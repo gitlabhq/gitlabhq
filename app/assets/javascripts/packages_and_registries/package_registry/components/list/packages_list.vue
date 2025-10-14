@@ -67,6 +67,7 @@ export default {
     isListEmpty() {
       return !this.list || this.list.length === 0;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       const category = this.itemToBeDeleted
         ? packageTypeToTrackCategory(this.itemToBeDeleted.packageType)

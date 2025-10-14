@@ -1,7 +1,7 @@
 - title: "Azure storage driver for the container registry"
   announcement_milestone: "17.10"
   removal_milestone: "19.0"
-  breaking_change: true
+  breaking_change: false
   reporter: trizzi
   stage: Package
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523096
@@ -11,9 +11,11 @@
   manual_task: true
   window: "3"
   body: |
-    The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0. If you use Azure object storage for your container registry, you'll need to update your configuration to use the new `azure_v2` driver.
+    The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0.
+    If you use Azure object storage for your container registry, and would like to use the new driver earlier, you'll need to update your configuration to use the new `azure_v2` driver. In GitLab 19.0, the deprecated Azure driver will become an alias for `azure_v2` driver and no manual action will be needed.
 
-    The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver. These improvements help prevent performance issues as your registry usage scales.
+    The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver.
+    These improvements help prevent performance issues as your registry usage scales.
 
     To migrate to the `azure_v2` driver:
 

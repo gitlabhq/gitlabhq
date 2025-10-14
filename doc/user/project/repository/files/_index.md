@@ -48,18 +48,29 @@ If your file has one of the these file extensions, GitLab renders the contents o
 
 ### README and index files
 
-When a `README` or `index` file is present in a repository, GitLab renders its contents.
+{{< history >}}
+
+- Support for `_index.md` files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206533) in GitLab 18.5.
+
+{{< /history >}}
+
+When a `README`, `index`, or `_index` file is present in a repository, GitLab renders its contents.
 These files can either be plain text or have the extension of a
 supported markup language.
 
-- When both a `README` and an `index` file are present, the `README` takes precedence.
-- When multiple files with the same name have different extensions, the files are
-  ordered alphabetically. GitLab orders files without an extension last, like this:
+The priority order for automatic rendering is:
+
+- Previewable files: `README.md`, `index.md`, `_index.md`, etc.
+- Plain text files: `README`, `index`, `_index`, etc.
+
+The first file found in each category (in alphabetical order) is selected, with
+previewable files taking precedence over plain text files. For example, if
+multiple READMEs are available GitLab renders them in the following order:
 
   1. `README.adoc`
   1. `README.md`
   1. `README.rst`
-  1. `README`.
+  1. `README`
 
 ### Render OpenAPI files
 

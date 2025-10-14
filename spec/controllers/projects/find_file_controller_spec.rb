@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::FindFileController do
+RSpec.describe Projects::FindFileController, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 

@@ -59,7 +59,7 @@ export default {
       'totalClusters',
     ]),
     contentAlignClasses() {
-      return 'gl-flex gl-items-center gl-justify-end md:gl-justify-start';
+      return 'gl-flex gl-items-center gl-justify-end @md/panel:gl-justify-start';
     },
     currentPage: {
       get() {

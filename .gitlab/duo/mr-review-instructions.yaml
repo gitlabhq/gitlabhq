@@ -4,15 +4,20 @@
 
 # References:
 # - Code Review Guidelines: https://docs.gitlab.com/development/code_review/
-# - Databse Review Guidelines: https://docs.gitlab.com/development/database_review/
+# - Database Review Guidelines: https://docs.gitlab.com/development/database_review/
 # - Developer Guide: https://docs.gitlab.com/operator/developer/guide/
 # - Contributing Guide: https://docs.gitlab.com/development/contributing/
+# - Documentation Guide: https://docs.gitlab.com/development/documentation/styleguide/
 
 # This file defines custom review criteria that will be applied to specific files
 # during merge request reviews. Instructions are grouped by name and can target
 # multiple file patterns using glob syntax.
-
 instructions:
+  - name: General Standards
+    fileFilters:
+      - "**/*"
+    instructions: |
+      1. Ensure you use inclusive language where applicable, e.g. prefer `allowlist` over `whitelist`
   - name: Ruby Code Quality
     fileFilters:
       - "**/*.rb"
@@ -23,6 +28,16 @@ instructions:
       3. Ensure authorization checks in controller actions and API endpoints
       4. Ensure input validation for user-provided parameters
       5. Ensure no information disclosure in error responses
+      6. Ensure all modified or new queries are flagged as needing a database reviewer
+      7. Ensure all modified or new queries have both raw SQL and query plans documented in the merge request description
+      8. Analyze query plans for common pitfalls in the merge request description:
+        - Sequential scans on large tables
+        - Nested loops with large datasets
+        - Missing or inefficient index usage
+        - High-cost operations
+        - Unexpected sort operations
+        - Verify the query returns expected records (not zero rows)
+        - Check that maximum query execution time is under 100ms
 
   - name: Database Migrations
     fileFilters:
@@ -34,9 +49,30 @@ instructions:
       1. Ensure migrations are reversible (add explicit down method for complex operations)
       2. Ensure bulk operations use batched migrations
       3. Use post-migrations for time-consuming operations
-      4. Ensure indexes on new foreign key columns
       5. Ensure column removals were ignored in previous release
-      6. Update db/structure.sql and Database Dictionary
+      7. Ask: "Have you triggered the db:gitlabcom-database-testing pipeline?"
+      8. For migrations that modify the database schema:
+         - Ensure db/structure.sql is updated to reflect the changes
+      9. For creating new tables, views or dropping existing tables/views:
+          - Ensure the Database Dictionary is updated to reflect the changes
+          - Remind: "When creating tables/views or dropping tables/views, make sure to update the Database Dictionary to maintain accurate documentation of the database schema"
+      10. For column additions with foreign keys to pre-existing tables (not created in the current merge request):
+         - Check if an index exists or is being added for the foreign key column
+         - Ask: "What is the current size of this table, and what is the projected size after adding this column? Tables cannot exceed 50 GB total size (including all indexes and column data) after adding a new column with a foreign key on GitLab.com."
+         - Remind: "If this table exceeds or will exceed the size limit, you can request an exemption by filing an issue with the Database Frameworks Team: https://docs.gitlab.com/development/database/large_tables_limitations/#requesting-an-exception"
+         - Ask: "Are you following the guidelines for adding foreign keys to existing tables to avoid downtime and migration failures? See: https://docs.gitlab.com/development/database/foreign_keys/#avoiding-downtime-and-migration-failures"
+      11. For column additions without foreign keys to pre-existing tables (not created in the current merge request):
+          - Ask: "What is the current size of this table, and what is the projected size after adding this column? Tables cannot exceed 100 GB total size (including all indexes and column data) after adding a new column on GitLab.com."
+          - Remind: "If this table exceeds or will exceed the size limit, you can request an exemption by filing an issue with the Database Frameworks Team: https://docs.gitlab.com/development/database/large_tables_limitations/#requesting-an-exception"
+      12. For new tables created in the current merge request that contain foreign key columns:
+          - Ensure indexes are created for all foreign key columns
+          - Check if each foreign key column in this new table has a corresponding index
+      13. For new tables created in the current merge request:
+          - Check if columns are ordered optimally for space efficiency:
+            - Group fixed-width columns together in descending size order (8-byte types first, then 4-byte, etc.)
+            - Place variable-width columns (text, varchar, arrays, json, jsonb) at the end
+          - Ask: "Have you ordered the columns to minimize space usage by grouping fixed-width columns together and placing variable-width columns at the end?"
+          - Remind: "Proper column ordering can significantly reduce storage requirements at scale. See: https://docs.gitlab.com/ee/development/database/ordering_table_columns.html"
 
   - name: Test Coverage
     fileFilters:
@@ -48,3 +84,12 @@ instructions:
       1. Use shared examples to reduce duplication
       2. Ensure error handling tests for security-sensitive operations
       3. Ensure input validation tests for user-facing endpoints
+
+  - name: Documentation
+    fileFilters:
+      - "doc/**/*.md"
+    instructions: |
+      1. Ensure markdown formatting follows GitLab Flavored Markdown syntax standards.
+      2. Ensure new or updated content aligns with existing content in technical meaning and style.
+      3. Ensure the style is clear, concise, not repetitive, and follows the GitLab Documentation Style Guide.
+      4. Avoid excessive or repetitive links.

@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Vue from 'vue';
 import Sortable from 'sortablejs';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { destroyImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
 import { toggleCheckbox } from '~/behaviors/markdown/utils';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
@@ -17,6 +18,7 @@ import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -40,7 +42,7 @@ export default {
     CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
     GlButton,
   },
-  mixins: [trackingMixin],
+  mixins: [trackingMixin, glFeatureFlagsMixin()],
   props: {
     enableTruncation: {
       type: Boolean,
@@ -143,6 +145,10 @@ export default {
     eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
     window.removeEventListener('hashchange', this.truncateOrScrollToAnchor);
     this.removeAllPointerEventListeners();
+
+    if (this.$refs['gfm-content'] && this.glFeatures.imageLightboxes) {
+      destroyImageLightbox(this.$refs['gfm-content']);
+    }
   },
   methods: {
     async renderGFM() {

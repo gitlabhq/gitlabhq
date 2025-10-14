@@ -89,8 +89,9 @@ module LfsRequest
   end
 
   def lfs_upload_access?
-    return false unless has_authentication_ability?(:push_code)
     return false if limit_exceeded?
+    return true if can?(user, :build_push_code, project) && has_authentication_ability?(:build_push_code)
+    return false unless has_authentication_ability?(:push_code)
 
     lfs_deploy_token? ||
       can?(user, :push_code, project) ||

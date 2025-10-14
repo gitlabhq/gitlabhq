@@ -3,8 +3,8 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
-description: Two-factor authentication (2FA) adds an extra layer of security to your GitLab account by requiring a second form of verification in addition to your password.
 title: Two-factor authentication
+description: Enable multi-factor authentication for enhanced account protection.
 ---
 
 {{< details >}}
@@ -114,10 +114,10 @@ You can use FortiAuthenticator as an OTP provider in GitLab. Users must:
 - Exist in both FortiAuthenticator and GitLab with the same username.
 - Have FortiToken configured in FortiAuthenticator.
 
-You need a username and access token for FortiAuthenticator. The `access_token` shown below is the FortAuthenticator
+You need a username and access token for FortiAuthenticator. The `access_token` shown below is the FortiAuthenticator
 access key. To get the token, see the REST API Solution Guide at
 [Fortinet Document Library](https://docs.fortinet.com/document/fortiauthenticator/6.2.0/rest-api-solution-guide/158294/the-fortiauthenticator-api).
-Tested with FortAuthenticator version 6.2.0.
+Tested with FortiAuthenticator version 6.2.0.
 
 Configure FortiAuthenticator in GitLab. On your GitLab server:
 

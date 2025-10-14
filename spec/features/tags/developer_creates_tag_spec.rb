@@ -66,7 +66,7 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
     end
 
     it 'opens dropdown for ref' do
-      ref_row = find('.form-group:nth-of-type(2) .col-sm-auto')
+      ref_row = find('.form-group:nth-of-type(2) .gl-col-sm-auto')
       page.within ref_row do
         ref_input = find('[name="ref"]', visible: false)
         expect(ref_input.value).to eq 'master'

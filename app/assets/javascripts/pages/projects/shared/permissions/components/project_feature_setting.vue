@@ -52,11 +52,6 @@ export default {
       required: false,
       default: true,
     },
-    accessControlForced: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -68,9 +63,6 @@ export default {
   computed: {
     internalValue: {
       get() {
-        if (this.accessControlForced && this.options.length > 0) {
-          return this.options[0].value;
-        }
         return this.value;
       },
       set(value) {
@@ -91,8 +83,7 @@ export default {
         this.disabledSelectInput ||
         this.disabledInput ||
         !this.featureEnabled ||
-        this.displayOptions.length < 2 ||
-        this.accessControlForced
+        this.displayOptions.length < 2
       );
     },
     valueWhenFeatureEnabled() {

@@ -36,7 +36,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Depending on the template type you want to create, scroll to either
    [**Merge commit message template**](#default-template-for-merge-commits) or
    [**Squash commit message template**](#default-template-for-squash-commits).

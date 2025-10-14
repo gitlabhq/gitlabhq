@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
 
       context 'when the rule matches' do
-        let(:context) { double(variables_hash: { 'MY_VAR' => 'hello' }) }
+        let(:context) { double(variables_hash_expanded: { 'MY_VAR' => 'hello' }) }
 
         it { is_expected.to eq(true) }
 
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       end
 
       context 'when the rule does not match' do
-        let(:context) { double(variables_hash: { 'MY_VAR' => 'invalid' }) }
+        let(:context) { double(variables_hash_expanded: { 'MY_VAR' => 'invalid' }) }
 
         it { is_expected.to eq(false) }
       end
@@ -99,22 +99,44 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       let(:rule_hashes) { [{ changes: ['file.txt'] }] }
 
       shared_examples 'when the pipeline has modified paths' do
-        let(:modified_paths) { ['file.txt'] }
+        let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'file.txt')] }
 
         before do
-          allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
+          allow(pipeline).to receive(:changed_paths).and_return(changed_paths)
         end
 
         context 'when the file has changed' do
           it { is_expected.to eq(true) }
 
           it_behaves_like 'with when: specified'
+
+          context 'when ci_changes_changed_paths is disabled' do
+            let(:modified_paths) { ['file.txt'] }
+
+            before do
+              stub_feature_flags(ci_changes_changed_paths: false)
+              allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
+            end
+
+            it_behaves_like 'with when: specified'
+          end
         end
 
         context 'when the file has not changed' do
-          let(:modified_paths) { ['README.md'] }
+          let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'README.md')] }
 
           it { is_expected.to eq(false) }
+
+          context 'when ci_changes_changed_paths is disabled' do
+            let(:modified_paths) { ['README.md'] }
+
+            before do
+              stub_feature_flags(ci_changes_changed_paths: false)
+              allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
+            end
+
+            it { is_expected.to eq(false) }
+          end
         end
       end
 

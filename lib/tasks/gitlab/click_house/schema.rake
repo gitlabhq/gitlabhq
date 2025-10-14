@@ -57,6 +57,9 @@ namespace :gitlab do
 
       raise "ClickHouse schema dump not found at #{schema_dump_path}" unless File.exist?(schema_dump_path)
 
+      # Environment variable used on CI to to allow requests to ClickHouse docker container
+      WebMock.allow_net_connect! if Rails.env.test? && ENV['DISABLE_WEBMOCK']
+
       schema_sql = File.read(schema_dump_path)
 
       ClickHouse::Client.configuration.databases.each_key do |db|
@@ -65,6 +68,10 @@ namespace :gitlab do
         # CH doesn't support multiple statements by default
         schema_sql.split(';').each do |statement|
           next if statement.strip.empty?
+
+          if connection.replicated_engine?
+            statement = ClickHouse::ReplicatedTableEnginePatcher.patch_replicated(statement)
+          end
 
           connection.execute(statement)
         end
@@ -111,6 +118,7 @@ namespace :gitlab do
 
       path_to_sql = Rails.root.join('db', 'click_house', "#{database}.sql")
       if File.writable?(path_to_sql)
+        result = ClickHouse::ReplicatedTableEnginePatcher.unpatch_replicated(result) if connection.replicated_engine?
         File.write(path_to_sql, result)
       else
         puts "File #{path_to_sql} is not writeable, skipping writing #{database}.sql"

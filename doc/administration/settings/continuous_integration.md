@@ -129,7 +129,7 @@ To change the maximum artifact size for a group or project:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
-1. Expand **General pipelines**
+1. Expand **General pipelines**.
 1. Change the value of **Maximum artifacts size** (in MB).
 1. Select **Save changes**.
 
@@ -577,7 +577,8 @@ To access these settings:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350883) in GitLab 17.11, replacing previous `ci_enable_live_trace` [feature flag](../../administration/feature_flags/_index.md). The setting automatically migrates from the previous feature flag configuration during upgrade.
+- Instance setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186182) in GitLab 17.11, replacing the `ci_enable_live_trace` [feature flag](../../administration/feature_flags/_index.md).
+- `ci_enable_live_trace` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189232) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -593,7 +594,7 @@ Prerequisites:
 
 To turn on incremental logging for all projects:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Job logs** section.
 1. Under **Incremental logging configuration**, select the **Turn on incremental logging** checkbox.

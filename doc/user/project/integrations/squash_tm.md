@@ -42,7 +42,7 @@ see [Leverage Requirements and Test management in your SDLC](https://www.youtube
 ## Configure GitLab
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Squash TM**.
 1. Ensure that the **Active** toggle is enabled.
 1. In the **Trigger** section, indicate which type of issue is concerned by the real-time synchronization.

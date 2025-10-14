@@ -47,6 +47,28 @@ RSpec.describe 'Destroying a package file', feature_category: :package_registry 
     end
   end
 
+  shared_examples 'protected deletion of package file' do
+    it_behaves_like 'returning response status', :success
+
+    it 'returns protection error' do
+      mutation_request
+
+      expect(mutation_response).to include('errors' => ['Package is deletion protected.'])
+    end
+
+    it 'does not mark package file for destruction' do
+      expect { mutation_request }.not_to change { ::Packages::PackageFile.pending_destruction.count }
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(packages_protected_packages_delete: false)
+      end
+
+      it_behaves_like 'destroying the package file'
+    end
+  end
+
   describe 'post graphql mutation' do
     subject(:mutation_request) { post_graphql_mutation(mutation, current_user: user) }
 
@@ -78,12 +100,39 @@ RSpec.describe 'Destroying a package file', feature_category: :package_registry 
         end
 
         it 'enqueue worker to sync helm metadata cache' do
-          expect(::Packages::Helm::CreateMetadataCacheWorker)
-            .to receive(:perform_async)
-            .with(package_file.project_id, package_file.helm_channel)
+          expect(::Packages::Helm::BulkSyncHelmMetadataCacheService)
+            .to receive(:new)
+            .with(user, ::Packages::PackageFile.id_in(package_file.id))
+            .and_call_original
 
           mutation_request
         end
+      end
+    end
+
+    context 'with protected package file' do
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule,
+          project: package.project,
+          package_name_pattern: package.name,
+          package_type: package.package_type,
+          minimum_access_level_for_delete: :owner
+        )
+      end
+
+      where(:user_role, :shared_examples_name) do
+        :owner      | 'destroying the package file'
+        :maintainer | 'protected deletion of package file'
+        :developer  | 'denying the mutation request'
+        :anonymous  | 'denying the mutation request'
+      end
+
+      with_them do
+        before do
+          project.send("add_#{user_role}", user) unless user_role == :anonymous
+        end
+
+        it_behaves_like params[:shared_examples_name]
       end
     end
 

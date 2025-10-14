@@ -1,7 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
 .clusters-container {
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .nav-controls {
       width: 100%;
       order: -1;
@@ -16,7 +16,7 @@
 }
 
 .cluster-card-item {
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     padding-top: $gl-spacing-scale-2;
     min-height: 372px;
   }

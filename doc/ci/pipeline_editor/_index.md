@@ -13,7 +13,7 @@ title: Pipeline editor
 {{< /details >}}
 
 The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
-the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **Build > Pipeline editor**.
+the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **Build** > **Pipeline editor**.
 
 From the pipeline editor page you can:
 
@@ -49,7 +49,7 @@ due to a Git push event, and can help troubleshoot logic issues, including incor
 `rules` and `needs` job dependencies:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
+1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Optional. Select a different branch to use for the simulated push event by using
    the **Pipeline run source** dropdown list.
@@ -77,7 +77,7 @@ for review.
 ## Visualize CI configuration
 
 To view a visualization of your `.gitlab-ci.yml` configuration, in your project,
-go to **Build > Pipeline editor**, and then select the **Visualize** tab. The
+go to **Build** > **Pipeline editor**, and then select the **Visualize** tab. The
 visualization shows all stages and jobs. Any [`needs`](../yaml/_index.md#needs)
 relationships are displayed as lines connecting jobs together, showing the
 hierarchy of execution.

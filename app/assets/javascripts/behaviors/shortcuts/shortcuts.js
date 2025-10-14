@@ -19,6 +19,7 @@ import {
   TOGGLE_CANARY,
   TOGGLE_MARKDOWN_PREVIEW,
   FIND_AND_REPLACE,
+  GO_TO_HOMEPAGE,
   GO_TO_YOUR_TODO_LIST,
   GO_TO_ACTIVITY_FEED,
   GO_TO_YOUR_ISSUES,
@@ -86,6 +87,7 @@ export default class Shortcuts {
       [HIDE_APPEARING_CONTENT, Shortcuts.hideAppearingContent],
       [TOGGLE_CANARY, Shortcuts.onToggleCanary],
 
+      [GO_TO_HOMEPAGE, () => findAndFollowLink('.brand-logo')],
       [GO_TO_YOUR_TODO_LIST, () => findAndFollowLink('.shortcuts-todos')],
       [GO_TO_ACTIVITY_FEED, () => findAndFollowLink('.dashboard-shortcuts-activity')],
       [GO_TO_YOUR_ISSUES, () => findAndFollowLink('.dashboard-shortcuts-issues')],
@@ -294,6 +296,8 @@ export default class Shortcuts {
   }
 
   static async focusSearchFile(e) {
+    if (!/^projects:/.test(document.body.dataset.page)) return;
+
     if (e?.key) {
       InternalEvents.trackEvent(FIND_FILE_SHORTCUT_CLICK);
     }

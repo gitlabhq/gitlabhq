@@ -28,12 +28,12 @@ Secret push protection blocks secrets such as keys and API tokens from being pus
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see the playlist [Get Started with Secret Push Protection](https://www.youtube.com/playlist?list=PL05JrBw4t0KoADm-g2vxfyR0m6QLphTv-).
 
-Use [pipeline secret detection](../_index.md) together with secret push protection to further strengthen your security.
+Use pipeline secret detection with secret push protection to further strengthen your security.
 
 ## Secret push protection workflow
 
 Secret push protection takes place in the pre-receive hook. When you push changes to GitLab,
-push protection checks each [file or commit](#coverage) for secrets. By default, if a secret is detected,
+push protection checks each file or commit for secrets. By default, if a secret is detected,
 the push is blocked.
 
 <!-- To edit the diagram, use either Draw.io or the VS Code extension "Draw.io Integration" -->
@@ -62,9 +62,9 @@ If secret push protection does not detect any secrets in your commits, no messag
 
 ## Detected secrets
 
-Secret push protection scans [files or commits](#coverage) for specific patterns. Each pattern
+Secret push protection scans files or commits for specific patterns. Each pattern
 matches a specific type of secret. To confirm which secrets are detected by secret push protection,
-see [Detected secrets](../detected_secrets.md). Only high-confidence patterns were chosen for secret
+see [detected secrets](../detected_secrets.md). Only high-confidence patterns were chosen for secret
 push protection, to minimize the delay when pushing your commits and minimize the number of false
 alerts. For example, personal access tokens that use a custom prefix are not detected by secret push protection.
 You can [exclude](../exclusions.md) selected secrets from detection by secret push protection.
@@ -73,10 +73,10 @@ You can [exclude](../exclusions.md) selected secrets from detection by secret pu
 
 On GitLab Dedicated and GitLab Self-Managed instances, you must:
 
-1. [Allow secret push protection on the entire instance](#allow-the-use-of-secret-push-protection-in-your-gitlab-instance).
+1. Allow secret push protection on the entire instance.
 1. Enable secret push protection. You can either:
-   - [Enable secret push protection in a specific project](#enable-secret-push-protection-in-a-project).
-   - Use the API to [enable secret push protection for all projects in group](../../../../api/group_security_settings.md#update-secret_push_protection_enabled-setting).
+   - Enable secret push protection in a specific project.
+   - Use the API to enable secret push protection for all projects in group.
 
 ### Allow the use of secret push protection in your GitLab instance
 
@@ -120,16 +120,16 @@ You can also enable secret push protection for all projects in a group [with the
 
 Secret push protection does not block a secret when:
 
-- You used the [skip secret push protection](#skip-secret-push-protection) option when you pushed
+- You used the skip secret push protection option when you pushed
   the commits.
-- The secret is [excluded](../exclusions.md) from secret push protection.
-- The secret is in a path defined as an [exclusion](../exclusions.md).
+- The secret is excluded from secret push protection.
+- The secret is in a path defined as an exclusion.
 
 Secret push protection does not check a file in a commit when:
 
 - The file is a binary file.
 - The file is larger than 1 MiB.
-- The diff patch for the file is larger than 1 MiB (when using [diff scanning](#diff-scanning)).
+- The diff patch for the file is larger than 1 MiB (if you use diff scanning).
 - The file was renamed, deleted, or moved without changes to the content.
 - The content of the file is identical to the content of another file in the source code.
 - The file is contained in the initial push that created the repository.
@@ -169,7 +169,7 @@ When a push is blocked, secret push protection provides detailed information to 
 Not all detections require immediate action. Consider the following when evaluating results:
 
 - True positives: Legitimate secrets that should be rotated and removed. For example:
-  - [Valid](../../vulnerabilities/validity_check.md) API keys or tokens
+  - Valid API keys or tokens
   - Production database credentials
   - Private cryptographic keys
   - Any credentials that could grant unauthorized access
@@ -192,7 +192,7 @@ False positives can significantly impact developer productivity and lead to secu
 
 To reduce false positives:
 
-- Configure [exclusions](../exclusions.md) strategically:
+- Configure exclusions strategically:
   - Create path-based exclusions for test directories, documentation, and third party dependencies.
   - Use pattern-based exclusions for known false positive patterns specific to your codebase.
   - Document your exclusion rules and review them regularly.
@@ -250,38 +250,8 @@ After you have completed the pilot, consider the following phases for a scaled r
 
 When secret push protection blocks a push, you can either:
 
-- [Remove the secret](#remove-the-secret)
-- [Skip secret push protection](#skip-secret-push-protection)
-
-### Remove the secret
-
-Remove a blocked secret to allow the commit to be pushed to GitLab. The method of removing the
-secret depends on how recently it was committed. The instructions below use the Git CLI client,
-but you can achieve the same result by using another Git client.
-
-If the blocked secret was added with the most recent commit on your branch:
-
-1. Remove the secrets from the files.
-1. Stage the changes with `git add <file-name>`.
-1. Modify the most recent commit to include the changed files with `git commit --amend`.
-1. Push your changes with `git push`.
-
-If the blocked secret appears earlier in your Git history:
-
-1. Optional. Watch a short demo of [removing secrets from your commits](https://www.youtube.com/watch?v=2jBC3uBUlyU).
-1. Identify the commit SHA from the push error message. If there are multiple, find the earliest using `git log`.
-1. Create a copy branch to work from with `git switch --create copy-branch` so you can reset to the original branch if the rebase encounters issues.
-1. Use `git rebase -i <commit-sha>~1` to start an interactive rebase.
-1. Mark the offending commits for editing by changing the `pick` command to `edit` in the editor.
-1. Remove the secrets from the files.
-1. Stage the changes with `git add <file-name>`.
-1. Commit the changed files with `git commit --amend`.
-1. Continue the rebase with `git rebase --continue` until all secrets are removed.
-1. Push your changes from the copy branch to your original remote branch
-   with `git push --force --set-upstream origin copy-branch:<original-branch>`.
-1. When you are satisfied with the changes, consider the following optional cleanup steps.
-   1. Optional. Delete the original branch with `git branch --delete --force <original-branch>`.
-   1. Optional. Replace the original branch by renaming the copy branch with `git branch --move copy-branch <original-branch>`.
+- [Remove the secret](../remove_secrets_tutorial.md).
+- Skip secret push protection.
 
 ### Skip secret push protection
 
@@ -289,7 +259,7 @@ In some cases, it might be necessary to skip secret push protection. For example
 to commit a placeholder secret for testing, or a user might want to skip secret push protection due to
 a Git operation timeout.
 
-[Audit events](../../../compliance/audit_event_types.md#secret-detection) are logged when
+Audit events are logged when
 secret push protection is skipped. Audit event details include:
 
 - Skip method used.
@@ -299,19 +269,19 @@ secret push protection is skipped. Audit event details include:
 - Target branch. (Introduced in GitLab 17.4)
 - Commits that skipped secret push protection. (Introduced in GitLab 17.9)
 
-If [pipeline secret detection](../pipeline/_index.md) is enabled, the content of all commits are
+If pipeline secret detection is enabled, the content of all commits are
 scanned after they are pushed to the repository.
 
 To skip secret push protection for all commits in a push, either:
 
-- If you're using the Git CLI client, [instruct Git to skip secret push protection](#skip-when-using-the-git-cli-client).
-- If you're using any other client, [add `[skip secret push protection]` to one of the commit messages](#skip-when-using-the-git-cli-client).
+- If you're using the Git CLI client, instruct Git to skip secret push protection.
+- If you're using any other client, add `[skip secret push protection]` to one of the commit messages.
 
-#### Skip when using the Git CLI client
+#### For the Git CLI client
 
-To skip secret push protection when using the Git CLI client:
+To skip secret push protection from the command line:
 
-- Use the [push option](../../../../topics/git/commit.md#push-options-for-secret-push-protection).
+- Use the `secret_push_protection.skip_all` push option.
 
   For example, you have several commits that are blocked from being pushed because one of them
   contains a secret. To skip secret push protection, you append the push option to the Git command.
@@ -320,9 +290,9 @@ To skip secret push protection when using the Git CLI client:
   git push -o secret_push_protection.skip_all
   ```
 
-#### Skip when using any Git client
+#### For any Git client
 
-To skip secret push protection when using any Git client:
+To skip secret push protection:
 
 - Add `[skip secret push protection]` to one of the commit messages, on either an existing line or a new
   line, then push the commits.
@@ -341,11 +311,11 @@ Before GitLab 17.11, secret push protection scanned the contents of all modified
 This can cause a push to be unexpectedly blocked if a modified file contains a secret,
 even if the secret is not part of the diff.
 
-On GitLab 17.11 and earlier, [enable the `spp_scan_diffs` feature flag](#diff-scanning)
+On GitLab 17.11 and earlier, enable the `spp_scan_diffs` feature flag
 to ensure that only newly committed changes are scanned. To push a Web IDE change to a
 file that contains a secret, you need to additionally enable the
 `secret_checks_for_web_requests` feature flag.
 
 ### File was not scanned
 
-Some files are excluded from scanning. For details see [coverage](#coverage).
+Some files are excluded from scanning. For details, see the coverage.

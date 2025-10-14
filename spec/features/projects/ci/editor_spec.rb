@@ -71,7 +71,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     end
 
     it 'renders the empty page', :aggregate_failures do
-      expect(page).to have_content 'Optimize your workflow with CI/CD Pipelines'
+      expect(page).to have_content 'Configure a pipeline to automate your builds, tests, and deployments'
       expect(page).to have_selector '[data-testid="create-new-ci-button"]'
     end
 

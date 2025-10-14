@@ -20,18 +20,15 @@ title: GitLab for Eclipse
 
 {{< /history >}}
 
-{{< alert type="disclaimer" />}}
-
 The GitLab for Eclipse plugin integrates with GitLab Duo.
-This feature is an [experiment](../../policy/development_stages_support.md).
 
-[Install and configure the extension](setup.md).
+To install and configure the extension, see [Install and set up](setup.md).
 
 ## Update the plugin
 
 To update your version of the plugin:
 
-1. In your Eclipse IDE, go to **Help > Check for Updates**.
+1. In your Eclipse IDE, go to **Help** > **Check for Updates**.
 1. In the **Available Updates** dialog, ensure that **GitLab for Eclipse** is selected.
 1. Select **Next**, then **Finish**, to update the plugin.
 

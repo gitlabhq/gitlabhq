@@ -30,6 +30,49 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
     end
   end
 
+  describe 'triggers' do
+    it 'sets the appropriate sharding key column when the organization is set' do
+      entity = create(:bulk_import_entity)
+      entity.reload
+      expect(entity.organization_id).not_to be_nil
+      expect(entity.namespace_id).to be_nil
+      expect(entity.project_id).to be_nil
+
+      tracker = create(:bulk_import_tracker, entity: entity)
+      tracker.reload
+      expect(tracker.organization_id).to eq(entity.organization_id)
+      expect(tracker.namespace_id).to be_nil
+      expect(tracker.project_id).to be_nil
+    end
+
+    it 'sets the appropriate sharding key column when the group is set' do
+      group = create(:group)
+      entity = create(:bulk_import_entity, :group_entity, group: group)
+      entity.reload
+      expect(entity.namespace_id).not_to be_nil
+      expect(entity.project_id).to be_nil
+
+      tracker = create(:bulk_import_tracker, entity: entity)
+      tracker.reload
+      expect(tracker.organization_id).to be_nil
+      expect(tracker.namespace_id).to eq(entity.namespace_id)
+      expect(tracker.project_id).to be_nil
+    end
+
+    it 'sets the appropriate sharding key column when the project is set' do
+      project = create(:project)
+      entity = create(:bulk_import_entity, :project_entity, project: project)
+      entity.reload
+      expect(entity.project_id).not_to be_nil
+
+      tracker = create(:bulk_import_tracker, entity: entity)
+      tracker.reload
+      expect(tracker.organization_id).to be_nil
+      expect(tracker.namespace_id).to be_nil
+      expect(tracker.project_id).to eq(entity.project_id)
+    end
+  end
+
   describe '.running_trackers' do
     it 'returns trackers that are running for a given entity' do
       entity = create(:bulk_import_entity)

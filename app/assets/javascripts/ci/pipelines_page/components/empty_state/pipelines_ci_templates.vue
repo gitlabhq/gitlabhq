@@ -1,6 +1,6 @@
 <script>
 import { s__ } from '~/locale';
-
+import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import CiCards from './ci_cards.vue';
 import CiTemplates from './ci_templates.vue';
 
@@ -24,12 +24,15 @@ export default {
   components: {
     CiCards,
     CiTemplates,
+    ExternalConfigEmptyState,
   },
+  inject: ['usesExternalConfig'],
 };
 </script>
 
 <template>
-  <div>
+  <external-config-empty-state v-if="usesExternalConfig" />
+  <div v-else>
     <h2 class="gl-text-size-h2">{{ $options.i18n.title }}</h2>
 
     <div class="gl-mb-8">

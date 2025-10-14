@@ -147,6 +147,69 @@ RSpec.describe Snippet, feature_category: :source_code_management do
         end
       end
     end
+
+    describe 'project or organization validation' do
+      # Test using both subclasses to ensure the parent validation works
+
+      let_it_be(:project) { create(:project) }
+      let_it_be(:organization) { create(:organization) }
+
+      context 'with ProjectSnippet' do
+        it 'is valid with only project_id' do
+          snippet = build(:project_snippet, project: project)
+          snippet.organization_id = nil
+
+          expect(snippet).to be_valid
+        end
+
+        it 'is invalid with both project and organization' do
+          snippet = build(
+            :project_snippet,
+            project: project,
+            organization: organization
+          )
+
+          expect(snippet).not_to be_valid
+          expect(snippet.errors[:base]).to include('must belong to either a project or an organization')
+        end
+
+        it 'is invalid with neither project nor organization' do
+          snippet = build(:project_snippet)
+          snippet.organization = nil
+          snippet.project = nil
+
+          expect(snippet).not_to be_valid
+          expect(snippet.errors[:base]).to include('must belong to either a project or an organization')
+        end
+      end
+
+      context 'with PersonalSnippet' do
+        it 'is valid with only organization' do
+          snippet = build(:personal_snippet)
+
+          snippet.project = nil
+
+          expect(snippet).to be_valid
+        end
+
+        it 'is invalid with both project and organization' do
+          snippet = build(:personal_snippet)
+          snippet.project = project
+
+          expect(snippet).not_to be_valid
+          expect(snippet.errors[:base]).to include('must belong to either a project or an organization')
+        end
+
+        it 'is invalid with neither project nor organization' do
+          snippet = build(:personal_snippet)
+          snippet.organization = nil
+          snippet.project = nil
+
+          expect(snippet).not_to be_valid
+          expect(snippet.errors[:base]).to include('must belong to either a project or an organization')
+        end
+      end
+    end
   end
 
   describe 'callbacks' do

@@ -223,10 +223,6 @@ $monokai-gh: #75715e;
       @include dark-diff-match-line;
     }
 
-    &.diff-grid-row {
-      @include dark-diff-expansion-line;
-    }
-
     .diff-td.diff-line-num.hll,
     .diff-td.line-coverage.hll,
     .diff-td.line-inline-findings.hll,

@@ -236,8 +236,6 @@ runner for testing, the path separator for the trigger job is `/`. Other CI/CD
 configuration for jobs that use the Windows runner, like scripts, use ` \ `.
 
 You cannot use CI/CD variables in an `include` section in a dynamic child pipeline's configuration.
-[Issue 378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717) proposes fixing
-this issue.
 
 ### Run child pipelines with merge request pipelines
 
@@ -381,7 +379,7 @@ as soon as one of its jobs fail.
 The parent pipeline only auto-cancels when a job in the child pipeline fails if:
 
 - The parent pipeline is also set up to auto-cancel on job failure.
-- The trigger job is configured with [`strategy: depend`](../yaml/_index.md#triggerstrategy).
+- The trigger job is configured with [`strategy: mirror`](../yaml/_index.md#triggerstrategy).
 
 For example:
 
@@ -395,7 +393,7 @@ For example:
   trigger_job:
     trigger:
       include: child-pipeline.yml
-      strategy: depend
+      strategy: mirror
 
   job3:
     script:
@@ -687,7 +685,11 @@ a few different methods, based on where the variable is created or defined.
 
 ### Pass YAML-defined CI/CD variables
 
-_Note: Inputs are recommended for pipeline configuration instead of variables as they offer improved security and flexibility._
+{{< alert type="note" >}}
+
+Inputs are recommended for pipeline configuration instead of variables as they offer improved security and flexibility.
+
+{{< /alert >}}
 
 You can use the `variables` keyword to pass CI/CD variables to a downstream pipeline.
 These variables are pipeline variables for [variable precedence](../variables/_index.md#cicd-variable-precedence).

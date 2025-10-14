@@ -225,6 +225,29 @@ describe('LabelToken', () => {
       );
     });
 
+    it.each`
+      value                     | expectedText              | labelExists
+      ${'None'}                 | ${'None'}                 | ${false}
+      ${'Any'}                  | ${'Any'}                  | ${false}
+      ${mockRegularLabel.title} | ${mockRegularLabel.title} | ${true}
+    `(
+      'when "$value" is selected, shows "$expectedText" and presence of GlLabel is $labelExists',
+      async ({ value, expectedText, labelExists }) => {
+        wrapper = createComponent({
+          value: { data: value, operator: '=' },
+          config: {
+            initialLabels: mockLabels,
+          },
+        });
+
+        await nextTick();
+
+        const tokenSegments = findTokenSegments();
+        expect(tokenSegments.at(2).text()).toBe(expectedText);
+        expect(tokenSegments.at(2).findComponent(GlLabel).exists()).toBe(labelExists);
+      },
+    );
+
     it('renders provided defaultLabels as suggestions', async () => {
       wrapper = createComponent({
         active: true,

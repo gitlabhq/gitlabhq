@@ -1,15 +1,14 @@
 <script>
-import { GlTooltip, GlIcon } from '@gitlab/ui';
+import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 
 export default {
   i18n: {
     timeEstimate: __('Time estimate'),
   },
   components: {
-    GlIcon,
-    GlTooltip,
+    WorkItemAttribute,
   },
   inject: ['timeTrackingLimitToHours'],
   props: {
@@ -31,22 +30,36 @@ export default {
       );
     },
   },
+  methods: {
+    createAriaLabel() {
+      return sprintf(__(`Time estimate: %{estimate}`), {
+        estimate: this.title,
+      });
+    },
+  },
 };
 </script>
 
 <template>
-  <span>
-    <span ref="issueTimeEstimate" class="board-card-info gl-mr-3 gl-cursor-help gl-text-subtle">
-      <gl-icon name="hourglass" class="board-card-info-icon gl-mr-2" variant="subtle" />
-      <time class="board-card-info-text gl-text-sm">{{ timeEstimate }}</time>
-    </span>
-    <gl-tooltip
-      :target="() => $refs.issueTimeEstimate"
-      placement="bottom"
-      data-testid="issue-time-estimate"
-    >
-      <span class="gl-block gl-font-bold">{{ $options.i18n.timeEstimate }}</span>
-      {{ title }}
-    </gl-tooltip>
-  </span>
+  <work-item-attribute
+    wrapper-component="button"
+    anchor-id="board-card-time-estimate"
+    wrapper-component-class="board-card-info board-card-weight gl-inline-flex gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle !gl-cursor-help gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
+    title-component-class="board-card-info-text"
+    icon-name="hourglass"
+    icon-class="gl-mr-1"
+    :aria-label="createAriaLabel()"
+  >
+    <template #title>
+      <span class="board-card-info gl-cursor-help gl-text-subtle">
+        <time class="board-card-info-text gl-text-sm">{{ timeEstimate }}</time>
+      </span>
+    </template>
+    <template #tooltip-text>
+      <span data-testid="issue-time-estimate">
+        <span class="gl-block gl-font-bold">{{ $options.i18n.timeEstimate }}</span>
+        <span>{{ title }}</span>
+      </span>
+    </template>
+  </work-item-attribute>
 </template>

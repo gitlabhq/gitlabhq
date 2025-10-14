@@ -7,12 +7,30 @@ $comparison-empty-state-height: 62px;
 $merge-request-sticky-header-height: 45px;
 
 .apply-suggestions-input-min-width {
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     width: $gl-dropdown-width-wide;
   }
 }
 
-.mr_source_commit, .mr_target_commit {
+.media-section {
+  @include gl-container-width-down(lg, panel) {
+    align-items: flex-start;
+
+    .media-body {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .code-text {
+    @include gl-container-width-up(lg, panel) {
+      align-self: center;
+      flex: 1;
+    }
+  }
+}
+
+.mr-source-commit {
   margin-bottom: 0;
 
   .commit {
@@ -52,61 +70,19 @@ $merge-request-sticky-header-height: 45px;
   }
 }
 
-.card-new-merge-request {
-  .card-header {
-    padding: 5px 10px;
-    font-weight: $gl-font-weight-bold;
-    line-height: 25px;
-  }
-
-  .card-body {
-    padding: 10px 5px;
-  }
-
-  .card-footer {
-    padding: 0;
-
-    .btn {
-      min-width: auto;
-    }
-  }
-
-  .commit {
-    .commit-row-title {
-      margin-bottom: 4px;
-    }
-
-    .item-title {
-      @include media-breakpoint-up(sm) {
-        width: 45%;
-      }
-    }
-
-    .avatar {
-      left: 0;
-      top: 2px;
-    }
-  }
-}
-
 .merge-request-select {
   padding-left: 5px;
   padding-right: 5px;
   margin-bottom: 10px;
 
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  @include media-breakpoint-up(xs) {
+  @include gl-container-width-up(sm, panel) {
     float: left;
     width: 50%;
     margin-bottom: 0;
   }
 
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-dropdown-custom-toggle {
-    width: 100%;
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -114,19 +90,12 @@ $merge-request-sticky-header-height: 45px;
   display: inline-block;
   width: 100%;
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     width: 250px;
   }
 
   .dropdown-menu-toggle {
     width: 100%;
-  }
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.issuable-form-label-select-holder .gl-dropdown-toggle {
-  @include media-breakpoint-up(md) {
-    width: 250px;
   }
 }
 
@@ -141,7 +110,7 @@ $merge-request-sticky-header-height: 45px;
 
 @supports (container-type: scroll-state) {
   .merge-request-sticky-header-wrapper {
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       top: $calc-application-header-height;
       min-height: 88px;
       container-type: scroll-state;
@@ -152,7 +121,7 @@ $merge-request-sticky-header-height: 45px;
   }
 
   .merge-request-sticky-header {
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       &:has(.detail-page-description)::after {
         height: calc(#{$merge-request-sticky-header-height} + 26px); // Height of the 2 sticky bars combined
       }
@@ -168,6 +137,10 @@ $merge-request-sticky-header-height: 45px;
       @container sticky-header scroll-state(stuck: top) {
         &::after, .merge-request-sticky-title {
           @apply gl-block;
+        }
+
+        .merge-request-tabs-container {
+          @apply gl-flex-row;
         }
 
         .merge-request-tabs {
@@ -191,12 +164,6 @@ $merge-request-sticky-header-height: 45px;
         .detail-page-description {
           @apply gl-z-1;
         }
-
-        @include media-breakpoint-down(md) {
-          .merge-request-tabs-actions {
-            @apply gl-hidden;
-          }
-        }
       }
     }
   }
@@ -211,12 +178,6 @@ $merge-request-sticky-header-height: 45px;
 }
 
 .merge-request-tabs-container {
-  @include media-breakpoint-down(xs) {
-    .discussion-filter-container {
-      margin-bottom: $gl-padding-4;
-    }
-  }
-
   .discussion-filter-container {
     &:not(:only-child) {
       margin: $gl-padding-4;
@@ -232,13 +193,33 @@ $merge-request-sticky-header-height: 45px;
 }
 
 // Wrap MR tabs/buttons so you don't have to scroll on desktop
-@include media-breakpoint-down(md) {
+@include gl-container-width-down(lg, panel) {
   .merge-request-tabs-container {
-    flex-direction: column-reverse;
+    @apply gl-flex-row;
   }
 }
 
-@include media-breakpoint-down(lg) {
+@include gl-container-width-down(md, panel) {
+  .merge-request-tabs-container {
+    @apply gl-flex-col-reverse;
+  }
+}
+
+// Hide actions on sticky header when right sidebar is expanded
+// and viewport is medium.
+.right-sidebar-expanded {
+  .merge-request-sticky-header {
+    @include gl-container-width-up(md, panel) {
+      @container sticky-header scroll-state(stuck: top) {
+        .merge-request-tabs-container .merge-request-tabs-actions {
+          @apply gl-hidden;
+        }
+      }
+    }
+  }
+}
+
+@include gl-container-width-down(xl, panel) {
   .right-sidebar-expanded {
     .merge-request-tabs-container {
       flex-direction: column-reverse;
@@ -255,33 +236,6 @@ $merge-request-sticky-header-height: 45px;
   position: fixed;
   z-index: 99999;
   @apply gl-bg-overlay;
-}
-
-.mr-compare {
-  .diff-file .file-title-flex-parent {
-    top: calc(#{$calc-application-header-height} + #{$mr-tabs-height});
-  }
-}
-
-// These are composite classes for use with Vue Transition
-// https://vuejs.org/guide/built-ins/transition
-.survey-slide-up-enter {
-  transform: translateY(10px);
-  opacity: 0;
-}
-
-.survey-slide-up-enter-active {
-  @apply gl-transition-all;
-  @apply gl-duration-slow;
-}
-
-.mr-compare-dropdown {
-  width: 100%;
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-button-text {
-    width: 100%;
-  }
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class --- We need a slightly smaller spinner to fit the design

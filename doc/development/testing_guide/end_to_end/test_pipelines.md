@@ -132,6 +132,10 @@ Note: Do not remove any existing resources being created form [mr_seed.rb](https
 
 [Component Performance testing](https://gitlab.com/gitlab-org/quality/component-performance-testing) currently doesn't support multiple seed files but this will be addressed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/76>
 
+### Skipping `e2e:perf-on-cng` test job
+
+To skip the `e2e:perf-on-cng` test job to run on MR pipeline, add the `pipeline:skip-performance` label while creating the merge request.
+
 ### Troubleshooting
 
 Sometimes the multi-project job under `run-performance-test` job may fail during data seeding with gem incompatibility error.
@@ -178,6 +182,13 @@ Jobs in `test` stage perform following actions:
 1. local k8s cluster setup using [`kind`](https://github.com/kubernetes-sigs/kind)
 1. GitLab installation using official [`helm` chart](https://gitlab.com/gitlab-org/charts/gitlab)
 1. E2E test execution against performed deployment
+
+Jobs in `test` stage:
+
+- `cng-instance` runs the full e2e suite, excluding orchestrated tests, against CNG
+- `cng-qa-min-redis-version` runs validation for minimal supported Redis version using `Test::Instance::HealthCheck` scenario against CNG
+- `cng-registry` runs tests in the registry scenario `Test::Integration::Registry` against CNG
+- `cng-relative-url` runs the same tests as `cng-instance` but with a relative URL set for CNG
 
 ##### report
 

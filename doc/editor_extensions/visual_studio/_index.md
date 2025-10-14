@@ -11,7 +11,7 @@ integrates GitLab with Visual Studio for Windows. GitLab for Visual Studio suppo
 [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
 and [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-visual-studio-for-windows).
 
-[Install and configure the extension](setup.md).
+To install and configure the extension, see [Install and set up](setup.md).
 
 Report any issues, bugs, or feature requests in the
 [`gitlab-visual-studio-extension` issue tracker](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues).
@@ -20,7 +20,7 @@ Report any issues, bugs, or feature requests in the
 
 To update your extension to the latest version:
 
-1. In Visual Studio, go to **Extensions > Manage Extensions...**.
+1. In Visual Studio, go to **Extensions** > **Manage Extensions...**.
 1. Select the **Updates** tab.
 1. Search for **GitLab** published by **GitLab (`gitlab.com`)**.
 1. Select **Update** on the extension to update to the latest version.
@@ -33,5 +33,5 @@ To update your extension to the latest version:
 
 ## Troubleshooting
 
-For troubleshooting information, see the
-[extension's troubleshooting page](visual_studio_troubleshooting.md).
+For troubleshooting information about the extension, see
+[troubleshooting](visual_studio_troubleshooting.md).

@@ -5,6 +5,7 @@ module Organizations
     include Gitlab::Utils::StrongMemoize
     include Gitlab::SQL::Pattern
     include Gitlab::VisibilityLevel
+    include Gitlab::Routing.url_helpers
     include FeatureGate
 
     DEFAULT_ORGANIZATION_ID = 1
@@ -25,8 +26,10 @@ module Organizations
     has_many :root_groups, -> { roots }, class_name: 'Group', inverse_of: :organization
     has_many :projects
     has_many :snippets
+    has_many :snippet_repositories, inverse_of: :organization
     has_many :topics, class_name: "Projects::Topic"
     has_many :integrations
+    has_many :system_hooks
 
     has_one :settings, class_name: "OrganizationSetting"
     has_one :organization_detail, inverse_of: :organization, autosave: true
@@ -118,6 +121,15 @@ module Organizations
       "#<#{self.class.name} id:#{id} path:#{path}>"
     end
 
+    # Root path in the context of this organization instance.
+    def root_path
+      return organization_root_path(self) if scoped_paths?
+
+      unscoped_root_path
+    end
+
+    # Deprecated, use root_path instead.
+    # Will be removed in future commit.
     def full_path
       return '' unless scoped_paths?
 

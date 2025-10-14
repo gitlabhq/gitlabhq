@@ -188,7 +188,7 @@ To set up the dashboard:
 
    1. Map each GitLab project URL to its corresponding business unit.
    1. Upload the file to Splunk as a lookup table:
-      1. Go to **Settings > Lookups > Lookup table files**.
+      1. Go to **Settings** > **Lookups** > **Lookup table files**.
       1. Select **New Lookup Table File**.
       1. Upload your CSV file.
       1. Set the **Destination filename** to `business_unit_mapping.csv`.
@@ -204,7 +204,7 @@ To set up the dashboard:
    1. Save the provided `vuln_metrics_dashboard.xml` file.
    1. In Splunk:
       1. Go to the Search app.
-      1. Click **Dashboards > Create New Dashboard**.
+      1. Click **Dashboards** > **Create New Dashboard**.
       1. Select **Source** in the edit view.
       1. Replace the default XML with the contents of `vuln_metrics_dashboard.xml`.
       1. Save the dashboard.

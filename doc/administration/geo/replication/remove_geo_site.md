@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Removing secondary Geo sites
@@ -15,7 +15,7 @@ title: Removing secondary Geo sites
 **Secondary** sites can be removed from the Geo cluster using the Geo administration page of the **primary** site. To remove a **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Nodes**.
+1. Select **Geo** > **Nodes**.
 1. For the **secondary** site you want to remove, select **Remove**.
 1. Confirm by selecting **Remove** when the prompt appears.
 

@@ -2779,7 +2779,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   describe '#has_exposed_artifacts?' do
     before do
-      stub_feature_flags(ci_validate_config_options: false)
       create(:ci_build, pipeline: pipeline) # Job without artifacts
     end
 
@@ -2942,6 +2941,65 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'returns external pull request modified paths' do
         expect(pipeline.modified_paths).to match(external_pull_request.modified_paths)
+      end
+    end
+  end
+
+  describe '#changed_paths' do
+    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+
+    context 'when old and new revisions are set' do
+      before do
+        pipeline.update!(before_sha: '1234abcd', sha: '2345bcde')
+      end
+
+      it 'fetches stats for changes between commits' do
+        expect(project.repository)
+          .to receive(:find_changed_paths).with(
+            array_including((an_instance_of(Gitlab::Git::DiffTree).and have_attributes(left_tree_id: "1234abcd", right_tree_id: "2345bcde"))),
+            hash_including(merge_commit_diff_mode: :all_parents)
+          )
+          .and_call_original
+
+        pipeline.changed_paths
+      end
+    end
+
+    context 'when either old or new revision is missing' do
+      before do
+        pipeline.update!(before_sha: Gitlab::Git::SHA1_BLANK_SHA)
+      end
+
+      it 'returns nil' do
+        expect(pipeline.changed_paths).to be_nil
+      end
+    end
+
+    context 'when source is merge request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
+      end
+
+      let(:merge_request) do
+        create(:merge_request, :simple, source_project: project, target_project: project)
+      end
+
+      it 'returns merge request modified paths' do
+        expect(pipeline.changed_paths).to match(merge_request.changed_paths)
+      end
+    end
+
+    context 'when source is an external pull request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :external_pull_request_event, external_pull_request: external_pull_request)
+      end
+
+      let(:external_pull_request) do
+        create(:external_pull_request, project: project, target_sha: '281d3a7', source_sha: '498214d')
+      end
+
+      it 'returns external pull request modified paths' do
+        expect(pipeline.changed_paths).to match(external_pull_request.changed_paths)
       end
     end
   end
@@ -4218,6 +4276,29 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             expect(subject).to be_empty
           end
         end
+
+        context 'when the environment is linked via Environments::Job instead of CI metadata' do
+          before do
+            job.metadata&.destroy!
+          end
+
+          it 'returns the environment' do
+            expect(subject).to contain_exactly(job.deployment.environment)
+          end
+        end
+
+        context 'when there are environments linked via both Environments::Job and CI metadata' do
+          let_it_be_with_refind(:staging_job) { create(factory_type, :with_deployment, :start_staging, pipeline: pipeline) }
+
+          before do
+            job.job_environment.destroy!
+            job.ensure_metadata.update!(expanded_environment_name: job.expanded_environment_name)
+          end
+
+          it 'includes environments from both sources' do
+            expect(subject).to contain_exactly(job.deployment.environment, staging_job.deployment.environment)
+          end
+        end
       end
 
       context 'when an associated environment does not have deployments' do
@@ -4226,7 +4307,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let_it_be(:environment) { create(:environment, project: pipeline.project) }
 
         before_all do
-          job.metadata.update!(expanded_environment_name: environment.name)
+          job.link_to_environment(environment)
         end
 
         it 'does not return environments' do
@@ -6954,6 +7035,33 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       let!(:lfk_column) { :trigger_id }
       let!(:parent) { create(:ci_trigger, project: create(:project, maintainers: [user])) }
       let!(:model) { create(:ci_pipeline, trigger: parent) }
+    end
+  end
+
+  describe 'pipeline finished events' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be_with_reload(:pipeline) do
+      create(:ci_pipeline, project: project)
+    end
+
+    where(:status, :transition) do
+      'success'  | :succeed!
+      'failed'   | :drop!
+      'canceled' | :cancel!
+      'skipped'  | :skip!
+      'manual'   | :block!
+    end
+
+    with_them do
+      it 'publishes a PipelineFinishedEvent' do
+        expect(::Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event).to be_an_instance_of(::Ci::PipelineFinishedEvent)
+          expect(event.data).to eq({ 'pipeline_id' => pipeline.id, 'status' => pipeline.status })
+        end
+
+        pipeline.public_send(transition)
+      end
     end
   end
 end

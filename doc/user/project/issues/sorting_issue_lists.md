@@ -141,3 +141,22 @@ When in descending order, the issues are shown in the following order:
 When you sort by **Weight**, the issue list changes to sort ascending by the
 [issue weight](issue_weight.md).
 Issues with lowest weight are first, and issues without a weight are last.
+
+## Sorting by status
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550262) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
+
+{{< /history >}}
+
+When you sort by **Status**, the issue list changes to sort ascending by the
+[issue status](../../work_items/status.md).
+Issues are first sorted by their status category. If two issues share the same category, the system falls back to sorting by issue ID.

@@ -9,7 +9,7 @@ title: GitLab plugin for Neovim - `gitlab.vim`
 The [GitLab plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim) is a Lua-based plugin
 that integrates GitLab with Neovim.
 
-[Install and configure the extension](setup.md).
+To install and configure the extension, see [Install and set up](setup.md).
 
 ## Disable `gitlab.statusline`
 

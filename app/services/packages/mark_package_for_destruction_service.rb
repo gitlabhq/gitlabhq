@@ -12,7 +12,7 @@ module Packages
       package.mark_package_files_for_destruction
       package.sync_maven_metadata(current_user) if package.maven?
       package.sync_npm_metadata_cache if package.npm?
-      package.sync_helm_metadata_caches(current_user) if package.helm?
+      sync_helm_metadata_caches(current_user) if package.helm?
 
       service_response_success('Package was successfully marked as pending destruction')
     rescue StandardError => e
@@ -40,6 +40,12 @@ module Packages
         project_id: package.project_id,
         package_id: package.id
       )
+    end
+
+    def sync_helm_metadata_caches(user)
+      Packages::Helm::BulkSyncHelmMetadataCacheService.new(
+        user, package.package_files
+      ).execute
     end
   end
 end

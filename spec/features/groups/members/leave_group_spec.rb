@@ -28,7 +28,7 @@ RSpec.describe 'Groups > Members > Leave group', :with_organization_url_helpers,
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests
 
-    expect(page).to have_current_path(member_dashboard_groups_path, ignore_query: true)
+    expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
     expect(page).to have_content left_group_message(group)
     expect(group).not_to have_user(user)
   end
@@ -41,7 +41,7 @@ RSpec.describe 'Groups > Members > Leave group', :with_organization_url_helpers,
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests
 
-    expect(page).to have_current_path(member_dashboard_groups_path, ignore_query: true)
+    expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
     expect(group).not_to have_user(user)
   end
 
@@ -54,7 +54,7 @@ RSpec.describe 'Groups > Members > Leave group', :with_organization_url_helpers,
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests
 
-    expect(page).to have_current_path(member_dashboard_groups_path, ignore_query: true)
+    expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
     expect(page).to have_content left_group_message(group)
     expect(group).not_to have_user(user)
   end
@@ -69,7 +69,7 @@ RSpec.describe 'Groups > Members > Leave group', :with_organization_url_helpers,
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests
 
-    expect(page).to have_current_path(member_dashboard_groups_path, ignore_query: true)
+    expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
     expect(page).to have_content left_group_message(group)
     expect(group).not_to have_user(user)
   end

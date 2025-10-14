@@ -111,6 +111,9 @@ function mountPipelines() {
       mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
       sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
       useFailedJobsWidget: true,
+      mergeRequestPath: mrWidgetData?.merge_request_path
+        ? `${gon.gitlab_url}${mrWidgetData.merge_request_path}`
+        : null,
     },
     render(createElement) {
       return createElement('merge-request-pipelines-table', {
@@ -210,7 +213,6 @@ export default class MergeRequestTabs {
       this.mergeRequestTabPanes && this.mergeRequestTabPanes.querySelectorAll
         ? this.mergeRequestTabPanes.querySelectorAll('.tab-pane')
         : null;
-    this.navbar = document.querySelector('.navbar-gitlab');
     this.peek = document.getElementById('js-peek');
     this.sidebar = document.querySelector('.js-right-sidebar');
     this.pageLayout = document.querySelector('.layout-page');
@@ -612,9 +614,11 @@ export default class MergeRequestTabs {
   }
 
   expandViewContainer() {
-    this.contentWrapper.classList.remove('container-limited');
-    this.contentWrapper.classList.remove('rd-page-container');
-    this.contentWrapper.classList.add('diffs-container-limited');
+    if (this.contentWrapper.classList.contains('container-limited')) {
+      this.contentWrapper.classList.remove('container-limited');
+      this.contentWrapper.classList.remove('rd-page-container');
+      this.contentWrapper.classList.add('diffs-container-limited');
+    }
   }
 
   resetViewContainer() {

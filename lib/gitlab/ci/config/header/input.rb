@@ -22,7 +22,7 @@ module Gitlab
             validates :input_description, alphanumeric: true, allow_nil: true
             validates :input_regex, type: String, allow_nil: true
             validates :input_type, allow_nil: true,
-              allowed_values: ::Ci::PipelineCreation::Inputs::SpecInputs.input_types
+              allowed_values: ::Ci::Inputs::Builder.input_types
             validates :input_options, type: Array, allow_nil: true
 
             validate do

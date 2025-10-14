@@ -16,7 +16,7 @@ Built-in templates are sourced from the following groups:
 
 Prerequisites:
 
-- You must have a working [GitLab Development Kit (GDK) environment](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md).
+- You must have a working [GitLab Development Kit (GDK) environment](https://gitlab-org.gitlab.io/gitlab-development-kit/).
   In particular, PostgreSQL, Praefect, and `sshd` must be working.
 - `wget` should be installed.
 

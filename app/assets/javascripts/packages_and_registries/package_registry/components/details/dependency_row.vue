@@ -29,7 +29,7 @@ export default {
 
     <div
       v-if="showVersion"
-      class="table-section section-50 gl-flex md:gl-justify-end"
+      class="table-section section-50 gl-flex @md/panel:gl-justify-end"
       data-testid="version-pattern"
     >
       <span class="gl-text-default">{{ dependencyLink.dependency.versionPattern }}</span>

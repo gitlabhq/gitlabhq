@@ -13,7 +13,7 @@ module CloudSeed
 
       def execute
         # Prevent too many workers from hitting the same HTTP endpoint
-        if ::Gitlab::ApplicationRateLimiter.throttled?(:fetch_google_ip_list, scope: nil)
+        if ::Gitlab::ApplicationRateLimiter.throttled?(:fetch_google_ip_list, scope: :global)
           return error("#{self.class} was rate limited")
         end
 

@@ -26,8 +26,8 @@ func TestFailSetContentTypeAndDisposition(t *testing.T) {
 	resp := makeRequest(t, h, testCaseBody, "")
 	defer func() { _ = resp.Body.Close() }()
 
-	require.Equal(t, "", resp.Header.Get(headers.ContentDispositionHeader))
-	require.Equal(t, "", resp.Header.Get(headers.ContentTypeHeader))
+	require.Empty(t, resp.Header.Get(headers.ContentDispositionHeader))
+	require.Empty(t, resp.Header.Get(headers.ContentTypeHeader))
 }
 
 func TestSuccessSetContentTypeAndDispositionFeatureEnabled(t *testing.T) {

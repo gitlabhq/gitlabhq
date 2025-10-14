@@ -1,6 +1,6 @@
 ---
 view_name: postgres_partitioned_tables
-description: TODO
+description: List partitioned tables in the current schema with their partitioning strategies
 classes:
 - Gitlab::Database::PostgresPartitionedTable
 feature_categories:

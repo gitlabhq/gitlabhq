@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Default do
       it 'contains the expected node names' do
         expect(described_class.nodes.keys)
           .to match_array(%i[before_script after_script hooks cache image services
-                             interruptible timeout retry tags artifacts id_tokens])
+            interruptible timeout retry tags artifacts id_tokens])
       end
     end
   end

@@ -12,7 +12,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_feature_flags(ci_validate_config_options: false)
     project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
     stub_ci_pipeline_to_return_yaml_file
   end
@@ -769,7 +768,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         stub_ci_pipeline_yaml_file(YAML.dump({
           rspec: { script: 'rspec', retry: retry_value }
         }))
-        allow(rspec_job).to receive(:options).and_return({ retry: retry_value })
+        stub_ci_job_definition(rspec_job, options: { retry: retry_value })
       end
 
       context 'as an integer' do
@@ -890,15 +889,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       it_behaves_like 'with resource group'
       it_behaves_like 'when resource group is defined for review app deployment'
-
-      context 'when FF `read_from_new_ci_destinations` is disabled' do
-        before do
-          stub_feature_flags(read_from_new_ci_destinations: false)
-        end
-
-        it_behaves_like 'with resource group'
-        it_behaves_like 'when resource group is defined for review app deployment'
-      end
     end
 
     context 'with timeout' do
@@ -1804,6 +1794,39 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           failed_request = ::Ci::PipelineCreation::Requests.hget(creation_request)
           expect(failed_request['error']).to eq('Insufficient permissions to create a new pipeline')
           expect(failed_request['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
+        end
+      end
+    end
+
+    describe 'stop writing to ci_builds_metadata' do
+      # This config includes all non-EE metadata attributes that are written on pipeline creation
+      let(:config) do
+        YAML.dump(
+          job: {
+            interruptible: true,
+            script: 'echo',
+            variables: { VAR: 'test' },
+            environment: { name: 'env' },
+            id_tokens: { ID_TOKEN: { aud: 'https://test' } }
+          }
+        )
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'does not write to ci_builds_metadata' do
+        expect { execute_service }.to not_change { Ci::BuildMetadata.count }
+      end
+
+      context 'when FF `stop_writing_builds_metadata` is disabled' do
+        before do
+          stub_feature_flags(stop_writing_builds_metadata: false)
+        end
+
+        it 'writes to ci_builds_metadata' do
+          expect { execute_service }.to change { Ci::BuildMetadata.count }.by(1)
         end
       end
     end

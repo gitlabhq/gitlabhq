@@ -2,7 +2,7 @@
 stage: Systems
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Learn how to spin up a pre-configured GitLab VM on Microsoft Azure.
+description: Install GitLab from Azure Marketplace.
 title: Install GitLab on Microsoft Azure
 ---
 
@@ -176,7 +176,7 @@ redirect you to the public IP.
 
 To set up the GitLab external URL:
 
-1. Connect to GitLab through SSH by going to **Settings > Connect** from the VM
+1. Connect to GitLab through SSH by going to **Settings** > **Connect** from the VM
    dashboard, and follow the instructions. Remember to sign in with the username
    and SSH key you specified when you [created the VM](#configure-the-basics-tab).
    The Azure VM domain name is the one you
@@ -258,7 +258,7 @@ in this section whenever you need to update GitLab.
 To determine the version of GitLab you're currently running:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Dashboard**.
+1. Select **Overview** > **Dashboard**.
 1. Find the version under the **Components** table.
 
 If there's a newer available version of GitLab that contains one or more

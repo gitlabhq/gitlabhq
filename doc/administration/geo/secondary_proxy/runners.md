@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
@@ -81,7 +81,7 @@ You must have administrator access to use any of the following methods:
 
 - Through the **Admin** area:
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. Select **Settings > Runners**.
+  1. Select **Settings** > **Runners**.
   1. Identify the runners you would like to pause.
   1. Select the `pause` button next to each runner you would like to pause.
   1. After the failover is complete, unpause the runners you paused in the previous step.

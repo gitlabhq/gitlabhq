@@ -18,20 +18,6 @@
 RSpec.shared_examples 'an access token GET API with access token params' do
   let(:api_request) { api(path, personal_access_token: personal_access_token) }
   let_it_be(:created_at_desc) { created_at_asc.reverse }
-  let_it_be(:all_token_ids) do
-    [
-      active_token1.id,
-      active_token2.id,
-      expired_token1.id,
-      expired_token2.id,
-      revoked_token1.id,
-      revoked_token2.id,
-      named_token.id,
-      created_2_days_ago_token.id,
-      last_used_2_days_ago_token.id,
-      last_used_2_months_ago_token.id
-    ]
-  end
 
   let(:params) { {} }
 

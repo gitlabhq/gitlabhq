@@ -44,14 +44,16 @@ module RuboCop
         test_file_path = filepath(node).gsub('app/', 'spec/').gsub('.rb', '_spec.rb')
         test_file_path << '_spec.rb' if test_file_path.end_with?('.haml')
 
-        "#{read_file(test_file_path)}\n#{additional_tests_code(test_file_path)}"
+        "#{read_file(test_file_path)}\n#{outside_app_tests_code(test_file_path)}"
       end
 
-      def additional_tests_code(test_file_path)
+      def outside_app_tests_code(test_file_path)
         if test_file_path.include?('/controllers/')
           read_file(test_file_path.gsub('/controllers/', '/requests/'))
-        elsif test_file_path.include?('/lib/api/')
+        elsif test_file_path.include?('/lib/api/') # api tests in lib folder
           read_file(test_file_path.gsub('/lib/', '/spec/requests/'))
+        elsif test_file_path.include?('/lib/') # other tests in lib folder
+          read_file(test_file_path.gsub('/lib/', '/spec/lib/'))
         end
       end
 
@@ -98,7 +100,7 @@ module RuboCop
       end
 
       def filepath(node)
-        node.location.expression.source_buffer.name
+        node.source_range.source_buffer.name
       end
 
       def stub_experiments_matcher

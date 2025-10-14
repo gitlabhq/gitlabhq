@@ -265,11 +265,14 @@ describe('CE ServiceDeskListApp', () => {
 
   describe('Initial url params', () => {
     describe('search', () => {
-      it('is set from the url params', () => {
+      it('is set from the url params', async () => {
         setWindowLocation(locationSearch);
         wrapper = createComponent();
+        await waitForPromises();
 
-        expect(router.history.current.query).toMatchObject({ search: 'find issues' });
+        const { query } = router?.currentRoute || router.history.current;
+
+        expect(query).toMatchObject({ search: 'find issues' });
       });
     });
 

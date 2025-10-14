@@ -84,7 +84,7 @@
     align-self: center;
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     flex-direction: column;
   }
 }
@@ -105,7 +105,7 @@
   .btn:not(.split-content-button):not(.dropdown-toggle-split) {
     margin: $gl-padding-8 $gl-padding-4;
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       width: 100%;
       margin: $gl-padding-8 0;
     }

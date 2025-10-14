@@ -2,7 +2,7 @@
 
 exports[`Design management design index page when loaded renders design index 1`] = `
 <div
-  class="design-detail fixed-top gl-bg-subtle gl-flex gl-flex-col gl-justify-center gl-w-full js-design-detail lg:gl-flex-row"
+  class="@lg/panel:gl-flex-row design-detail fixed-top gl-bg-subtle gl-flex gl-flex-col gl-justify-center gl-w-full js-design-detail"
 >
   <div
     class="gl-flex gl-flex-col gl-grow gl-overflow-hidden gl-relative"
@@ -30,7 +30,7 @@ exports[`Design management design index page when loaded renders design index 1`
       updatedby="[object Object]"
     />
     <div
-      class="gl-flex gl-flex-col gl-grow gl-overflow-hidden gl-relative lg:gl-flex-row"
+      class="@lg/panel:gl-flex-row gl-flex gl-flex-col gl-grow gl-overflow-hidden gl-relative"
     >
       <div
         class="gl-flex gl-flex-col gl-grow-2 gl-overflow-hidden gl-relative"
@@ -49,7 +49,9 @@ exports[`Design management design index page when loaded renders design index 1`
           />
         </div>
       </div>
-      <div />
+      <div
+        design-variables="[object Object]"
+      />
     </div>
   </div>
 </div>

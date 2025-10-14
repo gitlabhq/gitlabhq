@@ -26,8 +26,10 @@ When you work on multiple features at once, squashing separates each feature's c
 Each time a branch merges into your base branch, up to two commits are added:
 
 - The single commit created by squashing the commits from the branch.
-- A merge commit, unless you have enabled [fast-forward merges](methods/_index.md#fast-forward-merge)
-  in your project. Fast-forward merges disable merge commits.
+- A merge commit, unless you have enabled
+  [fast-forward merges](methods/_index.md#fast-forward-merge) in your project.
+  Fast-forward merges prevent the creation of additional merge commits, but
+  you can still squash the commits from your branch into a single commit.
 
 By default, squashed commits contain the following metadata:
 
@@ -51,7 +53,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select **Edit**.
 1. Select or clear the **Squash commits when merge request is accepted** checkbox.
 1. Select **Save changes**.
@@ -62,7 +64,7 @@ If your project allows you to select squashing options for merge requests, to
 squash the commits as part of the merge process:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request widget, ensure the **Squash commits** checkbox is selected. This checkbox doesn't display
    if the project's squashing option is set to either **Do not allow** or **Require**.
 1. Optional. To modify either the squash commit message or the merge commit message
@@ -78,7 +80,7 @@ Prerequisites:
 To configure the default squashing behavior for all merge requests in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Squash commits when merging** section, select your desired behavior:
    - **Do not allow**: Squashing is never performed, and the option is not displayed.
    - **Allow**: Squashing is allowed, but cleared by default.

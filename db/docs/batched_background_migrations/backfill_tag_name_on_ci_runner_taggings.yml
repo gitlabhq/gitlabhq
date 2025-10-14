@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillTagNameOnCiRunnerTaggings
+description: Backfill the tag_name column for runner taggings
+feature_category: runner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205101
+milestone: '18.5'
+queued_migration_version: 20250915130419
+finalized_by: # version of the migration that finalized this BBM

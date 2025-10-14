@@ -1,9 +1,10 @@
 ---
-stage: none
-group: unassigned
+stage: None - Facilitated functionality, see https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality
+group: Unassigned - Facilitated functionality, see https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
 title: Email from GitLab
+description: Administrators can send plain-text emails to all users of an instance or members of a group or project.
 ---
 
 {{< details >}}
@@ -32,7 +33,7 @@ You can send email notifications once every 10 minutes.
 To send an email:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the upper-right corner, select **Send email to users** ({{< icon name="mail" >}}).
 1. Complete the fields. The email body supports only plain text and does not support HTML, Markdown, or other rich text formats.
 1. From the **Select group or project** dropdown list, select the recipient.

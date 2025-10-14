@@ -14,6 +14,7 @@ module API
     before { authenticate_non_get! }
 
     allow_mcp_access_read
+    allow_mcp_access_create
     allow_access_with_scope :ai_workflows, if: ->(request) do
       request.get? || request.head? || mr_update?(request) || mr_create?(request)
     end
@@ -348,10 +349,13 @@ module API
           desc: 'The target project of the merge request defaults to the :id of the project.'
         use :optional_params
       end
+      route_setting :mcp, tool_name: :create_merge_request, params: [:id, :title, :source_branch, :target_branch, :target_project_id, :optional_params]
       post ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20770')
 
         authorize! :create_merge_request_from, user_project
+
+        Gitlab::CoveredExperience.start_covered_experience_create_merge_request(user_project)
 
         mr_params = declared_params(include_missing: false)
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)

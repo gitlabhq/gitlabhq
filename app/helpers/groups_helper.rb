@@ -141,7 +141,6 @@ module GroupsHelper
       new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
       empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
-      empty_subgroup_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
       render_empty_state: 'true',
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
@@ -151,7 +150,13 @@ module GroupsHelper
   def groups_show_app_data(group)
     {
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
-      initial_sort: project_list_sort_by
+      initial_sort: project_list_sort_by,
+      full_path: group.full_path,
+      new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
+      new_project_path: new_project_path(namespace_id: group.id),
+      can_create_subgroups: can?(current_user, :create_subgroup, group),
+      can_create_projects: can?(current_user, :create_projects, group),
+      empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg')
     }.to_json
   end
 
@@ -253,7 +258,8 @@ module GroupsHelper
   def groups_list_with_filtered_search_app_data(endpoint)
     {
       endpoint: endpoint,
-      initial_sort: project_list_sort_by
+      initial_sort: project_list_sort_by,
+      base_path: dashboard_groups_path
     }.to_json
   end
 
@@ -349,7 +355,7 @@ module GroupsHelper
 
   def available_step_up_auth_providers_for_namespace
     Gitlab::Auth::Oidc::StepUpAuthentication.enabled_providers(
-      scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE
+      scope: Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE
     )
   end
 end

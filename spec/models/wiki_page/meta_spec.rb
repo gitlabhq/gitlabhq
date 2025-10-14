@@ -63,17 +63,18 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
 
   describe '#to_reference' do
     it 'returns a canonical slug as reference to the object' do
-      meta = create(:wiki_page_meta, canonical_slug: 'foo')
+      meta = create(:wiki_page_meta, :for_wiki_page)
 
-      expect(meta.to_reference).to eq('[[foo]]')
+      expect(meta.to_reference).to eq("[wiki_page:#{meta.container.full_path}:#{meta.wiki_page.slug}]")
     end
   end
 
   describe '#gfm_reference' do
     it 'returns class name with canonical slug as reference to the object' do
-      meta = create(:wiki_page_meta, canonical_slug: 'foo', container: project)
+      meta = create(:wiki_page_meta, :for_wiki_page, container: project)
 
-      expect(meta.gfm_reference).to eq('project wiki page [[foo]]')
+      expect(meta.gfm_reference)
+        .to eq("project wiki page [wiki_page:#{meta.container.full_path}:#{meta.wiki_page.slug}]")
     end
   end
 

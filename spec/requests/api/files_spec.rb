@@ -534,6 +534,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         get api(route(file_path), user), params: params
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:large_blob_download))
       end
     end
   end

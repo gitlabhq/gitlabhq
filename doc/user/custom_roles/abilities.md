@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authorization
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 title: Custom permissions
+description: Configure granular permissions with specific abilities for fine-grained access controls.
 ---
 
 <!--
@@ -37,6 +38,7 @@ Any dependencies are noted in the `Description` column for each permission.
 |:-----------|:------------|:--------------|:------|:-----------|
 | View CI/CD | Read CI/CD details for runners and jobs in the Admin Area. | [`read_admin_cicd`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177233) | Instance | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/507960) |
 | View Groups | Read group details in the Admin Area. | [`read_admin_groups`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197777) | Instance | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/534449) |
+| View Projects | Read project details in the Admin Area. | [`read_admin_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197777) | Instance | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/534449) |
 | View subscription details | Read subscription details in the Admin area. | [`read_admin_subscription`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178230) | Instance | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/507961) |
 | View system monitoring | Read system information such as background migrations, health checks, and Gitaly in the Admin Area. | [`read_admin_monitoring`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179439) | Instance | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/507959) |
 | View users | Read the user list and user details in the Admin area. | [`read_admin_users`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177514) | Instance | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/508782) |

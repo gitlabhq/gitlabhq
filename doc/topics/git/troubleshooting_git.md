@@ -258,7 +258,7 @@ and their respective timings, like the example below:
 ```plaintext
 remote: Running checks for branch: master
 remote: Scanning for LFS objects... (153ms)
-remote: Calculating new repository size... (cancelled after 729ms)
+remote: Calculating new repository size... (canceled after 729ms)
 ```
 
 This could be used to further investigate what operation is performing poorly
@@ -300,7 +300,7 @@ This problem is common in Git itself, due to its inability to handle large files
 - The existence of large files in the repository.
 
 If this error occurs when cloning a large repository, you can
-[decrease the cloning depth](../../user/project/repository/monorepos/_index.md#use-shallow-clones-in-cicd-processes) to a value of `1`. For example:
+[decrease the cloning depth](../../user/project/repository/monorepos/_index.md#use-shallow-clones-and-filters-in-cicd-processes) to a value of `1`. For example:
 
 This approach doesn't resolve the underlying cause, but you can successfully clone the repository.
 To decrease the cloning depth to `1`, run:
@@ -353,10 +353,30 @@ The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issu
 If you receive an `HTTP Basic: Access denied` error when using Git over HTTP(S),
 refer to the [two-factor authentication troubleshooting guide](../../user/profile/account/two_factor_authentication_troubleshooting.md).
 
-This error may also occur with [Git for Windows](https://gitforwindows.org/)
-2.46.0 and later when specifying an empty username.
-When authenticating with a token, the username can be any value, but an empty value
-could trigger an authentication error. To resolve this, specify a username string.
+This error might also occur with [Git for Windows](https://gitforwindows.org/)
+2.46.0 and later. When authenticating with a token, the username can be any value, but an empty value
+could trigger the authentication error.
+
+To resolve this, specify a username string. Use one of the following methods, replacing
+`<USERNAME>` with your GitLab username:
+
+- When cloning a repository:
+
+  ```shell
+  git clone https://<USERNAME>@gitlab.com/path/to/a/project.git
+  ```
+
+- Update an existing remote URL:
+
+  ```shell
+  git remote set-url origin https://<USERNAME>@gitlab.com/path/to/a/project.git
+  ```
+
+- Configure Git to always use a username for a specific host:
+
+  ```shell
+  git config --global url."https://<USERNAME>@gitlab.com/".insteadOf "https://gitlab.com/"
+  ```
 
 ## `401` errors logged during successful `git clone`
 

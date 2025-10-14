@@ -9,13 +9,13 @@ RSpec.describe RuboCop::Cop::Rake::Require do
 
   describe '#in_rake_file?' do
     context 'in a Rake file' do
-      let(:node) { double(location: double(expression: double(source_buffer: double(name: 'foo/bar.rake')))) } # rubocop:disable RSpec/VerifiedDoubles
+      let(:node) { double(source_range: double(source_buffer: double(name: 'foo/bar.rake'))) } # rubocop:disable RSpec/VerifiedDoubles
 
       it { expect(subject.__send__(:in_rake_file?, node)).to be(true) }
     end
 
     context 'when outside of a Rake file' do
-      let(:node) { double(location: double(expression: double(source_buffer: double(name: 'foo/bar.rb')))) } # rubocop:disable RSpec/VerifiedDoubles
+      let(:node) { double(source_range: double(source_buffer: double(name: 'foo/bar.rb'))) } # rubocop:disable RSpec/VerifiedDoubles
 
       it { expect(subject.__send__(:in_rake_file?, node)).to be(false) }
     end

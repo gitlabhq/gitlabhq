@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application Terraform state settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "terraform_state_encryption_enabled": {
+      "type": "boolean",
+      "description": "Enable or disable encryption for Terraform state files."
+    }
+  }
+}

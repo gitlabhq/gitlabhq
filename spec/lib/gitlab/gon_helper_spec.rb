@@ -120,6 +120,18 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
         helper.add_gon_variables
       end
     end
+
+    describe 'allow_immediate_namespaces_deletion' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:allow_immediate_namespaces_deletion_for_user?).and_return(false)
+      end
+
+      it 'exposes allow_immediate_namespaces_deletion property' do
+        expect(gon).to receive(:allow_immediate_namespaces_deletion=).with(false)
+
+        helper.add_gon_variables
+      end
+    end
   end
 
   describe '#push_frontend_ability' do
@@ -231,56 +243,6 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
 
       expect(url).to match(/^http/)
       expect(url).to match(/no_avatar.*png$/)
-    end
-  end
-
-  describe '#add_browsersdk_tracking' do
-    let(:gon) { double('gon').as_null_object }
-    let(:analytics_url) { 'https://analytics.gitlab.com' }
-    let(:is_gitlab_com) { true }
-
-    before do
-      allow(helper).to receive(:gon).and_return(gon)
-      allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
-    end
-
-    context 'when environment variables are set' do
-      before do
-        stub_env('GITLAB_ANALYTICS_URL', analytics_url)
-        stub_env('GITLAB_ANALYTICS_ID', 'analytics-id')
-      end
-
-      it 'sets the analytics_url and analytics_id' do
-        expect(gon).to receive(:analytics_url=).with(analytics_url)
-        expect(gon).to receive(:analytics_id=).with('analytics-id')
-
-        helper.add_browsersdk_tracking
-      end
-
-      context 'when Gitlab.com? is false' do
-        let(:is_gitlab_com) { false }
-
-        it "doesn't set the analytics_url and analytics_id" do
-          expect(gon).not_to receive(:analytics_url=)
-          expect(gon).not_to receive(:analytics_id=)
-
-          helper.add_browsersdk_tracking
-        end
-      end
-    end
-
-    context 'when environment variables are not set' do
-      before do
-        stub_env('GITLAB_ANALYTICS_URL', nil)
-        stub_env('GITLAB_ANALYTICS_ID', nil)
-      end
-
-      it "doesn't set the analytics_url and analytics_id" do
-        expect(gon).not_to receive(:analytics_url=)
-        expect(gon).not_to receive(:analytics_id=)
-
-        helper.add_browsersdk_tracking
-      end
     end
   end
 end

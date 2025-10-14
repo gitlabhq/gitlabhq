@@ -34,23 +34,35 @@ cycle.
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
 
-## Vulnerability management lifecycle
+## Vulnerability management cycle
 
-GitLab assists in the complete vulnerability management lifecycle through key phases:
+GitLab enables a comprehensive vulnerability management workflow that helps you continuously
+improve your application security posture. This workflow is an ongoing cycle of detection,
+triage, analysis, remediation, and optimization.
 
-[Detect](detect/_index.md)
-: Identify vulnerabilities through automated scanning and security testing.
+1. Detect - Identify vulnerabilities through automated security testing.
+1. Triage - Evaluate and prioritize vulnerabilities to determine which need immediate attention and
+   which can be addressed later.
+1. Analyze - Conduct detailed analysis of confirmed vulnerabilities to understand their impact and
+   determine appropriate remediation strategies.
+1. Remediate - Fix the root cause of vulnerabilities or implement appropriate risk mitigation
+   measures.
 
-[Triage](triage/_index.md)
-: Evaluate and prioritize vulnerabilities to determine which need immediate attention and which
-  can be addressed later.
+Use results from each phase to improve the next cycle. For example, adjust detection rules to reduce
+false positives identified during analysis.
 
-[Analyze](analyze/_index.md)
-: Conduct detailed analysis of confirmed vulnerabilities to understand their impact and determine
-  appropriate remediation strategies.
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart LR
+    accTitle: Vulnerability management workflow
+    accDescr: A circular workflow showing the continuous cycle of vulnerability management in GitLab
 
-[Remediate](remediate/_index.md)
-: Fix the root cause of vulnerabilities or implement appropriate risk mitigation measures.
+    Detect --> Triage
+    Triage --> Analyze
+    Analyze --> Remediate
+    Remediate -->|Optimize| Detect
+```
 
-Vulnerabilities are centralized in the vulnerability report and security dashboard, making
-prioritization and remediation tracking more straightforward for security teams.
+This cycle repeats with each code change, allowing you to incrementally improve both your
+application security and your vulnerability management processes. This continuous refinement means
+your vulnerability management becomes more effective and efficient over time.

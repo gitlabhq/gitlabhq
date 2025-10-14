@@ -149,7 +149,7 @@ export default {
         return ['col-actions', '!gl-align-middle'];
       }
 
-      return ['col-actions', '!gl-hidden', 'lg:!gl-table-cell', '!gl-align-middle'];
+      return ['col-actions', '!gl-hidden', '@lg/panel:!gl-table-cell', '!gl-align-middle'];
     },
     tbodyTrAttr(member) {
       return {
@@ -270,7 +270,7 @@ export default {
 
       <template #cell(invited)="{ item: { createdAt, createdBy, invite, state } }">
         <div
-          class="gl-flex gl-flex-wrap gl-items-center gl-justify-end gl-gap-3 lg:gl-justify-start"
+          class="gl-flex gl-flex-wrap gl-items-center gl-justify-end gl-gap-3 @lg/panel:gl-justify-start"
         >
           <created-at :date="createdAt" :created-by="createdBy" />
           <gl-badge v-if="inviteBadge(invite, state)" data-testid="invited-badge"
@@ -289,7 +289,7 @@ export default {
             <gl-button
               variant="link"
               :disabled="isRoleDrawerBusy"
-              button-text-classes="!gl-whitespace-normal gl-text-right lg:gl-text-left gl-line-clamp-2"
+              button-text-classes="!gl-whitespace-normal gl-text-right @lg/panel:gl-text-left gl-line-clamp-2"
               @click="selectedMember = member"
             >
               {{ member.accessLevel.stringValue }}
@@ -297,7 +297,7 @@ export default {
             <role-badges
               :member="member"
               :role="member.accessLevel"
-              class="gl-mt-3 gl-justify-end lg:gl-justify-start"
+              class="gl-mt-3 gl-justify-end @lg/panel:gl-justify-start"
             />
           </div>
           <max-role v-else :permissions="permissions" :member="member" />

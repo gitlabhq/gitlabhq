@@ -268,6 +268,15 @@ domains:
     feature_categories:
       - groups_and_projects
 
+  PushRules:
+    description:
+      Push rules are pre-receive Git hooks.
+      Push rules are inheritable and can be defined at organization, group or project level.
+      A group push rule can override an organization push rule.
+      A project push rule can override a group push rule.
+    feature_categories:
+      - source_code_management
+
   ResourceAccessTokens:
     description: Managing groups and projects access tokens
     feature_categories:

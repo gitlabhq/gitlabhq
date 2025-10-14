@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
   include LdapHelpers
 
   let(:entry) { ldap_user_entry('john.doe') }
+  let(:username_attribute) { %w[uid sAMAccountName userid] }
 
   before do
     stub_ldap_config(
@@ -19,8 +20,6 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
       }
     )
   end
-
-  let(:username_attribute) { %w[uid sAMAccountName userid] }
 
   describe '.normalize_dn' do
     subject { described_class.normalize_dn(given) }

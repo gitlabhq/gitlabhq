@@ -6,7 +6,7 @@ RSpec.describe Ci::TriggerPresenter do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, maintainers: user) }
 
-  let_it_be(:trigger) do
+  let_it_be_with_reload(:trigger) do
     create(:ci_trigger, token: '123456789abcd', project: project)
   end
 

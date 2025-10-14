@@ -131,7 +131,7 @@ export default {
       block
       is-check-centered
       searchable
-      class="gl-mt-3 @sm/panel:gl-mt-0"
+      class="gl-mt-3 @md/panel:gl-mt-0"
       :items="dropdownItems"
       :header-text="__('Search by author')"
       :toggle-text="dropdownText"

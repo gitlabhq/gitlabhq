@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
   include GraphqlHelpers
@@ -129,6 +130,18 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
           it 'returns errors' do
             expect(mutated_merge_request).to be_nil
             expect(subject[:errors]).to match_array(['Title can\'t be blank'])
+          end
+        end
+
+        it 'starts covered experience for create_merge_request' do
+          expect { subject }.to start_covered_experience(:create_merge_request)
+        end
+
+        context 'when covered_experience_create_merge_request feature flag is disabled' do
+          it 'does not start covered experience for create_merge_request' do
+            stub_feature_flags(covered_experience_create_merge_request: false)
+
+            expect { subject }.not_to start_covered_experience(:create_merge_request)
           end
         end
       end

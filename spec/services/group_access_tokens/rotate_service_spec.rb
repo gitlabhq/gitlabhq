@@ -15,6 +15,8 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
 
     shared_examples_for 'rotates the token successfully' do
       it 'rotates the token and does not set the bot user expires at', :freeze_time do
+        expect(token.group).not_to be_nil
+        expect(token.user_type).not_to be_nil
         expect(response).to be_success
 
         new_token = response.payload[:personal_access_token]
@@ -22,6 +24,8 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
         expect(new_token.token).not_to eq(token.token)
         expect(new_token.expires_at).to eq(1.week.from_now.to_date)
         expect(new_token.user).to eq(token.user)
+        expect(new_token.group_id).to eq(token.group_id)
+        expect(new_token.user_type).to eq(token.user_type)
         expect(new_token.user.members.first.reload.expires_at).to be_nil
       end
 

@@ -81,10 +81,11 @@ RSpec.describe WebHooks::HookActions, feature_category: :webhooks do
 
   # rubocop:disable Rails/SaveBang -- methods with ! are not defined
 
-  describe '#create' do
+  describe '#create', :with_current_organization do
     let(:create_service) { instance_double(WebHooks::CreateService) }
 
     before do
+      allow(Current).to receive(:organization).and_return(current_organization)
       allow(WebHooks::CreateService).to receive(:new).with(user).and_return(create_service)
       allow(controller).to receive(:hook_params).and_return(valid_params[:hook])
     end
@@ -96,7 +97,7 @@ RSpec.describe WebHooks::HookActions, feature_category: :webhooks do
 
         controller.create
 
-        expect(create_service).to have_received(:execute).with(valid_params[:hook], relation_mock)
+        expect(create_service).to have_received(:execute).with(valid_params[:hook], relation_mock, current_organization)
         expect(flash[:notice]).to eq('Webhook created')
         expect(controller).to have_received(:redirect_to).with(action: :index)
       end

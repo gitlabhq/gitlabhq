@@ -2,130 +2,149 @@
 
 require 'spec_helper'
 
-RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feature_category: :fleet_visibility do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project2) { create(:project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:pipeline1) { create(:ci_pipeline, project: project2) }
-  let_it_be(:stage1) { create(:ci_stage, pipeline: pipeline, project: project, name: 'build') }
-  let_it_be(:stage2) { create(:ci_stage, pipeline: pipeline, project: project, name: 'test') }
-  let_it_be(:stage3) { create(:ci_stage, pipeline: pipeline1, project: project2, name: 'deploy') }
-  let_it_be(:base_time) { Time.current }
-
-  let_it_be(:successful_fast_builds) do
-    create_builds(count: 3, status: :success, stage: stage1, name: 'compile', duration_seconds: 1)
-  end
-
-  let_it_be(:successful_slow_builds) do
-    create_builds(count: 2, status: :success, stage: stage1, name: 'compile-slow', duration_seconds: 5)
-  end
-
-  let_it_be(:failed_builds) do
-    create_builds(count: 2, status: :failed, stage: stage2, name: 'rspec', duration_seconds: 3)
-  end
-
-  let_it_be(:canceled_builds) do
-    create_builds(count: 1, status: :canceled, stage: stage2, name: 'rspec', duration_seconds: 2)
-  end
-
-  let_it_be(:skipped_builds) do
-    create_builds(count: 1, status: :skipped, stage: stage2, name: 'lint', duration_seconds: 0.5)
-  end
-
-  let_it_be(:other_project_builds) do
-    create_builds(count: 2, status: :success, stage: stage3, name: 'deploy', duration_seconds: 10)
-  end
+RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :freeze_time, feature_category: :fleet_visibility do
+  include_context 'with CI job analytics test data'
 
   let(:instance) { described_class.new }
 
-  before do
-    insert_ci_builds_to_click_house(
-      successful_fast_builds + successful_slow_builds + failed_builds +
-      canceled_builds + skipped_builds + other_project_builds
-    )
-  end
-
   describe '#for_project' do
-    it 'returns builds only for the specified project' do
-      result = instance.for_project(project.id).execute
+    let(:result) { instance.for_project(project_id).execute }
 
-      expect(result.size).to eq(9) # All builds except other_project_builds
-      expect(result.pluck('project_id').uniq).to eq([project.id])
+    context 'with valid project_id' do
+      let(:project_id) { project.id }
+
+      it 'returns builds only for the specified project' do
+        expect(result.size).to eq(13) # All builds except other_project_builds
+        expect(result.pluck('project_id').uniq).to eq([project.id])
+      end
     end
 
-    it 'returns empty result for non-existent project' do
-      result = instance.for_project(999999).execute
+    context 'with non-existent project_id' do
+      let(:project_id) { non_existing_record_id }
 
-      expect(result).to be_empty
+      it 'returns an empty result' do
+        expect(result).to be_empty
+      end
     end
   end
 
   describe '#select' do
-    context 'when selecting allowed columns' do
-      it 'returns only the selected columns grouped appropriately' do
-        result = instance.for_project(project.id).select(:name).execute
+    subject(:result) { instance.for_project(project.id).select(selected_fields).execute }
 
-        expect(result.size).to eq(4)
+    context 'when selecting allowed columns' do
+      let(:selected_fields) { [:name] }
+
+      it 'returns only the selected columns grouped appropriately' do
+        expect(result.size).to eq(6)
         expect(result.first.keys).to eq(['name'])
-        expect(result.pluck('name')).to match_array(%w[compile compile-slow lint rspec])
+        expect(result.pluck('name')).to match_array(%w[compile compile-slow lint rspec ref-build source-build])
       end
 
-      it 'handles multiple columns selection' do
-        result = instance.for_project(project.id).select([:name, :stage_id]).execute
+      context 'with multiple columns selection' do
+        let(:selected_fields) { [:name, :stage_id] }
 
-        expect(result.first.keys).to match_array(%w[name stage_id])
-
-        # assert grouping
-        compile_results = result.select { |r| r['name'] == 'compile' }
-        expect(compile_results.size).to eq(1)
-        expect(compile_results.first['stage_id']).to eq(stage1.id)
+        it 'returns the selections' do
+          expect(result.first.keys).to match_array(%w[name stage_id])
+          # assert grouping
+          compile_results = result.select { |r| r['name'] == 'compile' }
+          expect(compile_results.size).to eq(1)
+          expect(compile_results.first['stage_id']).to eq(stage1.id)
+        end
       end
     end
 
     context 'when selecting disallowed columns' do
+      let(:selected_fields) { [:invalid_column] }
+
       it 'raises ArgumentError' do
         expect do
-          instance.select(:invalid_column).execute
+          result
         end.to raise_error(ArgumentError, "Cannot select columns: [:invalid_column]. Allowed: name, stage_id")
       end
     end
 
     context 'with edge cases' do
-      it 'loads * when selecting empty array' do
-        result = instance.for_project(project.id).select([]).execute
+      context 'with empty array' do
+        let(:selected_fields) { [] }
 
-        expect(result.size).to eq(9)
-        expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
+        it 'loads *' do
+          expect(result.size).to eq(13)
+          expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
+        end
       end
 
-      it 'loads * when nil is passed' do
-        result = instance.for_project(project.id).select(nil).execute
+      context 'with nil' do
+        let(:selected_fields) { nil }
 
-        expect(result.size).to eq(9)
-        expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
+        it 'loads *' do
+          expect(result.size).to eq(13)
+          expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
+        end
       end
 
-      it 'handles duplicates properly' do
-        result = instance.for_project(project.id).select(:name, :name).execute
+      context 'with duplicates' do
+        let(:selected_fields) { [:name, :name] }
 
-        expect(result.size).to eq(4)
-        expect(result.first.keys).to eq(['name'])
+        it 'does not duplicate the fields' do
+          expect(result.size).to eq(6)
+          expect(result.first.keys).to eq(['name'])
+        end
+      end
+    end
+  end
+
+  describe '#select_aggregations' do
+    subject(:result) do
+      instance.for_project(project.id).select(:name).select_aggregations(*selected_aggregations).execute
+    end
+
+    context 'with single aggregation' do
+      let(:selected_aggregations) { [:mean_duration_in_seconds] }
+
+      it 'returns only mean_duration_in_seconds grouped by name' do
+        expect(result.first.keys).to contain_exactly('name', 'mean_duration_in_seconds')
+      end
+    end
+
+    context 'with multiple aggregations' do
+      let(:selected_aggregations) { [:mean_duration_in_seconds, :p95_duration_in_seconds] }
+
+      it 'returns multiple aggregations grouped by name' do
+        expect(result.first.keys).to contain_exactly('name', 'mean_duration_in_seconds', 'p95_duration_in_seconds')
+      end
+    end
+
+    context 'with invalid aggregations' do
+      let(:selected_aggregations) { [:invalid_aggregation] }
+
+      it 'raises ArgumentError' do
+        expect do
+          result
+        end.to raise_error(ArgumentError,
+          "Cannot aggregate columns: [:invalid_aggregation]. Allowed: mean_duration_in_seconds, " \
+            "p95_duration_in_seconds, rate_of_success, rate_of_failed, rate_of_canceled, rate_of_skipped")
       end
     end
   end
 
   describe '#mean_duration_in_seconds' do
-    it 'calculates average duration correctly' do
-      result = instance.for_project(project.id)
-                       .select(:name)
-                       .mean_duration_in_seconds
-                       .execute
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(:name)
+              .mean_duration_in_seconds
+              .execute
+    end
 
+    it 'calculates average duration correctly' do
       expect(result).to include(
         a_hash_including('name' => 'compile', 'mean_duration_in_seconds' => 1.0),
         a_hash_including('name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0),
         a_hash_including('name' => 'rspec', 'mean_duration_in_seconds' => be_within(0.01).of(2.67))
       )
+    end
+
+    it 'rounds the result to 2 decimal places' do
+      expect(result.all? { |r| r['mean_duration_in_seconds'].to_s.split('.').last.size <= 2 }).to be true
     end
   end
 
@@ -156,39 +175,54 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feat
       # p95 of 100ms, 200ms, ..., 2000ms should be 1900ms = 1.9 seconds
       expect(percentile_result['p95_duration_in_seconds']).to be_within(0.1).of(1.9)
     end
+
+    it 'rounds the result to 2 decimal places' do
+      result = instance.for_project(project.id)
+                       .p95_duration_in_seconds
+                       .execute
+
+      expect(result.first['p95_duration_in_seconds'].to_s.split('.').last.size <= 2).to be true
+    end
   end
 
   describe '#rate_of_status' do
-    context 'with valid status' do
-      it 'calculates success rate correctly' do
-        result = instance.for_project(project.id)
-                         .select(:name)
-                         .rate_of_status('success')
-                         .execute
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(:name)
+              .rate_of_status(status)
+              .execute
+    end
 
+    context 'with valid status' do
+      let(:status) { :success }
+
+      it 'calculates success rate correctly' do
         expect(result).to include(
           a_hash_including('name' => 'compile', 'rate_of_success' => 100),
           a_hash_including('name' => 'rspec', 'rate_of_success' => 0)
         )
       end
 
-      it 'calculates failed rate correctly' do
-        result = instance.for_project(project.id)
-                         .select(:name)
-                         .rate_of_failed
-                         .execute
+      context 'with status - failed' do
+        let(:status) { :failed }
 
-        rspec_result = result.find { |r| r['name'] == 'rspec' }
+        it 'calculates failed rate correctly and rounds off to 2 decimal places', :aggregate_failures do
+          rspec_result = result.find { |r| r['name'] == 'rspec' }
 
-        # rspec: 2 failed out of 3 = 66.67%
-        expect(rspec_result['rate_of_failed']).to be_within(0.01).of(66.67)
+          # rspec: 2 failed out of 3 = 66.67%
+          expect(rspec_result['rate_of_failed']).to be_within(0.01).of(66.67)
+          # assert round off
+          expect(result.first['rate_of_failed'].to_s.split('.').last.size <= 2).to be true
+        end
       end
     end
 
     context 'with invalid status' do
+      let(:status) { 'invalid_status' }
+
       it 'raises ArgumentError' do
         expect do
-          instance.rate_of_status('invalid_status').execute
+          result
         end.to raise_error(ArgumentError,
           "Invalid status: invalid_status. Must be one of: success, failed, canceled, skipped")
       end
@@ -212,46 +246,47 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feat
   end
 
   describe '#order_by' do
-    context 'with aggregated columns' do
-      it 'orders by mean duration correctly' do
-        result = instance.for_project(project.id)
-                         .select(:name)
-                         .mean_duration_in_seconds
-                         .order_by(:mean_duration_in_seconds)
-                         .execute
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(:name)
+              .mean_duration_in_seconds
+              .order_by(*order_by_args)
+              .execute
+    end
 
+    context 'with aggregated columns' do
+      let(:order_by_args) { [:mean_duration_in_seconds] }
+
+      it 'orders by mean duration correctly' do
         durations = result.pluck('mean_duration_in_seconds')
         expect(durations).to eq(durations.sort)
       end
 
-      it 'orders by mean duration DESC correctly' do
-        result = instance.for_project(project.id)
-                         .select(:name)
-                         .mean_duration_in_seconds
-                         .order_by(:mean_duration_in_seconds, :desc)
-                         .execute
+      context 'with order by desc' do
+        let(:order_by_args) { [:mean_duration_in_seconds, :desc] }
 
-        durations = result.pluck('mean_duration_in_seconds')
-        expect(durations).to eq(durations.sort.reverse)
+        it 'orders by mean duration DESC correctly' do
+          durations = result.pluck('mean_duration_in_seconds')
+          expect(durations).to eq(durations.sort.reverse)
+        end
       end
     end
 
     context 'with non-aggregated columns' do
-      it 'orders by name correctly' do
-        result = instance.for_project(project.id)
-                         .select(:name)
-                         .order_by(:name)
-                         .execute
+      let(:order_by_args) { [:name] }
 
+      it 'orders by name correctly' do
         names = result.pluck('name')
         expect(names).to eq(names.sort)
       end
     end
 
     context 'with invalid parameters' do
+      let(:order_by_args) { [:invalid_column] }
+
       it 'raises ArgumentError for invalid column' do
         expect do
-          instance.order_by(:invalid_column).execute
+          result
         end.to raise_error(ArgumentError, /Cannot order by column: invalid_column/)
       end
 
@@ -264,51 +299,63 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feat
   end
 
   describe '#group_by' do
-    it 'groups by single column correctly' do
-      result = instance.for_project(project.id)
-                       .select(:stage_id)
-                       .execute
-
-      expect(result.size).to eq(2) # stage1 and stage2
-      expect(result.pluck('stage_id')).to match_array([stage1.id, stage2.id])
+    subject(:result) do
+      instance.for_project(project.id)
+              .select(selected_fields)
+              .execute
     end
 
-    it 'groups by multiple columns correctly' do
-      result = instance.for_project(project.id)
-                       .select(:name, :stage_id)
-                       .execute
+    context 'with valid columns' do
+      context 'with single column' do
+        let(:selected_fields) { [:stage_id] }
 
-      expect(result.size).to eq(4) # Each unique name-stage combination
+        it 'groups by single column correctly' do
+          expect(result.size).to eq(4) # stage1, stage2, ref_stage, source_stage
+          expect(result.pluck('stage_id')).to match_array([stage1.id, stage2.id, ref_stage.id, source_stage.id])
+        end
+      end
+
+      context 'with multiple columns' do
+        let(:selected_fields) { [:name, :stage_id] }
+
+        it 'groups by multiple columns correctly' do
+          expect(result.size).to eq(6) # Each unique name-stage combination
+        end
+      end
+
+      context 'with duplicates' do
+        let(:selected_fields) { [:name, :name] }
+
+        it 'handles duplicates in grouping' do
+          # Should group by name only once
+          expect(result.pluck('name')).to match_array(%w[compile compile-slow lint ref-build rspec source-build])
+        end
+      end
     end
 
-    it 'handles duplicates in grouping' do
-      result = instance.for_project(project.id)
-                       .select(:name, :name)
-                       .execute
-
-      # Should group by name only once
-      expect(result.pluck('name')).to match_array(%w[compile compile-slow lint rspec])
-    end
-
-    it 'raises error for invalid columns' do
-      expect do
-        instance.group_by(:invalid_column).execute
-      end.to raise_error(ArgumentError, "Cannot group by column: invalid_column. Allowed: name, stage_id")
+    context 'with invalid columns' do
+      it 'raises error for invalid columns' do
+        expect do
+          instance.group_by(:invalid_column).execute
+        end.to raise_error(ArgumentError, "Cannot group by column: invalid_column. Allowed: name, stage_id")
+      end
     end
   end
 
   describe 'method chaining' do
-    it 'combines multiple operations correctly' do
-      result = instance.for_project(project.id)
-                       .select([:name, :stage_id])
-                       .mean_duration_in_seconds
-                       .p95_duration_in_seconds
-                       .rate_of_success
-                       .rate_of_failed
-                       .order_by(:mean_duration_in_seconds, :desc)
-                       .limit(3)
-                       .execute
+    subject(:result) do
+      instance.for_project(project.id)
+              .select([:name, :stage_id])
+              .mean_duration_in_seconds
+              .p95_duration_in_seconds
+              .rate_of_success
+              .rate_of_failed
+              .order_by(:mean_duration_in_seconds, :desc)
+              .limit(3)
+              .execute
+    end
 
+    it 'combines multiple operations correctly' do
       expect(result.size).to be <= 3
       expect(result.first.keys).to include(
         'name', 'stage_id', 'mean_duration_in_seconds',
@@ -346,7 +393,6 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feat
       stage2_result = result.find { |r| r['stage_id'] == stage2.id }
 
       # Stage1 has only successful builds
-
       expect(stage1_result['rate_of_success']).to eq(100.0)
       expect(stage1_result['rate_of_failed']).to eq(0.0)
 
@@ -361,11 +407,11 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feat
       result = instance.for_project(project.id).execute
 
       expect(result).to be_a(Array)
-      expect(result.size).to eq(9)
+      expect(result.size).to eq(13)
     end
 
     it 'returns empty array for queries with no matches' do
-      result = instance.for_project(999999).execute
+      result = instance.for_project(non_existing_record_id).execute
 
       expect(result).to be_a(Array)
       expect(result).to be_empty
@@ -395,6 +441,126 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feat
     end
   end
 
+  describe '#filter_by_job_name' do
+    subject(:filter_by_job_name) do
+      instance.for_project(project.id)
+              .filter_by_job_name(search_term)
+              .execute
+    end
+
+    context 'with exact match' do
+      let(:search_term) { 'compile' }
+
+      it 'returns builds with matching name' do
+        expect(filter_by_job_name.size).to eq(5) # 3 successful_fast_builds + 2 successful_slow_builds
+        expect(filter_by_job_name.pluck('name').uniq).to match_array(%w[compile compile-slow])
+      end
+    end
+
+    context 'with partial match' do
+      let(:search_term) { 'comp' }
+
+      it 'returns builds with partially matching name' do
+        expect(filter_by_job_name.size).to eq(5) # 3 successful_fast_builds + 2 successful_slow_builds
+        expect(filter_by_job_name.pluck('name').uniq).to match_array(%w[compile compile-slow])
+      end
+    end
+
+    context 'with case-insensitive match' do
+      let(:search_term) { 'COMPILE' }
+
+      it 'returns builds regardless of case' do
+        expect(filter_by_job_name.size).to eq(5) # 3 successful_fast_builds + 2 successful_slow_builds
+        expect(filter_by_job_name.pluck('name').uniq).to match_array(%w[compile compile-slow])
+      end
+    end
+
+    context 'with no match' do
+      let(:search_term) { non_existing_project_hashed_path }
+
+      it 'returns empty result' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#filter_by_pipeline_attrs', :freeze_time do
+    subject(:filter_by_pipeline_attrs) do
+      instance.filter_by_pipeline_attrs(**attrs).execute
+    end
+
+    context 'with project only' do
+      let(:attrs) { { project: project } }
+
+      it 'filters builds by pipeline project' do
+        expect(filter_by_pipeline_attrs).not_to be_empty
+        expect(filter_by_pipeline_attrs.pluck('pipeline_id')).to include(ref_pipeline.id, source_pipeline.id)
+      end
+    end
+
+    context 'with time range' do
+      let(:from_time) { 1.day.ago }
+      let(:to_time) { Time.current }
+      let(:attrs) do
+        {
+          project: project,
+          from_time: from_time,
+          to_time: to_time
+        }
+      end
+
+      it 'filters builds by time range' do
+        expect(filter_by_pipeline_attrs).not_to be_empty
+        expect(filter_by_pipeline_attrs.pluck('pipeline_id')).to include(ref_pipeline.id, source_pipeline.id)
+      end
+    end
+
+    context 'with source' do
+      let(:attrs) do
+        {
+          project: project,
+          source: 'web'
+        }
+      end
+
+      it 'filters builds by pipeline source' do
+        expect(filter_by_pipeline_attrs).not_to be_empty
+        expect(filter_by_pipeline_attrs.pluck('pipeline_id')).to include(source_pipeline.id)
+      end
+    end
+
+    context 'with ref' do
+      let(:attrs) do
+        {
+          project: project,
+          ref: 'feature-branch'
+        }
+      end
+
+      it 'filters builds by pipeline ref' do
+        expect(filter_by_pipeline_attrs).not_to be_empty
+        expect(filter_by_pipeline_attrs.pluck('pipeline_id')).to include(ref_pipeline.id)
+      end
+    end
+
+    context 'with multiple filters' do
+      let(:attrs) do
+        {
+          project: project,
+          from_time: 1.day.ago,
+          to_time: Time.current,
+          source: 'push',
+          ref: 'feature-branch'
+        }
+      end
+
+      it 'combines all filters correctly' do
+        expect(filter_by_pipeline_attrs).not_to be_empty
+        expect(filter_by_pipeline_attrs.pluck('pipeline_id')).to include(ref_pipeline.id)
+      end
+    end
+  end
+
   describe 'edge cases and error handling' do
     it 'handles empty results gracefully' do
       result = instance.for_project(project.id)
@@ -411,20 +577,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, feat
                        .select(:name)
                        .execute
 
-      expect(result.pluck('name')).to match_array(%w[compile compile-slow])
+      expect(result.pluck('name')).to match_array(%w[compile compile-slow ref-build source-build])
     end
-  end
-
-  private
-
-  def create_builds(count:, status:, stage:, name:, duration_seconds:)
-    create_list(:ci_build, count, status,
-      project: stage.project,
-      pipeline: stage.pipeline,
-      ci_stage: stage,
-      name: name,
-      started_at: base_time,
-      finished_at: base_time + duration_seconds.seconds
-    )
   end
 end

@@ -52,8 +52,12 @@ describe('WorkItemDrawer', () => {
     clickOutsideExcludeSelector = undefined,
     isGroup = true,
     mountFn = shallowMountExtended,
-    stubs = { WorkItemDetail },
+    stubs = {
+      WorkItemDetail,
+      MountingPortal: { template: '<div data-testid="mounting-portal"><slot /></div>' },
+    },
     workItemViewForIssues = true,
+    projectStudioEnabled = false,
   } = {}) => {
     wrapper = mountFn(WorkItemDrawer, {
       attachTo: document.body,
@@ -76,7 +80,7 @@ describe('WorkItemDrawer', () => {
         isGroup,
         glFeatures: {
           workItemViewForIssues,
-          projectStudioEnabled: false,
+          projectStudioEnabled,
         },
       },
       mocks: {
@@ -480,6 +484,23 @@ describe('WorkItemDrawer', () => {
       findGlDrawer().vm.$emit('close', false, true);
 
       // `close` was force called after the timeout by setting `bypassPendingRequests` to true
+      expect(wrapper.emitted('close')).toHaveLength(1);
+    });
+  });
+
+  describe('when paneled view is enabled', () => {
+    beforeEach(() => {
+      createComponent({ projectStudioEnabled: true, open: true });
+    });
+
+    it('renders the work item view in mounting portal', () => {
+      expect(wrapper.findByTestId('mounting-portal').exists()).toBe(true);
+    });
+
+    it('closes the drawer when Escape key is pressed', async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      await nextTick();
+
       expect(wrapper.emitted('close')).toHaveLength(1);
     });
   });

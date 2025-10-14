@@ -5,13 +5,13 @@
     float: right;
     margin-right: 0;
 
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       float: none;
     }
   }
 }
 
-@include media-breakpoint-up(sm) {
+@include gl-container-width-up(sm, panel) {
   .filter-item:not(:last-child) {
     margin-right: 6px;
   }
@@ -33,7 +33,7 @@
   }
 }
 
-@include media-breakpoint-down(sm) {
+@include gl-container-width-down(md, panel) {
   .filter-item {
     display: block;
     margin: 0 0 10px;
@@ -255,7 +255,7 @@
   max-width: 280px;
   overflow: auto;
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     width: auto;
     left: 0;
     right: 0;
@@ -281,7 +281,7 @@
 .filtered-search-history-dropdown {
   width: 40%;
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     left: 0;
     right: 0;
     max-width: none;
@@ -310,7 +310,7 @@
   }
 }
 
-@include media-breakpoint-down(sm) {
+@include gl-container-width-down(md, panel) {
   .issues-details-filters,
   .epics-details-filters {
     padding-top: $gl-padding-8;
@@ -367,13 +367,13 @@
     min-width: 0;
   }
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     .sort-dropdown-container {
       margin-left: 10px;
     }
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     .sort-dropdown-container {
       margin-top: 10px;
     }

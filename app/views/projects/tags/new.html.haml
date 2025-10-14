@@ -14,17 +14,17 @@
 
 = form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "common-note-form tag-form js-quick-submit" do
   .form-group.row
-    .col-sm-12
+    .gl-col-sm-12
       = label_tag :tag_name, _('Tag name')
       = text_field_tag :tag_name, params[:tag_name], required: true, autofocus: true, class: 'form-control', data: { testid: 'tag-name-field' }
   .form-group.row
-    .col-sm-auto.create-from
+    .gl-col-sm-auto.create-from
       = label_tag :ref, _('Create from')
       .js-new-tag-ref-selector{ data: { project_id: @project.id, default_branch_name: default_ref, hidden_input_name: 'ref' } }
       .form-text.gl-text-subtle
         = s_('TagsPage|Existing branch name, tag, or commit SHA')
   .form-group.row
-    .col-sm-12
+    .gl-col-sm-12
       = label_tag :message, _('Message')
       = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5, data: { testid: 'tag-message-field' }
       .form-text.gl-text-subtle

@@ -24,7 +24,7 @@ module CommitsHelper
       user: committer,
       user_name: committer.name,
       user_email: committer.email,
-      css_class: 'gl-hidden sm:gl-inline-block float-none !gl-mr-0 gl-align-text-bottom'
+      css_class: 'gl-hidden @sm/panel:gl-inline-block !gl-float-none !gl-mr-0 gl-align-text-bottom'
     }))
   end
 
@@ -103,7 +103,8 @@ module CommitsHelper
       tooltip = _("Browse Directory")
     end
 
-    render Pajamas::ButtonComponent.new(href: url, button_options: { title: tooltip, class: 'has-tooltip btn-icon', data: { container: 'body' } }) do
+    render Pajamas::ButtonComponent.new(href: url,
+      button_options: { title: tooltip, class: 'has-tooltip btn-icon', data: { container: 'body' } }) do
       sprite_icon('folder-open')
     end
   end
@@ -139,7 +140,8 @@ module CommitsHelper
       project = diffs.project
       repo = project.repository
 
-      Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo, Gitlab::Diff::FileCollection::MergeRequestDiffBase.max_blob_size(project)])
+      Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo,
+        Gitlab::Diff::FileCollection::MergeRequestDiffBase.max_blob_size(project)])
       Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo, Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE])
 
       Kaminari.paginate_array(diff_files).page(page).per(per).tap do |diff_files|
@@ -250,7 +252,8 @@ module CommitsHelper
     if user.nil?
       mail_to(source_email, text, link_options)
     else
-      link_to(text, user_path(user), { class: "commit-#{options[:source]}-link js-user-link", data: { user_id: user.id } })
+      link_to(text, user_path(user),
+        { class: "commit-#{options[:source]}-link js-user-link", data: { user_id: user.id } })
     end
   end
 
@@ -269,7 +272,17 @@ module CommitsHelper
     external_url = environment.external_url_for(diff_new_path, commit_sha)
     return unless external_url
 
-    render Pajamas::ButtonComponent.new(href: external_url, icon: 'external-link', target: '_blank', button_options: { rel: 'noopener noreferrer', title: "View on #{environment.formatted_external_url}", class: 'has-tooltip', data: { container: 'body' } })
+    render Pajamas::ButtonComponent.new(
+      href: external_url,
+      icon: 'external-link',
+      target: '_blank',
+      button_options: {
+        rel: 'noopener noreferrer',
+        title: "View on #{environment.formatted_external_url}",
+        class: 'has-tooltip',
+        data: { container: 'body' }
+      }
+    )
   end
 
   def truncate_sha(sha)

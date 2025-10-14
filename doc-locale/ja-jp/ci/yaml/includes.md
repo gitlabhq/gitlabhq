@@ -2,42 +2,43 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: 他のファイルからのCI/CD設定を使用する
+title: 他のファイルのCI/CD設定を使用する
+description: "`include`キーワードを使用して、他のYAMLファイルの内容でCI/CDの設定を拡張します。"
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 提供: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-[`include`](_index.md#include)を使用して、CI/CDジョブに外部のYAMLファイルを含めることができます。
+[`include`](_index.md#include)を使用して、外部のYAMLファイルをCI/CDジョブにインクルードできます。
 
-## 単一の設定ファイルをインクルードする
+## 単一の設定ファイルをインクルードする {#include-a-single-configuration-file}
 
 単一の設定ファイルをインクルードするには、次のいずれかの構文オプションで、`include`を単独で使用します。
 
-- 同じ行で使用する場合:
+- 同じ行に記述する場合:
 
   ```yaml
   include: 'my-config.yml'
   ```
 
-- 配列内の単一の項目として使用する場合:
+- 配列内の単一の項目として記述する場合:
 
   ```yaml
   include:
     - 'my-config.yml'
   ```
 
-ファイルがローカルファイルの場合、動作は[`include:local`](_index.md#includelocal)と同じになります。ファイルがリモートファイルの場合、[`include:remote`](_index.md#includeremote)と同じになります。
+ファイルがローカルファイルの場合、[`include:local`](_index.md#includelocal)と同じ動作になります。ファイルがリモートファイルの場合、[`include:remote`](_index.md#includeremote)と同じ動作になります。
 
-## 設定ファイルの配列を含める
+## 設定ファイルの配列をインクルードする {#include-an-array-of-configuration-files}
 
-設定ファイルの配列を含めることができます。
+設定ファイルの配列をインクルードできます。
 
-- `include`タイプを指定しない場合、必要に応じて、各配列項目はデフォルトで[`include:local`](_index.md#includelocal)または[`include:remote`](_index.md#includeremote)になります。
+- `include`タイプを指定しない場合、必要に応じて、各配列項目はデフォルトで[`include:local`](_index.md#includelocal)または[`include:remote`](_index.md#includeremote)として扱われます。
 
   ```yaml
   include:
@@ -52,7 +53,7 @@ title: 他のファイルからのCI/CD設定を使用する
     - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
   ```
 
-- 配列を定義し、複数の`include`タイプを明示的に指定できます。
+- 配列を定義して、複数の`include`タイプを明示的に指定できます。
 
   ```yaml
   include:
@@ -61,7 +62,7 @@ title: 他のファイルからのCI/CD設定を使用する
     - template: Auto-DevOps.gitlab-ci.yml
   ```
 
-- デフォルトと特定の`include`タイプの両方を組み合わせた配列を定義できます。
+- デフォルトと特定の`include`タイプを組み合わせた配列を定義できます。
 
   ```yaml
   include:
@@ -73,13 +74,13 @@ title: 他のファイルからのCI/CD設定を使用する
       file: 'templates/.gitlab-ci-template.yml'
   ```
 
-## インクルードされた設定ファイルから`default`設定を使用する
+## インクルードされた設定ファイルの`default`設定を使用する {#use-default-configuration-from-an-included-configuration-file}
 
-設定ファイルで[`default`](_index.md#default)セクションを定義できます。`default`キーワードで`include`セクションを使用すると、パイプライン内のすべてのジョブにデフォルトが適用されます。
+設定ファイルで[`default`](_index.md#default)セクションを定義できます。`include`キーワードと組み合わせて`default`セクションを使用する場合、パイプライン内のすべてのジョブにこのデフォルトが適用されます。
 
 たとえば、[`before_script`](_index.md#before_script)で`default`セクションを使用できます。
 
-`/templates/.before-script-template.yml`という名前のカスタム設定ファイルの内容:
+カスタム設定ファイル`/templates/.before-script-template.yml`の内容:
 
 ```yaml
 default:
@@ -103,15 +104,15 @@ rspec2:
     - bundle exec rspec
 ```
 
-デフォルトの`before_script`コマンドは、`script`コマンドの前に両方の`rspec`ジョブで実行されます。
+デフォルトの`before_script`コマンドは、両方の`rspec`ジョブで`script`コマンドの前に実行されます。
 
-## インクルードされた設定値を上書きする
+## インクルードされた設定の値をオーバーライドする {#override-included-configuration-values}
 
-`include`キーワードを使用すると、インクルードされた設定値を上書きして、パイプラインの要件に適合させることができます。
+`include`キーワードを使用する場合、インクルードされた設定の値をオーバーライドして、パイプライン要件に適合させることができます。
 
-次の例は、`.gitlab-ci.yml`ファイルでカスタマイズされた`include`ファイルを示しています。YAMLで定義された特定の変数と、`production`ジョブの詳細が上書きされます。
+次の例は、`.gitlab-ci.yml`ファイル内でカスタマイズされた`include`ファイルを示しています。YAMLで定義した特定の変数と、`production`ジョブの詳細がオーバーライドされます。
 
-`autodevops-template.yml`という名前のカスタム設定ファイルの内容:
+カスタム設定ファイル`autodevops-template.yml`の内容:
 
 ```yaml
 variables:
@@ -153,25 +154,25 @@ production:
     url: https://domain.com
 ```
 
-`.gitlab-ci.yml`ファイルで定義された`production`ジョブの`POSTGRES_USER`変数、`POSTGRES_PASSWORD`変数、および`environment:url`は、`autodevops-template.yml`ファイルで定義された値を上書きします。他のキーワードは変更されません。この方法は*マージ*と呼ばれます。
+`.gitlab-ci.yml`ファイルで定義された`POSTGRES_USER`変数と`POSTGRES_PASSWORD`変数、および`production`ジョブの`environment:url`が、`autodevops-template.yml`ファイルで定義された値をオーバーライドします。他のキーワードは変更されません。この方法は*マージ*と呼ばれます。
 
-### `include`のマージ方法
+### `include`のマージ方法 {#merge-method-for-include}
 
-`include`設定は、このプロセスでメイン設定ファイルにマージされます。
+`include`設定は、次のプロセスでメインの設定ファイルとマージされます。
 
-- インクルードされたファイルは設定ファイルで定義された順に読み込まれ、インクルードされた設定は同じ順番でまとめてマージされます。
-- インクルードされたファイルが`include`も使用している場合、ネストされた`include`設定が最初に（再帰的に）マージされます。
-- パラメーターが重複している場合は、インクルードされたファイルから設定をマージする際に、最後にインクルードされたファイルが優先されます。
-- `include`で追加されたすべての設定がまとめてマージされた後、メインの設定がインクルードされた設定にマージされます。
+- インクルードされたファイルは設定ファイルで定義された順に読み取られ、その設定は同じ順序でマージされます。
+- インクルードされたファイルも`include`を使用している場合、そのネストされた`include`設定が最初に（再帰的に）マージされます。
+- パラメータが重複している場合、インクルードされたファイルの設定をマージする際に、最後にインクルードされたファイルが優先されます。
+- `include`で追加されたすべての設定がマージされた後、インクルードされた設定とメインの設定がマージされます。
 
-このマージ方法は、_深いマージ_と呼ばれ、ハッシュマップは設定内の任意の深さでマージされます。ハッシュマップ「A」（これまでにマージされた設定を含む）と「B」（次の設定を含む）をマージするため、キーと値は次のように処理されます。
+このマージ方法は_ディープマージ_と呼ばれ、ハッシュマップは設定内の任意の深さでマージされます。ハッシュマップ「A」（この時点までにマージ済みの設定を含む）と「B」（次にマージされる設定）をマージする場合、キーと値は次のルールで処理されます。
 
-- キーがAにのみ存在する場合は、Aのキーと値を使用します。
-- キーがAとBの両方に存在し、それらの値が両方ともハッシュマップである場合は、それらのハッシュマップをマージします。
-- キーがAとBの両方に存在し、どちらかの値がハッシュマップでない場合は、Bの値を使用します。
-- それ以外の場合は、Bのキーと値を使用します。
+- キーがAにのみ存在する場合は、Aのキーと値を使用する。
+- キーがAとBの両方に存在し、値が両方ともハッシュマップである場合は、それらのハッシュマップをマージする。
+- キーがAとBの両方に存在し、どちらかの値がハッシュマップでない場合は、Bの値を使用する。
+- それ以外の場合は、Bのキーと値を使用する。
 
-たとえば、2つのファイルで構成される設定の場合:
+たとえば、設定が次の2つのファイルで構成される場合:
 
 - `.gitlab-ci.yml`ファイル:
 
@@ -208,7 +209,7 @@ production:
         dotenv: deploy.env
   ```
 
-マージされた結果は次のようになります。
+マージされた結果:
 
 ```yaml
 variables:
@@ -230,13 +231,13 @@ test:
 
 この例では:
 
-- 変数が評価されるのは、すべてのファイルがまとめてマージされた後のみです。インクルードされたファイル内のジョブは、最終的に別のファイルで定義された変数の値を使用する可能性があります。
-- `rules`は配列であり、マージできません。トップレベルのファイルが優先されます。
-- `artifacts`はハッシュマップであり、深いマージが可能です。
+- 変数は、すべてのファイルがマージされた後にのみ評価されます。インクルードされたファイル内のジョブが、最終的に別のファイルで定義された変数の値を使用する場合があります。
+- `rules`は配列であるため、マージできません。トップレベルのファイルが優先されます。
+- `artifacts`はハッシュマップであるため、ディープマージが可能です。
 
-## インクルードされた設定配列を上書きする
+## インクルードされた設定の配列をオーバーライドする {#override-included-configuration-arrays}
 
-マージを使用して、インクルードされたテンプレート内の設定を拡張および上書できますが、配列内の個々の項目を追加したり変更したりすることはできません。たとえば、追加の`notify_owner`コマンドを拡張された`production`ジョブの`script`配列に追加する場合:
+マージを使用すると、インクルードされたテンプレートの設定を拡張またはオーバーライドできますが、配列内の個別の項目を追加したり変更したりすることはできません。たとえば、拡張された`production`ジョブの`script`配列に`notify_owner`コマンドを追加する場合、次のようになります。
 
 `autodevops-template.yml`の内容:
 
@@ -263,11 +264,11 @@ production:
     - notify_owner
 ```
 
-`deploy`と`.gitlab-ci.yml`が`install_dependencies`ファイルで繰り返されない場合、`production`ジョブのスクリプトには`notify_owner`のみが含まれます。
+`.gitlab-ci.yml`ファイル内で`install_dependencies`と`deploy`が再定義されていない場合、`production`ジョブのスクリプトには`notify_owner`のみが残ります。
 
-## ネストされたインクルードを使用する
+## ネストされたインクルードを使用する {#use-nested-includes}
 
-別の設定にインクルードされる設定ファイルで、`include`セクションをネストできます。たとえば、3段階にネストされた`include`キーワードの場合:
+設定ファイル内の`include`セクションをネストし、その設定ファイルをさらに別の設定ファイルにインクルードできます。たとえば、`include`キーワードを3階層にネストした場合、次のようになります。
 
 `.gitlab-ci.yml`の内容:
 
@@ -291,11 +292,11 @@ default:
     - echo "Job complete."
 ```
 
-### 重複する`include`エントリを持つネストされたインクルードを使用する
+### 重複する`include`エントリがあるネストされたインクルードを使用する {#use-nested-includes-with-duplicate-include-entries}
 
-メイン設定ファイルとネストされたインクルードで、同じ設定ファイルを複数回インクルードできます。
+同じ設定ファイルを、メインの設定ファイルとネストされたインクルードに複数回インクルードできます。
 
-いずれかのファイルが[上書き](#override-included-configuration-values)を使用してインクルードされた設定を変更した場合、`include`エントリの順番が最終的な設定に影響を与える可能性があります。最後に設定がインクルードされると、以前にファイルがインクルードされたときのすべての設定が上書きされます。以下に例を示します。
+ファイルが[オーバーライド](#override-included-configuration-values)を使用して、インクルードされた設定を変更する場合、`include`エントリの順序が最終的な設定に影響を及ぼすことがあります。最後にインクルードされたときの設定が、それ以前の設定をオーバーライドします。次に例を示します。
 
 - `defaults.gitlab-ci.yml`ファイルの内容:
 
@@ -330,9 +331,9 @@ default:
     script: smoke-test.sh
   ```
 
-これらの3つのファイルでは、インクルードされる順番によって最終的な設定が変わります。次のようになります。
+上記の3つのファイルを使用する場合、インクルードする順序によって最終的な設定が変わります。次のようになります。
 
-- `unit-tests`が最初にインクルードされると、`.gitlab-ci.yml`ファイルの内容は次のようになります。
+- `unit-tests`を最初にインクルードした場合の`.gitlab-ci.yml`ファイルの内容:
 
   ```yaml
   include:
@@ -340,7 +341,7 @@ default:
     - local: smoke-tests.gitlab-ci.yml
   ```
 
-  最終的な設定は次のようになります。
+  最終的な設定:
 
   ```yaml
   unit-test-job:
@@ -352,7 +353,7 @@ default:
    script: smoke-test.sh
   ```
 
-- `unit-tests`が最後にインクルードされると、`.gitlab-ci.yml`ファイルの内容は次のようになります:
+- `unit-tests`を最後にインクルードした場合の`.gitlab-ci.yml`ファイルの内容:
 
   ```yaml
   include:
@@ -360,7 +361,7 @@ default:
     - local: unit-tests.gitlab-ci.yml
   ```
 
-- 最終的な設定は次のようになります。
+- 最終的な設定:
 
   ```yaml
   unit-test-job:
@@ -372,9 +373,9 @@ default:
    script: smoke-test.sh
   ```
 
-インクルードされた設定を上書きするファイルがない場合、`include`エントリの順番は最終的な設定に影響しません
+インクルードされた設定をオーバーライドするファイルがない場合、`include`エントリの順序は最終的な設定に影響しません。
 
-## `include`で変数を使用する
+## `include`で変数を使用する {#use-variables-with-include}
 
 `.gitlab-ci.yml`ファイルの`include`セクションでは、以下を使用できます。
 
@@ -385,10 +386,10 @@ default:
 - [トリガー変数](../triggers/_index.md#pass-cicd-variables-in-the-api-call)。
 - [スケジュールされたパイプライン変数](../pipelines/schedules.md#add-a-pipeline-schedule)。
 - [手動パイプライン実行変数](../pipelines/_index.md#run-a-pipeline-manually)。
-- `CI_PIPELINE_SOURCE`および`CI_PIPELINE_TRIGGERED`[定義済み変数](../variables/predefined_variables.md)。
-- `$CI_COMMIT_REF_NAME`[定義済み変数](../variables/predefined_variables.md)。
+- [定義済み変数](../variables/predefined_variables.md)`CI_PIPELINE_SOURCE`と`CI_PIPELINE_TRIGGERED`。
+- [定義済み変数](../variables/predefined_variables.md)`$CI_COMMIT_REF_NAME`。
 
-以下に例を示します。
+次に例を示します。
 
 ```yaml
 include:
@@ -396,38 +397,38 @@ include:
   file: '.compliance-gitlab-ci.yml'
 ```
 
-ジョブで定義された変数や、すべてのジョブのデフォルト変数を定義するグローバルな[`variables`](_index.md#variables)セクションでは、定義された変数を使用できません。インクルードはジョブの前に評価されるため、これらの変数は`include`で使用できません。
+ジョブ内で定義された変数や、すべてのジョブのデフォルト変数を定義するグローバル[`variables`](_index.md#variables)セクションで定義された変数は使用できません。インクルードはジョブの前に評価されるため、これらの変数を`include`で使用することはできません。
 
-定義済み変数をインクルードする方法と、その変数がCI/CDジョブに与える影響の例については、こちらの[CI/CD 変数のデモ](https://youtu.be/4XR8gw3Pkos)を参照してください。
+定義済み変数をインクルードする方法、それらの変数がCI/CDジョブに及ぼす影響の例については、この[CI/CD変数のデモ](https://youtu.be/4XR8gw3Pkos)を参照してください。
 
-動的な子パイプラインの設定の`include`セクションでは、CI/CD変数は使用できません。[イシュー378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717)では、この問題の修正が提案されています。
+動的な子パイプラインの設定の`include`セクションでは、CI/CD変数は使用できません。[イシュー378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717)で、この問題の修正が提案されています。
 
-## `rules`と`include`を同時に使用する
+## `rules`を`include`と組み合わせて使用する {#use-rules-with-include}
 
 {{< history >}}
 
-- GitLab 15.11で、`needs`ジョブの依存関係のサポートが[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)。
+- `needs`ジョブ依存関係のサポートは、GitLab 15.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)されました。
 
 {{< /history >}}
 
-[`rules`](_index.md#rules)と`include`を組み合わせて使用すると、他の設定ファイルを条件付きでインクルードできます。
+[`rules`](_index.md#rules)と`include`を組み合わせて使用すると、条件付きで他の設定ファイルをインクルードできます。
 
-`rules`は、[特定の変数](#use-variables-with-include)および以下のキーワードのみで使用できます。
+`rules`を使用できるのは、[特定の変数](#use-variables-with-include)および以下のキーワードに限定されます。
 
 - [`rules:if`](_index.md#rulesif)。
 - [`rules:exists`](_index.md#rulesexists)。
 - [`rules:changes`](_index.md#ruleschanges)。
 
-### `include`で`rules:if`を使用する
+### `rules:if`を`include`と組み合わせる {#include-with-rulesif}
 
 {{< history >}}
 
-- GitLab16.1で、`when: never`と`when:always`のサポートが、`ci_support_include_rules_when_never`という[フラグ](../../administration/feature_flags.md)で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/348146)されました。デフォルトでは無効になっています。
-- GitLab 16.2で、`when: never`と`when:always`のサポートが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/414517)になりました。機能フラグ`ci_support_include_rules_when_never`が削除されました。
+- `when: never`と`when:always`のサポートは、GitLab 16.1で`ci_support_include_rules_when_never`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/348146)されました。デフォルトでは無効になっています。
+- GitLab 16.2で、`when: never`と`when:always`のサポートが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/414517)になりました。機能フラグ`ci_support_include_rules_when_never`は削除されました。
 
 {{< /history >}}
 
-[`rules:if`](_index.md#rulesif)を使用して、CI/CD変数の状態に基づいて、他の設定ファイルを条件付きでインクルードします。以下に例を示します。
+[`rules:if`](_index.md#rulesif)を使用すると、CI/CD変数の状態に基づいて、条件付きで他の設定ファイルをインクルードできます。次に例を示します。
 
 ```yaml
 include:
@@ -451,16 +452,16 @@ test:
   script: exit 0
 ```
 
-### `include`で`rules:exists`を使用する
+### `rules:exists`を`include`と組み合わせる {#include-with-rulesexists}
 
 {{< history >}}
 
-- GitLab16.1で、`when: never`と`when:always`のサポートが、`ci_support_include_rules_when_never`という[フラグ](../../administration/feature_flags.md)で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/348146)されました。デフォルトでは無効になっています。
-- GitLab 16.2で、`when: never`と`when:always`のサポートが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/414517)になりました。機能フラグ`ci_support_include_rules_when_never`が削除されました。
+- `when: never`と`when:always`のサポートは、GitLab 16.1で`ci_support_include_rules_when_never`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/348146)されました。デフォルトでは無効になっています。
+- GitLab 16.2で、`when: never`と`when:always`のサポートが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/414517)になりました。機能フラグ`ci_support_include_rules_when_never`は削除されました。
 
 {{< /history >}}
 
-[`rules:exists`](_index.md#rulesexists)を使用して、ファイルの存在に基づいて、他の設定ファイルを条件付きでインクルードします。以下に例を示します。
+[`rules:exists`](_index.md#rulesexists)を使用すると、ファイルの存在に基づいて、条件付きで他の設定ファイルをインクルードできます。次に例を示します。
 
 ```yaml
 include:
@@ -486,7 +487,7 @@ test:
 
 この例では、GitLabは現在のプロジェクトに`file.md`が存在するかどうかを確認します。
 
-別のプロジェクトからのインクルードファイルで`rules:exists`とともに`include`を使用する場合は、設定を慎重にレビューする必要があります。GitLabは、_他の_プロジェクトにファイルが存在するかどうかを確認します。以下に例を示します。
+別のプロジェクトからのインクルードファイルで`rules:exists`とともに`include`を使用する場合は、設定を慎重にレビューする必要があります。GitLabは、別のプロジェクトにファイルが存在するかどうかを確認します。次に例を示します。
 
 ```yaml
 # Pipeline configuration in my-group/my-project
@@ -508,9 +509,9 @@ include:
           - file.md
 ```
 
-この例では、GitLabは、パイプラインが実行されるプロジェクトや参照ではなく、コミットを参照する`other_branch`の`my-group/other-project`にある`file.md`の存在を検索します。
+この例では、GitLabは、パイプラインが実行されるプロジェクトや参照ではなく、`other_branch`の`my-group/other-project`のコミット参照で`file.md`が存在するかどうかを検索します。
 
-検索のコンテキストを変更するには、[`rules:exists:paths`](_index.md#rulesexistspaths)を[`rules:exists:project`](_index.md#rulesexistsproject)とともに使用します。以下に例を示します。
+検索コンテキストを変更するには、[`rules:exists:paths`](_index.md#rulesexistspaths)を[`rules:exists:project`](_index.md#rulesexistsproject)とともに使用します。次に例を示します。
 
 ```yaml
 include:
@@ -525,15 +526,15 @@ include:
           ref: main
 ```
 
-### `include`で`rules:changes`を使用する
+### `rules:changes`を`include`と組み合わせる {#include-with-ruleschanges}
 
 {{< history >}}
 
-- GitLab 16.4で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/342209)。
+- GitLab 16.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/342209)されました。
 
 {{< /history >}}
 
-[`rules:changes`](_index.md#ruleschanges)を使用して、変更されたファイルに基づいて、他の設定ファイルを条件付きでインクルードします。以下に例を示します。
+[`rules:changes`](_index.md#ruleschanges)を使用すると、変更されたファイルに基づいて、条件付きで他の設定ファイルをインクルードできます。次に例を示します。
 
 ```yaml
 include:
@@ -562,13 +563,13 @@ test:
 
 この例では:
 
-- `builds1.yml`は、`Dockerfile`が変更された場合にインクルードされます。
-- `builds2.yml`は、`Dockerfile`が`refs/heads/branch1`に対して相対的に変更された場合にインクルードされます。
-- `builds3.yml`は、`Dockerfile`が変更され、パイプラインソースがマージリクエストイベントである場合にインクルードされます。`builds3.yml`のジョブを、[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines)用に実行するように設定する必要もあります。
+- `Dockerfile`が変更されている場合、`builds1.yml`をインクルードします。
+- `refs/heads/branch1`と比較して、`Dockerfile`が変更されている場合、`builds2.yml`をインクルードします。
+- `Dockerfile`が変更され、かつパイプラインソースがマージリクエストイベントである場合、`builds3.yml`をインクルードします。`builds3.yml`のジョブも、[マージリクエスト](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines)パイプラインで実行するように設定されている必要があります。
 
-## ワイルドカードファイルパスで`include:local`を使用する
+## `include:local`でワイルドカードのファイルパスを使用する {#use-includelocal-with-wildcard-file-paths}
 
-ワイルドカードパス（`*`と`**`）を`include:local`で使用できます。
+`include:local`ではワイルドカードパス（`*`および`**`）を使用できます。
 
 例:
 
@@ -576,10 +577,10 @@ test:
 include: 'configs/*.yml'
 ```
 
-パイプラインの実行時に、GitLabは次の処理を行います。
+パイプラインを実行すると、GitLabは次のように動作します。
 
-- `configs`ディレクトリにあるすべての`.yml`ファイルをパイプライン設定に追加します。
-- `configs`ディレクトリのサブフォルダにある`.yml`ファイルは追加しません。これを許可するには、次の設定を追加します:
+- `configs`ディレクトリ内のすべての`.yml`ファイルをパイプライン設定に追加します。
+- `configs`ディレクトリのサブフォルダにある`.yml`ファイルは追加しません。これを許可するには、次の設定を追加します。
 
   ```yaml
   # This matches all `.yml` files in `configs` and any subfolder in it.
@@ -589,25 +590,25 @@ include: 'configs/*.yml'
   include: 'configs/**/*.yml'
   ```
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
-### `Maximum of 150 nested includes are allowed!`エラー
+### `Maximum of 150 nested includes are allowed!`エラー {#maximum-of-150-nested-includes-are-allowed-error}
 
-パイプラインで許可される[ネストされたインクルードファイル](#use-nested-includes)の最大数は150です。パイプラインで`Maximum 150 includes are allowed`エラーメッセージが表示された場合、次のいずれかの可能性があります:
+パイプラインで許可される[ネストされたインクルードファイル](#use-nested-includes)の最大数は150です。パイプラインで`Maximum 150 includes are allowed`というエラーメッセージが表示される場合、次のいずれかが原因である可能性があります。
 
-- ネストされた設定の一部に、過剰な数の追加のネストされた`include`設定が含まれている。
-- ネストされたインクルードに偶発的なloopがある。たとえば、`include1.yml`に`include2.yml`が含まれ、`include2.yml`には`include1.yml`が含まれるという再帰的なloopが作成されている。
+- ネストされた設定の一部に、過剰な数のネストされた`include`設定が含まれている。
+- ネストされたインクルードに意図しないループが存在する。たとえば、`include1.yml`が`include2.yml`をインクルードし、`include2.yml`が`include1.yml`をインクルードすることで再帰的なループが発生している。
 
-この問題が発生するリスクを軽減するには、[パイプラインエディタ](../pipeline_editor/_index.md)でパイプライン設定ファイルを編集し、制限に達したかどうかを検証します。一度に1つずつインクルードファイルを削除すると、loopや過剰なインクルードファイルの原因となっている設定ファイルを絞り込めます。
+この問題が発生するリスクを軽減するには、[パイプラインエディタ](../pipeline_editor/_index.md)でパイプライン設定ファイルを編集します。エディタが、上限に達したかどうかを検証します。一度に1つずつインクルードファイルを削除すると、ループや過剰なインクルードファイルの原因となっている設定ファイルを絞り込めます。
 
-[GitLab16.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/207270)で、GitLab Self-Managedのユーザーは、[最大インクルード数](../../administration/settings/continuous_integration.md#maximum-includes)の値を変更できるようになりました。
+[GitLab 16.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/207270)、GitLab Self-Managedのユーザーは、[最大インクルード数](../../administration/settings/continuous_integration.md#set-maximum-includes)の値を変更できるようになりました。
 
-### `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello`およびその他のネットワーク障害
+### `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello`およびその他のネットワーク障害 {#ssl_connect-syscall-returned5-errno0-statesslv3tls-write-client-hello-and-other-network-failures}
 
-[`include:remote`](_index.md#includeremote)を使用すると、GitLabは HTTP(S)経由でリモートファイルのフェッチを試みます。このプロセスは、接続に関するさまざまなイシューが原因で失敗する可能性があります。
+[`include:remote`](_index.md#includeremote)を使用する場合、GitLabはHTTP（S）を介してリモートファイルのフェッチを試行します。さまざまな接続に関する問題が原因で、このプロセスが失敗することがあります。
 
-`SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello`エラーは、GitLabがリモートホストへのHTTPS接続を確立できない場合に発生します。このイシューは、リクエストによるサーバーの過負荷を防ぐためにリモートホストにレート制限が設定されている場合に発生する可能性があります。
+`SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello`エラーは、GitLabがリモートホストへのHTTPS接続を確立できない場合に発生します。この問題は、リクエストによるサーバーの過負荷を防ぐために、リモートホストにレート制限が設定されている場合に発生する可能性があります。
 
-たとえば、GitLab.comの[GitLab Pages](../../user/project/pages/_index.md)サーバーには、レート制限があります。GitLab PagesでホストされているCI/CD設定ファイルを繰り返しフェッチしようとすると、レート制限に達してエラーが発生する可能性があります。GitLab PagesサイトでのCI/CD設定ファイルのホスティングは避ける必要があります。
+たとえば、GitLab.comの[GitLab Pages](../../user/project/pages/_index.md)サーバーにはレート制限があります。GitLab PagesでホストされているCI/CD設定ファイルを繰り返しフェッチしようとすると、レート制限に達してエラーが発生する可能性があります。GitLab PagesサイトでCI/CD設定ファイルをホストするのは避けてください。
 
-可能であれば、外部HTTP(S)リクエストを行わずに、[`include:project`](_index.md#includeproject)を使用して、GitLabインスタンス内の他のプロジェクトから設定ファイルをフェッチします。
+可能であれば、外部HTTP（S）リクエストを行わずに、[`include:project`](_index.md#includeproject)を使用して、GitLabインスタンス内の他のプロジェクトから設定ファイルをフェッチします。

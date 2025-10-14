@@ -12,7 +12,7 @@
   }
 
   .home-panel-description {
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       font-size: $gl-font-size-large;
     }
   }

@@ -23,7 +23,6 @@ For example, you can define:
 - Allowed types and lengths for SSH keys.
 - Git settings, such as accepted protocols (SSH or HTTPS) and clone URLs.
 - Allow or prevent push mirroring and pull mirroring.
-- Allow or prevent invitations to groups and projects.
 
 Prerequisites:
 
@@ -99,16 +98,9 @@ To disable the restriction:
 - Enabled delayed deletion for projects by default [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 - [Changed to default behavior for groups](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) on the Premium and Ultimate tier in GitLab 16.0.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- Support for disallowing immediate deletion for groups or projects scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4 [with a flag](../../administration/feature_flags/_index.md) named `disallow_immediate_deletion`. Disabled by default.
+- [Instance setting](#immediate-deletion) to allow immediate deletion for groups or projects scheduled for deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205556) in GitLab 18.5. Enabled by default. Disabled on GitLab.com and Dedicated.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 These protections help guard against accidental deletion of groups and projects on your instance.
 
@@ -128,6 +120,41 @@ To configure deletion protection for groups and projects:
 1. Expand **Visibility and access controls**.
 1. Scroll to **Deletion protection** and set the retention period to a value between `1` and `90` days.
 1. Select **Save changes**.
+
+### Immediate deletion
+
+{{< history >}}
+
+- Instance setting to allow immediate deletion for groups or projects scheduled for deletion
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205556) in GitLab 18.5
+  [with a flag](../feature_flags/_index.md) named `allow_immediate_namespaces_deletion`.
+  Enabled by default on self-managed, but disabled on GitLab.com and Dedicated.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+By default, immediate deletion is allowed for groups and projects marked for deletion. This allows users
+to effectively bypass the configured retention period and delete groups or projects immediately.
+
+This can be disabled, so that groups and projects are only deleted automatically after the configured retention period:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Visibility and access controls**.
+1. Scroll to **Immediate deletion** and uncheck the checkbox.
+1. Select **Save changes**.
+
+{{< alert type="note" >}}
+
+Administrators can always immediately delete groups and projects through the Admin pages.
+
+{{< /alert >}}
 
 ### Override defaults and delete immediately
 
@@ -384,13 +411,11 @@ Features such as [sharing](../../user/project/members/sharing_projects_groups.md
 
 {{< /alert >}}
 
-Administrators can also [prevent user invitations to a specific group](../../user/group/manage.md#prevent-invitations-to-a-group).
-
 Prerequisites:
 
 - You must be an administrator.
 
-To prevent invitations to an instance:
+To prevent invitations:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.

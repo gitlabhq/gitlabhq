@@ -70,3 +70,15 @@ To resolve this error:
 
 - On Helm chart (Kubernetes) deployments, update the `values.yaml` to set [`sshHostKeys.mount`](https://docs.gitlab.com/charts/charts/gitlab/webservice/) to `true` under the `webservice` section.
 - On GitLab Self-Managed instances, check the `/etc/ssh` directory for the host keys.
+
+## General SSH troubleshooting
+
+If the previous sections don't resolve your issue, run the SSH connection in verbose mode.
+Verbose mode can return useful information about the connection.
+
+To run SSH in verbose mode, use the following command and replace `gitlab.example.com` with
+your GitLab instance URL:
+
+```shell
+ssh -Tvvv git@gitlab.example.com
+```

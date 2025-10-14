@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failu
 
           expect(environment).to be_present
           expect(job.persisted_environment.name).to eq('review/master')
-          expect(job.metadata.expanded_environment_name).to eq('review/master')
+          expect(job.expanded_environment_name).to eq('review/master')
         end
 
         context 'and the pipeline is for a merge request' do
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failu
 
           expect(environment).to be_present
           expect(job.persisted_environment.name).to eq('review/master')
-          expect(job.metadata.expanded_environment_name).to eq('review/master')
+          expect(job.expanded_environment_name).to eq('review/master')
         end
 
         context 'and the pipeline is for a merge request' do
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failu
 
         expect(environment).to be_present
         expect(job.persisted_environment.name).to eq('review/master')
-        expect(job.metadata.expanded_environment_name).to eq('review/master')
+        expect(job.expanded_environment_name).to eq('review/master')
       end
     end
 

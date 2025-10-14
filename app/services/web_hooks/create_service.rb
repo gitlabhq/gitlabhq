@@ -8,8 +8,10 @@ module WebHooks
       @current_user = current_user
     end
 
-    def execute(hook_params, relation)
+    def execute(hook_params, relation, organization = nil)
       hook = relation.new(hook_params)
+
+      hook.organization_id = organization&.id if hook.is_a?(SystemHook)
 
       if hook.save
         after_create(hook)

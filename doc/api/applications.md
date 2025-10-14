@@ -12,10 +12,10 @@ title: Applications API
 
 {{< /details >}}
 
-Use this API to interact instance-wide OAuth applications for:
+Use this API to manage instance-wide OAuth applications that:
 
-- [Using GitLab as an authentication provider](../integration/oauth_provider.md).
-- [Allowing access to GitLab resources on a user's behalf](oauth2.md).
+- [Use GitLab as an authentication provider](../integration/oauth_provider.md).
+- [Allow access to GitLab resources on a user's behalf](oauth2.md).
 
 {{< alert type="note" >}}
 
@@ -29,7 +29,7 @@ Prerequisites:
 
 ## Create an application
 
-Create an application by posting a JSON payload.
+Creates an application by posting a JSON payload.
 
 Returns `200` if the request succeeds.
 
@@ -43,8 +43,8 @@ Supported attributes:
 |:---------------|:--------|:---------|:---------------------------------|
 | `name`         | string  | yes      | Name of the application.         |
 | `redirect_uri` | string  | yes      | Redirect URI of the application. |
-| `scopes`       | string  | yes      | Scopes of the application. You can specify multiple scopes by separating each scope using a space. |
-| `confidential` | boolean | no       | The application is used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential. Defaults to `true` if not supplied |
+| `scopes`       | string  | yes      | Scopes available to the application. Separate multiple scopes with a space. |
+| `confidential` | boolean | no       | If `true`, the application can securely store client credentials, such as the client secret. Non-confidential applications (such as native mobile apps and Single Page Apps) might expose client credentials. Defaults to `true` if unspecified. |
 
 Example request:
 
@@ -70,7 +70,7 @@ Example response:
 
 ## List all applications
 
-List all registered applications.
+Lists all registered applications.
 
 ```plaintext
 GET /applications
@@ -106,7 +106,7 @@ The `secret` value is not exposed by this API.
 
 ## Delete an application
 
-Delete a specific application.
+Deletes a registered application.
 
 Returns `204` if the request succeeds.
 

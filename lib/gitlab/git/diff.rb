@@ -254,7 +254,7 @@ module Gitlab
         return @overflow if defined?(@overflow)
 
         # If overflow is not defined, we're
-        # not recieveing a diff from Gitaly
+        # not receiving a diff from Gitaly
         # and overflow has no meaning
         false
       end

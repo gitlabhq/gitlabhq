@@ -87,10 +87,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
     let(:style_src) { directives['style_src'] }
     let(:worker_src) { directives['worker_src'] }
 
-    before do
-      stub_env('GITLAB_ANALYTICS_URL', nil)
-    end
-
     it 'returns default directives' do
       directive_names = (described_class::DIRECTIVES - ['report_uri'])
       directive_names.each do |directive|
@@ -556,47 +552,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
 
         it 'adds Snowplow Micro URL with trailing slash to connect-src' do
           expect(connect_src).to match(Regexp.new(snowplow_micro_url))
-        end
-      end
-    end
-
-    describe 'browsersdk_tracking' do
-      let(:analytics_url) { 'https://analytics.gitlab.com' }
-      let(:is_gitlab_com) { true }
-
-      before do
-        allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
-      end
-
-      context 'when browsersdk_tracking is enabled, GITLAB_ANALYTICS_URL is set, and Gitlab.com? is true' do
-        before do
-          stub_env('GITLAB_ANALYTICS_URL', analytics_url)
-        end
-
-        it 'adds GITLAB_ANALYTICS_URL to connect-src' do
-          expect(connect_src).to include(analytics_url)
-        end
-      end
-
-      context 'when Gitlab.com? is false' do
-        let(:is_gitlab_com) { false }
-
-        before do
-          stub_env('GITLAB_ANALYTICS_URL', analytics_url)
-        end
-
-        it 'does not add GITLAB_ANALYTICS_URL to connect-src' do
-          expect(connect_src).not_to include(analytics_url)
-        end
-      end
-
-      context 'when GITLAB_ANALYTICS_URL is not set' do
-        before do
-          stub_env('GITLAB_ANALYTICS_URL', nil)
-        end
-
-        it 'does not add GITLAB_ANALYTICS_URL to connect-src' do
-          expect(connect_src).not_to include(analytics_url)
         end
       end
     end

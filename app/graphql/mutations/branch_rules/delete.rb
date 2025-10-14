@@ -5,7 +5,7 @@ module Mutations
     class Delete < BaseMutation
       graphql_name 'BranchRuleDelete'
 
-      authorize :destroy_branch_rule
+      authorize :delete_branch_rule
 
       argument :id, ::Types::GlobalIDType[::Projects::BranchRule],
         required: true,

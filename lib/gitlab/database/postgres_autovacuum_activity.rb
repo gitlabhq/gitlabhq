@@ -8,14 +8,40 @@ module Gitlab
 
       scope :wraparound_prevention, -> { where(wraparound_prevention: true) }
 
-      def self.for_tables(tables)
-        Gitlab::Database::LoadBalancing::SessionMap
-          .current(load_balancer)
-          .use_primary do
-          # calling `.to_a` here to execute the query in the primary's scope
-          # and to avoid having the scope chained and re-executed
-          #
-          where('schema = current_schema()').where(table: tables).to_a
+      class << self
+        def for_tables(tables)
+          return [] if tables.empty?
+
+          partitioned_tables, regular_tables = partition_tables(tables)
+          partitions = PostgresPartition.with_parent_tables(partitioned_tables).pluck(:schema, :name)
+
+          execute_in_primary_scope do
+            build_query_scope(regular_tables, partitions).to_a
+          end
+        end
+
+        private
+
+        def partition_tables(tables)
+          tables.partition { |table_name| partitioned_table?(table_name) }
+        end
+
+        def partitioned_table?(table_name)
+          Gitlab::Database::PostgresPartitionedTable.find_by_name_in_current_schema(table_name).present?
+        end
+
+        def execute_in_primary_scope(&block)
+          Gitlab::Database::LoadBalancing::SessionMap
+            .current(load_balancer)
+            .use_primary(&block)
+        end
+
+        def build_query_scope(regular_tables, partitions)
+          base_scope = where('schema = current_schema()').where(table: regular_tables)
+
+          partitions.reduce(base_scope) do |accumulated_scope, (schema, name)|
+            accumulated_scope.or(where(schema: schema, table: name))
+          end
         end
       end
 

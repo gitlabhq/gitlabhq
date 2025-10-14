@@ -18,7 +18,6 @@ module WorkItems
     def perform(namespace_id)
       namespace = Namespace.find_by_id(namespace_id)
       return unless namespace
-      return unless Feature.enabled?(:update_work_item_traversal_ids_on_transfer, namespace)
 
       UpdateNamespaceTraversalIdsService.execute(namespace)
     rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError

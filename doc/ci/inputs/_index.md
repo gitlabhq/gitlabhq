@@ -86,6 +86,8 @@ With `spec:inputs`:
 - A string containing an input must be less than 1 MB.
 - A string inside an input must be less than 1 KB.
 - Inputs can use CI/CD variables, but have the same [variable limitations as the `include` keyword](../yaml/includes.md#use-variables-with-include).
+- If the file that defines `spec:inputs` also contains job definitions, add a YAML document
+  separator (`---`) after the header.
 
 Then you set the values for the inputs when you:
 

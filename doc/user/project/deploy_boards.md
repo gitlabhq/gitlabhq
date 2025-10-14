@@ -54,7 +54,7 @@ With deploy boards you can gain more insight into deploys with benefits such as:
 
 Here's an example of a deploy board of the production environment.
 
-![deploy boards landing page](img/deploy_boards_landing_page_v9_0.png)
+![Dashboard showing production environment deployment with Kubernetes cluster pods.](img/deploy_boards_landing_page_v9_0.png)
 
 The squares represent pods in your Kubernetes cluster that are associated with
 the given environment. Hovering above each square you can see the state of a
@@ -123,12 +123,12 @@ To display the deploy boards for a specific [environment](../../ci/environments/
    Kubernetes as well. The image below demonstrates how this is shown inside
    Kubernetes.
 
-   If you use GCP to manage clusters, you can see the deployment details in GCP itself by navigating to **Workloads > deployment name > Details**:
+   If you use GCP to manage clusters, you can see the deployment details in GCP itself by navigating to **Workloads** > **deployment name** > **Details**:
 
-   ![deploy boards Kubernetes Label](img/deploy_boards_kubernetes_label_v11_9.png)
+   ![GCP deployment boards details.](img/deploy_boards_kubernetes_label_v11_9.png)
 
 Once all of these previous instructions are set up and the pipeline has run at least once,
-go to the environments page under **Operate > Environments**.
+go to the environments page under **Operate** > **Environments**.
 
 Deploy boards are visible by default. You can explicitly select
 the triangle next to their respective environment name to hide them.

@@ -68,7 +68,7 @@ module SidebarsHelper
       is_admin: user.can_admin_all_resources?,
       name: user.name,
       username: user.username,
-      admin_url: admin_root_url,
+      admin_url: admin_root_path,
       admin_mode: {
         admin_mode_feature_enabled: Gitlab::CurrentSettings.admin_mode,
         admin_mode_active: current_user_mode.admin_mode?,
@@ -88,7 +88,7 @@ module SidebarsHelper
       },
       user_counts: {
         assigned_issues: user.assigned_open_issues_count,
-        assigned_merge_requests: user.assigned_open_merge_requests_count(cached_only: true),
+        assigned_merge_requests: user.all_assigned_merge_requests_count(cached_only: true),
         review_requested_merge_requests: user.review_requested_open_merge_requests_count(cached_only: true),
         todos: user.todos_pending_count,
         last_update: time_in_milliseconds
@@ -96,11 +96,10 @@ module SidebarsHelper
       can_sign_out: current_user_menu?(:sign_out),
       sign_out_link: destroy_user_session_path,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
-      merge_request_dashboard_path: user.merge_request_dashboard_enabled? ? merge_requests_dashboard_path : nil,
+      merge_request_dashboard_path: merge_requests_dashboard_path,
       todos_dashboard_path: dashboard_todos_path,
       compare_plans_url: compare_plans_url(user: user, project: project, group: group),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
-      merge_request_menu: create_merge_request_menu(user),
       projects_path: dashboard_projects_path,
       groups_path: dashboard_groups_path,
       gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
@@ -290,42 +289,6 @@ module SidebarsHelper
                end
       }
     end
-  end
-
-  def create_merge_request_menu(user)
-    return if user.merge_request_dashboard_enabled?
-
-    [
-      {
-        name: _('Merge requests'),
-        items: [
-          {
-            text: _('Assigned'),
-            href: merge_requests_dashboard_path(assignee_username: user.username),
-            count: user.assigned_open_merge_requests_count(cached_only: true),
-            userCount: 'assigned_merge_requests',
-            extraAttrs: {
-              'data-track-action': 'click_link',
-              'data-track-label': 'merge_requests_assigned',
-              'data-track-property': 'nav_core_menu',
-              class: 'dashboard-shortcuts-merge_requests'
-            }
-          },
-          {
-            text: _('Review requests'),
-            href: merge_requests_dashboard_path(reviewer_username: user.username),
-            count: user.review_requested_open_merge_requests_count(cached_only: true),
-            userCount: 'review_requested_merge_requests',
-            extraAttrs: {
-              'data-track-action': 'click_link',
-              'data-track-label': 'merge_requests_to_review',
-              'data-track-property': 'nav_core_menu',
-              class: 'dashboard-shortcuts-review_requests'
-            }
-          }
-        ]
-      }
-    ]
   end
 
   def project_sidebar_context_data(project, user, current_ref, ref_type: nil)

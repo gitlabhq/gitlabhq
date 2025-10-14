@@ -1,0 +1,26 @@
+---
+description: The event tracks Gemnasium SBOM scan data
+internal_events: true
+status: active
+action: collect_gemnasium_python_scan_sbom_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  label:
+    description: PURL type
+  value:
+    description: Components count
+  input_file_path:
+    description: Path of input (lock) file for SBOM
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202596/
+tiers:
+- free
+- premium
+- ultimate

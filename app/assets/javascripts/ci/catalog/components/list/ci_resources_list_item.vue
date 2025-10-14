@@ -136,7 +136,7 @@ export default {
     },
     usageText() {
       return s__(
-        'CiCatalog|The number of projects that used a component from this project in a pipeline, by using "include:component", in the last 30 days.',
+        'CiCatalog|The number of projects that used a component from this catalog resource in their pipelines in the last 30 days.',
       );
     },
     webPath() {
@@ -204,7 +204,7 @@ export default {
           <b> {{ resource.name }}</b>
         </gl-link>
         <project-visibility-icon v-if="isPrivate" />
-        <div class="gl-flex gl-grow md:gl-justify-between">
+        <div class="gl-flex gl-grow @md/panel:gl-justify-between">
           <div class="gl-flex gl-items-center">
             <gl-badge
               v-gl-tooltip.top
@@ -246,11 +246,11 @@ export default {
           </div>
         </div>
       </div>
-      <div class="gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-text-sm md:gl-flex-row">
+      <div class="gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-text-sm @md/panel:gl-flex-row">
         <div class="gl-flex gl-basis-2/3 gl-flex-col">
           <markdown
             v-if="resource.description"
-            class="gl-hidden md:gl-block"
+            class="gl-hidden @md/panel:gl-block"
             :markdown="truncatedDescription"
           />
           <div

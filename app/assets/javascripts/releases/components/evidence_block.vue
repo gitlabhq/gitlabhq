@@ -69,7 +69,7 @@ export default {
           :title="__('Open evidence JSON in new tab')"
           :href="evidenceUrl(index)"
         >
-          <gl-icon name="review-list" class="align-middle gl-mr-3" />
+          <gl-icon name="review-list" class="gl-mr-3 !gl-align-middle" />
           <span>{{ evidenceTitle(index) }}</span>
           <gl-icon name="external-link" class="gl-ml-2 gl-shrink-0 gl-flex-grow-0" />
         </gl-link>
@@ -89,7 +89,7 @@ export default {
         <gl-icon
           v-gl-tooltip
           name="clock"
-          class="align-middle gl-mr-3"
+          class="gl-mr-3 !gl-align-middle"
           :title="collectedAt(index)"
         />
         <span>{{ timeSummary(index) }}</span>

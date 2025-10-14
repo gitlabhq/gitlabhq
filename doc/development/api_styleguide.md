@@ -46,11 +46,9 @@ Every method must be described using the [Grape DSL](https://github.com/ruby-gra
 (see [`environments.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/environments.rb)
 for a good example):
 
-- `desc` for the method summary. You should pass it a block for additional
-  details such as:
-  - The GitLab version when the endpoint was added. If it is behind a feature flag, mention that instead: `This feature is gated by the :feature\_flag\_symbol feature flag.`
-  - If the endpoint is deprecated, and if so, its planned removal date
-
+- `desc` for the method summary.
+- `detail` for each `desc` block. This must be a string.
+- `tags` for each `desc` block. This should be a string, or array of strings.
 - `params` for the method parameters. This acts as description,
   [validation, and coercion of the parameters](https://github.com/ruby-grape/grape#parameter-validation-and-coercion)
 
@@ -60,6 +58,7 @@ A good example is as follows:
 desc 'Get all broadcast messages' do
   detail 'This feature was introduced in GitLab 8.12.'
   success Entities::System::BroadcastMessage
+  tags ['broadcast_messages']
 end
 params do
   optional :page,     type: Integer, desc: 'Current page number'
@@ -71,6 +70,35 @@ get do
   present paginate(messages), with: Entities::System::BroadcastMessage
 end
 ```
+
+### Defining endpoint details
+
+Every endpoint must have a `detail` value for each `desc` block. The value must be a string.
+The `detail` should describe any additional details not covered by the `desc` such as:
+
+- The GitLab version when the endpoint was added.
+- If it is behind a feature flag, mention that instead: `This feature is gated by the :feature\_flag\_symbol feature flag.`
+- If the endpoint is deprecated, and if so, its planned removal date
+
+### Choosing a tag
+
+Every endpoint must have at least one value defined in `tags` per `desc` block.
+The tags should describe the type of objects being acted upon in the API call, in their plural form.
+
+**In most cases, the filename of the API is sufficient** but can also be too granular.
+
+#### Good tag names
+
+- `audit_events`
+- `users`
+- `clusters`
+
+#### Bad tag names
+
+- `commit` (singular)
+- `epic_management` (coupled to a product category, not an entity)
+
+If the correct name for a tag is not clear, speak to technical writers for guidance.
 
 ## Breaking changes
 

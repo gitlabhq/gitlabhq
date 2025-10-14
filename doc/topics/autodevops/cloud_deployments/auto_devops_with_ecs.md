@@ -11,7 +11,7 @@ To get started on Auto DevOps to AWS ECS, you must add a specific CI/CD variable
 To do so, follow these steps:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Specify which AWS platform to target during the Auto DevOps deployment
    by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable with one of the following values:

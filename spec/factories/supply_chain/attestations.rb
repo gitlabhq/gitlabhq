@@ -7,5 +7,6 @@ FactoryBot.define do
     predicate_kind { :provenance }
     predicate_type { "https://slsa.dev/provenance/v1" }
     subject_digest { Digest::SHA256.hexdigest("abc") }
+    file { fixture_file_upload('spec/fixtures/supply_chain/attestation.json') }
   end
 end

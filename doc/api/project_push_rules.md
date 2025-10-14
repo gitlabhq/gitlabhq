@@ -56,13 +56,15 @@ response attributes:
 | `reject_non_dco_commits`        | boolean | If `true`, rejects commits when not DCO certified. |
 | `reject_unsigned_commits`       | boolean | If `true`, rejects commits when not signed. |
 
-If push rules were never configured for the project, this endpoint returns a response with value `null` instead of a `404` error.
+If push rules were never configured for the project, returns HTTP `200 OK` with the literal string
+`"null"` as the response body.
 
-When disabled, some boolean attributes return `null` instead of `false`. For example:
+{{< alert type="note" >}}
 
-- `commit_committer_check`
-- `reject_unsigned_commits`
-- `reject_non_dco_commits`
+This differs from the [group push rules API](group_push_rules.md#get-the-push-rules-of-a-group),
+which returns `404 Not Found` error.
+
+{{< /alert >}}
 
 Example request:
 
@@ -93,6 +95,24 @@ Example response when push rules are configured with all settings disabled:
   "reject_non_dco_commits": null
 }
 ```
+
+If the following attributes are disabled, they return `null` instead of `false`:
+
+- `commit_committer_check`
+- `reject_unsigned_commits`
+- `reject_non_dco_commits`
+
+Example response when push rules were never configured for the project:
+
+```plaintext
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 4
+
+null
+```
+
+This returns the literal string `"null"` (4 characters), not a JSON `null` value.
 
 ## Add a project push rule
 

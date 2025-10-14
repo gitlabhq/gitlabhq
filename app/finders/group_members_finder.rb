@@ -72,6 +72,7 @@ class GroupMembersFinder < UnionFinder
 
     members = members.filter_by_2fa(params[:two_factor]) if params[:two_factor].present? && can_manage_members
     members = members.by_access_level(params[:access_levels]) if params[:access_levels].present?
+    members = members.including_user_ids(params[:ids]) if params[:ids].present?
 
     members = filter_by_user_type(members)
     members = filter_by_max_role(members)

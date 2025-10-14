@@ -11,10 +11,15 @@ title: GitLab Duo Chat (Agentic)
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -27,7 +32,7 @@ title: GitLab Duo Chat (Agentic)
 - Visual Studio for Windows [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245) in GitLab 18.3.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 - Feature flags `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487) in GitLab 18.4.
-- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
+- For GitLab Duo Agent Platform on self-managed instances (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 
 {{< /history >}}
 
@@ -84,7 +89,7 @@ Prerequisites:
 To use Chat in the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
    It may take a few seconds to produce an answer.
@@ -249,11 +254,83 @@ Conversations that existed before you created any custom rules do not follow tho
    ```
 
 1. Save the file.
-1. To have GitLab Duo Chat follow the new custom rules, start a new conversation, or `/clear` the existing conversation.
+1. To have GitLab Duo Chat follow the new custom rules, start a new conversation.
 
    You must do this every time you change the custom rules.
 
 For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
+
+### Select a model
+
+{{< details >}}
+
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19251) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) feature with a [flag](../../administration/feature_flags/_index.md) called `ai_user_model_switching`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When you use Chat in the GitLab UI, you can select the model to use for conversations. If you open a previous chat from the chat history and continue the conversation,
+Chat uses the currently selected model.
+
+Model selection in the IDE is not supported.
+
+Prerequisites:
+
+- No model has been selected for the GitLab Duo Agent Platform feature by the Owner of the top-level group.
+If a model has been selected for the group, you cannot change the model for Chat.
+
+To select a model:
+
+1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
+1. Select a model from the dropdown list.
+
+### Select an agent
+
+{{< details >}}
+
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562708) in GitLab 18.4 for the GitLab UI as an [experiment](../../policy/development_stages_support.md#experiment).
+
+{{< /history >}}
+
+When you use Chat in a project in the GitLab UI, you can select a specific agent for Chat to use.
+
+Prerequisites:
+
+- You must [add an agent to your project](../duo_agent_platform/agents/_index.md#add-an-agent-to-a-project)
+  from the AI catalog.
+
+To select an agent:
+
+1. In the GitLab UI, open GitLab Duo Chat.
+1. In the upper-right corner of the drawer, select **New chat**.
+1. In the dropdown list, select a custom agent. If you have not set up any custom
+   agents, there is no dropdown list, and Chat uses the default GitLab Duo agent.
+1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
+
+After you create a conversation with a custom agent:
+
+- The conversation remembers the custom agent you selected.
+- If you use the chat history to go back to the same conversation, it uses the same agent.
 
 ## GitLab Duo Chat capabilities
 
@@ -286,8 +363,8 @@ GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with th
 | Retrieve issues and MRs without specifying IDs |          No |                                                            Yes. Search by other criteria. For example, an MR or issue's title or assignee.                                       |
 | Combine information from multiple sources |               No |                                                            Yes                                                                                                                   |
 | Analyze pipeline logs |                                   Yes. Requires Duo Enterprise add-on. |                          Yes                                                                                                                   |
-| Restart a conversation |                                  Yes. Use `/reset`. |                                            Yes. Use `/reset`.                                                                                                    |
-| Delete a conversation |                                   Yes. Use `/clear`.|                                             Yes, in the chat history                                                                                                            |
+| Restart a conversation |                                  Yes. Use `/new` or `/reset`. |                             Yes. Use `/new` or, if in the UI, `/reset`.                                                                                       |
+| Delete a conversation |                                   Yes, in the chat history.|                                             Yes, in the chat history                                                                                                            |
 | Create issues and MRs |                                   No |                                                            Yes                                                                                                                   |
 | Use Git read-only commands |                                                 No |                                                            Yes                                                  |
 | Use Git write commands |                                                 No |                                                            Yes, UI only                                                  |
@@ -315,6 +392,50 @@ GitLab Duo Chat works best with natural language questions. Here are some exampl
 - `Component <component name> has methods for <x> and <y>. Could you split it up into two components?`
 - `Could you add in-line documentation for all Java files in <directory>?`
 - `Do merge request <MR URL> and merge request <MR URL> fully address this issue <issue URL>?`
+
+### Security
+
+{{< details >}}
+
+- Tier: Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Dedicated
+
+{{< /details >}}
+
+You can use GitLab Duo Chat (Agentic) to triage, manage, and remediate vulnerabilities through natural language commands.
+
+You can use the following security tools in GitLab Duo Chat (Agentic):
+
+Vulnerability information and analysis:
+
+- List all vulnerabilities in a project with filtering by severity and report types.
+- Get detailed vulnerability information including CVE data, EPSS scores, and reachability analysis.
+
+Vulnerability management actions:
+
+- Confirm vulnerabilities when verified as genuine security issues.
+- Dismiss false positives or acceptable risks with proper reasoning.
+- Update vulnerability severity levels based on security review.
+- Revert vulnerability status back to detected for re-assessment.
+
+Issue management integration:
+
+- Create GitLab issues automatically linked to vulnerabilities.
+- Link existing issues to vulnerabilities for tracking.
+
+#### Security example prompts
+
+- `Show me all critical vulnerabilities in my project`
+- `List vulnerabilities with EPSS scores above 0.7 that are reachable`
+- `Dismiss all dependency scanning vulnerabilities marked as false positives with unreachable code`
+- `Create issues for all confirmed high-severity SAST vulnerabilities and assign them to recent committers`
+- `Update severity to HIGH for all vulnerabilities that cross trust boundaries`
+- `Show me vulnerabilities dismissed in the past week with their reasoning`
+- `Confirm all container scanning vulnerabilities with known exploits`
+- `Link vulnerability 123 to issue 456 for tracking remediation`
+
+For more information about these security capabilities, see [epic 19639](https://gitlab.com/groups/gitlab-org/-/epics/19639).
 
 ## Troubleshooting
 

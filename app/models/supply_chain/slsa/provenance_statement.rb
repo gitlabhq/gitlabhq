@@ -24,6 +24,8 @@ module SupplyChain
 
       attr_accessor :_type, :subject, :predicate_type, :predicate
 
+      PREDICATE_TYPE_V1 = "https://slsa.dev/provenance/v1"
+
       def self.from_build(build)
         archives = build.job_artifacts.filter { |artifact| artifact.file_type == "archive" }
         raise ArgumentError, 'artifacts associated with build do not contain a single archive' if archives.length != 1
@@ -40,7 +42,7 @@ module SupplyChain
 
       def initialize
         @_type = "https://in-toto.io/Statement/v1"
-        @predicate_type = "https://slsa.dev/provenance/v1"
+        @predicate_type = PREDICATE_TYPE_V1
       end
 
       def as_json(options = nil)
@@ -83,7 +85,7 @@ module SupplyChain
 
         def self.from_build(build)
           builder = {
-            id: Gitlab::Routing.url_helpers.group_runner_url(build.runner.owner, build.runner),
+            id: Gitlab::Routing.url_helpers.project_runner_url(build.project, build.runner),
             version: {
               "gitlab-runner": build.runner_manager.revision
             }

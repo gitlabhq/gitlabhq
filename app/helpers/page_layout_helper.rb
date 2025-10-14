@@ -203,3 +203,5 @@ module PageLayoutHelper
     request.original_fullpath.sub(request.path, '')[0] == '/'
   end
 end
+
+PageLayoutHelper.prepend_mod

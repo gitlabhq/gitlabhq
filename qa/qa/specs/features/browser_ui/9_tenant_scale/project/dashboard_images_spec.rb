@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', feature_category: :organization do
+  RSpec.describe 'Tenant Scale', feature_category: :organization, feature_flag: {
+    name: 'personal_homepage'
+  } do
     shared_examples 'loads all images' do |admin|
       let(:api_client) { Runtime::API::Client.as_admin }
       let(:user) { create(:user, is_admin: admin, api_client: api_client) }
+      let(:expected_text) { admin ? "Welcome to GitLab" : "Today's highlights" }
+
+      before do
+        Runtime::Feature.enable(:personal_homepage, user: user)
+      end
 
       it do
         Flow::Login.sign_in(as: user)
@@ -12,7 +19,7 @@ module QA
         Page::Dashboard::Welcome.perform do |welcome|
           Support::Waiter.wait_until(sleep_interval: 2, max_duration: 60, reload_page: page,
             retry_on_exception: true) do
-            expect(welcome).to have_welcome_title("Welcome to GitLab")
+            expect(welcome).to have_welcome_title(expected_text)
           end
           # This would be better if it were a visual validation test
           expect(welcome).to have_loaded_all_images

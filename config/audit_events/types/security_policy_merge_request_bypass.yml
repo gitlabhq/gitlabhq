@@ -1,0 +1,10 @@
+---
+name: security_policy_merge_request_bypass
+description: A security policy is bypassed for a merge request
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/549797
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205601
+feature_category: security_policy_management
+milestone: '18.5'
+saved_to_database: true
+streamed: true
+scope: [Project]

@@ -64,6 +64,8 @@ module Gitlab
         @stages = @ci_config.stages
         @jobs = @ci_config.normalized_jobs
 
+        error!(@ci_config.normalizer_errors.join(', ')) if @ci_config.normalizer_errors.any?
+
         @jobs.each do |name, job|
           validate_job!(name, job)
         end

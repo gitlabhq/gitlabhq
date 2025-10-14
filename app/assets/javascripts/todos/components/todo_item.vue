@@ -69,7 +69,7 @@ export default {
   >
     <gl-form-checkbox
       v-if="selectable"
-      class="gl-mt-1 gl-inline-block"
+      class="gl-mt-[0.675rem] gl-inline-block"
       :aria-label="__('Select')"
       :checked="selected"
       @change="(checked) => $emit('select-change', todo.id, checked)"
@@ -86,11 +86,11 @@ export default {
       <todo-item-timestamp
         :todo="todo"
         :is-snoozed="isSnoozed"
-        class="gl-self-start gl-whitespace-nowrap @sm/panel:gl-w-auto"
+        class="gl-mr-2 gl-mt-2 gl-self-start gl-whitespace-nowrap @sm/panel:gl-w-auto"
       />
     </gl-link>
     <todo-item-actions
-      class="gl-self-start"
+      class="gl-mt-2 gl-self-start"
       :todo="todo"
       :is-snoozed="isSnoozed"
       @change="$emit('change')"

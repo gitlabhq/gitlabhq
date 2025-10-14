@@ -66,7 +66,7 @@ To collect events and view dashboards about your website usage, the project must
 
 To onboard your new project with product analytics:
 
-1. In the project, select **Analyze > Analytics dashboards**.
+1. In the project, select **Analyze** > **Analytics dashboards**.
 1. Find the **Product analytics** item and select **Set up**.
 1. Select **Set up product analytics**.
 1. Wait for your instance to finish creating.
@@ -82,8 +82,8 @@ For this example website, we use the Browser SDK.
 
 To instrument your new website:
 
-1. In the project, select **Code > Repository**.
-1. Select **Code > Web IDE**.
+1. In the project, select **Code** > **Repository**.
+1. Select **Code** > **Web IDE**.
 1. In the left Web IDE toolbar, select **File Explorer** and open the `public/index.html` file.
 1. In the `public/index.html` file, before the closing `</body>` tag, paste the snippet you copied in the previous section.
 
@@ -124,14 +124,14 @@ To instrument your new website:
 1. In the left Web IDE toolbar, select **Source Control**.
 1. Enter a commit message, such as `Add GitLab product analytics tracking snippet`.
 1. Select **Commit**, and if prompted to create a new branch or continue, select **Continue**. You can then close the Web IDE.
-1. In the project, select **Build > Pipelines**.
+1. In the project, select **Build** > **Pipelines**.
    A pipeline is triggered from your recent commit. Wait for it to finish running and deploying your updated website.
 
 ## Collect usage data
 
 After the instrumented website is deployed, events start being collected.
 
-1. In the project, select **Deploy > Pages**.
+1. In the project, select **Deploy** > **Pages**.
 1. To open the website, in **Access pages** select your unique URL.
 1. To collect some page view events, refresh the page a few times.
 
@@ -142,7 +142,7 @@ These dashboards become available after your project has received some events.
 
 To view these dashboards:
 
-1. In the project, select **Analyze > Dashboards**.
+1. In the project, select **Analyze** > **Dashboards**.
 1. From the list of available dashboards, select **Audience** or **Behavior**.
 
 That was it! Now you have a website project with product analytics, which help you collect and visualize data to understand your users' behavior, and make your team work more efficiently.

@@ -12,6 +12,12 @@ RSpec.describe ClickHouse::Connection, click_house: :without_migrations, feature
     end
   end
 
+  describe '#database_engine' do
+    it 'returns the default Atomic engine' do
+      expect(connection.database_engine).to eq('Atomic')
+    end
+  end
+
   describe '#select' do
     it 'proxies select to client' do
       expect(

@@ -165,12 +165,12 @@ export default {
       </div>
     </template>
 
-    <div v-if="!openMrs.length || isLoading" class="gl-w-34 gl-px-5 gl-py-3 md:gl-w-48">
+    <div v-if="!openMrs.length || isLoading" class="gl-w-34 gl-px-5 gl-py-3 @md/panel:gl-w-48">
       <gl-skeleton-loader :height="15">
         <rect width="250" height="15" rx="4" />
       </gl-skeleton-loader>
     </div>
-    <ul v-else class="gl-m-0 gl-w-34 gl-p-0 md:gl-w-48">
+    <ul v-else class="gl-m-0 gl-w-34 gl-p-0 @md/panel:gl-w-48">
       <gl-disclosure-dropdown-item
         v-for="mergeRequest in openMrs"
         :key="mergeRequest.iid"

@@ -18,13 +18,13 @@ module Features
     end
 
     def enable_two_factor_authentication
-      click_on _('Enable two-factor authentication')
+      click_on _('Manage authentication')
       expect(page).to have_content(_('Register device'))
       wait_for_requests
     end
 
     def manage_two_factor_authentication
-      click_on 'Manage two-factor authentication'
+      click_on _('Manage authentication')
       expect(page).to have_content(_('Register device'))
       wait_for_requests
     end

@@ -37,8 +37,11 @@ Before starting this tutorial, you must have:
 For this tutorial, the following hierarchy is used:
 
 ```mermaid
-%%{init: {'theme':'neutral'}}%%
-graph TD;
+%%{init: { "theme": "neutral", "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Hierarchy structure for GitLab workspaces
+    accDescr: Workspace projects inherit agent access through the group hierarchy with agents connected to separate agent projects.
+
     classDef active fill:lightgreen, stroke:#green, color:green, stroke-width:1px;
 
     topGroup[Top-level group]
@@ -309,12 +312,12 @@ To install the Helm chart for the GitLab workspaces proxy:
 
    {{< alert type="warning" >}}
 
-   Chart versions 0.1.22 and earlier contain a security vulnerability that exposes sensitive 
-   information through command line arguments. For more information, see the 
+   Chart versions 0.1.22 and earlier contain a security vulnerability that exposes sensitive
+   information through command line arguments. For more information, see the
    [vulnerability](https://gitlab.com/gitlab-org/gitlab/-/issues/567267).
 
-   Chart versions 0.1.20 and earlier also contain a security vulnerability that sets cookies 
-   on a wildcard domain. For more information, see the 
+   Chart versions 0.1.20 and earlier also contain a security vulnerability that sets cookies
+   on a wildcard domain. For more information, see the
    [vulnerability fix](https://gitlab.com/gitlab-org/workspaces/gitlab-workspaces-proxy/-/merge_requests/34).
 
    You should upgrade to chart version 0.1.23 or later to address both vulnerabilities.

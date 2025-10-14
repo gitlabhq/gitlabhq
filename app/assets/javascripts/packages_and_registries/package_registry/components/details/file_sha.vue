@@ -30,6 +30,7 @@ export default {
     copyButtonTitle: s__('PackageRegistry|Copy SHA'),
   },
   computed: {
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         category: packageTypeToTrackCategory(this.packageType),

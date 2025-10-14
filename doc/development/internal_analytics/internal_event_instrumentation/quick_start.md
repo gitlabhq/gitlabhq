@@ -83,16 +83,16 @@ Tracking classes already have three built-in properties:
 - `property` (string)
 - `value`(numeric)
 
-The arbitrary naming and typing of the these three properties is due to constraints from the data extraction process.
-It's recommended to use these properties first, even if their name does not match with the data you want to track. You can further describe what is the actual data being tracked by using the `description` property in the YAML definition of the event. For an example, see
-[`create_ci_internal_pipeline.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/537ea367dab731e886e6040d8399c430fdb67ab7/config/events/create_ci_internal_pipeline.yml):
+If the built-in properties are not suitable or descriptive, properties of any name can be used.
 
-```ruby
+```yaml
 additional_properties:
   label:
     description: The source of the pipeline, e.g. a push, a schedule or similar.
   property:
     description: The source of the config, e.g. the repository, auto_devops or similar.
+  agent:
+    description: Type of the execution agent.
 ```
 
 Additional properties are passed by including the `additional_properties` hash in the `#track_event` call:
@@ -103,30 +103,11 @@ track_internal_event(
   user: user,
   additional_properties: {
     label: source, # The label is tracking the source of the pipeline
-    property: config_source # The property is tracking the source of the configuration
+    property: config_source, # The property is tracking the source of the configuration
+    agent: agent
   }
 )
 ```
-
-If you need to pass more than the three built-in additional properties, you can use the `additional_properties` hash with your custom keys:
-
-```ruby
-track_internal_event(
-  "code_suggestion_accepted",
-  user: user,
-  additional_properties: {
-    # Built-in properties
-    label: editor_name,
-    property: suggestion_type,
-    value: suggestion_shown_duration,
-    # Your custom properties
-    lang: 'ruby',
-    custom_key: 'custom_value'
-  }
-)
-```
-
-Add custom properties only in addition to the built-in properties. Additional properties can only have string or numeric values.
 
 {{< alert type="warning" >}}
 
@@ -349,7 +330,7 @@ Sometimes we want to send internal events when the component is rendered or load
 
 #### Additional properties
 
-You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not sufficient.
+You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not suitable or descriptive for your use-case.
 
 {{< alert type="note" >}}
 

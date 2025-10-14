@@ -60,6 +60,7 @@ module API
             desc: 'Sort pipelines',
             documentation: { example: 'asc' }
           optional :source,   type: String, values: ::Ci::Pipeline.sources.keys,
+            desc: 'The source of pipelines',
             documentation: { example: 'push' }
           optional :name,     types: String, desc: 'Filter pipelines by name',
             documentation: { example: 'Build pipeline' }

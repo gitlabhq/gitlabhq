@@ -2,9 +2,9 @@
  * @module common-utils
  */
 
-import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { isFunction, defer, escape, partial, toLower } from 'lodash';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
 import { DEFAULT_CI_CONFIG_PATH, CI_CONFIG_PATH_EXTENSION } from '~/lib/utils/constants';
@@ -187,13 +187,14 @@ export const getOuterHeight = (selector) => {
 };
 
 export const contentTop = () => {
-  const isDesktop = breakpointInstance.isDesktop();
+  const isDesktop = PanelBreakpointInstance.isDesktop();
+
   const heightCalculators = [
     () => getOuterHeight('#js-peek'),
     () => getOuterHeight('.header-logged-out'),
     () => getOuterHeight('.top-bar-fixed'),
     ({ desktop }) => {
-      const mrStickyHeader = document.querySelector('.merge-request-sticky-header');
+      const mrStickyHeader = document.querySelector('.js-merge-request-sticky-header-wrapper');
       if (mrStickyHeader) {
         return mrStickyHeader.offsetHeight;
       }
@@ -220,11 +221,25 @@ export const contentTop = () => {
         : 0;
     },
     ({ desktop }) => (desktop ? getOuterHeight('.mr-version-controls') : 0),
+    () => getOuterHeight('.super-topbar'),
   ];
 
   return heightCalculators.reduce((totalHeight, calculator) => {
     return totalHeight + (calculator({ desktop: isDesktop }) || 0);
   }, 0);
+};
+
+export const findParentPanelScrollingEl = (element) => {
+  if (!element) return null;
+  const staticPanel = element.closest('.js-static-panel');
+  if (staticPanel) {
+    return staticPanel.querySelector('.js-static-panel-inner');
+  }
+  const dynamicPanel = element.closest('.js-dynamic-panel');
+  if (dynamicPanel) {
+    return dynamicPanel.querySelector('.js-dynamic-panel-inner');
+  }
+  return null;
 };
 
 /**
@@ -246,6 +261,9 @@ export const scrollToElement = (element, options = {}) => {
   } else if (typeof el === 'string') {
     el = document.querySelector(element);
   }
+  if (window.gon?.features?.projectStudioEnabled) {
+    scrollingEl = findParentPanelScrollingEl(el) || window;
+  }
 
   if (el && el.getBoundingClientRect) {
     // In the previous implementation, jQuery naturally deferred this scrolling.
@@ -257,7 +275,8 @@ export const scrollToElement = (element, options = {}) => {
         behavior = duration ? 'smooth' : 'auto',
         parent,
       } = options;
-      const y = el.getBoundingClientRect().top + window.pageYOffset + offset - contentTop();
+      const scrollTop = scrollingEl.scrollTop ?? scrollingEl.pageYOffset;
+      const y = el.getBoundingClientRect().top + scrollTop + offset - contentTop();
 
       if (parent && typeof parent === 'string') {
         scrollingEl = document.querySelector(parent);
@@ -560,9 +579,9 @@ export const spriteIcon = (icon, className = '', color = '') => {
  * @param {ConversionFunction} conversionFunction - Function to apply to each prop of the object.
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectProps = (conversionFunction, obj = {}, options = {}) => {
   if (!isFunction(conversionFunction) || obj === null) {
@@ -616,9 +635,9 @@ export const convertObjectProps = (conversionFunction, obj = {}, options = {}) =
  *
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
   convertObjectProps(convertToCamelCase, obj, options);
@@ -633,9 +652,9 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
  *
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact while building new object
  */
 export const convertObjectPropsToLowerCase = partial(convertObjectProps, toLower);
 
@@ -646,9 +665,9 @@ export const convertObjectPropsToLowerCase = partial(convertObjectProps, toLower
  *
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectPropsToSnakeCase = (obj = {}, options = {}) =>
   convertObjectProps(convertToSnakeCase, obj, options);

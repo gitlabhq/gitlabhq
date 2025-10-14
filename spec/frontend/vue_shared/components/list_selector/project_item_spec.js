@@ -33,9 +33,7 @@ describe('GroupItem spec', () => {
     expect(findAvatarLabeled().props()).toMatchObject({
       label: 'Project 1',
       subLabel: 'Group 1 / Project 1',
-    });
-    expect(findAvatarLabeled().attributes()).toMatchObject({
-      size: '32',
+      size: 32,
       src: 'some/avatar.jpg',
     });
   });

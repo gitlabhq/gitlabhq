@@ -111,7 +111,6 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
 
     before do
       job.update!(retried: false, status: :success)
-      job.metadata.update!(interruptible: true)
     end
   end
 
@@ -170,17 +169,18 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
 
       context 'when the job definitions do not exit' do
         before do
+          job.ensure_metadata
           Ci::JobDefinitionInstance.delete_all
           Ci::JobDefinition.delete_all
         end
 
-        it 'creates a new job definition' do
+        it 'creates a new job definition from metadata' do
           expect(job.job_definition).not_to be_present
           expect(new_job.job_definition).to be_present
         end
       end
 
-      context 'when a job definition already exits' do
+      context 'when a job definition for the metadata attributes already exits' do
         let(:config) do
           {
             options: job.metadata.config_options,
@@ -202,8 +202,16 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
 
         before do
+          job.ensure_metadata.update!(
+            config_options: job.options,
+            config_variables: job.yaml_variables,
+            id_tokens: job.id_tokens,
+            interruptible: job.interruptible
+          )
+
           Ci::JobDefinitionInstance.delete_all
           Ci::JobDefinition.fabricate(**attributes).save!
+          job.reload # clear the associated records
         end
 
         it 'attaches an existing job definition' do
@@ -270,27 +278,50 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
 
         it 'persists the expanded environment name' do
-          expect(new_job.metadata.expanded_environment_name).to eq('production')
+          expect(new_job.expanded_environment_name).to eq('production')
+        end
+
+        it 'does not write to ci_builds_metadata' do
+          expect { new_job }.to not_change { Ci::BuildMetadata.count }
+        end
+
+        context 'when FF `stop_writing_builds_metadata` is disabled' do
+          before do
+            stub_feature_flags(stop_writing_builds_metadata: false)
+          end
+
+          it 'persists the expanded environment name in metadata' do
+            expect { new_job }.to change { Ci::BuildMetadata.count }.by(1)
+            expect(new_job.metadata.expanded_environment_name).to eq('production')
+          end
         end
       end
 
-      context 'when it has a dynamic environment' do
-        let_it_be(:other_developer) { create(:user, developer_of: project) }
-
-        let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
-
-        let!(:job) do
-          create(:ci_build, :with_deployment,
-            environment: environment_name,
-            options: { environment: { name: environment_name } },
-            pipeline: pipeline, stage_id: stage.id, project: project,
-            user: other_developer)
+      context 'when FF `stop_writing_builds_metadata` is disabled' do
+        # The responsibility of linking the new job to the existing persisted environment
+        # has been moved to Ci::RetryJobService using Ci::Deployable#link_to_environment.
+        before do
+          stub_feature_flags(stop_writing_builds_metadata: false)
         end
 
-        it 're-uses the previous persisted environment' do
-          expect(job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+        context 'when it has a dynamic environment' do
+          let_it_be(:other_developer) { create(:user, developer_of: project) }
 
-          expect(new_job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+          let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
+
+          let!(:job) do
+            create(:ci_build, :with_deployment,
+              environment: environment_name,
+              options: { environment: { name: environment_name } },
+              pipeline: pipeline, stage_id: stage.id, project: project,
+              user: other_developer)
+          end
+
+          it 're-uses the previous persisted environment' do
+            expect(job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+
+            expect(new_job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+          end
         end
       end
 
@@ -305,13 +336,10 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
       # Remove with stop_writing_builds_metadata
       context 'when writing to builds metadata' do
         before do
-          job.clear_memoization(:read_from_new_destination?)
           job.clear_memoization(:can_write_metadata?)
+          job.ensure_metadata.update!(interruptible: true)
 
-          stub_feature_flags(
-            stop_writing_builds_metadata: false,
-            read_from_new_ci_destinations: false
-          )
+          stub_feature_flags(stop_writing_builds_metadata: false)
         end
 
         it 'clones the interruptible job attribute' do

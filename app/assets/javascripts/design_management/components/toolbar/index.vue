@@ -134,9 +134,9 @@ export default {
 
 <template>
   <header
-    class="js-design-header gl-border-b gl-flex gl-max-w-full gl-flex-col gl-justify-between gl-bg-default gl-py-4 gl-pl-5 md:gl-flex-row md:gl-items-center"
+    class="js-design-header gl-border-b gl-flex gl-max-w-full gl-flex-col gl-justify-between gl-bg-default gl-py-4 gl-pl-5 @md/panel:gl-flex-row @md/panel:gl-items-center"
   >
-    <div class="gl-mb-3 gl-flex gl-flex-row gl-items-center gl-overflow-hidden md:gl-mb-0">
+    <div class="gl-mb-3 gl-flex gl-flex-row gl-items-center gl-overflow-hidden @md/panel:gl-mb-0">
       <div class="gl-mr-3 gl-flex gl-overflow-hidden">
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
         <h2 v-else class="gl-m-0 gl-flex gl-items-center gl-overflow-hidden gl-text-base">
@@ -149,13 +149,13 @@ export default {
         </h2>
         <small v-if="updatedAt" class="gl-text-subtle">{{ updatedText }}</small>
       </div>
-      <close-button class="gl-ml-auto md:gl-hidden" />
+      <close-button class="gl-ml-auto @md/panel:gl-hidden" />
     </div>
-    <div class="gl-mr-5 gl-flex gl-shrink-0 md:gl-ml-auto md:gl-flex-row">
+    <div class="gl-mr-5 gl-flex gl-shrink-0 @md/panel:gl-ml-auto @md/panel:gl-flex-row">
       <design-todo-button
         v-if="isLoggedIn"
         :design="design"
-        class="gl-ml-0 md:gl-ml-3"
+        class="gl-ml-0 @md/panel:gl-ml-3"
         @error="$emit('todoError', $event)"
       />
       <gl-button
@@ -190,6 +190,6 @@ export default {
       />
       <design-navigation :id="id" class="gl-ml-auto" />
     </div>
-    <close-button class="gl-hidden md:gl-flex" />
+    <close-button class="gl-hidden @md/panel:gl-flex" />
   </header>
 </template>

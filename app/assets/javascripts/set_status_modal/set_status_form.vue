@@ -205,6 +205,7 @@ export default {
           <emoji-picker
             dropdown-class="gl-h-full"
             toggle-class="emoji-menu-toggle-button !gl-px-4 !gl-rounded-r-none"
+            :button-title="__('Choose emoji')"
             :right="false"
             @click="handleEmojiClick"
           >

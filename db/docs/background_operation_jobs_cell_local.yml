@@ -1,0 +1,11 @@
+---
+table_name: background_operation_jobs_cell_local
+classes:
+  - Gitlab::Database::BackgroundOperation::JobCellLocal
+feature_categories:
+  - database
+description: Store jobs info for each background_operation_workers_cell_local.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203234
+milestone: '18.4'
+gitlab_schema: gitlab_shared_cell_local
+table_size: small

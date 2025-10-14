@@ -38,10 +38,7 @@ export default {
     },
   },
   data() {
-    return {
-      tags: [],
-      tagsPageInfo: {},
-    };
+    return {};
   },
   computed: {
     hasNoTags() {

@@ -60,7 +60,7 @@ definitions. Repository scanning can detect vulnerabilities in each of these.
 
 Repository scanning tools include:
 
-- Static Application Security Testing (SAST): Analyze source code for vulnerabilities.
+- Static application security testing (SAST): Analyze source code for vulnerabilities.
 - Infrastructure as Code (IaC) scanning: Detect vulnerabilities in your application's infrastructure
   definitions.
 - Secret detection: Detect and block secrets from being committed to the repository.

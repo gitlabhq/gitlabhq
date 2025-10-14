@@ -94,4 +94,14 @@ RSpec.describe Gitlab::QueryLimiting, :request_store, feature_category: :databas
       expect(described_class).to be_enabled
     end
   end
+
+  describe '.with_suppressed' do
+    it 'disables query limiting within the block' do
+      expect(described_class).to be_enabled
+
+      described_class.with_suppressed do
+        expect(described_class).not_to be_enabled
+      end
+    end
+  end
 end

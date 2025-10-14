@@ -1,0 +1,10 @@
+#import "../fragments/import_source_user.fragment.graphql"
+
+mutation undoKeepAsPlaceholder($id: ImportSourceUserID!) {
+  importSourceUserUndoKeepAsPlaceholder(input: { id: $id }) {
+    errors
+    importSourceUser {
+      ...ImportSourceUser
+    }
+  }
+}

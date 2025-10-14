@@ -17,12 +17,12 @@ individual users to enterprise organizations.
 Understanding the GitLab security model helps you implement access controls that balance security
 requirements with operational efficiency.
 
-## Core concepts
-
 {{< cards >}}
 
 - [User identity](../administration/auth/_index.md)
 - [User authentication](user_authentication.md)
 - [User permissions](user_permissions.md)
+- [Authentication and authorization best practices](auth_practices.md)
+- [Authentication and authorization glossary](auth_glossary.md)
 
 {{< /cards >}}

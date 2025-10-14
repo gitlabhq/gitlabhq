@@ -2,6 +2,7 @@
 
 module SessionsHelper
   include Gitlab::Utils::StrongMemoize
+  include VerifiesWithEmailHelper
 
   def unconfirmed_email?
     flash[:alert] == t(:unconfirmed, scope: [:devise, :failure])
@@ -22,11 +23,14 @@ module SessionsHelper
   end
 
   def verification_data(user)
+    permitted_to_skip = permitted_to_skip_email_otp_in_grace_period?(user)
+
     {
       username: user.username,
       obfuscated_email: obfuscated_email(user.email),
       verify_path: session_path(:user),
-      resend_path: users_resend_verification_code_path
+      resend_path: users_resend_verification_code_path,
+      skip_path: permitted_to_skip ? users_skip_verification_for_now_path : nil
     }
   end
 end

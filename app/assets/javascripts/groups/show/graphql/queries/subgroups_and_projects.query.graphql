@@ -19,7 +19,6 @@ query activeGroupsAndProjects(
       ... on Group {
         ...Group
         type
-        editPath
         hasChildren
         children
         childrenCount
@@ -28,7 +27,6 @@ query activeGroupsAndProjects(
         ...Project
         name
         type
-        editPath
       }
     }
     pageInfo {

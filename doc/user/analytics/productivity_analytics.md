@@ -42,7 +42,7 @@ Prerequisites:
 - You must have at least the Reporter role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Productivity analytics**.
+1. Select **Analyze** > **Productivity analytics**.
 1. Optional. Filter results:
 
 - To view analytics for a specific project, from the **Projects** dropdown list, select a project.

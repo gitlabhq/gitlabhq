@@ -118,7 +118,7 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
       expect(RedCloth.new(test_text).to_html).to eq(expected_res)
     end
 
-    it 'protects against malicious backtracking' do
+    it 'protects against malicious backtracking', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514150' do
       test_text = '<A' + ('A' * 54773)
 
       expect do

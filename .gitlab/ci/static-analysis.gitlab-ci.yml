@@ -64,14 +64,18 @@ generate-apollo-graphql-schema:
 .eslint-base:
   extends:
     - .static-analysis-base
-    - .yarn-cache
-  needs: ['generate-apollo-graphql-schema']
+  needs:
+    - generate-apollo-graphql-schema
+    - job: compile-fe-island
+      optional: true
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
+  cache:
+    - !reference [.yarn-cache, cache]
 
 eslint-changed-files:
   extends:
@@ -86,6 +90,27 @@ eslint:
     - .frontend:rules:eslint-default
   script:
     - yarn run lint:eslint:all --format gitlab
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+
+eslint:fe-island:
+  extends:
+    - .eslint-base
+    - .frontend:rules:fe-island:test
+  needs:
+    - cache:fe-island-hash
+    - job: compile-fe-island
+      optional: true
+  cache:
+    - !reference [.yarn-cache, cache]
+    - !reference [.fe-island-yarn-cache, cache]
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
+  script:
+    - cd ee/frontend_islands/apps/duo_next
+    - yarn run lint --format gitlab
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
@@ -226,6 +251,10 @@ semgrep-appsec-custom-rules:
   stage: lint
   extends:
     - .semgrep-appsec-custom-rules:rules
+  rules:
+    - if: $CI_MERGE_REQUEST_DRAFT == "true"
+      when: never
+    - !reference [.semgrep-appsec-custom-rules:rules, rules]
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}returntocorp/semgrep:1.99.0
   needs: []
   script:
@@ -274,6 +303,21 @@ custom-roles-verify:
   script:
     - bundle exec rake gitlab:custom_roles:check_docs
 
+permissions-verify:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .permissions:rules:permissions-verify
+  stage: lint
+  needs:
+    - job: cache:ruby-gems
+      optional: true
+  script:
+    - bundle exec rake gitlab:permissions:validate
+
 ci-job-token-policies-verify:
   variables:
     SETUP_DB: "false"
@@ -307,6 +351,10 @@ ping-appsec-for-sast-findings:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   extends:
     - .ping-appsec-for-sast-findings:rules
+  rules:
+    - if: $CI_MERGE_REQUEST_DRAFT == "true"
+      when: never
+    - !reference [.ping-appsec-for-sast-findings:rules, rules]
   variables:
     # Project Access Token bot ID for /gitlab-com/gl-security/product-security/appsec/sast-custom-rules
     BOT_USER_ID: 19650678

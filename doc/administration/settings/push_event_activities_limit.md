@@ -29,7 +29,7 @@ To set a different **Push event activities limit**, either:
 
 - In the GitLab UI:
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Settings > Network**.
+  1. On the left sidebar, select **Settings** > **Network**.
   1. Expand **Performance optimization**.
   1. Edit the **Push event activities limit** setting.
   1. Select **Save changes**.

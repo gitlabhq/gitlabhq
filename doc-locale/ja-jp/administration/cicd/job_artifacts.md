@@ -8,7 +8,7 @@ title: ジョブアーティファクトの管理
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -16,7 +16,7 @@ title: ジョブアーティファクトの管理
 
 アーティファクトとは、ジョブの完了後にジョブにアタッチされるファイルやディレクトリのリストです。この機能は、すべてのGitLabインストールにおいてデフォルトで有効になっています。
 
-## ジョブアーティファクトを無効にする
+## ジョブアーティファクトを無効にする {#disabling-job-artifacts}
 
 アーティファクトをサイト全体で無効にするには、次の手順に従います。
 
@@ -40,7 +40,7 @@ title: ジョブアーティファクトの管理
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helm値をエクスポートします。
+1. Helmの値をエクスポートします。
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
@@ -108,19 +108,19 @@ title: ジョブアーティファクトの管理
 
 {{< /tabs >}}
 
-## ジョブアーティファクトを保存する
+## ジョブアーティファクトを保存する {#storing-job-artifacts}
 
-GitLab Runnerは、ジョブアーティファクトを含むアーカイブをGitLabにアップロードできます。デフォルトでは、これはジョブが成功した場合に実行されますが、[`artifacts:when`](../../ci/yaml/_index.md#artifactswhen)パラメーターを使用することで、失敗時または常にアップロードするように設定することもできます。
+GitLab Runnerは、ジョブアーティファクトを含むアーカイブをGitLabにアップロードできます。これは、デフォルトではジョブが成功した場合に実行されます。しかし、[`artifacts:when`](../../ci/yaml/_index.md#artifactswhen)パラメータを使用することで、失敗時または常にアップロードするように設定することもできます。
 
 ほとんどのアーティファクトは、コーディネーターに送信される前にGitLab Runnerによって圧縮されます。ただし、[レポートアーティファクト](../../ci/yaml/_index.md#artifactsreports)は例外で、アップロード後に圧縮されます。
 
-### ローカルストレージを使用する
+### ローカルストレージを使用する {#using-local-storage}
 
 Linuxパッケージまたは自己コンパイルでインストールしている場合は、アーティファクトをローカルに保存する場所を変更できます。
 
 {{< alert type="note" >}}
 
-Dockerインストールの場合は、データがマウントされるパスを変更できます。Helmチャートの場合は、[オブジェクトストレージ](https://docs.gitlab.com/charts/advanced/external-object-storage/)を使用します。
+Dockerインストールの場合、データがマウントされるパスを変更できます。Helmチャートの場合は、[オブジェクトストレージ](https://docs.gitlab.com/charts/advanced/external-object-storage/)を使用します。
 
 {{< /alert >}}
 
@@ -171,7 +171,7 @@ Dockerインストールの場合は、データがマウントされるパス�
 
 {{< /tabs >}}
 
-### オブジェクトストレージを使用する
+### オブジェクトストレージを使用する {#using-object-storage}
 
 GitLabがインストールされているローカルディスクにアーティファクトを保存したくない場合は、代わりにAWS S3などのオブジェクトストレージを使用できます。
 
@@ -185,7 +185,7 @@ GitLabがインストールされているローカルディスクにアーテ�
 
 [統合されたオブジェクトストレージ設定](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form)を使用する必要があります。
 
-### オブジェクトストレージに移行する
+### オブジェクトストレージに移行する {#migrating-to-object-storage}
 
 ジョブアーティファクトをローカルストレージからオブジェクトストレージに移行できます。この処理はバックグラウンドワーカーで実行され、**ダウンタイムは不要**です。
 
@@ -296,9 +296,9 @@ GitLabがインストールされているローカルディスクにアーテ�
 
 1. [Geo](../geo/_index.md)が有効になっている場合は、[すべてのジョブアーティファクトを再検証](../geo/replication/troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites)してください。
 
-場合によっては、[孤立したアーティファクトファイルのクリーンアップ用Rakeタスク](../raketasks/cleanup.md#remove-orphan-artifact-files)を実行して、孤立したアーティファクトをクリーンアップする必要があります。
+場合によっては、[孤立したアーティファクトファイルのクリーンアップ用Rakeタスク](../raketasks/cleanup.md#remove-orphan-artifact-files)を実行して、孤立したアーティファクトのクリーンアップが必要となることがあります。
 
-### オブジェクトストレージからローカルストレージに移行する
+### オブジェクトストレージからローカルストレージに移行する {#migrating-from-object-storage-to-local-storage}
 
 アーティファクトをローカルストレージに戻すには、次の手順に従います。
 
@@ -306,11 +306,11 @@ GitLabがインストールされているローカルディスクにアーテ�
 1. `gitlab.rb`で、[必要に応じてアーティファクトのストレージを無効にします](../object_storage.md#disable-object-storage-for-specific-features)。
 1. [GitLabを再設定します](../restart_gitlab.md#reconfigure-a-linux-package-installation)。
 
-## アーティファクトの有効期限を設定する
+## アーティファクトの有効期限を設定する {#expiring-artifacts}
 
-[`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in)を使用してアーティファクトの有効期限を設定した場合、その期限を過ぎるとすぐに削除対象としてマークされます。設定していない場合は、[デフォルトのアーティファクトの有効期限設定](../settings/continuous_integration.md#default-artifacts-expiration)に従って期限切れとなります。
+[`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in)を使用してアーティファクトの有効期限を設定した場合、その期限を過ぎるとすぐに削除対象としてマークされます。設定していない場合は、[デフォルトのアーティファクトの有効期限設定](../settings/continuous_integration.md#set-default-artifacts-expiration)に従って期限切れとなります。
 
-Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブが、アーティファクトを削除します（[Cron](../../topics/cron/_index.md)の構文では`*/7 * * * *`）。
+Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブが、アーティファクトを削除します（[Cron](../../topics/cron/_index.md)構文`*/7 * * * *`）。
 
 期限切れのアーティファクトを削除するデフォルトのスケジュールを変更するには、次の手順に従います。
 
@@ -318,7 +318,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加します（すでに存在しておりコメントアウトされている場合は、コメントを解除します）。スケジュールはCronの構文で変更してください。
+1. `/etc/gitlab/gitlab.rb`を編集し、次の行を追加します（すでに存在しておりコメントアウトされている場合は、コメントを解除します）。スケジュールはCron構文で変更してください。
 
    ```ruby
    gitlab_rails['expire_build_artifacts_worker_cron'] = "*/7 * * * *"
@@ -334,7 +334,7 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
 
 {{< tab title="Helmチャート（Kubernetes）" >}}
 
-1. Helm値をエクスポートします。
+1. Helmの値をエクスポートします。
 
    ```shell
    helm get values gitlab > gitlab_values.yaml
@@ -404,18 +404,18 @@ Sidekiqが7分ごとに実行する`expire_build_artifacts_worker` cronジョブ
 
 {{< /tabs >}}
 
-## アーティファクトの最大ファイルサイズを設定する
+## アーティファクトの最大ファイルサイズを設定する {#set-the-maximum-file-size-of-the-artifacts}
 
-アーティファクトが有効になっている場合は、[**管理者**エリアの設定](../settings/continuous_integration.md#maximum-artifacts-size)からアーティファクトの最大ファイルサイズを変更できます。
+アーティファクトが有効になっている場合は、[**管理者**エリアの設定](../settings/continuous_integration.md#set-maximum-artifacts-size)からアーティファクトの最大ファイルサイズを変更できます。
 
-## ストレージ統計
+## ストレージ統計 {#storage-statistics}
 
 グループおよびプロジェクトごとのジョブアーティファクトの合計ストレージ使用量は、次の手段で確認できます。
 
 - **管理者**エリア
-- [Groups](../../api/groups.md) APIおよび[Projects](../../api/projects.md) API
+- [グループ](../../api/groups.md) APIおよび[プロジェクト](../../api/projects.md) API
 
-## 実装の詳細
+## 実装の詳細 {#implementation-details}
 
 GitLabがアーティファクトのアーカイブを受信すると、[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse)によってアーカイブメタデータファイルも生成されます。このメタデータファイルには、アーティファクトアーカイブ内のすべてのエントリに関する情報が含まれています。メタデータファイルはバイナリ形式で、さらにGzip圧縮が施されています。
 

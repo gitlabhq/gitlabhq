@@ -110,7 +110,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     let(:stub_config) { true }
 
     before do
-      stub_feature_flags(ci_validate_config_options: false)
       downstream_project.add_developer(user)
       stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' })) if stub_config
     end

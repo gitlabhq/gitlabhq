@@ -45,11 +45,6 @@ export default {
       type: Array,
       required: true,
     },
-    labels: {
-      type: Object,
-      required: false,
-      default: null,
-    },
   },
 
   render(createElement, context) {

@@ -6,21 +6,14 @@ require_migration!
 RSpec.describe QueueBackfillSubscriptionUserAddOnAssignmentVersions, migration: :gitlab_main, feature_category: :value_stream_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
-  it 'schedules a new batched migration' do
+  it 'does nothing' do
     reversible_migration do |migration|
       migration.before -> {
         expect(batched_migration).not_to have_scheduled_batched_migration
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main,
-          table_name: :subscription_user_add_on_assignments,
-          column_name: :id,
-          interval: described_class::DELAY_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end

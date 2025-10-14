@@ -117,7 +117,7 @@ You will now manually create the users for your organization. These are test
 users. To create the first test user, Alex Smith:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select **New user**.
 1. Complete the required fields:
    - **Name**: `Alex Smith`
@@ -159,7 +159,7 @@ You can give users access to all projects in a group by adding them to that grou
 First, you will add all the users to the parent group, Development.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Complete the fields for the product manager, Alex Smith.
    - Give Alex the **Owner** role. The role applies to all subgroups projects
@@ -201,7 +201,7 @@ and which members have inherited membership of that subgroup from the parent gro
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
 1. Select the **User Experience** subgroup.
-1. On the left sidebar, select **Subgroup information > Members**.
+1. On the left sidebar, select **Subgroup information** > **Members**.
 1. On the **Members** page, select the **Filter members** field.
 1. Select **Membership**, then select **Inherited**, and press <kbd>Return</kbd>.
 
@@ -220,7 +220,7 @@ them from the parent group.
 Go back to the parent group and remove everyone except Alex Smith:
 
 1. On the left sidebar, select **Search or go to** and find the parent group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. On the member row you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
    and then select **Remove member**.
 1. In the **Remove member** confirmation box, select the
@@ -240,7 +240,7 @@ You will now add users directly to the different subgroups.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
 1. Select the **Product Management** subgroup.
-1. On the left sidebar, select **Subgroup information > Members**.
+1. On the left sidebar, select **Subgroup information** > **Members**.
 
 Excluding you, Alex is the only member of this subgroup and is a direct member,
 which is correct. However, you believe they should have the Maintainer role
@@ -284,7 +284,7 @@ You are now going to invite some users to the Engineering subgroup.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
 1. Select the **Engineering** subgroup.
-1. On the left sidebar, select **Subgroup information > Members**. The only
+1. On the left sidebar, select **Subgroup information** > **Members**. The only
    members are you and Alex, both with the Owner role. These are inherited roles.
 1. Select **Invite members**.
 1. Complete the fields for the following members:
@@ -329,7 +329,7 @@ rather than to the User Experience subgroup.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
 1. Select the **User Experience** subgroup, and then the **UX Design** subgroup.
-1. On the left sidebar, select **Subgroup information > Members**. You and Alex
+1. On the left sidebar, select **Subgroup information** > **Members**. You and Alex
    Smith are currently the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Complete the fields and select **Invite** for the following members:
@@ -354,7 +354,7 @@ You can add Grayson to the **User Experience** subgroup as a specific role, whil
 keeping their role for the **Technical Writing** subgroup the same.
 
 1. Go to the **User Experience** subgroup.
-1. On the left sidebar, select **Subgroup information > Members**. You and Alex
+1. On the left sidebar, select **Subgroup information** > **Members**. You and Alex
    Smith are currently the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Invite Grayson Garcia as a Developer, a role with a lower level of permissions
@@ -410,7 +410,7 @@ add different users to that project.
 
 You have now created a project in the parent group.
 
-In this project, go to **Manage > Members**.
+In this project, go to **Manage** > **Members**.
 
 The existing members of the parent group (you and Alex) are already members of
 this project because when your project belongs to a group, project members inherit
@@ -422,7 +422,7 @@ directly to the project.
 ## Add users to the project and parent group
 
 1. On the left sidebar, select **Search or go to** and find the **Release 2.0** project.
-1. On the left sidebar, select **Manage > Members**.
+1. On the left sidebar, select **Manage** > **Members**.
 1. Select **Invite members**. Invite the following users:
 
    | User           | Role       | Access expiration date |

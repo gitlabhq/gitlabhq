@@ -106,17 +106,6 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		nginx.AllowResponseBuffering(w)
 	}
 
-	// If the ultimate client disconnects when the response isn't fully written
-	// to them yet, httputil.ReverseProxy panics with a net/http.ErrAbortHandler
-	// error. We can catch and discard this to keep the error log clean
-	defer func() {
-		if err := recover(); err != nil {
-			if err != http.ErrAbortHandler {
-				panic(err)
-			}
-		}
-	}()
-
 	p.reverseProxy.ServeHTTP(w, r)
 }
 

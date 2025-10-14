@@ -33,7 +33,7 @@ Prerequisites:
 To enable error tracking with GitLab as the backend:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to **Settings > Monitor**.
+1. Go to **Settings** > **Monitor**.
 1. Expand **Error Tracking**.
 1. For **Enable error tracking**, select **Active**.
 1. For **Error tracking backend**, select **GitLab**.
@@ -63,7 +63,7 @@ After your application emits errors to the Error Tracking API through the Sentry
 those errors are available in the GitLab UI. To view them:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to **Monitor > Error Tracking** to see the list of open errors:
+1. Go to **Monitor** > **Error Tracking** to see the list of open errors:
 
    ![MonitorListErrors](img/list_errors_v16_0.png)
 

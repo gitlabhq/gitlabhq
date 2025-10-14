@@ -7,10 +7,6 @@ class Admin::GroupsController < Admin::ApplicationController
 
   feature_category :groups_and_projects, [:create, :destroy, :edit, :index, :members_update, :new, :show, :update]
 
-  before_action only: :index do
-    push_frontend_feature_flag(:archive_group)
-  end
-
   def index
     # Groups are loaded via GraphQL query on frontend
     return if Feature.enabled?(:admin_groups_vue, current_user)

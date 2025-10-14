@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Geo with Single Sign On (SSO)
@@ -49,7 +49,7 @@ If a secondary site uses a different `external_url` to the primary site, then co
 1. Go to **Okta Admin Dashboard** > **Applications** > **Your App Name** > **General**.
 1. In **SAML Settings**, select **Edit**.
 1. In **General Settings**, select **Next** to go to **SAML Settings**.
-1. In **SAML Settings > General**, make sure the **Single sign-on URL** is your primary site's SAML callback URL. For example, `https://gitlab-primary.example.com/users/auth/saml/callback`. If it is not, enter your primary site's SAML callback URL into this field.
+1. In **SAML Settings** > **General**, make sure the **Single sign-on URL** is your primary site's SAML callback URL. For example, `https://gitlab-primary.example.com/users/auth/saml/callback`. If it is not, enter your primary site's SAML callback URL into this field.
 1. Select **Show Advanced Settings**.
 1. In **Other Requestable SSO URLs**, enter your secondary site's SAML callback URL. For example, `https://gitlab-secondary.example.com/users/auth/saml/callback`. You can set **Index** to anything.
 1. Select **Next** and then **Finish**.
@@ -135,7 +135,9 @@ in most cases, it should work without an issue:
 
 ## LDAP
 
-If you use LDAP on your **primary** site, you should also set up secondary LDAP servers on each **secondary** site. Otherwise, users cannot perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication. However, users can still use Git with SSH and personal access tokens.
+If you use LDAP on your **primary** site, the same LDAP configuration also applies to the **secondary** site because the **secondary** proxies requests related to authentication to the **primary**.
+
+To prepare for disaster recovery scenarios, you should set up secondary LDAP servers on each **secondary** site. In this case, when you promote the **secondary**, users will be able to authenticate using the replica LDAP service. Otherwise, if the LDAP service connected to the **primary** site is not available to the promoted **secondary** site, users won't be able to perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication. However, users can still use Git with SSH and personal access tokens.
 
 {{< alert type="note" >}}
 

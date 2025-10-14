@@ -53,7 +53,7 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 To install the GitLab for Slack app from the project or group settings:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
 1. On the Slack confirmation page:
@@ -87,7 +87,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 To reinstall the GitLab for Slack app:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
 1. On the Slack confirmation page:
@@ -150,7 +150,7 @@ You can use a project alias instead.
 To create a project alias for slash commands in the GitLab for Slack app:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Next to the project path or alias, select **Edit**.
 1. Enter the new alias and select **Save changes**.
@@ -170,7 +170,7 @@ You can receive notifications to Slack channels for certain GitLab [events](#not
 To configure Slack notifications:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. In the **Trigger** section:
    - Select the checkbox for each GitLab [event](#notification-events) you want to receive notifications for in Slack.
@@ -187,9 +187,12 @@ To configure Slack notifications:
    - Select the **Notify only broken pipelines** checkbox
      to receive notifications for failed pipelines only.
    - From the **Branches for which notifications are to be sent** dropdown list,
-     select the branches you want to receive notifications for. Notifications
-     for vulnerabilities are only triggered by the default branch, regardless
-     of the selected branches.
+     select the branches you want to receive notifications for.
+
+     Notifications are also sent for pipelines triggered by tags created from these branches.
+
+     Notifications for vulnerabilities are only triggered by the default branch,
+     regardless of the selected branches.
      For more details, see [issue 469373](https://gitlab.com/gitlab-org/gitlab/-/issues/469373).
    - For **Labels to be notified**, enter any or all of the labels a GitLab
      issue, merge request, or comment must have to receive notifications for.

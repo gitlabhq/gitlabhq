@@ -2,7 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Extend the features of GitLab to Visual Studio Code, JetBrains IDEs, Visual Studio, and Neovim.
+description: Extend the features of GitLab to Visual Studio Code, JetBrains IDEs, Visual Studio, Eclipse, and Neovim.
 title: Editor Extensions
 ---
 
@@ -27,6 +27,7 @@ GitLab offers extensions for the following development environments:
 - [GitLab Duo for JetBrains IDEs](jetbrains_ide/_index.md): Bring GitLab Duo AI capabilities
   to IntelliJ IDEA, PyCharm, WebStorm, and other JetBrains IDEs.
 - [GitLab Extension for Visual Studio](visual_studio/_index.md): Bring GitLab Duo Code Suggestions to Visual Studio.
+- [GitLab for Eclipse](eclipse/_index.md): Bring GitLab Duo capabilities to Eclipse.
 
 If you prefer a command-line interface, try:
 

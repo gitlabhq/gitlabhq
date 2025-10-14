@@ -71,7 +71,7 @@ See: https://docs.gitlab.com/user/markdown/#tables
 | Tool       | Language | Command        | Regex pattern |
 |------------|----------|----------------|---------------|
 | pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
-| Simplecov  | Ruby     | `rspec spec`   | `/(?:LOC\s\(\d+\.\d+%\|Line Coverage:\s\d+\.\d+%)/` |
+| Simplecov-html  | Ruby     | `rspec spec`   | `/Line\sCoverage:\s\d+\.\d+%/` |
 
 {{< /tab >}}
 
@@ -127,7 +127,7 @@ See: https://docs.gitlab.com/user/markdown/#tables
 |-----------|------------|---------|---------------|
 | OpenCover | .NET       | None    | `/(Visited Points).*\((.*)\)/` |
 | dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\\|*\s(\d+(?:\.\d+)?)/` |
-| Pester    | PowerShell | None    | `/Covered (\d{1,3}(\.|,)?\d{0,2}%)/` |
+| Pester    | PowerShell | None    | `/Covered (\d{1,3}(\.\|,)?\d{0,2}%)/` |
 
 {{< /tab >}}
 
@@ -212,7 +212,7 @@ Prerequisites:
 
 To add a `Coverage-Check` approval rule:
 
-1. Go to your project and select **Settings > Merge requests**.
+1. Go to your project and select **Settings** > **Merge requests**.
 1. Under **Merge request approvals**, do one of the following:
    - Next to the `Coverage-Check` approval rule, select **Enable**.
    - For manual setup, select **Add approval rule**, then enter `Coverage-Check` as the **Rule name**.
@@ -247,7 +247,7 @@ You can track the evolution of code coverage for your project or group over time
 To view the code coverage history for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Repository analytics**.
+1. Select **Analyze** > **Repository analytics**.
 1. From the dropdown list, select the job you want to view historical data for.
 1. Optional. To view a CSV file of the data, select **Download raw data (.csv)**.
 
@@ -262,7 +262,7 @@ To view the code coverage history for a project:
 To view the code coverage history for all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Repository analytics**.
+1. Select **Analyze** > **Repository analytics**.
 1. Optional. To view a CSV file of the data, select **Download historic test coverage data (.csv)**.
 
 ## Display coverage badges

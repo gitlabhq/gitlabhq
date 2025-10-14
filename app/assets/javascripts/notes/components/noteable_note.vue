@@ -115,6 +115,11 @@ export default {
       required: false,
       default: false,
     },
+    anchorPrefix: {
+      type: String,
+      required: false,
+      default: 'note',
+    },
   },
   data() {
     return {
@@ -171,7 +176,7 @@ export default {
       return Boolean(this.reportAbusePath) && this.authorId !== this.getUserData.id;
     },
     noteAnchorId() {
-      return `note_${this.note.id}`;
+      return `${this.anchorPrefix}_${this.note.id}`;
     },
     isTarget() {
       return this.targetNoteHash === this.noteAnchorId;

@@ -21,6 +21,10 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
   let(:job) { create(:ci_build, pipeline: pipeline, runner: runner) }
   let(:metadata) { job.metadata }
 
+  before do
+    stub_feature_flags(stop_writing_builds_metadata: false)
+  end
+
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:build) }
@@ -70,16 +74,6 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
             script: ['echo'],
             parallel: {
               foo: 'bar'
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects allow_failure_criteria with wrong exit_codes type' do
-          metadata.config_options = {
-            script: ['echo'],
-            allow_failure_criteria: {
-              exit_codes: 'not-an-integer-or-array'
             }
           }
           expect(metadata).to be_invalid

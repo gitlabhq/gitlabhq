@@ -28,8 +28,9 @@ module SessionlessAuthentication
       # for every request. If you want the token to work as a
       # sign in token, you can simply remove store: false.
       sign_in(user, store: false, message: :sessionless_sign_in)
-    elsif request_authenticator.can_sign_in_bot?(user)
-      # we suppress callbacks to avoid redirecting the bot
+    elsif request_authenticator.can_sign_in_bot?(user) || (user.composite_identity_enforced? &&
+      !user.password_expired_if_applicable?)
+      # we suppress callbacks to avoid redirecting the bot or a user with composite identity enforced
       sign_in(user, store: false, message: :sessionless_sign_in, run_callbacks: false)
     end
   end

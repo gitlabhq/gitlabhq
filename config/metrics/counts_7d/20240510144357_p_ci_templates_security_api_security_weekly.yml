@@ -4,16 +4,18 @@ description: Count of distinct projects that included the Security/API-Security.
 product_group: dynamic_analysis
 value_type: number
 status: active
-milestone: "17.1"
+milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147183
 time_frame: 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
 tiers:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - p_ci_templates_security_api_security
+events:
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: security_api_security
+    property: 'false'

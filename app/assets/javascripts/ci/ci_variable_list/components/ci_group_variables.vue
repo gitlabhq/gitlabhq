@@ -1,7 +1,7 @@
 <script>
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import { getGroupEnvironments } from '~/ci/common/private/ci_environments_dropdown';
 import { ADD_MUTATION_ACTION, DELETE_MUTATION_ACTION, UPDATE_MUTATION_ACTION } from '../constants';
 import getGroupVariables from '../graphql/queries/group_variables.query.graphql';
@@ -14,11 +14,11 @@ export default {
   components: {
     CiVariableShared,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glLicensedFeaturesMixin()],
   inject: ['groupPath', 'groupId'],
   computed: {
     areScopedVariablesAvailable() {
-      return this.glFeatures.groupScopedCiVariables;
+      return this.glLicensedFeatures.groupScopedCiVariables;
     },
     graphqlId() {
       return convertToGraphQLId(TYPENAME_GROUP, this.groupId);

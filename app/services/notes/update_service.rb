@@ -6,6 +6,7 @@ module Notes
       return note unless note.editable? && params.present?
 
       old_mentioned_users = note.mentioned_users(current_user).to_a
+      self.old_note_body = note.note
 
       note.assign_attributes(params)
 
@@ -69,6 +70,8 @@ module Notes
 
     private
 
+    attr_accessor :old_note_body
+
     def updated_by_user
       @_updated_by_user ||= Gitlab::Auth::Identity.invert_composite_identity(current_user)
     end
@@ -83,7 +86,7 @@ module Notes
     def delete_note(note, message)
       note.quick_actions_status.add_error(_('Commands did not apply')) if message.blank?
 
-      Notes::DestroyService.new(project, current_user).execute(note)
+      Notes::DestroyService.new(project, current_user).execute(note, old_note_body: old_note_body)
     end
 
     def update_suggestions(note)

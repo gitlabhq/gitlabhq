@@ -4,10 +4,6 @@ require 'spec_helper'
 
 module Ci
   RSpec.describe RegisterJobService, feature_category: :continuous_integration do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     let_it_be(:group) { create(:group) }
     let_it_be_with_reload(:project) { create(:project, :repository, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }

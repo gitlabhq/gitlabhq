@@ -36,6 +36,11 @@ export default {
       default: '',
       required: false,
     },
+    shouldPreloadBlame: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showBlame: {
       type: Boolean,
       required: false,
@@ -109,7 +114,7 @@ export default {
 </script>
 <template>
   <div class="blob-viewer" :data-type="activeViewer.type" :data-loaded="isContentLoaded">
-    <gl-loading-icon v-if="loading" size="lg" color="dark" class="my-4 mx-auto" />
+    <gl-loading-icon v-if="loading" size="lg" color="dark" class="!gl-mx-auto !gl-my-6" />
 
     <template v-else>
       <blob-content-error
@@ -130,6 +135,7 @@ export default {
         :rich-viewer="richViewer"
         :is-snippet="isSnippet"
         :is-raw-content="isRawContent"
+        :should-preload-blame="shouldPreloadBlame"
         :show-blame="showBlame"
         :file-name="blob.name"
         :blame-path="blob.blamePath"

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:project, freeze: true) { create(:project) }
+  let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project) }
 
   let(:build) { create(:ci_build, :running, pipeline: pipeline) }
   let(:metrics) { spy('metrics') }
@@ -461,5 +461,277 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
     described_class
       .new(build, params, metrics)
       .execute
+  end
+
+  public
+
+  describe 'runner acknowledgment workflow' do
+    let_it_be(:runner) { create(:ci_runner) }
+    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner, system_xid: 'abc') }
+
+    let(:redis_klass) { Gitlab::Redis::SharedState }
+
+    context 'when build is waiting for runner acknowledgment', :clean_gitlab_redis_cache do
+      let(:build) do
+        create(:ci_build, :waiting_for_runner_ack, pipeline: pipeline, runner: runner,
+          ack_runner_manager: runner_manager)
+      end
+
+      context 'when state is pending' do
+        let(:params) { { state: 'pending' } }
+
+        context 'when build is not assigned to a runner manager' do
+          specify 'should not have runner manager assigned' do
+            expect(build.runner_manager).to be_nil
+          end
+
+          it 'returns 200 OK status for keep-alive signal' do
+            result = execute
+
+            expect(result.status).to eq 200
+            expect(result.backoff).to be_nil
+          end
+
+          it 'does not assign runner manager' do
+            expect { execute }.to not_change { build.reload.runner_manager }.from(nil)
+          end
+
+          it 'updates runner manager heartbeat' do
+            expect(build).to receive(:heartbeat_runner_ack_wait).with(runner_manager.id)
+
+            execute
+          end
+
+          it 'resets ttl', :freeze_time do
+            service.execute
+
+            consume_redis_ttl(runner_build_ack_queue_key)
+
+            # Redis key TTL should increase by at least 1 second
+            expect { execute }.to change { redis_ttl(runner_build_ack_queue_key) }.by_at_least(1)
+          end
+
+          it 'does not change build state' do
+            expect { execute }.not_to change { build.reload.status }
+          end
+        end
+
+        context 'when build is already assigned to a runner manager (race condition)' do
+          before do
+            allow(build).to receive(:runner_manager).and_return(runner_manager)
+          end
+
+          it 'returns 409 Conflict status' do
+            result = execute
+
+            expect(result.status).to eq 409
+            expect(result.backoff).to be_nil
+          end
+
+          it 'does not change build state' do
+            expect { execute }.not_to change { build.reload.status }
+          end
+
+          it 'does not reset ttl', :freeze_time do
+            service.execute
+
+            consume_redis_ttl(runner_build_ack_queue_key)
+
+            expect { execute }.not_to change { redis_ttl(runner_build_ack_queue_key) }
+          end
+        end
+      end
+
+      context 'when state is running' do
+        let(:params) { { state: 'running' } }
+
+        context 'when runner manager exists' do
+          it 'transitions job to running state and returns 200 OK' do
+            expect(build).to receive(:run!)
+
+            result = execute
+
+            expect(result.status).to eq 200
+            expect(result.backoff).to be_nil
+          end
+
+          it 'assigns the runner manager to the build' do
+            allow(build).to receive(:run!)
+
+            expect { execute }.to change { build.reload.runner_manager }.from(nil).to(runner_manager)
+          end
+        end
+
+        context 'when runner manager does not exist' do
+          let(:build) do
+            create(:ci_build, :pending, pipeline: pipeline, runner: runner).tap do |b|
+              b.set_waiting_for_runner_ack(non_existing_record_id)
+            end
+          end
+
+          it 'returns 400 Bad Request status' do
+            expect(execute.status).to eq 400
+            expect(execute.backoff).to be_nil
+          end
+
+          it 'does not change build state or runner manager' do
+            expect { execute }.to not_change { build.reload.status }
+              .and not_change { build.reload.runner_manager }
+          end
+
+          it 'does not change ttl' do
+            expect { execute }.not_to change { redis_ttl(runner_build_ack_queue_key) }
+          end
+
+          it 'does not transition build to running' do
+            expect(build).not_to receive(:run!)
+
+            execute
+          end
+        end
+      end
+
+      context 'when state is invalid for two-phase commit workflow' do
+        %w[success failed].each do |state|
+          context "when state is #{state}" do
+            let(:params) { { state: state } }
+
+            it 'returns 400 Bad Request status' do
+              result = execute
+
+              expect(result.status).to eq 400
+              expect(result.backoff).to be_nil
+            end
+
+            it 'does not change build state' do
+              expect { execute }.not_to change { build.reload.status }
+            end
+
+            it 'does not change ttl' do
+              expect { execute }.not_to change { redis_ttl(runner_build_ack_queue_key) }
+            end
+          end
+        end
+      end
+
+      context 'when handling edge cases in runner ack workflow' do
+        context 'when build state is empty' do
+          let(:params) { { state: '' } }
+
+          it 'returns 400 Bad Request status' do
+            result = execute
+
+            expect(result.status).to eq 400
+            expect(result.backoff).to be_nil
+          end
+        end
+
+        context 'when build state is nil' do
+          let(:params) { {} }
+
+          it 'returns 400 Bad Request status' do
+            result = execute
+
+            expect(result.status).to eq 400
+            expect(result.backoff).to be_nil
+          end
+        end
+      end
+    end
+
+    context 'when build is not waiting for runner acknowledgment' do
+      let(:build) { create(:ci_build, :running, runner: runner, runner_manager: runner_manager, pipeline: pipeline) }
+      let(:params) { { state: 'success' } }
+
+      it 'skips runner ack workflow and proceeds with normal processing' do
+        expect(build).not_to receive(:heartbeat_runner_ack_wait)
+        expect(build).not_to receive(:run!)
+        expect(build).to receive(:success!)
+        expect(service).to receive(:accept_available?).and_call_original
+
+        expect(execute.status).to eq 200
+      end
+    end
+
+    context 'when allow_runner_job_acknowledgement feature flag is disabled' do
+      before do
+        stub_feature_flags(allow_runner_job_acknowledgement: false)
+      end
+
+      context 'when build would normally be waiting for runner acknowledgment', :clean_gitlab_redis_cache do
+        let(:build) do
+          create(:ci_build, :waiting_for_runner_ack, pipeline: pipeline, runner: runner,
+            ack_runner_manager: runner_manager)
+        end
+
+        context 'when state is pending' do
+          let(:params) { { state: 'pending' } }
+
+          it 'returns 200 OK despite feature flag' do
+            result = execute
+
+            expect(result.status).to eq 200
+            expect(result.backoff).to be_nil
+          end
+
+          it 'does not change build state' do
+            expect { execute }.not_to change { build.reload.status }
+          end
+
+          it 'updates runner manager heartbeat' do
+            expect(build).to receive(:heartbeat_runner_ack_wait).with(runner_manager.id)
+
+            execute
+          end
+        end
+
+        context 'when state is running' do
+          let(:params) { { state: 'running' } }
+
+          it 'returns 200 OK despite feature flag' do
+            result = execute
+
+            expect(result.status).to eq 200
+            expect(result.backoff).to be_nil
+          end
+
+          it 'changes build state to running' do
+            expect { execute }.to change { build.reload.status }.from('pending').to('running')
+          end
+        end
+      end
+
+      context 'when build is not waiting for runner acknowledgment' do
+        let(:build) { create(:ci_build, :running, runner: runner, runner_manager: runner_manager, pipeline: pipeline) }
+        let(:params) { { state: 'success' } }
+
+        it 'proceeds with normal processing' do
+          expect(build).not_to receive(:heartbeat_runner_ack_wait)
+          expect(build).to receive(:success!)
+          expect(service).to receive(:accept_available?).and_call_original
+
+          expect(execute.status).to eq 200
+        end
+      end
+    end
+
+    private
+
+    def runner_build_ack_queue_key
+      build.send(:runner_ack_queue).redis_key
+    end
+
+    def redis_ttl(cache_key)
+      redis_klass.with do |redis|
+        redis.ttl(cache_key)
+      end
+    end
+
+    def consume_redis_ttl(cache_key)
+      redis_klass.with do |redis|
+        redis.set(cache_key, runner_manager.id, ex: Gitlab::Ci::Build::RunnerAckQueue::RUNNER_ACK_QUEUE_EXPIRY_TIME - 1,
+          nx: false)
+      end
+    end
   end
 end

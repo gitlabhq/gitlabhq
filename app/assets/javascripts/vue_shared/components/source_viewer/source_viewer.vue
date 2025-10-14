@@ -32,6 +32,11 @@ export default {
       required: false,
       default: () => [],
     },
+    shouldPreloadBlame: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showBlame: {
       type: Boolean,
       required: false,
@@ -51,6 +56,7 @@ export default {
       lineHighlighter: new LineHighlighter(),
       blameData: [],
       renderedChunks: [],
+      isBlameLoading: false,
     };
   },
   computed: {
@@ -71,10 +77,21 @@ export default {
     },
   },
   watch: {
+    shouldPreloadBlame: {
+      handler(shouldPreload) {
+        if (!shouldPreload) return;
+        this.requestBlameInfo(this.renderedChunks[0]);
+      },
+    },
     showBlame: {
       handler(isVisible) {
         toggleBlameClasses(this.blameData, isVisible);
 
+        if (isVisible) {
+          this.isBlameLoading = true;
+        } else {
+          this.isBlameLoading = false;
+        }
         if (!isVisible) this.blameData = [];
 
         this.requestBlameInfo(this.renderedChunks[0]);
@@ -85,6 +102,10 @@ export default {
       handler(blameData) {
         if (!this.showBlame) return;
         toggleBlameClasses(blameData, true);
+
+        if (blameData.length > 0) {
+          this.isBlameLoading = false;
+        }
       },
       immediate: true,
     },
@@ -116,7 +137,7 @@ export default {
     },
     async requestBlameInfo(chunkIndex) {
       const chunk = this.chunks[chunkIndex];
-      if (!this.showBlame || !chunk) return;
+      if ((!this.showBlame && !this.shouldPreloadBlame) || !chunk) return;
 
       const { data } = await this.$apollo.query({
         query: blameDataQuery,
@@ -144,7 +165,7 @@ export default {
 
 <template>
   <div class="gl-flex">
-    <blame v-if="showBlame && blameInfo.length" :blame-info="blameInfo" />
+    <blame v-if="showBlame" :blame-info="blameInfo" :is-blame-loading="isBlameLoading" />
 
     <div
       class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"

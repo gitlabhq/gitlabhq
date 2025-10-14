@@ -9,7 +9,7 @@ import './behaviors';
 
 // lib/utils
 import { setGlTooltipDefaultContainer } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
@@ -34,6 +34,7 @@ import initBroadcastNotifications from './broadcast_notification';
 import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
 import { initExpireSessionModal } from './authentication/sessions';
+import initPanelHeightCalc from './panel_height_calc';
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
 
@@ -97,6 +98,7 @@ function deferredInitialisation() {
   initCopyCodeButton();
   initGitlabVersionCheck();
   initExpireSessionModal();
+  initPanelHeightCalc();
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
@@ -120,7 +122,7 @@ function deferredInitialisation() {
 
 const $body = $('body');
 const $document = $(document);
-const bootstrapBreakpoint = bp.getBreakpointSize();
+const currentBreakpoint = PanelBreakpointInstance.getBreakpointSize();
 
 initUserTracking();
 initLayoutNav();
@@ -146,7 +148,7 @@ $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
 const isBoardsOrMR = /((projects|groups):boards:show|projects:merge_requests:)/.test(
   document.body.dataset.page,
 );
-if (!isBoardsOrMR && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
+if (!isBoardsOrMR && (currentBreakpoint === 'sm' || currentBreakpoint === 'xs')) {
   const $rightSidebar = $('.js-right-sidebar[data-auto-collapse]');
   const $layoutPage = $('.layout-page');
 

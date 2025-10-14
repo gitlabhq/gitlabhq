@@ -91,13 +91,11 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
 
     using RSpec::Parameterized::TableSyntax
 
-    where(:gitlab_com, :current_user, :signup_enabled, :user_dismissed, :controller_path, :expected_result) do
-      false | ref(:admin) | true  | false | 'admin/users'     | true
-      true  | ref(:admin) | true  | false | 'admin/users'     | false
-      false | ref(:user)  | true  | false | 'admin/users'     | false
-      false | ref(:admin) | false | false | 'admin/users'     | false
-      false | ref(:admin) | true  | true  | 'admin/users'     | false
-      false | ref(:admin) | true  | false | 'projects/issues' | false
+    where(:gitlab_com, :current_user, :signup_enabled, :controller_path, :expected_result) do
+      false | ref(:admin) | true  | 'admin/users'     | true
+      true  | ref(:admin) | true  | 'admin/users'     | false
+      false | ref(:admin) | false | 'admin/users'     | false
+      false | ref(:admin) | true  | 'projects/issues' | false
     end
 
     with_them do
@@ -105,7 +103,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
         allow(::Gitlab).to receive(:com?).and_return(gitlab_com)
         allow(helper).to receive(:current_user).and_return(current_user)
         stub_application_setting(signup_enabled: signup_enabled)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { user_dismissed }
         allow(helper.controller).to receive(:controller_path).and_return(controller_path)
       end
 
@@ -360,6 +357,76 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
         expect(helper).to receive(:render).with('shared/product_usage_data_collection_changes_callout')
         render_callout
       end
+    end
+  end
+
+  describe '#show_email_otp_enrollment_callout?' do
+    subject { helper.show_email_otp_enrollment_callout? }
+
+    let(:email_otp_required_after) { 31.days.from_now }
+
+    before do
+      user.update!(email_otp_required_after: email_otp_required_after)
+    end
+
+    it { is_expected.to be true }
+
+    context 'when user is not signed in' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(email_based_mfa: false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user has dismissed the banner' do
+      before do
+        create(:callout, user: user, feature_name: :email_otp_enrollment_callout)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user does not have email_otp_required_after set' do
+      let(:email_otp_required_after) { nil }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user has two-factor authentication enabled' do
+      before do
+        user.update!(otp_required_for_login: true)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user does not sign in with a password' do
+      before do
+        user.update!(password_automatically_set: true)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when email_otp_required_after is more than 60 days away' do
+      let(:email_otp_required_after) { 61.days.from_now }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when email_otp_required_after is less than 31 days away' do
+      let(:email_otp_required_after) { 30.days.from_now }
+
+      it { is_expected.to be false }
     end
   end
 end

@@ -51,7 +51,7 @@ This project provides you with:
 
 To create a GitLab agent for Kubernetes:
 
-1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. Select **Connect a cluster**.
 1. From the **Select an agent** dropdown list, select `civo-agent` and select **Register**.
 1. GitLab generates an agent access token for the agent. Securely store this secret token, as you will need it later.
@@ -63,7 +63,7 @@ Use CI/CD environment variables to configure your project.
 
 **Required configuration**:
 
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Set the variable `CIVO_TOKEN` to the token from your Civo account.
 1. Set the variable `TF_VAR_agent_token` to the agent token you received in the previous task.
@@ -90,7 +90,7 @@ Refer to the [Civo Terraform provider](https://registry.terraform.io/providers/c
 
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
-1. On the left sidebar, select **Build > Pipelines**.
+1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Select **Run pipeline**, and then select the newly created pipeline from the list.
 1. Next to the **deploy** job, select **Manual action** ({{< icon name="status_manual" >}}).
@@ -98,7 +98,7 @@ After configuring your project, manually trigger the provisioning of your cluste
 When the pipeline finishes successfully, you can see your new cluster:
 
 - In Civo dashboard: on your Kubernetes tab.
-- In GitLab: from your project's sidebar, select **Operate > Kubernetes clusters**.
+- In GitLab: from your project's sidebar, select **Operate** > **Kubernetes clusters**.
 
 If you didn't set the `TF_VAR_civo_region` variable, the cluster will be created in the 'lon1' region.
 
@@ -106,7 +106,7 @@ If you didn't set the `TF_VAR_civo_region` variable, the cluster will be created
 
 After you provision the cluster, it is connected to GitLab and is ready for deployments. To check the connection:
 
-1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
 For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
@@ -117,7 +117,7 @@ A cleanup job is included in your pipeline by default.
 
 To remove all created resources:
 
-1. On the left sidebar, select **Build > Pipelines**, and then select the most recent pipeline.
+1. On the left sidebar, select **Build** > **Pipelines**, and then select the most recent pipeline.
 1. Next to the **destroy-environment** job, select **Manual action** ({{< icon name="status_manual" >}}).
 
 ## Civo support

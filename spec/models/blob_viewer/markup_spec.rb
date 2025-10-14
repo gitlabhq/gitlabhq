@@ -12,8 +12,10 @@ RSpec.describe BlobViewer::Markup do
 
   describe '#banzai_render_context' do
     it 'returns context needed for banzai rendering' do
-      expect(subject.banzai_render_context.keys).to match_array([:issuable_reference_expansion_enabled, :cache_key])
+      expect(subject.banzai_render_context.keys).to match_array([:issuable_reference_expansion_enabled, :cache_key,
+        :commit_id])
       expect(subject.banzai_render_context[:issuable_reference_expansion_enabled]).to be(true)
+      expect(subject.banzai_render_context[:commit_id]).to eq(blob.commit_id)
     end
 
     context 'when blob does respond to rendered_markup' do

@@ -43,20 +43,30 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
           .with_prefix(:minimum_access_level_for_delete)
       )
     }
+
+    it {
+      is_expected.to define_enum_for(:pattern_type).with_values(wildcard: 0).with_prefix(:pattern_type)
+    }
+
+    it {
+      is_expected.to define_enum_for(:target_field).with_values(package_name: 0).with_prefix(:target_field)
+    }
   end
 
   describe 'validations' do
-    subject { build(:package_protection_rule) }
+    subject(:rule) { build(:package_protection_rule) }
 
-    describe '#package_name_pattern' do
-      it { is_expected.to validate_presence_of(:package_name_pattern) }
-      it { is_expected.to validate_uniqueness_of(:package_name_pattern).scoped_to(:project_id, :package_type) }
-      it { is_expected.to validate_length_of(:package_name_pattern).is_at_most(255) }
-
+    shared_examples 'validates package_name formats' do |column_name|
       context 'for different package types' do
-        subject { build(:package_protection_rule, package_type: package_type) }
+        subject(:rule) do
+          build(:package_protection_rule, {
+            package_type: package_type,
+            pattern_type: :wildcard,
+            target_field: :package_name
+          })
+        end
 
-        where(:package_type, :package_name_pattern, :allowed) do
+        where(:package_type, :value, :allowed) do
           :npm  | '@my-scope/my-package'                            | true
           :npm  | '@my-scope/*my-package-with-wildcard-inbetween'   | true
           :npm  | '@my-scope/*my-package-with-wildcard-start'       | true
@@ -86,18 +96,33 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
 
         with_them do
           if params[:allowed]
-            it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
+            it { is_expected.to allow_value(value).for(column_name) }
           else
             it {
               is_expected.not_to(
-                allow_value(package_name_pattern)
-                .for(:package_name_pattern)
+                allow_value(value)
+                .for(column_name)
                 .with_message(/should be a valid #{package_type} package name with optional wildcard characters./i)
               )
             }
           end
         end
       end
+    end
+
+    describe '#package_name_pattern' do
+      it { is_expected.to validate_presence_of(:package_name_pattern) }
+      it { is_expected.to validate_uniqueness_of(:package_name_pattern).scoped_to(:project_id, :package_type) }
+      it { is_expected.to validate_length_of(:package_name_pattern).is_at_most(255) }
+
+      it_behaves_like 'validates package_name formats', :package_name_pattern
+    end
+
+    describe '#pattern' do
+      it { is_expected.to validate_presence_of(:pattern).allow_blank }
+      it { is_expected.to validate_length_of(:pattern).is_at_most(255) }
+
+      it_behaves_like 'validates package_name formats', :pattern
     end
 
     describe '#package_type' do

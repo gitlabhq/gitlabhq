@@ -1,5 +1,8 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlToast } from '@gitlab/ui';
+import createDefaultClient from '~/lib/graphql';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
 import DeleteLabelModal from './components/delete_label_modal.vue';
@@ -9,10 +12,18 @@ import eventHub, {
   EVENT_DELETE_LABEL_MODAL_SUCCESS,
   EVENT_OPEN_DELETE_LABEL_MODAL,
   EVENT_OPEN_PROMOTE_LABEL_MODAL,
+  EVENT_ARCHIVE_LABEL_SUCCESS,
 } from './event_hub';
 import GroupLabelSubscription from './group_label_subscription';
 import LabelManager from './label_manager';
 import ProjectLabelSubscription from './project_label_subscription';
+
+Vue.use(VueApollo);
+Vue.use(GlToast);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export function initDeleteLabelModal(optionalProps = {}) {
   document.querySelectorAll('.js-delete-label-modal-button').forEach((button) => {
@@ -45,10 +56,12 @@ export function initLabelActions(el) {
     editPath,
     promotePath,
     destroyPath,
+    archived,
   } = el.dataset;
 
   return new Vue({
     el,
+    apolloProvider,
     render(createElement) {
       return createElement(LabelActions, {
         props: {
@@ -61,6 +74,7 @@ export function initLabelActions(el) {
           editPath,
           promotePath,
           destroyPath,
+          isArchived: archived === 'true',
         },
       });
     },
@@ -84,6 +98,15 @@ export function initLabels() {
       new ProjectLabelSubscription($el); // eslint-disable-line no-new
     }
   });
+
+  if (window.gon?.features?.labelsArchive) {
+    function removeLabelSuccessCallback(labelId) {
+      document.querySelector(`[data-id="${labelId}"]`)?.classList?.add('!gl-hidden');
+    }
+
+    eventHub.$on(EVENT_ARCHIVE_LABEL_SUCCESS, removeLabelSuccessCallback);
+  }
+
   initLabelsActions();
 }
 

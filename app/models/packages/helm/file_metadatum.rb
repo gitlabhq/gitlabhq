@@ -6,6 +6,7 @@ module Packages
       self.primary_key = :package_file_id
 
       belongs_to :package_file, inverse_of: :helm_file_metadatum
+      belongs_to :project
 
       validates :package_file, presence: true
       validate :valid_helm_package_type
@@ -18,8 +19,9 @@ module Packages
       validates :metadata,
         json_schema: { filename: "helm_metadata" }
 
-      scope :select_distinct_channel, -> { select(:channel).distinct }
+      scope :select_distinct_channel_and_project, -> { select(:channel, :project_id).distinct }
       scope :for_package_files, ->(package_files) { where(package_file: package_files) }
+      scope :preload_projects, -> { preload(:project) }
 
       private
 

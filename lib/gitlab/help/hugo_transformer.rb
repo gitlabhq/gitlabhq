@@ -26,6 +26,7 @@ module Gitlab
       TABS_WRAPPER_PATTERN = %r{\{\{<\s*tabs\s*>\}\}(.*?)\{\{<\s*/tabs\s*>\}\}}m
       HISTORY_PATTERN = %r{\{\{<\s*history\s*>\}\}(.*?)\{\{<\s*/history\s*>\}\}}m
       MAINTAINED_VERSIONS_PATTERN = %r{\{\{<\s*maintained-versions\s*/?\s*>\}\}}
+      COLLAPSIBLE_PATTERN = %r{\{\{<\s*collapsible\s+title="([^"]+)"\s*>\}\}(.*?)\{\{<\s*/collapsible\s*>\}\}}m
 
       # Markdown heading constants
       HEADING_PATTERN = /^(\#{1,6})\s+[^\n]+$/m
@@ -49,6 +50,7 @@ module Gitlab
         handle_icon_shortcodes(processed_content)
         handle_tab_shortcodes(processed_content)
         handle_maintained_versions_shortcodes(processed_content)
+        handle_collapsible_shortcodes(processed_content)
         remove_generic_shortcodes(processed_content)
         clean_up_blank_lines(processed_content)
 
@@ -131,6 +133,18 @@ module Gitlab
       def handle_maintained_versions_shortcodes(content)
         content.gsub!(MAINTAINED_VERSIONS_PATTERN) do
           "https://docs.gitlab.com/policy/maintenance/#maintained-versions"
+        end
+        content
+      end
+
+      def handle_collapsible_shortcodes(content)
+        content.gsub!(COLLAPSIBLE_PATTERN) do
+          match_data = ::Regexp.last_match
+          title = match_data[1]
+          collapsible_content = match_data[2].strip
+          heading_level = find_next_heading_level(content, match_data.begin(0))
+
+          "#{'#' * heading_level} #{title}\n\n#{collapsible_content}"
         end
         content
       end

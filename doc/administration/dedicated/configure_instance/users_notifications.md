@@ -62,28 +62,28 @@ If multi-factor authentication (MFA) is set up for your account, you're prompted
 
 ### Reset multi-factor authentication
 
-To reset your MFA for Switchboard, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). 
+To reset your MFA for Switchboard, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 The support team will help you regain access to your account.
 
 ## Email notifications
 
-Switchboard sends email notifications about instance incidents, maintenance, performance issues, and security updates.
+You receive email notifications about instance incidents, maintenance, performance issues, and security updates.
 
 Notifications are sent to:
 
 - Switchboard users: Receive notifications based on their notification settings.
-- Operational email addresses: Receive notifications for important instance events and service updates,
+- Operational contacts: Receive notifications for important instance events and service updates,
   regardless of their notification settings.
 
-Operational email addresses receive customer notifications, even if recipients:
+Operational contacts receive customer notifications, even if recipients:
 
 - Are not Switchboard users.
 - Have not signed in to Switchboard.
 - Turn off email notifications.
 
-### Manage operational email addresses
+### Manage email addresses for operational contacts
 
-To update the list of operational email addresses:
+To add, edit, or remove email addresses for operational contacts:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.

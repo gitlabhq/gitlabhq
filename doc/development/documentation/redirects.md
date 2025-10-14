@@ -87,12 +87,8 @@ might link to the old file:
    grep -r "docs.gitlab.com/path/to/file" .
    ```
 
-1. In <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/tree/main/data>,
-   search the navigation bar configuration files for the path:
-
-   ```shell
-   grep -r "path/to/file" .
-    ```
+1. In <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml>,
+   search for the path, and remove the entry.
 
 1. In [all of the doc projects](site_architecture/_index.md#source-files), search for links in the docs
    and codebase. Search for all variations, including full URL and just the path.

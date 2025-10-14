@@ -2,16 +2,16 @@
   = form_errors(@identity)
 
   .form-group.row
-    .col-sm-2.col-form-label
+    .gl-col-sm-2.col-form-label
       = f.label :provider
-    .col-sm-10
+    .gl-col-sm-10
       - values = Gitlab::Auth::OAuth::Provider.providers.map { |name| ["#{Gitlab::Auth::OAuth::Provider.label_for(name)} (#{name})", name] }
       = f.select :provider, values, { allow_blank: false }, class: 'form-control'
   = render_if_exists partial: 'admin/identities/provider_id', locals: { f: f }
   .form-group.row
-    .col-sm-2.col-form-label
+    .gl-col-sm-2.col-form-label
       = f.label :extern_uid, _("Identifier")
-    .col-sm-10
+    .gl-col-sm-10
       = f.text_field :extern_uid, class: 'form-control', required: true
 
   .form-actions

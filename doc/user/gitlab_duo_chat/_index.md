@@ -10,11 +10,16 @@ title: GitLab Duo Chat (Classic)
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLMs: Anthropic Claude and Vertex AI Search. The LLM depends on the question asked.
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible>}}
 
 {{< history >}}
 
@@ -65,23 +70,29 @@ If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user exp
 
 ## Use GitLab Duo Chat in the GitLab UI
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/562168) to be available on all pages in the GitLab UI for GitLab.com in GitLab 18.5.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have access to GitLab Duo Chat and GitLab Duo must be turned on.
-- You must be where Chat is available. It is not available on:
+- On GitLab Self-Managed, you must be where Chat is available. It is not available on:
   - The **Your work** pages, like the To-Do List.
   - Your **User settings** page.
   - The **Help** menu.
 
 To use GitLab Duo Chat in the GitLab UI:
 
-1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
    - It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
 
-To ask a new, unrelated question, clear the context by typing `/reset` or `/clear` and selecting **Send**.
+To ask a new, unrelated question, type `/reset` and select **Send** to clear the context.
 
 ### View the Chat history
 
@@ -103,7 +114,7 @@ To view the history:
 
 In GitLab 17.10 and later, you can have an unlimited number of simultaneous conversations with Chat.
 
-1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
 1. Create a new conversation with Chat by selecting one of the following:
    - In the upper-right corner of the drawer, select **New chat** ({{< icon name="duo-chat-new" >}}).
@@ -206,7 +217,7 @@ After Quick Chat opens:
 
 1. In the message box, enter your question. You can also:
    - Type `/` to display all available commands.
-   - Type `/re` to display `/refactor`.
+   - Type `/re` to display `/refactor` and `/reset`.
 1. To send your question, select **Send**, or press <kbd>Command</kbd>+<kbd>Enter</kbd>.
 1. To interact with the responses, above the code blocks, use the **Copy Snippet** and **Insert Snippet** links.
 1. To exit chat, select the chat icon in the gutter, or press **Escape** while focused on the chat.

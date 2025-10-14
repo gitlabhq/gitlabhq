@@ -138,6 +138,12 @@ export const DUO_CHAT = {
   defaultKeys: ['d'],
 };
 
+export const GO_TO_HOMEPAGE = {
+  id: 'globalShortcuts.goToHomepage',
+  description: __('Go to homepage'),
+  defaultKeys: ['shift+h'],
+};
+
 export const BOLD_TEXT = {
   id: 'editing.boldText',
   description: __('Bold text'),
@@ -622,6 +628,7 @@ const GLOBAL_SHORTCUTS_GROUP = {
   name: __('Global Shortcuts'),
   keybindings: [
     TOGGLE_KEYBOARD_SHORTCUTS_DIALOG,
+    GO_TO_HOMEPAGE,
     GO_TO_YOUR_PROJECTS,
     GO_TO_YOUR_GROUPS,
     GO_TO_ACTIVITY_FEED,

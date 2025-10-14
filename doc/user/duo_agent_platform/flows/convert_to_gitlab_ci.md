@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Convert to GitLab CI/CD flow
+title: Convert to GitLab CI/CD Flow
 ---
 
 {{< details >}}
@@ -28,7 +28,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The **Convert to GitLab CI/CD** flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
+The Convert to GitLab CI/CD Flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
 
 - Analyzes your existing Jenkins pipeline configuration.
 - Converts Jenkins pipeline syntax to GitLab CI/CD YAML.
@@ -40,12 +40,11 @@ This flow is available in the GitLab UI only.
 
 ## Prerequisites
 
-Before you can convert a Jenkinsfile, you must have:
+To convert a Jenkinsfile, you must:
 
-- Access to your Jenkins pipeline configuration.
-- At least Developer role in the target GitLab project.
-- GitLab Duo [turned on and flows allowed to execute](../../gitlab_duo/turn_on_off.md).
-- Feature flags [`duo_workflow` and `duo_workflow_in_ci` enabled](../../../administration/feature_flags/_index.md).
+- Have access to your Jenkins pipeline configuration.
+- Have at least the Developer role in the target GitLab project.
+- Meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
 
 ## Use the flow
 

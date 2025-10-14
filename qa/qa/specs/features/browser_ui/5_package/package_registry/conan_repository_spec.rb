@@ -4,7 +4,8 @@ module QA
   RSpec.describe 'Package', :object_storage, :skip_fips_env, :external_api_calls, feature_category: :package_registry,
     quarantine: {
       only: {
-        job: /object_storage|cng-instance|release-environments-qa|qa_gke.*|qa_eks.*|debug_review_gke125/,
+        job:
+          /object_storage|cng-instance|cng-relative-url|release-environments-qa|qa_gke.*|qa_eks.*|debug_review_gke125/,
         condition: -> { QA::Support::FIPS.enabled? }
       },
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',

@@ -215,17 +215,54 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
         end
 
         it 'returns work items with any parent' do
-          items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'ANY' })
+          items = resolve_items(parent_wildcard_id: 'ANY')
 
           expect(items).to include(work_item_with_parent)
           expect(items).not_to include(work_item_without_parent)
         end
 
         it 'returns work items with no parent' do
-          items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'NONE' })
+          items = resolve_items(parent_wildcard_id: 'NONE')
 
           expect(items).to include(work_item_without_parent)
           expect(items).not_to include(work_item_with_parent)
+        end
+
+        context 'with hierarchy_filters argument' do
+          it 'returns work items with any parent' do
+            items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'ANY' })
+
+            expect(items).to include(work_item_with_parent)
+            expect(items).not_to include(work_item_without_parent)
+          end
+
+          it 'returns work items with no parent' do
+            items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'NONE' })
+
+            expect(items).to include(work_item_without_parent)
+            expect(items).not_to include(work_item_with_parent)
+          end
+
+          context 'when parent_wildcard_id is passed with hierarchy_filters' do
+            it 'generates a mutually exclusive argument error' do
+              expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError,
+                'Only one of [hierarchyFilters, parentWildcardId] arguments is allowed at the same time.') do
+                resolve_items(parent_wildcard_id: 'ANY', hierarchy_filters: { parent_wildcard_id: 'ANY' })
+              end
+            end
+          end
+
+          context 'when parent_wildcard_id is passed with parent_ids' do
+            it 'generates a mutually exclusive argument error' do
+              expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError,
+                'Only one of [hierarchyFilters, parentIds] arguments is allowed at the same time.') do
+                resolve_items(
+                  parent_ids: [work_item_with_parent.to_global_id],
+                  hierarchy_filters: { parent_wildcard_id: 'ANY' }
+                )
+              end
+            end
+          end
         end
       end
 

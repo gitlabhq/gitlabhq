@@ -32,9 +32,7 @@ module API
       # See: https://modelcontextprotocol.io/specification/2025-06-18/schema#common-types
       JSONRPC_METHOD_HANDLERS = {
         'initialize' => Handlers::InitializeRequest,
-        'notifications/initialized' => Handlers::InitializedNotificationRequest,
-        'tools/list' => Handlers::ListToolsRequest,
-        'tools/call' => Handlers::CallToolRequest
+        'notifications/initialized' => Handlers::InitializedNotificationRequest
       }.freeze
 
       feature_category :mcp_server
@@ -44,19 +42,15 @@ module API
       before do
         authenticate!
         not_found! unless Feature.enabled?(:mcp_server, current_user)
-        forbidden! unless access_token&.scopes&.map(&:to_s) == [Gitlab::Auth::MCP_SCOPE.to_s]
+        forbidden! unless AccessTokenValidationService.new(access_token).include_any_scope?([Gitlab::Auth::MCP_SCOPE])
       end
 
       helpers do
         def invoke_basic_handler
           method_name = params[:method]
           handler_class = JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
-          handler = handler_class.new(params[:params] || {})
+          handler = handler_class.new(params[:params] || {}, oauth_access_token, current_user)
           handler.invoke
-        end
-
-        def find_handler_class(method_name)
-          JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
         end
 
         def method_not_found!(method_name)
@@ -75,14 +69,6 @@ module API
           )
           unauthorized! unless token
           token
-        end
-
-        def create_handler(handler_class, handler_params)
-          if handler_class == Handlers::CallToolRequest
-            handler_class.new(handler_params, oauth_access_token)
-          else
-            handler_class.new(handler_params)
-          end
         end
 
         def format_jsonrpc_response(result)
@@ -134,19 +120,13 @@ module API
           status :ok
 
           result =
-            if Feature.enabled?(:mcp_server_new_implementation, current_user)
-              case params[:method]
-              when 'tools/call'
-                Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params])
-              when 'tools/list'
-                Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke
-              else
-                invoke_basic_handler
-              end
+            case params[:method]
+            when 'tools/call'
+              Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user)
+            when 'tools/list'
+              Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke(current_user)
             else
-              handler_class = find_handler_class(params[:method])
-              handler = create_handler(handler_class, params[:params] || {})
-              handler.invoke
+              invoke_basic_handler
             end
 
           format_jsonrpc_response(result)
@@ -154,7 +134,7 @@ module API
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#listening-for-messages-from-the-server
         get do
-          status :not_implemented
+          status :method_not_allowed
         end
       end
     end

@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillEpicsWorkItemParentLinkId
-description: Sets the foreign key in Epics to the corresponding WorkItemParentLink record if missing.
+description: Sets the foreign key in Epics to the corresponding WorkItemParentLink
+  record if missing.
 feature_category: team_planning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195672
 milestone: '18.2'
 queued_migration_version: 20250625170200
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20250917232140'

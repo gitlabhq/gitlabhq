@@ -14,7 +14,7 @@ title: Troubleshooting the GitLab Duo Agent Platform
 
 {{< /details >}}
 
-If you are working with the GitLab Duo Agent Platform in your IDE, you might encounter the following issues.
+If you are working with the GitLab Duo Agent Platform in your Integrated Development Environment (IDE), you might encounter the following issues.
 
 ## General guidance
 
@@ -23,6 +23,7 @@ Start by ensuring that GitLab Duo is on and that you are properly connected.
 - Ensure you meet [the prerequisites](_index.md#prerequisites).
 - Ensure the branch you want to work in is checked out.
 - Ensure you have turned on the necessary settings in the IDE.
+- Ensure that [Admin mode is disabled](../../administration/settings/sign_in_restrictions.md#turn-off-admin-mode-for-your-session).
 
 ## Network issues
 
@@ -67,8 +68,8 @@ VS Code and JetBrains IDEs:
 In VS Code, you can troubleshoot some issues by viewing debugging logs.
 
 1. Open local debugging logs:
-   - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
-   - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
+   - On macOS: <kbd>Command</kbd> + <kbd>,</kbd>
+   - On Windows and Linux: <kbd>Control</kbd> + <kbd>,</kbd>
 1. Search for the setting **GitLab: Debug** and enable it.
 1. Open the language server logs:
    1. In VS Code, select **View** > **Output**.
@@ -147,6 +148,81 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 1. Ensure you have at least Developer role in the project.
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags, [`duo_workflow` and `duo_workflow_in_ci`](../../administration/feature_flags/_index.md), are enabled.
+
+## IDE commands fail or run indefinitely
+
+When using GitLab Duo Chat (Agentic) or the Software Development flow in your IDE,
+GitLab Duo can get stuck in a loop or have difficulty running commands.
+
+This issue can occur when you are using shell themes or integrations, like `Oh My ZSH!` or `powerlevel10k`.
+When a GitLab Duo agent spawns a terminal, a theme or integration can prevent commands from running properly.
+
+As a workaround, use a simpler theme for commands sent by agents.
+[Issue 2070](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/2070) tracks improvements to this behavior so this workaround is no longer needed.
+
+### Edit your `.zshrc` file
+
+In VS Code and JetBrains IDEs, configure `Oh My ZSH!` or `powerlevel10k` to use a simpler
+theme when it runs commands sent by an agent. You can use the environment variables exposed
+by the IDEs to set these values.
+
+Edit your `~/.zshrc` file to include this code:
+
+```shell
+# ~/.zshrc
+
+# Path to your oh-my-zsh installation
+export ZSH="$HOME/.oh-my-zsh"
+
+# ...
+
+# Decide whether to load a full terminal environment,
+# or keep it minimal for agentic AI in IDEs
+if [[ "$TERM_PROGRAM" == "vscode" || "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
+  echo "IDE agentic environment detected, not loading full shell integrations"
+else
+  # Oh My ZSH
+  source $ZSH/oh-my-zsh.sh
+  # Theme: Powerlevel10k
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+  # Other integrations like syntax highlighting
+fi
+
+# Other setup, like PATH variables
+```
+
+### Edit your Bash shell
+
+In VS Code or JetBrains IDEs, you can turn off advanced prompts in Bash, so that agents don't initiate them.
+Edit your `~/.bashrc` or `~/.bash_profile` file to include this code:
+
+```shell
+# ~/.bashrc or ~/.bash_profile
+
+# Decide whether to load a full terminal environment,
+# or keep it minimal for Agentic AI in IDEs
+if [[ "$TERM_PROGRAM" == "vscode" || "$TERMINAL_EMULATOR" == "JetBrains-JediTerm" ]]; then
+  echo "IDE agentic environment detected, not loading full shell integrations"
+
+  # Keep only essential settings for agents
+  export PS1='\$ '  # Minimal prompt
+
+else
+  # Load full Bash environment
+
+  # Custom prompt (e.g., Starship, custom PS1)
+  if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
+  else
+    # ... Add your own PS1 variable
+  fi
+
+  # Load additional integrations
+fi
+
+# Always load essential environment variables and aliases
+
+```
 
 ## Still having issues?
 

@@ -2,12 +2,16 @@ name: gitlab_main_cell_setting
 description: Schema for all cell setting tables, ex. application_settings, etc.
 allow_cross_joins:
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
   - gitlab_main
   - gitlab_main_cell
   - gitlab_main_org
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
   - gitlab_main
   - gitlab_main_cell
   - gitlab_main_org

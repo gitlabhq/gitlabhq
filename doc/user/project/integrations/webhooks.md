@@ -101,7 +101,7 @@ Prerequisites:
 To create a webhook:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    Use percent-encoding for special characters.
@@ -123,7 +123,7 @@ are encrypted at rest in the database.
 To mask sensitive portions of a webhook URL:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. In **URL**, enter the full URL of the webhook.
 1. To define masked portions, select **Add URL masking**.
 1. In **Sensitive portion of URL**, enter the part of the URL you want to mask.
@@ -267,7 +267,7 @@ Prerequisites:
 To configure mutual TLS for webhooks:
 
 1. Prepare a client certificate in PEM format.
-1. Optional: Protect the certificate with a PEM passphrase.
+1. Optional. Protect the certificate with a PEM passphrase.
 1. Configure GitLab to use the certificate.
 
 {{< tabs >}}
@@ -368,7 +368,7 @@ Prerequisites:
 To view the request history for a webhook:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
 
@@ -383,7 +383,7 @@ The table includes:
 - Elapsed time of the request
 - Relative time the request was made
 
-![Recent deliveries](img/webhook_logs_v14_4.png)
+![Webhook event log showing status codes and response times](img/webhook_logs_v14_4.png)
 
 #### Inspect request and response details
 
@@ -401,7 +401,7 @@ This page contains the body and headers of:
 To inspect the request and response details of a webhook event:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
 1. Select **View details** for the event.
@@ -423,13 +423,14 @@ Prerequisites:
 To test a webhook:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
-1. In the list of configured webhooks, locate the webhook you want to test.
-1. From the **Test** dropdown list, select the type of event to test.
-
-Alternatively, you can test a webhook from its edit page.
-
-![Webhook testing](img/webhook_testing_v9_4.png)
+1. Select **Settings** > **Webhooks** to see all webhooks for this project.
+1. To test a webhook directly from the list of configured webhooks:
+   1. Locate the webhook you want to test.
+   1. From the **Test** dropdown list, select the type of event to test.
+1. To test a webhook while editing it:
+   1. Locate the webhook you want to test, and select **Edit**.
+   1. Make your changes to the webhook.
+   1. Select the **Test** dropdown list, then select the type of event to test.
 
 Testing is not supported for some types of events for project and group webhooks.
 For more information, see [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
@@ -490,14 +491,14 @@ GitLab automatically disables project or group webhooks that fail four consecuti
 To view auto-disabled webhooks:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 
 In the webhook list, auto-disabled webhooks display as:
 
 - **Temporarily disabled** if they fail four consecutive times
 - **Disabled** if they fail 40 consecutive times
 
-![Badges on failing webhooks](img/failed_badges_v17_11.png)
+![Webhook list showing disabled and temporarily disabled status badges.](img/failed_badges_v17_11.png)
 
 #### Temporarily disabled webhooks
 
@@ -557,13 +558,13 @@ GitLab rewrites relative image references to absolute URLs in webhook bodies.
 If the original image reference in a merge request, comment, or wiki page is:
 
 ```markdown
-![image](/uploads/$sha/image.png)
+![A Markdown image with a relative URL.](/uploads/$sha/image.png)
 ```
 
 The rewritten image reference in the webhook body would be:
 
 ```markdown
-![image](https://gitlab.example.com/-/project/:id/uploads/<SHA>/image.png)
+![A Markdown image with an absolute URL.](https://gitlab.example.com/-/project/:id/uploads/<SHA>/image.png)
 ```
 
 This example assumes:

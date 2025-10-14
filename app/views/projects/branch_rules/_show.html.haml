@@ -3,6 +3,9 @@
 - show_status_checks = @project.licensed_feature_available?(:external_status_checks)
 - show_approvers = @project.licensed_feature_available?(:merge_request_approvers)
 - show_enterprise_access_levels = @project.licensed_feature_available?(:protected_refs_for_users)
+- namespace = @project.root_ancestor
+- can_admin_group_protected_branches = namespace.is_a?(Group) && namespace.licensed_feature_available?(:group_protected_branches) && current_user.can?(:admin_group, namespace)
+- group_settings_repository_path = namespace.is_a?(Group) ? group_settings_repository_path(namespace, anchor: 'js-protected-branches-settings') : ''
 
 = render ::Layouts::SettingsBlockComponent.new(_('Branch rules'),
   id: 'branch-rules',
@@ -14,4 +17,4 @@
   - c.with_body do
     - if Feature.enabled?(:edit_branch_rules, @project)
       .gl-mb-5= render 'projects/settings/branch_rules_callout'
-    #js-branch-rules{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s, show_enterprise_access_levels: show_enterprise_access_levels.to_s } }
+    #js-branch-rules-listing{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s, show_enterprise_access_levels: show_enterprise_access_levels.to_s, can_admin_group_protected_branches: can_admin_group_protected_branches.to_s, group_settings_repository_path: group_settings_repository_path } }

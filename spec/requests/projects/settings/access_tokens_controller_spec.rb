@@ -116,7 +116,7 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
 
     it 'includes details of the active project access tokens' do
       active_access_tokens =
-        ::ProjectAccessTokenSerializer.new.represent(resource_access_tokens.reverse, project: resource)
+        ::ProjectAccessTokenSerializer.new.represent(resource_access_tokens, project: resource)
 
       expect(assigns(:active_access_tokens).to_json).to eq(active_access_tokens.to_json)
     end

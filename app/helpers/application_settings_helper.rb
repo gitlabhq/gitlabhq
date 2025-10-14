@@ -261,6 +261,7 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :allow_immediate_namespaces_deletion,
       :allow_local_requests_from_hooks_and_services,
       :allow_local_requests_from_web_hooks_and_services,
       :allow_local_requests_from_system_hooks,
@@ -450,6 +451,7 @@ module ApplicationSettingsHelper
       :spam_check_api_key,
       :terminal_max_session_time,
       :terms,
+      :terraform_state_encryption_enabled,
       :throttle_authenticated_api_enabled,
       :throttle_authenticated_api_period_in_seconds,
       :throttle_authenticated_api_requests_per_period,
@@ -639,7 +641,10 @@ module ApplicationSettingsHelper
       :anonymous_searches_allowed,
       :git_push_pipeline_limit,
       :delay_user_account_self_deletion,
-      :resource_usage_limits
+      :resource_usage_limits,
+      :runner_jobs_request_api_limit,
+      :runner_jobs_patch_trace_api_limit,
+      :runner_jobs_endpoints_api_limit
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

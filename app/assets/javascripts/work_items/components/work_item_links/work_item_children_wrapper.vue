@@ -34,6 +34,11 @@ export default {
       type: String,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemType: {
       type: String,
       required: false,
@@ -572,6 +577,7 @@ export default {
       v-for="child in displayableChildren"
       :key="child.id"
       :can-update="canUpdate"
+      :is-group="isGroup"
       :issuable-gid="child.id"
       :child-item="child"
       :confidential="child.confidential"

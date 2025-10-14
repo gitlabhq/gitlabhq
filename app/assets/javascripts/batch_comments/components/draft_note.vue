@@ -109,6 +109,7 @@ export default {
     class="draft-note !gl-mb-0"
     :autosave-key="autosaveDraftKey"
     :restore-from-autosave="restoreFromAutosave"
+    anchor-prefix="draft"
     data-testid="draft-note"
     @handleEdit="handleEditing"
     @cancelForm="handleNotEditing"

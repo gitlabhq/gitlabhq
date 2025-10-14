@@ -177,6 +177,12 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         end
       end
 
+      context 'and updating members to PLANNER' do
+        it_behaves_like 'a service updating members' do
+          let_it_be(:access_level) { Gitlab::Access::PLANNER }
+        end
+      end
+
       context 'and updating themselves to OWNER' do
         let(:members) { source.members_and_requesters.find_by!(user_id: current_user.id) }
 
@@ -369,6 +375,50 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
       end
 
       it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+    end
+  end
+
+  describe 'event publishing' do
+    let_it_be(:source) { group }
+
+    before do
+      group.add_owner(current_user)
+    end
+
+    context 'without error' do
+      it 'publishes a members updated event' do
+        expect { subject }.to publish_event(Members::UpdatedEvent).with({
+          source_id: group.id,
+          source_type: "Group",
+          user_ids: [members.first.user_id, members.second.user_id]
+        })
+      end
+    end
+
+    context 'without changes' do
+      let(:params) { { source: source } }
+
+      it 'does not trigger a members updated event' do
+        expect { subject }.not_to publish_event(Members::UpdatedEvent)
+      end
+    end
+
+    context 'with error for one member' do
+      before do
+        allow(members.second).to receive(:save!).and_raise ActiveRecord::RecordInvalid
+      end
+
+      it 'does not trigger a members updated event' do
+        expect { subject }.not_to publish_event(Members::UpdatedEvent)
+      end
+    end
+
+    context 'with errors for all members' do
+      let(:access_level) { -100 }
+
+      it 'does not trigger a members updated event' do
+        expect { subject }.not_to publish_event(Members::UpdatedEvent)
+      end
     end
   end
 end

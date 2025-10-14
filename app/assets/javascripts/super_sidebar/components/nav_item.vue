@@ -7,7 +7,6 @@ import {
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
-import eventHub from '../event_hub';
 import NavItemLink from './nav_item_link.vue';
 import NavItemRouterLink from './nav_item_router_link.vue';
 
@@ -76,7 +75,6 @@ export default {
     return {
       isMouseIn: false,
       canClickPinButton: false,
-      localPillCount: this.item.pill_count,
     };
   },
   computed: {
@@ -84,11 +82,6 @@ export default {
       if (this.item.pill_count_field) {
         return this.asyncCount[this.item.pill_count_field];
       }
-
-      if (this.item.pill_count_dynamic) {
-        return this.localPillCount;
-      }
-
       return this.item.pill_count;
     },
     hasPill() {
@@ -186,11 +179,6 @@ export default {
         inline: 'nearest',
       });
     }
-
-    eventHub.$on('updatePillValue', this.updatePillValue);
-  },
-  destroyed() {
-    eventHub.$off('updatePillValue', this.updatePillValue);
   },
   methods: {
     pinAdd() {
@@ -201,11 +189,6 @@ export default {
     },
     togglePointerEvents() {
       this.canClickPinButton = this.isMouseIn;
-    },
-    updatePillValue({ value, itemId }) {
-      if (this.item.id === itemId) {
-        this.localPillCount = value;
-      }
     },
   },
 };
@@ -222,7 +205,7 @@ export default {
     <component
       :is="navItemLinkComponent"
       v-bind="linkProps"
-      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-2 gl-font-semibold gl-text-default !gl-no-underline focus:gl-focus"
+      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-2 gl-font-semibold gl-text-default !gl-no-underline focus:gl-focus-inset"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
       :aria-label="item.title"
@@ -258,7 +241,7 @@ export default {
       <div
         v-show="!isIconOnly"
         class="gl-grow gl-text-default gl-break-anywhere"
-        :class="{ 'gl-w-max': isFlyout }"
+        :class="{ 'gl-w-max': isFlyout, 'nav-item-link-label': !isFlyout }"
         data-testid="nav-item-link-label"
       >
         {{ item.title }}
@@ -269,7 +252,7 @@ export default {
       <slot name="actions"></slot>
       <span
         v-if="hasEndSpace && !isIconOnly"
-        class="gl-flex gl-min-w-6 gl-items-start gl-justify-end"
+        class="nav-item-link-badge gl-flex gl-min-w-6 gl-items-start gl-justify-end"
       >
         <gl-badge
           v-if="hasPill"

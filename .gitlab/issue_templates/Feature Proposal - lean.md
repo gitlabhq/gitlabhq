@@ -68,4 +68,4 @@ Examples:
 /label ~"GitLab Free" ~"GitLab Premium" ~"GitLab Ultimate"
 
 -->
-/label ~"type::feature" 
+/label ~"type::feature" ~"feature::addition"

@@ -171,7 +171,7 @@ export default {
       :state="isContentValid"
       :invalid-feedback="__('Please enter the comment template content.')"
       data-testid="comment-template-content-form-group"
-      class="lg:gl-max-w-8/10"
+      class="@lg/panel:gl-max-w-8/10"
     >
       <markdown-editor
         v-model="updateCommentTemplate.content"

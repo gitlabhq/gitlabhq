@@ -18,6 +18,11 @@ module Ci
         @optional_commit_status_params = optional_commit_status_params
         unsafe_execute
       end
+    rescue FailedToObtainLockError
+      ServiceResponse.error(
+        message: 'Another update to this commit status is in progress',
+        reason: :conflict
+      )
     end
 
     private
@@ -142,7 +147,37 @@ module Ci
       end
     end
 
+    # rubocop:disable CodeReuse/ActiveRecord -- Quick Logging Check
+    def check_and_log_external_commit_status_user_collision(pipeline)
+      duplicate_commit_status = ::GenericCommitStatus
+        .running_or_pending
+        .for_project(project.id)
+        .in_pipelines(pipeline)
+        .in_partition(pipeline.partition_id)
+        .for_ref(ref)
+        .by_name(name)
+        .where.not(user: current_user)
+
+      return unless duplicate_commit_status.exists?
+
+      Gitlab::AppJsonLogger.info(
+        class: self.class.name,
+        event: 'external_commit_status_user_collision',
+        project_id: project.id,
+        pipeline_id: pipeline.id,
+        commit_sha: sha,
+        ref: ref,
+        status_name: name,
+        current_user_id: current_user.id,
+        existing_user_ids: duplicate_commit_status.map(&:user_id),
+        existing_status_count: duplicate_commit_status.length
+      )
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
+
     def external_commit_status_scope(pipeline)
+      check_and_log_external_commit_status_user_collision(pipeline)
+
       scope = ::GenericCommitStatus
         .running_or_pending
         .for_project(project.id)
@@ -187,7 +222,7 @@ module Ci
 
     def pipeline_lock_params
       {
-        ttl: 5.seconds,
+        ttl: (Feature.enabled?(:long_pipeline_lock_ttl, project) ? 1.minute : 5.seconds),
         sleep_sec: 0.1.seconds,
         retries: 20
       }

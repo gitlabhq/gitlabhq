@@ -191,18 +191,25 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       let_it_be(:channel) { 'stable' }
       let_it_be(:package_file) { create(:helm_package_file, package: package, channel: channel) }
       let(:package_file_id) { package_file.id }
+      let(:expect_metadatum) { package_file.helm_file_metadatum }
 
       before_all do
         project.add_maintainer(user)
       end
 
       it 'enqueue a worker to sync a helm metadata cache', :aggregate_failures do
-        expect(Packages::Helm::CreateMetadataCacheWorker)
-          .to receive(:perform_async).with(project.id, channel)
+        allow(Packages::Helm::CreateMetadataCacheWorker).to receive(:bulk_perform_async_with_contexts)
 
         api_request
 
         expect(response).to have_gitlab_http_status(:success)
+        expect(Packages::Helm::CreateMetadataCacheWorker)
+          .to have_received(:bulk_perform_async_with_contexts) do |metadata, arguments_proc:, context_proc:|
+            expect(metadata.map(&:channel)).to match_array([channel])
+
+            expect(arguments_proc.call(expect_metadatum)).to eq([project.id, channel])
+            expect(context_proc.call(expect_metadatum)).to eq(project: project, user: user)
+          end
       end
 
       context 'when package_file does not have helm_file_metadatum' do

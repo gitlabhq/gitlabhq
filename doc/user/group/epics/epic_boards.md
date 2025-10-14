@@ -2,6 +2,7 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Manage and visualize group epics in GitLab with Epic Boards. Create, organize, filter, and track progress using labels and weights.
 title: Epic boards
 ---
 
@@ -35,7 +36,7 @@ On the top of each list, you can see the number of epics in the list ({{< icon n
 To view an epic board:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epic boards**.
+1. Select **Plan** > **Epic boards**.
 
 ![GitLab epic board - Premium](img/epic_board_v15_10.png)
 
@@ -48,7 +49,7 @@ Prerequisites:
 To create a new epic board:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epic boards**.
+1. Select **Plan** > **Epic boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. Enter the new board's title.
@@ -101,7 +102,7 @@ Prerequisites:
 To create a new list:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epic boards**.
+1. Select **Plan** > **Epic boards**.
 1. In the upper-right corner, select **New list**.
 1. Hover or move keyboard focus between two lists.
 1. Select **New list**.

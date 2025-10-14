@@ -3,7 +3,7 @@
 - breadcrumb_title @group.name
 - page_title @group.name, _("Groups")
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
-- list_item_classes = '!gl-grid md:gl-grid-cols-3 gl-gap-x-3'
+- list_item_classes = '!gl-grid @md/panel:gl-grid-cols-3 gl-gap-x-3'
 
 = render ::Layouts::PageHeadingComponent.new(@group.full_name) do |c|
   - c.with_actions do
@@ -12,7 +12,7 @@
         button_options: { data: { testid: 'edit-group-link' }}) do
         = _('Edit')
 
-.gl-grid.md:gl-grid-cols-2.gl-gap-5
+.gl-grid.gl-gap-5{ class: "@md/panel:gl-grid-cols-2" }
   .gl-flex.gl-flex-col.gl-gap-5
     = render ::Layouts::CrudComponent.new(_('Group information')) do |c|
       - c.with_body do

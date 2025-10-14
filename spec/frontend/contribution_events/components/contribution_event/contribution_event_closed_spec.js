@@ -22,7 +22,7 @@ describe('ContributionEventClosed', () => {
   describe.each`
     event                                       | expectedMessage                                                   | iconName
     ${eventMilestoneClosed()}                   | ${'Closed milestone %{targetLink} in %{resourceParentLink}.'}     | ${'status_closed'}
-    ${eventIssueClosed()}                       | ${'Closed issue %{targetLink} in %{resourceParentLink}.'}         | ${'issue-closed'}
+    ${eventIssueClosed()}                       | ${'Closed issue %{targetLink} in %{resourceParentLink}.'}         | ${'issue-close'}
     ${eventMergeRequestClosed()}                | ${'Closed merge request %{targetLink} in %{resourceParentLink}.'} | ${'merge-request-close'}
     ${{ target: { type: 'unsupported type' } }} | ${'Closed resource.'}                                             | ${'status_closed'}
   `('when event target type is $event.target.type', ({ event, expectedMessage, iconName }) => {

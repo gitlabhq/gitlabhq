@@ -671,7 +671,7 @@ Public key encryption algorithms are:
 - More secure because leaking the private key has severe security consequences.
 
 1. Open the Keycloak administration console.
-1. Select **Realm Settings > Tokens > Default Signature Algorithm**.
+1. Select **Realm Settings** > **Tokens** > **Default Signature Algorithm**.
 1. Configure the signature algorithm.
 
 Example configuration block for Linux package installations:
@@ -737,8 +737,8 @@ To use symmetric key encryption:
      In this example, there are two private keys: one for HS256 (`hmac-generated`)
      and another for HS384 (`fallback-HS384`). We use the first `value` to configure GitLab.
 
-1. Convert `value` to standard base64. As discussed in the [**Invalid signature with HS256 token** post](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9),
-   `value` is encoded in the [**Base 64 Encoding with URL and Filename Safe Alphabet** section](https://datatracker.ietf.org/doc/html/rfc4648#section-5) of RFC 4648.
+1. Convert `value` to standard base64. As discussed in the ["Invalid signature with HS256 token" post](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9),
+   `value` is encoded in the ["Base 64 Encoding with URL and Filename Safe Alphabet section](https://datatracker.ietf.org/doc/html/rfc4648#section-5) of RFC 4648.
    This must be converted to [standard base64 as defined in RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045).
    The following Ruby script does this:
 
@@ -1722,7 +1722,7 @@ Prerequisites:
 To force step-up authentication for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under Step-up authentication, select an available authentication provider.
 1. Select **Save changes**.

@@ -44,12 +44,12 @@ export default {
     {
       key: 'fingerprint_sha256',
       label: __('Fingerprint (SHA256)'),
-      tdClass: 'md:gl-max-w-26',
+      tdClass: '@md/panel:gl-max-w-26',
     },
     {
       key: 'fingerprint',
       label: __('Fingerprint (MD5)'),
-      tdClass: 'md:gl-max-w-26',
+      tdClass: '@md/panel:gl-max-w-26',
     },
     {
       key: 'projects',
@@ -62,8 +62,8 @@ export default {
     {
       key: 'actions',
       label: __('Actions'),
-      tdClass: 'lg:gl-w-px gl-whitespace-nowrap',
-      thClass: 'lg:gl-w-px gl-whitespace-nowrap',
+      tdClass: '@lg/panel:gl-w-px gl-whitespace-nowrap',
+      thClass: '@lg/panel:gl-w-px gl-whitespace-nowrap',
     },
   ],
   modal: {

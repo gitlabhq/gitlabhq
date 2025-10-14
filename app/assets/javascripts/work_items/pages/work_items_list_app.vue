@@ -7,9 +7,13 @@ import {
   GlTooltipDirective,
   GlIcon,
   GlSkeletonLoader,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlModalDirective,
 } from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -23,6 +27,7 @@ import {
   getInitialPageParams,
   getSortOptions,
   getTypeTokenOptions,
+  groupMultiSelectFilterTokens,
 } from 'ee_else_ce/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
@@ -35,10 +40,12 @@ import {
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
+import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
+  ISSUE_REFERENCE,
   PARAM_FIRST_PAGE_SIZE,
   PARAM_LAST_PAGE_SIZE,
   PARAM_PAGE_AFTER,
@@ -46,6 +53,7 @@ import {
   PARAM_SORT,
   PARAM_STATE,
   urlSortParams,
+  UPDATED_DESC,
   RELATIVE_POSITION_ASC,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
@@ -54,7 +62,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { __, s__ } from '~/locale';
+import { __, s__, n__ } from '~/locale';
 import {
   OPERATOR_IS,
   OPERATORS_AFTER_BEFORE,
@@ -115,6 +123,7 @@ import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import WorkItemListActions from '../components/work_item_list_actions.vue';
 import WorkItemByEmail from '../components/work_item_by_email.vue';
+import WorkItemsCsvImportModal from '../components/work_items_csv_import_modal.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
@@ -160,6 +169,7 @@ export default {
   CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
   searchProjectsQuery,
+  importModalId: 'work-item-import-modal',
   components: {
     GlLoadingIcon,
     GlButton,
@@ -170,6 +180,7 @@ export default {
       import('~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue'),
     WorkItemDrawer,
     WorkItemHealthStatus,
+    EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     CreateWorkItemModal,
     LocalBoard,
@@ -180,9 +191,13 @@ export default {
     GlIcon,
     GlSkeletonLoader,
     NewResourceDropdown,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
+    WorkItemsCsvImportModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin()],
   provide() {
@@ -221,6 +236,11 @@ export default {
     'newWorkItemEmailAddress',
     'isGroupIssuesList',
     'groupId',
+    'canImportWorkItems',
+    'canEdit',
+    'isIssueRepositioningDisabled',
+    'hasProjects',
+    'newIssuePath',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -260,7 +280,6 @@ export default {
       workItemsSlim: [],
       workItemStateCounts: {},
       activeItem: null,
-      isRefetching: false,
       hasStateToken: false,
       initialLoadWasFiltered: false,
       showLocalBoard: false,
@@ -446,7 +465,7 @@ export default {
       return Boolean(this.searchQuery);
     },
     isLoading() {
-      return this.$apollo.queries.workItemsSlim.loading && !this.isRefetching;
+      return this.$apollo.queries.workItemsSlim.loading;
     },
     isOpenTab() {
       return this.state === STATUS_OPEN;
@@ -457,17 +476,20 @@ export default {
     queryVariables() {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
       const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
+      const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.rootPageFullPath,
         sort: this.sortKey,
         state: this.state,
         ...this.apiFilterParams,
         ...this.pageParams,
-        search: this.searchQuery,
+        iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
+        search: isIidSearch ? undefined : this.searchQuery,
         excludeProjects: hasGroupFilter || this.isEpicsList,
         includeDescendants: !hasGroupFilter,
         types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
+        excludeGroupWorkItems: this.isGroupIssuesList,
       };
     },
     csvExportQueryVariables() {
@@ -507,11 +529,13 @@ export default {
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
+          unique: true, // need not to be unique but the BE supports only one author in "IS" condition
           token: UserToken,
           dataType: 'user',
           defaultUsers: [],
@@ -520,6 +544,7 @@ export default {
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-author`,
           preloadedUsers,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -530,6 +555,7 @@ export default {
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.fetchLatestLabels,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-label`,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_MILESTONE,
@@ -754,6 +780,7 @@ export default {
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
         hasManualSort: !this.isEpicsList,
+        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList,
         hasStartDate: true,
         hasPriority: !this.isEpicsList,
         hasMilestoneDueDate: true,
@@ -843,6 +870,40 @@ export default {
     },
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
+    },
+    isJiraImportVisible() {
+      return Boolean(this.projectImportJiraPath) && this.canEdit;
+    },
+    importFromJira() {
+      return {
+        text: s__('WorkItem|Import from Jira'),
+        href: this.projectImportJiraPath,
+      };
+    },
+    importCsv() {
+      return {
+        text: s__('WorkItem|Import CSV'),
+      };
+    },
+    showProjectNewWorkItem() {
+      return this.showNewWorkItem && !this.isGroupIssuesList;
+    },
+    showGroupNewWorkItem() {
+      return this.isGroupIssuesList && this.hasProjects;
+    },
+    workItemTotalStateCount() {
+      const stateToken = this.filterTokens?.find((token) => token.type === TOKEN_TYPE_STATE);
+      const stateValue = stateToken?.value?.data;
+
+      let count = this.workItemStateCounts?.all || 0;
+
+      if (stateValue === STATUS_OPEN) {
+        count = this.workItemStateCounts?.opened || 0;
+      } else if (stateValue === STATUS_CLOSED) {
+        count = this.workItemStateCounts?.closed || 0;
+      }
+
+      return n__('WorkItem|%d item', 'WorkItem|%d items', count);
     },
   },
   watch: {
@@ -1021,8 +1082,21 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    showIssueRepositioningMessage() {
+      createAlert({
+        message: s__(
+          'WorkItems|Sort order rebalancing in progress. Reordering is temporarily disabled.',
+        ),
+        variant: VARIANT_INFO,
+      });
+    },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
+        return;
+      }
+
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
         return;
       }
 
@@ -1080,10 +1154,19 @@ export default {
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      this.filterTokens = getFilterTokens(window.location.search, {
+      let sortKey = deriveSortKey({ sort, state });
+
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
+        sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+      }
+
+      const tokens = getFilterTokens(window.location.search, {
         includeStateToken: !this.withTabs,
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
       });
+      this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
+
       if (!this.hasStateToken && this.state === STATUS_ALL) {
         this.filterTokens = this.filterTokens.filter(
           (filterToken) => filterToken.type !== TOKEN_TYPE_STATE,
@@ -1100,7 +1183,7 @@ export default {
 
       // Trigger pageSize UI component update based on URL changes
       this.pageSize = this.pageParams.firstPageSize;
-      this.sortKey = deriveSortKey({ sort });
+      this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
     },
     checkDrawerParams() {
@@ -1149,7 +1232,6 @@ export default {
       return this.filterTokens.some((filterToken) => filterToken.type === TOKEN_TYPE_STATE);
     },
     handleWorkItemCreated() {
-      this.isInitialLoadComplete = false;
       this.refetchItems({ refetchCounts: true });
     },
     fetchReleases(search) {
@@ -1304,7 +1386,8 @@ export default {
         :issuables-loading="isLoading"
         :is-manual-ordering="isManualOrdering"
         :show-bulk-edit-sidebar="showBulkEditSidebar"
-        namespace="work-items"
+        label-filter-param="label_name"
+        :namespace="rootPageFullPath"
         :full-path="rootPageFullPath"
         recent-searches-storage-key="issues"
         :search-tokens="searchTokens"
@@ -1335,10 +1418,11 @@ export default {
             :display-settings="displaySettings"
             :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
+            :is-group="isGroup"
           />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
-          <div class="gl-flex gl-gap-3">
+          <div class="gl-flex gl-justify-end gl-gap-3">
             <gl-button
               v-if="enableClientSideBoardsExperiment"
               data-testid="show-local-board-button"
@@ -1355,17 +1439,17 @@ export default {
               {{ __('Bulk edit') }}
             </gl-button>
             <create-work-item-modal
-              v-if="showNewWorkItem && !isGroupIssuesList"
+              v-if="showProjectNewWorkItem"
               :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              @workItemCreated="refetchItems"
+              @workItemCreated="handleWorkItemCreated"
             />
             <new-resource-dropdown
-              v-if="showNewWorkItem && isGroupIssuesList"
+              v-if="showGroupNewWorkItem"
               :query="$options.searchProjectsQuery"
               :query-variables="newIssueDropdownQueryVariables"
               :extract-projects="extractProjects"
@@ -1382,7 +1466,7 @@ export default {
 
         <template v-if="isPlanningViewsEnabled" #list-header>
           <work-item-list-heading>
-            <div class="gl-flex gl-gap-3">
+            <div class="gl-flex gl-justify-end gl-gap-3">
               <gl-button
                 v-if="enableClientSideBoardsExperiment"
                 data-testid="show-local-board-button"
@@ -1399,17 +1483,17 @@ export default {
                 {{ __('Bulk edit') }}
               </gl-button>
               <create-work-item-modal
-                v-if="showNewWorkItem && !isGroupIssuesList"
+                v-if="showProjectNewWorkItem"
                 :allowed-work-item-types="allowedWorkItemTypes"
                 :always-show-work-item-type-select="!isEpicsList"
                 :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                 :full-path="rootPageFullPath"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
-                @workItemCreated="refetchItems"
+                @workItemCreated="handleWorkItemCreated"
               />
               <new-resource-dropdown
-                v-if="showNewWorkItem && isGroupIssuesList"
+                v-if="isGroupIssuesList"
                 :query="$options.searchProjectsQuery"
                 :query-variables="newIssueDropdownQueryVariables"
                 :extract-projects="extractProjects"
@@ -1423,6 +1507,13 @@ export default {
               />
             </div>
           </work-item-list-heading>
+        </template>
+
+        <template v-if="isPlanningViewsEnabled && workItems.length" #before-list-items>
+          <!-- state-count -->
+          <div class="gl-border-b gl-py-3">
+            {{ workItemTotalStateCount }}
+          </div>
         </template>
 
         <template #timeframe="{ issuable = {} }">
@@ -1443,7 +1534,33 @@ export default {
         </template>
 
         <template #empty-state>
-          <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
+          <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
+            <empty-state-with-any-issues
+              :has-search="hasSearch"
+              :is-open-tab="isOpenTab"
+              :is-epic="isEpicsList"
+            >
+              <template #new-issue-button>
+                <create-work-item-modal
+                  v-if="showProjectNewWorkItem"
+                  :allowed-work-item-types="allowedWorkItemTypes"
+                  :always-show-work-item-type-select="!isEpicsList"
+                  :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+                  :full-path="rootPageFullPath"
+                  :is-group="isGroup"
+                  :preselected-work-item-type="preselectedWorkItemType"
+                  @workItemCreated="handleWorkItemCreated"
+                />
+                <new-resource-dropdown
+                  v-if="showGroupNewWorkItem"
+                  :query="$options.searchProjectsQuery"
+                  :query-variables="newIssueDropdownQueryVariables"
+                  :extract-projects="extractProjects"
+                  :group-id="groupId"
+                />
+              </template>
+            </empty-state-with-any-issues>
+          </slot>
         </template>
 
         <template #list-body>
@@ -1466,7 +1583,7 @@ export default {
         </template>
 
         <template #sidebar-items="{ checkedIssuables }">
-          <div class="gl-h-[calc(100%-57px)] gl-overflow-y-auto">
+          <div class="work-item-bulk-edit-sidebar-wrapper gl-overflow-y-auto">
             <work-item-bulk-edit-sidebar
               v-if="showBulkEditSidebar"
               :checked-items="checkedIssuables"
@@ -1523,18 +1640,51 @@ export default {
 
   <div v-else>
     <slot name="page-empty-state">
-      <empty-state-without-any-issues
-        :export-csv-path-with-query="exportCsvPathWithQuery"
-        :show-csv-buttons="showCsvButtons"
-      >
+      <empty-state-without-any-issues :export-csv-path-with-query="exportCsvPathWithQuery">
         <template #new-issue-button>
           <create-work-item-modal
+            v-if="showProjectNewWorkItem"
+            :allowed-work-item-types="allowedWorkItemTypes"
+            :always-show-work-item-type-select="!isEpicsList"
             :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
             :full-path="rootPageFullPath"
             :is-group="isGroup"
             :preselected-work-item-type="preselectedWorkItemType"
             @workItemCreated="handleWorkItemCreated"
           />
+          <new-resource-dropdown
+            v-if="showGroupNewWorkItem"
+            :query="$options.searchProjectsQuery"
+            :query-variables="newIssueDropdownQueryVariables"
+            :extract-projects="extractProjects"
+            :group-id="groupId"
+          />
+        </template>
+        <template #import-export-buttons
+          ><gl-disclosure-dropdown
+            v-if="showCsvButtons"
+            class="gl-mx-2 gl-mb-3"
+            :toggle-text="__('Import issues')"
+            data-testid="import-issues-dropdown"
+          >
+            <gl-disclosure-dropdown-item
+              v-if="isJiraImportVisible"
+              data-testid="import-from-jira-link"
+              :item="importFromJira"
+            />
+            <gl-disclosure-dropdown-item
+              v-if="canImportWorkItems"
+              v-gl-modal="$options.importModalId"
+              data-testid="import-csv-button"
+              :item="importCsv"
+            />
+
+            <work-items-csv-import-modal
+              v-if="canImportWorkItems"
+              :modal-id="$options.importModalId"
+              :full-path="rootPageFullPath"
+            />
+          </gl-disclosure-dropdown>
         </template>
       </empty-state-without-any-issues>
     </slot>

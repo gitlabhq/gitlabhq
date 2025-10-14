@@ -330,11 +330,74 @@ If you specify multiple approvers in the same `require_approval` block, any of t
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `require_approval` | The action's type. |
 | `approvals_required` | `integer` | true | Greater than or equal to zero | The number of MR approvals required. |
-| `user_approvers` | `array` of `string` | false | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `user_approvers_ids` | `array` of `integer` | false | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `group_approvers` | `array` of `string` | false | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `group_approvers_ids` | `array` of `integer` | false | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `role_approvers` | `array` of `string` | false | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. |
+| `user_approvers` | `array` of `string` | Conditional | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `user_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `group_approvers` | `array` of `string` | Conditional <sup>1</sup> | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `group_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `role_approvers` | `array` of `string` | Conditional <sup>1</sup> | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. |
+
+**Footnotes:**
+
+1. You must specify at least one approver using the approver fields (`user_approvers`, `user_approvers_ids`, `group_approvers`, `group_approvers_ids`, or `role_approvers`).
+
+### Valid configuration examples
+
+**Valid `user_approvers`:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 2
+    user_approvers:
+      - alice
+      - bob
+```
+
+**Valid `group_approvers`:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 1
+    group_approvers:
+      - security-team
+```
+
+**Valid `role_approvers`:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 1
+    role_approvers:
+      - maintainer
+```
+
+**Valid with multiple approver types:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 2
+    user_approvers:
+      - alice
+    group_approvers:
+      - security-team
+    role_approvers:
+      - maintainer
+```
+
+### Invalid configuration example
+
+**Invalid because no approvers specified:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 2
+    # ERROR: At least one approver field must be specified
+    # This configuration will fail validation
+```
 
 ## `send_bot_message` action type
 
@@ -360,9 +423,9 @@ the bot message is sent as long as at least one of those policies has the `send_
 
 ### Example bot messages
 
-![scan_results_example_bot_message_v17_0](img/scan_result_policy_example_bot_message_vulnerabilities_v17_0.png)
+![Example bot message showing vulnerabilities detected by security scans.](img/scan_result_policy_example_bot_message_vulnerabilities_v17_0.png)
 
-![scan_results_example_bot_message_v17_0](img/scan_result_policy_example_bot_message_artifacts_v17_0.png)
+![Example bot message showing missing or incomplete scan artifacts required for policy evaluation.](img/scan_result_policy_example_bot_message_artifacts_v17_0.png)
 
 ## Warn mode
 
@@ -430,6 +493,8 @@ On GitLab Self-Managed, by default the `fallback_behavior` field is available. T
 
 ## `policy_tuning`
 
+### `unblock_rules_using_execution_policies`
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498624) support for use in pipeline execution policies in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `unblock_rules_using_pipeline_execution_policies`. Enabled by default.
@@ -437,19 +502,15 @@ On GitLab Self-Managed, by default the `fallback_behavior` field is available. T
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of support for pipeline execution policies is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
 
-### Examples
+You can only exclude [license finding rules](#license_finding-rule-type) if they target newly detected states only (`license_states` is set to `newly_detected`).
 
-#### Example of `policy_tuning` with a scan execution policy
+#### Examples
+
+##### Example of `policy_tuning` with a scan execution policy
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](enforcement/security_policy_projects.md):
@@ -495,7 +556,7 @@ approval_policy:
     unblock_rules_using_execution_policies: true
 ```
 
-#### Example of `policy_tuning` with a pipeline execution policy
+##### Example of `policy_tuning` with a pipeline execution policy
 
 {{< alert type="warning" >}}
 
@@ -529,7 +590,7 @@ include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 ```
 
-##### Recreate pipeline execution policies created before GitLab 17.10
+###### Recreate pipeline execution policies created before GitLab 17.10
 
 Pipeline execution policies created before GitLab 17.10 do not contain the data required
 to use the `policy_tuning` feature. To use this feature with older pipeline execution policies,
@@ -541,16 +602,35 @@ For a video walkthrough, see [Security policies: Recreate a pipeline execution p
 
 To recreate a pipeline execution policy:
 
+<!-- markdownlint-disable MD044 -->
+
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Policies**.
+1. Select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
 1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
 1. Next to the policies table, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and select **Delete**.
 1. Merge the generated merge request.
-1. Go back to **Secure > Policies** and select **New policy**.
+1. Go back to **Secure** > **Policies** and select **New policy**.
 1. In the **Pipeline execution policy** section, select **Select policy**.
-1. In the **.YAML mode**, paste the contents of the old policy.
+1. In the **.yaml mode**, paste the contents of the old policy.
 1. Select **Update via merge request** and merge the generated merge request.
+
+<!-- markdownlint-enable MD044 -->
+
+### `security_report_time_window`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525509) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_time_window`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/543027) in GitLab 18.5. Feature flag `approval_policy_time_window` removed.
+
+{{< /history >}}
+
+In busy projects, the most recent pipeline may not have completed security scans available right away, which blocks security report comparisons. Use the `security_report_time_window` setting to security reports from recently completed pipelines instead. The security reports cannot be older than the time window, specified in minutes prior to the creation of the target branch pipeline. This setting does not apply if the selected pipeline already has completed security reports.
+
+| Field  | Type     | Required | Possible values    | Description                                                                                                          |
+|--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| `security_report_time_window` | `integer` | false    | 1 to 10080 (7 days) | Specifies the time window in minutes for choosing the target pipeline for the security report comparison. |
 
 ## Policy scope schema
 
@@ -567,6 +647,10 @@ The `bypass_settings` field allows you to specify exceptions to the policy for c
 | `branches`        | array   | false    | List of source and target branches (by name or pattern) that bypass the policy. |
 | `access_tokens`   | array   | false    | List of access token IDs that bypass the policy.                                |
 | `service_accounts`| array   | false    | List of service account IDs that bypass the policy.                             |
+| `users`           | array   | false    | List of user IDs that can bypass the policy.                                        |
+| `groups`          | array   | false    | List of group IDs that can bypass the policy.                                       |
+| `roles`           | array   | false    | List of default roles that can bypass the policy.                                   |
+| `custom_roles`    | array   | false    | List of custom role IDs that can bypass the policy.                                 |
 
 ### Source branch exceptions
 
@@ -599,6 +683,27 @@ With access token and service account exceptions, you can designate specific ser
 |-------|---------|----------|------------------------------------------------|
 | `id`  | integer | true     | The ID of the access token or service account. |
 
+### Allowing users to bypass security policies
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18114) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_group_roles`.
+
+{{< /history >}}
+
+You can prepare for urgent situations by designating specific users, groups, roles, or custom roles that can bypass merge request approval policies. This capability provides flexibility for emergency responses, while providing comprehensive audit trails and maintaining governance controls. To allow a user, group, role, or custom role the ability to bypass security policies, you grant them an exception.
+
+Users who have these exceptions can bypass at two levels:
+
+- Merge request approval requirements: The user can bypass an approval requirement by providing a reason from the merge request UI.
+- Branch protections: The user can push directly to a branch with push protection from merge request approval policy by providing a reason in the [`security_policy.bypass_reason` Git push options](../../../topics/git/commit.md#push-options-for-security-policy)
+
+{{< alert type="note" >}}
+
+The `security_policy.bypass_reason` push option works only for branches with push protection from a merge request approval policy configured with [approval_settings](merge_request_approval_policies.md#approval_settings). Pushes to protected branches that are not covered by a merge request approval policy cannot be bypassed with this option.
+
+{{< /alert >}}
+
 #### Example YAML
 
 ```yaml
@@ -607,6 +712,18 @@ bypass_settings:
     - id: 123
     - id: 456
   service_accounts:
+    - id: 789
+    - id: 1011
+  users:
+    - id: 123
+    - id: 456
+  groups:
+    - id: 789
+    - id: 1011
+  roles:
+    - maintainer
+    - developer
+  custom_roles:
     - id: 789
     - id: 1011
 ```

@@ -710,7 +710,8 @@ module ProjectsHelper
   def dashboard_projects_app_data
     {
       initial_sort: project_list_sort_by,
-      programming_languages: programming_languages
+      programming_languages: programming_languages,
+      base_path: root_path
     }.to_json
   end
 

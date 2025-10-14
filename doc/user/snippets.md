@@ -80,7 +80,7 @@ To discover all snippets visible to you in GitLab, you can:
 
 - View a project's snippets:
   1. On the left sidebar, select **Search or go to** and find your project.
-  1. Select **Code > Snippets**.
+  1. Select **Code** > **Snippets**.
 - View all the snippets you created:
   1. On the left sidebar, select **Search or go to**.
   1. Select **Your work**.
@@ -100,7 +100,7 @@ To discover all snippets visible to you in GitLab, you can:
 Project snippets are enabled and available by default. To change their
 default visibility:
 
-1. In your project, go to **Settings > General**.
+1. In your project, go to **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section, and scroll to **Snippets**.
 1. Toggle the default visibility, and select whether snippets can be viewed by
    everyone, or only project members.
@@ -193,7 +193,7 @@ To embed a snippet:
 1. Confirm your snippet is publicly visible:
    - If it's a project snippet, the project must be public.
    - The snippet is publicly visible.
-   - In your project, go to **Settings > General**. Expand the **Visibility, project features, permissions**
+   - In your project, go to **Settings** > **General**. Expand the **Visibility, project features, permissions**
      section, and scroll to **Snippets**. Set the snippet permission to **Everyone with access**.
 1. In your snippet's **Embed** section, select **Copy** to copy a one-line script
    you can add to any website or blog post. For example:
@@ -246,7 +246,7 @@ Prerequisites:
 To do this task:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Snippets**.
+1. Select **Code** > **Snippets**.
 1. Select the snippet you want to report as spam.
 1. Select **Submit as spam**.
 

@@ -57,7 +57,7 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
  * @param currentNotes
  * @param newNote
  */
-export const updateCacheAfterCreatingNote = (currentNotes, newNote) => {
+export const updateCacheAfterCreatingNote = (currentNotes, newNote, { prepend = false } = {}) => {
   if (!newNote) {
     return currentNotes;
   }
@@ -76,7 +76,12 @@ export const updateCacheAfterCreatingNote = (currentNotes, newNote) => {
       return;
     }
 
-    notesWidget.discussions.nodes.push(newNote.discussion);
+    if (prepend) {
+      notesWidget.discussions.nodes.unshift(newNote.discussion);
+    } else {
+      notesWidget.discussions.nodes.push(newNote.discussion);
+    }
+
     updateNotesWidgetDataInDraftData(draftData, notesWidget);
   });
 };
@@ -413,8 +418,8 @@ export const getNewWorkItemSharedCache = ({
           weight: sharedCacheWidgets[WIDGET_TYPE_WEIGHT]
             ? sharedCacheWidgets[WIDGET_TYPE_WEIGHT]?.weight || null
             : null,
-          rolledUpWeight: 0,
-          rolledUpCompletedWeight: 0,
+          rolledUpWeight: null,
+          rolledUpCompletedWeight: null,
           widgetDefinition: {
             editable: weightWidgetData?.editable,
             rollUp: weightWidgetData?.rollUp,
@@ -736,6 +741,7 @@ export const setNewWorkItemCache = async ({
           duplicatedToWorkItemUrl: null,
           promotedToEpicUrl: null,
           showPlanUpgradePromotion: false,
+          userDiscussionsCount: 0,
           project: null,
           namespace: {
             id: newWorkItemPath,

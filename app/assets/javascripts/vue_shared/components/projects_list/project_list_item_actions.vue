@@ -2,11 +2,14 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { archiveProject, restoreProject, unarchiveProject } from '~/rest_api';
+import { archiveProject, restoreProject, unarchiveProject, deleteProject } from '~/rest_api';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
+import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import {
   ACTION_ARCHIVE,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_EDIT,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
@@ -17,6 +20,8 @@ import {
   renderArchiveSuccessToast,
   renderRestoreSuccessToast,
   renderUnarchiveSuccessToast,
+  renderDeleteSuccessToast,
+  deleteParams,
 } from './utils';
 
 export default {
@@ -24,6 +29,8 @@ export default {
   components: {
     GlLoadingIcon,
     ListActions,
+    DeleteModal,
+    ProjectListItemDelayedDeletionModalFooter,
   },
   mixins: [InternalEvents.mixin()],
   i18n: {
@@ -34,10 +41,32 @@ export default {
       type: Object,
       required: true,
     },
+    openMergeRequestsCount: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    openIssuesCount: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    forksCount: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    starCount: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       actionsLoading: false,
+      isDeleteModalVisible: false,
+      isDeleteLoading: false,
     };
   },
   computed: {
@@ -76,7 +105,16 @@ export default {
         [ACTION_DELETE]: {
           action: this.onActionDelete,
         },
+        [ACTION_DELETE_IMMEDIATELY]: {
+          action: this.onActionDelete,
+        },
       };
+    },
+    hasActionDelete() {
+      return (
+        this.project.availableActions?.includes(ACTION_DELETE) ||
+        this.project.availableActions?.includes(ACTION_DELETE_IMMEDIATELY)
+      );
     },
   },
   methods: {
@@ -117,18 +155,56 @@ export default {
       }
     },
     onActionDelete() {
-      this.$emit('delete');
+      this.isDeleteModalVisible = true;
+    },
+    async onDeleteModalPrimary() {
+      this.isDeleteLoading = true;
+
+      try {
+        await deleteProject(this.project.id, deleteParams(this.project));
+        this.$emit('refetch');
+        renderDeleteSuccessToast(this.project);
+      } catch (error) {
+        createAlert({
+          message: s__(
+            'Projects|An error occurred deleting the project. Please refresh the page to try again.',
+          ),
+          error,
+          captureError: true,
+        });
+      } finally {
+        this.isDeleteLoading = false;
+      }
     },
   },
 };
 </script>
 
 <template>
-  <gl-loading-icon v-if="actionsLoading" size="sm" class="gl-px-3" />
-  <list-actions
-    v-else
-    data-testid="groups-projects-more-actions-dropdown"
-    :actions="actions"
-    :available-actions="project.availableActions"
-  />
+  <div>
+    <gl-loading-icon v-if="actionsLoading" size="sm" class="gl-px-3" />
+    <list-actions
+      v-else
+      data-testid="projects-list-item-actions"
+      :actions="actions"
+      :available-actions="project.availableActions"
+    />
+    <delete-modal
+      v-if="hasActionDelete"
+      v-model="isDeleteModalVisible"
+      :confirm-phrase="project.fullPath"
+      :name-with-namespace="project.nameWithNamespace"
+      :is-fork="project.isForked"
+      :confirm-loading="isDeleteLoading"
+      :merge-requests-count="openMergeRequestsCount"
+      :issues-count="openIssuesCount"
+      :forks-count="forksCount"
+      :stars-count="starCount"
+      @primary="onDeleteModalPrimary"
+    >
+      <template #modal-footer>
+        <project-list-item-delayed-deletion-modal-footer :project="project" />
+      </template>
+    </delete-modal>
+  </div>
 </template>

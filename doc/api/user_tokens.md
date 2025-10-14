@@ -38,11 +38,11 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description |
 |:-------------|:--------|:---------|:------------|
-| `user_id`    | integer | yes      | ID of user account |
-| `name`       | string  | yes      | Name of personal access token |
-| `description`| string  | no       | Description of personal access token |
+| `user_id`    | integer | yes      | ID of user account. |
+| `name`       | string  | yes      | Name of personal access token. |
+| `description`| string  | no       | Description of personal access token. Maximum: 255 characters. |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
-| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes).  |
+| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes). |
 
 Example request:
 
@@ -99,8 +99,8 @@ Supported attributes:
 
 | Attribute    | Type   | Required | Description |
 |:-------------|:-------|:---------|:------------|
-| `name`       | string | yes      | Name of personal access token |
-| `description`| string | no       | Description of personal access token |
+| `name`       | string | yes      | Name of personal access token. |
+| `description`| string | no       | Description of personal access token. Maximum: 255 characters. |
 | `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy` and `self_rotate`. |
 | `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 

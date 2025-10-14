@@ -2302,6 +2302,52 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#assigning_role_too_high?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:member, reload: true) { create(:group_member, :reporter, group: group, user: user) }
+
+    subject(:assigning_role_too_high) { group.assigning_role_too_high?(user, access_level) }
+
+    context 'when the access_level is nil' do
+      let(:access_level) { nil }
+
+      it 'returns false' do
+        expect(assigning_role_too_high).to be_falsey
+      end
+    end
+
+    context 'when the role being assigned is lower then the role of currect user' do
+      let(:access_level) { Gitlab::Access::GUEST }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the role being assigned is equal to the role of currect user' do
+      let(:access_level) { Gitlab::Access::REPORTER }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the role being assigned is higher than the role of currect user' do
+      let(:access_level) { Gitlab::Access::MAINTAINER }
+
+      it 'returns true' do
+        expect(assigning_role_too_high).to be_truthy
+      end
+
+      context 'when the current user is admin', :enable_admin_mode do
+        before do
+          user.update!(admin: true)
+        end
+
+        it 'returns false' do
+          expect(assigning_role_too_high).to be_falsey
+        end
+      end
+    end
+  end
+
   def setup_group_members(group)
     members = {
       owner: create(:user),
@@ -4306,13 +4352,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items_alpha }
       let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
-    end
-  end
-
-  describe '#work_items_project_issues_list_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :work_items_project_issues_list }
-      let(:feature_flag_method) { :work_items_project_issues_list_feature_flag_enabled? }
     end
   end
 

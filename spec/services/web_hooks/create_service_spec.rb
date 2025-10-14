@@ -12,14 +12,31 @@ RSpec.describe WebHooks::CreateService, feature_category: :webhooks do
 
     subject(:webhook_created) { described_class.new(current_user) }
 
-    context 'when creating a new hook' do
+    context 'when creating a new project hook' do
       it 'creates a new hook' do
         expect do
           response = webhook_created.execute(hook_params, relation)
 
           expect(response).to be_success
+          expect(response[:hook].organization_id).to be_nil
           expect(response[:async]).to eq(false)
         end.to change { ProjectHook.count }.by(1)
+      end
+
+      context 'when creating a new system hook' do
+        let_it_be(:system_hook_relation) { SystemHook }
+        let(:hook_params) { { url: 'https://example.com/hook' } }
+        let(:organization) { create(:organization) }
+
+        it 'creates a new hook with an organization_id' do
+          expect do
+            response = webhook_created.execute(hook_params, system_hook_relation, organization)
+
+            expect(response).to be_success
+            expect(response[:hook].organization_id).to eq(organization.id)
+            expect(response[:async]).to eq(false)
+          end.to change { SystemHook.count }.by(1)
+        end
       end
     end
 

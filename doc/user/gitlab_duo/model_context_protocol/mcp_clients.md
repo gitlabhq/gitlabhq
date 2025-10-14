@@ -11,9 +11,14 @@ title: GitLab MCP clients
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
-- Available on GitLab Duo with self-hosted models: Not supported
 
 {{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
+- Available on GitLab Duo with self-hosted models: Not supported
+
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -45,8 +50,9 @@ For a click-through demo, see [Duo Agent Platform - MCP integration](https://git
 
 Before using a GitLab Duo feature with MCP, you must:
 
-- Install [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
-- Set up the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup).
+- Install [VSCodium](https://vscodium.com/) or [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
+- Set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
+  or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
   - MCP support requires version 6.28.2 and later.
   - Workspace and user configuration features require version 6.35.6 and later.
 - Meet [the prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
@@ -85,6 +91,7 @@ To set up workspace configuration:
 1. Using the [configuration format](#configuration-format), add information about the MCP servers
    your feature connects to.
 1. Save the file.
+1. Restart your IDE.
 
 ### Create user configuration
 
@@ -93,13 +100,14 @@ workspaces, but any workspace settings for the same server override the user con
 
 To set up user configuration:
 
-1. In VS Code, open the Command Palette by pressing
+1. In VSCodium or VS Code, open the Command Palette by pressing
    <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
    <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Run the command `GitLab MCP: Open User Settings (JSON)` to create and open the user configuration file.
 1. Using the [configuration format](#configuration-format), add information about the MCP servers
    your feature connects to.
 1. Save the file.
+1. Restart your IDE.
 
 Alternatively, manually create the file in this location:
 
@@ -114,6 +122,7 @@ Both configuration files use the same JSON format:
 {
   "mcpServers": {
     "server-name": {
+      "type": "stdio",
       "command": "path/to/server",
       "args": ["--arg1", "value1"],
       "env": {
@@ -121,7 +130,12 @@ Both configuration files use the same JSON format:
       }
     },
     "http-server": {
+      "type": "http",
       "url": "http://localhost:3000/mcp"
+    },
+    "sse-server": {
+      "type": "sse",
+      "url": "http://localhost:3000/mcp/sse"
     }
   }
 }
@@ -140,6 +154,7 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 {
   "mcpServers": {
     "enterprise-data-v2": {
+      "type": "stdio",
       "command": "node",
       "args": ["src/server.js"],
       "cwd": "</path/to/your-mcp-server>"
@@ -148,12 +163,13 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 }
 ```
 
-#### Remote server
+#### Remote server with `mcp-remote`
 
 ```json
 {
   "mcpServers": {
     "aws-knowledge": {
+      "type": "stdio",
       "command": "npx",
       "args": [
         "mcp-remote",
@@ -170,7 +186,21 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 {
   "mcpServers": {
     "local-http-server": {
+      "type": "http",
       "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+#### SSE server
+
+```json
+{
+  "mcpServers": {
+    "remote-sse-server": {
+      "type": "sse",
+      "url": "http://public.domain:3000/mcp/sse"
     }
   }
 }
@@ -178,27 +208,36 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 
 ## Use GitLab Duo features with MCP
 
-When a GitLab Duo feature wants to call an external tool to answer
-the question you have asked, you must review the tool before
-the feature can use that tool:
+{{< history >}}
+
+- Approving external tools for the entire session [added](https://gitlab.com/gitlab-org/gitlab/-/issues/556045) in GitLab 18.4.
+
+{{< /history >}}
+
+When a GitLab Duo feature calls an external tool to answer a question,
+you must review that tool unless you've approved it for the entire session:
 
 1. Open VS Code.
 1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** or **Flows** tab.
 1. In the text box, enter a question or specify a code task.
 1. Submit the question or code task.
-1. The **Tool Approval Required** dialog appears.
+1. The **Tool Approval Required** dialog appears in these cases:
 
-   You must review a tool every time a GitLab Duo feature tries to connect
-   to that tool, even if you have previously reviewed that tool.
+   - GitLab Duo is calling that tool for the first time in your session.
+   - You have not approved that tool for the entire session.
 
 1. Approve or deny the tool:
 
    - If you approve the tool, the feature connects to the tool and generates an answer.
+     - Optional. To approve the tool for the entire session,
+       from the **Approve** dropdown list, select **Approve for Session**.
 
-   - Optional: For Chat, if you deny the tool, the **Provide Rejection Reason**
-     dialog appears. Enter a rejection reason into the text box, and select
-     **Submit Rejection**.
+       You can approve only MCP server-provided tools for the session. You cannot
+       approve terminal or CLI commands.
+
+   - For Chat, if you deny the tool, the **Provide Rejection Reason** dialog appears.
+     Enter a rejection reason, then select **Submit Rejection**.
 
 ## Related topics
 

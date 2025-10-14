@@ -99,7 +99,7 @@ export default {
 
 <template>
   <div class="row">
-    <div class="col-lg-12">
+    <div class="gl-col-lg-12">
       <ci-variable-table
         :entity="entity"
         :is-loading="isLoading"

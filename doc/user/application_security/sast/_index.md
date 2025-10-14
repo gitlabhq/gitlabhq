@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Static Application Security Testing (SAST)
+title: Static application security testing (SAST)
 description: Scanning, configuration, analyzers, vulnerabilities, reporting, customization, and integration.
 ---
 
@@ -50,7 +50,7 @@ table.no-vertical-table-lines tr {
 
 {{< /details >}}
 
-Static Application Security Testing (SAST) discovers vulnerabilities in your source code before they
+Static application security testing (SAST) discovers vulnerabilities in your source code before they
 reach production. Integrated directly into your CI/CD pipeline, SAST identifies security issues
 during development when they're easiest and most cost-effective to fix.
 
@@ -131,7 +131,7 @@ For details on other configuration methods, see [Configuration](#configuration).
 You can review vulnerabilities in a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipelines**.
+1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Either download results, or select a vulnerability to view its details (Ultimate only), including:
@@ -315,9 +315,9 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
 | Elixir (Phoenix)   | {{< icon name="check-circle-filled" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)               | None                         |
 | Groovy             | {{< icon name="check-circle-filled" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup> | None                         |
 | Kotlin<sup>4</sup> | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
-| Objective-C (iOS)  | {{< icon name="check-circle-filled" >}} Yes                                                                                             | None                         |
+| Objective-C (iOS)  | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 | Scala              | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
-| Swift (iOS)        | {{< icon name="check-circle-filled" >}} Yes                                                                                             | None                         |
+| Swift (iOS)        | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 
 **Footnotes**:
 
@@ -516,7 +516,7 @@ successfully, and an error might occur.
 To enable and configure SAST with customizations:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
+1. Select **Secure** > **Security configuration**.
 1. If the latest pipeline for the default branch of the project has completed
    and produced valid `SAST` artifacts, select **Configure SAST**, otherwise
    select **Enable SAST** in the Static Application Security Testing (SAST) row.
@@ -542,7 +542,7 @@ successfully, and an error might occur.
 To enable and configure SAST with default settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
+1. Select **Secure** > **Security configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 1. Review and merge the merge request to enable SAST.
 
@@ -851,7 +851,7 @@ The following are Docker image-related CI/CD variables.
     </tr>
     <tr>
       <td>
-        <a href="gitlab_advanced_sast.md">GitLab Advanced SAST</a><sup><b><a href="#sast-excluded-paths-semgrep">2</a></b>,</sup><sup><b><a href="#sast-excluded-paths-all-other-sast-analyzers">3</a></b></sup>
+        <a href="https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/">GitLab Advanced SAST</a><sup><b><a href="#sast-excluded-paths-semgrep">2</a></b>,</sup><sup><b><a href="#sast-excluded-paths-all-other-sast-analyzers">3</a></b></sup>
       </td>
     </tr>
     <tr>
@@ -903,7 +903,7 @@ The following are Docker image-related CI/CD variables.
     </tr>
     <tr>
       <td>
-        <a href="gitlab_advanced_sast.md">GitLab Advanced SAST</a>
+        <a href="https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/">GitLab Advanced SAST</a>
       </td>
     </tr>
     <tr>

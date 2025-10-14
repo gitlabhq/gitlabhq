@@ -2,8 +2,8 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
 import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import DisclosureHierarchy from '~/work_items/components/work_item_ancestors//disclosure_hierarchy.vue';
 import DisclosureHierarchyItem from '~/work_items/components/work_item_ancestors/disclosure_hierarchy_item.vue';
 import { mockDisclosureHierarchyItems } from './mock_data';
@@ -108,7 +108,7 @@ describe('DisclosurePath', () => {
           withEllipsis: false,
         });
 
-        jest.spyOn(GlBreakpointInstance, 'getBreakpointSize').mockReturnValue('sm');
+        jest.spyOn(PanelBreakpointInstance, 'getBreakpointSize').mockReturnValue('sm');
 
         window.dispatchEvent(new Event('resize'));
         await nextTick();
@@ -138,7 +138,7 @@ describe('DisclosurePath', () => {
             items: [mockDisclosureHierarchyItems[0]],
           });
 
-          jest.spyOn(GlBreakpointInstance, 'getBreakpointSize').mockReturnValue('sm');
+          jest.spyOn(PanelBreakpointInstance, 'getBreakpointSize').mockReturnValue('sm');
 
           window.dispatchEvent(new Event('resize'));
           await nextTick();

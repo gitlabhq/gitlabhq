@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Manage projects
@@ -173,7 +173,7 @@ To view only the projects you are the owner of:
 To view the activity of a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Activity**.
+1. Select **Manage** > **Activity**.
 1. Optional. To filter activity by contribution type, select a tab:
 
    - **All**: All contributions by project members.
@@ -249,7 +249,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
 Components published in the CI/CD catalog require a project description.
@@ -274,7 +274,7 @@ For more information on redirect duration and its side-effects, see
 To rename a repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
@@ -320,7 +320,7 @@ Prerequisites:
 To upload an avatar in your project settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Project avatar** section, select **Choose file**.
 1. Select your avatar file.
 1. Select **Save changes**.
@@ -358,7 +358,7 @@ Prerequisites:
 To delete a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Delete project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
@@ -387,7 +387,7 @@ Prerequisites:
 To restore a project pending deletion:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Restore project** section, select **Restore project**.
 
@@ -401,14 +401,14 @@ To restore a project pending deletion:
 
 Archive a project to make it read-only and preserve its data for future reference.
 
-Archived projects:
+When you archive a project:
 
-- Display an `Archived` badge on the project page
-- Appear in the **Inactive** tab on the group page, **Your work** page, and **Explore** page
-- Become read-only for most features (repository, packages, issues, merge requests, feature flags, pull mirroring, and others)
-- Have their fork relationships removed (open merge requests from forks are automatically closed)
-- Have their deployed Pages removed along with any custom domains
-- Stop running scheduled CI/CD pipelines
+- The project becomes inactive and displays an `Archived` badge
+- Most features become read-only, including repositories, issues, merge requests, and packages
+- Fork relationships are removed and open merge requests from forks are closed
+- Deployed Pages are removed along with custom domains
+- Scheduled CI/CD pipelines stop running
+- Pull mirroring stops
 
 Prerequisites:
 
@@ -417,7 +417,7 @@ Prerequisites:
 To archive a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive**.
 
@@ -432,13 +432,15 @@ This action is also available on other list pages.
 
 ### Unarchive a project
 
-Unarchive a project to: 
+When you unarchive a project:
 
-- Remove read-only restrictions.
-- Return the project to the **Active** or **Member** tab in project lists.
-- Resume pull mirroring automatically.
+- Read-only restrictions are removed
+- The project is no longer marked as inactive
+- Scheduled CI/CD pipelines resume automatically
+- Pull mirroring resumes automatically
 
-Projects that were archived as part of group archiving cannot be unarchived individually. You must [unarchive the parent group](../group/manage.md#unarchive-a-group) to unarchive all its projects and subgroups.
+Projects that were archived as part of group archiving cannot be unarchived individually.
+You must [unarchive the parent group](../group/manage.md#unarchive-a-group) to unarchive all its projects and subgroups.
 
 {{< alert type="note" >}}
 
@@ -456,7 +458,7 @@ To unarchive a project:
    1. On the left sidebar, select **Search or go to**.
    1. Select **View all my projects**.
    1. In the **Inactive** tab, select your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Under **Advanced**, select **Expand**.
 1. In the **Unarchive project** section, select **Unarchive**.
 
@@ -533,7 +535,7 @@ Prerequisites:
 To transfer a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
 1. Select **Transfer project**.
@@ -553,6 +555,30 @@ When you transfer a project from a namespace licensed for GitLab.com Premium or 
 - [Project access tokens](settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
   and [test cases](../../ci/test_cases/_index.md) are deleted.
+
+## Manage projects with the Actions menu
+
+You can view a list of all your projects and
+manage them with the **Actions** menu.
+
+Prerequisites:
+
+- You must have the required [project permissions](../../user/permissions.md#projects) to perform the action.
+
+To manage projects with the **Actions** menu:
+
+1. On the left sidebar, select **Search or go to** > **View all my projects**.
+1. On the **Projects** page, find your project and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
+1. Select an action.
+
+The following actions are available
+depending on the state of your project:
+
+| Project state    | Actions available |
+|----------|-------------------------|
+| Active   | **Edit**, **Archive**, **Transfer**, **Leave project**, **Delete** |
+| Archived | **Unarchive**, **Leave project**, **Delete** |
+| Pending deletion | **Restore**, **Leave project** |
 
 ## Add a compliance framework to a project
 

@@ -4,7 +4,7 @@
   $height: 39px;
 
   &:not(:has(.read-more-content)) {
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       &:not(.is-expanded) {
         white-space: nowrap;
         overflow: hidden;

@@ -86,9 +86,8 @@ module API
       end
 
       def immediately_delete_project_error(project)
-        # Admin frontend uses this endpoint to force-delete projects
-        if Feature.enabled?(:disallow_immediate_deletion, current_user) && !current_user.can_admin_all_resources?
-          '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
+        if !Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
+          '`permanently_remove` option is not permitted on this instance.'
         elsif !project.self_deletion_scheduled?
           'Project must be marked for deletion first.'
         elsif project.full_path != params[:full_path]

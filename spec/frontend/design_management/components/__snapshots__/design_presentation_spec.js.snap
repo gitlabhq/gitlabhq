@@ -2,7 +2,7 @@
 
 exports[`Design management design presentation component currentCommentForm is equal to current annotation position when isAnnotating is true 1`] = `
 <div
-  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+  class="!gl-overflow-auto gl-h-full gl-p-5 gl-relative gl-w-full"
 >
   <div
     class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
@@ -24,7 +24,7 @@ exports[`Design management design presentation component currentCommentForm is e
 
 exports[`Design management design presentation component currentCommentForm is null when isAnnotating is false 1`] = `
 <div
-  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+  class="!gl-overflow-auto gl-h-full gl-p-5 gl-relative gl-w-full"
 >
   <div
     class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
@@ -45,7 +45,7 @@ exports[`Design management design presentation component currentCommentForm is n
 
 exports[`Design management design presentation component currentCommentForm is null when isAnnotating is true but annotation position is falsey 1`] = `
 <div
-  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+  class="!gl-overflow-auto gl-h-full gl-p-5 gl-relative gl-w-full"
 >
   <div
     class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
@@ -66,7 +66,7 @@ exports[`Design management design presentation component currentCommentForm is n
 
 exports[`Design management design presentation component renders empty state when no image provided 1`] = `
 <div
-  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+  class="!gl-overflow-auto gl-h-full gl-p-5 gl-relative gl-w-full"
 >
   <div
     class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
@@ -76,7 +76,7 @@ exports[`Design management design presentation component renders empty state whe
 
 exports[`Design management design presentation component renders image and overlay when image provided 1`] = `
 <div
-  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+  class="!gl-overflow-auto gl-h-full gl-p-5 gl-relative gl-w-full"
 >
   <div
     class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"

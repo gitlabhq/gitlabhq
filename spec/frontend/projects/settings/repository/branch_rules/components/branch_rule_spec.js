@@ -4,6 +4,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
+import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
+import GroupBadge from '~/projects/settings/repository/branch_rules/components/group_badge.vue';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import {
@@ -29,6 +31,12 @@ describe('Branch rule', () => {
       },
       stubs: {
         ProtectedBadge,
+        GroupInheritancePopover: {
+          template: '<div>Stubbed GroupInheritancePopover</div>',
+        },
+        GroupBadge: {
+          template: '<div>Stubbed GroupBadge</div>',
+        },
       },
       propsData: { ...branchRulePropsMock, ...props },
     });
@@ -37,6 +45,7 @@ describe('Branch rule', () => {
 
   const findDefaultBadge = () => wrapper.findByText('default');
   const findProtectedBadge = () => wrapper.findByText('protected');
+  const findGroupBadge = () => wrapper.findComponent(GroupBadge);
   const findBranchName = () => wrapper.findByText(branchRulePropsMock.name);
   const findProtectionDetailsList = () => wrapper.findByRole('list');
   const findProtectionDetailsListItems = () => wrapper.findAllByRole('listitem');
@@ -63,6 +72,21 @@ describe('Branch rule', () => {
       createComponent(branchRuleWithoutDetailsPropsMock);
       expect(findProtectedBadge().exists()).toBe(false);
     });
+
+    it('does not render group badge by default', () => {
+      expect(findGroupBadge().exists()).toBe(false);
+    });
+
+    it('renders group badge when isGroupLevel is true', async () => {
+      const branchRuleProps = {
+        ...branchRulePropsMock,
+        branchProtection: { ...branchRulePropsMock.branchProtection, isGroupLevel: true },
+      };
+
+      await createComponent(branchRuleProps);
+
+      expect(findGroupBadge().exists()).toBe(true);
+    });
   });
 
   it('does not render the protection details list when branchProtection is null', () => {
@@ -88,6 +112,25 @@ describe('Branch rule', () => {
     expect(findDetailsButton().attributes('href')).toBe(
       `${branchRuleProvideMock.branchRulesPath}?branch=${encodedBranchName}`,
     );
+  });
+
+  it('does not render group inheritance popover', () => {
+    expect(findDetailsButton().attributes('disabled')).toBeUndefined();
+    expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(false);
+  });
+
+  describe('when `isGroupLevel` is true', () => {
+    it('renders group inheritance popover and disabled `View details` button, when protection is on', async () => {
+      const branchRuleProps = {
+        ...branchRulePropsMock,
+        branchProtection: { ...branchRulePropsMock.branchProtection, isGroupLevel: true },
+      };
+
+      await createComponent(branchRuleProps);
+
+      expect(findDetailsButton().attributes('disabled')).toBeDefined();
+      expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(true);
+    });
   });
 
   describe('squash settings', () => {

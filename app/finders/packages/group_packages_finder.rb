@@ -8,8 +8,7 @@ module Packages
       current_user, group, params = { exclude_subgroups: false,
                                       exact_name: false,
                                       order_by: 'created_at',
-                                      sort: 'asc',
-                                      packages_class: ::Packages::Package }
+                                      sort: 'asc' }
     )
       @current_user = current_user
       @group = group
@@ -33,9 +32,8 @@ module Packages
         .for_projects(group_projects_visible_to_current_user.select(:id))
         .sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")
       packages = packages.preload_pipelines if preload_pipelines
-
       packages = filter_with_version(packages)
-      packages = filter_by_package_type(packages)
+      packages = packages.without_package_type(:terraform_module) unless package_type
       packages = (params[:exact_name] ? filter_by_exact_package_name(packages) : filter_by_package_name(packages))
       packages = filter_by_package_version(packages)
       installable_only ? packages.installable : filter_by_status(packages)
@@ -92,7 +90,16 @@ module Packages
     end
 
     def packages_class
-      params.fetch(:packages_class, ::Packages::Package)
+      if group
+        return ::Packages::Package unless package_type
+
+        klass = ::Packages::Package.inheritance_column_to_class_map[package_type.to_sym]
+        raise ArgumentError, "'#{package_type}' is not a valid package_type" unless klass
+
+        klass.constantize
+      else
+        ::Packages::Package
+      end
     end
   end
 end

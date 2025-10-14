@@ -32,6 +32,8 @@ describe('NestedGroupsProjectsListItem', () => {
   };
 
   const findNestedGroupsProjectsList = () => wrapper.findComponent(NestedGroupsProjectsList);
+  const findGroupsListItem = () => wrapper.findComponent(GroupsListItem);
+  const findProjectsListItem = () => wrapper.findComponent(ProjectsListItem);
   const findToggleButton = () => wrapper.findComponent(GlButton);
   const findMoreChildrenLink = () => wrapper.findByTestId('more-children-link');
 
@@ -39,11 +41,29 @@ describe('NestedGroupsProjectsListItem', () => {
     it('renders GroupsListItem component with correct props', () => {
       createComponent();
 
-      expect(wrapper.findComponent(GroupsListItem).props()).toMatchObject({
+      expect(findGroupsListItem().props()).toMatchObject({
         showGroupIcon: true,
         group: topLevelGroupA,
         listItemClass: null,
         timestampType: defaultPropsData.timestampType,
+        includeMicrodata: false,
+      });
+    });
+
+    describe.each`
+      event                 | payload
+      ${'refetch'}          | ${undefined}
+      ${'hover-visibility'} | ${'private'}
+      ${'hover-stat'}       | ${'projects-count'}
+      ${'click-avatar'}     | ${undefined}
+    `('when GroupsListItem emits $event event', ({ event, payload }) => {
+      beforeEach(() => {
+        createComponent();
+        findGroupsListItem().vm.$emit(event, payload);
+      });
+
+      it(`emits ${event} event`, () => {
+        expect(wrapper.emitted(event)).toEqual([[payload]]);
       });
     });
 
@@ -55,25 +75,27 @@ describe('NestedGroupsProjectsListItem', () => {
       it('renders NestedGroupsProjectsList component with correct props and classes', () => {
         expect(findNestedGroupsProjectsList().props()).toMatchObject({
           timestampType: defaultPropsData.timestampType,
+          includeMicrodata: false,
           items: [],
           expandedOverride: false,
         });
         expect(findNestedGroupsProjectsList().classes()).toContain('gl-hidden');
       });
 
-      describe('when NestedGroupsProjectsList emits load-children event', () => {
-        it('emits load-children event', () => {
-          findNestedGroupsProjectsList().vm.$emit('load-children', 1);
-
-          expect(wrapper.emitted('load-children')).toEqual([[1]]);
+      describe.each`
+        event                 | payload
+        ${'load-children'}    | ${1}
+        ${'refetch'}          | ${undefined}
+        ${'hover-visibility'} | ${'private'}
+        ${'hover-stat'}       | ${'projects-count'}
+        ${'click-avatar'}     | ${undefined}
+      `('when NestedGroupsProjectsList emits $event event', ({ event, payload }) => {
+        beforeEach(() => {
+          findNestedGroupsProjectsList().vm.$emit(event, payload);
         });
-      });
 
-      describe('when NestedGroupsProjectsList emits refetch event', () => {
-        it('emits refetch event', () => {
-          findNestedGroupsProjectsList().vm.$emit('refetch');
-
-          expect(wrapper.emitted('refetch')).toEqual([[]]);
+        it(`emits ${event} event`, () => {
+          expect(wrapper.emitted(event)).toEqual([[payload]]);
         });
       });
     });
@@ -99,11 +121,28 @@ describe('NestedGroupsProjectsListItem', () => {
     });
 
     it('renders ProjectsListItem component', () => {
-      expect(wrapper.findComponent(ProjectsListItem).props()).toMatchObject({
+      expect(findProjectsListItem().props()).toMatchObject({
         showProjectIcon: true,
         project: projectA,
         listItemClass: 'gl-pl-7',
         timestampType: defaultPropsData.timestampType,
+        includeMicrodata: false,
+      });
+    });
+
+    describe.each`
+      event                 | payload
+      ${'refetch'}          | ${undefined}
+      ${'hover-visibility'} | ${'private'}
+      ${'hover-stat'}       | ${'projects-count'}
+      ${'click-avatar'}     | ${undefined}
+    `('when ProjectsListItem emits $event event', ({ event, payload }) => {
+      beforeEach(() => {
+        findProjectsListItem().vm.$emit(event, payload);
+      });
+
+      it(`emits ${event} event`, () => {
+        expect(wrapper.emitted(event)).toEqual([[payload]]);
       });
     });
   });

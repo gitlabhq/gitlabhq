@@ -13,7 +13,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'pushes code to the repository via SSH', :smoke, :health_check, :skip_fips_env,
+      it 'pushes code to the repository via SSH', :smoke, :health_check, :skip_fips_env, :skip_cells,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347825' do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -31,7 +31,7 @@ module QA
         end
       end
 
-      it 'pushes multiple branches and tags together', :smoke, :health_check, :skip_fips_env,
+      it 'pushes multiple branches and tags together', :smoke, :health_check, :skip_fips_env, :skip_cells,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347826' do
         branches = []
         tags = []

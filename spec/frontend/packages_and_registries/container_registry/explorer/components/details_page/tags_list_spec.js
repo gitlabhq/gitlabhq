@@ -46,7 +46,6 @@ describe('Tags List', () => {
     first: GRAPHQL_PAGE_SIZE,
     sort: 'NAME_ASC',
     id: '1',
-    referrers: true,
   };
 
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
@@ -59,7 +58,6 @@ describe('Tags List', () => {
 
   const mountComponent = ({
     disabled = false,
-    showContainerRegistryTagSignatures = true,
     isImageLoading = false,
     mutationResolver,
     config = {},
@@ -85,7 +83,6 @@ describe('Tags List', () => {
           ...defaultConfig,
           ...config,
         },
-        glFeatures: { showContainerRegistryTagSignatures },
       },
     });
 
@@ -719,11 +716,5 @@ describe('Tags List', () => {
         }
       },
     );
-  });
-
-  it('sends referrers as false for the tags query when showContainerRegistryTagSignatures feature flag is off', async () => {
-    await mountComponent({ showContainerRegistryTagSignatures: false });
-
-    expect(resolver).toHaveBeenCalledWith({ ...queryData, referrers: false });
   });
 });

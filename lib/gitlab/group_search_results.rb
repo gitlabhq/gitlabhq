@@ -13,8 +13,7 @@ module Gitlab
         default_project_filter: opts.fetch(:default_project_filter, false),
         order_by: opts.fetch(:order_by, nil),
         sort: opts.fetch(:sort, nil),
-        filters: opts.fetch(:filters, {}),
-        source: opts.fetch(:source, nil)
+        filters: opts.fetch(:filters, {})
       )
     end
 

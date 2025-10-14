@@ -128,11 +128,9 @@ describe('WorkItemDescription', () => {
         editMode,
         showButtonsBelowField,
         isCreateFlow,
+        isGroup,
         hideFullscreenMarkdownButton,
         uploadsPath: 'http://127.0.0.1:3000/test-project-path/uploads',
-      },
-      provide: {
-        isGroup,
       },
       mocks: {
         $route: {
@@ -349,6 +347,7 @@ describe('WorkItemDescription', () => {
 
         it('queries for the template content when a template is selected', () => {
           expect(successfulTemplateHandler).toHaveBeenCalledWith({
+            fromNamespace: 'test-project-path',
             name: 'example',
             projectId: 1,
           });

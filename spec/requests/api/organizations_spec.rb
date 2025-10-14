@@ -93,10 +93,16 @@ RSpec.describe API::Organizations, feature_category: :organization do
       end
 
       it_behaves_like 'rate limited endpoint', rate_limit_key: :create_organization_api do
+        let_it_be(:user2) { create(:user) }
+
         let(:current_user) { user }
 
         def request
           post api("/organizations", user), params: params
+        end
+
+        def request_with_second_scope
+          post api("/organizations", user2), params: params
         end
       end
 

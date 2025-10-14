@@ -114,6 +114,7 @@ export default [
       'fixtures/**/*.graphql',
       'storybook/public',
       'spec/fixtures/**/*.graphql',
+      'ee/frontend_islands/',
     ],
   },
   ...compat.extends(...extendConfigs),
@@ -171,7 +172,7 @@ export default [
       'import/no-unresolved': [
         'error',
         {
-          ignore: ['^(ee|jh)_component/', '^jh_else_ee/'],
+          ignore: ['^(ee|jh)_component/', '^jh_else_ee/', '^fe_islands/'],
         },
       ],
 
@@ -413,7 +414,7 @@ export default [
       'vue/no-undef-components': [
         'error',
         {
-          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$'],
+          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$', 'fe-island-duo-next'],
         },
       ],
 
@@ -605,7 +606,7 @@ export default [
         parser: graphqlPlugin.parser,
         graphQLConfig: {
           documents: '{,ee/,jh/}app/**/*.graphql',
-          schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql',
+          schema: path.resolve(dirname, 'tmp/tests/graphql/gitlab_schema_apollo.graphql'),
         },
       },
     },

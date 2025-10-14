@@ -26,6 +26,9 @@ module API
         end
         get ':id/variables', urgency: :low do
           variables = user_project.variables
+
+          audit_all_variables_access(user_project)
+
           present paginate(variables), with: Entities::Ci::Variable
         end
 
@@ -44,7 +47,7 @@ module API
           variable = find_variable(user_project, params)
           not_found!('Variable') unless variable
 
-          audit_variable_access(variable, user_project)
+          audit_single_variable_access(variable, user_project)
 
           present variable, with: Entities::Ci::Variable
         end

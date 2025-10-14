@@ -29,7 +29,7 @@ Enable any relevant feature flag, if the spam/CAPTCHA support is behind a featur
    1. Follow the instructions provided by Google to get the official [test reCAPTCHA credentials](https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do).
       1. For **Site key**, use: `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
       1. For **Secret key**, use: `6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`
-   1. Go to **Admin -> Settings -> Reporting** settings: `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
+   1. Go to **Admin** > **Settings** > **Reporting** settings: `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
    1. Expand the **Spam and Anti-bot Protection** section.
    1. Select **Enable reCAPTCHA**. Enabling for login is not required unless you are testing that feature.
    1. Enter the **Site key** and **Secret key**.
@@ -48,7 +48,7 @@ Enable any relevant feature flag, if the spam/CAPTCHA support is behind a featur
       1. Add `akismet-guaranteed-spam@example.com` as a secondary email for the administrator user.
       1. Confirm it in the Rails console: `bin/rails c` -> `User.find_by_username('root').emails.last.confirm`
       1. Switch this verified email to be your primary email:
-         1. Go to **Avatar dropdown list -> Edit Profile -> Main Settings**.
+         1. Go to **Avatar dropdown list** > **Edit Profile** > **Main Settings**.
          1. For **Email**, enter `akismet-guaranteed-spam@example.com` to replace `admin@example.com`.
          1. Select **Update Profile Settings** to save your changes.
 
@@ -69,12 +69,12 @@ behavior with any spam-protected model/controller action.
 
 If CAPTCHA is enabled in these areas, you must solve the CAPTCHA popup modal before you can resubmit the form:
 
-- **Admin -> Settings -> Reporting -> Spam**
-- **Anti-bot Protection -> Enable reCAPTCHA**
+- **Admin** > **Settings** > **Reporting** > **Spam**
+- **Anti-bot Protection** > **Enable reCAPTCHA**
 
 ### Testing with CAPTCHA disabled (`DISALLOW` verdict)
 
-If CAPTCHA is disabled in **Admin -> Settings -> Reporting -> Spam** and **Anti-bot Protection -> Enable reCAPTCHA**,
+If CAPTCHA is disabled in **Admin** > **Settings** > **Reporting** > **Spam** and **Anti-bot Protection** > **Enable reCAPTCHA**,
 no CAPTCHA popup displays. You are prevented from submitting the form at all.
 
 ### HTML page to render reCAPTCHA
@@ -139,7 +139,7 @@ For the prerequisites, you must:
    If you use **Google's official test reCAPTCHA credentials** listed in
    [Set up Akismet and reCAPTCHA](#set-up-akismet-and-recaptcha), the contents of the
    CAPTCHA response string don't matter.
-1. Go to **Admin -> Settings -> Reporting -> Spam and Anti-bot protection**.
+1. Go to **Admin** > **Settings** > **Reporting** > **Spam and Anti-bot protection**.
 1. Select or clear **Enable reCAPTCHA** and **Enable Akismet** according to your
    scenario's needs.
 

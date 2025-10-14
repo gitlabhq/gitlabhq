@@ -37,4 +37,4 @@ Usage trends data refreshes daily.
 To view usage trends:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Analytics > Usage trends**.
+1. Select **Analytics** > **Usage trends**.

@@ -2,7 +2,7 @@
 - add_page_specific_style 'page_bundles/login'
 
 .row.gl-mt-5.justify-content-center
-  .col-md-5
+  .gl-col-md-5
     .login-page
       - if any_form_based_providers_enabled?
         = render 'devise/shared/tabs_ldap', admin_mode: true

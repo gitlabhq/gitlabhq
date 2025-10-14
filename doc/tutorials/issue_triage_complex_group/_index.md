@@ -151,7 +151,7 @@ then follow these steps from inside a subgroup.
 To create each label:
 
 1. On the left sidebar, select **Search or go to** and find your **Web App Dev** group.
-1. Select **Manage > Labels**.
+1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `type::bug`.
 1. Optional. Select a color from the available colors, or enter a hex color value for
@@ -204,7 +204,7 @@ To set up your issue board:
    For example, create a [group issue board](../../user/project/issue_board.md#group-issue-boards) to assign
    severity to issues.
 1. On the left sidebar, select **Search or go to** and find your **Web App Dev** group.
-1. Select **Plan > Issue board**.
+1. Select **Plan** > **Issue board**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. In the **Title** field, enter `Issue triage (by severity)`.

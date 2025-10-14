@@ -4127,6 +4127,7 @@ paths:
         - terraform_module
         - rpm
         - ml_model
+        - cargo
         required: false
       - in: query
         name: package_name
@@ -12142,6 +12143,7 @@ paths:
         example: asc
       - in: query
         name: source
+        description: The source of pipelines
         type: string
         enum:
         - unknown
@@ -26497,187 +26499,6 @@ paths:
       tags:
       - members
       operationId: getApiV4ProjectsIdMembersAllUserId
-  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approvals":
-    get:
-      description: List approvals for merge request
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: merge_request_iid
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: List approvals for merge request
-          schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestApprovals"
-        '404':
-          description: Not found
-      tags:
-      - projects
-      operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
-    post:
-      summary: 'Deprecated in 16.0: Use the merge request approvals API instead. Change
-        approval-related configuration'
-      description: This feature was introduced in 10.6 and deprecated in 16.0
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: path
-        name: merge_request_iid
-        description: The IID of a merge request
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals"
-      responses:
-        '201':
-          description: 'Deprecated in 16.0: Use the merge request approvals API instead.
-            Change approval-related configuration'
-          schema:
-            "$ref": "#/definitions/EE_API_Entities_ApprovalState"
-      tags:
-      - projects
-      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
-      deprecated: true
-  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approve":
-    post:
-      description: Approve a merge request
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: merge_request_iid
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove"
-      responses:
-        '201':
-          description: Approve a merge request
-          schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestApprovals"
-        '404':
-          description: Not found
-        '401':
-          description: Unauthorized
-      tags:
-      - projects
-      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove
-  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/unapprove":
-    post:
-      description: Remove an approval from a merge request
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: merge_request_iid
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Remove an approval from a merge request
-          schema:
-            "$ref": "#/definitions/API_Entities_MergeRequestApprovals"
-        '404':
-          description: Not found
-        '401':
-          description: Unauthorized
-      tags:
-      - projects
-      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidUnapprove
-  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/reset_approvals":
-    put:
-      summary: Remove all merge request approvals
-      description: Clear all approvals of merge request. This feature was added in
-        GitLab 15.4
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: merge_request_iid
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Remove all merge request approvals
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not found
-      tags:
-      - merge_requests
-      operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidResetApprovals
-  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approval_state":
-    get:
-      description: Get approval state of merge request
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: path
-        name: merge_request_iid
-        description: The IID of a merge request
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get approval state of merge request
-          schema:
-            "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalState"
-      tags:
-      - projects
-      operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalState
   "/api/v4/projects/{id}/create_ci_config":
     post:
       description: Creates merge request for missing ci config in project
@@ -28020,6 +27841,187 @@ paths:
       tags:
       - merge_requests
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidRelatedIssues
+  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approvals":
+    get:
+      description: List approvals for merge request
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - in: path
+        name: merge_request_iid
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: List approvals for merge request
+          schema:
+            "$ref": "#/definitions/API_Entities_MergeRequestApprovals"
+        '404':
+          description: Not found
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
+    post:
+      summary: 'Deprecated in 16.0: Use the merge request approvals API instead. Change
+        approval-related configuration'
+      description: This feature was introduced in 10.6 and deprecated in 16.0
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: merge_request_iid
+        description: The IID of a merge request
+        type: integer
+        format: int32
+        required: true
+      - name: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals"
+      responses:
+        '201':
+          description: 'Deprecated in 16.0: Use the merge request approvals API instead.
+            Change approval-related configuration'
+          schema:
+            "$ref": "#/definitions/EE_API_Entities_ApprovalState"
+      tags:
+      - projects
+      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
+      deprecated: true
+  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approve":
+    post:
+      description: Approve a merge request
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - in: path
+        name: merge_request_iid
+        type: integer
+        format: int32
+        required: true
+      - name: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove"
+      responses:
+        '201':
+          description: Approve a merge request
+          schema:
+            "$ref": "#/definitions/API_Entities_MergeRequestApprovals"
+        '404':
+          description: Not found
+        '401':
+          description: Unauthorized
+      tags:
+      - projects
+      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove
+  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/unapprove":
+    post:
+      description: Remove an approval from a merge request
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - in: path
+        name: merge_request_iid
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '201':
+          description: Remove an approval from a merge request
+          schema:
+            "$ref": "#/definitions/API_Entities_MergeRequestApprovals"
+        '404':
+          description: Not found
+        '401':
+          description: Unauthorized
+      tags:
+      - projects
+      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidUnapprove
+  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/reset_approvals":
+    put:
+      summary: Remove all merge request approvals
+      description: Clear all approvals of merge request. This feature was added in
+        GitLab 15.4
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - in: path
+        name: merge_request_iid
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Remove all merge request approvals
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+      tags:
+      - merge_requests
+      operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidResetApprovals
+  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approval_state":
+    get:
+      description: Get approval state of merge request
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: merge_request_iid
+        description: The IID of a merge request
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Get approval state of merge request
+          schema:
+            "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalState"
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalState
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/versions":
     get:
       summary: Get a list of merge request diff versions
@@ -30972,6 +30974,7 @@ paths:
       parameters:
       - in: query
         name: status
+        description: HTTP status code of the event
         type: array
         items:
           type: string
@@ -33629,6 +33632,7 @@ paths:
         - terraform_module
         - rpm
         - ml_model
+        - cargo
         required: false
       - in: query
         name: package_name
@@ -38159,6 +38163,37 @@ paths:
       tags:
       - projects
       operationId: putApiV4ProjectsIdRepositorySubmodulesSubmodule
+  "/api/v4/projects/{id}/attestations/{subject_digest}":
+    get:
+      summary: Fetch the list of all attestations for a specific project and artifact
+        hash
+      description: This feature was introduced in GitLab 18.5
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: subject_digest
+        description: The SHA-256 hash of the artifact
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Fetch the list of all attestations for a specific project and
+            artifact hash
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Artifact not found
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdAttestationsSubjectDigest
   "/api/v4/projects/{id}/repository/tags":
     get:
       description: Get a project repository tags
@@ -40698,6 +40733,8 @@ paths:
           description: Conflict
         '422':
           description: Runner is orphaned
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsRequest
@@ -40729,6 +40766,10 @@ paths:
           description: Unknown parameters
         '403':
           description: Forbidden
+        '409':
+          description: Conflict
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: putApiV4JobsId
@@ -40760,6 +40801,8 @@ paths:
           description: Forbidden
         '416':
           description: Range not satisfiable
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: patchApiV4JobsIdTrace
@@ -40791,6 +40834,8 @@ paths:
           description: Artifacts support not enabled
         '413':
           description: File too large
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsIdArtifactsAuthorize
@@ -40824,6 +40869,8 @@ paths:
           description: Artifacts support not enabled
         '413':
           description: File too large
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsIdArtifacts
@@ -40861,6 +40908,8 @@ paths:
           description: Forbidden
         '404':
           description: Artifact not found
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: getApiV4JobsIdArtifacts
@@ -42165,11 +42214,12 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       responses:
@@ -42198,11 +42248,12 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       responses:
@@ -42229,11 +42280,12 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       responses:
@@ -42262,16 +42314,17 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       - in: query
         name: module_version
-        description: Module version
+        description: Version of the module
         type: string
         required: true
       responses:
@@ -42298,16 +42351,17 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       - in: query
         name: module_version
-        description: Module version
+        description: Version of the module
         type: string
         required: true
       responses:
@@ -42336,16 +42390,17 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       - in: query
         name: module_version
-        description: Module version
+        description: Version of the module
         type: string
         required: true
       responses:
@@ -47824,6 +47879,10 @@ definitions:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups
           outside the namespace. Only available on top-level groups.
+      step_up_auth_required_oauth_provider:
+        type: string
+        description: OAuth provider required for step-up authentication. Pass empty
+          string to disable.
       lock_math_rendering_limits_enabled:
         type: boolean
         description: Indicates if math rendering limits are locked for all descendent
@@ -48024,6 +48083,9 @@ definitions:
         type: string
       prevent_sharing_groups_outside_hierarchy:
         type: string
+      step_up_auth_required_oauth_provider:
+        type: string
+        description: OAuth provider required for step-up authentication.
       projects:
         "$ref": "#/definitions/API_Entities_Project"
       shared_projects:
@@ -52113,12 +52175,12 @@ definitions:
         type: integer
         format: int32
         enum:
+        - 5
         - 10
         - 15
         - 20
         - 30
         - 40
-        - 5
         example: 40
       admin_merge_request:
         type: boolean
@@ -52958,10 +53020,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -52987,10 +53050,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -53840,6 +53904,9 @@ definitions:
         example: 98.29
       detailed_status:
         "$ref": "#/definitions/DetailedStatusEntity"
+      archived:
+        type: boolean
+        example: false
     description: API_Entities_Ci_Pipeline model
   DetailedStatusEntity:
     type: object
@@ -53975,6 +54042,9 @@ definitions:
         example: 98.29
       detailed_status:
         "$ref": "#/definitions/DetailedStatusEntity"
+      archived:
+        type: boolean
+        example: false
       name:
         type: string
         example: Build pipeline
@@ -55700,6 +55770,7 @@ definitions:
         description: The associated discussion should be resolved.
       position:
         type: object
+        description: Position when creating a note
         properties:
           base_sha:
             type: string
@@ -55749,10 +55820,11 @@ definitions:
             description: Y coordinate in the image
           line_range:
             type: object
-            description: Multi-line start and end
+            description: Line range for a multi-line note
             properties:
               start:
                 type: object
+                description: Start line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -55768,6 +55840,7 @@ definitions:
                     description: Start new_line line number
               end:
                 type: object
+                description: End line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -55797,6 +55870,7 @@ definitions:
         description: The content of a note.
       position:
         type: object
+        description: Position when creating a note
         properties:
           base_sha:
             type: string
@@ -55846,10 +55920,11 @@ definitions:
             description: Y coordinate in the image
           line_range:
             type: object
-            description: Multi-line start and end
+            description: Line range for a multi-line note
             properties:
               start:
                 type: object
+                description: Start line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -55865,6 +55940,7 @@ definitions:
                     description: Start new_line line number
               end:
                 type: object
+                description: End line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -56185,6 +56261,7 @@ definitions:
           Omit to create a Legacy feature flag.
       strategies:
         type: array
+        description: Array of feature flag strategies
         items:
           type: object
           properties:
@@ -56203,6 +56280,7 @@ definitions:
               description: The ID of the feature flag user list. If strategy is `gitlabUserList`.
             scopes:
               type: array
+              description: Array of scopes for the strategy
               items:
                 type: object
                 properties:
@@ -56231,6 +56309,7 @@ definitions:
         description: The active state of the flag. Supported in GitLab 13.3 and later
       strategies:
         type: array
+        description: Array of feature flag strategies
         items:
           type: object
           properties:
@@ -56254,6 +56333,7 @@ definitions:
               description: Delete the strategy when true
             scopes:
               type: array
+              description: Array of scopes for the strategy
               items:
                 type: object
                 properties:
@@ -61027,208 +61107,6 @@ definitions:
     required:
     - access_level
     description: Updates a member of a group or project.
-  API_Entities_MergeRequestApprovals:
-    type: object
-    properties:
-      user_has_approved:
-        type: boolean
-      user_can_approve:
-        type: boolean
-      approved:
-        type: boolean
-      approved_by:
-        "$ref": "#/definitions/API_Entities_Approvals"
-    description: API_Entities_MergeRequestApprovals model
-  API_Entities_Approvals:
-    type: object
-    properties:
-      user:
-        "$ref": "#/definitions/API_Entities_UserBasic"
-      approved_at:
-        type: string
-        format: date-time
-        example: '2025-01-01T10:00:00Z'
-  postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove:
-    type: object
-    properties:
-      sha:
-        type: string
-        description: When present, must have the HEAD SHA of the source branch
-      approval_password:
-        type: string
-        description: Current user's password if project is set to require explicit
-          auth on approval
-        example: secret
-    description: Approve a merge request
-  EE_API_Entities_MergeRequestApprovalState:
-    type: object
-    properties:
-      approval_rules_overwritten:
-        type: boolean
-      rules:
-        type: array
-        items:
-          "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalStateRule"
-    description: EE_API_Entities_MergeRequestApprovalState model
-  EE_API_Entities_MergeRequestApprovalStateRule:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      name:
-        type: string
-        example: QA
-      rule_type:
-        type: string
-        example: regular
-      eligible_approvers:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_UserBasic"
-      approvals_required:
-        type: integer
-        format: int32
-        example: 2
-      users:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_UserBasic"
-      groups:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_Group"
-      contains_hidden_groups:
-        type: boolean
-      report_type:
-        type: string
-      section:
-        type: string
-        example: Backend
-      source_rule:
-        "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalRule_SourceRule"
-      overridden:
-        type: boolean
-      code_owner:
-        type: boolean
-      approved_by:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_UserBasic"
-      approved:
-        type: boolean
-  EE_API_Entities_MergeRequestApprovalRule_SourceRule:
-    type: object
-    properties:
-      approvals_required:
-        type: integer
-        format: int32
-        example: 2
-  postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals:
-    type: object
-    properties:
-      approvals_required:
-        type: integer
-        format: int32
-        description: The amount of approvals required. Must be higher than the project
-          approvals
-        example: 2
-    required:
-    - approvals_required
-    description: 'Deprecated in 16.0: Use the merge request approvals API instead.
-      Change approval-related configuration'
-  EE_API_Entities_ApprovalState:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 84
-      iid:
-        type: integer
-        format: int32
-        example: 14
-      project_id:
-        type: integer
-        format: int32
-        example: 4
-      title:
-        type: string
-        example: Impedit et ut et dolores vero provident ullam est
-      description:
-        type: string
-        example: Repellendus impedit et vel velit dignissimos.
-      state:
-        type: string
-        example: closed
-      created_at:
-        type: string
-        format: date-time
-        example: '2022-08-17T12:46:35.053Z'
-      updated_at:
-        type: string
-        format: date-time
-        example: '2022-11-14T17:22:01.470Z'
-      merge_status:
-        type: string
-        example: can_be_merged
-      approved:
-        type: boolean
-      approvals_required:
-        type: integer
-        format: int32
-        example: 2
-      approvals_left:
-        type: integer
-        format: int32
-        example: 2
-      require_password_to_approve:
-        type: boolean
-      approved_by:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_Approvals"
-      suggested_approvers:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_UserBasic"
-      approvers:
-        type: string
-      approver_groups:
-        type: string
-      user_has_approved:
-        type: boolean
-      user_can_approve:
-        type: boolean
-      approval_rules_left:
-        type: array
-        items:
-          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
-      has_approval_rules:
-        type: boolean
-      merge_request_approvers_available:
-        type: boolean
-      multiple_approval_rules_available:
-        type: boolean
-      invalid_approvers_rules:
-        type: array
-        items:
-          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
-    description: EE_API_Entities_ApprovalState model
-  EE_API_Entities_ApprovalRuleShort:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      name:
-        type: string
-        example: QA
-      rule_type:
-        type: string
-        example: regular
   postApiV4ProjectsIdMergeRequestsMergeRequestIidTimeEstimate:
     type: object
     properties:
@@ -61818,6 +61696,208 @@ definitions:
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
     description: API_Entities_MRNote model
+  API_Entities_MergeRequestApprovals:
+    type: object
+    properties:
+      user_has_approved:
+        type: boolean
+      user_can_approve:
+        type: boolean
+      approved:
+        type: boolean
+      approved_by:
+        "$ref": "#/definitions/API_Entities_Approvals"
+    description: API_Entities_MergeRequestApprovals model
+  API_Entities_Approvals:
+    type: object
+    properties:
+      user:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      approved_at:
+        type: string
+        format: date-time
+        example: '2025-01-01T10:00:00Z'
+  postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove:
+    type: object
+    properties:
+      sha:
+        type: string
+        description: When present, must have the HEAD SHA of the source branch
+      approval_password:
+        type: string
+        description: Current user's password if project is set to require explicit
+          auth on approval
+        example: secret
+    description: Approve a merge request
+  EE_API_Entities_MergeRequestApprovalState:
+    type: object
+    properties:
+      approval_rules_overwritten:
+        type: boolean
+      rules:
+        type: array
+        items:
+          "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalStateRule"
+    description: EE_API_Entities_MergeRequestApprovalState model
+  EE_API_Entities_MergeRequestApprovalStateRule:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      name:
+        type: string
+        example: QA
+      rule_type:
+        type: string
+        example: regular
+      eligible_approvers:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_UserBasic"
+      approvals_required:
+        type: integer
+        format: int32
+        example: 2
+      users:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_UserBasic"
+      groups:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Group"
+      contains_hidden_groups:
+        type: boolean
+      report_type:
+        type: string
+      section:
+        type: string
+        example: Backend
+      source_rule:
+        "$ref": "#/definitions/EE_API_Entities_MergeRequestApprovalRule_SourceRule"
+      overridden:
+        type: boolean
+      code_owner:
+        type: boolean
+      approved_by:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_UserBasic"
+      approved:
+        type: boolean
+  EE_API_Entities_MergeRequestApprovalRule_SourceRule:
+    type: object
+    properties:
+      approvals_required:
+        type: integer
+        format: int32
+        example: 2
+  postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals:
+    type: object
+    properties:
+      approvals_required:
+        type: integer
+        format: int32
+        description: The amount of approvals required. Must be higher than the project
+          approvals
+        example: 2
+    required:
+    - approvals_required
+    description: 'Deprecated in 16.0: Use the merge request approvals API instead.
+      Change approval-related configuration'
+  EE_API_Entities_ApprovalState:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 84
+      iid:
+        type: integer
+        format: int32
+        example: 14
+      project_id:
+        type: integer
+        format: int32
+        example: 4
+      title:
+        type: string
+        example: Impedit et ut et dolores vero provident ullam est
+      description:
+        type: string
+        example: Repellendus impedit et vel velit dignissimos.
+      state:
+        type: string
+        example: closed
+      created_at:
+        type: string
+        format: date-time
+        example: '2022-08-17T12:46:35.053Z'
+      updated_at:
+        type: string
+        format: date-time
+        example: '2022-11-14T17:22:01.470Z'
+      merge_status:
+        type: string
+        example: can_be_merged
+      approved:
+        type: boolean
+      approvals_required:
+        type: integer
+        format: int32
+        example: 2
+      approvals_left:
+        type: integer
+        format: int32
+        example: 2
+      require_password_to_approve:
+        type: boolean
+      approved_by:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Approvals"
+      suggested_approvers:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_UserBasic"
+      approvers:
+        type: string
+      approver_groups:
+        type: string
+      user_has_approved:
+        type: boolean
+      user_can_approve:
+        type: boolean
+      approval_rules_left:
+        type: array
+        items:
+          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
+      has_approval_rules:
+        type: boolean
+      merge_request_approvers_available:
+        type: boolean
+      multiple_approval_rules_available:
+        type: boolean
+      invalid_approvers_rules:
+        type: array
+        items:
+          "$ref": "#/definitions/EE_API_Entities_ApprovalRuleShort"
+    description: EE_API_Entities_ApprovalState model
+  EE_API_Entities_ApprovalRuleShort:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      name:
+        type: string
+        example: QA
+      rule_type:
+        type: string
+        example: regular
   API_Entities_MergeRequestDiff:
     type: object
     properties:
@@ -62609,6 +62689,7 @@ definitions:
         description: Override the project description
       upload:
         type: object
+        description: Object that contains information on the upload
         properties:
           url:
             type: string
@@ -62675,6 +62756,10 @@ definitions:
         type: boolean
       enable_ssl_verification:
         type: boolean
+      organization_id:
+        type: integer
+        format: int32
+        example: 1
       alert_status:
         type: symbol
         example: executable
@@ -63708,6 +63793,8 @@ definitions:
           indication if the container registry is enabled for that project'
       container_expiration_policy_attributes:
         type: object
+        description: Object that contains information on the container expiration
+          policy
         properties:
           cadence:
             type: string
@@ -64149,6 +64236,8 @@ definitions:
           indication if the container registry is enabled for that project'
       container_expiration_policy_attributes:
         type: object
+        description: Object that contains information on the container expiration
+          policy
         properties:
           cadence:
             type: string
@@ -65071,6 +65160,8 @@ definitions:
           indication if the container registry is enabled for that project'
       container_expiration_policy_attributes:
         type: object
+        description: Object that contains information on the container expiration
+          policy
         properties:
           cadence:
             type: string
@@ -65536,13 +65627,15 @@ definitions:
         - 60
       allowed_to_push:
         type: array
-        description: An array of users/groups allowed to push
+        description: Array of users, groups, deploy keys, or access levels allowed
+          to push to protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to push
               enum:
               - 30
               - 40
@@ -65551,31 +65644,37 @@ definitions:
             deploy_key_id:
               type: integer
               format: int32
+              description: Deploy key allowed to push
               example: 1
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_merge:
         type: array
-        description: An array of users/groups allowed to merge
+        description: Array of users, groups, or access levels allowed to merge protected
+          branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to merge
               enum:
               - 30
               - 40
@@ -65584,27 +65683,32 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_unprotect:
         type: array
-        description: An array of users/groups allowed to unprotect
+        description: Array of users, groups, or access levels allowed to unprotect
+          protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to unprotect
               enum:
               - 30
               - 40
@@ -65612,15 +65716,18 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
@@ -65647,13 +65754,15 @@ definitions:
         - 60
       allowed_to_push:
         type: array
-        description: An array of users/groups allowed to push
+        description: Array of users, groups, deploy keys, or access levels allowed
+          to push to protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to push
               enum:
               - 30
               - 40
@@ -65662,31 +65771,37 @@ definitions:
             deploy_key_id:
               type: integer
               format: int32
+              description: Deploy key allowed to push
               example: 1
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_merge:
         type: array
-        description: An array of users/groups allowed to merge
+        description: Array of users, groups, or access levels allowed to merge protected
+          branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to merge
               enum:
               - 30
               - 40
@@ -65695,27 +65810,32 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_unprotect:
         type: array
-        description: An array of users/groups allowed to unprotect
+        description: Array of users, groups, or access levels allowed to unprotect
+          protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to unprotect
               enum:
               - 30
               - 40
@@ -65723,15 +65843,18 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
@@ -65768,13 +65891,15 @@ definitions:
         example: 30
       allowed_to_create:
         type: array
-        description: An array of users/groups allowed to create
+        description: Array of users, groups, deploy keys, or access levels allowed
+          to create protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: ID of an access level
               enum:
               - 30
               - 40
@@ -65783,12 +65908,15 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
             group_id:
               type: integer
               format: int32
+              description: ID of a group
             deploy_key_id:
               type: integer
               format: int32
+              description: ID of a deploy key
     required:
     - name
     description: Protect a single tag or wildcard
@@ -65800,35 +65928,46 @@ definitions:
         description: The package file to be published (generated by Multipart middleware)
       name:
         type: string
+        description: Name of the package
         example: my.pypi.package
       version:
         type: string
+        description: Version of the package
         example: 1.3.7
       requires_python:
         type: string
+        description: PyPI version required for the package
         example: ">=3.7"
       md5_digest:
         type: string
+        description: MD5 checksum of the package
         example: 900150983cd24fb0d6963f7d28e17f72
       sha256_digest:
         type: string
+        description: SHA256 checksum of the package
         example: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
       metadata_version:
         type: string
+        description: Metadata version of the package
         example: '2.3'
       author_email:
         type: string
+        description: Email address for the package author
         example: cschultz@example.com, snoopy@peanuts.com
       description:
         type: string
+        description: Description of the package
       description_content_type:
         type: string
+        description: Type of content for the package description
         example: text/markdown; charset=UTF-8; variant=GFM
       summary:
         type: string
+        description: Short summary of the package
         example: A module for collecting votes from beagles.
       keywords:
         type: string
+        description: Keywords listed for the package
         example: dog,puppy,voting,election
     required:
     - content
@@ -65857,9 +65996,11 @@ definitions:
           tag name, or a branch name.
       assets:
         type: object
+        description: Object that contains assets for the release
         properties:
           links:
             type: array
+            description: Link information about the release
             items:
               type: object
               properties:
@@ -66519,10 +66660,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -66548,10 +66690,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -67531,10 +67674,10 @@ definitions:
     properties:
       token:
         type: string
-        description: Job token
+        description: Job's authentication token
       state:
         type: string
-        description: 'Job''s status: success, failed'
+        description: 'Job''s status: pending, running, success, failed'
       checksum:
         type: string
         description: Job's trace CRC32 checksum
@@ -67567,7 +67710,7 @@ definitions:
         description: Job's authentication token
       debug_trace:
         type: boolean
-        description: Enable or Disable the debug trace
+        description: Enable or disable the debug trace
     description: Append a patch to the job trace
   postApiV4JobsIdArtifactsAuthorize:
     type: object
@@ -69254,6 +69397,7 @@ definitions:
         description: End of subscription of the additional purchased storage
       gitlab_subscription_attributes:
         type: object
+        description: Object that contains information on the GitLab subscription
         properties:
           start_date:
             type: string
@@ -69952,6 +70096,10 @@ definitions:
         type: boolean
       enable_ssl_verification:
         type: boolean
+      organization_id:
+        type: integer
+        format: int32
+        example: 1
       alert_status:
         type: symbol
         example: executable
@@ -70424,6 +70572,18 @@ definitions:
         type: integer
         format: int32
         example: 15000
+      web_hook_calls:
+        type: integer
+        format: int32
+        example: 500
+      web_hook_calls_low:
+        type: integer
+        format: int32
+        example: 500
+      web_hook_calls_mid:
+        type: integer
+        format: int32
+        example: 500
     description: API_Entities_PlanLimit model
   putApiV4ApplicationPlanLimits:
     type: object
@@ -70536,6 +70696,21 @@ definitions:
         format: int32
         description: Maximum number of downstream pipelines in a pipeline's hierarchy
           tree
+      web_hook_calls:
+        type: integer
+        format: int32
+        description: Maximum number of times a webhook can be called per minute, per
+          top-level namespace. 0 for unlimited.
+      web_hook_calls_low:
+        type: integer
+        format: int32
+        description: Maximum number of times a webhook can be called per minute, per
+          top-level namespace. 0 for unlimited (GitLab.com only).
+      web_hook_calls_mid:
+        type: integer
+        format: int32
+        description: Maximum number of times a webhook can be called per minute, per
+          top-level namespace. 0 for unlimited (GitLab.com only).
     required:
     - plan_name
     description: Change plan limits

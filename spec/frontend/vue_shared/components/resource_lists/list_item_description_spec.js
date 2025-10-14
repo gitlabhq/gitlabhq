@@ -21,7 +21,8 @@ describe('ListItemDescription', () => {
     resource: project,
   };
 
-  const descriptionHtml = '<p data-testid="description">Foo bar</p>';
+  const descriptionHtml = '<p>Foo bar</p>';
+  const description = 'Plain text description';
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(ListItemDescription, {
@@ -31,10 +32,11 @@ describe('ListItemDescription', () => {
   };
 
   const findDescription = () => wrapper.findByTestId('description');
+  const findDescriptionHtml = () => wrapper.findByTestId('description-html');
   const findGlIcon = () => wrapper.findComponent(GlIcon);
 
   describe('when resource has a description but is archived', () => {
-    it('does not render description', () => {
+    it('does not render descriptionHtml', () => {
       createComponent({
         props: {
           resource: {
@@ -45,12 +47,57 @@ describe('ListItemDescription', () => {
         },
       });
 
+      expect(findDescriptionHtml().exists()).toBe(false);
+    });
+
+    it('does not render plain text description when archived', () => {
+      createComponent({
+        props: {
+          resource: {
+            ...project,
+            archived: true,
+            description,
+          },
+        },
+      });
+
       expect(findDescription().exists()).toBe(false);
     });
   });
 
-  describe('when project has a description and is not archived', () => {
-    it('renders description', () => {
+  describe('when resource has a plain text description and is not archived', () => {
+    it('renders plain text description', () => {
+      createComponent({
+        props: {
+          resource: {
+            ...project,
+            description,
+          },
+        },
+      });
+
+      expect(findDescription().exists()).toBe(true);
+      expect(findDescription().text()).toBe(description);
+      expect(findDescriptionHtml().exists()).toBe(false);
+    });
+
+    it('does not render as HTML', () => {
+      createComponent({
+        props: {
+          resource: {
+            ...project,
+            description,
+          },
+        },
+      });
+
+      expect(findDescription().attributes('v-safe-html')).toBeUndefined();
+      expect(findDescription().classes()).toContain('md');
+    });
+  });
+
+  describe('when resource has descriptionHtml and is not archived', () => {
+    it('renders description as HTML', () => {
       createComponent({
         props: {
           resource: {
@@ -60,15 +107,36 @@ describe('ListItemDescription', () => {
         },
       });
 
-      expect(findDescription().text()).toBe('Foo bar');
+      expect(findDescriptionHtml().exists()).toBe(true);
+      expect(findDescriptionHtml().text()).toBe('Foo bar');
+      expect(findDescription().exists()).toBe(false);
     });
   });
 
-  describe('when project does not have a description', () => {
+  describe('when resource has both description and descriptionHtml', () => {
+    it('prioritizes descriptionHtml over plain text description', () => {
+      createComponent({
+        props: {
+          resource: {
+            ...project,
+            description,
+            descriptionHtml,
+          },
+        },
+      });
+
+      expect(findDescriptionHtml().exists()).toBe(true);
+      expect(findDescriptionHtml().text()).toBe('Foo bar');
+      expect(findDescription().exists()).toBe(false);
+    });
+  });
+
+  describe('when resource does not have a description', () => {
     it('does not render description', () => {
       createComponent();
 
       expect(findDescription().exists()).toBe(false);
+      expect(findDescriptionHtml().exists()).toBe(false);
     });
   });
 

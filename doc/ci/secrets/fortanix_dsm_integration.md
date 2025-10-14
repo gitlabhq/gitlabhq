@@ -106,7 +106,7 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
      ```
 
 1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
    - `FORTANIX_API_KEY`
@@ -134,8 +134,8 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
    ```
 
 1. The pipeline should run automatically after saving the `.gitlab-ci.yml` file.
-   If not, select **Build > Pipelines > Run pipeline**.
-1. Go to **Build > Jobs** and check the `build` job's log:
+   If not, select **Build** > **Pipelines** > **Run pipeline**.
+1. Go to **Build** > **Jobs** and check the `build` job's log:
 
    ![gitlab_build_result_1](img/gitlab_build_result_1_v16_9.png)
 
@@ -150,7 +150,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
    ![dsm_secret_import_1](img/dsm_secret_import_1_v16_9.png)
 
 1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
    - `FORTANIX_API_KEY`
@@ -176,7 +176,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
 
 1. The pipeline should run automatically after saving the `.gitlab-ci.yml` file.
    If not, select **Build > Pipelines > Run pipeline**.
-1. Go to **Build > Jobs** and check the `build` job's log:
+1. Go to **Build** > **Jobs** and check the `build` job's log:
 
    - ![gitlab_build_result_2](img/gitlab_build_result_2_v16_9.png)
 
@@ -190,7 +190,7 @@ To set up code signing securely in your GitLab environment:
    ![dsm_secret_import_2](img/dsm_secret_import_2_v16_9.png)
 
 1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
    - `FORTANIX_API_KEY`
@@ -226,6 +226,6 @@ To set up code signing securely in your GitLab environment:
 
 1. The pipeline should run automatically after saving the `.gitlab-ci.yml` file.
    If not, select **Build > Pipelines > Run pipeline**.
-1. Go to **Build > Jobs** and check the `build` job's log:
+1. Go to **Build** > **Jobs** and check the `build` job's log:
 
    - ![gitlab_build_result_3](img/gitlab_build_result_3_v16_9.png)

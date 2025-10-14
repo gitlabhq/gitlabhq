@@ -66,6 +66,7 @@ module Gitlab
 
         def create
           log("Creating cluster '#{name}'", :info, bright: true)
+          raise "'kind' executable not found in PATH, please install it first!" unless TTY::Which.exist?("kind")
           return log("cluster '#{name}' already exists, skipping!", :warn) if cluster_exists?
 
           create_cluster

@@ -220,6 +220,7 @@ RSpec.configure do |config|
   config.include ClickHouseHelpers, :click_house
   config.include WorkItems::DataSync::AssociationsHelpers
   config.include StateMachinesRspec::Matchers
+  config.include Ci::JobHelpers
 
   config.include_context 'when rendered has no HTML escapes', type: :view
   config.include_context 'with STI disabled', type: :model
@@ -328,9 +329,6 @@ RSpec.configure do |config|
       # Disable suspending ClickHouse data ingestion workers
       stub_feature_flags(suspend_click_house_data_ingestion: false)
 
-      # Experimental merge request dashboard
-      stub_feature_flags(merge_request_dashboard: false)
-
       # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
       stub_feature_flags(allow_self_hosted_features_for_com: false)
 
@@ -359,10 +357,6 @@ RSpec.configure do |config|
       # New paneled view is still a WIP and not functional.
       stub_feature_flags(paneled_view: false)
 
-      # We are in the process of migrating Tailwind utils to container queries and some breakages
-      # are still expected at the moment
-      stub_feature_flags(tailwind_container_queries: false)
-
       # Handle dynamic partitions creation
       stub_feature_flags(disallow_database_ddl_feature_flags: false)
 
@@ -390,6 +384,10 @@ RSpec.configure do |config|
 
       # FF is temporary until we add a proper UI setting to enable/disable pipeline running for composite identities.
       stub_feature_flags(forbid_composite_identities_to_run_pipelines: false)
+
+      # Using the new indexes causes many specs to fail on the group issues list when joining on project in the finder
+      # Default to false, since switching the finders over is still a WIP
+      stub_feature_flags(use_namespace_id_for_issue_and_work_item_finders: false)
     else
       unstub_all_feature_flags
     end
@@ -600,6 +598,19 @@ RSpec.configure do |config|
 
     # Set default editor preference for new users in tests to not set (value derived from local storage)
     allow_any_instance_of(UserPreference).to receive(:text_editor_type).and_return(0) # not_set
+  end
+
+  # Labkit::CoveredExperience hooks
+  config.around do |example|
+    Labkit::CoveredExperience.configure do |config|
+      # Ignore logs by default in tests
+      config.logger = Labkit::Logging::JsonLogger.new("/dev/null")
+    end
+
+    example.run
+
+    Labkit::CoveredExperience::Current.reset
+    Labkit::CoveredExperience.reset_configuration
   end
 end
 

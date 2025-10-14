@@ -74,8 +74,8 @@ func NewGitalyServer(finalMessageCode codes.Code) *GitalyTestServer {
 
 // InfoRefsUploadPack is a method on GitalyTestServer that handles the InfoRefsUploadPack RPC call.
 func (s *GitalyTestServer) InfoRefsUploadPack(in *gitalypb.InfoRefsRequest, stream gitalypb.SmartHTTPService_InfoRefsUploadPackServer) error {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	if err := validateRepository(in.GetRepository()); err != nil {
 		return err
@@ -104,8 +104,8 @@ func (s *GitalyTestServer) InfoRefsUploadPack(in *gitalypb.InfoRefsRequest, stre
 
 // InfoRefsReceivePack is a method on GitalyTestServer that handles the InfoRefsReceivePack RPC call.
 func (s *GitalyTestServer) InfoRefsReceivePack(in *gitalypb.InfoRefsRequest, stream gitalypb.SmartHTTPService_InfoRefsReceivePackServer) error {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	if err := validateRepository(in.GetRepository()); err != nil {
 		return err
@@ -155,8 +155,8 @@ func (s *GitalyTestServer) sendInfoRefs(stream infoRefsSender, data []byte) erro
 
 // PostReceivePack is a method on GitalyTestServer that handles the PostReceivePack RPC call.
 func (s *GitalyTestServer) PostReceivePack(stream gitalypb.SmartHTTPService_PostReceivePackServer) error {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	req, err := stream.Recv()
 	if err != nil {
@@ -202,8 +202,8 @@ func (s *GitalyTestServer) PostReceivePack(stream gitalypb.SmartHTTPService_Post
 
 // PostUploadPackWithSidechannel is a method on GitalyTestServer that handles the PostUploadPackWithSidechannel RPC call.
 func (s *GitalyTestServer) PostUploadPackWithSidechannel(ctx context.Context, req *gitalypb.PostUploadPackWithSidechannelRequest) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	if err := validateRepository(req.GetRepository()); err != nil {
 		return nil, err
@@ -241,8 +241,8 @@ func (s *GitalyTestServer) CommitIsAncestor(_ context.Context, _ *gitalypb.Commi
 
 // GetBlob is a method on GitalyTestServer that handles the GetBlob RPC call.
 func (s *GitalyTestServer) GetBlob(in *gitalypb.GetBlobRequest, stream gitalypb.BlobService_GetBlobServer) error {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	if err := validateRepository(in.GetRepository()); err != nil {
 		return err
@@ -275,8 +275,8 @@ func (s *GitalyTestServer) GetBlob(in *gitalypb.GetBlobRequest, stream gitalypb.
 }
 
 func (s *GitalyTestServer) GetArchive(in *gitalypb.GetArchiveRequest, stream gitalypb.RepositoryService_GetArchiveServer) error {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	if err := validateRepository(in.GetRepository()); err != nil {
 		return err
@@ -313,8 +313,8 @@ func (s *GitalyTestServer) RawDiff(_ *gitalypb.RawDiffRequest, stream gitalypb.D
 }
 
 func (s *GitalyTestServer) RawPatch(in *gitalypb.RawPatchRequest, stream gitalypb.DiffService_RawPatchServer) error {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	if err := validateRepository(in.GetRepository()); err != nil {
 		return err
@@ -336,8 +336,8 @@ func (s *GitalyTestServer) RawPatch(in *gitalypb.RawPatchRequest, stream gitalyp
 }
 
 func (s *GitalyTestServer) GetSnapshot(in *gitalypb.GetSnapshotRequest, stream gitalypb.RepositoryService_GetSnapshotServer) error {
-	s.WaitGroup.Add(1)
-	defer s.WaitGroup.Done()
+	s.Add(1)
+	defer s.Done()
 
 	if err := validateRepository(in.GetRepository()); err != nil {
 		return err

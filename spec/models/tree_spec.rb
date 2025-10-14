@@ -14,13 +14,13 @@ RSpec.describe Tree, feature_category: :source_code_management do
       allow(tree).to receive(:blobs).and_return(files)
     end
 
-    context 'when repository does not contains a README file' do
+    context 'when repository does not contain a README file' do
       let(:files) { [fake_blob('file'), fake_blob('license'), fake_blob('copying')] }
 
       it { is_expected.to be_nil }
     end
 
-    context 'when repository does not contains a previewable README file' do
+    context 'when repository does not contain a previewable README file' do
       let(:files) { [fake_blob('file'), fake_blob('README.pages'), fake_blob('README.png')] }
 
       it { is_expected.to be_nil }
@@ -48,10 +48,18 @@ RSpec.describe Tree, feature_category: :source_code_management do
       end
     end
 
-    context 'when the repository has a previewable and plain text READMEs' do
+    context 'when the repository has a previewable and a plain text README' do
       let(:files) { [fake_blob('file'), fake_blob('README'), fake_blob('README.md')] }
 
       it 'prefers previewable README file' do
+        is_expected.to have_attributes(name: 'README.md')
+      end
+    end
+
+    context 'when repository contains both README and _index files' do
+      let(:files) { [fake_blob('README.md'), fake_blob('_index.md'), fake_blob('file')] }
+
+      it 'returns README over _index' do
         is_expected.to have_attributes(name: 'README.md')
       end
     end

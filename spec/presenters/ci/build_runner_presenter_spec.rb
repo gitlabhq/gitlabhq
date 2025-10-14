@@ -42,10 +42,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   end
 
   describe '#artifacts' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     context "when option contains archive-type artifacts" do
       let(:build) { create(:ci_build, options: { artifacts: archive }) }
 
@@ -397,7 +393,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     before do
-      stub_feature_flags(ci_validate_config_options: false)
       create(:ci_job_input, job: build, project: build.project, name: 'string_input', value: 'not default')
     end
 

@@ -76,6 +76,7 @@ These variables tell the scanner where to look for certain elements, which actio
 | `DAST_TARGET_PATHS` | string | `/page1.html,/category1/page3.html` | Scan only these paths instead of crawling the whole site. Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`. When this is set, `DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`. |
 | `DAST_TARGET_URL` | URL | `https://site.com` | The URL of the website to scan. |
 | `DAST_USE_CACHE` | boolean | `true` | Set to `false` to disable caching. Default: `true`. **Note**: Disabling cache can cause OOM events or DAST job timeouts. |
+| `DAST_CRAWL_GROUPED_URLS` | string | `https://example.com/hello/*,https://example.com/world/*/details` | (Experimental) Set to a comma-separated list of wildcard URL patterns with at least one `*`. To reduce scan time, the scanner groups and analyzes only one matched URL per pattern. |
 
 ### Authentication
 

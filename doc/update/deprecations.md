@@ -12,12 +12,12 @@ The following GitLab features are deprecated and no longer recommended for use.
 - Some features cause breaking changes when they are removed.
 - On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
 - To view documentation for a removed feature, see the [GitLab Docs archive](https://docs.gitlab.com/archives/).
-- For GraphQL API deprecations, you should [verify your API calls work without the deprecated items](https://docs.gitlab.com/api/graphql/#verify-against-the-future-breaking-change-schema).
+- For GraphQL API deprecations, you should [verify your API calls work without the deprecated items](../api/graphql/_index.md#verify-against-the-future-breaking-change-schema).
 
 For advanced searching and filtering of this deprecation information, try
 [a tool built by our Customer Success team](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/what-is-new-since/?tab=deprecations).
 
-[REST API deprecations](https://docs.gitlab.com/api/rest/deprecations/) are documented separately.
+[REST API deprecations](../api/rest/deprecations.md) are documented separately.
 
 {{< icon name="rss" >}} **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
@@ -47,9 +47,87 @@ For deprecation reviewers (Technical Writers only):
 -->
 
 <div class="js-deprecation-filters"></div>
+<div class="milestone-wrapper" data-milestone="21.0">
+
+## GitLab 21.0
+
+<div class="deprecation " data-milestone="21.0">
+
+### Container Registry legacy metadata storage
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.5</span>
+- Removal in GitLab <span class="milestone">21.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/571531).
+
+</div>
+
+The GitLab container registry's legacy metadata storage approach is deprecated in favor of the container registry metadata database.
+
+GitLab.com already uses the metadata database. This deprecation affects GitLab Self-Managed instances currently using the legacy container registry that stores metadata information directly in the storage backend (whether object storage or a local filesystem).
+
+The legacy metadata storage method will remain supported in maintenance mode, but will not receive new features or improvements. We strongly recommend migrating to the container registry metadata database at your earliest convenience.
+
+This change only affects how the container registry stores metadata about your images and tags. Your choice of storage backend (object storage or filesystem) remains the same. You can continue using [object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage) or filesystem storage with the metadata database.
+
+To migrate from legacy metadata storage to the metadata database, follow the [container registry metadata database migration guide](https://docs.gitlab.com/administration/packages/container_registry_metadata_database/). The migration process involves enabling the metadata database feature and running the import tool to transfer your existing registry data.
+
+The metadata database provides better performance, reliability, and enables new container registry features that are not available with the legacy metadata storage approach.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="20.0">
 
 ## GitLab 20.0
+
+<div class="deprecation breaking-change" data-milestone="20.0">
+
+### Dependency Scanning upgrades to the GitLab SBOM Vulnerability Scanner
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
+</div>
+
+The Dependency Scanning feature is upgrading to the GitLab SBOM Vulnerability Scanner. As part of this change, the Gemnasium analyzer (previously used in CI/CD pipelines) is deprecated in GitLab 17.9.
+
+It is replaced with the [Dependency Scanning using SBOM](https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/) feature and
+the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) that focuses on detecting dependencies and their relationships (dependency graph) and relies on GitLab's build-in SBOM Vulnerability Scanner, which is already employed by
+[Continuous Vulnerability Scanning](https://docs.gitlab.com/user/application_security/continuous_vulnerability_scanning/), to identify their vulnerabilities.
+
+As of GitLab 18.5, this new feature is in Limited Availability. Until the majority of users have migrated to the new dependency scanning feature, GitLab will continue to support the Gemnasium analyzer. Only then,
+the Gemnasium analyzer will reach [end of support](https://docs.gitlab.com/update/terminology/#end-of-support).
+
+Due to the significant changes and feature removals this upgrade introduces, it will not be implemented automatically. Existing CI/CD jobs
+using the Gemnasium analyzer will continue to function by default to prevent disruption to CI configurations.
+
+Please review the fully detailed changes below and consult [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/) to assist you with the transition.
+
+- To prevent disruptions to your CI/CD configuration, when your application uses the stable Dependency Scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`), Dependency Scanning uses only the existing CI/CD jobs based on the Gemnasium analyzer.
+- When your application uses the latest Dependency Scanning CI/CD template (`Dependency-Scanning.latest.gitlab-ci.yml`), Dependency Scanning uses the existing CI/CD jobs based on the Gemnasium analyzer and the new Dependency Scanning analyzer also runs on the supported file types.
+You can also opt-in to enforce the new Dependency Scanning analyzer for all projects.
+- Other migration paths might be considered as the feature gains maturity.
+- The [Gemnasium analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/) project is deprecated, as well as the corresponding container images (all tags and variants): `gemnasium`, `gemnasium-maven`, `gemnasium-python`.
+These images will not be removed from the GitLab container registry.
+- The following CI/CD variables associated with the Gemnasium analyzer are also deprecated. While these variables will continue to work when using the Gemnasium analyzer, they will not be effective after migrating to the new Dependency Scanning analyzer.
+If a variable is also used in another context, the deprecation only applies to the Dependency Scanning feature (for example, `GOOS` and `GOARCH` are not specific to the Dependency Scanning feature).
+`DS_EXCLUDED_ANALYZERS`, `DS_GRADLE_RESOLUTION_POLICY`, `DS_IMAGE_SUFFIX`, `DS_JAVA_VERSION`, `DS_PIP_DEPENDENCY_PATH`, `DS_PIP_VERSION`, `DS_REMEDIATE_TIMEOUT`, `DS_REMEDIATE`, `GEMNASIUM_DB_LOCAL_PATH`, `GEMNASIUM_DB_REF_NAME`, `GEMNASIUM_DB_REMOTE_URL`,
+`GEMNASIUM_DB_UPDATE_DISABLED`, `GEMNASIUM_LIBRARY_SCAN_ENABLED`, `GOARCH`, `GOFLAGS`, `GOOS`, `GOPRIVATE`, `GRADLE_CLI_OPTS`, `GRADLE_PLUGIN_INIT_PATH`, `MAVEN_CLI_OPTS`, `PIP_EXTRA_INDEX_URL`, `PIP_INDEX_URL`, `PIPENV_PYPI_MIRROR`, `SBT_CLI_OPTS`.
+- The following [CI/CD components](https://gitlab.com/components/dependency-scanning/#components) are deprecated: Android, Rust, Swift, Cocoapods. These are replaced by
+[the main Dependency Scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main?ref_type=heads) that covers all supported languages and package managers.
+- The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature **for Yarn projects** is deprecated in GitLab 17.9.
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for more details.
+- The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature is deprecated in GitLab 17.9.
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#dependency-scanning-for-javascript-vendored-libraries) for more details.
+
+</div>
 
 <div class="deprecation breaking-change" data-milestone="20.0">
 
@@ -295,21 +373,23 @@ If you encounter any issues after making these changes, try regenerating your AW
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
+<div class="deprecation " data-milestone="19.0">
 
 ### Azure storage driver for the container registry
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.10</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">19.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523096).
 
 </div>
 
-The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0. If you use Azure object storage for your container registry, you'll need to update your configuration to use the new `azure_v2` driver.
+The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0.
+If you use Azure object storage for your container registry, and would like to use the new driver earlier, you'll need to update your configuration to use the new `azure_v2` driver. In GitLab 19.0, the deprecated Azure driver will become an alias for `azure_v2` driver and no manual action will be needed.
 
-The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver. These improvements help prevent performance issues as your registry usage scales.
+The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver.
+These improvements help prevent performance issues as your registry usage scales.
 
 To migrate to the `azure_v2` driver:
 
@@ -450,54 +530,6 @@ A replacement feature will be developed with [Dependency Scanning on vendored li
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Dependency Scanning upgrades to the GitLab SBOM Vulnerability Scanner
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
-
-</div>
-
-The Dependency Scanning feature is upgrading to the GitLab SBOM Vulnerability Scanner. As part of this change, the Gemnasium analyzer (previously used in CI/CD pipelines) is deprecated in GitLab 17.9.
-
-It is replaced with the [Dependency Scanning using SBOM](https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/) feature and
-the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) that focuses on detecting dependencies and their relationships (dependency graph).
-This upgrade represents a fundamental shift: instead of performing security analysis within CI pipelines, the new system uses GitLab's built-in SBOM Vulnerability Scanner, which is already employed by
-[Continuous Vulnerability Scanning](https://docs.gitlab.com/user/application_security/continuous_vulnerability_scanning/).
-
-As of GitLab 17.9, this new feature is in Beta. Therefore, until it reaches General Availability, GitLab will continue to support the Gemnasium analyzer. Only then,
-the Gemnasium analyzer will reach [end of support](https://docs.gitlab.com/update/terminology/#end-of-support).
-
-Due to the significant changes and feature removals this upgrade introduces, it will not be implemented automatically. Existing CI/CD jobs
-using the Gemnasium analyzer will continue to function by default to prevent disruption to CI configurations.
-
-Please review the fully detailed changes below and consult [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/) to assist you with the transition.
-
-- To prevent disruptions to your CI/CD configuration, when your application uses the stable Dependency Scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`), Dependency Scanning uses only the existing CI/CD jobs based on the Gemnasium analyzer.
-- When your application uses the latest Dependency Scanning CI/CD template (`Dependency-Scanning.latest.gitlab-ci.yml`), Dependency Scanning uses the existing CI/CD jobs based on the Gemnasium analyzer and the new Dependency Scanning analyzer also runs on the supported file types.
-You can also opt-in to enforce the new Dependency Scanning analyzer for all projects.
-- Other migration paths might be considered as the feature gains maturity.
-- The [Gemnasium analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/) project is deprecated, as well as the corresponding container images (all tags and variants): `gemnasium`, `gemnasium-maven`, `gemnasium-python`.
-These images will not be removed from the GitLab container registry.
-- The following CI/CD variables associated with the Gemnasium analyzer are also deprecated. While these variables will continue to work when using the Gemnasium analyzer, they will not be effective after migrating to the new Dependency Scanning analyzer.
-If a variable is also used in another context, the deprecation only applies to the Dependency Scanning feature (for example, `GOOS` and `GOARCH` are not specific to the Dependency Scanning feature).
-`DS_EXCLUDED_ANALYZERS`, `DS_GRADLE_RESOLUTION_POLICY`, `DS_IMAGE_SUFFIX`, `DS_JAVA_VERSION`, `DS_PIP_DEPENDENCY_PATH`, `DS_PIP_VERSION`, `DS_REMEDIATE_TIMEOUT`, `DS_REMEDIATE`, `GEMNASIUM_DB_LOCAL_PATH`, `GEMNASIUM_DB_REF_NAME`, `GEMNASIUM_DB_REMOTE_URL`,
-`GEMNASIUM_DB_UPDATE_DISABLED`, `GEMNASIUM_LIBRARY_SCAN_ENABLED`, `GOARCH`, `GOFLAGS`, `GOOS`, `GOPRIVATE`, `GRADLE_CLI_OPTS`, `GRADLE_PLUGIN_INIT_PATH`, `MAVEN_CLI_OPTS`, `PIP_EXTRA_INDEX_URL`, `PIP_INDEX_URL`, `PIPENV_PYPI_MIRROR`, `SBT_CLI_OPTS`.
-- The following [CI/CD components](https://gitlab.com/components/dependency-scanning/#components) are deprecated: Android, Rust, Swift, Cocoapods. These are replaced by
-[the main Dependency Scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main?ref_type=heads) that covers all supported languages and package managers.
-- The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature **for Yarn projects** is deprecated in GitLab 17.9.
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for more details.
-- The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature is deprecated in GitLab 17.9.
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#dependency-scanning-for-javascript-vendored-libraries) for more details.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Enforce keyset pagination on audit event API
 
 <div class="deprecation-notes">
@@ -604,30 +636,6 @@ Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Make the `gitlab-runner-helper-images` Linux OS package an optional dependency of `gitlab-runner`
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517765).
-
-</div>
-
-Currently the `gitlab-runner` OS package depends on the `gitlab-runner-helper-images` package. The
-`gitlab-runner-helper-images` package provides an exported archive of the `gitlab-runner-helper` Docker images for
-several OS architectures. The archive is ~500MB, but is required by only some users. The required dependency means
-users are forced to install the latter package even if they do not need the exported runner helper images it
-provides.
-
-In GitLab 18.0 this dependency will become optional, and users that need the exported helper images will have to
-explicitly install them. This means that in very specific cases, CI jobs can fail when attempting to pull the helper
-Docker image.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`
 
 <div class="deprecation-notes">
@@ -635,7 +643,7 @@ Docker image.
 - Announced in GitLab <span class="milestone">17.11</span>
 - End of Support in GitLab <span class="milestone">19.0</span>
 - Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/475152).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/573447).
 
 </div>
 
@@ -778,22 +786,26 @@ GitLab has [required client authentication for ROPC on GitLab.com](https://about
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
+<div class="deprecation " data-milestone="19.0">
 
 ### S3 storage driver (AWS SDK v1) for the container registry
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.10</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">19.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523095).
 
 </div>
 
-The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0. If you use S3 object storage for your container registry, you'll need to update your configuration to use the new `s3_v2` driver.
+The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0.
+If you use S3 object storage for your container registry, and would like to use the new driver sooner, you must update your configuration to use the new `s3_v2` driver. In GitLab 19.0, the deprecated s3 driver will become an alias for the `s3_v2` driver, and no manual action will be needed.
 
-The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS. It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
+The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS.
+It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
 
+The `s3_v2` driver no longer supports Signature Signing Algorithm v2.
+If `v4auth: false` option is set in the configuration, it will be transparently ignored by the `s3_v2` driver and the more secure V4 algorithm will be used.
 To migrate to the `s3_v2` driver:
 
 1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.
@@ -889,19 +901,23 @@ The `Project.services` GraphQL field is deprecated. A `Project.integrations` fie
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
+<div class="deprecation " data-milestone="19.0">
 
 ### The `ci_job_token_scope_enabled` projects API attribute is deprecated
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">16.4</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">19.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423091).
 
 </div>
 
-GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/api/projects/), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/api/project_job_token_scopes/) instead.
+The [Limit access from this project](https://docs.gitlab.com/update/deprecations/#cicd-job-token---limit-access-from-your-project-setting-removal)
+CI/CD job token project setting was removed in 18.0. The related `ci_job_token_scope_enabled` attribute
+in the [projects API](https://docs.gitlab.com/api/projects/) is now deprecated
+and always returns `false`, so it will be removed in 19.0. To control job token access,
+use the [CI/CD job token project settings](https://docs.gitlab.com/ci/jobs/ci_job_token/#control-job-token-access-to-your-project).
 
 </div>
 
@@ -1043,54 +1059,6 @@ As a result, we updated the GraphQL endpoints. Use `approvalPolicies` instead of
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.0</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398132).
-
-</div>
-
-The `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated and is
-scheduled for removal in GitLab 19.0.
-
-GitLab uses a separate process called `mail_room` to ingest emails. Currently, GitLab administrators
-can configure their GitLab instances to use `sidekiq` or `webhook` delivery methods to deliver ingested
-emails from `mail_room` to GitLab.
-
-Using the deprecated `sidekiq` delivery method, `mail_room` writes the job data directly to the GitLab
-Redis queue. This means that there is a hard coupling between the delivery method and the Redis
-configuration. Another disadvantage is that framework optimizations such as job payload compression are missed.
-
-Using the `webhook` delivery method, `mail_room` pushes the ingested email body to the GitLab
-API. That way `mail_room` does not need to know your Redis configuration and the GitLab application
-adds the processing job. `mail_room` authenticates with a shared secret key.
-
-Reconfiguring an Omnibus installation generates this secret key file automatically,
-so no secret file configuration setting is needed.
-
-You can configure a custom secret key file (32 characters base 64 encoded) by running a command
-like below and referencing the secret file in `incoming_email_secret_file` and
-`service_desk_email_secret_file` (always specify the absolute path):
-
-```shell
-echo $( ruby -rsecurerandom -e "puts SecureRandom.base64(32)" ) > ~/.gitlab-mailroom-secret
-```
-
-If you run GitLab on more than one machine, you need to provide the secret key file for each machine.
-
-We encourage GitLab administrators to switch to the webhook delivery method for
-`incoming_email_delivery_method` and `service_desk_email_delivery_method` instead of `sidekiq`.
-
-[Issue 393157](https://gitlab.com/gitlab-org/gitlab/-/issues/393157) tracks improving email ingestion in general.
-We hope this will simplify infrastructure setup and add several improvements to how you manage GitLab in the near future.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### `workflow:rules` templates
 
 <div class="deprecation-notes">
@@ -1168,25 +1136,6 @@ and controls.
 
 ## GitLab 18.6
 
-<div class="deprecation breaking-change" data-milestone="18.6">
-
-### Fix typo in user profile visibility updated audit event type
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.8</span>
-- Removal in GitLab <span class="milestone">18.6</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/474386).
-
-</div>
-
-In GitLab 17.11, we created a duplicate audit event type with the name `user_profile_visibility_updated` to replace the audit event type
-`user_profile_visiblity_updated` that is misspelled. You should begin to migrate to this new audit event type as soon as possible.
-
-In GitLab 18.6, we'll remove the `user_profile_visiblity_updated` event type.
-
-</div>
-
 <div class="deprecation " data-milestone="18.6">
 
 ### Prometheus 2.x bundled with the Omnibus Linux package
@@ -1209,14 +1158,14 @@ This change does not impact GitLab Helm chart installations.
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="18.6">
+<div class="deprecation " data-milestone="18.6">
 
 ### Replace compliance standards adherence dashboard with compliance status dashboard
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.11</span>
-- Removal in GitLab <span class="milestone">18.6</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">18.6</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470834).
 
 </div>
@@ -6426,8 +6375,8 @@ Deploy these Helm charts in production by calling commands through GitLab
 As part of this change, the following specific capabilities within GitLab
 are now deprecated, and are scheduled for removal in GitLab 15.0:
 
-- The **Security & Compliance > Threat Monitoring** page.
-- The `Network Policy` security policy type, as found on the **Security & Compliance > Policies** page.
+- The **Security & Compliance** > **Threat Monitoring** page.
+- The `Network Policy` security policy type, as found on the **Security & Compliance** > **Policies** page.
 - The ability to manage integrations with the following technologies through GitLab: AppArmor, Cilium, Falco, FluentD, and Pod Security Policies.
 - All APIs related to the above functionality.
 
@@ -7568,7 +7517,7 @@ If you monitor Value Stream Analytics metrics and rely on the date filter, to av
 
 </div>
 
-The vulnerability check feature is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance > Policies** and creating a new Scan Result Policy.
+The vulnerability check feature is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance** > **Policies** and creating a new Scan Result Policy.
 
 The new security approvals feature is similar to vulnerability check. For example, both can require approvals for MRs that contain security vulnerabilities. However, security approvals improve the previous experience in several ways:
 
@@ -8153,9 +8102,9 @@ use `count` from `cars` in `MergeTrains::TrainType` instead.
 
 <div class="milestone-wrapper" data-special-status="true">
 
-## Cancelled changes
+## Canceled changes
 
-The following changes have been cancelled.
+The following changes have been canceled.
 
 <div class="deprecation breaking-change">
 
@@ -8169,7 +8118,7 @@ The following changes have been cancelled.
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8194,7 +8143,7 @@ To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOL
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8217,7 +8166,7 @@ Instead, you should use [License scanning of CycloneDX files](https://docs.gitla
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8254,7 +8203,7 @@ upgrading to 18.0 to avoid disruptions to your CI/CD pipelines.
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8287,7 +8236,7 @@ to ensure the correct locations are being used to mirror the required scanner im
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8319,7 +8268,7 @@ If you need to use the cache when scanning a project, you can restore the previo
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8339,7 +8288,7 @@ This planned change to the secret detection analyzer is cancelled. You can still
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 

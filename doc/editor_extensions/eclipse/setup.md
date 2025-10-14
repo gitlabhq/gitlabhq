@@ -37,7 +37,7 @@ To install GitLab for Eclipse:
 1. On the plugin's page, select **Install**, and drag your mouse over to your Eclipse IDE.
 1. In the **Eclipse Marketplace** window, select the **GitLab For Eclipse** category.
 1. Select **Confirm >**, then select **Finish**.
-1. If the **Trust Authorities** window appears, select the **[`https://gitlab.com`](https://gitlab.com)** update site and select **Trust Selected**.
+1. If the **Trust Authorities** window appears, select the **`https://gitlab.com`** update site and select **Trust Selected**.
 1. Select **Restart Now**.
 
 If the Eclipse Marketplace is unavailable, follow the
@@ -47,7 +47,7 @@ for adding a new software site. For **Work with**, use
 
 ## Connect to GitLab
 
-After you install the extension, connect it to your GitLab account.
+After you install the extension, connect it to your GitLab account by creating a personal access token and authenticating with GitLab.
 
 ### Create a personal access token
 
@@ -55,7 +55,7 @@ If you are on a GitLab Self-Managed instance, create a personal access token.
 
 1. In GitLab, on the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
 1. Enter a name, description, and expiration date.
 1. Select the `api` scope.
@@ -65,7 +65,7 @@ If you are on a GitLab Self-Managed instance, create a personal access token.
 
 After you configure the plugin in your IDE, connect it to your GitLab account:
 
-1. In your IDE, select **Eclipse > Settings**.
+1. In your IDE, select **Eclipse** > **Settings**.
 1. On the left sidebar, select **GitLab**.
 1. Provide the **Connection URL**. For GitLab.com, use `https://gitlab.com`.
 1. For **GitLab Personal Access Token**, paste in the personal access token you created.

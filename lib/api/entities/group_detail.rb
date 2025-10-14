@@ -10,6 +10,18 @@ module API
       expose :enabled_git_access_protocol, if: ->(group, options) { group.root? && options[:user_can_admin_group] }
       expose :prevent_sharing_groups_outside_hierarchy,
         if: ->(group) { group.root? && group.namespace_settings.present? }
+      expose :step_up_auth_required_oauth_provider,
+        documentation: {
+          type: 'string',
+          desc: 'OAuth provider required for step-up authentication.'
+        },
+        if: ->(group, options) {
+          ::Feature.enabled?(:omniauth_step_up_auth_for_namespace, group) &&
+            group.namespace_settings.present? &&
+            options[:user_can_admin_group]
+        } do |group|
+        group.namespace_settings.step_up_auth_required_oauth_provider
+      end
 
       expose :projects,
         if: ->(_, options) { options[:with_projects] },

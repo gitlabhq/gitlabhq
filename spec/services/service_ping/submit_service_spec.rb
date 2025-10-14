@@ -35,9 +35,6 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
         leader_deployments: 41.3,
         instance_deployments: 15.2,
 
-        leader_projects_prometheus_active: 0.31,
-        instance_projects_prometheus_active: 0.30,
-
         leader_service_desk_issues: 15.8,
         instance_service_desk_issues: 15.1,
 

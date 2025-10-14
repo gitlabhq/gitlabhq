@@ -46,7 +46,9 @@ module API
       get ":id/merge_requests/:merge_request_iid/versions/:version_id", urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present_cached merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull, cache_context: nil, enable_unidiff: declared_params[:unidiff]
+        cache_context = ->(_) { declared_params[:unidiff] }
+
+        present_cached merge_request.merge_request_diffs.find(params[:version_id]), with: Entities::MergeRequestDiffFull, cache_context: cache_context, enable_unidiff: declared_params[:unidiff]
       end
     end
   end

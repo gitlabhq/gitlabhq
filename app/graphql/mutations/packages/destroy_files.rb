@@ -6,6 +6,7 @@ module Mutations
       graphql_name 'DestroyPackageFiles'
 
       include FindsProject
+      include Mutations::Packages::DeleteProtection
 
       MAXIMUM_FILES = 100
 
@@ -29,13 +30,19 @@ module Mutations
 
         ensure_file_access!(project, package_files)
 
-        result = ::Packages::MarkPackageFilesForDestructionService.new(package_files).execute
+        files_to_destroy, protection_errors = filter_protected_files(project, package_files)
 
-        sync_helm_metadata_caches(package_files, project) unless result.error?
+        # Create relation from filtered IDs
+        files_to_destroy_relation = package_files.id_in(files_to_destroy.map(&:id))
 
-        errors = result.error? ? Array.wrap(result[:message]) : []
+        result = ::Packages::MarkPackageFilesForDestructionService.new(files_to_destroy_relation).execute
 
-        { errors: errors }
+        sync_helm_metadata_caches(package_files) unless result.error?
+
+        service_errors = result.error? ? Array.wrap(result[:message]) : []
+        all_errors = protection_errors + service_errors
+
+        { errors: all_errors }
       end
 
       private
@@ -52,20 +59,34 @@ module Mutations
         GitlabSchema.parse_gids(gids, expected_type: ::Packages::PackageFile).map(&:model_id)
       end
 
-      def sync_helm_metadata_caches(package_files, project)
-        metadata = ::Packages::Helm::FileMetadatum.for_package_files(package_files)
-        .select_distinct_channel
+      def sync_helm_metadata_caches(package_files)
+        ::Packages::Helm::BulkSyncHelmMetadataCacheService.new(
+          current_user, package_files
+        ).execute
+      end
 
-        return if metadata.blank?
+      def filter_protected_files(project, package_files)
+        files_to_destroy = []
+        protection_errors = []
+        protected_packages_cache = {}
 
-        # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as package file are deleted
-        # Related issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/569680
-        ::Packages::Helm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
-          metadata,
-          arguments_proc: ->(metadatum) { [project.id, metadatum.channel] },
-          context_proc: ->(_) { { project: project, user: current_user } }
-        )
-        # rubocop:enable CodeReuse/Worker
+        # We can leverage the fact that a package file has a one-to-one relationship
+        # to package and project, so we can pass the project directly
+        package_files.preload_package.find_each do |package_file|
+          package = package_file.package
+
+          # Cache protection check results per package to avoid duplicate checks
+          protected_packages_cache[package.id] ||= protected_for_delete?(package, in_project: project)
+
+          if protected_packages_cache[package.id]
+            protection_errors << deletion_protected_error_message(package.name)
+          else
+            files_to_destroy << package_file
+          end
+        end
+
+        # Deduplicate error messages
+        [files_to_destroy, protection_errors.uniq]
       end
     end
   end

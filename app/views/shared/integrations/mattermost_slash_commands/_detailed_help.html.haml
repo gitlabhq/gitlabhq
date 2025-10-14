@@ -21,22 +21,22 @@
 
 .help-form
   .form-group
-    = label_tag :display_name, _('Display name'), class: 'col-12 col-form-label label-bold'
-    .col-12.input-group
+    = label_tag :display_name, _('Display name'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12.input-group
       = text_field_tag :display_name, "GitLab / #{pretty_name}".html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#display_name', category: :primary, size: :medium)
 
   .form-group
-    = label_tag :description, _('Description'), class: 'col-12 col-form-label  label-bold'
-    .col-12.input-group
+    = label_tag :description, _('Description'), class: 'gl-col-12 col-form-label  label-bold'
+    .gl-col-12.input-group
       = text_field_tag :description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#description', category: :primary, size: :medium)
 
   .form-group
-    = label_tag nil, s_('MattermostService|Command trigger word'), class: 'col-12 col-form-label label-bold'
-    .col-12
+    = label_tag nil, s_('MattermostService|Command trigger word'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12
       %p= s_('MattermostService|Fill in the word that works best for your team.')
       %p
         = s_('MattermostService|Suggestions:')
@@ -46,44 +46,44 @@
           %code= @project.full_path
 
   .form-group
-    = label_tag :request_url, s_('MattermostService|Request URL'), class: 'col-12 col-form-label label-bold'
-    .col-12.input-group
+    = label_tag :request_url, s_('MattermostService|Request URL'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12.input-group
       = text_field_tag :request_url, integration_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#request_url', category: :primary, size: :medium)
 
   .form-group
-    = label_tag nil, s_('MattermostService|Request method'), class: 'col-12 col-form-label label-bold'
-    .col-12 POST
+    = label_tag nil, s_('MattermostService|Request method'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12 POST
 
   .form-group
-    = label_tag :response_username, s_('MattermostService|Response username'), class: 'col-12 col-form-label label-bold'
-    .col-12.input-group
+    = label_tag :response_username, s_('MattermostService|Response username'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12.input-group
       = text_field_tag :response_username, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#response_username', category: :primary, size: :medium)
 
   .form-group
-    = label_tag :response_icon, s_('MattermostService|Response icon'), class: 'col-12 col-form-label label-bold'
-    .col-12.input-group
+    = label_tag :response_icon, s_('MattermostService|Response icon'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12.input-group
       = text_field_tag :response_icon, asset_url('gitlab_logo.png'), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#response_icon', category: :primary, size: :medium)
 
   .form-group
-    = label_tag nil, _('Autocomplete'), class: 'col-12 col-form-label label-bold'
-    .col-12 Yes
+    = label_tag nil, _('Autocomplete'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12 Yes
 
   .form-group
-    = label_tag :autocomplete_hint, _('Autocomplete hint'), class: 'col-12 col-12 col-form-label label-bold'
-    .col-12.input-group
+    = label_tag :autocomplete_hint, _('Autocomplete hint'), class: 'gl-col-12 gl-col-12 col-form-label label-bold'
+    .gl-col-12.input-group
       = text_field_tag :autocomplete_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#autocomplete_hint', category: :primary, size: :medium)
 
   .form-group
-    = label_tag :autocomplete_description, _('Autocomplete description'), class: 'col-12 col-form-label label-bold'
-    .col-12.input-group
+    = label_tag :autocomplete_description, _('Autocomplete description'), class: 'gl-col-12 col-form-label label-bold'
+    .gl-col-12.input-group
       = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#autocomplete_description', category: :primary, size: :medium)

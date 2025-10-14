@@ -41,7 +41,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
 1. On the **Account details** page, review and confirm your subscription settings. These settings are based on the information you provided to your account team:
 
-   - **Reference architecture**: The maximum number of users allowed in your instance. For more information, see [availability and scalability](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#availability-and-scalability). For example, up to 3,000 users.
+   - **Reference architecture**: The maximum number of users allowed in your instance. For more information, see [availability and scalability](data_residency_high_availability.md#availability-and-scalability). For example, up to 3,000 users.
 
    - **Total repository capacity**: The total storage space available for all repositories in your instance. For example, 16 GiB. This setting cannot be reduced after you create your instance. You can increase storage capacity later if needed. For more information about how storage is calculated for GitLab Dedicated, see [GitLab Dedicated storage types](storage_types.md).
 
@@ -53,14 +53,14 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    - **Tenant URL**: Your instance URL is automatically generated as `<tenant_name>.gitlab-dedicated.com`.
 
-   - **Primary region**: Select the primary AWS region to use for data storage. For more information, see [available AWS regions](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
+   - **Primary region**: Select the primary AWS region to use for data storage. For more information, see [available AWS regions](data_residency_high_availability.md#primary-regions).
      - Optional. Select Availability Zone IDs for the primary region. Otherwise, AZ IDs are selected automatically during instance provisioning.
 
-   - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../disaster_recovery.md). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance. Some regions have [limited support](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#secondary-regions-with-limited-support).
+   - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../disaster_recovery.md). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance. Some regions have [limited support](data_residency_high_availability.md#secondary-regions-with-limited-support).
      - Optional. Select Availability Zone IDs for the secondary region. Otherwise, AZ IDs are selected automatically during instance provisioning.
 
    - **Backup region**: Select a region to replicate and store your primary data backups.
-     You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
+     You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../disaster_recovery.md).
 
    - **Time zone**: Select a weekly four-hour time slot when GitLab performs routine
      maintenance and upgrades. For more information, see [maintenance windows](../maintenance.md#maintenance-windows).

@@ -1,4 +1,4 @@
-export const withItems = {
+export const mergeRequestsDataWithItems = {
   data: {
     currentUser: {
       id: 'gid://gitlab/User/1',
@@ -29,7 +29,7 @@ export const withItems = {
   },
 };
 
-export const withoutItems = {
+export const mergeRequestsDataWithoutItems = {
   data: {
     currentUser: {
       id: 'gid://gitlab/User/1',
@@ -41,6 +41,37 @@ export const withoutItems = {
       assignedMergeRequests: {
         count: 0,
         nodes: [],
+        __typename: 'MergeRequestConnection',
+      },
+      __typename: 'CurrentUser',
+    },
+  },
+};
+
+export const mergeRequestsDataWithHugeCount = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      reviewRequestedMergeRequests: {
+        count: 750000,
+        nodes: [
+          {
+            __typename: 'MergeRequest',
+            id: 'gid://gitlab/MergeRequest/30',
+            updatedAt: '2025-06-12T15:13:25Z',
+          },
+        ],
+        __typename: 'MergeRequestConnection',
+      },
+      assignedMergeRequests: {
+        count: 25000,
+        nodes: [
+          {
+            __typename: 'MergeRequest',
+            id: 'gid://gitlab/MergeRequest/30',
+            updatedAt: '2025-06-12T15:13:25Z',
+          },
+        ],
         __typename: 'MergeRequestConnection',
       },
       __typename: 'CurrentUser',

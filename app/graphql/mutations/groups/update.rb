@@ -32,6 +32,9 @@ module Mutations
       argument :shared_runners_setting, Types::Namespace::SharedRunnersSettingEnum,
         required: false,
         description: copy_field_description(Types::GroupType, :shared_runners_setting)
+      argument :step_up_auth_required_oauth_provider, GraphQL::Types::String,
+        required: false,
+        description: 'OAuth provider required for step-up authentication.'
       argument :visibility, Types::VisibilityLevelsEnum,
         required: false,
         description: copy_field_description(Types::GroupType, :visibility)

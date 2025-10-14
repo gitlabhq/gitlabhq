@@ -244,7 +244,6 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `if-merge-request-title-as-if-foss`         | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-as-if-foss"`. | |
 | `if-merge-request-title-update-caches`      | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:update-cache"`. | |
 | `if-merge-request-labels-run-all-rspec`     | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-all-rspec"`. | |
-| `if-merge-request-labels-run-cs-evaluation` | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-CS-evaluation"`. | |
 | `if-security-merge-request`                 | Matches if the pipeline is for a security merge request. | |
 | `if-security-schedule`                      | Matches if the pipeline is for a security scheduled pipeline. | |
 | `if-nightly-master-schedule`                | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |
@@ -279,9 +278,9 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 The table below lists custom exit codes we use to auto-retry (see the retry rules in [GitLab global CI configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for its definition):
 
-| exit code |   description  |
-|-----------|----------------|
-|201        | low disk space |
+| Exit code | Description |
+|-----------|-------------|
+| 201       | low disk space |
 
 This list can be expanded as new failure patterns emerge. To avoid conflicts, please use exit codes in the range 201-255.
 

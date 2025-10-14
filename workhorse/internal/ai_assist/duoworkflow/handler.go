@@ -21,11 +21,13 @@ func Handler(rails *api.API) http.Handler {
 			fail.Request(w, r, fmt.Errorf("failed to upgrade: %v", err))
 			return
 		}
-		defer func() { _ = conn.Close() }()
 
 		runner, err := newRunner(conn, rails, r, a.DuoWorkflow)
 		if err != nil {
 			fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
+			if closeErr := conn.Close(); closeErr != nil {
+				log.WithRequest(r).WithError(closeErr).Error("failed to close connection")
+			}
 			return
 		}
 		defer func() { _ = runner.Close() }()

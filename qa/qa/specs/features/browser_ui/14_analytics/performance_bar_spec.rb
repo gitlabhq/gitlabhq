@@ -31,7 +31,7 @@ module QA
           quarantine: {
             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547796',
             type: :investigating,
-            only: { job: "cng-instance" }
+            only: { job: /cng-instance|cng-relative-url/ }
           }
         ) do
           # Issue pages always make AJAX requests

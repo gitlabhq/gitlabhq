@@ -150,7 +150,7 @@ describe('Linked pipeline', () => {
         expect(findPipelineLink().attributes('href')).toBe(downstreamProps.pipeline.path);
       });
 
-      it('applies the flex-row css class to the card', () => {
+      it('applies the !gl-flex-row css class to the card', () => {
         expect(findLinkedPipeline().classes()).toContain('gl-flex-row');
         expect(findLinkedPipeline().classes()).not.toContain('gl-flex-row-reverse');
       });

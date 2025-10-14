@@ -6,6 +6,7 @@ import renderSandboxedMermaid from './render_sandboxed_mermaid';
 import { renderGlql } from './render_glql';
 import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
 import { addAriaLabels } from './accessibility';
+import { renderImageLightbox } from './render_image_lightbox';
 
 function initPopovers(elements) {
   if (!elements.length) return;
@@ -33,6 +34,7 @@ export function renderGFM(element) {
     userEls,
     popoverEls,
     taskListCheckboxEls,
+    imageEls,
   ] = [
     '.js-syntax-highlight',
     '.js-render-kroki[hidden]',
@@ -44,6 +46,8 @@ export function renderGFM(element) {
     '.gfm-project_member',
     '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic, .gfm-milestone',
     '.task-list-item-checkbox',
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    'a>img',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));
 
   syntaxHighlight(highlightEls);
@@ -56,4 +60,8 @@ export function renderGFM(element) {
   initPopovers(popoverEls);
   addAriaLabels(taskListCheckboxEls);
   renderGlql(glqlEls.map((e) => e.parentNode));
+
+  if (gon.features?.imageLightboxes) {
+    renderImageLightbox(imageEls, element);
+  }
 }

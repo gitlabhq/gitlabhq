@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe IconsHelper do
   let(:icons_path) { ActionController::Base.helpers.image_path("icons.svg") }
+  let(:illustrations_full_path) { ActionController::Base.helpers.image_path("illustrations.svg") }
 
   describe 'sprite_icon_path' do
     it 'returns relative path' do
@@ -26,6 +27,31 @@ RSpec.describe IconsHelper do
       it 'returns an absolute URL on that asset host' do
         expect(sprite_icon_path)
           .to eq ActionController::Base.helpers.image_path("icons.svg", host: Gitlab.config.gitlab.url)
+      end
+    end
+  end
+
+  describe 'illustrations_path' do
+    it 'returns relative path' do
+      expect(illustrations_path).to eq(illustrations_full_path)
+    end
+
+    it 'only calls image_path once when called multiple times' do
+      expect(ActionController::Base.helpers).to receive(:image_path).once.and_call_original
+
+      2.times { illustrations_path }
+    end
+
+    context 'when an asset_host is set in the config it will return an absolute local URL' do
+      let(:asset_host) { 'http://assets' }
+
+      before do
+        allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
+      end
+
+      it 'returns an absolute URL on that asset host' do
+        expect(illustrations_path)
+          .to eq ActionController::Base.helpers.image_path("illustrations.svg", host: Gitlab.config.gitlab.url)
       end
     end
   end

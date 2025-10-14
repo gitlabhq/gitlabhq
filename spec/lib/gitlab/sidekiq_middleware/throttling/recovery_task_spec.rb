@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SidekiqMiddleware::Throttling::RecoveryTask, :clean_gitlab_redis_shared_state,
   feature_category: :scalability do
   include ExclusiveLeaseHelpers
-  let(:lease_key) { 'gitlab/sidekiq_middleware/throttling/recovery_task' }
+  let(:lease_key) { 'gitlab/sidekiq_middleware/throttling/recovery_task:queues:default' }
 
   subject(:recovery_task) do
     described_class.new.tap do |instance|
@@ -40,6 +40,22 @@ RSpec.describe Gitlab::SidekiqMiddleware::Throttling::RecoveryTask, :clean_gitla
     end
 
     context 'when lease can be obtained' do
+      let(:worker_a) do
+        Class.new do
+          def self.name
+            'WorkerA'
+          end
+        end
+      end
+
+      let(:worker_b) do
+        Class.new do
+          def self.name
+            'WorkerB'
+          end
+        end
+      end
+
       before do
         stub_exclusive_lease(lease_key, timeout: described_class::LEASE_TTL)
         allow(Gitlab::SidekiqMiddleware::Throttling::Tracker).to receive(:throttled_workers)
@@ -49,10 +65,15 @@ RSpec.describe Gitlab::SidekiqMiddleware::Throttling::RecoveryTask, :clean_gitla
       context 'when there are throttled workers' do
         let(:throttled_worker_names) { %w[WorkerA WorkerB] }
         let(:recovery_service_double) { instance_double(Gitlab::SidekiqMiddleware::Throttling::RecoveryService) }
+        let(:current_sidekiq_queue) { Sidekiq.default_configuration.queues.first }
 
         before do
           allow(Gitlab::SidekiqMiddleware::Throttling::RecoveryService).to receive(:new)
                                                                              .and_return(recovery_service_double)
+          stub_const('WorkerA', worker_a)
+          stub_const('WorkerB', worker_b)
+          allow(::Gitlab::SidekiqConfig::WorkerRouter.global).to receive(:route)
+                                                                   .and_return(current_sidekiq_queue)
         end
 
         it 'calls RecoveryService for each throttled worker' do
@@ -63,6 +84,25 @@ RSpec.describe Gitlab::SidekiqMiddleware::Throttling::RecoveryTask, :clean_gitla
           expect(recovery_service_double).to receive(:execute).exactly(throttled_worker_names.size).times
 
           recovery_task.call
+        end
+
+        context 'with throttled workers outside of current queue' do
+          before do
+            allow(Sidekiq.default_configuration).to receive(:queues).and_return(['current_queue'])
+
+            allow(::Gitlab::SidekiqConfig::WorkerRouter.global).to receive(:route).with(WorkerA)
+                                                                                  .and_return('current_queue')
+            allow(::Gitlab::SidekiqConfig::WorkerRouter.global).to receive(:route).with(WorkerB)
+                                                                                  .and_return('another_queue')
+          end
+
+          it 'calls RecoveryService for workers routed to current queue only' do
+            expect(Gitlab::SidekiqMiddleware::Throttling::RecoveryService).to receive(:new)
+                                                                                .with('WorkerA')
+            expect(recovery_service_double).to receive(:execute).once
+
+            recovery_task.call
+          end
         end
       end
 

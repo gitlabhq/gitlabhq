@@ -51,17 +51,17 @@ export const DEFAULT_WORKLOAD_TABLE_FIELDS = [
   {
     key: 'name',
     label: s__('KubernetesDashboard|Name'),
-    tdClass: 'md:gl-w-1/2 lg:gl-w-4/10 gl-break-anywhere',
+    tdClass: '@md/panel:gl-w-1/2 @lg/panel:gl-w-4/10 gl-break-anywhere',
   },
   {
     key: 'status',
     label: s__('KubernetesDashboard|Status'),
-    tdClass: 'md:gl-w-15',
+    tdClass: '@md/panel:gl-w-15',
   },
   {
     key: 'namespace',
     label: s__('KubernetesDashboard|Namespace'),
-    tdClass: 'gl-md-w-30p lg:gl-w-4/10 gl-break-anywhere',
+    tdClass: 'gl-md-w-30p @lg/panel:gl-w-4/10 gl-break-anywhere',
   },
   {
     key: 'age',
@@ -73,17 +73,17 @@ export const PODS_TABLE_FIELDS = [
   {
     key: 'name',
     label: s__('KubernetesDashboard|Name'),
-    tdClass: 'lg:gl-w-1/4 gl-break-anywhere',
+    tdClass: '@lg/panel:gl-w-1/4 gl-break-anywhere',
   },
   {
     key: 'status',
     label: s__('KubernetesDashboard|Status'),
-    tdClass: 'lg:gl-w-1/6',
+    tdClass: '@lg/panel:gl-w-1/6',
   },
   {
     key: 'namespace',
     label: s__('KubernetesDashboard|Namespace'),
-    tdClass: 'lg:gl-w-1/4 gl-break-anywhere',
+    tdClass: '@lg/panel:gl-w-1/4 gl-break-anywhere',
   },
   {
     key: 'age',

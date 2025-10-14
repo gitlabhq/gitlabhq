@@ -131,6 +131,29 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 
+  describe '.find_by_group_id' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:setting1) { create(:observability_group_o11y_setting, group: group1) }
+    let_it_be(:setting2) { create(:observability_group_o11y_setting, group: group2) }
+
+    it 'finds the setting by group_id' do
+      result = described_class.find_by_group_id(group1.id)
+      expect(result).to eq(setting1)
+    end
+
+    it 'returns nil when no setting exists for the group_id' do
+      non_existing_group_id = non_existing_record_id
+      result = described_class.find_by_group_id(non_existing_group_id)
+      expect(result).to be_nil
+    end
+
+    it 'finds the correct setting when multiple settings exist' do
+      result = described_class.find_by_group_id(group2.id)
+      expect(result).to eq(setting2)
+    end
+  end
+
   describe 'factory' do
     it 'creates a valid record' do
       setting = build(:observability_group_o11y_setting)

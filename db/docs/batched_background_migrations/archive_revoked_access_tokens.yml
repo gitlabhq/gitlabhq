@@ -1,0 +1,12 @@
+---
+migration_job_name: ArchiveRevokedAccessTokens
+description: |
+  The `oauth_access_tokens` table has a large number of "revoked" rows, that can be safely deleted.
+  This batch migration will move these records to separate archival table.
+  This functions as a way to soft delete old records from `oauth_access_tokens`, to prepare for
+  reclaiming space from the production table.
+feature_category: system_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197692
+milestone: '18.5'
+queued_migration_version: 20250826102649
+finalized_by: # version of the migration that finalized this BBM

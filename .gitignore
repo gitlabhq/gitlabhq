@@ -60,7 +60,7 @@ eslint-report.html
 /jsconfig.json
 /lefthook-local.yml
 /log/*.log*
-/node_modules
+node_modules
 /nohup.out
 /public/assets/
 /public/uploads.*

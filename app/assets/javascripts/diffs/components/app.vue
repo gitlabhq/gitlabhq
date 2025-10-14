@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { debounce, throttle } from 'lodash';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
@@ -12,6 +11,7 @@ import {
   MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
 } from '~/behaviors/shortcuts/keybindings';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -27,6 +27,7 @@ import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
+import { useBatchComments } from '~/batch_comments/store';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -157,6 +158,7 @@ export default {
       sastData: {},
       keydownTime: undefined,
       listenersAttached: false,
+      toggledFile: false,
     };
   },
   apollo: {
@@ -361,7 +363,7 @@ export default {
 
     const id = window?.location?.hash;
 
-    if (id && id.indexOf('#note') !== 0) {
+    if (id && id.indexOf('#note') !== 0 && id.indexOf('#draft') !== 0) {
       this.setHighlightedRow({ lineCode: id.split('diff-content').pop().slice(1) });
     }
 
@@ -396,6 +398,16 @@ export default {
     this.subscribeToVirtualScrollingEvents();
     window.addEventListener('hashchange', this.handleHashChange);
     window.addEventListener('scroll', this.hideTooltips);
+
+    if (document.querySelector('.js-static-panel-inner')) {
+      PanelBreakpointInstance.addResizeListener(() => {
+        if (!PanelBreakpointInstance.isDesktop()) {
+          this.setFileBrowserVisibility(false);
+        } else {
+          this.setTreeDisplay();
+        }
+      });
+    }
   },
   beforeCreate() {
     diffsApp.instrument();
@@ -485,6 +497,7 @@ export default {
       notesEventHub.$on('noteFormStartReview', this.handleReviewTracking);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
+      diffsEventHub.$on('setFileActive', this.setFileActive);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
     },
@@ -498,6 +511,7 @@ export default {
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
+      diffsEventHub.$off('setFileActive', this.setFileActive);
     },
     autoScroll() {
       const lineCode = window.location.hash;
@@ -689,11 +703,16 @@ export default {
         this.setFileBrowserVisibility(parseBoolean(hideBrowserPreference));
       } else {
         const shouldHide =
-          !bp.isDesktop() || (!this.isBatchLoading && this.flatBlobsList.length <= 1);
+          !PanelBreakpointInstance.isDesktop() ||
+          (!this.isBatchLoading && this.flatBlobsList.length <= 1);
         this.setFileBrowserVisibility(!shouldHide);
       }
     },
     async scrollVirtualScrollerToFileHash(hash) {
+      if (!this.isVirtualScrollingEnabled) {
+        setTimeout(() => handleLocationHash());
+      }
+
       const index = this.diffFiles.findIndex((f) => f.file_hash === hash);
 
       if (index !== -1) {
@@ -714,6 +733,13 @@ export default {
 
         if (discussion) {
           this.scrollVirtualScrollerToFileHash(discussion.diff_file.file_hash);
+        }
+      } else if (id.startsWith('#draft_')) {
+        const draftId = Number(id.replace('#draft_', ''));
+        const draft = useBatchComments().drafts.find((d) => d.id === draftId);
+
+        if (draft) {
+          this.scrollVirtualScrollerToFileHash(draft.file_hash);
         }
       }
     },
@@ -739,13 +765,20 @@ export default {
       }
     },
     isDiffViewActive(item) {
-      return this.virtualScrollCurrentIndex >= 0 && this.currentDiffFileId === item.file_hash;
+      return (
+        (this.virtualScrollCurrentIndex >= 0 || this.toggledFile) &&
+        this.currentDiffFileId === item.file_hash
+      );
     },
     toggleFileByFile() {
       this.setFileByFile({ fileByFile: !this.viewDiffsFileByFile });
     },
     toggleWhitespace(updatedSetting) {
       this.setShowWhitespace({ showWhitespace: updatedSetting });
+    },
+    setFileActive(hash) {
+      this.setCurrentFileHash(hash);
+      this.toggledFile = true;
     },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {

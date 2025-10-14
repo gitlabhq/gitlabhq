@@ -29,8 +29,8 @@ export const injectVueAppBreadcrumbs = (
       return createElement(BreadcrumbsComponent, {
         class: injectBreadcrumbEl.className,
         props: {
-          // The last item from the static breadcrumb set is replaced by the
-          // root of the vue app, so the last item should be removed
+          allStaticBreadcrumbs: items.slice(),
+          // Use if your app is replacing the last breadcrumb item as root
           staticBreadcrumbs: items.slice(0, -1),
         },
       });

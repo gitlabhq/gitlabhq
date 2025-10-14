@@ -255,7 +255,7 @@ There are two ways to remove a Conan 2 package from the GitLab package registry.
 
 - From the GitLab user interface:
 
-  Go to your project's **Deploy > Package registry**. Remove the
+  Go to your project's **Deploy** > **Package registry**. Remove the
   package by selecting **Remove repository** ({{< icon name="remove" >}}).
 
 ## Search for Conan 2 packages in the package registry

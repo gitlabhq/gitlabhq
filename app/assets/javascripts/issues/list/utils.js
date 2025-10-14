@@ -55,6 +55,8 @@ import {
   filtersMap,
   HEALTH_STATUS_ASC,
   HEALTH_STATUS_DESC,
+  STATUS_ASC,
+  STATUS_DESC,
   LABEL_PRIORITY_ASC,
   LABEL_PRIORITY_DESC,
   MILESTONE_DUE_ASC,
@@ -131,6 +133,7 @@ export const getSortOptions = ({
   hasBlockedIssuesFeature,
   hasIssuableHealthStatusFeature,
   hasIssueWeightsFeature,
+  hasStatusFeature,
   hasPriority = true,
   hasMilestoneDueDate = true,
   hasDueDate = true,
@@ -249,6 +252,17 @@ export const getSortOptions = ({
       sortDirection: {
         ascending: HEALTH_STATUS_ASC,
         descending: HEALTH_STATUS_DESC,
+      },
+    });
+  }
+
+  if (hasStatusFeature && gon.features?.workItemStatusMvc2) {
+    sortOptions.push({
+      id: sortOptions.length + 1,
+      title: __('Status'),
+      sortDirection: {
+        ascending: STATUS_ASC,
+        descending: STATUS_DESC,
       },
     });
   }

@@ -52,7 +52,6 @@ export default {
   },
   data() {
     return {
-      defaultEmojiTag: '',
       emoji: this.currentEmoji,
       message: this.currentMessage,
       availability: isUserBusy(this.currentAvailability),

@@ -11,15 +11,20 @@ title: GitLab Duo Agent Platform
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 
 - Introduced as [a beta](../../policy/development_stages_support.md) in GitLab 18.2.
-- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
+- For GitLab Duo Agent Platform on self-managed instances (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 
 {{< /history >}}
 
@@ -49,7 +54,8 @@ To use the Agent Platform:
 - [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
 - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 - For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md).
-- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), you must [install and run the AI Gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).
+- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md),
+  you must [install and run the AI gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).
 
 In addition, to use the Agent Platform in your IDE:
 

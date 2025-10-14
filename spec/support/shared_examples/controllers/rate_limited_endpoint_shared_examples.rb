@@ -3,11 +3,20 @@
 #
 # Requires a context containing:
 # - request (use method definition to avoid memoizing!)
+# - request_with_second_scope # required when use_second_scope is true - use to ensure correct rate limiting by scope
 # - current_user
 # - error_message # optional
 
-RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: false, with_redirect: false|
+RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: false, with_redirect: false,
+  use_second_scope: true|
   let(:error_message) { _('This endpoint has been requested too many times. Try again later.') }
+
+  before do
+    if use_second_scope && !respond_to?(:request_with_second_scope)
+      raise "The 'rate limited endpoint' shared example requires a 'request_with_second_scope' method " \
+        "when use_second_scope is true. Please define this method in your test context."
+    end
+  end
 
   context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
     let(:expected_logger_attributes) do
@@ -29,14 +38,18 @@ RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: fals
     end
 
     before do
+      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
       allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(rate_limit_key).and_return(1)
     end
 
-    it 'logs request and declines it when endpoint called more than the threshold' do
-      expect(Gitlab::AuthLogger).to receive(:error).with(expected_logger_attributes).once
+    it 'logs request and declines it when endpoint called more than the threshold for the same scope' do
+      allow(Gitlab::AuthLogger).to receive(:error)
 
       request
+      expect(Gitlab::AuthLogger).not_to have_received(:error)
+
       request
+      expect(Gitlab::AuthLogger).to have_received(:error).with(expected_logger_attributes).once
 
       if graphql
         expect_graphql_errors_to_include(error_message)
@@ -48,15 +61,23 @@ RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: fals
 
         if response.content_type == 'application/json' # it is API spec
           expect(response.body).to eq({ message: { error: error_message } }.to_json)
+          expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(rate_limit_key))
         else
           expect(response.body).to eq(error_message)
         end
+      end
+
+      if use_second_scope
+        expect(Gitlab::AuthLogger).not_to receive(:error)
+        request_with_second_scope
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
     end
   end
 
   context 'when rate limiter is disabled' do
     before do
+      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
       allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(rate_limit_key).and_return(0)
     end
 
@@ -74,12 +95,12 @@ RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: fals
   end
 end
 
-RSpec.shared_examples 'unthrottled endpoint' do |graphql: false|
+RSpec.shared_examples 'unthrottled endpoint' do |rate_limit_key:, graphql: false|
   let(:error_message) { _('This endpoint has been requested too many times. Try again later.') }
 
   context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
     it 'does not log request and accepts it when endpoint called more than the threshold' do
-      expect(Gitlab::ApplicationRateLimiter).not_to receive(:threshold)
+      expect(Gitlab::ApplicationRateLimiter).not_to receive(:threshold).with(rate_limit_key)
       expect(Gitlab::AuthLogger).not_to receive(:error)
 
       request

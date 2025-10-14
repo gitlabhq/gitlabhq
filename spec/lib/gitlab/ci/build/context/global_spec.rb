@@ -29,14 +29,6 @@ RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_c
       end
 
       it_behaves_like 'with passed yaml variables'
-
-      context 'when FF `read_from_new_ci_destinations` is disabled' do
-        before do
-          stub_feature_flags(read_from_new_ci_destinations: false)
-        end
-
-        it_behaves_like 'with passed yaml variables'
-      end
     end
   end
 

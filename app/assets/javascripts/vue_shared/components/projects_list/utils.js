@@ -1,6 +1,7 @@
 import {
   ACTION_EDIT,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
   ACTION_ARCHIVE,
@@ -20,32 +21,33 @@ export const availableGraphQLProjectActions = ({
     return [];
   }
 
-  const availableActions = [];
+  // Rules
+  const canEdit = userPermissions.viewEditPage;
+  const canArchive = userPermissions.archiveProject && !archived;
+  const canUnarchive = userPermissions.archiveProject && archived;
+  const canRestore = userPermissions.removeProject && isSelfDeletionScheduled;
+  // Projects that are not marked for deletion can be deleted (delayed)
+  const canDelete = userPermissions.removeProject && !markedForDeletion;
+  // Projects with self deletion scheduled can be deleted immediately if the
+  // allow_immediate_namespaces_deletion application setting is enabled
+  const canDeleteImmediately =
+    userPermissions.removeProject &&
+    isSelfDeletionScheduled &&
+    gon?.allow_immediate_namespaces_deletion;
 
-  if (userPermissions.viewEditPage) {
-    availableActions.push(ACTION_EDIT);
-  }
+  // Actions mapped to rules
+  const actions = {
+    [ACTION_EDIT]: canEdit,
+    [ACTION_ARCHIVE]: canArchive,
+    [ACTION_UNARCHIVE]: canUnarchive,
+    [ACTION_RESTORE]: canRestore,
+    [ACTION_DELETE]: canDelete,
+    [ACTION_DELETE_IMMEDIATELY]: canDeleteImmediately,
+  };
 
-  if (userPermissions.archiveProject) {
-    availableActions.push(archived ? ACTION_UNARCHIVE : ACTION_ARCHIVE);
-  }
-
-  if (userPermissions.removeProject && isSelfDeletionScheduled) {
-    availableActions.push(ACTION_RESTORE);
-  }
-
-  if (userPermissions.removeProject) {
-    // Projects that are not marked for deletion can be deleted (delayed)
-    if (!markedForDeletion) {
-      availableActions.push(ACTION_DELETE);
-      // Projects with self deletion scheduled can be deleted immediately
-    } else if (
-      isSelfDeletionScheduled &&
-      (userPermissions.adminAllResources || !gon?.features?.disallowImmediateDeletion)
-    ) {
-      availableActions.push(ACTION_DELETE);
-    }
-  }
+  const availableActions = Object.entries(actions).flatMap(([action, isAvailable]) =>
+    isAvailable ? [action] : [],
+  );
 
   return availableActions;
 };

@@ -57,21 +57,21 @@ label {
   width: 150px;
 }
 
-@include media-breakpoint-up(sm) {
+@include gl-container-width-up(sm, panel) {
   .custom-form-control {
     width: 150px;
   }
 }
 
 /* Medium devices (desktops, 992px and up) */
-@include media-breakpoint-up(md) {
+@include gl-container-width-up(md, panel) {
   .custom-form-control {
     width: 170px;
   }
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@include media-breakpoint-up(lg) {
+@include gl-container-width-up(lg, panel) {
   .custom-form-control {
     width: 200px;
   }
@@ -85,7 +85,7 @@ label {
     font-family: $monospace-font;
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     padding: 0 $gl-padding;
   }
 }
@@ -104,7 +104,7 @@ label {
   &.input-short {
     width: $input-short-width;
 
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       width: $input-short-md-width;
     }
   }
@@ -161,6 +161,7 @@ label {
 .invalid-feedback {
   @apply gl-text-danger;
   font-size: $gl-font-size;
+  margin-top: 0.5rem; // Match Pajamas error message spacing
 }
 
 .gl-show-field-errors {

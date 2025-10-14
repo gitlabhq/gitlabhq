@@ -24,6 +24,7 @@ module API
         expose :detailed_status, using: DetailedStatusEntity do |pipeline, options|
           pipeline.detailed_status(options[:current_user])
         end
+        expose :archived?, as: :archived, documentation: { type: 'boolean', example: false }
       end
     end
   end

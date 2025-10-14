@@ -183,11 +183,9 @@ export const autocompleteDataSources = (autocompleteSourcesPaths = {}) => {
     sources.mergeRequests = autocompleteSourcesPaths.merge_requests;
   }
 
-  if (gon.features?.extensibleReferenceFilters) {
-    sources.epicsAlternative = autocompleteSourcesPaths.epics;
-    sources.issuesAlternative = autocompleteSourcesPaths.issues;
-    sources.workItems = autocompleteSourcesPaths.issues;
-  }
+  sources.epicsAlternative = autocompleteSourcesPaths.epics;
+  sources.issuesAlternative = autocompleteSourcesPaths.issues;
+  sources.workItems = autocompleteSourcesPaths.issues;
 
   return sources;
 };
@@ -490,3 +488,16 @@ export const preserveDetailsState = (element, descriptionHtml) => {
 };
 
 export const activeWorkItemIds = ref([]);
+
+export const getWorkItemTypeAllowedStatusMap = (workItemTypeNodes) => {
+  const workItemTypeAllowedStatusMap = {};
+
+  workItemTypeNodes.forEach((workItemType) => {
+    const statuses = workItemType.widgetDefinitions?.find(isStatusWidget)?.allowedStatuses;
+    if (statuses) {
+      workItemTypeAllowedStatusMap[workItemType.name.toUpperCase()] = statuses;
+    }
+  });
+
+  return workItemTypeAllowedStatusMap;
+};

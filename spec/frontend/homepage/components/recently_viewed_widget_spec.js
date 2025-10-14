@@ -34,7 +34,7 @@ describe('RecentlyViewedWidget', () => {
             itemType: 'MergeRequest',
             item: {
               __typename: 'MergeRequest',
-              id: 'mr-1',
+              id: '!gl-mr-2',
               title: 'Implement authentication improvements',
               webUrl: '/project/-/merge_requests/456',
             },
@@ -73,7 +73,7 @@ describe('RecentlyViewedWidget', () => {
             itemType: 'MergeRequest',
             item: {
               __typename: 'MergeRequest',
-              id: 'mr-2',
+              id: '!gl-mr-3',
               title: 'Update documentation for API endpoints',
               webUrl: '/project/-/merge_requests/457',
             },
@@ -188,7 +188,7 @@ describe('RecentlyViewedWidget', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findItemLinks()).toHaveLength(5); // 5 items total (2 MRs, 2 Issues, 1 Epic)
+      expect(findItemLinks()).toHaveLength(5);
     });
 
     it('handles empty response gracefully', async () => {
@@ -238,16 +238,15 @@ describe('RecentlyViewedWidget', () => {
     it('sorts items by viewedAt in descending order (most recent first)', () => {
       const { items } = wrapper.vm;
 
-      // Should be sorted by viewedAt (backend already sorts): mr-1, issue-1, epic-1, issue-2, mr-2
-      expect(items[0].id).toBe('mr-1');
+      // Should be sorted by viewedAt (backend already sorts): !gl-mr-2, issue-1, epic-1, issue-2, !gl-mr-3
+      expect(items[0].id).toBe('!gl-mr-2');
       expect(items[1].id).toBe('issue-1');
       expect(items[2].id).toBe('epic-1');
       expect(items[3].id).toBe('issue-2');
-      expect(items[4].id).toBe('mr-2');
+      expect(items[4].id).toBe('!gl-mr-3');
     });
 
     it('limits items to MAX_ITEMS', async () => {
-      // Create response with more than 10 items
       const manyItemsResponse = {
         data: {
           currentUser: {
@@ -284,7 +283,7 @@ describe('RecentlyViewedWidget', () => {
       const mrItems = wrapper.vm.items.filter((item) => item.icon === 'merge-request');
 
       expect(mrItems).toHaveLength(2);
-      expect(mrItems[0].id).toBe('mr-1');
+      expect(mrItems[0].id).toBe('!gl-mr-2');
     });
 
     it('adds correct icon to epics', () => {
@@ -307,11 +306,11 @@ describe('RecentlyViewedWidget', () => {
     it('renders items with correct icons', () => {
       const icons = findItemIcons();
 
-      expect(icons.at(0).props('name')).toBe('merge-request'); // First item is MR
-      expect(icons.at(1).props('name')).toBe('issues'); // Second item is issue
-      expect(icons.at(2).props('name')).toBe('epic'); // Third item is epic
-      expect(icons.at(3).props('name')).toBe('issues'); // Fourth item is issue
-      expect(icons.at(4).props('name')).toBe('merge-request'); // Fifth item is MR
+      expect(icons.at(0).props('name')).toBe('merge-request');
+      expect(icons.at(1).props('name')).toBe('issues');
+      expect(icons.at(2).props('name')).toBe('epic');
+      expect(icons.at(3).props('name')).toBe('issues');
+      expect(icons.at(4).props('name')).toBe('merge-request');
     });
 
     it('renders tooltip components for each item', () => {

@@ -275,7 +275,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
         visit_pipelines_schedules
         first('[data-testid="edit-pipeline-schedule-btn"]').click
-        find_by_testid('remove-ci-variable-row').click
+        find_by_testid('remove-ci-variable-button-desktop').click
         save_pipeline_schedule
       end
 

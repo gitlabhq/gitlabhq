@@ -21,7 +21,7 @@ merge request, authored by the user who suggested the changes.
 ## Create suggestions
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. On the secondary menu, select **Changes**.
 1. Find the lines of code you want to change.
    - To select a single line, hover over the line number and
@@ -117,7 +117,7 @@ Prerequisites:
 To apply suggested changes directly from the merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Find the comment containing the suggestion you want to apply.
    - To apply suggestions individually, select **Apply suggestion**.
    - To apply multiple suggestions in a single commit, select **Add suggestion to batch**.
@@ -155,7 +155,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Scroll to **Merge suggestions**, and alter the text to meet your needs.
    See [Supported variables](#supported-variables) for a list of placeholders
    you can use in this message.
@@ -190,7 +190,7 @@ To reduce the number of commits added to your branch, apply multiple
 suggestions in a single commit.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. For each suggestion you want to apply, select **Add suggestion to batch**.
 1. Optional. To remove a suggestion, select **Remove from batch**.
 1. After you add your desired suggestions, select **Apply suggestions**.

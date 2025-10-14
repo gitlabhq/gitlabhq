@@ -199,6 +199,30 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
       end
     end
 
+    context 'for wiki page' do
+      # We need non-frozen project since wiki activity touches it
+      let_it_be(:project_2) { create(:project) }
+
+      let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project_2) }
+      let(:note) { create(:note, noteable: wiki_page_meta, project: project_2, author: user) }
+
+      before do
+        event.action = 6 # commented
+        event.project = project_2 # commented
+        event.target_type = note.class.name
+        event.target_id = note.id
+      end
+
+      it 'returns the wiki page URL' do
+        expect(helper.event_feed_url(event))
+          .to eq(project_wiki_url(project_2, wiki_page_meta.canonical_slug, anchor: dom_id(event.target)))
+      end
+
+      it 'contains the wiki page slug as link text' do
+        expect(helper.event_feed_title(event)).to include(wiki_page_meta.wiki_page.slug)
+      end
+    end
+
     context 'for merge request' do
       before do
         event.target = create(:merge_request, source_project: project_with_repo)

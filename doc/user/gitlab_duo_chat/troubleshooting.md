@@ -169,7 +169,7 @@ Some possible reasons:
 
 To resolve the issue, try your request again.
 
-If the error persists, use the `/clear` command to reset the chat.
+If the error persists, use the `/new` or `/reset` command to start a new conversation.
 If the problem continues, report the issue to the GitLab Support team.
 
 ## `Error A1002`
@@ -205,7 +205,7 @@ This error occurs when the length of prompts exceeds the max token limit of the 
 You might get an error that states
 `I'm sorry, Duo Chat agent reached the limit before finding an answer for your question. Please try a different prompt or clear your conversation history with /clear. Error code: A1006`.
 
-This error occurs when ReAct agent failed to find a solution for your query. Try a different prompt or clear your conversation history with `/clear`.
+This error occurs when ReAct agent failed to find a solution for your query. Try a different prompt or start a new conversation with `/new` or `/reset`.
 
 ## `Error A1007`
 
@@ -225,7 +225,7 @@ You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try a more specific request or enter /clear to start a new chat. Error code: A6000`.
 
 This is a fallback error that occurs when there is a problem with GitLab Duo Chat.
-Try a more specific request, enter `/clear` to start a new chat, or leave feedback to help us improve.
+Try a more specific request, enter `/new` to start a new chat, or leave feedback to help us improve.
 
 ## `Error A9999`
 

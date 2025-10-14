@@ -77,7 +77,7 @@ and run a local container instance:
 This is the less recommended approach, because it comes with a number of difficulties when emulating a real GitLab deployment.
 
 The [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) is not set up to run a Prometheus server or `node_exporter` alongside other GitLab components. If you would
-like to do so, [Monitoring the GDK with Prometheus](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/prometheus/index.md#monitoring-the-gdk-with-prometheus) is a good start.
+like to do so, [Monitoring the GDK with Prometheus](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/prometheus/index/#monitoring-the-gdk-with-prometheus) is a good start.
 
 The [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit) has limited support for testing Prometheus based Service Ping.
 By default, it comes with a fully configured Prometheus service that is set up to scrape a number of components.

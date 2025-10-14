@@ -6,9 +6,6 @@ import {
   MERGE_REQUEST_CATEGORY,
   MSG_ISSUES_ASSIGNED_TO_ME,
   MSG_ISSUES_IVE_CREATED,
-  MSG_MR_ASSIGNED_TO_ME,
-  MSG_MR_IM_REVIEWER,
-  MSG_MR_IVE_CREATED,
   MSG_IN_ALL_GITLAB,
   MSG_MR_IM_WORKING_ON,
   PROJECTS_CATEGORY,
@@ -111,32 +108,13 @@ export const defaultSearchOptions = (state, getters) => {
     },
   ];
 
-  const mergeRequestDashboardEnabled = window.gon.features?.mergeRequestDashboard;
-  let mergeRequests = [
+  return [
+    ...(getters.scopedIssuesPath ? issues : []),
     {
-      text: MSG_MR_ASSIGNED_TO_ME,
-      href: `${getters.scopedMRPath}/?assignee_username=${userName}`,
-    },
-    {
-      text: MSG_MR_IM_REVIEWER,
-      href: `${getters.scopedMRPath}/?reviewer_username=${userName}`,
-    },
-    {
-      text: MSG_MR_IVE_CREATED,
-      href: `${getters.scopedMRPath}/?author_username=${userName}`,
+      text: MSG_MR_IM_WORKING_ON,
+      href: getters.scopedMRPath,
     },
   ];
-
-  if (mergeRequestDashboardEnabled) {
-    mergeRequests = [
-      {
-        text: MSG_MR_IM_WORKING_ON,
-        href: getters.scopedMRPath,
-      },
-    ];
-  }
-
-  return [...(getters.scopedIssuesPath ? issues : []), ...mergeRequests];
 };
 
 export const projectUrl = (state) => {

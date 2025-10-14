@@ -69,7 +69,7 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 GitLab Self-Managed administrators can reduce their attack surface by disabling import sources they don't need:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
 1. Clear checkboxes for importers that are not required.
@@ -110,6 +110,7 @@ difficult, but several tools exist including:
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
+- Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
 
 {{< /history >}}
 
@@ -252,7 +253,7 @@ To view placeholder users created during imports to a top-level group and its su
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 
 #### Filter for placeholder users
@@ -277,7 +278,7 @@ Placeholder users are created on the destination instance while a group or proje
 To filter for placeholder users created during imports for an entire instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter users by **type**.
 
 #### Creating placeholder users
@@ -350,7 +351,7 @@ To view your current placeholder user usage and limits:
 
 1. On the left sidebar, select **Search or go to** and
    find your group. This group must be at the top level.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. Select the **Import** tab.
 
 You cannot determine the number of placeholder users you need in advance.
@@ -433,9 +434,9 @@ when you reassign placeholders:
 
 #### Reassigning contributions from multiple placeholder users
 
-All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
-user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
-active regular users.
+You can reassign all contributions initially assigned to a single placeholder user to a
+single active regular user, service accounts, project bots, and group bots on the destination instance.
+You cannot split contributions assigned to a single placeholder user among multiple users.
 
 You can reassign contributions from multiple placeholder users to the same user
 on the destination instance if the placeholder users are from:
@@ -446,15 +447,15 @@ on the destination instance if the placeholder users are from:
 If an assigned user becomes inactive before accepting the reassignment request,
 the pending reassignment remains linked to the user until they accept it.
 
-Bot user contributions and memberships on the source instance cannot be reassigned to bot users on the destination instance.
-You might choose to keep source bot user contributions [assigned to a placeholder user](#keep-as-placeholder).
-
 Users that receive a reassignment request can:
 
 - [Accept the request](#accept-contribution-reassignment). All contributions and membership previously attributed to the placeholder user are re-attributed
   to the accepting user. This process can take a few minutes, depending on the number of contributions.
 - [Reject the request](#reject-contribution-reassignment) or report it as spam. This option is available in the reassignment
   request email.
+
+When you reassign contributions to service accounts, project bots, and group bots,
+the reassignment request is automatically approved.
 
 In subsequent imports to the same top-level group, contributions and memberships that belong to the same source user
 are mapped automatically to the user who previously accepted reassignments for that source user.
@@ -511,7 +512,7 @@ To request reassignment of contributions and memberships:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. For each placeholder, review information in table columns **Placeholder user** and **Source**.
@@ -561,7 +562,7 @@ All other rows are skipped.
 To request reassignment of contributions and memberships by using a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Select **Reassign with CSV**.
 1. Download the prefilled CSV template.
@@ -593,6 +594,12 @@ see [Group placeholder reassignments API](../../../api/group_placeholder_reassig
 
 #### Keep as placeholder
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/535431) in GitLab 18.5, the operation can be undone.
+
+{{< /history >}}
+
 You might not want to reassign contributions and memberships to users on the destination instance. For example, you
 might have former employees that contributed on the source instance, but they do not exist as users on the destination
 instance.
@@ -602,10 +609,6 @@ membership information because they [cannot be members of projects or groups](#p
 
 Because names and usernames of placeholder users resemble names and usernames of source users, you keep a lot of
 historical context.
-
-Remember that if you keep remaining placeholder users as placeholders, you cannot reassign their contributions to
-actual users later. Ensure all required reassignments are completed before keeping the remaining placeholder users as
-placeholders.
 
 You can keep contributions assigned to placeholder users either one at a time or in bulk.
 When you reassign contributions in bulk, the entire namespace and users with the following
@@ -618,7 +621,7 @@ To keep placeholder users one at a time:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Find placeholder user you want to keep by reviewing **Placeholder user** and **Source** columns.
@@ -629,10 +632,19 @@ To keep placeholder users in bulk:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Above the list, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Keep all as placeholders**.
 1. On the confirmation dialog, select **Confirm**.
+
+To undo the operation:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
+1. Select **Manage** > **Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Reassigned** sub-tab, where placeholders are listed in a table.
+1. Select **Undo** in the correct row.
 
 #### Cancel reassignment request
 
@@ -640,7 +652,7 @@ Before a user accepts a reassignment request, you can cancel the request:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Cancel** in the correct row.
@@ -651,7 +663,7 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Notify** in the correct row.
@@ -662,7 +674,7 @@ To view the reassignment status of all placeholder users:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. See the status of each placeholder user in **Reassignment status** column.
@@ -899,6 +911,6 @@ For GitLab.com (GitLab team members only):
 
 Check the information gathered in [Review logs](#review-logs) against the following common issues:
 
-- **Interrupted jobs**: If you see a high `interrupted_count` or `job_status` indicating failure, the import job may have been interrupted multiple times and placed in a dead queue.
-- **S3 connectivity**: For imports using S3, check for any S3-related error messages in the logs.
-- **Large repository**: If the repository is very large, the import might time out. Consider using [Direct transfer](../../group/import/_index.md) in this case.
+- Interrupted jobs: If you see a high `interrupted_count` or `job_status` indicating failure, the import job may have been interrupted multiple times and placed in a dead queue.
+- S3 connectivity: For imports using S3, check for any S3-related error messages in the logs.
+- Large repository: If the repository is very large, the import might time out. Consider using [Direct transfer](../../group/import/_index.md) in this case.

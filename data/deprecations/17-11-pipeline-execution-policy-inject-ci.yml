@@ -5,7 +5,7 @@
   breaking_change: true
   reporter: g.hickman
   stage: security_risk_management
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475152
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/573447
   scope: group, project
   impact: low
   resolution_role: Owner, Maintainer

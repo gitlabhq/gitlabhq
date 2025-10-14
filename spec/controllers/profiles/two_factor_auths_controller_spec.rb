@@ -212,11 +212,21 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         expect(ActiveSession).to receive(:destroy_all_but_current)
         go
       end
+
+      it 'sends the user a notification email' do
+        expect_next_instance_of(NotificationService) do |notification|
+          expect(notification).to receive(:enabled_two_factor).with(user, :otp, {})
+        end
+
+        go
+      end
     end
 
     context 'with invalid pin' do
       before do
         expect(user).to receive(:validate_and_consume_otp!).with(pin).and_return(false)
+
+        allow(NotificationService).to receive(:new)
       end
 
       it 'assigns error' do
@@ -240,6 +250,11 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       it 'renders show' do
         go
         expect(response).to render_template(:show)
+      end
+
+      it 'does not send a notification email' do
+        go
+        expect(NotificationService).not_to have_received(:new)
       end
     end
 
@@ -329,6 +344,25 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         post :create_webauthn, params: params_with_password
         expect(response).to redirect_to(profile_two_factor_auth_path)
         expect(flash[:notice]).to match(/Your WebAuthn device was registered!/)
+      end
+
+      it 'sends the user a notification email' do
+        expect_next_instance_of(NotificationService) do |notification|
+          expect(notification).to receive(:enabled_two_factor).with(user, :webauthn, { device_name: 'touch id' })
+        end
+
+        post :create_webauthn, params: params_with_password
+      end
+    end
+
+    context 'when an invalid password is given' do
+      before do
+        allow(NotificationService).to receive(:new)
+      end
+
+      it 'does not send a notification email' do
+        post :create_webauthn, params: params
+        expect(NotificationService).not_to have_received(:new)
       end
     end
   end
@@ -424,6 +458,25 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       end
 
       it_behaves_like 'user must enter a valid current password'
+
+      it 'sends the user a notification email' do
+        expect_next_instance_of(NotificationService) do |notification|
+          expect(notification).to receive(:disabled_two_factor).with(user, :otp)
+        end
+
+        go
+      end
+
+      context 'when an invalid password is given' do
+        before do
+          allow(NotificationService).to receive(:new)
+        end
+
+        it 'does not send a notification email' do
+          delete :destroy_otp, params: { current_password: 'invalid' }
+          expect(NotificationService).not_to have_received(:new)
+        end
+      end
     end
 
     context 'for a user that has only WebAuthn enabled' do
@@ -464,7 +517,9 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       create(:user, :two_factor_via_webauthn)
     end
 
-    let(:webauthn_id) { user.webauthn_registrations.first.id }
+    let(:webauthn_registration) { user.webauthn_registrations.first }
+    let(:webauthn_id) { webauthn_registration.id }
+    let(:webauthn_name) { webauthn_registration.name }
     let(:current_password) { user.password }
     let(:destroy_webauthn) do
       delete :destroy_webauthn, params: { id: webauthn_id, current_password: current_password }
@@ -488,16 +543,56 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       expect(response).to redirect_to profile_two_factor_auth_path
     end
 
+    it 'displays a notice on success' do
+      go
+
+      expect(flash[:notice]).to eq _('Successfully deleted WebAuthn device.')
+    end
+
     it 'calls the Webauthn::DestroyService' do
       service = double
 
       expect(Webauthn::DestroyService).to receive(:new).with(user, user, webauthn_id.to_s).and_return(service)
-      expect(service).to receive(:execute)
+      expect(service).to receive(:execute).and_return(ServiceResponse.success)
 
       go
     end
 
     it_behaves_like 'user must enter a valid current password'
+
+    it 'sends the user a notification email' do
+      expect_next_instance_of(NotificationService) do |notification|
+        expect(notification).to receive(:disabled_two_factor).with(user, :webauthn, { device_name: webauthn_name })
+      end
+
+      go
+    end
+
+    context 'when an invalid password is given' do
+      let(:current_password) { 'invalid' }
+
+      before do
+        allow(NotificationService).to receive(:new)
+      end
+
+      it 'does not send a notification email' do
+        go
+        expect(NotificationService).not_to have_received(:new)
+      end
+    end
+
+    context 'when it fails to delete' do
+      it 'returns an error message' do
+        expect_next_instance_of(Webauthn::DestroyService) do |service|
+          expect(service).to receive(:execute).and_return({ status: :error, message: 'an error occurred' })
+        end
+
+        go
+
+        expect(response).to redirect_to(profile_two_factor_auth_path)
+        expect(flash[:alert]).to eq('an error occurred')
+      end
+    end
   end
 
   describe 'PATCH skip' do

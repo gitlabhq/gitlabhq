@@ -48,11 +48,11 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
           find('.add-to-tree').click
 
           aggregate_failures 'dropdown links above the repo tree' do
-            expect(page).to have_link('New file')
+            expect(page).to have_button('New file')
             expect(page).to have_button('Upload file')
             expect(page).to have_button('New directory')
-            expect(page).to have_link('New branch')
-            expect(page).to have_link('New tag')
+            expect(page).to have_button('New branch')
+            expect(page).to have_button('New tag')
           end
         end
 

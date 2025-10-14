@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe Projects::IssuesController, :request_store, feature_category: :team_planning do
   include ProjectForksHelper
@@ -1629,6 +1630,20 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
       it 'creates a new merge request', :sidekiq_might_not_need_inline do
         expect { create_merge_request }.to change(target_project.merge_requests, :count).by(1)
+      end
+    end
+
+    it 'starts covered experience for create_merge_request' do
+      expect { create_merge_request }.to start_covered_experience(:create_merge_request)
+    end
+
+    context 'when covered_experience_create_merge_request feature flag is disabled' do
+      before do
+        stub_feature_flags(covered_experience_create_merge_request: false)
+      end
+
+      it 'does not start covered experience' do
+        expect { create_merge_request }.not_to start_covered_experience(:create_merge_request)
       end
     end
 

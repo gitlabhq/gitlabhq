@@ -15,6 +15,11 @@ export default {
       type: String,
       required: true,
     },
+    fallbackOnError: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -47,9 +52,13 @@ export default {
 <template>
   <div>
     <gl-skeleton-loader v-if="loading" :width="200" :lines="2" />
-    <gl-alert v-else-if="error" :dismissible="false" variant="danger">
-      {{ __('Failed to format markdown.') }}
-    </gl-alert>
+    <template v-else-if="error">
+      <gl-alert :dismissible="false" variant="danger">
+        <span>{{ __('Failed to format markdown.') }}</span>
+        <span v-if="fallbackOnError">{{ __('Value rendered as plain text.') }}</span>
+      </gl-alert>
+      <div v-if="fallbackOnError" data-testid="raw-value">{{ value }}</div>
+    </template>
     <div v-else-if="markdown" v-safe-html="markdown" data-testid="markdown" class="md"></div>
   </div>
 </template>

@@ -42,7 +42,6 @@ export class AuthManager {
     this.allowedOrigin = allowedOrigin;
     this.authTokens = authTokens;
     this.targetPath = targetPath;
-    this.colorMode = AuthManager.determineColorMode();
     this.state = {
       messageNonce: null,
       messageCounter: 0,
@@ -125,7 +124,7 @@ export class AuthManager {
       timestamp: Date.now(),
       counter: this.state.messageCounter,
       targetPath: this.targetPath,
-      theme: this.colorMode,
+      theme: AuthManager.determineColorMode(),
     };
 
     try {

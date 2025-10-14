@@ -144,16 +144,6 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
           expect { subject }.not_to change { work_items.count }
         end
       end
-
-      context 'when work_items_project_issues_list feature flag is off' do
-        before do
-          stub_feature_flags(work_items_project_issues_list: false)
-        end
-
-        it 'raises an error' do
-          expect { subject }.to raise_error(/This feature is currently behind a feature flag and it is not available./)
-        end
-      end
     end
 
     context 'when user does not have permission' do

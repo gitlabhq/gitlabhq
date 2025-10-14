@@ -46,7 +46,7 @@ module RuboCop
           return unless be_success_usage?(node)
 
           add_offense(node, message: MESSAGE) do |corrector|
-            corrector.insert_after(node.loc.expression, 'ful')
+            corrector.insert_after(node, 'ful')
           end
         end
       end

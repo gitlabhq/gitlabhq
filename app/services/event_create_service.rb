@@ -248,6 +248,11 @@ class EventCreateService
     Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:project_action, values: current_user.id)
     Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
 
+    # Track human users only (excluding bots) for customer health scoring
+    unless current_user.bot?
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:project_action_human_users, values: current_user.id)
+    end
+
     namespace = project.namespace
     Gitlab::Tracking.event(
       self.class.to_s,

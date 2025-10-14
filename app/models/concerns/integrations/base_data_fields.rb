@@ -10,7 +10,8 @@ module Integrations
       belongs_to :integration, inverse_of: self.table_name.to_sym, foreign_key: :integration_id, optional: true
       belongs_to :project, inverse_of: self.table_name.to_sym, foreign_key: :project_id, optional: true
       belongs_to :group, inverse_of: self.table_name.to_sym, foreign_key: :group_id, optional: true
-      belongs_to :organization, inverse_of: self.table_name.to_sym, foreign_key: :organization_id, optional: true
+      belongs_to :organization, inverse_of: self.table_name.to_sym, foreign_key: :organization_id, optional: true,
+        class_name: 'Organizations::Organization'
 
       before_validation :set_sharding_key
 

@@ -125,7 +125,7 @@ the URL-encoded path parameters.
 ### `id` vs `iid`
 
 Some API resources have two similarly-named fields. For example, [issues](../issues.md),
-[merge requests](../merge_requests.md), and [project milestones](../merge_requests.md).
+[merge requests](../merge_requests.md), and [project milestones](../milestones.md).
 The fields are:
 
 - `id`: ID that is unique across all projects.
@@ -162,7 +162,7 @@ GET /api/v4/projects/diaspora%2Fdiaspora
 
 A project's path isn't necessarily the same as its name. A project's path is
 found in the project's URL or in the project's settings, under
-**General > Advanced > Change path**.
+**General** > **Advanced** > **Change path**.
 
 #### File path, branches, and tags name
 

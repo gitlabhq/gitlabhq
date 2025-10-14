@@ -4,12 +4,16 @@ module Gitlab
   module Database
     module BackgroundMigration
       class BatchedMigration < SharedModel
+        include Gitlab::Utils::StrongMemoize
+
         JOB_CLASS_MODULE = 'Gitlab::BackgroundMigration'
         BATCH_CLASS_MODULE = "#{JOB_CLASS_MODULE}::BatchingStrategies"
         MAXIMUM_FAILED_RATIO = 0.5
         MINIMUM_JOBS = 50
         FINISHED_PROGRESS_VALUE = 100
         MINIMUM_PAUSE_MS = 100
+        DEFAULT_NUMBER_OF_JOBS = 20
+        DEFAULT_EMA_ALPHA = 0.4
 
         self.table_name = :batched_background_migrations
 
@@ -275,7 +279,12 @@ module Gitlab
         end
 
         def optimize!
-          BatchOptimizer.new(self).optimize!
+          return false unless batch_optimizer.should_optimize?
+
+          new_batch_size = batch_optimizer.optimized_batch_size
+          return false if new_batch_size == batch_size
+
+          update!(batch_size: new_batch_size)
         end
 
         def health_context
@@ -333,6 +342,19 @@ module Gitlab
 
         def validate_batched_jobs_status
           errors.add(:batched_jobs, 'jobs need to be succeeded') if batched_jobs.except_succeeded.exists?
+        end
+
+        def batch_optimizer
+          time_efficiency = smoothed_time_efficiency(
+            number_of_jobs: DEFAULT_NUMBER_OF_JOBS,
+            alpha: DEFAULT_EMA_ALPHA
+          )
+
+          Gitlab::Database::Batch::Optimizer.new(
+            current_batch_size: batch_size,
+            max_batch_size: max_batch_size,
+            time_efficiency: time_efficiency
+          )
         end
       end
     end

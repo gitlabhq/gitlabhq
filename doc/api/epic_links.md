@@ -46,7 +46,8 @@ GET /groups/:id/epics/:epic_iid/epics
 | `epic_iid` | integer        | yes      | The internal ID of the epic.                                                                                  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/epics/"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/epics/5/epics"
 ```
 
 Example response:
@@ -101,7 +102,10 @@ POST /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/epics/6"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/epics/5/epics/6"
+
 ```
 
 Example response:
@@ -155,7 +159,9 @@ POST /groups/:id/epics/:epic_iid/epics
 | `confidential`  | boolean        | no       | Whether the epic should be confidential. Parameter is ignored if `confidential_epics` feature flag is disabled. Defaults to the confidentiality state of the parent epic.  |
 
 ```shell
-curl --request POST --header  "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/epics?title=Newpic"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/epics/5/epics?title=Newpic"
 ```
 
 Example response:
@@ -190,7 +196,9 @@ PUT /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | `move_after_id`  | integer        | no       | The global ID of a sibling epic that should be placed after the child epic.                                        |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5"
 ```
 
 Example response:
@@ -245,7 +253,9 @@ DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5"
 ```
 
 Example response:

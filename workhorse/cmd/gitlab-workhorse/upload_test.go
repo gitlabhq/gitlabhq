@@ -43,7 +43,6 @@ func testArtifactsUpload(t *testing.T, uploadArtifacts uploadArtifactsFunction) 
 	require.NoError(t, err)
 
 	ts := signedUploadTestServer(t, nil, nil)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -66,7 +65,7 @@ func expectSignedRequest(t *testing.T, r *http.Request) {
 }
 
 func uploadTestServer(t *testing.T, allowedHashFunctions []string, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
-	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	return testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, authorizeSuffix) || r.URL.Path == authorizeUploadPath {
 			expectSignedRequest(t, r)
 
@@ -232,7 +231,6 @@ func TestAcceleratedUpload(t *testing.T) {
 						verifyUploadFields(t, uploadFields, hashSet)
 					})
 
-				defer ts.Close()
 				ws := startWorkhorseServer(t, ts.URL)
 
 				reqBody, contentType, err := multipartBodyWithFile()
@@ -286,7 +284,7 @@ func multipartBodyWithFile() (io.Reader, string, error) {
 }
 
 func unacceleratedUploadTestServer(t *testing.T) *httptest.Server {
-	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	return testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		assert.False(t, strings.HasSuffix(r.URL.Path, "/authorize"))
 		assert.Empty(t, r.Header.Get(upload.RewrittenFieldsHeader))
 
@@ -318,7 +316,6 @@ func TestUnacceleratedUploads(t *testing.T) {
 		t.Run(tt.resource, func(t *testing.T) {
 			ts := unacceleratedUploadTestServer(t)
 
-			defer ts.Close()
 			ws := startWorkhorseServer(t, ts.URL)
 
 			reqBody, contentType, err := multipartBodyWithFile()
@@ -354,7 +351,7 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+			ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.Path {
 				case authorizeUploadPath:
 					w.Header().Set("Content-Type", api.ResponseContentType)
@@ -369,7 +366,7 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 
 				assert.NotEqual(t, canary, r.Header.Get(upload.RewrittenFieldsHeader), "Found canary %q in header", canary)
 			})
-			defer ts.Close()
+
 			ws := startWorkhorseServer(t, ts.URL)
 
 			req, err := http.NewRequest("POST", ws.URL+"/something", tc.body)
@@ -395,7 +392,7 @@ func TestLfsUpload(t *testing.T) {
 		t.TempDir(), oid, len(requestBody),
 	)
 
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "PUT", r.Method)
 		switch r.RequestURI {
 		case resource + authorizeSuffix:
@@ -423,7 +420,6 @@ func TestLfsUpload(t *testing.T) {
 			t.Fatalf("Unexpected request to upstream! %v %q", r.Method, r.RequestURI)
 		}
 	})
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -448,14 +444,13 @@ func TestLfsUpload(t *testing.T) {
 func TestLfsUploadRouting(t *testing.T) {
 	oid := "916f0027a575074ce72a331777c3478d6513f786a591bd892da1a577bf2335f9"
 
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get(secret.RequestHeader) == "" {
 			w.WriteHeader(204)
 		} else {
 			fmt.Fprint(w, testRspSuccessBody)
 		}
 	})
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -511,7 +506,7 @@ func TestLfsUploadRouting(t *testing.T) {
 }
 
 func packageUploadTestServer(t *testing.T, method string, resource string, reqBody string, rspBody string) *httptest.Server {
-	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	return testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, r.Method, method)
 		apiResponse := fmt.Sprintf(
 			`{"TempPath":%q, "Size": %d}`, t.TempDir(), len(reqBody),
@@ -550,7 +545,6 @@ func packageUploadTestServer(t *testing.T, method string, resource string, reqBo
 
 func testPackageFileUpload(t *testing.T, method string, resource string) {
 	ts := packageUploadTestServer(t, method, resource, requestBody, testRspSuccessBody)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 

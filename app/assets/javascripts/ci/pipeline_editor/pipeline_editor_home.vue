@@ -159,7 +159,7 @@ export default {
       @toggle-file-tree="toggleFileTree"
       v-on="$listeners"
     />
-    <div class="gl-flex gl-w-full gl-flex-col md:gl-flex-row">
+    <div class="gl-flex gl-w-full gl-flex-col @md/panel:gl-flex-row">
       <pipeline-editor-file-tree
         v-if="showFileTree"
         class="gl-shrink-0"

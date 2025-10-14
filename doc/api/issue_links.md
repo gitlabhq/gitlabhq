@@ -107,7 +107,9 @@ Response body attributes:
 Example request:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/84/issues/14/links/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/84/issues/14/links/1"
 ```
 
 Example response:
@@ -196,7 +198,9 @@ POST /projects/:id/issues/:issue_iid/links
 | `link_type`         | string         | no       | The type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/1/links?target_project_id=5&target_issue_iid=1"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/4/issues/1/links?target_project_id=5&target_issue_iid=1"
 ```
 
 Example response:

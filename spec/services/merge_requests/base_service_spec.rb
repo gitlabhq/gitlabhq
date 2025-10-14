@@ -140,6 +140,50 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
     end
   end
 
+  describe '#hook_data' do
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:service) { described_class.new(project: project, current_user: user) }
+
+    it 'includes system field when system: true' do
+      hook_data = service.send(:hook_data, merge_request, 'test_action', system: true)
+
+      expect(hook_data[:object_attributes][:system]).to be true
+    end
+
+    it 'includes system field as false when system: false' do
+      hook_data = service.send(:hook_data, merge_request, 'test_action', system: false)
+
+      expect(hook_data[:object_attributes][:system]).to be false
+    end
+
+    it 'defaults system field to false when not specified' do
+      hook_data = service.send(:hook_data, merge_request, 'test_action')
+
+      expect(hook_data[:object_attributes][:system]).to be false
+    end
+
+    it 'includes system_action when provided' do
+      hook_data = service.send(:hook_data, merge_request, 'test_action', system: true, system_action: 'approvals_reset_on_push')
+
+      expect(hook_data[:object_attributes][:system]).to be true
+      expect(hook_data[:object_attributes][:system_action]).to eq('approvals_reset_on_push')
+    end
+
+    it 'does not include system_action when not provided' do
+      hook_data = service.send(:hook_data, merge_request, 'test_action', system: true)
+
+      expect(hook_data[:object_attributes][:system]).to be true
+      expect(hook_data[:object_attributes]).not_to have_key(:system_action)
+    end
+
+    it 'does not include system_action when system is false' do
+      hook_data = service.send(:hook_data, merge_request, 'test_action', system: false, system_action: 'approvals_reset_on_push')
+
+      expect(hook_data[:object_attributes][:system]).to be false
+      expect(hook_data[:object_attributes]).not_to have_key(:system_action)
+    end
+  end
+
   describe '#constructor_container_arg' do
     it { expect(described_class.constructor_container_arg("some-value")).to eq({ project: "some-value" }) }
   end

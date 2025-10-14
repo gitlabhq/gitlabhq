@@ -28,7 +28,7 @@ Learn more about [Google Vertex AI Codey APIs Data Governance](https://cloud.goo
 
 ## Connect to GitLab
 
-After you download and install the extension, connect it to your GitLab account.
+After you install the extension, connect it to your GitLab account by creating a personal access token and authenticating with GitLab.
 
 ### Create a personal access token
 
@@ -36,7 +36,7 @@ If you are on GitLab Self-Managed, create a personal access token.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
 1. Enter a name, description, and expiration date.
 1. Select the `api` and `read_user` scope.
@@ -46,7 +46,7 @@ If you are on GitLab Self-Managed, create a personal access token.
 
 Then authenticate with GitLab.
 
-1. In Visual Studio, on the top bar, go to **Tools > Options > GitLab**.
+1. In Visual Studio, on the top bar, go to **Tools** > **Options** > **GitLab**.
 1. In the **Access Token** field, paste in your token. The token is not displayed, nor is it accessible to others.
 1. In the **GitLab URL** text box, enter the URL of your GitLab instance. For GitLab.com, use `https://gitlab.com`.
 
@@ -69,9 +69,9 @@ default keyboard shortcuts to avoid conflicts with your existing Visual Studio c
 |---------------------------------------|---------------------------------------------|-------------|
 | `GitLab.ToggleCodeSuggestions`        | None                                        | Turn on or turn off Code Suggestions. |
 | `GitLab.OpenDuoChat`                  | None                                        | Open GitLab Duo Chat.  |
-| `GitLab.GitLabDuoNextSuggestions`     | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> | Switch to the next code suggestion. |
+| `GitLab.GitLabDuoNextSuggestions`     | <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> | Switch to the next code suggestion. |
 | `GitLab.GitLabDuoPreviousSuggestions` | None                                        | Switch to the previous code suggestion. |
-| `GitLab.GitLabExplainTerminalWithDuo` | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>E</kbd> | Explain selected text in the terminal. |
+| `GitLab.GitLabExplainTerminalWithDuo` | <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>E</kbd> | Explain selected text in the terminal. |
 | `GitLabDuoChat.ExplainCode`           | None                                        | Explain selected code. |
 | `GitLabDuoChat.Fix`                   | None                                        | Fix issues for the selected code. |
 | `GitLabDuoChat.GenerateTests`         | None                                        | Generate tests for the selected code. |
@@ -79,6 +79,6 @@ default keyboard shortcuts to avoid conflicts with your existing Visual Studio c
 
 You can access the extension's custom commands with keyboard shortcuts, which you can customize:
 
-1. On the top bar, go to **Tools > Options**.
-1. Go to **Environment > Keyboard**. Search for `GitLab.`.
+1. On the top bar, go to **Tools** > **Options**.
+1. Go to **Environment** > **Keyboard**. Search for `GitLab.`.
 1. Select a command, and assign it a keyboard shortcut.

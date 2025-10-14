@@ -101,7 +101,7 @@ To find a domain expert:
 
 {{< alert type="note" >}}
 
-Reviewer roulette is an internal tool for use on GitLab.com, and not available for use on customer installations.
+[Reviewer roulette](https://gitlab-org.gitlab.io/gitlab-roulette/) is an internal tool for use on GitLab.com, and not available for use on customer installations.
 
 {{< /alert >}}
 
@@ -155,8 +155,6 @@ The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) contains
 - Sorting by different criteria.
 - A manual reviewer roulette.
 - Local time information.
-
-For more information, review [the roulette README](https://gitlab.com/gitlab-org/gitlab-roulette/).
 
 ### Approval guidelines
 
@@ -236,7 +234,7 @@ Using checklists improves quality in software engineering. This checklist is a s
 
 ##### Quality
 
-See the [test engineering process](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/test-engineering/) for further quality guidelines.
+For further quality guidelines, see [testing](https://handbook.gitlab.com/handbook/engineering/testing/).
 
 1. You have self-reviewed this MR per [code review guidelines](code_review.md).
 1. The code follows the [software design guidelines](software_design.md).
@@ -361,17 +359,14 @@ When assigning reviewers, it can be helpful to:
     efficient for the MR reviewers because they immediately know which type of review to provide.
   - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75921#note_758161716)
   - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109500#note_1253955051)
-
-Avoid:
-
-- Adding TODO comments (referenced above) directly to the source code unless the reviewer requires
+- Only add TODO comments (referenced above) directly to the source code if the reviewer requires
   you to do so. If TODO comments are added due to an actionable task,
   [include a link to the relevant issue](code_comments.md).
-- Adding comments which only explain what the code is doing. If non-TODO comments are added, they should
-  [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
-- Requesting maintainer reviews of merge requests with failed tests. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
-- Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
-  through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
+- Add comments that
+  [_explain why, not only what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/) the code is doing.
+- Request maintainer reviews only when all tests have passed. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
+- Mention maintainers through email or Slack (if the maintainer is reachable
+  through Slack) only if you have an immediate request. If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
 
 This saves reviewers time and helps authors catch mistakes earlier.
 
@@ -613,6 +608,10 @@ experience, refactors the existing code). Then:
   them. ("What do you think about using a custom validator here?")
 - Seek to understand the author's perspective.
 - Check out the branch, and test the changes locally. You can decide how much manual testing you want to perform.
+  - If the merge request requires significant GDK modifications (such as adding new services, modifying environment variables, or complex configuration changes), consider these approaches:
+    - **Skip local testing** and perform a thorough code review instead, then request a domain expert from the author's team to do local verification.
+    - **Request additional verification** such as screenshots, videos, or detailed testing steps from the author.
+    - **Identify the minimal change** needed to trigger the code path (for example, setting a condition to `true` in the code) rather than full environment setup.
   Your testing might result in opportunities to add automated tests.
 - If you don't understand a piece of code, _say so_. There's a good chance
   someone else would be confused by it as well.

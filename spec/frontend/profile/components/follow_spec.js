@@ -74,15 +74,15 @@ describe('FollowersTab', () => {
         .wrappers.map((avatarLabeledWrapper) => ({
           label: avatarLabeledWrapper.props('label'),
           subLabel: avatarLabeledWrapper.props('subLabel'),
-          size: avatarLabeledWrapper.attributes('size'),
-          entityName: avatarLabeledWrapper.attributes('entity-name'),
-          entityId: avatarLabeledWrapper.attributes('entity-id'),
-          src: avatarLabeledWrapper.attributes('src'),
+          size: avatarLabeledWrapper.props('size'),
+          entityName: avatarLabeledWrapper.props('entityName'),
+          entityId: avatarLabeledWrapper.props('entityId'),
+          src: avatarLabeledWrapper.props('src'),
         }));
       const expectedAvatarLabeledProps = users.map((user) => ({
         src: user.avatar_url,
-        size: '48',
-        entityId: user.id.toString(),
+        size: 48,
+        entityId: user.id,
         entityName: user.name,
         label: user.name,
         subLabel: user.username,

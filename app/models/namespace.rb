@@ -66,7 +66,7 @@ class Namespace < ApplicationRecord
   has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: false
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
-  has_one :catalog_verified_namespace, class_name: 'Ci::Catalog::VerifiedNamespace', inverse_of: :namespace
+  has_one :catalog_verified_namespace, class_name: 'Namespaces::VerifiedNamespace', inverse_of: :namespace
 
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
 
@@ -235,6 +235,7 @@ class Namespace < ApplicationRecord
   scope :ordered_by_name, -> { order(:name) }
   scope :top_level, -> { by_parent(nil) }
   scope :with_project_statistics, -> { includes(projects: :statistics) }
+  scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
   scope :with_namespace_details, -> { preload(:namespace_details) }
 
   scope :archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
@@ -849,6 +850,13 @@ class Namespace < ApplicationRecord
 
   def namespace_details
     super.presence || build_namespace_details
+  end
+
+  def user_role(user)
+    return unless user && !user_namespace?
+
+    user_access = max_member_access_for_user(user)
+    Gitlab::Access.human_access(user_access)&.downcase
   end
 
   private

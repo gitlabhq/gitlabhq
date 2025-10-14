@@ -10,7 +10,6 @@ import {
   START_SEARCH_PROJECT_FILE,
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
-import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -27,12 +26,13 @@ import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { useViewport } from '~/pinia/global_stores/viewport';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { Mousetrap } from '~/lib/mousetrap';
 import {
   EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
   EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
 } from '~/repository/constants';
+import { InternalEvents } from '~/tracking';
 
 export default {
   name: 'HeaderArea',
@@ -138,8 +138,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserVisible']),
-    ...mapState(useViewport, ['isCompactViewport']),
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
+    ...mapState(useMainContainer, ['isCompact']),
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
     },
@@ -212,8 +212,8 @@ export default {
       return (
         this.glFeatures.repositoryFileTreeBrowser &&
         !this.isProjectOverview &&
-        !this.fileTreeBrowserVisible &&
-        !this.isCompactViewport
+        !this.fileTreeBrowserIsVisible &&
+        !this.isCompact
       );
     },
     toggleFileBrowserShortcutKey() {
@@ -225,7 +225,7 @@ export default {
   },
   mounted() {
     if (this.glFeatures.repositoryFileTreeBrowser) {
-      this.initFileTreeVisibility();
+      this.initializeFileTreeBrowser();
       this.bindShortcuts();
     }
   },
@@ -234,14 +234,14 @@ export default {
   },
   methods: {
     ...mapActions(useFileTreeBrowserVisibility, [
-      'initFileTreeVisibility',
-      'toggleFileTreeVisibility',
+      'initializeFileTreeBrowser',
+      'handleFileTreeBrowserToggleClick',
     ]),
     onShortcutToggle() {
-      this.toggleFileTreeVisibility();
+      this.handleFileTreeBrowserToggleClick();
 
       this.trackEvent(
-        this.fileTreeBrowserVisible
+        this.fileTreeBrowserIsVisible
           ? EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
           : EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
         {
@@ -347,6 +347,7 @@ export default {
         <file-icon
           :file-name="fileIconName"
           :folder="isTreeView"
+          :size="18"
           opened
           aria-hidden="true"
           class="gl-inline-flex"

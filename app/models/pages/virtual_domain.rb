@@ -17,8 +17,11 @@ module Pages
       domain&.key
     end
 
+    def root_namespace_id
+      @namespace&.root_ancestor&.id
+    end
+
     def lookup_paths
-      root_namespace_id = @namespace&.root_ancestor&.id
       projects.flat_map { |project| lookup_paths_for(project, root_namespace_id) }
     end
 

@@ -11,7 +11,6 @@ import {
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import TerraformTitle from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
@@ -65,6 +64,7 @@ export default {
     readme() {
       return this.packageEntity.terraform_module_metadatum?.fields?.root?.readme;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         category: TRACK_CATEGORY,
@@ -76,9 +76,6 @@ export default {
   },
   methods: {
     ...mapActions(['deletePackage', 'fetchPackageVersions', 'deletePackageFile']),
-    formatSize(size) {
-      return numberToHumanSize(size);
-    },
     getPackageVersions() {
       if (!this.packageEntity.versions) {
         this.fetchPackageVersions();

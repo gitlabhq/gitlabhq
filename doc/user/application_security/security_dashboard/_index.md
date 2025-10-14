@@ -66,7 +66,7 @@ with up to 365 days of historical data for a given project. The dashboard is a h
 To view a project's security dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security dashboard**.
+1. Select **Secure** > **Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
    - To view a specific time frame, use the time range handles ({{< icon name="scroll-handle" >}}).
@@ -83,7 +83,7 @@ to use in documentation, presentations, and so on. To download the image of the 
 chart:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security dashboard**.
+1. Select **Secure** > **Security dashboard**.
 1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
 You will then be prompted to download the image in SVG format.
@@ -138,7 +138,7 @@ To view the Security Center:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
-1. Select **Security > Security dashboard**.
+1. Select **Security** > **Security dashboard**.
 
 The Security Center is blank by default. You must add a project which have been configured with at least one security scanner.
 

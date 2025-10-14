@@ -27,6 +27,11 @@ module QA
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   DELETE_BEFORE=2023-01-01 bundle exec rake "delete_test_snippets[true]"
+      USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
+        GITLAB_QA_ACCESS_TOKEN
+        GITLAB_QA_USER1_ACCESS_TOKEN
+        GITLAB_QA_USER2_ACCESS_TOKEN].freeze
+
       def initialize(dry_run: false)
         super
 
@@ -34,9 +39,18 @@ module QA
       end
 
       def run
-        snippets = fetch_resources("/snippets")
+        results = USER_TOKENS.flat_map do |token_name|
+          next unless ENV[token_name]
 
-        results = delete_snippets(snippets)
+          @user_api_client = user_api_client(ENV[token_name])
+          user = fetch_token_user(token_name, @user_api_client)
+          next if user[:id].nil?
+
+          logger.info("Running snippet delete for user #{user[:username]} (#{user[:id]}) on #{ENV['GITLAB_ADDRESS']}..")
+
+          snippets = fetch_resources("/snippets", @user_api_client)
+          results = delete_snippets(snippets)
+        end.compact
 
         log_results(results, @dry_run)
       end
@@ -58,7 +72,7 @@ module QA
       end
 
       def resource_request(snippet, **options)
-        Runtime::API::Request.new(api_client, "/snippets/#{snippet[:id]}", **options).url
+        Runtime::API::Request.new(@user_api_client, "/snippets/#{snippet[:id]}", **options).url
       end
     end
   end

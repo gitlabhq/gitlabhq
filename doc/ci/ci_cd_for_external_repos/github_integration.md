@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Connect your GitHub repository to GitLab CI/CD.
 title: Using GitLab CI/CD with a GitHub repository
 ---
 
@@ -76,12 +77,12 @@ To manually enable GitLab CI/CD for your repository:
    1. Fill in all the other fields and select **Create project**.
       GitLab automatically configures polling-based pull mirroring.
 1. In GitLab, enable [GitHub project integration](../../user/project/integrations/github.md):
-   1. On the left sidebar, select **Settings > Integrations**.
+   1. On the left sidebar, select **Settings** > **Integrations**.
    1. Select the **Active** checkbox.
    1. Paste your personal access token and HTTPS repository URL into the form and select **Save**.
 1. In GitLab, create a personal access token with `API` scope to
    authenticate the GitHub web hook notifying GitLab of new commits.
-1. In GitHub, from **Settings > Webhooks**, create a web hook to notify GitLab of
+1. In GitHub, from **Settings** > **Webhooks**, create a web hook to notify GitLab of
    new commits.
 
    The web hook URL should be set to the GitLab API to

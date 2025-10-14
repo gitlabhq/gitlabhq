@@ -35,8 +35,8 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
     it 'returns issues' do
       issues = milestone.milestone_issues(member)
 
-      expect(issues.first).to eq(issue)
-      expect(issues.second).to eq(security_issue_1)
+      expect(issues.first).to eq(closed_security_issue_2)
+      expect(issues.second).to eq(closed_security_issue_1)
       expect(issues.third).not_to eq(closed_issue_1)
     end
 

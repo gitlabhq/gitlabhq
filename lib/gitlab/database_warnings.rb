@@ -22,7 +22,7 @@ module Gitlab
             You are using PostgreSQL #{database.version} for the #{name} database, but this version of GitLab requires PostgreSQL >= <%= Gitlab::Database::MINIMUM_POSTGRES_VERSION %>.
             <% if Rails.env.development? || Rails.env.test? %>
             If using gitlab-development-kit, please find the relevant steps here:
-              https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md#upgrade-postgresql
+              https://gitlab-org.gitlab.io/gitlab-development-kit/howto/postgresql/#upgrade-postgresql
             <% end %>
             Please upgrade your environment to a supported PostgreSQL version. See
             https://docs.gitlab.com/ee/install/requirements.html#database for details.

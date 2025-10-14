@@ -50,20 +50,6 @@ RSpec.describe Packages::Helm::CreateMetadataCacheWorker, feature_category: :pac
       end
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(packages_helm_metadata_cache: false)
-      end
-
-      it_behaves_like 'does nothing'
-
-      it 'does not query project' do
-        expect(Project).not_to receive(:find_by_id)
-
-        perform_work
-      end
-    end
-
     context 'when create service responses failed' do
       it 'logs CreationFailedError error' do
         expect_next_instance_of(::Packages::Helm::CreateMetadataCacheService) do |service|

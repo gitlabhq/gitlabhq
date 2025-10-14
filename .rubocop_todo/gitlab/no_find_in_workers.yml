@@ -1,7 +1,6 @@
 ---
 Gitlab/NoFindInWorkers:
   Exclude:
-    - 'app/workers/approve_blocked_pending_approval_users_worker.rb'
     - 'app/workers/auto_devops/disable_worker.rb'
     - 'app/workers/bulk_imports/entity_worker.rb'
     - 'app/workers/bulk_imports/export_request_worker.rb'

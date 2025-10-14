@@ -387,16 +387,23 @@ module Gitlab
         end
 
         let(:attributes) do
-          [{ name: ".pre",
-             index: 0,
-             builds: [] },
-           { name: "build",
-             index: 1,
-             builds: [] },
-           { name: "test",
-             index: 2,
-             builds:
-               [{ stage_idx: 2,
+          [
+            {
+              name: ".pre",
+              index: 0,
+              builds: []
+            },
+            {
+              name: "build",
+              index: 1,
+              builds: []
+            },
+            {
+              name: "test",
+              index: 2,
+              builds:
+                [{
+                  stage_idx: 2,
                   stage: "test",
                   name: "rspec",
                   allow_failure: false,
@@ -405,23 +412,31 @@ module Gitlab
                   root_variables_inheritance: true,
                   scheduling_type: :stage,
                   options: { script: ["rspec"] },
-                  only: { refs: ["branches"] } }] },
-           { name: "deploy",
-             index: 3,
-             builds:
-               [{ stage_idx: 3,
-                  stage: "deploy",
-                  name: "prod",
-                  allow_failure: false,
-                  when: "on_success",
-                  job_variables: [],
-                  root_variables_inheritance: true,
-                  scheduling_type: :stage,
-                  options: { script: ["cap prod"] },
-                  only: { refs: ["tags"] } }] },
-           { name: ".post",
-             index: 4,
-             builds: [] }]
+                  only: { refs: ["branches"] }
+                }]
+            },
+            {
+              name: "deploy",
+              index: 3,
+              builds: [{
+                stage_idx: 3,
+                stage: "deploy",
+                name: "prod",
+                allow_failure: false,
+                when: "on_success",
+                job_variables: [],
+                root_variables_inheritance: true,
+                scheduling_type: :stage,
+                options: { script: ["cap prod"] },
+                only: { refs: ["tags"] }
+              }]
+            },
+            {
+              name: ".post",
+              index: 4,
+              builds: []
+            }
+          ]
         end
 
         it 'returns stages seed attributes' do
@@ -1183,12 +1198,19 @@ module Gitlab
       describe "Image and service handling" do
         context "when extended docker configuration is used" do
           it "returns image and service when defined" do
-            config = YAML.dump({ image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
-                                 services: ["mysql", { name: "docker:dind", alias: "docker",
-                                                       entrypoint: ["/usr/local/bin/init", "run"],
-                                                       command: ["/usr/local/bin/init", "run"] }],
-                                 before_script: ["pwd"],
-                                 rspec: { script: "rspec" } })
+            config = YAML.dump({
+              image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
+              services: [
+                "mysql", {
+                  name: "docker:dind",
+                  alias: "docker",
+                  entrypoint: ["/usr/local/bin/init", "run"],
+                  command: ["/usr/local/bin/init", "run"]
+                }
+              ],
+              before_script: ["pwd"],
+              rspec: { script: "rspec" }
+            })
 
             config_processor = described_class.new(config).execute
             rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
@@ -1202,9 +1224,15 @@ module Gitlab
                 before_script: ["pwd"],
                 script: ["rspec"],
                 image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
-                services: [{ name: "mysql" },
-                           { name: "docker:dind", alias: "docker", entrypoint: ["/usr/local/bin/init", "run"],
-                             command: ["/usr/local/bin/init", "run"] }]
+                services: [
+                  { name: "mysql" },
+                  {
+                    name: "docker:dind",
+                    alias: "docker",
+                    entrypoint: ["/usr/local/bin/init", "run"],
+                    command: ["/usr/local/bin/init", "run"]
+                  }
+                ]
               },
               allow_failure: false,
               when: "on_success",
@@ -1238,7 +1266,7 @@ module Gitlab
                 image: { name: "image:1.0", entrypoint: ["/usr/local/bin/init", "run"] },
                 services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
                              command: ["/usr/local/bin/init", "run"] },
-                           { name: "docker:dind" }]
+                  { name: "docker:dind" }]
               },
               allow_failure: false,
               when: "on_success",
@@ -1689,15 +1717,19 @@ module Gitlab
             expect(config_processor.builds[0]).to include(
               name: 'test1',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'test1 var 1' },
-                              { key: 'VAR2', value: 'test2 var 2' }]
+              job_variables: [
+                { key: 'VAR1', value: 'test1 var 1' },
+                { key: 'VAR2', value: 'test2 var 2' }
+              ]
             )
 
             expect(config_processor.builds[1]).to include(
               name: 'test2',
               options: { script: ['test'] },
-              job_variables: [{ key: 'VAR1', value: 'base var 1' },
-                              { key: 'VAR2', value: 'test2 var 2' }]
+              job_variables: [
+                { key: 'VAR1', value: 'base var 1' },
+                { key: 'VAR2', value: 'test2 var 2' }
+              ]
             )
 
             expect(config_processor.builds[2]).to include(
@@ -2380,9 +2412,9 @@ module Gitlab
           }
         end
 
-        subject { described_class.new(YAML.dump(config)).execute }
-
         let(:builds) { subject.builds }
+
+        subject { described_class.new(YAML.dump(config)).execute }
 
         context 'when a production environment is specified' do
           let(:environment) { 'production' }
@@ -2490,9 +2522,9 @@ module Gitlab
           }
         end
 
-        subject { described_class.new(YAML.dump(config)).execute }
-
         let(:builds) { subject.builds }
+
+        subject { described_class.new(YAML.dump(config)).execute }
 
         context 'when no timeout was provided' do
           it 'does not include job_timeout' do
@@ -3331,7 +3363,7 @@ module Gitlab
         context 'returns errors if services parameter is not an array' do
           let(:config) { YAML.dump({ services: "test", rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'services config should be a array'
+          it_behaves_like 'returns errors', 'services config should be an array'
         end
 
         context 'returns errors if services parameter is not an array of strings' do
@@ -3343,7 +3375,7 @@ module Gitlab
         context 'returns errors if job services parameter is not an array' do
           let(:config) { YAML.dump({ rspec: { script: "test", services: "test" } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:services config should be a array'
+          it_behaves_like 'returns errors', 'jobs:rspec:services config should be an array'
         end
 
         context 'returns errors if job services parameter is not an array of strings' do
@@ -3361,7 +3393,7 @@ module Gitlab
         context 'returns errors if services configuration is not correct' do
           let(:config) { YAML.dump({ extra: { script: 'rspec', services: "test" } }) }
 
-          it_behaves_like 'returns errors', 'jobs:extra:services config should be a array'
+          it_behaves_like 'returns errors', 'jobs:extra:services config should be an array'
         end
 
         context 'returns errors if there are no jobs defined' do

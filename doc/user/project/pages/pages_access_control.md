@@ -16,6 +16,7 @@ title: GitLab Pages access control
 
 - Group SAML SSO support for Pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326288) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
 - Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561778) in GitLab 18.5. Feature flag `ff_oauth_redirect_to_sso_login` removed.
 
 {{< /history >}}
 
@@ -29,7 +30,7 @@ on your GitLab instance. When enabled, only authenticated
 For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v=tSPAr5mQYc8).
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Toggle the **Pages** button to enable the access control. If you don't see the toggle button,
    that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/_index.md#access-control).
@@ -59,7 +60,7 @@ can access the website.
 When [SAML SSO](../../group/saml_sso/_index.md) is configured for the associated group
 and the access control is enabled, users must authenticate using SSO before accessing the website.
 
-## Restrict Pages access to project members for the group and its subgroups
+## Remove public access for group Pages
 
 {{< history >}}
 
@@ -67,8 +68,9 @@ and the access control is enabled, users must authenticate using SSO before acce
 
 {{< /history >}}
 
-You can configure a setting for the group to restrict Pages access to only project members.
-When enabled, all projects in the group and its subgroups become visible only to members.
+Configure a setting for the group to remove the public visibility option for Pages.
+When enabled, all projects in the group and its subgroups lose the ability to use the "Everyone" visibility
+level and are restricted to project members or everyone with access, depending on the project's visibility setting.
 
 Prerequisites
 
@@ -78,10 +80,9 @@ Prerequisites
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
-1. Under **Pages access control**, select
-   **Restrict access to only project members on all group projects**.
+1. Under **Pages public access**, select the **Remove public access** checkbox.
 1. Select **Save changes**.
 
 GitLab Pages uses a cache for efficiency. Changes to access settings typically take effect within one minute when the cache updates.

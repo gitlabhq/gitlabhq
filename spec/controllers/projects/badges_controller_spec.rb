@@ -180,6 +180,13 @@ RSpec.describe Projects::BadgesController do
     end
   end
 
+  describe '#custom' do
+    action = :custom
+
+    it_behaves_like 'a badge resource', action
+    it_behaves_like 'renders badge irrespective of project access levels', action
+  end
+
   describe '#coverage' do
     it_behaves_like 'a badge resource', :coverage
   end

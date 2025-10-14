@@ -96,7 +96,7 @@ export default {
               width="xs"
               @input="onPercentageChange"
             />
-            <span class="ml-1">%</span>
+            <span class="!gl-ml-2">%</span>
           </div>
         </template>
       </parameter-form-group>

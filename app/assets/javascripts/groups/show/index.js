@@ -30,9 +30,16 @@ export const initGroupsShowApp = () => {
     dataset: { appData },
   } = el;
 
-  const { initialSort, subgroupsAndProjectsEndpoint } = convertObjectPropsToCamelCase(
-    JSON.parse(appData),
-  );
+  const {
+    initialSort,
+    fullPath,
+    subgroupsAndProjectsEndpoint,
+    newSubgroupPath,
+    newProjectPath,
+    canCreateSubgroups,
+    canCreateProjects,
+    emptyProjectsIllustration,
+  } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers(subgroupsAndProjectsEndpoint)),
@@ -48,8 +55,15 @@ export const initGroupsShowApp = () => {
     router: createRouter(),
     apolloProvider,
     name: 'GroupsShowRoot',
+    provide: {
+      newSubgroupPath,
+      newProjectPath,
+      canCreateSubgroups,
+      canCreateProjects,
+      emptyProjectsIllustration,
+    },
     render(createElement) {
-      return createElement(GroupsShowApp, { props: { initialSort } });
+      return createElement(GroupsShowApp, { props: { initialSort, fullPath } });
     },
   });
 };

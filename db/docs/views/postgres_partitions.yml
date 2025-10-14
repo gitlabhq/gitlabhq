@@ -1,6 +1,6 @@
 ---
 view_name: postgres_partitions
-description: TODO
+description: List table partitions with their parent tables and partition conditions
 classes:
 - Gitlab::Database::PostgresPartition
 feature_categories:

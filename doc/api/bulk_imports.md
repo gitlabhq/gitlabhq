@@ -39,7 +39,7 @@ POST /bulk_imports
 | `entities[source_type]`           | String  | Yes      | Source entity type. Valid values are `group_entity` and `project_entity`. |
 | `entities[source_full_path]`      | String  | Yes      | Source full path of the entity to import. For example, `gitlab-org/gitlab`. |
 | `entities[destination_slug]`      | String  | Yes      | Destination slug for the entity. GitLab uses the slug as the URL path to the entity. The name of the imported entity is copied from the name of the source entity and not the slug. |
-| `entities[destination_namespace]` | String  | Yes      | Full path of the destination group [namespace](../user/namespace/_index.md) for the entity. Must be an existing group in the destination instance. Personal namespaces are not supported. |
+| `entities[destination_namespace]` | String  | Yes      | Full path of the destination group [namespace](../user/namespace/_index.md) for the entity. For `project_entity`, this value must be an existing group on the destination instance. For `group_entity`, this value can be an existing group on the destination instance or an empty string `""` to create a top-level group on the destination instance (on GitLab Self-Managed and GitLab Dedicated). Personal namespaces are not supported. |
 | `entities[destination_name]`      | String  | No       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |
 | `entities[migrate_memberships]`   | Boolean | No       | Import user memberships. Defaults to `true`. |
 | `entities[migrate_projects]`      | Boolean | No       | Also import all nested projects of the group (if `source_type` is `group_entity`). Defaults to `true`. |

@@ -25,7 +25,7 @@ module RuboCop
       CHECK_LINE_METHODS_REGEXP = Regexp.union((CHECK_LINE_METHODS + DISALLOW_METHODS).map(&:to_s) + [COMMENT_OR_EMPTY_LINE]).freeze
 
       def ee_const?(node)
-        line = node.location.expression.source_line
+        line = node.source_range.source_line
 
         # We use `match?` here instead of RuboCop's AST matching, as this makes
         # it far easier to handle nested constants such as `EE::Foo::Bar::Baz`.
@@ -45,7 +45,7 @@ module RuboCop
 
       def verify_line_number(node)
         line = node.location.line
-        buffer = node.location.expression.source_buffer
+        buffer = node.source_range.source_buffer
         last_line = buffer.last_line
         lines = buffer.source.split("\n")
         # We allow multiple includes, extends and prepends as long as they're all at the end.

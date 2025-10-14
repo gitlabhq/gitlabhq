@@ -17,7 +17,7 @@ this provider also allows Crowd authentication for Git-over-https requests.
 
 ## Configure a new Crowd application
 
-1. On the top menu, select **Applications > Add application**.
+1. On the top menu, select **Applications** > **Add application**.
 1. Go through the **Add application** steps, entering the appropriate details.
 1. When complete, select **Add application**.
 

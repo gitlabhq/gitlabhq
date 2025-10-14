@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon, GlAnimatedLoaderIcon } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { __, sprintf, s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
@@ -56,10 +56,6 @@ export default {
       type: Array,
       required: true,
     },
-    rootPath: {
-      type: String,
-      required: true,
-    },
     issuableType: {
       type: String,
       required: false,
@@ -78,7 +74,6 @@ export default {
   },
   data() {
     return {
-      showLess: true,
       loadingStates: {},
     };
   },
@@ -115,12 +110,6 @@ export default {
       setTimeout(() => {
         this.loadingStates[userId] = null;
       }, 1500);
-    },
-    reviewedButNotApprovedTooltip(user) {
-      return sprintf(s__('MergeRequest|Reviewed by @%{username} but not yet approved'), user);
-    },
-    toggleShowLess() {
-      this.showLess = !this.showLess;
     },
     reRequestReview(userId) {
       this.loadingStates[userId] = LOADING_STATE;
@@ -194,7 +183,6 @@ export default {
     >
       <reviewer-avatar-link
         :user="user"
-        :root-path="rootPath"
         :issuable-type="issuableType"
         class="gl-mr-2 gl-break-anywhere"
         data-css-area="user"

@@ -7,7 +7,7 @@ RSpec.shared_examples 'MR analytics renders as an analytics dashboard' do
     expect(find_by_testid('gridstack-grid')).to be_visible
     expect(page).not_to have_selector(dashboard_list_item_testid)
     expect(page).to have_text _('Merge request analytics')
-    expect(page).to have_text _('MR stats and trends')
+    expect(page).to have_text _('Get insights into your merge request lifecycle and view trends over time.')
 
     expect(find_by_testid('dashboard-filters-date-range')).to be_visible
     expect(find_by_testid('dashboard-filters-filtered-search')).to be_visible

@@ -106,9 +106,10 @@ POST /projects/:id/wikis
 | `format`  | string         | No       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc`, and `org`. |
 
 ```shell
-curl --data "format=rdoc&title=Hello&content=Hello world" \
+curl --request POST \
+     --data "format=rdoc&title=Hello&content=Hello world" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/1/wikis"
+     --url "https://gitlab.example.com/api/v4/groups/1/wikis"
 ```
 
 Example response:

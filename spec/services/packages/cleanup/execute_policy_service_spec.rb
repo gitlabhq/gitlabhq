@@ -35,8 +35,13 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
 
       let_it_be(:package_file3_1) { create(:package_file, package: package3, file_name: 'file_name_test') }
 
-      let_it_be(:package_file4_1) { create(:package_file, package: package4, file_name: 'file_name1') }
-      let_it_be(:package_file4_2) { create(:package_file, package: package4, file_name: 'file_name1') }
+      let_it_be(:package_file4_1) do
+        create(:package_file, :pending_destruction, package: package4, file_name: 'file_name1')
+      end
+
+      let_it_be(:package_file4_2) do
+        create(:package_file, :pending_destruction, package: package4, file_name: 'file_name1')
+      end
 
       let(:package_files_1) { package1.package_files.installable }
       let(:package_files_2) { package2.package_files.installable }
@@ -174,6 +179,18 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
               conan_package.package_files.installable.with_file_name(manifest_filename).count
             }
           end
+
+          context 'when packages_conan_duplicates_cleanup_policy is disabled' do
+            before do
+              stub_feature_flags(packages_conan_duplicates_cleanup_policy: false)
+            end
+
+            it 'keeps the two manifest files' do
+              expect { execute }.not_to change {
+                conan_package.package_files.installable.with_file_name(manifest_filename).count
+              }
+            end
+          end
         end
 
         context 'with multiple recipe files' do
@@ -190,6 +207,19 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
             expect(conan_package.package_files.installable.with_file_name(manifest_filename)).to contain_exactly(
               conan_recipe_manifest, conan_package_manifest
             )
+          end
+
+          context 'when packages_conan_duplicates_cleanup_policy is disabled' do
+            before do
+              stub_feature_flags(packages_conan_duplicates_cleanup_policy: false)
+            end
+
+            it 'keeps the most recent recipe files' do
+              expect { execute }.to change { conan_package.package_files.installable.count }.by(-2)
+              expect(conan_package.package_files.installable.with_file_name(manifest_filename)).to contain_exactly(
+                conan_recipe_manifest, conan_package_manifest
+              )
+            end
           end
         end
       end

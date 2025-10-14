@@ -6,9 +6,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/alert';
 import WorkItemBulkMove from '~/work_items/components/work_item_bulk_edit/work_item_bulk_move.vue';
-import destinationNamespacesQuery from '~/work_items/graphql/namespace_projects_for_links_widget.query.graphql';
+import searchUserProjectsWithIssuesEnabledQuery from '~/vue_shared/components/new_resource_dropdown/graphql/search_user_projects_with_issues_enabled.query.graphql';
+import searchOrganizationProjectsWithIssuesEnabled from '~/work_items/graphql/get_organization_project_to_move.query.graphql';
 import moveMutation from '~/work_items/graphql/list/work_item_bulk_move.mutation.graphql';
-import { namespaceProjectsList } from '../../mock_data';
+import { searchUserProjectsResponse, searchOrganizationProjectsResponse } from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -31,7 +32,10 @@ describe('WorkItemBulkMove', () => {
     },
   ];
 
-  const destinationNamespacesResolver = jest.fn().mockResolvedValue(namespaceProjectsList);
+  const destinationNamespacesResolver = jest.fn().mockResolvedValue(searchUserProjectsResponse);
+  const organizationDestinationResolver = jest
+    .fn()
+    .mockResolvedValue(searchOrganizationProjectsResponse);
 
   const moveMutationHandler = jest.fn().mockResolvedValue({
     data: {
@@ -46,11 +50,18 @@ describe('WorkItemBulkMove', () => {
     checkedItems = mockCheckedItems,
     disabled = false,
     destinationsResolver = destinationNamespacesResolver,
+    organizationResolver = organizationDestinationResolver,
     moveHandler = moveMutationHandler,
+    currentOrganization = null,
   } = {}) => {
+    window.gon = {
+      current_organization: currentOrganization,
+    };
+
     wrapper = mount(WorkItemBulkMove, {
       apolloProvider: createMockApollo([
-        [destinationNamespacesQuery, destinationsResolver],
+        [searchUserProjectsWithIssuesEnabledQuery, destinationsResolver],
+        [searchOrganizationProjectsWithIssuesEnabled, organizationResolver],
         [moveMutation, moveHandler],
       ]),
       propsData: {
@@ -107,13 +118,30 @@ describe('WorkItemBulkMove', () => {
         expect(destinationNamespacesResolver).not.toHaveBeenCalled();
       });
 
-      it('fetches destination list when opened', async () => {
-        createComponent();
-        findListbox().vm.$emit('shown');
-        await waitForPromises();
-        expect(destinationNamespacesResolver).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          projectSearch: '',
+      describe('without organization', () => {
+        it('fetches destination list using user projects query when opened', async () => {
+          createComponent();
+          findListbox().vm.$emit('shown');
+          await waitForPromises();
+          expect(destinationNamespacesResolver).toHaveBeenCalledWith({
+            search: '',
+          });
+          expect(organizationDestinationResolver).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('with organization', () => {
+        const mockOrganization = { id: '1' };
+
+        it('fetches destination list using organization projects query when opened', async () => {
+          createComponent({ currentOrganization: mockOrganization });
+          findListbox().vm.$emit('shown');
+          await waitForPromises();
+          expect(organizationDestinationResolver).toHaveBeenCalledWith({
+            search: '',
+            organizationId: 'gid://gitlab/Organizations::Organization/1',
+          });
+          expect(destinationNamespacesResolver).not.toHaveBeenCalled();
         });
       });
 
@@ -135,7 +163,7 @@ describe('WorkItemBulkMove', () => {
         await waitForPromises();
         findListbox().vm.$emit('select', 'gid://gitlab/Project/1');
         await nextTick();
-        expect(findListbox().props('toggleText')).toBe('Example project A');
+        expect(findListbox().props('toggleText')).toBe('Group A / Example project A');
       });
     });
   });

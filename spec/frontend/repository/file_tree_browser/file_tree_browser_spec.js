@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FileTreeBrowser, {
   TREE_WIDTH,
   FILE_TREE_BROWSER_STORAGE_KEY,
@@ -22,13 +22,14 @@ describe('FileTreeBrowser', () => {
 
   const findFileBrowserHeight = () => wrapper.findComponent(FileBrowserHeight);
   const findPanelResizer = () => wrapper.findComponent(PanelResizer);
+  const findOverlay = () => wrapper.findByTestId('overlay');
 
   afterEach(() => {
     localStorage.clear();
   });
 
   const createComponent = (routeName = 'blobPathDecoded') => {
-    wrapper = shallowMount(FileTreeBrowser, {
+    wrapper = shallowMountExtended(FileTreeBrowser, {
       propsData: {
         projectPath: 'group/project',
         currentRef: 'main',
@@ -47,13 +48,48 @@ describe('FileTreeBrowser', () => {
     beforeEach(() => {
       pinia = createTestingPinia({ stubActions: false });
       fileTreeBrowserStore = useFileTreeBrowserVisibility();
-      fileTreeBrowserStore.setFileTreeVisibility(true);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
       createComponent();
     });
 
     it('renders the file browser height component', () => {
       expect(findFileBrowserHeight().exists()).toBe(true);
       expect(findFileBrowserHeight().attributes('style')).toBe(`--tree-width: ${TREE_WIDTH}px;`);
+    });
+
+    describe('file tree browser overlay', () => {
+      it('does not render the overlay when peek is not on', () => {
+        expect(findOverlay().exists()).toBe(false);
+      });
+
+      it('renders the overlay when peek is on', () => {
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(true);
+        createComponent();
+        expect(findOverlay().exists()).toBe(true);
+      });
+    });
+
+    describe('visibilityClasses', () => {
+      it.each`
+        isExpanded | isPeekOn | expectedClasses
+        ${false}   | ${false} | ${''}
+        ${true}    | ${false} | ${'file-tree-browser-expanded'}
+        ${false}   | ${true}  | ${'file-tree-browser-peek'}
+      `(
+        'returns correct classes when expanded=$isExpanded and peekOn=$isPeekOn',
+        ({ isExpanded, isPeekOn, expectedClasses }) => {
+          fileTreeBrowserStore.setFileTreeBrowserIsExpanded(isExpanded);
+          fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(isPeekOn);
+
+          createComponent();
+
+          const hasClassName = Object.keys(wrapper.vm.visibilityClasses).some((key) =>
+            key.includes(expectedClasses),
+          );
+
+          expect(hasClassName).toBe(true);
+        },
+      );
     });
 
     describe('PanelResizer component', () => {

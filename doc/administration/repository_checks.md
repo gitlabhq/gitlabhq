@@ -63,7 +63,7 @@ notification of the situation. By default, this notification is sent out once a 
 the start of Sunday.
 
 Repositories with known check failures can be found at
-`/admin/projects?last_repository_check_failed=1`.
+`/admin/projects?last_repository_check_failed=true`.
 
 ## Run a check using the command line
 

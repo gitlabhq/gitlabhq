@@ -45,7 +45,7 @@ module Mcp
         }
       end
 
-      def execute(request, params)
+      def execute(request: nil, params: nil)
         args = params[:arguments]&.slice(*settings[:params]) || {}
         request.env[Grape::Env::GRAPE_ROUTING_ARGS].merge!(args)
         request.env[Rack::REQUEST_METHOD] = route.request_method

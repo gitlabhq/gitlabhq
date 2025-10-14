@@ -71,7 +71,6 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
 
     context 'when there is a custom root config' do
       before do
-        stub_feature_flags(ci_validate_config_options: false)
         build.job_artifacts_archive.update!(file: fixture_file_upload("spec/fixtures/pages_with_custom_root.zip"))
         build.job_artifacts_metadata.update!(file: fixture_file_upload("spec/fixtures/pages_with_custom_root.zip.meta"))
       end

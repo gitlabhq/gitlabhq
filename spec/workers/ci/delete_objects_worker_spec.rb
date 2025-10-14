@@ -15,11 +15,17 @@ RSpec.describe Ci::DeleteObjectsWorker, feature_category: :continuous_integratio
       expect_next_instance_of(Ci::DeleteObjectsService) do |instance|
         expect(instance).to receive(:execute).and_return(ServiceResponse.success)
         expect(instance).to receive(:remaining_batches_count)
-          .with(max_batch_count: 20)
+          .with(max_batch_count: 50)
           .once
           .and_call_original
       end
       worker.perform
+    end
+  end
+
+  describe '#max_running_jobs' do
+    it 'returns concurrency of 50' do
+      expect(worker.max_running_jobs).to eq(50)
     end
   end
 end

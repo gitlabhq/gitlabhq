@@ -23,9 +23,7 @@ module QA
         gitlab-e2e-sandbox-group-8].freeze
 
       def initialize(dry_run: false)
-        %w[GITLAB_ADDRESS GITLAB_QA_ACCESS_TOKEN].each do |var|
-          raise ArgumentError, "Please provide #{var} environment variable" unless ENV[var]
-        end
+        raise ArgumentError, "Please provide GITLAB_ADDRESS environment variable" unless ENV['GITLAB_ADDRESS']
 
         @delete_before = Time.parse(ENV['DELETE_BEFORE'] || (Time.now - (24 * 3600)).to_s).utc.iso8601(3)
         @dry_run = dry_run
@@ -37,7 +35,7 @@ module QA
       def api_client
         @api_client ||= Runtime::API::Client.new(
           ENV['GITLAB_ADDRESS'],
-          personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN']
+          personal_access_token: personal_access_token
         )
       end
 
@@ -107,7 +105,7 @@ module QA
       #
       # @param [String] api_path Api path to fetch resources from
       # @return [Array<Hash>] list of parsed resource hashes
-      def fetch_resources(api_path)
+      def fetch_resources(api_path, client = api_client)
         logger.info("Fetching #{@type}s created before #{@delete_before} on #{ENV['GITLAB_ADDRESS']}...")
 
         page_no = '1'
@@ -115,7 +113,7 @@ module QA
 
         while page_no.present?
           response = get Runtime::API::Request.new(
-            api_client,
+            client,
             api_path,
             page: page_no,
             per_page: ITEMS_PER_PAGE
@@ -139,13 +137,31 @@ module QA
         resources
       end
 
-      # Create a new api client for the specified token - used for deleting test user personal resources
+      # Fetches the user who owns the token with the given token name by using the given user_api_client
       #
-      # @param [String] token Personal access token
-      # @return [Runtime::API::Client] API client
-      def user_api_client(token)
-        Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
-          personal_access_token: token)
+      # @param [String] token_name Token name, not the token itself
+      # @param [Runtime::API::Client] client, api client for the token
+      # @return [Hash] User
+      def fetch_token_user(token_name, client = api_client)
+        logger.info("Fetching #{token_name} user ...")
+
+        user_response = get Runtime::API::Request.new(client, "/user").url
+
+        unless user_response.code == HTTP_STATUS_OK
+          logger.error("Request for user returned (#{user_response.code}): `#{user_response}` ")
+          exit 1 if [HTTP_STATUS_UNAUTHORIZED, HTTP_STATUS_BAD_REQUEST].include?(user_response.code)
+        end
+
+        parsed_response = parse_body(user_response)
+
+        if parsed_response.empty?
+          logger.error("User not found")
+          return {}
+        end
+
+        parsed_response
+      rescue StandardError => e
+        logger.error("Failed to fetch user for #{token_name}: #{e.message}")
       end
     end
   end

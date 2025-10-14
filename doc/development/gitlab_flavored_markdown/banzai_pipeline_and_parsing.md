@@ -107,13 +107,16 @@ This is documented in [Markdown Cache](../../administration/invalidate_markdown_
 might be needed if, for example, a system setting gets changed, such as a new PlantUML server is used and the administrator wants all
 fields to use the new value. The documentation also mentions how you could reset just a project, etc.
 
->>> [!warning]
-Changing either the `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION` or the application setting will cause all
+{{< alert type="warning" >}}
+
+Changing either the `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION` or the application setting causes all
 cached Markdown fields to be re-rendered. For large installations, this puts heavy strain on the database,
-as every row with cached Markdown needs to be updated. As a result, avoid changing `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION`
+as every row with cached Markdown needs to be updated. So, avoid changing `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION`
 if the change to the renderer output is a new feature or a minor bug fix. It should only be bumped in extreme
-circumstances. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/330313).
->>>
+circumstances.
+For more information, see [issue 330313](https://gitlab.com/gitlab-org/gitlab/-/issues/330313).
+
+{{< /alert >}}
 
 ## Debugging
 

@@ -23,7 +23,15 @@ export default {
       if (date === null) {
         return __('Never');
       }
-      return formatDate(new Date(date), this.dateFormat);
+
+      let dateWithTime = new Date(date);
+
+      // Set local midnight on dates passed as YYYY-MM-DD
+      if (date.match(/^\d{4,}-\d{2}-\d{2}$/)) {
+        dateWithTime = new Date(`${date}T00:00`);
+      }
+
+      return formatDate(dateWithTime, this.dateFormat);
     },
   },
 };

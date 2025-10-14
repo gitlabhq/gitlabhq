@@ -53,7 +53,7 @@ describe('AdminUserAvatar component', () => {
     });
 
     it("renders the user's avatar image", () => {
-      expect(findAvatar().attributes('src')).toBe(user.avatarUrl);
+      expect(findAvatar().props('src')).toBe(user.avatarUrl);
     });
 
     it('renders a user note icon', () => {

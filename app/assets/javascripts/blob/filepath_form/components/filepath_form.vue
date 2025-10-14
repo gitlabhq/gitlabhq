@@ -43,7 +43,9 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-mr-3 gl-flex gl-w-full gl-flex-col gl-gap-3 lg:gl-w-auto lg:gl-flex-row">
+  <div
+    class="gl-mr-3 gl-flex gl-w-full gl-flex-col gl-gap-3 @lg/panel:gl-w-auto @lg/panel:gl-flex-row"
+  >
     <gl-form-group
       class="gl-mb-0"
       :label="inputOptions.label"

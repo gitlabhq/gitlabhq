@@ -2,24 +2,24 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Control the job concurrency in GitLab CI/CD
+description: GitLab CI/CDでジョブの並行処理を制御する
 title: リソースグループ
 ---
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-デフォルトでは、GitLab CI/CDのパイプラインは同時に実行されます。並行処理は、マージリクエストのフィードバックループを改善するための重要な要素ですが、デプロイジョブの並行処理を制限して、一度に1つずつ実行したい場合があります。リソースグループを使用して、ジョブの並行処理を戦略的に制御し、継続的デプロイメントワークフローを安全に最適化します。
+デフォルトでは、GitLab CI/CDのパイプラインは複数同時に実行されます。並行処理は、マージリクエストのフィードバックループを改善するうえで重要な要素ですが、デプロイメントジョブの並行処理を制限して、一度に1つずつ実行したい場合があります。リソースグループを使用すると、ジョブの並行処理を戦略的に制御し、継続的デプロイメントワークフローを安全に最適化できます。
 
-## リソースグループを追加
+## リソースグループを追加する {#add-a-resource-group}
 
 リソースグループに追加できるリソースは1つのみです。
 
-次のパイプライン設定（リポジトリ内の `.gitlab-ci.yml` ファイル）があるとします。
+次のようなパイプライン設定（リポジトリ内の`.gitlab-ci.yml`ファイル）があるとします。
 
 ```yaml
 build:
@@ -32,14 +32,14 @@ deploy:
   environment: production
 ```
 
-ブランチに新しいコミットをプッシュするたびに、2つのジョブ `build` と `deploy` を持つ新しいパイプラインが実行されます。ただし、短い間隔で複数のコミットをプッシュすると、複数のパイプラインが同時に実行され始めます。次に例を示します。
+ブランチに新しいコミットをプッシュするたびに、2つのジョブ`build`と`deploy`を持つ新しいパイプラインが実行されます。ただし、短い間隔で複数のコミットをプッシュすると、複数のパイプラインが同時に実行を開始します。次に例を示します。
 
-- 最初のパイプラインはジョブ `build` -> `deploy` を実行します
-- 2番目のパイプラインはジョブ `build` -> `deploy` を実行します
+- 最初のパイプラインはジョブ`build` -> `deploy`を実行します。
+- 2番目のパイプラインはジョブ`build` -> `deploy`を実行します。
 
-この場合、異なるパイプラインにまたがる `deploy` ジョブは、`production` 環境に対して同時に実行される可能性があります。同じインフラストラクチャに対して複数のデプロイスクリプトを実行すると、インスタンスに損害を与えたり、混乱させたりする可能性があり、最悪の場合、破損した状態になる可能性があります。
+この場合、異なるパイプラインにまたがる`deploy`ジョブが`production`環境で同時に実行されるおそれがあります。同じインフラストラクチャで複数のデプロイスクリプトを実行すると、インスタンスに悪影響や混乱をもたらし、最悪の場合、破損状態に陥る可能性があります。
 
-`deploy` ジョブが一度に1つずつ実行されるようにするには、並行処理の影響を受けやすいジョブに [`resource_group` キーワード](../yaml/_index.md#resource_group) を指定します。
+`deploy`ジョブを一度に1つずつ実行するには、並行処理の影響を受けやすいジョブに[`resource_group`キーワード](../yaml/_index.md#resource_group)を指定します。
 
 ```yaml
 deploy:
@@ -47,38 +47,37 @@ deploy:
   resource_group: production
 ```
 
-この設定により、デプロイメントの安全性が確保され、パイプラインの効率性を最大化するために `build` ジョブを同時に実行できます。
+この設定により、デプロイの安全性を確保しつつ、パイプラインの効率性を最大化するために複数の`build`ジョブを同時に実行できます。
 
-## 前提要件
+## 前提要件 {#prerequisites}
 
-- [GitLab CI/CD パイプライン](../pipelines/_index.md) の基本的な知識
-- [GitLab環境とデプロイメント](../environments/_index.md) の基本的な知識
-- CI/CDパイプラインをConfigureするには、プロジェクトのデベロッパーロール以上の権限が必要です。
+- [GitLab CI/CDパイプライン](../pipelines/_index.md)に関する知識
+- [GitLab環境とデプロイ](../environments/_index.md)に関する知識
+- CI/CDパイプラインを設定するには、プロジェクトのデベロッパーロール以上が必要です。
 
-## 処理モード
+## 処理モード {#process-modes}
 
-デプロイ設定に合わせてジョブの並行処理を戦略的に制御するために、処理モードを選択できます。次のモードがサポートされています:
+デプロイ設定に合わせてジョブの並行処理を制御するために、処理モードを選択できます。次のモードがサポートされています。
 
-- **順不同:**これは、実行中のジョブの並行処理を制限するデフォルトの処理モードです。ジョブの実行順序を気にしない場合は、これが最も簡単なオプションです。ジョブの実行準備が整うと、すぐにジョブの処理を開始します。
-- **最古順:**この処理モードはジョブの並行処理を制限します。リソースが空いている場合、パイプラインIDで昇順にソートされた、リストにあるこれから実行するジョブ（`created`、`scheduled`、または `waiting_for_resource` 状態）から最初のジョブを選択します。
+| 処理モード | 説明 | 使用するケース  |
+|---------------|-------------|-------------|
+| `unordered` | デフォルトの処理モードです。ジョブの実行準備が整うと、すぐにジョブを処理します。 | ジョブの実行順序が重要でない場合。最も使いやすいオプションです。 |
+| `oldest_first` | リソースが空くと、パイプラインIDを昇順に並べた実行待ちジョブのリストから、最初のジョブを選択します。 | 最も古いパイプラインのジョブから順に実行したい場合。`unordered`モードよりも効率は下がりますが、継続的デプロイではより安全です。 |
+| `newest_first` | リソースが空くと、パイプラインIDを降順に並べた実行待ちジョブのリストから、最初のジョブを選択します。 | 最新のパイプラインのジョブを実行し、[古いデプロイメントジョブの実行を防ぎたい](../environments/deployment_safety.md#prevent-outdated-deployment-jobs)場合。各ジョブがべき等（同じ操作を繰り返し実行しても結果が同じ）でなければなりません。 |
+| `newest_ready_first` | リソースが空くと、このリソースでの実行待ちジョブのリストから、最初のジョブを選択します。ジョブは、パイプラインIDの降順でソートされています。 | `newest_first`が現在のパイプラインをデプロイする前に新しいパイプラインを優先するのを防ぎたい場合。`newest_first`よりも高速です。各ジョブがべき等（同じ操作を繰り返し実行しても結果が同じ）でなければなりません。 |
 
-  このモードは、ジョブを最も古いパイプラインから実行する必要がある場合に効率的です。パイプラインの効率という点では `unordered` モードに比べて効率性は劣りますが、継続的デプロイメントにはより安全です。
+### 処理モードを変更する {#change-the-process-mode}
 
-- **最新順:**この処理モードはジョブの並行処理を制限します。リソースが空いている場合、パイプラインIDで降順にソートされた、リストにあるこれから実行するジョブ（`created`、`scheduled`、または `waiting_for_resource` 状態）から最初のジョブを選択します。
-
-  このモードは、最新のパイプラインからジョブが実行されるようにし、[最新ではないデプロイジョブを防止](../environments/deployment_safety.md#prevent-outdated-deployment-jobs) 機能を使用して、古いデプロイジョブをすべて防止する場合に効率的です。これは、パイプラインの効率という点では最も効率的なオプションですが、各デプロイジョブがべき等であることを確認する必要があります。
-
-### 処理モードの変更
-
-リソースグループの処理モードを変更するには、APIを使用し、`process_mode` を指定して [既存のリソースグループを編集](../../api/resource_groups.md#edit-an-existing-resource-group) するリクエストを送信する必要があります。
+リソースグループの処理モードを変更するには、APIを使用して`process_mode`を指定し、[既存のリソースグループを編集](../../api/resource_groups.md#edit-an-existing-resource-group)するリクエストを送信する必要があります。
 
 - `unordered`
 - `oldest_first`
 - `newest_first`
+- `newest_ready_first`
 
-### 処理モード間の違いの例
+### 処理モード間の違いの例 {#an-example-of-difference-between-the-process-modes}
 
-次の `.gitlab-ci.yml` について考えてみます。ここでは、2つのジョブ `build` と `deploy` がそれぞれ独自のステージで実行されており、`deploy` ジョブには `production` に設定されたリソースグループがあります。
+次の`.gitlab-ci.yml`について考えてみます。ここでは、2つのジョブ`build`と`deploy`がそれぞれ独自のステージで実行され、`deploy`ジョブには`production`というリソースグループが設定されています。
 
 ```yaml
 build:
@@ -92,29 +91,29 @@ deploy:
   resource_group: production
 ```
 
-3つのコミットが短い間隔でプロジェクトにプッシュされた場合、3つのパイプラインがほぼ同時に実行されることを意味します。
+3つのコミットが短い間隔でプロジェクトにプッシュされると、3つのパイプラインがほぼ同時に実行されることになります。
 
-- 最初のパイプラインはジョブ `build` -> `deploy` を実行します。このデプロイジョブを `deploy-1` と呼びましょう。
-- 2番目のパイプラインはジョブ `build` -> `deploy` を実行します。このデプロイジョブを `deploy-2` と呼びましょう。
-- 3番目のパイプラインはジョブ `build` -> `deploy` を実行します。このデプロイジョブを `deploy-3` と呼びましょう。
+- 最初のパイプラインはジョブ`build` -> `deploy`を実行します。このデプロイメントジョブを`deploy-1`とします。
+- 2番目のパイプラインはジョブ`build` -> `deploy`を実行します。このデプロイメントジョブを`deploy-2`とします。
+- 3番目のパイプラインはジョブ`build` -> `deploy`を実行します。このデプロイメントジョブを`deploy-3`とします。
 
-リソースグループの処理モードに応じて、次のようになります。
+リソースグループの処理モードに応じて、次のように動作します。
 
-- 処理モードが `unordered` に設定されている場合:
-  - `deploy-1`、`deploy-2`、および `deploy-3` は同時に実行されません。
-  - ジョブの実行順序は保証されていません。たとえば、`deploy-1` は `deploy-3` の実行前または実行後に実行される可能性があります。
-- 処理モードが `oldest_first` の場合:
-  - `deploy-1`、`deploy-2`、および `deploy-3` は同時に実行されません。
-  - `deploy-1` が最初に実行され、`deploy-2` が2番目に実行され、`deploy-3` が最後に実行されます。
-- 処理モードが `newest_first` の場合:
-  - `deploy-1`、`deploy-2`、および `deploy-3` は同時に実行されません。
-  - `deploy-3` が最初に実行され、`deploy-2` が2番目に実行され、`deploy-1` が最後に実行されます。
+- 処理モードが`unordered`の場合:
+  - `deploy-1`、`deploy-2`、`deploy-3`は同時には実行されません。
+  - ジョブの実行順序は保証されません。たとえば、`deploy-1`が`deploy-3`より先に実行される場合も、後に実行される場合もあります。
+- 処理モードが`oldest_first`の場合:
+  - `deploy-1`、`deploy-2`、`deploy-3`は同時には実行されません。
+  - `deploy-1`が最初に実行され、次に`deploy-2`、最後に`deploy-3`が実行されます。
+- 処理モードが`newest_first`の場合:
+  - `deploy-1`、`deploy-2`、`deploy-3`は同時には実行されません。
+  - `deploy-3`が最初に実行され、次に`deploy-2`、最後に`deploy-1`が実行されます。
 
-## クロスプロジェクト/親子パイプラインによるパイプラインレベルの並行処理制御
+## クロスプロジェクト/親子パイプラインによるパイプラインレベルの並行処理制御 {#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines}
 
-並行処理に影響されやすいダウンストリームパイプラインに対して `resource_group` を定義できます。[`trigger` キーワード](../yaml/_index.md#trigger) はダウンストリームパイプラインをトリガーでき、[`resource_group` キーワード](../yaml/_index.md#resource_group) はそれと共存できます。`resource_group` はデプロイメントパイプラインの並行処理を制御するのに効率的ですが、他のジョブは引き続き同時に実行できます。
+並行処理に影響されやすいダウンストリームパイプラインに対して`resource_group`を定義できます。[`trigger`キーワード](../yaml/_index.md#trigger)はダウンストリームパイプラインをトリガーでき、[`resource_group`キーワード](../yaml/_index.md#resource_group)はそれと併用できます。`resource_group`はデプロイメントパイプラインの並行処理を制御するのに効率的であり、他のジョブは引き続き同時に実行できます。
 
-次の例では、プロジェクトに2つのパイプライン設定があります。パイプラインの実行が開始されると、影響を受けやすいジョブ以外のジョブが最初に実行され、他のパイプラインでの並行処理の影響を受けません。ただし、GitLabは、デプロイメント（子）パイプラインをトリガーする前に、他のデプロイメントパイプラインが実行されていないことを確認します。他のデプロイメントパイプラインが実行されている場合、GitLabはこれらのパイプラインが完了するまで待機してから、別のパイプラインを実行します。
+次の例では、1つのプロジェクトに2つのパイプライン設定があります。パイプラインの実行が開始されると、並行処理の影響を受けにくいジョブが最初に実行され、他のパイプラインの並行処理の影響を受けません。ただし、GitLabは、他のデプロイメントパイプラインが実行中でないことを確認してから、デプロイメント（子）パイプラインをトリガーします。他のデプロイメントパイプラインが実行中であれば、GitLabはこれらのパイプラインが完了するまで待機してから、別のパイプラインを実行します。
 
 ```yaml
 # .gitlab-ci.yml (parent pipeline)
@@ -131,7 +130,7 @@ deploy:
   stage: deploy
   trigger:
     include: deploy.gitlab-ci.yml
-    strategy: depend
+    strategy: mirror
   resource_group: AWS-production
 ```
 
@@ -152,21 +151,21 @@ deployment:
   environment: production
 ```
 
-`trigger` キーワードで [`strategy: depend`](../yaml/_index.md#triggerstrategy) を定義する必要があります。これにより、ダウンストリームパイプラインが完了するまでロックがリリースされないようになります。
+[`trigger:strategy`](../yaml/_index.md#triggerstrategy)を定義して、ダウンストリームパイプラインが完了するまでロックが解除されないようにする必要があります。
 
-## 関連トピック
+## 関連トピック {#related-topics}
 
 - [APIドキュメント](../../api/resource_groups.md)
-- [logドキュメント](../../administration/logs/_index.md#ci_resource_groups_jsonlog)
-- [安全なデプロイメントのためのGitLab](../environments/deployment_safety.md)
+- [ログのドキュメント](../../administration/logs/_index.md#ci_resource_groups_jsonlog)
+- [安全なデプロイのためのGitLab](../environments/deployment_safety.md)
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
-### パイプライン設定でデッドロックを回避する
+### パイプライン設定でデッドロックを回避する {#avoid-dead-locks-in-pipeline-configurations}
 
-[`oldest_first` 処理モード](#process-modes) では、ジョブがパイプライン順に実行されるため、他のCI機能とうまく連携しない場合があります。
+[`oldest_first`処理モード](#process-modes)では、ジョブをパイプライン順に強制的に実行するため、他のCI機能とうまく連携しない場合があります。
 
-たとえば、親パイプラインと同じリソースグループを必要とする[子パイプライン](../pipelines/downstream_pipelines.md#parent-child-pipelines)を実行すると、デッドロックが発生する可能性があります。以下は _悪い_ 設定の例です。
+たとえば、親パイプラインと同じリソースグループを必要とする[子パイプライン](../pipelines/downstream_pipelines.md#parent-child-pipelines)を実行すると、デッドロックが発生する可能性があります。以下は不適切な設定の例です。
 
 ```yaml
 # BAD
@@ -174,7 +173,7 @@ test:
   stage: test
   trigger:
     include: child-pipeline-requires-production-resource-group.yml
-    strategy: depend
+    strategy: mirror
 
 deploy:
   stage: deploy
@@ -183,11 +182,11 @@ deploy:
   environment: production
 ```
 
-親パイプラインでは、`test` ジョブを実行して子パイプラインを後続で実行し、[`strategy: depend` オプション](../yaml/_index.md#triggerstrategy) は、`test` ジョブが子パイプラインの完了まで待機するようにします。親パイプラインは、`production` リソースグループのリソースを必要とする次のステージで `deploy` ジョブを実行します。処理モードが `oldest_first` の場合、最も古いパイプラインからジョブが実行されます。つまり、`deploy` ジョブが次に実行されます。
+親パイプラインでは、`test`ジョブを実行し、その後に子パイプラインを実行します。[`strategy: mirror`オプション](../yaml/_index.md#triggerstrategy)により、`test`ジョブは子パイプラインが完了するまで待機します。次のステージで、親パイプラインは`deploy`ジョブを実行しますが、このジョブは`production`リソースグループのリソースを必要とします。処理モードが`oldest_first`の場合、最も古いパイプラインからジョブが実行されます。つまり、次に実行されるのは`deploy`ジョブになります。
 
-ただし、子パイプラインも `production` リソースグループのリソースを必要とします。子パイプラインは親パイプラインよりも新しいため、`deploy` ジョブが完了するまで子パイプラインは待機します。これは決して起こりません。
+ところが、子パイプラインも`production`リソースグループのリソースを必要とします。子パイプラインは親パイプラインよりも新しいため、`deploy`ジョブが完了するまで待機します。しかし、このジョブが完了することはありません。
 
-この場合、代わりに親パイプライン設定で `resource_group` キーワードを指定する必要があります。
+この場合、代わりに親パイプラインの設定で`resource_group`キーワードを指定する必要があります。
 
 ```yaml
 # GOOD
@@ -195,7 +194,7 @@ test:
   stage: test
   trigger:
     include: child-pipeline.yml
-    strategy: depend
+    strategy: mirror
   resource_group: production # Specify the resource group in the parent pipeline
 
 deploy:
@@ -205,52 +204,52 @@ deploy:
   environment: production
 ```
 
-### ジョブが「リソース待機中」でスタックする
+### ジョブが「Waiting for resource」でスタックする {#jobs-get-stuck-in-waiting-for-resource}
 
-ジョブが `Waiting for resource: <resource_group>` というメッセージでハングすることがあります。解決するには、まずリソースグループが正しく機能していることを確認します。
+ジョブが`Waiting for resource: <resource_group>`（リソース待機中）というメッセージでハングすることがあります。解決するには、まずリソースグループが正しく動作していることを確認します。
 
 1. ジョブの詳細ページに移動します。
-1. リソースがジョブに割り当てられている場合は、**現在リソースを使用しているジョブを表示** を選択し、ジョブの状態を確認します。
+1. リソースがジョブに割り当てられている場合は、**現在リソースを使用しているジョブを表示**を選択し、ジョブステータスを確認します。
 
-   - 状態が `running` または `pending` の場合、機能は正しく動作しています。ジョブが完了してリソースをリリースするまで待ちます。
-   - 状態が `created` であり、[処理モード](#process-modes) が **最古順** または **最新順** のいずれかである場合、機能は正しく動作しています。ジョブのパイプラインページにアクセスし、どのアップストリームステージまたはジョブが実行をブロックしているかを確認します。
-   - 上記の条件のいずれも満たされていない場合、機能が正しく動作していない可能性があります。[GitLabにイシューを報告](#report-an-issue) します。
+   - ステータスが`running`または`pending`の場合、この機能は正常に動作しています。ジョブが完了してリソースをリリースするまで待ちます。
+   - ステータスが`created`であり、[処理モード](#process-modes)が**古い順**または**新しい順**のいずれかである場合、この機能は正しく動作しています。ジョブのパイプラインページにアクセスし、どのアップストリームステージまたはジョブが実行をブロックしているかを確認します。
+   - 前述の条件に当てはまらない場合、この機能が正しく動作していない可能性があります。[GitLabにイシューを報告](#report-an-issue)してください。
 
-1. **現在リソースを使用しているジョブを表示** が利用できない場合、リソースはジョブに割り当てられていません。代わりに、リソースの今後のジョブを確認してください。
+1. **現在リソースを使用しているジョブを表示**が利用できない場合、リソースはジョブに割り当てられていません。代わりに、リソースの実行待ちジョブを確認します。
 
-   1. [REST API](../../api/resource_groups.md#list-upcoming-jobs-for-a-specific-resource-group) でリソースの今後のジョブを取得します。
-   1. リソースグループの[処理モード](#process-modes)が**最古順**であることを検証します。
-   1. 今後のジョブのリストで最初のジョブを見つけ、[GraphQLで](#get-job-details-through-graphql)ジョブの詳細を取得します。
-   1. 最初のジョブのパイプラインが古いパイプラインの場合は、パイプラインまたはジョブ自体をキャンセルしてみてください。
-   1. 任意。次の今後のジョブがまだ実行されなくなった古いパイプラインにある場合は、このプロセスを繰り返します。
-   1. イシューが解決しない場合は、[GitLabに問題を報告](#report-an-issue) します。
+   1. [REST API](../../api/resource_groups.md#list-upcoming-jobs-for-a-specific-resource-group)でリソースの実行待ちジョブを取得します。
+   1. リソースグループの[処理モード](#process-modes)が**古い順**であることを確認します。
+   1. 実行待ちジョブのリストで最初のジョブを見つけ、[GraphQLで](#get-job-details-through-graphql)そのジョブの詳細を取得します。
+   1. 最初のジョブのパイプラインが古いパイプラインの場合は、そのパイプラインまたはジョブ自体をキャンセルしてみてください。
+   1. （オプション）次の実行待ちジョブが、実行されなくなった古いパイプラインに属している場合は、このプロセスを繰り返します。
+   1. 問題が解決しない場合は、[GitLabにイシューを報告](#report-an-issue)してください。
 
-#### 複雑またはビジーなパイプラインでの競合状態
+#### 複雑またはビジーなパイプラインでの競合状態 {#race-conditions-in-complex-or-busy-pipelines}
 
-上記の方法でイシューを解決できない場合は、既知の競合状態の問題が発生している可能性があります。競合状態は、複雑またはビジーなパイプラインで発生します。たとえば、次のような場合に競合状態が発生する可能性があります。
+前述の方法でイシューを解決できない場合は、既知の競合状態の問題が発生している可能性があります。競合状態は、複雑またはビジーなパイプラインで発生します。たとえば、次のような場合に競合状態が発生する可能性があります。
 
-- 複数の子パイプラインを持つパイプライン。
-- 複数のパイプラインが同時に実行されている単一のプロジェクト。
+- パイプラインに複数の子パイプラインが存在する
+- 単一のプロジェクトで複数のパイプラインが同時に実行されている
 
-このイシューが発生していると思われる場合は、[GitLabに問題を報告](#report-an-issue) し、新しい問題へのリンクを付けて [イシュー 436988](https://gitlab.com/gitlab-org/gitlab/-/issues/436988) にコメントを残してください。問題を確認するために、GitLabは完全なパイプライン設定などの追加の詳細を求める場合があります。
+このイシューが発生していると思われる場合は、[GitLabにイシューを報告](#report-an-issue)し、新しいイシューへのリンクを付けて[イシュー436988](https://gitlab.com/gitlab-org/gitlab/-/issues/436988)にコメントを残してください。問題を確認するために、GitLabからパイプライン全体の設定などの追加の詳細を求められる場合があります。
 
 一時的な回避策として、次のことができます。
 
-- 新しいパイプラインを開始します。
-- スタックしたジョブと同じリソースグループを持つ完了したジョブを再実行します。
+- 新しいパイプラインを開始する。
+- スタックしたジョブと同じリソースグループを持つ完了したジョブを再実行する。
 
-  たとえば、同じリソースグループを持つ `setup_job` と `deploy_job` がある場合、`deploy_job` が「リソース待機中」でスタックしている間、`setup_job` が完了する可能性があります。`setup_job` を再起動してプロセス全体を再開し、`deploy_job` が完了できるようにします。
+  たとえば、同じリソースグループに属する`setup_job`と`deploy_job`がある場合、`deploy_job`が「`waiting for resource`」で停滞している間に、`setup_job`が完了する可能性があります。この場合、`setup_job`を再起動してプロセス全体を再開し、`deploy_job`を完了させることができます。
 
-#### GraphQLを介してジョブの詳細を取得
+#### GraphQLを介してジョブの詳細を取得する {#get-job-details-through-graphql}
 
-GraphQL APIからジョブ情報を取得できます。[クロスプロジェクト/親子パイプラインによるパイプラインレベルの並行処理制御](#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines) を使用する場合は、トリガージョブがUIからアクセスできないため、GraphQL APIを使用する必要があります。
+GraphQL APIからジョブ情報を取得できます。[クロスプロジェクト/親子パイプラインによるパイプラインレベルの並行処理制御](#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines)を使用する場合は、UIからはトリガージョブにアクセスできないため、GraphQL APIを使用する必要があります。
 
-GraphQL APIからジョブ情報を取得するには:
+GraphQL APIからジョブ情報を取得するには、次のようにします。
 
 1. パイプラインの詳細ページに移動します。
-1. **ジョブ** タブを選択し、スタックしたジョブのIDを見つけます。
-1. [インタラクティブGraphQLエクスプローラー](../../api/graphql/_index.md#interactive-graphql-explorer) に移動します。
-1. 次のクエリを実行します:
+1. **ジョブ**タブを選択し、スタックしたジョブのIDを見つけます。
+1. [インタラクティブGraphQLエクスプローラー](../../api/graphql/_index.md#interactive-graphql-explorer)に移動します。
+1. 次のクエリを実行します。
 
    ```graphql
    {
@@ -270,9 +269,9 @@ GraphQL APIからジョブ情報を取得するには:
    }
    ```
 
-    `job.detailedStatus.action.path` フィールドには、リソースを使用しているジョブIDが含まれています。
+    `job.detailedStatus.action.path`フィールドには、リソースを使用しているジョブのIDが含まれています。
 
-1. 次のクエリを実行し、上記の基準に従って `job.status` フィールドを確認します。`pipeline.path` フィールドからパイプラインページにアクセスすることもできます。
+1. 次のクエリを実行し、前述の基準に従って`job.status`フィールドを確認します。`pipeline.path`フィールドからパイプラインページにアクセスすることもできます。
 
    ```graphql
    {
@@ -289,13 +288,13 @@ GraphQL APIからジョブ情報を取得するには:
    }
    ```
 
-### イシューを報告
+### イシューを報告する {#report-an-issue}
 
-次の情報で[新しいイシューをオープン](https://gitlab.com/gitlab-org/gitlab/-/issues/new) します:
+次の情報を含む[新しいイシューをオープン](https://gitlab.com/gitlab-org/gitlab/-/issues/new)します。
 
-- 影響を受けるジョブのID。
-- ジョブの状態。
-- 問題の発生頻度。
-- 問題を再現する手順。
+- 影響を受けたジョブのID
+- ジョブステータス
+- 問題の発生頻度
+- 問題を再現する手順
 
-  詳細な支援が必要な場合、または開発チームに連絡を取りたい場合は、[サポートに連絡](https://about.gitlab.com/support/#contact-support) することもできます。
+  [サポートに連絡](https://about.gitlab.com/support/#contact-support)して、さらに支援を受けたり、開発チームとやり取りしたりすることもできます。

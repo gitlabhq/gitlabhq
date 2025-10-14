@@ -113,7 +113,7 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
 
     it 'includes details of the active group access tokens' do
       active_access_tokens =
-        ::GroupAccessTokenSerializer.new.represent(resource_access_tokens.reverse, group: resource)
+        ::GroupAccessTokenSerializer.new.represent(resource_access_tokens, group: resource)
 
       expect(assigns(:active_access_tokens).to_json).to eq(active_access_tokens.to_json)
     end

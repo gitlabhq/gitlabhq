@@ -160,7 +160,7 @@ export default {
 
       if (draft.position && !this.isOnLatestDiff(draft)) {
         const url = new URL(setUrlParams({ commit_id: draft.position.head_sha }));
-        url.hash = `note_${draft.id}`;
+        url.hash = `draft_${draft.id}`;
         visitUrl(url.toString());
       } else {
         await this.scrollToDraft(draft);
@@ -280,7 +280,7 @@ export default {
     :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     :open="drawerOpened"
-    class="merge-request-review-drawer !gl-w-screen !gl-max-w-2xl"
+    class="merge-request-review-drawer !gl-w-[100cqw] !gl-max-w-2xl"
     data-testid="review-drawer-toggle"
     @close="setDrawerOpened(false)"
   >

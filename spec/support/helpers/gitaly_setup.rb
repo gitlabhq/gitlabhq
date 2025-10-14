@@ -438,5 +438,14 @@ module GitalySetup
 
     stack_output = `cat /proc/#{pid}/stack 2>/dev/null || echo "Could not read process stack"`
     LOGGER.debug stack_output
+
+    load_avg = `cat /proc/loadavg 2>/dev/null || echo "unavailable"`
+    LOGGER.debug "Load average: #{load_avg.strip}\n"
+
+    io_wait = `vmstat 1 1 2>/dev/null | tail -1 | awk '{print $16}' || echo "0"`
+    LOGGER.debug "I/O wait: #{io_wait.strip}%\n"
+
+    disk_usage = `df -h 2>/dev/null | grep overlay | awk '{print $5}' || echo "unknown"`
+    LOGGER.debug "Disk usage: #{disk_usage.strip}\n"
   end
 end

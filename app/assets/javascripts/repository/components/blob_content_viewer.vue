@@ -156,6 +156,7 @@ export default {
       blobInfo: {},
       isEmptyRepository: false,
       projectId: null,
+      shouldPreloadBlame: false,
       showBlame: this.$route?.query?.blame === '1',
     };
   },
@@ -422,6 +423,7 @@ export default {
         @copy="onCopy"
         @edit="editBlob"
         @error="displayError"
+        @preload-blame="shouldPreloadBlame = true"
         @blame="handleToggleBlame"
       />
       <blame-header v-if="isBlameAvailable" />
@@ -433,6 +435,7 @@ export default {
         :content="legacySimpleViewer"
         :is-raw-content="true"
         :active-viewer="viewer"
+        :should-preload-blame="shouldPreloadBlame"
         :show-blame="showBlame && glFeatures.inlineBlame"
         :current-ref="currentRef"
         :loading="isLoadingLegacyViewer"
@@ -447,6 +450,7 @@ export default {
         :show-blame="showBlame && glFeatures.inlineBlame"
         :project-path="projectPath"
         :current-ref="currentRef"
+        :should-preload-blame="shouldPreloadBlame"
         class="blob-viewer"
         @error="onError"
       />

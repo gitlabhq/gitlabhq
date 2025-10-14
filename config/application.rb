@@ -367,6 +367,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/web_ide_loader.css"
     config.assets.precompile << "page_bundles/wiki.css"
     config.assets.precompile << "page_bundles/work_items.css"
+    config.assets.precompile << "page_bundles/work_item_settings.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
     config.assets.precompile << "lazy_bundles/gridstack.css"
@@ -499,7 +500,7 @@ module Gitlab
       allow do
         origins '*'
         resource '/oauth/token/info',
-          headers: %w[Authorization],
+          headers: %w[Authorization x-gitlab-language-server-version user-agent],
           credentials: false,
           methods: %i[get head options]
       end

@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Access, feature_category: :pip
 
     it 'returns an error' do
       expect(subject).not_to be_valid
-      expect(subject.errors.first).to eq('unknown input name provided: `nonexistent` in `inputs.nonexistent`')
+      expect(subject.errors.first).to eq('unknown interpolation provided: `nonexistent` in `inputs.nonexistent`')
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Access, feature_category: :pip
 
     it 'returns an error' do
       expect(subject).not_to be_valid
-      expect(subject.errors.first).to eq('unknown input name provided: `extra` in `inputs.data.extra`')
+      expect(subject.errors.first).to eq('unknown interpolation provided: `extra` in `inputs.data.extra`')
     end
   end
 end

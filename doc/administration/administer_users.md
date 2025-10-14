@@ -28,17 +28,6 @@ Administer and manage users in GitLab Self-Managed.
 
 {{< /cards >}}
 
-## User types
-
-{{< cards >}}
-
-- [Auditor users](auditor_users.md)
-- [External users](external_users.md)
-- [Guest users](guest_users.md)
-- [Internal users](internal_users.md)
-
-{{< /cards >}}
-
 ## User management
 
 {{< cards >}}
@@ -51,16 +40,5 @@ Administer and manage users in GitLab Self-Managed.
 - [Broadcast messages](broadcast_messages.md)
 - [Email from GitLab](email_from_gitlab.md)
 - [User management Rake tasks](raketasks/user_management.md)
-
-{{< /cards >}}
-
-## Security and authentication
-
-{{< cards >}}
-
-- [Password storage](../security/password_storage.md)
-- [Credentials inventory](credentials_inventory.md)
-- [Custom password length limits](../security/password_length_limits.md)
-- [Generated passwords and integrated authentication](../security/passwords_for_integrated_authentication_methods.md)
 
 {{< /cards >}}

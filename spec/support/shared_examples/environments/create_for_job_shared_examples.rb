@@ -35,22 +35,8 @@ RSpec.shared_examples 'create environment for job' do
           environment: instance_of(Environment),
           pipeline: job.pipeline,
           expanded_environment_name: job.persisted_environment.name,
-          options: job.environment_options_for_permanent_storage.deep_stringify_keys
+          options: job.environment_options_for_permanent_storage
         )
-      end
-
-      context 'when the persisted_job_environment_relationship feature flag is disabled' do
-        before do
-          stub_feature_flags(persisted_job_environment_relationship: false)
-        end
-
-        it 'does not create an associated job environment record' do
-          subject
-
-          job.save!
-
-          expect(job.job_environment).to be_nil
-        end
       end
 
       context 'when environment has already existed' do
@@ -82,22 +68,8 @@ RSpec.shared_examples 'create environment for job' do
             environment: environment,
             pipeline: job.pipeline,
             expanded_environment_name: environment.name,
-            options: job.environment_options_for_permanent_storage.deep_stringify_keys
+            options: job.environment_options_for_permanent_storage
           )
-        end
-
-        context 'when the persisted_job_environment_relationship feature flag is disabled' do
-          before do
-            stub_feature_flags(persisted_job_environment_relationship: false)
-          end
-
-          it 'does not create an associated job environment record' do
-            subject
-
-            job.save!
-
-            expect(job.job_environment).to be_nil
-          end
         end
 
         it_behaves_like 'internal event tracking' do
@@ -169,16 +141,17 @@ RSpec.shared_examples 'create environment for job' do
     context 'when job has deployment tier attribute' do
       let(:attributes) do
         {
-          environment: 'customer-portal',
+          environment: environment_name,
           options: {
             environment: {
-              name: 'customer-portal',
+              name: environment_name,
               deployment_tier: deployment_tier
             }
           }
         }
       end
 
+      let(:environment_name) { 'customer-portal' }
       let(:deployment_tier) { 'production' }
 
       context 'when environment has not been created yet' do
@@ -197,8 +170,9 @@ RSpec.shared_examples 'create environment for job' do
         context 'when deployment tier is unknown' do
           let(:deployment_tier) { 'unknown' }
 
-          it 'raises an error' do
-            expect { subject }.to raise_error(ArgumentError, "'unknown' is not a valid tier")
+          it "is not a valid tier" do
+            is_expected.not_to be_valid
+            expect(subject.errors[:tier].first).to eq('is not included in the list')
           end
         end
       end
@@ -404,7 +378,7 @@ RSpec.shared_examples 'create environment for job' do
 
           expect(environment).to be_present
           expect(job.persisted_environment.name).to eq('review/master')
-          expect(job.metadata.expanded_environment_name).to eq('review/master')
+          expect(job.expanded_environment_name).to eq('review/master')
         end
 
         context 'and the pipeline is for a merge request' do
@@ -414,6 +388,27 @@ RSpec.shared_examples 'create environment for job' do
             expect { subject }.to change { Environment.count }.by(1)
 
             expect(environment.merge_request).to eq(merge_request)
+          end
+        end
+
+        context 'when job metadata exists' do
+          before do
+            job.ensure_metadata
+          end
+
+          it 'does not change metadata.expanded_environment_name' do
+            expect { subject }.to not_change { job.metadata.expanded_environment_name }
+          end
+        end
+
+        context 'when FF `stop_writing_builds_metadata` is disabled' do
+          before do
+            job.ensure_metadata
+            stub_feature_flags(stop_writing_builds_metadata: false)
+          end
+
+          it 'sets the expanded environment name in metadata' do
+            expect { subject }.to change { job.metadata.expanded_environment_name }.to('review/master')
           end
         end
       end
@@ -428,7 +423,7 @@ RSpec.shared_examples 'create environment for job' do
 
           expect(environment).to be_present
           expect(job.persisted_environment.name).to eq('review/master')
-          expect(job.metadata.expanded_environment_name).to eq('review/master')
+          expect(job.expanded_environment_name).to eq('review/master')
         end
 
         context 'and the pipeline is for a merge request' do
@@ -438,6 +433,27 @@ RSpec.shared_examples 'create environment for job' do
             expect { subject }.not_to change { Environment.count }
 
             expect(environment.merge_request).to be_nil
+          end
+        end
+
+        context 'when job metadata exists' do
+          before do
+            job.ensure_metadata
+          end
+
+          it 'does not change metadata.expanded_environment_name' do
+            expect { subject }.to not_change { job.metadata.expanded_environment_name }
+          end
+        end
+
+        context 'when FF `stop_writing_builds_metadata` is disabled' do
+          before do
+            job.ensure_metadata
+            stub_feature_flags(stop_writing_builds_metadata: false)
+          end
+
+          it 'sets the expanded environment name in metadata' do
+            expect { subject }.to change { job.metadata.expanded_environment_name }.to('review/master')
           end
         end
       end
@@ -465,7 +481,28 @@ RSpec.shared_examples 'create environment for job' do
 
         expect(environment).to be_present
         expect(job.persisted_environment.name).to eq('review/master')
-        expect(job.metadata.expanded_environment_name).to eq('review/master')
+        expect(job.expanded_environment_name).to eq('review/master')
+      end
+
+      context 'when job metadata exists' do
+        before do
+          job.ensure_metadata
+        end
+
+        it 'does not change metadata.expanded_environment_name' do
+          expect { subject }.to not_change { job.metadata.expanded_environment_name }
+        end
+      end
+
+      context 'when FF `stop_writing_builds_metadata` is disabled' do
+        before do
+          job.ensure_metadata
+          stub_feature_flags(stop_writing_builds_metadata: false)
+        end
+
+        it 'sets the expanded environment name in metadata' do
+          expect { subject }.to change { job.metadata.expanded_environment_name }.to('review/master')
+        end
       end
     end
 

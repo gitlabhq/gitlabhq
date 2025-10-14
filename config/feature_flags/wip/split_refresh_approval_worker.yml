@@ -1,0 +1,10 @@
+---
+name: split_refresh_approval_worker
+description: Split out approval refresh logic from the refresh MR service
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554081
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203223
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/576277
+milestone: '18.5'
+group: group::code review
+type: wip
+default_enabled: false

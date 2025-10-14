@@ -77,7 +77,6 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
             project_key: project_key,
             repo_slug: repo_slug,
             timeout_strategy: timeout_strategy,
-            bitbucket_server_notes_separate_worker: true,
             user_contribution_mapping_enabled: true,
             user_mapping_to_personal_namespace_owner_enabled: true
           }
@@ -93,7 +92,6 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
 
     context 'when all feature flags are disabled' do
       before do
-        stub_feature_flags(bitbucket_server_notes_separate_worker: false)
         stub_feature_flags(bitbucket_server_user_mapping: false)
         stub_feature_flags(user_mapping_to_personal_namespace_owner: false)
       end
@@ -106,7 +104,6 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
               project_key: project_key,
               repo_slug: repo_slug,
               timeout_strategy: timeout_strategy,
-              bitbucket_server_notes_separate_worker: false,
               user_contribution_mapping_enabled: false,
               user_mapping_to_personal_namespace_owner_enabled: false
             }
@@ -134,7 +131,6 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
               project_key: project_key,
               repo_slug: repo_slug,
               timeout_strategy: timeout_strategy,
-              bitbucket_server_notes_separate_worker: true,
               user_contribution_mapping_enabled: false,
               user_mapping_to_personal_namespace_owner_enabled: false
             }
@@ -162,7 +158,6 @@ RSpec.describe Gitlab::BitbucketServerImport::ProjectCreator, feature_category: 
               project_key: project_key,
               repo_slug: repo_slug,
               timeout_strategy: timeout_strategy,
-              bitbucket_server_notes_separate_worker: true,
               user_contribution_mapping_enabled: true,
               user_mapping_to_personal_namespace_owner_enabled: false
             }

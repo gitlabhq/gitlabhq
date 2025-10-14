@@ -6,8 +6,6 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
   describe '#valid?' do
     let_it_be(:private_key) { OpenSSL::PKey::RSA.generate 3072 }
 
-    subject(:asymmetric_jwt) { described_class.new(jwt, verification_claims) }
-
     let(:verification_claims) { jwt_claims }
     let(:jwt_claims) { { aud: aud, iss: client_key, qsh: qsh } }
     let(:aud) { 'https://test.host/-/jira_connect' }
@@ -22,6 +20,8 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
     let(:qsh) do
       Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/installed', 'POST', 'https://gitlab.test')
     end
+
+    subject(:asymmetric_jwt) { described_class.new(jwt, verification_claims) }
 
     before do
       stub_request(:get, install_keys_url)

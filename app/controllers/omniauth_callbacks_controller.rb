@@ -426,10 +426,21 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def handle_step_up_auth
-    return if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+    handle_step_up_auth_for_admin_mode if Feature.enabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+    handle_step_up_auth_for_namespace if Feature.enabled?(:omniauth_step_up_auth_for_namespace, current_user)
+  end
 
+  def handle_step_up_auth_for_admin_mode
+    handle_step_up_auth_for(::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_ADMIN_MODE)
+  end
+
+  def handle_step_up_auth_for_namespace
+    handle_step_up_auth_for(::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE)
+  end
+
+  def handle_step_up_auth_for(scope)
     step_up_auth_flow =
-      ::Gitlab::Auth::Oidc::StepUpAuthentication.build_flow(session: session, provider: oauth.provider)
+      ::Gitlab::Auth::Oidc::StepUpAuthentication.build_flow(session: session, provider: oauth.provider, scope: scope)
 
     return unless step_up_auth_flow.enabled_by_config?
     return unless step_up_auth_flow.requested?

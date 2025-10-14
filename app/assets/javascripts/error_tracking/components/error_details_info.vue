@@ -157,7 +157,7 @@ export default {
         </template>
       </gl-card>
     </div>
-    <div v-if="!error.integrated" class="py-3">
+    <div v-if="!error.integrated" class="!gl-py-5">
       <span class="gl-font-bold">{{ __('Sentry event') }}:</span>
       <gl-link
         v-track-event="trackClickErrorLinkToSentryOptions(error.externalUrl)"
@@ -165,8 +165,8 @@ export default {
         target="_blank"
         data-testid="external-url-link"
       >
-        <span class="text-truncate">{{ error.externalUrl }}</span>
-        <gl-icon name="external-link" class="ml-1 flex-shrink-0" />
+        <span class="gl-truncate">{{ error.externalUrl }}</span>
+        <gl-icon name="external-link" class="!gl-ml-2 !gl-shrink-0" />
       </gl-link>
     </div>
   </div>

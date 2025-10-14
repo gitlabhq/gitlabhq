@@ -80,9 +80,13 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute', feature_category: 
       context 'project authorizations refresh' do
         it 'schedules worker only for the direct members of the group with medium priority' do
           expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker).to receive(:perform_async)
-            .with(shared_with_group.id, { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY,
-'direct_members_only' => true })
-            .and_call_original
+            .with(
+              shared_with_group.id,
+              {
+                'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY.to_s,
+                'direct_members_only' => true
+              }
+            ).and_call_original
 
           subject.execute
         end

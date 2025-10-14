@@ -43,8 +43,8 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex md:gl-justify-end">
-    <gl-button-group class="gl-hidden md:gl-flex">
+  <div class="gl-flex @md/panel:gl-justify-end">
+    <gl-button-group class="gl-hidden @md/panel:gl-flex">
       <gl-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
@@ -66,7 +66,7 @@ export default {
         @click="$emit('update-issue-status', { errorId: error.id, status: resolveBtn.status })"
       />
     </gl-button-group>
-    <div class="gl-flex gl-gap-3 md:gl-hidden">
+    <div class="gl-flex gl-gap-3 @md/panel:gl-hidden">
       <gl-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
@@ -94,7 +94,7 @@ export default {
       :href="detailsLink"
       category="primary"
       variant="confirm"
-      class="gl-mb-0 gl-ml-3 md:!gl-hidden"
+      class="gl-mb-0 gl-ml-3 @md/panel:!gl-hidden"
     >
       {{ __('More details') }}
     </gl-button>

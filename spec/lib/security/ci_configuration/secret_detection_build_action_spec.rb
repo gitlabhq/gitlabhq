@@ -96,6 +96,19 @@ RSpec.describe Security::CiConfiguration::SecretDetectionBuildAction, feature_ca
         end
       end
 
+      context 'secret_detection template contains symbolized keys' do
+        let(:gitlab_ci_content) do
+          { stages: %w[test],
+            variables: { "RANDOM" => "make sure this persists" },
+            include: [{ "template" => "Security/Secret-Detection.gitlab-ci.yml" }] }
+        end
+
+        it 'generates the correct YML' do
+          expect(result[:action]).to eq('update')
+          expect(result[:content]).to eq(expected_yml)
+        end
+      end
+
       context 'secret_detection template include is not an array' do
         let(:gitlab_ci_content) do
           { "stages" => %w[test],

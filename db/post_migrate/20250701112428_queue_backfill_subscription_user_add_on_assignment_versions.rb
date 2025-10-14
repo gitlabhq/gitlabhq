@@ -11,22 +11,12 @@ class QueueBackfillSubscriptionUserAddOnAssignmentVersions < Gitlab::Database::M
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :subscription_user_add_on_assignments,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op, there were more orphan records that needs to have assigment version created.
+    # Fixed by: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203303
   end
 
   def down
-    delete_batched_background_migration(
-      'BackfillSubscriptionUserAddOnAssignmentVersions',
-      :subscription_user_add_on_assignments,
-      :id,
-      []
-    )
+    # no-op, there were more orphan records that needs to have assigment version created.
+    # Fixed by: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203303
   end
 end

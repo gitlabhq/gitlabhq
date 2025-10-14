@@ -31,7 +31,7 @@ Doorkeeper.configure do
     next if user.password_automatically_set? && !user.password_based_omniauth_user?
     next if user.two_factor_enabled? || Gitlab::Auth::TwoFactorAuthVerifier.new(user).two_factor_authentication_enforced?
 
-    Gitlab::Auth.find_with_user_password(params[:username], params[:password], increment_failed_attempts: true)
+    Gitlab::Auth.find_with_user_password(params[:username], params[:password], increment_failed_attempts: true, request: request)
   end
 
   allow_grant_flow_for_client do |grant_flow, client|
@@ -39,8 +39,7 @@ Doorkeeper.configure do
     next true unless grant_flow == 'password'
 
     if ::Gitlab::Saas.respond_to?(:feature_available?) &&
-        ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications) &&
-        ::Feature.enabled?(:disable_ropc_for_all_applications, :instance)
+        ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications)
       next false
     end
 

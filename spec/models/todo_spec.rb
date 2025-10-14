@@ -17,6 +17,7 @@ RSpec.describe Todo, feature_category: :notifications do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:target).touch(false) }
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:organization) }
   end
 
   describe 'respond to' do
@@ -29,6 +30,32 @@ RSpec.describe Todo, feature_category: :notifications do
     it { is_expected.to validate_presence_of(:target_type) }
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:author) }
+
+    context 'for parentless_type' do
+      let(:todo) { build(:todo, user: nil) }
+
+      context 'when action is a parentless action type' do
+        it 'returns true when action is included in parentless_action_types' do
+          parentless_action = described_class.parentless_action_types.first
+          todo.action = parentless_action
+
+          expect(todo).to be_parentless_type
+          todo.validate
+          expect(todo.errors[:organization]).to include("can't be blank")
+        end
+      end
+
+      context 'when action is not a parentless action type' do
+        it 'returns false when action is not included in parentless_action_types' do
+          non_parentless_action = (described_class::ACTION_NAMES.keys - described_class.parentless_action_types).first
+          todo.action = non_parentless_action
+
+          expect(todo).not_to be_parentless_type
+          todo.validate
+          expect(todo.errors[:organization]).to be_empty
+        end
+      end
+    end
 
     context "for project and/or group" do
       using RSpec::Parameterized::TableSyntax
@@ -59,6 +86,15 @@ RSpec.describe Todo, feature_category: :notifications do
 
         expect(subject.errors.messages[:project].first).to eq("can't be blank")
         expect(subject.errors.messages[:group].first).to eq("can't be blank")
+      end
+
+      it "both are present" do
+        subject.project = project
+        subject.group = group
+        subject.validate
+
+        expect(subject.project).not_to be_nil
+        expect(subject.group).to be_nil
       end
     end
 
@@ -91,6 +127,93 @@ RSpec.describe Todo, feature_category: :notifications do
           it { is_expected.not_to validate_presence_of(:project) }
           it { is_expected.not_to validate_presence_of(:group) }
         end
+      end
+    end
+  end
+
+  describe 'single column sharding key' do
+    it 'prefers the organization when parentless_type?' do
+      todo = build(:todo, project: project, group: group, user: user, target: issue)
+      parentless_action = described_class.parentless_action_types.first
+      todo.action = parentless_action
+      todo.save!
+
+      todo.reload
+      expect(todo.project_id).to be_nil
+      expect(todo.group_id).to be_nil
+      expect(todo.organization_id).to eq(user.organization_id)
+    end
+
+    it 'prefers the project to a group when both are provided' do
+      todo = build(:todo, target: issue)
+      todo.project = project
+      todo.group = group
+      todo.save!
+
+      todo.reload
+      expect(todo.project_id).to eq(project.id)
+      expect(todo.group_id).to be_nil
+    end
+
+    context 'when bypassing activerecord' do
+      it 'prefers project_id' do
+        todos_attributes = [{
+          state: :pending,
+          user_id: user.id,
+          target_id: user.id,
+          target_type: ::User,
+          action: ::Todo::DUO_ENTERPRISE_ACCESS_GRANTED,
+          author_id: ::Users::Internal.duo_code_review_bot.id,
+          organization_id: user.organization_id,
+          group_id: group.id,
+          project_id: project.id
+        }]
+        ids = []
+        expect { ids = described_class.insert_all(todos_attributes, returning: :id).rows.flatten }.to change { Todo.count }.by(1)
+        todo = described_class.find(ids).first
+        expect(todo.organization_id).to be_nil
+        expect(todo.group_id).to be_nil
+        expect(todo.project_id).to eq(project.id)
+      end
+
+      it 'prefers group_id when project_id IS NULL' do
+        todos_attributes = [{
+          state: :pending,
+          user_id: user.id,
+          target_id: user.id,
+          target_type: ::User,
+          action: ::Todo::DUO_ENTERPRISE_ACCESS_GRANTED,
+          author_id: ::Users::Internal.duo_code_review_bot.id,
+          organization_id: user.organization_id,
+          group_id: group.id,
+          project_id: nil
+        }]
+        ids = []
+        expect { ids = described_class.insert_all(todos_attributes, returning: :id).rows.flatten }.to change { Todo.count }.by(1)
+        todo = described_class.find(ids).first
+        expect(todo.organization_id).to be_nil
+        expect(todo.group_id).to eq(group.id)
+        expect(todo.project_id).to be_nil
+      end
+
+      it 'sets the organization_id when one is not provided and group_id && project_id are NULL' do
+        todos_attributes = [{
+          state: :pending,
+          user_id: user.id,
+          target_id: user.id,
+          target_type: ::User,
+          action: ::Todo::DUO_ENTERPRISE_ACCESS_GRANTED,
+          author_id: ::Users::Internal.duo_code_review_bot.id,
+          organization_id: nil,
+          group_id: nil,
+          project_id: nil
+        }]
+        ids = []
+        expect { ids = described_class.insert_all(todos_attributes, returning: :id).rows.flatten }.to change { Todo.count }.by(1)
+        todo = described_class.find(ids).first
+        expect(todo.organization_id).to eq(user.organization_id)
+        expect(todo.group_id).to be_nil
+        expect(todo.project_id).to be_nil
       end
     end
   end

@@ -218,6 +218,18 @@ Users are notified of the following events:
 | Group scheduled for deletion             | Group Owners    | Sent when group is scheduled for deletion. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11_         |
 | Project scheduled for deletion           | Project Owners  | Sent when project is scheduled for deletion. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11_          |
 
+To disable `always sent` emails on GitLab Self-Managed and GitLab Dedicated, you must disable individual [background jobs](../../administration/maintenance_mode/_index.md#background-jobs), for example:
+
+- `personal_access_tokens_expiring_worker`
+- `personal_access_tokens_expired_notification_worker`
+- `ssh_keys_expiring_soon_notification_worker`
+- `ssh_keys_expired_notification_worker`
+- `send_recurring_notifications_worker`
+- `deploy_tokens_expiring_worker`
+- `members_expiring_worker`
+
+To disable background jobs, you must be an administrator.
+
 ## Notifications on issues, merge requests, and epics
 
 You also receive notifications for events happening on
@@ -425,8 +437,10 @@ If you no longer wish to receive any email notifications:
 1. If you belong to any groups or projects, set their notification setting to **Global** or
    **Disabled**.
 
-On GitLab Self-Managed instances, even after doing this, your instance administrator
-[can still email you](../../administration/email_from_gitlab.md).
+On GitLab Self-Managed and Dedicated instances, even after doing this, certain event notifications are still sent:
+
+- Your instance administrator [can still email you](../../administration/email_from_gitlab.md)
+- [Notification events](#notification-events) that are `always sent`
 
 ## Unsubscribe from notification emails
 

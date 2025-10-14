@@ -1,6 +1,8 @@
 <script>
+import { mapState } from 'pinia';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import TreeList from './components/tree_list.vue';
 
 export const TREE_WIDTH = 320;
@@ -34,6 +36,18 @@ export default {
       treeWidth: TREE_WIDTH,
     };
   },
+  computed: {
+    ...mapState(useFileTreeBrowserVisibility, [
+      'fileTreeBrowserIsExpanded',
+      'fileTreeBrowserIsPeekOn',
+    ]),
+    visibilityClasses() {
+      return {
+        'file-tree-browser-expanded gl-sticky': this.fileTreeBrowserIsExpanded,
+        'file-tree-browser-peek gl-left-0': this.fileTreeBrowserIsPeekOn,
+      };
+    },
+  },
   created() {
     this.restoreTreeWidthUserPreference();
   },
@@ -58,19 +72,27 @@ export default {
 </script>
 
 <template>
-  <file-browser-height
-    :style="{ '--tree-width': `${treeWidth}px` }"
-    class="repository-tree-list repository-tree-list-responsive gl-mt-4 gl-px-4"
-  >
-    <panel-resizer
-      class="max-@lg/panel:gl-hidden"
-      :start-size="treeWidth"
-      :min-size="$options.minTreeWidth"
-      :max-size="$options.maxTreeWidth"
-      side="right"
-      @update:size="onSizeUpdate"
-      @resize-end="saveTreeWidthPreference"
-    />
-    <tree-list :project-path="projectPath" :current-ref="currentRef" :ref-type="refType" />
-  </file-browser-height>
+  <div class="gl-relative">
+    <div
+      v-if="fileTreeBrowserIsPeekOn"
+      class="gl-fixed gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
+      data-testid="overlay"
+    ></div>
+    <file-browser-height
+      :style="{ '--tree-width': `${treeWidth}px` }"
+      class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
+      :class="visibilityClasses"
+    >
+      <panel-resizer
+        class="max-@lg/panel:gl-hidden"
+        :start-size="treeWidth"
+        :min-size="$options.minTreeWidth"
+        :max-size="$options.maxTreeWidth"
+        side="right"
+        @update:size="onSizeUpdate"
+        @resize-end="saveTreeWidthPreference"
+      />
+      <tree-list :project-path="projectPath" :current-ref="currentRef" :ref-type="refType" />
+    </file-browser-height>
+  </div>
 </template>

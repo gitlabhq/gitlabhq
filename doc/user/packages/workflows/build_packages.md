@@ -461,7 +461,7 @@ The npm version is shown in the output:
    npm init
    ```
 
-1. Enter responses to the questions. Ensure the **package name** follows
+1. Enter responses to the questions. Ensure the package name follows
    the [naming convention](../npm_registry/_index.md#naming-convention) and is scoped to the project or group where the registry exists.
 
 ## Yarn
@@ -493,7 +493,7 @@ The Yarn version is shown in the output:
    yarn init
    ```
 
-1. Enter responses to the questions. Ensure the **package name** follows
+1. Enter responses to the questions. Ensure the package name follows
    the [naming convention](../npm_registry/_index.md#naming-convention) and is scoped to the
    project or group where the registry exists.
 

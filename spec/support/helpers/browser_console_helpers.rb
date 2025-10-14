@@ -23,7 +23,10 @@ module BrowserConsoleHelpers
       "Origin trial controlled feature not enabled: 'interest-cohort'",
 
       # ERR_CONNECTION error could happen due to automated test session disabling browser network request
-      'net::ERR_CONNECTION'
+      'net::ERR_CONNECTION',
+
+      # GitLab UI translation fallback warnings
+      '@gitlab/ui.*translations have not been given.*fall back to their default US English strings'
     ]
   )
 

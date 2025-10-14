@@ -109,7 +109,7 @@ To find more details about the error, you can use your browser's developer tools
 
 To resolve the issue:
 
-- If the GraphQL response includes `only get, head, options, and trace methods are allowed in silent mode`, disable [silent mode](silent_mode/_index.md#disable-silent-mode) for your instance.
+- If the GraphQL response includes `only get, head, options, and trace methods are allowed in silent mode`, disable [silent mode](silent_mode/_index.md#turn-off-silent-mode) for your instance.
 
 If you are unable to determine the issue, contact [GitLab Support](https://about.gitlab.com/support/portal/) and provide the GraphQL response in your description of the issue.
 

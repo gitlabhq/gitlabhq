@@ -179,5 +179,43 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
         end
       end
     end
+
+    context 'when source_user is mapped to a project bot' do
+      let(:github_role_name) { 'write' }
+
+      let!(:source_user) do
+        create(
+          :import_source_user, :completed,
+          namespace: project.root_ancestor,
+          source_hostname: project.unsafe_import_url,
+          import_type: project.import_type,
+          source_user_identifier: github_user_id,
+          reassign_to_user: create(:user, :project_bot)
+        )
+      end
+
+      it 'does not create membership' do
+        expect { importer.execute }.not_to change { project.members.count }
+      end
+    end
+
+    context 'when source_user is mapped to a service account' do
+      let(:github_role_name) { 'write' }
+
+      let!(:source_user) do
+        create(
+          :import_source_user, :completed,
+          namespace: project.root_ancestor,
+          source_hostname: project.unsafe_import_url,
+          import_type: project.import_type,
+          source_user_identifier: github_user_id,
+          reassign_to_user: create(:user, :service_account)
+        )
+      end
+
+      it 'creates expected member' do
+        expect { importer.execute }.to change { project.members.count }.by(1)
+      end
+    end
   end
 end

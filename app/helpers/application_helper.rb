@@ -320,7 +320,7 @@ module ApplicationHelper
     class_names << 'with-header' if @with_header || !current_user || project_studio_enabled?
     class_names << 'application-chrome' if project_studio_enabled?
     class_names << 'page-with-panels' if project_studio_enabled?
-    class_names << 'with-gl-container-queries' if Feature.enabled?(:tailwind_container_queries, current_user)
+    class_names << 'with-gl-container-queries' if project_studio_enabled?
     class_names << system_message_class
 
     class_names
@@ -332,6 +332,7 @@ module ApplicationHelper
 
   def body_scroll_classes
     return '' if content_for(:disable_fixed_body_scroll).present?
+    return '' if project_studio_enabled?
 
     # Custom class is used instead of Tailwind so people can discover this, do not replace this with Tailwind analog
     'body-fixed-scrollbar'
@@ -475,14 +476,12 @@ module ApplicationHelper
   def autocomplete_data_sources(object, noteable_type)
     return {} unless object && noteable_type
 
-    extensible_reference_filters_enabled = Feature.enabled?(:extensible_reference_filters, Feature.current_request)
-
     if object.is_a?(Group)
       {
         members: members_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_group_autocomplete_sources_path(object),
-        issuesAlternative: extensible_reference_filters_enabled ? issues_group_autocomplete_sources_path(object) : nil,
-        workItems: extensible_reference_filters_enabled ? issues_group_autocomplete_sources_path(object) : nil,
+        issuesAlternative: issues_group_autocomplete_sources_path(object),
+        workItems: issues_group_autocomplete_sources_path(object),
         mergeRequests: merge_requests_group_autocomplete_sources_path(object),
         labels: labels_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_group_autocomplete_sources_path(object),
@@ -492,8 +491,8 @@ module ApplicationHelper
       {
         members: members_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_project_autocomplete_sources_path(object),
-        issuesAlternative: extensible_reference_filters_enabled ? issues_project_autocomplete_sources_path(object) : nil,
-        workItems: extensible_reference_filters_enabled ? issues_project_autocomplete_sources_path(object) : nil,
+        issuesAlternative: issues_project_autocomplete_sources_path(object),
+        workItems: issues_project_autocomplete_sources_path(object),
         mergeRequests: merge_requests_project_autocomplete_sources_path(object),
         labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_project_autocomplete_sources_path(object),
@@ -539,6 +538,10 @@ module ApplicationHelper
     content_tag(:span, class: 'has-tooltip', title: title) do
       sprite_icon('spam', css_class: ['gl-align-text-bottom', css_class].compact_blank.join(' '), variant: variant)
     end
+  end
+
+  def ai_panel_expanded?
+    cookies[:ai_panel_active_tab].present?
   end
 
   private

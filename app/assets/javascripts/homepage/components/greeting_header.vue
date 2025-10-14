@@ -126,7 +126,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-7 gl-mt-8 gl-flex gl-flex-row gl-items-center gl-gap-x-5">
+  <div
+    data-testid="homepage-greeting-header"
+    class="gl-mb-7 gl-mt-8 gl-flex gl-flex-row gl-items-center gl-gap-x-5"
+  >
     <!-- When no status is set, the entire avatar area is clickable -->
     <button
       v-if="!statusEmoji"
@@ -151,7 +154,7 @@ export default {
         </div>
         <button
           v-gl-tooltip="tooltipMessage"
-          class="gl-absolute -gl-bottom-2 -gl-right-1 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-border-2 gl-border-solid gl-border-gray-400 gl-bg-white hover:gl-bg-strong dark:gl-bg-gray-900"
+          class="gl-absolute -gl-bottom-2 -gl-right-1 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-border-2 gl-border-solid gl-border-gray-400 gl-bg-white gl-p-0 hover:gl-bg-strong dark:gl-bg-gray-900"
           data-testid="status-emoji-badge"
           :style="borderStyle"
           :aria-label="tooltipMessage"
@@ -162,8 +165,7 @@ export default {
             :data-name="statusEmoji"
             :title="null"
             :aria-label="statusEmoji"
-            class="gl-leading-none gl-text-sm"
-            style="pointer-events: none"
+            class="gl-pointer-events-none gl-mt-1 gl-h-full gl-w-full gl-content-center gl-text-center gl-text-[18px]"
           />
         </button>
       </div>

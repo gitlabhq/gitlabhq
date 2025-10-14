@@ -59,7 +59,7 @@ module Gitlab
             workspace_agentk_state = RemoteDevelopment::Models::BmWorkspaceAgentkState.new(
               workspace_id: workspace.id,
               project_id: workspace.project_id,
-              desired_config: desired_config
+              desired_config: desired_config.symbolized_desired_config_array
             )
             puts "Valid state model? #{workspace_agentk_state.valid?}"
 
@@ -71,7 +71,7 @@ module Gitlab
               {
                 workspace_id: workspace.id,
                 project_id: workspace.project_id,
-                desired_config: desired_config
+                desired_config: desired_config.symbolized_desired_config_array
               },
               unique_by: :workspace_id
             )

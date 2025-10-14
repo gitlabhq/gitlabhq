@@ -4,7 +4,6 @@ module ActiveContext
   class Reference
     extend Concerns::ReferenceUtils
     extend Concerns::Preprocessor
-    include Preprocessors::Chunking
     include Preprocessors::ContentFetcher
     include Preprocessors::Embeddings
     include Preprocessors::Preload

@@ -69,6 +69,19 @@ Statuses in the **Done** and **Canceled** categories automatically set work item
 
 ## Lifecycles
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556113) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 A lifecycle is a collection of statuses that can be applied to a work item type. Lifecycles group statuses into meaningful workflows that can be reused consistently across work item types and namespaces.
 
 Each lifecycle defines default transition statuses:
@@ -76,6 +89,73 @@ Each lifecycle defines default transition statuses:
 - **Default open status**: Applied when creating and reopening work items.
 - **Default closed status**: Applied when closing work items.
 - **Default duplicated status**: Applied when marking work items as duplicates, moved, or promoted.
+
+### Create a lifecycle
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+
+To create a lifecycle:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, select **Create lifecycle**.
+1. Add the lifecycle name and choose either the default lifecycle configuration or one of the existing lifecycles to start from. This pre-populates the new lifecycle with statuses which you can customize afterwards.
+1. Select **Create**.
+
+### Rename a lifecycle
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+
+To rename a lifecycle:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, hover over the lifecycle detail view.
+1. Select **Rename**.
+1. Rename the lifecycle and select **Save**.
+
+### Remove a lifecycle
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+- The lifecycle must not be in use i.e., should not be associated with any work item type
+
+To remove a lifecycle:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, select **Remove lifecycle** for the lifecycle you want to remove.
+1. On the confirmation dialog, select **Remove**.
+
+### Change lifecycle for a work item type
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+
+To change the lifecycle for a work item type:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, either:
+   - Select **Change lifecycle**.
+   - If the lifecycle is used with more than one work item type, select it from the dropdown list.
+1. Select a new lifecycle for the work item type. You can either choose an existing lifecycle or create a new lifecycle.
+1. Select **Next**.
+
+   All current statuses show which new status from the new lifecycle they get.
+
+1. Optional. To choose a different replacement status, select it from the dropdown list.
+1. Select **Save**.
 
 ## Custom statuses
 
@@ -87,7 +167,7 @@ Custom statuses have the following limits:
 - Maximum 70 statuses per namespace
 - Maximum 30 statuses per lifecycle
 
-## Configure custom statuses for a namespace
+### Configure custom statuses for a namespace
 
 Configure custom statuses for top-level groups to make them available for work items in that group, its subgroups, and projects.
 
@@ -99,12 +179,12 @@ Prerequisites:
 To configure custom statuses:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Issues**.
-1. In the **Statuses** section, select **Edit statuses**.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, select **Edit statuses** for the lifecycle being used by the work item type.
 1. Add, edit, or reorder statuses for the namespace.
 1. Select **Close**.
 
-## Set status for a work item
+### Set status for a work item
 
 Prerequisites:
 

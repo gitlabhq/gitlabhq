@@ -10,7 +10,7 @@ module Banzai
 
       def call
         doc.xpath('descendant-or-self::img[not(ancestor::a)]').each do |el|
-          el.replace(media_node(doc, el)) if has_media_extension?(el)
+          el.replace(media_node(doc, el)) if has_allowed_media?(el)
         end
 
         doc
@@ -30,7 +30,7 @@ module Banzai
         {}
       end
 
-      def has_media_extension?(element)
+      def has_allowed_media?(element)
         src = element.attr('data-canonical-src').presence || element.attr('src')
 
         return unless src.present?

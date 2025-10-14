@@ -77,13 +77,24 @@ RSpec.describe WorkItems::DataSync::Handlers::Notes::CopyService, feature_catego
       expect(notes_details).not_to match_array(expected_notes_details)
     end
 
-    it 'sets correct attributes from target', :aggregate_failures do
+    it 'sets correct attributes from target on copied description versions', :aggregate_failures do
       expect { execute_service }.to change { ::DescriptionVersion.count }.by(1)
 
       expected_description_version = DescriptionVersion.last
 
       expect(expected_description_version.namespace_id).to eq(target_work_item.namespace_id)
       expect(expected_description_version.issue_id).to eq(target_work_item.id)
+    end
+
+    it 'sets correct attributes from target on copied system_note_metadata', :aggregate_failures do
+      expect { execute_service }.to change { ::SystemNoteMetadata.count }.by(2)
+
+      copied_system_note_metadata = SystemNoteMetadata.last(2)
+
+      expect(copied_system_note_metadata).to contain_exactly(
+        have_attributes(organization_id: nil, namespace_id: target_work_item.namespace_id),
+        have_attributes(organization_id: nil, namespace_id: target_work_item.namespace_id)
+      )
     end
 
     describe 'discussion_id generation' do

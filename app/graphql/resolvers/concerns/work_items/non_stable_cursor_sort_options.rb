@@ -8,7 +8,8 @@ module WorkItems
       popularity_asc popularity_desc
       label_priority_asc label_priority_desc
       milestone_due_asc milestone_due_desc
-      escalation_status_asc escalation_status_desc].freeze
+      escalation_status_asc escalation_status_desc
+      status_asc status_desc].freeze
 
     private
 

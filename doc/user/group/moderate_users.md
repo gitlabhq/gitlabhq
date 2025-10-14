@@ -52,7 +52,7 @@ Prerequisites:
 To manually ban a user:
 
 1. Go to the top-level group.
-1. On the left sidebar, select **Manage > Members**.
+1. On the left sidebar, select **Manage** > **Members**.
 1. Next to the member you want to ban, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. From the dropdown list, select **Ban member**.
 
@@ -70,7 +70,7 @@ Prerequisites:
 To unban a user:
 
 1. Go to the top-level group.
-1. On the left sidebar, select **Manage > Members**.
+1. On the left sidebar, select **Manage** > **Members**.
 1. Select the **Banned** tab.
 1. For the account you want to unban, select **Unban**.
 
@@ -113,7 +113,7 @@ Activity has not been recorded for members added before 2025-01-22. These member
 To turn on automatic dormant member removal:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Dormant members**.
 1. Select the **Remove dormant members after a period of inactivity** checkbox.

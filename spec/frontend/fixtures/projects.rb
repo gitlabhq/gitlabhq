@@ -188,7 +188,7 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :groups_and_pro
   context 'for your work -> projects -> personal' do
     let_it_be(:user_with_namespace) { create(:user, :with_namespace) }
     let_it_be(:private_personal_project) do
-      create(:project, :private, :with_avatar, namespace: user_with_namespace.namespace)
+      create(:project, :private, :with_avatar, namespace: user_with_namespace.namespace, description: 'foo bar baz')
     end
 
     before do

@@ -9,7 +9,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
   </p>
   <form>
     <gl-form-group-stub
-      class="col-8 col-md-9 gl-p-0"
+      class="gl-col-8 gl-col-md-9 gl-p-0"
       labeldescription=""
       optionaltext="(optional)"
     >
@@ -21,7 +21,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       />
     </gl-form-group-stub>
     <gl-form-group-stub
-      class="col-8 col-md-9 gl-p-0"
+      class="gl-col-8 gl-col-md-9 gl-p-0"
       label="Webhook URL"
       label-for="url"
       labeldescription=""
@@ -37,6 +37,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       >
         <clipboard-button-stub
           category="secondary"
+          icon="copy-to-clipboard"
           size="medium"
           text="pagerduty.webhook.com"
           title="Copy"

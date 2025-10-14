@@ -123,7 +123,7 @@ items:
 kind: List
 ```
 
-You might see a similar error in the [agent server (KAS) logs](../../../administration/logs/_index.md#gitlab-agent-server-for-kubernetes) of your GitLab application server:
+You might see a similar error in the [agent server (KAS) logs](../../../administration/logs/_index.md#gitlab-agent-server-for-kubernetes-logs) of your GitLab application server:
 
 ```json
 {"level":"error","time":"2023-03-07T20:19:48.151Z","msg":"AgentInfo()","grpc_service":"gitlab.agent.agent_configuration.rpc.AgentConfiguration","grpc_method":"GetConfiguration","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": x509: certificate signed by unknown authority"}
@@ -163,7 +163,7 @@ To resolve this issue, ensure that the agent version matches the GitLab version.
 If the versions match and the error persists:
 
 1. Make sure `gitlab-kas` is running with `gitlab-ctl status gitlab-kas`.
-1. Check the `gitlab-kas` [logs](../../../administration/logs/_index.md#gitlab-agent-server-for-kubernetes) to make sure the agent is functioning properly.
+1. Check the `gitlab-kas` [logs](../../../administration/logs/_index.md#gitlab-agent-server-for-kubernetes-logs) to make sure the agent is functioning properly.
 
 ## Failed to perform vulnerability scan on workload: jobs.batch already exists
 

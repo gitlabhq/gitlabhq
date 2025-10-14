@@ -93,7 +93,7 @@ func removeGitalyRepository(_ *testing.T, apiResponse *api.Response) error {
 	}
 
 	// Remove the repository if it already exists, for consistency
-	if _, removeRepoErr := repository.RepositoryServiceClient.RemoveRepository(ctx, &gitalypb.RemoveRepositoryRequest{
+	if _, removeRepoErr := repository.RemoveRepository(ctx, &gitalypb.RemoveRepositoryRequest{
 		Repository: &gitalypb.Repository{
 			StorageName:  apiResponse.Repository.StorageName,
 			RelativePath: apiResponse.Repository.RelativePath,
@@ -117,7 +117,7 @@ func ensureGitalyRepository(_ *testing.T, apiResponse *api.Response) error {
 	}
 
 	// Remove the repository if it already exists, for consistency
-	if _, removeRepoErr := repository.RepositoryServiceClient.RemoveRepository(ctx, &gitalypb.RemoveRepositoryRequest{
+	if _, removeRepoErr := repository.RemoveRepository(ctx, &gitalypb.RemoveRepositoryRequest{
 		Repository: &gitalypb.Repository{
 			StorageName:  apiResponse.Repository.StorageName,
 			RelativePath: apiResponse.Repository.RelativePath,

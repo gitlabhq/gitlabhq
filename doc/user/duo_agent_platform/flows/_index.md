@@ -11,9 +11,14 @@ title: Flows
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
-- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 
 {{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
+- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
+
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -44,12 +49,12 @@ The following flows are available:
 - [Fix your CI/CD pipeline](fix_pipeline.md).
 - [Convert a Jenkinsfile to `.gitlab-ci.yml` file](convert_to_gitlab_ci.md).
 - [Convert an issue to a merge request](issue_to_mr.md).
-- A flow for any aspect of [software development](software_development.md). In this flow,
+- Work with any aspect of [software development](software_development.md). In this flow,
   you describe your needs and GitLab Duo understands your repository, the codebase,
   and its structure.
 
 For more focused pieces of work, like understanding selected code,
-use [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md).
+use [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md).
 
 ## Turn on flows
 

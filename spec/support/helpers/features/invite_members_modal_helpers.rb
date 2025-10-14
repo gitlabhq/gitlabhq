@@ -158,11 +158,11 @@ module Features
     end
 
     def expect_to_have_group(group)
-      expect(page).to have_selector("[entity-id='#{group.id}']")
+      expect(page).to have_selector("[data-testid='group-select-avatar-#{group.id}']")
     end
 
     def expect_not_to_have_group(group)
-      expect(page).not_to have_selector("[entity-id='#{group.id}']")
+      expect(page).not_to have_selector("[data-testid='group-select-avatar-#{group.id}']")
     end
   end
 end

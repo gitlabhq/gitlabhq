@@ -200,6 +200,32 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
     end
   end
 
+  it 'shows default state with no labels' do
+    within_testid 'work-item-labels' do
+      if page.has_no_css?('.gl-label')
+        expect(page).to have_content('None')
+      else
+        expect(page).not_to have_content('None')
+      end
+    end
+  end
+
+  it 'removes labels using x button' do
+    within_testid 'work-item-labels' do
+      if page.has_css?('.gl-label')
+        label_text = find('.gl-label:first-child').text
+
+        within('.gl-label:first-child') do
+          find('button.gl-label-close[aria-label="Remove label"]').click
+        end
+
+        expect(page).not_to have_css '.gl-label', text: label_text
+      end
+
+      expect(page).to have_content('None')
+    end
+  end
+
   it 'updates the assigned labels in real-time', :aggregate_failures do
     using_session :other_session do
       visit work_items_path
@@ -714,8 +740,8 @@ RSpec.shared_examples 'work items time tracking' do
 
   it 'adds and deletes time entries and view report', :aggregate_failures do
     add_time_entry('1d', 'First summary')
-
     add_time_entry('2d', 'Second summary')
+    wait_for_all_requests
 
     expect(page).to have_text 'Spent 3d'
     expect(page).to have_button '3d'

@@ -17,7 +17,7 @@ RSpec/ReturnFromStub:
     - 'ee/spec/services/deployments/auto_rollback_service_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/ide/schemas_config_service_spec.rb'
-    - 'ee/spec/services/merge_requests/build_service_spec.rb'
+    - 'ee/spec/services/ee/merge_requests/build_service_spec.rb'
     - 'ee/spec/services/merge_trains/create_pipeline_service_spec.rb'
     - 'ee/spec/services/merge_trains/refresh_merge_request_service_spec.rb'
     - 'ee/spec/services/security/token_revocation_service_spec.rb'

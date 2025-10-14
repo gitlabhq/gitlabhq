@@ -1,5 +1,6 @@
 <script>
 import { mapState } from 'pinia';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
 import { useBatchComments } from '~/batch_comments/store';
 
@@ -12,7 +13,6 @@ export default {
       bottomPadding: 0,
       stickyTopOffset: 0,
       reviewBarCachedHeight: 0,
-      mediaQueryMatch: null,
       isNarrowScreen: false,
     };
   },
@@ -29,21 +29,18 @@ export default {
   },
   mounted() {
     const styles = getComputedStyle(this.$el);
-    const largeBreakpointSize = parseInt(styles.getPropertyValue('--breakpoint-lg'), 10);
     this.stickyTopOffset = parseInt(styles.getPropertyValue('top'), 10);
     this.minHeight = parseInt(styles.getPropertyValue('--file-tree-min-height'), 10);
     this.bottomPadding = parseInt(styles.getPropertyValue('--file-tree-bottom-padding'), 10);
-    this.mediaQueryMatch = window.matchMedia(`(max-width: ${largeBreakpointSize - 1}px)`);
-    this.handleMediaMatch(this.mediaQueryMatch);
-    this.mediaQueryMatch.addEventListener('change', this.handleMediaMatch);
+    this.handleMediaMatch();
+    PanelBreakpointInstance.addResizeListener(this.handleMediaMatch);
   },
   beforeDestroy() {
-    this.mediaQueryMatch.removeEventListener('change', this.handleMediaMatch);
-    this.mediaQueryMatch = null;
+    PanelBreakpointInstance.removeResizeListener(this.handleMediaMatch);
   },
   methods: {
-    handleMediaMatch({ matches }) {
-      this.isNarrowScreen = matches;
+    handleMediaMatch() {
+      this.isNarrowScreen = !PanelBreakpointInstance.isDesktop();
     },
   },
 };

@@ -296,8 +296,8 @@ module API
         mount ::API::MarkdownUploads
         mount ::API::MavenPackages
         mount ::API::Members
-        mount ::API::MergeRequestApprovals
         mount ::API::MergeRequests
+        mount ::API::MergeRequestApprovals
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::MlModelPackages
@@ -347,6 +347,7 @@ module API
         mount ::API::Statistics
         mount ::API::Submodules
         mount ::API::Suggestions
+        mount ::API::SupplyChain::Attestations
         mount ::API::SystemHooks
         mount ::API::Tags
         mount ::API::Terraform::Modules::V1::NamespacePackages

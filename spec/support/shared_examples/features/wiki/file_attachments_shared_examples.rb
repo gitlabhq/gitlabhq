@@ -19,7 +19,8 @@ RSpec.shared_examples 'wiki file attachments' do
     end
 
     context 'uploading is in progress', :capybara_ignore_server_errors do
-      it 'cancels uploading on clicking to "Cancel" button' do
+      # rubocop:disable Layout/LineLength -- short lived quarantine link
+      it 'cancels uploading on clicking to "Cancel" button', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
         slow_requests do
           attach_with_dropzone
 
@@ -29,17 +30,20 @@ RSpec.shared_examples 'wiki file attachments' do
         expect(page).not_to have_button('Cancel')
         expect(page).not_to have_selector('.uploading-progress-container', visible: true)
       end
+      # rubocop:enable Layout/LineLength
 
-      it 'shows "Attaching a file" message on uploading 1 file' do
+      # rubocop:disable Layout/LineLength -- short lived quarantine link
+      it 'shows "Attaching a file" message on uploading 1 file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
         slow_requests do
           attach_with_dropzone
 
           expect(page).to have_selector('.attaching-file-message', visible: true, text: 'Attaching a file -')
         end
       end
+      # rubocop:enable Layout/LineLength
     end
 
-    context 'uploading is complete' do
+    context 'uploading is complete', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
       it 'shows "Attach a file or image" button on uploading complete' do
         attach_with_dropzone
         wait_for_requests

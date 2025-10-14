@@ -233,6 +233,55 @@ RSpec.describe Ci::ExternalPullRequest, feature_category: :continuous_integratio
     end
   end
 
+  describe '#changed_paths' do
+    let(:pull_request) do
+      build(:external_pull_request, project: project, target_sha: '281d3a7', source_sha: '498214d')
+    end
+
+    subject(:changed_paths) { pull_request.changed_paths }
+
+    it 'returns modified paths' do
+      expect(changed_paths.as_json).to eq [
+        Gitlab::Git::ChangedPath.new(
+          new_blob_id: "93e123ac8a3e6a0b600953d7598af629dec7b735",
+          new_mode: "100644",
+          old_blob_id: "0000000000000000000000000000000000000000",
+          old_mode: "0",
+          old_path: "bar/branch-test.txt",
+          path: "bar/branch-test.txt",
+          status: :ADDED
+        ),
+        Gitlab::Git::ChangedPath.new(
+          new_blob_id: "85bc2f9753afd5f4fc5d7c75f74f8d526f26b4f3",
+          new_mode: "100644",
+          old_blob_id: "0000000000000000000000000000000000000000",
+          old_mode: "0",
+          old_path: "files/js/commit.coffee",
+          path: "files/js/commit.coffee",
+          status: :ADDED
+        ),
+        Gitlab::Git::ChangedPath.new(
+          new_blob_id: "0000000000000000000000000000000000000000",
+          new_mode: "0",
+          old_blob_id: "5f53439ca4b009096571d3c8bc3d09d30e7431b3",
+          old_mode: "100644",
+          old_path: "files/js/commit.js.coffee",
+          path: "files/js/commit.js.coffee",
+          status: :DELETED
+        ),
+        Gitlab::Git::ChangedPath.new(
+          new_blob_id: "8c3014aceae45386c3c026a7ea4a1f68660d51d6",
+          new_mode: "100644",
+          old_blob_id: "0000000000000000000000000000000000000000",
+          old_mode: "0",
+          old_path: "with space/README.md",
+          path: "with space/README.md",
+          status: :ADDED
+        )
+      ].as_json
+    end
+  end
+
   context 'with a loose foreign key on external_pull_requests.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }

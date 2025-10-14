@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTracker,
-  :clean_gitlab_redis_queues_metadata, feature_category: :global_search do
+  :clean_gitlab_redis_queues_metadata, :clean_gitlab_redis_shared_state, feature_category: :global_search do
+  include ExclusiveLeaseHelpers
+
   let(:worker_class) do
     Class.new do
       def self.name
@@ -189,6 +191,20 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTrack
           worker_class: 'DummyWorker')
 
         expect { cleanup_stale_trackers }.to change { service.concurrent_worker_count }.from(1).to(0)
+      end
+    end
+
+    context 'when lease cannot be obtained' do
+      let(:lease_key) { "#{redis_key_prefix}:{#{worker_class_name.underscore}}" }
+
+      before do
+        stub_exclusive_lease_taken(lease_key, timeout: described_class::TRACKING_KEY_TTL)
+      end
+
+      it 'does not do anything' do
+        expect(Gitlab::Redis::QueuesMetadata).not_to receive(:with)
+
+        cleanup_stale_trackers
       end
     end
   end

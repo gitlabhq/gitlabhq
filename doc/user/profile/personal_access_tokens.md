@@ -49,7 +49,7 @@ Use impersonation tokens to automate authentication as a specific user.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
 - Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
-- Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Personal access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 {{< /history >}}
@@ -71,7 +71,7 @@ You can create as many personal access tokens as you like.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name for the token.
 1. Optional. In **Token description**, enter a description for the token.
@@ -119,7 +119,7 @@ To rotate a personal access token:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select  **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Rotate**.
@@ -140,7 +140,7 @@ To revoke a personal access token:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Revoke** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Revoke**.
@@ -194,7 +194,7 @@ After you have used the API to disable personal access tokens, those tokens cann
 In GitLab 17.3 and later, you can use the Admin UI to disable personal access tokens:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Select the **Disable personal access tokens** checkbox.
 1. Select **Save changes**.
@@ -228,7 +228,7 @@ Disabling personal access tokens for enterprise users does not disable personal 
 To disable the enterprise users' personal access tokens:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Personal access tokens**, select **Disable personal access tokens**.
 1. Select **Save changes**.
@@ -255,7 +255,7 @@ To view the last time a token was used, and the IP addresses from where the toke
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. In the **Active personal access tokens** area, view the **Last Used** date and **Last Used IPs** for
    the relevant token. **Last Used IPs** shows the last five distinct IP addresses.
 
@@ -304,7 +304,7 @@ If you enabled [external authorization](../../administration/settings/external_a
 
 {{< history >}}
 
-- Maximum token lifetime of 400 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- Maximum token lifetime of 400 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 {{< /history >}}
 
@@ -393,7 +393,7 @@ Prerequisites:
 - You must have the Owner role for the top-level group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General > Permissions and group features**.
+1. Select **Settings** > **General** > **Permissions and group features**.
 1. Clear the **Service account token expiration** checkbox.
 
 You can now create personal access tokens for a service account user with no expiry date.
@@ -405,7 +405,7 @@ Prerequisites:
 - You must be an administrator for your GitLab Self-Managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.
 
@@ -459,7 +459,7 @@ To require DPoP on all calls to the REST and GraphQL APIs:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.
 1. Select **Save changes**.
 1. To generate a DPoP header with the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),

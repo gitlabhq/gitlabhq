@@ -77,7 +77,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
   it('renders bubble menu component', async () => {
     await buildWrapperAndDisplayMenu();
 
-    expect(findBubbleMenu().classes()).toEqual(['gl-rounded-base', 'gl-bg-dropdown', 'gl-shadow']);
+    expect(findBubbleMenu().classes()).toEqual(['gl-rounded-lg', 'gl-bg-dropdown', 'gl-shadow']);
   });
 
   it('shows a clickable link to the URL in the link node', async () => {

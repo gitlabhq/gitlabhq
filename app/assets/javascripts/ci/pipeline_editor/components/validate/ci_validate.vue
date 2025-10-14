@@ -233,7 +233,7 @@ export default {
       </div>
       <gl-button
         v-if="ciLintPath"
-        class="md:gl-ml-auto"
+        class="@md/panel:gl-ml-auto"
         :href="ciLintPath"
         data-testid="lint-button"
       >

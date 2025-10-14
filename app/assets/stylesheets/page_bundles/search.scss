@@ -60,6 +60,10 @@ $black-divider: #666;
   }
 }
 
+.results .filters a[aria-current="page"] {
+  background-color: var(--gl-background-color-strong);
+}
+
 .language-filter-checkbox {
   .custom-control-label {
     flex-grow: 1;
@@ -72,13 +76,10 @@ $black-divider: #666;
 
     .header-search-dropdown-menu {
       max-height: $language-filter-max-height;
+      min-width: calc(#{$search-sidebar-min-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
+      max-width: calc(#{$search-sidebar-min-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
 
-      @include media-breakpoint-down(xl) {
-        min-width: calc(#{$search-sidebar-min-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
-        max-width: calc(#{$search-sidebar-min-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
-      }
-
-      @include media-breakpoint-up(xl) {
+      @include gl-container-width-up(xl, panel) {
         min-width: calc(#{$search-sidebar-max-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
         max-width: calc(#{$search-sidebar-max-width} - (#{$gl-spacing-scale-5} + #{$gl-spacing-scale-5}));
       }
@@ -103,7 +104,7 @@ $black-divider: #666;
 }
 
 .search-wrap-f-md-down {
-  @include gl-media-breakpoint-down(md) {
+  @include gl-container-width-down(md, panel) {
     white-space: normal !important;
   }
 }
@@ -123,7 +124,7 @@ $black-divider: #666;
     transition: border-color ease-in-out $default-transition-duration,
       background-color ease-in-out $default-transition-duration;
 
-    @include media-breakpoint-up(xl) {
+    @include gl-container-width-up(xl, panel) {
       width: $search-input-xl-width;
     }
 
@@ -189,7 +190,7 @@ $black-divider: #666;
       max-height: $search-dropdown-max-height;
       overflow: auto;
 
-      @include media-breakpoint-up(xl) {
+      @include gl-container-width-up(xl, panel) {
         width: $search-input-xl-width;
       }
     }
@@ -233,7 +234,7 @@ $black-divider: #666;
   .search-holder & {
     margin-right: 0;
 
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       margin-right: 5px;
     }
   }
@@ -253,7 +254,7 @@ $black-divider: #666;
 }
 
 .search-holder {
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     display: flex;
   }
 
@@ -264,7 +265,7 @@ $black-divider: #666;
     width: 100%;
     margin-top: 5px;
 
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       width: auto;
       margin-top: 0;
       margin-left: 5px;
@@ -272,7 +273,7 @@ $black-divider: #666;
   }
 
   .dropdown {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       margin-left: 5px;
       margin-right: 5px;
     }
@@ -288,13 +289,13 @@ $black-divider: #666;
   // stylelint-disable-next-line gitlab/no-gl-class
   .dropdown-menu-toggle,
   .gl-dropdown {
-    @include media-breakpoint-up(lg) {
+    @include gl-container-width-up(lg, panel) {
       width: 240px;
     }
   }
 
   .btn-search {
-    @include media-breakpoint-up(lg) {
+    @include gl-container-width-up(lg, panel) {
       width: auto;
     }
   }
@@ -339,7 +340,7 @@ $black-divider: #666;
 
     // The icons only appear on hover
     // So on mobile we can hide them and retake the space for the code blob
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       svg {
         display: none;
       }
@@ -383,4 +384,12 @@ input[type='search'] {
 
 .description.term p:last-child {
   @apply gl-m-0;
+}
+
+
+/* Hide sidebar toggle in new "Project Studio" layout where this page has no sidebar */
+.application-chrome {
+  .super-sidebar-toggle {
+    display: none;
+  }
 }

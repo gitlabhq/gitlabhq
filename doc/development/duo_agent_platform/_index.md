@@ -16,7 +16,7 @@ How to set up the local development environment to run [GitLab Duo Agent Platfor
 ## Prerequisites
 
 - [GitLab Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
-- [Vertex access](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#use-the-existing-project): You need access to the `ai-enablement-dev-69497ba7` project in GCP because GDK by default uses Anthropic hosted on Vertex. Access to this project should be available to all engineers at GitLab.
+- [Vertex access](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#use-the-existing-project): You need access to the `ai-enablement-dev-69497ba7` project in GCP because GDK by default uses Anthropic hosted on Vertex. Access to this project should be available to all engineers at GitLab.
   - If you do not have Vertex access for any reason, you should unset `DUO_WORKFLOW__VERTEX_PROJECT_ID` in the Duo Agent Platform Service and set `ANTHROPIC_API_KEY` to a regular Anthropic API key
 - Various settings and feature flags, which are enabled for you by the [GDK setup script](#development-setup-for-backend-components)
 
@@ -31,10 +31,22 @@ Agent Platform consists of four separate services:
 
 ### Development Setup for Backend Components
 
-You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_agent_platform.md)
+You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
 to run local versions of GitLab, Duo Agent Platform Service, and Executor.
 
 This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+
+#### Testing Agentic Duo Chat in Web UI
+
+To test Agentic Duo Chat in the Web UI of your local GitLab instance, follow these additional setup steps:
+
+1. [Enable NGINX for your GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md).
+   A loopback interface and HTTPS are **not** required, only the basic NGINX configuration.
+1. Access your GDK at `http://gdk.test:8080`. Your GDK is still available
+   at port 3000 but accessing it at port 8080 accesses the application through
+   NGINX, which is required for Agentic Duo Chat to work on the web. If you access
+   the application at port 3000 and try Agentic Duo Chat, you see an error message:
+   `Error: Unable to connect to workflow service. Please try again.`.
 
 ### Development Setup for Frontend Components
 

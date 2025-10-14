@@ -97,7 +97,7 @@
 }
 
 .timeline-event-note-date {
-  @media (max-width: $breakpoint-md) {
+  @include gl-container-width-down(md, panel) {
     width: 100%;
   }
 }

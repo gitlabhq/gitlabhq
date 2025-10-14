@@ -115,7 +115,7 @@ export default {
     handlePointerover(e) {
       if (!this.hasFlyout) return;
 
-      this.isMouseOverSection = e.pointerType === 'mouse';
+      this.isMouseOverSection = e.pointerType === 'mouse' || e.pointerType === 'pen';
     },
     handlePointerleave(e) {
       if (!this.hasFlyout) return;
@@ -126,7 +126,7 @@ export default {
       // has a chance to emit its mouseover event.
       // checks pointer type to not mess with touch devices, which fire a pointerleave event before
       // every click!
-      if (e.pointerType === 'mouse') {
+      if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
         setTimeout(() => {
           this.isMouseOverSection = false;
         }, 5);
@@ -141,7 +141,7 @@ export default {
     <button
       :id="`menu-section-button-${itemId}`"
       v-outside="handleClickOutside"
-      class="super-sidebar-nav-item gl-relative gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-p-2 gl-text-left gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus"
+      class="super-sidebar-nav-item gl-relative gl-mb-1 gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-p-2 gl-text-left gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus"
       :class="computedLinkClasses"
       data-testid="menu-section-button"
       :data-qa-section-name="item.title"
@@ -160,7 +160,7 @@ export default {
         </slot>
       </span>
 
-      <span v-show="!isIconOnly" class="gl-truncate-end gl-grow">
+      <span v-show="!isIconOnly" class="gl-truncate-end menu-section-button-label gl-grow">
         {{ item.title }}
       </span>
 

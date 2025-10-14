@@ -72,7 +72,11 @@ export default {
       'coverageLoaded',
       'selectedCommentPosition',
     ]),
-    ...mapState(useNotes, ['selectedCommentPosition', 'selectedCommentPositionHover']),
+    ...mapState(useNotes, [
+      'selectedCommentPosition',
+      'selectedCommentPositionHover',
+      'userCanReply',
+    ]),
     diffLinesLength() {
       return this.diffLines.length;
     },
@@ -99,12 +103,6 @@ export default {
       'setHighlightedRow',
       'toggleLineDiscussions',
     ]),
-    showCommentLeft(line) {
-      return line.left && !line.right;
-    },
-    showCommentRight(line) {
-      return line.right && !line.left;
-    },
     onStartDragging({ event = {}, line }) {
       if (event.target?.parentNode) {
         hide(event.target.parentNode);
@@ -175,12 +173,6 @@ export default {
     getCountBetweenIndex(index) {
       return countLinesInBetween(this.diffLines, index);
     },
-    getCodeQualityLine(line) {
-      return (
-        (line.left ?? line.right)?.codequality?.[0]?.line ||
-        (line.left ?? line.right)?.sast?.[0]?.line
-      );
-    },
     lineDrafts(line, side) {
       return (line[side]?.lineDrafts || []).filter((entry) => entry.isDraft);
     },
@@ -246,6 +238,7 @@ export default {
         :index="index"
         :file-line-coverage="fileLineCoverage"
         :coverage-loaded="coverageLoaded"
+        :user-can-reply="userCanReply"
         @showCommentForm="(code) => singleLineComment(code, line)"
         @setHighlightedRow="setHighlightedRow"
         @toggleLineDiscussions="

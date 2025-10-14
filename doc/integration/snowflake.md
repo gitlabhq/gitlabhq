@@ -35,9 +35,9 @@ requires both Snowflake and GitLab configuration.
 ## Configure the GitLab Data Connector
 
 1. Sign in to Snowflake.
-1. Select **Data Products > Marketplace**.
+1. Select **Data Products** > **Marketplace**.
 1. Search for **GitLab Data Connector**.
-1. Select **Data Products > Apps**.
+1. Select **Data Products** > **Apps**.
 1. Select **GitLab Data Connector**.
 1. Select a [warehouse](https://docs.snowflake.com/en/user-guide/warehouses) where the GitLab Data Connector runs.
 1. Select **Start Configuration**.
@@ -55,5 +55,5 @@ requires both Snowflake and GitLab configuration.
 ## View data in Snowflake
 
 1. Sign in to Snowflake.
-1. Select **Data > Databases**.
+1. Select **Data** > **Databases**.
 1. Select the warehouse previously configured.

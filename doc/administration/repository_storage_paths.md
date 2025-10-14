@@ -35,13 +35,6 @@ For more information on:
 
 ## Hashed storage
 
-{{< history >}}
-
-- Support for legacy storage, where repository paths were generated based on the project path, has been completely removed in GitLab 14.0.
-- **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
-
-{{< /history >}}
-
 Hashed storage stores projects on disk in a location based on a hash of the project's ID. This makes the folder
 structure immutable and eliminates the need to synchronize state from URLs to disk structure. This means that renaming a
 group, user, or project:
@@ -75,6 +68,12 @@ translate between the human-readable project name and the hashed storage path. Y
 
 #### From project name to hashed path
 
+{{< history >}}
+
+- **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
+
 Administrators can look up a project's hashed path from its name or ID using:
 
 - The [**Admin** area](admin_area.md#administering-projects).
@@ -83,7 +82,7 @@ Administrators can look up a project's hashed path from its name or ID using:
 To look up a project's hash path in the **Admin** area:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Projects** and select the project.
+1. Select **Overview** > **Projects** and select the project.
 1. Locate the **Relative path** field. The value is similar to:
 
    ```plaintext
@@ -321,7 +320,7 @@ LFS objects are also [S3-compatible](lfs/_index.md#storing-lfs-objects-in-remote
 After you [configure multiple repository storages](https://docs.gitlab.com/omnibus/settings/configuration.html#store-git-data-in-an-alternative-directory), you can choose where new repositories are stored:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Repository storage**.
 1. Enter values in the **Storage nodes for new repositories** fields.
 1. Select **Save changes**.

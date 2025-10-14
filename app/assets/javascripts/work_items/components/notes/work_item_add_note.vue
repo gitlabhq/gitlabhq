@@ -8,6 +8,7 @@ import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import { ASC, DESC } from '~/notes/constants';
 import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemNotesByIidQuery from '../../graphql/notes/work_item_notes_by_iid.query.graphql';
@@ -131,6 +132,11 @@ export default {
       type: String,
       required: true,
     },
+    discussionsSortOrder: {
+      type: String,
+      default: ASC,
+      required: false,
+    },
   },
   data() {
     return {
@@ -229,6 +235,9 @@ export default {
     hasEmailParticipantsWidget() {
       return Boolean(findEmailParticipantsWidget(this.workItem));
     },
+    showLockedBanner() {
+      return !this.isLoading && !this.canCreateNote && !this.isProjectArchived;
+    },
   },
   watch: {
     autofocus: {
@@ -318,12 +327,14 @@ export default {
       }
       cache.writeQuery({
         ...queryArgs,
-        data: updateCacheAfterCreatingNote(sourceData, newNote),
+        data: updateCacheAfterCreatingNote(sourceData, newNote, {
+          prepend: this.discussionsSortOrder === DESC,
+        }),
       });
     },
     onNoteUpdate(cache, { data }) {
       this.addDiscussionToCache(cache, data.createNote.note);
-
+      this.$emit('updateCount', 1);
       const numErrors = data?.createNote?.errors?.length;
 
       if (numErrors) {
@@ -361,12 +372,8 @@ export default {
 <template>
   <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
-    <work-item-comment-locked
-      v-else-if="!isLoading && !canCreateNote"
-      :work-item-type="workItemType"
-      :is-project-archived="isProjectArchived"
-    />
-    <div v-else :class="timelineEntryInnerClass">
+    <work-item-comment-locked v-else-if="showLockedBanner" :work-item-type="workItemType" />
+    <div v-else-if="!isProjectArchived" :class="timelineEntryInnerClass">
       <div :class="timelineContentClass">
         <gl-alert
           v-if="messages"

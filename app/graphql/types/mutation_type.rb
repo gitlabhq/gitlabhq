@@ -228,6 +228,7 @@ module Types
     mount_mutation Mutations::Namespaces::RegenerateNewWorkItemEmailAddress, experiment: { milestone: '18.2' }
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create
+    mount_mutation Mutations::Users::GroupCallouts::Create
     mount_mutation Mutations::UserPreferences::Update
     mount_mutation Mutations::Packages::Destroy
     mount_mutation Mutations::Packages::BulkDestroy,

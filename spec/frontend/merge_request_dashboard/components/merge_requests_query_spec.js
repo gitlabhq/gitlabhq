@@ -3,6 +3,10 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import {
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import eventHub from '~/merge_request_dashboard/event_hub';
 import MergeRequestQuery from '~/merge_request_dashboard/components/merge_requests_query.vue';
 import reviewerQuery from '~/merge_request_dashboard/queries/reviewer.query.graphql';
@@ -23,23 +27,25 @@ describe('Merge requests query component', () => {
     props = { query: 'reviewRequestedMergeRequests', variables: { state: 'opened' } },
     mergeRequests = [createMockMergeRequest({ title: 'reviewer' })],
   ) {
-    reviewerQueryMock = jest.fn().mockResolvedValue({
-      data: {
-        currentUser: {
-          id: 1,
-          mergeRequests: {
-            pageInfo: {
-              __typename: 'PageInfo',
-              hasNextPage: false,
-              hasPreviousPage: false,
-              startCursor: null,
-              endCursor: null,
+    reviewerQueryMock =
+      reviewerQueryMock ||
+      jest.fn().mockResolvedValue({
+        data: {
+          currentUser: {
+            id: 1,
+            mergeRequests: {
+              pageInfo: {
+                __typename: 'PageInfo',
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: null,
+                endCursor: null,
+              },
+              nodes: mergeRequests,
             },
-            nodes: mergeRequests,
           },
         },
-      },
-    });
+      });
     assigneeQueryMock = jest.fn().mockResolvedValue({
       data: {
         currentUser: {
@@ -60,6 +66,7 @@ describe('Merge requests query component', () => {
     assigneeCountQueryMock = jest
       .fn()
       .mockResolvedValue({ data: { currentUser: { id: 1, mergeRequests: { count: 1 } } } });
+
     const apolloProvider = createMockApollo(
       [
         [reviewerQuery, reviewerQueryMock],
@@ -88,6 +95,10 @@ describe('Merge requests query component', () => {
       },
     });
   }
+
+  afterEach(() => {
+    reviewerQueryMock = null;
+  });
 
   it('calls reviewerQueryMock for reviewer query', async () => {
     createComponent();
@@ -135,11 +146,22 @@ describe('Merge requests query component', () => {
 
     expect(slotSpy).toHaveBeenCalledWith(
       expect.objectContaining({
+        count: 0,
         mergeRequests: expect.arrayContaining([
           expect.objectContaining({
             title,
           }),
         ]),
+      }),
+    );
+  });
+
+  it('renders `count` as `null` when count query hasnt completed', () => {
+    createComponent();
+
+    expect(slotSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        count: null,
       }),
     );
   });
@@ -172,5 +194,65 @@ describe('Merge requests query component', () => {
 
       expect(reviewerQueryMock.mock.calls).toHaveLength(1);
     });
+  });
+
+  describe('when 503 error gets thrown', () => {
+    it('retries merge request query', async () => {
+      const error503 = {
+        statusCode: HTTP_STATUS_SERVICE_UNAVAILABLE,
+        result: {
+          errors: [{ message: 'Service temporarily unavailable' }],
+        },
+      };
+
+      reviewerQueryMock = jest
+        .fn()
+        .mockRejectedValueOnce(error503)
+        .mockResolvedValueOnce({
+          data: {
+            currentUser: {
+              id: 1,
+              mergeRequests: {
+                pageInfo: {
+                  __typename: 'PageInfo',
+                  hasNextPage: false,
+                  hasPreviousPage: false,
+                  startCursor: null,
+                  endCursor: null,
+                },
+                nodes: [createMockMergeRequest({ title: 'reviewer' })],
+              },
+            },
+          },
+        });
+
+      createComponent();
+
+      await waitForPromises();
+
+      expect(reviewerQueryMock.mock.calls).toHaveLength(2);
+    });
+  });
+
+  it('returns error prop when error gets thrown', async () => {
+    const error = {
+      statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR,
+      result: {
+        errors: [{ message: 'Service temporarily unavailable' }],
+      },
+    };
+
+    reviewerQueryMock = jest.fn().mockRejectedValueOnce(error);
+
+    createComponent();
+
+    await waitForPromises();
+
+    expect(slotSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: true,
+        loading: false,
+      }),
+    );
   });
 });

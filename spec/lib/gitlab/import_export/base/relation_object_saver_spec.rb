@@ -52,22 +52,6 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
           have_attributes(label_id: label.id, target_id: issue.id, namespace_id: issue.namespace_id)
         )
       end
-
-      context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do
-        before do
-          stub_feature_flags(validate_label_link_parent_presence_on_import: false)
-        end
-
-        it 'saves invalid label links' do
-          saver.execute
-
-          issue = project.issues.last
-          expect(issue.label_links).to contain_exactly(
-            have_attributes(label_id: label.id, target_id: issue.id),
-            have_attributes(label_id: nil, target_id: issue.id)
-          )
-        end
-      end
     end
 
     context 'when subrelation is not a collection' do

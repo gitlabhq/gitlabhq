@@ -120,12 +120,24 @@ RSpec.describe SearchController, feature_category: :global_search do
       it_behaves_like 'support for active record query timeouts', :show, { search: 'hello' }, :search_objects, :html
       it_behaves_like 'metadata is set', :show
 
-      it 'verifies search type' do
-        expect_next_instance_of(SearchService) do |service|
-          expect(service).to receive(:search_type_errors).once
-        end
+      context 'when search_type is included in params' do
+        it 'verifies search type' do
+          expect_next_instance_of(SearchService) do |service|
+            expect(service).to receive(:search_type_errors).once.and_call_original
+          end
 
-        get :show, params: { search: 'hello', scope: 'blobs' }
+          get :show, params: { search: 'hello', scope: 'blobs', search_type: 'foobar' }
+        end
+      end
+
+      context 'when search_type is not included in params' do
+        it 'does not verifies search type' do
+          expect_next_instance_of(SearchService) do |service|
+            expect(service).not_to receive(:search_type_errors)
+          end
+
+          get :show, params: { search: 'hello', scope: 'blobs' }
+        end
       end
 
       it_behaves_like 'rate limit scope handling', :show, { search: 'hello' }
@@ -278,7 +290,7 @@ RSpec.describe SearchController, feature_category: :global_search do
               get :show, params: { scope: 'projects', search: '*' }
 
               expect(response).to redirect_to new_user_session_path
-              expect(flash[:alert]).to match(/You need to sign in or sign up before continuing/)
+              expect(flash[:alert]).to include(/Sign in or sign up before continuing/)
             end
           end
         end
@@ -390,6 +402,10 @@ RSpec.describe SearchController, feature_category: :global_search do
 
         def request
           get(:show, params: { search: 'foo@bar.com', scope: 'users' })
+        end
+
+        def request_with_second_scope
+          get(:show, params: { search: 'foo@bar.com', scope: 'projects' })
         end
       end
 
@@ -577,6 +593,10 @@ RSpec.describe SearchController, feature_category: :global_search do
         def request
           get(:count, params: { search: 'foo@bar.com', scope: 'users' })
         end
+
+        def request_with_second_scope
+          get(:count, params: { search: 'foo@bar.com', scope: 'projects' })
+        end
       end
 
       it_behaves_like 'search request exceeding rate limit', :clean_gitlab_redis_cache do
@@ -593,10 +613,10 @@ RSpec.describe SearchController, feature_category: :global_search do
       it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
       it_behaves_like 'support for active record query timeouts', :autocomplete, { term: 'hello' }, :project, :json
 
-      it 'raises an error if search term is missing' do
-        expect do
-          get :autocomplete
-        end.to raise_error(ActionController::ParameterMissing)
+      it 'returns an empty array when search term is missing' do
+        get :autocomplete
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
       end
 
       it 'returns an empty array when given abusive search term' do
@@ -612,6 +632,10 @@ RSpec.describe SearchController, feature_category: :global_search do
 
         def request
           get(:autocomplete, params: { term: 'foo@bar.com', scope: 'users' })
+        end
+
+        def request_with_second_scope
+          get(:autocomplete, params: { term: 'foo@bar.com', scope: 'projects' })
         end
       end
 
@@ -794,7 +818,8 @@ RSpec.describe SearchController, feature_category: :global_search do
       end
 
       with_them do
-        it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated,
+          use_second_scope: false do
           def request
             get endpoint, params: params.merge(project_id: project.id)
           end

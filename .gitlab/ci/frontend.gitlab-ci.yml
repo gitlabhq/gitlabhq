@@ -24,6 +24,8 @@
   stage: prepare
   needs:
     - cache:assets-hash
+    - job: compile-fe-island
+      optional: true
   script:
     - scripts/compile_assets
     - scripts/build_assets_image
@@ -105,11 +107,21 @@ build-vite-prod:
     paths:
       - public/assets/vite/
 
-gdk:compile-test-assets:
+compile-fe-island:
   extends:
-    - compile-test-assets
-    - .assets-compile-cache-pull
-    - .build-images:rules:build-gdk-image
+    - .default-retry
+    - .with-ci-node-image
+    - .fe-island-compile-cache
+    - .frontend:rules:update-fe-island
+  needs: ["cache:fe-island-hash"]
+  stage: prepare
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  script:
+    - scripts/build_frontend_islands
+  artifacts:
+    paths:
+      - ee/frontend_islands/apps/duo_next/dist/duo_next.js
 
 .frontend-fixtures-base:
   extends:
@@ -230,7 +242,6 @@ upload-graphql-schema-dump:
 .frontend-test-base:
   extends:
     - .default-retry
-    - .yarn-cache
     - .with-ci-node-image
   variables:
     # Disable warnings in browserslist which can break on backports
@@ -242,12 +253,16 @@ upload-graphql-schema-dump:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
   stage: test-frontend
+  cache:
+    - !reference [.yarn-cache, cache]
+  needs:
+    - job: compile-fe-island
+      optional: true
 
 jest-build-cache:
   extends:
     - .frontend-test-base
     - .frontend:rules:jest
-  needs: []
   artifacts:
     name: jest-cache
     expire_in: 12h
@@ -271,6 +286,26 @@ jest-build-cache:
     NODE_OPTIONS: --max-old-space-size=7680
   allow_failure: true
 
+test-fe-island:
+  stage: test-frontend
+  extends:
+    - .frontend-test-base
+    - .frontend:rules:fe-island:test
+  script:
+    - cd ee/frontend_islands/apps/duo_next && yarn run test
+  cache:
+    - !reference [.frontend-test-base, cache]
+    - !reference [.fe-island-yarn-cache, cache]
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+      - ee/frontend_islands/apps/duo_next/coverage/
+      - ee/frontend_islands/apps/duo_next/junit_jest.xml
+    reports:
+      junit: junit_jest.xml
+
 .with-jest-build-cache-vue3-ensure-compilable-sfcs-needs:
   needs:
     - job: jest-build-cache-vue3-ensure-compilable-sfcs
@@ -290,6 +325,8 @@ jest:
     - .frontend:rules:jest
   needs:
     - job: jest-build-cache
+      optional: true
+    - job: compile-fe-island
       optional: true
   artifacts:
     name: coverage-frontend
@@ -348,6 +385,8 @@ jest vue3 mr:
     - .frontend:rules:jest
     - .vue3
   needs:
+    - job: compile-fe-island
+      optional: true
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
   artifacts:
     name: vue3-mr-junit
@@ -492,6 +531,8 @@ jest-integration:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: compile-fe-island
+      optional: true
 
 jest-snapshot-vue3:
   extends:
@@ -502,6 +543,8 @@ jest-snapshot-vue3:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
+    - job: compile-fe-island
+      optional: true
   variables:
     VUE_VERSION: 3
     JEST_REPORT: jest-test-report.json
@@ -536,7 +579,6 @@ jest-linters:
   extends:
     - .frontend-test-base
     - .frontend:rules:jest-linters
-  needs: []
   script:
     - yarn jest:eslint --ci
 
@@ -607,6 +649,8 @@ compile-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: compile-fe-island
+      optional: true
   artifacts:
     name: storybook
     expire_in: 31d
@@ -629,6 +673,8 @@ test-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: compile-fe-island
+      optional: true
   allow_failure: true
   timeout: 30m
   artifacts:
@@ -646,3 +692,31 @@ test-storybook:
     - until curl -f http://localhost:6006 >/dev/null 2>&1; do sleep 1; done  # Wait for Storybook to start
     - yarn run storybook:dev:test
     - kill $STORYBOOK_PID || true
+
+bundle-size-review:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .assets-compile-cache-pull
+    - .repo-from-artifacts
+    - .frontend:rules:bundle-size-review
+  stage: test-frontend
+  needs:
+    - job: compile-fe-island
+      optional: true
+    - job: compile-production-assets
+      optional: true
+  variables:
+    SETUP_DB: "false"
+  script:
+    - yarn_install_script
+    - scripts/bundle_size_review
+  cache:
+    - !reference [.yarn-cache, cache]
+    - !reference [.fe-island-yarn-cache, cache]
+  artifacts:
+    when: always
+    name: bundle-size-review
+    expire_in: 31d
+    paths:
+      - bundle-size-review/

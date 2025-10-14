@@ -15,6 +15,14 @@ title: Steps after installing GitLab
 Here are a few resources you might want to check out after completing the
 installation.
 
+## Initial sign-in
+
+After you install GitLab, you can visit the URL you set up during installation
+and sign in as the user `root`.
+
+If you haven't set up your own password during installation, a random one is assigned. You can
+find it in the server you installed GitLab, under `/etc/gitlab/initial_root_password`.
+
 ## Email and notifications
 
 - [SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html): Configure SMTP

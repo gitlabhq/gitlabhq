@@ -31,19 +31,15 @@ class AbuseReport < ApplicationRecord
   has_many :label_links, inverse_of: :abuse_report, class_name: 'AntiAbuse::Reports::LabelLink'
   has_many :labels, through: :label_links, source: :abuse_report_label,
     class_name: 'AntiAbuse::Reports::Label'
-  has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
-  has_many :assignees, class_name: "User", through: :admin_abuse_report_assignees
 
   has_many :abuse_events, class_name: 'AntiAbuse::Event', inverse_of: :abuse_report
 
   has_many :notes, class_name: 'AntiAbuse::Reports::Note'
   has_many :user_mentions, class_name: 'AntiAbuse::Reports::UserMention'
 
-  validates :reporter, presence: true, on: :create
+  validates :reporter, presence: true
   validates :user, presence: true, on: :create
-  validates :organization_id, presence: true, on: :create, if: -> {
-    Feature.enabled?(:abuse_report_populate_organization, :instance)
-  }
+  validates :organization_id, presence: true, on: :create
   validates :message, presence: true
   validates :category, presence: true
   validates :user_id,

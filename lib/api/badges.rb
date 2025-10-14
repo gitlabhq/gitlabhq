@@ -21,6 +21,7 @@ module API
     end
 
     %w[group project].each do |source_type|
+      boundary_type = source_type.to_sym
       params do
         requires :id,
           type: String,
@@ -37,6 +38,7 @@ module API
           use :pagination
           optional :name, type: String, desc: 'Name for the badge'
         end
+        route_setting :authorization, permissions: :read_badge, boundary_type: boundary_type
         get ":id/badges", urgency: :low do
           source = find_source(source_type, params[:id])
 
@@ -56,6 +58,8 @@ module API
           requires :link_url, type: String, desc: 'URL of the badge link'
           requires :image_url, type: String, desc: 'URL of the badge image'
         end
+
+        route_setting :authorization, permissions: :read_badge, boundary_type: boundary_type
         get ":id/badges/render" do
           authenticate!
 
@@ -82,6 +86,7 @@ module API
         # TODO: Set PUT /projects/:id/badges/:badge_id to low urgency and GET to default urgency
         # after different urgencies are supported for different HTTP verbs.
         # See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1670
+        route_setting :authorization, permissions: :read_badge, boundary_type: boundary_type
         get ":id/badges/:badge_id", urgency: :low do
           source = find_source(source_type, params[:id])
           badge = find_badge(source)
@@ -99,6 +104,7 @@ module API
           requires :image_url, type: String, desc: 'URL of the badge image'
           optional :name, type: String, desc: 'Name for the badge'
         end
+        route_setting :authorization, permissions: :create_badge, boundary_type: boundary_type
         post ":id/badges" do
           source = find_source_if_admin(source_type)
 
@@ -121,6 +127,7 @@ module API
           optional :image_url, type: String, desc: 'URL of the badge image'
           optional :name, type: String, desc: 'Name for the badge'
         end
+        route_setting :authorization, permissions: :update_badge, boundary_type: boundary_type
         put ":id/badges/:badge_id" do
           source = find_source_if_admin(source_type)
           badge = find_badge(source)
@@ -142,6 +149,7 @@ module API
         params do
           requires :badge_id, type: Integer, desc: 'The badge ID'
         end
+        route_setting :authorization, permissions: :delete_badge, boundary_type: boundary_type
         delete ":id/badges/:badge_id" do
           source = find_source_if_admin(source_type)
           badge = find_badge(source)

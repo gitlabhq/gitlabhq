@@ -47,7 +47,7 @@ the `api` scope:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. Select **Personal access tokens**.
 1. Enter a name and optional expiry date for the token.
 1. Select the `api` scope.
 1. Select **Create personal access token**.
@@ -75,13 +75,13 @@ To bootstrap a Flux installation:
 
 The arguments of `bootstrap` are:
 
-| Argument | Description |
+| Argument     | Description |
 |--------------|-------------|
-|`hostname` | Hostname of your GitLab instance. |
-|`owner` | GitLab group containing the Flux repository. |
-|`repository` | GitLab project containing the Flux repository. |
-|`branch` | Git branch the changes are committed to. |
-|`path` | File path to a folder where the Flux configuration is stored. |
+| `hostname`   | Hostname of your GitLab instance. |
+| `owner`      | GitLab group containing the Flux repository. |
+| `repository` | GitLab project containing the Flux repository. |
+| `branch`     | Git branch the changes are committed to. |
+| `path`       | File path to a folder where the Flux configuration is stored. |
 
 The bootstrap script does the following:
 
@@ -136,7 +136,7 @@ The `glab cluster agent bootstrap` created an environment within GitLab and [con
 To view your dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select your environment. For example, `flux-system/gitlab-agent`.
 1. Select the **Kubernetes overview** tab.
 

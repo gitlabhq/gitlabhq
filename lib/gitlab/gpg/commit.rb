@@ -101,8 +101,9 @@ module Gitlab
           project: project,
           gpg_key: gpg_key,
           gpg_key_user_name: user_infos[:name],
-          gpg_key_user_email: gpg_key_user_email(user_infos, verification_status)
+          gpg_key_user_email: user_infos[:email]
         }.tap do |attrs|
+          attrs[:committer_email] = committer_email if check_for_mailmapped_commit_emails?
           if using_signature_class?
             attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || gpg_signature.fingerprint
             attrs[:verification_status] = gpg_signature.verification_status
@@ -148,13 +149,6 @@ module Gitlab
         else
           GpgKey.find_by_primary_keyid(fingerprint) || GpgKeySubkey.find_by_keyid(fingerprint)
         end
-      end
-
-      def gpg_key_user_email(user_infos, verification_status)
-        return user_infos[:email] unless Feature.enabled?(:check_for_mailmapped_commit_emails,
-          project) && verification_status == :verified_system
-
-        user_infos[:email] || author_email
       end
 
       def gpg_signature

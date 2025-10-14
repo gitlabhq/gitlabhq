@@ -23,6 +23,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	gobpkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/gob"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
@@ -88,8 +89,6 @@ var (
 	// from downloading it we configure static.ServeExisting to treat files
 	// under public/uploads/ as if they do not exist.
 	staticExclude = []string{"/uploads/"}
-	// XGitalyCorrelationID is the header name for Git operation correlation IDs
-	XGitalyCorrelationID = "X-Gitaly-Correlation-Id"
 )
 
 func newRoute(regexpStr, routeID string, backendID routeBackend) routeMetadata {
@@ -159,8 +158,8 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 				fields["body_limit"] = opts.bodyLimit
 			}
 
-			if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
-				fields["gitaly_correlation_id"] = correlationID
+			if correlationID := r.Header.Get(git.XGitalyCorrelationID); correlationID != "" {
+				fields[string(gitaly.GitalyCorrelationIDKey)] = correlationID
 			}
 
 			return fields
@@ -675,7 +674,7 @@ func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Han
 }
 
 func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.Injector, u *upstream) http.Handler {
-	if u.Config.CircuitBreakerConfig.Enabled {
+	if u.CircuitBreakerConfig.Enabled {
 		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.rdb)
 
 		return buildProxy(u.Backend, u.Version, roundTripperCircuitBreaker, u.Config, dependencyProxyInjector)

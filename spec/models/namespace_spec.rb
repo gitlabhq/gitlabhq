@@ -779,6 +779,29 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         is_expected.not_to include(non_archived_subgroup_with_archived_parent)
       end
     end
+
+    describe '.with_visibility_level_greater_than' do
+      let_it_be(:private_namespace) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:internal_namespace) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+      let_it_be(:public_namespace) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+      it 'returns namespaces with visibility level greater than private' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::PRIVATE)
+        expect(result).to include(internal_namespace, public_namespace)
+        expect(result).not_to include(private_namespace)
+      end
+
+      it 'returns namespaces with visibility level greater than internal' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::INTERNAL)
+        expect(result).to include(public_namespace)
+        expect(result).not_to include(private_namespace, internal_namespace)
+      end
+
+      it 'returns no namespaces when level is public' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::PUBLIC)
+        expect(result).not_to include(private_namespace, internal_namespace, public_namespace)
+      end
+    end
   end
 
   describe 'delegate' do
@@ -3177,6 +3200,66 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:namespace_setting) { create(:namespace_settings, force_pages_access_control: false) }
 
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#user_role' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :expected_name) do
+      :guest      | 'guest'
+      :reporter   | 'reporter'
+      :developer  | 'developer'
+      :maintainer | 'maintainer'
+      :owner      | 'owner'
+    end
+
+    with_them do
+      before do
+        group.add_member(user, role)
+      end
+
+      it 'returns the correct role name' do
+        expect(group.user_role(user)).to eq(expected_name)
+      end
+    end
+
+    context 'when user has no access' do
+      let_it_be(:user_without_access) { create(:user) }
+
+      it 'returns nil' do
+        expect(group.user_role(user_without_access)).to be_nil
+      end
+    end
+
+    context 'with a user namespace' do
+      let_it_be(:user_namespace) { create(:user_namespace) }
+
+      it 'returns nil' do
+        expect(user_namespace.user_role(user)).to be_nil
+      end
+    end
+
+    context 'when user is nil' do
+      it 'returns nil' do
+        expect(group.user_role(nil)).to be_nil
+      end
+    end
+
+    context 'with a project namespace' do
+      let_it_be(:project) { create(:project) }
+      let(:project_namespace) { project.project_namespace }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns the role from the project' do
+        expect(project_namespace.user_role(user)).to eq('developer')
+      end
     end
   end
 end

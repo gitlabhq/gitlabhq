@@ -8,13 +8,14 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include SignatureType
 
-      attr_reader :signature_text, :signed_text, :created_at
+      attr_reader :signature_text, :signed_text, :created_at, :project
 
-      def initialize(signature_text, signed_text, email, created_at)
+      def initialize(signature_text, signed_text, email, created_at, project)
         @signature_text = signature_text
         @signed_text = signed_text
         @email = email
         @created_at = created_at
+        @project = project
       end
 
       def type
@@ -202,7 +203,8 @@ module Gitlab
         attributes = {
           subject_key_identifier: issuer_subject_key_identifier,
           subject: certificate_issuer,
-          crl_url: certificate_crl
+          crl_url: certificate_crl,
+          project_id: project.id
         }
 
         X509Issuer.safe_create!(attributes) unless verified_signature.nil?
@@ -221,7 +223,8 @@ module Gitlab
           email: certificate_email,
           emails: certificate_emails,
           serial_number: cert.serial.to_i,
-          x509_issuer_id: x509_issuer.id
+          x509_issuer_id: x509_issuer.id,
+          project_id: project.id
         }
       end
     end

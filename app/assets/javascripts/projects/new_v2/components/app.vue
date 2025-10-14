@@ -76,9 +76,9 @@ export default {
   data() {
     return {
       namespace: {
-        id: this.namespaceId,
-        fullPath: this.namespaceFullPath,
-        isPersonal: this.namespaceId === '',
+        id: this.namespaceId ? this.namespaceId : this.userNamespaceId,
+        fullPath: this.namespaceFullPath ? this.namespaceFullPath : this.userNamespaceFullPath,
+        isPersonal: this.namespaceId ? this.userNamespaceId === this.namespaceId : true,
       },
       selectedProjectType: OPTIONS.blank.value,
       currentStep: 1,

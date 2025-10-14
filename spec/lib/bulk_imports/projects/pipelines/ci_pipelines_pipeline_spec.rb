@@ -52,7 +52,6 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
 
   describe '#run', :clean_gitlab_redis_shared_state do
     before do
-      stub_feature_flags(ci_validate_config_options: false)
       group.add_owner(user)
 
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|

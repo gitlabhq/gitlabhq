@@ -7,7 +7,7 @@ feature_categories:
 description: Persists information about GitLab managed clusters
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14879
 milestone: '10.1'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_org
 desired_sharding_key_migration_job_name: BackfillClustersShardingKey
 table_size: small
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/559151

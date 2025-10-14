@@ -117,7 +117,7 @@ test-job:
 
 Commit and push this change to GitLab, then:
 
-1. Go to **Build > Pipelines** and make sure a pipeline runs in GitLab with this single job.
+1. Go to **Build** > **Pipelines** and make sure a pipeline runs in GitLab with this single job.
 1. Select the pipeline, then select the job to view the job's log and see the `This is my first job!` message
    followed by the date.
 
@@ -224,7 +224,7 @@ and view the pipeline details from the **Pipelines** list. Verify that:
 
 To view your site:
 
-- On the left sidebar, select **Deploy > Pages**.
+- On the left sidebar, select **Deploy** > **Pages**.
 - Make sure **Use unique domain** is off.
 - Under **Access pages**, select the link. The URL format should be similar to: `https://<my-username>.gitlab.io/<project-name>`. For more information, see [GitLab Pages default domain names](../../user/project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names).
 

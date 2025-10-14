@@ -56,8 +56,8 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
       end
 
       context 'for RC tag' do
-        it 'returns the correct environment' do
-          stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-rc42-ee')
+        it 'returns the correct environment for the RC' do
+          stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-rc50-ee')
           expect(model.environment).to eq('15-10-stable')
         end
       end
@@ -97,7 +97,7 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
 
     context 'when running in an RC tag pipeline' do
       it 'generates the correct omnibus package name from the RC tag' do
-        stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-rc42-ee')
+        stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-rc50-ee')
         stub_env('CI_COMMIT_BRANCH', nil) # This would be nil for tag pipelines
         stub_env('CI_PIPELINE_ID', '12345')
         stub_env('CI_COMMIT_SHORT_SHA', 'abcdef')

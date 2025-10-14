@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/mark_used_feature_flags'
 
-RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
+RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags, feature_category: :scalability do
   let(:defined_feature_flags) do
     %w[a_feature_flag foo_hello foo_world bar_baz baz]
   end
@@ -44,6 +44,7 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     Feature.enabled?
     Feature.disabled?
     push_frontend_feature_flag
+    FeatureFlags.enabled?
     Config::FeatureFlags.enabled?
     ::Gitlab::Ci::Config::FeatureFlags.enabled?
     ::Gitlab::AiGateway.push_feature_flag

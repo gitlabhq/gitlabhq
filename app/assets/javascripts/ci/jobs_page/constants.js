@@ -55,7 +55,7 @@ export const DEFAULT_FIELDS = [
   {
     key: 'coverage',
     label: __('Coverage'),
-    tdClass: '!gl-hidden lg:!gl-table-cell',
+    tdClass: '!gl-hidden @lg/panel:!gl-table-cell',
     columnClass: 'gl-w-2/20',
   },
   {

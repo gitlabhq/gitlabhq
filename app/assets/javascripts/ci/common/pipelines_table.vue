@@ -54,6 +54,9 @@ export default {
     useFailedJobsWidget: {
       default: false,
     },
+    mergeRequestPath: {
+      default: null,
+    },
   },
   props: {
     isCreatingPipeline: {
@@ -88,7 +91,7 @@ export default {
           key: 'pipeline',
           label: __('Pipeline'),
           tdClass: `${this.tdClasses}`,
-          columnClass: 'gl-w-6/20',
+          columnClass: 'gl-w-5/20',
           thAttr: { 'data-testid': 'pipeline-th' },
         },
         {
@@ -102,13 +105,13 @@ export default {
           key: 'stages',
           label: s__('Pipeline|Stages'),
           tdClass: this.tdClasses,
-          columnClass: 'gl-w-5/20',
+          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-4/20' : 'gl-w-5/20',
           thAttr: { 'data-testid': 'stages-th' },
         },
         {
           key: 'actions',
           tdClass: this.tdClasses,
-          columnClass: 'gl-w-4/20',
+          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-5/20' : 'gl-w-4/20',
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];
@@ -178,25 +181,13 @@ export default {
       }
       return null;
     },
-    mergeRequestPath(item) {
-      if (item.merge_request?.path) {
-        return `${gon.gitlab_url}${item.merge_request.path}`;
-      }
-      return null;
-    },
     currentBranch(item) {
-      if (item.source === 'push') {
-        return item.ref?.name;
-      }
-      if (item.source === 'merge_request_event') {
-        return item.merge_request?.source_branch;
-      }
-      return null;
+      return item.merge_request?.source_branch || item.ref?.name || null;
     },
     showDuoWorkflowAction(item) {
       return (
         this.isFailed(item) &&
-        this.mergeRequestPath(item) &&
+        this.mergeRequestPath &&
         this.currentBranch(item) &&
         this.glFeatures.aiDuoAgentFixPipelineButton
       );
@@ -204,12 +195,16 @@ export default {
     getAdditionalContext(item) {
       return [
         {
-          Category: 'agent_user_environment',
+          Category: 'merge_request',
           Content: JSON.stringify({
-            merge_request_url: this.mergeRequestPath(item),
+            url: this.mergeRequestPath,
+          }),
+        },
+        {
+          Category: 'pipeline',
+          Content: JSON.stringify({
             source_branch: this.currentBranch(item),
           }),
-          Metadata: '{}',
         },
       ];
     },
@@ -296,7 +291,7 @@ export default {
               :agent-privileges="agentPrivileges"
               :source-branch="currentBranch(item)"
               :additional-context="getAdditionalContext(item)"
-              workflow-definition="fix_pipeline/experimental"
+              workflow-definition="fix_pipeline/v1"
               size="medium"
             />
           </template>

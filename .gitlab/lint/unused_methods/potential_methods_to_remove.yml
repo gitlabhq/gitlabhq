@@ -137,8 +137,6 @@ provisioned_by_this_group?:
   file: ee/app/models/ee/project_member.rb
 commit_count_for:
   file: ee/app/models/ee/push_event_payload.rb
-upstream_has_diverged?:
-  file: ee/app/models/ee/repository.rb
 zoekt_indexed_namespaces:
   file: ee/app/models/ee/user.rb
 ci_namespace_mirrors_permitted_to:
@@ -407,8 +405,6 @@ find_assignee:
   file: app/models/merge_request.rb
 merge_request_assignees_with:
   file: app/models/merge_request.rb
-diff_refs_by_sha?:
-  file: app/models/merge_request_diff.rb
 migrate_files_to_database!:
   file: app/models/merge_request_diff.rb
 can_be_closed?:
@@ -429,8 +425,6 @@ saved_change_to_path_or_parent?:
   file: app/models/namespace.rb
 normal_select:
   file: app/models/namespaces/traversal/linear_scopes.rb
-attribute_names_for_serialization:
-  file: app/models/note.rb
 user_admin?:
   file: app/models/personal_access_token.rb
 import_scheduled?:
@@ -475,22 +469,14 @@ members_in_project_and_ancestors:
   file: app/models/project_team.rb
 members_with_access_levels:
   file: app/models/project_team.rb
-valid_push?:
-  file: app/models/push_event.rb
-tag_missing?:
-  file: app/models/release.rb
 mark_for_retry!:
   file: app/models/remote_mirror.rb
 mirror_url_changed?:
   file: app/models/remote_mirror.rb
 expire_avatar_cache:
   file: app/models/repository.rb
-move_dir_files:
-  file: app/models/repository.rb
 blobs_metadata:
   file: app/models/repository.rb
-from_merge_request_author?:
-  file: app/models/review.rb
 owner_class_attribute_default:
   file: app/models/service_desk/custom_email_verification.rb
 valid_secret_token?:
@@ -513,8 +499,6 @@ for_ssh_key?:
   file: app/models/todo.rb
 self_assigned?:
   file: app/models/todo.rb
-inner_join_local_uploads_projects:
-  file: app/models/upload.rb
 owner_class_attribute_default:
   file: app/models/user.rb
 inactive_message:

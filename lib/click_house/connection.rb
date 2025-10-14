@@ -2,6 +2,8 @@
 
 module ClickHouse
   class Connection
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(database, configuration = ClickHouse::Client.configuration)
       @database = database
       @configuration = configuration
@@ -25,6 +27,28 @@ module ClickHouse
 
     def database_name
       configuration.databases[database]&.database
+    end
+
+    def database_engine
+      raw_query = <<~SQL
+        SELECT engine
+        FROM system.databases WHERE name = {database_name: String}
+        LIMIT 1
+      SQL
+
+      placeholders = { database_name: database_name }
+
+      query = ClickHouse::Client::Query.new(raw_query: raw_query, placeholders: placeholders)
+
+      # Falling back to 'Atomic' engine if we cannot determine the DB engine.
+      # This fallback will likely never happen as the application wouldn't be
+      # able to boot up without an existing database.
+      select(query).first['engine'] || 'Atomic'
+    end
+    strong_memoize_attr :database_engine
+
+    def replicated_engine?
+      database_engine == 'Replicated'
     end
 
     def table_exists?(table_name)

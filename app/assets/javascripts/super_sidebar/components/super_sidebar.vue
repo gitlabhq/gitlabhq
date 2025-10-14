@@ -14,7 +14,11 @@ import {
   SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
   SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
 } from '../constants';
-import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
+import {
+  isCollapsed,
+  toggleSuperSidebarCollapsed,
+  toggleSuperSidebarIconOnly,
+} from '../super_sidebar_collapsed_state_manager';
 import { trackContextAccess } from '../utils';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
@@ -52,7 +56,7 @@ export default {
   inject: ['showTrialWidget', 'projectStudioEnabled', 'showDuoAgentPlatformWidget'],
   provide() {
     return {
-      isIconOnly: computed(() => this.canIconOnly && this.isIconOnly),
+      isIconOnly: computed(() => this.isIconOnly),
     };
   },
   props: {
@@ -66,7 +70,7 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
-      isIconOnly: this.projectStudioEnabled,
+      isAnimatable: false,
     };
   },
   computed: {
@@ -81,8 +85,9 @@ export default {
         'super-sidebar-peek-hint': this.showPeekHint,
         'super-sidebar-peek': this.showOverlay,
         'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
-        'super-sidebar-is-icon-only': this.canIconOnly && this.isIconOnly,
+        'super-sidebar-is-icon-only': this.isIconOnly,
         'super-sidebar-is-mobile': this.sidebarState.isMobile,
+        'super-sidebar-animatable': this.isAnimatable,
       };
     },
     isAdmin() {
@@ -90,6 +95,9 @@ export default {
     },
     canIconOnly() {
       return this.projectStudioEnabled && !this.sidebarState.isMobile;
+    },
+    isIconOnly() {
+      return this.canIconOnly && this.sidebarState.isIconOnly;
     },
   },
   watch: {
@@ -119,6 +127,10 @@ export default {
   mounted() {
     this.setupFocusTrapListener();
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
+
+    this.$nextTick(() => {
+      this.isAnimatable = true;
+    });
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.focusTrap);
@@ -127,7 +139,7 @@ export default {
   methods: {
     toggleSidebar() {
       if (this.canIconOnly) {
-        this.isIconOnly = !this.isIconOnly;
+        toggleSuperSidebarIconOnly();
         return;
       }
 
@@ -222,10 +234,10 @@ export default {
 </script>
 
 <template>
-  <div class="super-sidebar-wrapper">
+  <div v-if="menuItems.length || !projectStudioEnabled" class="super-sidebar-wrapper">
     <div ref="overlay" class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
-      v-if="sidebarData.is_logged_in"
+      v-if="!projectStudioEnabled && sidebarData.is_logged_in"
       class="super-sidebar-skip-to gl-sr-only !gl-fixed gl-left-0 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
       data-testid="super-sidebar-skip-to"
       href="#content-body"
@@ -273,16 +285,12 @@ export default {
           />
           <sidebar-portal-target />
         </scroll-scrim>
-        <div v-if="showTrialWidget" class="gl-p-2">
+        <div v-if="showTrialWidget && !isIconOnly" class="gl-p-2">
           <trial-widget
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
-        <div v-if="showDuoAgentPlatformWidget" class="gl-p-2">
-          <duo-agent-platform-widget
-            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
-          />
-        </div>
+        <duo-agent-platform-widget v-if="showDuoAgentPlatformWidget && !isIconOnly" />
         <help-center
           v-if="canIconOnly"
           ref="helpCenter"
@@ -306,11 +314,7 @@ export default {
             </gl-button>
           </div>
         </div>
-        <icon-only-toggle
-          v-if="canIconOnly"
-          class="gl-hidden xl:gl-flex"
-          @toggle="isIconOnly = !isIconOnly"
-        />
+        <icon-only-toggle v-if="canIconOnly" class="gl-hidden xl:gl-flex" @toggle="toggleSidebar" />
       </div>
     </nav>
     <a

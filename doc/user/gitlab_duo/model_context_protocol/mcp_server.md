@@ -16,22 +16,28 @@ title: GitLab MCP server
 
 {{< history >}}
 
-- Introduced in GitLab 18.3 [with two flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_generation`. Disabled by default.
+- Introduced in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-The availability of this feature is controlled by a feature flag.
+The availability of this feature is controlled by feature flags.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-The GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server enables AI tools
-and applications to connect to your GitLab instance securely. After you configure the MCP server,
-AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools can access your GitLab data,
-and perform actions on your behalf.
+{{< alert type="warning" >}}
+
+To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
+
+{{< /alert >}}
+
+With the GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
+you can securely connect AI tools and applications to your GitLab instance.
+AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools
+can then access your GitLab data and perform actions on your behalf.
 
 The MCP server provides a standardized way for AI tools to:
 
@@ -55,7 +61,7 @@ For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.n
 
 Prerequisites:
 
-- You've installed [Node.js](https://nodejs.org/en/download) version 20 or later.
+- Install Node.js version 20 or later.
 
 To configure the GitLab MCP server in Cursor:
 
@@ -90,19 +96,12 @@ To configure the GitLab MCP server in Cursor:
    If this does not happen, close and restart Cursor.
 1. In your browser, review and approve the authorization request.
 
-The MCP server is now available within Cursor.
-
-You can now start a new chat and ask a question about the MCP server version, a GitLab issue, or merge request depending on the [available tools](mcp_server.md#available-tools-and-capabilities).
-
-```markdown
-What version of the GitLab MCP server am I connected to?
-
-Get details for issue 1 in project gitlab-org/gitlab
-```
+You can now start a new chat and ask a question depending on the available tools.
 
 {{< alert type="warning" >}}
 
-You are responsible for guarding against prompt injection when using these tools. Exercise extreme caution or use MCP tools only on GitLab objects that you trust.
+You're responsible for guarding against prompt injection when you use these tools.
+Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 {{< /alert >}}
 
@@ -110,8 +109,8 @@ You are responsible for guarding against prompt injection when using these tools
 
 Prerequisites:
 
-- You've installed [Node.js](https://nodejs.org/en/download) version 20 or later.
-- Node.js is available globally in the `PATH` environment variable (`which -a node`).
+- Install Node.js version 20 or later.
+- Ensure Node.js is available globally in the `PATH` environment variable (`which -a node`).
 
 To configure the GitLab MCP server in Claude Desktop:
 
@@ -148,77 +147,101 @@ To configure the GitLab MCP server in Claude Desktop:
 1. Go to **Settings** > **Developer** and verify the new GitLab MCP configuration.
 1. Go to **Settings** > **Connectors** and inspect the connected GitLab MCP Server.
 
-You can now start a new chat and ask a question about the MCP server version, a GitLab issue, or merge request depending on the [available tools](mcp_server.md#available-tools-and-capabilities).
-
-```markdown
-What version of the GitLab MCP server am I connected to?
-
-Get details for issue 1 in project gitlab-org/gitlab
-```
+You can now start a new chat and ask a question depending on the available tools.
 
 {{< alert type="warning" >}}
 
-You are responsible for guarding against prompt injection when using these tools. Exercise extreme caution or use MCP tools only on GitLab objects that you trust.
+You're responsible for guarding against prompt injection when you use these tools.
+Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 {{< /alert >}}
 
-## Available tools and capabilities
+## Available tools
 
-The GitLab MCP server provides these capabilities. The development of this feature is tracked in [epic 18413](https://gitlab.com/groups/gitlab-org/-/epics/18413).
+The GitLab MCP server provides the following tools.
 
 ### `get_mcp_server_version`
 
 Returns the current version of the GitLab MCP server.
 
-**Parameters**: None
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 What version of the GitLab MCP server am I connected to?
-```
-
-### `get_issue`
-
-Retrieves detailed information about a specific GitLab issue.
-
-**Parameters**:
-
-- `project_id` (required): The ID or URL-encoded path of the project
-- `issue_iid` (required): The internal ID of the issue
-
-**Example usage in AI tool**:
-
-```plaintext
-Get details for issue 42 in project 123
 ```
 
 ### `create_issue`
 
 Creates a new issue in a GitLab project.
 
-**Parameters**:
+| Parameter      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `id`           | string  | Yes      | ID or URL-encoded path of the project. |
+| `title`        | string  | Yes      | Title of the issue. |
+| `description`  | string  | No       | Description of the issue. |
+| `assignee_ids` | array   | No       | IDs of assigned users. |
+| `milestone_id` | integer | No       | ID of the milestone. |
+| `labels`       | string  | No       | Comma-separated list of label names. |
+| `confidential` | boolean | No       | Sets the issue to confidential. Default is `false`. |
+| `epic_id`      | integer | No       | ID of the linked epic. |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `title` (required): The title of the issue
-- `description` (optional): The description of the issue
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
-Create a new issue titled "Fix login bug" in project 123 with description "Users cannot log in with special characters in password"
+Create a new issue titled "Fix login bug" in project 123 with description
+"Users cannot log in with special characters in password"
+```
+
+### `get_issue`
+
+Retrieves detailed information about a specific GitLab issue.
+
+| Parameter   | Type    | Required | Description |
+|-------------|---------|----------|-------------|
+| `id`        | string  | Yes      | ID or URL-encoded path of the project. |
+| `issue_iid` | integer | Yes      | Internal ID of the issue. |
+
+Example:
+
+```plaintext
+Get details for issue 42 in project 123
+```
+
+### `create_merge_request`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571243) in GitLab 18.5.
+
+{{< /history >}}
+
+Creates a merge request in a project.
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `title`             | string  | Yes      | Title of the merge request. |
+| `source_branch`     | string  | Yes      | Name of the source branch. |
+| `target_branch`     | string  | Yes      | Name of the target branch. |
+| `target_project_id` | integer | No       | ID of the target project. |
+
+Example:
+
+```plaintext
+Create a merge request in project gitlab-org/gitlab titled "Bug fix broken specs"
+from branch "fix/specs-broken" into "master" and enable squash
 ```
 
 ### `get_merge_request`
 
 Retrieves detailed information about a specific GitLab merge request.
 
-**Parameters**:
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Get details for merge request 15 in project gitlab-org/gitlab
@@ -228,79 +251,123 @@ Get details for merge request 15 in project gitlab-org/gitlab
 
 Retrieves the list of commits in a specific merge request.
 
-**Parameters**:
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
+| `per_page`          | integer | No       | Number of commits per page. |
+| `page`              | integer | No       | Current page number. |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Show me all commits in merge request 42 from project 123
 ```
 
-### `get_merge_request_changes`
+### `get_merge_request_diffs`
 
-Retrieves the file changes (diffs) for a specific merge request.
+Retrieves the diffs for a specific merge request.
 
-**Parameters**:
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
+| `per_page`          | integer | No       | Number of diffs per page. |
+| `page`              | integer | No       | Current page number. |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 What files were changed in merge request 25 in the gitlab project?
+```
+
+### `get_merge_request_pipelines`
+
+Retrieves the pipelines for a specific merge request.
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
+
+Example:
+
+```plaintext
+Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 ```
 
 ### `get_pipeline_jobs`
 
 Retrieves the jobs for a specific CI/CD pipeline.
 
-**Parameters**:
+| Parameter     | Type    | Required | Description |
+|---------------|---------|----------|-------------|
+| `id`          | string  | Yes      | ID or URL-encoded path of the project. |
+| `pipeline_id` | integer | Yes      | ID of the pipeline. |
+| `per_page`    | integer | No       | Number of jobs per page. |
+| `page`        | integer | No       | Current page number. |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `pipeline_id` (required): The ID of the pipeline
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 ```
 
-### `get_merge_request_pipelines_service`
-
-Retrieves the pipelines for a specific merge request.
-
-**Parameters**:
-
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
-
-```plaintext
-Show me all pipelines for merge request 42 in project gitlab-org/gitlab
-```
-
 ### `gitlab_search`
 
-Performs a search on a term across the entire GitLab instance using the Search API.
+{{< history >}}
 
-Parameters:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566143) in GitLab 18.4.
 
-- `search` (required): The expression to search for
-- `scope` (required): The search scope (for example, `issues`, `merge_requests`, `projects`)
+{{< /history >}}
 
-**Example usage in AI tool**:
+Searches for a term across the entire GitLab instance with the search API.
+This tool is available only for global search.
+
+| Parameter      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `scope`        | string  | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
+| `search`       | string  | Yes      | Search term. |
+| `state`        | string  | No       | State of search results. |
+| `confidential` | boolean | No       | Filters results by confidentiality. Default is `false`. |
+| `per_page`     | integer | No       | Number of results per page. |
+| `page`         | integer | No       | Current page number. |
+| `fields`       | string  | No       | Comma-separated list of fields you want to search. |
+
+Example:
 
 ```plaintext
 Search issues for "flaky test" across GitLab
 ```
 
-## Feedback
+### `get_code_context`
 
-This feature is experimental. Your feedback is valuable in helping us to improve it. Share your experiences, suggestions, or issues in [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
+{{< history >}}
 
-<!-- TODO: Link the development docs once https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202921/diffs is merged -->
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+Searches for relevant code snippets in a project.
+
+| Parameter        | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `search_term`    | string  | Yes      | Search term. |
+| `project_id`     | integer | Yes      | ID of the project. |
+| `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
+| `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
+| `limit`          | integer | No       | Maximum number of results to return. Default is `20`. |
+
+Example:
+
+```plaintext
+Search for relevant code snippets that show how authorizations are managed in GitLab
+```

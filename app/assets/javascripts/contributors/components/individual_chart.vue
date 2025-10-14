@@ -71,7 +71,7 @@ export default {
 </script>
 
 <template>
-  <div class="col-lg-6 col-12 gl-my-5">
+  <div class="gl-col-lg-6 gl-col-12 gl-my-5">
     <h4 class="gl-mb-2 gl-mt-0" data-testid="chart-header">{{ contributor.name }}</h4>
     <p class="gl-mb-3" data-testid="commit-count">
       {{ n__('%d commit', '%d commits', commitCount) }} ({{ contributor.email }})

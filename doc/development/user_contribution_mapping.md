@@ -17,7 +17,7 @@ User contribution mapping is implemented within each importer to assign contribu
 | Placeholder user         | `User` with `user_type: 'placeholder'`   | A `User` record that satisfies foreign key constraints during migration intended to be reassigned to a real user after import. Placeholder users cannot log in and have no rights in GitLab.                |
 | Assignee user, real user | `User` with `user_type: 'human'`         | The human user assigned to a placeholder user.                                                                                                                                                              |
 | User contribution        | Any GitLab ActiveRecord model            | Any ActiveRecord model imported during a migration that belongs to a `User`. E.g. merge request assignees, notes, memberships, etc.                                                                         |
-| Placeholder reference    | `Import::SourceUserPlaceholderReference` | A separate model to track all placeholder user contributions across the database **except** memberships.                                                                                                    |
+| Placeholder reference    | `Import::SourceUserPlaceholderReference` | A separate model to track all placeholder user contributions across the database except memberships.                                                                                                    |
 | Placeholder membership   | `Import::Placeholders::Membership`       | A separate model to track imported memberships belonging to placeholder users. `Member` records are not created for placeholder users during a migration to prevent placeholders from appearing as members. |
 | Import user              | `Import::NamespaceImportUser`            | A placeholder user used when records can't be assigned to a regular placeholder. E.g. when the [placeholder user limit](../user/project/import/_index.md#placeholder-user-limits) has been reached.                                                                     |
 | Placeholder detail       | `Import::PlaceholderUserDetail`          | A record that tracks which namespaces have placeholder users so that placeholder users can be deleted when their top-level group is deleted.                                                                |
@@ -127,7 +127,14 @@ flowchart
 
 1. Persist the cached `Import::SourceUserPlaceholderReference`s asynchronously using the `LoadPlaceholderReferencesWorker`. This worker uses `Import::PlaceholderReferences::LoadService` to persist the placeholder references. It's best to periodically call this worker throughout the import, e.g., at the end of a stage, as well as at the end of the import.
 
-   - **Important:** Placeholder user references are cached before loading to avoid too many concurrent writes on the `import_source_user_placeholder_references` table. If a database record references a placeholder user's ID but a placeholder reference is not persisted for some reason, the contribution **cannot be reassigned and the placeholder user may not be deleted**.
+   {{< alert type="note" >}}
+
+   Placeholder user references are cached before loading to avoid too many concurrent writes on the
+   `import_source_user_placeholder_references` table. If a database record references a placeholder
+   user's ID but a placeholder reference is not persisted for some reason, the contribution cannot
+   be reassigned and the placeholder user may not be deleted.
+
+   {{< /alert >}}
 
 1. Delay finishing the import until all cached placeholder references have been loaded.
 
@@ -161,11 +168,11 @@ flowchart TD
         The user is redirected to the more details page
     ]
     CheckRequestStatus{
-        Group owner has cancelled
+        Group owner has canceled
         the request?
     }
-    RequestCancelledPage(((
-        Shows request cancelled
+    RequestCanceledPage(((
+        Shows request canceled
         by the owner message
     )))
     OwnerCancel(
@@ -188,7 +195,7 @@ flowchart TD
     OwnerAssigns --> Notification --> ReceivesNotification --> ClickMoreDetails
     OwnerAssigns --> OwnerCancel
     ClickMoreDetails --> CheckRequestStatus
-    CheckRequestStatus -- Yes --> RequestCancelledPage
+    CheckRequestStatus -- Yes --> RequestCanceledPage
     CheckRequestStatus -- No --> ReassigmentOptions
     ReassigmentOptions -- User accepts --> ReassigmentStarts
     ReassigmentOptions -- User rejects --> ReassigmentRejected
@@ -275,8 +282,12 @@ When a real user accepts their reassignment, the process of replacing all foreig
 
 1. The service sets the source user's state to `complete`.
 
-   - **Note:** there are valid scenarios where a placeholder reference may not be able to be reassigned. For example, if a user is added as a reviewer to a merge request with a placeholder user reviewer, then the user accepts reassignments to the placeholder who was already a reviewer. This will raise an `ActiveRecord::RecordNotUnique` error during contribution reassignment, but it's a valid scenario.
-   - **Note:** there is a possibility that the reassignment may fail due to unhandled errors. We need to investigate the issue since the reassignment is supposed to always succeed.
+   {{< alert type="note" >}}
+
+   - There are valid scenarios where a placeholder reference may not be able to be reassigned. For example, if a user is added as a reviewer to a merge request with a placeholder user reviewer, then the user accepts reassignments to the placeholder who was already a reviewer. This will raise an `ActiveRecord::RecordNotUnique` error during contribution reassignment, but it's a valid scenario.
+   - There is a possibility that the reassignment may fail due to unhandled errors. We need to investigate the issue since the reassignment is supposed to always succeed.
+
+   {{< /alert >}}
 
 1. Once the service finishes, the worker calls `Import::DeletePlaceholderUserWorker` asynchronously to delete the placeholder user. If the placeholder user ID is still referenced in any imported table, it will not be deleted. Check `columns_ignored_on_deletion` in the [AliasResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/import/placeholder_references/alias_resolver.rb#L5) for exceptions.
 
@@ -303,7 +314,7 @@ There are several scenarios where the `Import::PlaceholderReferences::AliasResol
 
 Add the new column key to the latest version of the model's alias. The new column does not need to be added to previous versions unless the new column has been populated with a user ID that could belong to a placeholder user.
 
-**Example**
+Example:
 
 `last_updated_by_id`, a reference to a `User` ID, is added to the `snippets` table. `author_id` is still present and unchanged.
 
@@ -321,7 +332,7 @@ Add the new column key to the latest version of the model's alias. The new colum
 
 Add a new version to the model's alias with the updated column name. Update all previous versions' column values with the updated column name as well to ensure placeholder references that have yet to be reassigned will update the correct, most current column name.
 
-**Examples**
+Examples:
 
 `author_id` was renamed to `user_id` on the `snippets` table. Note that keys in `columns` stays the same:
 
@@ -364,7 +375,7 @@ After some time, `user_id` on the `snippets` table was changed again to `created
 
 Add an alias to the `ALIASES` hash for the newly imported model. The model doesn't need to be new in GitLab, it just needs to be newly imported by at least one importer that implements user contribution mapping.
 
-**Example**
+Example:
 
 Direct transfer was updated to import `Todo`s. `Todo` has two user reference columns, `user_id` and `author_id`:
 
@@ -383,7 +394,7 @@ Direct transfer was updated to import `Todo`s. `Todo` has two user reference col
 
 Add an alias to the `ALIASES` hash as if the renamed model were a newly imported model. Also update all previous versions' model value to the new model name. Do not remove the old alias, even if the model under its old name no longer exists. Unused placeholder references referencing the old model name may still exist.
 
-**Example**
+Example:
 
 `Snippet` is renamed to `Sample`:
 
@@ -403,7 +414,7 @@ Add an alias to the `ALIASES` hash as if the renamed model were a newly imported
  },
 ```
 
-**Edge case example**
+Edge case example:
 
 Some time after `Snippet` is renamed to `Sample`, the `Snippet` model is reintroduced and imported, but with an entirely different use. The new `Snippet` model belongs to a `User` using `user_id`. In this case, do not update previous versions of the `"Snippet"` alias, as any placeholder reference with `alias_version` 1 is actually a reference to a `Sample`:
 

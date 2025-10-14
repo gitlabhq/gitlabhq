@@ -4,7 +4,7 @@ module DbCleaner
   def all_connection_classes
     ::ActiveRecord::Base.connection_handler
       .connection_pool_list(:writing)
-      .map { |pool| pool.connection.connection_class }
+      .map(&:connection_class)
       .uniq
   end
 
@@ -16,7 +16,7 @@ module DbCleaner
 
   def deletion_except_tables
     %w[
-      work_item_types work_item_hierarchy_restrictions
+      work_item_types
       work_item_widget_definitions work_item_related_link_restrictions
     ]
   end

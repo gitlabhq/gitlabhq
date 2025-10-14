@@ -61,7 +61,7 @@ func extractZipFiles(t *testing.T, tmpDir, zipFileName string) {
 	zipReader, err := zip.OpenReader(zipFileName)
 	require.NoError(t, err)
 
-	for _, file := range zipReader.Reader.File {
+	for _, file := range zipReader.File {
 		zippedFile, err := file.Open()
 		require.NoError(t, err)
 		defer zippedFile.Close()

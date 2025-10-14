@@ -50,7 +50,7 @@ You can use the UI or the API to enforce 2FA for all users.
 ### Use the UI
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**:
    - Select **Enforce two-factor authentication** to enable this feature.
    - In **Two-factor grace period**, enter a number of hours. If you want to
@@ -87,7 +87,7 @@ Administrators can enforce 2FA for both:
 - Regular users who have been assigned a [custom admin role](../user/custom_roles/_index.md).
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section:
    1. Select **Require administrators to enable 2FA**.
    1. In **Two-factor grace period**, enter a number of hours. If you want to
@@ -125,7 +125,7 @@ Prerequisites:
 To enforce 2FA for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Select **All users in this group must set up two-factor authentication**.
 1. Optional. In **Delay 2FA enforcement (hours)**, enter the number of hours you
@@ -152,7 +152,7 @@ In such cases, the most restrictive requirement takes precedence.
 
 To prevent subgroups from setting individual 2FA requirements:
 
-1. Go to the top-level group's **Settings > General**.
+1. Go to the top-level group's **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow subgroups to set up their own two-factor authentication rule** checkbox.
 
@@ -254,7 +254,7 @@ Top-level group Owners can disable two-factor authentication (2FA) for enterpris
 To disable 2FA:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
 

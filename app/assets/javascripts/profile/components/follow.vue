@@ -83,7 +83,11 @@ export default {
   />
   <div v-else>
     <div class="-gl-mx-3 -gl-my-3 gl-flex gl-flex-wrap">
-      <div v-for="user in users" :key="user.id" class="gl-w-full gl-p-3 md:gl-w-1/2 lg:gl-w-1/4">
+      <div
+        v-for="user in users"
+        :key="user.id"
+        class="gl-w-full gl-p-3 @md/panel:gl-w-1/2 @lg/panel:gl-w-1/4"
+      >
         <gl-avatar-link
           :href="user.web_url"
           class="js-user-link gl-border gl-w-full gl-rounded-base gl-p-5"

@@ -124,7 +124,7 @@ This chart contains several types of items:
     A -->|"Virtual Scroller is
     disabled when
     Find in page search
-    (Cmd/Ctrl+f) is used."|codeForFiles
+    (Command/Control+f) is used."|codeForFiles
     descVirtualScroller --> codeForFiles
     codeForFiles --> B --> C --> D
     B --> E

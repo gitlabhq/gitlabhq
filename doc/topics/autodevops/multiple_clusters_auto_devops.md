@@ -38,7 +38,7 @@ To deploy your environments to different Kubernetes clusters:
 
 For deprecated, [certificate-based clusters](../../user/infrastructure/clusters/_index.md#certificate-based-kubernetes-integration-deprecated):
 
-1. Go to the project and select **Operate > Kubernetes clusters** from the left sidebar.
+1. Go to the project and select **Operate** > **Kubernetes clusters** from the left sidebar.
 1. [Set the environment scope of each cluster](../../user/project/clusters/multiple_kubernetes_clusters.md#setting-the-environment-scope).
 1. For each cluster, [add a domain based on its Ingress IP address](../../user/project/clusters/gitlab_managed_clusters.md#base-domain).
 

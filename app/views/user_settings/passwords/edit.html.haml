@@ -1,6 +1,24 @@
 - breadcrumb_title _('Edit Password')
 - page_title _('Password')
 - @force_desktop_expanded_sidebar = true
+- @hide_search_settings = true
+
+- if Feature.enabled?(:passkeys, @user)
+  -# TODO: change the conditions, check if user has passkeys.
+  - if @user.two_factor_webauthn_enabled?
+    = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-my-5' }) do |c|
+      = c.with_body do
+        - two_factor_link = link_to('', profile_two_factor_auth_path)
+        = safe_format(s_('ProfilesAuthentication|You currently use passkeys for secure and faster sign in. %{link_start}Manage passkeys%{link_end}.'), tag_pair(two_factor_link, :link_start, :link_end))
+  - else
+    = render Pajamas::AlertComponent.new(title: s_('ProfilesAuthentication|Sign in faster with passkeys'),
+        alert_options: { class: 'gl-my-5' }) do |c|
+      = c.with_body do
+        - learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noopener')
+        = safe_format(s_('ProfilesAuthentication|Add a passkey to sign in securely with your trusted device. %{link_start}Learn more about passkeys%{link_end}.'), tag_pair(learn_more_link, :link_start, :link_end))
+      = c.with_actions do
+        = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path, variant: :confirm) do
+          = s_('ProfilesAuthentication|Add passkey')
 
 = render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
   - c.with_description do

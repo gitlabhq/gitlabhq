@@ -334,10 +334,10 @@ export default {
 
 <template>
   <div
-    class="detail-page-header-actions gl-mt-1 gl-flex gl-w-full gl-self-start sm:gl-gap-3 md:gl-w-auto"
+    class="detail-page-header-actions gl-mt-1 gl-flex gl-w-full gl-self-start @sm/panel:gl-gap-3 @md/panel:gl-w-auto"
     data-testid="issue-header"
   >
-    <div class="gl-w-full md:!gl-hidden">
+    <div class="gl-w-full @md/panel:!gl-hidden">
       <gl-disclosure-dropdown
         v-if="hasMobileDropdown"
         ref="issuableActionsDropdownMobile"
@@ -431,7 +431,7 @@ export default {
       :title="editTooltip"
       :aria-label="$options.i18n.editTitleAndDescription"
       :aria-keyshortcuts="editShortcutKey"
-      class="js-issuable-edit !gl-hidden md:!gl-block"
+      class="js-issuable-edit !gl-hidden @md/panel:!gl-block"
       data-testid="edit-button"
       @click="edit"
     >
@@ -443,7 +443,7 @@ export default {
       id="new-actions-header-dropdown"
       ref="issuableActionsDropdownDesktop"
       v-gl-tooltip="showDropdownTooltip"
-      class="gl-hidden md:!gl-inline-flex"
+      class="gl-hidden @md/panel:!gl-inline-flex"
       icon="ellipsis_v"
       category="tertiary"
       :toggle-text="dropdownText"

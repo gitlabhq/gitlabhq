@@ -59,10 +59,10 @@ After you invite the bot to a Telegram channel, you can configure GitLab to send
 1. To enable the integration:
    - **For your group or project**:
      1. On the left sidebar, select **Search or go to** and find your project or group.
-     1. Select **Settings > Integrations**.
+     1. Select **Settings** > **Integrations**.
    - **For your instance**:
      1. On the left sidebar, at the bottom, select **Admin**.
-     1. Select **Settings > Integrations**.
+     1. Select **Settings** > **Integrations**.
 1. Select **Telegram**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Optional. In **Hostname**, enter the hostname of your [local bot API server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).

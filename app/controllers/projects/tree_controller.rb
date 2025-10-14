@@ -30,6 +30,13 @@ class Projects::TreeController < Projects::ApplicationController
   def show
     return render_404 unless @commit
 
+    if require_auth?
+      @skip_logs_tree_loading = true
+      gon.push({
+        show_commit_columns: false
+      })
+    end
+
     @ref_type = ref_type
 
     if tree.entries.empty?
@@ -53,6 +60,11 @@ class Projects::TreeController < Projects::ApplicationController
   end
 
   private
+
+  def require_auth?
+    current_user.blank? && @ref != @project.default_branch_or_main &&
+      Feature.enabled?(:require_login_for_commit_tree, @project)
+  end
 
   def tree
     @tree ||= @repo.tree(@commit.id, @path)

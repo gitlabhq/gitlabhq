@@ -22,6 +22,7 @@
       ref="wrapper"
       :style="{ [direction === 'vertical' ? 'minHeight' : 'minWidth']: totalSize + 'px' }"
       class="vue-recycle-scroller__item-wrapper"
+      role="tree"
     >
       <div
         v-for="view of pool"
@@ -32,6 +33,9 @@
           left: !useTransform && direction !== 'vertical' ? `${view.position}px` : null,
         } : null"
         class="vue-recycle-scroller__item-view"
+        role="treeitem"
+        :aria-setsize="items.length"
+        :aria-posinset="view.nr.index + 1"
         :class="{ hover: hoverKey === view.nr.key, 'will-change-transform': useTransform }"
         @mouseenter="hoverKey = view.nr.key"
         @mouseleave="hoverKey = null"

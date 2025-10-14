@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting Geo synchronization and verification errors
@@ -901,7 +901,7 @@ by network hiccups, an alternative method such as `rsync` can be used to circumv
 create the initial copy of any repository that fails to be replicated by Geo.
 
 We recommend transferring each failing repository individually and checking for consistency
-after each transfer. Follow the [single target `rsync` instructions](../../../operations/moving_repositories.md#single-rsync-to-another-server)
+after each transfer. Follow the [`rsync` to another server instructions](../../../operations/moving_repositories.md#use-rsync-to-another-server)
 to transfer each affected repository from the primary to the secondary site.
 
 ## Find repository check failures in a Geo secondary site

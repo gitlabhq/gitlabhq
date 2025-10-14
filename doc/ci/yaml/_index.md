@@ -26,6 +26,8 @@ This file is where you define the CI/CD jobs that make up your pipeline.
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](lint.md) tool.
 
+Use [CI/CD expressions](expressions.md) for more dynamic pipeline configuration options.
+
 <!--
 If you are editing content on this page, follow the instructions for documenting keywords:
 https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/
@@ -1268,11 +1270,45 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   You can use a job token for authentication in `after_script` commands, but the token
   immediately becomes invalid if the job is canceled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
   for more details.
+- For jobs that time out:
+  - `after_script` commands do not execute by default.
+  - You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
 
-For jobs that time out:
+**Execution timing and file inclusion**:
 
-- `after_script` commands do not execute by default.
-- You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
+`after_script` commands execute before cache and artifact upload operations.
+
+- If you configured artifact collection:
+  - Files created or modified in `after_script` are included in artifacts.
+  - Changes made in `after_script` are included in cache uploads.
+- Any files that `after_script` creates or modifies in the specified cache or artifact paths are captured and uploaded. You can use this timing for scenarios like:
+  - Generating test reports or coverage data after the main script.
+  - Creating summary files or logs.
+  - Post-processing build outputs.
+
+In the following example, the only files that are not included are those created or modified after the artifact or cache upload stages:
+
+```yaml
+job:
+  script:
+    - echo "main" > output.txt
+    - build_something
+
+  after_script:
+    - echo "modified in after_script" >> output.txt  # This WILL be in the artifact
+    - generate_test_report > report.html            # This WILL be in the artifact
+
+  artifacts:
+    paths:
+      - output.txt
+      - report.html
+
+  cache:
+    paths:
+      - output.txt  # Will include the "modified in after_script" line
+```
+
+For more information, see [job execution flow](../jobs/job_execution.md).
 
 **Related topics**:
 
@@ -1557,7 +1593,7 @@ job:
 #### `artifacts:expose_as`
 
 Use the `artifacts:expose_as` keyword to
-[expose job artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
+[expose artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1579,22 +1615,17 @@ test:
 
 **Additional details**:
 
-- Artifacts are saved, but do not display in the UI if the `artifacts:paths` values:
+- You can use `expose_as` only once per job, with a maximum of 10 jobs per merge request.
+- Glob patterns are not supported.
+- Artifacts are always sent to GitLab. They are displayed in the UI unless `artifacts:paths` values:
   - Use [CI/CD variables](../variables/_index.md).
   - Define a directory, but do not end with `/`. For example, `directory/` works with `artifacts:expose_as`,
     but `directory` does not.
-  - Start with `./`. For example, `file` works with `artifacts:expose_as`, but `./file` does not.
-- A maximum of 10 job artifacts per merge request can be exposed.
-- Glob patterns are unsupported.
-- If a directory is specified and there is more than one file in the directory,
-  the link is to the job [artifacts browser](../jobs/job_artifacts.md#download-job-artifacts).
-- If [GitLab Pages](../../administration/pages/_index.md) is enabled, GitLab automatically
-  renders the artifacts when the artifacts is a single file with one of these extensions:
-  - `.html` or `.htm`
-  - `.txt`
-  - `.json`
-  - `.xml`
-  - `.log`
+- If `artifacts:paths` only includes a single file, the link opens the file directly.
+  In all other cases, the link opens the [artifacts browser](../jobs/job_artifacts.md#download-job-artifacts).
+- Linked files are downloaded by default.
+  If [GitLab Pages](../../administration/pages/_index.md) is enabled, you can preview some artifacts file extensions directly in your browser.
+  See [Browse the contents of the artifacts archive](../jobs/job_artifacts.md#browse-the-contents-of-the-artifacts-archive) for details.
 
 **Related topics**:
 
@@ -2739,6 +2770,12 @@ the namespace `my-namespace` and the `flux_resource_path` set to
 
 #### `environment:deployment_tier`
 
+{{< history >}}
+
+- Support for CI/CD variables [added](https://gitlab.com/gitlab-org/gitlab/-/issues/365402) in GitLab 18.5.
+
+{{< /history >}}
+
 Use the `deployment_tier` keyword to specify the tier of the deployment environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -2750,6 +2787,9 @@ Use the `deployment_tier` keyword to specify the tier of the deployment environm
 - `testing`
 - `development`
 - `other`
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file),
+  including predefined, project, group, instance, or variables defined in the
+  `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
 
 **Example of `environment:deployment_tier`**:
 
@@ -3837,9 +3877,10 @@ Use `needs:parallel:matrix` to execute jobs out-of-order depending on paralleliz
 
 **Keyword type**: Job keyword. You can use it only as part of a job. Must be used with `needs:job`.
 
-**Supported values**: An array of hashes of variables:
+**Supported values**: An array of hashes of matrix identifiers:
 
-- The variables and values must be selected from the variables and values defined in the `parallel:matrix` job.
+- The identifiers and values must be selected from the identifiers and values defined in the `parallel:matrix` job.
+- You can use [matrix expressions](matrix_expressions.md).
 
 **Example of `needs:parallel:matrix`**:
 
@@ -3877,13 +3918,9 @@ linux:rspec
 
 The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishes.
 
-**Related topics**:
-
-- [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
-
 **Additional details**:
 
-- The order of the matrix variables in `needs:parallel:matrix` must match the order
+- The order of the matrix identifiers in `needs:parallel:matrix` must match the order
   of the matrix variables in the needed job. For example, reversing the order of
   the variables in the `linux:rspec` job in the previous example would be invalid:
 
@@ -3899,7 +3936,10 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
     script: echo "Running rspec on linux..."
   ```
 
----
+**Related topics**:
+
+- [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
+- [Matrix expressions in `needs:parallel:matrix`](matrix_expressions.md#matrix-expressions-in-needsparallelmatrix).
 
 ### `pages`
 
@@ -4187,7 +4227,7 @@ Multiple runners must exist, or a single runner must be configured to run multip
 
 **Supported values**: An array of hashes of variables:
 
-- The variable names can use only numbers, letters, and underscores (`_`).
+- The matrix identifiers, which become the variable names, can use only numbers, letters, and underscores (`_`).
 - The values must be either a string, or an array of strings.
 - The number of permutations cannot exceed 200.
 
@@ -4205,37 +4245,30 @@ deploystacks:
           - monitoring
           - app1
           - app2
-      - PROVIDER: ovh
-        STACK: [monitoring, backup, app]
       - PROVIDER: [gcp, vultr]
         STACK: [data, processing]
   environment: $PROVIDER/$STACK
 ```
 
-The example generates 10 parallel `deploystacks` jobs, each with different values
+The example generates 7 parallel `deploystacks` jobs, each with different values
 for `PROVIDER` and `STACK`:
 
-```plaintext
-deploystacks: [aws, monitoring]
-deploystacks: [aws, app1]
-deploystacks: [aws, app2]
-deploystacks: [ovh, monitoring]
-deploystacks: [ovh, backup]
-deploystacks: [ovh, app]
-deploystacks: [gcp, data]
-deploystacks: [gcp, processing]
-deploystacks: [vultr, data]
-deploystacks: [vultr, processing]
-```
+- `deploystacks: [aws, monitoring]`
+- `deploystacks: [aws, app1]`
+- `deploystacks: [aws, app2]`
+- `deploystacks: [gcp, data]`
+- `deploystacks: [gcp, processing]`
+- `deploystacks: [vultr, data]`
+- `deploystacks: [vultr, processing]`
 
 **Additional details**:
 
-- `parallel:matrix` jobs add the variable values to the job names to differentiate
+- `parallel:matrix` jobs add the matrix values to the job names to differentiate
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
   - [Job names](../jobs/_index.md#job-names) must be 255 characters or fewer.
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
-- You cannot create multiple matrix configurations with the same variable values but different variable names.
-  Job names are generated from the variable values, not the variable names, so matrix entries
+- You cannot create multiple matrix configurations with the same values but different names.
+  Job names are generated from the matrix values, not the names, so matrix entries
   with identical values generate identical job names that overwrite each other.
 
   For example, this `test` configuration would try to create two series of identical jobs,
@@ -4258,6 +4291,7 @@ deploystacks: [vultr, processing]
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
 - [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
+- [Matrix expressions in `needs:parallel:matrix`](matrix_expressions.md#matrix-expressions-in-needsparallelmatrix).
 
 ---
 
@@ -4306,7 +4340,7 @@ release_job:
 This example creates a release:
 
 - When you push a Git tag.
-- When you add a Git tag in the UI at **Code > Tags**.
+- When you add a Git tag in the UI at **Code** > **Tags**.
 
 **Additional details**:
 
@@ -4971,7 +5005,10 @@ relative to `refs/heads/branch1` and the pipeline source is a merge request even
 
 **Additional details**:
 
-- Using `compare_to` with [merged results pipelines](../pipelines/merged_results_pipelines.md#troubleshooting) can cause unexpected results, because the comparison base is an internal commit that GitLab creates.
+- Using `compare_to` in some situation can cause unexpected results:
+  - With [merged results pipelines](../pipelines/merged_results_pipelines.md#troubleshooting),
+    because the comparison base is an internal commit that GitLab creates.
+  - In a forked project, see [issue 424584](https://gitlab.com/gitlab-org/gitlab/-/issues/424584).
 
 **Related topics**:
 
@@ -5002,7 +5039,7 @@ Use `exists` to run a job when certain files or directories exist in the reposit
 **Example of `rules:exists`**:
 
 ```yaml
-job:
+job1:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - exists:
@@ -5087,11 +5124,6 @@ docker-build-2:
 ```
 
 In this example, both jobs have the same behavior.
-
-**Additional details**:
-
-- In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
-  See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
 
 ---
 
@@ -6295,8 +6327,8 @@ This setting makes your pipeline execution linear rather than parallel.
 **Supported values**:
 
 - `mirror`: Mirrors the status of the downstream pipeline exactly.
-- `depend`: The trigger job status shows **failed**, **success** or **running**,
-  depending on the downstream pipeline status. See additional details.
+- `depend`: Not recommended, use `mirror` instead. The trigger job status shows **failed**, **success**,
+  or **running**, depending on the downstream pipeline status. See additional details.
 
 **Example of `trigger:strategy`**:
 
@@ -6318,7 +6350,7 @@ successfully complete before starting.
 - By default, jobs in later stages do not start until the trigger job completes.
 - [Blocking manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
   must run before the trigger job is marked as successful or failed.
-- When using `stratgy:depend`:
+- When using `strategy:depend` (no longer recommended, use `strategy:mirror` instead):
   - The trigger job shows **running** ({{< icon name="status_running" >}}) if the downstream pipeline status is
     **waiting for manual action** ({{< icon name="status_manual" >}}) due to manual jobs.
   - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),

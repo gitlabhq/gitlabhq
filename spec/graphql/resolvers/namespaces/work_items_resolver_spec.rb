@@ -30,6 +30,43 @@ RSpec.describe Resolvers::Namespaces::WorkItemsResolver, feature_category: :team
 
       resolve_items(project_namespace, { include_ancestors: true })
     end
+
+    context 'with include_archived filtering' do
+      let_it_be(:archived_project) { create(:project, :archived, developers: current_user) }
+      let_it_be(:work_item_archived_project) { create(:work_item, project: archived_project) }
+
+      it 'is ignored for project namespaces' do
+        items = resolve_items(archived_project.project_namespace, { include_archived: false })
+        expect(items).to contain_exactly(work_item_archived_project)
+      end
+    end
+  end
+
+  context 'with a group namespace' do
+    let_it_be(:group) { create(:group, developers: current_user) }
+
+    context 'with include_archived filtering' do
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:archived_project) { create(:project, :archived, group: group) }
+
+      let_it_be(:work_item) { create(:work_item, project: project) }
+      let_it_be(:work_item_archived_project) { create(:work_item, project: archived_project) }
+
+      it 'does not include work items from archived projects by default' do
+        items = resolve_items(group, { include_descendants: true })
+        expect(items).to contain_exactly(work_item)
+      end
+
+      it 'does not include work items from archived projects when include_archived is false' do
+        items = resolve_items(group, { include_archived: false, include_descendants: true })
+        expect(items).to contain_exactly(work_item)
+      end
+
+      it 'includes work items from archived projects when include_archived is true' do
+        items = resolve_items(group, { include_archived: true, include_descendants: true })
+        expect(items).to contain_exactly(work_item, work_item_archived_project)
+      end
+    end
   end
 
   context 'with a user namespace' do

@@ -375,15 +375,17 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
+      'AiImpactAnalytics|Code contributors with assigned Duo seats who used Code Suggestions.',
     ),
     groupLink: '',
     projectLink: '',
-    docsLink: helpPagePath('user/project/repository/code_suggestions/_index'),
+    docsLink: helpPagePath('user/project/repository/code_suggestions/_index', {
+      anchor: 'use-code-suggestions',
+    }),
   },
   [AI_METRICS.CODE_SUGGESTIONS_ACCEPTANCE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated.',
+      'AiImpactAnalytics|Code Suggestions accepted out of total Code Suggestions generated.',
     ),
     groupLink: '',
     projectLink: '',
@@ -392,16 +394,14 @@ export const VALUE_STREAM_METRIC_METADATA = {
     }),
   },
   [AI_METRICS.DUO_CHAT_USAGE_RATE]: {
-    description: s__(
-      'AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
-    ),
+    description: s__('AiImpactAnalytics|Users with assigned Duo seats who used Duo Chat.'),
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/gitlab_duo_chat/_index'),
   },
   [AI_METRICS.DUO_RCA_USAGE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio calculated as total monthly unique Duo Root Cause Analysis users / monthly unique Duo Chat users.',
+      'AiImpactAnalytics|Users with assigned Duo seats who used Root Cause Analysis.',
     ),
     groupLink: '',
     projectLink: '',
@@ -438,7 +438,7 @@ export const USAGE_OVERVIEW_METADATA = {
     options: { title: __('Users'), titleIcon: 'user' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: {
-    options: { title: __('Issues'), titleIcon: 'issues' },
+    options: { title: __('Issues'), titleIcon: 'issue-type-issue' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: {
     options: { title: __('Merge requests'), titleIcon: 'merge-request' },
@@ -462,3 +462,9 @@ export const USAGE_OVERVIEW_GROUP_ONLY_IDENTIFIERS = [
   USAGE_OVERVIEW_IDENTIFIER_USERS,
   USAGE_OVERVIEW_IDENTIFIER_PROJECTS,
 ];
+
+export const CHART_TOOLTIP_TITLE_FORMATTERS = {
+  DATE: 'DATE',
+  TITLE_CASE: 'TITLE_CASE',
+  VALUE_ONLY: 'VALUE_ONLY',
+};

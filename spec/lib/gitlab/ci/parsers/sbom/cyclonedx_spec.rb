@@ -31,6 +31,23 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
     allow(SecureRandom).to receive(:uuid).and_return(uuid)
   end
 
+  context 'when standard error is raised' do
+    let(:exception) { StandardError.new('some error') }
+
+    before do
+      allow_next_instance_of(Gitlab::Ci::Parsers::Sbom::Cyclonedx) do |cyclonedx|
+        allow(cyclonedx).to receive(:parse_report).and_raise(exception)
+      end
+    end
+
+    it 'adds error to the report and tracks exception' do
+      expect(report).to receive(:add_error).with('Unexpected error encountered')
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception).and_call_original
+
+      parse!
+    end
+  end
+
   context 'when report is invalid' do
     context 'when report JSON is invalid' do
       let(:raw_report_data) { '{ ' }

@@ -145,7 +145,7 @@ In this analogy, the brain part for ChatGPT is the GPT-4 model, while in the Ant
 
 For further information about supported serving platforms and models, see [LLM Serving Platforms](../../administration/gitlab_duo_self_hosted/supported_llm_serving_platforms.md) and [Models](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
 
-**What is Ollama?**
+**What is Ollama**?
 
 Ollama is a streamlined, open-source framework for running Large Language Models (LLMs) in local environments. It simplifies the traditionally complex process of deploying AI models, making it accessible to both individuals and organizations looking for efficient, flexible, and scalable AI solutions.
 

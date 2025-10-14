@@ -7,7 +7,7 @@ module Gitlab
       class Host
         attr_reader :pool, :last_checked_at, :intervals, :load_balancer, :host, :port
 
-        delegate :connection, :release_connection, :enable_query_cache!, :disable_query_cache!, :query_cache_enabled, :discarded?, to: :pool
+        delegate :release_connection, :enable_query_cache!, :disable_query_cache!, :query_cache_enabled, :discarded?, to: :pool
 
         CONNECTION_ERRORS = [
           ActionView::Template::Error,
@@ -77,6 +77,14 @@ module Gitlab
           # Randomly somewhere in between interval and 2*interval we'll refresh the status of the host
           interval = load_balancer.configuration.replica_check_interval
           @intervals = (interval..(interval * 2)).step(0.5).to_a
+        end
+
+        def connection
+          if Gitlab.next_rails?
+            pool.lease_connection
+          else
+            pool.connection
+          end
         end
 
         # Disconnects the pool, once all connections are no longer in use.

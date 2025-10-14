@@ -4,7 +4,7 @@
   grid-template-columns: 1fr auto;
   grid-gap: $gl-spacing-scale-5;
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     grid-template-columns: 3fr 1fr;
   }
 }
@@ -12,7 +12,7 @@
 .geo-site-details-grid-columns {
   grid-gap: $gl-spacing-scale-5;
 
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     grid-template-columns: 1fr 3fr;
   }
 }
@@ -26,7 +26,7 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     grid-template-columns: 1fr 1fr 2fr 2fr;
   }
 }
@@ -34,7 +34,7 @@
 .geo-site-filter-grid-columns {
   grid-template-columns: 1fr;
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     grid-template-columns: 3fr 1fr;
   }
 }

@@ -113,7 +113,7 @@ describe('SuggestionDiffRow', () => {
       });
 
       lineContent = wrapper.find('td.line_content');
-      expect(lineContent.classes()).not.toContain('d-table-cell');
+      expect(lineContent.classes()).not.toContain('!gl-table-cell');
 
       factory({
         propsData: {
@@ -125,7 +125,7 @@ describe('SuggestionDiffRow', () => {
       });
 
       lineContent = wrapper.find('td.line_content');
-      expect(lineContent.classes()).not.toContain('d-table-cell');
+      expect(lineContent.classes()).not.toContain('!gl-table-cell');
     });
   });
 

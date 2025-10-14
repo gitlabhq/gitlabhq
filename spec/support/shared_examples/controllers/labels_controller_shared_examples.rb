@@ -69,6 +69,13 @@ RSpec.shared_examples 'handles archived labels' do
     end
   end
 
+  it 'pushes labels_archive feature flag to frontend' do
+    allow(controller).to receive(:push_frontend_feature_flag)
+
+    get :index, params: params
+    expect(controller).to have_received(:push_frontend_feature_flag).with(:labels_archive, anything).at_least(:once)
+  end
+
   context 'with feature flag labels_archive disabled' do
     let(:archived) { true }
 

@@ -81,7 +81,7 @@ To learn more about enterprise best practices, see [enterprise considerations](e
 In this section, you'll build a simple Kubernetes manifest as an OCI artifact, then deploy it to your cluster.
 
 1. Run the following `flux` CLI commands to tell Flux where to retrieve the specified OCI image and deploy its content.
-   Adjust the `--url` value for your GitLab instance. You can find the container registry URL under **Deploy > Container registry**.
+   Adjust the `--url` value for your GitLab instance. You can find the container registry URL under **Deploy** > **Container registry**.
    You can inspect the created `clusters/testing/nginx.yaml` file to better understand how Flux finds the manifests to deploy.
 
    ```shell
@@ -186,7 +186,7 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
    ```
 
 1. Commit and push the changes to your project, and wait for the build pipeline to finish.
-1. On the left sidebar, select **Operate > Environments** and check the available [dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md).
+1. On the left sidebar, select **Operate** > **Environments** and check the available [dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md).
    The `applications/nginx` environment should be healthy.
 
 ## Secure the GitLab pipeline access

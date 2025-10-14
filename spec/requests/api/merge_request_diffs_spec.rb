@@ -96,10 +96,24 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :s
     end
 
     context 'caching merge request diffs', :use_clean_rails_redis_caching do
-      it 'is performed' do
+      let(:merge_request_raw_diff) { merge_request_diff.diffs.diffs.first }
+      let(:expected_diff) { merge_request_raw_diff.diff }
+      let(:expected_unidiff) { merge_request_raw_diff.unidiff }
+
+      it 'creates different cache keys for diff/unidiff modes' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user)
 
-        expect(Rails.cache.fetch(merge_request_diff.cache_key)).to be_present
+        expected_diff_key = [::API::Entities::MergeRequestDiffFull, merge_request_diff.cache_key, false].join(":")
+        expect(Rails.cache.fetch(expected_diff_key)).to be_present
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('diffs', 0, 'diff')).to eq(expected_diff)
+
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user), params: { unidiff: true }
+
+        expected_unidiff_key = [::API::Entities::MergeRequestDiffFull, merge_request_diff.cache_key, true].join(":")
+        expect(Rails.cache.fetch(expected_unidiff_key)).to be_present
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('diffs', 0, 'diff')).to eq(expected_unidiff)
       end
     end
   end

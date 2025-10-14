@@ -43,7 +43,7 @@ export default {
       'footerCreateLabelTitle',
       'footerManageLabelTitle',
     ]),
-    ...mapGetters(['selectedLabelsList', 'isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
+    ...mapGetters(['isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     visibleLabels() {
       if (this.searchKey) {
         return fuzzaldrinPlus.filter(this.labels, this.searchKey, {
@@ -168,7 +168,7 @@ export default {
         class="dropdown-title gl-flex gl-items-center !gl-pb-3 gl-pt-0"
         data-testid="dropdown-title"
       >
-        <span class="flex-grow-1">{{ labelsListTitle }}</span>
+        <span class="!gl-grow">{{ labelsListTitle }}</span>
         <gl-button
           :aria-label="__('Close')"
           category="tertiary"
@@ -215,7 +215,7 @@ export default {
         <ul class="list-unstyled">
           <li v-if="allowLabelCreate">
             <gl-link
-              class="flex-row label-item gl-flex gl-w-full gl-break-all"
+              class="label-item gl-flex gl-w-full !gl-flex-row gl-break-all"
               data-testid="create-label-link"
               @click="handleCreateLabelClick"
             >
@@ -223,7 +223,7 @@ export default {
             </gl-link>
           </li>
           <li v-if="labelsManagePath">
-            <gl-link :href="labelsManagePath" class="flex-row label-item gl-flex gl-break-all">
+            <gl-link :href="labelsManagePath" class="label-item gl-flex !gl-flex-row gl-break-all">
               {{ footerManageLabelTitle }}
             </gl-link>
           </li>

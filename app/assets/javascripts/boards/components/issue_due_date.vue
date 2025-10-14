@@ -7,8 +7,9 @@ import {
   humanTimeframe,
   localeDateFormat,
   newDate,
+  formatDateLongMonthDay,
 } from '~/lib/utils/datetime_utility';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 export default {
@@ -87,6 +88,21 @@ export default {
         : localeDateFormat.asDate.format(this.issueDueDate);
     },
   },
+  methods: {
+    createAriaLabel() {
+      let dueDateAccessibleLabel;
+
+      if (this.timeDifference >= -1 && this.timeDifference < 7) {
+        dueDateAccessibleLabel = this.body;
+      } else {
+        dueDateAccessibleLabel = formatDateLongMonthDay(this.issueDueDate);
+      }
+
+      return sprintf(__(`Due date: %{date}`), {
+        date: dueDateAccessibleLabel,
+      });
+    },
+  },
 };
 </script>
 
@@ -95,13 +111,10 @@ export default {
     anchor-id="board-card-due-date"
     wrapper-component="button"
     :wrapper-component-class="`${cssClass} board-card-info gl-mr-3 !gl-cursor-help gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset`"
+    :aria-label="createAriaLabel()"
   >
     <template #icon>
-      <gl-icon
-        :variant="isOverdue ? 'danger' : 'subtle'"
-        class="board-card-info-icon"
-        :name="iconName"
-      />
+      <gl-icon :variant="isOverdue ? 'danger' : 'subtle'" :name="iconName" />
     </template>
     <template #title>
       <time datetime="date" class="board-card-info-text gl-text-sm">{{ body }}</time>

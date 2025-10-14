@@ -10,12 +10,6 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
 
   let(:path) { group_path(group) }
 
-  before do
-    # Disable feature flag while it is a WIP.
-    # Feature specs for enabled feature flag will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/519658
-    stub_feature_flags(groups_overview_shared_vue_components: false)
-  end
-
   context 'when signed in' do
     context 'with non-admin group concerns' do
       before do
@@ -84,9 +78,9 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
 
           visit group_path(group, sort: :stars_desc)
 
-          expect(find('.group-row:nth-child(1) .namespace-title > a')).to have_content(project2.title)
-          expect(find('.group-row:nth-child(2) .namespace-title > a')).to have_content(project1.title)
-          expect(find('.group-row:nth-child(3) .namespace-title > a')).to have_content(project3.title)
+          expect(find('li[data-testid^="projects-list-item"]:nth-child(1)')).to have_content(project2.title)
+          expect(find('li[data-testid^="projects-list-item"]:nth-child(2)')).to have_content(project1.title)
+          expect(find('li[data-testid^="projects-list-item"]:nth-child(3)')).to have_content(project3.title)
           expect(page).to have_selector('button[data-testid="base-dropdown-toggle"]', text: 'Stars')
         end
       end
@@ -135,46 +129,6 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
               .to have_link(s_('GroupsEmptyState|Create project'), href: expected_path)
           end
         end
-      end
-    end
-
-    context 'with visibility warning popover' do
-      let_it_be(:public_project) { create(:project, :public) }
-
-      shared_examples 'it shows warning popover' do
-        it 'shows warning popover', :js do
-          group_to_share_with.add_owner(user)
-          sign_in(user)
-          visit group_path(group_to_share_with)
-
-          click_link _('Shared projects')
-
-          wait_for_requests
-
-          within_testid("groups-list-item-#{public_project.id}") do
-            click_button _('Less restrictive visibility')
-          end
-
-          expect(page).to have_content _('Project visibility level is less restrictive than the group settings.')
-        end
-      end
-
-      context 'when a public project is shared with a private group' do
-        let_it_be(:group_to_share_with) { create(:group, :private) }
-        let_it_be(:project_group_link) do
-          create(:project_group_link, group: group_to_share_with, project: public_project)
-        end
-
-        include_examples 'it shows warning popover'
-      end
-
-      context 'when a public project is shared with an internal group' do
-        let_it_be(:group_to_share_with) { create(:group, :internal) }
-        let_it_be(:project_group_link) do
-          create(:project_group_link, group: group_to_share_with, project: public_project)
-        end
-
-        include_examples 'it shows warning popover'
       end
     end
 
@@ -247,28 +201,6 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
       end
 
       it_behaves_like "an autodiscoverable RSS feed without a feed token"
-    end
-
-    context 'when group has a public project', :js do
-      let!(:project) { create(:project, :public, namespace: group) }
-
-      it 'renders public project', :aggregate_failures do
-        visit path
-
-        expect(page).to have_link group.name
-        expect(page).to have_link project.name
-      end
-    end
-
-    context 'when group has a private project', :js do
-      let!(:project) { create(:project, :private, namespace: group) }
-
-      it 'does not render private project', :aggregate_failures do
-        visit path
-
-        expect(page).to have_link group.name
-        expect(page).not_to have_link project.name
-      end
     end
   end
 
@@ -361,6 +293,13 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
     it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
   end
 
+  def click_group_caret(group)
+    within_testid("groups-list-item-#{group.id}") do
+      find_by_testid('nested-groups-project-list-item-toggle-button').click
+    end
+    wait_for_requests
+  end
+
   context 'for structured schema markup' do
     let_it_be(:group) { create(:group, :public, :with_avatar, description: 'foo') }
     let_it_be(:subgroup) { create(:group, :public, :with_avatar, parent: group, description: 'bar') }
@@ -387,10 +326,8 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
         end
 
         # Finding the subgroup row and expanding it
-        el = find('[itemprop="subOrganization"][itemtype="https://schema.org/Organization"]')
-        el.click
-        wait_for_all_requests
-        page.within(el) do
+        click_group_caret(subgroup)
+        within_testid("groups-list-item-#{subgroup.id}") do
           expect(page).to have_selector('[itemprop="logo"]')
           expect(page).to have_selector('[itemprop="name"]', text: subgroup.name)
           expect(page).to have_selector('[itemprop="description"]', text: subgroup.description)
@@ -411,17 +348,6 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
       visit group_shared_path(group)
       wait_for_all_requests
 
-      expect(page).to have_selector('li.group-row')
-      expect(page).not_to have_selector('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]')
-    end
-
-    it 'does not include structured markup in archived projects tab', :aggregate_failures, :js do
-      project.update!(archived: true)
-
-      visit group_inactive_path(group)
-      wait_for_all_requests
-
-      expect(page).to have_selector('li.group-row')
       expect(page).not_to have_selector('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]')
     end
   end

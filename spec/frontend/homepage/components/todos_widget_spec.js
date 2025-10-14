@@ -106,7 +106,7 @@ describe('TodosWidget', () => {
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
         action: null,
-        first: 5,
+        first: 15,
         state: ['pending'],
       });
     });
@@ -179,7 +179,6 @@ describe('TodosWidget', () => {
     });
 
     it('refetches todos when a todo item changes', async () => {
-      // Reset call count after initial query
       todosQuerySuccessHandler.mockClear();
 
       const firstTodoItem = findFirstTodoItem();
@@ -206,7 +205,7 @@ describe('TodosWidget', () => {
       createComponent();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
-        first: 5,
+        first: 15,
         state: ['pending'],
         action: null,
       });
@@ -220,7 +219,7 @@ describe('TodosWidget', () => {
       await waitForPromises();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
-        first: 5,
+        first: 15,
         state: ['pending'],
         action: ['assigned'],
       });
@@ -234,7 +233,7 @@ describe('TodosWidget', () => {
       await waitForPromises();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
-        first: 5,
+        first: 15,
         state: ['pending'],
         action: ['mentioned', 'directly_addressed'],
       });
@@ -259,7 +258,6 @@ describe('TodosWidget', () => {
       };
 
       const queryHandler = jest.fn((value) => {
-        // Return an empty response if the filter is provided
         if (value.action) {
           return emptyResponse;
         }
@@ -311,6 +309,120 @@ describe('TodosWidget', () => {
       await waitForPromises();
 
       expect(provided.currentUserId.value).toBe(todosResponse.data.currentUser.id);
+    });
+  });
+
+  describe('display behavior', () => {
+    it('displays only first 5 todos when more than 5 are fetched', async () => {
+      const manyTodosResponse = {
+        ...todosResponse,
+        data: {
+          ...todosResponse.data,
+          currentUser: {
+            ...todosResponse.data.currentUser,
+            todos: {
+              ...todosResponse.data.currentUser.todos,
+              nodes: Array.from({ length: 8 }, (_, i) => ({
+                ...todosResponse.data.currentUser.todos.nodes[0],
+                id: `gid://gitlab/Todo/${i + 1}`,
+                targetUrl: `http://example.com/issue/${i + 1}`,
+              })),
+            },
+          },
+        },
+      };
+
+      const manyTodosQueryHandler = jest.fn().mockResolvedValue(manyTodosResponse);
+      createComponent({ todosQueryHandler: manyTodosQueryHandler });
+      await waitForPromises();
+
+      expect(manyTodosQueryHandler).toHaveBeenCalledWith({
+        first: 15,
+        state: ['pending'],
+        action: null,
+      });
+
+      expect(wrapper.vm.todos).toHaveLength(8);
+      expect(findTodoItems()).toHaveLength(5);
+      expect(wrapper.vm.displayedTodos).toHaveLength(5);
+      expect(wrapper.vm.displayedTodos[0].id).toBe('gid://gitlab/Todo/1');
+      expect(wrapper.vm.displayedTodos[4].id).toBe('gid://gitlab/Todo/5');
+    });
+
+    it('displays all todos when fewer than 5 are available', async () => {
+      const fewTodosResponse = {
+        ...todosResponse,
+        data: {
+          ...todosResponse.data,
+          currentUser: {
+            ...todosResponse.data.currentUser,
+            todos: {
+              ...todosResponse.data.currentUser.todos,
+              nodes: Array.from({ length: 3 }, (_, i) => ({
+                ...todosResponse.data.currentUser.todos.nodes[0],
+                id: `gid://gitlab/Todo/${i + 1}`,
+                targetUrl: `http://example.com/issue/${i + 1}`,
+              })),
+            },
+          },
+        },
+      };
+
+      const fewTodosQueryHandler = jest.fn().mockResolvedValue(fewTodosResponse);
+      createComponent({ todosQueryHandler: fewTodosQueryHandler });
+      await waitForPromises();
+
+      expect(wrapper.vm.todos).toHaveLength(3);
+      expect(findTodoItems()).toHaveLength(3);
+      expect(wrapper.vm.displayedTodos).toHaveLength(3);
+    });
+
+    it('handles SAML-blocked todos correctly when mixed with accessible todos', async () => {
+      const mixedTodosResponse = {
+        ...todosResponse,
+        data: {
+          ...todosResponse.data,
+          currentUser: {
+            ...todosResponse.data.currentUser,
+            todos: {
+              ...todosResponse.data.currentUser.todos,
+              nodes: [
+                {
+                  ...todosResponse.data.currentUser.todos.nodes[0],
+                  id: 'gid://gitlab/Todo/1',
+                },
+                {
+                  ...todosResponse.data.currentUser.todos.nodes[0],
+                  id: 'gid://gitlab/Todo/2',
+                  targetUrl: 'http://example.com/saml-auth-url',
+                  targetEntity: null,
+                  project: null,
+                },
+                {
+                  ...todosResponse.data.currentUser.todos.nodes[1],
+                  id: 'gid://gitlab/Todo/3',
+                },
+              ],
+              pageInfo: {
+                ...todosResponse.data.currentUser.todos.pageInfo,
+                hasNextPage: true,
+              },
+            },
+          },
+        },
+      };
+
+      const mixedTodosQueryHandler = jest.fn().mockResolvedValue(mixedTodosResponse);
+      createComponent({ todosQueryHandler: mixedTodosQueryHandler });
+      await waitForPromises();
+
+      expect(findTodoItems()).toHaveLength(3);
+
+      const todoItems = findTodoItems();
+      expect(todoItems.at(0).props('todo').targetEntity).not.toBeNull();
+      expect(todoItems.at(1).props('todo').targetEntity).toBeNull();
+      expect(todoItems.at(2).props('todo').targetEntity).not.toBeNull();
+      expect(todoItems.at(1).props('todo').targetUrl).toBe('http://example.com/saml-auth-url');
     });
   });
 

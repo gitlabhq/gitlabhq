@@ -8,18 +8,6 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForIna
   let(:projects_table) { table(:projects) }
   let(:project_settings_table) { table(:project_settings) }
 
-  subject(:perform_migration) do
-    described_class.new(
-      start_id: projects_table.minimum(:id),
-      end_id: projects_table.maximum(:id),
-      batch_table: :projects,
-      batch_column: :id,
-      sub_batch_size: 2,
-      pause_ms: 0,
-      connection: ActiveRecord::Base.connection
-    ).perform
-  end
-
   let(:queries) { ActiveRecord::QueryRecorder.new { perform_migration } }
 
   let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
@@ -56,6 +44,18 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForIna
       name: 'proj-4', path: 'path-4', namespace_id: namespace_1.id, organization_id: organization.id,
       project_namespace_id: project_namespace_5.id, visibility_level: 20, last_activity_at: '2022-01-01'
     )
+  end
+
+  subject(:perform_migration) do
+    described_class.new(
+      start_id: projects_table.minimum(:id),
+      end_id: projects_table.maximum(:id),
+      batch_table: :projects,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   before do

@@ -16,10 +16,10 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest, feature_category: :source_c
         in_progress_merge_commit_sha: newrev)
     end
 
-    subject { described_class.new(newrev, target_branch, project) }
-
     let(:total_counter) { subject.send(:total_counter) }
     let(:stale_counter) { subject.send(:stale_counter) }
+
+    subject { described_class.new(newrev, target_branch, project) }
 
     it 'matches a merge request' do
       expect(subject.match?).to be true

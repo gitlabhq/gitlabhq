@@ -249,8 +249,7 @@ Example response:
 ## Schedule repository storage moves for all projects on a storage shard
 
 Schedules repository storage moves for each project repository stored on the source storage shard.
-This endpoint migrates all projects at once. For more information, see
-[Move all projects](../administration/operations/moving_repositories.md#move-all-projects).
+This endpoint migrates all projects at once.
 
 ```plaintext
 POST /project_repository_storage_moves
@@ -280,3 +279,7 @@ Example response:
   "message": "202 Accepted"
 }
 ```
+
+## Related topics
+
+- [Moving repositories managed by GitLab](../administration/operations/moving_repositories.md)

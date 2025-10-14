@@ -14,6 +14,7 @@ and running quickly.
 | [GitLab with Git Essentials](https://university.gitlab.com/courses/gitlab-with-git-essentials-s2)  |  Learn the basics of Git and GitLab in this self-paced course. | {{< icon name="star" >}} |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [How to start a free trial](https://www.youtube.com/watch?v=dIlBLrXbfrM&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=63) (3m 01s) | Learn how to start a free 30-day Ultimate trial, and create your first project. | {{< icon name="star" >}} |
 | [Use the left sidebar to navigate GitLab](left_sidebar/_index.md) |  Start navigating the GitLab UI. | {{< icon name="star" >}} |
+| [Use the personal homepage](personal_homepage/_index.md) |  Learn how to use the personal homepage to keep track of your activity across GitLab. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Continuous Delivery overview](https://www.youtube.com/watch?v=M7rBDZYsx8U&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=193) (17m 2s) | Learn how to use GitLab features to continuously build, test, and deploy iterative code changes. | |
 
 ## Find more tutorial content

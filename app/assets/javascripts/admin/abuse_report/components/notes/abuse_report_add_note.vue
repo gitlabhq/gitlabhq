@@ -53,8 +53,7 @@ export default {
     timelineEntryClasses() {
       return this.isNewDiscussion
         ? 'timeline-entry note-form'
-        : // eslint-disable-next-line @gitlab/require-i18n-strings
-          'note note-wrapper note-comment discussion-reply-holder !gl-border-t-0 clearfix';
+        : 'note note-wrapper note-comment discussion-reply-holder !gl-border-t-0 gl-clearfix';
     },
     timelineEntryInnerClasses() {
       return this.isNewDiscussion ? 'timeline-entry-inner' : '';

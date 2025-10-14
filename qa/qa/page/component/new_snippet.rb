@@ -74,6 +74,7 @@ module QA
         end
 
         def click_create_snippet_button
+          sleep 1 # debounce delay
           click_element_coordinates('submit-button')
           wait_until(reload: false) do
             has_no_element?('snippet-title-input-field')

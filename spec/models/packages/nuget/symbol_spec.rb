@@ -25,7 +25,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
     it { is_expected.to validate_presence_of(:signature) }
     it { is_expected.to validate_presence_of(:object_storage_key) }
     it { is_expected.to validate_presence_of(:size) }
-    it { is_expected.to validate_uniqueness_of(:object_storage_key).case_insensitive }
+    it { is_expected.to validate_uniqueness_of(:object_storage_key).scoped_to(:project_id).case_insensitive }
     it { is_expected.to validate_presence_of(:project) }
 
     context 'for signature & file_path uniqueness' do

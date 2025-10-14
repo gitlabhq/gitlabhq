@@ -1,7 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Counter from '~/super_sidebar/components/counter.vue';
-import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
 import UserCounts from '~/super_sidebar/components/user_counts.vue';
 import { userCounts, useCachedUserCounts } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
@@ -19,7 +18,6 @@ describe('UserCounts component', () => {
   const findIssuesCounter = () => wrapper.findByTestId('issues-shortcut-button');
   const findMRsCounter = () => wrapper.findByTestId('merge-requests-shortcut-button');
   const findTodosCounter = () => wrapper.findByTestId('todos-shortcut-button');
-  const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(UserCounts, {
@@ -52,7 +50,7 @@ describe('UserCounts component', () => {
       const issuesCounter = findIssuesCounter();
       expect(issuesCounter.props('count')).toBe(userCounts.assigned_issues);
       expect(issuesCounter.props('href')).toBe(mockSidebarData.issues_dashboard_path);
-      expect(issuesCounter.props('label')).toBe('1 assigned issue');
+      expect(issuesCounter.props('label')).toBe('Assigned issues');
       expect(issuesCounter.attributes('data-track-action')).toBe('click_link');
       expect(issuesCounter.attributes('data-track-label')).toBe('issues_link');
       expect(issuesCounter.attributes('data-track-property')).toBe('nav_core_menu');
@@ -62,7 +60,7 @@ describe('UserCounts component', () => {
     it('renders merge requests counter', () => {
       const mrsCounter = findMRsCounter();
       expect(mrsCounter.props('count')).toBe(userCounts.total_merge_requests);
-      expect(mrsCounter.props('label')).toBe('4 merge requests');
+      expect(mrsCounter.props('label')).toBe('Merge requests');
       expect(mrsCounter.attributes('data-track-action')).toBe('click_dropdown');
       expect(mrsCounter.attributes('data-track-label')).toBe('merge_requests_menu');
       expect(mrsCounter.attributes('data-track-property')).toBe('nav_core_menu');
@@ -73,7 +71,7 @@ describe('UserCounts component', () => {
         const todosCounter = findTodosCounter();
         expect(todosCounter.props('count')).toBe(userCounts.todos);
         expect(todosCounter.props('href')).toBe(mockSidebarData.todos_dashboard_path);
-        expect(todosCounter.props('label')).toBe('3 to-do items');
+        expect(todosCounter.props('label')).toBe('To-do items');
         expect(todosCounter.attributes('data-track-action')).toBe('click_link');
         expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
         expect(todosCounter.attributes('data-track-property')).toBe('nav_core_menu');
@@ -96,16 +94,6 @@ describe('UserCounts component', () => {
         expect(findTodosCounter().props('count')).toBe(1);
       });
     });
-
-    it('passes the "Merge request" menu groups to the merge_request_menu component', () => {
-      expect(findMergeRequestMenu().props('items')).toBe(mockSidebarData.merge_request_menu);
-    });
-  });
-
-  it('does not render merge request menu when merge_request_menu is null', () => {
-    createWrapper({ sidebarData: { ...mockSidebarData, merge_request_menu: null } });
-
-    expect(findMergeRequestMenu().exists()).toBe(false);
   });
 
   describe('merge request counts', () => {

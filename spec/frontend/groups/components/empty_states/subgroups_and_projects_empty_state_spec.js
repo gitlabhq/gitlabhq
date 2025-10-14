@@ -9,7 +9,6 @@ const defaultProvide = {
   newProjectPath: '/projects/new?namespace_id=231',
   newSubgroupPath: '/groups/new?parent_id=231',
   emptyProjectsIllustration: '/assets/illustrations/empty-state/empty-projects-md.svg',
-  emptySubgroupIllustration: '/assets/illustrations/empty-state/empty-projects-md.svg',
   canCreateSubgroups: true,
   canCreateProjects: true,
 };
@@ -62,7 +61,7 @@ describe('SubgroupsAndProjectsEmptyState', () => {
         title: 'There are no subgroups or projects in this group',
         description:
           'You do not have necessary permissions to create a subgroup or project in this group. Please contact an owner of this group to create a new subgroup or project.',
-        svgPath: defaultProvide.emptySubgroupIllustration,
+        svgPath: defaultProvide.emptyProjectsIllustration,
         search: '',
         searchMinimumLength: SEARCH_MINIMUM_LENGTH,
       });

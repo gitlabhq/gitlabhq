@@ -74,7 +74,7 @@ The ability to create group access tokens without an expiry date was [deprecated
 To create a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Access tokens**.
+1. Select **Settings** > **Access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the group.
 1. Optional. In **Token description**, enter a description for the token.
@@ -157,7 +157,7 @@ The inactive group access tokens table displays revoked and expired tokens until
 To revoke or rotate a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Access tokens**.
+1. Select **Settings** > **Access tokens**.
 1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Revoke** or **Rotate**.
 
@@ -197,7 +197,7 @@ To restrict the creation of group access tokens:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.
 1. Select **Save changes**.

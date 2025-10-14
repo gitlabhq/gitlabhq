@@ -57,7 +57,7 @@ With this integration, your GitLab project can interact with all Jira projects o
 To configure your project settings in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide connection details:
@@ -142,7 +142,7 @@ You can enable Jira issues for a specific group or project, but you can view the
 To view issues from one or more Jira projects in a GitLab project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Jira issues**.
+1. Select **Plan** > **Jira issues**.
 
 By default, the issues are sorted by **Created date**.
 The most recently created issues appear at the top.
@@ -215,7 +215,7 @@ You can set up verification rules to ensure Jira issues referenced in commit mes
 To configure Jira verification:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira verification** section.
 1. Configure the following verification checks:
@@ -287,7 +287,7 @@ You can create a Jira issue from GitLab to track any action taken to resolve or 
 To create a Jira issue for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
 
@@ -306,7 +306,7 @@ To create a Jira Cloud API token:
    from an account with write access to Jira projects.
 
    The link opens the **API tokens** page. Alternatively, from your Atlassian
-   profile, select **Account Settings > Security > Create and manage API tokens**.
+   profile, select **Account Settings** > **Security** > **Create and manage API tokens**.
 
 1. Select **Create API token**.
 1. On the dialog, enter a label for your token and select **Create**.

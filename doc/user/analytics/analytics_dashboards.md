@@ -70,7 +70,7 @@ Prerequisites:
 To view a list of dashboards (both built-in and custom) for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
+1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
 ## View group dashboards
@@ -90,7 +90,7 @@ Prerequisites:
 To view a list of dashboards (both built-in and custom) for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Analytics dashboards**.
+1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
 ## Change the location of dashboards
@@ -114,7 +114,7 @@ To change the location of a group's custom dashboards:
 1. On the left sidebar, select **Search or go to** and find the project you want to store your dashboard files in.
    The project must belong to the group for which you create the dashboards.
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Analytics**.
+1. Select **Settings** > **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 
@@ -137,7 +137,7 @@ To change the location of project dashboards:
    or select **Create new** ({{< icon name="plus" >}}) and **New project/repository**
    to create the project to store your dashboard files.
 1. On the left sidebar, select **Search or go to** and find the analytics project.
-1. Select **Settings > Analytics**.
+1. Select **Settings** > **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 

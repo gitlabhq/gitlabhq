@@ -17,7 +17,7 @@ RSpec.describe Gitlab::TaskHelpers do
 
     it 'checkout the version and reset to it' do
       expect(subject).to receive(:get_version).with(version).and_call_original
-      expect(subject).to receive(:checkout_version).with(tag, clone_path)
+      expect(subject).to receive(:checkout_version).with(tag, clone_path, checkout_opts: [])
 
       subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
     end

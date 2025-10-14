@@ -22,7 +22,7 @@ module QA
           payload[:request]
         end
 
-        # @return [Time] Time request was recieved
+        # @return [Time] Time request was received
         def received
           date = request&.dig(:date)
           Time.parse date if date

@@ -1,5 +1,5 @@
 <script>
-import { camelCase } from 'lodash';
+import { camelCase, chunk } from 'lodash';
 import { GlForm } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
@@ -27,6 +27,8 @@ const WorkItemBulkEditIteration = () =>
   import('ee_component/work_items/components/list/work_item_bulk_edit_iteration.vue');
 const WorkItemBulkEditStatus = () =>
   import('ee_component/work_items/components/work_item_bulk_edit/work_item_bulk_edit_status.vue');
+
+const BULK_EDIT_CHUNK_SIZE = 25;
 
 export default {
   name: 'WorkItemBulkEditSidebar',
@@ -180,42 +182,72 @@ export default {
         this.$emit('finish');
       }
     },
-    performBulkEdit() {
+    async performBulkEdit() {
+      const input = this.createBulkEditInput();
+      return this.chunkedBulkEditMutation(input);
+    },
+
+    createBulkEditInput() {
       let assigneeIds;
       if (this.assigneeId === BULK_EDIT_NO_VALUE) {
         assigneeIds = [null];
       } else if (this.assigneeId) {
         assigneeIds = [this.assigneeId];
       }
+
       const hasLabelsToUpdate = this.addLabelIds.length > 0 || this.removeLabelIds.length > 0;
+
+      return {
+        fullPath: this.fullPath,
+        labelsWidget: hasLabelsToUpdate
+          ? {
+              addLabelIds: this.addLabelIds,
+              removeLabelIds: this.removeLabelIds,
+            }
+          : undefined,
+        assigneesWidget: assigneeIds
+          ? {
+              assigneeIds,
+            }
+          : undefined,
+        confidential: this.confidentiality ? this.confidentiality === 'true' : undefined,
+        healthStatusWidget: this.formatValue({
+          name: 'healthStatus',
+          value: this.healthStatus,
+        }),
+        iterationWidget: this.formatValue({ name: 'iterationId', value: this.iterationId }),
+        milestoneWidget: this.formatValue({ name: 'milestoneId', value: this.milestoneId }),
+        statusWidget: this.formatValue({ name: 'status', value: this.statusId }),
+        stateEvent: this.state && this.state.toUpperCase(),
+        subscriptionEvent: this.subscription && this.subscription.toUpperCase(),
+        hierarchyWidget: this.formatValue({ name: 'parentId', value: this.parentId }),
+      };
+    },
+    async chunkedBulkEditMutation(input) {
+      const chunkedItems = chunk(this.checkedItems, BULK_EDIT_CHUNK_SIZE);
+
+      const mutations = chunkedItems.map((itemsChunk) => this.bulkEditMutation(input, itemsChunk));
+
+      const results = await Promise.allSettled(mutations);
+
+      const failedChunks = results.filter((result) => result.status === 'rejected');
+      if (failedChunks.length > 0) {
+        const messages = failedChunks.map((failure) => failure.reason);
+        throw new Error(
+          `${failedChunks.length} out of ${results.length} chunk(s) failed to update`,
+          { cause: messages },
+        );
+      }
+
+      return results;
+    },
+    bulkEditMutation(input, items) {
       return this.$apollo.mutate({
         mutation: workItemBulkUpdateMutation,
         variables: {
           input: {
-            fullPath: this.fullPath,
-            ids: this.checkedItems.map((item) => item.id),
-            labelsWidget: hasLabelsToUpdate
-              ? {
-                  addLabelIds: this.addLabelIds,
-                  removeLabelIds: this.removeLabelIds,
-                }
-              : undefined,
-            assigneesWidget: assigneeIds
-              ? {
-                  assigneeIds,
-                }
-              : undefined,
-            confidential: this.confidentiality ? this.confidentiality === 'true' : undefined,
-            healthStatusWidget: this.formatValue({
-              name: 'healthStatus',
-              value: this.healthStatus,
-            }),
-            iterationWidget: this.formatValue({ name: 'iterationId', value: this.iterationId }),
-            milestoneWidget: this.formatValue({ name: 'milestoneId', value: this.milestoneId }),
-            statusWidget: this.formatValue({ name: 'status', value: this.statusId }),
-            stateEvent: this.state && this.state.toUpperCase(),
-            subscriptionEvent: this.subscription && this.subscription.toUpperCase(),
-            hierarchyWidget: this.formatValue({ name: 'parentId', value: this.parentId }),
+            ...input,
+            ids: items.map((item) => item.id),
           },
         },
       });
@@ -322,11 +354,12 @@ export default {
       :disabled="!hasItemsSelected || !canEditMilestone"
     />
     <work-item-bulk-edit-parent
-      v-if="!isEpicsList"
       v-model="parentId"
       :full-path="fullPath"
       :is-group="isGroup"
       :disabled="!hasItemsSelected || !canEditParent"
+      :selected-work-item-types-ids="workItemTypeIds"
+      data-testid="bulk-edit-parent"
     />
     <template v-if="!isEpicsList">
       <hr />

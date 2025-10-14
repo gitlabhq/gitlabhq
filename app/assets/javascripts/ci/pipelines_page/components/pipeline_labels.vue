@@ -37,15 +37,17 @@ export default {
     showMergedResultsBadge() {
       // A merge train pipeline is technically also a merged results pipeline,
       // but we want the badges to be mutually exclusive.
-      return (
-        this.pipeline.flags.merged_result_pipeline && !this.pipeline.flags.merge_train_pipeline
-      );
+      const isMergedResult =
+        this.pipeline?.flags?.merged_result_pipeline ||
+        this.pipeline?.mergeRequestEventType === 'MERGED_RESULT';
+
+      return isMergedResult && !this.isMergeTrainPipeline;
     },
     showBranchBadge() {
-      return this.pipeline.flags.type === 'branch';
+      return this.pipeline?.flags?.type === 'branch' || this.pipeline?.type === 'branch';
     },
     showTagBadge() {
-      return this.pipeline.flags.type === 'tag';
+      return this.pipeline?.flags?.type === 'tag' || this.pipeline?.type === 'tag';
     },
     autoDevopsTagId() {
       return `pipeline-url-autodevops-${this.pipeline.id}`;
@@ -55,6 +57,36 @@ export default {
     },
     isApi() {
       return this.pipeline.source === API_ORIGIN;
+    },
+    hasLatestFlag() {
+      return this.pipeline?.flags?.latest || this.pipeline?.latest;
+    },
+    isMergeTrainPipeline() {
+      return (
+        this.pipeline?.flags?.merge_train_pipeline ||
+        this.pipeline?.mergeRequestEventType === 'MERGE_TRAIN'
+      );
+    },
+    isDetached() {
+      return (
+        this.pipeline?.flags?.detached_merge_request_pipeline ||
+        this.pipeline?.mergeRequestEventType === 'DETACHED'
+      );
+    },
+    hasYamlErrors() {
+      return this.pipeline?.flags?.yaml_errors || this.pipeline?.yamlErrors;
+    },
+    hasFailureReason() {
+      return this.pipeline?.flags?.failure_reason || Boolean(this.pipeline?.failureReason);
+    },
+    failureReason() {
+      return this.pipeline?.failure_reason || this.pipeline?.failureReason;
+    },
+    autoDevopsSource() {
+      return this.pipeline?.flags?.auto_devops || this.pipeline?.configSource === 'AUTO_DEVOPS';
+    },
+    stuck() {
+      return this.pipeline?.flags?.stuck || this.pipeline?.stuck;
     },
   },
   buttonClass: '!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0',
@@ -83,7 +115,7 @@ export default {
     </button>
 
     <button
-      v-if="pipeline.flags.latest"
+      v-if="hasLatestFlag"
       v-gl-tooltip
       :class="$options.buttonClass"
       :title="__('Latest pipeline for the most recent commit on this ref')"
@@ -93,7 +125,7 @@ export default {
     </button>
 
     <button
-      v-if="pipeline.flags.merge_train_pipeline"
+      v-if="isMergeTrainPipeline"
       v-gl-tooltip
       :title="
         s__(
@@ -107,7 +139,7 @@ export default {
     </button>
 
     <button
-      v-if="pipeline.flags.yaml_errors"
+      v-if="hasYamlErrors"
       v-gl-tooltip
       :title="pipeline.yaml_errors"
       :class="$options.buttonClass"
@@ -117,15 +149,15 @@ export default {
     </button>
 
     <button
-      v-if="pipeline.flags.failure_reason"
+      v-if="hasFailureReason"
       v-gl-tooltip
-      :title="pipeline.failure_reason"
+      :title="failureReason"
       :class="$options.buttonClass"
       data-testid="pipeline-url-failure"
     >
       <gl-badge variant="danger">{{ __('error') }}</gl-badge>
     </button>
-    <template v-if="pipeline.flags.auto_devops">
+    <template v-if="autoDevopsSource">
       <gl-link
         :id="autoDevopsTagId"
         tabindex="0"
@@ -162,7 +194,7 @@ export default {
       </gl-popover>
     </template>
 
-    <gl-badge v-if="pipeline.flags.stuck" variant="warning" data-testid="pipeline-url-stuck">{{
+    <gl-badge v-if="stuck" variant="warning" data-testid="pipeline-url-stuck">{{
       __('stuck')
     }}</gl-badge>
 
@@ -186,7 +218,7 @@ export default {
       <gl-badge variant="info">{{ s__('Pipeline|branch') }}</gl-badge>
     </button>
     <button
-      v-if="pipeline.flags.detached_merge_request_pipeline"
+      v-if="isDetached"
       v-gl-tooltip
       :title="
         s__(

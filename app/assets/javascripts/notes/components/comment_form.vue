@@ -205,6 +205,9 @@ export default {
     shouldMeasureNoteTemperature() {
       return !isSlashCommand(this.note) && this.glAbilities.measureCommentTemperature;
     },
+    showLockedWidget() {
+      return !this.canCreateNote && this.isLocked(this.getNoteableData);
+    },
   },
   watch: {
     noteIsInternal(val) {
@@ -381,7 +384,7 @@ export default {
 <template>
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
-    <discussion-locked-widget v-else-if="!canCreateNote" :issuable-type="noteableDisplayName" />
+    <discussion-locked-widget v-else-if="showLockedWidget" :issuable-type="noteableDisplayName" />
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
         <div class="flash-container gl-mb-2"></div>

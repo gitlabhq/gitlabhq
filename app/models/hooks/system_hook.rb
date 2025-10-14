@@ -25,6 +25,8 @@ class SystemHook < WebHook
   attribute :repository_update_events, default: true
   attribute :merge_requests_events, default: false
 
+  belongs_to :organization, class_name: 'Organizations::Organization'
+
   validates :url, system_hook_url: true, unless: ->(hook) { hook.url_variables? }
 
   # Allow urls pointing localhost and the local network

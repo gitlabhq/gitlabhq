@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class AddResourceGroupDefaultProcessModeToProjectSettings < Gitlab::Database::Migration[2.3]
   # When using the methods "add_concurrent_index" or "remove_concurrent_index"
   # you must disable the use of transactions

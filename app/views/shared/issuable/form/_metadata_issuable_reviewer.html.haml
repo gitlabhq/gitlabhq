@@ -1,5 +1,5 @@
-= form.label :reviewer_id, issuable.allows_multiple_reviewers? ? _('Reviewers') : _('Reviewer'), class: "col-12"
-.col-12
+= form.label :reviewer_id, issuable.allows_multiple_reviewers? ? _('Reviewers') : _('Reviewer'), class: "gl-col-12"
+.gl-col-12
   .issuable-form-select-holder.selectbox
     - issuable.reviewers.each do |reviewer|
       = hidden_field_tag "#{issuable.to_ability_name}[reviewer_ids][]", reviewer.id, id: nil, data: { meta: reviewer.name, avatar_url: reviewer.avatar_url, name: reviewer.name, username: reviewer.username }

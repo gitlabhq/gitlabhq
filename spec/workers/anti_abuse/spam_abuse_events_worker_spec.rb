@@ -72,7 +72,8 @@ RSpec.describe AntiAbuse::SpamAbuseEventsWorker, :clean_gitlab_redis_shared_stat
   context "when the user exists" do
     context 'and there is an existing abuse report' do
       let_it_be(:abuse_report) do
-        create(:abuse_report, user: user, reporter: Users::Internal.security_bot, message: 'Test report')
+        create(:abuse_report, user: user, reporter: Users::Internal.for_organization(user.organization).security_bot,
+          message: 'Test report')
       end
 
       it_behaves_like 'creates an abuse event with the correct data' do
@@ -84,7 +85,7 @@ RSpec.describe AntiAbuse::SpamAbuseEventsWorker, :clean_gitlab_redis_shared_stat
       it 'creates an abuse report with the correct data' do
         expect { worker.perform(params) }.to change { AbuseReport.count }.from(0).to(1)
         expect(AbuseReport.last.attributes).to include({
-          reporter_id: Users::Internal.security_bot.id,
+          reporter_id: Users::Internal.for_organization(user.organization).security_bot.id,
           organization_id: Users::Internal.security_bot.organization_id,
           user_id: user.id,
           category: "spam",

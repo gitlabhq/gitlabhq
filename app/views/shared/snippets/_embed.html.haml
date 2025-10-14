@@ -12,7 +12,7 @@
       %a.gitlab-logo-wrapper{ href: url_for(only_path: false, overwrite_params: nil), title: 'View on GitLab', target: '_blank', rel: 'noopener noreferrer' }
         %img.gitlab-logo{ src: image_url('ext_snippet_icons/logo.svg'), alt: "GitLab logo" }
 
-    .file-actions.gl-hidden.sm:gl-block
+    .file-actions.gl-hidden{ class: "@sm/panel:gl-block" }
       .btn-group{ role: "group" }<
         = embedded_copy_snippet_button(blob)
         = embedded_raw_snippet_button(@snippet, blob)

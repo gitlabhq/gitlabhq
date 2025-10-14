@@ -356,7 +356,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 | `id`                | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `repository_id`     | integer        | yes      | The ID of registry repository. |
 | `keep_n`            | integer        | no       | The amount of latest tags of given name to keep. |
-| `name_regex`        | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. **Note**: `name_regex` is deprecated in favor of `name_regex_delete`. This field is validated. |
+| `name_regex`        | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. Note: `name_regex` is deprecated in favor of `name_regex_delete`. This field is validated. |
 | `name_regex_delete` | string         | yes      | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. This field is validated. |
 | `name_regex_keep`   | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to keep. This value overrides any matches from `name_regex_delete`. This field is validated. Note: setting to `.*` results in a no-op. |
 | `older_than`        | string         | no       | Tags to delete that are older than the given time, written in human readable form `1h`, `1d`, `1month`. |

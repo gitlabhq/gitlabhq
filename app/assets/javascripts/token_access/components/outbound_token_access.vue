@@ -49,7 +49,7 @@ export default {
     removeNamespaceModalActionText: s__('CICD|Remove group or project'),
   },
   deprecationDocumentationLink: helpPagePath('ci/jobs/ci_job_token', {
-    anchor: 'limit-your-projects-job-token-access-removed',
+    anchor: 'add-a-group-or-project-to-the-job-token-allowlist',
   }),
   components: {
     GlAlert,
@@ -110,7 +110,7 @@ export default {
   },
   computed: {
     ciJobTokenHelpPage() {
-      return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access-removed');
+      return helpPagePath('ci/jobs/ci_job_token#add-a-group-or-project-to-the-job-token-allowlist');
     },
     disableTokenToggle() {
       return !this.jobTokenScopeEnabled;

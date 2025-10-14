@@ -31,27 +31,27 @@ RSpec.shared_examples 'importer routing' do
     except_actions.push(is_realtime ? :jobs : :realtime_changes)
   end
 
-  it 'to #create' do
+  specify 'to #create' do
     expect(post("/import/#{provider}")).to route_to("import/#{provider}#create") unless except_actions.include?(:create)
   end
 
-  it 'to #new' do
+  specify 'to #new' do
     expect(get("/import/#{provider}/new")).to route_to("import/#{provider}#new") unless except_actions.include?(:new)
   end
 
-  it 'to #status' do
+  specify 'to #status' do
     expect(get("/import/#{provider}/status")).to route_to("import/#{provider}#status") unless except_actions.include?(:status)
   end
 
-  it 'to #callback' do
+  specify 'to #callback' do
     expect(get("/import/#{provider}/callback")).to route_to("import/#{provider}#callback") unless except_actions.include?(:callback)
   end
 
-  it 'to #jobs' do
+  specify 'to #jobs' do
     expect(get("/import/#{provider}/jobs")).to route_to("import/#{provider}#jobs") unless except_actions.include?(:jobs)
   end
 
-  it 'to #realtime_changes' do
+  specify 'to #realtime_changes' do
     expect(get("/import/#{provider}/realtime_changes")).to route_to("import/#{provider}#realtime_changes") unless except_actions.include?(:realtime_changes)
   end
 end
@@ -68,15 +68,15 @@ RSpec.describe Import::GithubController, 'routing', feature_category: :importers
     let(:is_realtime) { true }
   end
 
-  it 'to #personal_access_token' do
+  specify 'to #personal_access_token' do
     expect(post('/import/github/personal_access_token')).to route_to('import/github#personal_access_token')
   end
 
-  it 'to #cancel_all' do
+  specify 'to #cancel_all' do
     expect(post('/import/github/cancel_all')).to route_to('import/github#cancel_all')
   end
 
-  it 'to #counts' do
+  specify 'to #counts' do
     expect(get('/import/github/counts')).to route_to('import/github#counts')
   end
 end
@@ -136,15 +136,15 @@ RSpec.describe Import::FogbugzController, 'routing', feature_category: :importer
     let(:is_realtime) { true }
   end
 
-  it 'to #callback' do
+  specify 'to #callback' do
     expect(post("/import/fogbugz/callback")).to route_to("import/fogbugz#callback")
   end
 
-  it 'to #new_user_map' do
+  specify 'to #new_user_map' do
     expect(get('/import/fogbugz/user_map')).to route_to('import/fogbugz#new_user_map')
   end
 
-  it 'to #create_user_map' do
+  specify 'to #create_user_map' do
     expect(post('/import/fogbugz/user_map')).to route_to('import/fogbugz#create_user_map')
   end
 end
@@ -153,18 +153,18 @@ end
 #                           POST     /import/gitlab_project(.:format)                                                              import/gitlab_projects#create
 # new_import_gitlab_project GET      /import/gitlab_project/new(.:format)                                                          import/gitlab_projects#new
 RSpec.describe Import::GitlabProjectsController, 'routing', feature_category: :importers do
-  it 'to #create' do
+  specify 'to #create' do
     expect(post('/import/gitlab_project')).to route_to('import/gitlab_projects#create')
   end
 
-  it 'to #new' do
+  specify 'to #new' do
     expect(get('/import/gitlab_project/new')).to route_to('import/gitlab_projects#new')
   end
 end
 
 # status_import_github_group GET /import/github_group/status(.:format) import/github_groups#status
 RSpec.describe Import::GithubGroupsController, 'routing', feature_category: :importers do
-  it 'to #status' do
+  specify 'to #status' do
     expect(get('/import/github_group/status')).to route_to('import/github_groups#status')
   end
 end

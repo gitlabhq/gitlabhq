@@ -7,30 +7,30 @@ title: パイプラインアーキテクチャ
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-パイプラインは、GitLabのCI/CDの基本的な構成要素です。このページでは、パイプラインに関連する重要なドキュメントについて説明します。
+パイプラインは、GitLabのCI/CDの基本的な構成要素です。このページでは、パイプラインに関連するいくつかの重要な概念について説明します。
 
-さまざまな方法でパイプラインを構造化でき、それぞれに利点があります。これらの方法は、必要に応じて組み合わせて使用できます:
+パイプラインはさまざまな方法で構造化でき、それぞれに利点があります。これらの方法は、必要に応じて組み合わせて使用できます。
 
-- [基本](#basic-pipelines):すべての設定が 1 か所にまとめられている、単純なプロジェクトに適しています。
-- [`needs` キーワードを使用したパイプライン](#pipelines-with-the-needs-keyword):効率的な実行が必要な、大規模で複雑なプロジェクトに適しています。
-- [親子パイプライン](#parent-child-pipelines):モノレポや、独立して定義されたコンポーネントが多数あるプロジェクトに適しています。
+- [基本](#basic-pipelines): すべての設定が1か所にまとめられている、単純なプロジェクトに適しています。
+- [`needs`キーワードを使用したパイプライン](#pipelines-with-the-needs-keyword): 効率的な実行が必要な、大規模で複雑なプロジェクトに適しています。
+- [親子パイプライン](#parent-child-pipelines): モノレポや、独立して定義されたコンポーネントが多数あるプロジェクトに適しています。
 
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> 概要については、[親子パイプラインの機能デモ](https://youtu.be/n8KpBSqZNbk)をご覧ください。
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>概要については、[Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk)（親子パイプラインの機能デモ）をご覧ください。
 
-- [マルチプロジェクトパイプライン](downstream_pipelines.md#multi-project-pipelines):[マイクロサービスアーキテクチャー](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/)を使用しているものなど、プロジェクト間の相互依存関係を必要とする大規模な製品に適しています。
+- [マルチプロジェクトパイプライン](downstream_pipelines.md#multi-project-pipelines): [マイクロサービスアーキテクチャ](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/)を使用するものなど、クロスプロジェクト相互依存関係を必要とする大規模なプロダクトに適しています。
 
-  たとえば、3つの異なるGitLabプロジェクトからWebアプリケーションをデプロイできます。マルチプロジェクトパイプラインを使用すると、各プロジェクトでパイプラインをトリガーでき、それぞれが独自のビルド、テスト、およびデプロイプロセスを持ちます。プロジェクト間のすべての相互依存関係を含め、接続されたパイプラインを 1 か所で視覚化できます。
+  たとえば、3つの異なるGitLabプロジェクトからWebアプリケーションをデプロイするとします。マルチプロジェクトパイプラインを使用すると、各プロジェクトでパイプラインをトリガーでき、それぞれが独自のビルド、テスト、デプロイプロセスを持ちます。すべてのクロスプロジェクト相互依存関係を含め、接続されたパイプラインを1か所で視覚化できます。
 
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> 概要については、[マルチプロジェクトパイプラインのデモ](https://www.youtube.com/watch?v=g_PIwBM1J84)をご覧ください。
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>概要については、[Multi-project pipelines](https://www.youtube.com/watch?v=g_PIwBM1J84)（マルチプロジェクトパイプライン）のデモをご覧ください。
 
-## 基本的なパイプライン
+## 基本的なパイプライン {#basic-pipelines}
 
-基本的なパイプラインは、GitLabで最もシンプルなパイプラインです。ビルドステージのすべてを同時に実行し、それらがすべて完了すると、Test および後続のステージのすべてを同じように実行します。効率的ではなく、多くのステップがある場合は非常に複雑になる可能性がありますが、メンテナンスは簡単です。
+基本的なパイプラインは、GitLabで最もシンプルなパイプラインです。ビルドステージのすべてを同時に実行し、それらがすべて完了すると、テストステージおよび後続のステージをすべて同じように実行します。効率的ではなく、ステップが多い場合は非常に複雑になる可能性がありますが、メンテナンスは簡単です。
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -59,7 +59,7 @@ accDescr: Shows a pipeline that runs sequentially through the build, test, and d
   test_b -.-> deploy
 ```
 
-図と一致する基本的な`/.gitlab-ci.yml`パイプライン設定の例:
+図に対応する基本的な`/.gitlab-ci.yml`パイプライン設定の例:
 
 ```yaml
 stages:
@@ -107,9 +107,9 @@ deploy_b:
   environment: production
 ```
 
-## `needs`キーワードを使用したパイプライン
+## `needs`キーワードを使用したパイプライン {#pipelines-with-the-needs-keyword}
 
-効率性が重要で、すべてをできるだけ早く実行したい場合は、[`needs` キーワード](../yaml/needs.md)を使用してジョブ間の依存関係を定義できます。GitLabはジョブ間の依存関係を認識しているため、ジョブは可能な限り高速に実行でき、同じステージ内の他のジョブよりも早く開始することもできます。
+効率性を重視し、すべてをできるだけ早く実行したい場合は、[`needs`キーワード](../yaml/needs.md)を使用してジョブ間の依存関係を定義できます。GitLabがジョブ間の依存関係を把握すると、ジョブは可能な限り高速に実行でき、同じステージ内の他のジョブよりも先に開始されることもあります。
 
 以下の例では、`build_a`と`test_a`が`build_b`と`test_b`よりもはるかに高速な場合、GitLabは`build_b`がまだ実行中であっても`deploy_a`を開始します。
 
@@ -125,7 +125,7 @@ accDescr: Shows how two jobs can start without waiting for earlier stages to com
   end
 ```
 
-図と一致する`/.gitlab-ci.yml`設定の例:
+図に対応する`/.gitlab-ci.yml`設定の例:
 
 ```yaml
 stages:
@@ -176,22 +176,22 @@ deploy_b:
   environment: production
 ```
 
-## 親子パイプライン
+## 親子パイプライン {#parent-child-pipelines}
 
 パイプラインが複雑になるにつれて、いくつかの関連する問題が発生し始めます。
 
-- ステージ内のすべてのステップが次のステージの最初のジョブが開始される前に完了する必要がある段階的な構造により、待ち時間が発生し、処理が遅くなります。
-- 単一のグローバルパイプラインの設定は、管理が難しくなります。
-- [`include`](../yaml/_index.md#include)を使用したインポートは、設定の複雑さを増し、ジョブが意図せずに重複するネームスペースの競合を引き起こす可能性があります。
-- パイプラインユーザーエクスペリエンスには、操作するジョブとステージが多すぎます。
+- ステージ構造では、ステージ内のすべてのステップが完了するまで次のステージの最初のジョブが開始されないため、待ち時間が発生して処理が遅くなる。
+- 単一のグローバルパイプラインの設定が管理しづらくなる。
+- [`include`](../yaml/_index.md#include)を使用したインポートは、設定をより複雑にし、ジョブが意図せずに重複するネームスペースの競合を引き起こす可能性がある。
+- パイプラインのユーザーエクスペリエンスにジョブとステージが多すぎて操作しづらくなる。
 
-さらに、パイプラインの動作がより動的である必要がある場合があります。サブパイプラインを開始するかどうかを選択できることは、特にYAMLが動的に生成される場合に強力な機能です。
+さらに、場合によっては、パイプラインの動作をより動的にする必要があります。サブパイプラインを開始するかどうかを選択できる機能は強力で、特にYAMLが動的に生成される場合に役立ちます。
 
-上記の[基本的なパイプライン](#basic-pipelines)および[`needs` パイプライン](#pipelines-with-the-needs-keyword)の例では、独立して構築できる2つのパッケージがあります。これらのケースは、[親子パイプライン](downstream_pipelines.md#parent-child-pipelines)の使用に最適です。設定を複数のファイルに分離し、物事をよりシンプルに保ちます。親子パイプラインを以下と組み合わせることができます。
+前述の[基本的なパイプライン](#basic-pipelines)や[`needs`パイプライン](#pipelines-with-the-needs-keyword)の例では、独立してビルドできる2つのパッケージがあります。こうしたケースは、[親子パイプライン](downstream_pipelines.md#parent-child-pipelines)を使用するのに最適です。設定を複数のファイルに分割し、シンプルに管理できます。親子パイプラインは以下と組み合わせることができます。
 
-- [`rules` キーワード](../yaml/_index.md#rules):たとえば、その領域への変更がある場合にのみ、子パイプラインをトリガーします。
-- [`include` キーワード](../yaml/_index.md#include):共通の動作を取り込み、繰り返しを避けます。
-- 子パイプライン内の[`needs` キーワード](#pipelines-with-the-needs-keyword)。両方の利点を実現します。
+- [`rules`キーワード](../yaml/_index.md#rules): たとえば、その領域に変更があった場合にのみ、子パイプラインをトリガーします。
+- [`include`キーワード](../yaml/_index.md#include): 共通の動作を取り込むことで、同じ記述を繰り返さずに済みます。
+- 子パイプライン内の[`needs`キーワード](#pipelines-with-the-needs-keyword): 両方の利点を活用できます。
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -212,7 +212,7 @@ accDescr: Shows that a parent pipeline can trigger independent child pipelines
   end
 ```
 
-図と一致する親パイプラインの`/.gitlab-ci.yml`設定例:
+図に対応する親パイプラインの`/.gitlab-ci.yml`設定の例:
 
 ```yaml
 stages:
@@ -235,7 +235,7 @@ trigger_b:
         - b/*
 ```
 
-`needs`キーワードを利用して、`/a/.gitlab-ci.yml`にある子`a`パイプライン設定の例:
+子`a`パイプライン設定の例（`needs`キーワードを使用し、`/a/.gitlab-ci.yml`に記述）:
 
 ```yaml
 stages:
@@ -265,7 +265,7 @@ deploy_a:
   environment: production
 ```
 
-`needs`キーワードを利用して、`/b/.gitlab-ci.yml`にある子`b`パイプライン設定の例:
+子`b`パイプライン設定の例（`needs`キーワードを使用し、`/b/.gitlab-ci.yml`に記述）:
 
 ```yaml
 stages:
@@ -295,4 +295,4 @@ deploy_b:
   environment: production
 ```
 
-ジョブは、GitLabで子パイプラインをトリガーする前または後に実行するように設定でき、共通のセットアップステップまたは統合されたデプロイが可能になります。
+GitLabでは、ジョブを子パイプラインをトリガーする前または後に実行するよう設定でき、これにより共通のセットアップステップや統一されたデプロイを実現できます。

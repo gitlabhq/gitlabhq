@@ -36,7 +36,7 @@ module ActiveContext
         result
       end
 
-      def with_per_ref_handling(refs, error_types: [StandardError])
+      def with_per_ref_handling(refs, retry_error_types: [StandardError], skip_error_types: [])
         return { successful: [], failed: [] } unless refs.any?
 
         failed_refs = []
@@ -45,8 +45,15 @@ module ActiveContext
         refs.each do |ref|
           yield(ref)
           successful_refs << ref
-        rescue *error_types => e
-          ::ActiveContext::Logger.retryable_exception(e, class: self.class.name, ref: ref.serialize)
+        rescue *skip_error_types => e
+          ::ActiveContext::Logger.skippable_exception(
+            e, class: self.class.name, reference: ref.serialize, reference_id: ref.identifier
+          )
+        rescue *retry_error_types => e
+          ::ActiveContext::Logger.retryable_exception(
+            e, class: self.class.name, reference: ref.serialize, reference_id: ref.identifier
+          )
+
           failed_refs << ref
         end
 

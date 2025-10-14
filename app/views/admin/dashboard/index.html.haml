@@ -27,7 +27,7 @@
 
 .admin-dashboard.gl-mt-3{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_dashboard_pageload' } }
   %h2.gl-heading-2= _('Instance overview')
-  .gl-grid.md:gl-grid-cols-2.lg:gl-grid-cols-3.gl-gap-5
+  .gl-grid.gl-gap-5{ class: "@md/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-3" }
     - component_params = { options: { class: 'gl-flex gl-flex-col gl-h-full' }, body_options: { class: 'gl-h-full gl-mt-0' } }
     - if current_user.can_admin_all_resources?
       = render ::Layouts::CrudComponent.new(s_('AdminArea|Projects'), count: approximate_count_with_delimiters(@counts, Project), **component_params) do |c|
@@ -121,7 +121,7 @@
         - if show_version_check?
           .gl-min-h-9.gl-py-4.gl-border-b
             .js-gitlab-version-check-badge{ data: { "size": "lg", "actionable": "true", "version": gitlab_version_check.to_json } }
-            = link_to('CHANGELOG', 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md', target: 'blank', rel: 'noopener noreferrer', class: 'gl-float-right gl-font-monospace' )
+            = link_to('CHANGELOG', 'https://gitlab.com/gitlab-org/gitlab/-/raw/master/CHANGELOG.md', target: 'blank', rel: 'noopener noreferrer', class: 'gl-float-right gl-font-monospace' )
         %p.gl-py-4.gl-m-0.gl-border-b
           = _('GitLab version')
           %span.gl-float-right.gl-font-monospace

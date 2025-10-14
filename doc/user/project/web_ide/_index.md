@@ -39,19 +39,19 @@ You can access the Web IDE through several methods.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your directory.
-1. Select **Code > Open in Web IDE**.
+1. Select **Code** > **Open in Web IDE**.
 
 ### From a file
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your file.
-1. Select **Edit > Open in Web IDE**.
+1. Select **Edit** > **Open in Web IDE**.
 
 ### From a merge request
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your merge request.
-1. In the upper right, select **Code > Open in Web IDE**.
+1. In the upper right, select **Code** > **Open in Web IDE**.
 
 The Web IDE opens new and modified files in separate tabs, and displays changes side by side.
 To reduce load time, only 10 files with the most lines changed open automatically.
@@ -224,7 +224,7 @@ To open the Command Palette and run a command in the Web IDE:
 You can use the settings editor to view and edit your user and workspace settings.
 To open the settings editor in the Web IDE:
 
-- On the top menu bar, select **File > Preferences > Settings**,
+- On the top menu bar, select **File** > **Preferences** > **Settings**,
   or press <kbd>Command</kbd>+<kbd>,</kbd>.
 
 In the settings editor, you can search for the settings you want to change.
@@ -235,7 +235,7 @@ You can use the keyboard shortcuts editor to view and change
 the default keybindings for all available commands.
 To open the keyboard shortcuts editor in the Web IDE:
 
-- On the top menu bar, select **File > Preferences > Keyboard Shortcuts**,
+- On the top menu bar, select **File** > **Preferences** > **Keyboard Shortcuts**,
   or press <kbd>Command</kbd>+<kbd>K</kbd> then <kbd>Command</kbd>+<kbd>S</kbd>.
 
 In the keyboard shortcuts editor, you can search for:
@@ -253,7 +253,7 @@ The default theme is **GitLab Dark**.
 
 To change the color theme in the Web IDE:
 
-1. On the top menu bar, select **File > Preferences > Theme > Color Theme**,
+1. On the top menu bar, select **File** > **Preferences** > **Theme** > **Color Theme**,
    or press <kbd>Command</kbd>+<kbd>K</kbd> then <kbd>Command</kbd>+<kbd>T</kbd>.
 1. From the dropdown list, preview the themes with the arrow keys.
 1. Select a theme.
@@ -328,7 +328,7 @@ Prerequisites:
 
 To install an extension in the Web IDE:
 
-1. On the top menu bar, select **View > Extensions**,
+1. On the top menu bar, select **View** > **Extensions**,
    or press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>.
 1. In the search box, enter the extension name.
 1. Select the extension you want to install.
@@ -338,7 +338,7 @@ To install an extension in the Web IDE:
 
 To uninstall an extension in the Web IDE:
 
-1. On the top menu bar, select **View > Extensions**,
+1. On the top menu bar, select **View** > **Extensions**,
    or press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>.
 1. From the list of installed extensions, select the extension you want to uninstall.
 1. Select **Uninstall**.
@@ -372,7 +372,7 @@ When working with the Web IDE, you might encounter the following issues.
 When you type in the Web IDE, you might get a four-character offset.
 As a workaround:
 
-1. On the top menu bar, select **File > Preferences > Settings**,
+1. On the top menu bar, select **File** > **Preferences** > **Settings**,
    or press <kbd>Command</kbd>+<kbd>,</kbd>.
 1. In the upper-right corner, select **Open Settings (JSON)**.
 1. In the `settings.json` file, add `"editor.disableMonospaceOptimizations": true`

@@ -48,7 +48,7 @@ This project provides you with:
 
 To create a GitLab agent for Kubernetes:
 
-1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
 1. From the **Select an agent** dropdown list, select `aks-agent` and select **Register an agent**.
 1. GitLab generates a registration token for the agent. Securely store this secret token, as you will need it later.
@@ -60,7 +60,7 @@ Use CI/CD environment variables to configure your project.
 
 **Required configuration**:
 
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Set the variable `ARM_CLIENT_ID` to your Azure client ID.
 1. Set the variable `ARM_CLIENT_SECRET` to your Azure client secret.
@@ -86,20 +86,20 @@ See the [Azure Terraform provider](https://registry.terraform.io/providers/hashi
 
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
-1. On the left sidebar, select **Build > Pipelines**.
+1. On the left sidebar, select **Build** > **Pipelines**.
 1. Next to **Play** ({{< icon name="play" >}}), select the dropdown list icon ({{< icon name="chevron-lg-down" >}}).
 1. Select **Deploy** to manually trigger the deployment job.
 
 When the pipeline finishes successfully, you can view the new cluster:
 
 - In Azure: From the [Azure portal](https://portal.azure.com/#home), select **Kubernetes services > View**.
-- In GitLab: On the left sidebar, select **Operate > Kubernetes clusters**.
+- In GitLab: On the left sidebar, select **Operate** > **Kubernetes clusters**.
 
 ## Use your cluster
 
 After you provision the cluster, it is connected to GitLab and is ready for deployments. To check the connection:
 
-1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
 For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
@@ -127,5 +127,5 @@ To remove all resources:
      needs: []
    ```
 
-1. On the left sidebar, select **Build > Pipelines** and select the most recent pipeline.
+1. On the left sidebar, select **Build** > **Pipelines** and select the most recent pipeline.
 1. For the `destroy` job, select **Play** ({{< icon name="play" >}}).

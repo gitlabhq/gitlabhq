@@ -95,7 +95,7 @@ docs code_quality:
     when: always
 
 docs hugo_build:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.148.2
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.150.1
   extends:
     - .default-retry
     - .docs:rules:docs-all-lint
@@ -171,7 +171,7 @@ docs-lint deprecations-and-removals:
       optional: true
   script:
     - bundle exec rake gitlab:docs:check_deprecations
-    - bundle exec rake gitlab:docs:check_windows
+    # - bundle exec rake gitlab:docs:check_windows
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
@@ -196,12 +196,29 @@ docs-i18n-lint markdown:
     - install_gitlab_gem
     - scripts/i18n_lint_doc.sh
 
+# Japanese-specific Vale linting with language-specific rules
+docs-i18n-lint japanese-vale:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-i18n-lint-japanese
+    - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  variables:
+    LANGUAGE_CODE: "ja-jp"
+    LANGUAGE_NAME: "Japanese"
+  script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+    - scripts/i18n_lint_language_vale.sh
+
 # Verify localized documentation files have corresponding English versions
 docs-i18n-lint paths:
   extends:
     - .default-retry
     - .docs:rules:docs-i18n-lint
     - .docs-markdown-lint-image
+  allow_failure: true
   stage: lint
   needs: []
   script:

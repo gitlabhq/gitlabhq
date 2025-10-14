@@ -1,0 +1,22 @@
+---
+description: The event tracks Dependency Scanner configurations set to a non default value
+internal_events: true
+status: active
+action: collect_ds_analyzer_scan_non_default_config_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  label:
+    description: Configuration name (<ENV_VAR>)
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208064/
+tiers:
+- free
+- premium
+- ultimate

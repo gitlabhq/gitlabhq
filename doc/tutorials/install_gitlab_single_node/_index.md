@@ -322,7 +322,7 @@ credentials, and then configure SMTP for the Linux package:
    ```
 
    By default, the encrypted file is stored under
-   `/var/opt/gitlab/gitlab-rails/shared/encrypted_configuration/smtp.yaml.enc`.
+   `/var/opt/gitlab/gitlab-rails/shared/encrypted_settings/smtp.yaml.enc`.
 
 1. Remove the YAML file:
 
@@ -379,7 +379,7 @@ Prerequisites:
 To require email verification for locked accounts:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. Select the **Email verification for locked accounts** checkbox.
 1. Select **Save changes**.

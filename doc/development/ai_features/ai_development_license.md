@@ -33,7 +33,7 @@ features. Premium gets access to only a subset of GitLab Duo features.
 1. Follow [the process to obtain an Ultimate license](https://handbook.gitlab.com/handbook/support/internal-support#gitlab-plan-or-license-for-team-members)
 for your local instance. Start with a GitLab Self-Managed Ultimate license. After you have a GitLab Self-Managed license configured, you can always [simulate a SaaS instance](../ee_features.md#simulate-a-saas-instance) and assign individual groups Premium and Ultimate licenses in the admin panel.
 1. [Upload your license activation code](../../administration/license.md#activate-gitlab-ee)
-1. [Set environment variables](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/contributing/runit.md#using-environment-variables) in GDK:
+1. [Set environment variables](https://gitlab-org.gitlab.io/gitlab-development-kit/contributing/runit/#using-environment-variables) in GDK:
 
       ```shell
       export GITLAB_LICENSE_MODE=test
@@ -97,7 +97,7 @@ When working in staging environments, you may need to set up Duo add-ons for you
 
 1. Have your account ready at <https://staging.gitlab.com>.
 1. [Create a new group](../../user/group/_index.md#create-a-group) or use an existing one as the namespace which will receive the Duo Pro access.
-1. Go to **Settings > Billing**.
+1. Go to **Settings** > **Billing**.
 1. Initiate the purchase flow for the Ultimate plan by clicking on `Upgrade to Ultimate`.
 1. After being redirected to <https://customers.staging.gitlab.com>, click on `Continue with your Gitlab.com account`.
 1. Purchase the SaaS Ultimate subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com#testing-credit-card-information).

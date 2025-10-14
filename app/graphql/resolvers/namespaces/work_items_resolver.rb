@@ -12,6 +12,7 @@ module Resolvers
         exclude_projects
         timeframe
         exclude_group_work_items
+        include_archived
       ].freeze
 
       argument :include_ancestors, GraphQL::Types::Boolean,
@@ -37,6 +38,12 @@ module Resolvers
           'Ignored for project namespaces.',
         experiment: { milestone: '18.4' }
 
+      argument :include_archived, GraphQL::Types::Boolean,
+        required: false,
+        default_value: false,
+        description: 'Return work items from archived projects. Ignored for project namespaces.',
+        experiment: { milestone: '18.5' }
+
       argument :timeframe, Types::TimeframeInputType,
         required: false,
         description: 'List items overlapping the given timeframe. Ignored for project namespaces.'
@@ -54,6 +61,7 @@ module Resolvers
       override :finder
       def finder(args)
         filtered_args = if group_namespace?
+                          args[:non_archived] = !args.delete(:include_archived)
                           args.merge(group_id: resource_parent, **transform_timeframe_parameters(args))
                         else
                           # For project namespaces, exclude the group level args

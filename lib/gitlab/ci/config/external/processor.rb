@@ -15,7 +15,7 @@ module Gitlab
             @content = {}
             @logger = context.logger
           rescue External::Mapper::Error,
-                 OpenSSL::SSL::SSLError => e
+            OpenSSL::SSL::SSLError => e
             raise IncludeError, e.message
           end
 

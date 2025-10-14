@@ -147,8 +147,11 @@ For GitLab there is an essential difference in analytics setup between GitLab.co
 
 ### Self-Managed and Dedicated
 
-For Self-Managed and Dedicated instances only pre-computed metrics are available. These are computed once per week on a randomly chosen day and forwarded to our [version app](https://version.gitlab.com) via a process called Service Ping.
-Only the metrics that were instrumented until the version the instance is running are available. For example, if a metric is instrumented during the development of version 16.9, it will be available on instances running versions equal to or bigger than 16.9 but not on instances running previous versions such as 16.8.
+{{< alert type="note" >}}
+Starting with version 18.0, we collect event-level data on both Self-Managed and Dedicated instances, providing more detailed insights into product usage.
+{{< /alert >}}
+
+For Self-Managed and Dedicated instances on versions prior to 18.0, only pre-computed metrics are available. These metrics are computed once per week on a randomly chosen day and forwarded to our [version app](https://version.gitlab.com) via a process called Service Ping. Only the metrics that were instrumented up to the version the instance is running are available. For example, if a metric is instrumented during the development of version 16.9, it will be available on instances running version 16.9 or later, but not on instances running earlier versions such as 16.8.
 The received payloads are imported into our Data Warehouse once per day.
 
 ### GitLab.com

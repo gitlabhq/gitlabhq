@@ -51,7 +51,7 @@ Prerequisites:
 To view the branch rules overview list:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 
 ### View branch rule details
@@ -59,7 +59,7 @@ To view the branch rules overview list:
 To view branch rules and protections for a single branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
 
@@ -89,7 +89,7 @@ Prerequisites:
 To create a branch rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
 1. Choose one of the following options:
@@ -114,11 +114,11 @@ Not available for `all branches`.
 To add protections to a new branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
 1. Select one of **All protected branches** or **Branch name or pattern**.
-1. Select **Create protected branch**.
+1. Select **Create branch rule**.
 
 ### Add an approval rule
 
@@ -254,7 +254,7 @@ Prerequisites:
 To edit a branch rule target:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
 1. In the **Rule target** section, select **Edit**.
@@ -263,35 +263,13 @@ To edit a branch rule target:
 
 ### Edit a branch rule protection
 
+For information about branch protection controls, see [Protected branches](protected.md).
+
 {{< alert type="note" >}}
 
 Not available for `all branches`.
 
 {{< /alert >}}
-
-To edit branch rule protections:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
-1. Expand **Branch rules** to view all branches with protections.
-1. Identify the branch you want and select **View details**.
-1. From the **Protect branch** section, choose one of the following options:
-   - From **Allowed to merge**, select **Edit**.
-     1. Select the roles that can merge into this branch.
-     1. Select **Save changes**.
-   - From **Allowed to push and merge**, select **Edit**.
-     1. Select the roles that can merge into this branch.
-     1. If desired, search to add **Deploy keys**.
-     1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-In GitLab Premium and Ultimate, you can also add groups or individual users
-to **Allowed to merge** and **Allowed to push and merge**.
-
-{{< /alert >}}
-
-For additional information about branch protection controls, see [Protected branches](protected.md).
 
 ## Delete a branch rule
 
@@ -324,7 +302,7 @@ Prerequisites:
 To delete a branch rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Next to a rule you want to delete, select **View details**.
 1. In the upper-right corner, select **Delete rule**.
@@ -332,8 +310,8 @@ To delete a branch rule:
 
 ## Related topics
 
-- [Protect your repository](../protect.md)
 - [Default branch](default.md)
 - [Protected branches](protected.md)
+- [Protect your repository](../protect.md)
 - [Branching strategies](strategies/_index.md)
 - [Merge request approvals](../../merge_requests/approvals/_index.md)

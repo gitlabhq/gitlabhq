@@ -175,18 +175,6 @@ RSpec.describe PushEvent do
     end
   end
 
-  describe '#valid_push?' do
-    it 'returns true if a ref exists' do
-      allow(payload).to receive(:ref).and_return('master')
-
-      expect(event).to be_valid_push
-    end
-
-    it 'returns false when no ref is present' do
-      expect(event).not_to be_valid_push
-    end
-  end
-
   describe '#new_ref?' do
     it 'returns true when pushing a new ref' do
       allow(payload).to receive(:created?).and_return(true)

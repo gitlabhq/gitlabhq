@@ -24,6 +24,7 @@ import { StylePlugin } from './config/helpers/vite_plugin_style.mjs';
 import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
 import { CrossOriginWorkerPlugin } from './config/helpers/vite_plugin_cross_origin_worker';
+import { PrebuildDuoNext } from './config/helpers/vite_plugin_prebuild_duo_next';
 
 let viteGDKConfig;
 try {
@@ -111,6 +112,7 @@ export default defineConfig({
     }),
     graphql(),
     CrossOriginWorkerPlugin(),
+    PrebuildDuoNext(),
   ],
   define: {
     // window can be undefined in a Web Worker

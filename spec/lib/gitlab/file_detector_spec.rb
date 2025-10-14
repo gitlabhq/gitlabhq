@@ -19,13 +19,14 @@ RSpec.describe Gitlab::FileDetector, feature_category: :global_search do
     it 'returns the type of a README without extension' do
       expect(described_class.type_of('README')).to eq(:readme)
       expect(described_class.type_of('INDEX')).to eq(:readme)
+      expect(described_class.type_of('_INDEX')).to eq(:readme)
     end
 
     it 'returns the type of a README file with a recognized extension' do
       extensions = ['txt', *Gitlab::MarkupHelper::EXTENSIONS]
 
       extensions.each do |ext|
-        %w[index readme].each do |file|
+        %w[index readme _index].each do |file|
           expect(described_class.type_of("#{file}.#{ext}")).to eq(:readme)
         end
       end
@@ -38,6 +39,12 @@ RSpec.describe Gitlab::FileDetector, feature_category: :global_search do
     it 'is case insensitive' do
       expect(described_class.type_of('ReadMe')).to eq(:readme)
       expect(described_class.type_of('index.TXT')).to eq(:readme)
+    end
+
+    it 'is case insensitive for _index files' do
+      expect(described_class.type_of('_index')).to eq(:readme)
+      expect(described_class.type_of('_INDEX')).to eq(:readme)
+      expect(described_class.type_of('_Index.md')).to eq(:readme)
     end
 
     it 'returns nil for a README file in a directory' do

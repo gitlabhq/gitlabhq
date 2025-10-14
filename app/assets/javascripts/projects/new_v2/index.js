@@ -51,6 +51,7 @@ export function initNewProjectForm() {
     importManifestEnabled,
     importManifestImportPath,
     importByUrlValidatePath,
+    formPath,
   } = el.dataset;
 
   const provide = {
@@ -93,6 +94,7 @@ export function initNewProjectForm() {
     importManifestEnabled: parseBoolean(importManifestEnabled),
     importManifestImportPath,
     importByUrlValidatePath,
+    formPath,
   };
 
   return new Vue({

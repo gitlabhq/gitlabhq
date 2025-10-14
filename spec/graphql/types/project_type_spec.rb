@@ -186,14 +186,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
 
-    before do
-      stub_licensed_features(security_dashboard: true)
-      project.add_developer(user)
-      allow(project.repository).to receive(:blob_data_at).and_return(gitlab_ci_yml_content)
-    end
-
-    include_context 'read ci configuration for sast enabled project'
-
     let(:query) do
       %(
         query {
@@ -244,7 +236,15 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       )
     end
 
+    before do
+      stub_licensed_features(security_dashboard: true)
+      project.add_developer(user)
+      allow(project.repository).to receive(:blob_data_at).and_return(gitlab_ci_yml_content)
+    end
+
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    include_context 'read ci configuration for sast enabled project'
 
     it "returns the project's sast configuration for global variables" do
       secure_analyzers = subject.dig('data', 'project', 'sastCiConfiguration', 'global', 'nodes').first
@@ -443,8 +443,14 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   describe 'grafana_integration field' do
     subject { described_class.fields['grafanaIntegration'] }
 
+    let_it_be(:project) { create(:project) }
+
     it { is_expected.to have_graphql_type(Types::GrafanaIntegrationType) }
-    it { is_expected.to have_graphql_resolver(Resolvers::Projects::GrafanaIntegrationResolver) }
+    it { is_expected.to have_graphql_resolver(nil) }
+
+    it 'returns nil for grafana_integration' do
+      expect(resolve_field(:grafana_integration, project, current_user: project.owner)).to be_nil
+    end
   end
 
   describe 'environments field' do
@@ -1044,6 +1050,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
 
     let(:mock_languages) { [] }
+    let(:languages) { subject.dig('data', 'project', 'languages') }
 
     before do
       allow_next_instance_of(::Projects::RepositoryLanguagesService) do |service|
@@ -1052,8 +1059,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
 
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
-
-    let(:languages) { subject.dig('data', 'project', 'languages') }
 
     context "when the languages haven't been detected yet" do
       it 'returns an empty array' do
@@ -1153,11 +1158,11 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       )
     end
 
-    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
-
     let(:detailed_import_status) do
       subject.dig('data', 'project', 'detailedImportStatus')
     end
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
 
     context 'when project is not imported' do
       let(:current_user) { create(:user) }
@@ -1338,12 +1343,12 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       )
     end
 
-    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
-
     let_it_be(:project) { create :project }
     let_it_be(:deploy_key) { create(:deploy_keys_project, :write_access, project: project).deploy_key }
     let_it_be(:maintainer) { create(:user) }
     let(:available_deploy_keys) { subject.dig('data', 'project', 'availableDeployKeys', 'nodes') }
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
 
     context 'when there are deploy keys' do
       before_all do

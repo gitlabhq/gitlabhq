@@ -1,5 +1,5 @@
 .row.gl-mt-3
-  .col-lg-12
+  .gl-col-lg-12
     - if can?(current_user, :update_max_artifacts_size, group)
       = gitlab_ui_form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|
         %fieldset.builds-feature

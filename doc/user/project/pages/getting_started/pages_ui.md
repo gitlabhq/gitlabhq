@@ -38,7 +38,7 @@ This guide explains how to use the Pages UI to deploy a static site or framework
     like [Eleventy](https://www.11ty.dev), [Astro](https://astro.build), or [Jekyll](https://jekyllrb.com).
   - Contains a framework configured for static output, such as [Next.js](https://nextjs.org),
     [Nuxt](https://nuxt.com), or [SvelteKit](https://kit.svelte.dev).
-- GitLab Pages must be enabled for the project. (To enable, go to **Settings > General**,
+- GitLab Pages must be enabled for the project. (To enable, go to **Settings** > **General**,
   expand **Visibility, project features, permissions**, and turn on the **Pages** toggle.)
 
 ## Create the Pages deployment
@@ -46,7 +46,7 @@ This guide explains how to use the Pages UI to deploy a static site or framework
 To complete the setup and generate a GitLab Pages deployment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Pages**.
+1. Select **Deploy** > **Pages**.
 
    A **Get Started with Pages** form appears. If this form is not available,
    see [Troubleshooting](#if-the-get-started-with-pages-form-is-not-available).
@@ -64,7 +64,7 @@ To complete the setup and generate a GitLab Pages deployment:
 1. For **Step 4**, add a commit message and select **Commit**. This commit triggers your first
    GitLab Pages deployment.
 
-To view the running pipeline, go to **Build > Pipelines**.
+To view the running pipeline, go to **Build** > **Pipelines**.
 
 To view the artifacts that were created during the deployment, view the job,
 and on the right side, select **Download artifacts**.

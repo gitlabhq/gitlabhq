@@ -117,7 +117,11 @@ Gitaly implements a client-server architecture:
 The following illustrates the Gitaly client-server architecture:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
+    accTitle: Gitaly client-server architecture
+    accDescr: GitLab clients connect to Gitaly server through gRPC to access local filesystem and object storage.
+
   subgraph Gitaly clients
     Rails[GitLab Rails]
     Workhorse[GitLab Workhorse]

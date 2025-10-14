@@ -623,7 +623,7 @@ If your user base is private or otherwise trusted, you can disable the
 verification requirement:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Clear the **Require users to prove ownership of custom domains** checkbox.
    This setting is enabled by default.
@@ -638,7 +638,7 @@ To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Enter the email address for receiving notifications and accept the Terms of Service for Let's Encrypt.
 1. Select **Save changes**.
@@ -721,7 +721,7 @@ Prerequisites:
 To disable public access to all Pages sites:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Select the **Disable public access to Pages sites** checkbox.
 1. Select **Save changes**.
@@ -752,7 +752,7 @@ Prerequisites:
 To disable unique domains by default:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Clear the **Enable unique domains by default** checkbox.
 1. Select **Save changes**.
@@ -1008,7 +1008,7 @@ Prerequisites:
 To set the global maximum pages size for a project:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. In **Maximum size of pages**, enter a value. The default is `100`.
 1. Select **Save changes**.
@@ -1029,7 +1029,7 @@ Prerequisites:
 To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Pages**.
 1. Enter a value under **Maximum size** in MB.
 1. Select **Save changes**.
@@ -1050,7 +1050,7 @@ Prerequisites:
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Pages**.
+1. Select **Deploy** > **Pages**.
 1. In **Maximum size of pages**, enter the size in MB.
 1. Select **Save changes**.
 
@@ -1063,7 +1063,7 @@ Prerequisites:
 To set the maximum number of GitLab Pages custom domains for a project:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
 1. Select **Save changes**.
@@ -1085,7 +1085,7 @@ To configure the default duration for the instance after which
 are deleted:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Pages**.
 1. Enter a value for **Default expiration for parallel deployments in seconds**.
    Use `0` if parallel deployments should not expire by default.

@@ -3,22 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Counters::FlushStaleCounterIncrements, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration do
-  let(:date) { 1.year.ago }
+  let(:date) { 1.month.ago }
   let(:collection) { ProjectDailyStatistic.where(date: date..) }
   let(:service) { described_class.new(collection) }
 
   let_it_be(:project) { create :project }
 
   let!(:project_daily_statistic) do
-    create(:project_daily_statistic, date: Date.new(2025, 2, 1), fetch_count: 5, project: project)
+    create(:project_daily_statistic, date: Time.zone.today - 2.days, fetch_count: 5, project: project)
   end
 
   let!(:project_daily_statistic_two) do
-    create(:project_daily_statistic, date: Date.new(2025, 2, 2), fetch_count: 0, project: project)
+    create(:project_daily_statistic, date: Time.zone.today - 1.day, fetch_count: 0, project: project)
   end
 
   let!(:project_daily_statistic_three) do
-    create(:project_daily_statistic, date: Date.new(2025, 2, 3), fetch_count: 10, project: project)
+    create(:project_daily_statistic, date: Time.zone.today, fetch_count: 10, project: project)
   end
 
   let(:keys) do

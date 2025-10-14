@@ -109,7 +109,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Root, feature_category: :pipeline_com
     it_behaves_like 'an invalid header'
   end
 
-  describe '#inputs_value' do
+  describe '#spec_inputs_value' do
     let(:header_hash) do
       {
         spec: {
@@ -124,10 +124,74 @@ RSpec.describe Gitlab::Ci::Config::Header::Root, feature_category: :pipeline_com
     end
 
     it 'returns the inputs' do
-      expect(config.inputs_value).to eq({
+      expect(config.spec_inputs_value).to eq({
         foo: {},
         bar: { default: 'baz' }
       })
+    end
+  end
+
+  describe '#spec_component_value' do
+    context 'when component is specified' do
+      let(:header_hash) do
+        {
+          spec: {
+            component: %w[name sha]
+          }
+        }
+      end
+
+      it 'returns the component value as symbols' do
+        expect(config.spec_component_value).to match_array([:name, :sha])
+      end
+    end
+
+    context 'when component is empty' do
+      let(:header_hash) do
+        {
+          spec: {
+            component: []
+          }
+        }
+      end
+
+      it 'returns empty array' do
+        expect(config.spec_component_value).to be_empty
+      end
+    end
+
+    context 'when component is not specified' do
+      let(:header_hash) do
+        {
+          spec: {
+            inputs: {
+              foo: { default: 'bar' }
+            }
+          }
+        }
+      end
+
+      it 'returns empty array by default' do
+        expect(config.spec_component_value).to be_empty
+      end
+    end
+
+    context 'when both inputs and component are specified' do
+      let(:header_hash) do
+        {
+          spec: {
+            inputs: {
+              foo: { default: 'bar' }
+            },
+            component: %w[name]
+          }
+        }
+      end
+
+      it 'returns both values correctly' do
+        expect(config.spec_inputs_value).to eq({ foo: { default: 'bar' } })
+        expect(config.spec_component_value).to match_array([:name])
+      end
     end
   end
 end

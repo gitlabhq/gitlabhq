@@ -9,6 +9,7 @@ module Gitlab
     RevokedError = Class.new(AuthenticationError)
     ImpersonationDisabled = Class.new(AuthenticationError)
     UnauthorizedError = Class.new(AuthenticationError)
+    GranularPermissionsError = Class.new(AuthenticationError)
 
     class DpopValidationError < AuthenticationError
       def initialize(msg)
@@ -134,7 +135,8 @@ module Gitlab
 
         ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
-        access_token.user || raise(UnauthorizedError)
+        user = access_token.user || raise(UnauthorizedError)
+        resolve_composite_identity_user(user)
       end
 
       def find_user_from_access_token
@@ -229,6 +231,7 @@ module Gitlab
         end
 
         save_current_token_in_env
+        access_token
       end
 
       def authentication_token_present?

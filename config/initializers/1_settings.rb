@@ -503,6 +503,9 @@ end
 Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
 Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
+Settings.cron_jobs['delete_expired_trigger_token_worker'] ||= {}
+Settings.cron_jobs['delete_expired_trigger_token_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['delete_expired_trigger_token_worker']['job_class'] = 'Ci::DeleteExpiredTriggerTokenWorker'
 Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
 Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
 Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
@@ -783,6 +786,12 @@ Settings.cron_jobs['version_version_check_cron']['args'] = {
 Settings.cron_jobs['import_placeholder_user_cleanup_worker'] ||= {}
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['cron'] ||= "0 0 * * *"
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['job_class'] = 'Import::PlaceholderUserCleanupWorker'
+Settings.cron_jobs['authn_data_retention_oauth_access_grant_archive_worker'] ||= {}
+Settings.cron_jobs['authn_data_retention_oauth_access_grant_archive_worker']['cron'] ||= '15 6 * * *'
+Settings.cron_jobs['authn_data_retention_oauth_access_grant_archive_worker']['job_class'] = 'Authn::DataRetention::OauthAccessGrantArchiveWorker'
+Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker'] ||= {}
+Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['cron'] ||= '5 6 * * *'
+Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['job_class'] = 'Authn::DataRetention::OauthAccessTokenArchiveWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -1056,12 +1065,18 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker'] ||= {}
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['cron'] ||= "*/10 * * * *"
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['job_class'] = 'Analytics::DumpAiUserMetricsWriteBufferCronWorker'
+  Settings.cron_jobs['analytics_refresh_ai_events_counts_cron_worker'] ||= {}
+  Settings.cron_jobs['analytics_refresh_ai_events_counts_cron_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['analytics_refresh_ai_events_counts_cron_worker']['job_class'] = 'Analytics::AiAnalytics::EventsCountAggregationWorker'
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker'] ||= {}
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['cron'] ||= '0 4 * * *'
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['job_class'] = 'Vulnerabilities::DeleteExpiredExportsWorker'
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker'] ||= {}
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['job_class'] ||= 'Ai::DuoWorkflows::FailStuckWorkflowsWorker'
+  Settings.cron_jobs['secret_rotation_reminder_batch_worker'] ||= {}
+  Settings.cron_jobs['secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::SecretRotationReminderBatchWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -1093,7 +1108,7 @@ Gitlab.ee do
       'ComplianceManagement::Pipl::DeletePiplUsersWorker'
 
     Settings.cron_jobs['cleanup_build_name_worker'] ||= {}
-    Settings.cron_jobs['cleanup_build_name_worker']['cron'] ||= '0 1 * * *'
+    Settings.cron_jobs['cleanup_build_name_worker']['cron'] ||= '0 1 * * 1'
     Settings.cron_jobs['cleanup_build_name_worker']['job_class'] = 'Ci::CleanupBuildNameWorker'
   end
 
@@ -1173,6 +1188,15 @@ Settings.gitlab_kas['external_url'] ||= 'wss://kas.example.com'
 Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
+
+#
+# Workspaces
+#
+Gitlab.ee do
+  Settings['workspaces'] ||= {}
+  Settings.workspaces['enabled'] ||= false
+  Settings.workspaces['host'] ||= nil
+end
 
 #
 # Suggested Reviewers

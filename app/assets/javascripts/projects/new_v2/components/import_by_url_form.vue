@@ -14,8 +14,8 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
+import { isReasonableURL } from '../utils';
 import SharedProjectCreationFields from './shared_project_creation_fields.vue';
 
 export default {
@@ -52,11 +52,13 @@ export default {
       default: () => ({}),
     },
   },
+
   data() {
     return {
       repositoryUrl: '',
       repositoryUsername: '',
       repositoryPassword: '',
+      isRepositoryUrlValid: null,
       repositoryMirror: false,
       isCheckingConnection: false,
     };
@@ -68,12 +70,12 @@ export default {
     currentStep() {
       return this.isImportByUrlNewPage ? null : 3;
     },
-    isEmptyRepositoryUrl() {
-      return !this.repositoryUrl.trim();
-    },
   },
   methods: {
     async checkConnection() {
+      this.isRepositoryUrlValid = isReasonableURL(this.repositoryUrl);
+      if (!this.isRepositoryUrlValid) return;
+
       this.isCheckingConnection = true;
       try {
         const { data } = await axios.post(this.importByUrlValidatePath, {
@@ -83,14 +85,14 @@ export default {
         });
 
         if (data.success) {
-          this.$toast.show(s__('Integrations|Connection successful.'));
+          this.$toast.show(s__('ProjectImportByURL|Connection successful.'));
         } else {
           this.$toast.show(
-            sprintf(s__('ProjectImport|Connection failed: %{error}'), { error: data.message }),
+            sprintf(s__('ProjectImportByURL|Connection failed: %{error}'), { error: data.message }),
           );
         }
       } catch (error) {
-        this.$toast.show(sprintf(s__('ProjectImport|Connection failed: %{error}'), { error }));
+        this.$toast.show(sprintf(s__('ProjectImportByURL|Connection failed: %{error}'), { error }));
       } finally {
         this.isCheckingConnection = false;
       }
@@ -118,15 +120,20 @@ export default {
   <gl-form method="post" :action="newProjectFormPath">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
     <multi-step-form-template
-      :title="s__('ProjectImport|Import repository by URL')"
+      :title="s__('ProjectImportByURL|Import repository by URL')"
       :current-step="currentStep"
     >
       <template #form>
         <gl-form-group
           :label="__('Git repository URL')"
           label-for="repository-url"
+          :invalid-feedback="s__('ProjectImportByURL|Enter a valid URL')"
+          :state="isRepositoryUrlValid"
+          data-testid="repository-url-form-group"
           :label-description="
-            s__('ProjectImport|The repository must be accessible over http://, https:// or git://')
+            s__(
+              'ProjectImportByURL|The repository must be accessible over http://, https:// or git://',
+            )
           "
         >
           <gl-form-input-group>
@@ -136,6 +143,9 @@ export default {
               name="project[import_url]"
               autocomplete="off"
               data-testid="repository-url"
+              type="url"
+              required
+              :state="isRepositoryUrlValid"
               :placeholder="$options.repositoryUrlPlaceholder"
             />
             <template #append>
@@ -144,7 +154,7 @@ export default {
                 data-testid="check-connection"
                 @click="checkConnection"
               >
-                {{ s__('ProjectImport|Check connection') }}
+                {{ s__('ProjectImportByURL|Check connection') }}
               </gl-button>
             </template>
           </gl-form-input-group>
@@ -204,7 +214,6 @@ export default {
           type="submit"
           category="primary"
           variant="confirm"
-          :disabled="isEmptyRepositoryUrl"
           data-testid="import-project-by-url-next-button"
         >
           {{ __('Create project') }}

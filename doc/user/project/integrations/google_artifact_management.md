@@ -39,7 +39,7 @@ Prerequisites:
 To connect a Google Artifact Registry repository to a GitLab project:
 
 1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Google Artifact Management**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Complete the fields:
@@ -60,7 +60,7 @@ Prerequisites:
 To view the list of images in the connected Artifact Registry repository in the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Google Artifact Registry**.
+1. Select **Deploy** > **Google Artifact Registry**.
 1. To view the image details, select an image.
 1. To view the image in the Google Cloud console, select **Open in Google Cloud**. You must have the [required permissions](https://cloud.google.com/artifact-registry/docs/repositories/list-repos#required_roles) to view that Artifact Registry repository.
 

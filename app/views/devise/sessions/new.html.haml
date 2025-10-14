@@ -8,6 +8,7 @@
   = render "devise/sessions/broadcast"
 
 = render_if_exists "layouts/google_tag_manager_body"
+- content_for :overridden_brand_title, custom_sign_in_brand_title
 
 .js-non-oauth-login
   - if any_form_based_providers_enabled?

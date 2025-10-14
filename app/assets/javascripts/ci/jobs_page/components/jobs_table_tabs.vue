@@ -68,7 +68,7 @@ export default {
 </script>
 
 <template>
-  <div class="align-items-lg-center gl-flex">
+  <div class="gl-flex @lg/panel:gl-items-center">
     <gl-tabs content-class="gl-py-0" class="gl-w-full">
       <gl-tab
         v-for="tab in tabs"

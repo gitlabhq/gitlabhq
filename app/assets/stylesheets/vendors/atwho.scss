@@ -103,7 +103,7 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include gl-container-width-down(sm, panel) {
   .atwho-view ul li {
     overflow: hidden;
     text-overflow: ellipsis;

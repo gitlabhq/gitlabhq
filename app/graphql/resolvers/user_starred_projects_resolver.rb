@@ -10,6 +10,10 @@ module Resolvers
       required: false,
       description: 'Search query.'
 
+    argument :active, GraphQL::Types::Boolean,
+      required: false,
+      description: "Filters by projects that are not archived and not scheduled for deletion."
+
     argument :sort, Types::Projects::ProjectSortEnum,
       required: false,
       description: "List starred projects by sort order.",
@@ -21,7 +25,7 @@ module Resolvers
 
     argument :programming_language_name, GraphQL::Types::String,
       required: false,
-      description: 'Filter projects by programming language name (case insensitive). For example: "css" or "ruby".'
+      description: 'Filter projects by programming language name (case insensitive). For example: `css` or `ruby`.'
 
     before_connection_authorization do |projects, current_user|
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
@@ -47,7 +51,8 @@ module Resolvers
         search: args[:search],
         sort: args[:sort],
         min_access_level: args[:min_access_level],
-        language_name: args[:programming_language_name]
+        language_name: args[:programming_language_name],
+        active: args[:active]
       }
     end
   end

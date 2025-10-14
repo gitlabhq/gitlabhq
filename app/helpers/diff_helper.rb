@@ -85,7 +85,8 @@ module DiffHelper
 
     html = [content_tag(:td, '', class: [*first_line_num_class, css_class])]
     html << content_tag(:td, '', class: [*second_line_num_class, css_class]) if second_line_num_class
-    html << content_tag(:td, diff_line_content(line.rich_text), class: [*content_line_class, 'nomappinginraw', css_class])
+    html << content_tag(:td, diff_line_content(line.rich_text),
+      class: [*content_line_class, 'nomappinginraw', css_class])
 
     html.join.html_safe
   end
@@ -250,7 +251,8 @@ module DiffHelper
       return
     end
 
-    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts)
+    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request,
+      allow_tree_conflicts: allow_tree_conflicts)
 
     return unless allow_tree_conflicts || conflicts_service.can_be_resolved_in_ui?
 
@@ -296,7 +298,9 @@ module DiffHelper
   end
 
   def params_with_whitespace
-    hide_whitespace? ? safe_params.except(:w) : safe_params.merge(w: 1)
+    # w - ignore whitespace
+    w = hide_whitespace? ? 0 : 1
+    safe_params.merge(w: w)
   end
 
   def file_heading_id(diff_file)
@@ -339,7 +343,8 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_button_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'selected' : ''), data: { view_type: name } do
+    link_button_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'selected' : ''),
+      data: { view_type: name } do
       title
     end
   end
@@ -347,6 +352,10 @@ module DiffHelper
   def commit_diff_whitespace_link(project, commit, options)
     url = project_commit_path(project, commit.id, params_with_whitespace)
     toggle_whitespace_link(url, options)
+  end
+
+  def commit_diff_whitespace_url(project, commit)
+    project_commit_path(project, commit.id, params_with_whitespace)
   end
 
   def diff_compare_whitespace_link(project, from, to, options)

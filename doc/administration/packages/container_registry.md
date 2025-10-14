@@ -101,7 +101,7 @@ A Registry init file is not shipped with GitLab if you install it from source.
 Hence, [restarting GitLab](../restart_gitlab.md#self-compiled-installations) does not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
 
-At the **absolute** minimum, make sure your Registry configuration
+At the absolute minimum, make sure your Registry configuration
 has `container_registry` as the service and `https://gitlab.example.com/jwt/auth`
 as the realm:
 
@@ -389,7 +389,7 @@ In GitLab, tokens for the container registry expire every five minutes.
 To increase the token duration:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Container Registry**.
 1. For the **Authorization token duration (minutes)**, update the value.
 1. Select **Save changes**.
@@ -510,22 +510,6 @@ To configure object storage for your container registry:
 {{< tab title="S3" >}}
 
 The S3 storage driver integrates with Amazon S3 or any S3-compatible object storage service.
-
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-
-{{< alert type="warning" >}}
-
-The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-
-Use the `s3_v2` driver (in Beta) instead when it becomes available in May 2025. This driver offers improved performance, reliability, and compatibility with AWS authentication requirements. While this is a breaking change, the new driver has been thoroughly tested and is designed to be a drop-in replacement for most configurations.
-
-Make sure to test the new driver in non-production environments before deploying to production to ensure compatibility with your specific setup and usage patterns. This allows you to identify and address any edge cases unique to your environment.
-
-Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
-
-{{< /alert >}}
-
-<!--- end_remove -->
 
 The `s3_v2` driver (in Beta) uses AWS SDK v2 and only supports Signature Version 4 for authentication.
 This driver improves performance and reliability while ensuring compatibility with AWS authentication requirements,
@@ -740,7 +724,7 @@ to read-only mode. On large instances, this may require the container registry
 to be in read-only mode for a while. During this time,
 you can pull from the container registry, but you cannot push.
 
-1. Optional: To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime).
+1. Optional. To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime).
 1. This example uses the `aws` CLI. If you haven't configured the
    CLI before, you have to configure your credentials by running `sudo aws configure`.
    Because a non-administrator user likely can't access the container registry folder,
@@ -1019,7 +1003,7 @@ container registry may be unavailable or have [inherent risks](../../user/packag
 For the integration to work, the external registry must be configured to
 use a JSON Web Token to authenticate with GitLab. The
 [external registry's runtime configuration](https://distribution.github.io/distribution/about/configuration/#token)
-**must** have the following entries:
+must have the following entries:
 
 ```yaml
 auth:
@@ -1325,7 +1309,7 @@ Prerequisites:
 
 {{< alert type="note" >}}
 
-Retention policies in your object storage provider, such as Amazon S3 Lifecycle, may prevent
+Retention policies in an object storage provider, such as Amazon S3 Lifecycle, may prevent
 objects from being properly deleted.
 
 {{< /alert >}}
@@ -1352,7 +1336,7 @@ The `registry-garbage-collect` command shuts down the container registry prior t
 only starts it again after garbage collection completes. If you prefer to avoid downtime,
 you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
 
-This command proceeds only if the metadata is in object storage. This command does not proceed
+This command proceeds only if legacy metadata is in use. This command does not proceed
 if the [container registry metadata database](#container-registry-metadata-database) is enabled.
 
 {{< /alert >}}
@@ -1531,19 +1515,19 @@ and there are no scaling guides which target number of seats or requests per sec
 
 ### Database
 
-1. **Move to a separate database**: As database load increases, scale vertically by moving the registry metadata database
+1. Move to a separate database: As database load increases, scale vertically by moving the registry metadata database
    to a separate physical database. A separate database can increase the amount of resources available
    to the registry database while isolating the traffic produced by the registry.
-1. **Move to a HA PostgreSQL third-party solution**: Similar to [Praefect](../reference_architectures/5k_users.md#praefect-ha-postgresql-third-party-solution),
+1. Move to a HA PostgreSQL third-party solution: Similar to [Praefect](../reference_architectures/5k_users.md#praefect-ha-postgresql-third-party-solution),
    moving to a reputable provider or solution enables HA and is suitable for multi-node registry deployments.
    You must pick a provider that supports native Postgres partitioning, triggers, and functions,
    as the registry makes heavy use of these.
 
 ### Registry server
 
-1. **Move to a separate node**: A [separate node](#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations)
+1. Move to a separate node: A [separate node](#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations)
    is one way to scale vertically to increase the resources available to the container registry server process.
-1. **Run multiple registry nodes behind a load balancer**: While the registry can handle
+1. Run multiple registry nodes behind a load balancer: While the registry can handle
    a high amount of traffic with a single large node, the registry is generally intended to
    scale horizontally with multiple deployments. Configuring multiple smaller nodes
    also enables techniques such as autoscaling.
@@ -1553,26 +1537,26 @@ and there are no scaling guides which target number of seats or requests per sec
 Enabling the [Redis](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#redis)
 cache improves performance, but also enables features such as renaming repositories.
 
-1. **Redis Server**: A single Redis instance is supported and is the simplest way
+1. Redis Server: A single Redis instance is supported and is the simplest way
    to access the benefits of the Redis caching.
-1. **Redis Sentinel**: Redis Sentinel is also supported and enables the cache to be HA.
-1. **Redis Cluster**: Redis Cluster can also be used for further scaling as deployments grow.
+1. Redis Sentinel: Redis Sentinel is also supported and enables the cache to be HA.
+1. Redis Cluster: Redis Cluster can also be used for further scaling as deployments grow.
 
 ### Storage
 
-1. **Local file system**: A local file system is the default and is relatively performant,
+1. Local file system: A local file system is the default and is relatively performant,
    but not suitable for multi-node deployments or a large amount of registry data.
-1. **Object storage**: [Use object storage](#use-object-storage) to enable the practical storage
+1. Object storage: [Use object storage](#use-object-storage) to enable the practical storage
    of a larger amount of registry data. Object storage is also suitable for multi-node registry deployments.
 
 ### Online garbage collection
 
-1. **Adjust defaults**: If online garbage collection is not reliably clearing the [review queues](container_registry_metadata_database.md#queue-monitoring),
+1. Adjust defaults: If online garbage collection is not reliably clearing the [review queues](container_registry_metadata_database.md#queue-monitoring),
    you can adjust the `interval` settings in the `manifests` and `blobs` sections under the
    [`gc`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#gc)
    configuration section. The default is `5s`, and these can be configured with milliseconds as well,
    for example `500ms`.
-1. **Scale horizontally with the registry server**: If you are scaling the registry application horizontally
+1. Scale horizontally with the registry server: If you are scaling the registry application horizontally
    with multi-node deployments, online garbage collection automatically scales without
    the need for configuration changes.
 

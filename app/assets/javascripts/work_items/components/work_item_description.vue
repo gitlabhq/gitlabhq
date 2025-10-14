@@ -41,7 +41,6 @@ export default {
     WorkItemDescriptionTemplateListbox,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isGroup'],
   props: {
     description: {
       type: String,
@@ -93,6 +92,11 @@ export default {
       default: false,
     },
     isCreateFlow: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroup: {
       type: Boolean,
       required: false,
       default: false,
@@ -169,6 +173,7 @@ export default {
         return {
           name: this.selectedTemplate.name,
           projectId: this.selectedTemplate.projectId,
+          fromNamespace: this.fullPath,
         };
       },
       update(data) {

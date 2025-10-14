@@ -16,7 +16,8 @@ title: Diff limits administration
 
 Showing the full contents of large files can cause merge requests to load more slowly.
 To prevent this, set maximum values for the diff size, number of files changed, and number of
-lines changed.
+lines changed. These limits apply to both the GitLab UI and API endpoints that return diff
+information.
 
 When a diff reaches 10% of any of these values, GitLab shows the files in a collapsed view with a link
 to expand the diff. Diffs that exceed any of these values are shown as **Too large**, and you cannot
@@ -45,7 +46,7 @@ consumption of your instance. Keep this in mind when adjusting the maximum.
 To set maximum values for diff display in merge requests:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Diff limits**.
 1. Enter a value for the diff limit.
 1. Select **Save changes**.

@@ -67,7 +67,23 @@ module IpynbDiff
     end
 
     def transform_text(text_content, symbol)
-      symbolize_array(symbol, text_content) { |l| "    #{l.rstrip}" }
+      # Sanitize ANSI escape/color codes similarly to error outputs
+      if text_content.is_a?(Array)
+        symbolize_array(symbol, text_content) { |l| "    #{sanitize_text_line(l, rstrip: true)}" }
+      else
+        # Preserve previous behavior: no additional indentation for string content
+        text_content.to_s.split("\n").map { |l| ___(symbol, sanitize_text_line(l, rstrip: false)) }
+      end
+    end
+
+    private
+
+    def sanitize_text_line(line, rstrip: true)
+      # Remove ANSI color codes from output lines, akin to transform_error
+      # - Strip sequences like "[0m", "[31m", "[1;32m"
+      # - Remove ESC characters
+      sanitized = line.to_s.gsub(/\[[0-9][0-9;]*m/, '').delete("\u001B")
+      rstrip ? sanitized.rstrip : sanitized
     end
   end
 end

@@ -17,10 +17,6 @@ RSpec.shared_examples ::Security::JobsFinder do |default_job_types|
 
     subject { finder.execute }
 
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     shared_examples 'JobsFinder core functionality' do
       context 'when the pipeline has no jobs' do
         it { is_expected.to be_empty }

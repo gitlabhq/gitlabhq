@@ -200,7 +200,7 @@ EOT
         it 'is flagged with encoded_file_path' do
           expect(diff.old_path).to eq(".gitmodules")
           expect(diff.new_path).to eq(".gitmodules")
-          expect(diff.encoded_file_path).to eq(true)
+          expect(diff.encoded_file_path).to be(true)
         end
       end
 
@@ -221,7 +221,7 @@ EOT
         it 'is not flagged with encoded_file_path' do
           expect(diff.old_path).to eq("テスト")
           expect(diff.new_path).to eq("テスト")
-          expect(diff.encoded_file_path).to eq(false)
+          expect(diff.encoded_file_path).to be(false)
         end
       end
     end
@@ -535,8 +535,8 @@ EOT
       )
     end
 
-    it { expect(described_class.new(gitaly_diff).submodule?).to eq(false) }
-    it { expect(described_class.new(gitaly_submodule_diff).submodule?).to eq(true) }
+    it { expect(described_class.new(gitaly_diff).submodule?).to be(false) }
+    it { expect(described_class.new(gitaly_submodule_diff).submodule?).to be(true) }
   end
 
   describe '#line_count' do
@@ -559,13 +559,13 @@ EOT
     it 'returns true for a diff that is too large' do
       diff = described_class.new({ diff: 'a' * 204800 })
 
-      expect(diff.too_large?).to eq(true)
+      expect(diff.too_large?).to be(true)
     end
 
     it 'returns false for a diff that is small enough' do
       diff = described_class.new({ diff: 'a' })
 
-      expect(diff.too_large?).to eq(false)
+      expect(diff.too_large?).to be(false)
     end
 
     it 'returns true for a diff that was explicitly marked as being too large' do
@@ -573,7 +573,7 @@ EOT
 
       diff.too_large!
 
-      expect(diff.too_large?).to eq(true)
+      expect(diff.too_large?).to be(true)
     end
   end
 

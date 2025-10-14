@@ -254,6 +254,7 @@ Example response:
     "details_path": "/test-group/test-project/-/pipelines/257",
     "illustration": null,
     "favicon": "/assets/ci_favicons/favicon_status_created-4b975aa976d24e5a3ea7cd9a5713e6ce2cd9afd08b910415e96675de35f64955.png"
-  }
+  },
+  "archived": false
 }
 ```

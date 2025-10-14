@@ -1,21 +1,61 @@
 import { defineStore } from 'pinia';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { logError } from '~/lib/logger';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { FILE_TREE_BROWSER_VISIBILITY } from '../constants';
 
 export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
-  state: () => ({ fileTreeBrowserVisible: false }),
+  state: () => ({
+    fileTreeBrowserIsExpanded: false,
+    fileTreeBrowserIsPeekOn: false,
+  }),
+  getters: {
+    fileTreeBrowserIsVisible: (state) =>
+      state.fileTreeBrowserIsExpanded || state.fileTreeBrowserIsPeekOn,
+  },
   actions: {
-    setFileTreeVisibility(value) {
-      this.fileTreeBrowserVisible = value;
-      localStorage.setItem(FILE_TREE_BROWSER_VISIBILITY, JSON.stringify(value));
+    setFileTreeBrowserIsExpanded(value) {
+      this.fileTreeBrowserIsExpanded = value;
+      try {
+        localStorage.setItem(FILE_TREE_BROWSER_VISIBILITY, JSON.stringify(value));
+      } catch (error) {
+        logError(error);
+      }
     },
-    toggleFileTreeVisibility() {
-      this.setFileTreeVisibility(!this.fileTreeBrowserVisible);
+    toggleFileTreeBrowserIsExpanded() {
+      this.setFileTreeBrowserIsExpanded(!this.fileTreeBrowserIsExpanded);
     },
-    initFileTreeVisibility() {
-      const storedValue = localStorage.getItem(FILE_TREE_BROWSER_VISIBILITY);
-      if (storedValue !== null) {
-        this.setFileTreeVisibility(parseBoolean(storedValue));
+    setFileTreeBrowserIsPeekOn(value) {
+      this.fileTreeBrowserIsPeekOn = value;
+    },
+    toggleFileTreeBrowserIsPeek() {
+      this.setFileTreeBrowserIsPeekOn(!this.fileTreeBrowserIsPeekOn);
+    },
+    resetFileTreeBrowserAllStates() {
+      this.fileTreeBrowserIsExpanded = false;
+      this.fileTreeBrowserIsPeekOn = false;
+    },
+    loadFileTreeBrowserExpandedFromLocalStorage() {
+      try {
+        const storedValue = localStorage.getItem(FILE_TREE_BROWSER_VISIBILITY);
+        if (storedValue !== null) {
+          this.setFileTreeBrowserIsExpanded(parseBoolean(storedValue));
+        }
+      } catch (error) {
+        logError(error);
+      }
+    },
+    handleFileTreeBrowserToggleClick() {
+      if (useMainContainer().isIntermediate) {
+        this.toggleFileTreeBrowserIsPeek();
+      } else {
+        this.toggleFileTreeBrowserIsExpanded();
+      }
+    },
+    initializeFileTreeBrowser() {
+      // Only load expanded state on wide screens
+      if (useMainContainer().isWide) {
+        this.loadFileTreeBrowserExpandedFromLocalStorage();
       }
     },
   },

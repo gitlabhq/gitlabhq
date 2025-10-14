@@ -43,7 +43,10 @@ POST /pipelines/:id/dependency_list_exports
 | `send_email`        | boolean           | no         | When set to `true`, sends an email notification to the user who requested the export when the export completes. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/pipelines/1/dependency_list_exports" --data "export_type=sbom"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <private_token>" \
+  --url "https://gitlab.example.com/api/v4/pipelines/1/dependency_list_exports" \
+  --data "export_type=sbom"
 ```
 
 The created dependency list export is automatically deleted at the time specified in the `expires_at` field.
@@ -88,7 +91,9 @@ GET /dependency_list_exports/:id
 | `id` | integer | yes | The ID of the dependency list export. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/dependency_list_exports/2"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <private_token>" \
+  --url "https://gitlab.example.com/api/v4/dependency_list_exports/2"
 ```
 
 The status code is `202 Accepted` when the dependency list export is being generated, and `200 OK` when it's ready.
@@ -117,7 +122,9 @@ GET /dependency_list_exports/:id/download
 | `id` | integer | yes | The ID of the dependency list export. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/dependency_list_exports/2/download"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <private_token>" \
+  --url "https://gitlab.example.com/api/v4/dependency_list_exports/2/download"
 ```
 
 The response is `404 Not Found` if the dependency list export is not finished yet or was not found.

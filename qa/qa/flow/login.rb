@@ -28,6 +28,10 @@ module QA
             login.sign_in_using_credentials(user: as, skip_page_validation: skip_page_validation)
           end
         end
+
+        return unless Runtime::Env.project_studio_enabled? && Page::Main::Menu.perform(&:signed_in?)
+
+        Page::Main::Menu.perform(&:enable_project_studio)
       end
 
       def sign_in_as_admin(address: :gitlab)

@@ -47,9 +47,11 @@ export default {
 
       await this.$nextTick();
 
-      setTimeout(() => {
+      if (this.handleLocationHashTimeout) clearTimeout(this.handleLocationHashTimeout);
+
+      this.handleLocationHashTimeout = setTimeout(() => {
         handleLocationHash();
-      });
+      }, 1);
     },
   },
   render(h) {

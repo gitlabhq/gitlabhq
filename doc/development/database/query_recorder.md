@@ -175,6 +175,47 @@ There are multiple ways to find the source of queries.
       --> /home/user/gitlab/gdk/gitlab/app/models/project.rb:1296:in `open_issues_count'
   ```
 
+## Testing query counts in the Rails console
+
+During development, it can be challenging to identify and count database queries directly in the Rails console output. `QueryRecorder` can be used interactively to help analyze and optimize query performance before writing tests.
+
+This is particularly useful when:
+
+- Debugging N+1 queries during feature development
+- Comparing different preloading strategies
+- Validating query optimizations before committing code
+
+The `QueryRecorder` helper is not automatically loaded in the Rails console, so you must require it first:
+
+```ruby
+# Important: Require the QueryRecorder helper (not loaded by default)
+require './spec/support/helpers/query_recorder.rb'
+
+# Example: Analyzing query counts for different preloading strategies
+result = {}
+package_files = Packages::PackageFile.limit(5)
+
+# Create a helper to count queries
+query_counter = proc do |&query_block|
+  ActiveRecord::QueryRecorder.new(&query_block).data.map { |_, v| v[:count] }.reduce(&:+)
+end
+
+# Test different approaches
+result['without preloading'] = query_counter.call { package_files.map(&:package) }
+result['with preload(:package)'] = query_counter.call { package_files.preload(:package).map(&:package) }
+result['with includes(package: :project)'] = query_counter.call { package_files.includes(package: :project).map(&:package) }
+
+# View results
+result
+# => {"without preloading"=>5, "with preload(:package)"=>2, "with includes(package: :project)"=>2}
+
+# Find the most efficient approach
+result.min { |a, b| a.second <=> b.second }
+# => ["with preload(:package)", 2]
+```
+
+This approach allows you to quickly test and compare different query strategies during development, helping you choose the most efficient implementation before writing your tests and code.
+
 ## See also
 
 - [Bullet](../profiling.md#bullet) For finding `N+1` query problems

@@ -9,11 +9,7 @@ module Sidebars
 
         override :link
         def link
-          unless context.current_user.merge_request_dashboard_enabled?
-            assignee_username = @context.current_user.username
-          end
-
-          merge_requests_dashboard_path(assignee_username: assignee_username)
+          merge_requests_dashboard_path
         end
 
         override :title
@@ -28,12 +24,7 @@ module Sidebars
 
         override :configure_menu_items
         def configure_menu_items
-          return false if context.current_user.merge_request_dashboard_enabled?
-
-          add_item(assigned_mrs_menu_item)
-          add_item(reviewer_mrs_menu_item)
-
-          true
+          false
         end
 
         override :render?
@@ -54,34 +45,6 @@ module Sidebars
         override :pill_count_field
         def pill_count_field
           "total_merge_requests"
-        end
-
-        private
-
-        def assigned_mrs_menu_item
-          link = merge_requests_dashboard_path(assignee_username: context.current_user.username)
-
-          ::Sidebars::MenuItem.new(
-            title: _('Assigned'),
-            link: link,
-            active_routes: { page: link },
-            has_pill: true,
-            pill_count_field: "assigned_merge_requests",
-            item_id: :merge_requests_assigned
-          )
-        end
-
-        def reviewer_mrs_menu_item
-          link = merge_requests_dashboard_path(reviewer_username: context.current_user.username)
-
-          ::Sidebars::MenuItem.new(
-            title: _('Review requests'),
-            link: link,
-            active_routes: { page: link },
-            has_pill: true,
-            pill_count_field: "review_requested_merge_requests",
-            item_id: :merge_requests_to_review
-          )
         end
       end
     end

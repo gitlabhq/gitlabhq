@@ -31,9 +31,9 @@ data for features.
 
 ### Seed project and group resources for GitLab Duo
 
-The [`gitlab:duo:setup` setup script](ai_features/_index.md#run-gitlabduosetup-script) will execute
-the development seed file for GitLab Duo project and group resources.
-However, if you would like to re-create the resources, you can re-run the seed task using the command:
+The [`gitlab:duo:setup` setup script](ai_features/_index.md#run-gitlabduosetup-script) executes the development seed file for GitLab Duo project and group resources. In self-managed mode, the task is idempotent and skips reseeding if the `gitlab-duo` group already exists. To force reseeding from the setup task, set `GITLAB_DUO_RESEED=1`.
+
+To run the seed directly (outside the setup task) and recreate all resources:
 
 ```shell
 SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu

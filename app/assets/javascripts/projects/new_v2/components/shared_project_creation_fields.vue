@@ -13,11 +13,11 @@ import {
   VISIBILITY_LEVEL_PUBLIC_STRING,
   VISIBILITY_TYPE_ICON,
   PROJECT_VISIBILITY_LEVEL_DESCRIPTIONS,
-  VISIBILITY_LEVELS_INTEGER_TO_STRING,
   VISIBILITY_LEVELS_STRING_TO_INTEGER,
 } from '~/visibility_level/constants';
 import { K8S_OPTION, DEPLOYMENT_TARGET_SELECTIONS } from '../form_constants';
 import NewProjectDestinationSelect from './project_destination_select.vue';
+import ProjectNameValidator from './project_name_validator.vue';
 
 export default {
   components: {
@@ -28,6 +28,7 @@ export default {
     GlLink,
     GlIcon,
     NewProjectDestinationSelect,
+    ProjectNameValidator,
     SingleChoiceSelector,
     SingleChoiceSelectorItem,
   },
@@ -67,9 +68,6 @@ export default {
     isK8sOptionSelected() {
       return this.selectedTarget === K8S_OPTION.value;
     },
-    defaultVisibilityLevel() {
-      return VISIBILITY_LEVELS_INTEGER_TO_STRING[this.defaultProjectVisibility];
-    },
   },
   mounted() {
     this.setVisibilityLevelsOptions();
@@ -98,7 +96,8 @@ export default {
           'VisibilityLevel|This visibility level has been restricted by your administrator.',
         );
       } else if (
-        visibilityLevelInteger > VISIBILITY_LEVELS_STRING_TO_INTEGER[this.namespace.visibility]
+        visibilityLevelInteger >
+        VISIBILITY_LEVELS_STRING_TO_INTEGER[this.selectedNamespace.visibility]
       ) {
         disableMessage = s__(
           'VisibilityLevel|This visibility level is not allowed because the parent group has a more restrictive visibility level.',
@@ -109,11 +108,15 @@ export default {
         title: VISIBILITY_LEVEL_LABELS[visibilityLevelString],
         description: PROJECT_VISIBILITY_LEVEL_DESCRIPTIONS[visibilityLevelString],
         icon: VISIBILITY_TYPE_ICON[visibilityLevelString],
-        value: visibilityLevelString,
+        value: String(visibilityLevelInteger),
+        name: visibilityLevelString,
         disabled: disableMessage !== '',
         disabledMessage: disableMessage,
         id: 1,
       };
+    },
+    updateProjectNameValidationStatus(status) {
+      this.$emit('onValidateForm', status && this.form.state);
     },
   },
   helpPageK8s: helpPagePath('user/clusters/agent/_index'),
@@ -194,6 +197,13 @@ export default {
       </gl-form-group>
     </div>
 
+    <project-name-validator
+      :namespace-full-path="selectedNamespace.fullPath"
+      :project-path="form.fields['project[path]'].value"
+      :project-name="form.fields['project[name]'].value"
+      @onValidation="updateProjectNameValidationStatus"
+    />
+
     <gl-form-group
       :label="s__('Deployment Target|Project deployment target (optional)')"
       label-for="deployment-target-select"
@@ -234,13 +244,14 @@ export default {
     </gl-form-group>
 
     <gl-form-group :label="s__('ProjectsNew|Visibility Level')">
-      <single-choice-selector :checked="defaultVisibilityLevel" name="project[visibility_level]">
+      <single-choice-selector :checked="defaultProjectVisibility" name="project[visibility_level]">
         <single-choice-selector-item
           v-for="{
             title,
             description,
             icon,
             value,
+            name,
             disabled,
             disabledMessage,
             id,
@@ -251,7 +262,7 @@ export default {
           :description="description"
           :disabled-message="disabledMessage"
           :disabled="disabled"
-          :data-testid="`${value}-visibility-level`"
+          :data-testid="`${name}-visibility-level`"
         >
           <gl-icon :name="icon" />
           {{ title }}

@@ -23,10 +23,6 @@
 
 = render_if_exists 'groups/group_activity_analytics', group: @group
 
-
-- if Feature.enabled?(:groups_overview_shared_vue_components, current_user)
-  #js-groups-show-app{ data: { app_data: groups_show_app_data(@group) } }
-- else
-  #js-group-overview-tabs{ data: group_overview_tabs_app_data(@group) }
+#js-groups-show-app{ data: { app_data: groups_show_app_data(@group) } }
 
 = render partial: 'groups/group_readme', locals: { group: @group }

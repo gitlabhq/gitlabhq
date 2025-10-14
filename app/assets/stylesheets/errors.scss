@@ -1,6 +1,9 @@
 /*
  * This is a minimal stylesheet, meant to be used for error pages.
  */
+@import '@gitlab/ui/src/scss/variables';
+@import '@gitlab/ui/src/scss/mixins';
+
 @import 'framework/variables';
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
@@ -9,8 +12,6 @@
 @import 'bootstrap/scss/buttons';
 @import 'bootstrap/scss/forms';
 
-@import '@gitlab/ui/src/scss/variables';
-@import '@gitlab/ui/src/scss/mixins';
 @import '@gitlab/ui/src/components/base/button/button';
 
 body {
@@ -64,7 +65,7 @@ a {
     flex-grow: 1;
   }
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     flex-direction: row;
   }
 }
@@ -79,7 +80,7 @@ a {
     padding-bottom: 1em;
   }
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     li {
       display: inline-block;
       padding-bottom: 0;

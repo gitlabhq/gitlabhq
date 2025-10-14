@@ -26,6 +26,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     it { is_expected.to have_many(:organization_users).inverse_of(:organization) }
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :snippets }
+    it { is_expected.to have_many :snippet_repositories }
     it { is_expected.to have_many :topics }
   end
 
@@ -364,6 +365,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     it { expect(organization.scoped_paths?).to eq(true) }
   end
 
+  describe '#root_path' do
+    it { expect(organization.root_path).to eq("/o/#{organization.path}") }
+  end
+
   describe '#full_path' do
     it { expect(organization.full_path).to eq("/o/#{organization.path}") }
   end
@@ -517,6 +522,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
     describe '#scoped_paths?' do
       it { expect(default_organization.scoped_paths?).to eq(false) }
+    end
+
+    describe '#root_path' do
+      it { expect(default_organization.root_path).to eq('/') }
     end
 
     describe '#full_path' do

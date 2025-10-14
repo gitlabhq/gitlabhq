@@ -1,0 +1,111 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/
+#
+# Configure dependency scanning with spec:inputs (https://docs.gitlab.com/ci/yaml/#specinputs).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#spec_inputs
+spec:
+  inputs:
+    # Variables for job behavior.
+    job_name:
+      type: string
+      default: 'dependency-scanning'
+      description: "The name of the dependency scanning job."
+    stage:
+      type: string
+      default: test
+      description: "The stage of the dependency scanning job."
+    allow_failure:
+      type: boolean
+      default: true
+      description: "Whether the dependency scanning job failure should fail the pipeline."
+    # Default value set to SECURE_ANALYZERS_PREFIX to ensure that global variables applying to AST templates
+    # work as expected. If $SECURE_ANALYZERS_PREFIX is set globally and this input is supplied, the global
+    # variable will be preferred.
+    analyzer_image_prefix:
+      type: string
+      default: "$SECURE_ANALYZERS_PREFIX"
+      description: "The registry url prefix pointing to the repository of the analyzer."
+    analyzer_image_name:
+      type: string
+      default: "dependency-scanning"
+      description: "The repository of the analyzer image used by the dependency-scanning job."
+    analyzer_image_version:
+      type: string
+      default: "1"
+      description: "The version of the analyzer image used by the dependency-scanning job."
+
+    # Variables for analyzer behavior.
+    pipcompile_requirements_file_name_pattern:
+      type: string
+      default: ""
+      description: "Custom requirements file name pattern to use when analyzing. The pattern should match file names only, not directory paths. See https://github.com/bmatcuk/doublestar/tree/v1#patterns for syntax details."
+    max_scan_depth:
+      type: number
+      default: 2
+      description: "Defines how many directory levels analyzer should search for supported files. A value of -1 means the analyzer will search all directories regardless of depth."
+    excluded_paths:
+      type: string
+      default: "**/spec,**/test,**/tests,**/tmp"
+      description: "A comma-separated list of paths (globs supported) to exclude from the scan."
+    include_dev_dependencies:
+      type: boolean
+      default: true
+      description: "Include development/test dependencies when scanning a supported file."
+    enable_static_reachability:
+      type: boolean
+      default: false
+      description: "Enable static reachability."
+    analyzer_log_level:
+      type: string
+      default: "info"
+      description: "Logging level used by the analyzer. The options are fatal, error, warn, info, debug."
+    enable_vulnerability_scan:
+      type: boolean
+      default: true
+      description: "Enable the vulnerability analysis of generated SBOMs."
+    vulnerability_scan_api_timeout:
+      type: number
+      default: 10
+      description: "Vulnerability scanning API request timeout in seconds."
+    vulnerability_scan_api_download_delay:
+      type: number
+      default: 3
+      description: "Vulnerability scanning API initial delay in seconds before downloading scan results."
+
+---
+
+variables:
+  # Setting this variable affects all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+
+"$[[ inputs.job_name ]]":
+  variables:
+    DS_ANALYZER_IMAGE: $[[ inputs.analyzer_image_prefix ]]/$[[ inputs.analyzer_image_name ]]:$[[ inputs.analyzer_image_version ]]
+  image: "$DS_ANALYZER_IMAGE"
+  stage: $[[ inputs.stage ]]
+  allow_failure: $[[ inputs.allow_failure ]]
+  script:
+    # Variable fallback for legacy variables used by version 1 of the Dependency Scanning template.
+    - export DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN="${DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN:-$[[ inputs.pipcompile_requirements_file_name_pattern ]]}"
+    - export DS_MAX_DEPTH="${DS_MAX_DEPTH:-$[[ inputs.max_scan_depth ]]}"
+    - export DS_EXCLUDED_PATHS="${DS_EXCLUDED_PATHS:-$[[ inputs.excluded_paths ]]}"
+    - export DS_INCLUDE_DEV_DEPENDENCIES="${DS_INCLUDE_DEV_DEPENDENCIES:-$[[ inputs.include_dev_dependencies ]]}"
+    - export DS_STATIC_REACHABILITY_ENABLED="${DS_STATIC_REACHABILITY_ENABLED:-$[[ inputs.enable_static_reachability ]]}"
+    - export SECURE_LOG_LEVEL="${SECURE_LOG_LEVEL:-$[[ inputs.analyzer_log_level ]]}"
+    - export DS_ENABLE_VULNERABILITY_SCAN="${DS_ENABLE_VULNERABILITY_SCAN-$[[ inputs.enable_vulnerability_scan ]]}"
+    - export DS_API_TIMEOUT="${DS_API_TIMEOUT:-$[[ inputs.vulnerability_scan_api_timeout ]]}"
+    - export DS_API_SCAN_DOWNLOAD_DELAY="${DS_API_SCAN_DOWNLOAD_DELAY:-$[[ inputs.vulnerability_scan_api_download_delay ]]}"
+    - /analyzer run
+  artifacts:
+    access: "developer"
+    paths:
+      - "**/gl-sbom-*.cdx.json"
+      - "gl-dependency-scanning-report.json"
+    reports:
+      cyclonedx: "**/gl-sbom-*.cdx.json"
+      dependency_scanning: 'gl-dependency-scanning-report.json'
+  rules:
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '($AST_ENABLE_MR_PIPELINES == "true" || $AST_ENABLE_MR_PIPELINES == null) && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: $CI_COMMIT_BRANCH

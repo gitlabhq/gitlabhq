@@ -17,7 +17,7 @@ RSpec.describe Banzai::Filter::AudioLinkFilter, feature_category: :markdown do
     %(<img src="#{path}"/>)
   end
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   shared_examples 'an audio element' do
     let(:image) { link_to_image(src) }

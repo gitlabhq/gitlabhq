@@ -38,11 +38,6 @@ export default {
 
       return sprintf(modalMessage, { tagName: this.tagName });
     },
-    undoneWarning() {
-      return sprintf(this.$options.i18n.undoneWarning, {
-        buttonText: this.buttonText,
-      });
-    },
     confirmationText() {
       return sprintf(this.$options.i18n.confirmationText, {
         tagName: this.tagName,

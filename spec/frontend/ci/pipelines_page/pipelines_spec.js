@@ -28,7 +28,7 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue';
 import PipelinesComponent from '~/ci/pipelines_page/pipelines.vue';
 import PipelinesCiTemplates from '~/ci/pipelines_page/components/empty_state/pipelines_ci_templates.vue';
-import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
+import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import {
   PIPELINE_ID_KEY,
   PIPELINE_IID_KEY,
@@ -85,7 +85,7 @@ describeSkipVue3(skipReason, () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findNavigationTabs = () => wrapper.findComponent(NavigationTabs);
   const findNavigationControls = () => wrapper.findComponent(NavigationControls);
-  const findPipelinesTable = () => wrapper.findComponent(PipelinesTableComponent);
+  const findPipelinesTable = () => wrapper.findComponent(PipelinesTable);
   const findTablePagination = () => wrapper.findComponent(TablePagination);
   const findPipelineKeyCollapsibleBox = () => wrapper.findComponent(GlCollapsibleListbox);
 
@@ -112,6 +112,8 @@ describeSkipVue3(skipReason, () => {
           showJenkinsCiPrompt: false,
           identityVerificationRequired: false,
           identityVerificationPath: '#',
+          usesExternalConfig: false,
+          emptyStateIllustrationPath: 'illustrations/empty-state/empty-pipeline-md.svg',
         },
         propsData: {
           ...defaultProps,
@@ -409,9 +411,11 @@ describeSkipVue3(skipReason, () => {
           expect(trackingSpy).not.toHaveBeenCalled();
         });
 
-        it('calls mutation to save idType preference', () => {
+        it('calls mutation to save idType preference', async () => {
           mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponse);
           createComponent();
+
+          await waitForPromises();
 
           findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
 
@@ -423,6 +427,8 @@ describeSkipVue3(skipReason, () => {
         it('captures error when mutation response has errors', async () => {
           mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponseWithErrors);
           createComponent();
+
+          await waitForPromises();
 
           findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
           await waitForPromises();

@@ -21,7 +21,7 @@
 
 - if can?(current_user, :"set_#{issuable.to_ability_name}_metadata", issuable)
   .row.gl-pt-4
-    %div{ class: (has_due_date ? "col-lg-6" : "col-12") }
+    %div{ class: (has_due_date ? "gl-col-lg-6" : "gl-col-12") }
       .form-group.row{ data: { testid: 'merge-request-assignee' } }
         = render "shared/issuable/form/metadata_issuable_assignee", issuable: issuable, form: form, has_due_date: has_due_date
 
@@ -33,8 +33,8 @@
 
       - if issuable.supports_milestone?
         .form-group.row.issue-milestone
-          = form.label :milestone_id, _('Milestone'), class: "col-12"
-          .col-12
+          = form.label :milestone_id, _('Milestone'), class: "gl-col-12"
+          .gl-col-12
             .issuable-form-select-holder
               = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]"
 
@@ -44,19 +44,19 @@
 
       - if issuable.is_a?(MergeRequest)
         .row
-          = form.label :merge_after, s_('MergeRequests|Merge can start'), class: 'col-12'
+          = form.label :merge_after, s_('MergeRequests|Merge can start'), class: 'gl-col-12'
           .js-merge-request-schedule-input{ data: {
             merge_after: issuable.merge_schedule&.merge_after&.strftime('%Y-%m-%dT%H:%M%z'),
             param_key: issuable.class.model_name.param_key
           } }
-          %p.gl-text-subtle.col-12= s_('MergeRequests|Requires that merge checks pass.')
+          %p.gl-text-subtle.gl-col-12= s_('MergeRequests|Requires that merge checks pass.')
 
     - if has_due_date
-      .col-lg-6
+      .gl-col-lg-6
         = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form
         .form-group.row
-          = form.label :due_date, _('Due date'), class: "col-12"
-          .col-12
+          = form.label :due_date, _('Due date'), class: "gl-col-12"
+          .gl-col-12
             .issuable-form-select-holder
               = form.gitlab_ui_datepicker :due_date, placeholder: _('Select due date'), autocomplete: 'off', id: "issuable-due-date"
         = render_if_exists "shared/issuable/form/iteration", form: form, group: project.group

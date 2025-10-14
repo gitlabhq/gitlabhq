@@ -36,7 +36,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
       let(:branches) { { 'new-feature' => 'unknown' } }
 
       before do
-        allow(project.repository).to receive(:add_branch).and_return(false)
+        allow(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::Repository::InvalidRef)
       end
 
       it 'returns an error with a reference name' do
@@ -86,8 +86,9 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
           user,
           'failed_branch',
           'master',
-          expire_cache: false
-        ).and_return(false)
+          expire_cache: false,
+          raise_on_invalid_ref: true
+        ).and_raise(Gitlab::Git::Repository::InvalidRef)
 
         expect(subject[:status]).to eq(:error)
         expect(subject[:message]).to match_array(
@@ -170,7 +171,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
 
     context 'when incorrect reference is provided' do
       before do
-        allow(project.repository).to receive(:add_branch).and_return(false)
+        allow(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::Repository::InvalidRef)
       end
 
       it 'returns an error with a reference name' do
@@ -200,6 +201,31 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
 
       expect(result[:status]).to eq(:error)
       expect(result[:message]).to eq(error_message)
+    end
+
+    context 'when there is a file directory conflict' do
+      let(:branch_name) { 'foo/bar' }
+      let(:expected_service_message) do
+        "Failed to create branch '#{branch_name}': Branch name conflicts with existing branch hierarchy."
+      end
+
+      before do
+        service.execute('foo', 'master')
+      end
+
+      it 'raises the actual Gitaly error containing "file directory conflict"' do
+        expect { project.repository.add_branch(user, branch_name, 'master', raise_on_invalid_ref: true) }
+          .to raise_error(Gitlab::Git::Repository::InvalidRef) do |e|
+            expect(e.message).to include('file directory conflict')
+          end
+      end
+
+      it 'returns a user friendly error message from the service' do
+        result = service.execute(branch_name, 'master')
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq(expected_service_message)
+      end
     end
   end
 end

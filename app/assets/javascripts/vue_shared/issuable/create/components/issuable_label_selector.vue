@@ -52,7 +52,7 @@ export default {
       {{ $options.i18n.fieldLabel }}
     </label>
     <div class="gl-col-12">
-      <div class="issuable-form-label-select-holder">
+      <div>
         <input
           v-for="selectedLabel in selectedLabels"
           :key="selectedLabel.id"

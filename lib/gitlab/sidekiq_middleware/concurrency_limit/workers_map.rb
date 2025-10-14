@@ -20,14 +20,14 @@ module Gitlab
             return 0 if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
 
             worker_class = worker.is_a?(Class) ? worker : worker.class
-            limit = data[worker_class]&.call.to_i
-            return limit unless limit == 0
+            limit = data[worker_class]&.call
+            return limit.to_i unless limit.nil?
 
-            if Feature.enabled?(:use_max_concurrency_limit_percentage_as_default_limit, Feature.current_request)
-              default_limit_from_max_percentage(worker_class)
-            else
-              limit
+            unless Feature.enabled?(:use_max_concurrency_limit_percentage_as_default_limit, Feature.current_request)
+              return limit.to_i # limit must be nil now, so cast it to 0
             end
+
+            default_limit_from_max_percentage(worker_class)
           end
 
           def over_the_limit?(worker:)

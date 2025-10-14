@@ -4,13 +4,13 @@
 
   %fieldset
     .row
-      .form-group.col-md-5
+      .form-group.gl-col-md-5
         = f.label :name, s_('Groups|Group name'), class: 'label-bold'
         = f.text_field :name, class: 'form-control', data: { testid: 'group-name-field' }
         %span.form-text.gl-text-subtle
           = s_('Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.')
 
-      .form-group.col-md-4
+      .form-group.gl-col-md-4
         = f.label :id, s_('Groups|Group ID'), class: 'label-bold'
         = f.text_field :id, class: 'form-control gl-form-input', readonly: true
 
@@ -23,7 +23,7 @@
         = link_button_to s_('Groups|Remove avatar'), group_avatar_path(@group.to_param), aria: { label: s_('Groups|Remove avatar') }, data: { confirm: s_('Groups|Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
 
     .row
-      .form-group.col-md-9
+      .form-group.gl-col-md-9
         = f.label :description, s_('Groups|Group description (optional)'), class: 'label-bold'
         = f.text_area :description, class: 'form-control', rows: 4, maxlength: 500
 
@@ -31,7 +31,7 @@
     = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 
     .row
-      .form-group.col-md-5
+      .form-group.gl-col-md-5
         = f.label :description, s_('Groups|Group README'), class: 'label-bold'
         #js-group-settings-readme{ data: group_settings_readme_app_data(@group) }
 

@@ -34,9 +34,9 @@ in Mattermost:
 Incoming Webhooks might be blocked on your Mattermost instance. Ask your Mattermost administrator
 to enable it on:
 
-- **Mattermost System Console > Integrations > Integration Management** in Mattermost
+- **Mattermost System Console** > **Integrations** > **Integration Management** in Mattermost
   versions 5.12 and later.
-- **Mattermost System Console > Integrations > Custom Integrations** in Mattermost
+- **Mattermost System Console** > **Integrations** > **Custom Integrations** in Mattermost
   versions 5.11 and earlier.
 
 Display name override is not enabled by default, you need to ask your administrator to enable it on that same section.
@@ -53,7 +53,7 @@ After the Mattermost instance has an incoming webhook set up, you can set up Git
 to send the notifications:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Mattermost notifications**.
 1. Select the GitLab events to generate notifications for. For each event you select, input the Mattermost channel
    to receive the notification. You do not need to add the hash sign (`#`).

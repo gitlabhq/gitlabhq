@@ -55,7 +55,7 @@ After you have set up the Google IAM for the integration for your organization o
 reuse the integration in new projects in that organization or group:
 
 1. [Create a new GitLab project](../../user/project/_index.md) in your organization or group.
-1. In your GitLab project, select **Settings > Integrations**.
+1. In your GitLab project, select **Settings** > **Integrations**.
 1. Select **Google Cloud IAM**.
 1. In the **Google Cloud project** section, enter the following:
 
@@ -78,7 +78,7 @@ reuse the integration in new projects in that organization or group:
 You can store multiple container images in Artifact Registry. To reuse the same repository for
 a new GitLab project, configure the Google Artifact Management integration in your project.
 
-1. In your GitLab project, select **Settings > Integrations**.
+1. In your GitLab project, select **Settings** > **Integrations**.
 1. Select **Google Artifact Management**
 1. In the **Repository** section, enter the following:
 

@@ -40,8 +40,6 @@ module Tooling
         automation_bot
         security_policy_bot
         admin_bot
-        suggested_reviewers_bot
-        llm_bot
         placeholder
         duo_code_review_bot
         import_user

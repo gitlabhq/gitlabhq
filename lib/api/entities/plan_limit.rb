@@ -30,6 +30,9 @@ module API
       expose :pypi_max_file_size, documentation: { type: 'integer', example: 3221225472 }
       expose :terraform_module_max_file_size, documentation: { type: 'integer', example: 1073741824 }
       expose :storage_size_limit, documentation: { type: 'integer', example: 15000 }
+      expose :web_hook_calls, documentation: { type: 'integer', example: 500 }
+      expose :web_hook_calls_low, documentation: { type: 'integer', example: 500 }
+      expose :web_hook_calls_mid, documentation: { type: 'integer', example: 500 }
     end
   end
 end

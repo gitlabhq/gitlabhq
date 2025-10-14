@@ -6,7 +6,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
 
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
-  let_it_be_with_reload(:composer_package) { create(:composer_package, :last_downloaded_at, project: project) }
+  let_it_be_with_reload(:composer_package) { create(:composer_package_sti, :last_downloaded_at, project: project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:composer_json) { { name: 'name', type: 'type', license: 'license', version: 1 } }
   let_it_be(:composer_metadatum) do
@@ -81,7 +81,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
 
   context 'when project is public' do
     let_it_be(:public_project) { create(:project, :public, group: group) }
-    let_it_be(:composer_package) { create(:composer_package, project: public_project) }
+    let_it_be(:composer_package) { create(:composer_package_sti, project: public_project) }
     let(:package_global_id) { global_id_of(composer_package) }
 
     before do
@@ -167,9 +167,9 @@ RSpec.describe 'package details', feature_category: :package_registry do
     end
 
     context 'versions field', :aggregate_failures do
-      let_it_be(:composer_package2) { create(:composer_package, project: project, name: composer_package.name) }
-      let_it_be(:composer_package3) { create(:composer_package, :error, project: project, name: composer_package.name) }
-      let_it_be(:pending_destruction) { create(:composer_package, :pending_destruction, project: project, name: composer_package.name) }
+      let_it_be(:composer_package2) { create(:composer_package_sti, project: project, name: composer_package.name) }
+      let_it_be(:composer_package3) { create(:composer_package_sti, :error, project: project, name: composer_package.name) }
+      let_it_be(:pending_destruction) { create(:composer_package_sti, :pending_destruction, project: project, name: composer_package.name) }
 
       def run_query
         versions_nodes = <<~QUERY
@@ -295,7 +295,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
 
       context 'when project is public' do
         let_it_be(:public_project) { create(:project, :public, group: group) }
-        let_it_be(:composer_package) { create(:composer_package, project: public_project) }
+        let_it_be(:composer_package) { create(:composer_package_sti, project: public_project) }
         let(:package_global_id) { global_id_of(composer_package) }
 
         before do
@@ -347,7 +347,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
     context 'public_package' do
       context 'when project is private' do
         let_it_be(:private_project) { create(:project, :private, group: group) }
-        let_it_be(:composer_package) { create(:composer_package, project: private_project) }
+        let_it_be(:composer_package) { create(:composer_package_sti, project: private_project) }
         let(:package_global_id) { global_id_of(composer_package) }
 
         before do
@@ -374,7 +374,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
 
       context 'when project is public' do
         let_it_be(:public_project) { create(:project, :public, group: group) }
-        let_it_be(:composer_package) { create(:composer_package, project: public_project) }
+        let_it_be(:composer_package) { create(:composer_package_sti, project: public_project) }
         let(:package_global_id) { global_id_of(composer_package) }
 
         before do

@@ -172,7 +172,7 @@ Prerequisites:
 To configure the timer:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Monitor**.
+1. Select **Settings** > **Monitor**.
 1. Expand the **Incidents** section, then select the **Incident settings** tab.
 1. Select **Activate "time to SLA" countdown timer**.
 1. Set a time limit in increments of 15 minutes.

@@ -41,23 +41,4 @@ RSpec.describe Review do
       expect(review.participants).to include(review.author)
     end
   end
-
-  describe '#from_merge_request_author?' do
-    let(:merge_request) { build_stubbed(:merge_request) }
-    let(:review) { build_stubbed(:review, merge_request: merge_request, author: author) }
-
-    subject(:from_merge_request_author?) { review.from_merge_request_author? }
-
-    context 'when review author is the merge request author' do
-      let(:author) { merge_request.author }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when review author is not the merge request author' do
-      let(:author) { build_stubbed(:user) }
-
-      it { is_expected.to eq(false) }
-    end
-  end
 end

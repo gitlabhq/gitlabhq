@@ -763,16 +763,37 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#optimize!' do
-    subject { batched_migration.optimize! }
+    subject(:optimize) { batched_migration.optimize! }
 
-    let(:batched_migration) { create(:batched_background_migration) }
-    let(:optimizer) { instance_double('Gitlab::Database::BackgroundMigration::BatchOptimizer') }
+    let(:batch_size) { 10_000 }
+    let(:batched_migration) { create(:batched_background_migration, batch_size: batch_size) }
 
-    it 'calls the BatchOptimizer' do
-      expect(Gitlab::Database::BackgroundMigration::BatchOptimizer).to receive(:new).with(batched_migration).and_return(optimizer)
-      expect(optimizer).to receive(:optimize!)
+    it 'does not update batch_size when efficiency is nil' do
+      expect { optimize }.not_to change { batched_migration.reload.batch_size }
+    end
 
-      subject
+    context 'when efficiency is low' do
+      before do
+        allow(batched_migration).to receive(:smoothed_time_efficiency).and_return(0.7)
+      end
+
+      it 'updates batch_size' do
+        # With efficiency 0.7: multiplier = 0.95/0.7 = 1.357, capped at 1.2
+        # New size = 10,000 * 1.2 = 12,000
+        expect { optimize }.to change { batched_migration.reload.batch_size }.from(batch_size).to(12_000)
+      end
+    end
+
+    context 'when efficiency is high' do
+      before do
+        allow(batched_migration).to receive(:smoothed_time_efficiency).and_return(1.5)
+      end
+
+      it 'updates batch_size' do
+        # With efficiency 1.5: multiplier = 0.95/1.5 = 0.633
+        # New size = 10,000 * 0.633 = 6,333
+        expect { optimize }.to change { batched_migration.reload.batch_size }.from(batch_size).to(6_333)
+      end
     end
   end
 

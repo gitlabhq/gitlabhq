@@ -51,6 +51,9 @@ class PersonalAccessToken < ApplicationRecord
   after_initialize :set_default_scopes, if: :persisted?
   before_save :ensure_token
 
+  before_create :set_user_type
+  before_create :set_group_id
+
   scope :active, -> { not_revoked.not_expired }
   # this scope must use a string condition, otherwise Postgres will not use the correct indices
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND seven_days_notification_sent_at IS NULL AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
@@ -67,11 +70,17 @@ class PersonalAccessToken < ApplicationRecord
   scope :not_revoked, -> { where(revoked: [false, nil]) }
   scope :for_user, ->(user) { where(user: user) }
   scope :for_users, ->(users) { where(user: users) }
+  scope :for_user_types, ->(user_types) { where(user_type: user_types) }
   scope :for_organization, ->(organization) { where(organization_id: organization) }
+  scope :for_group, ->(group) { where(group: group) }
   scope :preload_users, -> { preload(:user) }
-  scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
+  scope :order_name_asc_id_asc, -> { reorder(name: :asc, id: :asc) }
+  scope :order_name_desc_id_desc, -> { reorder(name: :desc, id: :desc) }
+  scope :order_created_at_asc_id_asc, -> { reorder(created_at: :asc, id: :asc) }
+  scope :order_created_at_desc_id_desc, -> { reorder(created_at: :desc, id: :desc) }
+  scope :order_expires_at_asc_id_asc, -> { reorder(expires_at: :asc, id: :asc) }
   scope :order_expires_at_desc_id_desc, -> { reorder(expires_at: :desc, id: :desc) }
-  scope :order_last_used_at_asc_id_desc, -> { reorder(last_used_at: :asc, id: :desc) }
+  scope :order_last_used_at_asc_id_asc, -> { reorder(last_used_at: :asc, id: :asc) }
   scope :order_last_used_at_desc_id_desc, -> { reorder(last_used_at: :desc, id: :desc) }
   scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }
   scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
@@ -91,6 +100,8 @@ class PersonalAccessToken < ApplicationRecord
   delegate :permitted_for_boundary?, to: :granular_scopes
 
   def revoke!
+    return true if revoked?
+
     if persisted?
       update_columns(revoked: true, updated_at: Time.zone.now)
     else
@@ -106,10 +117,13 @@ class PersonalAccessToken < ApplicationRecord
   def self.simple_sorts
     super.merge(
       {
-        'expires_asc' => -> { order_expires_at_asc_id_desc },
-        'expires_at_asc_id_desc' => -> { order_expires_at_asc_id_desc }, # Keep for backward compatibility
+        'name_asc' => -> { order_name_asc_id_asc },
+        'name_desc' => -> { order_name_desc_id_desc },
+        'created_asc' => -> { order_created_at_asc_id_asc },
+        'created_desc' => -> { order_created_at_desc_id_desc },
+        'expires_asc' => -> { order_expires_at_asc_id_asc },
         'expires_desc' => -> { order_expires_at_desc_id_desc },
-        'last_used_asc' => -> { order_last_used_at_asc_id_desc },
+        'last_used_asc' => -> { order_last_used_at_asc_id_asc },
         'last_used_desc' => -> { order_last_used_at_desc_id_desc }
       }
     )
@@ -159,6 +173,16 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   protected
+
+  def set_user_type
+    self.user_type = user.user_type
+  end
+
+  def set_group_id
+    if user.project_bot? && user.bot_namespace&.root_ancestor.is_a?(Group)
+      self.group_id = user.bot_namespace.root_ancestor.id
+    end
+  end
 
   def validate_scopes
     unless revoked || scopes.all? { |scope| Gitlab::Auth.all_available_scopes.include?(scope.to_sym) }

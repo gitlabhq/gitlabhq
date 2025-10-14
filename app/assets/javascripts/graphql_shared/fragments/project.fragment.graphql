@@ -3,6 +3,7 @@
 
 fragment Project on Project {
   ...ProjectInterface
+  editPath
   archived
   topics
   forksCount

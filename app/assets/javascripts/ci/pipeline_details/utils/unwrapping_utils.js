@@ -1,5 +1,9 @@
 import { reportToSentry } from '~/ci/utils';
-import { EXPLICIT_NEEDS_PROPERTY, NEEDS_PROPERTY } from '../constants';
+import {
+  NEEDS_PROPERTY,
+  PREVIOUS_STAGE_JOBS_PROPERTY,
+  PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+} from '../constants';
 
 const unwrapGroups = (stages) => {
   return stages.map((stage, idx) => {
@@ -35,9 +39,28 @@ const unwrapNodesWithName = (jobArray, prop, field = 'name') => {
   });
 };
 
+const createPreviousStageJobsOrNeeds = (job) => {
+  const previousStageJobs = job[PREVIOUS_STAGE_JOBS_PROPERTY] || [];
+  const needs = job[NEEDS_PROPERTY] || [];
+
+  const combined = [...previousStageJobs, ...needs];
+  return [...new Set(combined)];
+};
+
 const unwrapJobWithNeeds = (denodedJobArray) => {
-  const explicitNeedsUnwrapped = unwrapNodesWithName(denodedJobArray, EXPLICIT_NEEDS_PROPERTY);
-  return unwrapNodesWithName(explicitNeedsUnwrapped, NEEDS_PROPERTY);
+  const previousStageJobsUnwrapped = unwrapNodesWithName(
+    denodedJobArray,
+    PREVIOUS_STAGE_JOBS_PROPERTY,
+  );
+
+  const needsUnwrapped = unwrapNodesWithName(previousStageJobsUnwrapped, NEEDS_PROPERTY);
+
+  const jobsWithUnion = needsUnwrapped.map((job) => ({
+    ...job,
+    [PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]: createPreviousStageJobsOrNeeds(job),
+  }));
+
+  return jobsWithUnion;
 };
 
 const unwrapStagesWithNeedsAndLookup = (denodedStages) => {

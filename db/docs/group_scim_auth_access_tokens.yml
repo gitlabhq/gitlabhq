@@ -4,7 +4,7 @@ milestone: '17.6'
 classes:
 - GroupScimAuthAccessToken
 feature_categories:
-- system_access
+- user_management
 description: Bearer token used  for authenticating SCIM requests. This is table used
   for Group SCIM
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170565/diffs

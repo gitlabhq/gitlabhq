@@ -29,7 +29,6 @@ module Gitlab
           allow_framed_gitlab_paths(directives)
           allow_customersdot(directives)
           csp_level_3_backport(directives)
-          add_browsersdk_tracking(directives)
 
           directives
         end
@@ -102,16 +101,6 @@ module Gitlab
         def allow_snowplow_micro(directives)
           url = URI.join(Gitlab::Tracking::Destinations::SnowplowMicro.new.uri, '/').to_s
           append_to_directive(directives, 'connect_src', url)
-        end
-
-        def add_browsersdk_tracking(directives)
-          return if directives.blank?
-          return unless Gitlab.com? && ENV['GITLAB_ANALYTICS_URL'].present?
-
-          default_connect_src = directives['connect-src'] || directives['default-src']
-          connect_src_values = Array.wrap(default_connect_src) | [ENV['GITLAB_ANALYTICS_URL']]
-
-          append_to_directive(directives, 'connect_src', connect_src_values.join(' '))
         end
 
         def allow_lfs(directives)

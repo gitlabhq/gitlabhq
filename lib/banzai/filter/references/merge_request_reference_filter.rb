@@ -77,9 +77,31 @@ module Banzai
 
         def find_commit_by_sha(object, commit_sha)
           @all_commits ||= {}
-          @all_commits[object.id] ||= object.all_commits
+
+          unless @all_commits.key?(object.id)
+            @all_commits[object.id] = if Feature.enabled?(:merge_request_diff_commits_dedup, object.project)
+                                        preloaded_all_commits(object)
+                                      else
+                                        object.all_commits
+                                      end
+          end
 
           @all_commits[object.id].find { |commit| commit.sha == commit_sha }
+        end
+
+        def preloaded_all_commits(object)
+          commits = object.all_commits
+
+          ActiveRecord::Associations::Preloader.new(
+            records: commits,
+            associations: [
+              :commit_author,
+              :committer,
+              :merge_request_commits_metadata
+            ]
+          ).call
+
+          commits
         end
       end
     end

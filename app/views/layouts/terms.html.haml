@@ -9,7 +9,7 @@
       = render 'layouts/header/read_only_banner'
       = render "layouts/flash"
 
-      .limit-container-width.gl-my-5{ class: container_class }
+      .limit-container-width.gl-py-7{ class: container_class }
         = render Pajamas::CardComponent.new( body_options: { class: 'gl-p-0' }, header_options: { class: 'gl-flex gl-items-center gl-justify-between' }) do |c|
           - c.with_header do
             = brand_header_logo({add_gitlab_logo_text: true})

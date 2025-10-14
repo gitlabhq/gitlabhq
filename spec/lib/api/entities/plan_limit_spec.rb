@@ -31,7 +31,10 @@ RSpec.describe API::Entities::PlanLimit do
       :pypi_max_file_size,
       :terraform_module_max_file_size,
       :storage_size_limit,
-      :pipeline_hierarchy_size
+      :pipeline_hierarchy_size,
+      :web_hook_calls,
+      :web_hook_calls_low,
+      :web_hook_calls_mid
     )
   end
 

@@ -1,7 +1,9 @@
 query getWorkItemStateCounts(
   $excludeProjects: Boolean = false
+  $excludeGroupWorkItems: Boolean = false
   $includeDescendants: Boolean = true
   $isGroup: Boolean = true
+  $iid: String
   $fullPath: ID!
   $search: String
   $sort: WorkItemSort
@@ -36,7 +38,9 @@ query getWorkItemStateCounts(
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
     workItemStateCounts(
+      iid: $iid
       excludeProjects: $excludeProjects
+      excludeGroupWorkItems: $excludeGroupWorkItems
       includeDescendants: $includeDescendants
       search: $search
       sort: $sort
@@ -74,6 +78,7 @@ query getWorkItemStateCounts(
   project(fullPath: $fullPath) @skip(if: $isGroup) {
     id
     workItemStateCounts(
+      iid: $iid
       search: $search
       sort: $sort
       state: $state

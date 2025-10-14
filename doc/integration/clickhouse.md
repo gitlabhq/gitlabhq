@@ -41,6 +41,7 @@ You can connect ClickHouse to GitLab either:
 |----------------------|---------------------|---------|
 | 17.7.0               | 23.x (24.x, 25.x)   | For using ClickHouse 24.x and 25.x see the [workaround section](#database-schema-migrations-on-gitlab-1800-and-earlier). |
 | 18.1.0               | 23.x, 24.x, 25.x    |         |
+| 18.5.0               | 23.x, 24.x, 25.x    | Experimental support for `Replicated` database engine. |
 
 {{< alert type="note" >}}
 
@@ -154,15 +155,69 @@ To verify that your connection is set up successfully:
 
 ### Run ClickHouse migrations
 
+{{< tabs >}}
+
+{{< tab title="Linux package" >}}
+
 To create the required database objects execute:
 
 ```shell
 sudo gitlab-rake gitlab:clickhouse:migrate
 ```
 
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+Migrations are executed automatically using the [GitLab-Migrations chart](https://docs.gitlab.com/charts/charts/gitlab/migrations/#clickhouse-optional).
+
+Alternatively, you can run migrations by executing the following command in the [Toolbox pod](https://docs.gitlab.com/charts/charts/gitlab/toolbox/):
+
+```shell
+gitlab-rake gitlab:clickhouse:migrate
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Enable ClickHouse for Analytics
 
 Now that your GitLab instance is connected to ClickHouse, you can enable features to use ClickHouse by [enabling ClickHouse for Analytics](../administration/analytics.md).
+
+## `Replicated` database engine
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/560927) as an experiment in GitLab 18.5.
+
+{{< /history >}}
+
+For a multi-node, high-availability setup, GitLab supports the `Replicated` table engine in ClickHouse.
+
+Prerequisites:
+
+- A cluster must be defined in the `remote_servers` [configuration section](https://clickhouse.com/docs/architecture/cluster-deployment#configure-clickhouse-servers).
+- The following [macros](https://clickhouse.com/docs/architecture/cluster-deployment#macros-config-explanation) must be configured:
+  - `cluster`
+  - `shard`
+  - `replica`
+
+When configuring the database, you must run the statements with the `ON CLUSTER` clause.
+In the following example, replace `CLUSTER_NAME_HERE` with your cluster's name:
+
+ ```sql
+ CREATE DATABASE gitlab_clickhouse_main_production ON CLUSTER CLUSTER_NAME_HERE ENGINE = Replicated('/clickhouse/databases/{cluster}/gitlab_clickhouse_main_production', '{shard}', '{replica}')
+ CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE' ON CLUSTER CLUSTER_NAME_HERE;
+ CREATE ROLE gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+ GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+ GRANT SELECT ON information_schema.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+ GRANT gitlab_app TO gitlab ON CLUSTER CLUSTER_NAME_HERE;
+ ```
+
+### Load balancer considerations
+
+The GitLab application communicates with the ClickHouse cluster through the HTTP/HTTPS interface. Consider using an HTTP proxy for load balancing requests to the ClickHouse cluster, such as [`chproxy`](https://www.chproxy.org/).
 
 ## Troubleshooting
 

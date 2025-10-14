@@ -20,7 +20,7 @@
   - page_card_attributes("Namespace" => @group&.full_path, "Project" => @project&.full_path)
 
 #js-search-topbar{ data: { "default-branch-name": @project&.default_branch } }
-.results.lg:gl-flex.gl-mt-0
+.results.gl-mt-0{ class: "@lg/panel:gl-flex" }
   #js-search-sidebar{
     data: {
       navigation_json: search_navigation_json,

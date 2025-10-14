@@ -76,7 +76,7 @@ purposes. A security report is a JSON file.
 To download a security report:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select **Download results**, then the desired security report.
@@ -113,7 +113,7 @@ branch.
 To view a pipeline security report:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select the latest pipeline.
 
 To see details of a finding or vulnerability, select its description.
@@ -132,7 +132,7 @@ Prerequisites:
 To change the status and severity of findings or vulnerabilities:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select the latest pipeline.
 1. Select the **Security** tab.
 1. In the finding report:
@@ -151,7 +151,7 @@ To change the status and severity of findings or vulnerabilities:
 Create an issue to track, document, and manage the remediation work for a finding or vulnerability.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select a finding's description.

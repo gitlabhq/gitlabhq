@@ -187,6 +187,8 @@ RSpec.describe '1_settings', feature_category: :shared do
         adjourned_projects_deletion_cron_worker
         admin_email_worker
         analytics_usage_trends_count_job_trigger_worker
+        authn_data_retention_oauth_access_grant_archive_worker
+        authn_data_retention_oauth_access_token_archive_worker
         authorized_project_update_periodic_recalculate_worker
         batched_background_migrations_worker
         batched_background_migration_worker_ci_database
@@ -214,6 +216,7 @@ RSpec.describe '1_settings', feature_category: :shared do
         database_monitor_locked_tables_cron_worker
         deactivated_pages_deployments_delete_cron_worker
         deactivate_expired_deployments_cron_worker
+        delete_expired_trigger_token_worker
         deploy_tokens_expiring_worker
         environments_auto_delete_cron_worker
         environments_auto_stop_cron_worker

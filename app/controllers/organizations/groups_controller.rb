@@ -59,7 +59,7 @@ module Organizations
 
     def create_group
       create_service_params = group_params.merge(organization_id: organization.id)
-      Groups::CreateService.new(current_user, create_service_params).execute
+      ::Groups::CreateService.new(current_user, create_service_params).execute
     end
 
     def authorize_view_edit_page!
@@ -75,9 +75,9 @@ module Organizations
     end
 
     def destroy_immediately
-      Groups::DestroyService.new(group, current_user).async_execute
+      ::Groups::DestroyService.new(group, current_user).async_execute
       render json: { message: format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name) }
-    rescue Groups::DestroyService::DestroyError => error
+    rescue ::Groups::DestroyService::DestroyError => error
       render json: { message: error.message }, status: :unprocessable_entity
     end
   end

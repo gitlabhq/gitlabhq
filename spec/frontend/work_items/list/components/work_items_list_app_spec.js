@@ -13,9 +13,11 @@ import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
 import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
+import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import {
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
@@ -28,6 +30,7 @@ import {
   UPDATED_DESC,
   urlSortParams,
   RELATIVE_POSITION_ASC,
+  RELATIVE_POSITION,
 } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
@@ -67,6 +70,7 @@ import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -93,6 +97,7 @@ import {
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
+jest.mock('~/alert');
 
 const showToast = jest.fn();
 
@@ -132,6 +137,7 @@ describeSkipVue3(skipReason, () => {
   const findWorkItemHealthStatus = () => wrapper.findComponent(WorkItemHealthStatus);
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
   const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
+  const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAnyIssues);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
@@ -142,6 +148,10 @@ describeSkipVue3(skipReason, () => {
   const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
   const findSubChildIndicator = (item) =>
     item.find('[data-testid="sub-child-work-item-indicator"]');
+  const findImportIssuesButton = () => wrapper.findByTestId('import-issues-dropdown');
+  const findImportCSVButton = () => wrapper.findByTestId('import-csv-button');
+  const findImportJiraIssueButton = () => wrapper.findByTestId('import-from-jira-link');
+  const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 
   const mountComponent = ({
     provide = {},
@@ -156,6 +166,8 @@ describeSkipVue3(skipReason, () => {
     additionalHandlers = [],
     canReadCrmOrganization = true,
     canReadCrmContact = true,
+    isIssueRepositioningDisabled = false,
+    hasProjects = true,
     stubs = {},
   } = {}) => {
     window.gon = {
@@ -194,6 +206,7 @@ describeSkipVue3(skipReason, () => {
         hasOkrsFeature: false,
         hasQualityManagementFeature: false,
         hasCustomFieldsFeature: false,
+        hasStatusFeature: false,
         initialSort: CREATED_DESC,
         isGroup: true,
         isSignedIn: true,
@@ -204,7 +217,6 @@ describeSkipVue3(skipReason, () => {
         emailsHelpPagePath: '/help/development/emails.md#email-namespace',
         markdownHelpPath: '/help/user/markdown.md',
         quickActionsHelpPath: '/help/user/project/quick_actions.md',
-        hasStatusFeature: true,
         releasesPath: RELEASES_ENDPOINT,
         metadataLoading: false,
         email: '',
@@ -214,6 +226,11 @@ describeSkipVue3(skipReason, () => {
         groupId: 'gid://gitlab/Group/1',
         isProject: false,
         exportCsvPath: '/export/csv',
+        canEdit: true,
+        canImportWorkItems: true,
+        isIssueRepositioningDisabled,
+        hasProjects,
+        newIssuePath: '',
         ...provide,
       },
       propsData: {
@@ -271,7 +288,7 @@ describeSkipVue3(skipReason, () => {
         currentTab: STATUS_OPEN,
         error: '',
         initialSortBy: CREATED_DESC,
-        namespace: 'work-items',
+        namespace: 'full/path',
         recentSearchesStorageKey: 'issues',
         showWorkItemTypeIcon: true,
         tabs: WorkItemsListApp.issuableListTabs,
@@ -324,6 +341,7 @@ describeSkipVue3(skipReason, () => {
           state: STATUS_OPEN,
           firstPageSize: 20,
           types: ['ISSUE', 'INCIDENT', 'TASK'],
+          excludeGroupWorkItems: false,
         }),
       );
 
@@ -356,6 +374,32 @@ describeSkipVue3(skipReason, () => {
 
       expect(findSubChildIndicator(findChildItem1()).exists()).toBe(true);
       expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+    });
+
+    describe('when isGroupIssuesList is true', () => {
+      it('passes excludeGroupWorkItems: true to GraphQL queries', async () => {
+        mountComponent({ provide: { isGroupIssuesList: true } });
+
+        await waitForPromises();
+
+        expect(defaultQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            excludeGroupWorkItems: true,
+          }),
+        );
+
+        expect(defaultSlimQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            excludeGroupWorkItems: true,
+          }),
+        );
+
+        expect(defaultCountsQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            excludeGroupWorkItems: true,
+          }),
+        );
+      });
     });
   });
 
@@ -441,6 +485,41 @@ describeSkipVue3(skipReason, () => {
           expect.objectContaining({ title: 'Health' }),
           expect.objectContaining({ title: 'Blocking' }),
         ]);
+      });
+    });
+
+    describe('when sort is manual and issue repositioning is disabled', () => {
+      beforeEach(async () => {
+        mountComponent({
+          provide: { initialSort: RELATIVE_POSITION, isIssueRepositioningDisabled: true },
+        });
+        await waitForPromises();
+      });
+
+      it('changes the sort to the default of created descending', () => {
+        expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
+      });
+
+      it('shows an alert to tell the user that manual reordering is disabled', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Sort order rebalancing in progress. Reordering is temporarily disabled.',
+          variant: VARIANT_INFO,
+        });
+      });
+
+      it('shows alert when user tries to select manual sort after component mount', async () => {
+        mountComponent({
+          provide: { isIssueRepositioningDisabled: true },
+        });
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
+        await nextTick();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Sort order rebalancing in progress. Reordering is temporarily disabled.',
+          variant: VARIANT_INFO,
+        });
       });
     });
   });
@@ -848,6 +927,37 @@ describeSkipVue3(skipReason, () => {
           .map((token) => token.type);
 
         expect(tokens).toContain(TOKEN_TYPE_RELEASE);
+      });
+    });
+
+    describe('multiSelect property', () => {
+      beforeEach(async () => {
+        mountComponent();
+        await waitForPromises();
+      });
+
+      it('sets multiSelect to true for assignee token', () => {
+        const assigneeToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_ASSIGNEE);
+
+        expect(assigneeToken.multiSelect).toBe(true);
+      });
+
+      it('sets multiSelect to true for author token', () => {
+        const authorToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_AUTHOR);
+
+        expect(authorToken.multiSelect).toBe(true);
+      });
+
+      it('sets multiSelect to true for label token', () => {
+        const labelToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_LABEL);
+
+        expect(labelToken.multiSelect).toBe(true);
       });
     });
   });
@@ -1367,14 +1477,23 @@ describeSkipVue3(skipReason, () => {
       closed: 0,
       opened: 0,
     };
+    const getEmptyQueryHandler = ({
+      emptyWorkItems = emptyWorkItemsResponse,
+      emptyWorkItemsSlim = emptyWorkItemsSlimResponse,
+      emptyCounts = emptyCountsResponse,
+    } = {}) => {
+      return {
+        queryHandler: jest.fn().mockResolvedValue(emptyWorkItems),
+        slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlim),
+        countsQueryHandler: jest.fn().mockResolvedValue(emptyCounts),
+      };
+    };
 
     describe('when filters are applied and no work items match', () => {
       beforeEach(async () => {
         setWindowLocation('?label_name=bug');
         mountComponent({
-          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+          ...getEmptyQueryHandler(),
         });
         await waitForPromises();
       });
@@ -1385,14 +1504,13 @@ describeSkipVue3(skipReason, () => {
       });
     });
 
-    describe('when there are no work items', () => {
+    describe('when there are no work items in group context', () => {
       beforeEach(async () => {
         mountComponent({
-          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+          ...getEmptyQueryHandler(),
           provide: {
             isProject: false,
+            isGroupIssuesList: true,
           },
         });
         await waitForPromises();
@@ -1405,40 +1523,196 @@ describeSkipVue3(skipReason, () => {
       it('passes correct props to empty state component for groups', () => {
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
           exportCsvPathWithQuery: null,
-          showCsvButtons: false,
           showNewIssueDropdown: false,
+        });
+      });
+
+      it('does not render the import issues dropdown', () => {
+        expect(findImportIssuesButton().exists()).toBe(false);
+      });
+
+      it('renders the new resource dropdown when group has projects', () => {
+        expect(findNewResourceDropdown().exists()).toBe(true);
+        expect(findCreateWorkItemModal().exists()).toBe(false);
+      });
+
+      describe('when group has no projects', () => {
+        beforeEach(async () => {
+          mountComponent({
+            ...getEmptyQueryHandler(),
+            provide: {
+              isGroupIssuesList: true,
+              hasProjects: false,
+            },
+          });
+          await waitForPromises();
+        });
+
+        it('does not render the new resource dropdown when group has projects', () => {
+          expect(findNewResourceDropdown().exists()).toBe(false);
         });
       });
     });
 
     describe('when there are no work items in project context', () => {
+      const projectEmptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+      projectEmptyCountsResponse.data.project = {
+        id: 'gid://gitlab/Project/1',
+        workItemStateCounts: {
+          all: 0,
+          closed: 0,
+          opened: 0,
+        },
+      };
+      const emptyStateConfig = {
+        ...getEmptyQueryHandler({ emptyCounts: projectEmptyCountsResponse }),
+        provide: {
+          isGroup: false,
+          isProject: true,
+        },
+        stubs: {
+          EmptyStateWithoutAnyIssues: {
+            template: `<div><slot name="import-export-buttons"></slot></div>`,
+          },
+        },
+      };
+
       it('passes correct props to empty state component for projects', async () => {
-        const projectEmptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
-        projectEmptyCountsResponse.data.project = {
-          id: 'gid://gitlab/Project/1',
-          workItemStateCounts: {
-            all: 0,
-            closed: 0,
-            opened: 0,
-          },
-        };
         mountComponent({
-          provide: {
-            isGroup: false,
-            isProject: true,
-            exportCsvPath: '/export/csv',
-          },
-          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-          countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, exportCsvPath: '/export/csv' },
+          stubs: {},
         });
 
         await waitForPromises();
 
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
           exportCsvPathWithQuery: '/export/csv',
-          showCsvButtons: true,
           showNewIssueDropdown: false,
+        });
+      });
+
+      it('renders the import issues buttons in the dropdown', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+        });
+        await waitForPromises();
+
+        expect(findImportJiraIssueButton().props()).toEqual({
+          item: { text: 'Import from Jira', href: '/project/import/jira' },
+          variant: null,
+        });
+        expect(findImportCSVButton().props()).toEqual({
+          item: { text: 'Import CSV' },
+          variant: null,
+        });
+      });
+
+      it('does not render the import CSV option when user permission is false', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, canImportWorkItems: false },
+        });
+        await waitForPromises();
+
+        expect(findImportCSVButton().exists()).toBe(false);
+      });
+
+      it('does not render the jira import option when user permission is false', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, canEdit: false },
+        });
+        await waitForPromises();
+
+        expect(findImportJiraIssueButton().exists()).toBe(false);
+      });
+
+      it('does not render the jira import option when jira path is missing', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, projectImportJiraPath: null },
+        });
+        await waitForPromises();
+
+        expect(findImportJiraIssueButton().exists()).toBe(false);
+      });
+
+      it('does not render the import issues dropdown when user not signed in', async () => {
+        mountComponent({
+          ...getEmptyQueryHandler({ emptyCounts: projectEmptyCountsResponse }),
+          provide: {
+            isGroup: false,
+            isProject: true,
+            isSignedIn: false,
+          },
+          stubs: {
+            EmptyStateWithoutAnyIssues: {
+              template: `<div><slot name="import-export-buttons"></slot></div>`,
+            },
+          },
+        });
+        await waitForPromises();
+
+        expect(findImportIssuesButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are work items', () => {
+      describe('in group context', () => {
+        const emptyCountsWithIssueResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+        emptyCountsWithIssueResponse.data.group.workItemStateCounts = {
+          all: 1,
+          closed: 1,
+          opened: 0,
+        };
+        const emptyStateConfig = {
+          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+        };
+
+        it('renders the with issues empty state and the new resource dropdown', async () => {
+          mountComponent({
+            ...emptyStateConfig,
+            provide: {
+              isProject: false,
+              isGroupIssuesList: true,
+            },
+          });
+
+          await waitForPromises();
+
+          expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
+          expect(findNewResourceDropdown().exists()).toBe(true);
+        });
+      });
+
+      describe('in project context', () => {
+        const emptyCountsWithIssueResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+        emptyCountsWithIssueResponse.data.project = {
+          id: 'gid://gitlab/Project/1',
+          workItemStateCounts: {
+            all: 1,
+            closed: 1,
+            open: 0,
+          },
+        };
+        const emptyStateConfig = {
+          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+        };
+
+        it('renders the with issues empty state and the CreateWorkItemModal', async () => {
+          mountComponent({
+            ...emptyStateConfig,
+            provide: {
+              isProject: true,
+              isGroupIssuesList: false,
+            },
+          });
+
+          await waitForPromises();
+
+          expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
+          expect(findCreateWorkItemModal().exists()).toBe(true);
         });
       });
     });
@@ -1675,7 +1949,26 @@ describeSkipVue3(skipReason, () => {
       expect(defaultQueryHandler).not.toHaveBeenCalled();
       expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
     });
+
+    it('renders total items count when work items exist', async () => {
+      mountComponent({ workItemPlanningView: true });
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('3 items');
+    });
+
+    it('includes closed/opened in tab counts', async () => {
+      mountComponent({ workItemPlanningView: true });
+      await waitForPromises();
+
+      const tabCounts = findIssuableList().props('tabCounts');
+
+      expect(tabCounts.all).toBe(3);
+      expect(tabCounts.closed).toBeDefined();
+      expect(tabCounts.opened).toBeDefined();
+    });
   });
+
   describe('when "reorder" event is emitted by IssuableList', () => {
     beforeEach(async () => {
       mountComponent({
@@ -1770,6 +2063,40 @@ describeSkipVue3(skipReason, () => {
         'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
         'data-track-label': 'email_work_item_project_work_items_empty_list',
       });
+    });
+  });
+
+  describe('iid filter search', () => {
+    it('when user enters a number with #', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: FILTERED_SEARCH_TERM, value: { data: '#23', operator: 'undefined' } },
+      ]);
+      await nextTick();
+
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          iid: '23',
+        }),
+      );
+    });
+
+    it('when user enters a number without #', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: FILTERED_SEARCH_TERM, value: { data: '23', operator: 'undefined' } },
+      ]);
+      await nextTick();
+
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: '23',
+        }),
+      );
     });
   });
 });

@@ -23,6 +23,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client, :clean_gitla
 
   before do
     stub_const('TestConcurrencyLimitWorker', worker_class)
+    stub_feature_flags(disable_sidekiq_concurrency_limit_middleware_TestConcurrencyLimitWorker: false)
   end
 
   describe '#call' do
@@ -30,6 +31,20 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client, :clean_gitla
       context 'when feature flag is disabled' do
         before do
           stub_feature_flags(sidekiq_concurrency_limit_middleware: false)
+        end
+
+        it 'schedules the job' do
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+
+          TestConcurrencyLimitWorker.perform_async('foo')
+
+          expect(TestConcurrencyLimitWorker.jobs.size).to eq(1)
+        end
+      end
+
+      context 'when per worker feature flag is enabled' do
+        before do
+          stub_feature_flags(disable_sidekiq_concurrency_limit_middleware_TestConcurrencyLimitWorker: true)
         end
 
         it 'schedules the job' do

@@ -16,7 +16,7 @@ module QA
         end
 
         Page::Dashboard::Welcome.perform do |welcome|
-          expect(welcome).to have_content('Welcome to GitLab')
+          expect(welcome).to have_welcome_title("Today's highlights")
         end
       end
     end

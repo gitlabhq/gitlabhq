@@ -313,7 +313,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     end
 
     describe '#render_environment_template' do
-      let_it_be(:deployment_project) { create(:project) }
+      let_it_be(:deployment_project) { create(:project, path: "abc_ABC") }
       let_it_be(:environment) { create(:environment, project: deployment_project, cluster_agent: agent) }
       let_it_be(:user) { create(:user) }
       let_it_be(:build) { create(:ci_build, project: deployment_project, user: user) }
@@ -339,7 +339,8 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
               agent: Gitlab::Agent::ManagedResources::Agent.new(
                 id: agent.id,
                 name: agent.name,
-                url: Gitlab::Routing.url_helpers.project_cluster_agent_url(project, agent.name))))
+                url: Gitlab::Routing.url_helpers.project_cluster_agent_url(project, agent.name)),
+              legacy_namespace: "abc-abc-#{deployment_project.id}-#{environment.slug}"))
           .and_return(request)
 
         expect(stub).to receive(:render_environment_template)
@@ -351,7 +352,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     end
 
     describe '#ensure_environment' do
-      let_it_be(:deployment_project) { create(:project) }
+      let_it_be(:deployment_project) { create(:project, path: "abc_ABC") }
       let_it_be(:environment) { create(:environment, project: deployment_project, cluster_agent: agent) }
       let_it_be(:user) { create(:user) }
       let_it_be(:build) { create(:ci_build, project: deployment_project, user: user) }
@@ -377,7 +378,8 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
               agent: Gitlab::Agent::ManagedResources::Agent.new(
                 id: agent.id,
                 name: agent.name,
-                url: Gitlab::Routing.url_helpers.project_cluster_agent_url(project, agent.name))))
+                url: Gitlab::Routing.url_helpers.project_cluster_agent_url(project, agent.name)),
+              legacy_namespace: "abc-abc-#{deployment_project.id}-#{environment.slug}"))
           .and_return(request)
 
         expect(stub).to receive(:ensure_environment)

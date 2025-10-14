@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Verify
+group: CI Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: CI/CD analytics
 ---
@@ -28,7 +28,7 @@ These visualizations can help development teams quickly understand the health an
 To view CI/CD analytics:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > CI/CD analytics**.
+1. Select **Analyze** > **CI/CD analytics**.
 
 ## Pipeline metrics
 

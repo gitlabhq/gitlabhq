@@ -1,6 +1,7 @@
 import { GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperTopbar from '~/super_sidebar/components/super_topbar.vue';
+import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
 import OrganizationSwitcher from '~/super_sidebar/components/organization_switcher.vue';
@@ -19,10 +20,12 @@ describe('SuperTopbar', () => {
   const OrganizationSwitcherStub = stubComponent(OrganizationSwitcher);
   const SearchModalStub = stubComponent(SearchModal);
 
+  const findSkipToLink = () => wrapper.findByTestId('super-sidebar-skip-to');
   const findAdminLink = () => wrapper.findByTestId('topbar-admin-link');
   const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
   const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
   const findBrandLogo = () => wrapper.findComponent(BrandLogo);
+  const findSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findNextBadge = () => wrapper.findComponent(GlBadge);
   const findOrganizationSwitcher = () => wrapper.findComponent(OrganizationSwitcherStub);
@@ -56,6 +59,27 @@ describe('SuperTopbar', () => {
 
     it('renders the header element with correct `super-topbar` class', () => {
       expect(wrapper.find('header').classes()).toContain('super-topbar');
+    });
+
+    it('renders skip to main content link when logged in', () => {
+      expect(findSkipToLink().attributes('href')).toBe('#content-body');
+    });
+
+    describe('Mobile sidebar toggle', () => {
+      it('has the correct class', () => {
+        expect(findSidebarToggle().props('icon')).toBe('hamburger');
+      });
+
+      it('is not shown on large screens', () => {
+        expect(findSidebarToggle().classes()).toContain('xl:gl-hidden');
+      });
+
+      it('is not shown when the sidebar has no menu items', () => {
+        createComponent({
+          sidebarData: { ...mockSidebarData, current_menu_items: [] },
+        });
+        expect(findSidebarToggle().exists()).toBe(false);
+      });
     });
 
     describe('Organization switcher', () => {
@@ -135,7 +159,7 @@ describe('SuperTopbar', () => {
     });
 
     it('does not render UserMenu when user is not logged in', () => {
-      createComponent({ sidebarData: { is_logged_in: false } });
+      createComponent({ sidebarData: { ...mockSidebarData, is_logged_in: false } });
 
       expect(findUserMenu().exists()).toBe(false);
     });
@@ -145,21 +169,53 @@ describe('SuperTopbar', () => {
     });
 
     it('does not render UserCounts when user is not logged in', () => {
-      createComponent({ sidebarData: { is_logged_in: false } });
+      createComponent({ sidebarData: { ...mockSidebarData, is_logged_in: false } });
 
       expect(findUserCounts().exists()).toBe(false);
     });
 
     describe('Admin link', () => {
-      describe('when user is admin', () => {
+      describe('when user is admin and admin mode feature is not enabled', () => {
         it('renders', () => {
           createComponent({
             sidebarData: {
               ...mockSidebarData,
-              admin_mode: { user_is_admin: true },
+              admin_mode: { user_is_admin: true, admin_mode_feature_enabled: false },
             },
           });
           expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+        });
+      });
+
+      describe('when user is admin and admin mode is active', () => {
+        it('renders', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              admin_mode: {
+                user_is_admin: true,
+                admin_mode_feature_enabled: true,
+                admin_mode_active: true,
+              },
+            },
+          });
+          expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+        });
+      });
+
+      describe('when user is admin but admin mode feature is enabled and not active', () => {
+        it('does not render', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              admin_mode: {
+                user_is_admin: true,
+                admin_mode_feature_enabled: true,
+                admin_mode_active: false,
+              },
+            },
+          });
+          expect(findAdminLink().exists()).toBe(false);
         });
       });
 

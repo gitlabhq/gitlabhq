@@ -204,9 +204,11 @@ export default {
 
 <template>
   <div>
-    <div class="page-title-holder gl-flex gl-flex-col sm:gl-flex-row sm:gl-items-center">
+    <div
+      class="page-title-holder gl-flex gl-flex-col @sm/panel:gl-flex-row @sm/panel:gl-items-center"
+    >
       <h1 class="page-title gl-text-size-h-display">{{ $options.i18n.pageTitle }}</h1>
-      <div class="gl-mb-4 gl-flex gl-gap-x-3 sm:gl-mb-0 sm:gl-ml-auto">
+      <div class="gl-mb-4 gl-flex gl-gap-x-3 @sm/panel:gl-mb-0 @sm/panel:gl-ml-auto">
         <new-group-button category="secondary" />
         <new-project-button />
       </div>
@@ -230,7 +232,7 @@ export default {
         :items="$options.displayListboxItems"
         :header-text="$options.i18n.displayListboxHeaderText"
         block
-        toggle-class="md:gl-w-30"
+        toggle-class="@md/panel:gl-w-30"
         @select="onDisplayListboxSelect"
       />
     </filtered-search-and-sort>

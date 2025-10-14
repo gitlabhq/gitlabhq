@@ -114,6 +114,7 @@ export default {
     return {
       hasRowAppeared: false,
       delayedRowAppear: null,
+      showCommitColumns: window.gon?.show_commit_columns !== false,
     };
   },
   computed: {
@@ -143,6 +144,9 @@ export default {
     },
     isSubmodule() {
       return this.type === 'commit';
+    },
+    nameCellComponent() {
+      return this.showCommitColumns ? 'th' : 'td';
     },
     linkComponent() {
       return this.isFolder || this.isBlob ? 'router-link' : 'a';
@@ -209,7 +213,11 @@ export default {
 
 <template>
   <tr class="tree-item" data-event-tracking="click_file_list_on_repository_page">
-    <th class="tree-item-file-name gl-relative gl-cursor-default gl-font-normal" scope="row">
+    <component
+      :is="nameCellComponent"
+      class="tree-item-file-name gl-relative gl-cursor-default gl-font-normal"
+      scope="row"
+    >
       <component
         :is="linkComponent"
         ref="link"
@@ -254,8 +262,11 @@ export default {
         name="lock"
         :size="12"
       />
-    </th>
-    <td class="tree-commit cursor-default gl-hidden @sm/panel:gl-table-cell">
+    </component>
+    <td
+      v-if="showCommitColumns"
+      class="tree-commit cursor-default gl-hidden @sm/panel:gl-table-cell"
+    >
       <gl-link
         v-if="commitData"
         v-safe-html:[$options.safeHtmlConfig]="commitData.titleHtml"
@@ -267,7 +278,7 @@ export default {
         <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
       </gl-intersection-observer>
     </td>
-    <td class="tree-time-ago cursor-default gl-text-right gl-text-subtle">
+    <td v-if="showCommitColumns" class="tree-time-ago cursor-default gl-text-right gl-text-subtle">
       <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
         <timeago-tooltip
           v-if="commitData"

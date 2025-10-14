@@ -269,7 +269,7 @@ export default {
     >
       <template #cell(name)="{ item }">
         <div
-          class="gl-flex gl-flex-wrap gl-justify-end gl-gap-3 gl-font-normal md:gl-justify-start"
+          class="gl-flex gl-flex-wrap gl-justify-end gl-gap-3 gl-font-normal @md/panel:gl-justify-start"
         >
           <gl-link :href="item.webPath" data-testid="cluster-agent-name-link">{{
             item.name
@@ -289,7 +289,7 @@ export default {
       <template #cell(status)="{ item }">
         <span
           :id="getStatusCellId(item)"
-          class="md:gl-pr-5"
+          class="@md/panel:gl-pr-5"
           data-testid="cluster-agent-connection-status"
         >
           <span :class="$options.AGENT_STATUSES[item.status].class" class="gl-mr-3">

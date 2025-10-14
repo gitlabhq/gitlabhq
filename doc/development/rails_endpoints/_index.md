@@ -20,10 +20,10 @@ These Rails Endpoints:
 
 We are evaluating a new approach for documenting Rails endpoints. [Check out the Feedback Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411605) and feel free to share your thoughts, suggestions, or concerns. We appreciate your participation in helping us improve the documentation!
 
-## SAST Scanners
+## SAST scanners
 
-Static Application Security Testing (SAST) checks your source code for known vulnerabilities. When SAST is enabled
-on a Project these endpoints are available.
+Static application security testing (SAST) checks your source code for known vulnerabilities. When
+SAST is enabled on a project these endpoints are available.
 
 ### List existing merge request code quality findings sorted by files
 

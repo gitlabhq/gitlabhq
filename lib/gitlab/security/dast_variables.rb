@@ -562,6 +562,17 @@ module Gitlab
                   "Default: `true`. " \
                   "**Note**: Disabling cache can cause OOM events or DAST job timeouts."
               )
+            },
+            DAST_CRAWL_GROUPED_URLS: {
+              additional: true,
+              type: "string",
+              example: "https://example.com/hello/*,https://example.com/world/*/details",
+              name: s_("DastProfiles|Grouped URLs"),
+              description: s_(
+                "DastProfiles|(Experimental) Set to a comma-separated list of wildcard URL patterns " \
+                  "with at least one `*`. " \
+                  "To reduce scan time, the scanner groups and analyzes only one matched URL per pattern."
+              )
             }
           },
           scanner: {

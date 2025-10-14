@@ -72,7 +72,6 @@ export default {
 <template>
   <gl-modal
     size="sm"
-    modal-class="gl-@container"
     :visible="showModal"
     :modal-id="$options.modal.id"
     :title="$options.i18n.title"

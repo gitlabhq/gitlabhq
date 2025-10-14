@@ -375,10 +375,15 @@ RSpec.describe Snippets::NotesController, feature_category: :team_planning do
       sign_in(user)
     end
 
-    subject { post(:toggle_award_emoji, params: { snippet_id: public_snippet, id: note.id, name: emoji_name }) }
+    subject(:posting) do
+      post(
+        :toggle_award_emoji,
+        params: { snippet_id: public_snippet, id: note.id, name: emoji_name }
+      )
+    end
 
     it "toggles the award emoji" do
-      expect { subject }.to change { note.award_emoji.count }.by(1)
+      expect { posting }.to change { note.award_emoji.count }.by(1)
 
       expect(response).to have_gitlab_http_status(:ok)
     end
@@ -386,7 +391,7 @@ RSpec.describe Snippets::NotesController, feature_category: :team_planning do
     it "removes the already awarded emoji when it exists" do
       create(:award_emoji, awardable: note, name: emoji_name, user: user)
 
-      expect { subject }.to change { AwardEmoji.count }.by(-1)
+      expect { posting }.to change { AwardEmoji.count }.by(-1)
 
       expect(response).to have_gitlab_http_status(:ok)
     end

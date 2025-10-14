@@ -197,6 +197,7 @@ class DeploymentsFinder
         user: [],
         metadata: [],
         job_definition: [],
+        job_environment: [],
         pipeline: {
           project: {
             route: [],

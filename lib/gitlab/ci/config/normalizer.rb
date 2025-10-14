@@ -8,6 +8,7 @@ module Gitlab
 
         def initialize(jobs_config)
           @jobs_config = jobs_config
+          @errors = []
         end
 
         def normalize_jobs
@@ -27,7 +28,15 @@ module Gitlab
           end
         end
 
+        # Deduplicate errors since multiple matrix jobs may generate identical errors
+        # for the same missing matrix variable
+        def errors
+          @errors.uniq
+        end
+
         private
+
+        attr_reader :project
 
         def expand_names(job_names)
           return unless job_names
@@ -69,8 +78,23 @@ module Gitlab
           @jobs_config.each_with_object({}) do |(job_name, config), hash|
             if parallelized_jobs.key?(job_name)
               parallelized_jobs[job_name].each do |job|
-                hash[job.name.to_sym] =
-                  yield(job.name, config.deep_merge(job.attributes))
+                merged_config = config.deep_merge(job.attributes)
+
+                if job.attributes[:job_variables] && merged_config[:needs] &&
+                    FeatureFlags.enabled?(:ci_matrix_expressions)
+                  interpolator = Interpolation::MatrixInterpolator.new(job.attributes[:job_variables])
+                  interpolated_needs = interpolator.interpolate(merged_config[:needs])
+
+                  if interpolator.errors.empty?
+                    merged_config[:needs] = interpolated_needs
+                  else
+                    job_errors = interpolator.errors.map { |error| "#{job_name} job: #{error}" }
+
+                    @errors.concat(job_errors)
+                  end
+                end
+
+                hash[job.name.to_sym] = yield(job.name, merged_config)
               end
             else
               hash[job_name] = yield(job_name, config)

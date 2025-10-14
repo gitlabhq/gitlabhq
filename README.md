@@ -19,7 +19,7 @@ To see how GitLab looks please see the [features page on our website](https://ab
 - Complete continuous integration (CI) and continuous deployment/delivery (CD) pipelines to build, test, and deploy your applications
 - Each project can also have an issue tracker, issue board, and a wiki
 - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
-- Completely free and open source (MIT Expat license)
+- Open-core, most of the code is MIT with the files in `/ee` being proprietary but source available and open for contributions.
 
 ## Editions
 
@@ -55,15 +55,15 @@ Please see the [requirements documentation](doc/install/requirements.md) for sys
 
 ## Installation
 
-The recommended way to install GitLab is with the [Omnibus packages](https://about.gitlab.com/downloads/) on our package server.
-Compared to [a self-compiled installation](https://docs.gitlab.com/install/installation/), this is faster and less error prone.
+The recommended way to install GitLab is with the [Omnibus packages](https://docs.gitlab.com/install/package/) on our package server.
+Compared to [a self-compiled installation](https://docs.gitlab.com/install/self_compiled/), this is faster and less error prone.
 Just select your operating system, download the respective package (Debian or RPM) and install it using the system's package manager.
 
 For more information about other installation methods, see [install GitLab](https://about.gitlab.com/install/).
 
 ## Contributing
 
-GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
+GitLab is an open source project and we are very happy to accept community contributions. Please refer to the [`CONTRIBUTING.md`](CONTRIBUTING.md) file for more details.
 
 ## Install a development environment
 
@@ -108,6 +108,10 @@ For upgrading information please see our [update page](https://about.gitlab.com/
 ## Documentation
 
 All documentation can be found on <https://docs.gitlab.com>.
+
+## Education
+
+Get up to speed quickly with comprehensive learning resources at [GitLab University](https://university.gitlab.com).
 
 ## Getting help
 

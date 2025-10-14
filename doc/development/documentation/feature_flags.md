@@ -156,6 +156,9 @@ When the flag is removed, add a `Generally available` entry. Ensure that you del
 {{</* history */>}}
 ```
 
+If the feature flag is introduced and removed in the same release, delete the feature flag entry
+from the history and the flag note.
+
 ## Simplify long history
 
 The history can get long, but you can sometimes simplify or delete entries.

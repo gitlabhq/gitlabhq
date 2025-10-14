@@ -22,8 +22,20 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Context, feature_category: :pipeline_
     context 'without variables provided' do
       subject(:context) { described_class.new }
 
-      it 'defaults to empty hash' do
+      it 'defaults to empty array' do
         expect(context.variables).to eq([])
+      end
+    end
+
+    context 'with component data provided' do
+      let(:component_data) do
+        { name: 'my-component', sha: 'abc123' }
+      end
+
+      subject(:context) { described_class.new(component: component_data) }
+
+      it 'stores the component data' do
+        expect(context.component).to eq(component_data)
       end
     end
   end
@@ -39,6 +51,18 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Context, feature_category: :pipeline_
 
     it 'returns the variables' do
       expect(context.variables).to eq(variables)
+    end
+  end
+
+  describe '#component' do
+    let(:component_data) do
+      { name: 'test-component', sha: 'def456' }
+    end
+
+    subject(:context) { described_class.new(component: component_data) }
+
+    it 'returns the component data' do
+      expect(context.component).to eq(component_data)
     end
   end
 end

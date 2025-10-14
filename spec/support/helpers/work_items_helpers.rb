@@ -16,6 +16,30 @@ module WorkItemsHelpers
     select_items_from_dropdown(items,  'Select labels', 'bulk-edit-remove-labels')
   end
 
+  def select_parent_on_bulk_edit(parent_title)
+    select_items_from_dropdown([parent_title], 'Select parent', 'bulk-edit-parent')
+  end
+
+  def select_no_parent_on_bulk_edit
+    select_items_from_dropdown(['No parent'], 'Select parent', 'bulk-edit-parent')
+  end
+
+  def search_parent_on_bulk_edit(search_term)
+    within_testid('bulk-edit-parent') do
+      click_button 'Select parent'
+      wait_for_requests
+      fill_in 'Search', with: search_term
+      wait_for_requests
+    end
+  end
+
+  def click_parent_bulk_edit_dropdown
+    within_testid('bulk-edit-parent') do
+      click_button 'Select parent'
+      wait_for_requests
+    end
+  end
+
   def select_items_from_dropdown(items, listbox_name, testid)
     within_testid(testid) do
       click_button listbox_name

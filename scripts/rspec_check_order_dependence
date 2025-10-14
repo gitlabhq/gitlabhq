@@ -23,11 +23,62 @@ fi
 TODO_YAML='./spec/support/rspec_order_todo.yml'
 RSPEC_ARGS=(--fail-fast --format progress --tag ~quarantine)
 RANDOM_ORDER_RUNS=${RANDOM_ORDER_RUNS:-5}
+LOGFILE=$(mktemp /tmp/rspec-check-order_dependence-XXXXXX)
+
+trap cleanup EXIT INT TERM
+
+# Required by `rspec --bisect' on MacOS.
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+cleanup() {
+  rm -f "$LOGFILE"
+}
 
 abort() {
   echo "$@"
   echo "Aborting..."
   exit 1
+}
+
+require_spec_helper_if_needed() {
+  local spec_helpers
+
+  spec_helpers=$(grep -rhE "^require ['\"].*spec_helper" "$@" 2>/dev/null | \
+                 sed 's/require //; s/["'\'']//g' | \
+                 sort -u)
+
+  # If specs require "spec_helper" and also "fast_spec_helper" (or other variant)
+  # we must apply `-rspec_helper` to avoid early failure.
+  if echo "$spec_helpers" | grep -qx 'spec_helper' && echo "$spec_helpers" | grep -qxE '.+_spec_helper'
+  then
+    echo "NOTE: Specs are mixing fast spec helpers with other spec helpers. Adding -rspec_helper."
+    RSPEC_ARGS+=(-rspec_helper)
+  fi
+}
+
+rspec_bisect() {
+  seed=$(grep "Randomized with seed " "$LOGFILE" | grep -oE '[0-9]+' | head -1 || true)
+
+  local args
+  args=("${RSPEC_ARGS[@]}")
+
+  if [[ -n "$seed" ]]
+  then
+    echo "NOTE: Found seed $seed. Adding --seed $seed."
+    args+=(--seed "$seed")
+  fi
+
+  bin/rspec --bisect "${args[@]}" "$@"
+
+  exit 1
+}
+
+rspec_run() {
+  if ! bin/rspec "${RSPEC_ARGS[@]}" "$@" 2>&1 | tee "$LOGFILE"
+  then
+    echo "WARNING: Specs failed. Running RSpec bisect:"
+    rspec_bisect "$@"
+  fi
 }
 
 for file in "$@"
@@ -41,20 +92,22 @@ do
   grep -E -- "- './$file" "$TODO_YAML" > /dev/null || abort "Could not find '$file' in '$TODO_YAML'"
 done
 
-set -xe
+require_spec_helper_if_needed "$@"
+
+set -xeo pipefail
 
 export RSPEC_WARN_MISSING_FEATURE_CATEGORY=0
 
 echo "Running in defined order:"
-bin/rspec --order defined "${RSPEC_ARGS[@]}" "$@"
+rspec_run --order defined "$@"
 
 echo "Running in reverse order:"
-RSPEC_ORDER=reverse bin/rspec "${RSPEC_ARGS[@]}" "$@"
+RSPEC_ORDER=reverse rspec_run "$@"
 
 for try in $(seq "$RANDOM_ORDER_RUNS")
 do
   echo "Running in random order ($try/$RANDOM_ORDER_RUNS):"
-  bin/rspec --order random "${RSPEC_ARGS[@]}" "$@"
+  rspec_run --order random "$@"
 done
 
 set +xe

@@ -124,7 +124,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/models/security/finding.rb'
     - 'ee/app/models/security/scan.rb'
     - 'ee/app/models/security/scan_result_policy_violation.rb'
-    - 'ee/app/models/software_license.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/app/models/vulnerabilities/read.rb'
     - 'ee/app/services/analytics/cycle_analytics/consistency_check_service.rb'
@@ -140,4 +139,3 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/services/security/security_orchestration_policies/protected_branches_deletion_check_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/protected_branches_push_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'
-    - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'

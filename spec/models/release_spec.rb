@@ -380,7 +380,8 @@ RSpec.describe Release, feature_category: :release_orchestration do
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_reload(:release) do
-      create(:release, :with_catalog_resource_version, project: project, tag: 'v1', released_at: '2023-01-01T00:00:00Z')
+      create(:release, :with_catalog_resource_version, project: project, tag: 'v1.2.3',
+        released_at: '2023-01-01T00:00:00Z')
     end
 
     let(:version) { release.catalog_resource_version }

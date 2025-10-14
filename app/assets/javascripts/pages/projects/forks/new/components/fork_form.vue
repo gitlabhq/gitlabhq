@@ -322,12 +322,12 @@ export default {
       />
     </gl-form-group>
 
-    <div class="md:gl-flex">
+    <div class="@md/panel:gl-flex">
       <div class="gl-basis-1/2">
         <gl-form-group
           :label="__('Project URL')"
           label-for="fork-url"
-          class="md:gl-mr-3"
+          class="@md/panel:gl-mr-3"
           :state="form.fields.namespace.state"
           :invalid-feedback="s__('ForkProject|Please select a namespace')"
         >
@@ -338,7 +338,7 @@ export default {
         <gl-form-group
           :label="__('Project slug')"
           label-for="fork-slug"
-          class="md:gl-ml-3"
+          class="@md/panel:gl-ml-3"
           :invalid-feedback="form.fields.slug.feedback"
         >
           <gl-form-input

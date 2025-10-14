@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: no
@@ -85,6 +85,12 @@ Geo actively tries to correct verification failures marking the repository to
 be resynced with a back-off period. You can also manually [resync and reverify individual components through the UI or the Rails console](../replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
 
 ## Reconcile differences with checksum mismatches
+
+{{< history >}}
+
+- **Storage name** and **Relative path** fields [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
 
 If the **primary** and **secondary** sites have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 

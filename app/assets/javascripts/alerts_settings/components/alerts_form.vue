@@ -80,7 +80,7 @@ export default {
       <gl-form-group
         label-size="sm"
         label-for="alert-integration-settings-issue-template"
-        class="col-8 col-md-9 gl-px-6"
+        class="gl-col-8 gl-col-md-9 gl-px-6"
       >
         <label class="gl-inline-flex" for="alert-integration-settings-issue-template">
           {{ $options.i18n.incidentTemplate.label }}

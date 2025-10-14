@@ -34,9 +34,9 @@ After you set up authentication, you can configure CI/CD to deploy.
 
 1. Sign on to your AWS account.
 1. Create [an IAM user](https://console.aws.amazon.com/iam/home#/home).
-1. Select your user to access its details. Go to **Security credentials > Create a new access key**.
+1. Select your user to access its details. Go to **Security credentials** > **Create a new access key**.
 1. Note the **Access key ID** and **Secret access key**.
-1. In your GitLab project, go to **Settings > CI/CD**. Set the following
+1. In your GitLab project, go to **Settings** > **CI/CD**. Set the following
    [CI/CD variables](../variables/_index.md):
 
    | Environment variable name | Value |
@@ -97,7 +97,7 @@ Prerequisites:
 
 To deploy to your ECS cluster:
 
-1. In your GitLab project, go to **Settings > CI/CD**. Set the following
+1. In your GitLab project, go to **Settings** > **CI/CD**. Set the following
    [CI/CD variables](../variables/_index.md). You can find these names by
    selecting the targeted cluster on your [Amazon ECS dashboard](https://console.aws.amazon.com/ecs/home).
 

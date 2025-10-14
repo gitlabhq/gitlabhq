@@ -307,26 +307,5 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
         end.to change { Ci::JobDefinition.count }.by(2)
       end
     end
-
-    context 'when write_to_new_ci_destinations feature flag is disabled' do
-      before do
-        stub_feature_flags(write_to_new_ci_destinations: false)
-      end
-
-      it 'does not create job definitions' do
-        expect { step.perform! }.not_to change { Ci::JobDefinition.count }
-      end
-
-      it 'does not create job definition instances' do
-        expect { step.perform! }.not_to change { Ci::JobDefinitionInstance.count }
-      end
-
-      it 'still saves the pipeline successfully' do
-        step.perform!
-
-        expect(pipeline).to be_persisted
-        expect(job1.reload).to be_persisted
-      end
-    end
   end
 end

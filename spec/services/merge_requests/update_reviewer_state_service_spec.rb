@@ -85,22 +85,16 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
         result
       end
 
-      context 'when merge_request_dashboard feature flag is enabled' do
-        before do
-          stub_feature_flags(merge_request_dashboard: true)
-        end
+      it 'invalidates cache counts for all assignees' do
+        expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
 
-        it 'invalidates cache counts for all assignees' do
-          expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
+        expect(result[:status]).to eq :success
+      end
 
-          expect(result[:status]).to eq :success
-        end
+      it 'invalidates cache counts for current user' do
+        expect(current_user).to receive(:invalidate_merge_request_cache_counts)
 
-        it 'invalidates cache counts for current user' do
-          expect(current_user).to receive(:invalidate_merge_request_cache_counts)
-
-          expect(result[:status]).to eq :success
-        end
+        expect(result[:status]).to eq :success
       end
 
       context 'when reviewer has approved' do

@@ -32,6 +32,6 @@ RSpec.shared_context 'with build, pipeline and artifacts' do
   end
 
   before do
-    allow(build).to receive(:yaml_variables).and_return(yaml_variables)
+    stub_ci_job_definition(build, yaml_variables: yaml_variables)
   end
 end

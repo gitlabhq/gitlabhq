@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Sharing projects and groups
@@ -51,7 +51,7 @@ The following table provides an overview of the group members that get access to
 
 1. GitLab supports extending project access to shared group members, but this approach is not recommended. [Epic 122](https://gitlab.com/groups/gitlab-org/-/epics/122) proposes changing this behavior and transitioning to a teams model for sharing groups.
 
-The [visibility level](../../public_access.md) of the group you're inviting must be at least as restrictive as that of the project.
+The [visibility level](../../public_access.md) of the group you're inviting can't be more restrictive than the project.
 For example, you can invite:
 
 - A **private** group to a **private** project.
@@ -135,7 +135,7 @@ Prerequisites:
 To invite a group to a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
 1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the project. Invited members receive the lower of:
@@ -212,7 +212,7 @@ which can be confusing and difficult to control.
 To prevent a project from being shared with other groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
@@ -310,7 +310,7 @@ Prerequisites:
 To invite a group to your group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
 1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the group. Invited members receive the lower of:
@@ -328,7 +328,7 @@ To invite a group to your group:
 To remove an invited group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Groups** tab.
 1. To the right of the group you want to remove, select **Remove group** ({{< icon name="remove" >}}).
 
@@ -357,9 +357,9 @@ This option is only available for top-level groups.
 
 For example, in the following group and project hierarchy:
 
-- **Animals > Dogs > Dog Project**
-- **Animals > Cats**
-- **Plants > Trees**
+- **Animals** > **Dogs** > **Dog Project**
+- **Animals** > **Cats**
+- **Plants** > **Trees**
 
 If you prevent inviting groups outside the hierarchy for the **Animals** group:
 
@@ -371,7 +371,7 @@ If you prevent inviting groups outside the hierarchy for the **Animals** group:
 To prevent inviting groups outside of the group's hierarchy:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.

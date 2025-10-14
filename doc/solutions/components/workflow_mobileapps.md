@@ -177,7 +177,7 @@ In order for the pipeline to communicate with ServiceNow, the webhook integratio
 The mobile app project pipeline includes several external configurations and components:
 
 - Local build configurations for iOS and Android
-- SAST (Static Application Security Testing) component
+- SAST (static application security testing) component
 - Auto-semversioning component
 - Dependency scanning
 - Snyk SAST scan component

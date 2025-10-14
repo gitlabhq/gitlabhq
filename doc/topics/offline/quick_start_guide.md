@@ -30,7 +30,7 @@ For a video walkthrough of this process, see [Offline GitLab Installation: Downl
 
 ### Download the GitLab package
 
-You should [manually download the GitLab package](../../update/package/_index.md#by-using-a-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
+You should [manually download the GitLab package](../../update/package/_index.md#upgrade-by-using-a-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
 
 If your offline environment has no local network access, you must manually transport the relevant package through physical media, such as a USB drive.
 
@@ -63,7 +63,7 @@ sudo cd /path/to/mount
 sudo dpkg -i <package_name>.deb
 ```
 
-[Use the relevant commands for your operating system to install the package](../../update/package/_index.md#by-using-a-downloaded-package) but make sure to specify an `http`
+[Use the relevant commands for your operating system to install the package](../../update/package/_index.md#upgrade-by-using-a-downloaded-package) but make sure to specify an `http`
 URL for the `EXTERNAL_URL` installation step. Once installed, we can manually
 configure the SSL ourselves.
 
@@ -235,7 +235,7 @@ always fails because it uses `pool.ntp.org`. This error can be ignored but you c
 ## Enabling the Package Metadata Database
 
 Enabling the Package Metadata Database is required to enable
-[Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md)
+[continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md)
 and [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md).
 This process requires the use of License and/or Advisory Data under what is collectively called the Package Metadata Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/LICENSE).
 Note the following in relation to use of the Package Metadata Database:
@@ -244,7 +244,7 @@ Note the following in relation to use of the Package Metadata Database:
 - The Package Metadata Database may contain links to third-party websites or resources. We provide these links only as a convenience and are not responsible for any third-party data, content, products, or services from those websites or resources or links displayed on such websites.
 - The Package Metadata Database is based in part on information made available by third parties, and GitLab is not responsible for the accuracy or completeness of content made available.
 
-Package metadata is stored in the following Google Cloud Provider (GCP) buckets:
+Package metadata is stored in the following Google Cloud Provider (GCP) buckets which are maintained and owned by GitLab:
 
 - License Scanning - `prod-export-license-bucket-1a6c642fc4de57d4`
 - Dependency Scanning - `prod-export-advisory-bucket-1a6c642fc4de57d4`

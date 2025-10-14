@@ -21,7 +21,7 @@ You can configure Bugzilla as an
 To enable the Bugzilla integration in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Bugzilla**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Fill in the required fields:

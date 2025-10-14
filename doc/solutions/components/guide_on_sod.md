@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Overview of GitLab Separation of Duties solution using Role-Based Access Control, including key components, workflows, and audit capabilities.
 title: GitLab Tutorial Guide on Separation of Duties
 ---
 

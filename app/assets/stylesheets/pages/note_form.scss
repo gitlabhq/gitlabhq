@@ -216,7 +216,7 @@
 .discussion-form {
   @apply gl-bg-default;
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .user-avatar-link {
       display: none;
     }
@@ -238,12 +238,12 @@ table {
 }
 
 .notes.notes-form > li.timeline-entry {
-  @include notes-media('max', map.get($grid-breakpoints, md) - 1) {
+  @include notes-media('md') {
     padding: 0;
   }
 
   .timeline-content {
-    @include notes-media('max', map.get($grid-breakpoints, md) - 1) {
+    @include notes-media('md') {
       margin: 0;
     }
   }
@@ -341,7 +341,7 @@ table {
 }
 
 .discussion-with-resolve-btn {
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     display: flex;
   }
 
@@ -374,7 +374,7 @@ table {
     transition: border-color ease-in-out 0.15s,
       box-shadow ease-in-out 0.15s;
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       margin-bottom: $gl-padding-8;
     }
 
@@ -384,7 +384,7 @@ table {
   }
 
   .reply-placeholder-input-field {
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       margin-bottom: $gl-padding-8;
     }
   }
@@ -407,7 +407,7 @@ table {
     outline: 0;
   }
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     float: left;
     margin-right: $gl-padding;
 
@@ -426,7 +426,7 @@ table {
 .note-form-actions {
   @apply gl-text-default;
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .btn {
       float: none;
       width: 100%;
@@ -435,7 +435,7 @@ table {
 }
 
 .comment-type-dropdown {
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     display: flex;
     width: 100%;
     margin-bottom: 10px;
@@ -451,7 +451,7 @@ table {
 .uploading-container {
   float: right;
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     float: left;
     margin-top: 5px;
   }
@@ -467,7 +467,7 @@ table {
 }
 
 .uploading-error-message {
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     &::after {
       content: '\a';
       white-space: pre;

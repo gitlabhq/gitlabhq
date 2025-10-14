@@ -178,7 +178,7 @@ export default {
 
         <h4 class="gl-mb-3 gl-text-base gl-font-bold">
           {{ s__('SecretDetection|Validity checks') }}
-          <gl-experiment-badge />
+          <gl-experiment-badge type="beta" />
         </h4>
 
         <p class="gl-mb-4 gl-text-base">

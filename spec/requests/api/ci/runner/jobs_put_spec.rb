@@ -40,9 +40,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { update_job(state: 'success') }
       end
 
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
+        let(:job2) do
+          create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id)
+        end
+
+        def request
+          update_job
+        end
+
+        def request_with_second_scope
+          update_job(job2.id, job2.token)
+        end
+      end
+
       it 'updates runner info' do
-        expect { update_job(state: 'success') }.to change { runner.reload.contacted_at }
-                                               .and change { runner_manager.reload.contacted_at }
+        expect { update_job(state: 'success') }
+          .to change { runner.reload.contacted_at }
+          .and change { runner_manager.reload.contacted_at }
       end
 
       context 'when status is given' do
@@ -283,8 +298,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       def update_job(job_id = job.id, token = job.token, **params)
-        new_params = params.merge(token: token)
-        put api("/jobs/#{job_id}"), params: new_params
+        put api("/jobs/#{job_id}"), params: params.merge(token: token)
       end
 
       def update_job_after_time(update_interval = 20.minutes, state = 'running')

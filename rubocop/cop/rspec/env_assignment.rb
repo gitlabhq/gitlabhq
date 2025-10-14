@@ -34,7 +34,7 @@ module RuboCop
           return unless env_assignment?(node)
 
           add_offense(node, message: MESSAGE) do |corrector|
-            corrector.replace(node.loc.expression, stub_env(env_key(node), env_value(node)))
+            corrector.replace(node, stub_env(env_key(node), env_value(node)))
           end
         end
 

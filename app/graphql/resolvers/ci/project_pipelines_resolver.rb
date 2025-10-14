@@ -21,7 +21,9 @@ module Resolvers
         {
           jobs: { statuses_order_id_desc: [:needs] },
           upstream: [:triggered_by_pipeline],
-          downstream: [:triggered_pipelines]
+          downstream: [:triggered_pipelines],
+          has_manual_actions: [:manual_actions],
+          has_scheduled_actions: [:scheduled_actions]
         }
       end
     end

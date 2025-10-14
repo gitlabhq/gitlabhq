@@ -261,6 +261,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:reviews).inverse_of(:author) }
     it { is_expected.to have_many(:merge_request_assignees).inverse_of(:assignee) }
+    it { is_expected.to have_many(:issue_assignees).inverse_of(:assignee).dependent(:delete_all) }
     it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
     it { is_expected.to have_many(:timelogs) }
@@ -276,10 +277,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
-    it { is_expected.to have_many(:abuse_trust_scores).class_name('AntiAbuse::TrustScore') }
+    it { is_expected.to have_many(:abuse_trust_scores).class_name('AntiAbuse::TrustScore').dependent(:destroy) }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
-    it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
 
     describe '#triggers' do
@@ -302,12 +302,6 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user.triggers).to contain_exactly(expired_trigger, valid_trigger)
         end
       end
-    end
-
-    it do
-      is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport')
-        .through(:admin_abuse_report_assignees)
-        .source(:abuse_report)
     end
 
     it do
@@ -1430,23 +1424,57 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#should_use_flipped_dashboard_mapping_for_rollout?' do
-      context 'when personal_homepage feature flag is enabled for user' do
-        before do
-          stub_feature_flags(personal_homepage: user)
-        end
-
-        it 'returns true' do
-          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
-        end
-      end
-
-      context 'when personal_homepage feature flag is disabled for user' do
+      context 'when feature flag is disabled' do
         before do
           stub_feature_flags(personal_homepage: false)
         end
 
-        it 'returns false' do
+        it 'returns false for regular user' do
           expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
+        end
+
+        it 'returns false for admin user' do
+          admin_user = create(:user, admin: true)
+          stub_feature_flags(personal_homepage: false)
+
+          expect(admin_user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        context 'for regular users' do
+          it 'returns true when user has no projects' do
+            expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+          end
+
+          it 'returns true when user has projects' do
+            project = create(:project)
+            project.add_developer(user)
+
+            expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+          end
+        end
+
+        context 'for admin users', :enable_admin_mode do
+          let(:admin_user) { create(:user, admin: true) }
+
+          before do
+            stub_feature_flags(personal_homepage: admin_user)
+          end
+
+          it 'returns false when admin has no projects' do
+            expect(admin_user).not_to be_should_use_flipped_dashboard_mapping_for_rollout
+          end
+
+          it 'returns true when admin has projects' do
+            create(:project, developers: admin_user)
+
+            expect(admin_user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+          end
         end
       end
     end
@@ -3423,23 +3451,6 @@ RSpec.describe User, feature_category: :user_profile do
           end.to change {
                    pipeline_schedules.map(&:reload).map(&:active?).uniq
                  }.from([true]).to([false])
-        end
-
-        context 'when feature flag disabled' do
-          before do
-            stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
-            allow(NotificationService).to receive(:new).and_return(notification_service)
-            allow(notification_service).to receive(:pipeline_schedule_owner_unavailable)
-          end
-
-          it "does not send notifications" do
-            expect(notification_service).not_to receive(:pipeline_schedule_owner_unavailable)
-
-            expect do
-              user.deactivate
-              user.run_callbacks(:commit) if user.respond_to?(:run_callbacks)
-            end.not_to change { pipeline_schedules.map(&:reload).map(&:active?) }
-          end
         end
       end
     end
@@ -5659,6 +5670,29 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#authorized_root_ancestor_ids' do
+    let_it_be(:user) { create(:user) }
+
+    subject { user.authorized_root_ancestor_ids }
+
+    context 'when user has authorized groups' do
+      let!(:root_group_1) { create(:group, developers: user) }
+      let!(:root_group_2) { create(:group) }
+      let!(:root_group_3) { create(:group) }
+      let!(:project) { create(:project, group: root_group_2, developers: user) }
+
+      it 'returns only the root group IDs' do
+        expect(subject).to contain_exactly(root_group_1.id, root_group_2.id)
+      end
+    end
+
+    context 'when user has no authorized groups' do
+      it 'returns an empty array' do
+        expect(subject).to be_empty
+      end
+    end
+  end
+
   describe '#search_on_authorized_groups' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group_1) { create(:group, name: 'test', path: 'blah') }
@@ -6768,8 +6802,9 @@ RSpec.describe User, feature_category: :user_profile do
     it 'invalidates cache for merge request counters' do
       cache_mock = double
 
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false])
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count', false])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false, true])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'returned_to_you_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
@@ -6859,12 +6894,41 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
     let(:cached_only) { false }
 
-    it 'returns number of open merge requests from non-archived projects' do
-      create(:merge_request, source_project: project, author: user, assignees: [user])
+    before do
+      create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
+      create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
       create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
       create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
-      is_expected.to eq 1
+      mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+
+      mr.merge_request_reviewers.update_all(state: :reviewed)
+      mr2.merge_request_reviewers.update_all(state: :requested_changes)
+    end
+
+    it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
+      is_expected.to eq 4
+    end
+
+    context 'when merge_request_dashboard_list_type is role_based' do
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'role_based')
+      end
+
+      it 'returns number of open merge requests from non-archived projects' do
+        is_expected.to eq 4
+      end
+    end
+
+    context 'when merge_request_dashboard_show_drafts is false' do
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'action_based')
+
+        allow(user).to receive(:merge_request_dashboard_show_drafts?).and_return(false)
+      end
+
+      it { is_expected.to eq 1 }
     end
 
     context 'when fetching only cached' do
@@ -6872,27 +6936,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns nil' do
         is_expected.to be_nil
-      end
-    end
-
-    context 'when merge_request_dashboard_author_or_assignee feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
-      end
-
-      it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
-        create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
-        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
-        create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
-        create(:merge_request, source_project: archived_project, author: user, assignees: [user])
-
-        mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-
-        mr.merge_request_reviewers.update_all(state: :reviewed)
-        mr2.merge_request_reviewers.update_all(state: :requested_changes)
-
-        is_expected.to eq 3
       end
     end
 
@@ -6949,6 +6992,67 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#returned_to_you_merge_requests_count' do
+    subject { user.returned_to_you_merge_requests_count(force: true, cached_only: cached_only) }
+
+    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be_with_refind(:project) { create(:project, :public) }
+    let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
+
+    let(:cached_only) { false }
+
+    context 'when role based rendering' do
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'role_based')
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when action based rendering' do
+      let(:show_drafts) { false }
+
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'action_based')
+
+        allow(user).to receive(:merge_request_dashboard_show_drafts?).and_return(show_drafts)
+      end
+
+      context 'when merge_request_dashboard_show_drafts is true' do
+        let(:show_drafts) { true }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      it 'returns count of open merge requests where reviewers have state of reviewed or requested_changes' do
+        create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
+        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
+        create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
+        create(:merge_request, source_project: archived_project, author: user, assignees: [user])
+
+        mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+
+        mr.merge_request_reviewers.update_all(state: :reviewed)
+        mr2.merge_request_reviewers.update_all(state: :requested_changes)
+
+        is_expected.to eq 2
+      end
+
+      context 'when fetching only cached' do
+        let(:cached_only) { true }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+    end
+  end
+
   describe '#review_requested_open_merge_requests_count' do
     subject { user.review_requested_open_merge_requests_count(force: true, cached_only: cached_only) }
 
@@ -6964,7 +7068,12 @@ RSpec.describe User, feature_category: :user_profile do
       create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
     end
 
-    it 'returns number of open merge requests from non-archived projects' do
+    it 'returns number of open merge requests from non-archived projects where a reviewer has not reviewed' do
+      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, reviewers: [user])
+
+      mr.merge_request_reviewers.update_all(state: :unreviewed)
+      mr2.merge_request_reviewers.update_all(state: :requested_changes)
+
       is_expected.to eq 1
     end
 
@@ -6973,21 +7082,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns nil' do
         is_expected.to be_nil
-      end
-    end
-
-    context 'when merge_request_dashboard feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
-      end
-
-      it 'returns number of open merge requests from non-archived projects where a reviewer has not reviewed' do
-        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, reviewers: [user])
-
-        mr.merge_request_reviewers.update_all(state: :unreviewed)
-        mr2.merge_request_reviewers.update_all(state: :requested_changes)
-
-        is_expected.to eq 1
       end
     end
   end
@@ -7471,6 +7565,8 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when the user is a spammer' do
         before do
+          stub_feature_flags(remove_trust_scores: false)
+
           user_scores = AntiAbuse::UserTrustScore.new(user)
           allow(AntiAbuse::UserTrustScore).to receive(:new).and_return(user_scores)
           allow(user_scores).to receive(:spammer?).and_return(true)
@@ -7482,7 +7578,7 @@ RSpec.describe User, feature_category: :user_profile do
           it 'creates an abuse report with the correct data' do
             expect { delete_async }.to change { AbuseReport.count }.from(0).to(1)
             expect(AbuseReport.last.attributes).to include({
-              reporter_id: Users::Internal.security_bot.id,
+              reporter_id: Users::Internal.for_organization(user.organization).security_bot.id,
               organization_id: Users::Internal.security_bot.organization_id,
               user_id: user.id,
               category: "spam",
@@ -7505,7 +7601,7 @@ RSpec.describe User, feature_category: :user_profile do
 
           context 'when there is an existing abuse report' do
             let!(:abuse_report) do
-              create(:abuse_report, user: user, reporter: Users::Internal.security_bot, message: 'Existing')
+              create(:abuse_report, user: user, reporter: Users::Internal.for_organization(user.organization).security_bot, message: 'Existing')
             end
 
             it 'updates the abuse report' do
@@ -8820,8 +8916,7 @@ RSpec.describe User, feature_category: :user_profile do
             { user_type: :support_bot },
             { user_type: :security_bot },
             { user_type: :automation_bot },
-            { user_type: :admin_bot },
-            { user_type: :llm_bot }
+            { user_type: :admin_bot }
           ]
         end
 
@@ -9882,6 +9977,58 @@ RSpec.describe User, feature_category: :user_profile do
 
       user_with_pin.support_pin
       user_with_pin.support_pin_expires_at
+    end
+  end
+
+  describe '#merge_request_dashboard_show_drafts?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+
+    subject { user.merge_request_dashboard_show_drafts? }
+
+    where(:flag_enabled, :show_drafts, :result) do
+      false | false | true
+      false | true  | true
+      true  | true  | true
+      true  | false | false
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(mr_dashboard_drafts_toggle: flag_enabled)
+        user.user_preference.update!(merge_request_dashboard_show_drafts: show_drafts)
+      end
+
+      it do
+        is_expected.to be(result)
+      end
+    end
+  end
+
+  describe '#all_assigned_merge_requests_count' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+
+    subject { user.all_assigned_merge_requests_count }
+
+    where(:assigned_count, :returned_count, :result) do
+      nil | nil | nil
+      2   | nil | 2
+      nil | 2   | 2
+      2   | 2   | 4
+    end
+
+    with_them do
+      before do
+        allow(user).to receive(:assigned_open_merge_requests_count).and_return(assigned_count)
+        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(returned_count)
+      end
+
+      it do
+        is_expected.to be(result)
+      end
     end
   end
 end

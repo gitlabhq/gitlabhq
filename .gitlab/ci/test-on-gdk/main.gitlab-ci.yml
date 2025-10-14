@@ -93,6 +93,15 @@ gdk-instance:
   variables:
     QA_SCENARIO: Test::Instance::All
 
+# Run E2E tests with Project Studio configured for Project Studio MRs
+gdk-instance-project-studio:
+  extends: gdk-instance
+  variables:
+    QA_FEATURE_FLAGS: "paneled_view=enabled"
+    QA_PROJECT_STUDIO: true
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /Project Studio/'
+
 gdk-instance-ff-inverse:
   extends: gdk-instance
   variables:
@@ -130,11 +139,6 @@ upload-test-runtime-data:
   extends:
     - .upload-test-runtime-data
     - .rules:report:upload-test-runtime-data
-
-export-test-metrics:
-  extends:
-    - .export-test-metrics
-    - .rules:report:process-results
 
 export-code-paths-mapping:
   extends:

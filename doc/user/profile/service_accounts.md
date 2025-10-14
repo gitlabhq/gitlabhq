@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Service accounts
-description: Machine user, rate limits, and personal access tokens.
+description: Create non-human accounts for automated processes and third-party service integrations.
 ---
 
 {{< details >}}
@@ -72,7 +72,7 @@ The service accounts page displays information about service accounts in your to
 To view service accounts for the entire instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Service accounts**.
+1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
 
@@ -81,7 +81,7 @@ To view service accounts for the entire instance:
 To view service accounts for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Service accounts**.
+1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
 

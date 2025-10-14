@@ -38,7 +38,8 @@ response attributes:
 Example request:
 
 ```shell
-curl --url "https://gitlab.example.com/api/v4/web_commits/public_key"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/web_commits/public_key"
 ```
 
 Example response:

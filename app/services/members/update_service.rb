@@ -24,8 +24,8 @@ module Members
         updated_members.each { |member| post_update(member, permission, old_values_map[member.id]) }
       end
 
+      publish_event(updated_members)
       prepare_response(members)
-
     rescue ActiveRecord::RecordInvalid
       prepare_response(members)
     end
@@ -64,7 +64,7 @@ module Members
     def prepare_response(members)
       errored_members = members.select { |member| member.errors.any? }
       if errored_members.present?
-        error_message = errored_members.flat_map { |member| member.errors.full_messages }.uniq.to_sentence
+        error_message = errored_members.flat_map(&:errors).flat_map(&:full_messages).uniq.to_sentence
         return error(error_message, pass_back: { members: errored_members })
       end
 
@@ -74,7 +74,14 @@ module Members
     def has_update_permissions?(member, permission)
       can?(current_user, action_member_permission(permission, member), member) &&
         !prevent_upgrade_to_owner?(member) &&
-        !prevent_downgrade_from_owner?(member)
+        !prevent_downgrade_from_owner?(member) &&
+        !role_too_high?(member)
+    end
+
+    def role_too_high?(member)
+      return false unless params[:access_level] # we don't update access_level
+
+      member.prevent_role_assignement?(current_user, params.merge(current_access_level: member.access_level))
     end
 
     def downgrading_to_guest?
@@ -99,6 +106,20 @@ module Members
 
     def build_old_values_map(member)
       { human_access: member.human_access_labeled, expires_at: member.expires_at }
+    end
+
+    def publish_event(members)
+      return if members.empty?
+
+      Gitlab::EventStore.publish(
+        Members::UpdatedEvent.new(
+          data: {
+            source_id: source.id,
+            source_type: source.class.name,
+            user_ids: members.filter_map(&:user_id)
+          }
+        )
+      )
     end
   end
 end

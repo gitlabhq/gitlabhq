@@ -25,6 +25,9 @@ module API
       end
       get ':id/variables', urgency: :low do
         variables = user_group.variables
+
+        audit_all_variables_access(user_group)
+
         present paginate(variables), with: Entities::Ci::Variable
       end
 
@@ -36,12 +39,12 @@ module API
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
-      get ':id/variables/:key' do
+      get ':id/variables/:key', urgency: :low do
         variable = find_variable(user_group, params)
 
         break not_found!('GroupVariable') unless variable
 
-        audit_variable_access(variable, user_group)
+        audit_single_variable_access(variable, user_group)
 
         present variable, with: Entities::Ci::Variable
       end

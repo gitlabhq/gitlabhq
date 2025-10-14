@@ -70,7 +70,7 @@ module API
         optional :updated_after, type: DateTime, desc: 'Return issues updated after the specified time'
         optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
 
-        optional :not, type: Hash do
+        optional :not, type: Hash, desc: 'Filters by the specified parameters' do
           use :negatable_issue_filter_params
         end
 
@@ -287,6 +287,7 @@ module API
         use :issue_params
       end
       route_setting :mcp, tool_name: :create_issue, params: Helpers::IssuesHelpers.create_issue_mcp_params
+      route_setting :authorization, permissions: :create_issue, boundary_type: :project
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
 

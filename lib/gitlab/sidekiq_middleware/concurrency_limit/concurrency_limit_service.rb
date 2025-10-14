@@ -30,8 +30,8 @@ module Gitlab
             new(worker_name).has_jobs_in_queue?
           end
 
-          def resume_processing!(worker_name, limit:)
-            new(worker_name).resume_processing!(limit: limit)
+          def resume_processing!(worker_name)
+            new(worker_name).resume_processing!
           end
 
           def queue_size(worker_name)

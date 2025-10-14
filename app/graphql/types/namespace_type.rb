@@ -198,6 +198,11 @@ module Types
       method: :itself,
       experiment: { milestone: '18.3' }
 
+    field :namespace_settings,
+      Types::Namespaces::NamespaceSettingsType,
+      null: true,
+      description: 'Namespace settings for the namespace.'
+
     field :web_url,
       GraphQL::Types::String,
       null: true,

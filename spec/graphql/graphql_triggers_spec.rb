@@ -191,10 +191,6 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
     let_it_be(:user) { create(:user) }
     let_it_be(:merge_request) { create(:merge_request) }
 
-    before do
-      stub_feature_flags(merge_request_dashboard: true)
-    end
-
     it 'triggers the user_merge_request_updated subscription' do
       expect(GitlabSchema.subscriptions).to receive(:trigger).with(
         :user_merge_request_updated,
@@ -203,22 +199,6 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       ).and_call_original
 
       described_class.user_merge_request_updated(user, merge_request)
-    end
-
-    describe 'when merge_request_dashboard is disabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: false)
-      end
-
-      it 'does not trigger the user_merge_request_updated subscription' do
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :user_merge_request_updated,
-          { user_id: user.id },
-          merge_request
-        ).and_call_original
-
-        described_class.user_merge_request_updated(user, merge_request)
-      end
     end
   end
 
@@ -263,35 +243,29 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
 
       described_class.ci_pipeline_schedule_status_updated(schedule)
     end
-
-    describe 'when ci_pipeline_schedules_status_realtime is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_schedules_status_realtime: false)
-      end
-
-      it 'does not trigger the ci_pipeline_schedules_status_realtime subscription' do
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :ci_pipeline_schedule_status_updated,
-          { project_id: schedule.project.to_gid },
-          schedule
-        )
-
-        described_class.ci_pipeline_schedule_status_updated(schedule)
-      end
-    end
   end
 
-  describe '.ci_job_created' do
+  describe '.ci_job_processed' do
     let_it_be(:job) { create(:ci_build) }
 
-    it 'triggers the ci_job_created subscription' do
+    it 'triggers the ci_job_processed subscription' do
       expect(GitlabSchema.subscriptions).to receive(:trigger).with(
-        :ci_job_created,
+        :ci_job_processed,
         { project_id: job.project.to_gid },
         job
       )
 
-      described_class.ci_job_created(job)
+      described_class.ci_job_processed(job)
+    end
+
+    it 'triggers the ci_job_processed_with_artifacts subscription with additional arguments' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_job_processed,
+        { project_id: job.project.to_gid, with_artifacts: true },
+        job
+      )
+
+      described_class.ci_job_processed_with_artifacts(job)
     end
 
     describe 'when ci_job_created_subscription is disabled' do
@@ -299,14 +273,24 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         stub_feature_flags(ci_job_created_subscription: false)
       end
 
-      it 'does not trigger the ci_job_created subscription' do
+      it 'does not trigger the ci_job_processed subscription' do
         expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :ci_job_created,
-          { job_id: job.project.to_gid },
+          :ci_job_processed,
+          { project_id: job.project.to_gid },
           job
         )
 
-        described_class.ci_job_created(job)
+        described_class.ci_job_processed(job)
+      end
+
+      it 'does not trigger the ci_job_processed subscription with additional arguments' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
+          :ci_job_processed,
+          { project_id: job.project.to_gid, with_artifacts: true },
+          job
+        )
+
+        described_class.ci_job_processed_with_artifacts(job)
       end
     end
   end

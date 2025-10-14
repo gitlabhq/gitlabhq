@@ -673,6 +673,9 @@ class ApplicationSetting < ApplicationRecord
       :projects_api_limit,
       :projects_api_rate_limit_unauthenticated,
       :raw_blob_request_limit,
+      :runner_jobs_request_api_limit,
+      :runner_jobs_patch_trace_api_limit,
+      :runner_jobs_endpoints_api_limit,
       :search_rate_limit,
       :search_rate_limit_unauthenticated,
       :sidekiq_job_limiter_compression_threshold_bytes,
@@ -863,7 +866,8 @@ class ApplicationSetting < ApplicationRecord
       :lock_pypi_package_requests_forwarding,
       :maven_package_requests_forwarding,
       :lock_maven_package_requests_forwarding,
-      :pages_unique_domain_default_enabled
+      :pages_unique_domain_default_enabled,
+      :allow_immediate_namespaces_deletion
     )
   end
 
@@ -973,6 +977,15 @@ class ApplicationSetting < ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  jsonb_accessor :namespace_deletion_settings,
+    allow_immediate_namespaces_deletion: [:boolean, { default: true }]
+
+  validates :namespace_deletion_settings, json_schema: { filename: "application_setting_namespace_deletion_settings" }
+
+  validates :allow_immediate_namespaces_deletion,
+    inclusion: { in: [false], message: N_('cannot be enabled on Dedicated') },
+    if: :gitlab_dedicated_instance
+
   validates :allow_runner_registration_token,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -1020,6 +1033,12 @@ class ApplicationSetting < ApplicationRecord
 
   validates :editor_extensions,
     json_schema: { filename: 'application_setting_editor_extensions', detail_errors: true }
+
+  jsonb_accessor :terraform_state_settings,
+    terraform_state_encryption_enabled: [:boolean, { default: true }]
+
+  validates :terraform_state_settings,
+    json_schema: { filename: 'application_setting_terraform_state_settings', detail_errors: true }
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
@@ -1156,6 +1175,9 @@ class ApplicationSetting < ApplicationRecord
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
+      runner_jobs_request_api_limit: [:integer, { default: 2000 }],
+      runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
+      runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
       throttle_authenticated_git_http_enabled: [:boolean, { default: false }],
       throttle_authenticated_git_http_requests_per_period:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],

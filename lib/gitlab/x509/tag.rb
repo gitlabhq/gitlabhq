@@ -11,7 +11,14 @@ module Gitlab
         strong_memoize(:signature) do
           super
 
-          signature = X509::Signature.new(signature_text, signed_text, @tag.user_email, @tag.date)
+          signature = X509::Signature.new(
+            signature_text,
+            signed_text,
+            @tag.user_email,
+            @tag.date,
+            @repository.container
+          )
+
           signature unless signature.verified_signature.nil?
         end
       end

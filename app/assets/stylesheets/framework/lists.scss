@@ -55,7 +55,7 @@ ul.content-list {
         &:last-child {
           margin-right: 0;
 
-          @include media-breakpoint-down(xs) {
+          @include gl-container-width-down(sm, panel) {
             margin: 0 auto;
           }
         }

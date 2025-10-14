@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLabを再起動する方法
 ---
@@ -8,7 +8,7 @@ title: GitLabを再起動する方法
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -20,11 +20,11 @@ GitLabのインストール方法に応じて、サービスを再起動する�
 
 {{< /alert >}}
 
-## Linuxパッケージインストール
+## Linuxパッケージインストール {#linux-package-installations}
 
 [Linuxパッケージ](https://about.gitlab.com/install/)を使用してGitLabをインストールした場合、すでに`gitlab-ctl`が`PATH`にあるはずです。
 
-`gitlab-ctl`はLinuxパッケージインストールと連携して、GitLab Railsアプリケーション（Puma）に加えて、次のような他のコンポーネントを再起動するために使用できます。
+`gitlab-ctl`はLinuxパッケージインストールと連携して、GitLab Railsアプリケーション（Puma）や、次のような他のコンポーネントを再起動するために使用できます。
 
 - GitLab Workhorse
 - Sidekiq
@@ -34,7 +34,7 @@ GitLabのインストール方法に応じて、サービスを再起動する�
 - [Mailroom](reply_by_email.md)
 - Logrotate
 
-### Linuxパッケージインストールを再起動する
+### Linuxパッケージインストールを再起動する {#restart-a-linux-package-installation}
 
 ドキュメントの中で、GitLabの_再起動_を求められる場合があります。Linuxパッケージインストールを再起動するには、次を実行します。
 
@@ -69,11 +69,11 @@ sudo gitlab-ctl status
 
 すべてのサービスが`ok: run`と表示されていることに注目してください。
 
-再起動中にコンポーネントがタイムアウトしたり（ログで`timeout`を探してください）、処理が停止したままになることがあります。そのような場合は、`gitlab-ctl kill <service>`を使用して、そのサービス（例: `sidekiq`）に`SIGKILL`シグナルを送信できます。その後、再起動は正常に動作するはずです。
+再起動中にコンポーネントがタイムアウトすることがあります（ログ内の`timeout`を確認してください）。場合によっては処理が停止してしまうこともあります。そのような場合は、`gitlab-ctl kill <service>`を使用して、そのサービス（例: `sidekiq`）に`SIGKILL`シグナルを送信できます。その後は再起動が正常に行えるはずです。
 
 どうしても再起動できない場合は、代わりにGitLabを再設定してみてください。
 
-### Linuxパッケージインストールを再設定する
+### Linuxパッケージインストールを再設定する {#reconfigure-a-linux-package-installation}
 
 ドキュメントの中で、GitLabの_再設定_を求められる場合があります。この方法は、Linuxパッケージインストールにのみ適用されることに注意してください。
 
@@ -91,9 +91,9 @@ sudo gitlab-ctl reconfigure
 
 `/var/opt/gitlab`内のChefによって管理されているファイルを手動で編集した場合、`reconfigure`を実行するとその変更が元に戻り、それらのファイルに依存するサービスが再起動されます。
 
-## 自己コンパイルによるインストール
+## 自己コンパイルによるインストール {#self-compiled-installations}
 
-公式インストールガイドに従って[自己コンパイルでインストール](../install/installation.md)した場合は、次のコマンドを実行してGitLabを再起動します。
+公式インストールガイドに従って[自己コンパイルでインストール](../install/self_compiled/_index.md)した場合は、次のコマンドを実行してGitLabを再起動します。
 
 ```shell
 # For systems running systemd
@@ -105,7 +105,7 @@ sudo service gitlab restart
 
 これにより、Puma、Sidekiq、GitLab Workhorse、[Mailroom](reply_by_email.md)（有効になっている場合）が再起動されます。
 
-## Helmチャートによるインストール
+## Helmチャートによるインストール {#helm-chart-installations}
 
 [クラウドネイティブなHelmチャート](https://docs.gitlab.com/charts/)を使用してインストールしたGitLabアプリケーション全体を再起動するための単一のコマンドはありません。通常は、関連するすべてのポッドを削除して、特定のコンポーネント（たとえば、`gitaly`、`puma`、`workhorse`、`gitlab-shell`）を個別に再起動すれば十分です。
 
@@ -115,12 +115,12 @@ kubectl delete pods -l release=<helm release name>,app=<component name>
 
 リリース名は、`helm list`コマンドの出力から取得できます。
 
-## Dockerインストール
+## Dockerインストール {#docker-installation}
 
 [Dockerインストール](../install/docker/_index.md)で設定を変更した場合、その変更を有効にするには、次のコンテナを再起動する必要があります。
 
-- メインの`gitlab`コンテナ
-- 個別のコンポーネントコンテナ
+- メインの`gitlab`コンテナ。
+- 個別のコンポーネントコンテナ。
 
 たとえば、Sidekiqを個別のコンテナにデプロイした場合、コンテナを再起動するには、次を実行します。
 

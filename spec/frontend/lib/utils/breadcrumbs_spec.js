@@ -6,10 +6,15 @@ import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 describe('Breadcrumbs utils', () => {
+  let wrapper;
   const mockRouter = jest.fn();
 
   const MockComponent = Vue.component('MockComponent', {
     props: {
+      allStaticBreadcrumbs: {
+        type: Array,
+        required: true,
+      },
       staticBreadcrumbs: {
         type: Array,
         required: true,
@@ -24,6 +29,15 @@ describe('Breadcrumbs utils', () => {
   });
 
   const mockApolloProvider = createMockApollo();
+
+  const findMockComponent = () => wrapper.findComponent(MockComponent);
+
+  beforeEach(() => {
+    staticBreadcrumbs.items = [
+      { text: 'First', href: '/first' },
+      { text: 'Last', href: '/last' },
+    ];
+  });
 
   afterEach(() => {
     resetHTMLFixture();
@@ -59,7 +73,7 @@ describe('Breadcrumbs utils', () => {
       });
 
       it('mounts given component at the inject target id', () => {
-        const wrapper = createWrapper(
+        wrapper = createWrapper(
           injectVueAppBreadcrumbs(mockRouter, MockComponent, mockApolloProvider),
         );
         expect(wrapper.exists()).toBe(true);
@@ -69,24 +83,30 @@ describe('Breadcrumbs utils', () => {
       });
     });
 
-    it('removes the last item from staticBreadcrumbs and passes it to the component', () => {
-      const breadcrumbsHTML = `
+    describe('staticBreadcrumbs', () => {
+      beforeEach(() => {
+        const breadcrumbsHTML = `
             <div id="js-vue-page-breadcrumbs-wrapper">
               <nav id="js-vue-page-breadcrumbs" class="gl-breadcrumbs"></nav>
               <div id="js-injected-page-breadcrumbs"></div>
             </div>
           `;
-      setHTMLFixture(breadcrumbsHTML);
-      staticBreadcrumbs.items = [
-        { text: 'First', href: '/first' },
-        { text: 'Last', href: '/last' },
-      ];
-      const wrapper = createWrapper(
-        injectVueAppBreadcrumbs(mockRouter, MockComponent, mockApolloProvider),
-      );
+        setHTMLFixture(breadcrumbsHTML);
 
-      const component = wrapper.findComponent(MockComponent);
-      expect(component.props('staticBreadcrumbs')).toEqual([{ text: 'First', href: '/first' }]);
+        wrapper = createWrapper(
+          injectVueAppBreadcrumbs(mockRouter, MockComponent, mockApolloProvider),
+        );
+      });
+
+      it('removes the last item from staticBreadcrumbs and passes it to the component', () => {
+        expect(findMockComponent().props('staticBreadcrumbs')).toEqual([
+          { text: 'First', href: '/first' },
+        ]);
+      });
+
+      it('passes all breadrumbs it to the component', () => {
+        expect(findMockComponent().props('allStaticBreadcrumbs')).toEqual(staticBreadcrumbs.items);
+      });
     });
   });
 });

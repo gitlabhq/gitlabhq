@@ -683,7 +683,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_cluster
     enable :create_environment_terminal
     enable :destroy_release
-    enable :destroy_artifacts
+    enable :delete_job_artifact
     enable :admin_operations
     enable :admin_sentry
     enable :read_deploy_token
@@ -693,7 +693,7 @@ class ProjectPolicy < BasePolicy
     enable :create_freeze_period
     enable :read_freeze_period
     enable :update_freeze_period
-    enable :destroy_freeze_period
+    enable :delete_freeze_period
     enable :admin_feature_flags_client
     enable :admin_project_google_cloud
     enable :admin_project_aws
@@ -1262,6 +1262,8 @@ class ProjectPolicy < BasePolicy
   rule { can?(:admin_project_member) }.policy do
     enable :invite_project_members
   end
+
+  rule { can?(:read_project) }.enable :read_attestation
 
   private
 

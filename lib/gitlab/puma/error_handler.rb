@@ -6,7 +6,7 @@ module Gitlab
       PROD_ERROR_MESSAGE = "An error has occurred and reported in the system's low-level error handler."
       DEV_ERROR_MESSAGE = <<~MSG
         Server Error: An error has been caught by Puma's low-level error handler.
-        Read the Puma section of the troubleshooting docs for next steps - https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/troubleshooting/index.md#puma.
+        Read the Puma section of the troubleshooting docs for next steps - https://gitlab-org.gitlab.io/gitlab-development-kit/troubleshooting/#puma.
       MSG
 
       def initialize(is_production)

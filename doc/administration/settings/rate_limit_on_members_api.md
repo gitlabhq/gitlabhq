@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Rate limit on Members API
@@ -24,7 +24,7 @@ You can configure the rate limit per group (or project) per user to the
 To change the rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Members API rate limit**.
 1. In the **Maximum requests per minute per group / project** text box, enter the new value.
 1. Select **Save changes**.

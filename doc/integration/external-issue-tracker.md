@@ -32,7 +32,7 @@ References are displayed as issue links.
 To disable the GitLab issue tracker for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Issues**, turn off the toggle.
 1. Select **Save changes**.

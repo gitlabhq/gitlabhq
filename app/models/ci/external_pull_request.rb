@@ -91,6 +91,11 @@ module Ci
       project.repository.diff_stats(target_sha, source_sha).paths
     end
 
+    def changed_paths
+      project.repository.find_changed_paths([Gitlab::Git::DiffTree.new(target_sha, source_sha)],
+        merge_commit_diff_mode: :all_parents)
+    end
+
     private
 
     def actual_source_branch_sha

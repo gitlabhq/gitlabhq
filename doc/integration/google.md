@@ -37,7 +37,7 @@ To see your new project in the list, refresh the page.
 1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard).
 1. In the upper-left corner, select your previously created project.
 1. Select **OAuth consent screen** and complete the fields.
-1. Select **Credentials > Create credentials > OAuth client ID**.
+1. Select **Credentials** > **Create credentials** > **OAuth client ID**.
 1. Complete the fields:
    - **Application type**: Select **Web application**.
    - **Name**: Use the default name or enter your own.

@@ -80,9 +80,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
   end
 
   def authorize_import_access!
-    can_import = can?(current_user, :import_work_items, project)
-    import_csv_feature_available = project&.work_items_project_issues_list_feature_flag_enabled?
-    return if can_import && import_csv_feature_available
+    return if can?(current_user, :import_work_items, project)
 
     if current_user || action_name == 'authorize'
       render_404

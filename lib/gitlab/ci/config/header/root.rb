@@ -26,8 +26,12 @@ module Gitlab
             inherit: false,
             default: {}
 
-          def inputs_value
+          def spec_inputs_value
             spec_entry.inputs_value
+          end
+
+          def spec_component_value
+            spec_entry.component_value
           end
         end
       end

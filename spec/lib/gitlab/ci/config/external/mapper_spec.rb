@@ -235,11 +235,13 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
 
     context "when duplicate 'include's are defined" do
       let(:values) do
-        { include: [
+        {
+          include: [
             { 'local' => local_file },
             { 'local' => local_file }
           ],
-          image: 'image:1.0' }
+          image: 'image:1.0'
+        }
       end
 
       it 'does not raise an exception' do
@@ -254,11 +256,13 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
 
     context 'when passing max number of files' do
       let(:values) do
-        { include: [
+        {
+          include: [
             { 'local' => local_file },
             { 'remote' => remote_url }
           ],
-          image: 'image:1.0' }
+          image: 'image:1.0'
+        }
       end
 
       it 'does not raise an exception' do
@@ -270,11 +274,13 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
 
     context "when too many 'includes' are defined" do
       let(:values) do
-        { include: [
+        {
+          include: [
             { 'local' => local_file },
             { 'remote' => remote_url }
           ],
-          image: 'image:1.0' }
+          image: 'image:1.0'
+        }
       end
 
       it 'raises an exception' do
@@ -433,9 +439,18 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
 
     context "when 'include' has rules" do
       let(:values) do
-        { include: [{ remote: remote_url },
-                    { local: local_file, rules: [{ if: "$CI_PROJECT_ID == '#{project_id}'" }] }],
-          image: 'image:1.0' }
+        {
+          include: [
+            { remote: remote_url },
+            {
+              local: local_file,
+              rules: [
+                { if: "$CI_PROJECT_ID == '#{project_id}'" }
+              ]
+            }
+          ],
+          image: 'image:1.0'
+        }
       end
 
       context 'when the rules matches' do
@@ -468,11 +483,13 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
       end
 
       let(:values) do
-        { include: [
+        {
+          include: [
             { 'local' => 'hello/secret-file1.yml' },
             { 'local' => 'hello/secret-file2.yml' }
           ],
-          image: 'ruby:2.7' }
+          image: 'ruby:2.7'
+        }
       end
 
       it 'has expanset with two' do

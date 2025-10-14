@@ -7,7 +7,7 @@ title: Use external secrets in CI/CD
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -26,4 +26,6 @@ GitLab supports several secret management providers, including:
 1. [Azure Key Vault](azure_key_vault.md)
 1. [AWS Secrets Manager](aws_secrets_manager.md)
 
-Use [ID tokens](id_token_authentication.md) to authenticate with a secrets provider.
+These integrations use [ID tokens](id_token_authentication.md) for authentication.
+You can also use ID tokens to manually authenticate with any secrets provider that supports
+OIDC authentication with JSON web tokens (JWT).

@@ -212,6 +212,8 @@ describe('WorkItemDescriptionRendered', () => {
 </ul>`,
         },
       });
+
+      jest.spyOn(wrapper.vm, 'createTaskListItemActions').mockReturnValue({});
     });
 
     it('checks unchecked checkbox', async () => {

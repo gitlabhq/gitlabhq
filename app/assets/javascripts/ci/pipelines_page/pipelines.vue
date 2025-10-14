@@ -45,6 +45,7 @@ export default {
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   mixins: [PipelinesMixin, Tracking.mixin()],
+  inject: ['usesExternalConfig'],
   props: {
     store: {
       type: Object,
@@ -109,7 +110,12 @@ export default {
   computed: {
     /**
      * `hasGitlabCi` handles both internal and external CI.
-     * The order on which  the checks are made in this method is
+     */
+    hasLocalCiConfig() {
+      return this.hasGitlabCi && !this.usesExternalConfig;
+    },
+    /**
+     * The order on which the checks are made in this method is
      * important to guarantee we handle all the corner cases.
      */
     stateToRender() {
@@ -127,7 +133,11 @@ export default {
         return stateMap.tableList;
       }
 
-      if ((this.scope !== 'all' && this.scope !== null) || this.hasGitlabCi) {
+      if (this.scope !== 'all' && this.scope !== null) {
+        return stateMap.emptyTab;
+      }
+
+      if (this.hasLocalCiConfig) {
         return stateMap.emptyTab;
       }
 
@@ -362,7 +372,7 @@ export default {
       />
     </div>
 
-    <div v-if="stateToRender !== $options.stateMap.emptyState" class="gl-flex">
+    <div v-if="shouldRenderTabs" class="gl-flex">
       <div
         class="row-content-block gl-flex gl-max-w-full gl-flex-grow gl-flex-wrap gl-gap-4 gl-border-b-0 @sm/panel:gl-flex-nowrap"
       >

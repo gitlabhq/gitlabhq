@@ -112,7 +112,7 @@ To configure a self-hosted model:
    - **Model family**: Select the model family the deployment belongs to. You can select either of the following:
 
      - A [supported model family](supported_models_and_hardware_requirements.md#supported-models).
-     - **General** to [use your own model](supported_models_and_hardware_requirements.md#bring-your-own-compatible-model) that is not explicitly supported by GitLab.
+     - **General** to [use your own model](supported_models_and_hardware_requirements.md#compatible-models) that is not explicitly supported by GitLab.
    - **Endpoint**: Enter the URL where the model is hosted.
      - For more information about configuring the endpoint for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#endpoint-configuration).
    - **API key**: Optional. Add an API key if you need one to access the model.
@@ -136,7 +136,12 @@ To configure a self-hosted model:
 
        - The `AWS_REGION` is `ap-northeast-1`.
        - The cross-region inferencing prefix is `apac.`.
-       - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`
+       - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`.
+
+       Some regions are not supported by cross-region inferencing. For these regions, the model identifier should be specified without the region prefix. For example:
+
+       - The `AWS_REGION` is `eu-west-2`.
+       - The model identifier should be `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`.
 
 1. Select **Create self-hosted model**.
 

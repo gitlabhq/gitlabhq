@@ -9,6 +9,10 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:path) { project.reload.project_namespace.traversal_path }
 
+  let!(:started_at_field) do
+    table_name == :ci_finished_pipelines ? 'started_at' : 'started_at_bucket'
+  end
+
   specify { expect(path).to match(%r{\A(\d+/){3}\z}) }
 
   describe '#for_project' do
@@ -72,8 +76,8 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     it 'builds the correct SQL' do
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
         SELECT * FROM `#{table_name}`
-        WHERE `#{table_name}`.`started_at_bucket` >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-        AND `#{table_name}`.`started_at_bucket` < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        WHERE `#{table_name}`.`#{started_at_field}` >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        AND `#{table_name}`.`#{started_at_field}` < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
       SQL
 
       expect(result_sql.strip).to eq(expected_sql.strip)
@@ -86,7 +90,7 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       it 'builds the correct SQL' do
         expected_sql = <<~SQL.lines(chomp: true).join(' ')
           SELECT * FROM `#{table_name}`
-          WHERE `#{table_name}`.`started_at_bucket` >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+          WHERE `#{table_name}`.`#{started_at_field}` >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
         SQL
 
         expect(result_sql.strip).to eq(expected_sql.strip)
@@ -100,7 +104,7 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       it 'builds the correct SQL' do
         expected_sql = <<~SQL.lines(chomp: true).join(' ')
           SELECT * FROM `#{table_name}`
-          WHERE `#{table_name}`.`started_at_bucket` < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+          WHERE `#{table_name}`.`#{started_at_field}` < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
         SQL
 
         expect(result_sql.strip).to eq(expected_sql.strip)
@@ -236,8 +240,8 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
         SELECT `#{table_name}`.`status` FROM `#{table_name}`
         WHERE `#{table_name}`.`path` = '#{path}'
-        AND `#{table_name}`.`started_at_bucket` >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-        AND `#{table_name}`.`started_at_bucket` < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        AND `#{table_name}`.`#{started_at_field}` >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        AND `#{table_name}`.`#{started_at_field}` < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
         AND `#{table_name}`.`status` IN ('failed', 'success')
         GROUP BY `#{table_name}`.`status`
       SQL

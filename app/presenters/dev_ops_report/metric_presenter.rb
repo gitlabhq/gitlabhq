@@ -71,13 +71,6 @@ module DevOpsReport
         ),
         Card.new(
           metric: metric,
-          title: 'Monitoring',
-          description: 'fraction of all projects',
-          feature: 'projects_prometheus_active',
-          blog: 'https://prometheus.io/docs/introduction/overview/'
-        ),
-        Card.new(
-          metric: metric,
           title: 'Service Desk',
           description: 'issues created per active user',
           feature: 'service_desk_issues',
@@ -137,7 +130,7 @@ module DevOpsReport
         IdeaToProductionStep.new(
           metric: metric,
           title: 'Feedback',
-          features: %w[projects_prometheus_active service_desk_issues]
+          features: %w[service_desk_issues]
         )
       ]
     end

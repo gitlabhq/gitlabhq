@@ -96,7 +96,7 @@ export default {
 <template>
   <div class="row">
     <gl-form-group
-      class="col-md-4 col-sm-10"
+      class="gl-col-md-4 gl-col-sm-10"
       :label="$options.i18n.label"
       :label-for="id"
       :optional-text="$options.i18n.required"

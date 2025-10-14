@@ -235,7 +235,7 @@ class IssuableBaseService < ::BaseContainerService
 
       after_create(issuable)
       set_crm_contacts(issuable, add_crm_contact_emails)
-      execute_triggers
+      execute_triggers(issuable)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees) unless issuable.allows_reviewers?
 
@@ -281,7 +281,11 @@ class IssuableBaseService < ::BaseContainerService
     handle_label_changes(issuable, old_associations[:labels])
   end
 
-  def execute_triggers
+  def execute_triggers(_issuable, _old_associations = {})
+    # This is overridden in EE
+  end
+
+  def execute_flow_triggers(_issuable, _users, _event_type)
     # This is overridden in EE
   end
 
@@ -351,7 +355,7 @@ class IssuableBaseService < ::BaseContainerService
           old_associations: old_associations
         )
 
-        execute_triggers
+        execute_triggers(issuable, old_associations)
         issuable.invalidate_project_counter_caches if update_project_counters
       end
     end

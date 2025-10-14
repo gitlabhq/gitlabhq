@@ -2,7 +2,11 @@ name: gitlab_pm
 description: Schema for all Cell-local package management features.
 allow_cross_joins:
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
 require_sharding_key: false

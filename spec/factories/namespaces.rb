@@ -9,7 +9,7 @@ FactoryBot.define do
 
     path { name.downcase.gsub(/\s/, '_') }
 
-    owner { association(:user, strategy: :build, namespace: instance, username: path) }
+    owner { association(:user, strategy: :build, namespace: instance, username: path, organization: organization) }
 
     after(:build) do |namespace, evaluator|
       namespace.organization ||= evaluator.parent&.organization ||

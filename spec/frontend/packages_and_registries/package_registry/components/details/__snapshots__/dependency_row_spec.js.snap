@@ -19,7 +19,7 @@ exports[`DependencyRow renders full dependency 1`] = `
     </span>
   </div>
   <div
-    class="gl-flex md:gl-justify-end section-50 table-section"
+    class="@md/panel:gl-justify-end gl-flex section-50 table-section"
     data-testid="version-pattern"
   >
     <span

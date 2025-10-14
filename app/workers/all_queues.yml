@@ -306,6 +306,26 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:authn_data_retention_oauth_access_grant_archive
+  :worker_name: Authn::DataRetention::OauthAccessGrantArchiveWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:authn_data_retention_oauth_access_token_archive
+  :worker_name: Authn::DataRetention::OauthAccessTokenArchiveWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   :feature_category: :permissions
@@ -379,6 +399,16 @@
 - :name: cronjob:ci_click_house_finished_pipelines_sync_cron
   :worker_name: Ci::ClickHouse::FinishedPipelinesSyncCronWorker
   :feature_category: :fleet_visibility
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:ci_delete_expired_trigger_token
+  :worker_name: Ci::DeleteExpiredTriggerTokenWorker
+  :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -539,6 +569,16 @@
 - :name: cronjob:counters_flush_stale_counter_increments_cron
   :worker_name: Gitlab::Counters::FlushStaleCounterIncrementsCronWorker
   :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_cron_enqueue
+  :worker_name: Database::BackgroundOperation::CronEnqueueWorker
+  :feature_category: :database
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3508,6 +3548,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_retry_stuck_waiting_job
+  :worker_name: Ci::RetryStuckWaitingJobWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: ci_runners_process_runner_version_update
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
   :feature_category: :fleet_visibility
@@ -3564,6 +3614,16 @@
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: ci_workloads_update_workload_status_event
+  :worker_name: Ci::Workloads::UpdateWorkloadStatusEventWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -4362,6 +4422,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_refresh_pipeline
+  :worker_name: MergeRequests::Refresh::PipelineWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_refresh_web_hooks
   :worker_name: MergeRequests::Refresh::WebHooksWorker
   :feature_category: :code_review_workflow
@@ -4480,6 +4550,16 @@
   :resource_boundary: :cpu
   :weight: 2
   :idempotent: false
+  :tags: []
+  :queue_namespace:
+- :name: observability_create_group_o11y_setting
+  :worker_name: Observability::CreateGroupO11ySettingWorker
+  :feature_category: :observability
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: pages
@@ -4873,7 +4953,7 @@
   :worker_name: Releases::CreateEvidenceWorker
   :feature_category: :release_evidence
   :has_external_dependencies: false
-  :urgency: :low
+  :urgency: :throttled
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
@@ -5068,16 +5148,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-  :queue_namespace:
-- :name: web_hooks_log_destroy
-  :worker_name: WebHooks::LogDestroyWorker
-  :feature_category: :webhooks
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: web_hooks_log_execution

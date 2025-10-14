@@ -110,7 +110,7 @@ export default {
 <template>
   <div>
     <div class="gl-flex gl-justify-between">
-      <div class="gl-grow lg:gl-pr-5">
+      <div class="gl-grow @lg/panel:gl-pr-5">
         <h1 class="page-title gl-text-size-h-display">
           <gl-sprintf :message="$options.i18n.header">
             <template #iid>{{ deploymentIid }}</template>
@@ -144,7 +144,7 @@ export default {
         :loading="isLoading"
         :deployment="deployment"
         :environment="environment"
-        class="gl-w-1/5"
+        class="gl-w-1/5 gl-shrink-0"
       />
     </div>
   </div>

@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
       tracking: {
         label: 'packages_cleanup_policies',
       },
@@ -138,7 +139,7 @@ export default {
       :form-options="$options.formOptions.keepNDuplicatedPackageFiles"
       :label="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL"
       :description="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION"
-      dropdown-class="md:gl-max-w-1/2"
+      dropdown-class="@md/panel:gl-max-w-1/2"
       name="keep-n-duplicated-package-files"
       data-testid="keep-n-duplicated-package-files-dropdown"
       @input="onModelChange($event, 'keepNDuplicatedPackageFiles')"

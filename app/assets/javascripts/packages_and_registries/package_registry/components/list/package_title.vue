@@ -15,10 +15,6 @@ export default {
       required: false,
       default: null,
     },
-    helpUrl: {
-      type: String,
-      required: true,
-    },
     isLoading: {
       type: Boolean,
       required: false,

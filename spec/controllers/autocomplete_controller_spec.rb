@@ -242,11 +242,15 @@ RSpec.describe AutocompleteController do
       let(:current_user) { user }
 
       def request
+        sign_in(current_user)
+
         get(:users, params: { search: 'foo@bar.com' })
       end
 
-      before do
-        sign_in(current_user)
+      def request_with_second_scope
+        sign_in(create(:admin))
+
+        get(:users, params: { search: 'foo@bar.com' })
       end
     end
   end

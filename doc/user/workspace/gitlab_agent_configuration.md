@@ -53,9 +53,10 @@ Group owners and administrators can control which cluster agents host workspaces
 For example, if the path to your workspace project is `top-level-group/subgroup-1/subgroup-2/workspace-project`, you can use any configured agent for either `top-level-group`, `subgroup-1` or `subgroup-2` group.
 
 ```mermaid
-%%{init: {'theme':'neutral'}}%%
-
-graph TD;
+%%{init: { "theme": "neutral", "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Agent authorization hierarchy for workspaces
+    accDescr: Workspace projects inherit access to agents from all parent groups in the hierarchy.
 
     classDef active fill:lightgreen, stroke:#green, color:green, stroke-width:1px;
 
@@ -134,7 +135,7 @@ Prerequisites:
 To allow a cluster agent for workspaces on the instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Available agents for workspaces**.
 1. From the list of agents with workspaces enabled, find the agent you want to allow, and select the
    availability toggle.
@@ -154,7 +155,7 @@ Prerequisites:
 To remove an allowed cluster agent from the instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Available agents for workspaces**.
 1. From the list of allowed agents, find the agent you want to remove, and clear the availability toggle.
 

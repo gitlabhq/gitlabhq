@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'deployable'
+require Rails.root.join('spec/support/helpers/ci/job_factory_helpers')
 
 FactoryBot.define do
   factory :ci_bridge, class: 'Ci::Bridge', parent: :ci_processable do
@@ -41,11 +42,11 @@ FactoryBot.define do
       if updated_options
         # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
         # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
-        bridge.metadata.write_attribute(:config_options, updated_options)
-        next unless bridge.job_definition
+        if Feature.disabled?(:stop_writing_builds_metadata, bridge.project)
+          bridge.metadata.write_attribute(:config_options, updated_options)
+        end
 
-        updated_config = bridge.job_definition.config.merge(options: updated_options)
-        bridge.job_definition.write_attribute(:config, updated_config)
+        Ci::JobFactoryHelpers.mutate_temp_job_definition(bridge, options: updated_options)
       end
     end
 

@@ -1,0 +1,12 @@
+---
+table_name: packages_cargo_metadata
+classes:
+- Packages::Cargo::Metadatum
+feature_categories:
+- package_registry
+description: Cargo package metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197846
+milestone: '18.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects

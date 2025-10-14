@@ -89,6 +89,13 @@ If push rules were never configured for the group, returns [`404 Not Found`](res
 }
 ```
 
+{{< alert type="note" >}}
+
+This differs from the [project push rules API](project_push_rules.md#get-project-push-rules),
+which returns HTTP `200 OK` with the literal string `"null"` when no push rules are configured.
+
+{{< /alert >}}
+
 When disabled, some boolean attributes return `null` instead of `false`. For example:
 
 - `commit_committer_check`
@@ -109,15 +116,15 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `id`                              | integer or string | Yes   | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `author_email_regex`              | string         | No       | Allow only commit author emails that match the regular expression provided in this attribute, for example, `@my-company.com$`. |
-| `branch_name_regex`               | string         | No       | Allow only branch names that match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*`. |
+| `branch_name_regex`               | string         | No       | Allow only branch names that match the regular expression provided in this attribute, for example, `(feature\|hotfix)\/.*`. |
 | `commit_committer_check`          | boolean        | No       | If `true`, allows commits from users only if the committer email is one of their own verified emails. |
 | `commit_committer_name_check`     | boolean        | No       | If `true`, allows commits from users only if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex`   | string         | No       | Reject commit messages matching the regular expression provided in this attribute, for example, `ssh\:\/\/`. |
 | `commit_message_regex`            | string         | No       | If `true`, allows only commit messages that match the regular expression provided in this attribute, for example, `Fixed \d+\..*`. |
 | `deny_delete_tag`                 | boolean        | No       | Deny deleting a tag. |
-| `file_name_regex`                 | string         | No       | Reject filenames matching the regular expression provided in this attribute, for example, `(jar|exe)$`. |
+| `file_name_regex`                 | string         | No       | Reject filenames matching the regular expression provided in this attribute, for example, `(jar\|exe)$`. |
 | `max_file_size`                   | integer        | No       | Maximum file size (MB) allowed. |
 | `member_check`                    | boolean        | No       | If `true`, allows only GitLab users to author commits. |
 | `prevent_secrets`                 | boolean        | No       | If `true`, rejects files that are likely to [contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml). |
@@ -191,15 +198,15 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `id`                              | integer or string | Yes   | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `author_email_regex`              | string         | No       | Allow only commit author emails that match the regular expression provided in this attribute, for example, `@my-company.com$`. |
-| `branch_name_regex`               | string         | No       | Allow only branch names that match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*`. |
+| `branch_name_regex`               | string         | No       | Allow only branch names that match the regular expression provided in this attribute, for example, `(feature\|hotfix)\/.*`. |
 | `commit_committer_check`          | boolean        | No       | If `true`, allows commits from users only if the committer email is one of their own verified emails. |
 | `commit_committer_name_check`     | boolean        | No       | If `true`, allows commits from users only if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex`   | string         | No       | Reject commit messages matching the regular expression provided in this attribute, for example, `ssh\:\/\/`. |
 | `commit_message_regex`            | string         | No       | If `true`, allows only commit messages that match the regular expression provided in this attribute, for example, `Fixed \d+\..*`. |
 | `deny_delete_tag`                 | boolean        | No       | If `true`, denies deleting a tag. |
-| `file_name_regex`                 | string         | No       | Reject filenames matching the regular expression provided in this attribute, for example, `(jar|exe)$`. |
+| `file_name_regex`                 | string         | No       | Reject filenames matching the regular expression provided in this attribute, for example, `(jar\|exe)$`. |
 | `max_file_size`                   | integer        | No       | Maximum file size (MB) allowed. |
 | `member_check`                    | boolean        | No       | If `true`, allows only GitLab users to author commits. |
 | `prevent_secrets`                 | boolean        | No       | If `true`, rejects files that are likely to [contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml). |

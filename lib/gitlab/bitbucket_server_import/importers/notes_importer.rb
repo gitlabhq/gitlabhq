@@ -11,8 +11,13 @@ module Gitlab
         PER_PAGE = 100
 
         def execute
+          # The new approach (import_notes_individually) is now the default behavior.
+          # The old approach (import_notes_in_batch) will be removed in a future release to prevent
+          # issues on inflight migrations using the old approach.
+          #
+          # TODO: Remove on https://gitlab.com/gitlab-org/gitlab/-/issues/570048
           bitbucket_server_notes_separate_worker_enabled =
-            project.import_data&.data&.dig('bitbucket_server_notes_separate_worker')
+            project.import_data&.data&.dig('bitbucket_server_notes_separate_worker') != false
 
           if bitbucket_server_notes_separate_worker_enabled
             import_notes_individually

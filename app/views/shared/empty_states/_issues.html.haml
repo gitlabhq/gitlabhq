@@ -7,10 +7,10 @@
 - can_edit = can?(current_user, :admin_project, @project)
 
 .row.empty-state
-  .col-12
+  .gl-col-12
     .svg-content.svg-150
       = image_tag 'illustrations/empty-state/empty-issues-md.svg'
-  .col-12
+  .gl-col-12
     .text-content
       - if has_filter_bar_param?
         %h4.text-center

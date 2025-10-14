@@ -2,9 +2,13 @@
 
 module Gitlab
   module TopologyServiceClient
+    DEFAULT_TIMEOUT_IN_SECONDS = 1
+
     class BaseService
-      def initialize
+      def initialize(timeout: nil)
         raise NotImplementedError unless enabled?
+
+        @timeout = timeout
       end
 
       private
@@ -13,8 +17,13 @@ module Gitlab
         @client ||= service_class.new(
           topology_service_address,
           service_credentials,
-          interceptors: [MetadataInterceptor.new]
+          interceptors: [MetadataInterceptor.new],
+          **options
         )
+      end
+
+      def options
+        { timeout: @timeout || DEFAULT_TIMEOUT_IN_SECONDS }
       end
 
       def cell_id

@@ -31,6 +31,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
       it { expect(subject.variables_hash).to include('a' => 'b') }
       it { expect(subject.pipeline_config).to eq(pipeline_config) }
+      it { expect(subject.component_data).to eq({}) }
     end
 
     context 'without values' do
@@ -42,6 +43,21 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
       it { expect(subject.pipeline_config).to be_nil }
+      it { expect(subject.component_data).to eq({}) }
+    end
+
+    context 'with component_data' do
+      let(:component_data) { { name: 'my-component', sha: 'abc123' } }
+      let(:attributes) do
+        {
+          project: project,
+          user: user,
+          sha: sha,
+          component_data: component_data
+        }
+      end
+
+      it { expect(subject.component_data).to eq(component_data) }
     end
 
     describe 'max_includes' do
@@ -177,6 +193,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(mutated.execution_deadline).to eq(subject.execution_deadline) }
       it { expect(mutated.logger).to eq(subject.logger) }
       it { expect(mutated.parallel_requests).to eq(subject.parallel_requests) }
+      it { expect(mutated.component_data).to eq(subject.component_data) }
     end
 
     context 'with attributes' do

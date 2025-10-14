@@ -9,6 +9,7 @@ RSpec.describe API::Entities::UserCounts do
 
   it 'represents user counts', :aggregate_failures do
     expect(user).to receive(:assigned_open_merge_requests_count).and_return(1).twice
+    expect(user).to receive(:returned_to_you_merge_requests_count).and_return(0).once
     expect(user).to receive(:assigned_open_issues_count).and_return(2).once
     expect(user).to receive(:review_requested_open_merge_requests_count).and_return(3).once
     expect(user).to receive(:todos_pending_count).and_return(4).once

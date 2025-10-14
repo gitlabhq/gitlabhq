@@ -116,16 +116,19 @@ describe('RelatedIssuesRoot', () => {
     describe('when "pendingIssuableRemoveRequest" event is emitted', () => {
       beforeEach(async () => {
         createComponent();
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
+        findRelatedIssuesBlock().vm.$emit('addIssuableFormInput', {
           untouchedRawReferences: [issuable1.reference],
           touchedReference: '',
         });
+
+        await waitForPromises();
       });
 
       it('removes pending related issue', async () => {
         expect(findRelatedIssuesBlock().props('pendingReferences')).toHaveLength(1);
 
         await findRelatedIssuesBlock().vm.$emit('pendingIssuableRemoveRequest', 0);
+        await waitForPromises();
 
         expect(findRelatedIssuesBlock().props('pendingReferences')).toHaveLength(0);
       });
@@ -323,7 +326,8 @@ describe('RelatedIssuesRoot', () => {
       it('adds any references to pending when blurring', async () => {
         const input = '#123';
         expect(findRelatedIssuesBlock().props('pendingReferences')).toEqual([]);
-        await findRelatedIssuesBlock().vm.$emit('addIssuableFormBlur', input);
+        findRelatedIssuesBlock().vm.$emit('addIssuableFormBlur', input);
+        await waitForPromises();
         expect(findRelatedIssuesBlock().props('pendingReferences')).toEqual([input]);
       });
     });

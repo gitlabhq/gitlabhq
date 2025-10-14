@@ -65,6 +65,28 @@ RSpec.describe 'Destroying a package', feature_category: :package_registry do
     it_behaves_like 'returning response status', :success
   end
 
+  shared_examples 'protected deletion of package' do
+    it_behaves_like 'returning response status', :success
+
+    it 'returns protection error' do
+      mutation_request
+
+      expect(mutation_response).to include('errors' => ['Package is deletion protected.'])
+    end
+
+    it 'does not mark package for destruction' do
+      expect { mutation_request }.not_to change { ::Packages::Package.pending_destruction.count }
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(packages_protected_packages_delete: false)
+      end
+
+      it_behaves_like 'destroying the package'
+    end
+  end
+
   describe 'post graphql mutation' do
     subject(:mutation_request) { post_graphql_mutation(mutation, current_user: user) }
 
@@ -74,6 +96,32 @@ RSpec.describe 'Destroying a package', feature_category: :package_registry do
         :developer  | 'denying the mutation request'
         :reporter   | 'denying the mutation request'
         :guest      | 'denying the mutation request'
+        :anonymous  | 'denying the mutation request'
+      end
+
+      with_them do
+        before do
+          project.send("add_#{user_role}", user) unless user_role == :anonymous
+        end
+
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
+    context 'with protected package' do
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule,
+          project: package.project,
+          package_name_pattern: package.name,
+          package_type: package.package_type,
+          minimum_access_level_for_delete: :owner
+        )
+      end
+
+      where(:user_role, :shared_examples_name) do
+        :owner      | 'destroying the package'
+        :maintainer | 'protected deletion of package'
+        :developer  | 'denying the mutation request'
         :anonymous  | 'denying the mutation request'
       end
 

@@ -13,13 +13,15 @@ class QueueBackfillWorkspaceAgentkStates < Gitlab::Database::Migration[2.3]
 
   # @return [Void]
   def up
-    # no-op -- The migration logic has some bug. This change is done to prevent the deployed migration to run.
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203996
     nil
   end
 
   # @return [Void]
   def down
-    # no-op
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203996
     nil
   end
 end

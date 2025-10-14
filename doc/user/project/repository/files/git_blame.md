@@ -27,13 +27,14 @@ commit hash.
 
 Prerequisites:
 
-- The file type must be text-based. The GitLab UI does not display
-  `git blame` results for binary files.
+- The file must contain readable text content. The GitLab UI displays `git blame` results for text
+  files like `.rb`, `.js`, `.md`, `.txt`, `.yml`, and similar formats. Binary files, such as images
+  and PDFs, are not supported.
 
 To view the blame for a file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Select the file you want to review.
 1. Either:
    - To change the view of the current file, in the file header, select **Blame**.
@@ -54,7 +55,7 @@ changes to light gray.
 To see earlier revisions of a specific line:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Select the file you want to review.
 1. In the upper-right corner, select **Blame**, and go to the line you want to see.
 1. Select **View blame prior to this change** ({{< icon name="doc-versions" >}})

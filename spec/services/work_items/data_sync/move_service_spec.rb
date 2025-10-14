@@ -21,13 +21,6 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     )
   end
 
-  before_all do
-    # Ensure support bot user is created so creation doesn't count towards query limit
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
-  end
-
   context 'when user does not have permissions' do
     context 'when user cannot read original work item' do
       let_it_be(:current_user) { target_project_member }

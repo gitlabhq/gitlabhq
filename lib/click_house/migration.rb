@@ -16,6 +16,7 @@ module ClickHouse
     MIGRATION_FILENAME_REGEXP = /\A([0-9]+)_([_a-z0-9]*)\.?([_a-z0-9]*)?\.rb\z/
 
     def execute(query)
+      query = ReplicatedTableEnginePatcher.patch_replicated(query) if connection.replicated_engine?
       connection.execute(query)
     end
 

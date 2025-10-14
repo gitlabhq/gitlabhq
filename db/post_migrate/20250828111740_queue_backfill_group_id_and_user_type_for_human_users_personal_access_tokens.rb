@@ -11,17 +11,21 @@ class QueueBackfillGroupIdAndUserTypeForHumanUsersPersonalAccessTokens < Gitlab:
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :personal_access_tokens,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205577
+    #
+    # queue_batched_background_migration(
+    #   MIGRATION,
+    #   :personal_access_tokens,
+    #   :id,
+    #   job_interval: DELAY_INTERVAL,
+    #   batch_size: BATCH_SIZE,
+    #   sub_batch_size: SUB_BATCH_SIZE
+    # )
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :personal_access_tokens, :id, [])
+    # no-op, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205577
+    #
+    # delete_batched_background_migration(MIGRATION, :personal_access_tokens, :id, [])
   end
 end

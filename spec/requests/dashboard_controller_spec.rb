@@ -22,7 +22,11 @@ RSpec.describe DashboardController, feature_category: :system_access do
       end
 
       def request
-        get issues_dashboard_path, params: { scope: 'all', search: 'test' }
+        get issues_dashboard_path, params: { scope: 'merge_requests', search: 'test' }
+      end
+
+      def request_with_second_scope
+        get issues_dashboard_path, params: { scope: 'issues', search: 'test' }
       end
     end
   end
@@ -30,28 +34,24 @@ RSpec.describe DashboardController, feature_category: :system_access do
   context 'merge requests dashboard' do
     let_it_be(:current_user) { create(:user) }
 
+    before do
+      sign_in current_user
+    end
+
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
-      before do
-        sign_in current_user
+      def request
+        get merge_requests_dashboard_path, params: { scope: 'issues', search: 'test' }
       end
 
-      def request
-        get merge_requests_dashboard_path, params: { scope: 'all', search: 'test' }
+      def request_with_second_scope
+        get merge_requests_dashboard_path, params: { scope: 'merge_requests', search: 'test' }
       end
     end
 
-    context 'when merge_request_dashboard feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
+    it 'redirects to search page with the current query string' do
+      get merge_requests_dashboard_path, params: { assignee_username: current_user.username }
 
-        sign_in current_user
-      end
-
-      it 'redirects to search page with the current query string' do
-        get merge_requests_dashboard_path, params: { assignee_username: current_user.username }
-
-        expect(response).to redirect_to(merge_requests_search_dashboard_path(params: { assignee_username: current_user.username }))
-      end
+      expect(response).to redirect_to(merge_requests_search_dashboard_path(params: { assignee_username: current_user.username }))
     end
   end
 
@@ -64,7 +64,11 @@ RSpec.describe DashboardController, feature_category: :system_access do
       end
 
       def request
-        get merge_requests_search_dashboard_path, params: { scope: 'all', search: 'test' }
+        get merge_requests_search_dashboard_path, params: { scope: 'merge_requests', search: 'test' }
+      end
+
+      def request_with_second_scope
+        get merge_requests_search_dashboard_path, params: { scope: 'issues', search: 'test' }
       end
     end
   end

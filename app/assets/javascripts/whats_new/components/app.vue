@@ -140,7 +140,7 @@ export default {
       </template>
 
       <div>
-        <featured-carousel v-if="whatsNewFeaturedCarouselEnabled" />
+        <featured-carousel v-if="whatsNewFeaturedCarouselEnabled" class="featured-carousel" />
 
         <other-updates
           :features="features"
@@ -149,7 +149,7 @@ export default {
           :mark-as-read-path="markAsReadPath"
           :fetching="fetching"
           :drawer-body-height="drawerBodyHeight"
-          class="gl-pt-3"
+          class="other-updates gl-pt-3"
           @bottomReached="bottomReached"
         />
       </div>

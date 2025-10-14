@@ -34,12 +34,12 @@ export default {
     <commit-list-header @filter="handleFilter" />
     <ol class="gl-my-6 gl-list-none gl-p-0">
       <li v-for="commit in commits" :key="commit.id" data-testid="daily-commits">
-        <div class="gl-mb-5 gl-flex gl-items-center gl-gap-3 @sm/panel:gl-gap-5">
+        <h2 class="gl-mb-5 gl-flex gl-items-center gl-gap-3 gl-text-base @md/panel:gl-gap-5">
           <gl-icon name="commit" />
           <time class="gl-font-bold" :datetime="commit.day">
             {{ getFormattedDate(commit.day) }}
           </time>
-        </div>
+        </h2>
         <ul class="daily-commits-item gl-mb-6 gl-list-none gl-p-0">
           <commit-list-item
             v-for="dailyCommit in commit.dailyCommits"

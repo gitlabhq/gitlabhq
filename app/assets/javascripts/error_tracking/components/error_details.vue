@@ -297,7 +297,7 @@ export default {
       </gl-alert>
 
       <div
-        class="error-details-header gl-border-b gl-flex gl-flex-col gl-justify-between gl-py-3 md:gl-flex-row"
+        class="error-details-header gl-border-b gl-flex gl-flex-col gl-justify-between gl-py-3 @md/panel:gl-flex-row"
       >
         <div
           v-if="!loadingStacktrace && stacktrace"
@@ -314,7 +314,7 @@ export default {
           </gl-sprintf>
         </div>
         <div>
-          <div class="gl-hidden md:gl-inline-flex">
+          <div class="gl-hidden @md/panel:gl-inline-flex">
             <gl-button
               :loading="updatingIgnoreStatus"
               data-testid="update-ignore-status-btn"
@@ -370,7 +370,7 @@ export default {
           <gl-disclosure-dropdown
             block
             :toggle-text="__('Options')"
-            toggle-class="md:gl-hidden"
+            toggle-class="@md/panel:gl-hidden"
             placement="bottom-end"
             :disabled="issueUpdateInProgress"
             :items="dropdownItems"

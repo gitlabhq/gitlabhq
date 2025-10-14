@@ -60,9 +60,53 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
       setup.setup_connection_proxy
 
+      expect(model.connection).to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
       expect(model.load_balancer).to eq(lb)
       expect(model.sticking)
         .to be_an_instance_of(Gitlab::Database::LoadBalancing::Sticking)
+
+      if Gitlab.next_rails?
+        expect(model.lease_connection).to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
+      end
+    end
+  end
+
+  describe '#with_connection' do
+    let(:model) { Class.new(ActiveRecord::Base) }
+
+    before do
+      skip 'Skipping Rails 7.2 only tests' unless Gitlab.next_rails?
+
+      described_class.new(model).setup_connection_proxy
+      model.load_balancer.release_connections
+    end
+
+    it 'does not release connections if connection was overridden' do
+      allow(model).to receive(:connection).and_return(model.load_balancer.pool.lease_connection)
+
+      expect(model.load_balancer).not_to receive(:release_connections)
+
+      model.with_connection do |conn|
+        conn.execute('SELECT 1')
+      end
+    end
+
+    it 'does not release connections if a connection was already checked out' do
+      expect(model.load_balancer).not_to receive(:release_connections)
+
+      model.connection.execute('SELECT 1')
+
+      model.with_connection do |conn|
+        conn.execute('SELECT 1')
+      end
+    end
+
+    it 'releases connections if a connection has not been checked out' do
+      expect(model.load_balancer).to receive(:release_connections)
+
+      model.with_connection do |conn|
+        conn.execute('SELECT 1')
+      end
     end
   end
 
@@ -122,6 +166,20 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
   context 'uses correct base models', :reestablished_active_record_base do
     using RSpec::Parameterized::TableSyntax
 
+    let(:main_class) do
+      Class.new(ActiveRecord::Base) do
+        def self.name
+          'ApplicationRecordTemporary'
+        end
+
+        establish_connection ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          Rails.env,
+          'main',
+          ActiveRecord::Base.connection_db_config.configuration_hash
+        )
+      end
+    end
+
     let(:ci_class) do
       Class.new(ActiveRecord::Base) do
         def self.name
@@ -138,7 +196,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
     let(:models) do
       {
-        main: ActiveRecord::Base,
+        main: main_class,
         ci: ci_class
       }
     end
@@ -146,13 +204,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
     before do
       allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
 
-      # Rewrite `class_attribute` to use rspec mocking and prevent modifying the objects
       allow_next_instance_of(described_class) do |setup|
         allow(setup).to receive(:configure_connection)
-
-        allow(setup).to receive(:setup_class_attribute) do |attribute, value|
-          allow(setup.model).to receive(attribute) { value }
-        end
       end
 
       # Make load balancer to force init with a dedicated replicas connections

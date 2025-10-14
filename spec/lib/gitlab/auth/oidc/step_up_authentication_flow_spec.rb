@@ -9,6 +9,35 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
 
   subject(:flow) { described_class.new(session: session, provider: provider, scope: scope) }
 
+  describe '#initialize' do
+    using RSpec::Parameterized::TableSyntax
+
+    shared_examples 'a valid flow' do
+      it { is_expected.to have_attributes(scope: scope) }
+    end
+
+    shared_examples 'an invalid flow' do
+      it 'raises an error' do
+        expect { flow }
+          .to raise_error(ArgumentError, "Invalid scope '#{scope}'. Allowed scopes are: admin_mode, namespace")
+      end
+    end
+
+    where(:scope, :expected_example) do
+      'admin_mode'   | 'a valid flow'
+      :admin_mode    | 'a valid flow'
+      'namespace'    | 'a valid flow'
+      :namespace     | 'a valid flow'
+      'custom_scope' | 'an invalid flow'
+      :invalid_scope | 'an invalid flow'
+      nil            | 'an invalid flow'
+    end
+
+    with_them do
+      it_behaves_like params[:expected_example]
+    end
+  end
+
   describe '#requested?, #succeeded?, #failed?' do
     using RSpec::Parameterized::TableSyntax
 
@@ -134,7 +163,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
     where(:provider_config, :provider_name, :scope, :expected_result) do
       { 'step_up_auth' => { 'admin_mode' => { 'documentation_link' => 'https://example.com/company/internal/auth-help' } } }          | 'openid_connect' | 'admin_mode'   | 'https://example.com/company/internal/auth-help'
       { 'step_up_auth' => { 'admin_mode' => { 'documentation_link' => 'https://example.com/company/internal/auth-help' } } }          | :openid_connect  | 'admin_mode'   | 'https://example.com/company/internal/auth-help'
-      { 'step_up_auth' => { 'custom_scope' => { 'documentation_link' => 'https://example.com/company/internal/custom-auth-help' } } } | 'openid_connect' | 'custom_scope' | 'https://example.com/company/internal/custom-auth-help'
+      { 'step_up_auth' => { 'namespace' => { 'documentation_link' => 'https://example.com/company/internal/namespace-auth-help' } } } | 'openid_connect' | 'namespace'    | 'https://example.com/company/internal/namespace-auth-help'
       { 'step_up_auth' => { 'admin_mode' => {} } }                                                                                    | 'openid_connect' | 'admin_mode'   | nil
       {}                                                                                                                              | 'openid_connect' | 'admin_mode'   | nil
     end

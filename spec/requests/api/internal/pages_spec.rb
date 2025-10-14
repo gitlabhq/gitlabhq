@@ -97,6 +97,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
             expect(json_response['certificate']).to eq(pages_domain.certificate)
             expect(json_response['key']).to eq(pages_domain.key)
 
+            expect(json_response['root_namespace_id']).to eq(project.namespace.root_ancestor.id)
+
             expect(json_response['lookup_paths']).to eq(
               [
                 {
@@ -168,6 +170,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('internal/pages/virtual_domain')
 
+            expect(json_response['root_namespace_id']).to eq(project.namespace.root_ancestor.id)
+
             expect(json_response['lookup_paths']).to eq(
               [
                 {
@@ -213,6 +217,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('internal/pages/virtual_domain')
+
+            expect(json_response['root_namespace_id']).to eq(project.namespace.root_ancestor.id)
 
             expect(json_response['lookup_paths']).to eq(
               [
@@ -265,6 +271,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
+
+              expect(json_response['root_namespace_id']).to eq(project.namespace.root_ancestor.id)
 
               expect(json_response['lookup_paths']).to eq(
                 [
@@ -425,6 +433,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
+
+              expect(json_response['root_namespace_id']).to eq(project.namespace.root_ancestor.id)
 
               expect(json_response['lookup_paths']).to eq(
                 [

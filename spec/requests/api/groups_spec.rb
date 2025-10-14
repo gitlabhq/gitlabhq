@@ -137,6 +137,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       def request
         get api("/groups")
       end
+
+      def request_with_second_scope
+        get api("/groups", user2)
+      end
     end
 
     context "when unauthenticated" do
@@ -642,6 +646,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       def request
         get api("/groups/#{group2.id}")
       end
+
+      def request_with_second_scope
+        get api("/groups/#{group2.id}", user1)
+      end
     end
 
     context 'when unauthenticated' do
@@ -1037,6 +1045,73 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response_groups).to contain_exactly(group1.id, group_with_deletion_on.id, group_without_deletion.id)
       end
     end
+
+    context 'step_up_auth_required_oauth_provider attribute' do
+      let(:ommiauth_provider_config) do
+        GitlabSettings::Options.new(
+          name: "openid_connect",
+          step_up_auth: {
+            namespace: {
+              id_token: {
+                required: {
+                  acr: 'gold'
+                }
+              }
+            }
+          }
+        )
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+      end
+
+      context 'when user has admin_group permission' do
+        it 'includes step_up_auth_required_oauth_provider' do
+          group1.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+
+          get api("/groups/#{group1.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('step_up_auth_required_oauth_provider' => 'openid_connect')
+        end
+
+        it 'returns nil when not configured' do
+          get api("/groups/#{group1.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('step_up_auth_required_oauth_provider' => nil)
+        end
+      end
+
+      context 'when user lacks admin_group permission' do
+        let(:guest) { create(:user, guest_of: group1) }
+
+        it 'excludes step_up_auth_required_oauth_provider' do
+          group1.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+
+          get api("/groups/#{group1.id}", guest)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).not_to include('step_up_auth_required_oauth_provider')
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+        end
+
+        it 'excludes step_up_auth_required_oauth_provider' do
+          group1.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+
+          get api("/groups/#{group1.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).not_to include('step_up_auth_required_oauth_provider')
+        end
+      end
+    end
   end
 
   describe 'PUT /groups/:id' do
@@ -1153,6 +1228,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['avatar_url']).to end_with('dk.png')
         expect(json_response['math_rendering_limits_enabled']).to eq(false)
         expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)
+        expect(json_response['step_up_auth_required_oauth_provider']).to be_nil
       end
 
       context 'when updating :emails_disabled' do
@@ -1303,6 +1379,82 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
       end
 
+      context 'updating the `step_up_auth_required_oauth_provider` attribute' do
+        let(:ommiauth_provider_config) do
+          GitlabSettings::Options.new(
+            name: "openid_connect",
+            step_up_auth: {
+              namespace: {
+                id_token: {
+                  required: {
+                    acr: 'gold'
+                  }
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+        end
+
+        context 'when user has admin_group permission' do
+          it 'updates step_up_auth_required_oauth_provider' do
+            put api("/groups/#{group1.id}", user1), params: {
+              step_up_auth_required_oauth_provider: 'openid_connect'
+            }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to include('step_up_auth_required_oauth_provider' => 'openid_connect')
+            expect(group1.reload.step_up_auth_required_oauth_provider).to eq('openid_connect')
+          end
+
+          it 'returns validation error for invalid provider' do
+            put api("/groups/#{group1.id}", user1), params: {
+              step_up_auth_required_oauth_provider: 'invalid_provider'
+            }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']['namespace_settings.step_up_auth_required_oauth_provider'])
+              .to include('is not included in the list')
+          end
+        end
+
+        context 'when user lacks admin_group permission' do
+          let(:developer) { create(:user, developer_of: group1) }
+
+          before do
+            group1.add_developer(developer)
+          end
+
+          it 'returns forbidden' do
+            put api("/groups/#{group1.id}", developer), params: {
+              step_up_auth_required_oauth_provider: 'openid_connect'
+            }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+          end
+
+          it 'ignores the parameter' do
+            put api("/groups/#{group1.id}", user1), params: {
+              step_up_auth_required_oauth_provider: 'openid_connect',
+              description: 'Updated description'
+            }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(group1.reload.step_up_auth_required_oauth_provider).to be_nil
+            expect(group1.description).to eq('Updated description')
+          end
+        end
+      end
+
       context 'malicious group name' do
         subject { put api("/groups/#{group1.id}", user1), params: { name: "<SCRIPT>alert('DOUBLE-ATTACK!')</SCRIPT>" } }
 
@@ -1414,6 +1566,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_projects_api do
       def request
         get api("/groups/#{group1.id}/projects")
+      end
+
+      def request_with_second_scope
+        get api("/groups/#{group1.id}/projects", user2)
       end
     end
 
@@ -2028,6 +2184,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       def request
         get api(path)
       end
+
+      def request_with_second_scope
+        get api(path, user2)
+      end
     end
 
     context 'when authenticated as user' do
@@ -2314,6 +2474,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_invited_groups_api do
       def request
         get api(path)
+      end
+
+      def request_with_second_scope
+        get api(path, user2)
       end
     end
 
@@ -3182,27 +3346,30 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   describe "DELETE /groups/:id" do
     let(:group) { group1 }
     let(:user) { user1 }
+    let(:admin_mode) { false }
     let(:params) { {} }
 
-    subject { delete api("/groups/#{group.id}", user), params: params }
+    subject(:api_request) { delete api("/groups/#{group.id}", user, admin_mode: admin_mode), params: params }
 
     shared_examples_for 'immediately enqueues the job to delete the group' do
       it 'immediately enqueues the job to delete the group', :clean_gitlab_redis_queues do
         Sidekiq::Testing.fake! do
-          expect { subject }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          expect { api_request }.to change(GroupDestroyWorker.jobs, :size).by(1)
         end
 
         expect(response).to have_gitlab_http_status(:accepted)
       end
     end
 
-    shared_examples_for 'does not immediately enqueues the job to delete the group' do |error_message|
+    shared_examples_for 'does not immediately enqueues the job to delete the group' do
+      let(:expected_http_status) { :bad_request }
+
       it 'does not immediately enqueues the job to delete the group', :clean_gitlab_redis_queues do
         Sidekiq::Testing.fake! do
-          expect { subject }.not_to change(GroupDestroyWorker.jobs, :size)
+          expect { api_request }.not_to change(GroupDestroyWorker.jobs, :size)
         end
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(expected_http_status)
         expect(json_response['message']).to eq(error_message)
       end
     end
@@ -3210,7 +3377,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     shared_examples_for 'marks group for delayed deletion' do
       it 'marks group for delayed deletion', :clean_gitlab_redis_queues do
         Sidekiq::Testing.fake! do
-          expect { subject }.not_to change(GroupDestroyWorker.jobs, :size)
+          expect { api_request }.not_to change(GroupDestroyWorker.jobs, :size)
         end
 
         group.reload
@@ -3248,64 +3415,92 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let(:params) { { permanently_remove: true } }
 
       context 'if group is a subgroup' do
-        let(:subgroup) { create(:group, parent: group) }
+        let(:parent_group) { create(:group) }
 
-        subject { delete api("/groups/#{subgroup.id}", user), params: params }
-
-        context 'forbidden by the :disallow_immediate_deletion feature flag' do
-          it_behaves_like 'does not immediately enqueues the job to delete the group',
-            '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
+        before do
+          group.update!(parent: parent_group)
         end
 
-        context 'when the :disallow_immediate_deletion feature flag is disabled' do
+        describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
           before do
-            stub_feature_flags(disallow_immediate_deletion: false)
+            stub_application_setting(allow_immediate_namespaces_deletion: false)
           end
 
-          context 'when group is not marked for deletion' do
-            it_behaves_like 'does not immediately enqueues the job to delete the group', 'Group must be marked for deletion first.'
+          it_behaves_like 'does not immediately enqueues the job to delete the group' do
+            let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
           end
 
-          context 'when group is already marked for deletion' do
-            before do
-              create(:group_deletion_schedule, group: subgroup, marked_for_deletion_on: Date.current)
-            end
+          context 'when current user is an admin' do
+            let_it_be(:user) { admin }
+            let(:admin_mode) { true }
 
-            context 'when full_path param is not passed' do
-              it_behaves_like 'does not immediately enqueues the job to delete the group',
-                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-            end
+            context 'when group is already marked for deletion' do
+              let(:params) { { permanently_remove: true, full_path: group.full_path } }
 
-            context 'when full_path param is not equal to full_path' do
-              let(:params) { { permanently_remove: true, full_path: subgroup.path } }
-
-              it_behaves_like 'does not immediately enqueues the job to delete the group',
-                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-            end
-
-            context 'when the full_path param is passed and it matches the full path of subgroup' do
-              let(:params) { { permanently_remove: true, full_path: subgroup.full_path } }
+              before do
+                create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+                group.add_owner(admin)
+              end
 
               it_behaves_like 'immediately enqueues the job to delete the group'
+
+              context 'when admin_mode is false' do
+                let(:admin_mode) { false }
+
+                it_behaves_like 'does not immediately enqueues the job to delete the group' do
+                  let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
+                end
+              end
             end
+          end
+        end
+
+        context 'when group is not marked for deletion' do
+          it_behaves_like 'does not immediately enqueues the job to delete the group' do
+            let(:error_message) { 'Group must be marked for deletion first.' }
+          end
+        end
+
+        context 'when group is already marked for deletion' do
+          before do
+            create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+          end
+
+          context 'when full_path param is not passed' do
+            it_behaves_like 'does not immediately enqueues the job to delete the group' do
+              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the subgroup.' }
+            end
+          end
+
+          context 'when full_path param is not equal to full_path' do
+            let(:params) { { permanently_remove: true, full_path: group.path } }
+
+            it_behaves_like 'does not immediately enqueues the job to delete the group' do
+              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the subgroup.' }
+            end
+          end
+
+          context 'when the full_path param is passed and it matches the full path of subgroup' do
+            let(:params) { { permanently_remove: true, full_path: group.full_path } }
+
+            it_behaves_like 'immediately enqueues the job to delete the group'
           end
         end
       end
 
       context 'if group is not a subgroup' do
-        subject { delete api("/groups/#{group.id}", user), params: params }
-
-        context 'forbidden by the :disallow_immediate_deletion feature flag' do
-          it_behaves_like 'does not immediately enqueues the job to delete the group',
-            '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
-        end
-
-        context 'when the :disallow_immediate_deletion feature flag is disabled' do
+        describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
           before do
-            stub_feature_flags(disallow_immediate_deletion: false)
+            stub_application_setting(allow_immediate_namespaces_deletion: false)
           end
 
-          it_behaves_like 'does not immediately enqueues the job to delete the group', '`permanently_remove` option is only available for subgroups.'
+          it_behaves_like 'does not immediately enqueues the job to delete the group' do
+            let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
+          end
+        end
+
+        it_behaves_like 'does not immediately enqueues the job to delete the group' do
+          let(:error_message) { '`permanently_remove` option is only available for subgroups.' }
         end
       end
     end
@@ -3317,7 +3512,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
 
       it 'returns an error' do
-        subject
+        api_request
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('error')

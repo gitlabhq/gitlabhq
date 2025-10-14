@@ -27,7 +27,7 @@ specifically the [Before you start](_index.md#before-you-start) and [Deciding wh
 - **Target load**: API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS
 - **High Availability**: Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
 - **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with)
+- **Unsure which Reference Architecture to use**? [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with)
 
 | Service                                  | Nodes | Configuration           | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |------------------------------------------|-------|-------------------------|------------------|--------------|-----------|
@@ -1926,7 +1926,7 @@ To configure the Sidekiq nodes, on each one:
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_enabled'] = true
-   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "<gcp-ci_secure_files-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_connection'] = {
       'provider' => 'Google',
@@ -2076,7 +2076,7 @@ On each node perform the following:
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
    gitlab_rails['ci_secure_files_object_store_enabled'] = true
-   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "<gcp-ci_secure_files-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_connection'] = {
       'provider' => 'Google',
@@ -2310,12 +2310,7 @@ section assumes this.
 
 {{< /alert >}}
 
-{{< alert type="warning" >}}
-
-**Gitaly Cluster (Praefect) is not supported to be run in Kubernetes**.
-Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
-
-{{< /alert >}}
+For information about Gitaly on Kubernetes availability, limitations, and deployment considerations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md).
 
 ### Cluster topology
 

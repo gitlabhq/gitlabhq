@@ -1,4 +1,5 @@
 // DEPLOYMENT STATUSES
+export const BLOCKED = 'blocked';
 export const CREATED = 'created';
 export const MANUAL_DEPLOY = 'manual_deploy';
 export const WILL_DEPLOY = 'will_deploy';

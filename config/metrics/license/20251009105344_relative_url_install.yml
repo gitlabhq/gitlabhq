@@ -1,0 +1,17 @@
+---
+data_category: optional
+key_path: relative_url_install
+description: Indicates whether GitLab is installed with a relative URL root configuration
+product_group: analytics_instrumentation
+value_type: boolean
+status: active
+milestone: "18.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208216
+time_frame: none
+data_source: system
+instrumentation_class: RelativeUrlInstallMetric
+tiers:
+- free
+- premium
+- ultimate
+performance_indicator_type: []

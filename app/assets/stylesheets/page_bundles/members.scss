@@ -2,7 +2,7 @@
 
 .member {
   .controls {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       display: flex;
     }
 
@@ -22,7 +22,7 @@
       margin-top: 0;
     }
 
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       .badge.badge-pill {
         margin-right: 0;
         margin-left: 0;
@@ -50,7 +50,7 @@
 }
 
 .members-table {
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     .col-meta {
       width: px-to-rem(150px);
     }

@@ -237,7 +237,7 @@ deploy:
   environment: production
 ```
 
-### Jobs get stuck in "Waiting for resource"
+### Jobs get stuck in `Waiting for resource`
 
 Sometimes, a job hangs with the message `Waiting for resource: <resource_group>`. To resolve,
 first check that the resource group is working correctly:

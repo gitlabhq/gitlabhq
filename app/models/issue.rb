@@ -124,11 +124,17 @@ class Issue < ApplicationRecord
     inverse_of: :work_item,
     autosave: true
 
+  has_one :work_item_description,
+    class_name: 'WorkItems::Description',
+    inverse_of: :work_item,
+    autosave: true
+
   alias_method :escalation_status, :incident_management_issuable_escalation_status
 
   accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue
   accepts_nested_attributes_for :incident_management_issuable_escalation_status, update_only: true
+  accepts_nested_attributes_for :work_item_description
 
   validates :project, presence: true, if: -> { !namespace || namespace.is_a?(Namespaces::ProjectNamespace) }
   validates :namespace, presence: true
@@ -288,6 +294,7 @@ class Issue < ApplicationRecord
   }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type, :ensure_namespace_traversal_ids
+  before_validation :ensure_work_item_description, if: :importing?
 
   after_save :ensure_metrics!, unless: :skip_metrics?
   after_commit :expire_etag_cache, unless: :importing?
@@ -837,6 +844,19 @@ class Issue < ApplicationRecord
 
   def group_epic_work_item?
     epic_work_item? && group_level?
+  end
+
+  def ensure_work_item_description
+    return if work_item_description.present?
+
+    build_work_item_description(
+      description: description,
+      description_html: description_html,
+      last_edited_at: last_edited_at,
+      last_edited_by_id: last_edited_by_id,
+      lock_version: lock_version,
+      cached_markdown_version: cached_markdown_version
+    )
   end
 
   private

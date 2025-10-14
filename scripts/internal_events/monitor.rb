@@ -221,7 +221,7 @@ def event_tracking_disabled_table
              - Save changes
 
           2) Set up Snowplow Micro in your GDK
-            https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+            https://gitlab-org.gitlab.io/gitlab-development-kit/howto/snowplow_micro/
       TEXT
     ]]
   )
@@ -250,7 +250,7 @@ rescue Errno::ECONNRESET, EOFError
           |    address: 'gdk.test:9090'  |    address: 'localhost:9090'  |
 
       2) Set up Snowplow Micro in your GDK
-         https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+         https://gitlab-org.gitlab.io/gitlab-development-kit/howto/snowplow_micro/
 
   TEXT
 

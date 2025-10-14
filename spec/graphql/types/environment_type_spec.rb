@@ -23,8 +23,6 @@ RSpec.describe GitlabSchema.types['Environment'] do
     let_it_be(:environment) { create(:environment, project: project, external_url: 'https://gitlab.com', description: '_description_') }
     let_it_be(:user) { create(:user) }
 
-    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
-
     let(:query) do
       %(
         query {
@@ -40,6 +38,8 @@ RSpec.describe GitlabSchema.types['Environment'] do
         }
       )
     end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
     before do
       project.add_developer(user)

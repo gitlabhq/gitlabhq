@@ -35,6 +35,7 @@ class User < ApplicationRecord
   include Todoable
   include Gitlab::InternalEventsTracking
   include Ci::PipelineScheduleOwnershipValidator
+  include Users::DependentAssociations
 
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 
@@ -242,13 +243,15 @@ class User < ApplicationRecord
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- This association is from a third party gem
   has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
-  has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
-  has_many :assigned_abuse_reports, class_name: "AbuseReport", through: :admin_abuse_report_assignees, source: :abuse_report
   has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
   has_many :abuse_events,             foreign_key: :user_id, class_name: 'AntiAbuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_trust_scores,       class_name: 'AntiAbuse::TrustScore', foreign_key: :user_id
+  has_many :abuse_trust_scores,
+    class_name: 'AntiAbuse::TrustScore',
+    foreign_key: :user_id,
+    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent - required by https://gitlab.com/groups/gitlab-org/-/epics/19085
+
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'
@@ -261,7 +264,7 @@ class User < ApplicationRecord
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
   has_many :alert_assignees, class_name: '::AlertManagement::AlertAssignee', inverse_of: :assignee
-  has_many :issue_assignees, inverse_of: :assignee
+  has_many :issue_assignees, inverse_of: :assignee, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085
   has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
@@ -456,7 +459,12 @@ class User < ApplicationRecord
 
   # Determines if this user should use flipped dashboard enum mapping
   def should_use_flipped_dashboard_mapping_for_rollout?
-    Feature.enabled?(:personal_homepage, self)
+    return false unless Feature.enabled?(:personal_homepage, self)
+
+    # Don't flip for SM admins who have no authorized projects as they go through different onboarding flow.
+    return false if self_managed_admin? && !authorized_projects.exists?
+
+    true
   end
 
   # User's Project preference
@@ -607,9 +615,7 @@ class User < ApplicationRecord
 
     after_transition any => :deactivated do |user|
       user.run_after_commit do
-        if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable, user)
-          notify_and_disable_all_pipeline_schedules_for_user(user.id)
-        end
+        notify_and_disable_all_pipeline_schedules_for_user(user.id)
 
         next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
 
@@ -1332,6 +1338,10 @@ class User < ApplicationRecord
     self.webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
   end
 
+  def destroy_webauthn_device(device_id)
+    self.webauthn_registrations.find(device_id).destroy
+  end
+
   def reset_backup_codes!
     update(otp_backup_codes: nil)
   end
@@ -1446,6 +1456,10 @@ class User < ApplicationRecord
           groups_from_shares
         ])
     end
+  end
+
+  def authorized_root_ancestor_ids
+    authorized_groups&.top_level&.pluck(:id)
   end
 
   # Used to search on the user's authorized_groups effeciently by using a CTE
@@ -2224,20 +2238,61 @@ class User < ApplicationRecord
     end
   end
 
-  def merge_request_dashboard_enabled?
-    Feature.enabled?(:merge_request_dashboard, self, type: :beta)
+  def merge_request_dashboard_show_drafts?
+    return true if Feature.disabled?(:mr_dashboard_drafts_toggle, self)
+
+    merge_request_dashboard_show_drafts
+  end
+
+  def returned_to_you_merge_requests_count(force: false, cached_only: false)
+    return if merge_request_dashboard_show_drafts? || user_preference.role_based?
+
+    Rails.cache.fetch(['users', id, 'returned_to_you_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+      return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
+
+      params = {
+        state: 'opened',
+        non_archived: true,
+        include_assigned: true,
+        author_id: id,
+        review_states: %w[reviewed requested_changes],
+        ignored_reviewer_username: ::Users::Internal.duo_code_review_bot.username
+      }
+
+      begin
+        MergeRequestsFinder.new(self, params).execute.count
+      # rubocop:disable Database/RescueStatementTimeout, Database/RescueQueryCanceled -- Expensive query can throw 500 error, temporary while the query gets improved
+      rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => e
+        # rubocop:enable Database/RescueStatementTimeout, Database/RescueQueryCanceled
+        Gitlab::AppLogger.error(
+          message: 'Timeout counting assigned merge requests',
+          user_id: id,
+          error: e.message
+        )
+
+        nil
+      end
+    end
   end
 
   def assigned_open_merge_requests_count(force: false, cached_only: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?, merge_request_dashboard_show_drafts?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
-      params = { state: 'opened', non_archived: true }
+      params = {
+        state: 'opened',
+        non_archived: true,
+        include_assigned: true,
+        author_id: id
+      }
 
-      if merge_request_dashboard_enabled?
-        params = params.merge(include_assigned: true, author_id: id, or: { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: ::Users::Internal.duo_code_review_bot.username })
-      else
-        params[:assignee_id] = id
+      unless user_preference.role_based?
+        params[:or] = { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: 'GitLabDuo' }
+      end
+
+      unless merge_request_dashboard_show_drafts?
+        params[:draft] = false
+        params[:or] = { reviewer_wildcard: 'NONE', only_reviewer_username: ::Users::Internal.duo_code_review_bot.username }
       end
 
       begin
@@ -2256,12 +2311,20 @@ class User < ApplicationRecord
     end
   end
 
+  def all_assigned_merge_requests_count(force: false, cached_only: false)
+    assigned_count = assigned_open_merge_requests_count(force: force, cached_only: cached_only)
+    returned_to_you_count = returned_to_you_merge_requests_count(force: force, cached_only: cached_only)
+
+    return if assigned_count.nil? && returned_to_you_count.nil?
+
+    assigned_count.to_i + returned_to_you_count.to_i
+  end
+
   def review_requested_open_merge_requests_count(force: false, cached_only: false)
-    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
-      params = { reviewer_id: id, state: 'opened', non_archived: true }
-      params[:review_states] = %w[unapproved unreviewed review_started] if merge_request_dashboard_enabled?
+      params = { reviewer_id: id, state: 'opened', non_archived: true, review_states: %w[unapproved unreviewed review_started] }
 
       MergeRequestsFinder.new(self, params).execute.count
     end
@@ -2302,8 +2365,9 @@ class User < ApplicationRecord
   end
 
   def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?])
-    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?])
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?, merge_request_dashboard_show_drafts?])
+    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'returned_to_you_merge_requests_count'])
   end
 
   def invalidate_todos_cache_counts
@@ -2740,6 +2804,10 @@ class User < ApplicationRecord
 
   private
 
+  def self_managed_admin?
+    can_admin_all_resources?
+  end
+
   def notification_setting_find_by_source(source)
     notification_settings.find do |notification|
       notification.source_type == source.class.base_class.name && notification.source_id == source.id
@@ -2785,6 +2853,8 @@ class User < ApplicationRecord
   end
 
   def block_or_ban
+    return block if Feature.enabled?(:remove_trust_scores, self)
+
     user_scores = AntiAbuse::UserTrustScore.new(self)
     if user_scores.spammer? && account_age_in_days < 7
       ban_and_report
@@ -2795,7 +2865,7 @@ class User < ApplicationRecord
 
   def ban_and_report
     msg = 'Potential spammer account deletion'
-    attrs = { user_id: id, reporter: Users::Internal.security_bot, category: 'spam' }
+    attrs = { user_id: id, reporter: Users::Internal.for_organization(organization).security_bot, category: 'spam' }
     abuse_report = AbuseReport.find_by(attrs)
 
     if abuse_report.nil?

@@ -294,7 +294,7 @@ Run `perf` against the Sidekiq PID:
 sudo perf record -p <sidekiq_pid>
 ```
 
-Let this run for 30-60 seconds and then press Ctrl-C. Then view the `perf` report:
+Let this run for 30-60 seconds and then press <kbd>Control</kbd>-<kbd>C</kbd>. Then view the `perf` report:
 
 ```shell
 $ sudo perf report
@@ -476,7 +476,7 @@ queue = Sidekiq::Queue.new('<queue name>')
 queue.each { |job| job.delete if <condition>}
 ```
 
-Have a look at the section below for cancelling running jobs.
+Have a look at the section below for canceling running jobs.
 
 In the method documented previously, `<queue-name>` is the name of the queue that contains the jobs you want to delete and `<condition>` decides which jobs get deleted.
 
@@ -496,7 +496,7 @@ queue.each { |job| job.delete if job.args[0] == 125 and job.args[4] == 'ref/head
 ```
 
 ```ruby
-# Cancelling jobs like: `RepositoryImportWorker.new.perform_async(100)`
+# Canceling jobs like: `RepositoryImportWorker.new.perform_async(100)`
 id_list = [100]
 
 queue = Sidekiq::Queue.new('repository_import')

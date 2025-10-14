@@ -200,7 +200,7 @@ class Environment < ApplicationRecord
     testing: 2,
     development: 3,
     other: 4
-  }
+  }, validate: true
 
   enum :auto_stop_setting, {
     always: 0,

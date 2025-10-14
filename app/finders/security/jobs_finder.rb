@@ -44,7 +44,12 @@ module Security
     private
 
     def find_jobs
-      @pipeline.builds.with_secure_reports_from_config_options(@job_types)
+      scope = @pipeline.builds
+      if scope.has_any_job_definition?
+        scope.with_secure_reports_from_config_options(@job_types)
+      else
+        scope.with_secure_reports_from_metadata_config_options(@job_types)
+      end
     end
 
     def valid_job_types?(job_types)

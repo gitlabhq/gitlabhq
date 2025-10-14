@@ -2,6 +2,8 @@ import { GlButton, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { COPY_SSH_CLONE_URL } from '~/repository/components/code_dropdown/constants';
 
 describe('CodeDropdownCloneItem', () => {
   let wrapper;
@@ -36,6 +38,8 @@ describe('CodeDropdownCloneItem', () => {
   });
 
   describe('default', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
     it('sets form group label', () => {
       expect(wrapper.findComponent(GlFormGroup).attributes('label')).toBe(label);
     });
@@ -65,6 +69,26 @@ describe('CodeDropdownCloneItem', () => {
       await nextTick();
 
       expect(mockToastShow).toHaveBeenCalledWith('Copied');
+    });
+
+    it('tracks the copy event if tracking is passed', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      createComponent({ ...defaultPropsData, tracking: { action: COPY_SSH_CLONE_URL } });
+
+      findCopyButton().vm.$emit('click');
+      await nextTick();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(COPY_SSH_CLONE_URL, {}, undefined);
+    });
+
+    it('does not track the copy event if tracking not passed', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findCopyButton().vm.$emit('click');
+      await nextTick();
+
+      expect(trackEventSpy).not.toHaveBeenCalled();
     });
   });
 });

@@ -92,26 +92,12 @@ module Packages
 
     def sync_helm_metadata(packages)
       helm_packages = packages.select(&:helm?)
+      package_files = Packages::PackageFile.for_package_ids(helm_packages.map(&:id))
+      return unless package_files.exists?
 
-      files = ::Packages::PackageFile.most_recent_for(
-        ::Packages::Package.id_in(helm_packages.map(&:id)),
-        extra_join: :helm_file_metadatum
-      ).preload_helm_file_metadata
-        .preload_project
-
-      grouped = files.group_by { |f| [f.project_id, f.helm_file_metadatum.channel] }
-      file_with_metadata_infos = grouped.map do |(_, channel), files|
-        {
-          channel: channel,
-          project: files.first.package.project
-        }
-      end
-
-      ::Packages::Helm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
-        file_with_metadata_infos,
-        arguments_proc: ->(hash) { [hash[:project].id, hash[:channel]] },
-        context_proc: ->(hash) { { project: hash[:project], user: current_user } }
-      )
+      Packages::Helm::BulkSyncHelmMetadataCacheService.new(
+        current_user, package_files
+      ).execute
     end
 
     def can_destroy_packages?(packages)

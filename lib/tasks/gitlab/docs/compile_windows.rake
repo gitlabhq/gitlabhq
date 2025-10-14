@@ -27,7 +27,7 @@ end
 def generate_markdown_file
   File.open(OUTPUT_FILE, 'w') do |file|
     write_metadata(file)
-    write_windows_content(file)
+    # write_windows_content(file)
   end
 end
 
@@ -44,8 +44,9 @@ def write_metadata(file)
     Changes are deployed continuously to GitLab.com. However, breaking changes
     can require more time to prepare for.
 
-    In the month before the GitLab 18.0 release, breaking changes will be deployed
-    during three time windows. The following tables list when each breaking change will be deployed.
+    In the month before the GitLab 19.0 release, breaking changes will be deployed
+    during specific time windows. Closer to the 19.0 release, the dates for these windows
+    will be announced and this page will list when each breaking change will be deployed.
 
     <!--
     Do not edit this page directly.

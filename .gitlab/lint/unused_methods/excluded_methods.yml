@@ -17,3 +17,6 @@ toggle_award_emoji_project_project_snippet_url:
 "#{arg}?":
   file: app/models/concerns/integrations/base/integration.rb
   reason: A metaprogramming method
+attribute_names_for_serialization:
+  file: app/models/note.rb
+  reason: Acts as an override of an existing private ActiveRecord method

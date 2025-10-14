@@ -169,7 +169,9 @@ export default {
         />
       </gl-intersperse>
       <template v-else>
+        <template v-if="!activeTokenValue">{{ inputValue }}</template>
         <gl-label
+          v-else
           class="js-no-trigger"
           :background-color="
             getLabelBackgroundColor(activeTokenValue ? getLabelName(activeTokenValue) : inputValue)

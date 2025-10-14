@@ -141,7 +141,7 @@ export default {
           <gl-icon name="branch" class="gl-mr-3" />
           {{ __('Select a branch to compare') }}
         </div>
-        <ul v-safe-html="commitHtml" class="list-unstyled mr_source_commit"></ul>
+        <ul v-safe-html="commitHtml" class="list-unstyled mr-source-commit"></ul>
       </template>
     </div>
   </div>

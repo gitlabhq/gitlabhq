@@ -48,7 +48,7 @@ export default {
     placement="bottom-end"
     icon="earth"
     size="small"
-    toggle-class="py-0 gl-h-6"
+    toggle-class="!gl-py-0 gl-h-6"
     @select="onLanguageSelected"
   >
     <template #list-item="{ item: locale }">

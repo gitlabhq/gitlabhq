@@ -4,12 +4,14 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {}, source: nil)
+    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {})
       @project = project
       @repository_ref = repository_ref.presence
 
       # use the default filter for project searches since we are already limiting by a single project
-      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters, default_project_filter: true, source: source)
+      super(
+        current_user, query, [project], order_by: order_by, sort: sort, filters: filters, default_project_filter: true
+      )
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
@@ -25,7 +27,7 @@ module Gitlab
       when 'users'
         users.page(page).per(per_page)
       else
-        super(scope, page: page, per_page: per_page, without_count: true)
+        super
       end
     end
 
@@ -118,7 +120,7 @@ module Gitlab
                         if project.wiki.empty?
                           []
                         else
-                          Gitlab::WikiFileFinder.new(project, repository_wiki_ref).find(query, content_match_cutoff: limit)
+                          WikiFileFinder.new(project, repository_wiki_ref).find(query, content_match_cutoff: limit)
                         end
                       else
                         []
@@ -131,7 +133,8 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def notes_finder(type)
-      NotesFinder.new(@current_user, search: query, target_type: type, project: project).execute.user.order('updated_at DESC')
+      note_finder = NotesFinder.new(@current_user, search: query, target_type: type, project: project)
+      note_finder.execute.user.order(updated_at: :desc)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -164,7 +167,7 @@ module Gitlab
     def filter_milestones_by_project(milestones)
       return Milestone.none unless Ability.allowed?(@current_user, :read_milestone, @project)
 
-      milestones.where(project_id: project.id) # rubocop: disable CodeReuse/ActiveRecord
+      milestones.of_projects(project.id)
     end
 
     def repository_project_ref

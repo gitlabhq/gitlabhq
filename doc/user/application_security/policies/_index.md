@@ -119,7 +119,7 @@ Development teams:
 To enforce a security policy project on a group, subgroup, or project, you must have either:
 
 - The Owner role in that group, subgroup, or project.
-- A [custom role](../../custom_roles/_index.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
+- A custom role in that group, subgroup, or project with the `manage_security_policy_link` permission.
 
 The Owner role and custom roles with the `manage_security_policy_link` permission follow the standard hierarchy rules across groups, subgroups, and projects:
 
@@ -170,7 +170,7 @@ occurs:
 Branch name `update-policy-<timestamp>` does not follow the pattern `<branch_name_regex>`.
 ```
 
-In [GitLab 17.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/463064), security policy
+In GitLab 17.4 and later, security policy
 projects are excluded from push rules that enforce branch name validation.
 
 ### Security policy projects
@@ -203,7 +203,7 @@ policy's information (for example, description or enforcement status), and creat
 policies:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Policies**.
+1. Select **Secure** > **Policies**.
 
 ![Policies List Page](img/policies_list_v17_7.png)
 
@@ -214,28 +214,22 @@ A green checkmark in the first column indicates that the policy is enabled and e
 Use the policy editor to create, edit, and delete policies:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Policies**.
+1. Select **Secure** > **Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
      You can then select which type of policy to create.
    - To edit an existing policy, select **Edit policy** in the selected policy drawer.
 
    The policy editor has two modes:
 
-   - The visual **Rule mode** allows you to construct and preview policy
-     rules using rule blocks and related controls.
+   Rule mode
+   : Construct and preview policy rules using rule blocks and related controls.
 
-     ![Policy Editor Rule Mode](img/policy_rule_mode_v15_9.png)
+   YAML mode
+   : Enter a policy definition in YAML format. Suitable for expert users and cases that the rule
+   mode doesn't support.
 
-   - **YAML mode** allows you to enter a policy definition in `.yaml` format
-     and is aimed at expert users and cases that the Rule mode doesn't
-     support.
-
-     ![Policy Editor YAML Mode](img/policy_yaml_mode_v15_9.png)
-
-     You can use both modes interchangeably and switch between them at any time. If a YAML resource
-     is incorrect or contains data not supported by the Rule mode, Rule mode is automatically
-     disabled. If the YAML is incorrect, you must use YAML mode to fix your policy before Rule mode
-     is available again.
+   You can switch between rule mode and YAML mode at any time. If your YAML has errors or
+   unsupported data, rule mode turns off automatically. Fix the YAML first to use rule mode again.
 
 1. Select **Configure with a merge request** to save and apply the changes.
 
@@ -342,7 +336,7 @@ Be aware of the following limitations for the GitLab Security Policy Bot:
 - Project-bound: Each bot instance is tied to a specific project and you cannot shared an instance across projects.
 - Policy-dependent: The bot's functionality is entirely dependent on the security policies configured for the project.
 
-### Security troubleshooting 
+### Security troubleshooting
 
 {{< alert type="warning" >}}
 
@@ -382,7 +376,7 @@ If container scanning is not triggering as configured:
 - Confirm container scanning policies are properly configured.
 - Verify the bot has registry authentication credentials, if required.
 - Check that the `latest` tag push triggered the expected policy rules.
-   
+
 #### Bot account missing
 
 If the bot account no longer exists:

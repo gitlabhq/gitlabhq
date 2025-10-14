@@ -386,7 +386,11 @@
 
     .timeline-content {
       padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
-      @apply gl-bg-section gl-border-b gl-border-b-subtle dark:gl-border-b-section;
+      @apply gl-bg-section;
+
+      &:not(:last-child) {
+        @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
+      }
     }
 
     .timeline-avatar {
@@ -398,4 +402,3 @@
     }
   }
 }
-

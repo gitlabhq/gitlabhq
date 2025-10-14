@@ -249,8 +249,7 @@ Example response:
 ## Schedule repository storage moves for all groups on a storage shard
 
 Schedules repository storage moves for each group repository stored on the source storage shard.
-This endpoint migrates all groups at once. For more information, see
-[Move all groups](../administration/operations/moving_repositories.md#move-all-groups).
+This endpoint migrates all groups at once.
 
 ```plaintext
 POST /group_repository_storage_moves
@@ -279,3 +278,7 @@ Example response:
   "message": "202 Accepted"
 }
 ```
+
+## Related topics
+
+- [Moving repositories managed by GitLab](../administration/operations/moving_repositories.md)

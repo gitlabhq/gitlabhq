@@ -24,7 +24,11 @@ module QA
 
       it(
         'allows using 2FA recovery code once only',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347937'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347937', quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/567702',
+          type: :bug,
+          only: { job: "gdk-instance-project-studio" }
+        }
       ) do
         recovery_code = enable_2fa_for_user_and_fetch_recovery_code(developer_user)
 

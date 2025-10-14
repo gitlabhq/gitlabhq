@@ -28,12 +28,13 @@ export default {
   data() {
     return {
       shouldShowPopover: true,
+      showPopover: false,
     };
   },
   computed: {
-    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserVisible']),
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
     toggleFileBrowserTitle() {
-      return this.fileTreeBrowserVisible
+      return this.fileTreeBrowserIsVisible
         ? __('Hide file tree browser')
         : __('Show file tree browser');
     },
@@ -41,13 +42,31 @@ export default {
       return !shouldDisableShortcuts();
     },
   },
+  mounted() {
+    if (this.shouldShowPopover) {
+      this.popoverTimeout = setTimeout(() => {
+        this.showPopover = true;
+      }, 500);
+    }
+  },
+  beforeDestroy() {
+    if (this.popoverTimeout) {
+      clearTimeout(this.popoverTimeout);
+    }
+  },
+
   methods: {
-    ...mapActions(useFileTreeBrowserVisibility, ['toggleFileTreeVisibility']),
+    ...mapActions(useFileTreeBrowserVisibility, ['handleFileTreeBrowserToggleClick']),
     onClickToggle() {
-      this.toggleFileTreeVisibility();
+      this.handleFileTreeBrowserToggleClick();
+
+      if (this.showPopover) {
+        this.showPopover = false;
+        this.setShouldShowPopover(false);
+      }
 
       this.trackEvent(
-        this.fileTreeBrowserVisible
+        this.fileTreeBrowserIsVisible
           ? EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
           : EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
         {
@@ -58,6 +77,10 @@ export default {
     setShouldShowPopover(value) {
       this.shouldShowPopover = value;
     },
+    onPopoverClose() {
+      this.showPopover = false;
+      this.setShouldShowPopover(false);
+    },
   },
 };
 </script>
@@ -65,24 +88,25 @@ export default {
 <template>
   <div class="file-tree-browser-toggle-wrapper">
     <gl-button
-      id="file-tree-browser-toggle"
       ref="toggle"
       icon="file-tree"
+      class="btn-icon"
       :aria-label="toggleFileBrowserTitle"
       @click="onClickToggle"
-    />
-    <gl-tooltip
-      custom-class="file-browser-toggle-tooltip"
-      target="file-tree-browser-toggle"
-      trigger="hover focus"
     >
-      {{ toggleFileBrowserTitle }}
-      <shortcut
+      <gl-tooltip
         v-if="shortcutsEnabled"
-        class="gl-whitespace-nowrap"
-        :shortcuts="$options.TOGGLE_FILE_TREE_BROWSER_VISIBILITY.defaultKeys"
-      />
-    </gl-tooltip>
+        custom-class="file-browser-toggle-tooltip"
+        :target="() => $refs.toggle.$el"
+        placement="left"
+      >
+        {{ toggleFileBrowserTitle }}
+        <shortcut
+          class="gl-whitespace-nowrap"
+          :shortcuts="$options.TOGGLE_FILE_TREE_BROWSER_VISIBILITY.defaultKeys"
+        />
+      </gl-tooltip>
+    </gl-button>
 
     <local-storage-sync
       :value="shouldShowPopover"
@@ -91,11 +115,13 @@ export default {
     >
       <gl-popover
         v-if="shouldShowPopover"
+        :show="showPopover"
         :show-close-button="true"
         placement="bottom"
         boundary="viewport"
         target="file-tree-browser-toggle"
-        @close-button-clicked="setShouldShowPopover(false)"
+        triggers=""
+        @close-button-clicked="onPopoverClose"
       >
         <template #title>
           <div class="gl-flex gl-items-center gl-justify-between gl-gap-3">
@@ -118,5 +144,9 @@ export default {
 <style scoped>
 .file-tree-browser-toggle-wrapper {
   display: contents; /* Removes wrapper from layout flow */
+}
+
+.file-browser-toggle-tooltip .tooltip-inner {
+  max-width: 210px;
 }
 </style>

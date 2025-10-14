@@ -36,7 +36,6 @@ export const initGitlabWebIDE = async (el) => {
     signOutPath,
   } = el.dataset;
 
-  const languageServerWebIDE = gon?.features?.webIdeLanguageServer || false;
   const webIdeWorkbenchConfig = await getWebIDEWorkbenchConfig();
   const container = setupIdeContainer(el);
   const editorFont = editorFontJSON
@@ -80,7 +79,7 @@ export const initGitlabWebIDE = async (el) => {
         signIn: el.dataset.signInPath,
       },
       featureFlags: {
-        languageServerWebIDE,
+        languageServerWebIDE: true,
         additionalSourceControlOperations: true,
       },
       editorFont,

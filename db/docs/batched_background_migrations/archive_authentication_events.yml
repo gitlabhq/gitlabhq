@@ -1,0 +1,12 @@
+---
+migration_job_name: ArchiveAuthenticationEvents
+description: |
+  Copies old records from the `authentication_events` table to an archival table that mirrors the schema
+  of the production table. Then, deletes the old record from the production table. This functions as
+  a way to soft delete old records from `authentication_events`, to prepare for reclaiming space
+  from the production table.
+feature_category: system_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
+milestone: '18.5'
+queued_migration_version: 20250915200517
+finalized_by: # version of the migration that finalized this BBM

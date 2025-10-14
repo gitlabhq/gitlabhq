@@ -15,7 +15,8 @@ module InternalEventsCli
     :data_source,
     :data_category,
     :tiers,
-    :events
+    :events,
+    :instrumentation_class
   ].freeze
 
   ADDITIONAL_METRIC_FIELDS = [
@@ -80,12 +81,14 @@ module InternalEventsCli
 
   NewMetric = Struct.new(*NEW_METRIC_FIELDS, :identifier, :actions, :key, :filters, :operator, keyword_init: true) do
     def formatted_output
+      extra_keys = event_metric? ? { events: events } : {}
+
       METRIC_DEFAULTS
         .merge(to_h.compact)
-        .merge(time_frame: assign_time_frame)
         .merge(
-          key_path: key_path,
-          events: events)
+          time_frame: assign_time_frame,
+          key_path: key_path
+        ).merge(extra_keys)
         .slice(*NEW_METRIC_FIELDS)
         .transform_keys(&:to_s)
         .to_yaml(line_width: 150)
@@ -108,11 +111,12 @@ module InternalEventsCli
     end
 
     def file_name
-      "#{key.value}.yml"
+      name = event_metric? ? key.value : key_path
+      "#{name}.yml"
     end
 
     def key_path
-      key.full_path
+      event_metric? ? key.full_path : self[:key_path]
     end
 
     def time_frame
@@ -196,8 +200,8 @@ module InternalEventsCli
     def description_prefix
       [
         (time_frame.description if time_frame.single?),
-        operator.description,
-        *(identifier.plural if identifier.default?)
+        (operator.description if event_metric?),
+        *(identifier.plural if identifier.default? && event_metric?)
       ].compact.join(' ').capitalize
     end
 
@@ -208,8 +212,8 @@ module InternalEventsCli
       event_name ||= 'the selected events'
       [
         (time_frame.description if time_frame.single?),
-        operator.description,
-        (identifier.description % event_name).to_s
+        (operator.description if event_metric?),
+        ((identifier.description % event_name).to_s if event_metric?)
       ].compact.join(' ').capitalize
     end
 
@@ -221,6 +225,10 @@ module InternalEventsCli
     # TODO: Remove once we can deduplicate and merge metric files
     def assign_time_frame
       time_frame.single? ? time_frame.value.first : time_frame.value
+    end
+
+    def event_metric?
+      data_source == 'internal_events'
     end
   end
 

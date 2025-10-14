@@ -1,7 +1,13 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/notes/work_item_note.fragment.graphql"
 
-query workItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pageSize: Int) {
+query workItemNotesByIid(
+  $fullPath: ID!
+  $iid: String!
+  $after: String
+  $pageSize: Int
+  $sort: WorkItemDiscussionsSort
+) {
   workspace: namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
@@ -14,7 +20,7 @@ query workItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pageSiz
         ... on WorkItemWidgetNotes {
           type
           discussionLocked
-          discussions(first: $pageSize, after: $after, filter: ALL_NOTES) {
+          discussions(first: $pageSize, after: $after, filter: ALL_NOTES, sort: $sort) {
             pageInfo {
               ...PageInfo
             }

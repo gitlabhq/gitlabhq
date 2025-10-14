@@ -17,7 +17,6 @@ import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking
 import * as constants from '~/notes/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createNoteErrorMessages, getAutosaveKey } from '../utils';
-import WikiDiscussionLocked from './wiki_discussion_locked.vue';
 import WikiDiscussionSignedOut from './wiki_discussions_signed_out.vue';
 
 export default {
@@ -27,7 +26,6 @@ export default {
     GlAlert,
     GlFormCheckbox,
     WikiDiscussionSignedOut,
-    WikiDiscussionLocked,
     TimelineEntryItem,
     CommentFieldLayout,
     MarkdownEditor,
@@ -183,6 +181,14 @@ export default {
         resolve: this.newResolvedState,
       };
     },
+    editMutationVariables() {
+      return {
+        input: {
+          id: convertToGraphQLId(TYPENAME_NOTE, this.noteId),
+          body: this.note,
+        },
+      };
+    },
     saveMutationVariables() {
       return {
         shouldCreateNote: this.noteHasContent,
@@ -255,7 +261,7 @@ export default {
       try {
         const discussion = await this.$apollo.mutate({
           mutation: this.isEdit ? updateWikiPageMutation : createWikiPageNoteMutation,
-          variables: this.saveMutationVariables,
+          variables: this.isEdit ? this.editMutationVariables : this.saveMutationVariables,
         });
 
         const response = this.isEdit
@@ -303,7 +309,6 @@ export default {
 <template>
   <div data-testid="wiki-note-comment-form-container" :class="dynamicClasses.root">
     <wiki-discussion-signed-out v-if="!userSignedId" />
-    <wiki-discussion-locked v-else-if="!canCreateNote" />
     <ul
       v-else-if="canCreateNote"
       data-testid="wiki-note-comment-form"

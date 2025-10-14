@@ -66,7 +66,7 @@ export default {
         {
           key: 'title',
           label: __('Integration'),
-          thClass: 'd-sm-table-cell',
+          thClass: '@sm/panel:!gl-table-cell',
           tdClass: '!gl-border-b-0 !gl-align-middle',
         },
       );
@@ -76,8 +76,9 @@ export default {
           key: 'updated_at',
           label: this.showUpdatedAt ? __('Last updated') : '',
           thAlignRight: true,
-          thClass: 'gl-hidden d-sm-table-cell gl-w-20',
-          tdClass: '!gl-border-b-0 gl-text-right gl-hidden d-sm-table-cell !gl-align-middle',
+          thClass: 'gl-hidden @sm/panel:!gl-table-cell gl-w-20',
+          tdClass:
+            '!gl-border-b-0 gl-text-right gl-hidden @sm/panel:!gl-table-cell !gl-align-middle',
         });
       }
 

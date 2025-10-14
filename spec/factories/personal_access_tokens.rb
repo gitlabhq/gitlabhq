@@ -11,10 +11,6 @@ FactoryBot.define do
     scopes { ['api'] }
     impersonation { false }
 
-    after(:build) do |token|
-      token.user_type = token.user.user_type
-    end
-
     trait :impersonation do
       impersonation { true }
     end
@@ -57,6 +53,8 @@ FactoryBot.define do
     granular { true }
 
     after(:create) do |token, evaluator|
+      next unless evaluator.permissions.present?
+
       granular_scope = Authz::GranularScope.create!(
         namespace: evaluator.namespace,
         permissions: Array(evaluator.permissions),
@@ -78,7 +76,10 @@ FactoryBot.define do
       access_level { Gitlab::Access::DEVELOPER }
     end
 
-    after(:create) do |token, evaluator|
+    before(:create) do |token, evaluator|
+      bot_namespace = evaluator.resource.is_a?(Group) ? evaluator.resource : evaluator.resource.project_namespace
+      token.user.update!(bot_namespace: bot_namespace)
+
       evaluator.resource.add_member(token.user, evaluator.access_level)
     end
 

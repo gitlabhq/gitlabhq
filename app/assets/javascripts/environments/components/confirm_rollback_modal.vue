@@ -156,7 +156,7 @@ export default {
   >
     <gl-sprintf :message="modalBodyText">
       <template #commitId>
-        <gl-link :href="commitUrl" target="_blank" class="commit-sha mr-0">{{
+        <gl-link :href="commitUrl" target="_blank" class="commit-sha !gl-mr-0">{{
           commitShortSha
         }}</gl-link>
       </template>

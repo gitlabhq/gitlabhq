@@ -1,17 +1,13 @@
 /* eslint-disable func-names, consistent-return, no-param-reassign */
 
 import $ from 'jquery';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { setCookie } from '~/lib/utils/common_utils';
 import { hide, fixTitle } from '~/tooltips';
 import { __ } from './locale';
 
-const updateSidebarClasses = (layoutPage, rightSidebar, windowSize = window.innerWidth) => {
-  let scrollBarWidth = 0;
-
-  if (window.innerWidth && document?.documentElement?.clientWidth) {
-    scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-  }
-  if (windowSize + scrollBarWidth >= 992) {
+const updateSidebarClasses = (layoutPage, rightSidebar) => {
+  if (PanelBreakpointInstance.isDesktop()) {
     layoutPage.classList.remove('right-sidebar-expanded', 'right-sidebar-collapsed');
     rightSidebar.classList.remove('right-sidebar-collapsed');
     rightSidebar.classList.add('right-sidebar-expanded');
@@ -26,6 +22,8 @@ function Sidebar() {
   this.sidebar = $('aside');
 
   this.isMR = /projects:merge_requests:/.test(document.body.dataset.page);
+
+  this.isTransitioning = false;
 
   this.removeListeners();
   this.addEventListeners();
@@ -57,7 +55,7 @@ Sidebar.prototype.addEventListeners = function () {
   this.sidebar.on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
   this.sidebar.on('hiddenGlDropdown', this, this.onSidebarDropdownHidden);
 
-  $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
+  $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked.bind(this));
 
   const layoutPage = document.querySelector('.layout-page');
   const rightSidebar = document.querySelector('.js-right-sidebar');
@@ -65,16 +63,20 @@ Sidebar.prototype.addEventListeners = function () {
   if (rightSidebar.classList.contains('right-sidebar-merge-requests')) {
     updateSidebarClasses(layoutPage, rightSidebar);
 
-    const resizeHandler = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        updateSidebarClasses(layoutPage, rightSidebar, entry.contentRect.width);
-      }
+    PanelBreakpointInstance.addResizeListener(() => {
+      updateSidebarClasses(layoutPage, rightSidebar);
     });
-    resizeHandler.observe(document.querySelector('html'));
   }
 };
 
 Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
+  if (this.isTransitioning && this.sidebar.is(':not(.right-sidebar-merge-requests)')) return;
+
+  this.isTransitioning = true;
+  this.sidebar.one('transitionend', () => {
+    this.isTransitioning = false;
+  });
+
   const $toggleButtons = $('.js-sidebar-toggle');
   const $collapseIcon = $('.js-sidebar-collapse');
   const $expandIcon = $('.js-sidebar-expand');

@@ -743,6 +743,51 @@ entry.
 - [Migration to remove sidekiq jobs for confidential epic worker](https://gitlab.com/gitlab-org/gitlab/-/commit/3eed5264bd2a24db76fba79a4b767d5fbc889d7c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200894))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/5c73da9d08e0c5732bead4407bfdeeffba00ca80) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197074))
 
+## 18.3.4 (2025-10-08)
+
+### Fixed (2 changes)
+
+- [Remove non Saas instances from calling CDOT for trial duration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/764210b1790db3e4984ecbd404f211c0668af1a4) **GitLab Enterprise Edition**
+- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ec7a2082e1229aa64d0b1529135f2fb209ba656d)
+
+### Security (5 changes)
+
+- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd818dff7bb196ba52e428e8a90eb33869f60fa2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5389))
+- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/13b1fb00de0ab7db943c579b612b813199084f29) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5385))
+- [Some mutations have read_api scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a2c70f53fde77761905c184021dba0a1c74013c8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5369))
+- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e8060c8dd0cd6a268ac654b177e2ef7b28b2b245) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5302))
+- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dcb8ddf94070937b7a245a9f300fede051a30252) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5365))
+
+## 18.3.3 (2025-09-25)
+
+### Added (1 change)
+
+- [Add job project claims to CI ID Tokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f2fbc42345c2b907c7b3a8f9988972117199788f)
+
+### Fixed (7 changes)
+
+- [Use isUnsafeLink for xcode protocol](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cceeb02fd87dea5260935ca6dc485eb8de0b62c0)
+- [Optimize HandleMalformedStrings middleware for CPU and memory](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4082a4d613c73890bc28839bc60d1352067fd9a3)
+- [Merge branch 'tchu-fix-forbidden-causing-save-errors-in-search-admin' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fd9947e3073b242eaddcb29449345cb09a9bc47b) **GitLab Enterprise Edition**
+- [Fix the rendering when content is empty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6b7548ccf491e17aac35ef501f0a67f98f7fc150) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202049))
+- [Exclude other report types from scan readiness check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0d6684b6cff8dd9e323577276fb977b4d2f496a2) **GitLab Enterprise Edition**
+- [Fix security widget polling indefinitely when there are sboms](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4613a87bde04e9bf4cd506c70a4e011fa9df986b) **GitLab Enterprise Edition**
+- [Merge branch 'ngala/geo-secondary-deployment-filename' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/106eca44590cff62d0d4121660b91605b8043f5a)
+
+### Security (11 changes)
+
+- [Increase JSON validation limits on NPM endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a9b696cdf821a88cab6664ab179ae46edb54f16) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5361))
+- [Addresses logical bug in the GraphQL base resolver](https://gitlab.com/gitlab-org/security/gitlab/-/commit/536a9c86c750c8dfb94fc18f1e75f6a4c6b5975f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5275))
+- [Escape text for wrapNodes utility](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4483cacb226a15a75ca690ff5c8e2795895d1597) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5307))
+- [Add the rate limit in BlobSearch GraphQL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0def0dec4033082f8f15a601ef5129372dade734) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5251))
+- [Fix Identical Project Names via Move Issue Drop Down leads to Confusion](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d267a454c0eee30648c880c6f5ce17f1400a1c9e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5258))
+- [Prevent role assignment for custom roles in projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdbd08c0d9e72b5ce925c0df3b0fad7c1de5c713) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5338))
+- [Only owners can invite groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc2a782805997d9d7be4640d13d8a339020b3ab9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5310))
+- [Add limit to array fields in WorkItems API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c67ed0d001cb492fbaf5fcac3419ad1349c5888) by @afrnz ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5262))
+- [Limit String => Integer conversions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6abe5b8d77c7085cf36253f012ba809cd9341654) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5276))
+- [Removes password field from maven upstream GraphQL type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/811f03bc8c1b47ac9a97f32abbda5c57b6f0d61b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5315))
+- [Add JSON input streaming validator middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f6991c93fc0d9264d4870efcf372c1347df3b421) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5350))
+
 ## 18.3.2 (2025-09-09)
 
 ### Added (1 change)
@@ -1640,6 +1685,49 @@ entry.
 - [Finalize BBM BackfillScanResultPoliciesProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/abfb77370cea034cfe41327535e6d7aa6445de0f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197399))
 - [Use proper vue frontend errors on company form](https://gitlab.com/gitlab-org/gitlab/-/commit/d04f737a5d4dbef68db29c73e37edf382b8cea79) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194378)) **GitLab Enterprise Edition**
 - [Remove ignore column from Users](https://gitlab.com/gitlab-org/gitlab/-/commit/ad08665571456b0e6d8d4f70f161a0980b6a4f80) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197464))
+
+## 18.2.8 (2025-10-08)
+
+### Fixed (1 change)
+
+- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ffa794edbc50ae509c9d2a9dcd6a3d30cf938de5)
+
+### Security (4 changes)
+
+- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/99e5aeaddd439d66513cdf5710bc3fdb70df7cb4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5390))
+- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb1ff84697efa0abd38063207c7ec3905a9bfc2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5386))
+- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db84009946afba988a96aa6871d992ef3fcc02ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5303))
+- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eaadf56f52b6533dd0d07e177a4df8d62d076d1b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5367))
+
+## 18.2.7 (2025-09-25)
+
+### Added (1 change)
+
+- [Add target project claims to CI ID Tokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5dd1a33251ff65bf7e9951a00f7fa6d156cfa17d)
+
+### Fixed (7 changes)
+
+- [Optimize HandleMalformedStrings middleware for CPU and memory](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f738dfc3a780b22ea1a03911e1746f123fea3e03)
+- [Exclude other report types from scan readiness check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e3798968d9cbe9422d68ef35c094fcfb5b157f03) **GitLab Enterprise Edition**
+- [Fix security widget polling indefinitely when there are sboms](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f0396a3c58481697e9939c02210e33fa1ab0f4c3) **GitLab Enterprise Edition**
+- [Merge branch 'ngala/geo-secondary-deployment-filename' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b05f668d676ae3a253fab2e6a9ee910c4fdf21d3)
+- [Backport comment suggestion line range fix to 18-2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7860283def2e88f5681f56f24ab38cb7b66231b8)
+- [Fix the rendering when content is empty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/de5a8fc41a8f6ee71ed9409c9b0cee9a704ae3da) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202049))
+- [Merge branch 'tchu-fix-forbidden-causing-save-errors-in-search-admin' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c1b259f987bda2512aa5b4e97df5f13e36f06bfd) **GitLab Enterprise Edition**
+
+### Security (11 changes)
+
+- [Increase JSON validation limits on NPM endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7a4ae3929eea14e5481fb24c416cf4864c913ee5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5362))
+- [Addresses logical bug in the GraphQL base resolver](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0f469c9fb95b0a1260f5912d87423a31969d68f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5274))
+- [Escape text for wrapNodes utility](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24495b1b30347a4af4303c8462266dac22d7b10f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5308))
+- [Add the rate limit in BlobSearch GraphQL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24938714fe99ac5e3f47b2c5a7d35c36c669f88c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5220))
+- [Fix Identical Project Names via Move Issue Drop Down leads to Confusion](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ddf20d20cd34ea110afe42baedac79faa48b5055) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5259))
+- [Prevent role assignment for custom roles in projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/afb3d9e6f0ff2e021ee0a31412e764e81c90c8f2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5339))
+- [Only owners can invite groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1587f713029284cfb3686ca15de1a25614951649) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5233))
+- [Add limit to array fields in WorkItems API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/36a94015745c91d2c8da6a76a5f95dac8e28f155) by @afrnz ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5246))
+- [Limit String => Integer conversions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bb7fe2763aa998310f4038845ad925f2f9b0efd8) by @afrnz ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5218))
+- [Removes password field from maven upstream GraphQL type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a2992dc98f2b61be6fda906b70d55d8fd44ced9a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5316))
+- [Add JSON input streaming validator middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bfb5c0c774a13ea24075d55e9ae941f29fa994de) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5351))
 
 ## 18.2.6 (2025-09-09)
 

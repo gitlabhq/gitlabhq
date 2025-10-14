@@ -85,7 +85,7 @@ workflows across teams.
 To create a workflow label:
 
 1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group.
-1. Select **Manage > Labels**.
+1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the label name.
 1. Optional. Select a background color or enter a hex color value.
@@ -109,7 +109,7 @@ Create your board in the group so you can manage issues from any project in the 
 To create a group issue board:
 
 1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group.
-1. Select **Plan > Issue boards**.
+1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. Complete the fields:

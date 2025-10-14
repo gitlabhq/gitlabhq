@@ -1,5 +1,11 @@
 <script>
-import { GlBadge, GlButton, GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import GitlabVersionCheckBadge from 'jh_else_ce/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
@@ -14,6 +20,9 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GitlabVersionCheckBadge,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin({ property: 'nav_help_menu' })],
   i18n: {
@@ -236,7 +245,8 @@ export default {
   <div class="gl-flex gl-flex-col gl-gap-2">
     <gl-button
       v-if="showWhatsNewNotification"
-      class="super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem]"
+      v-gl-tooltip.right="isIconOnly ? $options.i18n.whatsnew : ''"
+      class="super-sidebar-whats-new super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem]"
       category="tertiary"
       icon="compass"
       data-testid="sidebar-whatsnew-button"
@@ -273,6 +283,7 @@ export default {
     >
       <template #toggle>
         <gl-button
+          v-gl-tooltip.right="isIconOnly ? $options.i18n.help : ''"
           category="tertiary"
           icon="question-o"
           class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem] !gl-py-2 gl-font-semibold"

@@ -49,7 +49,7 @@ export default {
         <gl-icon :name="iconName" :size="24" />
       </span>
 
-      <div class="gl-flex gl-grow gl-flex-col md:gl-flex-row">
+      <div class="gl-flex gl-grow gl-flex-col @md/panel:gl-flex-row">
         <slot name="header"></slot>
 
         <div>

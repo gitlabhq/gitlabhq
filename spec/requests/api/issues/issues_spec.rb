@@ -136,17 +136,17 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /issues' do
+    it_behaves_like 'issuable API rate-limited search' do
+      let(:url) { '/issues' }
+      let(:issuable) { issue }
+    end
+
     context 'when unauthenticated' do
       it 'returns an array of all issues', :aggregate_failures do
         get api('/issues'), params: { scope: 'all' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
-      end
-
-      it_behaves_like 'issuable API rate-limited search' do
-        let(:url) { '/issues' }
-        let(:issuable) { issue }
       end
 
       it 'returns authentication error without any scope' do

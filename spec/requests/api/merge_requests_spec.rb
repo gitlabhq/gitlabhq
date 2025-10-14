@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require 'labkit/rspec/matchers'
 
 RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management do
   include ProjectForksHelper
@@ -43,6 +44,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   shared_examples 'merge requests list' do
+    it_behaves_like 'issuable API rate-limited search' do
+      let(:url) { endpoint_path }
+      let(:issuable) { merge_request }
+    end
+
     context 'when unauthenticated' do
       it 'returns merge requests for public projects' do
         get api(endpoint_path)
@@ -70,11 +76,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             expect(merge_request.reload.merge_status).to eq('unchecked')
           end
         end
-      end
-
-      it_behaves_like 'issuable API rate-limited search' do
-        let(:url) { endpoint_path }
-        let(:issuable) { merge_request }
       end
     end
 
@@ -742,19 +743,19 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe 'GET /merge_requests' do
     include_context 'with merge requests'
 
+    it_behaves_like 'issuable API rate-limited search' do
+      let(:url) { '/merge_requests' }
+      let(:issuable) { merge_request }
+    end
+
     context 'when unauthenticated' do
       it 'returns an array of all merge requests' do
-        get api('/merge_requests', user), params: { scope: 'all' }
+        get api('/merge_requests'), params: { scope: 'all' }
 
         expect_response_contain_exactly(
           merge_request_merged.id, merge_request_locked.id,
           merge_request_closed.id, merge_request.id
         )
-      end
-
-      it_behaves_like 'issuable API rate-limited search' do
-        let(:url) { '/merge_requests' }
-        let(:issuable) { merge_request }
       end
 
       it "returns authentication error without any scope" do
@@ -2320,6 +2321,28 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(json_response['title']).to eq('Test merge request')
         expect(json_response['assignee']['name']).to eq(user2.name)
         expect(json_response['assignees'].first['name']).to eq(user2.name)
+      end
+
+      it 'starts covered experience' do
+        expect do
+          post api("/projects/#{project.id}/merge_requests", user), params: params
+        end.to start_covered_experience(:create_merge_request)
+      end
+
+      context 'when covered_experience_create_merge_request feature flag is disabled' do
+        before do
+          stub_feature_flags(covered_experience_create_merge_request: false)
+        end
+
+        it 'creates merge request without starting covered experience' do
+          mr_count = MergeRequest.count
+
+          expect do
+            post api("/projects/#{project.id}/merge_requests", user), params: params
+          end.not_to start_covered_experience(:create_merge_request)
+
+          expect(MergeRequest.count).to eq(mr_count + 1)
+        end
       end
 
       it 'creates a new merge request when assignee_id is empty' do

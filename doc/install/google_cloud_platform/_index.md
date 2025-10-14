@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Learn how to install a GitLab instance on Google Cloud Platform.
+description: Install a GitLab instance on a virtual machine in Google Cloud Platform.
 title: Installing GitLab on Google Cloud Platform
 ---
 
@@ -51,7 +51,7 @@ To deploy GitLab on GCP you must create a virtual machine:
 
    ![Configure your instance.](img/vm_details_v13_1.png)
 
-1. To select the size, type, and desired [operating system](../../administration/package_information/supported_os.md),
+1. To select the size, type, and desired [operating system](../../install/package/_index.md),
    select **Change** under `Boot disk`. select **Select** when finished.
 
 1. As a last step allow HTTP and HTTPS traffic, then select **Create**. The process finishes in a few seconds.

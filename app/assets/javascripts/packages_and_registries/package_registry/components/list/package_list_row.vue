@@ -15,7 +15,6 @@ import {
   ERRORED_PACKAGE_TEXT,
   ERROR_PUBLISHING,
   PACKAGE_ERROR_STATUS,
-  PACKAGE_DEFAULT_STATUS,
   PACKAGE_DEPRECATED_STATUS,
   PACKAGE_TYPE_CONAN,
   WARNING_TEXT,
@@ -95,9 +94,6 @@ export default {
     showDeprecatedBadge() {
       return this.packageEntity.status === PACKAGE_DEPRECATED_STATUS;
     },
-    nonDefaultRow() {
-      return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
-    },
     errorPackageStyle() {
       return {
         'gl-text-danger': this.errorStatusRow,
@@ -135,7 +131,7 @@ export default {
     </template>
     <template #left-primary>
       <div class="gl-mr-5 gl-flex gl-min-w-0 gl-items-center gl-gap-3" data-testid="package-name">
-        <div class="gl-gap-2 sm:gl-flex">
+        <div class="gl-gap-2 @sm/panel:gl-flex">
           <router-link
             v-if="containsWebPathLink"
             :class="errorPackageStyle"
@@ -150,7 +146,7 @@ export default {
           </span>
 
           <div v-if="isPackageTypeConan" data-testid="conan-metadata">
-            <span class="gl-hidden sm:gl-inline">&middot;</span>
+            <span class="gl-hidden @sm/panel:gl-inline">&middot;</span>
             <span class="gl-font-normal gl-text-subtle" data-testid="package-username">
               {{ packageEntity.metadata.packageUsername }}
             </span>
@@ -186,7 +182,7 @@ export default {
         data-testid="left-secondary-infos"
       >
         <gl-truncate
-          class="gl-max-w-15 md:gl-max-w-26"
+          class="gl-max-w-15 @md/panel:gl-max-w-26"
           :text="packageEntity.version"
           :with-tooltip="true"
         />

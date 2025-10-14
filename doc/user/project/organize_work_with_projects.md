@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Project visibility, search, badges, layout.
@@ -26,7 +26,6 @@ GitLab does not limit the number of private projects you can create.
 - [Project visibility](../public_access.md)
 - [Project settings](working_with_projects.md)
 - [Description templates](description_templates.md)
-- [Project access tokens](settings/project_access_tokens.md)
 - [Deploy keys](deploy_keys/_index.md)
 - [Deploy tokens](deploy_tokens/_index.md)
 - [Reserved project and group names](../reserved_names.md)

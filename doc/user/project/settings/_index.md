@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project settings
@@ -17,7 +17,7 @@ title: Project settings
 To configure features and permissions for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
 1. To turn features on or off in the project, use the feature toggles.
@@ -57,7 +57,7 @@ and accessible to project members, regardless of their role.
 To toggle the availability of individual features in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To change the availability of a feature, turn the toggle on or off.
 1. Select **Save changes**.
@@ -74,7 +74,7 @@ By default, project analytics are displayed under the **Analyze** item in the le
 To turn this feature off and remove the **Analyze** item from the left sidebar:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn off the **Analytics** toggle.
 1. Select **Save changes**.
@@ -99,7 +99,7 @@ In some environments, users can submit a [CVE identifier request](../../applicat
 To turn off the CVE identifier request option in issues in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
 1. Select **Save changes**.
@@ -111,7 +111,7 @@ Prerequisites:
 - You must have the Owner role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear the **Enable email notifications** checkbox.
 
@@ -137,7 +137,7 @@ Prerequisites:
 To turn off diff previews for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear **Include diff previews**.
 1. Select **Save changes**.
@@ -168,7 +168,7 @@ In merge requests, you can change the default behavior so that the
 To set this default:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
 
@@ -176,8 +176,7 @@ To set this default:
 
 {{< history >}}
 
-- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `extended_expiry_webhook_execution_setting`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/513684) in GitLab 17.10.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499732) 60- and 30-day triggers to project and group access token webhooks in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `extended_expiry_webhook_execution_setting`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513684) in GitLab 17.10. Feature flag `extended_expiry_webhook_execution_setting` removed.
 
 {{< /history >}}
@@ -193,7 +192,7 @@ GitLab sends multiple [expiry emails](project_access_tokens.md#project-access-to
 To enable additional triggers for these webhooks:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Select the **Extended Group Access Tokens Expiry Webhook execution** checkbox.
 1. Select **Save changes**.

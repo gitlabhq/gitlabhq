@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
@@ -23,7 +23,7 @@ questions when creating a group.
 To toggle the display of customer experience improvement content and third-party offers:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Customer experience improvement and third-party offers**.
 1. Select **Do not display content for customer experience improvement and offers from third parties**.
 1. Select **Save changes**.

@@ -12,7 +12,7 @@
   }
 
   .home-panel-description {
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       font-size: $gl-font-size-large;
     }
   }
@@ -20,7 +20,7 @@
 
 .project-repo-buttons {
   .download-button {
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       margin-left: 0;
     }
   }
@@ -77,7 +77,7 @@
       }
     }
 
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       flex-direction: column;
 
       .nav {
@@ -98,7 +98,7 @@
         vertical-align: top;
         margin-top: 0;
 
-        @include media-breakpoint-up(lg) {
+        @include gl-container-width-up(lg, panel) {
           float: right;
         }
       }
@@ -144,7 +144,7 @@
 }
 
 .project-page-indicator:not(.hidden) + .project-page-layout {
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     display: grid;
     grid-template-columns: auto $right-sidebar-width;
     gap: 2rem;

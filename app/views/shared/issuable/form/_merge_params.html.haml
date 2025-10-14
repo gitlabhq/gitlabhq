@@ -12,7 +12,7 @@
 - return if !merge_request.is_a?(MergeRequest) || merge_request.closed_or_merged_without_fork?
 
 .form-group.row.gl-mb-7
-  .col-12
+  .gl-col-12
     %label
       = _('Merge options')
     - if merge_request.can_remove_source_branch?(current_user)

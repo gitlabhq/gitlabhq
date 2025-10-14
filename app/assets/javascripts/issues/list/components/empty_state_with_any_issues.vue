@@ -2,7 +2,7 @@
 import epicEmptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-epic-md.svg';
 import issuesEmptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-issues-md.svg';
 import { GlButton, GlEmptyState } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export default {
   components: {
@@ -36,10 +36,17 @@ export default {
   },
   computed: {
     closedTabTitle() {
-      return this.isEpic ? __('There are no closed epics') : __('There are no closed issues');
+      return this.isEpic ? __('There are no closed epics') : s__('Issues|No closed issues');
     },
     openTabTitle() {
-      return this.isEpic ? __('There are no open epics') : __('There are no open issues');
+      return this.isEpic ? __('There are no open epics') : s__('Issues|No open issues');
+    },
+    noIssueDescription() {
+      return this.isEpic
+        ? ''
+        : s__(
+            'Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+          );
     },
     svgPath() {
       return this.isEpic ? epicEmptyStateSvg : issuesEmptyStateSvg;
@@ -59,7 +66,7 @@ export default {
     <template #actions>
       <slot name="new-issue-button">
         <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-          {{ __('New issue') }}
+          {{ __('Create issue') }}
         </gl-button>
       </slot>
     </template>
@@ -68,13 +75,14 @@ export default {
   <gl-empty-state
     v-else-if="isOpenTab"
     :title="openTabTitle"
+    :description="noIssueDescription"
     :svg-path="svgPath"
     data-testid="issuable-empty-state"
   >
     <template #actions>
       <slot name="new-issue-button">
         <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-          {{ __('New issue') }}
+          {{ __('Create issue') }}
         </gl-button>
       </slot>
     </template>

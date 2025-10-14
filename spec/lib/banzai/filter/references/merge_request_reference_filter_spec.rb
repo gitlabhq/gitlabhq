@@ -332,4 +332,70 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
       expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control)
     end
   end
+
+  describe '#find_commit_by_sha' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let(:filter) { described_class.new('', project: project) }
+    let(:commit_sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+    context 'with feature flag enabled' do
+      it 'preloads all commits metadata' do
+        expect(filter).to receive(:preloaded_all_commits).with(merge_request).and_call_original
+
+        filter.send(:find_commit_by_sha, merge_request, commit_sha)
+      end
+
+      it 'caches preloaded commits per merge request' do
+        expect(filter).to receive(:preloaded_all_commits).once.and_call_original
+
+        filter.send(:find_commit_by_sha, merge_request, commit_sha)
+        filter.send(:find_commit_by_sha, merge_request, 'another_sha')
+      end
+
+      it 'finds the correct commit by sha' do
+        commit = filter.send(:find_commit_by_sha, merge_request, commit_sha)
+
+        expect(commit).not_to be_nil
+        expect(commit.sha).to eq(commit_sha)
+      end
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it 'does not preload commits metadata' do
+        expect(filter).not_to receive(:preloaded_all_commits)
+        expect(merge_request).to receive(:all_commits).and_call_original
+
+        filter.send(:find_commit_by_sha, merge_request, commit_sha)
+      end
+    end
+  end
+
+  describe '#preloaded_all_commits' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let(:filter) { described_class.new('', project: project) }
+
+    it 'preloads commit metadata associations' do
+      commits = merge_request.all_commits
+
+      result = filter.send(:preloaded_all_commits, merge_request)
+      expect(result).to eq(commits)
+
+      if result.any?
+        expect { result.first.commit_author }.not_to raise_error
+        expect { result.first.committer }.not_to raise_error
+      end
+    end
+
+    it 'returns all commits' do
+      commits = filter.send(:preloaded_all_commits, merge_request)
+
+      expect(commits).to eq(merge_request.all_commits)
+    end
+  end
 end

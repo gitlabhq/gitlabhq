@@ -36,7 +36,7 @@ RSpec.describe WebIdeTerminal do
     end
 
     before do
-      allow(build).to receive(:options).and_return(config)
+      stub_ci_job_definition(build, options: config)
     end
 
     context 'when image does not have an alias' do

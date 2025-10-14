@@ -13,12 +13,6 @@ module Resolvers
         required: false,
         description: 'Reviewer states for the merge requests the current user is a reviewer of.'
 
-      def resolve(**args)
-        return unless current_user.merge_request_dashboard_enabled?
-
-        super(**args)
-      end
-
       def user_role
         :assigned_user
       end

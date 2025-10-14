@@ -172,6 +172,12 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
   end
 
   describe '#client' do
+    let(:mock_service_class) { class_double(Class) }
+    let(:mock_service) { instance_double(Class, new: instance_double(Object)) }
+    let(:timeout) { 0.5 }
+
+    let(:base_service) { described_class.new(timeout: timeout) }
+
     before do
       stub_config(cell: {
         enabled: true,
@@ -180,15 +186,39 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
           tls: { enabled: false }
         }
       })
+
+      allow(base_service).to receive(:service_class).and_return(mock_service_class)
     end
 
     it 'includes MetadataInterceptor in client initialization' do
       expect(Gitlab::TopologyServiceClient::MetadataInterceptor).to receive(:new)
 
-      mock_service = instance_double(Class, new: instance_double(Object))
       allow(base_service).to receive(:service_class).and_return(mock_service)
 
       base_service.send(:client)
+    end
+
+    it 'includes timeout in client initialization' do
+      expect(mock_service_class).to receive(:new).with('test:50051', :this_channel_is_insecure,
+        hash_including(
+          interceptors: array_including(instance_of(Gitlab::TopologyServiceClient::MetadataInterceptor)),
+          timeout: timeout
+        )
+      ).and_return(mock_service)
+
+      base_service.send(:client)
+    end
+  end
+
+  describe '#options' do
+    before do
+      stub_config(cell: { enabled: true })
+    end
+
+    it 'returns a hash with timeout set to DEFAULT_TIMEOUT_IN_SECONDS from now' do
+      options = base_service.send(:options)
+
+      expect(options).to eq({ timeout: Gitlab::TopologyServiceClient::DEFAULT_TIMEOUT_IN_SECONDS })
     end
   end
 end

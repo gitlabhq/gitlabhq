@@ -9,9 +9,13 @@ module API
           @manager = manager
         end
 
-        def invoke(request, params)
+        def invoke(request, params, current_user = nil)
           tool = find_tool!(params[:name])
-          tool.execute(request, params)
+
+          # only custom_service needs the current_user injected
+          tool.set_cred(current_user: current_user) if tool.is_a? ::Mcp::Tools::CustomService
+
+          tool.execute(request: request, params: params)
         end
 
         private

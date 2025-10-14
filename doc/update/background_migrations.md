@@ -67,7 +67,7 @@ Prerequisites:
 To check the status of batched background migrations:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Background migrations**.
+1. Select **Monitoring** > **Background migrations**.
 1. Select **Queued** or **Finalizing** to see incomplete migrations,
    and **Failed** for failed migrations.
 
@@ -172,6 +172,7 @@ Use the following database queries to see the state of the current batched backg
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204173) in GitLab 18.4. Feature flag `optimize_batched_migrations` removed.
 
 {{< /history >}}
 
@@ -179,13 +180,6 @@ Use the following database queries to see the state of the current batched backg
 
 There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
 Refer to this feature's history for more details.
-
-{{< /alert >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 {{< /alert >}}
 
@@ -243,7 +237,7 @@ Prerequisites:
 - You must have administrator access to the instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Background migrations**.
+1. Select **Monitoring** > **Background migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
 1. Select the failed **Migration** to see the migration parameters and the jobs that failed.
 1. Under **Failed jobs**, select each **ID** to see why the job failed.
@@ -258,7 +252,7 @@ Prerequisites:
 - You must have administrator access to the instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Background migrations**.
+1. Select **Monitoring** > **Background migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
 1. Select a failed batched background migration to retry by clicking on the retry button ({{< icon name="retry" >}}).
 
@@ -409,6 +403,59 @@ Gitlab::Database.database_base_models.each do |database_name, model|
 end
 ```
 
+## View batched background migration logs
+
+When troubleshooting batched background migrations, you can view detailed execution logs in multiple locations.
+
+### Sidekiq logs
+
+The [Sidekiq logs](../administration/logs/_index.md#sidekiq-logs) show when the `Database::BatchedBackgroundMigrationWorker` jobs are executed. These logs show job execution but do not identify which specific migration is running.
+
+### Application logs
+
+To identify which batched background migration is running, check the [application logs](../administration/logs/_index.md#application_jsonlog). The application logs contain detailed information including:
+
+- The class name of the specific batched background migration (`job_class_name`)
+- State transitions (pending, running, and succeeded or failed)
+
+### Trace a migration execution
+
+To trace a specific batched background migration:
+
+1. Find `correlation_id` in the Sidekiq log entry for `Database::BatchedBackgroundMigrationWorker`.
+1. Search the application logs with that `correlation_id` to see detailed state transitions.
+
+Example application log entry:
+
+```json
+{
+  "severity": "INFO",
+  "time": "2025-08-27T22:52:07.806Z",
+  "meta.caller_id": "Database::BatchedBackgroundMigration::MainExecutionWorker",
+  "correlation_id": "74d0295cbe4bb6147230a7d481fb0f8a",
+  "message": "BatchedJob transition",
+  "batched_job_id": 725,
+  "previous_state": "pending",
+  "new_state": "running",
+  "batched_migration_id": 638,
+  "job_class_name": "BackfillSentNotificationsAfterPartition",
+  "job_arguments": []
+},
+{
+  "severity": "INFO",
+  "time": "2025-08-27T22:52:14.293Z",
+  "meta.caller_id": "Database::BatchedBackgroundMigration::MainExecutionWorker",
+  "correlation_id": "74d0295cbe4bb6147230a7d481fb0f8a",
+  "message": "BatchedJob transition",
+  "batched_job_id": 725,
+  "previous_state": "running",
+  "new_state": "succeeded",
+  "batched_migration_id": 638,
+  "job_class_name": "BackfillSentNotificationsAfterPartition",
+  "job_arguments": []
+}
+```
+
 ## Check for pending advanced search migrations
 
 {{< details >}}
@@ -446,9 +493,9 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 {{< /tabs >}}
 
 If you're on a long upgrade path and have many pending migrations, you might want to configure
-`Requeue indexing workers` and `Number of shards for non-code indexing` to speed up indexing.
+**Requeue indexing workers** and **Number of shards for non-code indexing** to speed up indexing.
 Another option is to ignore the pending migrations and [reindex the instance](../integration/advanced_search/elasticsearch.md#index-the-instance) after you upgrade GitLab to the target version.
-You can also disable advanced search during this process with the [`Search with Elasticsearch enabled`](../integration/advanced_search/elasticsearch.md#advanced-search-configuration) setting.
+You can also disable advanced search during this process with the [**Search with advanced search**](../integration/advanced_search/elasticsearch.md#advanced-search-configuration) setting.
 
 {{< alert type="warning" >}}
 

@@ -24,7 +24,7 @@
   #js-review-drawer{ data: review_bar_data(@merge_request, current_user) }
   #js-merge-sticky-header{ data: { data: sticky_header_data(@project, @merge_request).to_json } }
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
-    .merge-request-sticky-header-wrapper
+    .merge-request-sticky-header-wrapper.js-merge-request-sticky-header-wrapper
       .merge-request-sticky-header.gl-border-b
         = render "projects/merge_requests/mr_box"
         .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: "#{'is-merge-request' if !fluid_layout} #{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
@@ -82,6 +82,7 @@
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
+                archived: @project.self_or_ancestors_archived?.to_s,
                 report_abuse_path: add_category_abuse_reports_path,
                 new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json,
                 new_custom_emoji_path: new_custom_emoji_path(@project.group) } }

@@ -1,8 +1,4 @@
 ---
-abuse_report_assignees:
-  - table: users
-    column: user_id
-    on_delete: async_delete
 ai_conversation_messages:
   - table: ai_conversation_threads
     column: thread_id
@@ -42,6 +38,17 @@ approval_merge_request_rules:
   - table: approval_policy_rules
     column: approval_policy_rule_id
     on_delete: async_nullify
+background_operation_jobs:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+background_operation_workers:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 backup_finding_evidences:
   - table: projects
     column: project_id
@@ -83,6 +90,10 @@ backup_vulnerability_issue_links:
     column: project_id
     on_delete: async_delete
 backup_vulnerability_merge_request_links:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerability_reads:
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -599,6 +610,10 @@ p_ci_job_messages:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_pipeline_artifact_states:
+  - table: ci_pipeline_artifacts
+    column: pipeline_artifact_id
+    on_delete: async_delete
 p_ci_pipelines:
   - table: merge_requests
     column: merge_request_id
@@ -668,6 +683,10 @@ packages_package_file_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+packages_package_file_states:
+  - table: packages_package_files
+    column: package_file_id
+    on_delete: async_delete
 pages_deployments:
   - table: p_ci_builds
     column: ci_build_id
@@ -825,6 +844,12 @@ user_details:
   - table: namespaces
     column: enterprise_group_id
     on_delete: async_nullify
+virtual_registries_container_cache_entries:
+  - table: virtual_registries_container_upstreams
+    column: upstream_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
 virtual_registries_packages_maven_cache_entries:
   - table: virtual_registries_packages_maven_upstreams
     column: upstream_id
@@ -909,6 +934,10 @@ vulnerability_finding_evidences:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_finding_risk_scores:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_finding_signatures:
   - table: projects
     column: project_id
@@ -921,6 +950,9 @@ vulnerability_flags:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: duo_workflows_workflows
+    column: workflow_id
+    on_delete: async_nullify
 vulnerability_historical_statistics:
   - table: projects
     column: project_id

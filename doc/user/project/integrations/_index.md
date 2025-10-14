@@ -40,7 +40,7 @@ Prerequisites:
 To manage the group default settings for a project integration:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. Complete the fields.
 1. Select **Save changes**.
@@ -83,7 +83,7 @@ Prerequisites:
 To remove a group default setting:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
 
@@ -98,7 +98,7 @@ Prerequisites:
 To use instance or group default settings for a project integration:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use default settings**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.
@@ -115,7 +115,7 @@ Prerequisites:
 To use custom settings for a project or group integration:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use custom settings**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.

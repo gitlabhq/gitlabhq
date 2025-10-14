@@ -294,7 +294,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   end
 
   describe '#group_issues_list_data' do
-    let(:current_user) { double.as_null_object }
+    let(:current_user) { build(:user) }
 
     it 'returns expected result' do
       allow(helper).to receive(:current_user).and_return(current_user)

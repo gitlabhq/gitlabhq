@@ -178,7 +178,7 @@ export default {
   <section>
     <div class="gl-flex gl-py-4 gl-pl-5 gl-pr-4">
       <status-icon :status="statusIconName" :size="24" class="gl-self-center" />
-      <div class="gl-flex gl-flex-row gl-items-start">
+      <div class="gl-flex gl-flex-1 gl-flex-row gl-items-start">
         <div class="gl-grow gl-self-center" data-testid="report-code-text">
           <div class="gl-flex gl-items-center">
             <p class="gl-m-0 gl-leading-normal">{{ headerText }}</p>

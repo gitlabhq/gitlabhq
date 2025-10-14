@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Members of a project
@@ -132,7 +132,7 @@ Prerequisites:
 To add a user to a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. If the user:
 
@@ -178,7 +178,7 @@ If [administrator approval for role promotions](../../../administration/settings
 To view users pending promotion:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Role promotions** tab.
 
 If the **Role promotions** tab is not displayed, the project has no pending promotions.
@@ -217,7 +217,7 @@ If the importing member's role for the target project is:
 To import a project's members:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Import from a project**.
 1. Select the project. You can view only the projects for which you're a maintainer.
 1. Select **Import project members**.
@@ -243,7 +243,7 @@ Prerequisites:
 To remove a member from a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Next to the project member you want to remove, select **Remove member**.
 1. Optional. On the confirmation dialog, select the
    **Also unassign this user from related issues and merge requests** checkbox.
@@ -276,14 +276,14 @@ You can filter and sort members in a project.
 ### Display direct members
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press <kbd>Enter</kbd>.
 
 ### Display indirect members
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. In the **Filter members** box, select `Membership` `=` `Indirect`.
 1. Press <kbd>Enter</kbd>.
 
@@ -292,7 +292,7 @@ You can filter and sort members in a project.
 To search for a project member:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. In the search box, enter the member's name, username, or email.
 1. Press <kbd>Enter</kbd>.
 
@@ -310,7 +310,7 @@ You can sort members in ascending or descending order by:
 To sort members:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. At the top of the member list, from the dropdown list, select the item you want to sort by.
 
 ## Request access to a project
@@ -345,7 +345,7 @@ Prerequisites:
 - The project must be public.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Project visibility**, ensure the **Users can request access** checkbox is not selected.
 1. Select **Save changes**.

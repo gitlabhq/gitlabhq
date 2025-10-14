@@ -916,13 +916,13 @@ h4 {
 }
 
 .text-right-md {
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     text-align: right;
   }
 }
 
 .text-right-lg {
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     text-align: right;
   }
 }
@@ -987,4 +987,8 @@ wbr {
     font-size: 0.875em;
     pointer-events: none;
   }
+}
+
+.math-content-inline {
+  @apply gl-max-w-full gl-overflow-x-auto gl-inline-block;
 }

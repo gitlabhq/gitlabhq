@@ -133,8 +133,8 @@ func TestPreAuthorizeHandler_NotFound(t *testing.T) {
 
 func getGeoProxyDataGivenResponse(t *testing.T, givenInternalAPIResponse string) (*GeoProxyData, error) {
 	t.Helper()
-	ts := testRailsServer(regexp.MustCompile(`/api/v4/geo/proxy`), 200, givenInternalAPIResponse)
-	defer ts.Close()
+	ts := testRailsServer(t, regexp.MustCompile(`/api/v4/geo/proxy`), 200, givenInternalAPIResponse)
+
 	backend := helper.URLMustParse(ts.URL)
 	version := "123"
 	rt := roundtripper.NewTestBackendRoundTripper(backend)
@@ -147,8 +147,8 @@ func getGeoProxyDataGivenResponse(t *testing.T, givenInternalAPIResponse string)
 	return geoProxyData, err
 }
 
-func testRailsServer(url *regexp.Regexp, code int, body string) *httptest.Server {
-	return testhelper.TestServerWithHandlerWithGeoPolling(url, func(w http.ResponseWriter, r *http.Request) {
+func testRailsServer(t *testing.T, url *regexp.Regexp, code int, body string) *httptest.Server {
+	return testhelper.TestServerWithHandlerWithGeoPolling(t, url, func(w http.ResponseWriter, r *http.Request) {
 		// return a 204 No Content response if we don't receive the JWT header
 		if r.Header.Get(secret.RequestHeader) == "" {
 			w.WriteHeader(204)

@@ -1,0 +1,4 @@
+---
+name: delete_branch_rule
+description: Grants the ability to delete branch rules
+feature_category: source_code_management

@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting common Geo errors
@@ -24,7 +24,7 @@ Before attempting more advanced troubleshooting:
 On the **primary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 
 We perform the following health checks on each **secondary** site
 to help identify if something is wrong:
@@ -111,11 +111,11 @@ sudo gitlab-rake gitlab:geo:check NTP_HOST="ntp.ubuntu.com" NTP_TIMEOUT="30"
 
 The following environment variables are supported.
 
-| Variable    | Description | Default value |
-| ----------- | ----------- | ------------- |
-|`NTP_HOST`   | The NTP host. | `pool.ntp.org` |
-|`NTP_PORT`   | The NTP port the host listens on. |`ntp`|
-|`NTP_TIMEOUT`| The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
+| Variable      | Description | Default value |
+| ------------- | ----------- | ------------- |
+| `NTP_HOST`    | The NTP host. | `pool.ntp.org` |
+| `NTP_PORT`    | The NTP port the host listens on. | `ntp` |
+| `NTP_TIMEOUT` | The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
 
 If the Rake task skips the `OpenSSH configured to use AuthorizedKeysCommand` check, the
 following output displays:
@@ -299,7 +299,7 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary site in the **Admin** area under **Geo > Sites** on the web interface for the **primary** site.
+  Ensure you have added the secondary site in the **Admin** area under **Geo** > **Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
   when adding the secondary site in the **Admin** area of the **primary** site.
 
@@ -531,14 +531,14 @@ If these kinds of risks do not apply, for example in a test environment, or if y
 
    This command assumes that the affected secondary site is the one that was created last.
 
-1. Update the secondary site's status in **Admin > Geo > Sites**. In Rails console in the **secondary** site, run:
+1. Update the secondary site's status in **Admin** > **Geo** > **Sites**. In Rails console in the **secondary** site, run:
 
    ```ruby
    Geo::MetricsUpdateWorker.new.perform
    ```
 
 1. The secondary site should appear healthy. If it does not, run `gitlab-rake gitlab:geo:check` on the secondary site, or try restarting Rails if you haven't done so since re-adding the secondary site.
-1. To resync missing or out-of-date data, go to **Admin > Geo > Sites**.
+1. To resync missing or out-of-date data, go to **Admin** > **Geo** > **Sites**.
 1. Under the secondary site select **Replication Details**.
 1. Select **Reverify all** for every data type.
 
@@ -621,7 +621,7 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 In this case, make sure to update the changed URL on all your sites:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Change the URL and save the change.
 
 ### Message: `ERROR: canceling statement due to conflict with recovery` during backup
@@ -719,7 +719,7 @@ Gitlab::HTTP.get(primary.internal_uri, allow_local_requests: true, limit: 10)
 ```
 
 Make sure that the value of `internal_uri` is correct in the previous output.
-If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/gitlab.rb`, and in **Admin > Geo > Sites**.
+If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/gitlab.rb`, and in **Admin** > **Geo** > **Sites**.
 
 ### Excessive database IO from Geo metrics collection
 

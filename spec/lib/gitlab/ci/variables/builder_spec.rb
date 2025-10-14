@@ -224,22 +224,23 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
 
       it 'returns variables in order depending on resource hierarchy' do
-        expect(subject.to_runner_variables).to eq(
-          [var('A', 1), var('B', 1),
-           var('B', 2), var('C', 2),
-           var('C', 3), var('D', 3),
-           var('D', 4), var('E', 4),
-           var('E', 5), var('F', 5),
-           var('G', 7), var('H', 7),
-           var('H', 8), var('I', 8),
-           var('I', 9), var('J', 9),
-           var('J', 10), var('K', 10),
-           var('K', 11), var('L', 11),
-           var('L', 12), var('M', 12),
-           var('M', 13), var('N', 13),
-           var('N', 14), var('O', 14),
-           var('O', 15), var('P', 15),
-           var('P', 16), var('Q', 16)])
+        expect(subject.to_runner_variables).to eq([
+          var('A', 1), var('B', 1),
+          var('B', 2), var('C', 2),
+          var('C', 3), var('D', 3),
+          var('D', 4), var('E', 4),
+          var('E', 5), var('F', 5),
+          var('G', 7), var('H', 7),
+          var('H', 8), var('I', 8),
+          var('I', 9), var('J', 9),
+          var('J', 10), var('K', 10),
+          var('K', 11), var('L', 11),
+          var('L', 12), var('M', 12),
+          var('M', 13), var('N', 13),
+          var('N', 14), var('O', 14),
+          var('O', 15), var('P', 15),
+          var('P', 16), var('Q', 16)
+        ])
       end
 
       it 'overrides duplicate keys depending on resource hierarchy' do
@@ -569,19 +570,20 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
 
       it 'returns variables in order depending on resource hierarchy' do
-        expect(subject.to_runner_variables).to eq(
-          [var('A', 1), var('B', 1),
-           var('B', 2), var('C', 2),
-           var('C', 3), var('D', 3),
-           var('E', 5), var('F', 5),
-           var('G', 7), var('H', 7),
-           var('H', 8), var('I', 8),
-           var('J', 10), var('K', 10),
-           var('K', 11), var('L', 11),
-           var('L', 12), var('M', 12),
-           var('M', 13), var('N', 13),
-           var('N', 14), var('O', 14),
-           var('P', 15), var('Q', 15)])
+        expect(subject.to_runner_variables).to eq([
+          var('A', 1), var('B', 1),
+          var('B', 2), var('C', 2),
+          var('C', 3), var('D', 3),
+          var('E', 5), var('F', 5),
+          var('G', 7), var('H', 7),
+          var('H', 8), var('I', 8),
+          var('J', 10), var('K', 10),
+          var('K', 11), var('L', 11),
+          var('L', 12), var('M', 12),
+          var('M', 13), var('N', 13),
+          var('N', 14), var('O', 14),
+          var('P', 15), var('Q', 15)
+        ])
       end
 
       it 'overrides duplicate keys depending on resource hierarchy' do
@@ -1146,14 +1148,15 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
 
       it 'returns variables in order depending on resource hierarchy' do
-        expect(config_variables.to_runner_variables).to eq(
-          [var('A', 1), var('B', 1),
-           var('B', 2), var('C', 2),
-           var('C', 3), var('D', 3),
-           var('D', 4), var('E', 4),
-           var('E', 5), var('F', 5),
-           var('F', 6), var('G', 6),
-           var('G', 7), var('H', 7)])
+        expect(config_variables.to_runner_variables).to eq([
+          var('A', 1), var('B', 1),
+          var('B', 2), var('C', 2),
+          var('C', 3), var('D', 3),
+          var('D', 4), var('E', 4),
+          var('E', 5), var('F', 5),
+          var('F', 6), var('G', 6),
+          var('G', 7), var('H', 7)
+        ])
       end
 
       it 'overrides duplicate keys depending on resource hierarchy' do

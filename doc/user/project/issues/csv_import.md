@@ -16,7 +16,7 @@ description: "Import issues to a project by uploading a CSV file."
 {{< history >}}
 
 - Additionally [allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) for Planner role in GitLab 17.7.
-- Support for the `type` column [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4, [with a flag](../../../administration/feature_flags/_index.md) named `work_items_project_issues_list`. Enabled by default.
+- Support for the `type` column [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -53,7 +53,7 @@ To import issues:
 
 1. Go to your project's **Issues** page.
 1. Open the import feature, depending if the project has issues:
-   - The project has existing issues: in the upper-right corner, next to **Bulk edit**, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Import CSV**.
+   - The project has existing issues: in the upper-right corner, next to **Bulk edit**, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Import CSV**.
    - The project has no issues: in the middle of the page, select **Import CSV**.
 1. Select the file you want to import, and then select **Import issues**.
 

@@ -1,0 +1,7 @@
+<%= say_hi(@user) %>
+
+<%= _('A WebAuthn device has been registered to your GitLab account.') %>
+
+<%= _('- Device name: %{device_name}') % { device_name: sanitize_name(@device_name) } %>
+
+<%= manage_two_factor_authentication_text %>

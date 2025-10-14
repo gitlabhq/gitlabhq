@@ -39,8 +39,6 @@ class MergeRequest < ApplicationRecord
     updated_by_id_convert_to_bigint
   ], remove_with: '18.3', remove_after: '2025-07-17'
 
-  ignore_column :sprint_id, remove_with: '18.5', remove_after: '2025-09-18'
-
   extend ::Gitlab::Utils::Override
 
   sha_attribute :squash_commit_sha
@@ -390,6 +388,9 @@ class MergeRequest < ApplicationRecord
   scope :by_merged_or_merge_or_squash_commit_sha, ->(sha) do
     from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
   end
+  scope :by_generated_ref_commit_sha, ->(sha) do
+    joins(:generated_ref_commits).where(p_generated_ref_commits: { commit_sha: sha })
+  end
   scope :by_related_commit_sha, ->(sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
@@ -403,7 +404,8 @@ class MergeRequest < ApplicationRecord
         by_commit_sha(sha),
         by_squash_commit_sha(sha),
         by_merge_commit_sha(sha),
-        by_merged_commit_sha(sha)
+        by_merged_commit_sha(sha),
+        by_generated_ref_commit_sha(sha)
       ]
     )
   end
@@ -473,7 +475,21 @@ class MergeRequest < ApplicationRecord
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
   scope :preload_metrics, ->(relation) { preload(metrics: relation) }
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
-  scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: { merge_request_diff_commits: [:commit_author, :committer] }) }
+
+  scope :preload_latest_diff_commit, -> do
+    if Feature.enabled?(:merge_request_diff_commits_dedup)
+      preload(latest_merge_request_diff: {
+        merge_request_diff_commits: [{
+          merge_request_commits_metadata: [:commit_author, :committer]
+        }]
+      })
+    else
+      preload(latest_merge_request_diff: {
+        merge_request_diff_commits: [:commit_author, :committer]
+      })
+    end
+  end
+
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
 
   scope :with_web_entity_associations, -> do
@@ -849,8 +865,31 @@ class MergeRequest < ApplicationRecord
     Feature.enabled?(:unstick_locked_merge_requests_redis)
   end
 
+  def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil, preload_metadata: false)
+    if preload_metadata && Feature.enabled?(:merge_request_diff_commits_dedup, project) && !load_from_gitaly
+      preload_commits_metadata
+    end
+
+    commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page)
+  end
+
+  def preload_commits_metadata
+    return unless merge_request_diff.persisted?
+
+    ActiveRecord::Associations::Preloader.new(
+      records: merge_request_diff.merge_request_diff_commits,
+      associations: {
+        merge_request_commits_metadata: [:commit_author, :committer]
+      }
+    ).call
+  end
+
   def committers(with_merge_commits: false, lazy: false, include_author_when_signed: false)
     strong_memoize_with(:committers, with_merge_commits, lazy, include_author_when_signed) do
+      if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+        preload_commits_metadata
+      end
+
       commits.committers(
         with_merge_commits: with_merge_commits,
         lazy: lazy,
@@ -900,10 +939,6 @@ class MergeRequest < ApplicationRecord
                   end
 
     CommitCollection.new(source_project, commits_arr, source_branch)
-  end
-
-  def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil)
-    commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page)
   end
 
   def commits_count
@@ -1618,6 +1653,10 @@ class MergeRequest < ApplicationRecord
       .for_commit_id(commit_ids)
   end
 
+  def duo_code_review_progress_note
+    # Overridden in EE
+  end
+
   def mergeable_discussions_state?
     return true unless only_allow_merge_if_all_discussions_are_resolved?
 
@@ -2115,7 +2154,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
+    else
+      diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+    end
   end
 
   def compare_codequality_reports
@@ -2185,13 +2228,13 @@ class MergeRequest < ApplicationRecord
   def compare_sast_reports(current_user)
     return missing_report_error("SAST") unless has_sast_reports?
 
-    compare_reports(::Ci::CompareSecurityReportsService, current_user, 'sast')
+    compare_reports(::Vulnerabilities::CompareSecurityReportsService, current_user, 'sast')
   end
 
   def compare_secret_detection_reports(current_user)
     return missing_report_error("secret detection") unless has_secret_detection_reports?
 
-    compare_reports(::Ci::CompareSecurityReportsService, current_user, 'secret_detection')
+    compare_reports(::Vulnerabilities::CompareSecurityReportsService, current_user, 'secret_detection')
   end
 
   def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
@@ -2655,6 +2698,28 @@ class MergeRequest < ApplicationRecord
     return latest_merge_request_diff&.patch_id_sha if cannot_be_merged?
 
     merge_head_diff&.patch_id_sha
+  end
+
+  def commit_exists?(sha)
+    return all_commits.exists?(sha: sha) if Feature.disabled?(:merge_request_diff_commits_dedup, project)
+
+    # We query the SHA from `merge_request_commits_metadata` table first and
+    # fallback to querying them from `merge_request_diff_commits` if doesn't match
+    # anything. That is to check if commit exists but the records are old and there
+    # are no `merge_request_commits_metadata_id` set for them since they're not
+    # backfilled yet.
+    return true if MergeRequest::CommitsMetadata
+      .where(project: project, sha: sha)
+      .where_exists(
+        MergeRequestDiffCommit
+          .where('merge_request_diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id')
+          .where_exists(
+            merge_request_diffs.where('merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id')
+          )
+      )
+      .exists?
+
+    all_commits.exists?(sha: sha)
   end
 
   private

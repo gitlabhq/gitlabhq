@@ -62,6 +62,11 @@ export default {
       type: Number,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     workItem: {
@@ -365,6 +370,7 @@ export default {
           :children="children"
           :parent="workItem"
           :can-update="canUpdate"
+          :is-group="isGroup"
           :full-path="fullPath"
           :work-item-id="issuableGid"
           :show-labels="showLabels"

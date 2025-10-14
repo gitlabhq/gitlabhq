@@ -42,7 +42,13 @@ func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response)
 	offers := []string{"gzip", "identity"}
 	encoding := httputil.NegotiateContentEncoding(r, offers)
 
-	if err := handleGetInfoRefsWithGitaly(r.Context(), responseWriter, a, rpc, gitProtocol, encoding); err != nil {
+	// Extract correlation ID from X-Gitaly-Correlation-Id header and store in context
+	ctx := r.Context()
+	if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
+		ctx = context.WithValue(ctx, gitaly.GitalyCorrelationIDKey, correlationID)
+	}
+
+	if err := handleGetInfoRefsWithGitaly(ctx, responseWriter, a, rpc, gitProtocol, encoding); err != nil {
 		status := grpcstatus.Convert(err)
 		err = fmt.Errorf("handleGetInfoRefs: %v", err)
 

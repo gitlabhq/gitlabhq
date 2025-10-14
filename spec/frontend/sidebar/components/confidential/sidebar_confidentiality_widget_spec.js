@@ -80,7 +80,7 @@ describe('Sidebar Confidentiality Widget', () => {
 
     it('changes confidentiality to true after setConfidentiality is called', async () => {
       confidentialWidget.setConfidentiality();
-      await nextTick();
+      await waitForPromises();
       expect(findConfidentialityForm().props('confidential')).toBe(true);
       expect(findConfidentialityContent().props('confidential')).toBe(true);
     });
@@ -109,7 +109,7 @@ describe('Sidebar Confidentiality Widget', () => {
 
     it('changes confidentiality to false after setConfidentiality is called', async () => {
       confidentialWidget.setConfidentiality();
-      await nextTick();
+      await waitForPromises();
       expect(findConfidentialityForm().props('confidential')).toBe(false);
       expect(findConfidentialityContent().props('confidential')).toBe(false);
     });

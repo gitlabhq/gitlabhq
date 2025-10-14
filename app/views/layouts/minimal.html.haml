@@ -11,9 +11,9 @@
     = render 'layouts/published_experiments'
     = render "layouts/header/empty" unless content_for(:hide_empty_navbar).present?
     .layout-page.gl-h-full.borderless.gl-flex.gl-flex-wrap
-      .content-wrapper.gl-pt-6{ class: 'md:!gl-pt-11' }
+      .content-wrapper.gl-pt-6{ class: '@md/panel:!gl-pt-11' }
         %div{ class: container_class }
-          %main#content-body.content
+          %main#content-body.content{ class: "gl-@container/panel" }
             = render "layouts/flash" unless @hide_flash
             = yield
       = yield :footer

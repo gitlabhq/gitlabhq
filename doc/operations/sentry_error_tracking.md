@@ -37,7 +37,7 @@ To enable the Sentry integration:
    `event:write` (for resolving events).
 1. In GitLab, enable and configure Error Tracking:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Settings > Monitor**, then expand **Error Tracking**.
+   1. Select **Settings** > **Monitor**, then expand **Error Tracking**.
    1. For **Enable error tracking**, select **Active**.
    1. For **Error tracking backend**, select **Sentry**.
    1. For **Sentry API URL**, enter your Sentry hostname. For example,
@@ -50,7 +50,7 @@ To enable the Sentry integration:
    1. From the **Project** list, choose a Sentry project to link to your GitLab project.
    1. Select **Save changes**.
 
-To view a list of Sentry errors, on your project's sidebar, go to **Monitor > Error Tracking**.
+To view a list of Sentry errors, on your project's sidebar, go to **Monitor** > **Error Tracking**.
 
 ## Enable Sentry's integration with GitLab
 
@@ -77,7 +77,7 @@ On-premise Sentry integrations may encounter this issue when attempting to conne
 To fix this issue:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** and **Allow requests to the local network from system hooks** checkboxes.
 1. Select **Save changes**.

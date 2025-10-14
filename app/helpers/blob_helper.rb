@@ -351,7 +351,10 @@ module BlobHelper
       empty_repo: project.empty_repo?.to_s,
       blob_name: is_update ? blob.name : nil,
       branch_allows_collaboration: project.branch_allows_collaboration?(current_user, ref).to_s,
-      last_commit_sha: @last_commit_sha
+      last_commit_sha: @last_commit_sha,
+      project_id: project.id,
+      project_path: project.full_path,
+      new_merge_request_path: project_new_merge_request_path(project)
     }
   end
 

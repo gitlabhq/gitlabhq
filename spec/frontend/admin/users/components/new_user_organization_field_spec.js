@@ -40,9 +40,9 @@ describe('NewUserOrganizationField', () => {
     });
 
     it('renders avatar', () => {
-      expect(findAvatar().attributes()).toMatchObject({
-        'entity-id': defaultPropsData.initialOrganization.id.toString(),
-        'entity-name': defaultPropsData.initialOrganization.name,
+      expect(findAvatar().props()).toMatchObject({
+        entityId: defaultPropsData.initialOrganization.id,
+        entityName: defaultPropsData.initialOrganization.name,
         label: defaultPropsData.initialOrganization.name,
         shape: AVATAR_SHAPE_OPTION_RECT,
         src: defaultPropsData.initialOrganization.avatarUrl,

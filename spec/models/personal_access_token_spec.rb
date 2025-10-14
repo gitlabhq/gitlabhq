@@ -33,6 +33,96 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
+  describe 'before_save' do
+    context 'for set_user_type' do
+      let(:personal_access_token) { build(:personal_access_token) }
+
+      it 'sets user_type' do
+        personal_access_token.user_type = nil
+
+        personal_access_token.save!
+
+        expect(personal_access_token.user_type).to eq(personal_access_token.user.user_type)
+      end
+    end
+
+    context 'for set_group_id' do
+      context 'for project_bot user' do
+        let(:personal_access_token) { build(:personal_access_token, user: project_bot) }
+
+        context 'when resource access token within top-level group' do
+          let(:project_bot) { create(:user, :project_bot, bot_namespace: resource) }
+          let_it_be(:top_level_group) { create(:group) }
+          let_it_be(:subgroup) { create(:group, parent: top_level_group) }
+          let_it_be(:project) { create(:project, namespace: subgroup) }
+
+          context 'when resource is top-level group' do
+            let_it_be(:resource) { top_level_group }
+
+            it 'sets group_id to top-level group id' do
+              expect(personal_access_token.group_id).to be_nil
+
+              personal_access_token.save!
+
+              expect(personal_access_token.group_id).to eq(top_level_group.id)
+            end
+          end
+
+          context 'when resource is subgroup' do
+            let_it_be(:resource) { subgroup }
+
+            it 'sets group_id to top-level group id' do
+              expect(personal_access_token.group_id).to be_nil
+
+              personal_access_token.save!
+
+              expect(personal_access_token.group_id).to eq(top_level_group.id)
+            end
+          end
+
+          context 'when resource is project' do
+            let_it_be(:resource) { project.project_namespace }
+
+            it 'sets group_id to top-level group id' do
+              expect(personal_access_token.group_id).to be_nil
+
+              personal_access_token.save!
+
+              expect(personal_access_token.group_id).to eq(top_level_group.id)
+            end
+          end
+        end
+
+        context 'when resource access token within user namespace' do
+          let_it_be(:user_namespace) { create(:user, :with_namespace).namespace }
+          let_it_be(:project) { create(:project, namespace: user_namespace) }
+
+          let(:project_bot) { create(:user, :project_bot, bot_namespace: project.project_namespace) }
+
+          it 'does not set group_id' do
+            expect(personal_access_token.group_id).to be_nil
+
+            personal_access_token.save!
+
+            expect(personal_access_token.group_id).to be_nil
+          end
+        end
+
+        context 'for legacy project bot users without bot_namespace' do
+          let(:project_bot) { create(:user, :project_bot, bot_namespace: nil) }
+
+          it 'does not set group_id' do
+            expect(personal_access_token.group_id).to be_nil
+
+            personal_access_token.save!
+
+            expect(personal_access_token.group_id).to be_nil
+          end
+        end
+      end
+    end
+  end
+
   describe 'associations' do
     subject(:project_access_token) { create(:personal_access_token) }
 
@@ -85,6 +175,42 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         create_list(:personal_access_token, 3)
 
         expect(described_class.for_users([user_1, user_2])).to contain_exactly(token_of_user_1, token_of_user_2)
+      end
+    end
+
+    describe '.for_user_types' do
+      let_it_be(:human_user) { create(:user) }
+      let_it_be(:service_account_user) { create(:user, :service_account) }
+      let_it_be(:project_bot_user) { create(:user, :project_bot) }
+
+      let_it_be(:human_user_personal_access_token1) do
+        create(:personal_access_token, user: human_user)
+      end
+
+      let_it_be(:human_user_personal_access_token2) do
+        create(:personal_access_token, user: human_user)
+      end
+
+      let_it_be(:service_account_user_personal_access_token) do
+        create(:personal_access_token, user: service_account_user)
+      end
+
+      let_it_be(:project_bot_user_personal_access_token) do
+        create(:personal_access_token, user: project_bot_user)
+      end
+
+      it 'returns personal access tokens for the specified user types only', :aggregate_failures do
+        expect(described_class.for_user_types([:human, :service_account]))
+          .to contain_exactly(
+            human_user_personal_access_token1,
+            human_user_personal_access_token2,
+            service_account_user_personal_access_token
+          )
+
+        expect(described_class.for_user_types([:project_bot]))
+          .to contain_exactly(
+            project_bot_user_personal_access_token
+          )
       end
     end
 
@@ -216,6 +342,21 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         expect(described_class.for_organization(organization)).to contain_exactly(personal_access_token)
       end
     end
+
+    describe ".for_group" do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:personal_access_token1) { create(:personal_access_token, group: group) }
+      let_it_be(:personal_access_token2) { create(:personal_access_token) }
+      let_it_be(:personal_access_token3) { create(:personal_access_token, group: group) }
+      let_it_be(:personal_access_token4) { create(:personal_access_token, group: create(:group)) }
+
+      it "returns personal access tokens for the specified group only" do
+        expect(described_class.for_group(group)).to contain_exactly(
+          personal_access_token1,
+          personal_access_token3
+        )
+      end
+    end
   end
 
   describe 'PolicyActor methods' do
@@ -276,6 +417,19 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         expect(active_personal_access_token.updated_at).not_to eq(previous_updated_at)
 
         expect(active_personal_access_token.updated_at).to eq(timestamp_of_token_revocation)
+      end
+
+      context 'when already revoked' do
+        before do
+          travel_to(3.days.ago.change(usec: 0)) do
+            active_personal_access_token.revoke!
+          end
+        end
+
+        it 'is idempotent' do
+          expect(active_personal_access_token).to be_revoked
+          expect { active_personal_access_token.revoke! }.not_to change { active_personal_access_token.reload.updated_at }
+        end
       end
     end
 
@@ -683,7 +837,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
   describe '.simple_sorts' do
     it 'includes overridden keys' do
-      expect(described_class.simple_sorts.keys).to include(*%w[expires_asc expires_at_asc_id_desc expires_desc last_used_asc last_used_desc])
+      expect(described_class.simple_sorts.keys).to include(*%w[name_asc name_desc created_asc created_desc expires_asc expires_desc last_used_asc last_used_desc])
     end
 
     it 'returns a valid ActiveRecord::Relation for each sort' do
@@ -709,15 +863,57 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
+  describe 'ordering by name' do
+    let_it_be(:earlier_token) { create(:personal_access_token, name: 'Token A') }
+    let_it_be(:later_token) { create(:personal_access_token, name: 'Token B') }
+
+    describe '.order_name_asc_id_asc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, name: 'Token A') }
+
+      it 'returns ordered list in combination of name ascending and id ascending' do
+        expect(described_class.order_name_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
+      end
+    end
+
+    describe '.order_name_desc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, name: 'Token A') }
+
+      it 'returns ordered list in combination of name descending and id descending' do
+        expect(described_class.order_name_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
+      end
+    end
+  end
+
+  describe 'ordering by created_at' do
+    let_it_be(:earlier_token) { create(:personal_access_token, created_at: 2.days.ago) }
+    let_it_be(:later_token) { create(:personal_access_token, created_at: 1.day.ago) }
+
+    describe '.order_created_at_asc_id_asc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, created_at: 2.days.ago) }
+
+      it 'returns ordered list in combination of created_at ascending and id ascending' do
+        expect(described_class.order_created_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
+      end
+    end
+
+    describe '.order_created_at_desc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, created_at: 2.days.ago) }
+
+      it 'returns ordered list in combination of created_at descending and id descending' do
+        expect(described_class.order_created_at_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
+      end
+    end
+  end
+
   describe 'ordering by expires_at' do
     let_it_be(:earlier_token) { create(:personal_access_token, expires_at: 2.days.ago) }
     let_it_be(:later_token) { create(:personal_access_token, expires_at: 1.day.ago) }
 
-    describe '.order_expires_at_asc_id_desc' do
+    describe '.order_expires_at_asc_id_asc' do
       let_it_be(:earlier_token_2) { create(:personal_access_token, expires_at: 2.days.ago) }
 
-      it 'returns ordered list in combination of expires_at ascending and id descending' do
-        expect(described_class.order_expires_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
+      it 'returns ordered list in combination of expires_at ascending and id ascending' do
+        expect(described_class.order_expires_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
       end
     end
 
@@ -735,11 +931,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     let_it_be(:earlier_token) { create(:personal_access_token, last_used_at: two_days_ago) }
     let_it_be(:later_token) { create(:personal_access_token, last_used_at: 1.day.ago) }
 
-    describe '.order_last_used_at_asc_id_desc' do
+    describe '.order_last_used_at_asc_id_asc' do
       let_it_be(:earlier_token_2) { create(:personal_access_token, last_used_at: two_days_ago) }
 
-      it 'returns ordered list in combination of last_used_at ascending and id descending' do
-        expect(described_class.order_last_used_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
+      it 'returns ordered list in combination of last_used_at ascending and id ascending' do
+        expect(described_class.order_last_used_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
       end
     end
 

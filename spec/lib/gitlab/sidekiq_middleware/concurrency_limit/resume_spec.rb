@@ -118,7 +118,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Resume, :request_sto
 
     it 'enqueued jobs containing the correct payload' do
       TestNormalWorker.perform_async
-      queue_manager.resume_processing!(limit: 2)
+      queue_manager.resume_processing!
       TestNormalWorker.perform_async
 
       rw_jobs = TestResumedWorker.jobs

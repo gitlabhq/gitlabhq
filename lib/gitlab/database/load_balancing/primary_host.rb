@@ -41,7 +41,7 @@ module Gitlab
         end
 
         def connection
-          if Gem::Version.new(Rails.version) >= Gem::Version.new('7.2')
+          if Gitlab.next_rails?
             @load_balancer.pool.lease_connection
           else
             @load_balancer.pool.connection

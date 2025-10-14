@@ -10,18 +10,31 @@ module Gitlab
       module StepUpAuthBeforeRequestPhase
         class << self
           def call(env)
-            return if current_user_from(env).blank?
-            return if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user_from(env))
+            requested_scope = request_param_step_up_auth_scope_from(env).to_sym
+            current_user = current_user_from(env)
 
-            # If the step-up authentication scope is not included in the request params,
-            # then step-up authentication is likely not requested and we do not need to proceed.
-            return unless step_up_auth_requested_for_admin_mode?(env)
+            return if current_user.blank?
+            return if requested_scope.blank?
+
+            return if requested_scope_admin_mode?(requested_scope) &&
+              Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+
+            return if requested_scope_namespace?(requested_scope) &&
+              Feature.disabled?(:omniauth_step_up_auth_for_namespace, current_user)
 
             session = session_from(env)
             provider = current_provider_from(env)
-            step_up_auth_flow =
-              ::Gitlab::Auth::Oidc::StepUpAuthentication.build_flow(session: session, provider: provider)
 
+            step_up_auth_flow =
+              ::Gitlab::Auth::Oidc::StepUpAuthentication.build_flow(
+                session: session,
+                provider: provider,
+                scope: requested_scope
+              )
+
+            # TODO: Integrate the state uuid in the step-up auth session.
+            # Why? At the moment, there is a small security vulnerability
+            # where simultaneous authentication requests could lead to privilege escalation, https://gitlab.com/gitlab-org/gitlab/-/issues/555349.
             return unless step_up_auth_flow.enabled_by_config?
 
             # This method will set the state to 'requested' in the session
@@ -30,9 +43,12 @@ module Gitlab
 
           private
 
-          def step_up_auth_requested_for_admin_mode?(env)
-            request_param_step_up_auth_scope_from(env) ==
-              ::Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_ADMIN_MODE.to_s
+          def requested_scope_admin_mode?(scope)
+            scope == ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_ADMIN_MODE
+          end
+
+          def requested_scope_namespace?(scope)
+            scope == ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE
           end
 
           def current_user_from(env)

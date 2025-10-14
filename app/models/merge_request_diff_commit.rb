@@ -47,6 +47,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
     organization_id = project.organization_id
     dedup_enabled = Feature.enabled?(:merge_request_diff_commits_dedup, project)
+    partition_enabled = Feature.enabled?(:merge_request_diff_commits_partition, project)
     commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id)
     users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_triples)
 
@@ -78,14 +79,12 @@ class MergeRequestDiffCommit < ApplicationRecord
         trailers: Gitlab::Json.dump(trailers)
       )
 
-      # Need to add `raw_sha` and `raw_trailers` to commit_hash as we will use that when
-      # inserting the `sha` and `trailers` in `merge_request_commits_metadata` table. We
+      # Need to add `raw_sha` to commit_hash as we will use that when
+      # inserting the `sha` in `merge_request_commits_metadata` table. We
       # only need to do this when dedup is enabled.
-      if dedup_enabled
-        commit_hash[:raw_sha] = raw_sha
-        commit_hash[:raw_trailers] = trailers
-      end
+      commit_hash[:raw_sha] = raw_sha if dedup_enabled
 
+      commit_hash[:project_id] = project.id if partition_enabled
       commit_hash = commit_hash.merge(message: '') if skip_commit_data
 
       commit_hash
@@ -100,10 +99,9 @@ class MergeRequestDiffCommit < ApplicationRecord
       rows.each do |row|
         row[:merge_request_commits_metadata_id] = commits_metadata_mapping[row[:raw_sha]]
 
-        # At this point, we no longer need the `raw_sha` and `raw_trailer` so we delete them from
+        # At this point, we no longer need the `raw_sha` so we delete it from
         # the row that will be inserted into `merge_request_diff_commits` table.
         row.delete(:raw_sha)
-        row.delete(:raw_trailers)
       end
     end
 

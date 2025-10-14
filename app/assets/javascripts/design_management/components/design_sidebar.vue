@@ -7,7 +7,7 @@ import { s__, n__ } from '~/locale';
 import DesignDisclosure from '~/vue_shared/components/design_management/design_disclosure.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
-import { extractDiscussions, extractParticipants } from '../utils/design_management_utils';
+import { extractDiscussions } from '../utils/design_management_utils';
 import DesignDiscussion from './design_notes/design_discussion.vue';
 import DescriptionForm from './design_description/description_form.vue';
 import DesignNoteSignedOut from './design_notes/design_note_signed_out.vue';
@@ -54,10 +54,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    designVariables: {
-      type: Object,
-      required: true,
-    },
     isOpen: {
       type: Boolean,
       required: true,
@@ -73,15 +69,6 @@ export default {
   computed: {
     discussions() {
       return extractDiscussions(this.design.discussions);
-    },
-    issue() {
-      return {
-        ...this.design.issue,
-        webPath: this.design.issue?.webPath.substr(1),
-      };
-    },
-    discussionParticipants() {
-      return extractParticipants(this.issue.participants?.nodes || []);
     },
     resolvedDiscussions() {
       return this.discussions.filter((discussion) => discussion.resolved);
@@ -133,10 +120,6 @@ export default {
         },
       });
     },
-    closeCommentForm() {
-      this.comment = '';
-      this.$emit('closeCommentForm');
-    },
     updateDiscussionWithOpenForm(id) {
       this.discussionWithOpenForm = id;
     },
@@ -154,7 +137,6 @@ export default {
         <description-form
           v-if="showDescriptionForm"
           :design="design"
-          :design-variables="designVariables"
           :markdown-preview-path="markdownPreviewPath"
           class="gl-border-b gl-my-5"
         />

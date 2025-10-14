@@ -57,7 +57,6 @@ Rails/WhereRange:
     - 'ee/app/models/ee/project_authorization.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/gitlab_subscription.rb'
-    - 'ee/app/models/gitlab_subscriptions/add_on_purchase.rb'
     - 'ee/app/models/issuable_sla.rb'
     - 'ee/app/models/issuables_analytics.rb'
     - 'ee/app/models/iteration.rb'

@@ -4,7 +4,6 @@ query yourWorkGroups($active: Boolean, $search: String, $sort: String, $parentId
   groups(active: $active, search: $search, sort: $sort, parentId: $parentId, page: $page) @client {
     nodes {
       ...Group
-      editPath
       hasChildren
       children
       childrenCount

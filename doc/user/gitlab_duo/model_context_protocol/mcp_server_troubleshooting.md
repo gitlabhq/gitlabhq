@@ -16,15 +16,21 @@ title: Troubleshooting the GitLab MCP server
 
 {{< history >}}
 
-- Introduced in GitLab 18.3 [with two flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_generation`. Disabled by default.
+- Introduced in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-The availability of this feature is controlled by a feature flag.
+The availability of this feature is controlled by feature flags.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
+To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
 
 {{< /alert >}}
 
@@ -33,9 +39,9 @@ When working with GitLab MCP server, you might encounter issues.
 ## Troubleshoot the GitLab MCP Server in Cursor
 
 1. In Cursor, to open the Output view, do one of the following:
-   - Go to **View > Output**.
-   - In macOS, press <kbd>Cmd</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
-   - In Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
+   - Go to **View** > **Output**.
+   - In macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
+   - In Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
 1. In the Output view, select **MCP:SERVERNAME**. The name depends on the MCP configuration value. The example with `GitLab` results in `MCP: user-GitLab`.
 1. When reporting bugs, copy the output into the issue template logs section.
 

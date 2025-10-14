@@ -571,6 +571,10 @@ module QA
       def wait_for_gitlab_to_respond
         wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
           Capybara.page.has_no_text?(/GitLab is taking too much time to respond|Waiting for GitLab to boot/)
+        rescue Capybara::ElementNotFound
+          # In Chrome 138 we occasionally get `Unable to find xpath "/html"`
+          # https://github.com/teamcapybara/capybara/issues/2800
+          false
         end
       end
     end

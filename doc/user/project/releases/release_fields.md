@@ -253,7 +253,7 @@ they could either expire or someone might manually delete them.
 
 On [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/releases), you can view the number of new and total features in the project.
 
-![Feature count](img/feature_count_v14_6.png "Number of features in a release")
+![Badge showing the number of new and total features in a GitLab release.](img/feature_count_v14_6.png "Number of features in a release")
 
 The totals are displayed on [shields](https://shields.io/) and are generated per release by
 [a Rake task in the `www-gitlab-com` repository](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/lib/tasks/update_gitlab_project_releases_page.rake).

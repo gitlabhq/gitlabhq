@@ -14,10 +14,10 @@ module Gitlab
 
           ALLOWED_KEYS =
             %i[junit codequality sast secret_detection dependency_scanning container_scanning
-               dast performance browser_performance load_performance license_scanning metrics lsif
-               dotenv terraform accessibility
-               coverage_fuzzing api_fuzzing cluster_image_scanning
-               requirements requirements_v2 coverage_report cyclonedx annotations repository_xray].freeze
+              dast performance browser_performance load_performance license_scanning metrics lsif
+              dotenv terraform accessibility
+              coverage_fuzzing api_fuzzing cluster_image_scanning
+              requirements requirements_v2 coverage_report cyclonedx annotations repository_xray].freeze
 
           attributes ALLOWED_KEYS
 

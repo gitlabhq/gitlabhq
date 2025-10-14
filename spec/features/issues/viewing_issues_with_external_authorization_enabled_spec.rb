@@ -6,10 +6,6 @@ RSpec.describe 'viewing an issue with cross project references', :js, feature_ca
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Routing.url_helpers
 
-  # Ensure support bot user is created so creation doesn't count towards query limit
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-  let_it_be(:support_bot) { Users::Internal.support_bot }
-
   let_it_be(:user) { create(:user) }
   let_it_be(:other_project) do
     create(:project, :public, external_authorization_classification_label: 'other_label')

@@ -485,6 +485,7 @@ export const updateWorkItemMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: '2022-08-08T12:41:54Z',
         closedAt: null,
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -646,6 +647,7 @@ export const convertWorkItemMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: '2022-08-08T12:41:54Z',
         closedAt: null,
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -1781,13 +1783,14 @@ export const workItemResponseFactory = ({
   commentTemplatesPaths = null,
   hidden = false,
   imported = false,
+  archived = false,
 } = {}) => ({
   data: {
     workItem: {
       __typename: 'WorkItem',
       id,
       iid,
-      archived: false,
+      archived,
       hidden,
       imported,
       title: 'Updated _title_',
@@ -1804,6 +1807,7 @@ export const workItemResponseFactory = ({
       duplicatedToWorkItemUrl,
       promotedToEpicUrl,
       showPlanUpgradePromotion,
+      userDiscussionsCount: 0,
       project: {
         id: 'gid://gitlab/Project/7',
         __typename: 'Project',
@@ -2219,6 +2223,7 @@ export const createWorkItemMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -3547,6 +3552,7 @@ export const changeWorkItemParentMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: null,
         closedAt: null,
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -5419,8 +5425,8 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         internal: false,
                         imported: false,
                         systemNoteIconName: 'pencil',
-                        createdAt: '2023-05-10T05:21:08Z',
-                        lastEditedAt: '2023-05-10T05:21:08Z',
+                        createdAt: '2023-05-10T05:41:08Z',
+                        lastEditedAt: '2023-05-10T05:41:08Z',
                         url: 'https://gdk.test:3443/gnuwget/Wget2/-/work_items/79#note_1689',
                         lastEditedBy: null,
                         maxAccessLevelOfAuthor: 'Owner',
@@ -6407,6 +6413,78 @@ export const namespaceProjectsList = {
   },
 };
 
+export const searchUserProjectsResponse = {
+  data: {
+    projects: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Project/1',
+          name: 'Example project A',
+          nameWithNamespace: 'Group A / Example project A',
+          webUrl: 'https://gitlab.com/group-a/example-project-a',
+          fullPath: 'group-a/example-project-a',
+          __typename: 'Project',
+        },
+        {
+          id: 'gid://gitlab/Project/2',
+          name: 'Example project B',
+          nameWithNamespace: 'Group A / Example project B',
+          webUrl: 'https://gitlab.com/group-a/example-project-b',
+          fullPath: 'group-a/example-project-b',
+          __typename: 'Project',
+        },
+        {
+          id: 'gid://gitlab/Project/3',
+          name: 'Example project C',
+          nameWithNamespace: 'Group A / Example project C',
+          webUrl: 'https://gitlab.com/group-a/example-project-c',
+          fullPath: 'group-a/example-project-c',
+          __typename: 'Project',
+        },
+      ],
+      __typename: 'ProjectConnection',
+    },
+  },
+};
+
+export const searchOrganizationProjectsResponse = {
+  data: {
+    organization: {
+      id: 'gid://gitlab/Organizations::Organization/1',
+      projects: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Project/1',
+            name: 'Example project A',
+            nameWithNamespace: 'Group A / Example project A',
+            webUrl: 'https://gitlab.com/group-a/example-project-a',
+            fullPath: 'group-a/example-project-a',
+            __typename: 'Project',
+          },
+          {
+            id: 'gid://gitlab/Project/2',
+            name: 'Example project B',
+            nameWithNamespace: 'Group A / Example project B',
+            webUrl: 'https://gitlab.com/group-a/example-project-b',
+            fullPath: 'group-a/example-project-b',
+            __typename: 'Project',
+          },
+          {
+            id: 'gid://gitlab/Project/3',
+            name: 'Example project C',
+            nameWithNamespace: 'Group A / Example project C',
+            webUrl: 'https://gitlab.com/group-a/example-project-c',
+            fullPath: 'group-a/example-project-c',
+            __typename: 'Project',
+          },
+        ],
+        __typename: 'ProjectConnection',
+      },
+      __typename: 'Organization',
+    },
+  },
+};
+
 export const mockFrequentlyUsedProjects = [
   {
     id: 1,
@@ -6488,6 +6566,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
         reference: 'gitlab-org#56',
         createNoteEmail: null,
         project: null,
+        userDiscussionsCount: 0,
         namespace: {
           id: 'full-path-epic-id',
           fullPath: 'full-path',
@@ -7261,8 +7340,8 @@ export const mockCreateWorkItemDraftData = {
           __typename: 'WorkItemWidgetWeight',
           type: 'WEIGHT',
           weight: 5,
-          rolledUpWeight: 0,
-          rolledUpCompletedWeight: 0,
+          rolledUpWeight: null,
+          rolledUpCompletedWeight: null,
           widgetDefinition: { editable: false, rollUp: true },
         },
         {
@@ -7479,8 +7558,8 @@ export const restoredDraftDataWidgets = [
   {
     type: 'WEIGHT',
     weight: 5,
-    rolledUpWeight: 0,
-    rolledUpCompletedWeight: 0,
+    rolledUpWeight: null,
+    rolledUpCompletedWeight: null,
     widgetDefinition: { editable: false, rollUp: true },
     __typename: 'WorkItemWidgetWeight',
   },
@@ -7573,8 +7652,8 @@ export const restoredDraftDataWidgetsEmpty = [
   {
     type: 'WEIGHT',
     weight: null,
-    rolledUpWeight: 0,
-    rolledUpCompletedWeight: 0,
+    rolledUpWeight: null,
+    rolledUpCompletedWeight: null,
     widgetDefinition: {
       editable: false,
       rollUp: true,
@@ -7640,6 +7719,99 @@ export const restoredDraftDataWidgetsEmpty = [
     },
     totalTimeSpent: 0,
     __typename: 'WorkItemWidgetTimeTracking',
+  },
+];
+
+export const getAllStatusesQueryResponse = [
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+    category: 'to_do',
+    name: 'To do',
+    description: null,
+    iconName: 'status-waiting',
+    color: '#737278',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+    category: 'in_progress',
+    name: 'In progress',
+    description: null,
+    iconName: 'status-running',
+    color: '#1f75cb',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
+    category: 'done',
+    name: 'Done',
+    description: null,
+    iconName: 'status-success',
+    color: '#108548',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
+    category: 'canceled',
+    name: "Won't do",
+    description: null,
+    iconName: 'status-cancelled',
+    color: '#DD2B0E',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
+    category: 'canceled',
+    name: 'Duplicate',
+    description: null,
+    iconName: 'status-cancelled',
+    color: '#DD2B0E',
+    position: 10,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+    category: 'to_do',
+    name: 'To do',
+    description: null,
+    iconName: 'status-waiting',
+    color: '#737278',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/7',
+    category: 'in_progress',
+    name: 'In dev',
+    description: null,
+    iconName: 'status-running',
+    color: '#1f75cb',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/8',
+    category: 'in_progress',
+    name: 'In review',
+    description: null,
+    iconName: 'status-running',
+    color: '#1f75cb',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/9',
+    category: 'done',
+    name: 'Complete',
+    description: null,
+    iconName: 'status-success',
+    color: '#108548',
+    position: 0,
+    __typename: 'WorkItemStatus',
   },
 ];
 
@@ -9129,6 +9301,10 @@ export const namespacePathsQueryResponse = {
             '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=1',
           issues:
             '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+          issuesAlternative:
+            '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+          workItems:
+            '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
           mergeRequests:
             '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=1',
           labels:
@@ -9143,6 +9319,8 @@ export const namespacePathsQueryResponse = {
             '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
           wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
           epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
+          epicsAlternative:
+            '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
           iterations:
             '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
           vulnerabilities:

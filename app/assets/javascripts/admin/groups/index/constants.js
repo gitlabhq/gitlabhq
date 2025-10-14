@@ -12,7 +12,34 @@ import {
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
-import adminGroupsQuery from './graphql/queries/groups.query.graphql';
+import adminGroupsQuery from './graphql/queries/admin_groups.query.graphql';
+
+export const SORT_OPTION_NAME = {
+  value: 'name',
+  text: SORT_LABEL_NAME,
+};
+
+export const SORT_OPTION_CREATED = {
+  value: 'created_at',
+  text: SORT_LABEL_CREATED,
+};
+
+export const SORT_OPTION_UPDATED = {
+  value: 'updated_at',
+  text: SORT_LABEL_UPDATED,
+};
+
+export const SORT_OPTION_STORAGE_SIZE = {
+  value: 'storage_size_keyset',
+  text: SORT_LABEL_STORAGE_SIZE,
+};
+
+export const SORT_OPTIONS = [
+  SORT_OPTION_NAME,
+  SORT_OPTION_CREATED,
+  SORT_OPTION_UPDATED,
+  SORT_OPTION_STORAGE_SIZE,
+];
 
 const baseTab = {
   formatter: (groups) =>
@@ -35,6 +62,8 @@ const baseTab = {
   query: adminGroupsQuery,
   queryPath: 'groups',
   paginationType: PAGINATION_TYPE_KEYSET,
+  sortOptions: SORT_OPTIONS,
+  defaultSortOption: SORT_OPTION_UPDATED,
 };
 
 export const ACTIVE_TAB = {
@@ -65,33 +94,6 @@ export const INACTIVE_TAB = {
     description: s__('Groups|Groups that are archived or pending deletion will appear here.'),
   },
 };
-
-export const SORT_OPTION_NAME = {
-  value: 'name',
-  text: SORT_LABEL_NAME,
-};
-
-export const SORT_OPTION_CREATED = {
-  value: 'created_at',
-  text: SORT_LABEL_CREATED,
-};
-
-export const SORT_OPTION_UPDATED = {
-  value: 'updated_at',
-  text: SORT_LABEL_UPDATED,
-};
-
-export const SORT_OPTION_STORAGE_SIZE = {
-  value: 'storage_size_keyset',
-  text: SORT_LABEL_STORAGE_SIZE,
-};
-
-export const SORT_OPTIONS = [
-  SORT_OPTION_NAME,
-  SORT_OPTION_CREATED,
-  SORT_OPTION_UPDATED,
-  SORT_OPTION_STORAGE_SIZE,
-];
 
 export const ADMIN_GROUPS_TABS = [ACTIVE_TAB, INACTIVE_TAB];
 

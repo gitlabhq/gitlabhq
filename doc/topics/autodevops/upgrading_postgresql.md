@@ -129,7 +129,7 @@ being modified after the database dump is created.
      pg_dump -h production-postgres -U user production > /tmp/backup.sql
      ```
 
-1. Once the backup dump is complete, exit the Kubernetes exec process with `Control-D` or `exit`.
+1. Once the backup dump is complete, exit the Kubernetes exec process with <kbd>Control</kbd>-<kbd>D</kbd> or `exit`.
 
 1. Download the dump file with the following command:
 

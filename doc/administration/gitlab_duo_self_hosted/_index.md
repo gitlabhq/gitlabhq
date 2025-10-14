@@ -64,9 +64,9 @@ The following tables state:
 
 {{< alert type="note" >}}
 
-To use these features with GitLab Duo Self-Hosted, you must have the Duo Enterprise add-on. This applies regardless
-of whether you can use these features with Duo Core or Duo Pro when
-[GitLab hosts the models and connects to those models through the cloud-based AI gateway](../../user/gitlab_duo/gateway.md).
+You must have the GitLab Duo Enterprise add-on to use these features with GitLab Duo Self-Hosted.
+This applies even if you can use these features with GitLab Duo Core or GitLab Duo Pro
+when GitLab hosts and connects to those models through the cloud-based [AI gateway](../../user/gitlab_duo/gateway.md).
 
 {{< /alert >}}
 
@@ -145,7 +145,7 @@ While you deploy your own AI gateway, you can still use cloud-based LLM services
 
 If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you should use this fully self-hosted configuration.
 
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline Enterprise licenses are available for those customers with fully isolated offline environments. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md).
+For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline Enterprise licenses are available for those customers with fully isolated offline environments. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/billing_account.md).
 
 For more information, see:
 
@@ -190,7 +190,7 @@ When features are configured to use GitLab AI vendor models:
 
 {{< /alert >}}
 
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline licenses are not supported to use this configuration. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md).
+For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline licenses are not supported to use this configuration. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/billing_account.md).
 
 For more information, see:
 
@@ -214,9 +214,13 @@ When you configure a feature to use GitLab managed models:
 
 {{< /alert >}}
 
-For more information, see [Model selection](../../user/gitlab_duo/model_selection.md#on-gitlab-self-managed).
-
 ### GitLab.com AI gateway with default GitLab external vendor LLMs
+
+{{< details >}}
+
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+
+{{< /details >}}
 
 If you do not meet the use case criteria for GitLab Duo Self-Hosted, you can use the
 GitLab.com AI gateway with default GitLab external vendor LLMs.
@@ -231,8 +235,6 @@ integrates with external vendor LLM providers, including:
 
 These LLMs communicate through the GitLab Cloud Connector,
 offering a ready-to-use AI solution without the need for on-premise infrastructure.
-
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md)
 
 For more information, see the [GitLab.com AI gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 
@@ -250,7 +252,7 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
    - GitLab provides a matrix of supported models with their specific features and hardware requirements. For more information,
    see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
-1. Install the AI gateway to access AI-native GitLab Duo features.
+1. [Install the AI gateway](../../install/install_ai_gateway.md) to access AI-native GitLab Duo features.
 
 1. [Configure your GitLab instance](configure_duo_features.md) for features to access self-hosted models.
 

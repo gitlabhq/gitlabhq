@@ -33,10 +33,6 @@ en:
         api_url: "Sentry API URL"
       project/metrics_setting:
         external_dashboard_url: "External dashboard URL"
-      project/grafana_integration:
-        token: "Grafana HTTP API Token"
-        grafana_url: "Grafana API URL"
-        grafana_enabled: "Grafana integration enabled"
       service_desk_setting:
         project_key: "Project name suffix"
       system_access/group_microsoft_application:

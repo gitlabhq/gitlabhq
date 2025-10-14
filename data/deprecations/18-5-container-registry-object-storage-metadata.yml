@@ -1,0 +1,23 @@
+- title: "Container Registry legacy metadata storage"
+  announcement_milestone: "18.5"
+  removal_milestone: "21.0"
+  breaking_change: false
+  reporter: trizzi
+  stage: Package
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/571531
+  impact: medium
+  scope: instance
+  resolution_role: administrator
+  manual_task: true
+  body: |
+    The GitLab container registry's legacy metadata storage approach is deprecated in favor of the container registry metadata database.
+
+    GitLab.com already uses the metadata database. This deprecation affects GitLab Self-Managed instances currently using the legacy container registry that stores metadata information directly in the storage backend (whether object storage or a local filesystem).
+
+    The legacy metadata storage method will remain supported in maintenance mode, but will not receive new features or improvements. We strongly recommend migrating to the container registry metadata database at your earliest convenience.
+
+    This change only affects how the container registry stores metadata about your images and tags. Your choice of storage backend (object storage or filesystem) remains the same. You can continue using [object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage) or filesystem storage with the metadata database.
+
+    To migrate from legacy metadata storage to the metadata database, follow the [container registry metadata database migration guide](https://docs.gitlab.com/administration/packages/container_registry_metadata_database/). The migration process involves enabling the metadata database feature and running the import tool to transfer your existing registry data.
+
+    The metadata database provides better performance, reliability, and enables new container registry features that are not available with the legacy metadata storage approach.

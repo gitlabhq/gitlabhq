@@ -63,6 +63,11 @@ export default {
       required: false,
       default: undefined,
     },
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   methods: {
     handleClick(event) {
@@ -84,11 +89,13 @@ export default {
       :class="wrapperComponentClass"
       :href="!isLink ? href : null"
       :data-testid="anchorId"
+      :aria-label="ariaLabel"
     >
       <!-- icon  -->
       <slot name="icon">
         <gl-icon
           v-if="iconName"
+          variant="subtle"
           :class="iconClass"
           :name="iconName"
           :data-testid="`${anchorId}-icon`"

@@ -2,7 +2,7 @@
 
 ## Creating a migration
 
-Migrations are similiar to database migrations: they create collections, update schemas, run backfills, etc.
+Migrations are similar to database migrations: they create collections, update schemas, run backfills, etc.
 
 See [migrations](migrations.md) for more details.
 
@@ -46,7 +46,7 @@ To create a new queue:
     end
     ```
 
-2. Make sure the queue is registered by adding it to the `queue_classes` configuration.
+1. Make sure the queue is registered by adding it to the `queue_classes` configuration.
 
     ```ruby
     ActiveContext.configure do |config|
@@ -85,15 +85,18 @@ Instance methods required:
 - `identifier`: unique identifier
 
 Optional methods:
+
 - `unique_identifiers`: array of identifiers to build a unique identifier for every document. For example, `[identifier, branch_name]`. Defaults to `[identifier]`
 
 ### Preprocessors
 
-Existing preprocessors are
+Existing preprocessors are:
 
 1. `Preload`: preloads from the database to prevent N+1 queries
-1. `Chunking`: splits content into chunks and assigns them to `ref.documents`
+1. `ContentFetcher`: fetches content from existing documents in the vector store
 1. `Embeddings`: generates embeddings for every document in bulk
+
+These preprocessors rely on the document with content already stored in the vector store. If you need ActiveContext to handle the initial storage of documents in the vector store, you'll need to add a new preprocessor for that.
 
 #### Preload
 
@@ -105,22 +108,17 @@ add_preprocessor :preload do |refs|
 end
 ```
 
-#### Chunking
+#### ContentFetcher
 
-Requires passing `chunker` instance, `chunk_on` method to define the content to chunk on and the `field` to assign the content to.
+Fetches content from existing documents in the vector store using a query.
 
 ```ruby
-add_preprocessor :chunking do |refs|
-  chunker = Chunkers::BySize.new(chunk_size: 1000, overlap: 20)
-  chunk(refs: refs, chunker: chunker, chunk_on: :title_and_description, field: :content)
-end
+add_preprocessor :get_content do |refs|
+  identifiers = refs.map(&:identifier)
+  query = ActiveContext::Query.filter(id: identifiers).limit(identifiers.count)
 
-def title_and_description
-  "Title: #{database_record.title}\n\nDescription: #{database_record.description}"
+  fetch_content(refs: refs, query: query, collection: Collections::Code)
 end
-```
-
-Chunkers use the `::ActiveContext::Concerns::Chunker` concern and should define a `chunks` method. The only existing chunker is `BySize`.
 
 #### Embeddings
 
@@ -154,13 +152,13 @@ See [how to set initial embedding model](how_to.md#set-embedding-model) and [how
 
 Creates or updates documents, handling cases where a single reference has less documents than before by performing a delete cleanup operation.
 
-The document content can be full or partial json.
+The document content can be full or partial JSON.
 
 #### `update`
 
 Updates documents that already exist.
 
-The document content can be full or partial json.
+The document content can be full or partial JSON.
 
 #### `delete`
 
@@ -242,9 +240,8 @@ module Ai
   module Context
     module References
       class CodeEmbeddings < ::ActiveContext::Reference
-        add_preprocessor :chunk_full_file_by_size do |refs|
-          chunker = Chunkers::BySize.new
-          chunk(refs: refs, chunker: chunker, chunk_on: :blob_content)
+        add_preprocessor :embeddings do |refs|
+          apply_embeddings(refs: refs, content_method: :blob_content)
         end
 
         attr_accessor :project_id, :identifier, :repository, :blob
@@ -331,7 +328,7 @@ end
 
 Adding references to the queue can be done a few ways:
 
-The prefered method:
+The preferred method:
 
 ```ruby
 Ai::Context::Collections::MergeRequest.track!(MergeRequest.first)

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require Rails.root.join('spec/support/helpers/ci/job_factory_helpers')
+
 FactoryBot.define do
   factory :ci_processable, class: 'Ci::Processable' do
     name { 'processable' }
@@ -14,34 +16,15 @@ FactoryBot.define do
     # TODO: Remove metadata association when FF `stop_writing_builds_metadata` is removed.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
     metadata do
-      association(
-        :ci_build_metadata,
-        build: instance,
-        config_options: options,
-        config_variables: yaml_variables,
-        strategy: :build
-      )
-    end
-
-    job_definition do
-      association(
-        :ci_job_definition,
-        project: project,
-        partition_id: partition_id,
-        config: { options: options, yaml_variables: yaml_variables },
-        strategy: :build
-      )
-    end
-
-    job_definition_instance do
-      association(
-        :ci_job_definition_instance,
-        project: project,
-        partition_id: partition_id,
-        job: instance,
-        job_definition: job_definition,
-        strategy: :build
-      )
+      if Feature.disabled?(:stop_writing_builds_metadata, project)
+        association(
+          :ci_build_metadata,
+          build: instance,
+          config_options: options,
+          config_variables: yaml_variables,
+          strategy: :build
+        )
+      end
     end
 
     # This factory was updated to help with the efforts of the removal of `ci_builds.stage`:
@@ -53,6 +36,11 @@ FactoryBot.define do
       options { {} }
       yaml_variables { [] }
       stage { 'test' }
+    end
+
+    after(:stub, :build) do |processable, evaluator|
+      Ci::JobFactoryHelpers.mutate_temp_job_definition(
+        processable, options: evaluator.options, yaml_variables: evaluator.yaml_variables)
     end
 
     after(:build) do |processable, evaluator|
@@ -87,6 +75,10 @@ FactoryBot.define do
     end
 
     before(:create) do |processable, evaluator|
+      if processable.temp_job_definition
+        Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder.new(processable.pipeline, [processable]).run
+      end
+
       next if processable.ci_stage
 
       processable.ci_stage =
@@ -104,9 +96,18 @@ FactoryBot.define do
         end
     end
 
+    after(:create) do |processable, evaluator|
+      # job_definition_instance is assigned when we run JobDefinitionBuilder
+      next unless processable.job_definition_instance
+
+      processable.association(:job_definition).reload
+      processable.temp_job_definition = nil
+    end
+
     trait :without_job_definition do
-      job_definition { nil }
-      job_definition_instance { nil }
+      after(:build) do |processable, evaluator|
+        processable.temp_job_definition = nil
+      end
     end
 
     trait :waiting_for_resource do
@@ -123,13 +124,11 @@ FactoryBot.define do
 
     trait :interruptible do
       after(:build) do |processable|
-        processable.metadata.interruptible = true
+        if Feature.disabled?(:stop_writing_builds_metadata, processable.project)
+          processable.metadata.interruptible = true
+        end
 
-        next unless processable.job_definition
-
-        updated_config = processable.job_definition.config.merge(interruptible: true)
-        processable.job_definition.write_attribute(:config, updated_config)
-        processable.job_definition.write_attribute(:interruptible, true)
+        Ci::JobFactoryHelpers.mutate_temp_job_definition(processable, interruptible: true)
       end
     end
   end

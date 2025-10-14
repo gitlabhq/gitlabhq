@@ -22,6 +22,14 @@ module AppearancesHelper
     current_appearance&.title.presence || default_brand_title
   end
 
+  def custom_sign_in_brand_title
+    # no-op overridden in EE
+  end
+
+  def custom_sign_up_brand_title
+    # no-op overridden in EE
+  end
+
   def appearance_apple_touch_icon
     link_tags = favicon_link_tag('apple-touch-icon.png', rel: 'apple-touch-icon')
 

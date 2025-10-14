@@ -1828,24 +1828,10 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         end
 
         it 'checks for member owned pipeline_schedules' do
-          stub_feature_flags(notify_pipeline_schedule_owner_unavailable: true)
-
           expect(member).to receive(:notify_unavailable_owned_pipeline_schedules)
             .with(member.user.id, member.source)
 
           member.update_attribute(:access_level, Member::REPORTER)
-        end
-
-        context 'when feature flag disabled' do
-          before do
-            stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
-          end
-
-          it 'does not check for member owned pipeline_schedules when feature flag disabled' do
-            expect(member).not_to receive(:notify_unavailable_owned_pipeline_schedules)
-
-            member.update_attribute(:access_level, Member::REPORTER)
-          end
         end
       end
     end
@@ -2010,24 +1996,10 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     it 'checks for member owned pipeline_schedules' do
-      stub_feature_flags(notify_pipeline_schedule_owner_unavailable: true)
-
       expect(member).to receive(:notify_unavailable_owned_pipeline_schedules)
         .with(member.user.id, member.source)
 
       member.destroy!
-    end
-
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
-      end
-
-      it 'does not check for member owned pipeline_schedules when feature flag disabled' do
-        expect(member).not_to receive(:notify_unavailable_owned_pipeline_schedules)
-
-        member.destroy!
-      end
     end
   end
 

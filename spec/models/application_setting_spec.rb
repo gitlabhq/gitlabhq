@@ -24,6 +24,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         admin_mode: false,
         ai_action_api_rate_limit: 160,
         akismet_enabled: false,
+        allow_immediate_namespaces_deletion: true,
         allow_account_deletion: true,
         allow_bypass_placeholder_confirmation: false,
         allow_contribution_mapping_to_admins: false,
@@ -232,6 +233,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         root_moved_permanently_redirection: false,
         ropc_without_client_credentials: true,
         rsa_key_restriction: 0,
+        runner_jobs_request_api_limit: 2000,
+        runner_jobs_patch_trace_api_limit: 200,
+        runner_jobs_endpoints_api_limit: 200,
         search_rate_limit: 30,
         search_rate_limit_allowlist: [],
         search_rate_limit_unauthenticated: 10,
@@ -497,6 +501,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_values([true, false]).for(:pages_unique_domain_default_enabled) }
     it { is_expected.not_to allow_value(nil).for(:pages_unique_domain_default_enabled) }
 
+    it { is_expected.to allow_values([true, false]).for(:terraform_state_encryption_enabled) }
+
     context 'for validating the group_settings jsonb_column`s atrributes' do
       it { is_expected.to allow_values([true, false]).for(:top_level_group_creation_enabled) }
     end
@@ -539,6 +545,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           projects_api_limit
           projects_api_rate_limit_unauthenticated
           raw_blob_request_limit
+          runner_jobs_request_api_limit
+          runner_jobs_patch_trace_api_limit
+          runner_jobs_endpoints_api_limit
           search_rate_limit
           search_rate_limit_unauthenticated
           sidekiq_job_limiter_compression_threshold_bytes
@@ -1144,6 +1153,63 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
         it 'keeps existing key restrictions' do
           expect(setting.repository_storages_with_default_weight).to eq({ 'default' => 100, 'custom' => 0 })
+        end
+      end
+    end
+
+    describe '#allow_immediate_namespaces_deletion_for_user?' do
+      let(:user) { build_stubbed(:user) }
+      let(:admin) { build_stubbed(:admin) }
+
+      before do
+        stub_application_setting(admin_mode: false)
+      end
+
+      context 'with allow_immediate_namespaces_deletion disabled in database' do
+        before do
+          setting.update!(allow_immediate_namespaces_deletion: false)
+        end
+
+        it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(false) }
+
+        context 'when user is an admin' do
+          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
+        end
+
+        context 'when the :allow_immediate_namespaces_deletion feature flag is disabled' do
+          before do
+            stub_feature_flags(allow_immediate_namespaces_deletion: false)
+          end
+
+          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(true) }
+
+          context 'when user is an admin' do
+            it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
+          end
+        end
+      end
+
+      context 'with allow_immediate_namespaces_deletion enabled in database' do
+        before do
+          setting.update!(allow_immediate_namespaces_deletion: true)
+        end
+
+        it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(true) }
+
+        context 'when user is an admin' do
+          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
+        end
+
+        context 'when the :allow_immediate_namespaces_deletion feature flag is disabled' do
+          before do
+            stub_feature_flags(allow_immediate_namespaces_deletion: false)
+          end
+
+          it { expect(setting.allow_immediate_namespaces_deletion_for_user?(user)).to be(true) }
+
+          context 'when user is an admin' do
+            it { expect(setting.allow_immediate_namespaces_deletion_for_user?(admin)).to be(true) }
+          end
         end
       end
     end
@@ -1804,6 +1870,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         is_expected.not_to allow_value(
           { inactive_resource_access_tokens_delete_after_days: Gitlab::Database::MAX_INT_VALUE + 1 }
         ).for(:resource_access_tokens_settings)
+      end
+    end
+
+    describe 'for allow_immediate_namespaces_deletion' do
+      context 'when on Dedicated' do
+        before do
+          stub_application_setting(gitlab_dedicated_instance: true)
+        end
+
+        it { is_expected.to allow_value(false).for(:allow_immediate_namespaces_deletion) }
+        it { is_expected.not_to allow_value(true).for(:allow_immediate_namespaces_deletion) }
+      end
+
+      context 'when not on Dedicated' do
+        before do
+          stub_application_setting(gitlab_dedicated_instance: false)
+        end
+
+        it { is_expected.to allow_value(false).for(:allow_immediate_namespaces_deletion) }
+        it { is_expected.to allow_value(true).for(:allow_immediate_namespaces_deletion) }
       end
     end
   end

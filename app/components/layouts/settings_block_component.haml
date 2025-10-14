@@ -2,7 +2,7 @@
   - if callout?
     = callout
   .gl-flex.gl-justify-between.gl-items-start.gl-gap-x-3.gl-pt-5
-    .gl-shrink-0.gl-px-2.gl-py-0.-gl-mr-3.sm:gl-p-2.sm:gl-mr-0
+    .gl-shrink-0.gl-px-2.gl-py-0.-gl-mr-3{ class: "@sm/panel:gl-p-2 @sm/panel:gl-mr-0" }
       = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: @button_options.merge(class: 'btn-icon settings-toggle js-settings-toggle', 'aria-label': aria_label)) do
         .gl-sr-only = button_text
         = render Pajamas::AnimatedIconComponent.new(icon: :chevron_lg_right_down,
@@ -20,5 +20,5 @@
           .gl-text-subtle.gl-m-0
             = description || @description
   .settings-content
-    .gl-pl-7.sm:gl-pl-8.gl-mt-5
+    .gl-pl-7.gl-mt-5{ class: "@sm/panel:gl-pl-8" }
       = body

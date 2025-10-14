@@ -312,7 +312,11 @@ export default {
     </gl-alert>
 
     <div :class="newSubgroup && 'row gl-mb-3'">
-      <gl-form-group v-if="newSubgroup" class="col-sm-6 gl-pr-0" :label="inputLabels.subgroupPath">
+      <gl-form-group
+        v-if="newSubgroup"
+        class="gl-col-sm-6 gl-pr-0"
+        :label="inputLabels.subgroupPath"
+      >
         <div class="input-group gl-flex-nowrap">
           <gl-button-group class="gl-w-full">
             <gl-button class="js-group-namespace-button !gl-grow-0 gl-truncate" label>
@@ -356,13 +360,13 @@ export default {
           </gl-button-group>
 
           <div class="gl-self-center gl-pl-5">
-            <span class="gl-hidden md:gl-inline">/</span>
+            <span class="gl-hidden @md/panel:gl-inline">/</span>
           </div>
         </div>
       </gl-form-group>
 
       <gl-form-group
-        :class="newSubgroup && 'col-sm-6'"
+        :class="newSubgroup && 'gl-col-sm-6'"
         :label="inputLabels.path"
         :label-for="fields.path.id"
         :description="pathDescription"

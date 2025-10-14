@@ -26,6 +26,7 @@ import { createFileUrl, fileContentsId } from '~/diffs/components/diff_row_utils
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
+import diffsEventHub from '../event_hub';
 import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
 import { reviewable } from '../utils/file_reviews';
@@ -102,7 +103,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useLegacyDiffs, ['latestDiff', 'diffHasExpandedDiscussions', 'diffHasDiscussions']),
+    ...mapState(useLegacyDiffs, ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     ...mapState(useNotes, ['getNoteableData']),
     diffContentIDSelector() {
       return fileContentsId(this.diffFile);
@@ -280,6 +281,7 @@ export default {
         : sanitize(`${description} ${createHotkeyHtml(keys[0])}`);
     },
     handleToggleFile() {
+      diffsEventHub.$emit('setFileActive', this.diffFile.file_hash);
       this.setFileForcedOpen({
         filePath: this.diffFile.file_path,
         forced: false,

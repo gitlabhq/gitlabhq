@@ -36,6 +36,10 @@ svg {
   fill: currentColor;
 }
 
+svg:is([id*="-sm"], [id*="-md"], [id*="-lg"]) {
+  fill: none;
+}
+
 .square,
 svg {
   $svg-sizes: 8 10 12 14 16 18 24 32 48 72;
@@ -66,4 +70,8 @@ svg {
       filter: invert(1) brightness(2);
     }
   }
+}
+
+body.image-lightbox-open {
+  overflow: hidden;
 }

@@ -1,0 +1,22 @@
+query searchOrganizationProjectsWithIssuesEnabled(
+  $search: String
+  $organizationId: OrganizationsOrganizationID!
+) {
+  organization(id: $organizationId) {
+    id
+    projects(
+      search: $search
+      membership: true
+      withIssuesEnabled: true
+      sort: "latest_activity_desc"
+    ) {
+      nodes {
+        id
+        name
+        nameWithNamespace
+        webUrl
+        fullPath
+      }
+    }
+  }
+}

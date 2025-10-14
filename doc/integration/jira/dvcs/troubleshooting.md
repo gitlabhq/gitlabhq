@@ -103,7 +103,7 @@ For more information, see [issue 340160](https://gitlab.com/gitlab-org/gitlab/-/
 If Jira displays incorrect information, such as deleted branches, you may have to
 resynchronize the information:
 
-1. In Jira, select **Jira Administration > Applications > DVCS accounts**.
+1. In Jira, select **Jira Administration** > **Applications** > **DVCS accounts**.
 1. For the account (group or subgroup), select
    **Refresh repositories** from the {{< icon name="ellipsis_h" >}} (ellipsis) menu.
 1. For each project, next to the **Last activity** date:
@@ -128,7 +128,7 @@ In the previous example, the merge requests feature is disabled.
 To resolve the issue, enable the relevant feature:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggles to enable the features as needed.
 
@@ -137,7 +137,7 @@ To resolve the issue, enable the relevant feature:
 To find webhook logs in a DVCS-linked project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. Scroll down to **Project hooks**.
 1. Next to the log that points to your Jira instance, select **Edit**.
 1. Scroll down to **Recent events**.

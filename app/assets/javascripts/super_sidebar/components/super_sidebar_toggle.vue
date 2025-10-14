@@ -20,6 +20,16 @@ export default {
       required: false,
       default: 'expand',
     },
+    icon: {
+      type: String,
+      required: false,
+      default: 'sidebar',
+    },
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   i18n: {
     primaryNavigationSidebar: __('Primary navigation sidebar'),
@@ -44,11 +54,14 @@ export default {
       return this.type === 'expand';
     },
     tooltip() {
-      if (hasTouchCapability()) {
+      if (hasTouchCapability() || this.ariaLabel) {
         return null;
       }
 
       return this.isTypeExpand ? this.$options.tooltipExpand : this.$options.tooltipCollapse;
+    },
+    computedAriaLabel() {
+      return this.ariaLabel || this.$options.i18n.primaryNavigationSidebar;
     },
     ariaExpanded() {
       return String(this.isTypeCollapse);
@@ -60,6 +73,7 @@ export default {
   beforeUnmount() {
     this.$root.$off('bv::tooltip::show', this.onTooltipShow);
   },
+
   methods: {
     toggle() {
       this.track(this.isTypeExpand ? 'nav_show' : 'nav_hide', {
@@ -74,7 +88,7 @@ export default {
         if (!this.isTypeExpand) {
           document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`).focus();
         } else {
-          document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`).focus();
+          document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`)?.focus();
         }
       });
     },
@@ -99,8 +113,8 @@ export default {
     v-gl-tooltip="tooltip"
     aria-controls="super-sidebar"
     :aria-expanded="ariaExpanded"
-    :aria-label="$options.i18n.primaryNavigationSidebar"
-    icon="sidebar"
+    :aria-label="computedAriaLabel"
+    :icon="icon"
     category="tertiary"
     @click="toggle"
   />

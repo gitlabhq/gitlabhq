@@ -10,10 +10,6 @@ describe('GitLab Feature Flags Plugin', () => {
         aFeature: true,
         bFeature: false,
       },
-      licensed_features: {
-        cFeature: true,
-        dFeature: false,
-      },
     };
 
     Vue.use(GlFeatureFlags);
@@ -28,8 +24,6 @@ describe('GitLab Feature Flags Plugin', () => {
     expect(wrapper.vm.glFeatures).toEqual({
       aFeature: true,
       bFeature: false,
-      cFeature: true,
-      dFeature: false,
     });
   });
 
@@ -42,8 +36,6 @@ describe('GitLab Feature Flags Plugin', () => {
     expect(wrapper.vm.glFeatures).toEqual({
       aFeature: true,
       bFeature: false,
-      cFeature: true,
-      dFeature: false,
     });
   });
 });

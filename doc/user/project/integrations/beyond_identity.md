@@ -41,7 +41,7 @@ To enable the Beyond Identity integration for your instance:
 
 1. Sign in to GitLab as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Beyond Identity**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In **API token**, paste the API token you received from Beyond Identity.
@@ -79,7 +79,7 @@ To skip the push check for [service accounts](../../profile/service_accounts.md)
 
 1. Sign in to GitLab as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Beyond Identity**.
 1. Select the **Exclude service accounts** checkbox.
 1. Select **Save changes**.
@@ -102,7 +102,7 @@ To exclude groups or projects from the Beyond Identity check:
 
 1. Sign in to GitLab as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Beyond Identity**.
 1. Select the **Exclusions** tab.
 1. Select **Add exclusions**.

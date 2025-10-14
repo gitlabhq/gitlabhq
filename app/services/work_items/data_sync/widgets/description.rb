@@ -23,10 +23,13 @@ module WorkItems
               last_edited_by: work_item.last_edited_by
             )
           )
+
+          target_work_item.ensure_work_item_description
         end
 
         def post_move_cleanup
           # Description is a field in the work_item record, it will be removed upon the work_item deletion
+          # WorkItems::Description records will also be deleted due to the FK constraint.
         end
       end
     end

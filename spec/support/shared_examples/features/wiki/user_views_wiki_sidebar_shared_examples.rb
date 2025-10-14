@@ -11,7 +11,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
     sign_in(user)
   end
 
-  context 'when there are some existing pages' do
+  context 'when there are some existing pages', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     before do
       create(:wiki_page, wiki: wiki, title: 'home', content: 'home')
       create(:wiki_page, wiki: wiki, title: 'another', content: 'another')
@@ -49,20 +49,24 @@ RSpec.shared_examples 'User views wiki sidebar' do
         visit wiki_path(wiki)
       end
 
-      it 'renders both the custom sidebar and the default one' do
+      # rubocop:disable Layout/LineLength -- short lived quarantine link
+      it 'renders both the custom sidebar and the default one', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
         within('.right-sidebar') do
           expect(page).to have_css("[data-testid='expand-pages-list']")
           expect(page).to have_content('My custom sidebar')
         end
       end
+      # rubocop:enable Layout/LineLength
 
-      it 'can expand list of pages in sidebar', :js do
+      # rubocop:disable Layout/LineLength -- short lived quarantine link
+      it 'can expand list of pages in sidebar', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
         find("[data-testid='expand-pages-list']").click
 
         within('.right-sidebar') do
           expect(page).to have_content('another')
         end
       end
+      # rubocop:enable Layout/LineLength
 
       it 'can edit the custom sidebar', :js do
         click_on 'Edit custom sidebar'
@@ -97,7 +101,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       visit wiki_path(wiki)
 
       within('.right-sidebar') do
-        expect(page.all("[data-testid='chevron-down-icon']").size).to eq(3)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']").size).to eq(3)
       end
     end
 
@@ -105,15 +109,15 @@ RSpec.shared_examples 'User views wiki sidebar' do
       visit wiki_path(wiki)
 
       within('.right-sidebar') do
-        first("[data-testid='chevron-down-icon']").click
+        first("[data-testid='wiki-sidebar-entry-collapser']").click
         (11..15).each { |i| expect(page).not_to have_content("my page #{i}") }
-        expect(page.all("[data-testid='chevron-down-icon']").size).to eq(1)
-        expect(page.all("[data-testid='chevron-right-icon']").size).to eq(1)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90").size).to eq(1)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)").size).to eq(1)
 
-        first("[data-testid='chevron-right-icon']").click
+        first("[data-testid='wiki-sidebar-entry-collapser']").click
         (11..15).each { |i| expect(page).to have_content("my page #{i}") }
-        expect(page.all("[data-testid='chevron-down-icon']").size).to eq(3)
-        expect(page.all("[data-testid='chevron-right-icon']").size).to eq(0)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90").size).to eq(3)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)").size).to eq(0)
       end
     end
 

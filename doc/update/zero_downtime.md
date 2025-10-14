@@ -120,7 +120,7 @@ On each component's node to perform the upgrade:
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md).
 1. Reconfigure and restart to get the latest code in place:
 
    ```shell
@@ -172,7 +172,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md).
 1. Run the `reconfigure` command to get the latest code in place and to instruct Gitaly to gracefully reload at the next opportunity:
 
    ```shell
@@ -221,7 +221,7 @@ the **Praefect deploy node** in the following steps:
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md).
 
    1. Ensure that `praefect['auto_migrate'] = true` is set in `/etc/gitlab/gitlab.rb` so that database migrations run.
 
@@ -240,7 +240,7 @@ the **Praefect deploy node** in the following steps:
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md).
 
    1. Ensure that `praefect['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
       `reconfigure` from automatically running database migrations.
@@ -297,7 +297,7 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md).
 
    1. Configure regular migrations to run by setting `gitlab_rails['auto_migrate'] = true` in the
       `/etc/gitlab/gitlab.rb` configuration file.
@@ -339,7 +339,7 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md).
 
    1. Ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
       `reconfigure` from automatically running database migrations.
@@ -362,8 +362,10 @@ In addition to the previous, Rails is where the main database migrations need to
    1. Run the post-deployment migrations:
 
       ```shell
-      sudo gitlab-rake db:migrate
+      sudo gitlab-rake gitlab:db:configure
       ```
+
+      This task also runs ClickHouse migrations and configures the database based on its state by loading the schema.
 
    1. Return the config back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
@@ -388,7 +390,7 @@ Run through the following steps sequentially on each component node to perform t
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md).
 
 1. Run the `reconfigure` command to get the latest code in place as well as restart:
 
@@ -466,7 +468,7 @@ The upgrade process is the same for both primary and secondary sites. However, y
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md).
 
    1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site Rails node to the secondary site Rails node if they're different. The file must be the same on all of a site's nodes.
 
@@ -516,7 +518,7 @@ The upgrade process is the same for both primary and secondary sites. However, y
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md).
 
    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
@@ -549,7 +551,7 @@ Finally, head back to the primary site and finish the upgrade by running the pos
    1. Run the post-deployment migrations:
 
       ```shell
-      sudo gitlab-rake db:migrate
+      sudo gitlab-rake gitlab:db:configure
       ```
 
    1. Verify Geo configuration and dependencies

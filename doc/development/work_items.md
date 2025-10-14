@@ -271,7 +271,6 @@ Keep the following in mind when you write your migration:
   - The migration adds the new work item type as well as the widget definitions that are required for each work item.
     The widgets you choose depend on the feature the new work item supports, but there are some that probably
     all new work items need, like `Description`.
-- Optional. Create hierarchy restrictions.
   - In one of the example MRs we also insert records in the `work_item_hierarchy_restrictions` table. This is only
     necessary if the new work item type is going to use the `Hierarchy` widget. In this table, you must add what
     work item type can have children and of what type. Also, you should specify the hierarchy depth for work items of the same
@@ -338,10 +337,6 @@ class AddTicketWorkItemType < Gitlab::Database::Migration[2.1]
     self.table_name = 'work_item_widget_definitions'
   end
 
-  class MigrationHierarchyRestriction < MigrationRecord
-    self.table_name = 'work_item_hierarchy_restrictions'
-  end
-
   def up
     existing_ticket_work_item_type = MigrationWorkItemType.find_by(base_type: TICKET_ENUM_VALUE, namespace_id: nil)
 
@@ -372,16 +367,6 @@ class AddTicketWorkItemType < Gitlab::Database::Migration[2.1]
     issue_type = MigrationWorkItemType.find_by(base_type: ISSUE_ENUM_VALUE, namespace_id: nil)
     return say('Issue work item type not found, skipping hierarchy restrictions creation') unless issue_type
 
-    # This part of the migration is only necessary if the new type uses the `Hierarchy` widget.
-    restrictions = [
-      { parent_type_id: new_ticket_work_item_type.id, child_type_id: new_ticket_work_item_type.id, maximum_depth: 1 },
-      { parent_type_id: new_ticket_work_item_type.id, child_type_id: issue_type.id, maximum_depth: 1 }
-    ]
-
-    MigrationHierarchyRestriction.upsert_all(
-      restrictions,
-      unique_by: :index_work_item_hierarchy_restrictions_on_parent_and_child
-    )
   end
 
   def down
@@ -400,9 +385,7 @@ is where we can clearly visualize the structure of the types we have and what wi
 `BaseTypeImporter` is the single source of truth for fresh GitLab installs and also our test suite. This should always
 reflect what we change with migrations.
 
-Similarly, the single sources of truth for hierarchy and linked item restrictions are defined in [HierarchyRestrictionsImporter](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database_importers/work_items/hierarchy_restrictions_importer.rb) and [RelatedLinksRestrictionsImporter](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/database_importers/work_items/related_links_restrictions_importer.rb), respectively.
-
-**Important**: These importers should be updated whenever the corresponding database tables are modified.
+**Important**: This importer should be updated whenever the corresponding database table is modified.
 
 ## Custom work item types
 

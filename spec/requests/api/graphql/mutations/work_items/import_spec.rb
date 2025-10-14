@@ -27,24 +27,6 @@ RSpec.describe 'Import work items', feature_category: :team_planning do
         match(/The resource that you are attempting to access does not exist or you don't have permission/)
       )
     end
-
-    context 'when work_items_project_issues_list feature flag is disabled' do
-      let(:current_user) { reporter }
-
-      before do
-        stub_feature_flags(work_items_project_issues_list: false)
-      end
-
-      it 'returns feature flag disabled error' do
-        post_graphql_mutation_with_uploads(mutation, current_user: current_user)
-
-        expect(graphql_errors).to be_present
-        error_messages = graphql_errors.pluck('message')
-        expect(error_messages).to include(
-          match(/work_items_project_issues_list.*feature flag is disabled/)
-        )
-      end
-    end
   end
 
   context 'when user has permissions to import work items' do

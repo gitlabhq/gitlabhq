@@ -174,13 +174,13 @@ To publish multiple files or an entire directory, you must make one API call for
 
 You should follow these best practices when you publish multiple files to the repository:
 
-- **Versioning**: Use a consistent versioning scheme for your package. This could be based on your project's version, build number, or date.
-- **File organization**: Consider how you want to structure your files within the package. You might want to include a manifest file that lists all the included files and their purposes.
-- **Automation**: Whenever possible, automate the publishing process through CI/CD pipelines. This ensures consistency and reduces manual errors.
-- **Error handling**: Implement error checking in your scripts. For example, check the HTTP response code from cURL to ensure each file was uploaded successfully.
-- **Logging**: Maintain logs of what files were uploaded, when, and by whom. This can be crucial for troubleshooting and auditing.
-- **Compression**: For large directories, consider compressing the contents into a single file before uploading. This can simplify the upload process and reduce the number of API calls.
-- **Checksums**: Generate and store checksums (MD5, SHA256) for your files. This allows users to verify the integrity of downloaded files.
+- Versioning: Use a consistent versioning scheme for your package. This could be based on your project's version, build number, or date.
+- File organization: Consider how you want to structure your files within the package. You might want to include a manifest file that lists all the included files and their purposes.
+- Automation: Whenever possible, automate the publishing process through CI/CD pipelines. This ensures consistency and reduces manual errors.
+- Error handling: Implement error checking in your scripts. For example, check the HTTP response code from cURL to ensure each file was uploaded successfully.
+- Logging: Maintain logs of what files were uploaded, when, and by whom. This can be crucial for troubleshooting and auditing.
+- Compression: For large directories, consider compressing the contents into a single file before uploading. This can simplify the upload process and reduce the number of API calls.
+- Checksums: Generate and store checksums (MD5, SHA256) for your files. This allows users to verify the integrity of downloaded files.
 
 For example:
 
@@ -389,14 +389,14 @@ To download multiple files or an entire directory, you must make one API call fo
 
 You should follow these best practices when you download multiple files from the repository:
 
-- **Versioning**: Always specify the exact version of the package you want to download to ensure consistency.
-- **Directory structure**: When downloading, maintain the original directory structure of the package to preserve file organization.
-- **Automation**: Integrate package downloads into your CI/CD pipelines or build scripts for automated workflows.
-- **Error handling**: Implement checks to ensure all files are downloaded successfully. You can verify the HTTP status code or check file existence after download.
-- **Caching**: For frequently used packages, consider implementing a caching mechanism to reduce network usage and improve build times.
-- **Parallel downloads**: For large packages with many files, you might want to implement parallel downloads to speed up the process.
-- **Checksums**: If available, verify the integrity of downloaded files using checksums provided by the package publisher.
-- **Incremental downloads**: For large packages that change frequently, consider implementing a mechanism to download only the files that have changed since the last download.
+- Versioning: Always specify the exact version of the package you want to download to ensure consistency.
+- Directory structure: When downloading, maintain the original directory structure of the package to preserve file organization.
+- Automation: Integrate package downloads into your CI/CD pipelines or build scripts for automated workflows.
+- Error handling: Implement checks to ensure all files are downloaded successfully. You can verify the HTTP status code or check file existence after download.
+- Caching: For frequently used packages, consider implementing a caching mechanism to reduce network usage and improve build times.
+- Parallel downloads: For large packages with many files, you might want to implement parallel downloads to speed up the process.
+- Checksums: If available, verify the integrity of downloaded files using checksums provided by the package publisher.
+- Incremental downloads: For large packages that change frequently, consider implementing a mechanism to download only the files that have changed since the last download.
 
 For example:
 
@@ -457,32 +457,63 @@ download_package:
 
 ### Download an entire package
 
-To download all files in a package, list the package contents using the GitLab API, then download each file:
+To download all files in a package, you must:
+
+1. Get the package ID.
+1. List the package contents using the GitLab API.
+1. Download each file.
+
+Run the following command to download all files in a package:
 
 ```shell
 TOKEN="<access_token>"
 PROJECT_ID="24"
-PACKAGE_ID="1234"
 PACKAGE_NAME="my_package"
 PACKAGE_VERSION="1.0.0"
+GITLAB_URL="https://gitlab.example.com"
 OUTPUT_DIR="./downloaded_package"
 
 # Create output directory
 mkdir -p "$OUTPUT_DIR"
 
-# Get list of files in the package
-files=$(curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
-     "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/$PACKAGE_ID/package_files" \
+# Step 1: Get the package ID
+PACKAGE_ID=$(curl --location --header "PRIVATE-TOKEN: $TOKEN" \
+     "$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages?package_type=generic&package_name=$PACKAGE_NAME&package_version=$PACKAGE_VERSION" \
+     | jq -r ".[] | select(.name==\"$PACKAGE_NAME\" and .version==\"$PACKAGE_VERSION\") | .id")
+
+if [ -z "$PACKAGE_ID" ] || [ "$PACKAGE_ID" = "null" ]; then
+    echo "Error: Package '$PACKAGE_NAME' version '$PACKAGE_VERSION' not found"
+    exit 1
+fi
+
+echo "Found package ID: $PACKAGE_ID"
+
+# Step 2: Get list of files in the package
+files=$(curl --location --header "PRIVATE-TOKEN: $TOKEN" \
+     "$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages/$PACKAGE_ID/package_files" \
      | jq -r '.[].file_name')
 
-# Download each file
+if [ -z "$files" ]; then
+    echo "Error: No files found in package"
+    exit 1
+fi
+
+# Step 3: Download each file
 for file in $files; do
-    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+    echo "Downloading: $file"
+    curl --location --header "PRIVATE-TOKEN: $TOKEN" \
          --output "$OUTPUT_DIR/$file" \
          --create-dirs \
-         "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
-    echo "Downloaded: $file"
+         "$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
+    # Check if download was successful
+    if [ $? -eq 0 ]; then
+        echo "✓ Downloaded: $file"
+    else
+        echo "✗ Failed to download: $file"
+    fi
 done
+
+echo "Package download complete"
 ```
 
 ## Disable publishing duplicate package names
@@ -503,7 +534,7 @@ Prerequisites:
 To disable publishing duplicate file names:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. In the **Generic** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 

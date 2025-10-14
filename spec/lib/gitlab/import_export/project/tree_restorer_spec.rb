@@ -27,8 +27,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           @shared = @project.import_export_shared
 
           stub_all_feature_flags
-          stub_feature_flags(ci_validate_config_options: false)
-
           setup_import_export_config('complex')
           setup_reader
 
@@ -445,6 +443,17 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(award_emoji.name).to eq('clapper')
         end
 
+        it 'restores work_item_description for issues' do
+          issue = @project.issues.find_by(title: 'Voluptatem')
+          work_item_description = issue.work_item_description
+
+          expect(work_item_description).to be_present
+          expect(work_item_description.description).to eq('Aliquam enim illo et possimus.')
+          expect(work_item_description.description_html).to include('Aliquam enim illo et possimus.')
+          expect(work_item_description.last_edited_at).to eq(Time.parse('2016-06-14T15:02:47.967Z'))
+          expect(work_item_description.last_edited_by_id).to be_present
+        end
+
         it 'restores container_expiration_policy' do
           policy = Project.find_by_path('project').container_expiration_policy
 
@@ -605,6 +614,11 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
               .each do |(pipeline, expected_status_size)|
               expect(pipeline.statuses.size).to eq(expected_status_size)
             end
+          end
+
+          it 'does not restore jobs metadata' do
+            expect(Ci::Build.for_project(@project).count).to eq(7)
+            expect(Ci::BuildMetadata.count).to eq(0)
           end
         end
 

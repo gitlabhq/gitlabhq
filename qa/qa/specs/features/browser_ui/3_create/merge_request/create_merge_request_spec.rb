@@ -13,7 +13,7 @@ module QA
 
       it(
         'creates a basic merge request',
-        :smoke, :skip_fips_env, :health_check,
+        :smoke, :skip_fips_env, :health_check, :skip_cells,
         quarantine: {
           only: { job: 'update-ee-to-ce' },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412361',
@@ -35,7 +35,7 @@ module QA
       end
 
       it(
-        'creates a merge request with a milestone and label', :smoke, :health_check,
+        'creates a merge request with a milestone and label', :smoke, :health_check, :skip_cells,
         quarantine: {
           only: { job: 'update-ee-to-ce' },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/494054',

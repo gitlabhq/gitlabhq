@@ -39,6 +39,7 @@ class WikiPage
     end
 
     delegate :wiki, to: :container
+    delegate :to_reference, to: :wiki_page, allow_nil: true
 
     class << self
       # Return the (updated) WikiPage::Meta record for a given wiki page
@@ -176,12 +177,6 @@ class WikiPage
 
     def gfm_reference(from = nil)
       "#{container.class.name.downcase} wiki page #{to_reference(from)}"
-    end
-
-    def to_reference(_from = nil)
-      return "[[#{canonical_slug}]]" unless for_group_wiki?
-
-      canonical_slug
     end
 
     def reference_link_text

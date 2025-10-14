@@ -131,7 +131,7 @@ A blocked user:
 
 - Cannot sign in or access any repositories.
   - Any associated data remains in these repositories.
-- Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
+- Cannot use [slash commands in Slack](../user/project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not occupy a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 ### Block a user
@@ -194,7 +194,7 @@ A deactivated user:
 - Can sign in to GitLab.
   - If a deactivated user signs in, they are automatically reactivated.
 - Cannot access repositories or the API.
-- Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
+- Cannot use [slash commands in Slack](../user/project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not occupy a seat. For more information, see [billable users](../subscriptions/manage_users_and_seats.md#billable-users).
 
 When you deactivate a user, their projects, groups, and history remain.
@@ -340,7 +340,7 @@ A banned user:
 
 - Cannot sign in or access any repositories.
   - Any associated projects, issues, merge requests, or comments are hidden.
-- Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
+- Cannot use [slash commands in Slack](../user/project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not occupy a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 ### Ban a user

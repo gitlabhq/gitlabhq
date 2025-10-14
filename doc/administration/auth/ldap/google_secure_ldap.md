@@ -27,7 +27,7 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
 
 1. Go to <https://admin.google.com/Dashboard> and sign in as a Google Workspace domain administrator.
 
-1. Go to **Apps > LDAP > Add Client**.
+1. Go to **Apps** > **LDAP** > **Add Client**.
 
 1. Provide an **LDAP client name** and an optional **Description**. Any descriptive
    values are acceptable. For example, the name could be `GitLab` and the

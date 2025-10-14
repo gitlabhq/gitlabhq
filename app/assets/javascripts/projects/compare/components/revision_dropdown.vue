@@ -156,8 +156,7 @@ export default {
       if (code === ENTER_KEY || code === NUMPAD_ENTER_KEY) {
         this.setSelectedRevision(target.value);
         const listbox = this.$refs.collapsibleDropdown;
-        const dropdown = listbox.$refs.baseDropdown;
-        dropdown.close();
+        listbox.close();
       }
     },
     onShown() {

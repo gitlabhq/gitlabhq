@@ -7,6 +7,7 @@ module Gitlab
   # See CheckRateLimit concern for usage.
   module ApplicationRateLimiter
     InvalidKeyError = Class.new(StandardError)
+    InvalidScopeError = Class.new(StandardError)
 
     LIMIT_USAGE_BUCKET = [0.25, 0.5, 0.75, 1].freeze
 
@@ -15,7 +16,7 @@ module Gitlab
       # Application rate limits
       #
       # Threshold value can be either an Integer or a Proc
-      # in order to not evaluate it's value every time this method is called
+      # in order to not evaluate its value every time this method is called
       # and only do that when it's needed.
       def rate_limits # rubocop:disable Metrics/AbcSize
         {
@@ -25,7 +26,7 @@ module Gitlab
           autocomplete_users_unauthenticated: { threshold: -> { application_settings.autocomplete_users_unauthenticated_limit }, interval: 1.minute },
           bulk_delete_todos: { threshold: 6, interval: 1.minute },
           bulk_import: { threshold: 6, interval: 1.minute },
-          ci_job_created_subscription: { threshold: 50, interval: 1.minute },
+          ci_job_processed_subscription: { threshold: 50, interval: 1.minute },
           code_suggestions_api_endpoint: { threshold: -> { application_settings.code_suggestions_api_rate_limit }, interval: 1.minute },
           create_organization_api: { threshold: -> { application_settings.create_organization_api_limit }, interval: 1.minute },
           delete_all_todos: { threshold: 1, interval: 5.minutes },
@@ -83,6 +84,9 @@ module Gitlab
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
           },
           raw_blob: { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
+          runner_jobs_request_api: { threshold: -> { application_settings.runner_jobs_request_api_limit }, interval: 1.minute },
+          runner_jobs_patch_trace_api: { threshold: -> { application_settings.runner_jobs_patch_trace_api_limit }, interval: 1.minute },
+          runner_jobs_api: { threshold: -> { application_settings.runner_jobs_endpoints_api_limit }, interval: 1.minute },
           search_rate_limit: { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
           search_rate_limit_unauthenticated: { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           temporary_email_failure: { threshold: 300, interval: 1.day },
@@ -133,7 +137,9 @@ module Gitlab
       #
       # @return [Boolean] Whether or not a request should be throttled
       def throttled?(key, scope:, resource: nil, threshold: nil, interval: nil, users_allowlist: nil, peek: false)
-        raise InvalidKeyError unless rate_limits[key]
+        raise InvalidKeyError, key unless rate_limits[key]
+
+        validate_scope!(key, scope)
 
         strategy = resource.present? ? IncrementPerActionedResource.new(resource.id) : IncrementPerAction.new
 
@@ -155,6 +161,8 @@ module Gitlab
       #
       # @return [Boolean] Whether or not a request should be throttled
       def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
+        validate_scope!(key, scope)
+
         strategy = IncrementResourceUsagePerAction.new(resource_key)
 
         _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval, peek: peek)
@@ -241,13 +249,24 @@ module Gitlab
         }
 
         if current_user
-          request_information.merge!({
+          request_information.merge!(
             user_id: current_user.id,
             username: current_user.username
-          })
+          )
         end
 
         logger.error(request_information)
+      end
+
+      # Returns the interval value for a given rate limit key
+      #
+      # @param key [Symbol] Key attribute registered in `.rate_limits`
+      # @return [Integer, nil] The interval value in seconds, or nil if not configured
+      def interval(key)
+        value = rate_limit_value_by_key(key, :interval)
+        raise InvalidKeyError if value.nil?
+
+        rate_limit_value(value)
       end
 
       private
@@ -289,12 +308,6 @@ module Gitlab
 
       def threshold(key)
         value = rate_limit_value_by_key(key, :threshold)
-
-        rate_limit_value(value)
-      end
-
-      def interval(key)
-        value = rate_limit_value_by_key(key, :interval)
 
         rate_limit_value(value)
       end
@@ -363,6 +376,17 @@ module Gitlab
         ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
       end
       strong_memoize_attr :initialize_filtered_params
+
+      def validate_scope!(key, scope, logger = Gitlab::AuthLogger)
+        return if scope
+
+        logger.warn(
+          message: 'Application_Rate_Limiter_Request_Without_Scope',
+          env: :"#{key}_request_limit"
+        )
+
+        raise InvalidScopeError, 'scope cannot be nil. Use :global for global rate limits.'
+      end
     end
   end
 end

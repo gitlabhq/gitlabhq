@@ -1,0 +1,7 @@
+# The following specs failed order dependency checks and need to be fixed.
+# They have order dependencies that prevent them from running in random order.
+# This file is used by spec/support/rspec_order.rb to ensure these specs run in defined order.
+#
+# See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#test-order.
+#
+---

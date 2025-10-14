@@ -23,7 +23,7 @@ module Ci
     end
 
     def max_running_jobs
-      20
+      50
     end
 
     private

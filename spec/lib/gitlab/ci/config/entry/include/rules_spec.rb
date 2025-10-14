@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
         { if: '$SKIP' }
       end
 
-      it_behaves_like 'an invalid config', /should be a array/
+      it_behaves_like 'an invalid config', /should be an array/
     end
   end
 

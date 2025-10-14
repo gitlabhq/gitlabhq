@@ -88,7 +88,6 @@ export default {
   },
   data() {
     return {
-      protectionRules: [],
       protectionRulesQueryPayload: { nodes: [], pageInfo: {} },
       protectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
       protectionRuleMutationInProgress: false,
@@ -150,9 +149,6 @@ export default {
     },
   },
   methods: {
-    showProtectionRuleForm() {
-      this.$refs.containerProtectionCrud.showForm();
-    },
     hideProtectionRuleForm() {
       this.$refs.containerProtectionCrud.hideForm();
     },
@@ -181,9 +177,6 @@ export default {
     resetProtectionRuleMutation() {
       this.protectionRuleMutationItem = null;
       this.protectionRuleMutationInProgress = false;
-    },
-    isMinimumAccessLevelForPushDisabled(item) {
-      return this.isProtectionRuleMutationInProgress(item);
     },
     isDeleteActionDisabled(item) {
       return this.isProtectionRuleMutationInProgress(item);

@@ -16,7 +16,7 @@ variables:
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
   # Helm chart ref used by test-on-cng pipeline
-  GITLAB_HELM_CHART_REF: "a1c6b1a55392e1561d7275c6381c2357f672aab6"
+  GITLAB_HELM_CHART_REF: "fe2b8ea7f8cc572e247766200c772df4523bc8f9"
   # Specific ref for cng-mirror project to trigger builds for
   GITLAB_CNG_MIRROR_REF: "95d812e17f94ef29db700b0b3601a600148a4b6b"
   # Makes sure some of the common scripts from pipeline-common use bundler to execute commands
@@ -24,3 +24,5 @@ variables:
   # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder
   QA_PATH: "qa"
   MAX_E2E_TEST_EXECUTION_TIME: 45m
+  # Remove CHROME_VERSION when default image catches up, defined in .gitlab/ci/version.yml
+  CHROME_VERSION: "138"

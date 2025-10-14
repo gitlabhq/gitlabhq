@@ -43,7 +43,7 @@ When you create a release, or after, you can:
 
 To view a list of releases:
 
-- On the left sidebar, select **Deploy > Releases**, or
+- On the left sidebar, select **Deploy** > **Releases**, or
 
 - On the project's overview page, if at least one release exists, select the number of releases.
 
@@ -95,7 +95,7 @@ GitLab provides an RSS feed of a project's releases, in Atom format. To view the
 
 1. For projects you are a member of:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Deploy > Releases**.
+   1. Select **Deploy** > **Releases**.
 1. For all projects:
    1. Go to the **Project overview** page.
    1. On the right sidebar, select **Releases** ({{< icon name="rocket-launch" >}}).
@@ -119,7 +119,7 @@ Prerequisites:
 To create a release in the Releases page:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Releases** and select **New release**.
+1. Select **Deploy** > **Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
      results in a validation error.
@@ -261,7 +261,7 @@ Prerequisites:
 
 In the UI:
 
-1. On the left sidebar, select **Deploy > Releases**.
+1. On the left sidebar, select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
 1. Select **Save changes**.
@@ -288,7 +288,7 @@ To delete a release, use either the
 In the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Releases**.
+1. Select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to delete, select **Edit this release**
    ({{< icon name="pencil" >}}).
 1. On the **Edit Release** page, select **Delete**.
@@ -305,17 +305,17 @@ the [Releases API](../../../api/releases/_index.md#create-a-release).
 
 In the user interface, to associate milestones to a release:
 
-1. On the left sidebar, select **Deploy > Releases**.
+1. On the left sidebar, select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. From the **Milestones** list, select each milestone you want to associate. You can select multiple milestones.
 1. Select **Save changes**.
 
-On the **Deploy > Releases** page, the **Milestone** is listed in the top
+On the **Deploy** > **Releases** page, the **Milestone** is listed in the top
 section, along with statistics about the issues in the milestones.
 
 ![A Release with one associated milestone](img/release_with_milestone_v12_9.png)
 
-Releases are also visible on the **Plan > Milestones** page, and when you select a milestone
+Releases are also visible on the **Plan** > **Milestones** page, and when you select a milestone
 on this page.
 
 Here is an example of milestones with no releases, one release, and two releases.
@@ -388,7 +388,7 @@ To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with the Maintainer role.
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Scroll to **Deploy freezes**.
 1. Select **Expand** to see the deploy freeze table.
 1. Select **Add deploy freeze** to open the deploy freeze modal.
@@ -458,7 +458,7 @@ and set **Maintainer** in the **Allowed to create** column.
 
 {{< /history >}}
 
-Group-level release metrics are available by navigating to **Group > Analytics > CI/CD**.
+Group-level release metrics are available by navigating to **Group** > **Analytics** > **CI/CD**.
 These metrics include:
 
 - Total number of releases in the group

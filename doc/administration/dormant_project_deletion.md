@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
@@ -38,7 +38,7 @@ For the default setting on GitLab.com, see [GitLab.com settings](../user/gitlab_
 To configure deletion of dormant projects:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Dormant project deletion** section, select **Delete dormant projects**.
 1. Configure the settings.

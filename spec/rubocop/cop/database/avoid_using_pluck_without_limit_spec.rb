@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
+require 'rubocop-rails'
 require_relative '../../../../rubocop/cop/database/avoid_using_pluck_without_limit'
 
 RSpec.describe RuboCop::Cop::Database::AvoidUsingPluckWithoutLimit, feature_category: :database do

@@ -20,7 +20,7 @@ see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository
 
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
 
-1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
+1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
 1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. Add this line, or edit it if it already exists:
 
@@ -104,7 +104,7 @@ SSH connections), you might encounter initialization failures like:
 
 To resolve these issues:
 
-1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
+1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
 1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
    - Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**, and select it.
 1. Add or modify this setting:
@@ -121,7 +121,7 @@ For updates on a permanent solution, see
 
 ## Error: `can't access the OS Keychain`
 
-Error messages like these can occur on both MacOS and Ubuntu:
+Error messages like these can occur on both macOS and Ubuntu:
 
 ```plaintext
 GitLab Workflow can't access the OS Keychain.
@@ -138,9 +138,9 @@ For more information about these errors, see:
 - [Extension issue 580](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/580)
 - [Upstream `microsoft/vscode` issue 147515](https://github.com/microsoft/vscode/issues/147515)
 
-### MacOS workaround
+### macOS workaround
 
-A workaround exists for MacOS:
+A workaround exists for macOS:
 
 1. On your machine, open **Keychain Access** and search for `vscodegitlab.gitlab-workflow`.
 1. Delete `vscodegitlab.gitlab-workflow` from your keychain.
@@ -212,7 +212,7 @@ Gather this information from affected users, and provide it in your bug report:
       <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
    1. Run the command `GitLab: Diagnostics`, and note the extension version.
 1. System details:
-   - In VS Code, go to **Code > About Visual Studio Code** and find **OS**.
+   - In VS Code, go to **Code** > **About Visual Studio Code** and find **OS**.
    - Machine specifications (CPU, RAM): Provide these from your machine. They are not accessible in the IDE.
 1. Describe the scope of impact. How many users are affected?
 1. Describe how to reproduce the error. Include a screen recording, if possible.

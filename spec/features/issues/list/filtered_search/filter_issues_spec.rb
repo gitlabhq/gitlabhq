@@ -208,7 +208,7 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
     end
 
     context 'label with multiple words' do
-      it 'special characters' do
+      it 'special characters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/563535' do
         special_multiple_label = create(:label, project: project, title: "Utmost |mp0rt@nce")
         special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
         special_multiple_issue.labels << special_multiple_label

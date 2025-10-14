@@ -86,10 +86,15 @@ glab mr merge
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM: Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -162,7 +167,7 @@ To start a CI/CD pipeline that includes the contents of `variables.json`, run th
 the path to the file as needed:
 
 ```shell
-$ glab ci run --variables-file /tmp/variables.json`
+$ glab ci run --variables-file /tmp/variables.json
 
 $ echo $EXAMPLE_VARIABLE_1
 example value 1
@@ -199,6 +204,11 @@ to send us feedback.
 - Extension source code in the [`cli`](https://gitlab.com/gitlab-org/cli/) project
 
 ## Troubleshooting
+
+### Environment variable changes in `glab` 2.0.0
+
+In `glab` version 2.0.0 and later, all `glab` environment variables are prefixed with `GLAB_`.
+For more information about this deprecation, see [issue 7999](https://gitlab.com/gitlab-org/cli/-/issues/7999).
 
 ### `glab completion` commands fail when using the 1Password shell plugin
 

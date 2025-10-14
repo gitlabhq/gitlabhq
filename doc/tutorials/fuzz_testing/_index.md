@@ -57,7 +57,7 @@ project template:
 You have successfully forked the `fuzz-testing` project template. Before you can
 start fuzz testing, remove the relationship between the project template and the fork:
 
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
    Enter the name of the project when prompted.
@@ -183,7 +183,7 @@ fuzz test using the pipeline you've just created.
 
 To run the fuzz test:
 
-1. On the left sidebar, select **Code > Merge requests**.
+1. On the left sidebar, select **Code** > **Merge requests**.
 1. Select **New merge request**.
 1. In the **Source branch** section, select the `add-fuzz-test` branch.
 1. In the **Target branch** section, make sure that your namespace and the `main` branch are selected.

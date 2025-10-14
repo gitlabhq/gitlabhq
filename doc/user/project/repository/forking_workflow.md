@@ -93,6 +93,16 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 {{< /history >}}
 
+When you update a fork from the UI, the following repository protection settings on the fork are
+bypassed:
+
+- Push rules configured on the fork.
+- File locking applied to files in the fork.
+
+This behavior prevents synchronization failures when the upstream project and fork have different
+protection configurations. The synchronization process pulls changes from the upstream project and
+applies them directly to the fork.
+
 Prerequisites:
 
 - You must create your fork from an [unprotected branch](branches/protected.md) in upstream repository.
@@ -190,7 +200,7 @@ To restore the fork relationship, [use the API](../../../api/project_forks.md#cr
 To remove a fork relationship:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
 1. To confirm, enter the project path and select **Confirm**.

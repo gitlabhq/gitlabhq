@@ -51,7 +51,7 @@ Prerequisites:
 To view storage:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab to see namespace storage usage.
 1. To view storage usage for a project, in the table at the bottom, select a project. Storage usage is updated every 90 minutes.
 
@@ -70,7 +70,7 @@ A cost factor is applied to the storage consumed by project forks so that forks 
 To view the amount of namespace storage the fork has used:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab. The **Total** column displays the amount of namespace storage used by the fork as a portion of the actual size of the fork on disk.
 
 The cost factor applies to the project repository, LFS objects, job artifacts, packages, snippets, and the wiki.
@@ -184,7 +184,7 @@ You can [disable automatic subscription renewal](../subscriptions/manage_subscri
 ### For your personal namespace
 
 1. Sign in to GitLab.com.
-1. From either your personal homepage or the group's page, go to **Settings > Usage quotas**.
+1. From either your personal homepage or the group's page, go to **Settings** > **Usage quotas**.
 1. Select the **Storage** tab.
 1. For each read-only project, total by how much its **Usage** exceeds the free quota and purchased
    storage. You must purchase the storage increment that exceeds this total.
@@ -214,7 +214,7 @@ To purchase additional storage for your group on GitLab.com:
 
 1. Sign in to GitLab.com.
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab.
 1. Select **Buy storage**. You are taken to the Customers Portal.
 1. In the **Subscription details** section, in the **Quantity** field, enter the desired quantity of storage packs.

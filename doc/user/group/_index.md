@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Groups
@@ -168,7 +168,7 @@ To find the Group ID:
 To view the activity of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Activity**.
+1. Select **Manage** > **Activity**.
 1. Optional. To filter activity by contribution type, select a tab:
 
    - **All**: All contributions by group members in the group and group's projects.
@@ -214,7 +214,7 @@ Prerequisites:
 To edit group details:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Group name** text box, enter your group name. See the [limitations on group names](../reserved_names.md).
 1. Optional. In the **Group description (optional)** text box, enter your group description.
    The description is limited to 500 characters.
@@ -252,7 +252,7 @@ To leave a group:
 To delete a group and its contents:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Delete group** section, select **Delete group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
@@ -322,7 +322,7 @@ Prerequisites:
 To immediately delete a group marked for deletion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Permanently delete group** section, select **Delete group**.
 1. Confirm the action when asked to.
@@ -334,9 +334,32 @@ This action deletes the group, its subgroups, projects, and all related resource
 To restore a group that is marked for deletion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Restore group** section, select **Restore group**.
+
+## Manage groups with the Actions menu
+
+You can view a list of all your groups
+and manage them with the **Actions** menu.
+
+Prerequisites:
+
+- All of the available actions, except leaving a group, require the Owner role.
+
+To access the **Actions** menu for groups:
+
+1. On the left sidebar, select **Search or go to** > **View all my groups**.
+1. On the **Groups** page, find your group and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
+1. Select an action.
+
+The following actions are available, depending on the state of the group:
+
+| Group state      | Actions available       |
+| ---------------- | ----------------------- |
+| Active           | **Edit**, **Archive**, **Transfer**, **Leave group**, **Delete** |
+| Archived         | **Unarchive**, **Leave group**, **Delete** |
+| Pending deletion | **Restore**, **Leave group** |
 
 ## Request access to a group
 
@@ -360,7 +383,7 @@ If you change your mind before your request is approved, select
 To view members of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 
 A table displays the member's:
 
@@ -398,7 +421,7 @@ In lists of group members, entries can display the following badges:
 - **Enterprise**, to indicate that the member of the top-level group is an [enterprise user](../enterprise_user/_index.md).
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Above the list of members, in the **Filter members** text box, enter your search criteria. To view:
    - Direct members of the group, select **Membership = Direct**.
    - Inherited, shared, and inherited shared members of the group, select **Membership = Indirect**.
@@ -410,7 +433,7 @@ In lists of group members, entries can display the following badges:
 You can search for members by name, username, or [public email](../profile/_index.md#set-your-public-email).
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass ({{< icon name="search" >}}).
 
@@ -419,7 +442,7 @@ You can search for members by name, username, or [public email](../profile/_inde
 You can sort members by **Account**, **Access granted**, **Role**, or **Last sign-in**.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
@@ -445,7 +468,7 @@ Prerequisites:
   - If [administrator approval is enabled](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. If the user:
 
@@ -488,7 +511,7 @@ If [administrator approval for role promotions](../../administration/settings/si
 To view users pending promotion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Role promotions** tab.
 
 If the **Role promotions** tab is not displayed, the group has no pending promotions.
@@ -505,7 +528,7 @@ Prerequisites:
 To remove a member from a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Next to the member you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Remove member**.
 1. Optional. On the **Remove member** confirmation dialog, select one or both checkboxes:
@@ -535,7 +558,7 @@ By default, users with at least the:
 To specify which roles can create projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. From **Minimum role required to create projects**, select an option.
 1. Select **Save changes**.

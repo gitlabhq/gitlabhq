@@ -136,7 +136,7 @@ export default {
       return `@${this.user?.username}`;
     },
     cssClasses() {
-      const classList = ['user-popover', 'gl-w-34', 'gl-overflow-hidden'];
+      const classList = ['user-popover', 'gl-w-34'];
 
       if (this.userCannotMerge) {
         classList.push('user-popover-cannot-merge');

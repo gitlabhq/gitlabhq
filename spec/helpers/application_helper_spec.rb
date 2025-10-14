@@ -454,39 +454,15 @@ RSpec.describe ApplicationHelper do
       end
     end
 
-    context 'when feature flag extensible_reference_filters is enabled' do
-      before do
-        stub_feature_flags(extensible_reference_filters: true)
-      end
-
-      context 'group' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources + extensible_filter_sources)
-        end
-      end
-
-      context 'project' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources + extensible_filter_sources)
-        end
+    context 'group' do
+      it 'returns paths for autocomplete_sources_controller' do
+        expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources + extensible_filter_sources)
       end
     end
 
-    context 'when feature flag extensible_reference_filters is disabled' do
-      before do
-        stub_feature_flags(extensible_reference_filters: false)
-      end
-
-      context 'group' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources)
-        end
-      end
-
-      context 'project' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources)
-        end
+    context 'project' do
+      it 'returns paths for autocomplete_sources_controller' do
+        expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources + extensible_filter_sources)
       end
     end
   end
@@ -908,6 +884,16 @@ RSpec.describe ApplicationHelper do
     it 'fixes body scroll by default' do
       expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
     end
+
+    context 'when `project studio` feature is enabled' do
+      before do
+        allow(helper).to receive(:project_studio_enabled?).and_return(true)
+      end
+
+      it 'does not fix body scroll' do
+        expect(helper.body_scroll_classes).to eq('')
+      end
+    end
   end
 
   describe '#dispensable_render' do
@@ -1018,6 +1004,26 @@ RSpec.describe ApplicationHelper do
       it 'returns false' do
         expect(helper.sign_in_with_redirect?).to be_falsey
       end
+    end
+  end
+
+  describe 'ai_panel_expanded?' do
+    subject(:ai_panel_expanded?) { helper.ai_panel_expanded? }
+
+    context 'when ai_panel_active_tab cookie is set' do
+      before do
+        helper.request.cookies['ai_panel_active_tab'] = 'chat'
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when ai_panel_active_tab cookie is not set' do
+      before do
+        helper.request.cookies['ai_panel_active_tab'] = nil
+      end
+
+      it { is_expected.to be false }
     end
   end
 

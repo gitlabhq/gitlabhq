@@ -313,7 +313,7 @@ export default {
 
         <template #cell(tagNamePattern)="{ item }">
           <span
-            class="gl-flex gl-flex-nowrap gl-items-center gl-justify-end gl-gap-2 md:gl-justify-start"
+            class="gl-flex gl-flex-nowrap gl-items-center gl-justify-end gl-gap-2 @md/panel:gl-justify-start"
           >
             <span data-testid="tag-name-pattern" class="gl-break-all">
               {{ item.tagNamePattern }}

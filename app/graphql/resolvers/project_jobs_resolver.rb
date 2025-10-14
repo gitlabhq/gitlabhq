@@ -38,7 +38,7 @@ module Resolvers
       @kind = args[:kind]
       @with_artifacts = args[:with_artifacts]
 
-      filter_by_name = Feature.enabled?(:populate_and_use_build_names_table, project) && args[:name].to_s.present?
+      filter_by_name = args[:name].to_s.present?
       filter_by_sources = args[:sources].present?
 
       jobs = ::Ci::JobsFinder.new(

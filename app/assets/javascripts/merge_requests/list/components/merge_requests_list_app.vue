@@ -76,7 +76,6 @@ import {
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
-import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/issues/list/eventhub';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
@@ -120,7 +119,6 @@ export default {
     ApprovalCount,
     EmptyState,
     IssuableMilestone,
-    IssuableByEmail,
     DiscussionsBadge,
     NewResourceDropdown: () =>
       import('~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue'),
@@ -144,7 +142,6 @@ export default {
     environmentNamesPath: { default: '' },
     mergeTrainsPath: { default: undefined },
     defaultBranch: { default: '' },
-    initialEmail: { default: '' },
     getMergeRequestsQuery: { default: undefined },
     getMergeRequestsCountsQuery: { default: undefined },
     getMergeRequestsApprovalsQuery: { default: undefined },
@@ -953,11 +950,5 @@ export default {
       </template>
     </issuable-list>
     <empty-state v-else :has-merge-requests="false" />
-    <issuable-by-email
-      v-if="initialEmail"
-      class="gl-pb-7 gl-pt-5 gl-text-center"
-      data-track-action="click_email_issue_project_issues_empty_merge_request_page"
-      data-track-label="email_issue_project_merge_request_empty_list"
-    />
   </div>
 </template>

@@ -15,8 +15,8 @@ module Gitlab
           include ::Gitlab::Config::Entry::Inheritable
 
           PROCESSABLE_ALLOWED_KEYS = %i[extends stage only except rules variables
-                                        inherit allow_failure when needs resource_group environment
-                                        interruptible].freeze
+            inherit allow_failure when needs resource_group environment
+            interruptible].freeze
           MAX_NESTING_LEVEL = 10
 
           included do

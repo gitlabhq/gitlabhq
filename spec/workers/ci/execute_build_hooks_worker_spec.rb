@@ -161,5 +161,29 @@ RSpec.describe Ci::ExecuteBuildHooksWorker, feature_category: :pipeline_composit
         perform
       end
     end
+
+    describe 'logs build status' do
+      let(:worker) { described_class.new }
+
+      it 'logs build status when present in build_data' do
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:build_status, build.status)
+
+        worker.perform(project.id, build_data)
+      end
+
+      it 'logs nil build status when not present in build_data' do
+        build_data_without_status = build_data.except(:build_status)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:build_status, nil)
+
+        worker.perform(project.id, build_data_without_status)
+      end
+
+      it 'logs build status with string keys' do
+        string_build_data = build_data.stringify_keys
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:build_status, build.status)
+
+        worker.perform(project.id, string_build_data)
+      end
+    end
   end
 end

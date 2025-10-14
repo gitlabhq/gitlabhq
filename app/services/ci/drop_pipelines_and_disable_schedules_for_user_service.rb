@@ -27,11 +27,7 @@ module Ci
 
       drop_pipelines_for_user(user, reason)
 
-      if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable, user)
-        user.notify_and_disable_all_pipeline_schedules_for_user(user.id)
-      else
-        disable_schedules_for_user(user)
-      end
+      user.notify_and_disable_all_pipeline_schedules_for_user(user.id)
     end
 
     private

@@ -4,7 +4,8 @@ classes:
 - Ai::DuoChatEvent
 feature_categories:
 - value_stream_management
-description: Database storage for raw duo chat usage events. Partitioned by month.
+description: Scheduled for removal! Database storage for raw duo chat usage events.
+  Partitioned by month.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177239
 milestone: '17.9'
 gitlab_schema: gitlab_main_org

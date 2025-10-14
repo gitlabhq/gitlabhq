@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         # The purpose of `Root` is have only globally defined configuration.
         expect(described_class.nodes.keys)
           .to match_array(%i[before_script image services after_script
-                             variables cache stages include default workflow])
+            variables cache stages include default workflow])
       end
     end
   end

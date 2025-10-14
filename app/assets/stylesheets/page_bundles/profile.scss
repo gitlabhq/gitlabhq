@@ -9,7 +9,7 @@ $profile-grid-flex: 1fr;
     @include emoji-menu-toggle-button;
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     .input-lg {
       max-width: 100%;
     }
@@ -20,7 +20,7 @@ $profile-grid-flex: 1fr;
   .modal-dialog {
     width: 380px;
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       width: auto;
     }
   }
@@ -68,7 +68,7 @@ $profile-grid-flex: 1fr;
 
   // Home panel show profile sidebar
   // information on top
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg, panel) {
     display: flex;
     flex-direction: column;
 
@@ -78,7 +78,7 @@ $profile-grid-flex: 1fr;
     }
   }
 
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     display: grid;
     grid-template-columns: $profile-grid-flex;
     gap: $profile-grid-gap;
@@ -105,7 +105,7 @@ $profile-grid-flex: 1fr;
 
 .key-list-item {
   .key-list-item-info {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       float: left;
     }
   }
@@ -130,7 +130,7 @@ $profile-grid-flex: 1fr;
 .user-profile-with-sidebar {
   z-index: 2;
 
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     display: grid;
     grid-template-columns: $profile-grid-flex $right-sidebar-width;
     gap: $profile-grid-gap;

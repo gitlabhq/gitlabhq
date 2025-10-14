@@ -27,6 +27,27 @@ type runHTTPActionHandler struct {
 	action      *pb.Action
 }
 
+func (a *runHTTPActionHandler) createErrorResponse(err error, statusCode ...int32) *pb.ClientEvent {
+	httpResponse := &pb.HttpResponse{
+		Error: err.Error(),
+	}
+
+	if len(statusCode) > 0 {
+		httpResponse.StatusCode = statusCode[0]
+	}
+
+	return &pb.ClientEvent{
+		Response: &pb.ClientEvent_ActionResponse{
+			ActionResponse: &pb.ActionResponse{
+				RequestID: a.action.RequestID,
+				ResponseType: &pb.ActionResponse_HttpResponse{
+					HttpResponse: httpResponse,
+				},
+			},
+		},
+	}
+}
+
 func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, error) {
 	action := a.action.GetRunHTTPRequest()
 
@@ -62,13 +83,13 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 
 	response, err := a.rails.Client.Do(req)
 	if err != nil {
-		return nil, err
+		return a.createErrorResponse(err), nil
 	}
 	defer func() { _ = response.Body.Close() }()
 
 	body, err := io.ReadAll(io.LimitReader(response.Body, ActionResponseBodyLimit))
 	if err != nil {
-		return nil, err
+		return a.createErrorResponse(err, int32(response.StatusCode)), nil
 	}
 
 	clientEvent := &pb.ClientEvent{

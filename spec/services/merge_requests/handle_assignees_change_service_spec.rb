@@ -101,16 +101,10 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService, feature_category: :c
       execute
     end
 
-    context 'when merge_request_dashboard feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
-      end
+    it 'invalidates cache counts' do
+      expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
 
-      it 'invalidates cache counts' do
-        expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
-
-        execute
-      end
+      execute
     end
 
     it 'invalidates cache counts for old assignees' do

@@ -27,7 +27,10 @@ To update the documentation:
 1. Find the documentation page you want to update. If you're not sure where the page is,
    look at the URL of the page on <https://docs.gitlab.com>.
    The path is listed there.
-1. In the upper right, select **Edit > Edit single file**.
+
+   Alternatively, if you are already on the documentation page you would like to update, scroll to the bottom and on the footer, select **View page source**. This link takes you directly to the source file.
+
+1. In the upper right, select **Edit** > **Edit single file**.
 1. Make your updates.
 1. When you're done, in the **Commit message** text box, enter a commit message.
    Use 3-5 words, start the first word with a capital letter, and do not end the phrase with a period.
@@ -95,7 +98,7 @@ rather than using the GitLab community fork.
 
 1. On <https://docs.gitlab.com>, scroll to the bottom of the page you want to edit.
 1. Select **View page source**.
-1. In the upper-right corner, select **Edit > Edit single file**.
+1. In the upper-right corner, select **Edit** > **Edit single file**.
 1. Make your updates.
 1. When you're done, in the **Commit message** text box, enter a commit message.
    Use 3-5 words, start the first word with a capital letter, and do not end the phrase with a period.
@@ -107,7 +110,7 @@ The changes were added to GitLab in your forked repository, in a branch with the
 Now, create a merge request. This merge request is how the changes from your branch
 are merged into the GitLab `master` branch.
 
-1. On the left sidebar, select **Code > Merge requests**.
+1. On the left sidebar, select **Code** > **Merge requests**.
 1. Select **New merge request**.
 1. For the source branch, select your fork and branch.
 1. For the target branch, select the [GitLab repository](https://gitlab.com/gitlab-org/gitlab) `master` branch.

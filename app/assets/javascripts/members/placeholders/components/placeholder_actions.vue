@@ -421,12 +421,12 @@ export default {
 
 <template>
   <div class="gl-flex gl-flex-wrap gl-items-start gl-gap-3">
-    <div class="gl-w-full xl:gl-w-28">
+    <div class="gl-w-full @xl/panel:gl-w-28">
       <gl-collapsible-listbox
         ref="userSelect"
         block
         is-check-centered
-        toggle-class="!gl-w-full !xl:gl-w-28"
+        toggle-class="!gl-w-full !@xl/panel:gl-w-28"
         :class="{ 'is-invalid': userSelectInvalid || sourceUser.reassignmentError }"
         :header-text="s__('UserMapping|Reassign to')"
         :toggle-text="toggleText"

@@ -117,7 +117,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 			bodyProcessor(w, r)
 		}
 	})
-	return testhelper.TestServerWithHandler(nil, mux.ServeHTTP)
+	return testhelper.TestServerWithHandler(t, nil, mux.ServeHTTP)
 }
 
 type testServer struct {
@@ -143,7 +143,6 @@ func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format 
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		ts.Close()
 		require.NoError(t, writer.Close())
 	})
 

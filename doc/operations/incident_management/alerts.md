@@ -16,7 +16,7 @@ Alerts are a critical entity in your incident management workflow. They represen
 
 ## Alert list
 
-Users with at least the Developer role can access the Alert list at **Monitor > Alerts** in your project's sidebar. The Alert list displays alerts sorted by start time, but you can change the sort order by selecting the headers in the Alert list.
+Users with at least the Developer role can access the Alert list at **Monitor** > **Alerts** in your project's sidebar. The Alert list displays alerts sorted by start time, but you can change the sort order by selecting the headers in the Alert list.
 
 The alert list displays the following information:
 
@@ -166,7 +166,7 @@ To assign an alert:
 1. Display the list of current alerts:
 
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Monitor > Alerts**.
+   1. Select **Monitor** > **Alerts**.
 
 1. Select your desired alert to display its details.
 
@@ -205,7 +205,7 @@ Prerequisites:
 To configure the actions:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Monitor**.
+1. Select **Settings** > **Monitor**.
 1. Expand the **Alerts** section, then select the **Alert settings** tab.
 1. Select the **Create an incident** checkbox.
 1. Optional. To customize the incident, from the **Incident template**, select a template to be

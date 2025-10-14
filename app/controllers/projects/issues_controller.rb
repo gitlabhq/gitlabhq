@@ -57,7 +57,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_view_for_issues, project&.group)
-    push_frontend_feature_flag(:work_items_project_issues_list, project)
     push_frontend_feature_flag(:hide_incident_management_features, project)
   end
 
@@ -97,7 +96,7 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
-    redirect_if_epic_params
+    return if redirect_if_epic_params
 
     if index_html_request?
       set_sort_order
@@ -249,6 +248,8 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create_merge_request
+    Gitlab::CoveredExperience.start_covered_experience_create_merge_request(project)
+
     create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
     create_params[:target_project_id] = params[:target_project_id]
     result = ::MergeRequests::CreateFromIssueService.new(project: project, current_user: current_user, mr_params: create_params).execute

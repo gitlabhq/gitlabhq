@@ -25,7 +25,7 @@ You should implement a regular cleanup strategy to reduce package registry bloat
 To review the storage **Usage breakdown**:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. From the **Usage quotas** page, review the **Usage breakdown** for packages.
 
 ## Delete a package
@@ -40,7 +40,7 @@ Prerequisites:
 To delete a package:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Deploy > Package registry**.
+1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select the package you want to delete.
    - Or, from the **Package registry** page,
    select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
@@ -70,7 +70,7 @@ Prerequisites:
 To delete package assets:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Deploy > Package registry**.
+1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select a package to view additional details.
 1. From the **Assets** table, find the name of the assets you want to delete.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and select **Delete asset**.
@@ -103,7 +103,7 @@ Prerequisites:
 By default, the packages cleanup policy is disabled. To enable it:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Manage storage used by package assets**, set the rules appropriately.
 

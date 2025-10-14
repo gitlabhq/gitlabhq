@@ -59,8 +59,6 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
       )
     end
 
-    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
-
     let(:scope_field) { subject.dig('data', 'project', 'ciJobTokenScope') }
     let(:errors_field) { subject['errors'] }
     let(:projects_field) { scope_field&.dig('projects', 'nodes') }
@@ -72,6 +70,8 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
     let(:returned_groups_avatar_urls) { groups_allowlist_field.map { |p| p['avatarUrl'] } }
     let(:returned_outbound_paths) { outbound_allowlist_field.map { |p| p['path'] } }
     let(:returned_inbound_paths) { inbound_allowlist_field.map { |p| p['path'] } }
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
 
     context 'without access to scope' do
       before do

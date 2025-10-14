@@ -81,8 +81,8 @@ describe('ModelVersionsTable', () => {
       {
         key: 'actions',
         label: '',
-        tdClass: 'lg:gl-w-px gl-whitespace-nowrap !gl-p-3 gl-text-right',
-        thClass: 'lg:gl-w-px gl-whitespace-nowrap',
+        tdClass: '@lg/panel:gl-w-px gl-whitespace-nowrap !gl-p-3 gl-text-right',
+        thClass: '@lg/panel:gl-w-px gl-whitespace-nowrap',
       },
     ]);
   });

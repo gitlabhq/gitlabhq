@@ -2,14 +2,19 @@
   box-shadow: none;
   overflow-y: hidden;
 
-   // setting custom width above mobile breakpoint
-  @media (min-width: $breakpoint-md) {
+  // setting custom width above mobile breakpoint
+  @include gl-media-breakpoint-up(md) {
     width: 500px;
   }
 
   /* stylelint-disable gitlab/no-gl-class */
   .gl-infinite-scroll-legend {
     display: none;
+  }
+
+  .gl-drawer-header {
+    position: sticky;
+    top: 0;
   }
 
   .gl-tabs {
@@ -44,12 +49,22 @@
   /* stylelint-enable gitlab/no-gl-class */
 }
 
+.featured-carousel {
+  position: sticky;
+  top: 87px;
+}
+
+.other-updates {
+  height: calc(100vh - 300px);
+  overflow-y: hidden;
+}
+
 .whats-new-modal-backdrop {
   z-index: 699;
 }
 
 .whats-new-article-drawer {
-  @media (min-width: $breakpoint-md) {
+  @include gl-media-breakpoint-up(md) {
     width: 500px;
   }
 }

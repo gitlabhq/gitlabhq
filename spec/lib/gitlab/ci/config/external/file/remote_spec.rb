@@ -326,10 +326,12 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     context 'with a valid remote file' do
       it 'returns the content as a hash' do
         expect(to_hash).to eql(
-          before_script: ["apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs",
-                          "ruby -v",
-                          "which ruby",
-                          "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""]
+          before_script: [
+            "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs",
+            "ruby -v",
+            "which ruby",
+            "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
+          ]
         )
       end
     end

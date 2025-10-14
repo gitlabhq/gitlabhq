@@ -40,7 +40,7 @@ describe('MemberList', () => {
   it("renders group's avatar", () => {
     createComponent();
 
-    expect(wrapper.findComponent(GlAvatarLabeled).attributes('src')).toBe(group.avatarUrl);
+    expect(wrapper.findComponent(GlAvatarLabeled).props('src')).toBe(group.avatarUrl);
   });
 
   describe('when group is private', () => {

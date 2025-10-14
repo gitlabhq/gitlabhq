@@ -8,6 +8,8 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
   include described_class
   include TermsHelper
 
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:organization) { create(:organization) }
   let_it_be(:user, reload: true) { create(:user, organizations: [organization]) }
 
@@ -305,6 +307,83 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
           allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(true)
 
           expect(current_user).to be_nil
+        end
+      end
+    end
+
+    describe 'when authenticating using a granular token' do
+      let_it_be(:granular_pat) { create(:granular_pat) }
+
+      before do
+        env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = granular_pat.token
+        allow(self).to receive(:route_setting)
+      end
+
+      context 'when the `authorize_granular_pats` feature flag is disabled' do
+        before do
+          stub_feature_flags(authorize_granular_pats: false)
+        end
+
+        it 'raises an error stating that the feature is not yet supported' do
+          expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError,
+            'Granular tokens are not yet supported'
+        end
+      end
+
+      context 'when authorization permissions and boundary type are not defined for an endpoint' do
+        it 'raises an error stating that the permissions cannot be determined' do
+          expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError,
+            'Unable to determine boundary and permissions for authorization'
+        end
+      end
+
+      context 'when authorization permissions are defined for an endpoint' do
+        before do
+          env['PATH_INFO'] = "/api/v4/#{boundary_segment}/endpoint"
+          allow(self).to receive(:route_setting).with(:authorization)
+            .and_return(permissions: permission, boundary_type: boundary_type)
+
+          if boundary_resource != standalone_resource
+            allow(self).to receive(:params).and_return(boundary_parameter => boundary_resource.id)
+          end
+        end
+
+        let_it_be(:permission) { :create_issue }
+        let_it_be(:project_resource) { create(:project, organization: user.organization) }
+        let_it_be(:group_resource) { create(:group, organization: user.organization) }
+        let_it_be(:standalone_resource) { nil }
+        let(:boundary) { ::Authz::Boundary.for(boundary_resource) }
+
+        where(:boundary_type, :boundary_resource, :boundary_segment, :boundary_parameter) do
+          :project    | ref(:project_resource)    | 'projects' | :project_id
+          :project    | ref(:project_resource)    | 'projects' | :id
+          :group      | ref(:group_resource)      | 'groups'   | :group_id
+          :group      | ref(:group_resource)      | 'groups'   | :id
+          :standalone | ref(:standalone_resource) | ''         | nil
+        end
+
+        with_them do
+          context 'when the granular token scopes are insufficient' do
+            let(:message) do
+              msg = "Access denied: Your Personal Access Token lacks the required permissions: [#{permission}]"
+              msg << " for \"#{boundary.path}\"" if boundary_resource != standalone_resource
+              msg << "."
+            end
+
+            it 'raises an error that includes the missing scope' do
+              expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError, message
+            end
+          end
+
+          context 'when the granular token scopes are sufficient' do
+            let(:granular_pat) do
+              create(:granular_pat, user: user, permissions: permission, namespace: boundary.namespace)
+            end
+
+            it 'does not raise an error and returns the token user' do
+              expect(current_user).to eq(user)
+            end
+          end
         end
       end
     end

@@ -173,6 +173,9 @@ For example:
 
 Do not use title case for **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
+Use **GitLab agent for Kubernetes** if **agent** on its own is not clear,
+or to distinguish it from other types of agents.
+
 When referring to the specific component in technical contexts, use `agentk` in backticks.
 
 ## agent for workspace
@@ -186,6 +189,8 @@ in a workspace and is used to access the workspace. Do not use title case for **
 When referring to the specific component in technical contexts, use `agentw` in backticks.
 
 Do not confuse with [agent for Kubernetes](#agent-for-kubernetes).
+Use **agent for workspace** if **agent** on its own is not clear,
+or to distinguish it from other types of agents.
 
 ## agent access token
 
@@ -219,12 +224,19 @@ Use **AI**. Do not spell out **artificial intelligence**.
 
 When writing about AI, the **agent** is an entity that performs actions for the user.
 
-You can use **AI agent** if **agent** on its own is not clear.
+You can use **AI agent** if **agent** on its own is not clear,
+or to distinguish it from other types of agents.
+
+Use lowercase for **agent** on its own. Use title case for the agent name, for example, **Code Review Agent**.
 
 When you're interacting with an AI agent, a [**session**](#session) is running.
 The user can stop a session.
 
 One or more AI agents can be part of a [**flow**](#flows), where they are orchestrated to work together on a problem.
+
+## AI Catalog
+
+Use title case for the **AI Catalog**. Do not use **catalog**.
 
 ## AI gateway
 
@@ -419,6 +431,16 @@ Use:
 Instead of:
 
 - Select the **Run pipelines** button.
+
+## canceled, cancelled
+
+Use **canceled** (one L) instead of **cancelled** (two Ls).
+
+Similarly, use **canceling** instead of **cancelling**.
+
+Use two Ls for the noun **cancellation**.
+
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
 
 ## cannot, can not
 
@@ -1075,6 +1097,8 @@ Filtering is different from [searching](#search).
 
 GitLab provides multiple **flows** that are run by [agents](#ai-agent).
 
+Use lowercase for **flow** on its own. Use title case for the flow name, for example, **Issue to Merge Request Flow**.
+
 Do not use **agent flow**.
 
 You choose a flow. You start a [**session**](#session).
@@ -1553,6 +1577,16 @@ Licenses are different than subscriptions.
 - A license grants users access to the subscription they purchased. The license includes information like the number of seats and subscription dates.
 - A subscription is the subscription tier that the user purchases.
 
+Use:
+
+- Add a license to your instance.
+- Purchase a subscription.
+
+Instead of:
+
+- Buy a license.
+- Purchase a license.
+
 Avoid the terms [**cloud license** or **cloud licensing**](#cloud-licensing) if possible.
 
 The following terms are displayed in the UI and in emails. You can use them when necessary:
@@ -1566,16 +1600,6 @@ describing the files that customers receive by email as part of the overall
 licensing and synchronization process.
 
 However, if you can, rather than the relying on the term, use the more specific description instead.
-
-Use:
-
-- Add a license to your instance.
-- Purchase a subscription.
-
-Instead of:
-
-- Buy a license.
-- Purchase a license.
 
 ## lifecycle, life cycle, life-cycle
 
@@ -1774,7 +1798,7 @@ capitalization inconsistencies.
 Use **namespace** when distinguishing between personal and group namespaces.
 Don't use **namespace** as a synonym for **group** or **top-level group**.
 
-On GitLab.com, top-level group Owners have full control over their groups and projects. 
+On GitLab.com, top-level group Owners have full control over their groups and projects.
 Regular users can't have administrator access, as GitLab.com is managed by the GitLab team.
 
 For example:
@@ -2905,7 +2929,7 @@ For example:
 - Use code review analytics to view merge request data.
 - Create a board to organize your team tasks.
 - Configure variables to restrict pushes to a repository.
-- Add links to external accounts you have, like Discord and Twitter.
+- Add links to external accounts you have, like Discord and X (formerly Twitter).
 
 Use **you can** for optional actions. For example:
 

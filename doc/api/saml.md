@@ -47,7 +47,9 @@ response attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.com/api/v4/groups/33/saml/identities" --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
+curl --location --request GET \
+  --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>" \
+  --url "https://gitlab.com/api/v4/groups/33/saml/identities"
 ```
 
 Example response:
@@ -83,7 +85,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
+curl --location --request GET \
+  --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
+  --url "https://gitlab.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd"
 ```
 
 Example response:
@@ -117,9 +121,11 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request PATCH "https://gitlab.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" \
---header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
---form "extern_uid=be20d8dcc028677c931e04f387"
+curl --request PATCH \
+  --location \
+  --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
+  --url "https://gitlab.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" \
+  --form "extern_uid=be20d8dcc028677c931e04f387"
 ```
 
 ### Delete a single SAML identity
@@ -144,8 +150,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/groups/33/saml/be20d8dcc028677c931e04f387"
-
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.com/api/v4/groups/33/saml/be20d8dcc028677c931e04f387"
 ```
 
 Example response:
@@ -211,7 +218,9 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
 ```
 
 Example response:
@@ -263,13 +272,17 @@ If multiple SAML group links exist with the same name but different providers, a
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
 ```
 
 Example request with provider parameter:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1?provider=saml_provider_1"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1?provider=saml_provider_1"
 ```
 
 Example response:
@@ -346,13 +359,17 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
 ```
 
 Example request with provider parameter:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1?provider=saml_provider_1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1?provider=saml_provider_1"
 ```
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.

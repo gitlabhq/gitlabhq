@@ -72,11 +72,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       if user
         allow(user).to receive(:assigned_open_issues_count).and_return(1)
         allow(user).to receive(:assigned_open_merge_requests_count).and_return(4)
+        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(0)
         allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
         allow(user).to receive(:todos_pending_count).and_return(3)
         allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
-        allow(user).to receive(:review_requested_open_merge_requests_count_in_cache?).and_return(true)
-        allow(user).to receive(:assigned_open_merge_requests_count_in_cache?).and_return(true)
       end
     end
 
@@ -103,7 +102,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         is_admin: false,
         name: user.name,
         username: user.username,
-        admin_url: admin_root_url,
+        admin_url: admin_root_path,
         admin_mode: {
           admin_mode_feature_enabled: true,
           admin_mode_active: false,
@@ -284,50 +283,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
             ])
           end
         end
-      end
-    end
-
-    it 'returns "Merge requests" menu', :use_clean_rails_memory_store_caching do
-      expect(subject[:merge_request_menu]).to eq([
-        {
-          name: _('Merge requests'),
-          items: [
-            {
-              text: _('Assigned'),
-              href: merge_requests_dashboard_path(assignee_username: user.username),
-              count: 4,
-              userCount: 'assigned_merge_requests',
-              extraAttrs: {
-                'data-track-action': 'click_link',
-                'data-track-label': 'merge_requests_assigned',
-                'data-track-property': 'nav_core_menu',
-                class: 'dashboard-shortcuts-merge_requests'
-              }
-            },
-            {
-              text: _('Review requests'),
-              href: merge_requests_dashboard_path(reviewer_username: user.username),
-              count: 0,
-              userCount: 'review_requested_merge_requests',
-              extraAttrs: {
-                'data-track-action': 'click_link',
-                'data-track-label': 'merge_requests_to_review',
-                'data-track-property': 'nav_core_menu',
-                class: 'dashboard-shortcuts-review_requests'
-              }
-            }
-          ]
-        }
-      ])
-    end
-
-    context 'when merge_request_dashboard feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
-      end
-
-      it 'returns nil for merge_request_menu' do
-        expect(subject[:merge_request_menu]).to be_nil
       end
     end
 

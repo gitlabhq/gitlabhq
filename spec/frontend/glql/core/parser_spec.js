@@ -52,6 +52,7 @@ describe('parse', () => {
   it('parses a simple query correctly', async () => {
     expect(await parse('assignee = currentUser()')).toMatchInlineSnapshot(`
 {
+  "aggregate": [],
   "config": {
     "display": "list",
     "fields": "title",
@@ -63,6 +64,7 @@ describe('parse', () => {
       "name": "title",
     },
   ],
+  "groupBy": [],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
   issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
@@ -112,6 +114,7 @@ display: table
 assignee = currentUser()`),
     ).toMatchInlineSnapshot(`
 {
+  "aggregate": [],
   "config": {
     "display": "table",
     "fields": "title, assignees, dueDate",
@@ -133,6 +136,7 @@ assignee = currentUser()`),
       "name": "dueDate",
     },
   ],
+  "groupBy": [],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
   issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
@@ -192,6 +196,7 @@ query: assignee = currentUser()
 `),
     ).toMatchInlineSnapshot(`
 {
+  "aggregate": [],
   "config": {
     "display": "table",
     "fields": "title, assignees, dueDate",
@@ -214,6 +219,7 @@ query: assignee = currentUser()
       "name": "dueDate",
     },
   ],
+  "groupBy": [],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
   issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
@@ -380,6 +386,165 @@ describe('parseQuery', () => {
   }
 }"
 `);
+  });
+
+  describe('aggregation feature flag handling', () => {
+    const groupBy = "timeSegment(1w) on mergedAt as 'Date merged'";
+    const aggregate = "count as 'Total count'";
+    const query = 'type = MergeRequest and merged >= 2025-05-01 and merged <= 2025-05-30';
+    const config = { fields: MOCK_FIELDS, groupBy, aggregate };
+
+    describe('when aggregation is disabled', () => {
+      beforeEach(() => {
+        gon.features = {
+          ...gon.features,
+          glqlAggregation: false,
+        };
+      });
+
+      it('omits groupBy and aggregate from config passed to glql.compile', async () => {
+        const result = await parseQuery(query, config);
+
+        // The returned result should still have empty arrays for groupBy and aggregate
+        // since the feature flag is disabled
+        expect(result.groupBy).toEqual([]);
+        expect(result.aggregate).toEqual([]);
+      });
+
+      it('preserves other config properties when omitting aggregation config', async () => {
+        const configWithExtra = {
+          ...config,
+          limit: 100,
+          display: 'table',
+          customProperty: 'value',
+        };
+
+        const result = await parseQuery(query, configWithExtra);
+
+        // Verify that non-aggregation config is preserved in the returned config
+        expect(result.config.limit).toBe(100);
+        expect(result.config.display).toBe('table');
+        expect(result.config.customProperty).toBe('value');
+        expect(result.config.fields).toBe(MOCK_FIELDS);
+
+        // But aggregation properties should not be processed
+        expect(result.groupBy).toEqual([]);
+        expect(result.aggregate).toEqual([]);
+      });
+    });
+
+    describe('when aggregation is enabled', () => {
+      beforeEach(() => {
+        gon.features = {
+          ...gon.features,
+          glqlAggregation: true,
+        };
+      });
+
+      it('includes groupBy and aggregate in config passed to glql.compile', async () => {
+        const result = await parseQuery(query, config);
+
+        // When feature flag is enabled, aggregation should be processed
+        expect(result.groupBy).toMatchInlineSnapshot(`
+[
+  Dimension {
+    "field": {
+      "key": "mergedAt",
+      "label": "Date merged",
+      "name": "mergedAt",
+    },
+    "fn": Time {
+      "quantity": 1,
+      "timeSegmentType": "fromStartOfUnit",
+      "type": "time",
+      "unit": "w",
+    },
+  },
+]
+`);
+        expect(result.aggregate).toMatchInlineSnapshot(`
+[
+  {
+    "key": "count",
+    "label": "Total count",
+    "name": "count",
+  },
+]
+`);
+      });
+
+      it('parses the aggregation config correctly', async () => {
+        const result = await parseQuery(query, config);
+
+        expect(result.groupBy).toHaveLength(1);
+        expect(result.aggregate).toHaveLength(1);
+        expect(result.groupBy[0].field.key).toBe('mergedAt');
+        expect(result.groupBy[0].field.label).toBe('Date merged');
+        expect(result.aggregate[0].key).toBe('count');
+        expect(result.aggregate[0].label).toBe('Total count');
+      });
+    });
+
+    describe('when aggregation feature flag is undefined', () => {
+      beforeEach(() => {
+        gon.features = {
+          ...gon.features,
+        };
+        delete gon.features.glqlAggregation;
+      });
+
+      it('treats undefined feature flag as disabled and omits aggregation config', async () => {
+        const result = await parseQuery(query, config);
+
+        // When feature flag is undefined, it should be treated as disabled
+        expect(result.groupBy).toEqual([]);
+        expect(result.aggregate).toEqual([]);
+      });
+    });
+  });
+
+  describe('when aggregation is enabled', () => {
+    beforeEach(() => {
+      gon.features = {
+        ...gon.features,
+        glqlAggregation: true,
+      };
+    });
+    const groupBy = "timeSegment(1w) on mergedAt as 'Date merged'";
+    const aggregate = "count as 'Total count'";
+
+    it('parses the aggregation config', async () => {
+      const query = await parseQuery(
+        'type = MergeRequest and merged >= 2025-05-01 and merged <= 2025-05-30',
+        { fields: MOCK_FIELDS, groupBy, aggregate },
+      );
+      expect(query.groupBy).toMatchInlineSnapshot(`
+[
+  Dimension {
+    "field": {
+      "key": "mergedAt",
+      "label": "Date merged",
+      "name": "mergedAt",
+    },
+    "fn": Time {
+      "quantity": 1,
+      "timeSegmentType": "fromStartOfUnit",
+      "type": "time",
+      "unit": "w",
+    },
+  },
+]
+`);
+      expect(query.aggregate).toMatchInlineSnapshot(`
+[
+  {
+    "key": "count",
+    "label": "Total count",
+    "name": "count",
+  },
+]
+`);
+    });
   });
 
   it('throws an error for invalid queries', async () => {

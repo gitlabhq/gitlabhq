@@ -294,14 +294,6 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
         end
       end
 
-      context 'when the revocation feature is disabled' do
-        before do
-          stub_feature_flags(api_admin_token_revoke: false)
-        end
-
-        it_behaves_like 'returning response status', :not_found
-      end
-
       it_behaves_like 'rejecting invalid requests with admin'
     end
 

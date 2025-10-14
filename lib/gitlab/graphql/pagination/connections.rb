@@ -29,6 +29,11 @@ module Gitlab
             ::ClickHouse::Client::QueryBuilder,
             Gitlab::Graphql::Pagination::ClickHouseConnection
           )
+
+          schema.connections.add(
+            Gitlab::Graphql::Pagination::ClickHouseAggregatedRelation,
+            Gitlab::Graphql::Pagination::ClickHouseAggregatedConnection
+          )
         end
       end
     end

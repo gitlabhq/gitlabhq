@@ -285,10 +285,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         EOY
       end
 
-      before do
-        stub_feature_flags(ci_validate_config_options: false)
-      end
-
       it 'creates a pipeline' do
         expect(pipeline).to be_persisted
         expect(build_names).to contain_exactly(
@@ -638,6 +634,32 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           end
         end
       end
+
+      context 'with nested variables' do
+        let(:config) do
+          <<-EOY
+          variables:
+            NESTED_VAR: ${CI_DEFAULT_BRANCH}
+
+          stages:
+            - test
+
+          is-default:
+            stage: 'test'
+            script:
+              - "echo '$CI_COMMIT_BRANCH == $NESTED_VAR'"
+            rules:
+              - if: '$CI_COMMIT_BRANCH == $NESTED_VAR'
+                when: 'always'
+              - when: 'never'
+          EOY
+        end
+
+        it 'matches the rule' do
+          expect(pipeline).to be_persisted
+          expect(build_names).to contain_exactly('is-default')
+        end
+      end
     end
 
     context 'changes:' do
@@ -688,7 +710,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       context 'and matches' do
         before do
           allow_next_instance_of(Ci::Pipeline) do |pipeline|
-            allow(pipeline).to receive(:modified_paths).and_return(%w[README.md])
+            allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'README.md')])
           end
         end
 
@@ -714,7 +736,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       context 'and matches the second rule' do
         before do
           allow_next_instance_of(Ci::Pipeline) do |pipeline|
-            allow(pipeline).to receive(:modified_paths).and_return(%w[app.rb])
+            allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'app.rb')])
           end
         end
 
@@ -732,7 +754,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       context 'and does not match' do
         before do
           allow_next_instance_of(Ci::Pipeline) do |pipeline|
-            allow(pipeline).to receive(:modified_paths).and_return(%w[useless_script.rb])
+            allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'useless_script.rb')])
           end
         end
 
@@ -977,7 +999,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       context 'and changes: matches before if' do
         before do
           allow_next_instance_of(Ci::Pipeline) do |pipeline|
-            allow(pipeline).to receive(:modified_paths).and_return(%w[README.md])
+            allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'README.md')])
           end
         end
 
@@ -1048,7 +1070,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       context 'with if matches and changes matches' do
         before do
           allow_next_instance_of(Ci::Pipeline) do |pipeline|
-            allow(pipeline).to receive(:modified_paths).and_return(%w[app.rb])
+            allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'app.rb')])
           end
         end
 
@@ -1070,7 +1092,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
         before do
           allow_next_instance_of(Ci::Pipeline) do |pipeline|
-            allow(pipeline).to receive(:modified_paths).and_return(%w[README.md])
+            allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'README.md')])
           end
         end
 
@@ -1709,7 +1731,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         context 'when matches' do
           before do
             allow_next_instance_of(Ci::Pipeline) do |pipeline|
-              allow(pipeline).to receive(:modified_paths).and_return(%w[file1.md])
+              allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'file1.md')])
             end
           end
 
@@ -1722,7 +1744,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         context 'when does not match' do
           before do
             allow_next_instance_of(Ci::Pipeline) do |pipeline|
-              allow(pipeline).to receive(:modified_paths).and_return(%w[unknown])
+              allow(pipeline).to receive(:changed_paths).and_return([instance_double(Gitlab::Git::ChangedPath, path: 'unknown')])
             end
           end
 

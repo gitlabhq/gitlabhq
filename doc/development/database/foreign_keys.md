@@ -354,7 +354,7 @@ validating a foreign key:
 1. Run `bundle exec rails gitlab:db:validate_async_constraints:all` so that the FK is validated
    asynchronously on all databases.
 1. To verify the foreign key, open the PostgreSQL console using the
-   [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md)
+   [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/postgresql/)
    command `gdk psql` and run the command `\d+ table_name` to check that your
    foreign key is valid. A successful validation removes `NOT VALID` from
    the foreign key definition.
@@ -362,6 +362,47 @@ validating a foreign key:
 ### Removing foreign keys
 
 This operation does not require downtime.
+
+#### Removing foreign keys from partitioned tables
+
+When working with partitioned tables, use the `remove_partitioned_foreign_key` helper method instead of the regular `remove_foreign_key` method. This is necessary because `remove_foreign_key` doesn't remove foreign keys on partitions when the partitioned table doesn't have the validated foreign key yet. That happens when the `validate: false` option was set during the foreign key creation on partitioned table.
+
+The `remove_partitioned_foreign_key` method removes foreign keys from both the partitioned table and all its partitions:
+
+```ruby
+# Remove by column name
+remove_partitioned_foreign_key :partitioned_table, :referenced_table, column: :referenced_table_id
+
+# Remove by foreign key name
+remove_partitioned_foreign_key :partitioned_table, name: 'fk_rails_123456'
+```
+
+This method:
+
+- Removes the foreign key from the partitioned table which also removes inherited constraints on each partition
+- Then removes the foreign key from each partition individually (in case they have non-inherited constraints)
+- Uses `remove_foreign_key_if_exists` internally, so it won't raise errors if the foreign key doesn't exist
+- Supports the same options as the regular `remove_foreign_key` method
+
+Example migration:
+
+```ruby
+class RemovePartitionedForeignKey < Gitlab::Database::Migration[2.3]
+  include Gitlab::Database::PartitioningMigrationHelpers
+
+  disable_ddl_transaction!
+
+  def up
+    # Add partitioned foreign key
+    add_concurrent_partitioned_foreign_key :partitioned_table, :projects, column: :project_id
+  end
+
+  def down
+    # Remove partitioned foreign key
+    remove_partitioned_foreign_key :partitioned_table, :projects, column: :project_id
+  end
+end
+```
 
 ## Use `bigint` for foreign keys
 

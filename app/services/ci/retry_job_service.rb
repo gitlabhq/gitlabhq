@@ -35,9 +35,7 @@ module Ci
       start_pipeline_proc = -> { start_pipeline(job, new_job) } if start_pipeline
 
       new_job.run_after_commit do
-        if Feature.enabled?(:persisted_job_environment_relationship, project) && job.persisted_environment.present?
-          new_job.link_to_environment(job.persisted_environment)
-        end
+        new_job.link_to_environment(job.persisted_environment) if job.persisted_environment.present?
 
         start_pipeline_proc&.call
 

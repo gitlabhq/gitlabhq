@@ -4,6 +4,8 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
   include PartitionedTable
   include ShaAttribute
 
+  ignore_column :trailers, remove_with: '18.7', remove_after: '2025-11-20'
+
   # Need this to be set as calling `id` will return [id, project_id] since
   # this table is partitioned by `project_id`.
   self.primary_key = :id
@@ -33,19 +35,12 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
 
   sha_attribute :sha
 
-  attribute :trailers, ::Gitlab::Database::Type::IndifferentJsonb.new
-
-  # rubocop:disable Database/JsonbSizeLimit -- TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/554719
-  validates :trailers, json_schema: { filename: 'git_trailers' }
-  # rubocop:enable Database/JsonbSizeLimit
-
   # Creates a new row, or returns an existing one if a row already exists.
   def self.find_or_create(metadata = {})
     find_or_create_by!(project_id: metadata['project_id'], sha: metadata['sha']) do |record|
       record.committer = metadata['committer']
       record.commit_author = metadata['commit_author']
       record.message = metadata['message']
-      record.trailers = metadata['trailers'] || {}
       record.authored_date = metadata['authored_date']
       record.committed_date = metadata['committed_date']
     end
@@ -77,7 +72,6 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
   # - :authored_date
   # - :committed_date
   # - :message
-  # - :raw_trailers
   #
   # The return value is a hash that maps ID of each found or created commits metadata
   # row to a SHA.
@@ -110,8 +104,7 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
         sha: commit_row[:raw_sha],
         authored_date: commit_row[:authored_date],
         committed_date: commit_row[:committed_date],
-        message: commit_row[:message],
-        trailers: commit_row[:raw_trailers]
+        message: commit_row[:message]
       }
     end
 

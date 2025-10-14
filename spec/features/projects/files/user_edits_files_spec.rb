@@ -163,6 +163,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
   context 'when an user does not have write access', :js do
     before do
+      stub_feature_flags(blob_edit_refactor: false)
       project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
       wait_for_requests
@@ -262,6 +263,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       let!(:forked_project) { fork_project(project2, user, namespace: user.namespace, repository: true) }
 
       before do
+        stub_feature_flags(blob_edit_refactor: false)
         visit(project2_tree_path_root_ref)
         wait_for_requests
       end

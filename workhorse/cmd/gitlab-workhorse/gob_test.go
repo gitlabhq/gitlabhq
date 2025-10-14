@@ -309,7 +309,7 @@ func runTest(t *testing.T, tc gobTestCase) {
 	}))
 	defer upstream.Close()
 
-	authServer := testhelper.TestServerWithHandler(nil, func(w http.ResponseWriter, r *http.Request) {
+	authServer := testhelper.TestServerWithHandler(t, nil, func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, tc.authServer.shouldReceiveRequestPath, r.URL.Path, "requested auth endpoint")
 		// Auth request should use the same method as the original Workhorse request
 		assert.Equal(t, tc.method, r.Method, "auth request method")
@@ -344,7 +344,6 @@ func runTest(t *testing.T, tc gobTestCase) {
 			w.Write(data)
 		}
 	})
-	defer authServer.Close()
 
 	workhorse := startWorkhorseServer(t, authServer.URL)
 

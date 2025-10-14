@@ -678,6 +678,18 @@ def down
 end
 ```
 
+#### Minimizing lock contention with 2-step foreign key validation
+
+For high-traffic tables or when adding foreign keys that might cause lock contention during deployment, consider separating the foreign key creation and validation into different migrations. **This is especially important for partitioned tables**, where foreign keys must be added to each partition individually before being added to the parent table.
+
+1. **First migration**: Add the foreign key with `validate: false` to avoid blocking writes during deployment
+1. **Second migration**: Validate the foreign key asynchronously using `prepare_async_foreign_key_validation`
+1. **Third migration**: Add the parent foreign key (for partitioned tables) after validation is complete
+
+While `add_concurrent_foreign_key` already performs 2-step validation (add without validation, then validate) internally, separating these steps across different migrations provides deployment flexibility by allowing validation to happen outside the deployment window, reducing deployment time and risk.
+
+This approach minimizes deployment blocking due to lock contention, as seen in production incidents like [this one](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20468) where foreign key validation took longer than expected during critical deployment windows.
+
 ### Usage with non-transactional migrations
 
 Only when we disable transactional migrations using `disable_ddl_transaction!`, we can use

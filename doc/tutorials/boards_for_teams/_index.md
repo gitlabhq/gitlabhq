@@ -83,7 +83,7 @@ upcoming code changes.
 To create a blank project:
 
 1. In your group, on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and then select
-   **In this group > New project/repository**.
+   **In this group** > **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, name your project `Paperclip Assistant`.
@@ -100,7 +100,7 @@ projects you create later.
 To create each label:
 
 1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group.
-1. Select **Manage > Labels**.
+1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `Frontend`.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
@@ -125,7 +125,7 @@ to manage issues from all the projects that you might create later in this group
 To create a new group issue board:
 
 1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group.
-1. Select **Plan > Issue boards**.
+1. Select **Plan** > **Issue boards**.
 1. Create the UX workflow and Frontend workflow boards.
 
 To create the **UX workflow** issue board:

@@ -8,6 +8,22 @@ FactoryBot.define do
     target factory: :issue
     action { Todo::ASSIGNED }
 
+    # Add a transient attribute to control the behavior
+    transient do
+      with_group { false }
+    end
+
+    # Set project to nil when group is provided
+    after(:build) do |todo, evaluator|
+      todo.project = nil if todo.group.present? && !evaluator.with_group
+    end
+
+    # Create a trait for todos with group
+    trait :with_group do
+      project { nil }
+      group
+    end
+
     trait :assigned do
       action { Todo::ASSIGNED }
     end

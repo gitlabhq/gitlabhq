@@ -173,12 +173,6 @@ describe('Design management design index page', () => {
         resolvedDiscussionsExpanded: false,
         isLoading: false,
         isOpen: true,
-        designVariables: {
-          fullPath: 'project-path',
-          iid: '1',
-          filenames: ['gid:/gitlab/Design/1'],
-          atVersion: null,
-        },
       });
     });
 

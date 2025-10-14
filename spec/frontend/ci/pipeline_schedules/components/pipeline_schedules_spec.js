@@ -76,15 +76,12 @@ describe('Pipeline schedules app', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (requestHandlers, realtimeEnabled = true) => {
+  const createComponent = (requestHandlers) => {
     wrapper = mountExtended(PipelineSchedules, {
       provide: {
         projectPath: 'gitlab-org/gitlab',
         newSchedulePath: '/root/ci-project/-/pipeline_schedules/new',
         projectId: '23',
-        glFeatures: {
-          ciPipelineSchedulesStatusRealtime: realtimeEnabled,
-        },
       },
       mocks: {
         $toast,
@@ -638,16 +635,6 @@ describe('Pipeline schedules app', () => {
         await waitForPromises();
 
         expect(subscriptionHandler).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('with feature flag disabled', () => {
-      it('does not call subscription', async () => {
-        createComponent([[getPipelineSchedulesQuery, successHandler]], false);
-
-        await waitForPromises();
-
-        expect(subscriptionHandler).not.toHaveBeenCalled();
       });
     });
   });

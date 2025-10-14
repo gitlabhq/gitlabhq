@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-gitlab_dedicated: no
+gitlab_dedicated: yes
 description: Configure PlantUML integration with GitLab Self-Managed.
 title: PlantUML
 ---
@@ -462,7 +462,7 @@ After configuring your local PlantUML server, you're ready to enable the PlantUM
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. On the left sidebar, go to **Settings > General** and expand the **PlantUML** section.
+1. On the left sidebar, go to **Settings** > **General** and expand the **PlantUML** section.
 1. Select the **Enable PlantUML** checkbox.
 1. Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`,
    and select **Save changes**.

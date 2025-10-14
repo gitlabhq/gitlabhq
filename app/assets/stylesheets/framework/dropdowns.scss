@@ -47,7 +47,7 @@
       max-height: $dropdown-max-height;
     }
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       width: 100%;
     }
 
@@ -494,7 +494,7 @@
 .dropdown-select {
   width: $dropdown-width;
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     width: 100%;
   }
 }

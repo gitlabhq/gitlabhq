@@ -1,9 +1,8 @@
-- container_queries_enabled = Feature.enabled?(:tailwind_container_queries, current_user)
-- @main_wrapper_class =  "container-queries-enabled gl-@container/panel" if container_queries_enabled
+- @main_wrapper_class =  "container-queries-enabled gl-@container/panel js-container-queries-enabled" if project_studio_enabled?
 
 .layout-page{ class: page_with_sidebar_class }
   -# this is required to exactly match the main container width to the viewport inner width, which includes scrollbar
-  - if container_queries_enabled
+  - if project_studio_enabled?
     = javascript_tag do
       :plain
         const outer = document.createElement('div');
@@ -22,15 +21,15 @@
 
   - sidebar_panel = super_sidebar_nav_panel(nav: nav, user: current_user, group: group, project: @project, current_ref: current_ref, ref_type: @ref_type, viewed_user: @user, organization: @organization)
   - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
-  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
+  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ class: super_sidebar_loading_state_class, data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
 
-  = render_if_exists "layouts/tanuki_bot_chat" if context
+  = render_if_exists "layouts/tanuki_bot_chat"
   = render_if_exists "layouts/session_expire_modal"
 
   - if project_studio_enabled?
-    .panels-container.gl-flex{ class: 'gl-h-[100vh] gl-gap-3' }
-      .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative{ class: 'gl-@container/content-panels' }
-        #static-panel-portal.static-panel.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
+    .panels-container.gl-flex.gl-gap-3
+      .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative.js-content-panels{ class: 'gl-@container/content-panels' }
+        #static-panel-portal.js-static-panel.static-panel.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
           .panel-header
             -# Broadcast messages
             .broadcast-wrapper
@@ -47,7 +46,9 @@
               = render 'layouts/alerts', alert_class: alert_class, context: context
 
               %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-                %main.content{ id: "content-body", class: "gl-@container/panel", **page_itemtype }
+                %main#content-body.content{ class: "gl-@container/panel", **page_itemtype }
+                  -# mount drawers here for better page performance
+                  #js-drawer-container
                   -# Sticky alerts
                   = render "layouts/flash" unless @hide_flash
                   = yield :after_flash_content
@@ -58,14 +59,15 @@
             = render_if_exists "shared/footer/global_footer"
 
 
-        #contextual-panel-portal.paneled-view.contextual-panel{
+        #contextual-panel-portal.js-dynamic-panel.paneled-view.contextual-panel{
           class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative'
         }
 
     .paneled-view.ai-panels
-      #duo-chat-panel
+      = dispensable_render_if_exists 'layouts/duo_chat_panel'
 
   - else
+    - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if project_studio_enabled?
     .content-wrapper{ class: "#{@content_wrapper_class}" }
       -# Broadcast messages
       .broadcast-wrapper
@@ -80,6 +82,8 @@
 
       %div{ class: "#{container_class unless @no_container} #{@content_class}" }
         %main.content{ id: "content-body", **page_itemtype, class: @main_wrapper_class }
+          -# mount drawers here for better page performance
+          #js-drawer-container
           = render "layouts/flash" unless @hide_flash
           = yield :after_flash_content
           = yield :before_content

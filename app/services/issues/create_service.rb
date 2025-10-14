@@ -49,6 +49,7 @@ module Issues
 
     def before_create(issue)
       issue.check_for_spam(user: current_user, action: :create) if perform_spam_check
+      issue.ensure_work_item_description
 
       after_commit_tasks(current_user, issue)
     end
@@ -90,6 +91,7 @@ module Issues
 
       create_assignee_note(issue, old_assignees)
       Gitlab::ResourceEvents::AssignmentEventRecorder.new(parent: issue, old_assignees: old_assignees).record
+      execute_flow_triggers(issue, issue.assignees, :assign)
     end
 
     def resolve_discussions_with_issue(issue)

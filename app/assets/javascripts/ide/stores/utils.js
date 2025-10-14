@@ -61,17 +61,19 @@ export const decorateData = (entity) => {
   });
 };
 
-const sortTreesByTypeAndName = (a, b) => {
-  if (a.type === 'tree' && b.type === 'blob') {
-    return -1;
-  }
-  if (a.type === 'blob' && b.type === 'tree') {
-    return 1;
-  }
-  if (a.name < b.name) return -1;
-  if (a.name > b.name) return 1;
-  return 0;
-};
+function sortTreesByTypeAndOther(key) {
+  return (a, b) => {
+    if (a.type === 'tree' && b.type === 'blob') {
+      return -1;
+    }
+    if (a.type === 'blob' && b.type === 'tree') {
+      return 1;
+    }
+    if (a[key] < b[key]) return -1;
+    if (a[key] > b[key]) return 1;
+    return 0;
+  };
+}
 
 export const linkTreeNodes = (tree) => {
   return tree.map((entity) =>
@@ -81,11 +83,11 @@ export const linkTreeNodes = (tree) => {
   );
 };
 
-export const sortTree = (sortedTree) =>
+export const sortTree = (sortedTree, key = 'name') =>
   sortedTree
     .map((entity) =>
       Object.assign(entity, {
-        tree: entity.tree.length ? sortTree(entity.tree) : [],
+        tree: entity.tree.length ? sortTree(entity.tree, key) : [],
       }),
     )
-    .sort(sortTreesByTypeAndName);
+    .sort(sortTreesByTypeAndOther(key));

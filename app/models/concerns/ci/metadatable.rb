@@ -23,7 +23,7 @@ module Ci
       before_validation :ensure_metadata, on: :create, if: :can_write_metadata?
 
       scope :with_project_and_metadata, -> do
-        joins(:metadata).includes(:metadata).preload(:project, :job_definition)
+        preload(:project, :metadata, :job_definition)
       end
 
       def self.any_with_exposed_artifacts?
@@ -63,6 +63,7 @@ module Ci
       artifacts_exposed_as.present?
     end
 
+    # Remove this method with FF `stop_writing_builds_metadata`
     def ensure_metadata
       metadata || build_metadata(project: project)
     end
@@ -98,7 +99,8 @@ module Ci
     end
 
     def interruptible
-      return job_definition.interruptible if read_from_new_destination? && job_definition
+      return job_definition.interruptible if job_definition
+      return temp_job_definition.interruptible if temp_job_definition
 
       metadata&.read_attribute(:interruptible)
     end
@@ -120,7 +122,7 @@ module Ci
     end
 
     def debug_trace_enabled?
-      return debug_trace_enabled if read_from_new_destination? && !debug_trace_enabled.nil?
+      return debug_trace_enabled unless debug_trace_enabled.nil?
       return true if degenerated?
 
       !!metadata&.debug_trace_enabled?
@@ -132,11 +134,11 @@ module Ci
     end
 
     def timeout_human_readable_value
-      (read_from_new_destination? && timeout_human_readable) || metadata&.timeout_human_readable
+      timeout_human_readable || metadata&.timeout_human_readable
     end
 
     def timeout_value
-      (read_from_new_destination? && timeout) || metadata&.timeout
+      timeout || metadata&.timeout
     end
 
     # This method is called from within a Ci::Build state transition;
@@ -156,8 +158,9 @@ module Ci
       valid?
     end
 
+    # metadata has `unknown_timeout_source` as default
     def timeout_source_value
-      (read_from_new_destination? && timeout_source) || metadata&.timeout_source
+      timeout_source || metadata&.timeout_source || 'unknown_timeout_source'
     end
 
     def artifacts_exposed_as
@@ -174,11 +177,11 @@ module Ci
     strong_memoize_attr :downstream_errors
 
     def scoped_user_id
-      (read_from_new_destination? && read_attribute(:scoped_user_id)) || options[:scoped_user_id]
+      read_attribute(:scoped_user_id) || options[:scoped_user_id]
     end
 
     def exit_code
-      (read_from_new_destination? && read_attribute(:exit_code)) || metadata&.exit_code
+      read_attribute(:exit_code) || metadata&.exit_code
     end
 
     def exit_code=(value)
@@ -196,10 +199,8 @@ module Ci
       result = read_attribute(legacy_key) if legacy_key
       return result if result
 
-      if read_from_new_destination?
-        result = job_definition&.config&.dig(job_definition_key) || temp_job_definition&.config&.dig(job_definition_key)
-        return result if result
-      end
+      result = job_definition&.config&.dig(job_definition_key) || temp_job_definition&.config&.dig(job_definition_key)
+      return result if result
 
       metadata&.read_attribute(metadata_key) || default_value
     end
@@ -210,11 +211,6 @@ module Ci
       ensure_metadata.write_attribute(metadata_key, value)
       write_attribute(legacy_key, nil)
     end
-
-    def read_from_new_destination?
-      Feature.enabled?(:read_from_new_ci_destinations, project)
-    end
-    strong_memoize_attr :read_from_new_destination?
 
     def can_write_metadata?
       Feature.disabled?(:stop_writing_builds_metadata, project)

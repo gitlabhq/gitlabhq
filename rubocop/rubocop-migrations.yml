@@ -41,14 +41,13 @@ Migration/UpdateLargeTable:
   - :approval_merge_request_rules
   - :approval_merge_request_rules_users
   - :audit_events
-  - :authentication_events
   - :ci_job_artifact_states
   - :ci_pipeline_messages
   - :deployment_merge_requests
   - :import_source_user_placeholder_references
+  - :lfs_objects
   - :lfs_objects_projects
   - :namespaces
-  - :oauth_access_grants
   - :packages_package_files
   - :personal_access_tokens
   - :project_authorizations_for_migration

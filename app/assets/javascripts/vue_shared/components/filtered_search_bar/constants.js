@@ -21,6 +21,11 @@ export const OPERATOR_AFTER = '≥';
 export const OPERATOR_AFTER_TEXT = __('on or after');
 export const OPERATOR_BEFORE = '<';
 export const OPERATOR_BEFORE_TEXT = __('before');
+export const OPERATOR_EQUAL_TEXT = __('equal to');
+export const OPERATOR_GREATER_THAN_OR_EQUAL = '>=';
+export const OPERATOR_GREATER_THAN_OR_EQUAL_TEXT = __('greater than or equal to');
+export const OPERATOR_LESS_THAN_OR_EQUAL = '<=';
+export const OPERATOR_LESS_THAN_OR_EQUAL_TEXT = __('less than or equal to');
 
 export const OPERATORS_IS = [{ value: OPERATOR_IS, description: OPERATOR_IS_TEXT }];
 export const OPERATORS_NOT = [{ value: OPERATOR_NOT, description: OPERATOR_NOT_TEXT }];
@@ -30,6 +35,18 @@ export const OPERATORS_BEFORE = [{ value: OPERATOR_BEFORE, description: OPERATOR
 export const OPERATORS_IS_NOT = [...OPERATORS_IS, ...OPERATORS_NOT];
 export const OPERATORS_IS_NOT_OR = [...OPERATORS_IS, ...OPERATORS_NOT, ...OPERATORS_OR];
 export const OPERATORS_AFTER_BEFORE = [...OPERATORS_AFTER, ...OPERATORS_BEFORE];
+export const OPERATORS_EQUAL = [{ value: OPERATOR_IS, description: OPERATOR_EQUAL_TEXT }];
+export const OPERATORS_GREATER_THAN_OR_EQUAL = [
+  { value: OPERATOR_GREATER_THAN_OR_EQUAL, description: OPERATOR_GREATER_THAN_OR_EQUAL_TEXT },
+];
+export const OPERATORS_LESS_THAN_OR_EQUAL = [
+  { value: OPERATOR_LESS_THAN_OR_EQUAL, description: OPERATOR_LESS_THAN_OR_EQUAL_TEXT },
+];
+export const OPERATORS_LESS_THAN_EQUAL_TO_GREATER_THAN = [
+  ...OPERATORS_LESS_THAN_OR_EQUAL,
+  ...OPERATORS_EQUAL,
+  ...OPERATORS_GREATER_THAN_OR_EQUAL,
+];
 
 export const OPERATORS_TO_GROUP = [OPERATOR_OR, OPERATOR_NOT];
 

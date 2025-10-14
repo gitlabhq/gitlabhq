@@ -85,7 +85,7 @@ Next, add the subgroup as a member of the `engineering` group:
 
 1. On the left sidebar, select **Search or go to**
    and search for `engineering`. Select the group named `Engineering`.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. In the upper right, select **Invite a group**.
 1. For **Select a group to invite**, select `Engineering / Managers`.
 1. When adding the subgroups select the role **Maintainer**.
@@ -115,7 +115,7 @@ To add a user to the `frontend` subgroup:
 
 1. On the left sidebar, select **Search or go to**
    and search for `frontend`. Select the `Frontend` group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Fill in the fields. Select the **Developer** role by default, increasing it
    to **Maintainer** if this user reviews the work of others.
@@ -224,7 +224,7 @@ file and adds protection for release branches:
 
 1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
 1. Select **Add approval rule**.
 1. Create a rule named `Enforce CODEOWNERS`.
@@ -262,16 +262,18 @@ to protect multiple branches:
 
 1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
-1. Select **Settings > Repository**.
-1. Expand **Protected branches**.
-1. From the **Branch** dropdown list, type `1.*`, and then select **Create wildcard `1.*`**.
+1. Select **Settings** > **Repository**.
+1. Expand **Branch rules**.
+1. Select **Add branch rule** > **Branch name or pattern**.
+1. From the dropdown list, type `1.*`, and then select **Create wildcard `1.*`**.
 1. To require everyone to submit merge requests, rather than pushing commits directly:
-   1. Set **Allowed to merge** to **Maintainers**.
-   1. Set **Allowed to push and merge** to **No one**.
+   1. In the **Allowed to merge** section, select **Edit**, set to **Maintainers**,
+      and select **Save changes**.
+   1. In the **Allowed to push and merge** section, select **Edit**, set to **No one**,
+   and select **Save changes**.
    1. Leave **Allowed to force push** disabled.
 1. In GitLab Premium and GitLab Ultimate, to require Code Owners to review changes
    to files they work on, toggle **Require approval from code owners**.
-1. Select **Protect**.
 1. In the table of branches, find the rule marked as `Default`. (Depending on
    your version of GitLab, this branch might be named `main` or `master`.) Set the
    values for this branch to match the settings you used for the `1.*` rule.
@@ -286,18 +288,18 @@ Now that all branch protections in place, you're ready to create your 1.0.0 rele
 
 1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
 1. Select **Create branch**.
 
 The branch protections are now visible in the UI:
 
-- On the left sidebar, select **Code > Branches**. In the list of branches,
+- On the left sidebar, select **Code** > **Branches**. In the list of branches,
   branch `1.0.0` should be show that it is protected:
 
   ![List of branches, showing 1.0.0 is protected](img/branch_is_protected_v16_2.png)
 
-- On the left sidebar, select **Settings > Repository**, then expand **Branch rules**
+- On the left sidebar, select **Settings** > **Repository**, then expand **Branch rules**
   to see details about all protected branches:
 
   ![List of protected branches and their protections](img/protections_in_place_v16_2.png)

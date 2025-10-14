@@ -149,27 +149,16 @@ module ValueStreamsDashboardHelpers
       { namespace: project.namespace })
   end
 
-  # On the 1st day of any month, the metrics table intentionally uses the previous month
-  # in the `Current month` column. To handle that case, we need to shift
-  # the generated test metric dates by 1 month.
-  def n_months_ago(count)
-    count += 1 if Date.today.day == 1
-    count.months.ago
-  end
-
   def create_mock_dora_metrics(environment)
     seconds_in_1_day = 60 * 60 * 24
-    [
-      [n_months_ago(1), 5, 1, 5, 2],
-      [n_months_ago(2), 10, 3, 3, 3],
-      [n_months_ago(3) - 2.days, 8, 5, 7, 1]
-    ].each do |date, deploys, lead_time_for_changes, time_to_restore_service, incidents_count|
+    (1..6).to_a.each do |i|
+      date = i.months.ago
       create(
         :dora_daily_metrics,
-        deployment_frequency: deploys,
-        lead_time_for_changes_in_seconds: lead_time_for_changes * seconds_in_1_day,
-        time_to_restore_service_in_seconds: time_to_restore_service * seconds_in_1_day,
-        incidents_count: incidents_count,
+        deployment_frequency: i,
+        lead_time_for_changes_in_seconds: i * seconds_in_1_day,
+        time_to_restore_service_in_seconds: i * seconds_in_1_day,
+        incidents_count: i,
         environment: environment,
         date: date
       )
@@ -177,17 +166,14 @@ module ValueStreamsDashboardHelpers
   end
 
   def create_mock_flow_metrics(project)
-    [
-      [n_months_ago(1).beginning_of_month + 2.days, 2, 2],
-      [n_months_ago(2).beginning_of_month + 2.days, 4, 1],
-      [n_months_ago(3).beginning_of_month + 2.days, 3, 3]
-    ].each do |created_at, lead_time, count|
-      count.times do
+    (1..6).to_a.each do |i|
+      created_at = i.months.ago.beginning_of_month + 2.days
+      i.times do
         create(
           :issue,
           project: project,
           created_at: created_at,
-          closed_at: created_at + lead_time.days
+          closed_at: created_at + i.days
         ).metrics.update!(first_mentioned_in_commit_at: created_at + 1.day)
       end
     end
@@ -196,12 +182,9 @@ module ValueStreamsDashboardHelpers
   end
 
   def create_mock_merge_request_metrics(project)
-    [
-      [n_months_ago(1), 3],
-      [n_months_ago(2), 1],
-      [n_months_ago(3), 2]
-    ].each do |merged_at, count|
-      count.times do
+    (1..6).to_a.each do |i|
+      merged_at = i.months.ago
+      i.times do
         create(
           :merge_request,
           :skip_diff_creation,
@@ -214,11 +197,10 @@ module ValueStreamsDashboardHelpers
   end
 
   def create_mock_vulnerabilities_metrics(table_name, record_identifier)
-    [
-      [n_months_ago(1).end_of_month, 3, 2],
-      [n_months_ago(2).end_of_month, 5, 4],
-      [n_months_ago(3).end_of_month, 2, 3]
-    ].each do |date, critical, high|
+    (1..6).to_a.each do |i|
+      date = i.months.ago.end_of_month
+      critical = i
+      high = i * 2
       params = {
         date: date,
         high: high,

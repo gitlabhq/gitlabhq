@@ -15,6 +15,7 @@ module BlobViewer
         h[:rendered] = blob.rendered_markup if blob.respond_to?(:rendered_markup)
         h[:issuable_reference_expansion_enabled] = true
         h[:cache_key] = ['blob', blob.id, 'commit', blob.commit_id]
+        h[:commit_id] = blob.commit_id
       end
     end
   end

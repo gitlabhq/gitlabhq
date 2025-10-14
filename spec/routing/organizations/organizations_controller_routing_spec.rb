@@ -5,37 +5,37 @@ require 'spec_helper'
 RSpec.describe Organizations::OrganizationsController, :routing, feature_category: :organization do
   let_it_be(:organization) { build(:organization) }
 
-  it 'routes to #show' do
+  specify 'to #show' do
     expect(get("/-/organizations/#{organization.path}"))
       .to route_to('organizations/organizations#show', organization_path: organization.path)
   end
 
-  it 'routes to #new' do
+  specify 'to #new' do
     expect(get("/-/organizations/new"))
       .to route_to('organizations/organizations#new')
   end
 
-  it 'routes to #index' do
+  specify 'to #index' do
     expect(get("/-/organizations"))
       .to route_to('organizations/organizations#index')
   end
 
-  it 'routes to #activity' do
+  specify 'to #activity' do
     expect(get("/-/organizations/#{organization.path}/activity"))
       .to route_to('organizations/organizations#activity', organization_path: organization.path)
   end
 
-  it 'routes to #groups_and_projects' do
+  specify 'to #groups_and_projects' do
     expect(get("/-/organizations/#{organization.path}/groups_and_projects"))
       .to route_to('organizations/organizations#groups_and_projects', organization_path: organization.path)
   end
 
-  it 'routes to #users' do
+  specify 'to #users' do
     expect(get("/-/organizations/#{organization.path}/users"))
       .to route_to('organizations/organizations#users', organization_path: organization.path)
   end
 
-  it 'routes to #preview_markdown' do
+  specify 'to #preview_markdown' do
     expect(post("/-/organizations/preview_markdown"))
       .to route_to('organizations/organizations#preview_markdown')
   end

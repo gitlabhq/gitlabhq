@@ -37,7 +37,10 @@ describe('EmptyStateWithAnyIssues component', () => {
     it('shows empty state', () => {
       mountComponent({ hasSearch: false, isOpenTab: true });
 
-      expect(findGlEmptyState().props('title')).toBe('There are no open issues');
+      expect(findGlEmptyState().props('title')).toBe('No open issues');
+      expect(findGlEmptyState().props('description')).toBe(
+        'Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+      );
     });
   });
 
@@ -45,7 +48,7 @@ describe('EmptyStateWithAnyIssues component', () => {
     it('shows empty state', () => {
       mountComponent({ hasSearch: false, isOpenTab: false });
 
-      expect(findGlEmptyState().props('title')).toBe('There are no closed issues');
+      expect(findGlEmptyState().props('title')).toBe('No closed issues');
     });
   });
 

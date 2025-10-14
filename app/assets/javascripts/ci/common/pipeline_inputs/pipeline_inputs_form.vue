@@ -294,15 +294,6 @@ export default {
     :title="s__('Pipelines|Inputs')"
   >
     <template v-if="hasInputs" #actions>
-      <gl-button
-        category="secondary"
-        variant="confirm"
-        size="small"
-        @click="showPreviewDrawer = true"
-      >
-        {{ s__('Pipelines|Preview inputs') }}
-      </gl-button>
-
       <gl-collapsible-listbox
         v-model="selectedInputNames"
         :items="filteredInputsList"
@@ -320,6 +311,10 @@ export default {
         @select-all="selectAll"
         @search="handleSearch"
       />
+
+      <gl-button category="secondary" size="small" @click="showPreviewDrawer = true">
+        {{ s__('Pipelines|Preview inputs') }}
+      </gl-button>
 
       <pipeline-inputs-preview-drawer
         :open="showPreviewDrawer"

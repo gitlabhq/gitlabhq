@@ -158,7 +158,12 @@ export const sidebarData = {
     user_is_admin: false,
   },
   admin_url: '/admin',
-  current_menu_items: [],
+  current_menu_items: [
+    {
+      id: 'homepage_menu',
+      title: 'Home',
+    },
+  ],
   current_context: {},
   current_context_header: 'Your work',
   name: 'Administrator',

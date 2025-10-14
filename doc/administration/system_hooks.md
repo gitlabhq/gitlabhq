@@ -55,7 +55,7 @@ and `object_attributes`:
 The triggers for most of these are self-explanatory, but `project_update` and `project_rename` require clarification:
 
 - `project_update` triggers when an attribute of a project is changed (including name, description, and tags)
-  **except** when the `path` attribute is also changed.
+  except when the `path` attribute is also changed.
 - `project_rename` triggers when an attribute of a project (including `path`) is changed. If you only care about the
   repository URL, just listen for `project_rename`.
 
@@ -110,13 +110,13 @@ This limit is controlled by the `push_event_hooks_limit` setting
 
 ## Hooks request example
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: System Hook
 ```
 
-**Project created**:
+Project created:
 
 ```json
 {
@@ -138,7 +138,7 @@ X-Gitlab-Event: System Hook
 }
 ```
 
-**Project destroyed**:
+Project destroyed:
 
 ```json
 {
@@ -160,7 +160,7 @@ X-Gitlab-Event: System Hook
 }
 ```
 
-**Project renamed**:
+Project renamed:
 
 ```json
 {
@@ -186,7 +186,7 @@ X-Gitlab-Event: System Hook
 `project_rename` is not triggered if the namespace changes.
 Refer to `group_rename` and `user_rename` for that case.
 
-**Project transferred**:
+Project transferred:
 
 ```json
 {
@@ -209,7 +209,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**Project updated**:
+Project updated:
 
 ```json
 {
@@ -231,7 +231,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**Access request for group removed**:
+Access request for group removed:
 
 ```json
 {
@@ -249,7 +249,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**Access request for project removed**:
+Access request for project removed:
 
 ```json
 {
@@ -269,7 +269,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**Access request for group created**:
+Access request for group created:
 
 ```json
 {
@@ -287,7 +287,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**Access request for project created**:
+Access request for project created:
 
 ```json
 {
@@ -307,7 +307,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**New Team Member**:
+New team member:
 
 ```json
 {
@@ -327,7 +327,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**Team Member Removed**:
+Team member removed:
 
 ```json
 {
@@ -347,7 +347,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**Team Member Updated**:
+Team member updated:
 
 ```json
 {
@@ -367,7 +367,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**User created**:
+User created:
 
 ```json
 {
@@ -381,7 +381,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**User removed**:
+User removed:
 
 ```json
 {
@@ -395,7 +395,7 @@ Refer to `group_rename` and `user_rename` for that case.
 }
 ```
 
-**User failed login**:
+User failed login:
 
 ```json
 {
@@ -412,7 +412,7 @@ Refer to `group_rename` and `user_rename` for that case.
 
 If the user is blocked through LDAP, `state` is `ldap_blocked`.
 
-**User renamed**:
+User renamed:
 
 ```json
 {
@@ -427,7 +427,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**Key added**
+Key added:
 
 ```json
 {
@@ -440,7 +440,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**Key removed**
+Key removed:
 
 ```json
 {
@@ -453,7 +453,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**Group created**:
+Group created:
 
 ```json
 {
@@ -466,7 +466,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**Group removed**:
+Group removed:
 
 ```json
 {
@@ -479,7 +479,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**Group renamed**:
+Group renamed:
 
 ```json
 {
@@ -495,7 +495,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**New Group Member**:
+New group member:
 
 ```json
 {
@@ -513,7 +513,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**Group Member Removed**:
+Group member removed:
 
 ```json
 {
@@ -531,7 +531,7 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 }
 ```
 
-**Group Member Updated**:
+Group member updated:
 
 ```json
 {
@@ -554,13 +554,13 @@ If the user is blocked through LDAP, `state` is `ldap_blocked`.
 Triggered when you push to the repository, except when pushing tags.
 It generates one event per modified branch.
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: System Hook
 ```
 
-**Request body**:
+Request body:
 
 ```json
 {
@@ -620,13 +620,13 @@ X-Gitlab-Event: System Hook
 Triggered when you create (or delete) tags to the repository.
 It generates one event per modified tag.
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: System Hook
 ```
 
-**Request body**:
+Request body:
 
 ```json
 {
@@ -674,7 +674,7 @@ X-Gitlab-Event: System Hook
 Triggered when a new merge request is created, an existing merge request was
 updated/merged/closed or a commit is added in the source branch.
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: System Hook
@@ -836,13 +836,13 @@ X-Gitlab-Event: System Hook
 
 Triggered only once when you push to the repository (including tags).
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: System Hook
 ```
 
-**Request body**:
+Request body:
 
 ```json
 {
@@ -883,13 +883,13 @@ X-Gitlab-Event: System Hook
 
 These events are triggered if [administrator approval for role promotions](settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on.
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: System Hook
 ```
 
-**Member queued for promotion management**:
+Member queued for promotion management:
 
 ```json
 {
@@ -908,7 +908,7 @@ X-Gitlab-Event: System Hook
 }
 ```
 
-**User approved on a billable role by instance admin**:
+User approved on a billable role by instance administrator:
 
 ```json
 {
@@ -924,7 +924,7 @@ X-Gitlab-Event: System Hook
 }
 ```
 
-**User denied on a billable role by instance admin**:
+User denied on a billable role by instance admin:
 
 ```json
 {

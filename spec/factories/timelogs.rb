@@ -11,12 +11,14 @@ FactoryBot.define do
     trait :for_issue do
       issue
       user { issue.author }
+      namespace { issue.namespace }
     end
 
     trait :for_merge_request do
       merge_request
       issue { nil }
       user { merge_request.author }
+      namespace { merge_request.project.project_namespace }
     end
   end
 end

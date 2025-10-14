@@ -81,7 +81,7 @@ class Event < ApplicationRecord
 
   # Callbacks
   before_save :ensure_sharding_key
-  after_create :update_project
+  after_create :update_project, unless: :imported?
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -356,6 +356,8 @@ class Event < ApplicationRecord
     # Commit#to_reference returns the full SHA, but we want the short one here
     if commit_note?
       note_target.short_id
+    elsif wiki_page_note?
+      note_target.reference_link_text
     else
       note_target.to_reference
     end

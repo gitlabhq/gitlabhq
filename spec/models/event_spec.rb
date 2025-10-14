@@ -50,15 +50,25 @@ RSpec.describe Event, feature_category: :user_profile do
         end
       end
 
+      context 'with an imported event' do
+        it 'does not update the project last_repository_updated_at' do
+          project.update!(last_repository_updated_at: 1.year.ago)
+
+          imported_from = Import::HasImportSource::IMPORT_SOURCES[:github]
+
+          expect { create_push_event(project, project.first_owner, imported_from) }.not_to change {
+            project.reload.last_repository_updated_at
+          }
+        end
+      end
+
       context 'without a push event' do
         it 'does not update the project last_repository_updated_at' do
           project.update!(last_repository_updated_at: 1.year.ago)
 
-          create(:closed_issue_event, project: project, author: project.first_owner)
-
-          project.reload
-
-          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
+          expect { create(:closed_issue_event, project: project, author: project.first_owner) }.not_to change {
+            project.reload.last_repository_updated_at
+          }
         end
       end
     end
@@ -1364,8 +1374,8 @@ RSpec.describe Event, feature_category: :user_profile do
     end
   end
 
-  def create_push_event(project, user)
-    event = create(:push_event, project: project, author: user)
+  def create_push_event(project, user, imported_from = 0)
+    event = create(:push_event, project: project, author: user, imported_from: imported_from)
 
     create(
       :push_event_payload,

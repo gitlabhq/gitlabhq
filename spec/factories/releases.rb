@@ -41,7 +41,8 @@ FactoryBot.define do
         if instance.project&.catalog_resource
           association :ci_catalog_resource_version,
             catalog_resource: instance.project&.catalog_resource,
-            release: instance
+            release: instance,
+            semver: tag
         end
       end
     end

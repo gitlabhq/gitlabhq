@@ -438,4 +438,105 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
       end
     end
   end
+
+  describe '#remove_partitioned_foreign_key' do
+    context 'when removing by column name' do
+      before do
+        migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
+      end
+
+      it 'removes the foreign key from all partitions and the partitioned table' do
+        expect do
+          migration.remove_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
+        end.not_to raise_error
+
+        # Verify foreign key is removed from partitions
+        expect(migration.foreign_key_exists?(partition1_name, target_table_name, column: column_name)).to be false
+        expect(migration.foreign_key_exists?(partition2_name, target_table_name, column: column_name)).to be false
+
+        # Verify foreign key is removed from partitioned table
+        expect(migration.foreign_key_exists?(source_table_name, target_table_name, column: column_name)).to be false
+      end
+    end
+
+    context 'when removing by foreign key name' do
+      before do
+        migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name,
+          column: column_name, name: foreign_key_name)
+      end
+
+      it 'removes the foreign key from all partitions and the partitioned table' do
+        expect do
+          migration.remove_partitioned_foreign_key(source_table_name, name: foreign_key_name)
+        end.not_to raise_error
+
+        # Verify foreign key is removed from partitions
+        expect(migration.foreign_key_exists?(partition1_name, name: foreign_key_name)).to be false
+        expect(migration.foreign_key_exists?(partition2_name, name: foreign_key_name)).to be false
+
+        # Verify foreign key is removed from partitioned table
+        expect(migration.foreign_key_exists?(source_table_name, name: foreign_key_name)).to be false
+      end
+    end
+
+    context 'when foreign key exists only on partitions' do
+      before do
+        # Add foreign key only to partitions, not to the partitioned table
+        connection.add_foreign_key(partition1_name, target_table_name,
+          column: column_name, name: foreign_key_name)
+        connection.add_foreign_key(partition2_name, target_table_name,
+          column: column_name, name: foreign_key_name)
+      end
+
+      it 'removes the foreign key from partitions without error' do
+        expect do
+          migration.remove_partitioned_foreign_key(source_table_name, name: foreign_key_name)
+        end.not_to raise_error
+
+        # Verify foreign key is removed from partitions
+        expect(migration.foreign_key_exists?(partition1_name, name: foreign_key_name)).to be false
+        expect(migration.foreign_key_exists?(partition2_name, name: foreign_key_name)).to be false
+      end
+    end
+
+    context 'when neither name nor column is specified' do
+      it 'raises an ArgumentError' do
+        expect do
+          migration.remove_partitioned_foreign_key(source_table_name, target_table_name)
+        end.to raise_error(ArgumentError, 'Either name or column must be specified')
+      end
+    end
+
+    context 'when foreign key does not exist' do
+      it 'does not raise an error' do
+        expect do
+          migration.remove_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
+        end.not_to raise_error
+      end
+    end
+
+    context 'with reverse_lock_order option' do
+      before do
+        migration.add_concurrent_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
+      end
+
+      it 'passes the reverse_lock_order option to remove_foreign_key_if_exists' do
+        expect(migration).to receive(:remove_foreign_key_if_exists).at_least(:once)
+          .with(anything, anything, hash_including(reverse_lock_order: true))
+
+        migration.remove_partitioned_foreign_key(source_table_name, target_table_name,
+          column: column_name, reverse_lock_order: true)
+      end
+    end
+
+    context 'when run inside a transaction block' do
+      it 'raises an error' do
+        expect(migration).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          migration.remove_partitioned_foreign_key(source_table_name, target_table_name, column: column_name)
+        end.to raise_error(/can not be run inside a transaction/)
+      end
+    end
+  end
 end

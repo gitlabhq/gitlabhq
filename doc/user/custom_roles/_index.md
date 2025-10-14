@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Custom roles
+description: Create custom roles with tailored permissions to meet specific organizational needs.
 ---
 
 {{< details >}}
@@ -69,7 +70,7 @@ To create a custom member role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
 1. GitLab Self-Managed and GitLab Dedicated instances only. Select **Member role**.
 1. Enter a name and description for the custom role.
@@ -98,7 +99,7 @@ Prerequisites:
 To create a custom admin role:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
 1. Select **Admin role**.
 1. Enter a name and description for the custom role.
@@ -128,7 +129,7 @@ To edit a custom role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit role**.
 1. Modify the role.
 1. Select **Save role**.
@@ -154,7 +155,7 @@ To view details of a custom role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **View details**.
 
 ## Delete a custom role
@@ -171,7 +172,7 @@ To delete a custom role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete role**.
 1. On the confirmation dialog, select **Delete role**.
 
@@ -192,7 +193,7 @@ Prerequisites:
 To assign a custom member role to an existing user:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. In the **Role** column, select the role for an existing member. The **Role details** drawer opens.
 1. From the **Role** dropdown list, select a role to assign to the member.
 1. Select **Update role** to assign the role.
@@ -216,7 +217,7 @@ Prerequisites:
 To assign a custom admin role to an existing user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select **Edit** for a user.
 1. In the **Access** section, set the access level to either **Regular** or **Auditor**.
 1. From the **Admin area** dropdown list, select a custom admin role.
@@ -301,7 +302,7 @@ Prerequisites:
 To link a custom admin role with an LDAP CN:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `Group cn`.
 1. In the **Group cn** field, begin typing the CN of the group. A dropdown list appears with matching CNs in the configured `group_base`.
@@ -320,7 +321,7 @@ Prerequisites:
 To link a custom admin role with an LDAP filter:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `User filter`.
 1. In **User filter** box, enter a filter. For details, see [Set up LDAP user filter](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter).
@@ -334,5 +335,5 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 If a permission does not exist, you can:
 
 - Discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
-- Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%2520Proposal).
+- Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%20Proposal).
 - Contribute to GitLab and add the permission.

@@ -1,6 +1,6 @@
 ---
-stage: CI
-group: Runner
+stage: Verify
+group: CI Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Runner Fleet.
 title: Design and configure a GitLab Runner fleet on Google Kubernetes Engine
@@ -229,19 +229,19 @@ The following example uses GRIT to deploy the Google Kubernetes cluster and GitL
 
 To have the cluster and GitLab Runner well configured, consider the following information:
 
-- **How many job types do I need to cover?** This information comes from the assess phase. The assess phase aggregates metrics and identifies the number of resulting groups, considering organizational constraints. A **job type** is a collection of categorized jobs identified during the access phase. This categorization is based on the maximum resources needed by the job.
-- **How many GitLab Runner Managers do I need to run?** This information comes from the plan phase. If the organization manages projects separately, apply this framework to each project individually. This approach is relevant only when multiple job profiles are identified (for the entire organization or for a specific project), and they are all handled by an individual or a fleet of GitLab Runners. A basic configuration typically uses one GitLab Runner Manager per GKE cluster.
-- **What is the estimated max concurrent CI/CD jobs?** This information represents an estimate of the maximum number of concurrent CI/CD jobs that are run at any point in time. This information is needed when configuring the GitLab Runner Manager by providing how long it waits during the `Prepare` stage: job pod scheduling on a node with limited available resources.
+- **How many job types do I need to cover**? This information comes from the assess phase. The assess phase aggregates metrics and identifies the number of resulting groups, considering organizational constraints. A **job type** is a collection of categorized jobs identified during the access phase. This categorization is based on the maximum resources needed by the job.
+- **How many GitLab Runner Managers do I need to run**? This information comes from the plan phase. If the organization manages projects separately, apply this framework to each project individually. This approach is relevant only when multiple job profiles are identified (for the entire organization or for a specific project), and they are all handled by an individual or a fleet of GitLab Runners. A basic configuration typically uses one GitLab Runner Manager per GKE cluster.
+- **What is the estimated max concurrent CI/CD jobs**? This information represents an estimate of the maximum number of concurrent CI/CD jobs that are run at any point in time. This information is needed when configuring the GitLab Runner Manager by providing how long it waits during the `Prepare` stage: job pod scheduling on a node with limited available resources.
 
 ### Real life applications for the FastAPI fork
 
 For the FastAPI, consider the following information:
 
-- **How many job profiles do I need to cover?** We only have one job profile with the following characteristics: `1 CPU` and `303 Mi` of memory. As explained in [Analyzing the metrics collected](#analyzing-the-metrics-collected) sections, we change those raw values to the following:
+- **How many job profiles do I need to cover**? We only have one job profile with the following characteristics: `1 CPU` and `303 Mi` of memory. As explained in [Analyzing the metrics collected](#analyzing-the-metrics-collected) sections, we change those raw values to the following:
   - `400 Mi` for the memory limit instead of `303 Mi` to avoid any job failure due to the memory limits.
   - `0.20` for the CPU instead of `1 CPU`. We don't mind our job taking more time to complete. We prioritize accuracy and quality over speed when completing tasks.
-- **How many GitLab Runner Managers do I need to run?** Only one GitLab Runner Manager is enough for our tests.
-- **What is the expected Workload?** We want to run up to 20 jobs simultaneously at any time.
+- **How many GitLab Runner Managers do I need to run**? Only one GitLab Runner Manager is enough for our tests.
+- **What is the expected Workload**? We want to run up to 20 jobs simultaneously at any time.
 
 Based on these inputs, any GKE Cluster with the following minimum characteristics should be enough:
 
@@ -361,11 +361,11 @@ In the previous configuration:
 
 Take the following information in to consideration:
 
-- **How many job profiles do I need to cover?** Two profiles (specifications provided takes the helper limits in account):
+- **How many job profiles do I need to cover**? Two profiles (specifications provided takes the helper limits in account):
   - Medium jobs: `300m CPU` and `200 MiB`
   - CPU-intensive jobs: `1 CPU` and `1 GiB`
-- **How many GitLab Runner Managers do I need to run?** One.
-- **What is the expected Workload?**
+- **How many GitLab Runner Managers do I need to run**? One.
+- **What is the expected Workload**?
   - Up to **50 medium** jobs simultaneously
   - Up to **25 CPU-intensive** jobs simultaneously
 

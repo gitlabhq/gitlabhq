@@ -5,6 +5,8 @@ require 'digest'
 module Ci
   module Slsa
     class PublishProvenanceService < ::BaseService
+      include Gitlab::Utils::StrongMemoize
+
       HASH_READ_CHUNK_SIZE = 1.megabyte
 
       Error = Class.new(StandardError)
@@ -13,7 +15,12 @@ module Ci
 
       def initialize(build)
         @build = build
+
         @logger = Gitlab::AppJsonLogger
+        @logger_base_args = {
+          class: self.class.name,
+          build_id: @build&.id
+        }
       end
 
       def execute
@@ -23,40 +30,84 @@ module Ci
           return ServiceResponse.error(message: "Attestation is only enabled for public projects")
         end
 
-        id_token = @build.variables["SIGSTORE_ID_TOKEN"]&.value
         return ServiceResponse.error(message: "Missing required variable SIGSTORE_ID_TOKEN") unless id_token
 
-        reader = SupplyChain::ArtifactsReader.new(@build)
-
-        reader.files do |artifact_path, file_input_stream|
-          blob_name = File.basename(artifact_path)
-          hash = hash(file_input_stream)
-          predicate = SupplyChain::Slsa::ProvenanceStatement::Predicate.from_build(@build).to_json
-
-          @logger.info(class: self.class.name, message: "Performing attestation for artifact", hash: hash,
-            path: artifact_path, build_id: @build.id)
-
-          attestation, duration = attest_blob!(blob_name: blob_name, hash: hash, predicate: predicate,
-            id_token: id_token)
-
-          @logger.info(class: self.class.name, message: "Attestation successful", hash: hash, blob_name: blob_name,
-            attestation: attestation, duration: duration, build_id: @build.id)
-        end
-
-        ServiceResponse.success(message: "OK")
+        attest_all_artifacts
       end
 
-      def hash(file_input_stream)
-        sha = Digest::SHA256.new
-        sha << file_input_stream.read(HASH_READ_CHUNK_SIZE) until file_input_stream.eof?
-        sha.hexdigest
+      private
+
+      def id_token
+        @build.variables["SIGSTORE_ID_TOKEN"]&.value
       end
+      strong_memoize_attr :id_token
+
+      def log(**args)
+        @logger.info(@logger_base_args.merge(args))
+      end
+
+      def predicate
+        SupplyChain::Slsa::ProvenanceStatement::Predicate.from_build(@build).to_json
+      end
+      strong_memoize_attr :predicate
 
       def ci_server_url
         Gitlab.config.gitlab.url
       end
 
-      def attest_blob!(blob_name:, hash:, predicate:, id_token:)
+      def attest_all_artifacts
+        reader = SupplyChain::ArtifactsReader.new(@build)
+
+        all_successful = true
+        attestations = []
+        reader.files do |artifact_path, file_input_stream|
+          hash = hash(file_input_stream)
+
+          next if successful_attestation?(hash)
+
+          attestation, success = attest_artifact(artifact_path, hash)
+          attestations << attestation
+
+          all_successful = false unless success
+        end
+
+        if all_successful
+          return ServiceResponse.success(message: "Attestations persisted",
+            payload: { attestations: attestations })
+        end
+
+        ServiceResponse.error(message: "Attestation failure", payload: { attestations: attestations })
+      end
+
+      def successful_attestation?(hash)
+        existing_attestation = SupplyChain::Attestation.find_provenance(project: @build.project, subject_digest: hash)
+        return true if existing_attestation&.success?
+
+        existing_attestation&.destroy
+
+        false
+      end
+
+      def attest_artifact(artifact_path, hash)
+        blob_name = File.basename(artifact_path)
+        begin
+          attestation, duration = cosign_attest_blob(blob_name: blob_name, hash: hash)
+          log(message: "Attestation successful", duration: duration, path: artifact_path, hash: hash,
+            blob_name: blob_name)
+
+          [attestation, true]
+        rescue StandardError => e
+          log(message: "Attestation failure", path: artifact_path, hash: hash, blob_name: blob_name)
+
+          attestation = persist_attestation!(status: :error, subject_digest: hash)
+
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, project_id: @build.project.id)
+
+          [attestation, false]
+        end
+      end
+
+      def cosign_attest_blob(blob_name:, hash:)
         validate_id_token!(id_token)
         validate_blob_name!(blob_name)
         validate_hash!(hash)
@@ -84,14 +135,39 @@ module Ci
             stdin.write(predicate)
           end
 
-          bundle_file.rewind
-          attestation = bundle_file.read
+          if result.status.success?
+            attestation = persist_attestation!(status: :success, subject_digest: hash,
+              bundle_file: bundle_file)
+          end
         end
 
         return attestation, result.duration if result.status.success?
 
         error = result.stderr
         raise AttestationFailure, "Attestation for #{hash} failed after #{result.duration}s: #{error}"
+      end
+
+      def persist_attestation!(status:, subject_digest:, bundle_file: nil)
+        attestation = SupplyChain::Attestation.new do |att|
+          att.subject_digest = subject_digest
+          att.project = @build.project
+          att.build = @build
+          att.status = status
+          att.expire_at = 2.years.from_now # TODO: adjust based on outcomes of ticket discussion.
+          att.predicate_kind = :provenance
+          att.predicate_type = SupplyChain::Slsa::ProvenanceStatement::PREDICATE_TYPE_V1
+          att.file = bundle_file
+        end
+
+        attestation.save!
+
+        attestation
+      end
+
+      def hash(file_input_stream)
+        sha = Digest::SHA256.new
+        sha << file_input_stream.read(HASH_READ_CHUNK_SIZE) until file_input_stream.eof?
+        sha.hexdigest
       end
 
       def validate_id_token!(id_token)

@@ -1253,36 +1253,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe "#move_dir_files" do
-    it 'move directory files successfully' do
-      expect do
-        repository.move_dir_files(
-          user, 'files/new_js', 'files/js',
-          branch_name: 'master',
-          message: 'move directory images to new_images',
-          author_email: author_email,
-          author_name: author_name
-        )
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
-      files = repository.ls_files('master')
-
-      expect(files).not_to include('files/js/application.js')
-      expect(files).to include('files/new_js/application.js')
-    end
-
-    it 'skips commit with same path' do
-      expect do
-        repository.move_dir_files(
-          user, 'files/js', 'files/js',
-          branch_name: 'master',
-          message: 'no commit',
-          author_email: author_email,
-          author_name: author_name
-        )
-      end.to change { repository.count_commits(ref: 'master') }.by(0)
-    end
-  end
-
   describe "#delete_file" do
     let(:project) { create(:project, :repository) }
 
@@ -1932,6 +1902,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
         end
       end
     end
+
+    context 'when raise_on_invalid_ref is true' do
+      let(:branch_name) { 'master/123' }
+
+      subject { repository.add_branch(user, branch_name, target, raise_on_invalid_ref: true) }
+
+      it 'raises invalid ref exception' do
+        expect { subject }.to raise_error(Gitlab::Git::Repository::InvalidRef)
+      end
+    end
   end
 
   shared_examples 'asymmetric cached method' do |method|
@@ -2551,6 +2531,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it 'reverts the changes' do
         expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
       end
+
+      it 'sets target_sha to prevent race conditions' do
+        target_sha = repository.commit('master').id
+        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: target_sha))
+        repository.revert(user, update_image_commit, 'master', message)
+      end
     end
 
     context 'reverting a merge commit' do
@@ -2560,6 +2546,40 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
         repository.revert(user, merge_commit, 'master', message)
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+      end
+
+      it 'sets target_sha to prevent race conditions' do
+        merge_commit
+        target_sha = repository.commit('master').id
+        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: target_sha))
+        repository.revert(user, merge_commit, 'master', message)
+      end
+    end
+
+    context 'when branch_name is nil' do
+      it 'sets target_sha to nil' do
+        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: nil))
+        repository.revert(user, update_image_commit, nil, message)
+      end
+    end
+
+    context 'target_sha automatic detection' do
+      it 'automatically detects current branch SHA when branch_name is provided' do
+        branch = repository.find_branch('master')
+        expected_sha = branch.dereferenced_target.id
+
+        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: expected_sha))
+        repository.revert(user, update_image_commit, 'master', message)
+      end
+
+      it 'sets target_sha to nil when branch does not exist' do
+        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: nil))
+        repository.revert(user, update_image_commit, 'nonexistent-branch', message)
+      end
+
+      it 'sets target_sha to nil when branch_name is empty string' do
+        expect(repository.raw_repository).to receive(:revert).with(a_hash_including(target_sha: nil))
+        repository.revert(user, update_image_commit, '', message)
       end
     end
   end

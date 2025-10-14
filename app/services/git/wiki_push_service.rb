@@ -24,20 +24,12 @@ module Git
     private
 
     def process_changes
-      return unless can_process_wiki_events?
-
       push_changes.take(MAX_CHANGES).each do |change| # rubocop:disable CodeReuse/ActiveRecord
         next unless change.page.present?
 
         response = create_event_for(change)
         log_error(response.message) if response.error?
       end
-    end
-
-    def can_process_wiki_events?
-      # TODO: Support activity events for group wikis
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/209306
-      wiki.is_a?(ProjectWiki)
     end
 
     def push_changes

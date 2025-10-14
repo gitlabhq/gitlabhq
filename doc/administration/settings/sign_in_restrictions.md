@@ -20,7 +20,7 @@ Use sign-in restrictions to customize authentication restrictions for web interf
 To access sign-in restriction settings:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 
 ## Password authentication enabled
@@ -95,7 +95,7 @@ Open the [Rails console](../operations/rails_console.md) and run the following:
 To enable Admin Mode through the UI:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. Select **Enable Admin Mode**.
 1. Select **Save changes**.

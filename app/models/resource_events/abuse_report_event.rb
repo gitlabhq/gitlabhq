@@ -9,9 +9,7 @@ module ResourceEvents
     belongs_to :organization, class_name: 'Organizations::Organization'
 
     validates :action, presence: true
-    validates :organization_id, presence: true, on: :create, if: -> {
-      Feature.enabled?(:abuse_report_populate_organization, :instance)
-    }
+    validates :organization_id, presence: true, on: :create
 
     enum :action, {
       ban_user: 1,

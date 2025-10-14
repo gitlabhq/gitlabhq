@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Deleting a user account
+title: Delete users
 ---
 
 {{< details >}}
@@ -25,67 +25,56 @@ Deleting a user deletes all projects in that user namespace.
 
 ## Delete your own account
 
+{{< details >}}
+
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
 {{< history >}}
 
 - Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags/_index.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+{{< alert type="note" >}}
 
-- On GitLab.com, this feature is available.
-- On GitLab Dedicated, this feature is not available.
-- On GitLab Self-Managed, the availability of this feature is controlled by the `delay_user_account_self_deletion` application setting and is disabled by default. Use the [Application settings API](../../../api/settings.md) to enable the
+On GitLab Self-Managed, this feature is disabled by default. Use the
+[application settings API](../../../api/settings.md) to enable the
 `delay_user_account_self_deletion` setting for the instance.
 
 {{< /alert >}}
 
-On GitLab.com, it takes seven days from when you delete your own account to when your account is deleted. During this time:
+You can schedule your account for deletion. When you delete your account, it enters a pending
+deletion state. Generally, deletions happen in an hour, but can take up to seven days for
+accounts that are either:
 
-- That user is [blocked](../../../administration/moderate_users.md#block-a-user).
+- Associated with comments, issues, merge requests, notes, or snippets
+- Not part of a paid plan
+
+While your account is pending deletion:
+
+- Your account is [blocked](../../../administration/moderate_users.md#block-a-user).
 - You cannot create a new account with the same username.
+- You cannot create a new account with the same primary email address unless you change the
+  email address first.
 
-  {{< alert type="note" >}}
+{{< alert type="note" >}}
 
-  After the seven day time period is finished, any user can create a user account with that previously used username. Therefore, you should not assume that you will be able to create a new account with that username after the seven days, because it might be taken.
+After the account is deleted, any user can create a user account with the same username. If
+another user takes the username, you cannot reclaim it.
 
-  {{< /alert >}}
+{{< /alert >}}
 
-  You can [create a new account with the same email address](#create-a-new-account-with-the-same-email-address)
-  if you remove that email address from your account first.
-
-The following are deleted within an hour:
-
-- Accounts with no issues, comments, notes, merge requests, or snippets.
-- Accounts under paid namespaces.
-
-As a user, to delete your own account:
+To delete your own account:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
 
-If you cannot delete your own account, submit a [personal data request](https://support.gitlab.io/personal-data-request/)
-to ask for your account and data to be removed from GitLab.
-
-### Create a new account with the same email address
-
-On GitLab.com, during the [time between you deleting your own account and your account getting deleted](#delete-your-own-account),
-you cannot create a new account with the same email address or username.
-
-To create a new account with the same email address, before you delete your account:
-
-1. [Add a secondary email address](../_index.md#add-emails-to-your-user-profile)
-   to your account.
-1. [Change your primary email](../_index.md#change-your-primary-email) to this
-   new secondary email address.
-1. [Remove the now-secondary email address](../_index.md#delete-email-addresses-from-your-user-profile)
-   from your account.
-1. [Delete your own account](#delete-your-own-account).
-
-You can now [create a new account](create_accounts.md) with the same email address as your original
-primary email address.
+If you cannot delete your account on GitLab.com, submit a [personal data request](https://support.gitlab.io/personal-data-request/)
+to remove your account and data from GitLab.
 
 ## Delete users and user contributions
 
@@ -96,10 +85,14 @@ primary email address.
 
 {{< /details >}}
 
-As an administrator, to delete a user account:
+Prerequisites:
+
+- You must be an administrator for the instance.
+
+To delete a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select a user.
 1. Under the **Account** tab, select:
    - **Delete user** to delete only the user but maintain their [associated records](#associated-records). You can't use this option if

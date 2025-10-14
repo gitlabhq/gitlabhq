@@ -216,4 +216,31 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
       expect(config.url).to be_nil
     end
   end
+
+  describe '#external?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { config.external? }
+
+    let(:ci_config_path) { nil }
+
+    where(:config_source, :expected_result) do
+      :external_project_source  | true
+      :remote_source            | true
+      :auto_devops_source       | false
+      :bridge_source            | false
+      :compliance_source        | false
+      :parameter_source         | false
+      :repository_source        | false
+      nil                       | false
+    end
+
+    with_them do
+      before do
+        allow(config).to receive(:source).and_return(config_source)
+      end
+
+      it { is_expected.to be expected_result }
+    end
+  end
 end

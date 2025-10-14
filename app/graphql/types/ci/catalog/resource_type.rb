@@ -41,7 +41,7 @@ module Types
         field :visibility_level, Types::VisibilityLevelsEnum, null: true,
           description: 'Visibility level of the catalog resource.'
 
-        field :verification_level, Types::Ci::Catalog::Resources::VerificationLevelEnum, null: true,
+        field :verification_level, Types::Namespaces::VerificationLevelEnum, null: true,
           description: 'Verification level of the catalog resource.'
 
         field :latest_released_at, Types::TimeType, null: true,
@@ -55,8 +55,9 @@ module Types
           description: 'Relative path to the starrers page for the catalog resource project.'
 
         field :last_30_day_usage_count, GraphQL::Types::Int, null: false,
-          description: 'Number of projects that used a component from this catalog resource in a pipeline, by using ' \
-            '`include:component`, in the last 30 days.',
+          description: 'Number of projects that used a component from' \
+            'this catalog resource in a pipeline, by using ' \
+            '`include:component` in the last 30 days.',
           experiment: { milestone: '17.0' }
 
         field :archived, GraphQL::Types::Boolean, null: true,

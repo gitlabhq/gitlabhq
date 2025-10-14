@@ -16,9 +16,8 @@ module HasUserType
     automation_bot: 9,
     security_policy_bot: 10,
     admin_bot: 11,
-    suggested_reviewers_bot: 12,
     service_account: 13,
-    llm_bot: 14,
+    # 14: Deprecated llm_bot type (removed)
     placeholder: 15,
     duo_code_review_bot: 16,
     import_user: 17
@@ -34,9 +33,7 @@ module HasUserType
     automation_bot
     security_policy_bot
     admin_bot
-    suggested_reviewers_bot
     service_account
-    llm_bot
     duo_code_review_bot
   ].freeze
 

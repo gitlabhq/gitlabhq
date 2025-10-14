@@ -11,7 +11,7 @@
       .gl-text-sm.md.gl-truncate{ class: '*:!gl-text-subtle *:!gl-m-0' }
         = first_line_in_markdown(topic, :description, 200)
 
-  .stats.gl-text-subtle.gl-shrink-0.gl-hidden.sm:gl-flex
+  .stats.gl-text-subtle.gl-shrink-0.gl-hidden{ class: "@sm/panel:gl-flex" }
     %span.gl-ml-5.has-tooltip{ title: n_('%d project', '%d projects', topic.total_projects_count) % topic.total_projects_count }
       = sprite_icon('chart', css_class: 'gl-align-text-bottom')
       = number_with_delimiter(topic.total_projects_count)

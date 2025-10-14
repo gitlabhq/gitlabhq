@@ -39,7 +39,7 @@ func TestNewMultiHash(t *testing.T) {
 	for _, test := range tests {
 		mh := newMultiHash(test.allowedHashes)
 
-		require.Equal(t, len(test.expectedHashes), len(mh.hashes))
+		require.Len(t, test.expectedHashes, len(mh.hashes))
 
 		var keys []string
 		for key := range mh.hashes {

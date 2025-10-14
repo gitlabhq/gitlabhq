@@ -32,10 +32,10 @@ describe('CI Icon component', () => {
     showStatusText | showTooltip | expectedText | expectedTooltip
     ${true}        | ${true}     | ${'Success'} | ${undefined}
     ${true}        | ${false}    | ${'Success'} | ${undefined}
-    ${false}       | ${true}     | ${''}        | ${'Success'}
+    ${false}       | ${true}     | ${''}        | ${'Pipeline status: Success'}
     ${false}       | ${false}    | ${''}        | ${undefined}
   `(
-    'when showStatusText is %{showStatusText} and showTooltip is %{showTooltip}',
+    'when showStatusText is %{showStatusText} and showTooltip is Pipeline Status: %{showTooltip}',
     ({ showStatusText, showTooltip, expectedText, expectedTooltip }) => {
       beforeEach(() => {
         createComponent({
@@ -44,6 +44,10 @@ describe('CI Icon component', () => {
             showTooltip,
           },
         });
+      });
+
+      it(`title is set`, () => {
+        expect(wrapper.attributes('title')).toBe(expectedTooltip);
       });
 
       it(`aria-label is set`, () => {
@@ -116,7 +120,7 @@ describe('CI Icon component', () => {
       ${'status_skipped'}  | ${'neutral'}
       ${'status_canceled'} | ${'neutral'}
       ${'status_manual'}   | ${'neutral'}
-    `('should render a $group status', ({ icon, variant }) => {
+    `('should render a $icon status', ({ icon, variant }) => {
       createComponent({
         props: {
           status: {

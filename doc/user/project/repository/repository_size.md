@@ -101,7 +101,7 @@ to produce a list of objects in a`commit-map` file.
 To clean up a repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to **Settings > Repository**.
+1. Go to **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Upload the list of objects to remove. For example, the `commit-map` file in the `filter-repo` directory.
 
@@ -167,17 +167,17 @@ process. New commits pushed during blob removal can cause the operation to fail.
 To remove blobs from your repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Remove blobs**.
 1. Enter a list of blob IDs to remove, each ID on its own line.
 1. Select **Remove blobs**.
 1. On the confirmation dialog, enter your project path.
 1. Select **Yes, remove blobs**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand the section labeled **Advanced**.
 1. Select **Run housekeeping**. Wait at least 30 minutes for the operation to complete.
-1. In the same **Settings > General > Advanced** section, select **Prune unreachable objects**.
+1. In the same **Settings** > **General** > **Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
 {{< alert type="note" >}}

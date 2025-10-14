@@ -33,7 +33,7 @@ For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.
 
 {{< alert type="note" >}}
 
-A Workspace runs on any `linux/amd64` Kubernetes cluster. If you need to run sudo commands, or
+A workspace runs on any `linux/amd64` Kubernetes cluster that supports the GitLab agent for Kubernetes (`agentk`). If you need to run sudo commands, or
 build and run containers in your workspace, there might be platform-specific requirements.
 
 For more information, see [Platform compatibility](configuration.md#platform-compatibility).
@@ -77,7 +77,7 @@ in that workspace. The data cannot be recovered.
 ### Deleting resources associated with a workspace
 
 When you terminate a workspace, you delete all resources associated with the workspace.
-When you delete a project, agent, user, or token associated with a running workspace:
+When you delete a project, `agentk`, user, or token associated with a running workspace:
 
 - The workspace is deleted from the user interface.
 - In the Kubernetes cluster, the running workspace resources become orphaned and are not automatically deleted.
@@ -94,10 +94,10 @@ To clean up orphaned resources, an administrator must manually delete the worksp
 
 {{< /history >}}
 
-To manage all workspaces associated with an agent:
+To manage all workspaces associated with `agentk`:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Kubernetes clusters**.
+1. Select **Operate** > **Kubernetes clusters**.
 1. Select the agent configured for remote development.
 1. Select the **Workspaces** tab.
 1. From the list, you can restart, stop, or terminate an existing workspace.
@@ -111,7 +111,7 @@ in that workspace. The data cannot be recovered.
 
 ### Identify an agent from a running workspace
 
-In deployments that contain multiple agents, you might want to identify an agent from a running workspace.
+In deployments that contain multiple `agentk` installations, you might want to identify an agent from a running workspace.
 
 To identify an agent associated with a running workspace, use one of the following GraphQL endpoints:
 

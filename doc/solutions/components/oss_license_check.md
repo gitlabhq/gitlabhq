@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Guide to setting up OSS license compliance in GitLab, including dependency scanning, approval policies, and keeping license lists up to date.
 title: OSS License Check
 ---
 
@@ -55,7 +56,7 @@ If you don't have a security policy project yet, you'll need to create one and t
 #### Setting up Dependency Scanning from scratch
 
 1. First, identify which group you want to apply this policy to. This will be the highest group level where the policy can be applied (you can include or exclude projects within this group).
-1. Navigate to that group's **Secure > Policies** page.
+1. Navigate to that group's **Secure** > **Policies** page.
 1. Click on **New policy**.
 1. Select **Scan execution policy**.
 1. Enter a name for your policy (for example, "Dependency Scanning Policy").
@@ -69,7 +70,7 @@ If you don't have a security policy project yet, you'll need to create one and t
 
 After setting up dependency scanning, follow these steps to set up the license compliance policy:
 
-1. Navigate back to the same group's **Secure > Policies** page.
+1. Navigate back to the same group's **Secure** > **Policies** page.
 1. Click on **New policy**.
 1. Select **Merge request approval policy**.
 1. Enter a name for your policy (for example, "OSS Compliance Policy").

@@ -250,7 +250,7 @@ Prerequisites:
    remote branch:
 
    ```shell
-    git push origin my-feature-branch --force-with-lease
+   git push origin my-feature-branch --force-with-lease
    ```
 
 ## Force push to a remote branch

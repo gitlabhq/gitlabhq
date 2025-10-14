@@ -51,6 +51,7 @@ blog post.
 {{< history >}}
 
 - The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436565) from 10 to 30 in GitLab 16.9.
+- The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/569158) from 30 to 100 in GitLab 18.5.
 
 {{< /history >}}
 
@@ -205,7 +206,7 @@ In order of highest priority first, the component version can be:
 - A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
 - A tag, for example: `1.0.0`. If a tag and commit SHA exist with the same name,
   the commit SHA takes precedence over the tag. Components released to the CI/CD Catalog
-  should be tagged with a [semantic version](#semantic-versioning).
+  must be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
 - `~latest` or a partial semantic version, which selects the latest version within the specified pattern
@@ -641,7 +642,7 @@ Prerequisites:
 To set the project as a catalog project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **CI/CD Catalog project** toggle.
 

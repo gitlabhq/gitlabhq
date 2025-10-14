@@ -35,7 +35,7 @@ To configure the Language Server to use a proxy:
 
 1. In your JetBrains IDE, configure the [HTTP Proxy](https://www.jetbrains.com/help/idea/settings-http-proxy.html) settings.
 1. Restart your IDE to ensure connections to GitLab use the latest proxy settings.
-1. From the **Tools > GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
+1. From the **Tools** > **GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
 
 {{< /tab >}}
 
@@ -90,7 +90,7 @@ setting in VS Code for authenticating the language server with an HTTP proxy. Su
 1. Configure [HTTP Proxy](https://www.jetbrains.com/help/idea/settings-http-proxy.html) settings in your JetBrains IDE.
    1. If using **Manual proxy configuration**, enter your credentials under **Proxy authentication** and select **Remember**.
 1. Restart your JetBrains IDE to ensure connections to GitLab use the latest proxy settings.
-1. From the **Tools > GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
+1. From the **Tools** > **GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
 
 {{< /tab >}}
 

@@ -291,9 +291,9 @@ You can use one of three endpoints to install a Maven package. You must publish 
 
 The three endpoints are:
 
-- **Project-level**: Use when you have a few Maven packages and they are not in the same GitLab group.
-- **Group-level**: Use when you want to install packages from many different projects in the same GitLab group. GitLab does not guarantee the uniqueness of package names within the group. You can have two projects with the same package name and package version. As a result, GitLab serves whichever one is more recent.
-- **Instance-level**: Use when you have many packages in different GitLab groups or in their own namespace.
+- Project: Use when you have a few Maven packages and they are not in the same GitLab group.
+- Group: Use when you want to install packages from many different projects in the same GitLab group. GitLab does not guarantee the uniqueness of package names within the group. You can have two projects with the same package name and package version. As a result, GitLab serves whichever one is more recent.
+- Instance: Use when you have many packages in different GitLab groups or in their own namespace.
 
 For the instance-level endpoint, ensure the relevant section of your `pom.xml` in Maven looks like this:
 
@@ -302,7 +302,7 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
   <artifactId>project-slug</artifactId>
 ```
 
-**Only packages that have the same path as the project** are exposed by the instance-level endpoint.
+Only packages that have the same path as the project are exposed by the instance-level endpoint.
 
 | Project             | Package                          | Instance-level endpoint available |
 | ------------------- | -------------------------------- | --------------------------------- |
@@ -539,9 +539,6 @@ group, or namespace.
 If multiple packages have the same name and version, when you install
 a package, the most recently-published package is retrieved.
 
-In case there are not enough permissions to read the most recently-published
-package than `403 Forbidden` is returning.
-
 {{< tabs >}}
 
 {{< tab title="`mvn`" >}}
@@ -621,7 +618,7 @@ To install a package by using `gradle`:
 1. In your project, run the following:
 
    ```shell
-   gradle install
+   gradle build
    ```
 
 {{< /tab >}}
@@ -932,7 +929,7 @@ To prevent users from publishing duplicate Maven packages, you can use the [Grap
 In the UI:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. In the **Maven** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
@@ -1176,7 +1173,7 @@ The GitLab Maven repository supports the following CLI commands:
 {{< tab title="`gradle`" >}}
 
 - `gradle publish`: Publish your package to the package registry.
-- `gradle install`: Install packages specified in your Gradle project.
+- `gradle build`: Assembles and tests this project.
 
 {{< /tab >}}
 

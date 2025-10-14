@@ -1,0 +1,10 @@
+= content_for :meta_tags do
+  %meta{ 'http-equiv': 'refresh', content: "5; url=#{redirect_url}" }
+
+.gl-text-center.gl-max-w-62.gl-mx-auto
+  .svg-content.svg-80
+    = image_tag 'illustrations/gitlab_logo.svg'
+  %h2
+    = s_('IdentityVerification|You will be automatically redirected')
+  %p.gl-pt-2
+    = safe_format(s_("IdentityVerification|You can skip email verification for now. Starting on %{date}, email verification will be mandatory."), date: l(email_otp_required_after.to_date, format: :long))

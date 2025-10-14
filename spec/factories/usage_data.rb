@@ -77,10 +77,6 @@ FactoryBot.define do
       # Cluster Integrations
       create(:clusters_integrations_prometheus, cluster: gcp_cluster)
 
-      create(:grafana_integration, project: projects[0], enabled: true)
-      create(:grafana_integration, project: projects[1], enabled: true)
-      create(:grafana_integration, project: projects[2], enabled: false)
-
       create(:generic_package, project: projects[0], created_at: 3.days.ago)
       create(:generic_package, project: projects[0], created_at: 3.days.ago)
       create(:generic_package, project: projects[1], created_at: 3.days.ago)

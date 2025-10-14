@@ -125,7 +125,7 @@ module API
         requires :freeze_period_id, type: Integer, desc: 'The ID of the freeze period'
       end
       delete ':id/freeze_periods/:freeze_period_id' do
-        authorize! :destroy_freeze_period, user_project
+        authorize! :delete_freeze_period, user_project
 
         destroy_conditionally!(freeze_period)
       end

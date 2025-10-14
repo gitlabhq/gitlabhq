@@ -19,8 +19,6 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to have_many(:events).class_name('ResourceEvents::AbuseReportEvent').inverse_of(:abuse_report) }
     it { is_expected.to have_many(:notes) }
     it { is_expected.to have_many(:user_mentions).class_name('AntiAbuse::Reports::UserMention') }
-    it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
-    it { is_expected.to have_many(:assignees).class_name('User').through(:admin_abuse_report_assignees) }
 
     it do
       is_expected.to have_many(:label_links).inverse_of(:abuse_report).class_name('AntiAbuse::Reports::LabelLink')
@@ -42,19 +40,11 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
-    it { is_expected.to validate_presence_of(:reporter).on(:create) }
+    it { is_expected.to validate_presence_of(:reporter) }
     it { is_expected.to validate_presence_of(:user).on(:create) }
     it { is_expected.to validate_presence_of(:message) }
     it { is_expected.to validate_presence_of(:category) }
     it { is_expected.to validate_presence_of(:organization_id).on(:create) }
-
-    context 'when abuse_report_populate_organization FF is disabled' do
-      before do
-        stub_feature_flags(abuse_report_populate_organization: false)
-      end
-
-      it { is_expected.not_to validate_presence_of(:organization_id).on(:create) }
-    end
 
     it do
       is_expected.to validate_uniqueness_of(:user_id)

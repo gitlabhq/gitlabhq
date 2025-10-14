@@ -4,14 +4,18 @@ module Ci
   class RunnerTagging < Ci::ApplicationRecord
     include BulkInsertSafe
 
+    MAX_NAME_LENGTH = 255
+
     self.table_name = :ci_runner_taggings
     self.primary_key = :id
 
     ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-22'
+    ignore_column :name, remove_with: '18.7', remove_after: '2025-11-20'
 
     query_constraints :runner_id, :runner_type
 
     before_validation :set_runner_type, on: :create, if: -> { runner_type.nil? && runner }
+    before_validation :copy_tag_name_from_tags, on: [:create, :update], if: -> { tag_name.nil? && tag.present? }
 
     enum :runner_type, Ci::Runner.runner_types
 
@@ -21,6 +25,7 @@ module Ci
     belongs_to :tag, class_name: 'Ci::Tag', optional: false
 
     validates :runner_type, presence: true
+    validates :tag_name, presence: true, length: { maximum: MAX_NAME_LENGTH }, on: [:create, :update]
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
 
     validate :no_organization_id, if: :instance_type?
@@ -35,6 +40,10 @@ module Ci
 
     def set_runner_type
       self.runner_type = runner.runner_type
+    end
+
+    def copy_tag_name_from_tags
+      self.tag_name = tag.name
     end
 
     def no_organization_id

@@ -1,6 +1,4 @@
 <script>
-import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg?url';
-
 import {
   GlAvatarLabeled,
   GlButton,
@@ -123,8 +121,6 @@ export default {
     notYetAwarded: s__('Achievements|Not yet awarded.'),
   },
   NEW_ROUTE_NAME,
-  FILTERED_SVG_URL,
-  svgHeight: 145,
 };
 </script>
 
@@ -133,8 +129,7 @@ export default {
     <gl-empty-state
       v-if="!isLoading && !achievements.length"
       :title="$options.i18n.emptyStateTitle"
-      :svg-path="$options.FILTERED_SVG_URL"
-      :svg-height="$options.svgHeight"
+      illustration-name="empty-search-md"
     >
       <template #description>
         <router-link v-if="canAdminAchievement" :to="{ name: $options.NEW_ROUTE_NAME }">

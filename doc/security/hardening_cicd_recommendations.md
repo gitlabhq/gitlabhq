@@ -30,7 +30,7 @@ The general guidance is to:
 
 Pipelines are a core component of GitLab CI/CD that execute jobs in stages to automate tasks
 on behalf of the users of a project. For specific guidelines on dealing with pipelines,
-see the information on [pipeline security](../ci/pipelines/pipeline_security.md).
+see the information on [pipeline security](../ci/pipeline_security/_index.md).
 
 Deployment is the part of the CI/CD that deploys the results of the pipeline in
 relationship to a given environment. Default settings do not impose many

@@ -53,7 +53,7 @@ For GitLab Self-Managed, before you can use GitLab for your OpenTofu state files
 
 - An administrator must [set up Terraform/OpenTofu state storage](../../../administration/terraform_state.md).
 - You must turn on the **Infrastructure** menu for your project:
-  1. Go to **Settings > General**.
+  1. Go to **Settings** > **General**.
   1. Expand **Visibility, project features, permissions**.
   1. Under **Infrastructure**, turn on the toggle.
 
@@ -147,7 +147,7 @@ inconsistent. Instead, use a remote storage resource.
 1. Copy a pre-populated OpenTofu `init` command:
 
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Operate > Terraform states**.
+   1. Select **Operate** > **Terraform states**.
    1. Next to the environment you want to use, select **Actions**
       ({{< icon name="ellipsis_v" >}}) and select **Copy Terraform init command**.
 
@@ -365,7 +365,7 @@ To read the OpenTofu state in the target project, you need at least the Develope
 To view OpenTofu state files:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Terraform states**.
+1. Select **Operate** > **Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
 
@@ -462,7 +462,7 @@ You can also use [the GraphQL API](../../../api/graphql/reference/_index.md#muta
 
 To remove a state file using the UI:
 
-1. On the left sidebar, select **Operate > Terraform states**.
+1. On the left sidebar, select **Operate** > **Terraform states**.
 1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Remove state file and versions**.
 
 {{< /tab >}}
@@ -507,7 +507,7 @@ curl --request DELETE --header "Private-Token: <your_access_token>" \
 
 To lock or unlock a state file using the UI:
 
-1. On the left sidebar, select **Operate > Terraform states**.
+1. On the left sidebar, select **Operate** > **Terraform states**.
 1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Lock** to lock or **Actions ({{< icon name="ellipsis_v" >}}) > Unlock**.
 
 {{< /tab >}}
@@ -552,7 +552,7 @@ curl --header "Private-Token: <your_access_token>" \
 
 To download the latest state file using the UI:
 
-1. On the left sidebar, select **Operate > Terraform states**.
+1. On the left sidebar, select **Operate** > **Terraform states**.
 1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Download JSON**.
 
 There is no way to download a specific version of the state using the UI.

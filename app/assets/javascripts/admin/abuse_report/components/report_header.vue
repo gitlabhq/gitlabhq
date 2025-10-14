@@ -38,7 +38,7 @@ export default {
       return REPORT_HEADER_I18N[this.state];
     },
     badgeIcon() {
-      return this.isOpen ? 'issues' : 'issue-closed';
+      return this.isOpen ? 'issue-type-issue' : 'issue-close';
     },
   },
   methods: {
@@ -51,7 +51,7 @@ export default {
 </script>
 
 <template>
-  <header class="gl-border-b gl-flex gl-flex-col gl-justify-between gl-py-4 sm:gl-flex-row">
+  <header class="gl-border-b gl-flex gl-flex-col gl-justify-between gl-py-4 @sm/panel:gl-flex-row">
     <div class="gl-flex gl-items-center gl-gap-3">
       <gl-badge :variant="badgeVariant" :icon="badgeIcon" :aria-label="badgeText">
         {{ badgeText }}
@@ -62,14 +62,16 @@ export default {
       </h1>
       <gl-link :href="user.path"> @{{ user.username }} </gl-link>
     </div>
-    <nav class="gl-mt-4 gl-flex gl-flex-col sm:gl-mt-0 sm:gl-flex-row sm:gl-items-center">
+    <nav
+      class="gl-mt-4 gl-flex gl-flex-col @sm/panel:gl-mt-0 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
+    >
       <gl-button :href="user.adminPath">
         {{ $options.i18n.adminProfile }}
       </gl-button>
       <report-actions
         :user="user"
         :report="report"
-        class="gl-mt-3 sm:gl-ml-3 sm:gl-mt-0"
+        class="gl-mt-3 @sm/panel:gl-ml-3 @sm/panel:gl-mt-0"
         @closeReport="closeReport"
         v-on="$listeners"
       />

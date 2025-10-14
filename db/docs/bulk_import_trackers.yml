@@ -9,33 +9,9 @@ description: Used to store and track the status of each pipeline associated with
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47009
 milestone: '13.6'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: bulk_import_entity_id
-        table: bulk_import_entities
-        sharding_key: project_id
-        belongs_to: entity
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: bulk_import_entity_id
-        table: bulk_import_entities
-        sharding_key: namespace_id
-        belongs_to: entity
-  organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: bulk_import_entity_id
-        table: bulk_import_entities
-        sharding_key: organization_id
-        belongs_to: entity
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
+  organization_id: organizations
 table_size: small
-desired_sharding_key_migration_job_name:
-- BackfillBulkImportTrackersProjectId
-- BackfillBulkImportTrackersNamespaceId
-- BackfillBulkImportTrackersOrganizationId
+desired_sharding_key_migration_job_name: BackfillBulkImportTrackersShardingKey

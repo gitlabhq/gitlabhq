@@ -11,6 +11,7 @@ RSpec.describe Gitlab::Orchestrator::Kind::Cluster do
   end
 
   before do
+    allow(TTY::Which).to receive(:exist?).with("kind").and_return(true)
     allow(FileUtils).to receive(:mkdir_p).with(File.join(Dir.home, ".gitlab-orchestrator"))
     allow(File).to receive(:write).with(config_path, kind_config_content)
     allow(File).to receive(:read).with(config_path).and_return(kind_config_content)
@@ -55,6 +56,16 @@ RSpec.describe Gitlab::Orchestrator::Kind::Cluster do
 
       allow(cluster).to receive(:rand).with(30000..31000).and_return(http_container_port)
       allow(cluster).to receive(:rand).with(31001..32000).and_return(ssh_container_port)
+    end
+
+    context "with missing kind tool" do
+      before do
+        allow(TTY::Which).to receive(:exist?).with("kind").and_return(false)
+      end
+
+      it "raises error about missing kind installation" do
+        expect { cluster.create }.to raise_error RuntimeError, /'kind' executable not found in PATH/
+      end
     end
 
     context "with ci specific setup" do

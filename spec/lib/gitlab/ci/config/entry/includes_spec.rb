@@ -27,4 +27,31 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Includes, feature_category: :pipelin
       expect(includes_entry.errors).to include('includes config is too long (maximum is 1)')
     end
   end
+
+  describe '#composable_class' do
+    let(:config) { ['test.yml'] }
+
+    it 'returns Entry::Include class' do
+      expect(include_entry.composable_class).to eq(::Gitlab::Ci::Config::Entry::Include)
+    end
+
+    context 'when base implementation is called' do
+      # This test ensures coverage of the base composable_class method in BaseIncludes concern
+      # that raises NotImplementedError when not overridden by subclasses
+      let(:test_class) do
+        Class.new(::Gitlab::Config::Entry::ComposableArray) do
+          include ::Gitlab::Ci::Config::Entry::Concerns::BaseIncludes
+          # Don't override composable_class to test base implementation
+        end
+      end
+
+      let(:test_instance) { test_class.new(['test.yml']) }
+
+      it 'raises NotImplementedError from base concern' do
+        expect do
+          test_instance.composable_class
+        end.to raise_error(NotImplementedError, 'Subclasses must define composable_class')
+      end
+    end
+  end
 end

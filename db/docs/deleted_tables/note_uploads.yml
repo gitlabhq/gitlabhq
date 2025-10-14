@@ -1,0 +1,29 @@
+---
+table_name: note_uploads
+classes:
+- DiffNote
+- DiscussionNote
+- IterationNote
+- LabelNote
+- LegacyDiffNote
+- MilestoneNote
+- Note
+- StateNote
+- SyntheticNote
+- Upload
+- WeightNote
+feature_categories:
+- code_review_workflow
+- portfolio_management
+- service_desk
+- source_code_management
+- team_planning
+description: Stores uploads for Note model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206764
+removed_in_milestone: '18.5'

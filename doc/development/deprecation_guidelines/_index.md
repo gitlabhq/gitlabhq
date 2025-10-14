@@ -85,6 +85,24 @@ Related Handbook pages:
 
 ## Update the breaking change windows documentation
 
+{{< alert type="note" >}}
+
+This process is on hold, as the breaking change windows for 19.0 have not yet been determined.
+The auto-generation of the page [is disabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207514).
+When ready to start updating the page again:
+
+- In `lib/tasks/gitlab/docs/compile_windows.rake`:
+  - Uncomment the `# write_windows_content(file)` line.
+  - Add new dates for the breaking change windows.
+  - Update the page introduction.
+  - Run `bin/rake gitlab:docs:compile_windows`.
+- In `.gitlab/ci/docs.gitlab-ci.yml`
+  - Uncomment the `# - bundle exec rake gitlab:docs:check_windows` line
+- In: `doc/development/deprecation_guidelines/_index.md`:
+  - Remove this note.
+
+{{< /alert >}}
+
 The [breaking change windows](../../update/breaking_windows.md)
 documentation is generated based on the `window` value in the YAML files located in
 [`gitlab/data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).

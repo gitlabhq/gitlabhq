@@ -99,7 +99,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-col gl-gap-3 lg:gl-flex-row" data-testid="date-range-filter">
+  <div class="gl-flex gl-flex-col gl-gap-3 @lg/panel:gl-flex-row" data-testid="date-range-filter">
     <date-ranges-dropdown
       :selected="dateRange.value"
       :date-range-options="dateRangeOptions"

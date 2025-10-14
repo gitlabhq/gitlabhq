@@ -68,7 +68,7 @@ For more information, see the history.
 To view the dependencies of a project or all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Secure > Dependency list**.
+1. Select **Secure** > **Dependency list**.
 1. Optional. If there are transitive dependencies, you can also view all of the dependency paths:
    - For a project, in the **Location** column, select **View dependency paths**.
    - For a group, in the **Location** column, select the location, then select **View dependency paths**.
@@ -78,7 +78,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 | Field                       | Description |
 |-----------------------------|-------------|
 | Component                   | The dependency's name and version. |
-| Packager                    | The packager used to install the dependency. |
+| Packager                    | The package manager used to install the dependency. Displays as "unknown" for unsupported package managers. |
 | Location                    | For system dependencies, this field lists the image that was scanned. For application dependencies, this field shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the direct [dependents](#dependency-paths), if any. If there are transitive dependencies, selecting **View dependency paths** shows the full path of all dependents. Transitive dependencies are indirect dependents that have a direct dependent as an ancestor. |
 | License (for projects only) | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
 | Projects (for groups only)  | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. |
@@ -117,7 +117,7 @@ To filter by component version, you must filter by exactly one component first.
 To filter the dependency list:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Secure > Dependency list**.
+1. Select **Secure** > **Dependency list**.
 1. Select the filter bar.
 1. Select a filter, then from the dropdown list select one or more criteria.
    To close the dropdown list, select outside of it. To add more filters, repeat this step.
@@ -131,6 +131,7 @@ The dependency list shows only dependencies that match your filters.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500551) in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `update_sbom_occurrences_vulnerabilities_on_cvs`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/514223) in GitLab 17.9.
+- A change to make the dependency list display only `detected` and `confirmed` states introduced in GitLab 18.5.
 
 {{< /history >}}
 
@@ -145,6 +146,9 @@ If a dependency has known vulnerabilities, view them by selecting the arrow next
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
 vulnerability, its severity and description appears below it. To view more details of a vulnerability,
 select the vulnerability's description. The [vulnerability's details](../vulnerabilities/_index.md) page is opened.
+The dependency list shows only vulnerabilities in the `detected` and `confirmed` states.
+When a vulnerability's state changes, the changes are not reflected on the dependency list
+until a new pipeline runs on the default branch containing an SBoM.
 
 ## Dependency paths
 
@@ -193,7 +197,7 @@ You can export the dependency list in:
 To export the dependency list:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Secure > Dependency list**.
+1. Select **Secure** > **Dependency list**.
 1. Select **Export** and then select the file format.
 
 The dependency list is sent to your email address. To download the dependency list, select the

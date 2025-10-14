@@ -1,7 +1,7 @@
 .nav-block.activities
   = render 'shared/event_filter', show_group_events: @group.supports_events?
   .controls
-    = render Pajamas::ButtonComponent.new(href: group_path(@group, rss_url_options), icon: 'rss', button_options: { class: 'gl-hidden sm:gl-inline-flex has-tooltip', title: _('Subscribe') })
+    = render Pajamas::ButtonComponent.new(href: group_path(@group, rss_url_options), icon: 'rss', button_options: { class: 'gl-hidden @sm/panel:gl-inline-flex has-tooltip', title: _('Subscribe') })
 
 %ul.content_list.gl-list-none.gl-pl-0
 .loading

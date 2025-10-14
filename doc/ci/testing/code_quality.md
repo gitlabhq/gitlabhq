@@ -167,7 +167,7 @@ that were found on the branch it was run on.
 
 {{< /history >}}
 
-The project quality view displays an overview of the code quality findings. The view can be found under **Analyze > CI/CD analytics**, and requires [`project_quality_summary_page`](../../administration/feature_flags/_index.md) feature flag to be enabled for this particular project.
+The project quality view displays an overview of the code quality findings. The view can be found under **Analyze** > **CI/CD analytics**, and requires [`project_quality_summary_page`](../../administration/feature_flags/_index.md) feature flag to be enabled for this particular project.
 
 ![Total number of issues, called violations, followed by the number of issues of each severity](img/code_quality_summary_v15_9.png)
 
@@ -312,9 +312,8 @@ To integrate its output:
 
 1. Add the arguments to the command you use to run `golangci-lint`.
 
-   For v1 add  `--out-format code-climate:gl-code-quality-report.json,line-number`.
-
-   For v2 add  `--output.code-climate.path=gl-code-quality-report.json`.
+   - For v1 add `--out-format code-climate:gl-code-quality-report.json,line-number`.
+   - For v2 add `--output.code-climate.path=gl-code-quality-report.json`.
 
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 

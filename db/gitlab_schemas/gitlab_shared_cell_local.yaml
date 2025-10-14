@@ -1,0 +1,8 @@
+name: gitlab_shared_cell_local
+description:
+  Schema for all cell local shared tables that do not require sharding.
+allow_cross_joins:
+  - gitlab_internal
+allow_cross_transactions:
+  - gitlab_internal
+require_sharding_key: false

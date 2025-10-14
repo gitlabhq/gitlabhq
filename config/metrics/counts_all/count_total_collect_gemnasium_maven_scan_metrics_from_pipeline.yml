@@ -1,0 +1,22 @@
+---
+key_path: redis_hll_counters.count_total_collect_gemnasium_maven_scan_metrics_from_pipeline
+description: Count of Gemnasium maven scans
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '18.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206995
+time_frame:
+- 28d
+- 7d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: collect_gemnasium_maven_scan_metrics_from_pipeline

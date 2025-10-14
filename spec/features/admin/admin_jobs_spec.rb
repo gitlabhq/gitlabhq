@@ -132,7 +132,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
           expect(page).to have_selector('[data-testid="jobs-table-row"]', count: 2)
         end
 
-        select_tokens 'Status', 'Failed', submit: true, input_text: 'Filter jobs'
+        select_tokens 'Status', 'Failed', submit: true, input_text: 'Search'
 
         wait_for_requests
 

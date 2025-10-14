@@ -1,6 +1,6 @@
 ---
 name: snowplow_emitter_batching_off
-description: Allow disabling of snowplow emitter batching in staging environment
+description: Allow disabling of snowplow emitter batching
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/561744
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203000
 rollout_issue_url:

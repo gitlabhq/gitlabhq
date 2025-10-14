@@ -15,7 +15,7 @@ title: Debian packages in the package registry
 
 {{< history >}}
 
-- [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+- [Deployed behind a feature flag](../../../administration/feature_flags/list.md), disabled by default.
 
 {{< /history >}}
 
@@ -50,7 +50,7 @@ Prerequisites:
 ## Enable the Debian API
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's
-**disabled by default**.
+disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags/_index.md)
 can opt to enable it.
 
@@ -128,7 +128,7 @@ with one of the following:
 
 ## Create a Distribution
 
-At the project level, Debian packages are published with **Debian distributions**. At the
+At the project level, Debian packages are published with Debian distributions. At the
 group level, Debian packages are aggregated from the projects in the group provided that:
 
 - The project visibility is set to `public`.

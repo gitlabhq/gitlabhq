@@ -659,6 +659,15 @@ Parameters:
 | `sha`     | string         | Yes      | The commit hash or name of a repository branch or tag. |
 | `unidiff` | boolean        | No       | If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
 
+{{< alert type="note" >}}
+
+This endpoint is subject to [diff limits](../administration/diff_limits.md). When a commit
+exceeds the configured maximum number of files, pagination stops and no additional files are
+returned beyond the limit. For GitLab.com specific limits, see
+[diff display limits](../user/gitlab_com/_index.md#diff-display-limits).
+
+{{< /alert >}}
+
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
 | Attribute      | Type    | Description |

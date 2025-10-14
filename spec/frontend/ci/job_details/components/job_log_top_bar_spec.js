@@ -5,6 +5,8 @@ import { backoffMockImplementation } from 'helpers/backoff_helper';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mockJobLog } from 'jest/ci/jobs_mock_data';
 
+jest.mock('~/lib/utils/common_utils');
+
 const mockToastShow = jest.fn();
 
 describe('JobLogTopBar', () => {
@@ -24,7 +26,6 @@ describe('JobLogTopBar', () => {
     size: 511952,
     isScrollTopDisabled: false,
     isScrollBottomDisabled: false,
-    isScrollingDown: true,
     isJobLogSizeVisible: true,
     isComplete: true,
     jobLog: mockJobLog,
@@ -137,7 +138,6 @@ describe('JobLogTopBar', () => {
           createWrapper({
             isScrollTopDisabled: true,
             isScrollBottomDisabled: false,
-            isScrollingDown: false,
           });
         });
 
@@ -171,7 +171,6 @@ describe('JobLogTopBar', () => {
           createWrapper({
             isScrollTopDisabled: false,
             isScrollBottomDisabled: true,
-            isScrollingDown: false,
           });
         });
 
@@ -183,30 +182,6 @@ describe('JobLogTopBar', () => {
           await findScrollBottom().trigger('click');
 
           expect(wrapper.emitted().scrollJobLogBottom).toBeUndefined();
-        });
-      });
-
-      describe('while isScrollingDown is true', () => {
-        beforeEach(() => {
-          createWrapper();
-        });
-
-        it('renders animate class for the scroll down button', () => {
-          expect(findScrollBottom().classes()).toContain('animate');
-        });
-      });
-
-      describe('while isScrollingDown is false', () => {
-        beforeEach(() => {
-          createWrapper({
-            isScrollTopDisabled: true,
-            isScrollBottomDisabled: false,
-            isScrollingDown: false,
-          });
-        });
-
-        it('does not render animate class for the scroll down button', () => {
-          expect(findScrollBottom().classes()).not.toContain('animate');
         });
       });
     });

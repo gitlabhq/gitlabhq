@@ -14,6 +14,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useNotes } from '~/notes/store/legacy_notes';
+import diffsEventHub from '~/diffs/event_hub';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -23,6 +24,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
   scrollToElement: jest.fn(),
   isLoggedIn: () => true,
 }));
+jest.mock('~/diffs/event_hub');
 
 const createDiffFile = () => ({
   ...diffDiscussionsMockData.diff_file,
@@ -117,6 +119,15 @@ describe('DiffFileHeader component', () => {
 
     await nextTick();
     expect(wrapper.emitted().toggleFile).toBeDefined();
+  });
+
+  it('when header is clicked it emits setFileActive', async () => {
+    createComponent();
+    findHeader().trigger('click');
+
+    await nextTick();
+
+    expect(diffsEventHub.$emit).toHaveBeenCalledWith('setFileActive', 'xyz');
   });
 
   it('when header is clicked it triggers the action that removes the value that forces a file to be uncollapsed', () => {

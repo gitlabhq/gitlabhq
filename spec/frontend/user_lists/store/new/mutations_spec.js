@@ -14,11 +14,11 @@ describe('User List Edit Mutations', () => {
       mutations[types.RECEIVE_CREATE_USER_LIST_ERROR](state, ['network error']);
     });
 
-    it('sets the error message to the recieved one', () => {
+    it('sets the error message to the received one', () => {
       expect(state.errorMessage).toEqual(['network error']);
     });
 
-    it('sets the error message to the recevied API message if present', () => {
+    it('sets the error message to the received API message if present', () => {
       const message = ['name is blank', 'name is too short'];
 
       mutations[types.RECEIVE_CREATE_USER_LIST_ERROR](state, message);

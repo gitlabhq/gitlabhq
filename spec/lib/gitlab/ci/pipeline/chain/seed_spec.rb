@@ -190,9 +190,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
         {
           variables: { VAR1: 'var 1' },
           workflow: {
-            rules: [{ if: '$CI_PIPELINE_SOURCE',
-                      variables: { VAR1: 'overridden var 1' } },
-                    { when: 'always' }]
+            rules: [
+              {
+                if: '$CI_PIPELINE_SOURCE',
+                variables: { VAR1: 'overridden var 1' }
+              },
+              { when: 'always' }
+            ]
           },
           rspec: { script: 'rake' }
         }
@@ -212,9 +216,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
         {
           variables: { VAR1: 11 },
           workflow: {
-            rules: [{ if: '$CI_PIPELINE_SOURCE',
-                      variables: { SYMBOL: :symbol, STRING: "string", INTEGER: 1 } },
-                    { when: 'always' }]
+            rules: [
+              {
+                if: '$CI_PIPELINE_SOURCE',
+                variables: { SYMBOL: :symbol, STRING: "string", INTEGER: 1 }
+              },
+              { when: 'always' }
+            ]
           },
           rspec: { script: 'rake' }
         }

@@ -212,6 +212,8 @@ rspec integration pg16 praefect:
     - .rails:rules:praefect-with-db
 
 rspec system pg16:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-base-pg16
     - .rspec-system-parallel
@@ -240,36 +242,52 @@ rspec system pg16 single-redis:
     - rspec system pg16
     - .no-redis-cluster
     - .rspec-system-parallel
-    - .rails:rules:single-redis
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:single-redis", rules]
 
 rspec system pg16 single-db:
   extends:
     - rspec system pg16
     - .single-db-rspec
     - .rspec-system-parallel
-    - .rails:rules:single-db
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:single-db", rules]
 
 rspec system pg16 single-db-ci-connection:
   extends:
     - rspec system pg16
     - .single-db-ci-connection-rspec
     - .rspec-system-parallel
-    - .rails:rules:single-db-ci-connection
-    - .rails:rules:single-db
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    # NOTE: Previously (in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169907), both the
+    # .rails:rules:single-db-ci-connection and .rails:rules:single-db were included as regular
+    # 'extends' array entries. But this may not have been the best way to implement it,
+    # due to the first-match-wins behavior of 'rules' (https://docs.gitlab.com/ci/yaml/#rules),
+    # because there consequently needs to be duplication between the two rule sets.
+    # Nevertheless, this previous implementation has been preserved here with the conversion to '!reference'.
+    - !reference [".rails:rules:single-db-ci-connection", rules]
+    - !reference [".rails:rules:single-db", rules]
 
 rspec system pg16 single-db-sec-connection:
   extends:
     - rspec system pg16
     - .single-db-sec-connection-rspec
     - .rspec-system-parallel
-    - .rails:rules:single-db-sec-connection
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:single-db-sec-connection", rules]
 
 rspec system pg16 praefect:
   extends:
     - rspec system pg16
     - .praefect-with-db
     - .rspec-system-parallel
-    - .rails:rules:praefect-with-db
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:praefect-with-db", rules]
 
 # Test jobs that run without Gitaly's transactions enabled. These will be removed once
 # transactions are always in use in Gitaly.
@@ -297,6 +315,7 @@ rspec system pg16 no_gitaly_transactions:
   extends:
     - rspec system pg16
     - .gitaly-without-transactions
+    - .rails:rules:only-run-system-if-medium-runners-available
 
 rspec-ee migration pg16 no_gitaly_transactions:
   extends:
@@ -322,6 +341,8 @@ rspec-ee system pg16 no_gitaly_transactions:
   extends:
     - rspec-ee system pg16
     - .ee-only-gitaly-without-transactions
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
 
 rspec fast_spec_helper:
   extends:
@@ -956,6 +977,8 @@ rspec-ee integration pg16 single-db-sec-connection:
     - .rails:rules:single-db-sec-connection-ee
 
 rspec-ee system pg16:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-ee-base-pg16
     - .rspec-ee-system-parallel
@@ -966,28 +989,36 @@ rspec-ee system pg16 single-db:
     - rspec-ee system pg16
     - .single-db-rspec
     - .rspec-ee-system-parallel
-    - .rails:rules:single-db-ee
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:single-db-ee", rules]
 
 rspec-ee system pg16 single-redis:
   extends:
     - rspec-ee system pg16
     - .no-redis-cluster
     - .rspec-ee-system-parallel
-    - .rails:rules:single-redis-ee
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:single-redis-ee", rules]
 
 rspec-ee system pg16 single-db-ci-connection:
   extends:
     - rspec-ee system pg16
     - .single-db-ci-connection-rspec
     - .rspec-ee-system-parallel
-    - .rails:rules:single-db-ci-connection-ee
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:single-db-ci-connection-ee", rules]
 
 rspec-ee system pg16 single-db-sec-connection:
   extends:
     - rspec-ee system pg16
     - .single-db-sec-connection-rspec
     - .rspec-ee-system-parallel
-    - .rails:rules:single-db-sec-connection-ee
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:single-db-sec-connection-ee", rules]
 
 # Integration tests with Elasticsearch and PG production versions
 # These run on merge requests which meet certain conditions and the nightly pipeline
@@ -1011,6 +1042,7 @@ rspec-ee system pg16 es8:
     - .rspec-ee-base-pg16-es8
     - .rspec-ee-system-parallel
   rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:run-search-tests", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
@@ -1050,8 +1082,10 @@ rspec integration pg14:
 rspec system pg14:
   extends:
     - .rspec-base-pg14
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
 
 # PG15
 rspec migration pg15:
@@ -1083,8 +1117,10 @@ rspec integration pg15:
 rspec system pg15:
   extends:
     - .rspec-base-pg15
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
 
 # PG16 is the default now.
 
@@ -1118,8 +1154,11 @@ rspec integration pg17:
 rspec system pg17:
   extends:
     - .rspec-base-pg17
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage", rules]
+
 # EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
@@ -1156,8 +1195,10 @@ rspec-ee integration pg14:
 rspec-ee system pg14:
   extends:
     - .rspec-ee-base-pg14
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
 # PG15
 rspec-ee migration pg15:
@@ -1189,8 +1230,10 @@ rspec-ee integration pg15:
 rspec-ee system pg15:
   extends:
     - .rspec-ee-base-pg15
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
 # PG16
 # Integration tests with supported Elasticsearch and OpenSearch versions
@@ -1223,13 +1266,17 @@ rspec-ee system pg16 opensearch1:
   extends:
     - .rspec-ee-base-pg16-opensearch1
     - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
 rspec-ee system pg16 opensearch2:
   extends:
     - .rspec-ee-base-pg16-opensearch2
     - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 
 # Production version tests for ES and PG in nightly pipeline are defined in the previous section
 
@@ -1265,8 +1312,11 @@ rspec-ee integration pg17:
 rspec-ee system pg17:
   extends:
     - .rspec-ee-base-pg17
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
+
 # EE: default branch nightly scheduled jobs #
 #####################################
 
@@ -1294,7 +1344,9 @@ rspec-ee system pg16 es9:
     - .rspec-base-pg16
     - .rspec-ee-base-pg16-es9
     - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
 
 rspec-ee unit pg16 opensearch-latest:
   extends:
@@ -1315,7 +1367,9 @@ rspec-ee system pg16 opensearch-latest:
     - .rspec-base-pg16
     - .rspec-ee-base-pg16-opensearch-latest
     - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
 
 # EE: default branch weekly scheduled jobs #
 ##################################################
@@ -1323,6 +1377,17 @@ rspec-ee system pg16 opensearch-latest:
 ##################################################
 # EE: Canonical MR pipelines
 .rspec-fail-fast:
+  tags:
+    # NOTE: the fail-fast job is a special case with regard to GLCI_MEDIUM_RUNNER_REQUIRED,
+    # because it can contain both non-system and system tests, and thus must still always be run
+    # even on environments which do NOT have medium runners available to reliably run system tests
+    # with the latest chrome. So, in this case, we do not add a "never" rule to exclude the job
+    # like all the other system test jobs. So it's enabled, but instead of requiring a valid
+    # runner tag in these environments, we just allow it to use the default value of
+    # an empty string, which means that no runner tag will match, and thus the default runners
+    # will be used. This is still safe for those environments, because if no system test jobs ran,
+    # then no system tests can fail, and thus should never be included in the set of fail-fast tests
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rails:rules:rspec fail-fast
   stage: test
@@ -1360,6 +1425,8 @@ fail-pipeline-early:
     - fail_pipeline_early
 
 .base-rspec-pg16-rerun-previous-failed-tests:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED # See note above on .rspec-fail-fast regarding special-case usage of GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rails:rules:rerun-previous-failed-tests
   stage: test

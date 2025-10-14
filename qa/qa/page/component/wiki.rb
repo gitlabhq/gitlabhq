@@ -10,7 +10,7 @@ module QA
           super
 
           base.view 'app/views/shared/wikis/show.html.haml' do
-            element 'wiki-page-content-app'
+            element 'wiki-app'
           end
 
           base.view 'app/views/shared/wikis/_wiki_content.html.haml' do

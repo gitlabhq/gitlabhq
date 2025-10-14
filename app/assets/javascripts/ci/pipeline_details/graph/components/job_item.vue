@@ -88,11 +88,6 @@ export default {
       required: false,
       default: false,
     },
-    jobHovered: {
-      type: String,
-      required: false,
-      default: '',
-    },
     pipelineExpanded: {
       type: Object,
       required: false,

@@ -3,7 +3,7 @@ table_name: user_permission_export_uploads
 classes:
 - UserPermissionExportUpload
 feature_categories:
-- system_access
+- permissions
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47846
 milestone: '13.7'

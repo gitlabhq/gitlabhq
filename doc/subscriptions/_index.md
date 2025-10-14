@@ -13,10 +13,10 @@ Choose and manage the subscription that's right for you and your organization.
 - [GitLab plans](choosing_subscription.md)
 - [Manage subscription](manage_subscription.md)
 - [Manage users and seats](manage_users_and_seats.md)
+- [Manage billing account](billing_account.md)
 - [GitLab Dedicated](gitlab_dedicated/_index.md)
 - [GitLab Duo add-ons](subscription-add-ons.md)
 - [Community programs](community_programs.md)
-- [Customers Portal](customers_portal.md)
 - [Quarterly reconciliation and annual true-ups](quarterly_reconciliation.md)
 
 {{< /cards >}}

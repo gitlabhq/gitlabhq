@@ -77,6 +77,9 @@ To ensure GitLab maps users and their contributions correctly:
 - Users must [set a public email in their profiles](../../profile/_index.md#set-your-public-email) on the source GitLab
   instance that matches their primary email address on the destination GitLab instance. You can also manually add users'
   public emails by [editing project export files](#edit-project-export-files).
+- [In GitLab 18.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/559224), when you create
+  direct memberships while importing a project directly into an existing group, the
+  [**Users cannot be added to projects in this group** setting](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) is respected.
 
 When the email of an existing user matches the email of an imported user, that user is added as a
 [direct member](../members/_index.md) to the imported project.
@@ -141,7 +144,7 @@ Before you can migrate projects on GitLab Self-Managed using file exports, GitLa
 To enable file exports as an import source for the destination instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
 1. Select the **GitLab export** checkbox.
@@ -169,7 +172,7 @@ Prerequisites:
 To export a project and its data, follow these steps:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Export project**.
 1. After the export is generated, you can:
@@ -215,7 +218,7 @@ For a quick overview, items that are exported include:
 - Design management files and data
 - LFS objects
 - Issue boards
-- CI/CD pipelines
+- CI/CD pipelines (archived)
 - Pipeline schedules (inactive and assigned to the user who initiated the import)
 - Protected branches and tags
 - Push rules
@@ -231,11 +234,11 @@ For a quick overview, items that are exported include:
 
 #### Project items that are not exported
 
-Items that are **not** exported include:
+Items that are not exported include:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Pipeline triggers
-- Build traces and artifacts
+- CI/CD job traces and artifacts
 - Package and container registry images
 - CI/CD variables
 - CI/CD job token allowlist
@@ -436,7 +439,7 @@ Group items that are exported include:
 
 ### Group items that are not exported
 
-Items that are **not** exported include:
+Items that are not exported include:
 
 - Projects
 - Runner tokens
@@ -459,7 +462,7 @@ Prerequisites:
 To export the contents of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Advanced** section, select **Export group**.
 1. After the export is generated, you can:
    - Follow a link contained in an email that you should receive.

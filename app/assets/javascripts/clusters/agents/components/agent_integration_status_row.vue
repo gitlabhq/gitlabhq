@@ -2,6 +2,7 @@
 import { GlLink, GlIcon, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 
 export default {
   components: {
@@ -9,7 +10,7 @@ export default {
     GlIcon,
     GlBadge,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glLicensedFeaturesMixin(), glFeatureFlagMixin()],
   i18n: {
     premiumTitle: s__('ClusterAgents|Premium'),
   },
@@ -40,8 +41,11 @@ export default {
     },
   },
   computed: {
+    isFeature() {
+      return this.glFeatures[this.featureName] || this.glLicensedFeatures[this.featureName];
+    },
     showPremiumBadge() {
-      return this.featureName && !this.glFeatures[this.featureName];
+      return this.featureName && !this.isFeature;
     },
   },
 };

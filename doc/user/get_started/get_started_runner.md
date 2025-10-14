@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Set up and manage GitLab Runner.
 title: Get started with GitLab Runner
@@ -14,7 +14,7 @@ GitLab Runner administration encompasses the complete lifecycle of managing your
 
 The process of administering runners is part of a larger workflow:
 
-![Workflow](img/get_started_runner_v18_3.png)
+![GitLab workflow of Plan, Create, Verify (including managing runners), Secure, Release, and Monitor.](img/get_started_runner_v18_3.png)
 
 You manage runner access through scopes and tags, monitor performance, and maintain the runner fleet.
 

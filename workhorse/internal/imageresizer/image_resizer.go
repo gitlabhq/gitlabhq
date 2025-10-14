@@ -196,7 +196,7 @@ func (r *Resizer) Inject(w http.ResponseWriter, req *http.Request, paramsData st
 
 	// We first attempt to rescale the image; if this should fail for any reason, imageReader
 	// will point to the original image, i.e. we render it unchanged.
-	imageReader, resizeCmd, err := r.tryResizeImage(req, imageFile, params, r.Config.ImageResizerConfig)
+	imageReader, resizeCmd, err := r.tryResizeImage(req, imageFile, params, r.ImageResizerConfig)
 	if err != nil {
 		// Something failed, but we can still write out the original image, so don't return early.
 		// We need to log this separately since the subsequent steps might add other failures.

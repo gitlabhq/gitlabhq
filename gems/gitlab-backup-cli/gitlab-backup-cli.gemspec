@@ -40,7 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "concurrent-ruby", "~> 1.1"
   spec.add_dependency "faraday", "~> 2"
   spec.add_dependency "google-protobuf", "~> 3.25", ">= 3.25.3"
-  spec.add_dependency "grpc", "~> 1.74.0"
+  spec.add_dependency "grpc", "~> 1.75"
   spec.add_dependency "json", "~> 2.7"
   spec.add_dependency "jwt", "~> 2.5"
   spec.add_dependency "logger", "~> 1.5"

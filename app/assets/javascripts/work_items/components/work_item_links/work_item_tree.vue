@@ -485,6 +485,7 @@ export default {
           :parent="workItem"
           :can-update="canUpdateChildren"
           :full-path="fullPath"
+          :is-group="isGroup"
           :work-item-id="workItemId"
           :work-item-type="workItemType"
           :show-labels="showLabels"

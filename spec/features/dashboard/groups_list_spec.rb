@@ -21,7 +21,7 @@ RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, fea
 
   def click_options_menu(group)
     within_testid("groups-list-item-#{group.id}") do
-      find_by_testid('groups-projects-more-actions-dropdown').click
+      find_by_testid('groups-list-item-actions').click
     end
   end
 
@@ -225,7 +225,7 @@ RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, fea
 
       it 'cannot remove parent group' do
         within_testid("groups-list-item-#{group.id}") do
-          expect(has_testid?('groups-projects-more-actions-dropdown')).to be false
+          expect(has_testid?('groups-list-item-actions')).to be false
         end
       end
     end

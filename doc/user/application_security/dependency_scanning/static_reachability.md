@@ -9,7 +9,7 @@ title: Static reachability analysis
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
+- Status: Limited Availability
 
 {{< /details >}}
 
@@ -18,6 +18,8 @@ title: Static reachability analysis
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14177) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.5.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/15781) from experiment to beta in GitLab 17.11.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502334) support for JavaScript and TypeScript in GitLab 18.2 and Dependency Scanning Analyzer v0.32.0.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17607) support for Java in GitLab 18.5 and Dependency Scanning Analyzer v0.35.0.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/15780) from beta to Limited Availability (LA) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -26,17 +28,21 @@ dependencies. SRA identifies which dependencies your application actually uses. 
 scanning finds all vulnerable dependencies, SRA focuses on those that are reachable and pose higher
 security risks, helping you prioritize remediation based on actual threat exposure.
 
+Static reachability analysis is production-ready but marked as Limited Availability because it is bundled with [Dependency Scanning](dependency_scanning_sbom/_index.md), which is in Limited Availability maturity level.
+
 ## Getting started
 
 If you are new to static reachability analysis, the following steps show how to enable it for your
 project.
 
+Share any feedback on the new static reachability analysis in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/535498).
+
 Prerequisites:
 
 - Ensure the project uses [supported languages and package managers](#supported-languages-and-package-managers).
-- [Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
+- [Dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
   version 0.32.0 and later.
-- Enable [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
+- Enable [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
   [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not
   supported.
 - Language-specific prerequisites:
@@ -45,14 +51,21 @@ Prerequisites:
     related instructions for dependency scanning using SBOM. You can also use any other Python package
     manager that is
     [supported](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files)
-    by the DS analyzer.
+    by the dependency scanning analyzer.
   - For JavaScript and TypeScript, ensure your repository has lock files
     [supported](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files)
-    by the DS analyzer.
+    by the dependency scanning analyzer.
+  - For Java, follow the [Maven](dependency_scanning_sbom/_index.md#maven) or
+    [Gradle](dependency_scanning_sbom/_index.md#gradle) related instructions for dependency scanning using SBOM
+    to generate the required dependency graph files.
 
 Exclusions:
 
 - SRA cannot be used together with either a scan execution policy or pipeline execution policy.
+
+Performance impact:
+
+- When you enable static reachability analysis, keep in mind that it increases dependency scanning job duration.
 
 To enable SRA:
 
@@ -67,7 +80,7 @@ To enable SRA:
     DS_STATIC_REACHABILITY_ENABLED: true
   ```
 
-  If you're using the [Dependency Scanning component](https://gitlab.com/components/dependency-scanning),
+  If you're using the [dependency scanning component](https://gitlab.com/components/dependency-scanning),
   add the following (ensuring there is only one `include:` line.):
 
   ```yaml
@@ -103,13 +116,23 @@ dismissing it, as SRA cannot always definitively determine package usage.
 Not Available
 : SRA was not executed, so no reachability data exists.
 
-When a direct dependency is marked as **in use**, all its transitive dependencies are also marked as
-**in use**.
+When a direct dependency is marked as in use, all its transitive dependencies are also marked as
+in use.
 
 ## Supported languages and package managers
 
-Static reachability analysis is available only for Python, JavaScript, and TypeScript projects.
+Static reachability analysis is available for Python, JavaScript, TypeScript, and Java projects.
 Frontend frameworks are not supported.
+
+### Language maturity levels
+
+While the end-to-end static reachability feature is at Limited Availability level, individual language support has different maturity levels:
+
+| Maturity | Languages | Additional Information |
+|----------|-----------|-------------|
+| Beta | Python | Not appplicable |
+| Beta | JavaScript, TypeScript | No support for frontend frameworks. |
+| Experimental | Java | Java support is in early stages with [known limitations](#java-static-reachability-limitations) and may have higher false negative rates. |
 
 SRA supplements the SBOMs generated by the new dependency scanner analyzer and so supports the same
 package managers. If a package manager without dependency graph support is used, all indirect
@@ -119,10 +142,11 @@ dependencies are marked as [not found](#understanding-the-results).
 |-----------------------|---------------------------------------------|-----------------------|
 | Python<sup>1</sup>    | `pip`, `pipenv`<sup>2</sup>, `poetry`, `uv` | `.py`                 |
 | JavaScript/TypeScript | `npm`, `pnpm`, `yarn`                       | `.js`, `.ts`          |
+| Java                  | `maven`, `gradle`                           | `.java`               |
 
 **Footnotes**:
 
-1. When using Dependency Scanning with `pipdeptree`,
+1. When using dependency scanning with `pipdeptree`,
   [optional dependencies](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies)
    are marked as direct dependencies instead of as transitive dependencies. Static reachability
    analysis might not identify those packages as in use. For example, requiring `passlib[bcrypt]`
@@ -130,6 +154,19 @@ dependencies are marked as [not found](#understanding-the-results).
    more details, see [pip](dependency_scanning_sbom/_index.md#pip).
 1. For Python `pipenv`, static reachability analysis doesn't support `Pipfile.lock` files. Support
    is available only for `pipenv.graph.json` because it supports a dependency graph.
+1. For Java, static reachability analysis requires dependency graph files. For Maven projects,
+   use `maven.graph.json` files as described in the [Maven](dependency_scanning_sbom/_index.md#maven)
+   instructions. For Gradle projects, use dependency lock files as described in the
+   [Gradle](dependency_scanning_sbom/_index.md#gradle) instructions.
+
+### Java static reachability limitations
+
+Static reachability analysis for Java has two key limitations:
+
+- **Detection scope**: Detects only explicit static usage through direct imports. Cannot identify dependencies loaded dynamically at runtime, such as those using dependency injection frameworks like Spring Boot.
+- **Package coverage**: Limited to vulnerable and popular packages available in Maven Central.
+
+These limitations may result in higher false negative rates for projects using modern frameworks. We plan to improve Java static reachability analysis in future releases.
 
 ## Running SRA in an offline environment
 
@@ -141,6 +178,8 @@ To use the dependency scanning component in an offline environment, you must fir
 Dependency scanning generates an SBOM report that identifies all components and their transitive
 dependencies. Static reachability analysis checks each dependency in the SBOM report and adds a
 reachability value to the SBOM report. The enriched SBOM is then ingested by the GitLab instance.
+
+Static reachability analysis relies on [metadata](https://gitlab.com/gitlab-org/security-products/static-reachability-metadata) that maps package names from SBOMs to their corresponding code import paths for Python and Java packages. This metadata is maintained with weekly updates.
 
 The following are marked as not found:
 

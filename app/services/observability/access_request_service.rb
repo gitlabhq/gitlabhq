@@ -35,6 +35,7 @@ module Observability
       ).execute
 
       if result.success?
+        Observability::CreateGroupO11ySettingWorker.perform_async(current_user.id, group.id)
         success(issue: result[:issue])
       else
         error_message = result.errors.is_a?(Array) ? result.errors.join(', ') : result.errors.to_s

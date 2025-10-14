@@ -6,7 +6,7 @@
 - following_current_user_empty_message_header = s_('UserProfile|You are not following other users')
 
 - if users.size > 0
-  .gl-grid.gl-gap-3.gl-mt-3.md:gl-grid-cols-3
+  .gl-grid.gl-gap-3.gl-mt-3{ class: "@md/panel:gl-grid-cols-3" }
     = render partial: 'shared/users/user', collection: users, as: :user
   = paginate users, theme: 'gitlab'
 - else

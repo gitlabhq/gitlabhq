@@ -211,7 +211,7 @@ export default {
       return this.mr.hasCI;
     },
     isAutoMergeAvailable() {
-      return !isEmpty(this.state.availableAutoMergeStrategies);
+      return !isEmpty(this.mr.availableAutoMergeStrategies);
     },
     pipeline() {
       return this.state.headPipeline;
@@ -244,9 +244,7 @@ export default {
       return this.state.commitCount || 0;
     },
     preferredAutoMergeStrategy() {
-      return MergeRequestStore.getPreferredAutoMergeStrategy(
-        this.state.availableAutoMergeStrategies,
-      );
+      return MergeRequestStore.getPreferredAutoMergeStrategy(this.mr.availableAutoMergeStrategies);
     },
     isPreferredAutoMergeStrategyMWPC() {
       return this.preferredAutoMergeStrategy === MWCP_MERGE_STRATEGY;

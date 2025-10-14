@@ -21,13 +21,13 @@ RSpec.describe Gitlab::Asciidoc::IncludeProcessor do
 
   let(:document) { Asciidoctor::Document.new(lines) }
 
-  subject(:processor) { described_class.new(processor_context) }
-
   let(:a_blob) { double(:Blob, readable_text?: true, data: a_data) }
   let(:a_data) { 'include::b.adoc[]' }
 
   let(:directives) { [':max-include-depth: 1000'] }
   let(:lines) { directives + Array.new(10, 'include::a.adoc[]') }
+
+  subject(:processor) { described_class.new(processor_context) }
 
   before do
     allow(project.repository).to receive(:blob_at).with(ref, anything).and_return(nil)

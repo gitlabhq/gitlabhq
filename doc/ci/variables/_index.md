@@ -116,8 +116,7 @@ job1:
 ## Define a CI/CD variable in the UI
 
 Sensitive variables like tokens or passwords should be stored in the settings in the UI,
-not [in the `.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file).
-Add CI/CD variables in the UI:
+not in the `.gitlab-ci.yml` file. Add CI/CD variables in the UI:
 
 - For a project [in the project's settings](#for-a-project).
 - For all projects in a group [in the group's setting](#for-a-group).
@@ -144,7 +143,7 @@ Prerequisites:
 To add or update variables in the project settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -172,7 +171,7 @@ Prerequisites:
 To add a group variable:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -199,7 +198,7 @@ are recursively inherited.
 To set a group CI/CD variable to only be available for certain environments:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. To the right of the variable, select **Edit** ({{< icon name="pencil" >}}).
 1. For **Environment scope**, select **All (default)** (`*`), a specific [environment](../environments/_index.md#types-of-environments),
@@ -223,7 +222,7 @@ Prerequisites:
 To add an instance variable:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -265,12 +264,8 @@ To help reduce the risk of accidentally leaking secrets through scripts like in 
 all variables containing sensitive information should always be [masked in job logs](#mask-a-cicd-variable).
 You can also [limit a variable to protected branches and tags only](#protect-a-cicd-variable).
 
-Alternatively, use one of the native GitLab integrations to connect with third party
-secrets manager providers to store and retrieve secrets:
-
-- [HashiCorp Vault](../secrets/_index.md)
-- [Azure Key Vault](../secrets/azure_key_vault.md)
-- [Google Secret Manager](../secrets/gcp_secret_manager.md)
+Alternatively, use one of the [native GitLab integrations](../secrets/_index.md)
+to connect with external secrets management providers to store and retrieve secrets.
 
 You can also use [OpenID Connect (OIDC) authentication](../secrets/id_token_authentication.md)
 for secrets managers which do not have a native integration.
@@ -305,7 +300,7 @@ Prerequisites:
 
 To mask a variable:
 
-1. For the group, project, or in the **Admin** area, select **Settings > CI/CD**.
+1. For the group, project, or in the **Admin** area, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Under **Visibility**, select **Mask variable**.
@@ -356,7 +351,8 @@ You can configure a project, group, or instance CI/CD variable to be available
 only to pipelines that run on [protected branches](../../user/project/repository/branches/protected.md)
 or [protected tags](../../user/project/protected_tags.md).
 
-[Merged results pipelines](../pipelines/merged_results_pipelines.md) and [merge request pipelines](../pipelines/merge_request_pipelines.md) can optionally [access protected variables](../pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
+[Merged results pipelines](../pipelines/merged_results_pipelines.md) and [merge request pipelines](../pipelines/merge_request_pipelines.md)
+can optionally [access protected variables](../pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
 
 Prerequisites:
 
@@ -364,7 +360,7 @@ Prerequisites:
 
 To set a variable as protected:
 
-1. For the project or group, go to **Settings > CI/CD**.
+1. For the project or group, go to **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Protect variable** checkbox.
@@ -442,7 +438,7 @@ Prerequisites:
 
 To disable variable expansion for the variable:
 
-1. For the project or group, go to **Settings > CI/CD**.
+1. For the project or group, go to **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to do not want expanded, select **Edit**.
 1. Clear the **Expand variable** checkbox.
@@ -596,7 +592,7 @@ Prerequisites:
 To enable the pipeline variable restriction setting in projects in the group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. In the **Disable pipeline variables in projects that don't use them** section,
    select **Start migration**.

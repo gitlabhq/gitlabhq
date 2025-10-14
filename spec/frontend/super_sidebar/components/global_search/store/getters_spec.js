@@ -21,7 +21,6 @@ import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SORTED_AUTOCOMPLETE_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS_DEF,
-  MOCK_DASHBOARD_FLAG_ENABLED_SEARCH_OPTIONS,
 } from '../mock_data';
 
 describe('Global Search Store Getters', () => {
@@ -267,22 +266,6 @@ describe('Global Search Store Getters', () => {
         expect(getters.defaultSearchOptions(state, mockGetters)).toStrictEqual(
           MOCK_DEFAULT_SEARCH_OPTIONS.slice(2, MOCK_DEFAULT_SEARCH_OPTIONS.length),
         );
-      });
-
-      describe('when feature flag mergeRequestDashboard is enabled', () => {
-        beforeEach(() => {
-          window.gon.features = { mergeRequestDashboard: true };
-        });
-
-        afterEach(() => {
-          window.gon.features = {};
-        });
-
-        it('returns the correct array', () => {
-          expect(getters.defaultSearchOptions(state, mockGetters)).toStrictEqual(
-            MOCK_DASHBOARD_FLAG_ENABLED_SEARCH_OPTIONS,
-          );
-        });
       });
     });
 

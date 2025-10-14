@@ -164,7 +164,7 @@ how to get the most out of this page, see
 
 When you first open the **Changes** page, focus on the broader details first:
 
-- **What files have changed?** Expand the file browser ({{< icon name="file-tree" >}}) to see
+- **What files have changed**? Expand the file browser ({{< icon name="file-tree" >}}) to see
   the list of changed files. Are you familiar with these files? What part of the
   codebase are these files in?
 

@@ -195,7 +195,7 @@ No, GitLab Dedicated uses AWS S3 buckets managed by GitLab in your tenant accoun
 
 ## Related topics
 
-- [Data residency and high availability](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md)
+- [Data residency and high availability](data_residency_high_availability.md)
 - [Reference architectures](../../reference_architectures/_index.md)
 - [Repository storage](../../repository_storage_paths.md)
 - [Object storage](../../object_storage.md)

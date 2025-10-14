@@ -85,6 +85,11 @@ issues:
 - observability_traces
 - dates_source
 - current_status
+- work_item_description
+work_item_description:
+- namespace
+- work_item
+- last_editing_user
 work_item_type:
 - issues
 - namespace
@@ -715,6 +720,7 @@ project:
 - iterations
 - notes
 - snippets
+- snippet_repositories
 - hooks
 - all_protected_branches
 - protected_branches
@@ -842,7 +848,6 @@ project:
 - operations_feature_flags_client
 - operations_feature_flags_user_lists
 - software_license_policies
-- software_licenses
 - custom_software_licenses
 - project_registry
 - packages
@@ -861,7 +866,6 @@ project:
 - designs
 - project_aliases
 - external_pull_requests
-- grafana_integration
 - remove_source_branch_after_merge
 - deleting_user
 - upstream_projects
@@ -981,6 +985,7 @@ timelogs:
 - user
 - note
 - timelog_category
+- namespace
 push_event_payload:
 - event
 issue_assignees:
@@ -1288,6 +1293,9 @@ vulnerability_finding:
   - finding_evidence
   - security_findings
   - finding_token_status
+  - finding_risk_score
+  - cve_identifiers
+  - cve_enrichments
 scanner:
   - findings
   - security_findings
@@ -1295,9 +1303,11 @@ identifiers: &identifiers_definition
   - finding_identifiers
   - findings
   - primary_findings
+  - cve_enrichment
 primary_identifier: *identifiers_definition
 initial_finding_pipeline: *pipeline_definition
 latest_finding_pipeline: *pipeline_definition
 vulnerability_read:
   - vulnerability
   - scanner
+  - vulnerability_occurrence

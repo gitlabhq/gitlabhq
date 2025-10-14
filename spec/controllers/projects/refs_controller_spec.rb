@@ -6,12 +6,12 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
   let_it_be(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
-  before do
-    sign_in(user)
-    project.add_developer(user)
-  end
-
   describe 'GET #switch' do
+    before do
+      sign_in(user)
+      project.add_developer(user)
+    end
+
     context 'with normal parameters' do
       using RSpec::Parameterized::TableSyntax
 
@@ -116,43 +116,80 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
       }.merge(params), xhr: true
     end
 
-    it 'never throws MissingTemplate' do
-      expect { default_get }.not_to raise_error
-      expect { xhr_get(:json) }.not_to raise_error
-      expect { xhr_get }.not_to raise_error
+    context 'when user is unauthenticated' do
+      let_it_be(:project) { create(:project, :repository, :public) }
+
+      it 'renders 200' do
+        xhr_get(:json)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when requested ref is not default branch' do
+        it 'renders 401' do
+          xhr_get(:json, id: 'feature')
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+
+        context 'when "require_login_for_commit_tree" FF is disabled' do
+          before do
+            stub_feature_flags(require_login_for_commit_tree: false)
+          end
+
+          it 'is successful' do
+            xhr_get(:json, id: 'feature')
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
     end
 
-    it 'renders 404 for HTML requests' do
-      xhr_get
+    context 'when user authenticated' do
+      before do
+        sign_in(user)
+        project.add_developer(user)
+      end
 
-      expect(response).to be_not_found
-    end
+      it 'never throws MissingTemplate' do
+        expect { default_get }.not_to raise_error
+        expect { xhr_get(:json) }.not_to raise_error
+        expect { xhr_get }.not_to raise_error
+      end
 
-    context 'when ref is incorrect' do
-      it 'returns 404 page' do
-        xhr_get(:json, id: '.')
+      it 'renders 404 for HTML requests' do
+        xhr_get
 
         expect(response).to be_not_found
       end
-    end
 
-    context 'when offset has an invalid format' do
-      it 'renders JSON' do
-        xhr_get(:json, offset: { wrong: :format })
+      context 'when ref is incorrect' do
+        it 'returns 404 page' do
+          xhr_get(:json, id: '.')
 
-        expect(response).to be_successful
-        expect(json_response).to be_kind_of(Array)
+          expect(response).to be_not_found
+        end
       end
-    end
 
-    context 'when json is requested' do
-      it 'renders JSON' do
-        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+      context 'when offset has an invalid format' do
+        it 'renders JSON' do
+          xhr_get(:json, offset: { wrong: :format })
 
-        xhr_get(:json)
+          expect(response).to be_successful
+          expect(json_response).to be_kind_of(Array)
+        end
+      end
 
-        expect(response).to be_successful
-        expect(json_response).to be_kind_of(Array)
+      context 'when json is requested' do
+        it 'renders JSON' do
+          expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
+          xhr_get(:json)
+
+          expect(response).to be_successful
+          expect(json_response).to be_kind_of(Array)
+        end
       end
     end
   end

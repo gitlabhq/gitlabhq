@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
 description: 'Development Guidelines: learn about organization when developing GitLab.'
@@ -311,30 +311,6 @@ There are likely edge cases where this `desired_sharding_key` structure is not
 suitable for backfilling a `sharding_key`. In such cases the team owning the
 table will need to create the necessary merge requests to add the
 `sharding_key` manually.
-
-#### Exempting certain tables from having sharding keys
-
-Certain tables can be exempted from having sharding keys by adding
-
-```yaml
-exempt_from_sharding: true
-```
-
-to the table's database dictionary file. This can be used for:
-
-- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541).
-
-**Note on JiHu tables:** JiHu-specific tables are **not** a valid reason to use `exempt_from_sharding`. These tables are currently placed under the temporary `gitlab_main_jh` schema. Do **not** add `exempt_from_sharding: true` to JiHu tables.
-
-Do not use `exempt_from_sharding` for any other purposes.
-Tables which are exempt breaks our efforts at isolation and will introduce issues later in the Organizations and Cells projects.
-
-When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
-
-Exempted tables must not have foreign key, or loose foreign key references, as
-this may cause the target cell's database to have foreign key violations when data is
-moved.
-See [#471182](https://gitlab.com/gitlab-org/gitlab/-/issues/471182) for examples and possible solutions.
 
 ### Ensure sharding key presence on application level
 

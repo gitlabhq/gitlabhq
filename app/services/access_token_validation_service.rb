@@ -22,7 +22,7 @@ class AccessTokenValidationService
     elsif token.revoked?
       REVOKED
 
-    elsif !self.include_any_scope?(scopes)
+    elsif !token.try(:granular?) && !self.include_any_scope?(scopes)
       INSUFFICIENT_SCOPE
 
     elsif token.respond_to?(:impersonation) &&

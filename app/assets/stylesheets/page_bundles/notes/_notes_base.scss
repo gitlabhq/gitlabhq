@@ -105,7 +105,7 @@
 
     .notes-content {
       border: 0;
-      @apply gl-border-t;
+      @apply gl-border-t gl-bg-default;
     }
   }
 
@@ -309,7 +309,7 @@
 }
 
 .note {
-  @include notes-media('max', map.get($grid-breakpoints, sm) - 1) {
+  @include notes-media('sm') {
     .note-header {
       .note-actions > :first-child {
         margin-left: 0;

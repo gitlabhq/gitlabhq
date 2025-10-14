@@ -7,7 +7,9 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
   let_it_be_with_reload(:package) { create(:pypi_package) }
 
   describe '#execute' do
-    subject(:service) { described_class.new(container: package, current_user: user) }
+    let(:service) { described_class.new(container: package, current_user: user) }
+
+    subject(:execute) { service.execute }
 
     context 'when the user is authorized' do
       before do
@@ -19,12 +21,12 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
           expect(package).to receive(:mark_package_files_for_destruction).and_call_original
           expect(package).not_to receive(:sync_maven_metadata)
           expect(package).not_to receive(:sync_npm_metadata_cache)
-          expect(package).not_to receive(:sync_helm_metadata_caches)
-          expect { service.execute }.to change { package.status }.from('default').to('pending_destruction')
+          expect(Packages::Helm::BulkSyncHelmMetadataCacheService).not_to receive(:new)
+          expect { execute }.to change { package.status }.from('default').to('pending_destruction')
         end
 
         it 'returns a success ServiceResponse' do
-          response = service.execute
+          response = execute
 
           expect(response).to be_a(ServiceResponse)
           expect(response).to be_success
@@ -44,11 +46,11 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
             package_id: package.id
           )
 
-          response = service.execute
+          response = execute
 
           expect(package).not_to receive(:sync_maven_metadata)
           expect(package).not_to receive(:sync_npm_metadata_cache)
-          expect(package).not_to receive(:sync_helm_metadata_caches)
+          expect(Packages::Helm::BulkSyncHelmMetadataCacheService).not_to receive(:new)
           expect(response).to be_a(ServiceResponse)
           expect(response).to be_error
           expect(response.message).to eq("Failed to mark the package as pending destruction")
@@ -61,16 +63,30 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
 
         it 'returns a success ServiceResponse' do
           expect(package).to receive(:sync_npm_metadata_cache).and_call_original
-          expect(service.execute).to be_success
+          expect(execute).to be_success
         end
       end
 
       context 'with helm package' do
         let_it_be_with_reload(:package) { create(:helm_package) }
+        let(:expected_metadatum) { package.package_files.first.helm_file_metadatum }
 
-        it 'calls sync_helm_metadata_caches', :aggregate_failures do
-          expect(package).to receive(:sync_helm_metadata_caches).and_call_original
-          expect(service.execute).to be_success
+        before do
+          allow(Packages::Helm::CreateMetadataCacheWorker).to receive(:bulk_perform_async_with_contexts)
+        end
+
+        it 'enqueues a sync worker job', :aggregate_failures do
+          execute
+
+          expect(::Packages::Helm::CreateMetadataCacheWorker)
+            .to have_received(:bulk_perform_async_with_contexts) do |metadata, arguments_proc:, context_proc:|
+              expect(metadata.map(&:channel)).to match_array([expected_metadatum.channel])
+
+              expect(arguments_proc.call(expected_metadatum)).to eq(
+                [expected_metadatum.project_id, expected_metadatum.channel]
+              )
+              expect(context_proc.call(expected_metadatum)).to eq(project: package.project, user: user)
+            end
         end
       end
 
@@ -79,14 +95,14 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
 
         it 'returns a success ServiceResponse' do
           expect(package).to receive(:sync_maven_metadata).and_call_original
-          expect(service.execute).to be_success
+          expect(execute).to be_success
         end
       end
     end
 
     context 'when the user is not authorized' do
       it 'returns an error ServiceResponse' do
-        response = service.execute
+        response = execute
 
         expect(response).to be_a(ServiceResponse)
         expect(response).to be_error

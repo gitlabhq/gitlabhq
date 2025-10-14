@@ -4,7 +4,7 @@
 = render 'shared/groups/group_name_and_path_fields', f: f, autofocus: true, new_subgroup: !!parent
 
 .row
-  .form-group.gl-form-group.col-sm-12
+  .form-group.gl-form-group.gl-col-sm-12
     %label.label-bold
       = _('Visibility level')
     %p.gl-text-subtle
@@ -21,11 +21,11 @@
     = render 'personalize', f: f
 
   .row.js-invite-members-section
-    .col-sm-4
+    .gl-col-sm-4
       = render_if_exists 'shared/groups/invite_members'
 
 .row
-  .col-sm-12.gl-flex.gl-gap-3
+  .gl-col-sm-12.gl-flex.gl-gap-3
     = f.submit submit_label, pajamas_button: true, data: { testid: 'create-group-button' }
     = render Pajamas::ButtonComponent.new(href: @parent_group || dashboard_groups_path) do
       = _('Cancel')

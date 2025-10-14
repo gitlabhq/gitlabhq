@@ -4,7 +4,7 @@
 - title: "The `ci_job_token_scope_enabled` projects API attribute is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   removal_milestone: "19.0"  # (required) The milestone when this feature is planned to be removed
   announcement_milestone: "16.4"  # (required) The milestone when this feature was first announced as deprecated.
-  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  breaking_change: false  # (required) Change to false if this is not a breaking change.
   reporter: jocelynjane  # (required) GitLab username of the person reporting the change
   stage: Software Supply Chain Security  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423091  # (required) Link to the deprecation issue in GitLab
@@ -13,7 +13,11 @@
   resolution_role: Developer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/api/projects/), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/api/project_job_token_scopes/) instead.
+    The [Limit access from this project](https://docs.gitlab.com/update/deprecations/#cicd-job-token---limit-access-from-your-project-setting-removal)
+    CI/CD job token project setting was removed in 18.0. The related `ci_job_token_scope_enabled` attribute
+    in the [projects API](https://docs.gitlab.com/api/projects/) is now deprecated
+    and always returns `false`, so it will be removed in 19.0. To control job token access,
+    use the [CI/CD job token project settings](https://docs.gitlab.com/ci/jobs/ci_job_token/#control-job-token-access-to-your-project).
 #
 # OPTIONAL END OF SUPPORT FIELDS
 #

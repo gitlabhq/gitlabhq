@@ -50,6 +50,21 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
+      it 'change deletion settings', :js do
+        within_testid('admin-visibility-access-settings') do
+          fill_in 'Retention period', with: 30
+          uncheck 'Allow immediate deletion'
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content 'Application settings saved successfully'
+
+        within_testid('admin-visibility-access-settings') do
+          expect(find_field('Retention period').value).to eq('30')
+          expect(find_field('Allow immediate deletion')).not_to be_checked
+        end
+      end
+
       it 'modify import sources' do
         expect(current_settings.import_sources).to be_empty
 
@@ -574,10 +589,12 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
-      context 'Runner Registration' do
-        it 'allows admins to control who has access to register runners' do
+      context 'Runners' do
+        before do
           visit ci_cd_admin_application_settings_path
+        end
 
+        it 'allows admins to control who has access to register runners' do
           expect(current_settings.valid_runner_registrars).to eq(ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
 
           within_testid('runner-settings') do
@@ -588,6 +605,36 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
           expect(current_settings.valid_runner_registrars).to eq([])
           expect(page).to have_content 'Application settings saved successfully'
+        end
+
+        it 'changes `/jobs/request` rate limits settings' do
+          within_testid('runner-settings') do
+            fill_in 'Maximum requests per minute to the POST /jobs/request endpoint', with: 0
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.runner_jobs_request_api_limit).to eq(0)
+        end
+
+        it 'changes `PATCH /jobs/:id/trace` rate limits settings' do
+          within_testid('runner-settings') do
+            fill_in 'Maximum requests per minute to the PATCH /jobs/:id/trace endpoint', with: 0
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.runner_jobs_patch_trace_api_limit).to eq(0)
+        end
+
+        it 'changes Runner Jobs rate limits settings' do
+          within_testid('runner-settings') do
+            fill_in 'Maximum requests per minute to other Runner Jobs API endpoints', with: 0
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.runner_jobs_endpoints_api_limit).to eq(0)
         end
       end
 

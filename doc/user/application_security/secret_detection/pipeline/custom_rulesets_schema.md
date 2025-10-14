@@ -228,7 +228,7 @@ The `[[secrets.passthrough]]` section allows you to synthesize a custom configur
 analyzer.
 
 You can define up to 20 of these sections per analyzer. Passthroughs are then composed into a
-_passthrough chain_ that evaluates into a complete configuration that can be used to replace or
+passthrough chain that evaluates into a complete configuration that can be used to replace or
 extend the predefined rules of the analyzer.
 
 Passthroughs are evaluated in order. Passthroughs listed later in the chain have a higher precedence

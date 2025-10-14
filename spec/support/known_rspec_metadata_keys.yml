@@ -52,6 +52,7 @@
 - :execution_result
 - :existing_refs
 - :experiment
+- :experiment_tracking
 - :factory_default
 - :fails_if_sidekiq_not_configured
 - :feature

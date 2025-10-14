@@ -327,7 +327,7 @@ container_scanning:
 To view vulnerability information in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find the project that contains the agent configuration file.
-1. Select **Operate > Kubernetes clusters**.
+1. Select **Operate** > **Kubernetes clusters**.
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.
 

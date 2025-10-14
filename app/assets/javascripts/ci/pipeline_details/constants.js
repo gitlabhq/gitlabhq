@@ -3,7 +3,8 @@ import { __, s__ } from '~/locale';
 export const CANCEL_REQUEST = 'CANCEL_REQUEST';
 export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source'];
 export const NEEDS_PROPERTY = 'needs';
-export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
+export const PREVIOUS_STAGE_JOBS_PROPERTY = 'previousStageJobs';
+export const PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY = 'previousStageJobsUnionNeeds';
 
 export const testStatus = {
   FAILED: 'failed',

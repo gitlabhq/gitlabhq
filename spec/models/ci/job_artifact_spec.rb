@@ -973,6 +973,67 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
 
       it_behaves_like 'returning attributes for object deletion'
     end
+
+    context 'when object storage is disabled but artifact was previously stored in object storage' do
+      let(:artifact) do
+        artifact = create(
+          :ci_job_artifact,
+          :archive,
+          :remote_store,
+          file_final_path: file_final_path,
+          expire_at: expire_at
+        )
+
+        allow(JobArtifactUploader).to receive(:object_store_enabled?).and_return(false)
+        artifact
+      end
+
+      it 'returns nil for store_dir and file to skip deleted_object creation' do
+        expect(attributes).to include(
+          store_dir: nil,
+          file: nil
+        )
+      end
+
+      it 'returns other attributes' do
+        expect(attributes[:file_store]).to eq(artifact.file_store)
+        expect(attributes[:project_id]).to eq(artifact.project_id)
+        expect(attributes[:pick_up_at]).to be_present
+      end
+    end
+
+    context 'when object storage raises RuntimeError' do
+      before do
+        allow(artifact.file).to receive(:store_dir).and_raise(RuntimeError.new("Some error"))
+      end
+
+      it 'raises the error' do
+        expect { attributes }.to raise_error(RuntimeError, "Some error")
+      end
+
+      context 'when the RuntimeError is storage configuration error' do
+        let(:artifact) do
+          create(:ci_job_artifact, :archive, :remote_store)
+        end
+
+        before do
+          allow(artifact.file).to receive(:store_dir).and_raise(RuntimeError.new("storage is not configured properly"))
+        end
+
+        it 'returns nil for store_dir and file to skip deleted_object creation' do
+          expect(attributes).to include(
+            store_dir: nil,
+            file: nil
+          )
+        end
+
+        it 'returns other attributes normally' do
+          expect(attributes[:file_store]).to eq(artifact.file_store)
+          expect(attributes[:project_id]).to eq(artifact.project_id)
+          expect(attributes[:pick_up_at]).to be_present
+        end
+      end
+    end
   end
 
   describe '#each_blob' do

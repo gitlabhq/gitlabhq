@@ -21,13 +21,5 @@ RSpec.describe AntiAbuse::Reports::Label, feature_category: :insider_threat do
     it { is_expected.to validate_uniqueness_of(:title) }
     it { is_expected.to validate_length_of(:description).is_at_most(500) }
     it { is_expected.to validate_presence_of(:organization_id) }
-
-    context 'when abuse_report_populate_organization FF is disabled' do
-      before do
-        stub_feature_flags(abuse_report_populate_organization: false)
-      end
-
-      it { is_expected.not_to validate_presence_of(:organization_id) }
-    end
   end
 end

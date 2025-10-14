@@ -111,7 +111,8 @@ For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
 
 ## Diff display limits
 
-The settings for the display of diff files cannot be changed on GitLab.com.
+The settings for the display of diff files cannot be changed on GitLab.com. These limits
+apply to both the GitLab UI and API endpoints.
 
 | Setting                 | Definition                                     | GitLab.com |
 |-------------------------|------------------------------------------------|------------|
@@ -372,7 +373,14 @@ GitLab.com sets these requirements for passwords on new accounts and password ch
 
 ## Group creation
 
-On GitLab.com, [top-level group creation](../../api/groups.md#create-a-group) is not available through the API. It must be performed through the UI.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/506673) in GitLab 18.0
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/560840) the GitLab SAAS administrator exception in GitLab 18.5
+
+{{< /history >}}
+
+On GitLab.com, [top-level group creation](../../api/groups.md#create-a-group) is only allowed through the UI. Only administrators can use the API to create top-level groups.
 
 ## Project and group deletion
 
@@ -486,6 +494,9 @@ The following table describes the rate limits for GitLab.com:
 | Single project requests (`/api/v4/projects/:id`)                   | 400 requests each minute       |
 | Groups list requests (`/api/v4/groups`)                            | 200 requests each minute       |
 | Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute       |
+| Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute     |
+| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 2,000 requests each minute     |
+| Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute       |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and
@@ -699,4 +710,4 @@ For GitLab Self-Managed instance limits, see:
 - [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit).
 - [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
 - [Webhook timeout](../../administration/instance_limits.md#webhook-timeout).
-- [Parallel Pages deployments](../../administration/instance_limits.md#number-of-parallel-pages-deployments)..
+- [Parallel Pages deployments](../../administration/instance_limits.md#number-of-parallel-pages-deployments).

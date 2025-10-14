@@ -56,6 +56,10 @@ On non-default branches, all users can still modify locked files and directories
 A **Lock** status is visible on these files and directories. This helps team members
 to be aware of in-flight work without restricting their workflow on other branches.
 
+File locking is also bypassed during fork synchronization.
+When you [update a fork](repository/forking_workflow.md#update-your-fork) from its upstream
+project, locked files in the fork can be overwritten with changes from the upstream project.
+
 {{< /alert >}}
 
 ## Lock a file or directory
@@ -90,7 +94,7 @@ To lock a file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the file you want to lock.
-1. In the upper-right corner, next to a filename, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Lock**.
+1. In the upper-right corner, next to a filename, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Lock**.
 1. On the confirmation dialog, select **OK**.
 
 If you do not have permission to lock the file, the menu item is disabled.
@@ -104,7 +108,7 @@ Prerequisites:
 To view locked files:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Locked files**.
+1. Select **Code** > **Locked files**.
 
 The **Locked files** page displays all files locked with either Git LFS exclusive locks or the GitLab UI.
 
@@ -132,7 +136,7 @@ To remove a lock:
 {{< tab title="From the Locked file page" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Locked files**.
+1. Select **Code** > **Locked files**.
 1. To the right of the file you want to unlock, select **Unlock**.
 1. On the confirmation dialog, select **OK**.
 

@@ -21,8 +21,8 @@ GitLab Dedicated is a single-tenant SaaS solution that is:
 
 Each instance provides:
 
-- [High availability](data_residency_and_high_availability.md) with disaster recovery.
-- [Regular updates](maintenance.md) with the latest features.
+- [High availability](../../administration/dedicated/create_instance/data_residency_high_availability.md) with disaster recovery.
+- [Regular updates](../../administration/dedicated/maintenance.md) with the latest features.
 - Enterprise-grade security measures.
 
 With GitLab Dedicated, you can:
@@ -82,6 +82,18 @@ For more information, see [encrypted data at rest (BYOK)](../../administration/d
 
 By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/) is used to send emails securely. As an alternative, you can [configure your own email service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service) using SMTP.
 
+#### Web application firewall
+
+{{< details >}}
+
+- Status: Limited availability
+
+{{< /details >}}
+
+Cloudflare is implemented as a web application firewall (WAF) for distributed denial-of-service (DDoS)
+protection and related security capabilities. The WAF implementation and configuration is managed by the GitLab SRE team.
+Direct access to WAF configuration or logs is not available.
+
 ### Compliance
 
 GitLab Dedicated adheres to various regulations, certifications, and compliance frameworks to ensure the security, and reliability of your data.
@@ -121,25 +133,60 @@ You can access [application logs](../../administration/dedicated/monitor.md) for
 
 ### Bring your own domain
 
-You can use your own hostname to access your GitLab Dedicated instance. Instead of `tenant_name.gitlab-dedicated.com`, you can use a hostname for a domain that you own, like `gitlab.my-company.com`. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services for your GitLab Dedicated instance. For example, `gitlab-registry.my-company.com` and `gitlab-kas.my-company.com`.
+You can use your own custom domain to access your GitLab Dedicated instance
+instead of the default `tenant_name.gitlab-dedicated.com` URL.
+For example, you could use `gitlab.company.com` to access your instance.
 
-Add a custom hostname to:
+Use a custom domain when you need to:
 
-- Increase control over branding
-- Avoid having to migrate away from an existing domain already configured for a GitLab Self-Managed instance
+- Migrate from an existing GitLab Self-Managed instance without changing URLs.
+- Maintain consistent branding across your organization's tools.
+- Integrate with existing certificate management or domain policies.
 
-When you add a custom hostname:
+You can configure a custom domain for your main GitLab instance and for the bundled
+container registry and GitLab agent server for Kubernetes.
 
-- The hostname is included in the external URL used to access your instance.
-- Any connections to your instance using the previous domain names are no longer available.
-
-For more information about using a custom hostname for your GitLab Dedicated instance, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
+For more information, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
 
 {{< alert type="note" >}}
 
-Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
+GitLab Pages does not support custom domains. Pages sites are accessible only at
+`tenant_name.gitlab-dedicated.site`, regardless of any custom domain configured for your
+GitLab Dedicated instance.
 
 {{< /alert >}}
+
+### Object storage downloads
+
+By default, GitLab Dedicated enables direct downloads from S3 for optimal performance (`proxy_download = false`). The object types that support direct downloads include:
+
+- [CI/CD job artifacts](../../administration/cicd/job_artifacts.md)
+- [Dependency Proxy files](../../administration/packages/dependency_proxy.md)
+- [Merge request diffs](../../administration/merge_request_diffs.md)
+- [Git Large File Storage (LFS) objects](../../administration/lfs/_index.md)
+- [Project packages (for example, PyPI, Maven, or NuGet)](../../administration/packages/_index.md)
+- [Container registry containers](../../administration/packages/container_registry.md)
+- [User uploads](../../administration/uploads.md)
+
+When you download one of the above object types, your browser or client connects directly to Amazon S3 rather than routing through GitLab infrastructure.
+
+If your network security policies prevent direct access to S3 endpoints, you can request proxied downloads through GitLab infrastructure. This configuration (`proxy_download = true`) ensures all downloads route through your GitLab Dedicated instance.
+
+#### Request proxied downloads
+
+To request proxied downloads:
+
+1. Contact your account executive with your use case details.
+1. Include information about your network security requirements.
+1. Specify which object types need proxied access.
+
+{{< alert type="note" >}}
+
+Proxied downloads impact performance compared to direct S3 access.
+
+{{< /alert >}}
+
+For more information, see [proxy download](../../administration/object_storage.md#proxy-download).
 
 ### Application
 
@@ -171,24 +218,25 @@ ClickHouse on GitLab Dedicated has the following limitations:
 
 #### GitLab Pages
 
-You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
+You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicated to host your static website. Pages is enabled by default.
+
+Your website uses the domain `tenant_name.gitlab-dedicated.site`, where `tenant_name` matches your instance URL.
 
 {{< alert type="note" >}}
 
-Custom domains for GitLab Pages are not supported. For example, if you added a custom domain named `gitlab.my-company.com`, the URL to access the Pages site for your GitLab Dedicated instance would still be `tenant_name.gitlab-dedicated.site`.
+Custom domains are not supported. If you add a custom domain like `gitlab.my-company.com`,
+you still access your website at `tenant_name.gitlab-dedicated.site`.
 
 {{< /alert >}}
 
-You can control access to your Pages website with:
+Control access to your website with:
 
-- [GitLab Pages access control](../../user/project/pages/pages_access_control.md).
-- [IP allowlists](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
+- [GitLab Pages access control](../../user/project/pages/pages_access_control.md)
+- [IP allowlists](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist)
 
-GitLab Pages for Dedicated:
+Your existing IP allowlists are applied to your Pages websites.
 
-- Is enabled by default.
-- Only works in the primary site if [Geo](../../administration/geo/_index.md) is enabled.
-- Is not included as part of instance migrations to GitLab Dedicated.
+If failover occurs during disaster recovery, your site continues to work from the secondary region.
 
 #### Hosted runners
 
@@ -228,7 +276,6 @@ Limitations:
 - Single-region deployment only.
 - No SLA commitment.
 - Cannot run newer versions than production.
-- GitLab Duo Core is not available.
 
 ## Unavailable features
 
@@ -236,16 +283,16 @@ This section lists the features that are not available for GitLab Dedicated.
 
 ### Authentication, security, and networking
 
-| Feature                                       | Description                                                           | Impact                                                         |
-| --------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
-| LDAP authentication                           | Authentication using corporate LDAP/Active Directory credentials.     | Must use GitLab-specific passwords or access tokens instead.   |
-| Smart card authentication                     | Authentication using smart cards for enhanced security.               | Cannot use existing smart card infrastructure.                 |
-| Kerberos authentication                       | Single sign-on authentication using Kerberos protocol.                | Must authenticate separately to GitLab.                        |
-| Multiple login providers                      | Configuration of multiple OAuth/SAML providers (Google, GitHub).      | Limited to a single identity provider.                         |
-| FortiAuthenticator/FortiToken 2FA             | Two-factor authentication using Fortinet security solutions.          | Cannot integrate existing Fortinet 2FA infrastructure.         |
-| Git clone using HTTPS with username/password  | Git operations using username and password authentication over HTTPS. | Must use access tokens for Git operations.                     |
-| [Sigstore](../../ci/yaml/signing_examples.md) | Keyless signing and verification for software supply chain security.  | Must use traditional code signing methods.                     |
-| Port remapping                                | Remap ports like SSH (22) to different inbound ports.     | GitLab Dedicated only uses default communication ports. |
+| Feature                                       | Description                                                           | Impact                                                       |
+| --------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ |
+| LDAP authentication                           | Authentication using corporate LDAP/Active Directory credentials.     | Must use GitLab-specific passwords or access tokens instead. |
+| Smart card authentication                     | Authentication using smart cards for enhanced security.               | Cannot use existing smart card infrastructure.               |
+| Kerberos authentication                       | Single sign-on authentication using Kerberos protocol.                | Must authenticate separately to GitLab.                      |
+| Multiple login providers                      | Configuration of multiple OAuth/SAML providers (Google, GitHub).      | Limited to a single identity provider.                       |
+| FortiAuthenticator/FortiToken 2FA             | Two-factor authentication using Fortinet security solutions.          | Cannot integrate existing Fortinet 2FA infrastructure.       |
+| Git clone using HTTPS with username/password  | Git operations using username and password authentication over HTTPS. | Must use access tokens for Git operations.                   |
+| [Sigstore](../../ci/yaml/signing_examples.md) | Keyless signing and verification for software supply chain security.  | Must use traditional code signing methods.                   |
+| Port remapping                                | Remap ports like SSH (22) to different inbound ports.                 | GitLab Dedicated only uses default communication ports.      |
 
 ### Communication and collaboration
 
@@ -281,21 +328,21 @@ its own [release schedule](maintenance.md) for version deployments.
 
 ### GitLab Pages
 
-| Feature                      | Description                                                     | Impact                                                                 |
-| ---------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Custom domains               | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`. |
-| PrivateLink access           | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites are accessible over the public internet only. You can configure IP allowlists to restrict access to specific IP addresses. |
-| Namespaces in URL path       | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options.                                      |
+| Feature                | Description                                                     | Impact |
+| ---------------------- | --------------------------------------------------------------- | ------ |
+| Custom domains         | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`. |
+| PrivateLink access     | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites are accessible over the public internet only. You can configure IP allowlists to restrict access to specific IP addresses. |
+| Namespaces in URL path | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options. |
 
 ### Operational features
 
 The following operational features are not available:
 
-- Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
+- Multiple secondary regions for Geo replication beyond the default secondary region
 - [Geo proxying](../../administration/geo/secondary_proxy/_index.md) and using a unified URL
 - Self-serve purchasing and configuration
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
-- Observability dashboard in Switchboard
+- Observability dashboards in Switchboard, such as Grafana and OpenSearch
 
 ### Features that require server access
 

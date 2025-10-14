@@ -2,9 +2,13 @@ name: gitlab_ci
 description: Schema for all Organizational CI tables, ex. ci_builds, etc.
 allow_cross_joins:
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
 require_sharding_key: true
 sharding_root_tables:
   - projects

@@ -21,6 +21,7 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
   let(:auto_canceled_by_pipeline) { nil }
   let(:execute_async) { true }
   let(:safe_cancellation) { false }
+  let(:stop_writing_builds_metadata_flag_value) { true }
 
   shared_examples 'force_execute' do
     context 'when pipeline is not cancelable' do
@@ -32,6 +33,8 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
     context 'when pipeline is cancelable' do
       before do
+        stub_feature_flags(stop_writing_builds_metadata: stop_writing_builds_metadata_flag_value)
+
         create(:ci_build, :running, pipeline: pipeline, name: 'build1')
         create(:ci_build, :created, pipeline: pipeline, name: 'build2')
         create(:ci_build, :success, pipeline: pipeline, name: 'build3')
@@ -110,25 +113,6 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
             %w[bridge2 canceled],
             %w[bridge3 success]
           ])
-        end
-
-        context 'when using the metadata queries' do
-          before do
-            stub_feature_flags(ci_read_interruptible_from_job_definitions: false)
-          end
-
-          it 'cancels only interruptible jobs' do
-            expect(response).to be_success
-            expect(pipeline.all_jobs.pluck(:name, :status)).to match_array([
-              %w[build1 running],
-              %w[build2 created],
-              %w[build3 success],
-              %w[build4 canceled],
-              %w[bridge1 running],
-              %w[bridge2 canceled],
-              %w[bridge3 success]
-            ])
-          end
         end
       end
 
@@ -229,7 +213,7 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
             described_class.new(pipeline: pipeline2, current_user: current_user).force_execute
           end
 
-          extra_update_queries = 5 # transition ... => :canceled, queue pop
+          extra_update_queries = 7 # transition ... => :canceled, queue pop
           extra_generic_commit_status_validation_queries = 2 # name_uniqueness_across_types
 
           expect(control2.count)

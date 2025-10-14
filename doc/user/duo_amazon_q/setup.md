@@ -90,7 +90,7 @@ Prerequisites:
 Now, create an AWS identity provider:
 
 1. Sign in to the [AWS IAM console](https://console.aws.amazon.com/iam).
-1. Select **Access Management > Identity providers**.
+1. Select **Access Management** > **Identity providers**.
 1. Select **Add provider**.
 1. For **Provider type**, select **OpenID Connect**.
 1. For **Provider URL**, enter the value from GitLab.
@@ -370,7 +370,7 @@ To confirm that a mismatched UUID is the root cause, proceed with the following 
 1. Get the JWT token:
 
    ```ruby
-   token = CloudConnector::AvailableServices.find_by_name(:agent_quick_actions).access_token
+   token = CloudConnector::Tokens.get(unit_primitive: :agent_quick_actions, resource: :instance)
    JWT.decode(token, false, nil)
    ```
 

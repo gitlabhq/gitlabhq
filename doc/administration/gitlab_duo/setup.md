@@ -35,6 +35,7 @@ and [must be turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-ex
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
+- The GitLab application nodes must be able to connect to the [GitLab Duo Workflow service](https://duo-workflow-svc.runway.gitlab.net).
 
 ## Allow inbound connections from clients to the GitLab instance
 
@@ -112,10 +113,10 @@ If you want to host your own language models or AI gateway:
 - Use a [hybrid configuration](../../administration/gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration),
   where you host your own AI gateway and models for some features, but configure other features to use the GitLab AI gateway and vendor models.
 
-## Hide sidebar widget that shows Agent Platform availability
+## Hide sidebar widget that shows GitLab Duo Core availability
 
-On the left sidebar, near the bottom, a widget shows the availability of the GitLab Duo
-Agent Platform.
+On the left sidebar, near the bottom, a widget shows the availability of GitLab Duo
+Core.
 To hide this widget, disable the `duo_agent_platform_widget_self_managed` feature flag.
 
-![A widget that shows the availability of the Agent Platform](img/widget_v18_4.png)
+![A widget that shows the availability of GitLab Duo Core](img/widget_v18_5.png)

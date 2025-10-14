@@ -5,7 +5,7 @@
 # - params
 
 RSpec.shared_examples 'search request exceeding rate limit' do
-  include_examples 'rate limited endpoint', rate_limit_key: :search_rate_limit
+  include_examples 'rate limited endpoint', rate_limit_key: :search_rate_limit, use_second_scope: false
 
   it 'allows user in allow-list to search without applying rate limit', :freeze_time,
     :clean_gitlab_redis_rate_limiting do

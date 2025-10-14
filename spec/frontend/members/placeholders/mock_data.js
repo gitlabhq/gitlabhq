@@ -119,6 +119,18 @@ export const mockKeepAsPlaceholderMutationResponse = {
     },
   },
 };
+export const mockUndoKeepAsPlaceholderMutationResponse = {
+  data: {
+    importSourceUserUndoKeepAsPlaceholder: {
+      errors: [],
+      importSourceUser: {
+        ...mockSourceUsers[0],
+        status: 'PENDING_REASSIGNMENT',
+      },
+      __typename: 'ImportSourceUserKeepAsPlaceholderPayload',
+    },
+  },
+};
 export const mockResendNotificationMutationResponse = {
   data: {
     importSourceUserResendNotification: {

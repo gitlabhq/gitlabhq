@@ -69,7 +69,7 @@ To learn how to create better OKRs and how we use them at GitLab, see the
 To create an objective:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. In the upper-right corner, next to **New issue**, select the down arrow {{< icon name="chevron-lg-down" >}} and then select **New objective**.
 1. Select **New objective** again.
 1. Enter the objective title.
@@ -82,7 +82,7 @@ To create a key result, [add it as a child](#add-a-child-key-result) to an exist
 To view an objective:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
    for `Type = objective`.
 1. Select the title of an objective from the list.
@@ -92,7 +92,7 @@ To view an objective:
 To view a key result:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
    for `Type = key_result`.
 1. Select the title of a key result from the list.
@@ -276,7 +276,7 @@ Prerequisites:
 To set progress of an objective or key result:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
    for `Type = objective` or `Type = key result` and select your item.
 1. Next to **Progress**, select the text box.
@@ -357,7 +357,7 @@ Prerequisites:
 To convert an OKR into another item type:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**, then select your issue to view it.
+1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue list, find your objective or key result and select it.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Change type**.
 1. Select the desired item type.
@@ -380,7 +380,7 @@ To refer to an objective or key result elsewhere in GitLab, you can use its full
 To copy the objective or key result reference to your clipboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**, then select your objective or key result to view it.
+1. Select **Plan** > **Issues**, then select your objective or key result to view it.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Copy Reference**.
 
 You can now paste the reference into another description or comment.
@@ -404,7 +404,7 @@ For more information about creating comments by sending an email and the necessa
 To copy the objective's or key result's email address:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**, then select your issue to view it.
+1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Copy objective email address** or **Copy key result email address**.
 
 ## Close an OKR

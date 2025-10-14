@@ -121,7 +121,7 @@ You must register an agent before you can install the agent in your cluster. To 
 1. On the left sidebar, select **Search or go to** and find your project.
    If you have an [agent configuration file](#create-an-agent-configuration-file),
    it must be in this project. Your cluster manifest files should also be in this project.
-1. Select **Operate > Kubernetes clusters**.
+1. Select **Operate** > **Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
 1. In the **Name of new agent** field, enter a unique name for your agent.
    - If an [agent configuration file](#create-an-agent-configuration-file) with this name already exists, it is used.

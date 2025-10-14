@@ -27,7 +27,6 @@ export default {
     'newSubgroupPath',
     'newProjectPath',
     'emptyProjectsIllustration',
-    'emptySubgroupIllustration',
     'canCreateSubgroups',
     'canCreateProjects',
   ],
@@ -52,14 +51,14 @@ export default {
 <template>
   <resource-lists-empty-state
     :title="$options.i18n.title"
-    :svg-path="emptySubgroupIllustration"
+    :svg-path="emptyProjectsIllustration"
     :description="description"
     :search="search"
     :search-minimum-length="$options.SEARCH_MINIMUM_LENGTH"
   >
     <template v-if="hasActions" #actions>
       <div
-        class="gl-mt-5 gl-flex gl-flex-col gl-justify-center gl-gap-4 gl-text-left md:gl-flex-row"
+        class="gl-mt-5 gl-flex gl-flex-col gl-justify-center gl-gap-4 gl-text-left @md/panel:gl-flex-row"
         data-testid="empty-subgroup-and-projects-actions"
       >
         <action-card

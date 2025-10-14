@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: CI Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Runner fleet dashboard for groups
 ---
@@ -45,7 +45,7 @@ Prerequisites:
 To view the runner fleet dashboard for groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. Select **Fleet dashboard**.
 
 For GitLab Self-Managed, most of the dashboard metrics work without any additional configuration.

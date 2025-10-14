@@ -72,6 +72,19 @@ export default {
       return `include:
   - component: ${componentPath}`;
     },
+    getItemValue(item) {
+      return String(item.default);
+    },
+    shouldShowCodeBlock(item) {
+      return item.default && item.type === 'ARRAY';
+    },
+    getCodeBlock(item) {
+      try {
+        return JSON.stringify(item.default, null, 2);
+      } catch (e) {
+        return String(item.default);
+      }
+    },
   },
   fields: [
     {
@@ -81,10 +94,12 @@ export default {
     {
       key: 'required',
       label: s__('CiCatalogComponent|Mandatory'),
+      class: '@md/panel:gl-w-15',
     },
     {
       key: 'type',
       label: s__('CiCatalogComponent|Type'),
+      class: '@md/panel:gl-w-15',
     },
     {
       key: 'description',
@@ -141,7 +156,6 @@ export default {
         <pre
           data-testid="copy-to-clipboard"
           class="code highlight js-syntax-highlight language-yaml"
-          lang="yaml"
         ><code>{{
           generateSnippet(component.includePath)
         }}</code></pre>
@@ -156,7 +170,7 @@ export default {
               <help-icon />
             </gl-link>
           </div>
-          <gl-table-lite :items="component.inputs" :fields="$options.fields">
+          <gl-table-lite :items="component.inputs" :fields="$options.fields" stacked="md" fixed>
             <template #cell(name)="{ item }">
               <code v-if="item.name" data-testid="input-name">{{ item.name }}</code>
             </template>
@@ -167,14 +181,22 @@ export default {
               <span data-testid="input-type">{{ item.type.toLowerCase() }}</span>
             </template>
             <template #cell(description)="{ item }">
-              <span data-testid="input-description">{{ item.description }}</span>
+              <span data-testid="input-description" class="gl-break-words">{{
+                item.description
+              }}</span>
             </template>
             <template #cell(default)="{ item }">
-              <code v-if="item.default" data-testid="input-default">
+              <pre
+                v-if="shouldShowCodeBlock(item)"
+                class="gl-text-left gl-text-sm"
+                data-testid="input-code-block"
+                >{{ getCodeBlock(item) }}</pre
+              >
+              <code v-else-if="getItemValue(item)" data-testid="input-default">
                 <gl-truncate
-                  :text="`${item.default}`"
+                  :text="getItemValue(item)"
                   position="end"
-                  class="gl-max-w-34"
+                  class="gl-max-w-full"
                   with-tooltip
                 />
               </code>

@@ -5,7 +5,6 @@ NOTE: This file uses v-html over v-safe-html for performance reasons, see:
 https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57842
 * */
 import { memoize } from 'lodash';
-import { isLoggedIn } from '~/lib/utils/common_utils';
 import { compatFunctionalMixin } from '~/lib/utils/vue3compat/compat_functional_mixin';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
@@ -78,6 +77,10 @@ export default {
     },
     fileLineCoverage: {
       type: Function,
+      required: true,
+    },
+    userCanReply: {
+      type: Boolean,
       required: true,
     },
   },
@@ -190,7 +193,9 @@ export default {
   shouldRenderCommentButton: memoize(
     (props, side) => {
       return (
-        isLoggedIn() && !props.line[`isContextLine${side}`] && !props.line[`isMetaLine${side}`]
+        props.userCanReply &&
+        !props.line[`isContextLine${side}`] &&
+        !props.line[`isMetaLine${side}`]
       );
     },
     (props, side) =>

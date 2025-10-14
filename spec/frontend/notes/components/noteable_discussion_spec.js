@@ -61,6 +61,8 @@ describe('noteable_discussion component', () => {
     });
   };
 
+  const findReplyWrapper = () => wrapper.findByTestId('reply-wrapper');
+
   beforeEach(() => {
     ({ pinia, diffsStore } = createPinia());
     axiosMock = new MockAdapter(axios);
@@ -100,9 +102,45 @@ describe('noteable_discussion component', () => {
       wrapper.setProps({ discussion });
       await nextTick();
 
-      const replyWrapper = wrapper.find('[data-testid="reply-wrapper"]');
+      expect(findReplyWrapper().exists()).toBe(true);
+    });
+  });
 
-      expect(replyWrapper.exists()).toBe(true);
+  describe('when user is logged in', () => {
+    beforeEach(() => {
+      window.gon.current_user_id = 1;
+    });
+
+    describe('when user can reply', () => {
+      it('renders reply wrapper', () => {
+        useNotes().noteableData = { ...noteableDataMock, current_user: { can_create_note: true } };
+
+        createComponent();
+
+        expect(findReplyWrapper().exists()).toBe(true);
+      });
+    });
+
+    describe('when user cannot reply', () => {
+      it('does not render reply wrapper', () => {
+        useNotes().noteableData = { ...noteableDataMock, current_user: { can_create_note: false } };
+
+        createComponent();
+
+        expect(findReplyWrapper().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('when user is not logged in', () => {
+    beforeEach(() => {
+      window.gon.current_user_id = null;
+    });
+
+    it('renders reply wrapper', () => {
+      createComponent();
+
+      expect(findReplyWrapper().exists()).toBe(true);
     });
   });
 

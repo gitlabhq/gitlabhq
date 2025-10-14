@@ -96,10 +96,10 @@ and complete an integration with the Secure stage.
       - In the [Merge Request Security Report](../../ci/testing/_index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
       - While [browsing a Job Artifact](../../ci/jobs/job_artifacts.md).
       - In the [Security Dashboard](../../user/application_security/security_dashboard/_index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
-1. Optional: Provide a way to interact with results as Vulnerabilities:
+1. Optional. Provide a way to interact with results as Vulnerabilities:
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
    - To automatically create issues without user interaction, use the [issue API](../../api/issues.md).
-1. Optional: Provide auto-remediation steps:
+1. Optional. Provide auto-remediation steps:
    - If you specified `remediations` in your artifact, it is proposed through our [remediation](../../user/application_security/vulnerabilities/_index.md#resolve-a-vulnerability)
      interface.
 1. Demo the integration to GitLab:

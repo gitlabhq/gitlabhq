@@ -36,14 +36,11 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
       end
     end
 
-    context 'when lock retry is enabled' do
+    context 'when lock retry is enabled', :delete do
       let(:lock_fiber) do
         Fiber.new do
           # Initiating a separate DB connection for the lock
           conn = ActiveRecord::Base.connection_pool.checkout
-
-          # Set a new lock every time to allow multiple connections per thread
-          conn.lock_thread = ActiveSupport::Concurrency::ThreadLoadInterlockAwareMonitor.new
 
           conn.transaction do
             conn.execute("LOCK TABLE #{Project.table_name} in exclusive mode")
@@ -218,14 +215,17 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
       context 'when statement timeout is reached' do
         it 'raises QueryCanceled error' do
           lock_acquired = false
-          connection.execute("SET LOCAL statement_timeout='100ms'")
 
-          expect do
-            subject.run do
-              connection.execute("SELECT 1 FROM pg_sleep(0.11)") # 110ms
-              lock_acquired = true
-            end
-          end.to raise_error(ActiveRecord::QueryCanceled)
+          connection.transaction do
+            connection.execute("SET LOCAL statement_timeout='100ms'")
+
+            expect do
+              subject.run do
+                connection.execute("SELECT 1 FROM pg_sleep(0.11)") # 110ms
+                lock_acquired = true
+              end
+            end.to raise_error(ActiveRecord::QueryCanceled)
+          end
 
           expect(lock_acquired).to eq(false)
         end

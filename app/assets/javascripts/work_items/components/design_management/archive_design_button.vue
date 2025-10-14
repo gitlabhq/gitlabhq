@@ -68,7 +68,6 @@ export default {
 <template>
   <div :class="buttonClass">
     <gl-modal
-      modal-class="gl-@container"
       :modal-id="modalId"
       :title="$options.modal.title"
       :action-primary="$options.modal.actionPrimary"
@@ -80,7 +79,6 @@ export default {
     <gl-button
       v-gl-modal-directive="modalId"
       data-testid="archive-design-button"
-      modal-class="gl-@container"
       :size="buttonSize"
       :category="buttonCategory"
       :icon="buttonIcon"

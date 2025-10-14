@@ -17,9 +17,11 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Filter, feature_category: :
 
   describe '#process' do
     let(:locations) do
-      [{ local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1' }] },
-       { remote: 'https://testing.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1', when: 'never' }] },
-       { remote: 'https://example.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE2' }] }]
+      [
+        { local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1' }] },
+        { remote: 'https://testing.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1', when: 'never' }] },
+        { remote: 'https://example.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE2' }] }
+      ]
     end
 
     subject(:process) { filter.process(locations) }

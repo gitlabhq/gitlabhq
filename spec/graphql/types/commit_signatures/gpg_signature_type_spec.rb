@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['GpgSignature'] do
+RSpec.describe GitlabSchema.types['GpgSignature'], feature_category: :source_code_management do
   specify { expect(described_class.graphql_name).to eq('GpgSignature') }
 
   specify { expect(described_class).to require_graphql_authorizations(:download_code) }

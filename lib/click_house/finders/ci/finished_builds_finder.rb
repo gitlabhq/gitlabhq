@@ -5,6 +5,8 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
     module Ci
       # todo: rename base_model to base_finder: https://gitlab.com/gitlab-org/gitlab/-/issues/559016
       class FinishedBuildsFinder < ::ClickHouse::Models::BaseModel
+        include ActiveRecord::Sanitization::ClassMethods
+
         ALLOWED_TO_GROUP = %i[name stage_id].freeze
         ALLOWED_TO_SELECT = %i[name stage_id].freeze
         ALLOWED_AGGREGATIONS = %i[
@@ -20,12 +22,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         ERROR_MESSAGES = {
           select: "Cannot select columns: %{columns}. Allowed: #{ALLOWED_TO_SELECT.join(', ')}",
+          aggregate: "Cannot aggregate columns: %{columns}. Allowed: #{ALLOWED_AGGREGATIONS.join(', ')}",
           group: "Cannot group by column: %{column}. Allowed: #{ALLOWED_TO_GROUP.join(', ')}",
           order: "Cannot order by column: %{column}. Allowed: #{ALLOWED_TO_ORDER.join(', ')}"
         }.freeze
 
         ALLOWED_COLUMNS_BY_OPERATION = {
           select: ALLOWED_TO_SELECT,
+          aggregate: ALLOWED_AGGREGATIONS,
           group: ALLOWED_TO_GROUP,
           order: ALLOWED_TO_ORDER
         }.freeze
@@ -56,17 +60,29 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           aggregate ? query : query.group_by(*fields)
         end
 
+        def select_aggregations(*aggregations)
+          validate_columns!(aggregations, :aggregate)
+
+          aggregations.reduce(self) do |query, aggregation|
+            query.method(aggregation).call
+          end
+        end
+
         # Aggregation methods
         def mean_duration_in_seconds
           select(
-            build_duration_aggregate('avg', 'mean_duration_in_seconds'),
+            round(
+              ms_to_s(query_builder.avg(:duration))
+            ).as('mean_duration_in_seconds'),
             aggregate: true
           )
         end
 
         def p95_duration_in_seconds
           select(
-            build_duration_aggregate('quantile(0.95)', 'p95_duration_in_seconds'),
+            round(
+              ms_to_s(query_builder.quantile(0.95, :duration))
+            ).as('p95_duration_in_seconds'),
             aggregate: true
           )
         end
@@ -94,7 +110,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           validate_columns!(fields, :group)
 
           # Note: Aggregation can't be grouped, so using @query_builder.table directly.
-          group(fields.map { |f| @query_builder.table[f] }.uniq)
+          group(*fields.map { |f| @query_builder.table[f] }.uniq)
         end
 
         # Meta methods for STATUSes
@@ -102,6 +118,20 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           define_method(:"rate_of_#{status}") do
             rate_of_status(status)
           end
+        end
+
+        def filter_by_job_name(term)
+          where(query_builder.table[:name].matches("%#{sanitize_sql_like(term.downcase)}%"))
+        end
+
+        def filter_by_pipeline_attrs(project:, from_time: nil, to_time: nil, source: nil, ref: nil)
+          pipelines = ::ClickHouse::Models::Ci::FinishedPipeline.for_container(project).within_dates(
+            from_time, to_time)
+
+          pipelines = pipelines.for_source(source) if source
+          pipelines = pipelines.for_ref(ref) if ref
+
+          where(pipeline_id: pipelines.select(:id).query_builder)
         end
 
         private
@@ -124,39 +154,28 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           raise ArgumentError, "Invalid status: #{status}. Must be one of: #{STATUS.join(', ')}"
         end
 
-        def build_duration_aggregate(function, alias_name)
-          duration_function = Arel::Nodes::NamedFunction.new(
-            function,
-            [@query_builder.table[:duration]]
-          )
-
-          Arel::Nodes::Division.new(
-            duration_function,
-            Arel::Nodes.build_quoted(1000.0)
-          ).as(alias_name)
-        end
-
         def build_rate_aggregate(status)
-          count_if = Arel::Nodes::NamedFunction.new(
-            'countIf',
-            [
-              Arel::Nodes::Equality.new(
-                @query_builder.table[:status],
-                Arel::Nodes.build_quoted(status)
-              )
-            ]
+          builds_with_status = query_builder.count_if(
+            query_builder.equality(:status, Arel::Nodes.build_quoted(status))
           )
+          total_builds = query_builder.count
 
-          total_count = Arel::Nodes::NamedFunction.new('count', [])
+          percentage = query_builder.division(builds_with_status, total_builds)
+          percentage_value = query_builder.multiply(percentage, 100)
 
-          Arel::Nodes::Multiplication.new(
-            Arel::Nodes::Division.new(count_if, total_count),
-            Arel::Nodes.build_quoted(100)
-          ).as("rate_of_#{status}")
+          round(percentage_value).as("rate_of_#{status}")
         end
 
         def aggregate?(field)
           ALLOWED_AGGREGATIONS.include?(field.to_sym)
+        end
+
+        def round(node, precision = 2)
+          Arel::Nodes::NamedFunction.new('round', [node, precision])
+        end
+
+        def ms_to_s(node)
+          query_builder.division(node, 1000.0)
         end
       end
     end

@@ -36,13 +36,13 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       exposure: 3
     }.freeze
 
-    BUSINESS_IMPACT_ATTRIBUTES_TYPES = [
-      :mission_critical,
-      :business_critical,
-      :business_operational,
-      :business_administrative,
-      :non_essential
-    ].freeze
+    BUSINESS_IMPACT_ATTRIBUTES_TYPES = {
+      mission_critical: 0,
+      business_critical: 1,
+      business_operational: 2,
+      business_administrative: 3,
+      non_essential: 4
+    }.freeze
 
     DEFAULT_CONFIGURATION_SOURCE = :sbom
 

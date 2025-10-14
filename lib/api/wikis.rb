@@ -85,8 +85,8 @@ module API
         end
         params do
           requires :title, type: String, desc: 'Title of a wiki page'
-          optional :front_matter, type: Hash do
-            optional :title, type: String, desc: 'Front matter title of a wiki page'
+          optional :front_matter, type: Hash,  desc: 'Object that contains YAML frontmatter' do
+            optional :title, type: String, desc: 'Frontmatter title of a wiki page'
           end
           requires :content, type: String, desc: 'Content of a wiki page'
           use :common_wiki_page_params
@@ -115,8 +115,8 @@ module API
         end
         params do
           optional :title, type: String, desc: 'Title of a wiki page'
-          optional :front_matter, type: Hash do
-            optional :title, type: String, desc: 'Front matter title of a wiki page'
+          optional :front_matter, type: Hash,  desc: 'Object that contains YAML frontmatter' do
+            optional :title, type: String, desc: 'Frontmatter title of a wiki page'
           end
           optional :content, type: String, desc: 'Content of a wiki page'
           use :common_wiki_page_params

@@ -163,7 +163,7 @@ and cascade to all projects by default.
 To enable product analytics on your instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Analytics**.
+1. Select **Settings** > **Analytics**.
 1. Enter the configuration values.
 1. Select **Save changes**.
 
@@ -178,7 +178,7 @@ Prerequisites:
 - The project must be in a group namespace.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Analytics**.
+1. Select **Settings** > **Analytics**.
 1. Expand **Data sources** and enter the configuration values.
 1. Select **Save changes**.
 
@@ -199,7 +199,7 @@ Onboarding a GitLab project means preparing it to receive events that are used f
 To onboard a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
+1. Select **Analyze** > **Analytics dashboards**.
 1. Under **Product analytics**, select **Set up**.
 
 Then continue with the setup depending on the provider type.
@@ -218,7 +218,7 @@ Prerequisites:
    1. Select **Go to analytics settings**.
    1. Expand **Data sources** and remove the configuration values.
    1. Select **Save changes**.
-   1. Select **Analyze > Analytics dashboards**.
+   1. Select **Analyze** > **Analytics dashboards**.
    1. Under **Product analytics**, select **Set up**.
    1. Select **Connect GitLab-managed provider**.
 
@@ -233,7 +233,7 @@ Your instance is being created, and the project onboarded.
    1. Select **Go to analytics settings**.
    1. Expand **Data sources** and enter the configuration values.
    1. Select **Save changes**.
-   1. Select **Analyze > Analytics dashboards**.
+   1. Select **Analyze** > **Analytics dashboards**.
    1. Under **Product analytics**, select **Set up**.
    1. Select **Connect your own provider**.
 
@@ -356,7 +356,7 @@ Product analytics usage quota is calculated from the number of events received f
 To view product analytics usage quota:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quota**.
+1. Select **Settings** > **Usage quota**.
 1. Select the **Product analytics** tab.
 
 The tab displays the monthly totals for the group and a breakdown of usage per project.

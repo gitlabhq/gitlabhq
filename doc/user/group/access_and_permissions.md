@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Group access and permissions
@@ -30,7 +30,7 @@ Group push rules allow group maintainers to set
 To configure push rules for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
 1. Select **Save push rules**.
@@ -60,7 +60,7 @@ configured by an administrator.
 To change the permitted Git access protocols for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
@@ -113,7 +113,7 @@ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 To restrict group access by IP address:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
    address ranges in CIDR notation. This list:
@@ -173,7 +173,7 @@ to access that group. Subgroups inherit the same allowlist.
 To restrict group access by domain:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names to allow.
 1. Select **Save changes**.
@@ -205,7 +205,7 @@ As a group Owner, you can prevent non-members from requesting access to
 your group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
@@ -238,7 +238,7 @@ Prerequisites:
 To prevent projects from being forked outside the group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
@@ -270,7 +270,7 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 To prevent members from being added to projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under **Membership**, select **Users cannot be added to projects in this group**.
 1. Select **Save changes**.
@@ -297,7 +297,7 @@ After you lock the membership for a group:
 
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that are associated with GitLab groups.
 
-Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group. After you have configured the link:
+Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings** > **LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group. After you have configured the link:
 
 - In GitLab 16.7 and earlier, group Owners cannot add members to or remove members from the group. The LDAP server is considered the single source of truth for group membership for all users who have signed in with LDAP credentials.
 - In GitLab 16.8 and later, group Owners can use the [member roles API](../../api/member_roles.md) or [group members API](../../api/members.md#add-a-member-to-a-group-or-project) to add a service account user to or remove a service account user from the group, even when LDAP synchronization is enabled for the group. Group Owners cannot add or remove non-service account users.
@@ -368,7 +368,7 @@ To create group links with an LDAP user filter:
 {{< /details >}}
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Active synchronization**.
+1. Select **Settings** > **Active synchronization**.
 1. Identify the group link you want to remove and select **Remove**.
 
 {{< alert type="note" >}}
@@ -389,7 +389,7 @@ When you remove LDAP group syncing, the existing memberships and role assignment
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**. If LDAP synchronization
+1. Select **Manage** > **Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having
      [direct membership](../project/members/_index.md#display-direct-members) of the group.
@@ -422,7 +422,7 @@ Prerequisites:
 To set the default minimum role:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD > Variables**.
+1. Select **Settings** > **CI/CD** > **Variables**.
 1. Under **Default role to use pipeline variables** select a minimum role, or select
    **No one allowed** to prevent any user from using pipeline variables.
 1. Select **Save changes**.

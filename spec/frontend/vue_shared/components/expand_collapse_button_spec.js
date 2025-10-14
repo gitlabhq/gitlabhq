@@ -9,6 +9,7 @@ describe('ExpandCollapseButton', () => {
     wrapper = shallowMount(ExpandCollapseButton, {
       propsData: {
         isCollapsed: true,
+        accessibleLabel: 'Address review comments',
         ...props,
       },
       stubs: {
@@ -25,7 +26,9 @@ describe('ExpandCollapseButton', () => {
 
   describe('when isCollapsed is true', () => {
     it('shows expand button', () => {
-      expect(findExpandCollapseButton().attributes('aria-label')).toBe('Expand');
+      expect(findExpandCollapseButton().attributes('aria-label')).toBe(
+        'Expand Address review comments',
+      );
       expect(findExpandCollapseButton().attributes('aria-expanded')).toBe('false');
     });
 
@@ -41,7 +44,9 @@ describe('ExpandCollapseButton', () => {
     });
 
     it('shows collapse button', () => {
-      expect(findExpandCollapseButton().attributes('aria-label')).toBe('Collapse');
+      expect(findExpandCollapseButton().attributes('aria-label')).toBe(
+        'Collapse Address review comments',
+      );
       expect(findExpandCollapseButton().attributes('aria-expanded')).toBe('true');
     });
 

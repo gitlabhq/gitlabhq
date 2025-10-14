@@ -31,7 +31,7 @@ Prerequisites:
 To view repository analytics for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Repository analytics**.
+1. Select **Analyze** > **Repository analytics**.
 
 ## Coverage metrics
 

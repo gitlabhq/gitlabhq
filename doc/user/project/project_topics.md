@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project topics
@@ -86,11 +86,16 @@ The URL of the result contains a feed token and the list of projects that have t
 
 ## Assign topics to a project
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
 To assign topics to a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
-1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
+1. Expand **Naming, description, topics**.
+1. In the **Project topics** text box, search for a topic. Popular topics are suggested as you type.
 1. Select **Save changes**.
 
 ## Administer topics

@@ -163,7 +163,9 @@ export default {
       <template #cell(name)="{ item = {} }">
         <div class="gl-flex" data-testid="feature-flag-title">
           <div class="gl-mt-2 gl-flex gl-items-center">
-            <div class="feature-flag-name text-monospace text-wrap gl-break-anywhere">
+            <div
+              class="feature-flag-name !gl-whitespace-normal !gl-font-monospace gl-break-anywhere"
+            >
               {{ item.name }}
             </div>
             <div :data-testid="`feature-flag-description-${item.id}`">
@@ -194,7 +196,7 @@ export default {
 
       <template #cell(actions)="{ item = {} }">
         <gl-button-group
-          class="gl-hidden md:gl-inline-flex"
+          class="gl-hidden @md/panel:gl-inline-flex"
           data-testid="flags-table-action-buttons"
         >
           <template v-if="item.edit_path">
@@ -221,7 +223,7 @@ export default {
         </gl-button-group>
 
         <div
-          class="gl-flex gl-gap-4 md:gl-hidden md:gl-gap-0"
+          class="gl-flex gl-gap-4 @md/panel:gl-hidden @md/panel:gl-gap-0"
           data-testid="flags-table-action-buttons"
         >
           <template v-if="item.edit_path">

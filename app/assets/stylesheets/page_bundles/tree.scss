@@ -1,6 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
 $bottom-padding: $gl-spacing-scale-6;
+$file-tree-browser-z-index: 500;
 
 .content-wrapper:has(.navigation-root) {
   padding-bottom: $bottom-padding;
@@ -10,23 +11,49 @@ $bottom-padding: $gl-spacing-scale-6;
   min-height: calc(100dvh - var(--application-header-height) - #{$bottom-padding});
 }
 
-.repository-tree-list {
+.file-tree-browser-overlay {
+  @apply gl-bg-overlay;
+  z-index: $file-tree-browser-z-index - 1;
+}
+
+.file-tree-browser {
   --file-row-level-padding: #{$gl-spacing-scale-5};
   --file-tree-min-height: 300px;
   --file-tree-bottom-padding: #{rem-to-px($bottom-padding)};
-  position: sticky;
-  top: calc(var(--application-header-height) + #{$gl-spacing-scale-4});
+  top: var(--application-header-height);
+  bottom: $calc-application-footer-height;
+  background: var(--gl-background-color-default);
   min-height: var(--file-tree-min-height);
-  flex: none;
+  transform: translate3d(-100%, 0, 0);
+  z-index: $file-tree-browser-z-index;
+
+
+  @media (prefers-reduced-motion: no-preference) {
+    @apply gl-transition-transform;
+  }
 
   .file-row {
     @apply gl-border-none;
     @apply gl-bg-transparent;
     @apply gl-w-full;
   }
+
+  &.file-tree-browser-expanded,
+  &.file-tree-browser-peek {
+    transform: translate3d(0, 0, 0);
+  }
+
+
+  &.file-tree-browser-peek {
+    @apply gl-shadow;
+    @apply gl-rounded-base;
+    top: calc( var(--system-header-height) + var(--performance-bar-height));
+  }
 }
 
-.repository-tree-list-responsive {
+
+
+.file-tree-browser-responsive {
   width: var(--tree-width);
 
   @include gl-container-width-down(lg) {
@@ -36,7 +63,7 @@ $bottom-padding: $gl-spacing-scale-6;
 
 .tree-holder {
   .nav-block {
-    margin: $gl-spacing-scale-2 0 $gl-spacing-scale-5;
+    margin: $gl-spacing-scale-5 0 $gl-spacing-scale-5;
 
     .tree-ref-holder {
       margin-right: 15px;
@@ -76,7 +103,7 @@ $bottom-padding: $gl-spacing-scale-6;
     }
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .tree-ref-container {
       justify-content: space-between;
     }

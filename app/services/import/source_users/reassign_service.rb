@@ -88,21 +88,36 @@ module Import
       end
 
       def invalid_assignee_message
-        if admin_skip_reassignment_confirmation? && allow_mapping_to_admins?
-          s_('UserMapping|You can assign users with regular, auditor, or administrator access only.')
+        if assignee_user&.project_bot?
+          s_('UserMapping|Group or project bot does not belong to top level group.')
+        elsif assignee_user&.service_account?
+          s_('UserMapping|Service account does not belong to top level group.')
+        elsif admin_skip_reassignment_confirmation? && allow_mapping_to_admins?
+          s_('UserMapping|You can assign users with regular, auditor, or administrator access, ' \
+            'service accounts and group or project bots only.')
         elsif allow_mapping_to_admins?
-          s_('UserMapping|You can assign active users with regular, auditor, or administrator access only.')
+          s_('UserMapping|You can assign active users with regular, auditor, or administrator access, ' \
+            'service accounts and group or project bots only.')
         elsif admin_skip_reassignment_confirmation?
-          s_('UserMapping|You can assign users with regular or auditor access only.')
+          s_('UserMapping|You can assign users with regular or auditor access, ' \
+            'service accounts and group or project bots only.')
         else
-          s_('UserMapping|You can assign active users with regular or auditor access only.')
+          s_('UserMapping|You can assign active users with regular or auditor access, ' \
+            'service accounts and group or project bots only.')
         end
       end
 
+      # Overridden in EE
       def valid_assignee?
-        assignee_user.present? &&
-          assignee_user.human? &&
-          (admin_skip_reassignment_confirmation? || assignee_user.active?) &&
+        return false unless assignee_user.present?
+
+        valid_human_assignee? || project_bot_reassignment?
+      end
+
+      def valid_human_assignee?
+        return false unless assignee_user&.human?
+
+        (admin_skip_reassignment_confirmation? || assignee_user.active?) &&
           # rubocop:disable Cop/UserAdmin -- This should not be affected by admin mode.
           # We just want to know whether the user CAN have admin privileges or not.
           (allow_mapping_to_admins? || !assignee_user.admin?)
@@ -113,8 +128,9 @@ module Import
         ::Gitlab::CurrentSettings.allow_contribution_mapping_to_admins?
       end
 
+      # Overridden in EE
       def skip_reassignment_confirmation?
-        admin_skip_reassignment_confirmation? || enterprise_skip_reassignment_confirmation?
+        admin_skip_reassignment_confirmation? || project_bot_reassignment?
       end
 
       def admin_skip_reassignment_confirmation?
@@ -122,14 +138,10 @@ module Import
       end
       strong_memoize_attr :admin_skip_reassignment_confirmation?
 
-      # rubocop:disable Gitlab/NoCodeCoverageComment -- method is tested in EE
-      # :nocov:
-      # Overridden in EE
-      def enterprise_skip_reassignment_confirmation?
-        false
+      def project_bot_reassignment?
+        Import::UserMapping::ProjectBotBypassAuthorizer.new(root_namespace, assignee_user, current_user).allowed?
       end
-      # :nocov:
-      # rubocop:enable Gitlab/NoCodeCoverageComment
+      strong_memoize_attr :project_bot_reassignment?
     end
   end
 end

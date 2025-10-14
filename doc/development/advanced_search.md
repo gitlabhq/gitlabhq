@@ -53,6 +53,10 @@ Developers making significant changes to Elasticsearch queries should test their
   tail -f log/elasticsearch.log
   ```
 
+- If you run in [SaaS mode](ee_features.md#simulate-a-saas-instance), you should [limit the amount of namespace and project data to index](../integration/advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index) to mimic how advanced search is configured on GitLab.com.
+
+If namespace limiting is not enabled, advanced search is enabled by default for all namespaces (including free namespaces).
+
 ### Helpful Rake tasks
 
 - `gitlab:elastic:test:index_size`: Tells you how much space the current index is using, as well as how many documents
@@ -74,6 +78,7 @@ consider [following these instructions](rake_tasks.md#extra-project-seed-options
 - [Running tests with Elasticsearch](advanced_search/tips.md#testing)
 - [Testing migrations](advanced_search/tips.md#advanced-search-migrations)
 - [Viewing index status](advanced_search/tips.md#viewing-index-status)
+- [Analyze query changes](advanced_search/tips.md#analyze-query-changes)
 
 ### Debugging & troubleshooting
 
@@ -378,7 +383,7 @@ All new indexes must have:
   - For project data - `visibility_level`
   - For group data - `namespace_visibility_level`
   - Any required access level fields. These correspond to project feature access levels such as `issues_access_level` or `repository_access_level`
-- A `schema_version` integer field in a `YYWW` (year/week) format. This field is used for data migrations.
+- A `schema_version` integer field in a `YYWW` (year/week) format. This field is used for data migrations and its value corresponds to the week when the MR is merged.
 
 1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
 1. Define the following class methods:
@@ -658,7 +663,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 1. Add the field to the index mapping to add it newly created indices and create a migration to add the field to existing indices in the same MR to avoid mapping schema drift. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
 1. Populate the new field in the document JSON. The code must check the migration is complete using
    `::Elastic::DataMigrationService.migration_has_finished?`
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
 1. Create a migration to backfill the field in the index. If it's a not-nullable field, use [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper), or [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion) if it's a nullable field.
 
 ##### If the new field is an associated record
@@ -682,7 +687,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 #### Changing mapping of an existing field
 
 1. Update the field type in the index mapping to change it for newly created indices
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
 1. Create a migration to reindex all documents
    using [Zero downtime reindexing](search/advanced_search_migration_styleguide.md#zero-downtime-reindex-migration).
    Use the [`Search::Elastic::MigrationReindexTaskHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindextaskhelper)
@@ -690,7 +695,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 #### Changing field content
 
 1. Update the field content in the document JSON
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
 1. Create a migration to update documents. Use the [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion)
 
 #### Cleaning up documents from an index
@@ -698,7 +703,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 This may be used if documents are split from one index into separate indices or to remove data left in the index due to
 bugs.
 
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
 1. Create a migration to index all records. Use the [`MigrationDatabaseBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdatabasebackfillhelper)
 1. Create a migration to remove all documents with the previous `SCHEMA_VERSION`. Use the [`MigrationDeleteBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdeletebasedonschemaversion)
 
@@ -713,7 +718,7 @@ Milestone `M`:
 
 1. Remove the field from the index mapping to remove it from newly created indices
 1. Stop populating the field in the document JSON
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
 1. Remove any [filters which use the field](#available-filters) from the [query builder](#creating-a-query)
 1. Update the `scope_options` method to remove the field for the scope you are updating. The method is defined in
    `Gitlab::Elastic::SearchResults` with overrides in `Gitlab::Elastic::GroupSearchResults` and

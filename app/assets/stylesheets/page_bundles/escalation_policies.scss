@@ -23,18 +23,18 @@ $stroke-size: 1px;
 }
 
 .escalation-rule-row {
-  @media (max-width: $breakpoint-lg) {
+  @include gl-container-width-down(lg, panel) {
     flex-wrap: wrap;
   }
 }
 
 .rule-condition {
-  @media (min-width: $breakpoint-lg) {
+  @include gl-container-width-up(lg, panel) {
     flex-basis: 25%;
     flex-shrink: 0;
   }
 
-  @media (max-width: $breakpoint-lg) {
+  @include gl-container-width-down(lg, panel) {
     width: 100%;
   }
 }

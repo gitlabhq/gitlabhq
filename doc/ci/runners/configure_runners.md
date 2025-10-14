@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Set timeouts, protect sensitive information, control behavior with tags and variables, and configure artifact and cache settings of your GitLab Runner.
 title: Configuring runners
@@ -53,7 +53,7 @@ Prerequisites:
 To set the maximum job timeout:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
@@ -67,7 +67,7 @@ Prerequisites:
 To set the maximum job timeout:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
@@ -212,7 +212,7 @@ That new runner may then be used to obtain the values of secret variables or to 
 To reset the registration token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of **New project runner**, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Reset registration token**.
@@ -276,7 +276,7 @@ Prerequisites:
 To automatically rotate runner authentication tokens:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.
 1. Select **Save changes**.
@@ -312,7 +312,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
 1. Select **Save changes**.
@@ -324,7 +324,7 @@ Prerequisites:
 - You must have the Owner role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
@@ -364,7 +364,7 @@ Prerequisites:
 To control the jobs that a group runner can run:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
    - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `ruby`.
@@ -380,7 +380,7 @@ Prerequisites:
 To control the jobs that a project runner can run:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
@@ -500,6 +500,7 @@ globally or for individual jobs:
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
+- [`GIT_CLONE_EXTRA_FLAGS`](#git-clone-extra-flags)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_SUBMODULE_FORCE_HTTPS`](#rewrite-submodule-urls-to-https)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
@@ -519,7 +520,7 @@ You can also use variables to configure how many times a runner
 When using the Kubernetes executor, you can use variables to
 [override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes/#overwrite-container-resources).
 
-[Runner feature flags](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) are also accepted as 
+[Runner feature flags](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) are also accepted as
 [job and pipeline variables](https://docs.gitlab.com/runner/configuration/feature-flags/#enable-feature-flag-in-pipeline-configuration).
 
 ### Git strategy
@@ -693,6 +694,34 @@ git fetch origin $REFSPECS --depth 20  --prune
 ```
 
 Where `$REFSPECS` is a value provided to the runner internally by GitLab.
+
+### Git clone extra flags
+
+Use the `GIT_CLONE_EXTRA_FLAGS` variable to pass extra arguments to the native `git clone` operation.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
+
+To use `GIT_CLONE_EXTRA_FLAGS`:
+
+- Set `FF_USE_GIT_NATIVE_CLONE` to `true` to enable the native `git clone` functionality.
+- Set `GIT_STRATEGY` to `clone` to use the clone strategy instead of fetch.
+- The Git client must be at least version 2.49. This condition is met automatically if the
+  [helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration/#helper-image)
+  is a Linux-flavored image, version 18.1 or later.
+
+`GIT_CLONE_EXTRA_FLAGS` accepts all options of the `git clone` command. The flags are appended to the native
+`git clone` command to provide flexibility for advanced use cases, including referencing alternate repositories
+or optimizing clone performance.
+
+For example, you can optimize clone performance by using a reference repository:
+
+```yaml
+variables:
+  FF_USE_GIT_NATIVE_CLONE: true
+  GIT_STRATEGY: clone
+  GIT_CLONE_EXTRA_FLAGS: "--reference-if-available /tmp/test"
+```
+
+If `GIT_CLONE_EXTRA_FLAGS` is not specified, `git clone` uses only the default flags.
 
 ### Sync or exclude specific submodules from CI jobs
 

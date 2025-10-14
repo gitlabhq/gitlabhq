@@ -104,7 +104,9 @@ response attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 Example response:
@@ -171,7 +173,9 @@ response attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
 Example response:
@@ -233,17 +237,23 @@ Example requests:
 Create a new Pages domain with a certificate from a `.pem` file:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" \
-     --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains" \
+  --form "domain=ssl.domain.example" \
+  --form "certificate=@/path/to/cert.pem" \
+  --form "key=@/path/to/key.pem"
 ```
 
 Create a new Pages domain by using a variable containing the certificate:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" \
-     --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains" \
+  --form "domain=ssl.domain.example" \
+  --form "certificate=$CERT_PEM" \
+  --form "key=$KEY_PEM"
 ```
 
 Create a new Pages domain with an [automatic certificate](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md#enabling-lets-encrypt-integration-for-your-custom-domain):
@@ -309,15 +319,21 @@ response attributes:
 Add a certificate for a Pages domain from a `.pem` file:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" \
-     --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example" \
+  --form "certificate=@/path/to/cert.pem" \
+  --form "key=@/path/to/key.pem"
 ```
 
 Add a certificate for a Pages domain by using a variable containing the certificate:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" \
-     --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example" \
+  --form "certificate=$CERT_PEM" \
+  --form "key=$KEY_PEM"
 ```
 
 Example response:
@@ -339,8 +355,10 @@ Example response:
 ### Enabling Let's Encrypt integration for Pages custom domains
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example" \
+  --form "auto_ssl_enabled=true"
 ```
 
 Example response:
@@ -358,8 +376,11 @@ Example response:
 To remove the SSL certificate attached to the Pages domain, run:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=" \
-     --form "key=" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example" \
+  --form "certificate=" \
+  --form "key="
 ```
 
 Example response:
@@ -414,8 +435,9 @@ response attributes:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example/verify"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example/verify"
 ```
 
 Example response:
@@ -451,5 +473,7 @@ If successful, a `204 No Content` HTTP response with an empty body is expected.
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```

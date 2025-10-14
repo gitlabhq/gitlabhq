@@ -1,5 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
+$focus-mode-z-index: 9000;
+
 .is-ghost {
   opacity: 0.3;
   pointer-events: none;
@@ -10,7 +12,7 @@
   display: flex;
   flex-direction: column;
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     @apply gl-transition-width;
     width: 100%;
 
@@ -31,7 +33,7 @@
 
   min-height: calc(#{$calc-application-viewport-height} - var(--header-height));
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     min-height: 0;
   }
 }
@@ -39,12 +41,12 @@
 .board {
   width: calc(85vw - 15px);
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     width: 400px;
   }
 
   &.board-add-new-list {
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       width: 100%;
     }
   }
@@ -129,16 +131,10 @@
     margin-bottom: 0;
   }
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     &:not(:hover, :focus, :focus-within, :active) .move-to-position {
       visibility: hidden;
     }
-  }
-}
-
-.board-card-title a {
-  @include media-breakpoint-down(md) {
-    font-size: $gl-font-size-sm;
   }
 }
 
@@ -150,7 +146,7 @@
     font-size: $gl-font-size-xs;
     position: relative;
 
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       min-width: auto;
       height: $gl-padding;
       border-radius: $gl-padding;
@@ -165,19 +161,19 @@
   }
 
   .avatar {
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       width: $gl-padding;
       height: $gl-padding;
     }
   }
 
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg, panel) {
     margin-bottom: 0 !important;
   }
 }
 
 .board-card-number {
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg, panel) {
     font-size: $gl-font-size-sm;
   }
 }
@@ -193,7 +189,7 @@
     vertical-align: text-top;
   }
 
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg, panel) {
     font-size: $label-font-size;
   }
 }
@@ -206,30 +202,48 @@
   isolation: isolate;
 }
 
+.issue-boards-content,
+.content-panels {
+  &.is-focused {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: $focus-mode-z-index;
+  }
+}
+
+// Legacy View Focus Mode
 .issue-boards-content.is-focused {
-  $focus-mode-z-index: 9000;
-
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
   background: var(--white, $white);
-  z-index: $focus-mode-z-index;
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     padding-top: 10px;
+  }
+
+  // Use !important for these as top and z-index are set on style attribute
+  // in gitlab-ui; https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2737
+  ~#js-right-sidebar-portal .boards-sidebar {
+    top: 0 !important;
+    z-index: calc(#{$focus-mode-z-index} + 1) !important;
   }
 
   .boards-app {
     height: 100vh;
   }
+}
 
-  // Use !important for these as top and z-index are set on style attribute
-  // in gitlab-ui; https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2737
-  ~ #js-right-sidebar-portal .boards-sidebar {
-    top: 0 !important;
-    z-index: calc(#{$focus-mode-z-index} + 1) !important;
+// Paneled View (i.e. Project Studio) Focus Mode
+.content-panels.is-focused {
+  background: var(--super-sidebar-bg);
+
+  .panel-content .panel-content-inner {
+    @apply gl-mx-0;
+  }
+
+  .boards-app {
+    height: calc(100vh - 60px); // 60px offsets the header height and present vertical scrollbar
   }
 }
 

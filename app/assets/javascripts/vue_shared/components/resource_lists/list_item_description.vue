@@ -20,6 +20,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  inheritAttrs: false,
   props: {
     resource: {
       type: Object,
@@ -27,6 +28,9 @@ export default {
     },
   },
   computed: {
+    description() {
+      return this.resource.description;
+    },
     descriptionHtml() {
       return this.resource.descriptionHtml;
     },
@@ -37,7 +41,7 @@ export default {
       return formatDate(newDate(this.resource.permanentDeletionDate), SHORT_DATE_FORMAT);
     },
     showDescription() {
-      return this.resource.descriptionHtml && !this.resource.archived;
+      return (this.description || this.descriptionHtml) && !this.resource.archived;
     },
   },
 };
@@ -62,9 +66,19 @@ export default {
     class="gl-mt-2 gl-max-w-88"
   >
     <div
+      v-if="descriptionHtml"
       v-safe-html="descriptionHtml"
+      v-bind="$attrs"
+      class="md md-child-content-text-subtle gl-text-sm"
+      data-testid="description-html"
+    ></div>
+    <div
+      v-else-if="description"
+      v-bind="$attrs"
       class="md md-child-content-text-subtle gl-text-sm"
       data-testid="description"
-    ></div>
+    >
+      {{ description }}
+    </div>
   </gl-truncate-text>
 </template>

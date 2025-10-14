@@ -24,7 +24,7 @@ exports[`Alert integration settings form default state should match the default 
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
     <gl-form-group-stub
-      class="col-8 col-md-9 gl-px-6"
+      class="gl-col-8 gl-col-md-9 gl-px-6"
       label-for="alert-integration-settings-issue-template"
       label-size="sm"
       labeldescription=""

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# This concern is specifically for /search related endpoints(SearchController). Avoid using this for other controllers.
 module SearchRateLimitable
   extend ActiveSupport::Concern
 

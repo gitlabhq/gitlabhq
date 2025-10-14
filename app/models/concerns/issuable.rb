@@ -157,7 +157,7 @@ module Issuable
     attr_mentionable :description
 
     participant :author
-    participant :notes_with_associations
+    participant :notes_for_participants
     participant :assignees
 
     strip_attributes! :title
@@ -646,6 +646,10 @@ module Issuable
 
   def assignee_username_list
     assignees.map(&:username).to_sentence
+  end
+
+  def notes_for_participants
+    notes_with_associations.limit(Noteable::MAX_NOTES_LIMIT * 2)
   end
 
   def notes_with_associations

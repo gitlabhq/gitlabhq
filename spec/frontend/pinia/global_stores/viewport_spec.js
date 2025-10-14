@@ -23,9 +23,9 @@ describe('Viewport store', () => {
 
   describe('viewport detection', () => {
     it.each([
-      ['compact', 'isCompactViewport'],
-      ['intermediate', 'isIntermediateViewport'],
-      ['wide', 'isWideViewport'],
+      ['compact', 'isCompactSize'],
+      ['intermediate', 'isIntermediateSize'],
+      ['wide', 'isWideSize'],
       ['narrow', 'isNarrowScreen'],
     ])('detects %s viewport correctly', (breakpoint, property) => {
       mockBreakpoints[breakpoint].matches = true;
@@ -35,23 +35,21 @@ describe('Viewport store', () => {
     });
   });
 
-  it('updates narrow screen with updateIsNarrow', () => {
-    const viewport = useViewport();
+  describe('setViewportState function', () => {
+    it.each`
+      scenario                    | stateToSet                      | expectedState
+      ${'set isNarrowScreen'}     | ${{ isNarrowScreen: true }}     | ${{ isNarrowScreen: true, isCompactSize: false, isIntermediateSize: false, isWideSize: false }}
+      ${'set isCompactSize'}      | ${{ isCompactSize: true }}      | ${{ isNarrowScreen: false, isCompactSize: true, isIntermediateSize: false, isWideSize: false }}
+      ${'set isIntermediateSize'} | ${{ isIntermediateSize: true }} | ${{ isNarrowScreen: false, isCompactSize: false, isIntermediateSize: true, isWideSize: false }}
+      ${'set isWideSize'}         | ${{ isWideSize: true }}         | ${{ isNarrowScreen: false, isCompactSize: false, isIntermediateSize: false, isWideSize: true }}
+    `('$scenario', ({ stateToSet, expectedState }) => {
+      const viewport = useViewport();
+      viewport.setViewportState(stateToSet);
 
-    viewport.updateIsNarrow(true);
-    expect(viewport.isNarrowScreen).toBe(true);
-
-    viewport.updateIsNarrow(false);
-    expect(viewport.isNarrowScreen).toBe(false);
-  });
-
-  it('updates compact viewport with updateIsCompact', () => {
-    const viewport = useViewport();
-
-    viewport.updateIsCompact(true);
-    expect(viewport.isCompactViewport).toBe(true);
-
-    viewport.updateIsCompact(false);
-    expect(viewport.isCompactViewport).toBe(false);
+      expect(viewport.isNarrowScreen).toBe(expectedState.isNarrowScreen);
+      expect(viewport.isCompactSize).toBe(expectedState.isCompactSize);
+      expect(viewport.isIntermediateSize).toBe(expectedState.isIntermediateSize);
+      expect(viewport.isWideSize).toBe(expectedState.isWideSize);
+    });
   });
 });

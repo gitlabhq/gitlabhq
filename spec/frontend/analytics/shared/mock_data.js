@@ -81,7 +81,7 @@ const leadTime = {
       __typename: 'ValueStreamMetricLinkType',
     },
     {
-      label: 'Go to docs',
+      label: 'Learn more',
       name: 'Lead time',
       docsLink: true,
       url: '/help/user/analytics/index#definitions',
@@ -132,7 +132,7 @@ export const mockFlowMetricsResponseData = {
         __typename: 'ValueStreamMetricLinkType',
       },
       {
-        label: 'Go to docs',
+        label: 'Learn more',
         name: 'Issues Completed',
         docsLink: true,
         url: '/help/user/analytics/index#definitions',

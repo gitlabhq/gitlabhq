@@ -45,11 +45,16 @@ the top of the vulnerability's page.
 - Tier: Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -79,7 +84,7 @@ Prerequisites:
 To explain the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
 1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
@@ -112,12 +117,17 @@ The following data is shared with third-party AI APIs:
 - Tier: Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -152,7 +162,7 @@ Learn more about [how to enable all GitLab Duo features](../../gitlab_duo/turn_o
 To resolve the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
 1. In the dropdown list that appears, select **Activity**, then select **Vulnerability Resolution available** in the **GitLab Duo (AI)** category.
@@ -409,7 +419,7 @@ Prerequisites:
 To change a vulnerability's status from its Vulnerability Page:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Change status**.
 1. From the **Status** dropdown list, select a status or a [dismissal reason](#vulnerability-dismissal-reasons)
@@ -425,7 +435,7 @@ You can create a GitLab issue to track any action taken to resolve or mitigate a
 To create a GitLab issue for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create issue**.
 
@@ -448,7 +458,7 @@ Prerequisites:
 To link a vulnerability to existing GitLab issues:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. In the **Linked issues** section, select the plus icon ({{< icon name="plus" >}}).
 1. For each issue to be linked, either:
@@ -499,7 +509,7 @@ Be aware of the following conditions between a vulnerability and a linked Jira i
 For some vulnerabilities a solution is already known but needs to be implemented manually. The
 **Solution** field in the Vulnerability page is provided by the security scanning tool that
 reported the security finding, or entered during the [manual creation of a vulnerability](../vulnerability_report/_index.md#manually-add-a-vulnerability).
-The GitLab tools utilize information from the [GitLab Advisory Database](../gitlab_advisory_database/_index.md).
+The GitLab tools utilize information from the [GitLab advisory database](../gitlab_advisory_database/_index.md).
 
 Additionally, some tools may include a software patch to apply the suggested solution. In those instances,
 a vulnerability's page includes a **Resolve with merge request** option.
@@ -522,7 +532,7 @@ To resolve a vulnerability, you can either:
 To resolve the vulnerability with a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Resolve with merge request**.
 
@@ -534,7 +544,7 @@ Process the merge request according to your standard workflow.
 To manually apply the patch that GitLab generated for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Download patch to resolve**.
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
@@ -558,7 +568,7 @@ Security training helps your developers learn how to fix vulnerabilities. Develo
 To enable security training for vulnerabilities in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
+1. Select **Secure** > **Security configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
 
@@ -576,7 +586,7 @@ Vulnerabilities with a CWE are most likely to return a training result.
 To view the security training for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.
 

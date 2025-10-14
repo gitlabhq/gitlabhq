@@ -23,7 +23,7 @@ import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
 import designNoteAwardEmojiToggleMutation from '../../graphql/mutations/design_note_award_emoji_toggle.mutation.graphql';
 import { hasErrors } from '../../utils/cache_update';
-import { findNoteId, extractDesignNoteId } from '../../utils/design_management_utils';
+import { findNoteId } from '../../utils/design_management_utils';
 import DesignNoteAwardsList from './design_note_awards_list.vue';
 import DesignReplyForm from './design_reply_form.vue';
 
@@ -79,7 +79,6 @@ export default {
   data() {
     return {
       isEditing: false,
-      isError: true,
     };
   },
   computed: {
@@ -115,9 +114,6 @@ export default {
     noteAnchorId() {
       return findNoteId(this.note.id);
     },
-    isNoteLinked() {
-      return extractDesignNoteId(this.$route.hash) === this.noteAnchorId;
-    },
     mutationVariables() {
       return {
         id: this.note.id,
@@ -140,7 +136,7 @@ export default {
             this.isEditing = true;
           },
           extraAttrs: {
-            class: 'sm:!gl-hidden',
+            class: '@sm/panel:!gl-hidden',
           },
         },
         {
@@ -316,7 +312,7 @@ export default {
         <gl-button
           v-if="isEditingAndHasPermissions"
           v-gl-tooltip
-          class="gl-hidden sm:!gl-flex"
+          class="gl-hidden @sm/panel:!gl-flex"
           :aria-label="$options.i18n.editCommentLabel"
           :title="$options.i18n.editCommentLabel"
           category="tertiary"

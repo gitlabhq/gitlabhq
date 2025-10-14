@@ -39,10 +39,10 @@ You must:
 To identify which `401 Unauthorized` requests are failing due to
 expired access tokens, use the following fields in the `api_json.log` file:
 
-|Field name|Description|
-|----------|-----------|
-|`meta.auth_fail_reason`|The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`.|
-|`meta.auth_fail_token_id`|A string describing the type and ID of the attempted token.|
+| Field name                | Description |
+|---------------------------|-------------|
+| `meta.auth_fail_reason`   | The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`. |
+| `meta.auth_fail_token_id` | A string describing the type and ID of the attempted token. |
 
 When a user attempts to use an expired token, the `meta.auth_fail_reason`
 is `token_expired`. The following shows an excerpt from a log

@@ -56,4 +56,24 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
       expect(workload.logs_url).to eq('log-url')
     end
   end
+
+  describe 'state transitions' do
+    let_it_be(:workload_for_aasm) { build(:ci_workload) }
+
+    using RSpec::Parameterized::TableSyntax
+    where(:status, :can_finish, :can_drop) do
+      0 | true  | true
+      3 | false | true
+      4 | true  | false
+    end
+
+    with_them do
+      it 'adheres to state machine rules', :aggregate_failures do
+        workload_for_aasm.status = status
+
+        expect(workload_for_aasm.can_finish?).to eq(can_finish)
+        expect(workload_for_aasm.can_drop?).to eq(can_drop)
+      end
+    end
+  end
 end

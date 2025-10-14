@@ -4,8 +4,9 @@ import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vu
 import ResourceListsEmptyState, {
   TYPES,
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
-import { formatProjects } from '~/projects/your_work/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { PAGINATION_TYPE_KEYSET } from '~/groups_projects/constants';
+import { SORT_OPTIONS, SORT_OPTION_UPDATED } from '~/projects/filtered_search_and_sort/constants';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 import userProjectsQuery from './graphql/queries/user_projects.query.graphql';
 
@@ -27,8 +28,10 @@ const baseTab = {
     searchMinimumLength: 3,
     type: TYPES.filter,
   },
-  formatter: formatProjects,
+  formatter: formatGraphQLProjects,
   queryErrorMessage: __("Your projects couldn't be loaded. Refresh the page to try again."),
+  sortOptions: SORT_OPTIONS,
+  defaultSortOption: SORT_OPTION_UPDATED,
 };
 
 export const CONTRIBUTED_TAB = {
@@ -118,8 +121,7 @@ export const PROJECT_DASHBOARD_TABS = [
   INACTIVE_TAB,
 ];
 
-const organizationPath = gon?.current_organization?.full_path || '';
-export const BASE_ROUTE = `${organizationPath}/dashboard/projects`;
+export const BASE_ROUTE = '/dashboard/projects';
 
 export const ROOT_ROUTE_NAME = 'root';
 

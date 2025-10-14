@@ -85,7 +85,7 @@ Explain labels in GitLab. Provide an example for efficient usage with issue boar
 
 ## Reset when needed
 
-Use `/reset` if Chat gets stuck on a wrong track. Start fresh.
+Use `/reset` if Chat gets stuck on a wrong track.
 
 ## Refine slash command prompts
 

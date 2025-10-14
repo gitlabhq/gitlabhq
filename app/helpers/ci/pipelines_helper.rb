@@ -20,7 +20,8 @@ module Ci
         { name: 'Django', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/django.svg') },
         { name: 'Docker', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/docker.png') },
         { name: 'Elixir', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/elixir.svg') },
-        { name: 'iOS-Fastlane', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/fastlane.svg'), title: 'iOS with Fastlane' },
+        { name: 'iOS-Fastlane', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/fastlane.svg'),
+          title: 'iOS with Fastlane' },
         { name: 'Flutter', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/flutter.svg') },
         { name: 'Go', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/go_logo.svg') },
         { name: 'Gradle', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/gradle.svg') },
@@ -54,19 +55,23 @@ module Ci
         project_id: project.id,
         default_branch_name: project.default_branch,
         params: params.to_json,
-        artifacts_endpoint: downloadable_artifacts_project_pipeline_path(project, artifacts_endpoint_placeholder, format: :json),
+        artifacts_endpoint: downloadable_artifacts_project_pipeline_path(project, artifacts_endpoint_placeholder,
+          format: :json),
         artifacts_endpoint_placeholder: artifacts_endpoint_placeholder,
         pipeline_schedules_path: pipeline_schedules_path(project),
         can_create_pipeline: can?(current_user, :create_pipeline, project).to_s,
         new_pipeline_path: can?(current_user, :create_pipeline, project) && new_project_pipeline_path(project),
-        reset_cache_path: can_any?(current_user, [:admin_pipeline, :admin_runners], project) && reset_cache_project_settings_ci_cd_path(project),
+        reset_cache_path: can_any?(current_user, [:admin_pipeline, :admin_runners],
+          project) && reset_cache_project_settings_ci_cd_path(project),
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
         full_path: project.full_path,
         visibility_pipeline_id_type: visibility_pipeline_id_type,
         show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s,
-        pipelines_analytics_path: charts_project_pipelines_path(project)
+        pipelines_analytics_path: charts_project_pipelines_path(project),
+        uses_external_config: uses_external_config?(project).to_s,
+        empty_state_illustration_path: image_path('illustrations/empty-state/empty-pipeline-md.svg')
       }
     end
 
@@ -93,6 +98,10 @@ module Ci
         user_role: project.team.human_max_access(current_user&.id),
         can_set_pipeline_variables: Ability.allowed?(current_user, :set_pipeline_variables, project).to_s
       }
+    end
+
+    def uses_external_config?(project)
+      Gitlab::Ci::ProjectConfig.new(project: project, sha: nil).external?
     end
 
     private

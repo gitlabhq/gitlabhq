@@ -2,7 +2,7 @@
 # eslint-disable-next-line @graphql-eslint/require-selections
 fragment AdminProject on Project {
   userPermissions {
-    adminAllResources @gl_introduced(version: "18.3.0")
+    adminAllResources
   }
   ... on Project {
     statistics {

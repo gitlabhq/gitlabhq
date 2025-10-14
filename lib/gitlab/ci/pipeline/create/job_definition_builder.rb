@@ -14,8 +14,6 @@ module Gitlab
           end
 
           def run
-            return unless ::Feature.enabled?(:write_to_new_ci_destinations, project)
-
             find_or_insert_job_definitions.each do |job_definition|
               jobs_by_checksum[job_definition.checksum].each do |job|
                 job.build_job_definition_instance(
@@ -30,7 +28,7 @@ module Gitlab
           attr_reader :project, :pipeline, :jobs
 
           def find_or_insert_job_definitions
-            Gitlab::Ci::JobDefinitions::FindOrCreate.new(pipeline, jobs: jobs).execute
+            Gitlab::Ci::JobDefinitions::FindOrCreate.new(pipeline, definitions: jobs.map(&:temp_job_definition)).execute
           end
 
           def jobs_by_checksum

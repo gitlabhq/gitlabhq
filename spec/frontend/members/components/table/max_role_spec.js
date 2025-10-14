@@ -1,5 +1,5 @@
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
@@ -191,7 +191,7 @@ describe('MaxRole', () => {
   });
 
   it('sets the dropdown alignment to right on mobile', async () => {
-    jest.spyOn(bp, 'isDesktop').mockReturnValue(false);
+    jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
     createComponent();
 
     await nextTick();
@@ -200,7 +200,7 @@ describe('MaxRole', () => {
   });
 
   it('sets the dropdown alignment to left on desktop', async () => {
-    jest.spyOn(bp, 'isDesktop').mockReturnValue(true);
+    jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(true);
     createComponent();
 
     await nextTick();

@@ -145,10 +145,20 @@ To mitigate the effects of a large number of references in a monorepo:
 In Git 2.42.0 and later, different Git operations can skip over hidden references
 when doing an object graph walk.
 
+### Schedule repository optimization tasks
+
+The way data is stored in the object database of a Git repository can become inefficient over time, which slows down Git operations. You can
+[schedule Gitaly to run a daily background task](../../../../administration/housekeeping.md#configure-scheduled-housekeeping) with a maximum duration to clean up
+these items and improve performance.
+
 ## Optimize CI/CD for monorepos
 
 To keep GitLab scalable with your monorepo, optimize how your CI/CD jobs interact with your
-repository.
+repository. Large, long pipelines are common pain points for monorepos. In the pipeline configuration for your monorepo, use
+[build rules](../../../../ci/yaml/_index.md#rules) that detect the type of changes made and:
+
+- Skip unnecessary jobs.
+- Run only relevant jobs in child pipelines.
 
 ### Reduce concurrent clones in CI/CD
 
@@ -161,19 +171,23 @@ CI/CD loads are often concurrent, because pipelines are
 Git requests to your repository can spike during these times, and affect performance for CI/CD processes
 and users.
 
-### Use shallow clones in CI/CD processes
+### Use shallow clones and filters in CI/CD processes
 
-For `git clone` and `git fetch` calls in your CI/CD systems, set the
-[`--depth`](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---depthltdepthgt)
-option with a small number, like 10. A depth of 10 instructs Git to request only the last 10 changes
-for a given branch. If your repository has a long backlog, or many large files, this change can
-make Git fetches much faster. It reduces the amount of data transferred.
+For `git clone` and `git fetch` calls in your CI/CD systems, the amount of data
+transferred can be limited with these options:
 
+- [`--depth`](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---depthltdepthgt)
+- [`--filter`](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---filterfilter-spec)
+
+#### Shallow clone in CI/CD
+
+The `--depth` filter creates a so-called _shallow clone_.
 GitLab and GitLab Runner perform a
 [shallow clone](../../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone)
 by default.
 
-This GitLab CI/CD pipeline configuration example sets the `GIT_DEPTH`:
+The clone depth can be configured in the GitLab CI/CD pipeline configuration
+with `GIT_DEPTH`, for example:
 
 ```yaml
 variables:
@@ -183,6 +197,22 @@ test:
   script:
     - ls -al
 ```
+
+#### Partial clone in CI/CD
+
+You create a _partial clone_ by using the `--filter` option. To pass this argument
+to `git-clone`, set the `GIT_CLONE_EXTRA_FLAGS` variable. For example, to limit the
+maximum size of blobs to 1MB, add:
+
+```yaml
+variables:
+  GIT_CLONE_EXTRA_FLAGS: --filter=blob:limit=1m
+```
+
+### Filter out paths and object types
+
+To filter out objects of specific types, or from specific paths, use the `git sparse-checkout` option.
+For more information, see [filter by file path](../../../../topics/git/clone.md#filter-by-file-path).
 
 ### Use `git fetch` in CI/CD operations
 
@@ -238,6 +268,18 @@ can make your fetches faster and more compact.
 Even if your repository does not contain many tags, `--no-tags` can improve performance in some cases.
 For more information, see [issue 746](https://gitlab.com/gitlab-com/gl-infra/observability/team/-/issues/746)
 and the [`GIT_FETCH_EXTRA_FLAGS` Git documentation](../../../../ci/runners/configure_runners.md#git-fetch-extra-flags).
+
+### Use long polling for runners
+
+Runners periodically poll a GitLab instance for new CI/CD jobs. The polling interval depends on both:
+
+- The `check_interval` setting.
+- The number of runners configured in your runner configuration file.
+ 
+If your server handles many runners, this polling can cause performance issues on the GitLab instance such as longer
+queuing times and higher CPU usage. Long polling holds job requests from runners until a new job is ready.
+
+For configuration instructions, see [long polling](../../../../ci/runners/long_polling.md).
 
 ## Optimize Git for monorepos
 
@@ -352,3 +394,7 @@ cause problems for both server and client:
 Git LFS stores objects externally, such as in object storage. Your Git repository contains a pointer
 to the object's location, rather than the binary file itself. This can improve repository performance.
 For more information, see the [Git LFS documentation](../../../../topics/git/lfs/_index.md).
+
+## Related topics
+
+- [Configure Gitaly](../../../../administration/gitaly/configure_gitaly.md)

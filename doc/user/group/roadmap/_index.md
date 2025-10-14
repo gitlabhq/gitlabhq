@@ -33,7 +33,7 @@ The epic roadmap offers the following benefits:
 To view the roadmap in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Roadmap**.
+1. Select **Plan** > **Roadmap**.
 
 The roadmap shows the epics and milestones in a
 group, one of its subgroups, or a project in one of the groups.

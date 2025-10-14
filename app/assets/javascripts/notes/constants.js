@@ -26,6 +26,11 @@ export const TIME_DIFFERENCE_VALUE = 10;
 export const ASC = 'asc';
 export const DESC = 'desc';
 
+export const DISCUSSIONS_SORT_ENUM = {
+  [ASC]: 'CREATED_ASC',
+  [DESC]: 'CREATED_DESC',
+};
+
 export const DISCUSSION_FETCH_TIMEOUT = 750;
 
 export const FETCH_UPDATED_NOTES_DEBOUNCE_TIMEOUT = 750;

@@ -6,7 +6,6 @@ InternalAffairs/CopDescriptionWithExample:
     - 'rubocop/cop/active_record_association_reload.rb'
     - 'rubocop/cop/api/base.rb'
     - 'rubocop/cop/api/class_level_allow_access_with_scope.rb'
-    - 'rubocop/cop/api/ensure_string_detail.rb'
     - 'rubocop/cop/api/grape_array_missing_coerce.rb'
     - 'rubocop/cop/avoid_becomes.rb'
     - 'rubocop/cop/avoid_keyword_arguments_in_sidekiq_workers.rb'

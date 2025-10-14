@@ -15,6 +15,14 @@ module Gitlab
 
       API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}
 
+      def cargo_package_name_regex
+        @cargo_package_name_regex ||= /\A[a-zA-Z][a-zA-Z0-9\-_]{0,63}\z/
+      end
+
+      def cargo_package_normalized_name_regex
+        @cargo_package_normalized_name_regex ||= /\A[a-z0-9-]+\z/
+      end
+
       def conan_package_reference_regex
         @conan_package_reference_regex ||= %r{\A[A-Za-z0-9]+\z}
       end

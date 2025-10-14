@@ -137,4 +137,16 @@ RSpec.describe Gitlab::Database::Partitioning::MultipleNumericListPartition, fea
       it { is_expected.to be_truthy }
     end
   end
+
+  describe '#fully_qualified_partition' do
+    it 'uses the explicit partition name if provided' do
+      parsed_partition = described_class.new('table', 1, partition_name: 'some_other_name')
+
+      expect(parsed_partition.fully_qualified_partition).to eq('"gitlab_partitions_dynamic"."some_other_name"')
+    end
+
+    it 'defaults to the table name followed by the partition value' do
+      expect(described_class.new('table', 1).fully_qualified_partition).to eq('"gitlab_partitions_dynamic"."table_1"')
+    end
+  end
 end

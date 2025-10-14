@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Build::Image do
   let(:job) { create(:ci_build, options: job_options) }
 
-  before do
-    stub_feature_flags(ci_validate_config_options: false)
-  end
-
   describe '#from_image' do
     subject(:from_image) { described_class.from_image(job) }
 

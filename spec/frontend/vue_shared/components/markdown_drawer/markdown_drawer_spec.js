@@ -68,16 +68,8 @@ describe('MarkdownDrawer', () => {
     ${true}   | ${100}
   `('computes offsetTop', ({ hasNavbar, navbarHeight }) => {
     beforeEach(() => {
-      global.document.querySelector = jest.fn(() =>
-        hasNavbar
-          ? {
-              dataset: {
-                page: 'test',
-              },
-            }
-          : undefined,
-      );
       contentTop.mockReturnValue(navbarHeight);
+
       createComponent();
     });
 
@@ -85,7 +77,7 @@ describe('MarkdownDrawer', () => {
       contentTop.mockClear();
     });
 
-    it(`computes offsetTop ${hasNavbar ? 'with' : 'without'} .navbar-gitlab`, async () => {
+    it(`computes offsetTop ${hasNavbar ? 'with' : 'without'} navbarHeight`, async () => {
       wrapper.vm.getDrawerTop();
       await Vue.nextTick();
 

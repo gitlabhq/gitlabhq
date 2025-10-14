@@ -71,4 +71,4 @@ class SystemNoteMetadata < ApplicationRecord
   end
 end
 
-SystemNoteMetadata.prepend_mod_with('SystemNoteMetadata')
+SystemNoteMetadata.prepend_mod

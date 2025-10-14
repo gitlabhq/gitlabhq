@@ -1,8 +1,6 @@
 import { GlSprintf } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { nextTick } from 'vue';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
@@ -38,9 +36,6 @@ describe('PackageTitle', () => {
         GlSprintf,
       },
       provide,
-      directives: {
-        GlResizeObserver: createMockDirective('gl-resize-observer'),
-      },
     });
     await nextTick();
   }
@@ -51,7 +46,6 @@ describe('PackageTitle', () => {
   const findPackageRef = () => wrapper.findByTestId('package-ref');
   const findPackageLastDownloadedAt = () => wrapper.findByTestId('package-last-downloaded-at');
   const findPackageTags = () => wrapper.findComponent(PackageTags);
-  const findPackageBadges = () => wrapper.findAllByTestId('tag-badge');
   const findSubHeaderText = () => wrapper.findByTestId('sub-header');
   const findSubHeaderTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
@@ -66,29 +60,6 @@ describe('PackageTitle', () => {
       await createComponent();
 
       expect(findPackageTags().exists()).toBe(true);
-    });
-
-    it('with tags on mobile', async () => {
-      jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
-
-      await createComponent();
-
-      await nextTick();
-
-      expect(findPackageBadges()).toHaveLength(packageTags().length);
-    });
-
-    it('when the page is resized', async () => {
-      await createComponent();
-
-      expect(findPackageBadges()).toHaveLength(0);
-
-      jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
-      const { value } = getBinding(wrapper.element, 'gl-resize-observer');
-      value();
-
-      await nextTick();
-      expect(findPackageBadges()).toHaveLength(packageTags().length);
     });
   });
 

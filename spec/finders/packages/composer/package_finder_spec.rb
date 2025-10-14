@@ -8,17 +8,20 @@ RSpec.describe ::Packages::Composer::PackageFinder, feature_category: :package_r
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, namespace: group) }
     let_it_be(:target_sha) { OpenSSL::Digest.hexdigest('SHA1', FFaker::Lorem.word) }
-    let_it_be(:package) { create(:composer_package, :with_metadatum, project: project) }
+    let_it_be(:package_sti) { create(:composer_package_sti, :with_metadatum, project: project) }
+    let_it_be(:package) { ::Packages::Composer::Package.find(package_sti.id) }
 
-    let_it_be(:package3) do
-      create(:composer_package, :with_metadatum, project: project, sha: target_sha, name: package.name)
+    let_it_be(:package3_sti) do
+      create(:composer_package_sti, :with_metadatum, project: project, sha: target_sha, name: package.name)
     end
+
+    let_it_be(:package3) { ::Packages::Composer::Package.find(package3_sti.id) }
 
     let(:project_or_group) { project }
     let(:params) { {} }
 
     before_all do
-      create(:composer_package, :with_metadatum)
+      create(:composer_package_sti, :with_metadatum)
     end
 
     subject(:result) { described_class.new(user, project_or_group, params).execute }
@@ -28,10 +31,26 @@ RSpec.describe ::Packages::Composer::PackageFinder, feature_category: :package_r
         let(:params) { { package_name: package.name, target_sha: target_sha } }
 
         it { is_expected.to contain_exactly(package3) }
+
+        context 'when packages_composer_read_from_detached_table is disabled' do
+          before do
+            stub_feature_flags(packages_composer_read_from_detached_table: false)
+          end
+
+          it { is_expected.to contain_exactly(package3_sti) }
+        end
       end
     end
 
     it { is_expected.to contain_exactly(package, package3) }
+
+    context 'when packages_composer_read_from_detached_table is disabled' do
+      before do
+        stub_feature_flags(packages_composer_read_from_detached_table: false)
+      end
+
+      it { is_expected.to contain_exactly(package_sti, package3_sti) }
+    end
 
     it_behaves_like 'filtering by parameters'
 
@@ -46,6 +65,14 @@ RSpec.describe ::Packages::Composer::PackageFinder, feature_category: :package_r
         end
 
         it { is_expected.to contain_exactly(package, package3) }
+
+        context 'when packages_composer_read_from_detached_table is disabled' do
+          before do
+            stub_feature_flags(packages_composer_read_from_detached_table: false)
+          end
+
+          it { is_expected.to contain_exactly(package_sti, package3_sti) }
+        end
 
         it_behaves_like 'filtering by parameters'
       end

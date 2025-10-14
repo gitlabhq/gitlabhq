@@ -12,7 +12,7 @@ module Packages
 
       def initialize(current_user, params, project: nil)
         @current_user = current_user
-        @name, @version, @username, _ = params[:query].to_s.split(%r{[@/]}).map { |q| sanitize_sql(q) }
+        @name, @version, @username, @channel = params[:query].to_s.split(%r{[@/]}).map { |q| sanitize_sql(q) }
         @project = project
         @ignorecase = params[:ignorecase]
       end
@@ -27,7 +27,7 @@ module Packages
 
       private
 
-      attr_reader :current_user, :name, :project, :version, :username, :ignorecase
+      attr_reader :current_user, :name, :project, :version, :username, :ignorecase, :channel
 
       def sanitize_sql(query)
         sanitize_sql_like(query).tr(WILDCARD, SQL_WILDCARD) unless query.nil?
@@ -36,6 +36,8 @@ module Packages
       def packages
         packages = by_name(base.installable.preload_conan_metadatum)
         packages = by_version(packages) if version.present?
+        packages = packages.with_conan_username(username) if username.present?
+        packages = packages.with_conan_channel(channel) if channel.present?
         packages.limit_recent(MAX_PACKAGES_COUNT)
       end
 
@@ -64,7 +66,7 @@ module Packages
 
         project = Project.find_by_full_path(full_path)
 
-        return unless Ability.allowed?(current_user, :read_package, project.packages_policy_subject)
+        return unless Ability.allowed?(current_user, :read_package, project&.packages_policy_subject)
 
         project
       end

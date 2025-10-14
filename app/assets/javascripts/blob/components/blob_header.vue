@@ -89,7 +89,7 @@ export default {
 </script>
 <template>
   <div class="js-file-title file-title-flex-parent">
-    <div class="gl-mb-3 gl-flex gl-gap-3 md:gl-mb-0">
+    <div class="gl-mb-3 gl-flex gl-gap-3 @md/panel:gl-mb-0">
       <blob-filepath
         :blob="blob"
         :show-path="showPath"

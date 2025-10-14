@@ -1,0 +1,15 @@
+---
+description: User opened Visual Studio Code with HTTPS from the Code dropdown
+internal_events: true
+action: open_vscode_https
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: activation
+milestone: "18.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201841
+tiers:
+  - free
+  - premium
+  - ultimate

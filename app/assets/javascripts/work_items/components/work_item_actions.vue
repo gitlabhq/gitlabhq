@@ -833,7 +833,6 @@ export default {
       ref="modal"
       modal-id="work-item-confirm-delete"
       data-testid="work-item-confirm-delete"
-      modal-class="gl-@container"
       :title="i18n.deleteWorkItem"
       :ok-title="i18n.deleteWorkItem"
       ok-variant="danger"

@@ -63,7 +63,7 @@ In AWS IAM, create a new policy and user with read-only access to ECR:
 Configure the required AWS credentials as variables in your GitLab project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and add:
    - `AWS_ACCOUNT_ID`: Your AWS account number.
@@ -148,7 +148,7 @@ migration:
 After setting up the pipeline:
 
 1. Commit and push the `.gitlab-ci.yml` file to your repository.
-1. Go to **CI/CD > Pipelines** to monitor the migration progress.
+1. Go to **CI/CD** > **Pipelines** to monitor the migration progress.
 1. After completion, verify the migration:
    - Go to **Packages and registries > Container Registry**.
    - Verify all repositories and tags are present.

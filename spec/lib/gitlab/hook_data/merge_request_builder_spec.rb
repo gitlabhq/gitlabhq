@@ -19,7 +19,14 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder, feature_category: :code_re
     end
 
     it 'includes safe attributes' do
-      expect(data).to include(*described_class.safe_hook_attributes)
+      expected_attributes = described_class.safe_hook_attributes.reject { |attr| attr == :system_action }
+      expect(data).to include(*expected_attributes)
+      expect(data).to include(:system) # system should always be present
+      # system_action is only included when not nil, so we don't test for its presence here
+    end
+
+    it 'includes system in safe hook attributes' do
+      expect(described_class.safe_hook_attributes).to include(:system)
     end
 
     it 'includes additional attrs' do

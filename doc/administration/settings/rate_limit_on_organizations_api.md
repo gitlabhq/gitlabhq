@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Rate limit on Organizations API
@@ -39,7 +39,7 @@ You can configure the per minute rate limit per user for requests to the [POST /
 To change the rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Organizations API rate limits**.
 1. Change the value of any rate limit. The rate limits are per minute per user.
    To disable a rate limit, set the value to `0`.

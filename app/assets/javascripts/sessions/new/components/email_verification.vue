@@ -10,7 +10,9 @@ import {
   I18N_EMAIL_EMPTY_CODE,
   I18N_EMAIL_INVALID_CODE,
   I18N_SUBMIT_BUTTON,
-  I18N_RESEND_LINK,
+  I18N_DIDNT_GET_CODE_RESEND_LINK,
+  I18N_RESEND_CODE,
+  I18N_SKIP_FOR_NOW_BUTTON,
   I18N_EMAIL_RESEND_SUCCESS,
   I18N_GENERIC_ERROR,
   I18N_HELP_TEXT,
@@ -54,6 +56,11 @@ export default {
     resendPath: {
       type: String,
       required: true,
+    },
+    skipPath: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -124,6 +131,23 @@ export default {
       this.verifyToken(email);
       this.resend(email);
     },
+    skip() {
+      if (!this.skipPath) return;
+
+      axios
+        .post(this.skipPath, { user: { login: this.username } })
+        .then(this.handleSkipResponse)
+        .catch(this.handleError);
+    },
+    handleSkipResponse(response) {
+      if (response.data.status === undefined) {
+        this.handleError();
+      } else if (response.data.status === SUCCESS_RESPONSE) {
+        visitUrl(response.data.redirect_path);
+      } else if (response.data.status === FAILURE_RESPONSE) {
+        createAlert({ message: response.data.message });
+      }
+    },
     handleResendResponse(response) {
       if (response.data.status === undefined) {
         this.handleError();
@@ -158,10 +182,12 @@ export default {
     explanation: I18N_EXPLANATION,
     inputLabel: I18N_INPUT_LABEL,
     submitButton: I18N_SUBMIT_BUTTON,
-    resendLink: I18N_RESEND_LINK,
+    didntGetCoderesendLink: I18N_DIDNT_GET_CODE_RESEND_LINK,
+    resendCode: I18N_RESEND_CODE,
     helpText: I18N_HELP_TEXT,
     sendToSecondaryEmailButtonText: I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
     sendToSecondaryEmailGuide: I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
+    skipForNowButton: I18N_SKIP_FOR_NOW_BUTTON,
     supportUrl: SUPPORT_URL,
   },
   forms: {
@@ -176,7 +202,7 @@ export default {
     <email-form
       v-if="activeForm === $options.forms.sendToSecondaryEmailForm"
       :form-info="$options.i18n.sendToSecondaryEmailGuide"
-      :submit-text="$options.i18n.resendLink"
+      :submit-text="$options.i18n.resendCode"
       @submit-email="sendToSecondaryEmail"
       @cancel="verifyToken"
     />
@@ -205,15 +231,32 @@ export default {
           maxlength="6"
           :state="inputValidation.state"
         />
+
+        <!-- Resend button -->
+        <template #description>
+          <gl-sprintf :message="$options.i18n.didntGetCoderesendLink">
+            <template #button="{ content }">
+              <gl-button variant="link" category="tertiary" @click="() => resend()">
+                {{ content }}
+              </gl-button>
+            </template>
+          </gl-sprintf>
+        </template>
       </gl-form-group>
+
       <section class="gl-mt-5">
         <gl-button block variant="confirm" type="submit" :disabled="!inputValidation.state">{{
           $options.i18n.submitButton
         }}</gl-button>
-        <gl-button block variant="link" class="gl-mt-3 gl-h-7" @click="() => resend()">{{
-          $options.i18n.resendLink
-        }}</gl-button>
       </section>
+
+      <!-- Skip button -->
+      <section class="gl-mt-3">
+        <gl-button v-if="skipPath" block variant="link" @click="skip">
+          {{ $options.i18n.skipForNowButton }}
+        </gl-button>
+      </section>
+
       <p class="gl-mt-3 gl-text-subtle">
         <gl-sprintf :message="$options.i18n.helpText">
           <template #sendToSecondaryEmailButton>

@@ -15,7 +15,6 @@ RSpec.describe 'Kaniko.gitlab-ci.yml' do
 
     before do
       stub_ci_pipeline_yaml_file(template.content)
-      stub_feature_flags(ci_validate_config_options: false)
       allow(Ci::BuildScheduleWorker).to receive(:perform).and_return(true)
     end
 

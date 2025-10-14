@@ -55,6 +55,10 @@ module Gitlab
           false
         end
 
+        def lease_taken_log_level
+          :info
+        end
+
         def throttling_decision
           Gitlab::SidekiqMiddleware::Throttling::Decider.new(worker_name).execute
         end

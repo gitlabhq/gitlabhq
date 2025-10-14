@@ -5,7 +5,7 @@ module API
     module Internal
       module Pages
         class VirtualDomain < Grape::Entity
-          expose :certificate, :key
+          expose :certificate, :key, :root_namespace_id
           expose :lookup_paths, using: LookupPath
         end
       end

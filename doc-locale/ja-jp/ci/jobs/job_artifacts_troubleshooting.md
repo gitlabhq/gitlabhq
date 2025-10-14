@@ -2,73 +2,41 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: ジョブアーティファクトの問題を解決する
+title: ジョブアーティファクトのトラブルシューティング
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 [ジョブアーティファクト](job_artifacts.md)を使用するときに、次の問題が発生することがあります。
 
-## ジョブが特定のアーティファクトを取得しない
+## ジョブが特定のアーティファクトを取得しない {#job-does-not-retrieve-certain-artifacts}
 
-デフォルトでは、ジョブは前のステージからすべてのアーティファクトをフェッチしますが、`dependencies`または`needs`を使用するジョブは、デフォルトで一部のジョブからアーティファクトをフェッチしません。
+デフォルトでは、ジョブは前のステージからすべてのアーティファクトをフェッチしますが、`dependencies`または`needs`を使用するジョブでは、デフォルトでフェッチ対象のアーティファクトが限定されています。
 
-これらのキーワードを使用する場合、アーティファクトはジョブのサブセットからのみフェッチされます。これらのキーワードでアーティファクトをフェッチする方法については、キーワード参照を確認してください。
+これらのキーワードを使用する場合、アーティファクトは一部のジョブからのみフェッチされます。これらのキーワードでアーティファクトをフェッチする方法については、キーワードのリファレンスを確認してください。
 
 - [`dependencies`](../yaml/_index.md#dependencies)
 - [`needs`](../yaml/_index.md#needs)
 - [`needs:artifacts`](../yaml/_index.md#needsartifacts)
 
-## ジョブアーティファクトがディスク容量を過剰に使用する
+## ジョブアーティファクトがディスク容量を過剰に使用する {#job-artifacts-use-too-much-disk-space}
 
-ジョブアーティファクトがディスク容量を過剰に使用する場合は、[ジョブアーティファクトの管理ドキュメント](../../administration/cicd/job_artifacts_troubleshooting.md#job-artifacts-using-too-much-disk-space)を参照してください。
+ジョブアーティファクトがディスク容量を過剰に使用している場合は、[ジョブアーティファクトの管理ドキュメント](../../administration/cicd/job_artifacts_troubleshooting.md#job-artifacts-using-too-much-disk-space)を参照してください。
 
-## エラーメッセージ`No files to upload`
+## エラーメッセージ`No files to upload`（アップロードするファイルがありません） {#error-message-no-files-to-upload}
 
-このメッセージは、Runnerがアップロードするファイルを見つけられない場合にジョブログに表示されます。ファイルへのパスが間違っているか、ファイルが作成されていません。ファイル名と生成されなかった理由を示すその他のエラーまたは警告がないか、ジョブログを確認できます。
+このメッセージは、Runnerがアップロードするファイルを見つけられない場合にジョブログに表示されます。ファイルへのパスが間違っているか、ファイルが作成されていません。ジョブログを確認し、ファイル名と生成されなかった理由を示すその他のエラーまたは警告がないか探してください。
 
-より詳細なジョブログについては、[CI/CDデバッグログを有効](../variables/_index.md#enable-debug-logging)にして、ジョブを再度試してください。このログ生成により、ファイルが作成されなかった理由に関する詳細情報を得られる場合があります。
+より詳細なジョブログを確認するには、[CI/CDのデバッグログを有効にして](../variables/variables_troubleshooting.md#enable-debug-logging)ジョブを再試行してください。このログの生成により、ファイルが作成されなかった理由に関する詳細情報を得られる場合があります。
 
-## エラーメッセージ`Missing /usr/bin/gitlab-runner-helper. Uploading artifacts is disabled.`
+## Windows Runnerでdotenvアーティファクトをアップロードする際のエラーメッセージ`FATAL: invalid argument`（致命的なエラー: 無効な引数） {#error-message-fatal-invalid-argument-when-uploading-a-dotenv-artifact-on-a-windows-runner}
 
-{{< history >}}
-
-- GitLab 15.2で[導入](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3068)されました。GitLab Runnerは、`DEBUG`ではなく`RUNNER_DEBUG`を使用してこの問題を修正します。
-
-{{< /history >}}
-
-GitLab 15.1以前では、`DEBUG`という名前のCI/CD変数を設定すると、アーティファクトのアップロードが失敗する可能性があります。
-
-この問題を回避するには、次のいずれかを実行します。
-
-- GitLabおよびGitLab Runner 15.2にアップデートする
-- 別の変数名を使用する
-- `script`コマンドで環境変数として設定する
-
-  ```yaml
-  failing_test_job:  # This job might fail due to issue gitlab-org/gitlab-runner#3068
-    variables:
-      DEBUG: true
-    script: bin/mycommand
-    artifacts:
-      paths:
-        - bin/results
-
-  successful_test_job:  # This job does not define a CI/CD variable named `DEBUG` and is not affected by the issue
-    script: DEBUG=true bin/mycommand
-    artifacts:
-      paths:
-        - bin/results
-  ```
-
-## Windows Runnerでdotenvアーティファクトをアップロードする際のエラーメッセージ`FATAL: invalid argument`
-
-PowerShellの`echo`コマンドは、UCS-2 LE BOM（バイトオーダーマーク）エンコードでファイルを書き込みますが、サポートされているのはUTF-8だけです。`echo`で[`dotenv`](../yaml/artifacts_reports.md)アーティファクトを作成しようとすると、`FATAL: invalid argument`エラーが発生します。
+PowerShellの`echo`コマンドは、UCS-2 LE BOM（バイトオーダーマーク）エンコードでファイルを書き込みますが、サポートされているのはUTF-8のみです。そのため、`echo`で[`dotenv`](../yaml/artifacts_reports.md)アーティファクトを作成しようとすると、`FATAL: invalid argument`（致命的なエラー: 無効な引数）エラーが発生します。
 
 代わりに、UTF-8を使用するPowerShell `Add-Content`を使用してください。
 
@@ -85,28 +53,28 @@ test-job:
       dotenv: build.env
 ```
 
-## ジョブアーティファクトが期限切れにならない
+## ジョブアーティファクトが期限切れにならない {#job-artifacts-do-not-expire}
 
-一部のジョブアーティファクトが期待どおりに期限切れにならない場合は、[**成功した最新のジョブのアーティファクトを保持する**](job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)設定が有効になっているかどうかを確認してください。
+一部のジョブアーティファクトが想定どおりに期限切れにならない場合は、[**成功した最新のジョブのアーティファクトを保持する**](job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)設定が有効になっていないかを確認してください。
 
-この設定が有効になっている場合、各refの成功した最新のパイプラインからのジョブアーティファクトは期限切れにならず、削除されません。
+この設定が有効になっている場合、各refの成功した最新のパイプラインから生成されたジョブアーティファクトは期限切れにならず、削除されません。
 
-## エラーメッセージ`This job could not start because it could not retrieve the needed artifacts.`
+## エラーメッセージ`This job could not start because it could not retrieve the needed artifacts.`（このジョブは必要なアーティファクトを取得できなかったため開始できませんでした） {#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts}
 
-ジョブを開始できず、必要なアーティファクトをフェッチできなかった場合、このエラーメッセージが返されます。このエラーは、次の場合に返されます。
+必要なアーティファクトをフェッチできなかった場合、ジョブは開始できず、このエラーメッセージを返します。このエラーは、次の場合に返されます。
 
-- ジョブの依存関係が見つからない。デフォルトでは、以降のステージのジョブは、以前のすべてのステージのジョブからアーティファクトをフェッチするため、以前のジョブはすべて依存関係と見なされます。ジョブが[`dependencies`](../yaml/_index.md#dependencies)キーワードを使用している場合、リストされているジョブのみが依存します。
-- アーティファクトがすでに期限切れになっている。[`artifacts:expire_in`](../yaml/_index.md#artifactsexpire_in)でより長い有効期限を設定できます。
-- 権限が不十分なため、ジョブが関連リソースにアクセスできない。
+- ジョブの依存関係が見つからない場合。デフォルトでは、後続ステージのジョブはすべての先行ステージのジョブからアーティファクトをフェッチするため、先行ジョブはすべて依存関係と見なされます。ジョブが[`dependencies`](../yaml/_index.md#dependencies)キーワードを使用している場合は、リストに指定したジョブのみに依存します。
+- アーティファクトがすでに期限切れになっている場合。[`artifacts:expire_in`](../yaml/_index.md#artifactsexpire_in)で有効期限を延長できます。
+- 権限不足のため、ジョブが関連リソースにアクセスできない場合。
 
-ジョブが[`needs:artifacts`](../yaml/_index.md#needsartifacts):キーワードと一緒に次のキーワードを使用している場合、以下のトラブルシューティング手順を参照してください。
+ジョブが[`needs:artifacts`](../yaml/_index.md#needsartifacts):キーワードと次のキーワードを組み合わせて使用している場合、以下のトラブルシューティング手順を参照してください。
 
 - [`needs:project`](#for-a-job-configured-with-needsproject)
 - [`needs:pipeline:job`](#for-a-job-configured-with-needspipelinejob)
 
-### `needs:project`で設定されたジョブの場合
+### `needs:project`で設定されたジョブの場合 {#for-a-job-configured-with-needsproject}
 
-ジョブが次のような設定で[`needs:project`](../yaml/_index.md#needsproject)を使用する場合、`could not retrieve the needed artifacts.`エラーが発生する可能性があります。
+ジョブが次のような設定で[`needs:project`](../yaml/_index.md#needsproject)を使用している場合、`could not retrieve the needed artifacts.`（必要なアーティファクトを取得できませんでした）エラーが発生する可能性があります。
 
 ```yaml
 rspec:
@@ -119,14 +87,16 @@ rspec:
 
 このエラーを解決するには、以下を確認してください。
 
-- プロジェクト`my-group/my-project`がPremiumサブスクリプションプランのグループに属している。
+- プロジェクト`my-group/my-project`がPremiumサブスクリプションプランを持つグループに属している。
 - ジョブを実行しているユーザーが`my-group/my-project`のリソースにアクセスできる。
-- `project`、`job`、および`ref`の組み合わせが存在し、これによって目的の依存関係になる。
-- 使用されている変数はすべて正しい値に評価される。
+- `project`、`job`、`ref`の組み合わせが存在し、想定どおりの依存関係を構成している。
+- 使用している変数がすべて正しい値に評価される。
 
-### `needs:pipeline:job`で設定されたジョブの場合
+`CI_JOB_TOKEN`を使用する場合は、そのトークンをプロジェクトの[許可リスト](ci_job_token.md#control-job-token-access-to-your-project)に追加することで、別のプロジェクトからアーティファクトをプルできるようにしてください。
 
-ジョブが次のような設定で[`needs:pipeline:job`](../yaml/_index.md#needspipelinejob)を使用する場合、`could not retrieve the needed artifacts.`エラーが発生する可能性があります。
+### `needs:pipeline:job`で設定されたジョブの場合 {#for-a-job-configured-with-needspipelinejob}
+
+ジョブが次のような設定で[`needs:pipeline:job`](../yaml/_index.md#needspipelinejob)を使用している場合、`could not retrieve the needed artifacts.`（必要なアーティファクトを取得できませんでした）エラーが発生する可能性があります。
 
 ```yaml
 rspec:
@@ -142,9 +112,9 @@ rspec:
 - `pipeline`と`job`の組み合わせが存在し、既存のパイプラインに解決される。
 - `dependency-job`が実行され、正常に完了している。
 
-## アップグレード後にジョブに`UnlockPipelinesInQueueWorker`が表示される
+## アップグレード後にジョブに`UnlockPipelinesInQueueWorker`が表示される {#jobs-show-unlockpipelinesinqueueworker-after-an-upgrade}
 
-ジョブが停止し、`UnlockPipelinesInQueueWorker`を示すエラーが表示される場合があります。
+ジョブが停止し、`UnlockPipelinesInQueueWorker`というエラーが表示される場合があります。
 
 この問題は、アップグレード後に発生します。
 
@@ -160,6 +130,6 @@ GitLab SaaSの場合:
 
 GitLab Self-Managedの場合:
 
-- `ci_unlock_pipelines_extra_low`という名前の[機能フラグを有効にします](../../administration/feature_flags.md)。
+- `ci_unlock_pipelines_extra_low`[機能フラグを有効にします](../../administration/feature_flags/_index.md)。
 
 詳細については、[マージリクエスト140318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140318#note_1718600424)のコメントを参照してください。

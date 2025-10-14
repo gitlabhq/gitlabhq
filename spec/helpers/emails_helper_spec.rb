@@ -170,6 +170,25 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     end
   end
 
+  describe '#manage_two_factor_authentication_text' do
+    context 'format is html' do
+      it 'returns HTML' do
+        expect(manage_two_factor_authentication_text(format: :html)).to eq(
+          "To manage your two-factor authentication, visit the " \
+          "#{link_to('two-factor authentication settings', profile_two_factor_auth_url, target: :_blank, rel: 'noopener noreferrer')} page."
+        )
+      end
+    end
+
+    context 'format is not specified' do
+      it 'returns text' do
+        expect(manage_two_factor_authentication_text).to eq(
+          "To manage your two-factor authentication, visit #{profile_two_factor_auth_url}"
+        )
+      end
+    end
+  end
+
   describe '#admin_changed_password_text' do
     context 'format is html' do
       it 'returns HTML' do

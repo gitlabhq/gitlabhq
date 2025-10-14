@@ -123,6 +123,22 @@ describe('Blob Simple Viewer component', () => {
         );
       });
 
+      it('preloads blame data', async () => {
+        jest.clearAllMocks();
+        createComponent({ propsData: { showBlame: false, shouldPreloadBlame: true } });
+        await waitForPromises();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({
+            filePath: 'podfile',
+            fromLine: 1,
+            fullPath: 'test',
+            ref: 'test',
+            toLine: MAX_BLAME_LINES,
+          }),
+        );
+      });
+
       it('if there is more than 100 lines it calls query as many time as needed', async () => {
         createComponent({ propsData: { showBlame: true, lineNumbers: 201 } });
         await waitForPromises();

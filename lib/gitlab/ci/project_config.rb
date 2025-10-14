@@ -60,6 +60,10 @@ module Gitlab
         !!@config&.exists?
       end
 
+      def external?
+        [:external_project_source, :remote_source].include?(source)
+      end
+
       private
 
       def find_source(

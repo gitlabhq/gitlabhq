@@ -27,6 +27,9 @@ describe('FileTreeBrowserToggle', () => {
 
   const findToggleButton = () => wrapper.findComponent(GlButton);
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
+  const findShortcut = () => wrapper.findComponent(Shortcut);
+
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = () => {
@@ -34,13 +37,27 @@ describe('FileTreeBrowserToggle', () => {
       pinia,
       stubs: {
         LocalStorageSync,
+        GlTooltip,
       },
     });
   };
 
+  // Set up fake timers for entire file to satisfy global test cleanup
+  beforeAll(() => {
+    jest.useFakeTimers({ legacyFakeTimers: true });
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
     fileTreeBrowserStore = useFileTreeBrowserVisibility();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
   });
 
   describe('rendering', () => {
@@ -57,14 +74,14 @@ describe('FileTreeBrowserToggle', () => {
 
   describe('button text and aria-label', () => {
     it('shows "Show file tree browser" when file tree is hidden', () => {
-      fileTreeBrowserStore.setFileTreeVisibility(false);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(false);
       createComponent();
 
       expect(findToggleButton().attributes('aria-label')).toBe('Show file tree browser');
     });
 
     it('shows "Hide file tree browser" when file tree is visible', () => {
-      fileTreeBrowserStore.setFileTreeVisibility(true);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
       createComponent();
 
       expect(findToggleButton().attributes('aria-label')).toBe('Hide file tree browser');
@@ -78,7 +95,7 @@ describe('FileTreeBrowserToggle', () => {
 
     it('calls toggle method when button is clicked', async () => {
       const mockToggle = jest.fn();
-      useFileTreeBrowserVisibility().toggleFileTreeVisibility = mockToggle;
+      useFileTreeBrowserVisibility().handleFileTreeBrowserToggleClick = mockToggle;
 
       await findToggleButton().vm.$emit('click');
 
@@ -87,7 +104,7 @@ describe('FileTreeBrowserToggle', () => {
 
     it('triggers a tracking event when the button is clicked', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-      fileTreeBrowserStore.setFileTreeVisibility(false);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(false);
 
       createComponent();
       await findToggleButton().vm.$emit('click');
@@ -106,41 +123,36 @@ describe('FileTreeBrowserToggle', () => {
       );
     });
   });
+
   describe('tooltip', () => {
-    const findTooltip = () => wrapper.findComponent(GlTooltip);
-    const findShortcut = () => wrapper.findComponent(Shortcut);
-
-    it('displays hide message for open file browser with shortcut', () => {
+    it('displays "Hide file tree browser" tooltip when browser is expanded and shortcuts are enabled', () => {
       shouldDisableShortcuts.mockReturnValue(false);
-      fileTreeBrowserStore.setFileTreeVisibility(true);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
+
       createComponent();
+
       expect(findTooltip().text()).toContain('Hide file tree browser');
       expect(findShortcut().exists()).toBe(true);
     });
 
-    it('displays show message for hidden file browser with shortcut', async () => {
+    it('displays "Show file tree browser" tooltip when browser is collapsed and shortcuts are enabled', async () => {
       shouldDisableShortcuts.mockReturnValue(false);
+
       createComponent();
-      useFileBrowser().fileBrowserVisible = false;
+
+      useFileBrowser().fileTreeBrowserIsVisible = false;
       await nextTick();
+
       expect(findTooltip().text()).toContain('Show file tree browser');
       expect(findShortcut().exists()).toBe(true);
     });
 
-    it('displays hide message for open file browser without shortcut', () => {
+    it('does not render tooltip when shortcuts are disabled', () => {
       shouldDisableShortcuts.mockReturnValue(true);
-      fileTreeBrowserStore.setFileTreeVisibility(true);
-      createComponent();
-      expect(findTooltip().text()).toContain('Hide file tree browser');
-      expect(findShortcut().exists()).toBe(false);
-    });
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
 
-    it('displays show message for hidden file browser without shortcut', async () => {
-      shouldDisableShortcuts.mockReturnValue(true);
       createComponent();
-      useFileBrowser().fileBrowserVisible = false;
-      await nextTick();
-      expect(findTooltip().text()).toContain('Show file tree browser');
+
       expect(findShortcut().exists()).toBe(false);
     });
   });
@@ -164,15 +176,36 @@ describe('FileTreeBrowserToggle', () => {
       it('has an empty localStorage', () => {
         expect(localStorage.getItem('ftb-popover-visible')).toBe(null);
       });
+
+      it('has empty triggers prop', () => {
+        expect(findPopover().props('triggers')).toBe('');
+      });
+
+      it('is not shown immediately on mount', () => {
+        expect(findPopover().props('show')).toBe(false);
+      });
+
+      it('is shown after 500ms delay', async () => {
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
+        expect(findPopover().props('show')).toBe(true);
+      });
     });
 
     describe('when the localStorage entry is true', () => {
-      it('shows the popover', async () => {
+      it('shows the popover after delay', async () => {
         localStorage.setItem('ftb-popover-visible', 'true');
         createComponent();
         await nextTick();
 
         expect(findPopover().exists()).toBe(true);
+        expect(findPopover().props('show')).toBe(false);
+
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
+        expect(findPopover().props('show')).toBe(true);
       });
     });
 
@@ -186,10 +219,16 @@ describe('FileTreeBrowserToggle', () => {
       });
     });
 
-    describe('when dismissing the popover', () => {
-      beforeEach(() => {
+    describe('when dismissing the popover via close button', () => {
+      beforeEach(async () => {
+        localStorage.setItem('ftb-popover-visible', 'true');
         createComponent();
+
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
         findPopover().vm.$emit('close-button-clicked');
+        await nextTick();
       });
 
       it('sets the correct localStorage item', () => {
@@ -198,6 +237,35 @@ describe('FileTreeBrowserToggle', () => {
 
       it('sets the correct localStorage value', () => {
         expect(localStorage.getItem('ftb-popover-visible')).toBe('false');
+      });
+
+      it('hides the popover', () => {
+        expect(findPopover().exists()).toBe(false);
+      });
+    });
+
+    describe('when dismissing the popover via toggle button click', () => {
+      beforeEach(async () => {
+        localStorage.setItem('ftb-popover-visible', 'true');
+        createComponent();
+
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
+        await findToggleButton().vm.$emit('click');
+        await nextTick();
+      });
+
+      it('sets the correct localStorage item', () => {
+        expect(localStorage.setItem).toHaveBeenCalledWith('ftb-popover-visible', 'false');
+      });
+
+      it('sets the correct localStorage value', () => {
+        expect(localStorage.getItem('ftb-popover-visible')).toBe('false');
+      });
+
+      it('hides the popover', () => {
+        expect(findPopover().exists()).toBe(false);
       });
     });
   });

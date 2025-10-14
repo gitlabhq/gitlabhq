@@ -16,7 +16,7 @@ For more information, see [guidelines for reusing abstractions](../reusing_abstr
 Protecting the same resources at many points means that if one layer of defense is compromised
 or missing, customer data is still protected by the additional layers.
 
-For more information on permissions, see the permissions section in the [secure coding guidelines](../secure_coding_guidelines.md#permissions).
+For more information on permissions, see the permissions section in the [secure coding guidelines](../secure_coding_guidelines/_index.md#permissions).
 
 ### Considerations
 

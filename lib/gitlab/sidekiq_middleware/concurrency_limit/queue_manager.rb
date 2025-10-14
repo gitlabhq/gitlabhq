@@ -6,8 +6,9 @@ module Gitlab
       class QueueManager
         include ExclusiveLeaseGuard
 
-        LEASE_TIMEOUT = 10.seconds
-        RESUME_PROCESSING_BATCH_SIZE = 1_000
+        MAX_PROCESSING_TIME = 5.minutes
+        LEASE_TIMEOUT = MAX_PROCESSING_TIME + 2.seconds
+        MAX_BATCH_SIZE = 5_000
 
         attr_reader :redis_key, :metadata_key, :worker_name
 
@@ -33,16 +34,21 @@ module Gitlab
           queue_size != 0
         end
 
-        def resume_processing!(limit:)
+        def resume_processing!
           try_obtain_lease do
             with_redis do |redis|
-              jobs = next_batch_from_queue(redis, limit: limit)
-              break if jobs.empty?
+              deadline = MAX_PROCESSING_TIME.from_now
+              resumed_jobs = 0
+              while deadline.future?
+                jobs = next_batch_from_queue(redis, limit: num_jobs_to_resume)
+                break if jobs.empty?
 
-              bulk_send_to_processing_queue(jobs)
-              remove_processed_jobs(redis, limit: jobs.length)
+                bulk_send_to_processing_queue(jobs)
+                remove_processed_jobs(redis, limit: jobs.length)
 
-              jobs.length
+                resumed_jobs += jobs.length
+              end
+              resumed_jobs
             end
           end
         end
@@ -55,6 +61,31 @@ module Gitlab
 
         def lease_key
           @lease_key ||= "concurrency_limit:queue_manager:{#{worker_name.underscore}}"
+        end
+
+        def lease_taken_log_level
+          :info
+        end
+
+        def num_jobs_to_resume
+          limit = worker_limit
+          if limit > 0
+            limit - concurrent_worker_count
+          else
+            MAX_BATCH_SIZE
+          end
+        end
+
+        def worker_limit
+          if Feature.disabled?(:concurrency_limit_current_limit_from_redis, Feature.current_request)
+            return worker_klass.get_concurrency_limit
+          end
+
+          Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.current_limit(worker_name)
+        end
+
+        def concurrent_worker_count
+          Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.concurrent_worker_count(worker_name)
         end
 
         def with_redis(&)
@@ -77,11 +108,9 @@ module Gitlab
         def bulk_send_to_processing_queue(jobs)
           return if worker_klass.nil?
 
-          jobs.each_slice(RESUME_PROCESSING_BATCH_SIZE) do |batch|
-            args_list = prepare_and_store_metadata(batch)
-            Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.resumed_log(worker_name, args_list)
-            worker_klass.bulk_perform_async(args_list) # rubocop:disable Scalability/BulkPerformWithContext -- context is set separately in SidekiqMiddleware::ConcurrencyLimit::Resume
-          end
+          args_list = prepare_and_store_metadata(jobs)
+          Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.resumed_log(worker_name, args_list)
+          worker_klass.bulk_perform_async(args_list) # rubocop:disable Scalability/BulkPerformWithContext -- context is set separately in SidekiqMiddleware::ConcurrencyLimit::Resume
         end
 
         def prepare_and_store_metadata(jobs)

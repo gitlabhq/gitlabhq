@@ -48,6 +48,23 @@ module Gitlab
           setup_class_attribute(:load_balancer, load_balancer)
           setup_class_attribute(:connection, ConnectionProxy.new(load_balancer))
           setup_class_attribute(:sticking, Sticking.new(load_balancer))
+
+          return unless ::Gitlab.next_rails?
+
+          @model.singleton_class.alias_method(:lease_connection, :connection)
+          @model.singleton_class.define_method(:with_connection) do |*_args, **_kwargs, &block|
+            next block&.call(connection) unless connection.is_a?(ConnectionProxy)
+
+            connection_already_checked_out = load_balancer.connection_checked_out?
+
+            begin
+              block&.call(connection)
+            ensure
+              # When connections are already checked out before the `with_connection` block,
+              # we leave them as-is as we expect those to be released by the code that checked them out.
+              load_balancer.release_connections unless connection_already_checked_out
+            end
+          end
         end
 
         def setup_service_discovery

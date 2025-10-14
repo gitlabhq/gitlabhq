@@ -39,7 +39,9 @@ module Gitlab
         private
 
         def column_listing
-          @column_listing ||= connection.columns(source_table).map(&:name).join(DELIMITER)
+          @column_listing ||= connection.columns(source_table)
+            .map { |c| connection.quote_column_name(c.name) }
+            .join(DELIMITER)
         end
 
         def conflict_targets

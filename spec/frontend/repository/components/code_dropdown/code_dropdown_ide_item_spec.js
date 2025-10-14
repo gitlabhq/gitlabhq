@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlButtonGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import CodeDropdownIdeItem from '~/repository/components/code_dropdown/code_dropdown_ide_item.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { OPEN_VSCODE_SSH } from '~/repository/components/code_dropdown/constants';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle', () => ({
   shouldDisableShortcuts: () => false,
@@ -31,7 +32,7 @@ describe('CodeDropdownIdeItem', () => {
     const mockButtonGroupItems = {
       text: 'Test Group',
       items: [
-        { text: 'Option 1', href: '/link1' },
+        { text: 'Option 1', href: '/link1', tracking: { action: OPEN_VSCODE_SSH } },
         { text: 'Option 2', href: '/link2' },
       ],
     };
@@ -54,8 +55,21 @@ describe('CodeDropdownIdeItem', () => {
     });
 
     it('closes the dropdown on click', () => {
-      findGlButtonAtIndex(0).vm.$emit('click');
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findGlButtonAtIndex(1).vm.$emit('click');
+
       expect(wrapper.emitted('close-dropdown')).toStrictEqual([[]]);
+      expect(trackEventSpy).not.toHaveBeenCalled();
+    });
+
+    it('calls track if events are passed in', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findGlButtonAtIndex(0).vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(OPEN_VSCODE_SSH, { label: undefined }, undefined);
     });
   });
 

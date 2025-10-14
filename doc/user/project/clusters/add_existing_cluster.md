@@ -81,7 +81,7 @@ To add an existing **GKE** cluster, you need:
 To add a Kubernetes cluster to your project, group, or instance:
 
 1. Go to your:
-   1. Project's {{< icon name="cloud-gear" >}} **Operate > Kubernetes clusters** page, for a project-level cluster.
+   1. Project's {{< icon name="cloud-gear" >}} **Operate** > **Kubernetes clusters** page, for a project-level cluster.
    1. Group's {{< icon name="cloud-gear" >}} **Kubernetes** page, for a group-level cluster.
    1. The **Admin** area's **Kubernetes** page, for an instance-level cluster.
 1. On the **Kubernetes clusters** page, select the **Connect with a certificate** option from the **Actions** dropdown list.

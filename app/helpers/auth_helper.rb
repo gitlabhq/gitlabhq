@@ -257,6 +257,21 @@ module AuthHelper
       password_required: password_required.to_s }
   end
 
+  def delete_passkey_data(password_required, path)
+    message = if password_required
+                s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
+                  'Enter your password to continue.')
+              else
+                s_('ProfilesAuthentication|Are you sure you want to delete this passkey?')
+              end
+
+    { button_text: s_('ProfilesAuthentication|Delete passkey'),
+      icon: 'remove',
+      message: message,
+      path: path,
+      password_required: password_required.to_s }
+  end
+
   def delete_webauthn_device_data(password_required, path)
     message = if password_required
                 _('Are you sure you want to delete this WebAuthn device? ' \

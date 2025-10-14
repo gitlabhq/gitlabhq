@@ -138,8 +138,8 @@ export default {
       :searching="isLoading"
       :disabled="disabled"
       searchable
-      class="dropdown-target-project gl-w-full"
-      :toggle-class="['mr-compare-dropdown', toggleClass]"
+      block
+      :toggle-class="toggleClass"
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"

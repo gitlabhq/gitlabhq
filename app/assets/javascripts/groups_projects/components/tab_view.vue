@@ -245,7 +245,7 @@ export default {
       try {
         const response = await this.$apollo.query({
           query: this.tab.query,
-          variables: { parentId },
+          variables: { parentId, ...this.tab.variables },
         });
         const { nodes } = get(response.data, this.tab.queryPath);
 
@@ -288,6 +288,12 @@ export default {
       this.$emit('offset-page-change', page);
     },
     onClickAvatar() {
+      if (this.eventTracking?.clickItem) {
+        this.trackEvent(this.eventTracking.clickItem, {
+          label: this.tab.value,
+        });
+      }
+
       if (!this.eventTracking?.clickItemAfterFilter) {
         return;
       }

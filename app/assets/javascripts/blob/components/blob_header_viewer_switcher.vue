@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlTooltipDirective, GlHoverLoadDirective } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import {
   RICH_BLOB_VIEWER,
@@ -19,6 +19,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlHoverLoad: GlHoverLoadDirective,
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -52,6 +53,7 @@ export default {
   methods: {
     switchToViewer(viewer) {
       if (viewer === BLAME_VIEWER) {
+        this.$emit('blame-loading-started');
         this.$emit('blame');
         this.trackEvent('open_blame_viewer_on_blob_page');
       }
@@ -105,10 +107,13 @@ export default {
     <gl-button
       v-if="showBlameToggle"
       v-gl-tooltip.hover
+      v-gl-hover-load="() => $emit('preload-blame')"
+      data-testid="blame-button"
       :title="$options.BLAME_TITLE"
       :selected="isBlameViewer"
       category="primary"
       variant="default"
+      @focus="$emit('preload-blame')"
       @click="switchToViewer($options.BLAME_VIEWER)"
       >{{ __('Blame') }}</gl-button
     >

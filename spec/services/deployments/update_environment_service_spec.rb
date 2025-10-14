@@ -231,6 +231,47 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
           end
         end
       end
+
+      context 'when tier is set using a variable' do
+        let(:options) { { name: environment_name, deployment_tier: '$DEPLOYMENT_TIER' } }
+        let(:yaml_variables) { [{ key: 'DEPLOYMENT_TIER', value: 'production' }] }
+
+        let(:job) do
+          create(:ci_build,
+            :with_deployment,
+            pipeline: pipeline,
+            ref: 'master',
+            tag: false,
+            environment: environment_name,
+            options: { environment: options },
+            yaml_variables: yaml_variables,
+            user: user,
+            project: project)
+        end
+
+        before do
+          environment.update_column(:tier, Environment.tiers[:staging])
+        end
+
+        context 'when the variable has valid value' do
+          it 'overwrites the tier by the specified deployment tier' do
+            expect { subject.execute }
+              .to change { environment.reset.tier }.from('staging').to('production')
+          end
+        end
+
+        context 'when the deployment_tier has an invalid value' do
+          before do
+            environment.update_column(:tier, Environment.tiers[:production])
+          end
+
+          it 'does not overwrite the tier by the specified deployment tier' do
+            allow(job).to receive(:expanded_deployment_tier).and_return('invalid')
+
+            expect { subject.execute }.not_to change { environment.reset.tier }
+          end
+        end
+      end
     end
 
     context 'when deployment tier is not specified' do

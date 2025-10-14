@@ -23,8 +23,9 @@ module Routing
 
         url_helpers = Gitlab::Application.routes.url_helpers
 
-        # Preserve the original root_url for use in specific circumstances.
+        # Preserve the original root_url and root_path for use in specific circumstances.
         url_helpers.alias_method :unscoped_root_url, :root_url if url_helpers.respond_to?(:root_url)
+        url_helpers.alias_method :unscoped_root_path, :root_path if url_helpers.respond_to?(:root_path)
 
         # Override URL helpers to be Organization context aware.
         route_pairs = find_route_pairs

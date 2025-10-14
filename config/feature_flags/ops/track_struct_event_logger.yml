@@ -1,0 +1,10 @@
+---
+name: track_struct_event_logger
+description: Enable logging for tracking struct event
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/561744
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202205
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/563347
+milestone: '18.4'
+group: group::acquisition
+type: ops
+default_enabled: false

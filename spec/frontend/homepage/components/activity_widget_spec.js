@@ -244,6 +244,63 @@ describe('ActivityWidget', () => {
       await waitForPromises();
       expect(sessionStorage.getItem('homepage-activity-filter')).toBe('followed');
     });
+
+    it('handles sessionStorage errors gracefully when getting persisted filter', () => {
+      const originalGetItem = Storage.prototype.getItem;
+      Storage.prototype.getItem = jest.fn(() => {
+        throw new Error('SessionStorage error');
+      });
+
+      createWrapper();
+
+      expect(wrapper.vm.filter).toBe(null);
+
+      Storage.prototype.getItem = originalGetItem;
+    });
+
+    it('loads valid persisted filter from sessionStorage', () => {
+      sessionStorage.setItem('homepage-activity-filter', 'starred');
+
+      createWrapper();
+
+      expect(wrapper.vm.filter).toBe('starred');
+    });
+
+    it('ignores invalid persisted filter from sessionStorage', () => {
+      sessionStorage.setItem('homepage-activity-filter', 'invalid-filter');
+
+      createWrapper();
+
+      expect(wrapper.vm.filter).toBe(null);
+    });
+
+    it('handles sessionStorage errors gracefully when setting filter', async () => {
+      const originalSetItem = Storage.prototype.setItem;
+      const originalRemoveItem = Storage.prototype.removeItem;
+
+      Storage.prototype.setItem = jest.fn(() => {
+        throw new Error('SessionStorage error');
+      });
+      Storage.prototype.removeItem = jest.fn(() => {
+        throw new Error('SessionStorage error');
+      });
+
+      createWrapper();
+      await waitForPromises();
+
+      expect(() => {
+        findActivityFeedSelector().vm.$emit('select', 'starred');
+      }).not.toThrow();
+
+      await waitForPromises();
+
+      expect(() => {
+        findActivityFeedSelector().vm.$emit('select', null);
+      }).not.toThrow();
+
+      Storage.prototype.setItem = originalSetItem;
+      Storage.prototype.removeItem = originalRemoveItem;
+    });
   });
 
   describe('tracking events', () => {
@@ -341,6 +398,42 @@ describe('ActivityWidget', () => {
 
       expect(wrapper.vm.trackEvent).toBeDefined();
     });
+
+    it('does not track event when clicking on non-link elements', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li><span>Non-link text</span></li>',
+        });
+
+      createWrapper();
+      await waitForPromises();
+
+      const nonLinkElement = wrapper.findByText('Non-link text');
+      expect(nonLinkElement.exists()).toBe(true);
+
+      await nonLinkElement.trigger('click');
+
+      expect(trackEventSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not track event when clicking on link without href', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li><a>Link without href</a></li>',
+        });
+
+      createWrapper();
+      await waitForPromises();
+
+      const linkWithoutHref = wrapper.findByText('Link without href');
+      expect(linkWithoutHref.exists()).toBe(true);
+
+      await linkWithoutHref.trigger('click');
+
+      expect(trackEventSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('tracking constants', () => {
@@ -358,6 +451,235 @@ describe('ActivityWidget', () => {
       expect(filterOptions[0].scope).toBe(TRACKING_SCOPE_YOUR_ACTIVITY);
       expect(filterOptions[1].scope).toBe(TRACKING_SCOPE_STARRED_PROJECTS);
       expect(filterOptions[2].scope).toBe(TRACKING_SCOPE_FOLLOWED_USERS);
+    });
+  });
+
+  describe('relative URL handling', () => {
+    beforeEach(() => {
+      mockAxios.onGet('*').reply(200, { html: '' });
+    });
+
+    it('prepends gon.relative_url_root to URLs when set', async () => {
+      gon.relative_url_root = '/gitlab';
+
+      createWrapper();
+      await waitForPromises();
+
+      expect(mockAxios.history.get[0].url).toBe(
+        '/gitlab/users/administrator/activity?limit=5&is_personal_homepage=1',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[1].url).toBe(
+        '/gitlab/dashboard/activity?limit=5&offset=0&filter=starred',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'followed');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[2].url).toBe(
+        '/gitlab/dashboard/activity?limit=5&offset=0&filter=followed',
+      );
+    });
+
+    it('works correctly when gon.relative_url_root is empty', async () => {
+      gon.relative_url_root = '';
+
+      createWrapper();
+      await waitForPromises();
+
+      expect(mockAxios.history.get[0].url).toBe(
+        '/users/administrator/activity?limit=5&is_personal_homepage=1',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[1].url).toBe(
+        '/dashboard/activity?limit=5&offset=0&filter=starred',
+      );
+    });
+
+    it('works correctly when gon.relative_url_root is undefined', async () => {
+      delete gon.relative_url_root;
+
+      createWrapper();
+      await waitForPromises();
+
+      expect(mockAxios.history.get[0].url).toBe(
+        '/users/administrator/activity?limit=5&is_personal_homepage=1',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[1].url).toBe(
+        '/dashboard/activity?limit=5&offset=0&filter=starred',
+      );
+    });
+  });
+
+  describe('selectedFilterText computed property', () => {
+    it('returns default text when filter value does not match any option', () => {
+      createWrapper();
+
+      wrapper.vm.filter = 'invalid-filter-value';
+
+      expect(wrapper.vm.selectedFilterText).toBe('Your activity');
+    });
+  });
+
+  describe('error handling and data edge cases', () => {
+    it('handles response data without html property', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, { notHtml: 'some other data' });
+      createWrapper();
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEventsList().exists()).toBe(false);
+    });
+
+    it('handles response with html containing no timestamps', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li>Event without timestamp</li>',
+        });
+      createWrapper();
+      await waitForPromises();
+
+      expect(findEventsList().exists()).toBe(true);
+      expect(localTimeAgo).not.toHaveBeenCalled();
+    });
+
+    it('handles clicking on element that has closest link but no href', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li><a><span>Nested element in link without href</span></a></li>',
+        });
+
+      createWrapper();
+      await waitForPromises();
+
+      const nestedElement = wrapper.findByText('Nested element in link without href');
+      expect(nestedElement.exists()).toBe(true);
+
+      await nestedElement.trigger('click');
+
+      expect(trackEventSpy).not.toHaveBeenCalled();
+    });
+
+    it('handles case where $options.FILTER_OPTIONS is undefined during getPersistedFilter', () => {
+      const ActivityWidgetWithNoFilterOptions = {
+        ...ActivityWidget,
+        FILTER_OPTIONS: undefined,
+      };
+
+      sessionStorage.setItem('homepage-activity-filter', 'starred');
+      gon.current_username = MOCK_CURRENT_USERNAME;
+
+      wrapper = shallowMountExtended(ActivityWidgetWithNoFilterOptions, {
+        propsData: {
+          activityPath: '/foo/bar',
+        },
+      });
+
+      expect(wrapper.vm.filter).toBe(null);
+    });
+
+    it('handles response with data but null html', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, { html: null });
+      createWrapper();
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEventsList().exists()).toBe(false);
+    });
+
+    it('applies user-activity-feed class when filter is null', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, { html: '<li>Some activity</li>' });
+      createWrapper();
+      await waitForPromises();
+
+      const eventsList = findEventsList();
+      expect(eventsList.exists()).toBe(true);
+      expect(eventsList.classes()).toContain('user-activity-feed');
+    });
+
+    it('does not apply user-activity-feed class when filter is not null', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, { html: '<li>Some activity</li>' });
+      mockAxios.onGet('/dashboard/activity?limit=5&offset=0&filter=starred').reply(200, {
+        html: '<li>Starred activity</li>',
+      });
+
+      createWrapper();
+      await waitForPromises();
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      const eventsList = findEventsList();
+      expect(eventsList.exists()).toBe(true);
+      expect(eventsList.classes()).not.toContain('user-activity-feed');
+    });
+
+    it('constructs correct URL when filter is null (personal homepage path)', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, { html: '<li>Personal activity</li>' });
+
+      createWrapper();
+      wrapper.vm.filter = null;
+      await waitForPromises();
+
+      expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toBe(
+        `/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`,
+      );
+    });
+
+    it('constructs correct URL when filter is not null (dashboard path)', async () => {
+      mockAxios.onGet('/dashboard/activity?limit=5&offset=0&filter=starred').reply(200, {
+        html: '<li>Starred activity</li>',
+      });
+
+      createWrapper();
+      wrapper.vm.filter = 'starred';
+      wrapper.vm.reload();
+      await waitForPromises();
+
+      const starredRequests = mockAxios.history.get.filter(
+        (req) => req.url.includes('/dashboard/activity') && req.url.includes('filter=starred'),
+      );
+      expect(starredRequests.length).toBeGreaterThan(0);
+      expect(starredRequests[0].url).toBe('/dashboard/activity?limit=5&offset=0&filter=starred');
+    });
+
+    it('handles getPersistedFilter when savedFilter is null', () => {
+      sessionStorage.removeItem('homepage-activity-filter');
+
+      createWrapper();
+
+      expect(wrapper.vm.filter).toBe(null);
+    });
+
+    it('handles getPersistedFilter when savedFilter is valid value', () => {
+      sessionStorage.setItem('homepage-activity-filter', 'followed');
+
+      createWrapper();
+
+      expect(wrapper.vm.filter).toBe('followed');
     });
   });
 });

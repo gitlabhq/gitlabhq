@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
   describe '#perform' do
     let(:worker) { described_class.new }
 
     context 'when a merge request not found' do
+      let(:user) { create(:user) }
+
       it 'does not call Services' do
         expect(EventCreateService).not_to receive(:new)
         expect(NotificationService).not_to receive(:new)
@@ -15,20 +18,35 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
       end
 
       it 'logs an error' do
-        user = create(:user)
-
         expect(Gitlab::AppLogger).to receive(:error).with("NewMergeRequestWorker: couldn't find MergeRequest with ID=#{non_existing_record_id}, skipping job")
 
         worker.perform(non_existing_record_id, user.id)
       end
+
+      it 'completes the covered experience' do
+        Labkit::CoveredExperience.start(:create_merge_request)
+
+        expect do
+          worker.perform(non_existing_record_id, user.id)
+        end.to resume_covered_experience(:create_merge_request)
+        .and complete_covered_experience(:create_merge_request, error: true)
+      end
+
+      it 'does not resume covered experience when not started' do
+        expect do
+          worker.perform(non_existing_record_id, user.id)
+        end.not_to resume_covered_experience(:create_merge_request)
+      end
     end
 
     context 'when a user not found' do
+      let(:merge_request) { create(:merge_request) }
+
       it 'does not call Services' do
         expect(EventCreateService).not_to receive(:new)
         expect(NotificationService).not_to receive(:new)
 
-        worker.perform(create(:merge_request).id, non_existing_record_id)
+        worker.perform(merge_request.id, non_existing_record_id)
       end
 
       it 'logs an error' do
@@ -37,6 +55,21 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
         expect(Gitlab::AppLogger).to receive(:error).with("NewMergeRequestWorker: couldn't find User with ID=#{non_existing_record_id}, skipping job")
 
         worker.perform(merge_request.id, non_existing_record_id)
+      end
+
+      it 'completes the covered experience' do
+        Labkit::CoveredExperience.start(:create_merge_request)
+
+        expect do
+          worker.perform(merge_request.id, non_existing_record_id)
+        end.to resume_covered_experience(:create_merge_request)
+        .and complete_covered_experience(:create_merge_request, error: true)
+      end
+
+      it 'does not resume covered experience when not started' do
+        expect do
+          worker.perform(merge_request.id, non_existing_record_id)
+        end.not_to resume_covered_experience(:create_merge_request)
       end
     end
 
@@ -78,6 +111,21 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
         context 'when everything is ok' do
           it 'creates a new event record' do
             expect { worker.perform(merge_request.id, user.id) }.to change { Event.count }.from(0).to(1)
+          end
+
+          it 'completes the covered experience' do
+            Labkit::CoveredExperience.start(:create_merge_request)
+
+            expect do
+              worker.perform(merge_request.id, user.id)
+            end.to resume_covered_experience(:create_merge_request)
+            .and complete_covered_experience(:create_merge_request)
+          end
+
+          it 'does not resume covered experience when not started' do
+            expect do
+              worker.perform(merge_request.id, user.id)
+            end.not_to resume_covered_experience(:create_merge_request)
           end
 
           it 'creates a notification for the mentioned user' do

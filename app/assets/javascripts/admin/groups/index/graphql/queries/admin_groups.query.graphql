@@ -3,7 +3,7 @@
 #import "~/graphql_shared/fragments/group_interface.fragment.graphql"
 #import "ee_else_ce/admin/groups/index/graphql/fragments/admin_group.fragment.graphql"
 
-query adminGroupsQueryNew(
+query adminGroupsQuery(
   $first: Int
   $last: Int
   $before: String
@@ -25,7 +25,7 @@ query adminGroupsQueryNew(
     nodes {
       ...GroupInterface
       userPermissions {
-        adminAllResources @gl_introduced(version: "18.3.0")
+        adminAllResources
       }
       ... on Group {
         ...Group

@@ -102,7 +102,7 @@ Prerequisites:
 To configure review apps in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
+1. Select **Build** > **Pipeline editor**.
 1. In your `.gitlab-ci.yml` file, add a job that creates a [dynamic environment](../environments/_index.md#create-a-dynamic-environment).
    You can use a [predefined CI/CD variable](../variables/predefined_variables.md) to differentiate
    each environment. For example, using the `CI_COMMIT_REF_SLUG` predefined variable:
@@ -131,7 +131,7 @@ GitLab provides a built-in template that's configured for merge request pipeline
 To use and customize this template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select **Enable review apps**.
 1. From the **Enable Review Apps** dialog that appears, copy the YAML template:
 
@@ -147,7 +147,7 @@ To use and customize this template:
        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
    ```
 
-1. Select **Build > Pipeline editor**.
+1. Select **Build** > **Pipeline editor**.
 1. Paste the template into your `.gitlab-ci.yml` file.
 1. Customize the template based on your deployment needs:
 
@@ -358,7 +358,7 @@ To view a mapped page from a file:
 To view mapped pages from a commit:
 
 1. Go to a commit that has a review app deployment:
-   - For branch pipelines: Select **Code > Commits** and select a commit with a pipeline badge.
+   - For branch pipelines: Select **Code** > **Commits** and select a commit with a pipeline badge.
    - For merge request pipelines: In your merge request, select the **Commits** tab and select a commit.
    - For merged results pipelines: In your merge request, select the **Pipelines** tab and select the pipeline commit.
 1. Select the review app icon ({{< icon name="external-link" >}}) next to a filename that matches your route map.

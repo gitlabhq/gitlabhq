@@ -28,8 +28,6 @@ module Mutations
           project_path = args.delete(:project_path)
           project = authorized_find!(project_path)
 
-          validate_import_available_for!(project)
-
           file = args[:file]
 
           unless file_is_valid?(file)
@@ -47,12 +45,6 @@ module Mutations
         end
 
         private
-
-        def validate_import_available_for!(project)
-          return if project.work_items_project_issues_list_feature_flag_enabled?
-
-          raise_resource_not_available_error! '`work_items_project_issues_list` feature flag is disabled.'
-        end
 
         def file_is_valid?(file)
           return false unless file.respond_to?(:original_filename)

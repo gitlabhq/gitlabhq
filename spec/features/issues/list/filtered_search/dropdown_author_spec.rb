@@ -31,7 +31,7 @@ RSpec.describe 'Dropdown author', :js, feature_category: :team_planning do
     it 'shows current user at top of dropdown' do
       select_tokens 'Author', '='
 
-      expect(page).to have_css('.gl-filtered-search-suggestion:first-child', text: user.name)
+      expect(page).to have_css('.gl-filtered-search-suggestion:nth-child(2)', text: user.name)
     end
   end
 

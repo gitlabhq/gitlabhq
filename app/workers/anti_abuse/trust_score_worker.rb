@@ -17,6 +17,8 @@ module AntiAbuse
         return
       end
 
+      return if Feature.enabled?(:remove_trust_scores, user)
+
       AntiAbuse::TrustScore.create!(user: user, source: source, score: score.to_f, correlation_id_value: correlation_id)
       AntiAbuse::TrustScoreCleanupWorker.perform_async(user.id, source)
     end

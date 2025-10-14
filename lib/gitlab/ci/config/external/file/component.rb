@@ -83,8 +83,14 @@ module Gitlab
                 project: component_payload.fetch(:project),
                 sha: component_payload.fetch(:sha),
                 user: context.user,
-                variables: context.variables
+                variables: context.variables,
+                component_data: component_yaml_context
               }
+            end
+
+            override :yaml_context_attributes
+            def yaml_context_attributes
+              super.merge(component: component_yaml_context)
             end
 
             def masked_blob
@@ -113,6 +119,12 @@ module Gitlab
                 sha: component_payload.fetch(:sha),
                 name: component_payload.fetch(:name)
               }
+            end
+
+            def component_yaml_context
+              return {} unless ci_component_context_interpolation_enabled?
+
+              component_attrs.slice(*Config::Header::Component::ALLOWED_VALUES)
             end
           end
         end

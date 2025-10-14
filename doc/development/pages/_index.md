@@ -72,7 +72,7 @@ make && ./gitlab-pages -config=gitlab-pages.conf
 
 In the following steps, `$GDK_ROOT` is the directory where you cloned GDK.
 
-1. Set up the [GDK hostname](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md).
+1. Set up the [GDK hostname](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/local_network/).
 1. Add a [GitLab Pages hostname](#configuring-gitlab-pages-hostname) to the `gdk.yml`:
 
    ```yaml
@@ -114,7 +114,7 @@ FIPS_MODE=1 make && ./gitlab-pages -config=gitlab-pages.conf
 ### Creating GitLab Pages site
 
 To build a GitLab Pages site locally you must
-[configure `gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/runner.md).
+[configure `gitlab-runner`](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/runner/).
 
 For more information, refer to the [user manual](../../user/project/pages/_index.md).
 
@@ -202,7 +202,7 @@ is disabled by default. You can enable it in the GDK:
 
 1. Reconfigure and restart GitLab by running the commands `gdk reconfigure` and `gdk restart`.
 
-For more information, refer to the [GDK documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#object-storage-configuration).
+For more information, refer to the [GDK documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/configuration/#object-storage-configuration).
 
 ## Linting
 

@@ -141,6 +141,7 @@ export default {
     this.requestData = { page: this.page };
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- successCallback() is used by the `PipelinesMixin` mixin
     successCallback(resp) {
       // depending of the endpoint the response can either bring a `pipelines` key or not.
       const pipelines = resp.data.pipelines || resp.data;
@@ -284,23 +285,26 @@ export default {
     </template>
 
     <div v-else-if="shouldRenderTable">
-      <gl-button
+      <div
         v-if="canRenderPipelineButton"
-        block
-        class="gl-mb-3 gl-mt-3 @lg/panel:gl-hidden"
-        variant="confirm"
-        data-testid="run_pipeline_button_mobile"
-        :loading="state.isRunningMergeRequestPipeline"
-        @click="tryRunPipeline"
+        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @lg/panel:gl-hidden"
       >
-        {{ $options.i18n.runPipelineText }}
-      </gl-button>
+        <gl-button
+          class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"
+          data-testid="run_pipeline_button_mobile"
+          :loading="state.isRunningMergeRequestPipeline"
+          @click="tryRunPipeline"
+        >
+          {{ $options.i18n.runPipelineText }}
+        </gl-button>
+      </div>
 
       <pipelines-table
         :is-creating-pipeline="state.isRunningMergeRequestPipeline"
         :pipeline-id-type="$options.pipelineIdKey"
         :pipelines="state.pipelines"
         :view-type="viewType"
+        class="@lg/panel:-gl-mt-px"
         @cancel-pipeline="onCancelPipeline"
         @refresh-pipelines-table="onRefreshPipelinesTable"
         @retry-pipeline="onRetryPipeline"

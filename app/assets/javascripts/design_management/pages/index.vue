@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlAlert, GlFormCheckbox, GlLink, GlSprintf } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { getFilename, validateImageName } from '~/lib/utils/file_upload';
 import { __, s__ } from '~/locale';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -106,7 +106,7 @@ export default {
       return this.filesToBeSaved.length > 0;
     },
     isMobile() {
-      return GlBreakpointInstance.getBreakpointSize() === 'xs';
+      return PanelBreakpointInstance.getBreakpointSize() === 'xs';
     },
     canCreateDesign() {
       return this.permissions.createDesign;
@@ -119,9 +119,6 @@ export default {
     },
     hasSelectedDesigns() {
       return this.selectedDesigns.length > 0;
-    },
-    canDeleteDesigns() {
-      return this.isLatestVersion && this.hasSelectedDesigns;
     },
     projectQueryBody() {
       return {
@@ -142,12 +139,12 @@ export default {
     },
     designDropzoneWrapperClass() {
       if (!this.isDesignListEmpty) {
-        return 'gl-flex-col col-md-6 col-lg-3 gl-mt-5';
+        return 'gl-flex-col gl-col-md-6 gl-col-lg-3 gl-mt-5';
       }
       if (this.showToolbar) {
-        return 'col-12 gl-mt-5';
+        return 'gl-col-12 gl-mt-5';
       }
-      return 'col-12';
+      return 'gl-col-12';
     },
   },
   mounted() {
@@ -466,7 +463,7 @@ export default {
           <li
             v-for="design in designs"
             :key="design.id"
-            class="col-sm-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
+            class="gl-col-sm-6 gl-col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
           >
             <design-dropzone
               :display-as-card="hasDesigns"

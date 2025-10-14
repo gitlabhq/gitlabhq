@@ -543,6 +543,7 @@ Dangerfile
 /workhorse/
 
 [Application Security] @gitlab-com/gl-security/appsec
+/doc/development/application_secrets.md
 /app/assets/javascripts/lib/dompurify.js
 /app/assets/javascripts/gfm_auto_complete.js
 /ee/app/assets/javascripts/gfm_auto_complete.js
@@ -587,6 +588,7 @@ lib/gitlab/checks/
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
 # Begin rake-managed-docs-block
 /doc/administration/_index.md @axil @eread
+/doc/administration/administer_users.md @idurham
 /doc/administration/analytics.md @lciutacu
 /doc/administration/analytics/ @lciutacu
 /doc/administration/auditor_users.md @idurham
@@ -618,7 +620,7 @@ lib/gitlab/checks/
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
 /doc/administration/gitlab_duo/ @sselhorn
-/doc/administration/gitlab_duo_self_hosted/ @jglassman1
+/doc/administration/gitlab_duo_self_hosted/ @fneill
 /doc/administration/guest_users.md @idurham
 /doc/administration/housekeeping.md @eread
 /doc/administration/incoming_email.md @msedlakjakubowski
@@ -701,15 +703,15 @@ lib/gitlab/checks/
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
 /doc/administration/settings/scim_setup.md @lciutacu
 /doc/administration/settings/security_and_compliance.md @rdickenson
+/doc/administration/settings/sign_in_restrictions.md @idurham
+/doc/administration/settings/sign_up_restrictions.md @idurham
 /doc/administration/settings/slack_app.md @msedlakjakubowski
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
-/doc/administration/settings/vscode_extension_marketplace.md @brendan777
 /doc/administration/sidekiq/ @axil
 /doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil @eread
 /doc/administration/snippets/ @brendan777
-/doc/administration/static_objects_external_storage.md @brendan777
 /doc/administration/system_hooks.md @ashrafkhamis
 /doc/administration/timezone.md @axil @eread
 /doc/administration/troubleshooting/ @axil @eread
@@ -770,7 +772,6 @@ lib/gitlab/checks/
 /doc/api/group_protected_branches.md @brendan777
 /doc/api/group_push_rules.md @brendan777
 /doc/api/group_relations_export.md @ashrafkhamis
-/doc/api/group_repository_storage_moves.md @brendan777
 /doc/api/group_security_settings.md @rlehmann1
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @ashrafkhamis
@@ -966,6 +967,7 @@ lib/gitlab/checks/
 /doc/development/pipelines/ @gl-dx/pipeline-maintainers
 /doc/development/policies.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/remote_development/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
 /doc/development/software_design.md @gl-dx/pipeline-maintainers
@@ -979,11 +981,9 @@ lib/gitlab/checks/
 /doc/install/install_ai_gateway.md @sselhorn
 /doc/integration/ @idurham
 /doc/integration/advanced_search/ @ashrafkhamis
-/doc/integration/datadog.md @rsarangadharan
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/elasticsearch/troubleshooting/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @msedlakjakubowski
-/doc/integration/gitpod.md @brendan777
 /doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
 /doc/integration/jenkins.md @lyspin
 /doc/integration/jira/ @msedlakjakubowski
@@ -1079,7 +1079,7 @@ lib/gitlab/checks/
 /doc/user/get_started/get_started_runner.md @rsarangadharan
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
 /doc/user/gitlab_duo/ @sselhorn
-/doc/user/gitlab_duo/model_selection.md @jglassman1
+/doc/user/gitlab_duo/model_selection.md @fneill
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
 /doc/user/glql/ @msedlakjakubowski
@@ -1166,10 +1166,10 @@ lib/gitlab/checks/
 /doc/user/project/project_topics.md @z_painter
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
-/doc/user/project/remote_development/ @brendan777
 /doc/user/project/repository/ @brendan777
 /doc/user/project/repository/code_explain.md @scawood
 /doc/user/project/repository/code_suggestions/ @scawood
+/doc/user/project/repository/knowledge_graph/ @scawood
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski
@@ -1181,7 +1181,6 @@ lib/gitlab/checks/
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/troubleshooting.md @z_painter
 /doc/user/project/use_project_as_go_package.md @z_painter
-/doc/user/project/web_ide/ @brendan777
 /doc/user/project/wiki/ @msedlakjakubowski
 /doc/user/project/working_with_projects.md @z_painter
 /doc/user/public_access.md @z_painter
@@ -1199,7 +1198,6 @@ lib/gitlab/checks/
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @kpaizee
 /doc/user/work_items/ @msedlakjakubowski
-/doc/user/workspace/ @brendan777
 # End rake-managed-docs-block
 
 # i18n Docs
@@ -1640,10 +1638,10 @@ lib/gitlab/checks/
 /**/app/views/ci/**/ @gitlab-org/maintainers/rails-backend
 /ee/**/models/ai/ai_resource/ci/ @gitlab-org/maintainers/rails-backend
 /ee/**/serializers/ci/*_ai_*.rb @gitlab-org/maintainers/rails-backend
+^[Security reports]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/security-risk-management/security-insights/backend
-/ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
-/ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
+/ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/dynamic-analysis
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/security-risk-management/security-insights/backend
 
@@ -1776,6 +1774,13 @@ ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb
 ee/lib/gitlab/llm/chain/utils/chat_conversation.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
+[Category:MCP Server] @gitlab-org/ai-powered/mcp-tool-review-board
+lib/api/mcp/server.rb
+app/services/mcp/tools/
+
+^[Category:MCP Server] @gitlab-org/ai-powered/mcp-tool-review-board
+spec/services/mcp/tools/
+
 [Category:Code Suggestions] @gitlab-org/code-creation/engineers
 ee/lib/api/code_suggestions.rb
 ee/lib/ai/additional_context.rb
@@ -1809,7 +1814,6 @@ ee/app/workers/ai/repository_xray/
 # Necessary to keep the design system in-sync
 [Foundations::Design System] @gitlab-org/foundations/design-system/engineering
 /app/components/pajamas/
-/app/assets/stylesheets/framework/ds_experiments_tokens.scss
 
 # Necessary for availability, similar to DB migrations
 [Global Search] @gitlab-org/search-team/migration-maintainers
@@ -1895,8 +1899,8 @@ ee/app/workers/ai/repository_xray/
 /jh/doc/
 
 [Geo]
-/doc/**/geo/**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls
-geo_**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls
+/doc/**/geo/**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
+geo_**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 /node_modules/**/geo/ @gitlab-org/geo-team/geo-backend
@@ -1916,3 +1920,6 @@ frontend/**/geo_* @zcuddy
 /.gitlab/merge_request_templates/Security\ Fix.md @gitlab-org/delivery
 /.gitlab/merge_request_templates/Stable\ Branch.md @gitlab-org/delivery
 /.gitlab/issue_templates/Security\ developer\ workflow.md @gitlab-org/delivery
+
+[API Team]
+/gems/gitlab-grape-openapi/**/*.rb @cfeick @mwoolf @vwolanyk

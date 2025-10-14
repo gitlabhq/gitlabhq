@@ -39,14 +39,15 @@ db/fixtures/
 !db/fixtures/development/02_application_settings.rb
 !db/fixtures/development/25_api_personal_access_token.rb
 !db/fixtures/development/001_create_base_work_item_types.rb
-!db/fixtures/development/50_create_work_item_hierarchy_restrictions.rb
-!db/fixtures/development/51_create_work_item_related_link_restrictions.rb
 
 ee/db/fixtures/
 !ee/db/fixtures/development/10_license_file.rb
 
 scripts/
+!scripts/build_frontend_islands
 !scripts/frontend
+!scripts/lib/assets_sha.rb
+!scripts/lib/gitlab.rb
 
 qa/
 !qa/gdk
@@ -55,8 +56,12 @@ spec/
 !spec/contracts
 !spec/factories
 !spec/support
+# only needed for asset compilation
+!spec/frontend
 
 ee/spec
 !ee/spec/contracts
 !ee/spec/factories
 !ee/spec/support
+# only needed for asset compilation
+!ee/spec/frontend

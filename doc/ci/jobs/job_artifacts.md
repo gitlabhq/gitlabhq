@@ -14,8 +14,6 @@ title: Job artifacts
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
-You can download job artifacts by using the GitLab UI or the API.
-
 ## Create job artifacts
 
 To create job artifacts, use the `artifacts` keyword in your `.gitlab-ci.yml` file:
@@ -184,7 +182,7 @@ job:
 
 {{< /history >}}
 
-You can view all artifacts stored in a project from the **Build > Artifacts** page.
+You can view all artifacts stored in a project from the **Build** > **Artifacts** page.
 This list displays all jobs and their associated artifacts. Expand an entry to access
 all artifacts associated with a job, including:
 
@@ -196,7 +194,9 @@ You can download or delete individual artifacts from this list.
 
 ## Download job artifacts
 
-You can download job artifacts from:
+You can download job artifacts by using the GitLab UI or the API.
+
+From the GitLab UI, you can download job artifacts from:
 
 - Any **Pipelines** list. On the right of the pipeline, select **Download artifacts** ({{< icon name="download" >}}).
 - Any **Jobs** list. On the right of the job, select **Download artifacts** ({{< icon name="download" >}}).
@@ -257,6 +257,18 @@ build_submodule:
 ```
 
 To fetch artifacts from a job in the same pipeline, use the `needs:artifacts` keyword.
+
+### Control who can download artifacts
+
+To restrict who can download job artifacts, use the `artifacts:access` keyword in your `.gitlab-ci.yml` file. For example:
+
+```yaml
+job:
+  artifacts:
+    access: maintainer
+    paths:
+      - build/
+```
 
 ## Browse the contents of the artifacts archive
 
@@ -330,13 +342,13 @@ You can also delete individual artifacts from the **Artifacts** page.
 You can delete multiple artifacts at the same time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Artifacts**.
+1. Select **Build** > **Artifacts**.
 1. Select the checkboxes next to the artifacts you want to delete. You can select up to 50 artifacts.
 1. Select **Delete selected**.
 
 ## Link to job artifacts in the merge request UI
 
-Use the `artifacts:expose_as` keyword to display a link to job artifacts in the merge request UI.
+Use the `artifacts:expose_as` keyword to provide direct access to artifacts from the merge request UI.
 
 For example, for an artifact with a single file:
 
@@ -348,8 +360,9 @@ test:
     paths: ['file.txt']
 ```
 
-With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to the
-**View exposed artifact** section of the relevant merge request.
+With this configuration, the **View exposed artifact** section displays a link to `file.txt` labeled **artifact 1**.
+
+![A merge request widget that links to exposed artifacts.](img/mr_artifact_expose_v18_4.png)
 
 ## Keep artifacts from most recent successful jobs
 
@@ -377,7 +390,7 @@ with a lot of jobs or large artifacts. If the latest artifacts are not needed in
 a project, you can disable this behavior to save space:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Artifacts**.
 1. Clear the **Keep artifacts from most recent successful jobs** checkbox.
 

@@ -14,11 +14,6 @@ repository is licensed under Creative Commons:
 
 _This notice should stay as the first item in the `CONTRIBUTING.md` file._
 
-## Contributing Documentation has been moved
-
-As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location.
-[View the documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
-
 ## Contribute to GitLab
 
 [View the documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
@@ -82,6 +77,12 @@ View the [merge request workflow](doc/development/contributing/merge_request_wor
 
 - Merge request guidelines
 - Contribution acceptance criteria
+
+## Community forks
+
+We recommend using the [community fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab) to create merge requests.
+
+The [@gitlab-community README.md](https://gitlab.com/gitlab-community#gitlab-community-forks) provides more detail of what, why, and how to use the community fork. 
 
 ## Definition of done
 

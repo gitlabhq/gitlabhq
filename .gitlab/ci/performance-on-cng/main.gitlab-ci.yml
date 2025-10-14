@@ -92,10 +92,12 @@ run-performance-tests:
     DATA_SEEDER_FILE_NAME: mr_seed.rb
     CPT_PACKAGE_REGISTRY_API_TOKEN: $CPT_PACKAGE_REGISTRY_API_TOKEN
     CPT_BASELINE_PACKAGE_NAME: "gitlab-org-gitlab"
+    GENERATE_REPORT_FROM_DUO: true
   rules:
     - if: '$PARENT_CI_PIPELINE_SOURCE == "merge_request_event" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org?($|\/)/'
       variables:
         PARENT_PIPELINE_CONTEXT: $CI_MERGE_REQUEST_IID
+        PARENT_PROJECT_URL: $CI_PROJECT_URL
     - if: $CI_COMMIT_BRANCH == "master"
       variables:
         PARENT_PIPELINE_CONTEXT: "master"

@@ -6,7 +6,7 @@ module QA
     describe 'Maven group level endpoint', :external_api_calls do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
-      include_context 'packages registry qa scenario'
+      include_context 'packages registry qa scenario with runner'
 
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }

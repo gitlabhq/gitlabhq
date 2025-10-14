@@ -27,6 +27,7 @@ Database/AvoidUsingConnectionExecute:
     - 'lib/gitlab/database/lock_writes_manager.rb'
     - 'lib/gitlab/database/migrations/observers/query_statistics.rb'
     - 'lib/gitlab/database/migrations/observers/total_database_size_change.rb'
+    - 'lib/gitlab/database/migrations/prepared_async_dml_operations_testing/index_creator.rb'
     - 'lib/gitlab/database/partitioning/detached_partition_dropper.rb'
     - 'lib/gitlab/database/partitioning/partition_manager.rb'
     - 'lib/gitlab/database/partitioning_migration_helpers/bulk_copy.rb'

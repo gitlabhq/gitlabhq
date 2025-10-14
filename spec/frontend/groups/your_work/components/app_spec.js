@@ -11,6 +11,7 @@ import { createRouter } from '~/groups/your_work';
 import groupCountsQuery from '~/groups/your_work/graphql/queries/group_counts.query.graphql';
 import {
   GROUP_DASHBOARD_TABS,
+  FIRST_TAB_ROUTE_NAMES,
   SORT_OPTIONS,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
@@ -19,6 +20,8 @@ import {
   GROUPS_DASHBOARD_ROUTE_NAME,
 } from '~/groups/your_work/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import TabView from '~/groups_projects/components/tab_view.vue';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -50,17 +53,24 @@ describe('YourWorkGroupsApp', () => {
   const defaultRoute = {
     name: GROUPS_DASHBOARD_ROUTE_NAME,
   };
+  const mockGroup = dashboardGroupsResponse[1];
 
   const createComponent = async ({
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
+    stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers, resolvers(endpoint));
     router = createRouter();
     await router.push(route);
 
-    wrapper = mountFn(YourWorkGroupsApp, { propsData: defaultPropsData, apolloProvider, router });
+    wrapper = mountFn(YourWorkGroupsApp, {
+      propsData: defaultPropsData,
+      apolloProvider,
+      router,
+      stubs,
+    });
   };
 
   beforeEach(() => {
@@ -83,13 +93,11 @@ describe('YourWorkGroupsApp', () => {
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
       filteredSearchInputPlaceholder: 'Search',
-      sortOptions: SORT_OPTIONS,
-      defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
         [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
         [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
       },
-      firstTabRouteNames: [],
+      firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: [],
       eventTracking: {
@@ -99,6 +107,11 @@ describe('YourWorkGroupsApp', () => {
         pagination: 'click_pagination_on_your_work_groups',
         tabs: 'click_tab_on_your_work_groups',
         sort: 'click_sort_on_your_work_groups',
+        hoverStat: 'hover_stat_on_your_work_groups',
+        hoverVisibility: 'hover_visibility_icon_on_your_work_groups',
+        initialLoad: 'initial_load_on_your_work_groups',
+        clickItem: 'click_group_on_your_work_groups',
+        clickItemAfterFilter: 'click_group_after_filter_on_your_work_groups',
       },
       tabCountsQuery: groupCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
@@ -130,8 +143,22 @@ describe('YourWorkGroupsApp', () => {
     await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
 
     expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
-      dashboardGroupsResponse[1].edit_path,
+      mockGroup.edit_path,
     );
+  });
+
+  describe('when user does not have permission to edit', () => {
+    beforeEach(async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, [{ ...mockGroup, can_edit: false, children: [] }]);
+      await createComponent({ mountFn: mountExtended });
+      await waitForPromises();
+    });
+
+    it('does not render `Edit` action', async () => {
+      await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+      expect(wrapper.findByRole('link', { name: 'Edit' }).exists()).toBe(false);
+    });
   });
 
   it('uses offset pagination', async () => {
@@ -148,4 +175,20 @@ describe('YourWorkGroupsApp', () => {
 
     expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
   });
+
+  it.each(GROUP_DASHBOARD_TABS)(
+    'renders expected sort options and active sort option on $text tab',
+    async (tab) => {
+      await createComponent({
+        mountFn: mountExtended,
+        stubs: { TabView },
+        route: { name: tab.value },
+      });
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_UPDATED,
+      });
+    },
+  );
 });

@@ -1,0 +1,22 @@
+---
+description: The event tracks Gemnasium performance data
+internal_events: true
+status: active
+action: collect_gemnasium_scan_performance_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  value:
+    description: Scan duration in seconds
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202596/
+tiers:
+- free
+- premium
+- ultimate

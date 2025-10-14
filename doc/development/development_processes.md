@@ -16,7 +16,7 @@ Must-reads:
   reviewed
 - [Database review guidelines](database_review.md) for reviewing
   database-related changes and complex SQL queries, and having them reviewed
-- [Secure coding guidelines](secure_coding_guidelines.md)
+- [Secure coding guidelines](secure_coding_guidelines/_index.md)
 - [Pipelines for the GitLab project](pipelines/_index.md)
 - [Avoiding required stops](avoiding_required_stops.md)
 

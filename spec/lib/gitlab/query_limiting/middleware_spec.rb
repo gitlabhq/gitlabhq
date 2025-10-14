@@ -14,6 +14,16 @@ RSpec.describe Gitlab::QueryLimiting::Middleware do
       expect(middleware.call({ number: 10 }))
         .to eq({ number: 10 })
     end
+
+    it 'skips query limiting when suppressed' do
+      expect(Gitlab::QueryLimiting::Transaction).not_to receive(:run)
+
+      Gitlab::QueryLimiting.with_suppressed do
+        middleware = described_class.new(->(env) { env })
+
+        expect(middleware.call({ number: 10 })).to eq({ number: 10 })
+      end
+    end
   end
 
   describe '#action_name' do

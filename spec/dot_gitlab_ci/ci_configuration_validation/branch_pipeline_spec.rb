@@ -19,10 +19,6 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     pipeline_project.repository.blob_at(ci_commit_branch, '.gitlab-ci.yml').data
   end
 
-  before do
-    stub_feature_flags(ci_validate_config_options: false)
-  end
-
   subject(:pipeline) do
     trigger_source = ci_pipeline_source.to_sym
     create_pipeline_service

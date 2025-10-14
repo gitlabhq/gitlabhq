@@ -24,8 +24,8 @@ its frameworks are removed.
 
 You can apply up to 20 compliance frameworks to each project.
 
-For a click-through demo, see [Compliance frameworks](https://gitlab.navattic.com/compliance).
-<!-- Demo published on 2025-01-27 -->
+For a click-through demo, see [Custom Compliance frameworks](https://gitlab.navattic.com/custom-compliance).
+<!-- Demo published on 2025-10-09 -->
 
 ## Prerequisites
 
@@ -167,6 +167,89 @@ To import a compliance framework by using a JSON template:
 
 If the import is successful, the new compliance framework appears in the list. Any errors are displayed for correction.
 
+### JSON template structure and schema
+
+Compliance framework JSON templates follow a specific schema structure that defines the framework metadata, requirements, and associated controls. Understanding this structure helps you create custom templates or modify existing ones to meet your organization's specific compliance needs.
+
+#### Framework properties
+
+Each JSON template contains the following top-level properties:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | String | Yes | The display name of the compliance framework. |
+| `description` | String | Yes | A detailed description of the framework's purpose. |
+| `color` | String | Yes | Hexadecimal color code for the framework (for example, `#1f75cb`). |
+| `requirements` | Array | No | Array of requirement objects that define the compliance controls. |
+
+#### Requirements structure
+
+Each requirement in the `requirements` array contains:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | String | Yes | The name of the compliance requirement. |
+| `description` | String | Yes | Detailed description of what the requirement enforces. |
+| `controls` | Array | Yes | Array of control objects that implement the requirement. |
+
+#### Control structure
+
+Each control in the `controls` array defines a specific check:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | String | Yes | The GitLab control ID (for example, `scanner_sast_running`). |
+| `control_type` | String | Yes | Always `"internal"` for GitLab controls. |
+| `expression` | Object | Yes | Defines the evaluation logic for the control. |
+
+#### Expression object
+
+The `expression` object defines how the control is evaluated:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `field` | String | Yes | The field name to evaluate (matches the control name). |
+| `operator` | String | Yes | Comparison operator (`=`, `>=`, `<=`, `>`, `<`). |
+| `value` | Mixed | Yes | Expected value (boolean, number, or string). |
+
+#### Example JSON template structure
+
+Here's a simplified example that shows the complete structure:
+
+```json
+{
+  "name": "Example Compliance Framework",
+  "description": "Example framework demonstrating JSON structure",
+  "color": "#1f75cb",
+  "requirements": [
+    {
+      "name": "Security Scanning Requirement",
+      "description": "Ensure security scanning is enabled for all projects",
+      "controls": [
+        {
+          "name": "scanner_sast_running",
+          "control_type": "internal",
+          "expression": {
+            "field": "scanner_sast_running",
+            "operator": "=",
+            "value": true
+          }
+        },
+        {
+          "name": "minimum_approvals_required_2",
+          "control_type": "internal",
+          "expression": {
+            "field": "minimum_approvals_required",
+            "operator": ">=",
+            "value": 2
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Requirements
 
 {{< details >}}
@@ -210,7 +293,7 @@ Combine GitLab compliance controls to help you meet
 | Author approved merge request is forbidden               | `merge_request_prevent_author_approval`                    | Ensures that the author of a merge request [cannot approve their own changes](../../project/merge_requests/approvals/_index.md). |
 | Branch deletion disabled                                 | `branch_deletion_disabled`                                 | Ensures that [branches can't be deleted](../../project/repository/branches/protected.md). |
 | CI/CD job token scope enabled                            | `cicd_job_token_scope_enabled`                             | Ensures that [CI/CD job token](../../../ci/jobs/ci_job_token.md) scope restrictions are enabled. |
-| Code changes requires code owners                        | `code_changes_requires_code_owners`                        | Ensures that code changes require approval from [code owners](../../project/codeowners/_index.md). |
+| Code changes require code owners                         | `code_changes_requires_code_owners`                        | Ensures that code changes require approval from [code owners](../../project/codeowners/_index.md). |
 | Code owner approval required                             | `code_owner_approval_required`                             | Ensures that [code owners file](../../project/codeowners/_index.md) is configured. |
 | Code quality running                                     | `scanner_code_quality_running`                             | Ensures that [code quality scanning](../../../ci/testing/code_quality.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
 | Committers approved merge request is forbidden           | `merge_request_prevent_committers_approval`                | Ensures that users who have [committed to a merge request cannot approve it](../../project/merge_requests/approvals/_index.md). |
@@ -221,7 +304,7 @@ Combine GitLab compliance controls to help you meet
 | Default branch users can merge                           | `default_branch_users_can_merge`                           | Controls [whether users can merge changes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can push                            | `default_branch_users_can_push`                            | Controls [whether users can push directly to the default branch](../../project/repository/branches/protected.md). |
 | Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
-| Ensure two administrators per repository                 | `ensure_2_admins_per_repo`                                 | Ensures that [at least two administrators](../../project/members/_index.md) are assigned to each repository. |
+| Ensure two administrators per repository                 | `ensure_2_admins_per_repo`                                 | Ensures that [at least two Owners](../../project/members/_index.md) are assigned to each project. |
 | Error tracking enabled                                   | `error_tracking_enabled`                                   | Ensures that [error tracking](../../../operations/error_tracking.md) is enabled for the project. |
 | Force push disabled                                      | `force_push_disabled`                                      | Prevents [force pushing](../../project/repository/branches/protected.md) to repositories. |
 | Forks exist for the project                              | `has_forks`                                                | Ensures that the project has been [forked](../../project/repository/forking_workflow.md) |
@@ -232,10 +315,10 @@ Combine GitLab compliance controls to help you meet
 | Internal visibility is forbidden                         | `project_visibility_not_internal`                          | Ensures that projects are not set to [internal visibility](../../public_access.md). |
 | Issue tracking enabled                                   | `issue_tracking_enabled`                                   | Ensures that [issue tracking](../../project/issues/_index.md) is enabled for the project. |
 | License compliance running                               | `scanner_license_compliance_running`                       | Ensures that [license compliance scanning](../license_approval_policies.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
-| Merge request commit reset approvals                     | `merge_request_commit_reset_approvals`                     | Ensures that [new commits to merge requests reset approvals](../../project/merge_requests/approvals/settings.md). |
+| Merge request commit resets approvals                    | `merge_request_commit_reset_approvals`                     | Ensures that [new commits to merge requests reset approvals](../../project/merge_requests/approvals/settings.md). |
 | Merge requests approval rules prevent editing            | `merge_requests_approval_rules_prevent_editing`            | Ensures that [merge request approval rules](../../project/merge_requests/approvals/settings.md) can't be edited. |
 | Merge requests require code owner approval               | `merge_requests_require_code_owner_approval`               | Ensures that merge requests require approval from [code owners](../../project/codeowners/_index.md). |
-| More members than admins                                 | `more_members_than_admins`                                 | Ensures fewer [administrators](../../project/members/_index.md) are assigned to the project than total members. |
+| More members than admins                                 | `more_members_than_admins`                                 | Ensures fewer Administrators [(Owners or Maintainers)](../../project/members/_index.md) are assigned to the project than total members. |
 | Package Hunter no findings untriaged                     | `package_hunter_no_findings_untriaged`                     | Ensures that all [Package Hunter](../../application_security/triage/_index.md) findings are triaged. |
 | Project not archived                                     | `project_archived`                                         | Checks whether the [project is archived](../../project/settings/_index.md). Typically `false` is compliant. |
 | Project not marked for deletion                          | `project_marked_for_deletion`                              | Checks whether the [project is marked for deletion](../../project/settings/_index.md). `false` is compliant. |
@@ -255,7 +338,7 @@ Combine GitLab compliance controls to help you meet
 | Restricted build access                                  | `restricted_build_access`                                  | Ensures [restricted access to build artifacts and pipeline outputs](../../../ci/pipelines/settings.md). |
 | Review and archive stale repositories                    | `review_and_archive_stale_repos`                           | Ensures that stale repositories are reviewed and [archived](../../project/settings/_index.md). |
 | Review and remove inactive users                         | `review_and_remove_inactive_users`                         | Ensures that [inactive users](../../../administration/admin_area.md) are reviewed and removed. |
-| SAST running                                             | `scanner_sast_running`                                     | Ensures that [Static Application Security Testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| SAST running                                             | `scanner_sast_running`                                     | Ensures that [static application security testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
 | Secret detection running                                 | `scanner_secret_detection_running`                         | Ensures that [secret detection scanning](../../application_security/secret_detection/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
 | Secure webhooks                                          | `secure_webhooks`                                          | Ensures that [webhooks](../../project/integrations/webhooks.md) are securely configured. |
 | Stale branch cleanup enabled                             | `stale_branch_cleanup_enabled`                             | Ensures that [automatic cleanup of stale branches](../../project/repository/branches/_index.md) is enabled. |
@@ -297,14 +380,33 @@ To add an external control when creating or editing a framework:
 1. In the **Requirements** section, select **New requirement**.
 1. Select **Add an external control**.
 1. In the fields edit **External Control Name**, **External URL** and **`HMAC` shared secret**.
+1. Optional. Turn off the **Ping enabled** toggle to control whether GitLab sends notifications to the external service during compliance scans.
 1. Select **Save changes to the framework** to save the requirement.
+
+#### Ping enabled setting
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538898) in GitLab 18.5.
+
+{{< /history >}}
+
+The **Ping enabled** setting controls whether GitLab requests external control status updates from external systems every 12 hours.
+
+- Enabled (default): GitLab automatically sends HTTP requests to the external service URL every 12 hours and updates the external control status based on the response.
+- Disabled: GitLab does not send notifications to the external service and the external control displays a **Disabled** badge in the compliance framework UI. To request
+  the status of an external control, you must manually use the [External Controls API](../../../api/external_controls.md).
 
 #### External control lifecycle
 
 External controls have an **asynchronous** workflow. [Compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Workflow for external compliance controls
+    accDescr: GitLab sends a requirement payload to an external service and receives a control response for compliance validation.
+
     GitLab->>+External service: Requirement payload
     External service-->>-GitLab: Control response
     Note over External service,GitLab: Response includes SHA at HEAD

@@ -186,7 +186,7 @@ If you suspect unauthorized modifications to project settings, consider taking t
 
 ### Engaging GitLab for assistance with a security incident
 
-Before you ask GitLab for help, search the [GitLab documentation](https://docs.gitlab.com/). You should engage support once you have performed the preliminary investigation on your end and have additional questions or need of assistance. Eligibility for assistance from GitLab Support is [determined by your license](https://about.gitlab.com/support/#gitlab-support-service-levels).
+Before you ask GitLab for help, search the [GitLab documentation](https://docs.gitlab.com). You should engage support once you have performed the preliminary investigation on your end and have additional questions or need of assistance. Eligibility for assistance from GitLab Support is [determined by your license](https://about.gitlab.com/support/#gitlab-support-service-levels).
 
 ### Security best practices
 

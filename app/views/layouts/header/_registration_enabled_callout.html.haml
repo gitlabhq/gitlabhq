@@ -1,10 +1,8 @@
 - return unless show_registration_enabled_user_callout?
 
-= render Pajamas::AlertComponent.new(title: _('Check your sign-up restrictions'),
+= render Users::DismissibleAlertComponent.new(title: _('Check your sign-up restrictions'),
   variant: :warning,
-  alert_options: { class: 'js-registration-enabled-callout',
-                   data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT,
-                           dismiss_endpoint: callouts_path }},
+  dismiss_options: { user: current_user, feature_id: 'registration_enabled_callout' },
   close_button_options: { data: { testid: 'close-registration-enabled-callout' }}) do |c|
   - c.with_body do
     = _("Your GitLab instance allows anyone to register for an account, which is a security risk on public-facing GitLab instances. You should deactivate new sign ups if public users aren't expected to register for an account.")

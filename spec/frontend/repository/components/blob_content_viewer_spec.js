@@ -279,6 +279,18 @@ describe('Blob content viewer component', () => {
 
           expect(findBlameHeader().exists()).toBe(true);
         });
+
+        it('sets shouldPreloadBlame prop on the viewer when header emits preload event', async () => {
+          loadViewer.mockReturnValueOnce(SourceViewer);
+          await createComponent({ blob: simpleViewerMock });
+
+          expect(findSourceViewer().props('shouldPreloadBlame')).toBe(false); // does not preload by default
+
+          findBlobHeader().vm.$emit('preload-blame');
+          await nextTick();
+
+          expect(findSourceViewer().props('shouldPreloadBlame')).toBe(true); // preloads after receiving event
+        });
       });
     });
 

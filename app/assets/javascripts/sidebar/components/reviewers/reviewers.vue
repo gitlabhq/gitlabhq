@@ -15,10 +15,6 @@ export default {
     UncollapsedReviewerList,
   },
   props: {
-    rootPath: {
-      type: String,
-      required: true,
-    },
     users: {
       type: Array,
       required: true,
@@ -84,7 +80,6 @@ export default {
         v-else
         :can-rerequest="editable"
         :users="sortedReviewers"
-        :root-path="rootPath"
         :issuable-type="issuableType"
         @request-review="requestReview"
         @remove-reviewer="removeReviewer"

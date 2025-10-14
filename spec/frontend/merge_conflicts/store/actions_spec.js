@@ -127,7 +127,7 @@ describe('merge conflicts actions', () => {
         [],
       );
       expect(createAlert).toHaveBeenCalledWith({
-        message: 'Failed to save merge conflicts resolutions. Please try again!',
+        message: 'Failed to save merge conflict resolutions. Please try again.',
       });
     });
   });

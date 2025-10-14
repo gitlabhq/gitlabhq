@@ -101,7 +101,7 @@ When performing manual testing of dates, such as when reviewing merge requests, 
 
 To change the time zone on macOS:
 
-1. Go to **System Settings > General > Date & Time**.
+1. Go to **System Settings** > **General** > **Date & Time**.
 1. Clear the **Set time zone automatically using your current location** checkbox.
 1. Change **Closest city** to a city in another time zone, such as Sacramento, London, or Beijing.
 

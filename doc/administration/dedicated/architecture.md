@@ -48,7 +48,7 @@ GitLab Dedicated deploys Gitaly [in a sharded setup](../gitaly/praefect/_index.m
 
 ### Geo setup
 
-GitLab Dedicated leverages GitLab Geo for [disaster recovery](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
+GitLab Dedicated leverages Geo for [disaster recovery](disaster_recovery.md).
 
 Geo does not use an active-active failover configuration. For more information, see [Geo](../geo/_index.md).
 
@@ -56,7 +56,7 @@ Geo does not use an active-active failover configuration. For more information, 
 
 {{< alert type="note" >}}
 
-Required for Geo migrations to Dedicated. Otherwise, optional
+Required for Geo migrations to Dedicated. Otherwise, optional.
 
 {{< /alert >}}
 
@@ -90,6 +90,6 @@ The following diagram illustrates a GitLab-managed AWS account that contains Git
 
 ![Diagram of hosted Runners architecture for GitLab Dedicated.](img/hosted-runners-architecture_v17_3.png)
 
-For more information on how runners authenticate and execute the job payload, see [runner execution flow](https://docs.gitlab.com/runner#runner-execution-flow).
+For more information on how runners authenticate and execute the job payload, see [runner execution flow](https://docs.gitlab.com/runner/#runner-execution-flow).
 
 GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/0fb12de8-5236-4d80-9a9c-61c08b714e6f/edit?invitationId=inv_4a12e347-49e8-438e-a28f-3930f936defd) files for the diagram in Lucidchart.

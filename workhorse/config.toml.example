@@ -47,3 +47,36 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   interval = 180
   max_requests = 1
   consecutive_failures = 5
+
+# Health check listener configuration
+# Enables a dedicated health check endpoint for readiness probes
+[health_check_listener]
+  # Network type for the health check listener (tcp, tcp4, tcp6, unix)
+  network = "tcp"
+  # Address to bind the health check server to
+  addr = "localhost:8182"
+
+  # URL to check Puma's readiness endpoint
+  # Readiness indicates if the service is ready to accept traffic
+  # If not specified, authBackend + /-/readiness is used.
+  readiness_probe_url = "http://localhost:8080/-/readiness"
+
+  # Optional: URL to check Puma's control server for readiness checks
+  # Uncomment to enable control server checks
+  # puma_control_url = "http://localhost:9293"
+
+  # How often to perform health checks
+  check_interval = "10s"
+
+  # Timeout for individual health check requests
+  timeout = "5s"
+
+  # How long to remain not ready after receiving shutdown signal
+  # This allows load balancers to drain traffic before shutdown
+  graceful_shutdown_delay = "10s"
+
+  # Number of consecutive failures before marking as not ready (readiness only)
+  max_consecutive_failures = 1
+
+  # Number of consecutive successes required to become ready (readiness only)
+  min_successful_probes = 1

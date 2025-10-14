@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Read through the GitLab installation methods.
+description: Install GitLab on AWS using community AMIs provided by GitLab.
 title: Installing a GitLab POC on Amazon Web Services (AWS)
 ---
 
@@ -239,7 +239,7 @@ it receive traffic from any destination.
 
 1. Select **Route Tables** from the left menu and select the `gitlab-public`
    route to show the options at the bottom.
-1. Select the **Routes** tab, select **Edit routes > Add route** and set `0.0.0.0/0`
+1. Select the **Routes** tab, select **Edit routes** > **Add route** and set `0.0.0.0/0`
    as the destination. In the target column, select the **Internet Gateway** and select the `gitlab-gateway` we created previously.
    Select **Save changes** when done.
 
@@ -472,7 +472,7 @@ If you do not want to maintain bastion hosts, you can set up [AWS Systems Manage
 
 1. Go to the EC2 Dashboard and select **Launch instance**.
 1. In the **Name and tags** section, set the **Name** to `Bastion Host A`.
-1. Select the latest **Ubuntu Server LTS (HVM)** AMI. Check the GitLab documentation for the [latest supported OS version](../../administration/package_information/supported_os.md).
+1. Select the latest **Ubuntu Server LTS (HVM)** AMI. Check the GitLab documentation for the [latest supported OS version](../../install/package/_index.md).
 1. Choose an instance type. We use a `t2.micro` as we only use the bastion host to SSH into our other instances.
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `bastion-host-a`) and save the `bastion-host-a.pem` file for later use.
@@ -568,7 +568,7 @@ Because we're adding our SSL certificate at the load balancer, we do not need th
 
 From your GitLab instance, connect to the RDS instance to verify access and to install the required `pg_trgm` and `btree_gist` extensions.
 
-To find the host or endpoint, go to **Amazon RDS > Databases** and select the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
+To find the host or endpoint, go to **Amazon RDS** > **Databases** and select the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
 
 Do not to include the colon and port number:
 
@@ -652,7 +652,7 @@ Let's create an EC2 instance where we install Gitaly:
 
 1. From the EC2 dashboard, select **Launch instance**.
 1. In the **Name and tags** section, set the **Name** to `Gitaly`.
-1. Choose an AMI. In this example, we select the latest **Ubuntu Server LTS (HVM), SSD Volume Type**. Check the GitLab documentation for the [latest supported OS version](../../administration/package_information/supported_os.md).
+1. Choose an AMI. In this example, we select the latest **Ubuntu Server LTS (HVM), SSD Volume Type**. Check the GitLab documentation for the [latest supported OS version](../../install/package/_index.md).
 1. Choose an instance type. We pick a `m5.xlarge`.
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `gitaly`) and save the `gitaly.pem` file for later use.

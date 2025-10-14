@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { GlSprintf } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PickUpWidget from '~/homepage/components/pick_up_widget.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { lastPushEvent } from './mocks/last_push_event_mock';
@@ -12,13 +12,13 @@ describe('PickUpWidget', () => {
     lastPushEvent,
   };
 
-  const findWidget = () => wrapper.findByTestId('pick-up-widget-container');
+  const findWidget = () => wrapper.findByTestId('homepage-pick-up-widget');
   const findCreateMrButton = () => wrapper.findByTestId('create-merge-request-button');
   const findDismissButton = () => wrapper.findByTestId('dismiss-button');
   const findProjectLink = () => wrapper.findByTestId('project-link');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
-  function createWrapper(props = {}) {
+  function createShallowWrapper(props = {}) {
     wrapper = shallowMountExtended(PickUpWidget, {
       propsData: {
         ...defaultProps,
@@ -30,8 +30,20 @@ describe('PickUpWidget', () => {
     });
   }
 
+  function createWrapper(props = {}) {
+    wrapper = mountExtended(PickUpWidget, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+      stubs: {
+        GlSprintf,
+      },
+    });
+  }
+
   beforeEach(() => {
-    createWrapper();
+    createShallowWrapper();
   });
 
   it('displays the push message with branch name', () => {
@@ -69,13 +81,13 @@ describe('PickUpWidget', () => {
 
   describe('when create MR button should not be shown', () => {
     it('does not render the create MR button when createMrPath is empty', () => {
-      createWrapper({ lastPushEvent: { create_mr_path: '' } });
+      createShallowWrapper({ lastPushEvent: { create_mr_path: '' } });
 
       expect(findCreateMrButton().exists()).toBe(false);
     });
 
     it('does not render the create MR button when createMrPath is null', () => {
-      createWrapper({ lastPushEvent: { create_mr_path: null } });
+      createShallowWrapper({ lastPushEvent: { create_mr_path: null } });
 
       expect(findCreateMrButton().exists()).toBe(false);
     });
@@ -83,7 +95,7 @@ describe('PickUpWidget', () => {
 
   describe('when project data is missing', () => {
     beforeEach(() => {
-      createWrapper({
+      createShallowWrapper({
         lastPushEvent: {
           ...lastPushEvent,
           project: null,
@@ -98,7 +110,7 @@ describe('PickUpWidget', () => {
 
   describe('when there is no creation time of the push event', () => {
     it('does not render the time ago tooltip', () => {
-      createWrapper({
+      createShallowWrapper({
         lastPushEvent: {
           ...lastPushEvent,
           created_at: null,
@@ -112,6 +124,7 @@ describe('PickUpWidget', () => {
 
   describe('dismissal functionality', () => {
     beforeEach(() => {
+      localStorage.clear();
       createWrapper();
     });
 
@@ -119,6 +132,18 @@ describe('PickUpWidget', () => {
       expect(findWidget().exists()).toBe(true);
 
       findDismissButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findWidget().exists()).toBe(false);
+    });
+
+    it('updates localStorage value to true', async () => {
+      expect(findWidget().exists()).toBe(true);
+
+      findDismissButton().vm.$emit('click');
+      await nextTick();
+      wrapper.destroy();
+      createWrapper();
       await nextTick();
 
       expect(findWidget().exists()).toBe(false);

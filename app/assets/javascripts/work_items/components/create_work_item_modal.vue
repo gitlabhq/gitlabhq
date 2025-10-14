@@ -305,7 +305,7 @@ export default {
     </template>
     <gl-modal
       modal-id="create-work-item-modal"
-      modal-class="create-work-item-modal gl-@container"
+      modal-class="create-work-item-modal"
       :aria-label="newWorkItemText"
       :title="newWorkItemText"
       body-class="!gl-pb-0"

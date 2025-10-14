@@ -1,0 +1,39 @@
+- page_title s_('Observability|O11y service settings')
+- add_page_specific_style 'page_bundles/settings'
+
+= render ::Layouts::PageHeadingComponent.new(s_('Observability|O11y service settings')) do |c|
+  - c.with_actions do
+    = link_button_to new_experimental_o11y_service_setting_path, variant: :confirm do
+      = s_('Observability|New O11y service setting')
+
+- if @o11y_service_settings.any?
+  = render ::Layouts::SettingsBlockComponent.new(s_('Observability|O11y service configurations'),
+    id: 'o11y-service-settings-list',
+    expanded: true) do |c|
+    - c.with_description do
+      = s_('Observability|Manage your o11y service connection settings.')
+    - c.with_body do
+      %table.table.gl-table
+        %thead
+          %tr
+            %th= s_('Observability|Group ID')
+            %th= s_('Observability|Group name')
+            %th= s_('Observability|Service name')
+            %th= s_('Observability|User email')
+            %th= s_('Observability|Created at')
+            %th
+        %tbody
+          - @o11y_service_settings.each do |setting|
+            %tr
+              %td{ class: '!gl-align-middle' }= setting.group_id
+              %td{ class: '!gl-align-middle' }= setting.group.name
+              %td{ class: '!gl-align-middle' }= setting.o11y_service_name
+              %td{ class: '!gl-align-middle' }= setting.o11y_service_user_email
+              %td{ class: '!gl-align-middle' }= setting.created_at.strftime('%Y-%m-%d %H:%M')
+              %td{ class: '!gl-align-middle' }
+                = link_to s_('Observability|Edit'), edit_experimental_o11y_service_setting_path(setting), class: 'btn btn-sm btn-default'
+                = link_to s_('Observability|Delete'), experimental_o11y_service_setting_path(setting), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: s_('Observability|Are you sure you want to delete this O11y service setting?') }
+
+      = paginate @o11y_service_settings, theme: 'gitlab'
+- else
+  = render ::Layouts::EmptyResultComponent.new(type: :search)

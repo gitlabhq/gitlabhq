@@ -191,14 +191,14 @@ version of the product:
    only if the project namespace's plan includes the feature.
 
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Settings > General**.
+   1. On the left sidebar, select **Settings** > **General**.
    1. Expand **Account and limit**.
    1. Select the **Allow use of licensed EE features** checkbox.
    1. Select **Save changes**.
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Overview > Groups**.
+   1. On the left sidebar, select **Overview** > **Groups**.
    1. Identify the group you want to modify, and select **Edit**.
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
    1. Select **Save changes**.
@@ -299,7 +299,7 @@ To simulate a CE instance without deleting the license in a GDK:
 1. Then restart the GDK:
 
    ```shell
-   gdk restart rails && gdk restart webpack
+   gdk restart
    ```
 
 If you want to revert back to an EE

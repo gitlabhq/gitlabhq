@@ -7,18 +7,22 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include RedisHelpers
   include WorkhorseHelpers
 
+  let(:instance_id) { 'test-instance-id' }
+  let(:instance_uuid) { 'test-instance-uuid' }
+
   before do
     stub_application_setting(ci_job_live_trace_enabled: true)
-    stub_feature_flags(ci_validate_config_options: false)
     stub_gitlab_calls
     allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
     allow(Ci::Build).to receive(:find_by!).and_call_original
     allow(Ci::Build).to receive(:find_by!).with(partition_id: instance_of(Integer), id: job.id).and_return(job)
+    allow(Gitlab::GlobalAnonymousId).to receive_messages(instance_id: instance_id, instance_uuid: instance_uuid)
   end
 
   describe '/api/v4/jobs' do
     let_it_be(:group) { create(:group, :nested) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:scoped_user) { create(:user) }
 
     let(:project) do
       create(:project, *project_traits, namespace: group, shared_runners_enabled: false).tap(&:track_project_repository)
@@ -38,7 +42,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         pipeline: pipeline,
         name: 'spinach',
         stage: 'test',
-        stage_idx: 0
+        stage_idx: 0,
+        user: user,
+        scoped_user_id: scoped_user.id
       )
     end
 
@@ -108,6 +114,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { post api('/jobs/request') }
       end
 
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_request_api do
+        let(:runner2) { create(:ci_runner, :project, projects: [project]) }
+
+        def request
+          request_job
+        end
+
+        def request_with_second_scope
+          request_job(runner2.token)
+        end
+      end
+
       context 'when no token is provided' do
         it 'returns 400 error' do
           post api('/jobs/request')
@@ -125,6 +143,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       context 'when valid token is provided' do
+        context 'when authenticated with legacy private_token' do
+          # Pre-17.11 GitLab runners send PRIVATE-TOKEN value instead of token parameter
+          # These tests document the current behavior and ensure we handle this authentication method correctly
+
+          it 'successfully authenticates using token parameter and ignores private_token parameter' do
+            request_job(private_token: 'ignored_token')
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['id']).to eq(job.id)
+            expect(json_response['token']).to eq(job.token)
+          end
+        end
+
         context 'when runner is paused' do
           let(:runner) { create(:ci_runner, :inactive) }
           let(:update_value) { runner.ensure_runner_queue_value }
@@ -222,7 +253,15 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'name' => job.name,
               'stage' => job.stage_name,
               'project_id' => job.project.id,
-              'project_name' => job.project.name }
+              'project_name' => job.project.name,
+              'project_full_path' => job.project.full_path,
+              'namespace_id' => group.id,
+              'root_namespace_id' => group.parent.id,
+              'organization_id' => group.parent.organization.id,
+              'instance_id' => instance_id,
+              'instance_uuid' => instance_uuid,
+              'user_id' => user.id,
+              'scoped_user_id' => scoped_user.id }
           end
 
           let(:expected_git_info) do
@@ -843,7 +882,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 pipeline: pipeline,
                 name: 'spinach',
                 stage: 'test',
-                stage_idx: 0
+                stage_idx: 0,
+                user: user,
+                scoped_user_id: scoped_user.id
               )
             end
 
@@ -1436,10 +1477,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(response).to have_gitlab_http_status(:no_content)
           end
         end
+      end
 
-        def request_job(token = runner.token, **params)
-          post api('/jobs/request'), params: params.merge(token: token)
-        end
+      def request_job(token = runner.token, **params)
+        post api('/jobs/request'), params: params.merge(token: token)
       end
     end
   end

@@ -77,9 +77,9 @@ export default {
 
 <template>
   <header
-    class="js-design-header gl-border-b gl-flex gl-max-w-full gl-flex-col gl-justify-between gl-bg-overlap gl-py-4 gl-pl-5 @md/panel:gl-flex-row @md/panel:gl-items-center"
+    class="js-design-header gl-border-b gl-flex gl-max-w-full gl-flex-col gl-justify-between gl-bg-overlap gl-py-4 gl-pl-5 md:gl-flex-row md:gl-items-center"
   >
-    <div class="gl-mb-3 gl-flex gl-flex-row gl-items-center gl-overflow-hidden @md/panel:gl-mb-0">
+    <div class="gl-mb-3 gl-flex gl-flex-row gl-items-center gl-overflow-hidden md:gl-mb-0">
       <div class="gl-mr-3 gl-flex gl-overflow-hidden">
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
         <h2 v-else class="gl-m-0 gl-flex gl-items-center gl-overflow-hidden gl-text-base">
@@ -91,11 +91,11 @@ export default {
           <imported-badge v-if="design.imported" class="gl-ml-2" />
         </h2>
       </div>
-      <close-button class="gl-ml-auto @md/panel:gl-hidden" />
+      <close-button class="gl-ml-auto md:gl-hidden" />
     </div>
     <div
       v-if="!isLoading && design.id"
-      class="gl-mr-5 gl-flex gl-shrink-0 @md/panel:gl-ml-auto @md/panel:gl-flex-row"
+      class="gl-mr-5 gl-flex gl-shrink-0 md:gl-ml-auto md:gl-flex-row"
     >
       <todos-toggle
         v-if="$options.isLoggedIn"
@@ -136,6 +136,6 @@ export default {
       />
       <design-navigation :filename="designFilename" :all-designs="allDesigns" class="gl-ml-auto" />
     </div>
-    <close-button class="gl-hidden @md/panel:gl-flex" />
+    <close-button class="gl-hidden md:gl-flex" />
   </header>
 </template>

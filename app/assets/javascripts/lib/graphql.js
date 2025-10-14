@@ -106,6 +106,9 @@ export const typePolicies = {
       return id;
     },
   },
+  AiMetrics: {
+    merge: true,
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

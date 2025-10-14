@@ -47,7 +47,7 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
 | Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |
-| Secure | [Auto Static Application Security Testing (SAST)](stages.md#auto-sast) |
+| Secure | [Auto static application security testing (SAST)](stages.md#auto-sast) |
 | Secure | [Auto Secret Detection](stages.md#auto-secret-detection) |
 
 ### Comparison to application platforms and PaaS
@@ -103,7 +103,7 @@ Prerequisites:
 To enable Auto DevOps for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Optional but recommended. Add the [base domain](requirements.md#auto-devops-base-domain).
@@ -132,7 +132,7 @@ Prerequisites:
 To enable Auto DevOps for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Select **Save changes**.
@@ -145,7 +145,7 @@ Auto DevOps pipeline for any project that belongs to that group:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **New pipeline**.
 
 ### Deploy your app to a cloud provider

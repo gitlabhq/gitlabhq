@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Authentication best practices
+title: Authentication and authorization best practices
 description: Security recommendations and best practices for authentication, authorization, and access management.
 ---
 

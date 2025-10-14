@@ -318,6 +318,23 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
           pipeline.load(context, data)
         end
       end
+
+      context 'when user is a service account' do
+        let(:user) { create(:user, :service_account) }
+
+        let(:data) do
+          {
+            user_id: user.id,
+            access_level: 30,
+            group: portable.is_a?(Group) ? portable : nil,
+            project: portable.is_a?(Project) ? portable : nil
+          }.compact
+        end
+
+        it 'creates new membership' do
+          expect { subject.load(context, data) }.to change(portable.members, :count).by(1)
+        end
+      end
     end
   end
 

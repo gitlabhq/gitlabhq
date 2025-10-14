@@ -37,7 +37,7 @@ export default {
   i18n: {
     title: s__('DuoFeatures|GitLab Duo context exclusions'),
     description: s__(
-      'DuoFeatures|Specify project files and directories that GitLab Duo will not access. Excluded content is never sent to AI models. %{linkStart}learn more%{linkEnd}.',
+      'DuoFeatures|Specify project files and directories that GitLab Duo will not access. Excluded content is never sent to AI models. %{linkStart}Learn more%{linkEnd}.',
     ),
     manageExclusions: s__('DuoFeatures|Manage exclusions'),
     actionsLabel: __('Actions'),
@@ -147,8 +147,6 @@ export default {
     <crud-component
       ref="crudComponent"
       :title="$options.i18n.title"
-      :count="rules.length"
-      icon="remove"
       data-testid="exclusion-settings-crud"
     >
       <template #description>

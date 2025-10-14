@@ -16,6 +16,8 @@
 - Security::VulnerabilityElasticCountOverTimeFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - AuditEvents::CombinedAuditEventFinder # Reason: The finder combines result from 4 different tables and also returns cursor to next page
 - Security::AnalyzerGroupStatusFinder # Reason: To give accurate counts, return all analyzer types, even when there is no DB record
+- Ai::ClickHouseUsageEventsFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
+- Ai::UsageEventsFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
 
 # Temporary excludes (aka TODOs)
 # For example:

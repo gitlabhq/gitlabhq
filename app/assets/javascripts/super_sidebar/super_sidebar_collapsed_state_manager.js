@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
@@ -17,7 +17,7 @@ export const isCollapsed = () => findPage().classList.contains(SIDEBAR_COLLAPSED
 // See documentation: https://design.gitlab.com/patterns/navigation#left-sidebar
 // NOTE: at 1200px nav sidebar should not overlap the content
 // https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24555#note_134136110
-export const isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
+export const isDesktopBreakpoint = () => GlBreakpointInstance.windowWidth() >= breakpoints.xl;
 
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 
@@ -32,11 +32,19 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
   sidebarState.isCollapsed = collapsed;
   sidebarState.isMobile = !isDesktopBreakpoint();
 
-  if (saveCookie && isDesktopBreakpoint()) {
+  if (!gon?.features?.projectStudioEnabled && saveCookie && isDesktopBreakpoint()) {
     setCookie(SIDEBAR_COLLAPSED_COOKIE, collapsed, {
       expires: SIDEBAR_COLLAPSED_COOKIE_EXPIRATION,
     });
   }
+};
+
+export const toggleSuperSidebarIconOnly = (iconOnly = !sidebarState.isIconOnly) => {
+  sidebarState.isIconOnly = iconOnly;
+
+  setCookie(SIDEBAR_COLLAPSED_COOKIE, iconOnly, {
+    expires: SIDEBAR_COLLAPSED_COOKIE_EXPIRATION,
+  });
 };
 
 export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = false) => {
@@ -49,7 +57,13 @@ export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = fal
       collapsed = forceDesktopExpandedSidebar ? false : getCollapsedCookie();
     }
   }
+
   toggleSuperSidebarCollapsed(collapsed, false);
+
+  // In "Project Studio", this cookie means "collapsed to icon-only"
+  if (gon?.features?.projectStudioEnabled) {
+    toggleSuperSidebarIconOnly(getCollapsedCookie());
+  }
 };
 
 export const bindSuperSidebarCollapsedEvents = (forceDesktopExpandedSidebar = false) => {

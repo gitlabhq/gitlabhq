@@ -29,6 +29,10 @@ docker buildx build \
   --file="qa/gdk/Dockerfile.gdk" \
   --platform=${ARCH:-amd64} \
   --build-arg "GDK_BASE_TAG_PREFIX=${GDK_BASE_TAG_PREFIX}" \
+  --build-arg "GLCI_GITLAB_ASSETS_HASH_FILE=${GLCI_GITLAB_ASSETS_HASH_FILE}" \
+  --build-arg "RAILS_ENV=${RAILS_ENV}" \
+  --build-arg "NODE_ENV=${NODE_ENV}" \
+  --build-arg="NODE_OPTIONS=${NODE_OPTIONS}" \
   --tag="${IMAGE}:${SHA_TAG}" \
   --tag="${IMAGE}:${BRANCH_TAG}" \
   --provenance=false \

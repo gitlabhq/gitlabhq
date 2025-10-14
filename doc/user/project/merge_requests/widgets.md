@@ -83,6 +83,17 @@ for your project.
 
 ![Example of the license compliance information shown on a merge request.](img/license_compliance_widget_v15_3.png)
 
+## Security policies
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+To prevent developers from merging vulnerabilities and unsupported licenses, or to enforce required approvals in merge requests, configure [security policies](../../application_security/policies/merge_request_approval_policies.md). You can configure security policies for a project, group, or instance. Optionally, you can set security policies to warn mode to raise awareness of findings without preventing developers from merging.
+
 ## External status checks
 
 {{< details >}}

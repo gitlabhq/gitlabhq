@@ -1981,6 +1981,10 @@
         {
           "const": "data_integrity_failure",
           "description": "Retry if there is an unknown job problem."
+        },
+        {
+          "const": "runner_provisioning_timeout",
+          "description": "Retry if the runner manager did not provision a runner to pick up the job in time."
         }
       ]
     },
@@ -2334,14 +2338,7 @@
                 },
                 "deployment_tier": {
                   "type": "string",
-                  "description": "Explicitly specifies the tier of the deployment environment if non-standard environment name is used.",
-                  "enum": [
-                    "production",
-                    "staging",
-                    "testing",
-                    "development",
-                    "other"
-                  ]
+                  "description": "Explicitly specifies the tier of the deployment environment if non-standard environment name is used."
                 }
               },
               "required": [

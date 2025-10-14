@@ -13,6 +13,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   feature_category :system_access
 
   include SafeFormatHelper
+  include BaseServiceUtility
 
   def show
     setup_show_page
@@ -22,6 +23,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     otp_validation_result =
       ::Users::ValidateManualOtpService.new(current_user).execute(params[:pin_code])
     validated = (otp_validation_result[:status] == :success)
+
+    notify_on_success(:otp) if validated
 
     if validated && current_user.otp_backup_codes?
       ActiveSession.destroy_all_but_current(current_user, session)
@@ -57,6 +60,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     notice = _("Your WebAuthn device was registered!")
     if @webauthn_registration.persisted?
       session.delete(:challenge)
+
+      notify_on_success(:webauthn, device_name: @webauthn_registration.name)
 
       if current_user.otp_backup_codes?
         redirect_to profile_two_factor_auth_path, notice: notice
@@ -111,9 +116,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy_webauthn
-    Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
+    result = Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
 
-    redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
+    if result[:status] == :success
+      redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
+    else
+      redirect_to profile_two_factor_auth_path, status: :found, alert: result[:message]
+    end
   end
 
   def skip
@@ -269,4 +278,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     render_to_string partial: 'configure_later_button',
       locals: { message: message, grace_period_deadline: grace_period_deadline }
   end
+
+  def notify_on_success(type, options = {})
+    notification_service.enabled_two_factor(current_user, type, options)
+  end
 end
+
+Profiles::TwoFactorAuthsController.prepend_mod

@@ -15,9 +15,9 @@ To get started, [install and configure the extension](setup.md).
 
 When configured, this extension brings the GitLab features you use every day directly into your VS Code environment:
 
-- View issues and merge requests.
+- Create and view issues.
+- Create, view, and review merge requests.
 - [Run common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
-- Create and review merge requests.
 - [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
 - [View pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
 - Create and manage snippets.
@@ -63,7 +63,7 @@ To select a GitLab account for the active VS Code window, select the status bar 
 
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Run the command `GitLab: Select Account for this Workspace`.
 1. Select your desired account from the list.
 
@@ -83,6 +83,7 @@ To select an account:
 1. Expand **Issues and Merge Requests**.
 1. Select the line containing **(multiple projects, click to select)**.
 1. Select your desired project:
+
    ![select project-account combination](img/select-project-account_v17_7.png)
 
 The **Issues and Merge requests** list updates with your selected project's information.
@@ -94,7 +95,7 @@ To change your project selection:
 1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. Expand **Issues and Merge Requests** to show the project list.
 1. Select the project.
-1. Next to the project name, select **Clear Selected Project** button ({{< icon name="close-xs" >}}).
+1. Next to the project name, select **Clear Selected Project** ({{< icon name="close-xs" >}}).
 
 ## Use slash commands
 
@@ -112,7 +113,7 @@ To create a snippet in VS Code:
    - For a **Snippet from selection**, open the file and select the lines you want to include.
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. In the Command Palette, run the command `GitLab: Create Snippet`.
 1. Select the snippet's privacy level:
    - **Private** snippets are visible only to project members.
@@ -131,7 +132,7 @@ When you review a merge request, create a snippet patch when you want to suggest
 1. In VS Code, edit all files you want to change. Do not commit your changes.
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. In the Command Palette, enter `GitLab: Create snippet patch`, and select it. This command runs a
    `git diff` command and creates a GitLab snippet in your project.
 1. Enter a **Patch name** and press <kbd>Enter</kbd>. GitLab uses this name as the
@@ -150,7 +151,7 @@ To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-
 1. Place your cursor where you want to insert the snippet.
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Type `GitLab: Insert Snippet` and select it.
 1. Select the project containing your snippet.
 1. Select the snippet to apply.
@@ -164,15 +165,40 @@ To view issues and merge requests for a specific project:
 1. On the sidebar, expand **Issues and merge requests**.
 1. Select your desired project to expand it.
 1. Choose one of the following result types:
-   - Issues assigned to me
-   - Issues created by me
-   - Merge requests assigned to me
-   - Merge requests I'm reviewing
-   - Merge requests created by me
-   - All project merge requests
+   - **Issues assigned to me**
+   - **Issues created by me**
+   - **Merge requests assigned to me**
+   - **Merge requests I'm reviewing**
+   - **Merge requests created by me**
+   - **All project merge requests**
    - Your [custom queries](custom_queries.md)
 
 Select an issue or merge request to open it in a new VS Code tab.
+
+## Create an issue
+
+To create an issue in the current project:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Create new issue on current project**
+   and press <kbd>Enter</kbd>.
+
+GitLab opens the **New issue** page in your default browser.
+
+## Create a merge request
+
+To create a merge request in the current project, on the bottom status bar, select
+**Create MR** ({{< icon name="merge-request-open" >}}) or:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Create new merge request from current project**
+   and press <kbd>Enter</kbd>.
+
+GitLab opens the **New merge request** page in your default browser.
 
 ## Review a merge request
 
@@ -200,7 +226,7 @@ To compare your branch with your project's default branch, without creating a me
 
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. In the Command Palette, search for **GitLab: Compare current branch with master** and press <kbd>Enter</kbd>.
 
 The extension opens a new browser tab. It shows a diff between the most recent commit on your branch, and
@@ -216,7 +242,7 @@ To open a file from your current GitLab project in the GitLab UI, with specific 
 1. Select the lines you want to highlight.
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. In the Command Palette, search for **GitLab: Open active file on GitLab** and press <kbd>Enter</kbd>.
 
 ## View security findings
@@ -232,9 +258,9 @@ Prerequisites:
 
 - You're using GitLab Workflow version 3.74.0 or later.
 - Your project includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure) features, such as
-  Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST),
-  Container Scanning, or Dependency Scanning.
-- You configured the [Security Risk Management](../../user/application_security/secure_your_application.md) features.
+  static application security testing (SAST), dynamic application security testing (DAST),
+  container scanning, or dependency scanning.
+- You configured the [security risk management](../../user/application_security/secure_your_application.md) features.
 
 To view security findings:
 
@@ -288,12 +314,12 @@ To perform SAST scanning of a file in VS Code:
    - Using the Command Palette:
      1. Open the Command Palette:
         - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-        - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+        - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
      1. Search for **GitLab: Run Remote Scan (SAST)** and press
         <kbd>Enter</kbd>.
 1. View the results of the SAST scan.
    1. View the **Primary Side Bar**.
-   1. Select GitLab Workflow ({tanuki}) to display the extension sidebar.
+   1. Select GitLab Workflow ({{< icon name="tanuki">}}) to display the extension sidebar.
    1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
 
    The results of the SAST scan are listed in descending order by severity. To see details of a
@@ -318,7 +344,7 @@ To search the titles and description fields in your project:
 
 1. In VS Code, open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Select your desired search type: `GitLab: Search project merge requests` or `GitLab: Search project issues`.
 1. Enter your text, using filter tokens as needed.
 1. To confirm your search text, press <kbd>Enter</kbd>. To cancel, press <kbd>Escape</kbd>.
@@ -379,10 +405,10 @@ or **Accept Next Line Of Inline Suggestion**:
 
 To update your extension to the latest version:
 
-1. In Visual Studio Code, go to **Settings > Extensions**.
+1. In Visual Studio Code, go to **Settings** > **Extensions**.
 1. Search for **GitLab Workflow** published by **GitLab (`gitlab.com`)**.
 1. From **Extension: GitLab Workflow**, select **Update to {later version}**.
-1. Optional. To enable automatic updates in the future, select **Auto-Update**
+1. Optional. To enable automatic updates in the future, select **Auto-Update**.
 
 ## Check status
 

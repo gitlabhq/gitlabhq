@@ -410,6 +410,21 @@ To resolve the SSL certificate error:
   - `SSL_CERT_FILE=/path/to/ca-bundle.pem`
   - `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
 
+## Error: Invocation of model ID meta isn't supported
+
+In the AIGW logs, the following error displays when the format of the model identifier is incorrect:
+
+```plaintext
+Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn\u2019t supported. Retry your request with the ID or ARN of an inference profile that contains this model
+```
+
+Ensure your `model identifier` has the format `bedrock/<region>.<model-id>`, where:
+
+- `<region>` is your AWS region (such as `us`)
+- `<model-id>` is the full model identifier.
+
+For example: `bedrock/us.meta.llama3-3-70b-instruct-v1:0`. Update your model configuration to use the correct format.
+
 ## Troubleshooting common Duo Chat errors
 
 ### Error A1000

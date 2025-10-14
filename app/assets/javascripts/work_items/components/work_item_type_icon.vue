@@ -30,6 +30,11 @@ export default {
       required: false,
       default: false,
     },
+    showDerivedText: {
+      type: String,
+      required: false,
+      default: null,
+    },
     iconVariant: {
       type: String,
       required: false,
@@ -59,6 +64,9 @@ export default {
     workItemTooltipTitle() {
       return this.showTooltipOnHover ? this.workItemTypeText : '';
     },
+    workItemDerivedText() {
+      return this.showDerivedText ? this.showDerivedText : this.workItemTypeText;
+    },
   },
 };
 </script>
@@ -73,7 +81,7 @@ export default {
   >
     <gl-icon :name="iconName" :variant="iconVariant" :class="iconClass" />
     <span v-if="workItemTypeText" :class="{ 'gl-sr-only !gl-absolute': !showText }">{{
-      workItemTypeText
+      workItemDerivedText
     }}</span>
   </button>
 </template>

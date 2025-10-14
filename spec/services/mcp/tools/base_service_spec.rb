@@ -25,7 +25,7 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
 
       protected
 
-      def perform(_access_token, arguments, _query = {})
+      def perform(arguments, _query = {})
         raise StandardError, 'Something went wrong' if arguments[:required_field] == 'error'
 
         formatted_content = [{ type: 'text', text: 'Success' }]
@@ -50,7 +50,13 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
 
   describe '#perform' do
     it 'raises NoMethodError' do
-      expect { service.send(:perform, 'token', {}, {}) }.to raise_error(NoMethodError)
+      expect { service.send(:perform, {}, {}) }.to raise_error(NoMethodError)
+    end
+  end
+
+  describe '#set_cred' do
+    it 'raises NoMethodError' do
+      expect { service.set_cred(current_user: nil, access_token: nil) }.to raise_error(NoMethodError)
     end
   end
 
@@ -77,10 +83,10 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     let(:access_token) { 'test_token' }
 
     context 'with valid arguments' do
-      let(:arguments) { { required_field: 'test' } }
+      let(:arguments) { { arguments: { required_field: 'test' } } }
 
       it 'returns success response' do
-        result = test_service.execute(access_token, arguments)
+        result = test_service.execute(request: nil, params: arguments)
 
         expect(result).to eq({
           content: [{ type: 'text', text: 'Success' }],
@@ -91,10 +97,10 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     end
 
     context 'with missing required field' do
-      let(:arguments) { { optional_field: 123 } }
+      let(:arguments) { { arguments: { optional_field: 123 } } }
 
       it 'returns validation error' do
-        result = test_service.execute(access_token, arguments)
+        result = test_service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to eq('Validation error: required_field is missing')
@@ -102,10 +108,10 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     end
 
     context 'with invalid field type' do
-      let(:arguments) { { required_field: 123 } }
+      let(:arguments) { { arguments: { required_field: 123 } } }
 
       it 'returns validation error' do
-        result = test_service.execute(access_token, arguments)
+        result = test_service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('Validation error:')
@@ -113,10 +119,10 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     end
 
     context 'when perform raises an error' do
-      let(:arguments) { { required_field: 'error' } }
+      let(:arguments) { { arguments: { required_field: 'error' } } }
 
       it 'returns execution error' do
-        result = test_service.execute(access_token, arguments)
+        result = test_service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to eq('Tool execution failed: Something went wrong')
@@ -124,10 +130,10 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     end
 
     context 'with nil arguments' do
-      let(:arguments) { nil }
+      let(:arguments) { { arguments: nil } }
 
       it 'returns validation error' do
-        result = test_service.execute(access_token, arguments)
+        result = test_service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('required_field is missing')

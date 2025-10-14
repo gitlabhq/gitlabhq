@@ -36,6 +36,15 @@ class Oauth::TokensController < Doorkeeper::TokensController
       payload[:metadata][:oauth_access_token_scopes] = @authorize_response.token.scopes_string
     end
 
+    # rubocop:disable Rails/StrongParams -- following existing param access pattern
+    if Feature.enabled?(:log_refresh_token_hash, :instance) &&
+        params[:grant_type] == 'refresh_token' &&
+        params[:refresh_token].present?
+      payload[:metadata] ||= {}
+      payload[:metadata][:refresh_token_hash] = Digest::SHA256.hexdigest(params[:refresh_token])[0..9]
+    end
+    # rubocop:enable Rails/StrongParams
+
     payload
   end
 

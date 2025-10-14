@@ -61,7 +61,7 @@ For information about project and group milestones API, see:
 To view the milestone list:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Plan > Milestones**.
+1. Select **Plan** > **Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
 In a group, GitLab displays milestones that belong to the group and all projects and subgroups in the group.
@@ -118,7 +118,7 @@ The tabs below the title and description show the following:
 The milestone view contains a [burndown and burnup chart](burndown_and_burnup_charts.md),
 showing the progress of completing a milestone.
 
-![burndown and burnup chart](img/burndown_and_burnup_charts_v15_3.png)
+![A burndown and burnup chart showing project progress over time.](img/burndown_and_burnup_charts_v15_3.png)
 
 #### Milestone sidebar
 
@@ -132,7 +132,7 @@ The sidebar on the milestone view shows the following:
 - Links to associated releases.
 - The milestone's reference you can copy to your clipboard.
 
-![Project milestone page](img/milestones_project_milestone_page_sidebar_v13_11.png)
+![The project milestones page, displaying a list of milestones with their progress and due dates.](img/milestones_project_milestone_page_sidebar_v13_11.png)
 
 ## Create a milestone
 
@@ -153,13 +153,13 @@ Prerequisites:
 To create a milestone:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Plan > Milestones**.
+1. Select **Plan** > **Milestones**.
 1. Select **New milestone**.
 1. Enter the title.
 1. Optional. Enter description, start date, and due date.
 1. Select **New milestone**.
 
-![New milestone](img/milestones_new_project_milestone_v16_11.png)
+![The form for creating a new milestone, with fields for a title, description, start date, and due date.](img/milestones_new_project_milestone_v16_11.png)
 
 ## Edit a milestone
 
@@ -177,7 +177,7 @@ Prerequisites:
 To edit a milestone:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Plan > Milestones**.
+1. Select **Plan** > **Milestones**.
 1. Select a milestone's title.
 1. In the upper-right corner, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
 1. Edit the title, start date, due date, or description.
@@ -203,7 +203,7 @@ Prerequisites:
 To close a milestone:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Plan > Milestones**.
+1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to close, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Close**.
    - Select the milestone title, and then select **Close**.
@@ -224,7 +224,7 @@ Prerequisites:
 To delete a milestone:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Plan > Milestones**.
+1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to delete, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
    - Select the milestone title, and then select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
@@ -261,7 +261,7 @@ Prerequisites:
 To promote a project milestone:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Milestones**.
+1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to promote, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.
    - Select the milestone title, and then select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.

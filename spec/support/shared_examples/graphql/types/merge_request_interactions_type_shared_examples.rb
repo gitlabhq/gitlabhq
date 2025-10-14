@@ -38,6 +38,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       starredProjects
       contributedProjects
       callouts
+      groupCallouts
       merge_request_interaction
       namespace
       timelogs

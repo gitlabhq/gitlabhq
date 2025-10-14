@@ -9,11 +9,12 @@ class Timelog < ApplicationRecord
   include Sortable
   include EachBatch
 
+  before_validation :ensure_namespace_id
   before_save :set_project
 
-  validates :time_spent, :user, presence: true
+  validates :time_spent, :user, :namespace, presence: true
   validates :summary, length: { maximum: 255 }
-  validate :issuable_id_is_present, unless: :importing?
+  validate :issuable_id_is_present
   validate :check_total_time_spent_is_within_range, on: :create, unless: :importing?, if: :time_spent
 
   belongs_to :issue, touch: true
@@ -22,6 +23,7 @@ class Timelog < ApplicationRecord
   belongs_to :user
   belongs_to :note
   belongs_to :timelog_category, optional: true, class_name: 'TimeTracking::TimelogCategory'
+  belongs_to :namespace
 
   scope :in_group, ->(group) do
     joins(:project).where(projects: { namespace: group.self_and_descendants })
@@ -88,5 +90,13 @@ class Timelog < ApplicationRecord
   # Rails5 defaults to :touch_later, overwrite for normal touch
   def belongs_to_touch_method
     :touch
+  end
+
+  def ensure_namespace_id
+    self.namespace_id = if merge_request.present?
+                          merge_request.project&.project_namespace_id
+                        elsif issue.present?
+                          issue.namespace_id
+                        end
   end
 end

@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: None - Facilitated functionality, see https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality
+group: Unassigned - Facilitated functionality, see https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
 title: Terms of Service and Privacy Policy
@@ -27,7 +27,7 @@ terms are defined.
 To enforce acceptance of a Terms of Service and Privacy Policy:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Terms of Service and Privacy Policy** section.
 1. Check the **All users must accept the Terms of Service and Privacy Policy to access GitLab** checkbox.
 1. Input the text of the **Terms of Service and Privacy Policy**. You can use [Markdown](../../user/markdown.md)

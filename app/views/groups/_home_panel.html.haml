@@ -7,7 +7,7 @@
   - unless @group.subgroup?
     = render_if_exists 'shared/targeted_message_banner', group: @group
 
-  .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.sm:gl-flex-row.gl-gap-3.gl-my-5
+  .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.gl-gap-3.gl-my-5{ class: "@sm/panel:gl-flex-row" }
     .home-panel-title-row.gl-flex
       = render Pajamas::AvatarComponent.new(@group, size: 48, class: 'float-none gl-self-start gl-shrink-0 gl-mr-3', avatar_options: { itemprop: 'logo' })
       %h1.home-panel-title.gl-heading-1.gl-flex.gl-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere.gl-mb-0{ itemprop: 'name' }
@@ -18,7 +18,7 @@
         = render 'shared/groups/badges', group: @group
 
     - if current_user
-      .home-panel-buttons.gl-flex.md:gl-justify-end.gl-items-center.gl-gap-3{ data: { testid: 'group-buttons' } }
+      .home-panel-buttons.gl-flex.gl-items-center.gl-gap-3{ class: "@md/panel:gl-justify-end", data: { testid: 'group-buttons' } }
         - if current_user.admin?
           = render Pajamas::ButtonComponent.new(href: [:admin, @group], icon: 'admin', button_options: { title: _('View group in admin area'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } })
         - if @notification_setting
@@ -38,5 +38,5 @@
       .home-panel-description.gl-text-subtle.gl-break-words
         .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
           = markdown_field(@group.namespace_details, :description)
-        = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-read-more-trigger lg:gl-hidden' }) do
+        = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-read-more-trigger @lg/panel:gl-hidden' }) do
           = _("Read more")

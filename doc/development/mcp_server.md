@@ -11,7 +11,7 @@ This page includes information about developing and working with the GitLab MCP 
 
 To set up your development environment:
 
-1. [Enable and configure HTTPS in the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md#update-gdkyml-for-https-optional).
+1. [Enable and configure HTTPS in the GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/nginx/#update-gdkyml-for-https-optional).
 1. Install `node` and install `mcp-remote` globally. GDK comes with Node.js but installed AI assistants cannot use the GDK version.
 1. [Connect an AI assistant to the MCP server](../user/gitlab_duo/model_context_protocol/mcp_server.md#connect-cursor-to-a-gitlab-mcp-server).
 
@@ -116,6 +116,27 @@ npx -y @modelcontextprotocol/inspector npx
 
 ### Adding a new tool
 
+#### The Tool Proposal process
+
+Our current development guidelines remain in early development. As we continue establishing tool development standards - especially for custom and
+aggregated tools - we've created an interim `mcp-tool-review-board` committee to evaluate proposed tools before implementation and guide teams planning new MCP tools.
+
+To add a new tool, please create a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal)
+and follow the template instructions.
+
+{{< alert type="note" >}}
+Tool implementation location depends on GitLab resource interaction:
+
+- Tools that interact with GitLab resources should eventually live in MCP Server, but can be implemented in DAP for short-term or urgent needs.
+- Tools that don't interact with GitLab resources should be implemented in DAP.
+
+We are working to integrate MCP server functionality into DAP. You can track progress via [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/561296).
+
+We strongly encourage all engineers to follow the tool proposal process and provide clear explanations of their use cases.
+{{< /alert >}}
+
+#### Implement a tool from an API route
+
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201838) defines a process for creating an MCP tool from an API route.
 
 Adding the following `route_setting` to an API route definition:
@@ -130,6 +151,10 @@ route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_
 - When the tool is called, the route code is executed directly with the passed parameters
 
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) provides more examples.
+
+#### Implement a custom tool
+
+For tools with distinct functionality that should remain separate from API exposure, you can define a standalone class (see [this example](https://gitlab.com/gitlab-org/gitlab/-/blob/5d394a38c3dc20a247473d5334d71dab15d26a4b/app/services/mcp/tools/manager.rb#L7) for reference).
 
 #### Risks of tool proliferation in AI agent architecture
 

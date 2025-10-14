@@ -625,8 +625,12 @@ export default {
         : '-gl-mx-3 -gl-mb-10 gl-px-3 gl-bg-default gl-py-4';
     },
     selectedProjectGroupPath() {
+      // Eventually, we should be able to select both groups and projects from a single interface in consolidated list.
+      if (this.selectedProjectFullPath && this.selectedProjectFullPath.indexOf('/') === -1) {
+        return this.selectedProjectFullPath;
+      }
       return this.selectedProjectFullPath
-        ? this.selectedProjectFullPath.split('/')[0]
+        ? this.selectedProjectFullPath.substring(0, this.selectedProjectFullPath.lastIndexOf('/'))
         : this.groupPath;
     },
   },
@@ -1084,6 +1088,7 @@ export default {
                 class="create-work-item-description"
                 edit-mode
                 is-create-flow
+                :is-group="isGroup"
                 :autofocus="false"
                 :description="description"
                 :full-path="selectedProjectFullPath"
@@ -1300,7 +1305,7 @@ export default {
           </template>
         </div>
         <div
-          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
+          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 @sm:gl-flex-row @sm:gl-items-center"
           :class="formButtonsClasses"
           data-testid="form-buttons"
         >

@@ -5,6 +5,7 @@ import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import service from '~/batch_comments/services/drafts_service';
 import axios from '~/lib/utils/axios_utils';
+import diffsEventHub from '~/diffs/event_hub';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { createTestPiniaAction, createCustomGetters } from 'helpers/pinia_helpers';
@@ -15,6 +16,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
 
 jest.mock('~/alert');
+jest.mock('~/diffs/event_hub');
 
 describe('Batch comments store actions', () => {
   let res = {};
@@ -341,6 +343,12 @@ describe('Batch comments store actions', () => {
       });
       expect(useNotes().expandDiscussion).toHaveBeenCalledWith({ discussionId: '1' });
       expect(window.mrTabs.tabShown).toHaveBeenCalledWith('diffs');
+    });
+
+    it('emits `scrollToFileHash` with the file hash', () => {
+      store.scrollToDraft({ file_hash: 'filehash' });
+
+      expect(diffsEventHub.$emit).toHaveBeenCalledWith('scrollToFileHash', 'filehash');
     });
   });
 

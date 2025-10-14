@@ -44,9 +44,9 @@ export default {
       return `rounded-${this.position}`;
     },
     textAlignmentClass() {
-      if (this.isFullWidth) return 'text-center';
+      if (this.isFullWidth) return 'gl-text-center';
 
-      return `text-${this.isLeftSide ? SIDES.right : SIDES.left}`;
+      return this.isLeftSide ? 'gl-text-right' : 'gl-text-left';
     },
     positionSideClass() {
       return `position-${this.isLeftSide ? SIDES.right : SIDES.left}-0`;

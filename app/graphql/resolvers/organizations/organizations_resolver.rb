@@ -8,11 +8,14 @@ module Resolvers
       type Types::Organizations::OrganizationType.connection_type, null: true
       authorize :read_organization
 
-      def resolve
-        # For the Organization MVC, all the organizations are public. We need to change this to only accessible
-        # organizations once we start supporting private organizations.
-        # See https://gitlab.com/groups/gitlab-org/-/epics/10649.
-        ::Organizations::Organization.all
+      argument :search, GraphQL::Types::String,
+        required: false,
+        description: 'Search query, which can be for the organization name or a path.'
+
+      def resolve(**args)
+        ::Organizations::OrganizationsFinder
+          .new(context[:current_user], args)
+          .execute
       end
     end
   end

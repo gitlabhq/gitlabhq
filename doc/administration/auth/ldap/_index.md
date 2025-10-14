@@ -4,6 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: no
 title: Integrate LDAP with GitLab
+description: Integrate directory services for centralized authentication.
 ---
 
 {{< details >}}
@@ -130,7 +131,7 @@ The file you edit differs depending on your GitLab setup:
    gitlab_rails['ldap_servers'] = {
      'main' => {
        'label' => 'LDAP',
-       'host' =>  'ldap.mydomain.com',
+       'host' => 'ldap.mydomain.com',
        'port' => 636,
        'uid' => 'sAMAccountName',
        'bind_dn' => 'CN=Gitlab,OU=Users,DC=domain,DC=com',
@@ -219,7 +220,7 @@ For more information, see
            gitlab_rails['ldap_servers'] = {
              'main' => {
                'label' => 'LDAP',
-               'host' =>  'ldap.mydomain.com',
+               'host' => 'ldap.mydomain.com',
                'port' => 636,
                'uid' => 'sAMAccountName',
                'bind_dn' => 'CN=Gitlab,OU=Users,DC=domain,DC=com',
@@ -300,8 +301,8 @@ The following basic settings are available:
 
 <!-- markdownlint-disable MD056 -->
 
-| Setting                         | Required               | Type                          | Description |
-|---------------------------------|------------------------|-------------------------------|-------------|
+| Setting                         | Required                             | Type                          | Description |
+|---------------------------------|--------------------------------------|-------------------------------|-------------|
 | `label`                         | {{< icon name="check-circle" >}} Yes | String                        | A human-friendly name for your LDAP server. It is displayed on your sign-in page. Example: `'Paris'` or `'Acme, Ltd.'` |
 | `host`                          | {{< icon name="check-circle" >}} Yes | String                        | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. Example: `'ldap.mydomain.com'` |
 | `port`                          | {{< icon name="check-circle" >}} Yes | Integer                       | The port to connect with on your LDAP server. Ignored when `hosts` is defined. Example: `389` or `636` (for SSL) |
@@ -314,9 +315,9 @@ The following basic settings are available:
 | `verify_certificates`           | {{< icon name="dotted-circle" >}} No | Boolean                       | Defaults to `true`. Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. If set to `false`, no validation of the LDAP server's SSL certificate is performed. |
 | `timeout`                       | {{< icon name="dotted-circle" >}} No | Integer                       | Defaults to `10`. Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of `0` means there is no timeout. |
 | `active_directory`              | {{< icon name="dotted-circle" >}} No | Boolean                       | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. |
-| `allow_username_or_email_login` | {{< icon name="dotted-circle" >}} No | Boolean                       | Defaults to `false`. If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. |
+| `allow_username_or_email_login` | {{< icon name="dotted-circle" >}} No | Boolean                       | Defaults to `false`. If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the `userPrincipalName` contains an `@`. |
 | `block_auto_created_users`      | {{< icon name="dotted-circle" >}} No | Boolean                       | Defaults to `false`. To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator . |
-| `user_filter`                   | {{< icon name="dotted-circle" >}} No | String                        | Filter LDAP users. Follows the format of [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html). GitLab does not support `omniauth-ldap`'s custom filter syntax. Examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
+| `user_filter`                   | {{< icon name="dotted-circle" >}} No | String                        | Filter LDAP users. Follows the format of [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html). GitLab does not support `omniauth-ldap`'s custom filter syntax. Examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(\|(samaccountname=momo)(samaccountname=toto)))'` |
 | `lowercase_usernames`           | {{< icon name="dotted-circle" >}} No | Boolean                       | If enabled, GitLab converts the name to lowercase. |
 | `retry_empty_result_with_codes` | {{< icon name="dotted-circle" >}} No | Array                         | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
 
@@ -348,11 +349,11 @@ The examples below illustrate how to set `ca_file` and `ssl_version` in `tls_opt
    gitlab_rails['ldap_servers'] = {
      'main' => {
        'label' => 'LDAP',
-       'host' =>  'ldap.mydomain.com',
+       'host' => 'ldap.mydomain.com',
        'port' => 636,
        'uid' => 'sAMAccountName',
        'encryption' => 'simple_tls',
-       'base' => 'dc=example,dc=com'
+       'base' => 'dc=example,dc=com',
        'tls_options' => {
          'ca_file' => '/path/to/ca_file.pem',
          'ssl_version' => 'TLSv1_2'
@@ -424,7 +425,7 @@ For more information, see
            gitlab_rails['ldap_servers'] = {
              'main' => {
                'label' => 'LDAP',
-               'host' =>  'ldap.mydomain.com',
+               'host' => 'ldap.mydomain.com',
                'port' => 636,
                'uid' => 'sAMAccountName',
                'encryption' => 'simple_tls',
@@ -557,7 +558,7 @@ minimal configuration:
    gitlab_rails['ldap_servers'] = {
      'main' => {
        'label' => 'GitLab AD',
-       'host' =>  'ad.mydomain.com',
+       'host' => 'ad.mydomain.com',
        'port' => 636,
        'uid' => 'sAMAccountName',
        'encryption' => 'simple_tls',
@@ -566,7 +567,7 @@ minimal configuration:
 
      'secondary' => {
        'label' => 'GitLab Secondary AD',
-       'host' =>  'ad-secondary.mydomain.com',
+       'host' => 'ad-secondary.mydomain.com',
        'port' => 636,
        'uid' => 'sAMAccountName',
        'encryption' => 'simple_tls',
@@ -575,7 +576,7 @@ minimal configuration:
 
      'tertiary' => {
        'label' => 'GitLab Tertiary AD',
-       'host' =>  'ad-tertiary.mydomain.com',
+       'host' => 'ad-tertiary.mydomain.com',
        'port' => 636,
        'uid' => 'sAMAccountName',
        'encryption' => 'simple_tls',
@@ -655,7 +656,7 @@ minimal configuration:
            gitlab_rails['ldap_servers'] = {
              'main' => {
                'label' => 'GitLab AD',
-               'host' =>  'ad.mydomain.com',
+               'host' => 'ad.mydomain.com',
                'port' => 636,
                'uid' => 'sAMAccountName',
                'encryption' => 'simple_tls',
@@ -664,7 +665,7 @@ minimal configuration:
 
              'secondary' => {
                'label' => 'GitLab Secondary AD',
-               'host' =>  'ad-secondary.mydomain.com',
+               'host' => 'ad-secondary.mydomain.com',
                'port' => 636,
                'uid' => 'sAMAccountName',
                'encryption' => 'simple_tls',
@@ -673,7 +674,7 @@ minimal configuration:
 
              'tertiary' => {
                'label' => 'GitLab Tertiary AD',
-               'host' =>  'ad-tertiary.mydomain.com',
+               'host' => 'ad-tertiary.mydomain.com',
                'port' => 636,
                'uid' => 'sAMAccountName',
                'encryption' => 'simple_tls',
@@ -945,7 +946,7 @@ the configuration option `lowercase_usernames`. By default, this configuration o
        ldap:
          servers:
            main:
-            lowercase_usernames: true
+             lowercase_usernames: true
    ```
 
 1. Save the file and apply the new values:

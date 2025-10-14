@@ -8,7 +8,7 @@ title: Sentry monitoring in the frontend development of GitLab
 The GitLab Frontend team uses Sentry as an observability tool to monitor how the UI performs for
 users on `gitlab.com`.
 
-GitLab.com is configured to report to our Sentry instance at **Admin > Metrics and profiling > Sentry**.
+GitLab.com is configured to report to our Sentry instance at **Admin** > **Metrics and profiling** > **Sentry**.
 
 We monitor two kinds of data: **Errors** and **Performance**.
 
@@ -50,7 +50,7 @@ try {
 }
 ```
 
-**When should you report an error?** We want to avoid reporting errors that we either don't care
+**When should you report an error**? We want to avoid reporting errors that we either don't care
 about, or have no control over. For example, we shouldn't report validation errors when a user fills
 out a form incorrectly. However, if that form submission fails because or a server error,
 this is an error we want Sentry to know about.

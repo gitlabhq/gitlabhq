@@ -24,7 +24,8 @@ RSpec.describe Gitlab::X509::Tag, feature_category: :source_code_management do
           subject_key_identifier: X509Helpers::User1.tag_certificate_subject_key_identifier,
           subject: X509Helpers::User1.certificate_subject,
           email: X509Helpers::User1.certificate_email,
-          serial_number: X509Helpers::User1.tag_certificate_serial
+          serial_number: X509Helpers::User1.tag_certificate_serial,
+          project_id: project.id
         }
       end
 
@@ -32,7 +33,8 @@ RSpec.describe Gitlab::X509::Tag, feature_category: :source_code_management do
         {
           subject_key_identifier: X509Helpers::User1.tag_issuer_subject_key_identifier,
           subject: X509Helpers::User1.tag_certificate_issuer,
-          crl_url: X509Helpers::User1.tag_certificate_crl
+          crl_url: X509Helpers::User1.tag_certificate_crl,
+          project_id: project.id
         }
       end
 

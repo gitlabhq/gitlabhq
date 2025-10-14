@@ -57,7 +57,9 @@ control the pagination of results.
 | `yaml_errors`    | boolean        | No       | Returns pipelines with invalid configurations |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines"
 ```
 
 Example of response
@@ -119,7 +121,9 @@ control the pagination of results.
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 Example of response
@@ -164,7 +168,8 @@ Example of response
     "details_path": "/test-group/test-project/-/pipelines/287",
     "illustration": null,
     "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-  }
+  },
+  "archived": false
 }
 ```
 
@@ -191,7 +196,9 @@ control the pagination of results.
 | `ref`     | string | No       | The branch or tag to check for the latest pipeline. Defaults to the default branch when not specified. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
 ```
 
 Example of response
@@ -236,7 +243,8 @@ Example of response
         "details_path": "/test-group/test-project/-/pipelines/287",
         "illustration": null,
         "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-    }
+    },
+    "archived": false
 }
 ```
 
@@ -257,7 +265,9 @@ control the pagination of results.
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
 ```
 
 Example of response
@@ -299,7 +309,9 @@ control the pagination of results.
 Sample request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
 ```
 
 Sample response:
@@ -359,7 +371,9 @@ control the pagination of results.
 Sample request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
 ```
 
 Sample response:
@@ -417,7 +431,9 @@ POST /projects/:id/pipeline
 Basic example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
 Example request with [inputs](../ci/inputs/_index.md):
@@ -459,7 +475,8 @@ Example of response
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/61"
+  "web_url": "https://example.com/foo/bar/pipelines/61",
+  "archived": false
 }
 ```
 
@@ -483,7 +500,9 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
 ```
 
 Response:
@@ -515,7 +534,8 @@ Response:
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/46"
+  "web_url": "https://example.com/foo/bar/pipelines/46",
+  "archived": false
 }
 ```
 
@@ -538,7 +558,9 @@ For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
 ```
 
 Response:
@@ -570,7 +592,8 @@ Response:
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/46"
+  "web_url": "https://example.com/foo/bar/pipelines/46",
+  "archived": false
 }
 ```
 
@@ -595,7 +618,9 @@ DELETE /projects/:id/pipelines/:pipeline_id
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 ## Update pipeline metadata
@@ -648,6 +673,7 @@ Sample response:
   "queued_duration": 0.010,
   "coverage": null,
   "web_url": "https://example.com/foo/bar/pipelines/46",
-  "name": "Some new pipeline name"
+  "name": "Some new pipeline name",
+  "archived": false
 }
 ```

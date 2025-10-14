@@ -9,7 +9,6 @@ query getContainerRepositoryTags(
   $before: String
   $name: String
   $sort: ContainerRepositoryTagSort
-  $referrers: Boolean = false
 ) {
   containerRepository(id: $id) {
     id
@@ -24,7 +23,7 @@ query getContainerRepositoryTags(
       last: $last
       name: $name
       sort: $sort
-      referrers: $referrers
+      referrers: true
     ) {
       nodes {
         digest

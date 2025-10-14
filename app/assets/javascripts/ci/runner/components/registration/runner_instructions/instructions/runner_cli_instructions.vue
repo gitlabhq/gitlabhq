@@ -109,7 +109,7 @@ export default {
     </h5>
 
     <gl-collapsible-listbox v-model="selectedArchName" class="gl-mb-3" :items="listboxItems" />
-    <div class="gl-mb-3 gl-items-center sm:gl-flex">
+    <div class="gl-mb-3 gl-items-center @sm/panel:gl-flex">
       <h5>{{ $options.i18n.downloadInstallBinary }}</h5>
       <gl-button
         v-if="binaryUrl"

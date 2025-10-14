@@ -31,7 +31,7 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
 
       before do
         # Remove stub with stop_writing_builds_metadata
-        allow(job).to receive(:options).and_return(job.options.merge(scoped_user_id: scoped_user.id))
+        stub_ci_job_definition(job, options: job.options.merge(scoped_user_id: scoped_user.id))
         job.update!(scoped_user_id: scoped_user.id)
       end
 
@@ -53,12 +53,8 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
     context 'when the job is canceling' do
       let(:token) { canceling_job.token }
 
-      it 'raises error' do
-        expect { finder.execute! }.to raise_error described_class::NotRunningJobError, 'Job is not running'
-      end
-
-      it 'returns a job if allow_canceling is explicitly true' do
-        expect(finder.execute!(allow_canceling: true)).to eq(canceling_job)
+      it 'returns the job' do
+        expect(finder.execute!).to eq(canceling_job)
       end
     end
 

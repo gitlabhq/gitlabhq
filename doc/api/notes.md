@@ -63,12 +63,14 @@ Gets a list of all notes for a single issue.
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes
 GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
+GET /projects/:id/issues/:issue_iid/notes?activity_filter=only_comments
 ```
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
 | `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `issue_iid` | integer           | yes      | The IID of an issue |
+| `activity_filter` | string      | no       | Filter notes by activity type. Valid values: `all_notes`, `only_comments`, `only_activity`. Default is `all_notes` |
 | `sort`      | string            | no       | Return issue notes sorted in `asc` or `desc` order. Default is `desc` |
 | `order_by`  | string            | no       | Return issue notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 

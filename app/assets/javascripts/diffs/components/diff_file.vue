@@ -92,11 +92,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    active: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     codequalityData: {
       type: Object,
       required: false,
@@ -127,7 +122,6 @@ export default {
   },
   computed: {
     ...mapState(useLegacyDiffs, [
-      'currentDiffFileId',
       'conflictResolutionPath',
       'canMerge',
       'getDiffFileDiscussions',
@@ -135,7 +129,7 @@ export default {
       'linkedFile',
     ]),
     ...mapState(useMrNotes, ['isLoggedIn']),
-    ...mapState(useNotes, ['isNotesFetched', 'getNoteableData', 'noteableType']),
+    ...mapState(useNotes, ['getNoteableData', 'noteableType']),
     autosaveKey() {
       if (!this.isLoggedIn) return '';
 

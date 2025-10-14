@@ -70,6 +70,7 @@ describe('Import Project by URL Form', () => {
   const findNextButton = () => wrapper.findByTestId('import-project-by-url-next-button');
   const findBackButton = () => wrapper.findByTestId('import-project-by-url-back-button');
   const findUrlInput = () => wrapper.findByTestId('repository-url');
+  const findUrlInputWrapper = () => wrapper.findByTestId('repository-url-form-group');
   const findUsernameInput = () => wrapper.findByTestId('repository-username');
   const findPasswordInput = () => wrapper.findByTestId('repository-password');
   const findCheckConnectionButton = () => wrapper.findByTestId('check-connection');
@@ -121,13 +122,6 @@ describe('Import Project by URL Form', () => {
       expect(nextButton.attributes('type')).toBe('submit');
     });
 
-    it('disables "Create project" button when repository URL is empty', async () => {
-      await findUrlInput().vm.$emit('input', '   ');
-
-      const nextButton = findNextButton();
-      expect(nextButton.props('disabled')).toBe(true);
-    });
-
     it('navigates to `new project` page when back button is clicked', () => {
       findBackButton().vm.$emit('click');
       expect(visitUrl).toHaveBeenCalledWith(mockNewProjectPath);
@@ -158,6 +152,18 @@ describe('Import Project by URL Form', () => {
       await waitForPromises();
 
       expect(findCheckConnectionButton().props('loading')).toBe(false);
+    });
+
+    it('prevents connection if url field is empty', async () => {
+      mockAxios.onPost(mockImportByUrlValidatePath).reply(HTTP_STATUS_OK, { success: true });
+
+      findUrlInput().vm.$emit('input', '');
+
+      findCheckConnectionButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(mockAxios.history.post).toHaveLength(0);
+      expect(findUrlInputWrapper().attributes('invalid-feedback')).toBe('Enter a valid URL');
     });
 
     describe('when connection is successful', () => {
@@ -206,26 +212,6 @@ describe('Import Project by URL Form', () => {
 
         expect($toast.show).toHaveBeenCalledWith(expect.stringContaining('Connection failed'));
       });
-    });
-
-    // TODO: To be addressed in follow up before FF rollout https://gitlab.com/gitlab-org/gitlab/-/issues/562799
-    it('handles connection check with empty fields', async () => {
-      mockAxios.onPost(mockImportByUrlValidatePath).reply(HTTP_STATUS_OK, { success: true });
-
-      findUrlInput().vm.$emit('input', '');
-      findUsernameInput().vm.$emit('input', '');
-      findPasswordInput().vm.$emit('input', '');
-
-      findCheckConnectionButton().vm.$emit('click');
-      await waitForPromises();
-
-      expect(mockAxios.history.post[0].data).toBe(
-        JSON.stringify({
-          url: '',
-          user: '',
-          password: '',
-        }),
-      );
     });
   });
 

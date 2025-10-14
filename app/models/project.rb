@@ -60,6 +60,7 @@ class Project < ApplicationRecord
 
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
+  ExportAlreadyInProgress = Class.new(StandardError)
 
   EPOCH_CACHE_EXPIRATION = 30.days
   STATISTICS_ATTRIBUTE = 'repositories_count'
@@ -313,7 +314,6 @@ class Project < ApplicationRecord
   has_one :project_repository, inverse_of: :project
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
-  has_one :grafana_integration, inverse_of: :project
   has_one :project_setting, inverse_of: :project, autosave: true
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
   has_one :service_desk_custom_email_verification, class_name: 'ServiceDesk::CustomEmailVerification'
@@ -347,6 +347,7 @@ class Project < ApplicationRecord
   has_many :tag_push_hooks_integrations, -> { tag_push_hooks }, class_name: 'Integration'
   has_many :wiki_page_hooks_integrations, -> { wiki_page_hooks }, class_name: 'Integration'
   has_many :snippets, class_name: 'ProjectSnippet'
+  has_many :snippet_repositories, inverse_of: :project
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
   has_many :exported_protected_branches
@@ -534,7 +535,6 @@ class Project < ApplicationRecord
 
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
-  accepts_nested_attributes_for :grafana_integration, update_only: true, allow_destroy: true
 
   with_options to: :project_namespace, allow_nil: true do
     delegate :deletion_schedule
@@ -667,6 +667,7 @@ class Project < ApplicationRecord
   scope :not_hidden, -> { where(hidden: false) }
   scope :not_in_groups, ->(groups) { where.not(group: groups) }
   scope :by_not_in_root_id, ->(root_id) { joins(:project_namespace).where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
+  scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
 
   scope :aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
   scope :self_or_ancestors_aimed_for_deletion, -> do
@@ -2664,6 +2665,7 @@ class Project < ApplicationRecord
 
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
     check_project_export_limit!
+    check_duplicate_export!(current_user)
 
     params[:exported_by_admin] = current_user.can_admin_all_resources?
 
@@ -3499,16 +3501,16 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
-  def work_items_project_issues_list_feature_flag_enabled?
-    group&.work_items_project_issues_list_feature_flag_enabled? || Feature.enabled?(:work_items_project_issues_list, type: :beta)
-  end
-
   def glql_load_on_click_feature_flag_enabled?
     group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self, type: :ops)
   end
 
   def markdown_placeholders_feature_flag_enabled?
     group&.markdown_placeholders_feature_flag_enabled? || Feature.enabled?(:markdown_placeholders, self, type: :gitlab_com_derisk)
+  end
+
+  def allow_iframes_in_markdown_feature_flag_enabled?
+    group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
   def enqueue_record_project_target_platforms
@@ -3684,6 +3686,12 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def check_duplicate_export!(current_user)
+    return unless export_jobs.by_user_id(current_user.id).queued_or_started.exists?
+
+    raise ExportAlreadyInProgress, _('An export is already running or queued for this project. Please try again once it\'s done.')
+  end
 
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)

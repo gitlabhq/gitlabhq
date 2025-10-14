@@ -38,6 +38,8 @@ If you don't have access to the `gitaly` command, alternatives to server hooks i
 - [GitLab CI/CD](../ci/_index.md).
 - [Push rules](../user/project/repository/push_rules.md), for a user-configurable Git hook interface.
 
+For GitLab Helm chart instances, see information about [global server hooks in the Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/#global-server-hooks).
+
 {{< alert type="note" >}}
 
 [Geo](geo/_index.md) doesn't replicate server hooks to secondary nodes.
@@ -190,8 +192,18 @@ The following Git environment variables are supported for `pre-receive` and `pos
 
 ## Custom error messages
 
-You can have custom error messages appear in the GitLab UI when a commit is declined or an error occurs during the Git
-hook. To display a custom error message, your script must:
+When server hooks reject a push, provide clear error messages to help users understand why the
+push was rejected and how to fix the issue. Custom error messages appear in the GitLab UI and in
+the user's terminal when a hook declines a push.
+
+Without custom error messages, users only see generic messages like `(pre-receive hook declined)`.
+Clear error messages help users:
+
+- Understand why their push was rejected.
+- Fix the issue without contacting an administrator.
+- Reduce support requests.
+
+To display a custom error message, your script must:
 
 - Send the custom error messages to either the script's `stdout` or `stderr`.
 - Prefix each message with `GL-HOOK-ERR:` with no characters appearing before the prefix.
@@ -199,9 +211,11 @@ hook. To display a custom error message, your script must:
 For example:
 
 ```shell
-#!/bin/sh
-echo "GL-HOOK-ERR: My custom error message.";
-exit 1
+# Bad: Generic message
+echo "GL-HOOK-ERR: Commit rejected.";
+
+# Good: Specific message with action
+echo "GL-HOOK-ERR: Commit rejected: Commit message must include an issue reference (for example, #1234).";
 ```
 
 ## Related topics
@@ -209,3 +223,62 @@ exit 1
 - [System hooks](system_hooks.md)
 - [File hooks](file_hooks.md)
 - [Praefect-generated replica paths](gitaly/praefect/_index.md#praefect-generated-replica-paths)
+
+## Troubleshooting
+
+When working with Git server hooks, you might encounter the following issues.
+
+### Error: `pre-receive hook declined`
+
+When a user pushes to a GitLab repository, they might receive an error message that includes
+`(pre-receive hook declined)`. For example:
+
+```plaintext
+! [remote rejected] main (pre-receive hook declined)
+error: failed to push some refs to 'https://gitlab.example.com/group/project'
+```
+
+This error indicates that a pre-receive hook rejected the push. Pre-receive hooks run before any
+references are updated in the repository. Git provides three server-side hooks that can reject
+pushes:
+
+- `pre-receive`: Runs before any references are updated. Can reject the entire push.
+- `update`: Runs once per branch being updated. Can reject individual branches.
+- `post-receive`: Runs after all references are updated. Cannot reject pushes, but can cause
+  errors if the hook fails.
+
+The `(pre-receive hook declined)` error usually comes from either the `pre-receive` or `update`
+hook. To identify the issue:
+
+1. Check the output immediately before the `(pre-receive hook declined)` message. The output often
+   contains information about why the push was rejected. For example:
+
+   ```plaintext
+   remote: GitLab: The default branch of a project cannot be deleted.
+   ! [remote rejected] main (pre-receive hook declined)
+   ```
+
+1. Check the Gitaly logs for more details about why the hook failed:
+
+   ```shell
+   sudo grep PreReceiveHook /var/log/gitlab/gitaly/current | jq .
+   ```
+
+1. If the repository has custom server hooks configured, review the custom hook code for issues.
+
+The following are common causes of pre-receive hook failures:
+
+- Default branch protection: Pushes that delete or force-update the default branch are
+  rejected. This occurs with `git push --mirror` when the source repository has a
+  different default branch than the target repository.
+- Push rules: The push violates configured push rules, such as commit message requirements,
+  file size limits, or author email restrictions.
+- Custom server hooks: A custom server hook script rejected the push. Review your custom hook
+  code and error messages.
+- Timeout: The hook took too long to run and was terminated. Check the Gitaly logs for timeout
+  errors.
+- LFS objects: Required Git LFS objects are missing from the repository.
+
+To help users understand hook failures use [custom error messages](#custom-error-messages) to provide
+clear feedback about why a push was rejected. Custom error messages appear in the GitLab UI and in
+the user's terminal.

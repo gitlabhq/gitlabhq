@@ -48,7 +48,7 @@ CI/CD job tokens can access the following resources:
 | [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |
 | [Files API](../../api/repository_files.md)                                                            | Can access the `GET /projects/:id/repository/files/:file_path/raw` endpoint. |
 | [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | Can access only the `GET /job` endpoint. |
-| [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access all endpoints in this API. |
+| [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access download endpoints only. |
 | [Merge requests API](../../api/merge_requests.md)                                                     | Can access the `GET /projects/:id/merge_requests` and `GET /projects/:id/merge_requests/:merge_request_iid` endpoints. |
 | [Notes API](../../api/notes.md)                                                                       | Can access the `GET /projects/:id/merge_requests/:merge_request_iid/notes` and `GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id` endpoints. |
 | [Packages API](../../api/packages.md)                                                                 | Can access all endpoints in this API. |
@@ -56,7 +56,7 @@ CI/CD job tokens can access the following resources:
 | [Pipelines API](../../api/pipelines.md#update-pipeline-metadata)                                      | Can access only the `PUT /projects/:id/pipelines/:pipeline_id/metadata` endpoint. |
 | [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
 | [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
-| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint. |
+| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint of public repositories. |
 | [Tags API](../../api/tags.md)                                                                         | Can access the `GET /projects/:id/repository/tags` endpoint. |
 
 An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions
@@ -367,6 +367,8 @@ push to your project.
 When you use a job token to push to the project, no CI pipelines are triggered. The job token has
 the same access permissions as the user who started the job.
 
+If you use the tool semantic-release, with **Allow Git push requests to the repository** setting enabled, the tool gives precedence to CI_JOB_TOKEN embedded over a GitLab personal access token, if one is configured. There is an [open issue](https://github.com/semantic-release/gitlab/issues/891) that tracks resolution for this edge case.
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
@@ -413,63 +415,6 @@ Additionally, there are multiple valid methods for passing the job token in the 
 - Header: `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
 - Data: `--data "job_token=$CI_JOB_TOKEN"`
 - Query string in the URL: `?job_token=$CI_JOB_TOKEN`
-
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-
-## Limit your project's job token access (removed)
-
-{{< history >}}
-
-- Deprecated in GitLab 16.0.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/537186) in GitLab 18.0.
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-The [**Limit access from this project**](#configure-the-job-token-scope-removed)
-setting is disabled by default for all new projects and was removed
-in GitLab 18.0. Project maintainers or owners can configure the [**Limit access to this project**](#add-a-group-or-project-to-the-job-token-allowlist)
-setting instead.
-
-{{< /alert >}}
-
-Control your project's job token scope by creating an allowlist of projects which
-can be accessed by your project's job token.
-
-By default, the allowlist includes your current project.
-Other projects can be added and removed by maintainers with access to both projects.
-
-With the setting disabled, all projects are considered in the allowlist and the job token is
-limited only by the user's access permissions.
-
-For example, when the setting is enabled, jobs in a pipeline in project `A` have
-a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
-to make an API request to project `B`, then `B` must be added to the allowlist for `A`.
-
-### Configure the job token scope (removed)
-
-{{< history >}}
-
-- **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access from this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
-- **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must not have more than 200 projects added to the token's scope.
-
-To configure the job token scope:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
-1. Expand **Job token permissions**.
-1. Toggle **Limit access from this project** to enabled.
-1. Optional. Add existing projects to the token's access scope. The user adding a
-   project must have the Maintainer role in both projects.
-
-<!--- end_remove -->
 
 ## Job token authentication log
 

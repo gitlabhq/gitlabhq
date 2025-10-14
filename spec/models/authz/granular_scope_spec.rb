@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'associations' do
     it { is_expected.to belong_to(:organization).required }
     it { is_expected.to belong_to(:namespace) }
@@ -15,7 +17,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
       let_it_be(:namespace2) { create(:namespace, organization: organization) }
       let_it_be(:scope_with_namespace1) { create(:granular_scope, namespace: namespace1, organization: organization) }
       let_it_be(:scope_with_namespace2) { create(:granular_scope, namespace: namespace2, organization: organization) }
-      let_it_be(:instance_scope) { create(:granular_scope, :instance, organization: organization) }
+      let_it_be(:instance_scope) { create(:granular_scope, :standalone, organization: organization) }
 
       it 'returns scopes for the given namespace' do
         expect(described_class.with_namespace(namespace1.id)).to contain_exactly(scope_with_namespace1)
@@ -38,8 +40,6 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
 
   describe 'validations' do
     describe 'permissions' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:permissions, :valid) do
         nil              | false
         'create_issue'   | false
@@ -112,22 +112,45 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
   end
 
   describe '.token_permissions' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:boundary) { Authz::Boundary.for(project) }
-    let_it_be(:token_permissions) { ::Authz::Permission.all.keys.take(2) }
+    let_it_be(:rootgroup) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: rootgroup) }
+    let_it_be(:project) { create(:project, namespace: subgroup) }
+    let_it_be(:user) { create(:user, :with_namespace) }
+    let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
+
+    let_it_be(:instance_boundary) { Authz::Boundary.for(nil) }
+    let_it_be(:rootgroup_boundary) { Authz::Boundary.for(rootgroup) }
+    let_it_be(:subgroup_boundary) { Authz::Boundary.for(subgroup) }
+    let_it_be(:project_boundary) { Authz::Boundary.for(project) }
+    let_it_be(:user_boundary) { Authz::Boundary.for(user) }
+    let_it_be(:personal_project_boundary) { Authz::Boundary.for(personal_project) }
+    let_it_be(:nonexistent_boundary) { Authz::Boundary.for(create(:project)) }
+
+    before do
+      allow(::Authz::Permission).to receive(:all).and_return((:a..:h).index_with(nil))
+
+      create(:granular_scope, namespace: instance_boundary.namespace, permissions: [:a])
+      create(:granular_scope, namespace: rootgroup_boundary.namespace, permissions: [:b, :c])
+      create(:granular_scope, namespace: subgroup_boundary.namespace, permissions: [:c, :d])
+      create(:granular_scope, namespace: project_boundary.namespace, permissions: [:d, :e])
+      create(:granular_scope, namespace: user_boundary.namespace, permissions: [:f, :g])
+      create(:granular_scope, namespace: personal_project_boundary.namespace, permissions: [:g, :h])
+    end
+
+    where(:boundary, :expected_result) do
+      ref(:instance_boundary)         | [:a]
+      ref(:rootgroup_boundary)        | [:b, :c]
+      ref(:subgroup_boundary)         | [:b, :c, :d]
+      ref(:project_boundary)          | [:b, :c, :d, :e]
+      ref(:user_boundary)             | [:f, :g]
+      ref(:personal_project_boundary) | [:f, :g, :h]
+      ref(:nonexistent_boundary)      | []
+    end
 
     subject { described_class.token_permissions(boundary) }
 
-    context 'when a scope exists for a boundary' do
-      before do
-        create(:granular_scope, namespace: boundary.namespace, permissions: token_permissions)
-      end
-
-      it { is_expected.to eq token_permissions }
-    end
-
-    context 'when a scope does not exist for a boundary' do
-      it { is_expected.to eq [] }
+    with_them do
+      it { is_expected.to match_array(expected_result) }
     end
   end
 end

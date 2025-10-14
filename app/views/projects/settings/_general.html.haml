@@ -4,14 +4,14 @@
 
   %fieldset
     .row
-      .form-group.col-md-5
+      .form-group.gl-col-md-5
         = f.label :name, class: 'label-bold', for: 'project_name_edit' do
           = _('Project name')
         = f.text_field :name, class: 'form-control gl-form-input', id: "project_name_edit", data: { testid: 'project-name-field' }
         %span.form-text.gl-text-subtle
           = _('Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.')
 
-      .form-group.col-md-4
+      .form-group.gl-col-md-4
         = f.label :id, class: 'label-bold' do
           = _('Project ID')
         = f.text_field :id, class: 'form-control gl-form-input', readonly: true
@@ -25,7 +25,7 @@
         = link_button_to _('Remove avatar'), project_avatar_path(@project), aria: { label: _('Remove avatar') }, data: { confirm: _('Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
 
     .row
-      .form-group.col-md-9
+      .form-group.gl-col-md-9
         = f.label :description, _('Project description (optional)'), class: 'label-bold'
         = f.text_area :description, class: 'form-control gl-form-input', rows: 4
 
@@ -35,7 +35,7 @@
     = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
     .row
-      .form-group.col-md-9
+      .form-group.gl-col-md-9
         .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id, organization_id: @project.organization.id } }
         = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
 

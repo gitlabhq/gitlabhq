@@ -33,18 +33,17 @@ Prerequisites:
 There are a few ways to view a list of environments for a given project:
 
 - On the project's overview page, if at least one environment is available (that is, not stopped).
-   ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
 
-- On the left sidebar, select **Operate > Environments**.
-  The environments are displayed.
+  ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
+
+- On the left sidebar, select **Operate** > **Environments**. The environments are displayed.
 
   ![A list of available environments in a GitLab project, showing environment names, statuses, and other relevant details.](img/environments_list_v14_8.png)
 
 - To view a list of deployments for an environment, select the environment name,
-  for example, `staging`.
-  ![A list of deployments for a selected environment, displaying deployment history and related details.](img/deployments_list_v13_10.png)
+  for example, `staging`. Deployments show up in this list only after a deployment job has created them.
 
-  Deployments show up in this list only after a deployment job has created them.
+  ![A list of deployments for a selected environment, displaying deployment history and related details.](img/deployments_list_v13_10.png)
 
 - To view a list of all manual jobs in a deployment pipeline, select the **Run** ({{< icon name="play" >}}) dropdown list.
 
@@ -63,10 +62,15 @@ The [environment URL](../yaml/_index.md#environmenturl) is displayed in a few
 places in GitLab:
 
 - In a merge request as a link:
+
   ![Environment URL in merge request](img/environments_mr_review_app_v11_10.png)
+
 - In the Environments view as a button:
+
   ![Open live environment from environments view](img/environments_open_live_environment_v14_8.png)
+
 - In the Deployments view as a button:
+
   ![Environment URL in deployments](img/deployments_view_v11_10.png)
 
 You can see this information in a merge request if:
@@ -118,7 +122,7 @@ Prerequisites:
 To create a static environment in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select **Create an environment**.
 1. Complete the fields.
 1. Select **Save**.
@@ -370,7 +374,7 @@ GitLab validates the pipeline configuration at pipeline creation.
 To search environments by name:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. In the search bar, enter your search term.
    - The length of your **search term should be 3 or more characters**.
    - Matching applies from the beginning of the environment name.
@@ -420,7 +424,7 @@ Environments view, the stop and deploy jobs must be in the same
 To stop an environment in the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
 
@@ -571,7 +575,7 @@ you can view its expiration date and time.
 To view an environment's expiration date and time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the name of the environment.
 
 The expiration date and time is displayed in the upper-left corner, next to the environment's name.
@@ -584,7 +588,7 @@ you can override its expiration.
 To override an environment's expiration in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the environment name.
 1. in the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
 
@@ -614,7 +618,7 @@ Prerequisites:
 To clean up stale environments:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select **Clean up environments**.
 1. Select the date to use for determining which environments to consider stale.
 1. Select **Clean up**.
@@ -759,7 +763,7 @@ Prerequisites:
 To delete an environment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog, select **Delete environment**.
@@ -865,7 +869,7 @@ Limitations of GitLab Auto Rollback:
 GitLab Auto Rollback is turned off by default. To turn it on:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.
@@ -1020,7 +1024,7 @@ To ensure the `action: stop` can always run when needed, you can:
     when: manual
   ```
 
-### Error: job would create an environment with an invalid parameter
+### Error: job `would create an environment with an invalid parameter`
 
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
 you might encounter this error in a deployment job because the dynamically generated parameter can't be used for creating an environment:
@@ -1048,6 +1052,8 @@ To fix this, use one of the following solutions:
   even after the keyword removal.
 - Ensure the variable exists in the pipeline. Review the
   [limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- If you have `environment:deployment_tier` in your `.gitlab-ci.yml`, ensure the value is one of the
+  supported tiers: `production`, `staging`, `testing`, `development`, or `other`.
 
 #### If you get this error on review apps
 

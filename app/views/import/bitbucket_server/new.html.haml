@@ -17,18 +17,15 @@
       = _('Enter in your Bitbucket Server URL and personal access token below')
 
   = form_tag configure_import_bitbucket_server_path(namespace_id: params[:namespace_id]), method: :post do
-    .form-group.row
-      = label_tag :bitbucket_server_url, 'Bitbucket Server URL', class: 'col-form-label col-md-2'
-      .col-md-4
-        = text_field_tag :bitbucket_server_url, '', class: 'form-control gl-form-input gl-mr-3', placeholder: _('https://your-bitbucket-server'), size: 40
-    .form-group.row
-      = label_tag :bitbucket_server_url, 'Username', class: 'col-form-label col-md-2'
-      .col-md-4
-        = text_field_tag :bitbucket_server_username, '', class: 'form-control gl-form-input gl-mr-3', placeholder: _('username'), size: 40
-    .form-group.row
-      = label_tag :personal_access_token, 'Password/Personal access token', class: 'col-form-label col-md-2'
-      .col-md-4
-        = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input gl-mr-3', placeholder: _('Personal access token'), size: 40
-    .col-sm-12.gl-mt-5
+    .form-group.gl-col-12.gl-col-sm-6.gl-pr-0.gl-pl-0
+      = label_tag :bitbucket_server_url, 'Bitbucket Server URL', class: 'label-bold'
+      = text_field_tag :bitbucket_server_url, '', class: 'form-control gl-form-input gl-mr-3', placeholder: _('https://your-bitbucket-server'), size: 40
+    .form-group.gl-col-12.gl-col-sm-6.gl-pr-0.gl-pl-0
+      = label_tag :bitbucket_server_username, 'Username', class: 'col-form-label'
+      = text_field_tag :bitbucket_server_username, '', class: 'form-control gl-form-input gl-mr-3', placeholder: _('username'), size: 40
+    .form-group.gl-col-12.gl-col-sm-6.gl-pr-0.gl-pl-0
+      = label_tag :personal_access_token, 'Password/Personal access token', class: 'col-form-label'
+      = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input gl-mr-3', placeholder: _('Personal access token'), size: 40
+    .gl-mt-6
       = render Pajamas::ButtonComponent.new(type: 'submit', variant: :confirm) do
         = _('List your Bitbucket Server repositories')

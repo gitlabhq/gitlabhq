@@ -154,7 +154,7 @@ export default {
       @setDateRange="onSetDateRange"
       @setPredefinedDateRange="setPredefinedDateRange"
     />
-    <div class="gl-flex gl-flex-col md:gl-flex-row">
+    <div class="gl-flex gl-flex-col @md/panel:gl-flex-row">
       <path-navigation
         v-if="displayPathNavigation"
         data-testid="vsa-path-navigation"

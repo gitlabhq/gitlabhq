@@ -51,7 +51,7 @@ Prerequisites:
 To create a protection rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, select **Add protection rule**.
 1. Complete the fields:
@@ -66,12 +66,12 @@ The protection rule is created and matching tags are protected.
 
 Example patterns you can use to protect container tags:
 
-| Pattern           | Description                                                              |
-| ----------------- | ------------------------------------------------------------------------ |
-| `.*`              | Protects all tags                                                        |
-| `^v.*`            | Protects tags that start with "v" (like `v1.0.0`, `v2.1.0-rc1`)          |
-| `\d+\.\d+\.\d+`   | Protects semantic version tags (like `1.0.0`, `2.1.0`)                   |
-| `^latest$`        | Protects the `latest` tag                                                |
+| Pattern           | Description |
+|-------------------|-------------|
+| `.*`              | Protects all tags |
+| `^v.*`            | Protects tags that start with "v" (like `v1.0.0`, `v2.1.0-rc1`) |
+| `\d+\.\d+\.\d+`   | Protects semantic version tags (like `1.0.0`, `2.1.0`) |
+| `^latest$`        | Protects the `latest` tag |
 | `.*-stable$`      | Protects tags that end with "-stable" (like `1.0-stable`, `main-stable`) |
 | `stable\|release` | Protects tags that contain "stable" or "release" (like `1.0-stable`) |
 
@@ -84,7 +84,7 @@ Prerequisites:
 To delete a protection rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. When prompted for confirmation, select **Delete**.

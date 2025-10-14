@@ -143,7 +143,7 @@ export default {
             <div>
               {{ item.text }}
             </div>
-            <div class="gl-text-right gl-text-secondary">{{ item.formattedDate }}</div>
+            <div class="gl-text-right gl-text-subtle">{{ item.formattedDate }}</div>
           </div>
         </template>
       </gl-disclosure-dropdown-group>

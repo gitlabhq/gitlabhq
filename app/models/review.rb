@@ -31,10 +31,6 @@ class Review < ApplicationRecord
   def user_mentions
     merge_request.user_mentions.where.not(note_id: nil)
   end
-
-  def from_merge_request_author?
-    merge_request.author_id == author_id
-  end
 end
 
 Review.prepend_mod

@@ -45,7 +45,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | See new findings in the merge request widget                            | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | View identified secrets in the pipelines' **Security** tab              | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Access the Security Dashboard](../../security_dashboard/_index.md)     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Access the security dashboard](../../security_dashboard/_index.md)     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Enable security policies](../../policies/_index.md)                    | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
@@ -77,7 +77,7 @@ After you enable pipeline secret detection, you can [customize the analyzer sett
 This method requires you to manually edit an existing `.gitlab-ci.yml` file.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
+1. Select **Build** > **Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
    ```yaml
@@ -102,7 +102,7 @@ This method automatically prepares a merge request to add a `.gitlab-ci.yml` fil
 To enable pipeline secret detection:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
+1. Select **Secure** > **Security configuration**.
 1. In the **Pipeline secret detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
 1. Select **Create merge request**.
@@ -135,7 +135,8 @@ To override the default behavior, use the [available CI/CD variables](configure.
 
 ### How the analyzer fetches commits
 
-When additional commits are needed beyond the initial clone, the analyzer automatically fetches them using optimized strategies:
+By default, when GitLab first clones a repository, it fetches only the most recent commits (a "shallow clone").
+When additional commits are needed beyond this initial clone, the analyzer automatically fetches them using optimized strategies:
 
 - For merge requests, the analyzer retrieves only changes committed after the merge base, which minimizes data transfer.
 - If log options are specified, like `--since` or `--max-count`, the analyzer fetches only the required commits.
@@ -172,7 +173,7 @@ by default the first scheduled scan is a historic scan.
 To run a historic scan:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Add a CI/CD variable:
    1. From the dropdown list, select **Variable**.
@@ -288,7 +289,7 @@ For more information, see the [report file schema](https://gitlab.com/gitlab-org
 Job results are also reported on the:
 
 - [Merge request widget](../../detect/security_scanning_results.md#merge-request-security-widget): shows new findings introduced in the merge request.
-- [Pipeline security report](../../vulnerability_report/pipeline.md): displays all findings from the latest pipeline run.
+- [Pipeline security report](../../detect/security_scanning_results.md): displays all findings from the latest pipeline run.
 - [Vulnerability report](../../vulnerability_report/_index.md): provides centralized management of all security findings.
 - Security dashboard: offers organization-wide visibility into all vulnerabilities across projects and groups.
 
@@ -298,7 +299,7 @@ Pipeline secret detection provides detailed information about potential secrets 
 
 When reviewing results:
 
-1. Look at the surrounding code to determine if the detected pattern is actually a secret
+1. Look at the surrounding code to determine if the detected pattern is actually a secret.
 1. Test whether the detected value is a working credential.
 1. Consider the repository's visibility and the secret's scope.
 1. Address active, high-privilege secrets first.
@@ -413,7 +414,7 @@ Debug-level logging can help when troubleshooting. For details, see
 
 #### Warning: `gl-secret-detection-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
+For information on this, see the [general application security troubleshooting section](../../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 #### Error: `Couldn't run the gitleaks command: exit status 2`
 
@@ -425,16 +426,6 @@ To diagnose the issue, enable [debug-level logging](../../troubleshooting_applic
 ERRO[2020-11-18T18:05:52Z] object not found
 [ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Couldn't run the gitleaks command: exit status 2
 [ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Gitleaks analysis failed: exit status 2
-```
-
-To resolve the issue, set the [`GIT_DEPTH` CI/CD variable](../../../../ci/runners/configure_runners.md#shallow-cloning)
-to a higher value. To apply this only to the pipeline secret detection job, the following can be added to
-your `.gitlab-ci.yml` file:
-
-```yaml
-secret_detection:
-  variables:
-    GIT_DEPTH: 100
 ```
 
 To resolve this issue:
@@ -507,16 +498,34 @@ The secret detection analyzer decides what to scan based on:
 - Branch context (default, new, existing)
 - Your configuration (`SECRET_DETECTION_LOG_OPTIONS`, `SECRET_DETECTION_HISTORIC_SCAN`)
 
-For example, to scan only 30 commits, use analyzer variables:
+For example, to scan only 30 commits:
 
 ```yaml
 secret_detection:
   variables:
-    # Scan only the last 30 commits
+    # Scan the last 30 commits
     SECRET_DETECTION_LOG_OPTIONS: "--max-count=30"
+```
+
+To scan only commits from the last two weeks:
+
+```yaml
+secret_detection:
+  variables:
+    # Scan commits made in the last two weeks
     SECRET_DETECTION_LOG_OPTIONS: "--since=2.weeks"
+```
+
+To scan only commits from `HEAD~10` to `HEAD`:
+
+```yaml
+secret_detection:
+  variables:
+    # Scan commits from HEAD~10 to HEAD
     SECRET_DETECTION_LOG_OPTIONS: "HEAD~10..HEAD"
 ```
+
+For a full list of options, see the [Git log options](https://git-scm.com/docs/git-log) documentation.
 
 #### Force push detection
 

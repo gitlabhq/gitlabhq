@@ -14,6 +14,8 @@ title: External controls API
 
 Use the external controls API to set the status of a check that uses an external service.
 
+You can configure external controls with periodic ping functionality. When ping is enabled (default), GitLab automatically resets the control status to `pending` every 12 hours. When ping is disabled, the control status is updated only through API calls.
+
 ## Set status of an external control
 
 {{< history >}}
@@ -80,4 +82,4 @@ Example response:
 
 ## Related topics
 
-- [External controls](../user/compliance/compliance_frameworks/_index.md)
+- [Compliance frameworks](../user/compliance/compliance_frameworks/_index.md)

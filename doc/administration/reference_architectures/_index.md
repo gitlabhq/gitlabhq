@@ -266,8 +266,11 @@ For more information, see the [recommended cloud providers and services](#recomm
 Read through the guidance documented previously in full first before you refer to the following decision tree.
 
 ```mermaid
-%%{init: { 'theme': 'base' } }%%
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+    accTitle: Decision tree for reference architecture selection
+    accDescr: Key considerations for selecting architecture including expected load, HA requirements, and additional workload factors.
+
    L0A(<b>What Reference Architecture should I use?</b>)
    L1A(<b>What is your <a href=#expected-load-rps--user-count>expected load</a>?</b>)
 
@@ -454,7 +457,7 @@ We don't recommend the use of round-robin algorithms as they are known to not sp
 
 The total network bandwidth available to a load balancer when deployed on a machine can vary notably across cloud providers. Some cloud providers, like [AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html), may operate on a burst system with credits to determine the bandwidth at any time.
 
-The required network bandwidth for your load balancers depends on factors such as data shape and workload. The recommended base sizes for each architecture class have been selected based on real data. However, in some scenarios such as consistent clones of [large monorepos](#large-monorepos), you might have to adjust the sizes accordingly.
+The required network bandwidth for your load balancers depends on factors such as data shape and workload. The recommended base sizes for each architecture class have been selected based on real data. However, in some scenarios such as consistent clones of [large monorepos](#large-monorepos), heavy usage of [GitLab Container Registry](../../user/packages/container_registry/_index.md), large CI artifacts, or any workloads involving frequent transfer of large files, you might have to adjust the sizes accordingly.
 
 ### No swap
 
@@ -621,13 +624,11 @@ While we try to have a good range of support for GitLab environment designs, cer
 
 #### Stateful components in Kubernetes
 
-[Running stateful components in Kubernetes, such as Gitaly Cluster (Praefect), is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
+[Running stateful components in Kubernetes, such as Postgres and Redis, is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
 
-Gitaly Cluster (Praefect) is only supported on conventional virtual machines. Kubernetes strictly limits memory usage. However, the memory usage of Git is unpredictable, which
-can cause sporadic out of memory (OOM) termination of Gitaly pods. The OOM termination leads to significant disruptions and potential data loss. Hence, Gitaly is not tested
-or supported in Kubernetes. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+You can use other supported cloud provider services, unless specifically called out as unsupported.
 
-This applies to stateful components such as Postgres and Redis. You can use other supported cloud provider services, unless specifically called out as unsupported.
+Individual Gitaly nodes can be deployed on Kubernetes in [limited availability](../gitaly/kubernetes.md#timeline). This provides a non-HA solution where each repository is stored on a single node. For context on Gitaly deployment options and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#context).
 
 #### Autoscaling of stateful nodes
 
@@ -715,7 +716,7 @@ You should take an iterative approach when scaling downwards, to ensure there ar
 
 #### Scaling knock on effects
 
-In some cases, scaling a component significantly may result in knock on effects for downstream components, impacting performance. The architectures are designed with balance in mind to ensure components that depend on each other are congruent in terms of specifications. Notably scaling a component may result in additional throughput being passed to the other components it depends on. As a result, you could have to scale these other dependent components as well.
+In some cases, scaling a component significantly may result in knock on effects for downstream components, impacting performance. The architectures are designed with balance in mind to ensure components that depend on each other are congruent in terms of specifications. Notably scaling a component may result in additional throughput being passed to the other components it depends on. As a result, you could have to scale these other dependent components as well. To determine this, monitor the saturation metrics of all dependent services before scaling. If multiple interdependent components show saturation, they should be scaled together in a coordinated manner rather than sequentially, preventing bottlenecks from simply shifting between components.
 
 {{< alert type="note" >}}
 
@@ -818,7 +819,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2023-02-17](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110379): Updated Praefect configuration examples to the new format.
 - [2023-02-14](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109798): Added examples of what automation may be considered additional workloads.
 - [2023-02-13](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111018): Added a new before you start section that gives more context about what's involved with running production software self-managed. Also added more details for Standalone setups and cloud provider services in the decision tree section.
-- [2023-02-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110641): Switched to use more common complex terminology instead of the less known **involved**.
+- [2023-02-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110641): Switched to using the word "complex" instead of the less clear "involved".
 - [2023-01-31](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110328): Expanded and centralized the requirements section on the main page.
 - [2023-01-26](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110183): Added notes on migrating Git data from NFS, that object data is still supported on NFS and handling SSH keys correctly across multiple Rails nodes.
 

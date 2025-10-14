@@ -15,7 +15,7 @@ committing it with version control, and updating it over time.
 
 This process is part of a larger workflow:
 
-![Workflow](img/get_started_code_workflow_v16_11.png)
+![Manage your code in the Create stage of the GitLab DevOps lifecycle.](img/get_started_code_workflow_v16_11.png)
 
 ## Step 1: Create a repository
 

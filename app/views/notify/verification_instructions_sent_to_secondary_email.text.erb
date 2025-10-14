@@ -1,0 +1,6 @@
+<%= s_('IdentityVerification|Verification code sent to your secondary email address') %>
+
+<%= s_('IdentityVerification|We received a request to access your GitLab account with your secondary email address (%{user_secondary_email}).') % { user_secondary_email: @user_secondary_email } %>
+
+<%= s_('IdentityVerification|If you have not tried to sign into your account, we recommend changing your password (%{password_link}) and setting up Two-Factor Authentication (%{two_fa_link}) to keep your account safe.') % { password_link: @password_link, two_fa_link: @two_fa_link } %>
+<%= s_('IdentityVerification|To stop using this email with your GitLab account, remove it in your account settings (%{account_settings_link}).') % { account_settings_link: @account_settings_link } %>

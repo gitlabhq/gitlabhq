@@ -91,7 +91,7 @@ include:
 .rspec-base:
   extends:
     - .rails-job-base
-    - .base-artifacts
+    - .base-artifacts-with-junit-reports
     - .repo-from-artifacts
     - .gitaly-with-transactions
   stage: test
@@ -212,19 +212,25 @@ include:
       section_end "knapsack-report-issues"
     - scripts/minify-simplecov-resultsets.rb
 
+.artifact-base: &artifact-base
+  expire_in: 31d
+  when: always
+  paths:
+    - auto_explain/
+    - coverage/
+    - crystalball/
+    - deprecations/
+    - knapsack/
+    - rspec/
+    - tmp/capybara/
+    - log/*.log
+
 .base-artifacts:
+  artifacts: *artifact-base
+
+.base-artifacts-with-junit-reports:
   artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - auto_explain/
-      - coverage/
-      - crystalball/
-      - deprecations/
-      - knapsack/
-      - rspec/
-      - tmp/capybara/
-      - log/*.log
+    <<: *artifact-base
     reports:
       junit: "rspec/rspec-*.xml"
 

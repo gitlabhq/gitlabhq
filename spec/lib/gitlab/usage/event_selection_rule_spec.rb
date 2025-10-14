@@ -3,6 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_ping do
+  after do
+    described_class.clear_memoization(:key_overrides)
+  end
+
+  describe '.key_overrides' do
+    it 'returns the content of the YAML file as a Hash',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572900' do
+      stub_file_read(Gitlab::UsageDataCounters::HLLRedisCounter::KEY_OVERRIDES_PATH,
+        content: 'an_event-filter:[label:foo]: a_legacy_key')
+      expect(YAML).to receive(:safe_load).once.and_call_original
+
+      key_overrides1 = described_class.key_overrides
+      key_overrides2 = described_class.key_overrides
+
+      expect(key_overrides1).to eq({
+        'an_event-filter:[label:foo]' => 'a_legacy_key'
+      })
+      expect(key_overrides1).to be(key_overrides2)
+    end
+  end
+
   describe '.initialize' do
     it 'sets the attributes' do
       event_selection_rule = described_class.new(

@@ -2,8 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Learn about GitLab user permissions and what actions each role can take across groups, subgroups, and projects
 title: Roles and permissions
+description: Understand the permissions and capabilities available to each user role in GitLab.
 ---
 
 {{< details >}}
@@ -121,7 +121,7 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 
 **Footnotes**
 
-1. Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
+1. Users can view events based on their individual actions only. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
 
 ### GitLab Duo group permissions
 
@@ -171,7 +171,7 @@ Group permissions for [group features](group/_index.md):
 
 **Footnotes**
 
-1. Developers and Maintainers can only view events based on their individual actions. For more
+1. Developers and Maintainers can view events based on their individual actions only. For more
    information, see the [prerequisites](compliance/audit_events.md#prerequisites).
 1. Developers, Maintainers and Owners: Only if the project creation role is set
    [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects)
@@ -290,6 +290,11 @@ Personal [namespace](namespace/_index.md) owners:
 - Are displayed as having the Maintainer role on projects in the namespace, but have the same permissions as a user with the Owner role.
 - For new projects in the namespace, are displayed as having the Owner role.
 
+When you configure [protected branch settings](project/repository/branches/protection_rules.md),
+selecting a role grants access to users with that role and all higher roles. For example, if you select
+**Maintainers** in the protected branch settings, users with both the Maintainer and Owner roles
+can perform the action.
+
 For more information about how to manage project members, see
 [members of a project](project/members/_index.md).
 
@@ -390,6 +395,12 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Add project runners to project <sup>11</sup>                                                                |            |       |         |          |           |     ✓      |
 | Clear runner caches manually                                                                                |            |       |         |          |           |     ✓      |
 | Enable instance runners in project                                                                          |            |       |         |          |           |     ✓      |
+| Create pipeline schedules <sup>12</sup>                                                                     |            |       |         |          |     ✓     |     ✓      |
+| Edit own pipeline schedules <sup>12</sup>                                                                   |            |       |         |          |     ✓     |     ✓      |
+| Delete own pipeline schedules                                                                               |            |       |         |          |     ✓     |     ✓      |
+| Run pipeline schedules manually <sup>13</sup>                                                               |            |       |         |          |     ✓     |     ✓      |
+| Take ownership of pipeline schedules                                                                        |            |       |         |          |           |     ✓      |
+| Delete others' pipeline schedules                                                                           |            |       |         |          |           |     ✓      |
 
 **Footnotes**
 
@@ -397,14 +408,14 @@ Project Owners can perform any listed action, and can delete pipelines:
 <!-- markdownlint-disable MD029 -->
 
 1. Non-members and guests: Only if the project is public.
-2. Non-members: Only if the project is public and **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
-   <br>Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
-3. Non-members: Only if the project is public, **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**,
+2. Non-members: Only if the project is public and **Project-based pipeline visibility** is enabled.
+   <br>Guests: Only if **Project-based pipeline visibility** is enabled.
+3. Non-members: Only if the project is public, **Project-based pipeline visibility** is enabled,
    and [`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic) is not set on the job.
-   <br>Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD** and
+   <br>Guests: Only if **Project-based pipeline visibility** is enabled and
    `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false`
    is not set on the job.
-4. Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
+4. Guests: Only if **Project-based pipeline visibility** is enabled.
 5. Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
    <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
 6. Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
@@ -413,6 +424,11 @@ Project Owners can perform any listed action, and can delete pipelines:
 9. Maintainers: Must have the Maintainer role for a project associated with the runner.
 10. Maintainers: Must have the Maintainer role for [the owner project](../ci/runners/runners_scope.md#project-runner-ownership) (first project associated with runner).
 11. Maintainers: Must have the Maintainer role for the project being added and for a project already associated with the runner.
+12. Developers: Only for branches where the user has merge permissions.
+    For protected branches, must have merge permissions for the target branch.
+    For protected tags, the user must be allowed to create protected tags.
+    These permission requirements apply when creating or editing schedules, and are checked dynamically as branch protection rules may change over time.
+13. When running manually, the pipeline executes with the triggering user's permissions instead of the schedule owner's permissions.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -861,7 +877,7 @@ to control access to groups and projects in the group hierarchy. You can set the
 Minimal Access for members automatically added to the top-level group through SSO.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. From the **Default membership role** dropdown list, select **Minimal Access**.
 1. Select **Save changes**.
 

@@ -1,4 +1,3 @@
-@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .labels-select-contents-create {
@@ -83,7 +82,7 @@
   }
 }
 
-@media (max-width: map.get($grid-breakpoints, md)-1) {
+@include gl-container-width-down(md, panel) {
   .manage-labels-list {
     > li:not(.empty-message):not(.no-border) .label-content {
       flex-wrap: wrap;

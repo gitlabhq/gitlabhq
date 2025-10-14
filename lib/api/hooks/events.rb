@@ -19,7 +19,8 @@ module API
         optional :status,
           type: Array[String],
           coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-          values: Rack::Utils::HTTP_STATUS_CODES.keys.map(&:to_s) + %w[successful client_failure server_failure]
+          values: Rack::Utils::HTTP_STATUS_CODES.keys.map(&:to_s) + %w[successful client_failure server_failure],
+          desc: 'HTTP status code of the event'
         optional :per_page, type: Integer, default: 20,
           desc: 'Number of items per page', documentation: { example: 20 },
           values: 1..20

@@ -10,9 +10,30 @@ import {
   expectedSourceCodeItems,
   expectedDirectoryDownloadItems,
 } from 'jest/repository/components/code_dropdown/mock_data';
+import {
+  CODE_DROPDOWN_CLICK,
+  OPEN_VSCODE_SSH,
+  OPEN_VSCODE_HTTPS,
+  OPEN_INTELLIJ_SSH,
+  OPEN_INTELLIJ_HTTPS,
+  COPY_SSH_CLONE_URL,
+  COPY_HTTPS_CLONE_URL,
+} from '~/repository/components/code_dropdown/constants';
+
+jest.mock('~/tracking', () => ({
+  InternalEvents: {
+    mixin: () => ({
+      methods: {
+        trackEvent: jest.fn(),
+      },
+    }),
+  },
+}));
 
 describe('Compact Code Dropdown component', () => {
   let wrapper;
+  let trackingSpy;
+
   const sshUrl = 'ssh://foo.bar';
   const httpUrl = 'http://foo.bar';
   const httpsUrl = 'https://foo.bar';
@@ -54,6 +75,8 @@ describe('Compact Code Dropdown component', () => {
   const closeDropdown = jest.fn();
 
   const createComponent = (propsData) => {
+    trackingSpy = jest.fn();
+
     wrapper = shallowMount(CompactCodeDropdown, {
       propsData: {
         ...defaultPropsData,
@@ -66,8 +89,27 @@ describe('Compact Code Dropdown component', () => {
           },
         }),
       },
+      mixins: [
+        {
+          methods: {
+            trackEvent: trackingSpy,
+          },
+        },
+      ],
     });
   };
+
+  afterEach(() => {
+    wrapper?.destroy();
+  });
+
+  it('tracks CODE_DROPDOWN_CLICK when dropdown is shown', () => {
+    createComponent();
+
+    findDropdown().vm.$emit('shown');
+
+    expect(trackingSpy).toHaveBeenCalledWith(CODE_DROPDOWN_CLICK);
+  });
 
   describe('groups computed property', () => {
     beforeEach(() => {
@@ -112,6 +154,17 @@ describe('Compact Code Dropdown component', () => {
         createComponent({ sshUrl: undefined, httpUrl: undefined, [name]: value });
 
         expect(findCodeDropdownCloneItemAtIndex(0).props('link')).toBe(value);
+      });
+
+      // tests for calling tracking covered in code_dropdown/code_dropdown_clone_item_spec.js
+      it('passes correct tracking prop', () => {
+        createComponent();
+        expect(findCodeDropdownCloneItemAtIndex(0).props('tracking')).toMatchObject({
+          action: COPY_SSH_CLONE_URL,
+        });
+        expect(findCodeDropdownCloneItemAtIndex(1).props('tracking')).toMatchObject({
+          action: COPY_HTTPS_CLONE_URL,
+        });
       });
     });
 
@@ -162,8 +215,28 @@ describe('Compact Code Dropdown component', () => {
 
       mockIdeItems.forEach((item, index) => {
         const ideItem = findCodeDropdownIdeItemAtIndex(index);
-        expect(ideItem.props('ideItem')).toStrictEqual(item);
+        expect(ideItem.props('ideItem')).toMatchObject(item);
       });
+    });
+
+    // tests for calling tracking covered in code_dropdown/code_dropdown_ide_item_spec.js
+    it('passes tracking to ide dropdown', () => {
+      createComponent({
+        xcodeUrl: undefined,
+        sshUrl,
+        httpUrl,
+        showWebIdeButton: false,
+        isGitpodEnabledForUser: false,
+        isGitpodEnabledForInstance: false,
+      });
+
+      const vscode = findCodeDropdownIdeItemAtIndex(0).props('ideItem').items;
+      const intellij = findCodeDropdownIdeItemAtIndex(1).props('ideItem').items;
+
+      expect(vscode[0]).toMatchObject({ tracking: { action: OPEN_VSCODE_SSH } });
+      expect(vscode[1]).toMatchObject({ tracking: { action: OPEN_VSCODE_HTTPS } });
+      expect(intellij[0]).toMatchObject({ tracking: { action: OPEN_INTELLIJ_SSH } });
+      expect(intellij[1]).toMatchObject({ tracking: { action: OPEN_INTELLIJ_HTTPS } });
     });
 
     describe('conditional IDE items', () => {

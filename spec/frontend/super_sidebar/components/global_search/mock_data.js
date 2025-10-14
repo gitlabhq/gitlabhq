@@ -9,9 +9,6 @@ import {
   GROUPS_CATEGORY,
   MSG_ISSUES_ASSIGNED_TO_ME,
   MSG_ISSUES_IVE_CREATED,
-  MSG_MR_ASSIGNED_TO_ME,
-  MSG_MR_IM_REVIEWER,
-  MSG_MR_IVE_CREATED,
   MSG_IN_ALL_GITLAB,
   MSG_MR_IM_WORKING_ON,
 } from '~/vue_shared/global_search/constants';
@@ -88,28 +85,6 @@ export const MOCK_PROJECT_SEARCH_CONTEXT = {
 };
 
 export const MOCK_DEFAULT_SEARCH_OPTIONS = [
-  {
-    text: MSG_ISSUES_ASSIGNED_TO_ME,
-    href: `${MOCK_ISSUE_PATH}/?assignee_username=${MOCK_USERNAME}`,
-  },
-  {
-    text: MSG_ISSUES_IVE_CREATED,
-    href: `${MOCK_ISSUE_PATH}/?author_username=${MOCK_USERNAME}`,
-  },
-  {
-    text: MSG_MR_ASSIGNED_TO_ME,
-    href: `${MOCK_MR_PATH}/?assignee_username=${MOCK_USERNAME}`,
-  },
-  {
-    text: MSG_MR_IM_REVIEWER,
-    href: `${MOCK_MR_PATH}/?reviewer_username=${MOCK_USERNAME}`,
-  },
-  {
-    text: MSG_MR_IVE_CREATED,
-    href: `${MOCK_MR_PATH}/?author_username=${MOCK_USERNAME}`,
-  },
-];
-export const MOCK_DASHBOARD_FLAG_ENABLED_SEARCH_OPTIONS = [
   {
     text: MSG_ISSUES_ASSIGNED_TO_ME,
     href: `${MOCK_ISSUE_PATH}/?assignee_username=${MOCK_USERNAME}`,

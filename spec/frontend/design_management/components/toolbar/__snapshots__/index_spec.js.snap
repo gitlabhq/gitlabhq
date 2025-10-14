@@ -2,10 +2,10 @@
 
 exports[`Design management toolbar component renders design and updated data 1`] = `
 <header
-  class="gl-bg-default gl-border-b gl-flex gl-flex-col gl-justify-between gl-max-w-full gl-pl-5 gl-py-4 js-design-header md:gl-flex-row md:gl-items-center"
+  class="@md/panel:gl-flex-row @md/panel:gl-items-center gl-bg-default gl-border-b gl-flex gl-flex-col gl-justify-between gl-max-w-full gl-pl-5 gl-py-4 js-design-header"
 >
   <div
-    class="gl-flex gl-flex-row gl-items-center gl-mb-3 gl-overflow-hidden md:gl-mb-0"
+    class="@md/panel:gl-mb-0 gl-flex gl-flex-row gl-items-center gl-mb-3 gl-overflow-hidden"
   >
     <div
       class="gl-flex gl-mr-3 gl-overflow-hidden"
@@ -40,14 +40,14 @@ exports[`Design management toolbar component renders design and updated data 1`]
       </small>
     </div>
     <close-button-stub
-      class="gl-ml-auto md:gl-hidden"
+      class="@md/panel:gl-hidden gl-ml-auto"
     />
   </div>
   <div
-    class="gl-flex gl-mr-5 gl-shrink-0 md:gl-flex-row md:gl-ml-auto"
+    class="@md/panel:gl-flex-row @md/panel:gl-ml-auto gl-flex gl-mr-5 gl-shrink-0"
   >
     <design-todo-button-stub
-      class="gl-ml-0 md:gl-ml-3"
+      class="@md/panel:gl-ml-3 gl-ml-0"
       design="[object Object]"
     />
     <gl-button-stub
@@ -92,7 +92,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     />
   </div>
   <close-button-stub
-    class="gl-hidden md:gl-flex"
+    class="@md/panel:gl-flex gl-hidden"
   />
 </header>
 `;

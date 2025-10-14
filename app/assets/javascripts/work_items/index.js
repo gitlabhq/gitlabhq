@@ -78,6 +78,9 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     isGroupIssuesList,
     canEdit,
     exportCsvPath,
+    isIssueRepositioningDisabled,
+    hasProjects,
+    newIssuePath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -149,7 +152,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       labelsFetchPath,
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
       canCreateProjects: parseBoolean(canCreateProjects),
-      newIssuePath: '',
+      newIssuePath,
       newProjectPath,
       projectNamespaceFullPath,
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
@@ -167,6 +170,9 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       showImportButton: parseBoolean(canImportWorkItems),
       canEdit: parseBoolean(canEdit),
       exportCsvPath,
+      showNewIssueLink: parseBoolean(showNewWorkItem),
+      isIssueRepositioningDisabled: parseBoolean(isIssueRepositioningDisabled),
+      hasProjects: parseBoolean(hasProjects),
     },
     mounted() {
       performanceMarkAndMeasure({

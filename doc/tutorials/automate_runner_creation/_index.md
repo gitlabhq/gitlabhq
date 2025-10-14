@@ -60,7 +60,7 @@ For more information, see the history.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
 1. Enter a name and expiry date for the token.
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
@@ -95,7 +95,7 @@ all projects that have visibility level set to [Internal](../../user/public_acce
 To create a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Access tokens**.
+1. Select **Settings** > **Access tokens**.
 1. Select **Add new token**
 1. Enter a name. The token name is visible to any user with permissions to view
    the group or project.
@@ -251,7 +251,7 @@ Now that you've automated your runner creation and registration, you can view
 the runners that use the same configuration in the GitLab UI.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 1. In the search box, enter the runner description or search the list of runners.
 1. To view the runners that use the same configuration, in the **Details** tab,
    next to **Runners**, select **Show details**.

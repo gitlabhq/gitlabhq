@@ -680,25 +680,123 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
-  describe 'disabled two-factor authentication email' do
+  describe 'enabled two-factor authentication email' do
     let_it_be(:user) { create(:user) }
 
-    subject { Notify.disabled_two_factor_email(user) }
+    describe 'One-time password authenticator' do
+      subject { Notify.enabled_two_factor_otp_email(user) }
 
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
 
-    it 'is sent to the user' do
-      is_expected.to deliver_to user.email
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(/^Two-factor authentication enabled - OTP$/i)
+      end
+
+      it 'includes a link to two-factor authentication settings page' do
+        is_expected.to have_body_text(/#{profile_two_factor_auth_path}/)
+      end
     end
 
-    it 'has the correct subject' do
-      is_expected.to have_subject(/^Two-factor authentication disabled$/i)
+    describe 'WebAuthn device' do
+      subject { Notify.enabled_two_factor_webauthn_email(user, 'Macbook Touch ID') }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(/^Two-factor authentication enabled - WebAuthn$/i)
+      end
+
+      it 'includes the device name' do
+        is_expected.to have_body_text('Macbook Touch ID')
+      end
+
+      it 'includes a link to two-factor authentication settings page' do
+        is_expected.to have_body_text(/#{profile_two_factor_auth_path}/)
+      end
+    end
+  end
+
+  describe 'disabled two-factor authentication emails' do
+    let_it_be(:user) { create(:user) }
+
+    describe 'Two Factor' do
+      subject { Notify.disabled_two_factor_email(user) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(/^Two-factor authentication disabled$/i)
+      end
+
+      it 'includes a link to two-factor authentication settings page' do
+        is_expected.to have_body_text(/#{profile_two_factor_auth_path}/)
+      end
     end
 
-    it 'includes a link to two-factor authentication settings page' do
-      is_expected.to have_body_text(/#{profile_two_factor_auth_path}/)
+    describe 'OTP' do
+      let_it_be(:user) { create(:user) }
+
+      subject { Notify.disabled_two_factor_otp_email(user) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(/^One-time password authenticator deleted$/i)
+      end
+
+      it 'includes a link to two-factor authentication settings page' do
+        is_expected.to have_body_text(/#{profile_two_factor_auth_path}/)
+      end
+    end
+
+    describe 'WebAuthn' do
+      let_it_be(:user) { create(:user) }
+
+      subject { Notify.disabled_two_factor_webauthn_email(user, 'Macbook Touch ID') }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(/^WebAuthn device deleted$/i)
+      end
+
+      it 'includes the device name' do
+        is_expected.to have_body_text('Macbook Touch ID')
+      end
+
+      it 'includes a link to two-factor authentication settings page' do
+        is_expected.to have_body_text(/#{profile_two_factor_auth_path}/)
+      end
     end
   end
 

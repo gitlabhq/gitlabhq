@@ -122,7 +122,7 @@ Follow these steps to configure the base domain and other settings required for 
    Copy this IP address, as you need it in the next step.
 
 1. Go back to the application project.
-1. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
+1. On the left sidebar, select **Settings** > **CI/CD** and expand **Variables**.
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value. For this example, use the domain `<IP address>.nip.io`.
    - Add a key called `KUBE_NAMESPACE` with a value of the Kubernetes namespace for your deployments to target. You can use different namespaces per environment. Configure the environment, use the environment scope.
    - Add a key called `KUBE_CONTEXT` with a value like `path/to/agent/project:eks-agent`. Select the environment scope of your choice.
@@ -135,7 +135,7 @@ the entire instance (for GitLab Self-Managed instances) and for individual group
 these steps to enable Auto DevOps if it's disabled:
 
 1. On the left sidebar, select **Search or go to** and find the application project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
 1. In **Deployment strategy**, select your desired [continuous deployment strategy](../requirements.md#auto-devops-deployment-strategy)
@@ -199,7 +199,7 @@ to monitor it.
 
 After successfully deploying your application, you can view its website and check
 on its health on the **Environments** page by navigating to
-**Operate > Environments**. This page displays details about
+**Operate** > **Environments**. This page displays details about
 the deployed applications, and the right-hand column displays icons that link
 you to common environment tasks:
 

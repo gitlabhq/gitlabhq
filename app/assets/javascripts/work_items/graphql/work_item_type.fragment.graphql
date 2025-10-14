@@ -15,6 +15,12 @@ fragment WorkItemTypeFragment on WorkItemType {
           name
         }
       }
+      allowedParentTypes {
+        nodes {
+          id
+          name
+        }
+      }
     }
   }
 }

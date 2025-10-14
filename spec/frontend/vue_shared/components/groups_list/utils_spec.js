@@ -44,14 +44,6 @@ afterEach(() => {
 });
 
 describe('availableGraphQLGroupActions', () => {
-  beforeEach(() => {
-    window.gon = {
-      features: {
-        disallowImmediateDeletion: false,
-      },
-    };
-  });
-
   describe.each`
     userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | features                   | availableActions
     ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${false} | ${{}}                      | ${[]}
@@ -85,7 +77,10 @@ describe('availableGraphQLGroupActions', () => {
       availableActions,
     }) => {
       beforeEach(() => {
-        window.gon.features = features;
+        window.gon = {
+          features,
+          allow_immediate_namespaces_deletion: true,
+        };
       });
 
       it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, isSelfDeletionScheduled is ${isSelfDeletionScheduled}, and archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
@@ -102,12 +97,10 @@ describe('availableGraphQLGroupActions', () => {
     },
   );
 
-  describe('when disallowImmediateDeletion feature flag is enabled', () => {
+  describe('when allow_immediate_namespaces_deletion is disabled', () => {
     beforeEach(() => {
       window.gon = {
-        features: {
-          disallowImmediateDeletion: true,
-        },
+        allow_immediate_namespaces_deletion: false,
       };
     });
 
@@ -120,19 +113,6 @@ describe('availableGraphQLGroupActions', () => {
           isSelfDeletionScheduled: true,
         }),
       ).toStrictEqual([ACTION_EDIT, ACTION_RESTORE]);
-    });
-
-    describe('when userPermissions include adminAllResources', () => {
-      it('allows deleting immediately', () => {
-        expect(
-          availableGraphQLGroupActions({
-            userPermissions: { removeGroup: true, adminAllResources: true },
-            markedForDeletion: true,
-            isSelfDeletionInProgress: false,
-            isSelfDeletionScheduled: true,
-          }),
-        ).toStrictEqual([ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]);
-      });
     });
   });
 });

@@ -162,7 +162,7 @@ func TestGetInfoRefsProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 
@@ -302,7 +302,7 @@ func TestPostReceivePackProxiedToGitalyInterrupted(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 
@@ -473,7 +473,7 @@ func TestPostUploadPackProxiedToGitalyInterrupted(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 
@@ -593,7 +593,7 @@ func TestGetBlobProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 
@@ -658,7 +658,7 @@ func TestGetArchiveProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 
@@ -681,7 +681,7 @@ func TestGetDiffProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 
@@ -704,7 +704,7 @@ func TestGetPatchProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 
@@ -749,7 +749,7 @@ func TestGetSnapshotProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		gitalyServer.WaitGroup.Wait()
+		gitalyServer.Wait()
 		close(done)
 	}()
 

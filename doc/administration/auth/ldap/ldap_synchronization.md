@@ -4,6 +4,7 @@ group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: no
 title: LDAP synchronization
+description: Learn how to configure LDAP synchronization for users and groups, and adjust the sync schedule.
 ---
 
 {{< details >}}
@@ -492,7 +493,7 @@ To enable global group memberships lock:
 
 1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
@@ -504,7 +505,7 @@ GitLab administrators can remove this permission from group Owners:
 
 1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Allow group owners to manage LDAP-related settings** checkbox is not checked.
 
@@ -669,7 +670,7 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
        ldap:
          servers:
            main:
-            duo_add_on_groups: ['duo_group_1', 'duo_group_2']
+             duo_add_on_groups: ['duo_group_1', 'duo_group_2']
    ```
 
 1. Save the file and apply the new values:
@@ -736,12 +737,15 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
 This section outlines what LDAP queries are executed and what behavior you
 can expect from group sync.
 
-Group member access are downgraded from a higher level if their LDAP group
-membership changes. For example, if a user the Owner role in a group and the
+If a user's LDAP group membership changes, their group access level may be downgraded.
+For example, if a user has the Owner role in a group and the
 next group sync reveals they should only have the Developer role, their
 access is adjusted accordingly. The only exception is if the user is the
 last owner in a group. Groups need at least one owner to fulfill
-administrative duties.
+administrative duties. When seat control is set to restricted access and no
+subscription seats remain available, users are automatically assigned the Minimal
+Access role during group synchronization. This way, users can be synchronized
+without consuming a seat.
 
 #### Supported LDAP group types/attributes
 
@@ -780,7 +784,7 @@ is ignored.
   filter `(cn=<cn_from_group_link>)`.
 - If the LDAP group has the `memberuid` attribute, GitLab executes another
   LDAP query per member to obtain each user's full DN. These queries are
-  executed with base `base`, scope 'base object', and a filter depending on
+  executed with base `base`, scope `baseObject`, and a filter depending on
   whether `user_filter` is set. Filter may be `(uid=<uid_from_group>)` or a
   joining of `user_filter`.
 

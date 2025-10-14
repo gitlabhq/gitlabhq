@@ -1074,4 +1074,12 @@ describe('diffs/components/app', () => {
       expect(trackEventSpy).not.toHaveBeenCalled();
     });
   });
+
+  it('sets diff file active when eventHub receives setFileActive', () => {
+    createComponent();
+
+    eventHub.$emit('setFileActive', '111');
+
+    expect(useLegacyDiffs().setCurrentFileHash).toHaveBeenCalledWith('111');
+  });
 });

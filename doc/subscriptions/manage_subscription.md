@@ -48,7 +48,7 @@ To subscribe to GitLab.com:
 1. Create additional users and
    [add them to the group](../user/group/_index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
    the features of your subscription tier, and they consume a seat in your subscription.
-1. On the left sidebar, select **Settings > Billing** and choose a tier. You are taken to the Customers Portal.
+1. On the left sidebar, select **Settings** > **Billing** and choose a tier. You are taken to the Customers Portal.
 1. Fill out the form to complete your purchase.
 
 ### For GitLab Self-Managed
@@ -92,7 +92,7 @@ Prerequisites:
 To see the status of your GitLab.com subscription:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Billing**.
+1. Select **Settings** > **Billing**.
 
 The following information is displayed:
 
@@ -235,12 +235,12 @@ Prerequisites:
 When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
 You receive [email notifications](#renewal-notifications) before a subscription automatically renews.
 
+Seat counts do not decrease automatically at renewal time. If you have more billable users than your current subscription quantity at renewal time, your seat count increases automatically to match the current number of users in your
+[group](manage_users_and_seats.md#view-seat-usage) or [instance](manage_users_and_seats.md#view-users).
+To avoid unexpectedly renewing your subscription for more seats, learn how to [renew for fewer seats](#renew-for-fewer-seats).
+
 Subscriptions purchased through the Customers Portal are set to auto-renew by default,
 but you can [turn off automatic subscription renewal](#turn-on-or-turn-off-automatic-subscription-renewal).
-
-The number of user seats is adjusted to fit the number of billable users in your
-[group](manage_users_and_seats.md#view-seat-usage) or [instance](manage_users_and_seats.md#view-users)
-at the time of renewal, if that number is higher than the current subscription quantity.
 
 #### Turn on or turn off automatic subscription renewal
 
@@ -256,7 +256,7 @@ You can use the Customers Portal to turn on or turn off automatic subscription r
      automatically renew. To disable automatic renewal:
      1. In **Subscription actions** ({{< icon name="ellipsis_v" >}}), select **Cancel subscription**.
      1. Select a reason for canceling.
-     1. Optional: In **Would you like to add anything?**, enter any relevant information.
+     1. Optional. In **Would you like to add anything?**, enter any relevant information.
      1. Select **Cancel subscription**.
 
 ### Renew manually
@@ -265,7 +265,7 @@ To manually renew your subscription:
 
 1. Determine the number of users you need in the next subscription period.
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Under your existing subscription, select **Renew**. This button does not display
+1. Under your existing subscription, select **Start renewal**. This button does not display
    until 15 days before the subscription expires.
 1. If renewing Premium or Ultimate products, in the **Seats** text box, enter the
    total number of user seats you need for the upcoming year.
@@ -329,7 +329,7 @@ about the renewal.
 An invoice is generated for your renewal. To view or download this renewal invoice,
 go to the [Customers Portal invoices page](https://customers.gitlab.com/invoices).
 
-If your account has a [saved credit card](customers_portal.md#change-your-payment-method),
+If your account has a [saved credit card](billing_account.md#change-your-payment-method),
 the card is charged for the invoice amount.
 
 If we are unable to process a payment or the auto-renewal fails for any other reason,
@@ -488,7 +488,7 @@ Example of a license sync request:
 To change the group linked to a GitLab.com subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
-   [linked](customers_portal.md#link-a-gitlabcom-account) GitLab.com account.
+   [linked](billing_account.md#link-a-gitlabcom-account) GitLab.com account.
 1. Do one of the following:
    - If the subscription is not linked to a group, select **Link subscription to a group**.
    - If the subscription is already linked to a group, select **Subscription actions** ({{< icon name="ellipsis_v" >}}) > **Change linked group**.
@@ -514,8 +514,8 @@ For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/
 
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
-You can [change profile owner information](customers_portal.md#change-profile-owner-information)
-and [add another billing account manager](customers_portal.md#add-a-billing-account-manager).
+You can [change profile owner information](billing_account.md#change-profile-owner-information)
+and [add another billing account manager](billing_account.md#add-a-billing-account-manager).
 
 ### Transfer restrictions
 

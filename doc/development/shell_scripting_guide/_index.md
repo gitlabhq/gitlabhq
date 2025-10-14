@@ -40,7 +40,7 @@ in a particular case.
 
 According to the [GitLab installation requirements](../../install/requirements.md),
 this guide covers only those shells that are used by
-[supported Linux distributions](../../administration/package_information/supported_os.md),
+[supported Linux distributions](../../install/package/_index.md),
 that is:
 
 - [POSIX Shell](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html)

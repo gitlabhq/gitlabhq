@@ -36,7 +36,7 @@ After this step, your GitLab group or project is connected to Google Cloud. You 
 Google Cloud resources without the need for service accounts keys and the associated risks using workload identity federation.
 
 1. On the left sidebar, select **Search or go to** and find your group or project. If you configure this on a group, settings apply to all projects within by default.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Google Cloud IAM**.
 1. Select **Guided setup** and follow the instructions.
 
@@ -45,7 +45,7 @@ Google Cloud resources without the need for service accounts keys and the associ
 Now that the Google IAM integration is set up, you can connect to a Google Artifact Registry repository.
 After this step, you can view your Google Cloud artifacts in GitLab.
 
-1. In your GitLab project, on the left sidebar, select **Settings > Integrations**.
+1. In your GitLab project, on the left sidebar, select **Settings** > **Integrations**.
 1. Select **Google Artifact Registry**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Complete the fields:
@@ -58,7 +58,7 @@ After this step, you can view your Google Cloud artifacts in GitLab.
    Artifact Registry repository in your GitLab project.
 1. Select **Save changes**.
 1. To view your Google Cloud artifacts, on the left sidebar,
-   select **Deploy > Google Artifact Registry**.
+   select **Deploy** > **Google Artifact Registry**.
 
 In a later step, you will push your container images to Google Artifact Registry.
 
@@ -68,7 +68,7 @@ You can set up GitLab Runner to run CI/CD jobs on Google Cloud.
 After this step, your GitLab project has an autoscaling fleet of runners, with
 a runner manager that creates temporary runners to execute multiple jobs simultaneously.
 
-1. In your GitLab project, on the left sidebar, select **Settings > CI/CD**.
+1. In your GitLab project, on the left sidebar, select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **New project runner**.
 1. Complete the fields.
@@ -105,7 +105,7 @@ in your pipeline.
 After this step, whenever a new container image is pushed to your GitLab container registry,
 it is also pushed to your Google Artifact Registry.
 
-1. In your GitLab project, on the left sidebar, select **Build > Pipeline editor**.
+1. In your GitLab project, on the left sidebar, select **Build** > **Pipeline editor**.
 1. In the existing configuration, add the component as follows.
    - Replace `<your_stage>` with the stage where this job runs.
      It must be after the image is built and pushed to the GitLab container registry.
@@ -121,21 +121,21 @@ it is also pushed to your Google Artifact Registry.
 
 1. Add a descriptive commit message. **Target branch** must be your default branch.
 1. Select **Commit changes**.
-1. Go to **Build > Pipelines** and make sure a new pipeline runs.
+1. Go to **Build** > **Pipelines** and make sure a new pipeline runs.
 1. After the pipeline finishes successfully, to view the container image that was copied to Google Artifact Registry,
-   on the left sidebar, select **Deploy > Google Artifact Registry**.
+   on the left sidebar, select **Deploy** > **Google Artifact Registry**.
 
 ### Create a Google Cloud Deploy release
 
 To integrate your pipeline with Google Cloud Deploy, include the [CI/CD component from Google](https://gitlab.com/explore/catalog/google-gitlab-components/cloud-deploy) in your pipeline.
 After this step, your pipeline creates a Google Cloud Deploy release with your application.
 
-1. In your GitLab project, on the left sidebar, select **Build > Pipeline editor**.
+1. In your GitLab project, on the left sidebar, select **Build** > **Pipeline editor**.
 1. In the existing configuration, add the [Google Cloud Deploy component](https://gitlab.com/explore/catalog/google-gitlab-components/cloud-deploy).
 1. Edit the component `inputs`.
 1. Add a descriptive commit message. **Target branch** must be your default branch.
 1. Select **Commit changes**.
-1. Go to **Build > Pipelines** and make sure a new pipeline passes.
+1. Go to **Build** > **Pipelines** and make sure a new pipeline passes.
 1. After the pipeline finishes successfully, to view the release,
    see the [Google Cloud documentation](https://cloud.google.com/deploy/docs/view-release).
 

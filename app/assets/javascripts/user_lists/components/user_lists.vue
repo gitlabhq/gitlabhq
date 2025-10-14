@@ -76,12 +76,14 @@ export default {
 <template>
   <div>
     <div class="gl-flex gl-flex-col">
-      <div class="gl-flex gl-flex-col md:!gl-hidden">
+      <div class="gl-flex gl-flex-col @md/panel:!gl-hidden">
         <gl-button v-if="hasNewPath" :href="newUserListPath" variant="confirm">
           {{ s__('UserLists|New user list') }}
         </gl-button>
       </div>
-      <div class="gl-mt-6 gl-flex gl-flex-col gl-items-baseline gl-justify-between md:gl-flex-row">
+      <div
+        class="gl-mt-6 gl-flex gl-flex-col gl-items-baseline gl-justify-between @md/panel:gl-flex-row"
+      >
         <div class="gl-flex gl-items-center">
           <h2 class="gl-my-0 gl-text-size-h2">
             {{ s__('UserLists|User Lists') }}

@@ -32,7 +32,7 @@
             = safe_format(s_('GroupsNew|Provide credentials for the %{url_link_start}source instance%{url_link_end} to import from. You can provide this instance as a source to move groups within this instance.'), tag_pair(url_link, :url_link_start, :url_link_end))
           .form-group.gl-form-group.gl-flex.gl-flex-col
             = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance base URL'), for: 'import_gitlab_url'
-            = f.text_field :bulk_import_gitlab_url, disabled: !bulk_imports_enabled, placeholder: 'https://gitlab.example.com', class: 'gl-form-input col-xs-12 col-sm-8',
+            = f.text_field :bulk_import_gitlab_url, disabled: !bulk_imports_enabled, placeholder: 'https://gitlab.example.com', class: 'gl-form-input gl-col-xs-12 gl-col-sm-8',
               required: true,
               title: s_('GroupsNew|Enter the URL for the source instance.'),
               id: 'import_gitlab_url',
@@ -45,7 +45,7 @@
               - pat_link = link_to('', help_page_path('user/profile/personal_access_tokens.md'), target: '_blank')
               - short_living_link = link_to('', help_page_path('security/tokens/_index.md', anchor: 'security-considerations'), target: '_blank')
               = safe_format(s_('GroupsNew|Create a token in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance with the %{code_start}api%{code_end} scope. For source instances on GitLab 15.0 or earlier, the token must additionally have the %{code_start}read_repository%{code_end} scope. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time.'), tag_pair('<code></code>'.html_safe, :code_start , :code_end), tag_pair(pat_link, :pat_link_start, :pat_link_end), tag_pair(short_living_link, :short_living_link_start, :short_living_link_end))
-            = f.password_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e…'), class: 'gl-form-input gl-mt-3 col-xs-12 col-sm-8',
+            = f.password_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e…'), class: 'gl-form-input gl-mt-3 gl-col-xs-12 gl-col-sm-8',
               required: true,
               disabled: !bulk_imports_enabled,
               autocomplete: 'off',

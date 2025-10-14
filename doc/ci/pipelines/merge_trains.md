@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use merge trains to queue merge requests and prevent branch conflicts in GitLab CI/CD.
 title: Merge trains
 ---
 
@@ -113,7 +114,7 @@ Prerequisites:
 To enable merge trains:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In GitLab 16.4 and earlier, in the **Merge method** section, verify that **Merge commit** is selected.
    In GitLab 16.5 and later, you can use any merge method.
 1. In the **Merge options** section, ensure **Enable merged results pipelines** is enabled
@@ -153,7 +154,7 @@ The merge train details page shows active merge requests in the queue and merged
 To access the merge train details from the list of merge requests:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Merge trains**.
 1. Optional. Filter the merge trains by target branch.
 
@@ -284,7 +285,7 @@ Prerequisites:
 To enable skipping the train without pipeline restarts:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge options** section, ensure the **Enable merged results pipelines**
    and **Enable merge trains** options are enabled.
 1. Select **Allow skipping the merge train**.

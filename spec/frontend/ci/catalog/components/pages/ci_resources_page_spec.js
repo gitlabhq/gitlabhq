@@ -150,7 +150,6 @@ describe('CiResourcesPage', () => {
 
       it('passes down props to the resources list', () => {
         expect(findCiResourcesList().props()).toMatchObject({
-          currentPage: 1,
           resources: nodes,
           pageInfo,
         });
@@ -284,44 +283,16 @@ describe('CiResourcesPage', () => {
 
         await createComponent();
       });
-
-      it('increments and drecrements the page count correctly', async () => {
-        expect(findCiResourcesList().props().currentPage).toBe(1);
-
-        findCiResourcesList().vm.$emit('onNextPage');
-        await waitForPromises();
-
-        expect(findCiResourcesList().props().currentPage).toBe(2);
-
-        await findCiResourcesList().vm.$emit('onPrevPage');
-        await waitForPromises();
-
-        expect(findCiResourcesList().props().currentPage).toBe(1);
-      });
     });
 
     describe.each`
       event                   | payload
       ${'update-search-term'} | ${'cat'}
       ${'update-sorting'}     | ${'CREATED_ASC'}
-    `('when $event event is emitted', ({ event, payload }) => {
+    `('when $event event is emitted', () => {
       beforeEach(async () => {
         catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
         await createComponent();
-      });
-
-      it('resets the page count', async () => {
-        expect(findCiResourcesList().props().currentPage).toBe(1);
-
-        findCiResourcesList().vm.$emit('onNextPage');
-        await waitForPromises();
-
-        expect(findCiResourcesList().props().currentPage).toBe(2);
-
-        await findCatalogSearch().vm.$emit(event, payload);
-        await waitForPromises();
-
-        expect(findCiResourcesList().props().currentPage).toBe(1);
       });
     });
 
@@ -337,12 +308,9 @@ describe('CiResourcesPage', () => {
         });
 
         it('does not increment the page and calls createAlert', async () => {
-          expect(findCiResourcesList().props().currentPage).toBe(1);
-
           findCiResourcesList().vm.$emit('onNextPage');
           await waitForPromises();
 
-          expect(findCiResourcesList().props().currentPage).toBe(1);
           expect(createAlert).toHaveBeenCalledWith({ message: errorMessage, variant: 'danger' });
         });
       });
@@ -360,17 +328,12 @@ describe('CiResourcesPage', () => {
         });
 
         it('does not decrement the page and calls createAlert', async () => {
-          expect(findCiResourcesList().props().currentPage).toBe(1);
-
           findCiResourcesList().vm.$emit('onNextPage');
           await waitForPromises();
-
-          expect(findCiResourcesList().props().currentPage).toBe(2);
 
           findCiResourcesList().vm.$emit('onPrevPage');
           await waitForPromises();
 
-          expect(findCiResourcesList().props().currentPage).toBe(2);
           expect(createAlert).toHaveBeenCalledWith({ message: errorMessage, variant: 'danger' });
         });
       });

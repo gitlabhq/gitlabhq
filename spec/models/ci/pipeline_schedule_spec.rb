@@ -183,6 +183,116 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
       end
     end
 
+    context 'when the record updates attributes other than the cron values' do
+      before do
+        pipeline_schedule
+      end
+
+      it 'does not call set_next_run_at' do
+        expect(pipeline_schedule).not_to receive(:set_next_run_at)
+
+        pipeline_schedule.update!(description: 'some description')
+      end
+    end
+
+    context 'when the mutation updates cron' do
+      before do
+        pipeline_schedule
+      end
+
+      it 'calls set_next_run_at' do
+        expect(pipeline_schedule).to receive(:set_next_run_at)
+
+        pipeline_schedule.update!(cron: "0 2 * * *")
+      end
+
+      context 'when mutating the record but passing the same cron value' do
+        it 'does not call set_next_run_at' do
+          expect(pipeline_schedule).not_to receive(:set_next_run_at)
+
+          pipeline_schedule.update!(cron: "0 1 * * *")
+        end
+      end
+    end
+
+    context 'when the mutation updates cron_timezone' do
+      before do
+        pipeline_schedule
+      end
+
+      it 'calls set_next_run_at' do
+        expect(pipeline_schedule).to receive(:set_next_run_at)
+
+        pipeline_schedule.update!(cron_timezone: "Eastern Time (US & Canada)")
+      end
+
+      context 'when mutating the record but passing the same cron value' do
+        it 'does not call set_next_run_at' do
+          expect(pipeline_schedule).not_to receive(:set_next_run_at)
+
+          pipeline_schedule.update!(cron_timezone: Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE)
+        end
+      end
+    end
+
+    context 'when resolve_pipeline_schedule_race_conditions is disabled' do
+      before do
+        stub_feature_flags(resolve_pipeline_schedule_race_conditions: false)
+      end
+
+      context 'when the record updates attributes other than the cron values' do
+        before do
+          pipeline_schedule
+        end
+
+        it 'calls set_next_run_at' do
+          expect(pipeline_schedule).to receive(:set_next_run_at)
+
+          pipeline_schedule.update!(description: 'some description')
+        end
+      end
+
+      context 'when the mutation updates cron' do
+        before do
+          pipeline_schedule
+        end
+
+        it 'calls set_next_run_at' do
+          expect(pipeline_schedule).to receive(:set_next_run_at)
+
+          pipeline_schedule.update!(cron: "0 2 * * *")
+        end
+
+        context 'when mutating the record but passing the same cron value' do
+          it 'calls set_next_run_at' do
+            expect(pipeline_schedule).to receive(:set_next_run_at)
+
+            pipeline_schedule.update!(cron: "0 1 * * *")
+          end
+        end
+      end
+
+      context 'when the mutation updates cron_timezone' do
+        before do
+          pipeline_schedule
+        end
+
+        it 'calls set_next_run_at' do
+          expect(pipeline_schedule).to receive(:set_next_run_at)
+
+          pipeline_schedule.update!(cron_timezone: "Eastern Time (US & Canada)")
+        end
+
+        context 'when mutating the record but passing the same cron value' do
+          it 'calls set_next_run_at' do
+            expect(pipeline_schedule).to receive(:set_next_run_at)
+
+            pipeline_schedule.update!(cron_timezone: Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE)
+          end
+        end
+      end
+    end
+
     context 'when there are two different pipeline schedules in different time zones' do
       let(:pipeline_schedule_1) do
         create(:ci_pipeline_schedule, :weekly, cron_timezone: 'Eastern Time (US & Canada)', project: project)
@@ -219,6 +329,56 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
         pipeline_schedule.schedule_next_run!
 
         expect(pipeline_schedule.next_run_at).to be_nil
+      end
+    end
+
+    context 'when cron has changed' do
+      before do
+        pipeline_schedule.cron = '0 0 * * *'
+      end
+
+      it 'does not update next_run_at' do
+        expect(pipeline_schedule).not_to receive(:set_next_run_at)
+        pipeline_schedule.schedule_next_run!
+      end
+    end
+
+    context 'when cron_timezone has changed' do
+      before do
+        pipeline_schedule.cron_timezone = 'Eastern Time (US & Canada)'
+      end
+
+      it 'does not update next_run_at' do
+        expect(pipeline_schedule).not_to receive(:set_next_run_at)
+        pipeline_schedule.schedule_next_run!
+      end
+    end
+
+    context 'when resolve_pipeline_schedule_race_conditions is disabled' do
+      before do
+        stub_feature_flags(resolve_pipeline_schedule_race_conditions: false)
+      end
+
+      context 'when cron has changed' do
+        before do
+          pipeline_schedule.cron = '0 0 * * *'
+        end
+
+        it 'updates next_run_at' do
+          expect(pipeline_schedule).to receive(:set_next_run_at)
+          pipeline_schedule.schedule_next_run!
+        end
+      end
+
+      context 'when cron_timezone has changed' do
+        before do
+          pipeline_schedule.cron_timezone = 'Eastern Time (US & Canada)'
+        end
+
+        it 'updates next_run_at' do
+          expect(pipeline_schedule).to receive(:set_next_run_at)
+          pipeline_schedule.schedule_next_run!
+        end
       end
     end
   end

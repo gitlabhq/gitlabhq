@@ -126,9 +126,6 @@ export default {
   [types.DISABLE_SCROLL_BOTTOM](state) {
     state.isScrollBottomDisabled = true;
   },
-  [types.TOGGLE_SCROLL_ANIMATION](state, toggle) {
-    state.isScrollingDown = toggle;
-  },
   [types.REQUEST_JOBS_FOR_STAGE](state, stage = {}) {
     state.isLoadingJobs = true;
     state.selectedStage = stage.name;

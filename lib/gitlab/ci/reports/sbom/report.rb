@@ -18,7 +18,7 @@ module Gitlab
             @sbom_attributes = {
               bom_format: BOM_FORMAT,
               spec_version: SPEC_VERSION,
-              serial_number: "urn:uuid:#{SecureRandom.uuid}",
+              serial_number: Gitlab::UUID.urn,
               version: VERSION
             }
             @components = []

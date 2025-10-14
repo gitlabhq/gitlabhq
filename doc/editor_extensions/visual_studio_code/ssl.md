@@ -47,7 +47,7 @@ Make sure you can see your self-signed CA in your certificate store:
 
 1. Open the command prompt.
 1. Run `certmgr`.
-1. Make sure you see your certificate in **Trusted Root Certification Authorities > Certificates**.
+1. Make sure you see your certificate in **Trusted Root Certification Authorities** > **Certificates**.
 
 ### Linux
 
@@ -75,6 +75,6 @@ create a documentation issue with more information.
 
 Make sure you see the self-signed CA in your keychain:
 
-1. Go to **Finder > Applications > Utilities > Keychain Access**.
+1. Go to **Finder** > **Applications** > **Utilities** > **Keychain Access**.
 1. In the left-hand column, select **System**.
 1. Your self-signed CA certificate should be on the list.

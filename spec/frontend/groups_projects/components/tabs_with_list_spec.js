@@ -29,6 +29,7 @@ import {
   SORT_DIRECTION_ASC,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
+  FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -73,12 +74,11 @@ const defaultPropsData = {
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
     FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
     FILTERED_SEARCH_TOKEN_NAMESPACE,
+    FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
   ],
   filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
   filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
   filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
-  sortOptions: SORT_OPTIONS,
-  defaultSortOption: SORT_OPTION_UPDATED,
   timestampTypeMap: {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
@@ -283,6 +283,7 @@ describe('TabsWithList', () => {
             [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
             [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: [VISIBILITY_LEVEL_PRIVATE_STRING],
             [FILTERED_SEARCH_TOKEN_NAMESPACE]: ['namespace'],
+            [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]: ['true'],
           });
           await waitForPromises();
         });
@@ -293,6 +294,7 @@ describe('TabsWithList', () => {
             programmingLanguageName: 'CSS',
             visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
             namespacePath: 'namespace',
+            lastRepositoryCheckFailed: true,
             search: searchTerm,
             skipContributed: false,
             skipStarred: true,
@@ -300,6 +302,22 @@ describe('TabsWithList', () => {
             skipMember: true,
             skipInactive: true,
           });
+        });
+      });
+
+      describe(`when "${FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED}" value is 1`, () => {
+        beforeEach(async () => {
+          await mockApollo.defaultClient.clearStore();
+          findFilteredSearchAndSort().vm.$emit('filter', {
+            [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]: ['1'],
+          });
+          await waitForPromises();
+        });
+
+        it('casts the parameter as true', () => {
+          expect(successHandler).toHaveBeenCalledWith(
+            expect.objectContaining({ lastRepositoryCheckFailed: true }),
+          );
         });
       });
 
@@ -346,9 +364,45 @@ describe('TabsWithList', () => {
         filteredSearchRecentSearchesStorageKey:
           defaultPropsData.filteredSearchRecentSearchesStorageKey,
         searchInputPlaceholder: 'Filter or search (3 character minimum)',
-        sortOptions: defaultPropsData.sortOptions,
+        sortOptions: SORT_OPTIONS,
         activeSortOption: SORT_OPTION_CREATED,
         isAscending: false,
+      });
+    });
+
+    describe('when initialSort prop is not set', () => {
+      it('renders filtered search bar activeTab.defaultSortOption as fallback for sort', async () => {
+        await createComponent({
+          propsData: {
+            filteredSearchSupportedTokens: [FILTERED_SEARCH_TOKEN_LANGUAGE],
+            initialSort: '',
+          },
+        });
+
+        expect(findFilteredSearchAndSort().props('activeSortOption')).toBe(SORT_OPTION_UPDATED);
+      });
+
+      describe('when sortOptions and defaultSortOption are not set', () => {
+        beforeEach(async () => {
+          await createComponent({
+            propsData: {
+              filteredSearchSupportedTokens: [FILTERED_SEARCH_TOKEN_LANGUAGE],
+              initialSort: '',
+              tabs: PROJECT_DASHBOARD_TABS.map((tab) => ({
+                ...tab,
+                sortOptions: undefined,
+                defaultSortOption: undefined,
+              })),
+            },
+          });
+        });
+
+        it('sets activeSortOption and sortOptions props as empty', () => {
+          expect(findFilteredSearchAndSort().props()).toMatchObject({
+            activeSortOption: {},
+            sortOptions: [],
+          });
+        });
       });
     });
 
@@ -569,6 +623,7 @@ describe('TabsWithList', () => {
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
       [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_STRING,
       [FILTERED_SEARCH_TOKEN_NAMESPACE]: 'namespace',
+      [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]: 'true',
       [QUERY_PARAM_END_CURSOR]: mockEndCursor,
       [QUERY_PARAM_START_CURSOR]: mockStartCursor,
     };
@@ -596,6 +651,8 @@ describe('TabsWithList', () => {
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
           [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: query[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL],
           [FILTERED_SEARCH_TOKEN_NAMESPACE]: query[FILTERED_SEARCH_TOKEN_NAMESPACE],
+          [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]:
+            query[FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED],
         },
         filtersAsQueryVariables: {
           programmingLanguageName: 'CoffeeScript',
@@ -644,7 +701,7 @@ describe('TabsWithList', () => {
 
     it('falls back to defaultSortOption prop descending order', () => {
       expect(findTabView().props()).toMatchObject({
-        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_DESC}`,
+        sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
       });
     });
   });
@@ -710,12 +767,18 @@ describe('TabsWithList', () => {
     describe('when gon.relative_url_root is set', () => {
       beforeEach(async () => {
         gon.relative_url_root = '/gitlab';
-        await createComponent();
+        await createComponent({
+          propsData: {
+            tabs: GROUPS_SHOW_TABS,
+          },
+          createRouter: groupsShowCreateRouter,
+          route: { name: SUBGROUPS_AND_PROJECTS_TAB.value, params: { group: 'foo/bar/baz' } },
+        });
         router.push = jest.fn();
       });
 
       it('pushes new route correctly and respects relative url', async () => {
-        findGlTabs().vm.$emit('input', 3);
+        findGlTabs().vm.$emit('input', 1);
 
         await nextTick();
 
@@ -724,10 +787,10 @@ describe('TabsWithList', () => {
           expect(router.options.base).toBe('/gitlab');
         } else {
           // Vue router 4
-          expect(router.currentRoute.href).toBe('/gitlab/');
+          expect(router.currentRoute.href).toMatch(/^\/gitlab\//);
         }
 
-        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/member');
+        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/shared');
       });
     });
 
@@ -747,8 +810,8 @@ describe('TabsWithList', () => {
         await nextTick();
       });
 
-      it('converts route param to an array', () => {
-        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/inactive');
+      it('decodes URI', () => {
+        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/shared');
       });
     });
   });

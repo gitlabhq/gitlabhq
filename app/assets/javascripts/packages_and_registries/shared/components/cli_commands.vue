@@ -71,7 +71,7 @@ export default {
       />
 
       <code-instruction
-        class="mb-0"
+        class="!gl-mb-0"
         :label="$options.i18n.PUSH_COMMAND_LABEL"
         :instruction="dockerPushCommand"
         :copy-text="$options.i18n.COPY_PUSH_TITLE"

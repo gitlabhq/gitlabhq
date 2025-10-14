@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::IdToken do
       expect(id_token).not_to be_valid
       expect(id_token.errors).to match_array([
         'id token config missing required keys: aud',
-                                               'id token aud should be an array of strings or a string'
+        'id token aud should be an array of strings or a string'
       ])
     end
   end

@@ -27,6 +27,7 @@ module Gitlab
           source_branch
           source_project_id
           state_id
+          system
           target_branch
           target_project_id
           time_estimate
@@ -49,7 +50,14 @@ module Gitlab
 
       alias_method :merge_request, :object
       def build
-        attrs = {
+        merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
+          .merge!(additional_attributes)
+      end
+
+      private
+
+      def additional_attributes
+        {
           assignee_id: merge_request.assignee_ids.first, # This key is deprecated
           assignee_ids: merge_request.assignee_ids,
           blocking_discussions_resolved: merge_request.mergeable_discussions_state?,
@@ -65,6 +73,7 @@ module Gitlab
           reviewer_ids: merge_request.reviewer_ids,
           source: merge_request.source_project.try(:hook_attrs),
           state: merge_request.state,
+          system: false, # Default value for webhook system flag
           target: merge_request.target_project.hook_attrs,
           target_branch: merge_request.target_branch,
           time_change: merge_request.time_change,
@@ -72,12 +81,7 @@ module Gitlab
           url: Gitlab::UrlBuilder.build(merge_request),
           work_in_progress: merge_request.draft?
         }
-
-        merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
-          .merge!(attrs)
       end
-
-      private
 
       def detailed_merge_status
         ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: merge_request).execute.to_s

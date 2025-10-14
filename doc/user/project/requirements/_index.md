@@ -50,7 +50,7 @@ Prerequisites:
 
 To create a requirement:
 
-1. In a project, go to **Plan > Requirements**.
+1. In a project, go to **Plan** > **Requirements**.
 1. Select **New requirement**.
 1. Enter a title and description and select **New requirement**.
 
@@ -141,7 +141,7 @@ You can search for a requirement from the requirements list page based on the fo
 
 To search for a requirement:
 
-1. In a project, go to **Plan > Requirements > List**.
+1. In a project, go to **Plan** > **Requirements** > **List**.
 1. Select the **Search or filter results** field. A dropdown list appears.
 1. Select the requirement author or status from the dropdown list or enter plain text to search by requirement title.
 1. Press <kbd>Enter</kbd> on your keyboard to filter the list.
@@ -265,7 +265,7 @@ Before you import your file:
 
 To import requirements:
 
-1. In a project, go to **Plan > Requirements**.
+1. In a project, go to **Plan** > **Requirements**.
    - For a project with requirements, in the
      upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}),
      then select **Import requirements** ({{< icon name="import" >}}).
@@ -329,7 +329,7 @@ Prerequisites:
 
 To export requirements:
 
-1. In a project, go to **Plan > Requirements**.
+1. In a project, go to **Plan** > **Requirements**.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}),
    then select **Export as CSV** ({{< icon name="export" >}}).
 

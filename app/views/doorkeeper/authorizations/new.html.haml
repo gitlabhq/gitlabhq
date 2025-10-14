@@ -9,7 +9,7 @@
     window.addEventListener('focus', enablePointerEvents, {once: true});
     window.addEventListener('mousemove', enablePointerEvents, {once: true});
 
-#container.gl-ml-auto.gl-mr-auto.gl-pointer-events-none{ class: 'sm:gl-w-1/2' }
+#container.gl-ml-auto.gl-mr-auto.gl-pointer-events-none{ class: '@sm/panel:gl-w-1/2' }
   .gl-items-center
     .gl-text-size-h1
       = safe_format(_('%{strong_start}%{client_name}%{strong_end} is requesting access to your account on %{title}.'),
@@ -51,7 +51,7 @@
       %p
         = safe_format(_('%{owner} %{created_date} ago.'),
           { owner: auth_app_owner_text(@pre_auth.client.application),
-            created_date: time_ago_in_words(@pre_auth.client.application.created_at.to_date) })
+            created_date: time_ago_in_words(@pre_auth.client.application.created_at) })
         - domain = URI.parse(@pre_auth.redirect_uri).host.gsub(/^www\./, '')
         - if @pre_auth.redirect_uri.start_with?('http://', 'https://') && domain != 'localhost'
           = safe_format(_('You will be redirected to %{strong_start}%{domain}%{strong_end} after authorizing.'),

@@ -25,6 +25,7 @@ import {
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholderActions from './placeholder_actions.vue';
+import PlaceholderReassignedActions from './placeholder_reassigned_actions.vue';
 
 const MINIMUM_QUERY_LENGTH = 3;
 
@@ -39,6 +40,7 @@ export default {
     GlSprintf,
     GlLink,
     PlaceholderActions,
+    PlaceholderReassignedActions,
     HelpPopover,
     EmptyResult,
   },
@@ -164,16 +166,6 @@ export default {
     isPlaceholderUserDeleted(item) {
       return item.status === PLACEHOLDER_STATUS_COMPLETED && !item.placeholderUser;
     },
-    reassignedUser(item) {
-      if (item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER) {
-        return item.placeholderUser;
-      }
-      if (item.status === PLACEHOLDER_STATUS_COMPLETED) {
-        return item.reassignToUser;
-      }
-
-      return {};
-    },
     onPrevPage() {
       this.cursor = {
         before: this.sourceUsers.pageInfo.startCursor,
@@ -284,16 +276,11 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <template v-if="isReassignedItem(item)">
-          <gl-avatar-labeled
-            v-if="reassignedUser(item)"
-            :size="32"
-            :src="reassignedUser(item).avatarUrl"
-            :label="reassignedUser(item).name"
-            :sub-label="`@${reassignedUser(item).username}`"
-            data-testid="placeholder-reassigned"
-          />
-        </template>
+        <placeholder-reassigned-actions
+          v-if="isReassignedItem(item)"
+          :key="item.id"
+          :source-user="item"
+        />
         <placeholder-actions v-else :key="item.id" :source-user="item" @confirm="onConfirm(item)" />
       </template>
     </gl-table>

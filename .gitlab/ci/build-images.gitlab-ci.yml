@@ -11,6 +11,8 @@ build-qa-image:
   extends:
     - .base-image-build-buildx
     - .build-images:rules:build-qa-image
+  variables:
+    CHROME_VERSION: "138" # Remove when default image catches up, defined in .gitlab/ci/version.yml
   stage: build-images
   needs: []
   script:
@@ -40,12 +42,13 @@ retag-gdk-image:
 build-gdk-image:
   extends:
     - .base-image-build-buildx
-    - .build-images:rules:build-gdk-image
+    - .assets-compile-cache-pull
+    - .qa:rules:e2e:test-on-gdk
   tags:
     - $GITLAB_LARGE_RUNNER_OPTIONAL
   stage: build-images
   needs:
-    - job: gdk:compile-test-assets
+    - job: cache:assets-hash
     - job: retag-gdk-image
       optional: true
   script:

@@ -152,7 +152,7 @@ the components outlined previously and the pre-loaded demo runbook.
    GitLab instance with OAuth2. This button redirects you to a page at GitLab
    requesting authorization for JupyterHub to use your GitLab account.
 
-   ![authorize Jupyter](img/authorize_jupyter_v11_6.png)
+   ![Authorization dialog requesting permission for Jupyter to access your GitLab account.](img/authorize_jupyter_v11_6.png)
 
 1. Select **Authorize**, and GitLab redirects you to the JupyterHub application.
 1. Select **Start My Server** to start the server in a few seconds.
@@ -162,11 +162,11 @@ the components outlined previously and the pre-loaded demo runbook.
 
    1. Select the **DevOps-Runbook-Demo** folder located on the left panel.
 
-      ![demo runbook](img/demo_runbook_v11_6.png)
+      ![JupyterHub Launcher showing the DevOps-Runbook-Demo folder in the file browser.](img/demo_runbook_v11_6.png)
 
    1. Select the `Nurtch-DevOps-Demo.ipynb` runbook.
 
-      ![sample runbook](img/sample_runbook_v11_6.png)
+      ![JupyterHub file browser with Nurtch-DevOps-Demo.ipynb runbook selected.](img/sample_runbook_v11_6.png)
 
       Jupyter displays the runbook's contents in the right-hand side of the screen.
       The **Setup** section displays your `PRIVATE_TOKEN` and your `PROJECT_ID`.
@@ -197,7 +197,7 @@ the components outlined previously and the pre-loaded demo runbook.
    %env DB_NAME={project.variables.get('DB_NAME').value}
    ```
 
-   1. Go to **Settings > CI/CD > Variables** to create
+   1. Go to **Settings** > **CI/CD** > **Variables** to create
       the variables in your project.
 
       ![GitLab variables](img/gitlab_variables_v11_6.png)

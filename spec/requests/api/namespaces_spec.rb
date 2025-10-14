@@ -389,6 +389,10 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
         def request
           get api("#{path}/#{namespace1.path}/exists", current_user)
         end
+
+        def request_with_second_scope
+          get api("#{path}/#{namespace1.path}/exists", admin)
+        end
       end
 
       it 'returns JSON indicating the namespace exists and a suggestion' do

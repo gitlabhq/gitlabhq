@@ -8,51 +8,51 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
   shared_examples 'sends notification about expiry of bot user tokens' do
     context 'for 7 day notifications' do
       it 'uses notification service to send the email' do
-        expiring_token = create(:resource_access_token, user: project_bot, expires_at: 5.days.from_now)
+        expiring_token = create(:resource_access_token, resource: resource, expires_at: 5.days.from_now)
         expect_next_instance_of(NotificationService) do |notification_service|
           expect(notification_service).to receive(:bot_resource_access_token_about_to_expire)
-                                            .with(project_bot, expiring_token.name, a_hash_including(days_to_expire: 7))
+            .with(expiring_token.user, expiring_token.name, a_hash_including(days_to_expire: 7))
         end
 
         worker.perform
       end
 
       it 'marks the notification as delivered', :freeze_time do
-        expiring_token = create(:resource_access_token, user: project_bot, expires_at: 5.days.from_now)
+        expiring_token = create(:resource_access_token, resource: resource, expires_at: 5.days.from_now)
         expect { worker.perform }.to change { expiring_token.reload.expire_notification_delivered }.from(false).to(true).and change { expiring_token.reload.seven_days_notification_sent_at }.from(nil).to(Time.current)
       end
     end
 
     context 'for 30 day notifications' do
       it 'uses notification service to send the email' do
-        expiring_token = create(:resource_access_token, user: project_bot, expires_at: 28.days.from_now)
+        expiring_token = create(:resource_access_token, resource: resource, expires_at: 28.days.from_now)
         expect_next_instance_of(NotificationService) do |notification_service|
           expect(notification_service).to receive(:bot_resource_access_token_about_to_expire)
-                                            .with(project_bot, expiring_token.name, a_hash_including(days_to_expire: 30))
+            .with(expiring_token.user, expiring_token.name, a_hash_including(days_to_expire: 30))
         end
 
         worker.perform
       end
 
       it 'marks the notification as delivered', :freeze_time do
-        expiring_token = create(:resource_access_token, user: project_bot, expires_at: 28.days.from_now)
+        expiring_token = create(:resource_access_token, resource: resource, expires_at: 28.days.from_now)
         expect { worker.perform }.to change { expiring_token.reload.thirty_days_notification_sent_at }.from(nil).to(Time.current)
       end
     end
 
     context 'for 60 day notifications' do
       it 'uses notification service to send the email' do
-        expiring_token = create(:resource_access_token, user: project_bot, expires_at: 57.days.from_now)
+        expiring_token = create(:resource_access_token, resource: resource, expires_at: 57.days.from_now)
         expect_next_instance_of(NotificationService) do |notification_service|
           expect(notification_service).to receive(:bot_resource_access_token_about_to_expire)
-                                            .with(project_bot, expiring_token.name, a_hash_including(days_to_expire: 60))
+            .with(expiring_token.user, expiring_token.name, a_hash_including(days_to_expire: 60))
         end
 
         worker.perform
       end
 
       it 'marks the notification as delivered', :freeze_time do
-        expiring_token = create(:resource_access_token, user: project_bot, expires_at: 57.days.from_now)
+        expiring_token = create(:resource_access_token, resource: resource, expires_at: 57.days.from_now)
         expect { worker.perform }.to change { expiring_token.reload.sixty_days_notification_sent_at }.from(nil).to(Time.current)
       end
     end
@@ -233,23 +233,18 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
     end
 
     context 'when a token is owned by a project bot' do
-      let_it_be(:project_bot) { create(:user, :project_bot) }
-      let_it_be(:project) { create(:project) }
-      let_it_be(:namespace_settings) { create(:namespace_settings, namespace: project.namespace) }
+      let_it_be(:resource) { create(:project) }
+      let_it_be(:namespace_settings) { create(:namespace_settings, namespace: resource.namespace) }
       let(:fake_wh_service) { double }
-
-      before_all do
-        project.add_developer(project_bot)
-      end
 
       it_behaves_like 'sends notification about expiry of bot user tokens'
 
       context 'and a token is expiring' do
-        let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+        let_it_be(:expiring_token) { create(:resource_access_token, resource: resource, expires_at: 5.days.from_now) }
 
         it 'executes access token webhook' do
           hook_data = { interval: :seven_days }
-          project_hook = create(:project_hook, project: project, resource_access_token_events: true)
+          project_hook = create(:project_hook, project: resource, resource_access_token_events: true)
 
           expect(Gitlab::DataBuilder::ResourceAccessTokenPayload).to receive(:build).and_return(hook_data)
           expect(fake_wh_service).to receive(:async_execute).once
@@ -267,7 +262,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         end
 
         context 'with multiple batches of tokens' do
-          let_it_be(:expiring_tokens) { create_list(:resource_access_token, 4, expires_at: 6.days.from_now) }
+          let_it_be(:expiring_tokens) { create_list(:resource_access_token, 4, resource: resource, expires_at: 6.days.from_now) }
 
           subject(:perform) { worker.perform }
 
@@ -302,31 +297,25 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
     end
 
     context 'when a token is owned by a group bot' do
-      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:resource) { create(:group) }
 
       context 'when the group of the resource bot exists' do
-        let_it_be(:group) { create(:group) }
-
-        before_all do
-          group.add_maintainer(project_bot)
-        end
-
         it_behaves_like 'sends notification about expiry of bot user tokens'
 
         it 'updates expire notification delivered attribute of the token' do
-          expiring_token = create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now)
+          expiring_token = create(:resource_access_token, resource: resource, expires_at: 5.days.from_now)
           expect { worker.perform }.to change { expiring_token.reload.expire_notification_delivered }.from(false).to(true)
         end
 
         context 'when exception is raised during processing' do
-          let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+          let_it_be(:expiring_token) { create(:resource_access_token, resource: resource, expires_at: 5.days.from_now) }
 
           context 'with a single resource access token' do
             before do
               allow_next_instance_of(NotificationService) do |service|
                 allow(service).to(
                   receive(:bot_resource_access_token_about_to_expire)
-                    .with(project_bot, expiring_token.name, a_hash_including(days_to_expire: 7))
+                    .with(expiring_token.user, expiring_token.name, a_hash_including(days_to_expire: 7))
                     .and_raise('boom!')
                 )
               end
@@ -339,7 +328,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
                           class: described_class,
                           "exception.class": "RuntimeError",
                           "exception.message": "boom!",
-                          user_id: project_bot.id })
+                          user_id: expiring_token.user.id })
               )
 
               worker.perform
@@ -357,23 +346,18 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
           end
 
           context 'with multiple resource access tokens' do
-            let_it_be(:another_project_bot) { create(:user, :project_bot) }
-            let_it_be(:another_expiring_token) { create(:personal_access_token, user: another_project_bot, expires_at: 5.days.from_now) }
-
-            before_all do
-              group.add_maintainer(another_project_bot)
-            end
+            let_it_be(:another_expiring_token) { create(:resource_access_token, expires_at: 5.days.from_now) }
 
             it 'continues sending email' do
               expect_next_instance_of(NotificationService) do |service|
                 expect(service).to(
                   receive(:bot_resource_access_token_about_to_expire)
-                    .with(project_bot, expiring_token.name, a_hash_including(days_to_expire: 7))
+                    .with(expiring_token.user, expiring_token.name, a_hash_including(days_to_expire: 7))
                     .and_raise('boom!')
                 )
                 expect(service).to(
                   receive(:bot_resource_access_token_about_to_expire)
-                    .with(another_project_bot, another_expiring_token.name, a_hash_including(days_to_expire: 7))
+                  .with(another_expiring_token.user, another_expiring_token.name, a_hash_including(days_to_expire: 7))
                     .and_call_original
                 )
               end
@@ -385,11 +369,10 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
       end
 
       context 'when the group of the resource bot has been deleted' do
-        let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+        let_it_be(:expiring_token) { create(:resource_access_token, resource: resource, expires_at: 5.days.from_now) }
 
         it 'does not update token with no delivery' do
-          expect(Group).to be_none
-          expect(Project).to be_none
+          resource.destroy!
 
           expect { worker.perform }.not_to change { expiring_token.reload.expire_notification_delivered }
         end

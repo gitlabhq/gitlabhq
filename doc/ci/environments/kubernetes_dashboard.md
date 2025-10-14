@@ -52,7 +52,7 @@ Prerequisites:
 {{< tab title="The environment already exists" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the environment to be associated with the agent for Kubernetes.
 1. Select **Edit**.
 1. Select a GitLab agent for Kubernetes.
@@ -65,7 +65,7 @@ Prerequisites:
 {{< tab title="The environment doesn't exist" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select **New environment**.
 1. Complete the **Name** field.
 1. Select a GitLab agent for Kubernetes.
@@ -120,7 +120,7 @@ The status of your Kubernetes resources and Flux reconciliation updates in real 
 To view a configured dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the environment associated with the agent for Kubernetes.
 1. Select the **Kubernetes overview** tab.
 
@@ -265,13 +265,13 @@ To view a detailed dashboard:
 
 1. Find your agent for Kubernetes ID:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Operate > Kubernetes clusters**.
+   1. Select **Operate** > **Kubernetes clusters**.
    1. Copy the numerical ID of the agent you want to access.
 1. Go to one of the following URLs, replacing `<agent_id>` with your agent ID:
 
    | Resource type | URL |
    | --- | --- |
-   | Pods | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/pods`|
+   | Pods | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/pods` |
    | Services | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/services` |
    | Deployments | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/deployments` |
    | ReplicaSets | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/replicaSets` |

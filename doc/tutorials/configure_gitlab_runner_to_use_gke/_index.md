@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 'Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine'
 ---
@@ -231,5 +231,5 @@ To check if runners are running in the GKE cluster, you can either:
 
 - Check the job log in GitLab:
   1. On the left sidebar, select **Search or go to** and find your project.
-  1. Select **Build > Jobs** and find the job.
+  1. Select **Build** > **Jobs** and find the job.
   1. To view the job log, select the job status.

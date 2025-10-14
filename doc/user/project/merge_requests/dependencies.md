@@ -104,7 +104,7 @@ information about the dependency:
 To view dependency information on a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and identify your merge request.
+1. Select **Code** > **Merge requests** and identify your merge request.
 1. Scroll to the merge request reports area. Dependent merge requests display information
    about the total number of dependencies set, such as
    **Depends on 1 merge request being merged**.
@@ -149,7 +149,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and identify your merge request.
+1. Select **Code** > **Merge requests** and identify your merge request.
 1. Select **Edit**.
 1. In **Merge request dependencies**, paste either the reference or the full URL
    to the merge requests that should merge before this work merges. References
@@ -164,7 +164,7 @@ Prerequisites:
 - You must have a role for the project that allows you to edit merge requests.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and identify your merge request.
+1. Select **Code** > **Merge requests** and identify your merge request.
 1. Select **Edit**.
 1. Scroll to **Merge request dependencies** and select **Remove** next to the reference
    for each dependency you want to remove.

@@ -183,7 +183,7 @@ export default {
           v-gl-tooltip.hover
           :title="$options.i18n.label"
           :aria-label="$options.i18n.label"
-          class="gl-ml-2 gl-hidden sm:gl-block"
+          class="gl-ml-2 gl-hidden @sm/panel:gl-block"
           :selected="regexButtonState"
           category="tertiary"
           variant="default"

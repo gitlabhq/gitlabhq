@@ -95,6 +95,82 @@ you can also do the following:
 1. [Manually synchronize subscription data](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
    - Verify that the GitLab instance [synchronizes your subscription data with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
+## Error: `Webview didn't initialize in 10000ms`
+
+You might get this error when using GitLab Duo Chat in VS Code Remote SSH or WSL
+sessions. The extension might also attempt to incorrectly connect to a `127.0.0.1` address.
+
+This issue occurs when remote environments introduce latency that exceeds the
+hardcoded 10-second timeout in GitLab VS Code Extension 6.8.0 and later.
+
+To resolve this issue:
+
+1. In VS Code, select **Code** > **Preferences** > **Settings**.
+1. Select **Open Settings (JSON)** to edit your `settings.json` file.
+   Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**,
+   and select it.
+1. Add this setting:
+
+   ```json
+   "gitlab.featureFlags.languageServerWebviews": false
+   ```
+
+1. Save and reload VS Code.
+
+## Troubleshooting GitLab Duo on GitLab Dedicated
+
+GitLab Duo Core should work out-of-the-box on GitLab 18.3 and later for Premium
+and Ultimate customers.
+
+Pre-production GitLab Dedicated instances do not support GitLab Duo Core by design.
+
+### GitLab Duo settings not visible in Admin area
+
+You might experience one or more of these issues:
+
+- The **GitLab Duo** section doesn't appear in the Admin area.
+- Configuration options are missing.
+- API calls return `"addOnPurchases": []`.
+
+These issues occur when your license is not properly synchronized with the instance.
+
+To resolve this issue, create a support ticket to verify license synchronization.
+Support can check synchronization status and request new license generation if needed.
+
+### Error: `GitLab-workflow failed: the GitLab Language server failed to start in 10 seconds`
+
+You might get this error when using GitLab Duo Chat in the Web IDE.
+You might also see console errors about `Platform is missing!`
+
+This issue occurs when network connectivity to `cloud.gitlab.com` and
+`customers.gitlab.com` is blocked by network configuration.
+
+To resolve this issue:
+
+1. Verify outbound connections to `cloud.gitlab.com:443` and `customers.gitlab.com:443`.
+1. Add [Cloudflare IP ranges](https://www.cloudflare.com/ips/) to your allowlist if needed.
+1. Check for allowlist or firewall restrictions with
+   [private link](../../administration/dedicated/configure_instance/network_security.md#aws-private-link-connectivity).
+1. Follow [filtering outbound requests](../../security/webhooks.md#gitlab-duo-functionality-is-blocked)
+   to troubleshoot connectivity issues.
+1. Test connectivity from the instance.
+
+### Error: `Unable to resolve resource`
+
+You might get this error when the Web IDE fails to load.
+Check browser logs for CORS errors: `failed to load because it violates the following Content Security policy`.
+
+This issue occurs when CORS policies block required resources.
+
+To resolve this issue:
+
+1. Update to GitLab Workflow Extension version 6.35.1 or later.
+1. Add `https://*.cdn.web-ide.gitlab-static.net` to your CORS policy.
+1. To troubleshoot further, check HAR files for logs. For more information, see
+   [create HAR files](../../user/application_security/api_fuzzing/create_har_files.md).
+
+For more information, see [CORS issues](../../user/project/web_ide/_index.md#cors-issues).
+
 ## GitLab Duo features not available for users
 
 In addition to [turning on GitLab Duo features](turn_on_off.md),

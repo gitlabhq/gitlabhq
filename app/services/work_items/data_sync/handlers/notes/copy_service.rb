@@ -44,6 +44,10 @@ module WorkItems
           attr_reader :current_user, :source_noteable, :target_noteable, :source_parent, :target_parent,
             :new_discussion_ids
 
+          def namespace_id_for(noteable)
+            noteable.try(:namespace_id) || noteable.try(:group_id)
+          end
+
           def copy_notes_emoji(notes_ids_map)
             notes_emoji = ::AwardEmoji.by_awardable('Note', notes_ids_map.keys)
             ::AwardEmoji.insert_all(new_notes_emoji(notes_emoji, notes_ids_map)) if notes_emoji.any?
@@ -97,7 +101,7 @@ module WorkItems
                 attrs['discussion_id'] = new_discussion_ids[note.discussion_id]
                 # need to use `try` to be able to handle Issue model and legacy Epic model instances
                 attrs['project_id'] = target_noteable.try(:project_id)
-                attrs['namespace_id'] = target_noteable.try(:namespace_id) || target_noteable.try(:group_id)
+                attrs['namespace_id'] = namespace_id_for(target_noteable)
                 attrs['imported_from'] = 'none' # maintaining current copy notes implementation
 
                 # this data is not changed, but it is being serialized, and we need it deserialized for bulk inserts
@@ -140,9 +144,10 @@ module WorkItems
 
           def new_notes_metadata(system_notes_metadata, notes_ids_map, description_version_ids_map)
             system_notes_metadata.map do |note_metadata|
-              note_metadata.attributes.except('id').tap do |attrs|
+              note_metadata.attributes.except('id', 'namespace_id', 'organization_id').tap do |attrs|
                 attrs['note_id'] = notes_ids_map[note_metadata.note_id]
                 attrs['description_version_id'] = description_version_ids_map[note_metadata.description_version_id]
+                attrs['namespace_id'] = namespace_id_for(target_noteable)
               end
             end
           end

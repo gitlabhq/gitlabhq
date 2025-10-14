@@ -97,6 +97,8 @@ rspec integration predictive:
 
 <% if rspec_files_per_test_level.dig(:system, :files).size > 0 %>
 rspec system predictive:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .base-rspec-predictive
 <% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
@@ -154,6 +156,8 @@ rspec-ee integration predictive:
 
 <% if rspec_files_per_test_level.dig(:system, :files).size > 0 %>
 rspec-ee system predictive:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .base-rspec-ee-predictive
 <% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>

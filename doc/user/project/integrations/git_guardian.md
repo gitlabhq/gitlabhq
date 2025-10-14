@@ -68,7 +68,7 @@ After you have created and copied your API token, configure GitLab to reject com
 To enable the integration for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **GitGuardian**.
 1. In **Enable integration**, select the **Active** checkbox.
 1. In **API token**, [paste the token value from GitGuardian](#create-a-gitguardian-api-token).

@@ -62,7 +62,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/deploy_keys?public=true"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/deploy_keys?public=true"
 ```
 
 Example response:
@@ -190,7 +192,9 @@ GET /projects/:id/deploy_keys
 | `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
 ```
 
 Example response:
@@ -264,7 +268,9 @@ Parameters:
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/20/project_deploy_keys"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/20/project_deploy_keys"
 ```
 
 Example response:
@@ -299,7 +305,9 @@ Parameters:
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
 Example response:
@@ -423,7 +431,9 @@ POST /projects/:id/deploy_keys/:key_id/enable
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/12/enable"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/12/enable"
 ```
 
 Example response:
@@ -447,19 +457,25 @@ First, find the ID of the projects you're interested in, by either listing all
 projects:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 Or finding the ID of a group:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups"
+curl --request GET \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/groups"
 ```
 
 Then listing all projects in that group (for example, group 1234):
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1234"
+curl --request GET \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/groups/1234"
 ```
 
 With those IDs, add the same deploy key to all:

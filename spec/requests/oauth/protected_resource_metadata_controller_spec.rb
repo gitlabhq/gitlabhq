@@ -8,8 +8,7 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
     let(:expected_response) do
       {
         'resource' => [
-          "http://www.example.com/api/v4/mcp",
-          "http://www.example.com/api/v4/mcp_server"
+          "http://www.example.com/api/v4/mcp"
         ],
         'authorization_servers' => [
           "http://www.example.com"
@@ -55,8 +54,7 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
       it 'returns metadata with custom base URL' do
         expected_custom_response = {
           'resource' => [
-            "#{custom_host}/api/v4/mcp",
-            "#{custom_host}/api/v4/mcp_server"
+            "#{custom_host}/api/v4/mcp"
           ],
           'authorization_servers' => [
             custom_host
@@ -98,14 +96,12 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
       it 'has correct resource format' do
         resource_urls = response.parsed_body['resource']
-        expect(resource_urls.size).to eq(2)
+        expect(resource_urls.size).to eq(1)
 
         expect(resource_urls).to all be_a(String)
         expect(resource_urls).to all match(%r{\Ahttps?://})
 
-        resource_url, another_resource_url = resource_urls
-        expect(resource_url).to end_with('/api/v4/mcp')
-        expect(another_resource_url).to end_with('/api/v4/mcp_server')
+        expect(resource_urls.first).to end_with('/api/v4/mcp')
       end
 
       it 'has correct authorization_servers format' do

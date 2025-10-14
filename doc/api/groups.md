@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Groups API
@@ -1372,7 +1372,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< history >}}
 
 - Marking groups for deletion [available](https://gitlab.com/groups/gitlab-org/-/epics/17208) on Free tier in GitLab 18.0.
-- `permanently_remove` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4 [with a flag](../administration/feature_flags/_index.md) named `disallow_immediate_deletion`.
+- Since GitLab 18.5, `permanently_remove` is [not permitted](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205572)
+  when the immediate deletion
+  [instance setting](../administration/settings/visibility_and_access_controls.md#immediate-deletion)
+  is disabled (behind [a feature flag](../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`).
+  The setting is enabled by default on self-managed, but disabled on GitLab.com and Dedicated.
 
 {{< /history >}}
 
@@ -1388,14 +1392,23 @@ Marks a group for deletion. Groups are deleted at the end of the retention perio
 
 This endpoint can also immediately delete a subgroup that was previously marked for deletion.
 
+{{< alert type="warning" >}}
+
+On GitLab.com, after a group is deleted, its data is retained for 30 days, and immediate deletion is not available.
+If you really need to delete a group immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
+
+{{< /alert >}}
+
 ```plaintext
 DELETE /groups/:id
 ```
 
 Parameters:
 
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
 | `id`                 | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `permanently_remove` | boolean/string | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4. If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. |
+| `permanently_remove` | boolean/string | no       | If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. Disabled on GitLab.com and Dedicated. |
 | `full_path`          | string         | no       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
 
 The response is `202 Accepted` if the user has authorization.
@@ -1809,6 +1822,7 @@ PUT /groups/:id
 | `require_two_factor_authentication`                  | boolean           | no       | Require all users in this group to set up two-factor authentication. |
 | `shared_runners_setting`                             | string            | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable instance runners for a group's subgroups and projects. |
 | `share_with_group_lock`                              | boolean           | no       | Prevent sharing a project with another group within this group. |
+| `step_up_auth_required_oauth_provider`               | string            | no       | OAuth provider required for step-up authentication. Pass empty string to disable. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556943) in GitLab 18.4. Available when `omniauth_step_up_auth_for_namespace` feature flag is enabled. |
 | `subgroup_creation_level`                            | string            | no       | Allowed to [create subgroups](../user/group/subgroups/_index.md#create-a-subgroup). Can be `owner` (users with the Owner role), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                            | integer           | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                         | string            | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |

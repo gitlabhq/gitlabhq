@@ -15,60 +15,7 @@ import {
   SORT_LABEL_UPDATED,
   PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
-import projectsQuery from './graphql/queries/projects.query.graphql';
-
-const baseTab = {
-  listComponent: ProjectsList,
-  listComponentProps: {
-    listItemClass: 'gl-px-5',
-    showProjectIcon: true,
-  },
-  emptyStateComponent: ResourceListsEmptyState,
-  emptyStateComponentProps: {
-    title: s__('Projects|No projects found.'),
-    svgPath: emptyStateProjectsSvgPath,
-    searchMinimumLength: 3,
-    type: TYPES.filter,
-  },
-  queryPath: 'projects',
-  paginationType: PAGINATION_TYPE_KEYSET,
-  formatter: (projects) =>
-    formatGraphQLProjects(projects, (project) => {
-      const adminPath = joinPaths('/', gon.relative_url_root, '/admin/projects', project.fullPath);
-      const canAdminAllResources = get(project.userPermissions, 'adminAllResources', true);
-
-      return {
-        editPath: `${adminPath}/edit`,
-        avatarLabelLink: adminPath,
-        availableActions: canAdminAllResources ? project.availableActions : [],
-      };
-    }),
-};
-
-export const ACTIVE_TAB = {
-  ...baseTab,
-  text: __('Active'),
-  value: 'active',
-  query: projectsQuery,
-  variables: { active: true },
-  queryPath: 'projects',
-  countsQueryPath: 'active',
-};
-
-export const INACTIVE_TAB = {
-  ...baseTab,
-  text: __('Inactive'),
-  value: 'inactive',
-  query: projectsQuery,
-  variables: { active: false },
-  queryPath: 'projects',
-  countsQueryPath: 'inactive',
-  emptyStateComponentProps: {
-    ...baseTab.emptyStateComponentProps,
-    title: s__("Projects|You don't have any inactive projects."),
-    description: s__('Projects|Projects that are archived or pending deletion will appear here.'),
-  },
-};
+import projectsQuery from './graphql/queries/admin_projects.query.graphql';
 
 export const SORT_OPTION_NAME = {
   value: 'name',
@@ -102,6 +49,61 @@ export const SORT_OPTIONS = [
   SORT_OPTION_STARS,
   SORT_OPTION_STORAGE_SIZE,
 ];
+
+const baseTab = {
+  listComponent: ProjectsList,
+  listComponentProps: {
+    listItemClass: 'gl-px-5',
+    showProjectIcon: true,
+  },
+  emptyStateComponent: ResourceListsEmptyState,
+  emptyStateComponentProps: {
+    title: s__('Projects|No projects found.'),
+    svgPath: emptyStateProjectsSvgPath,
+    searchMinimumLength: 3,
+    type: TYPES.filter,
+  },
+  queryPath: 'projects',
+  paginationType: PAGINATION_TYPE_KEYSET,
+  formatter: (projects) =>
+    formatGraphQLProjects(projects, (project) => {
+      const adminPath = joinPaths('/', gon.relative_url_root, '/admin/projects', project.fullPath);
+      const canAdminAllResources = get(project.userPermissions, 'adminAllResources', true);
+
+      return {
+        editPath: `${adminPath}/edit`,
+        avatarLabelLink: adminPath,
+        availableActions: canAdminAllResources ? project.availableActions : [],
+      };
+    }),
+  sortOptions: SORT_OPTIONS,
+  defaultSortOption: SORT_OPTION_UPDATED,
+};
+
+export const ACTIVE_TAB = {
+  ...baseTab,
+  text: __('Active'),
+  value: 'active',
+  query: projectsQuery,
+  variables: { active: true },
+  queryPath: 'projects',
+  countsQueryPath: 'active',
+};
+
+export const INACTIVE_TAB = {
+  ...baseTab,
+  text: __('Inactive'),
+  value: 'inactive',
+  query: projectsQuery,
+  variables: { active: false },
+  queryPath: 'projects',
+  countsQueryPath: 'inactive',
+  emptyStateComponentProps: {
+    ...baseTab.emptyStateComponentProps,
+    title: s__("Projects|You don't have any inactive projects."),
+    description: s__('Projects|Projects that are archived or pending deletion will appear here.'),
+  },
+};
 
 export const ADMIN_PROJECTS_TABS = [ACTIVE_TAB, INACTIVE_TAB];
 

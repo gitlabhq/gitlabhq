@@ -166,7 +166,7 @@ describe('PlaceholdersTable', () => {
         label: placeholderUser.name,
         subLabel: `@${placeholderUser.username}`,
       });
-      expect(avatar.attributes('src')).toBe(placeholderUser.avatarUrl);
+      expect(avatar.props('src')).toBe(placeholderUser.avatarUrl);
     });
 
     describe('when the source user exists', () => {

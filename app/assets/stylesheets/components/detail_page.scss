@@ -8,7 +8,7 @@
     white-space: nowrap;
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     display: block;
   }
 }
@@ -29,7 +29,7 @@
   flex: 1 1;
   min-width: 0;
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     padding-left: 0;
     padding-right: 0;
   }

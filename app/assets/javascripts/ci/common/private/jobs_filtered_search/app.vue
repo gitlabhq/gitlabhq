@@ -120,10 +120,6 @@ export default {
                 },
               ];
             case 'name':
-              if (!this.glFeatures.feSearchBuildByName) {
-                return acc;
-              }
-
               return [
                 ...acc,
                 {
@@ -149,19 +145,11 @@ export default {
 
 <template>
   <gl-filtered-search
-    v-if="glFeatures.feSearchBuildByName"
     :placeholder="s__('Jobs|Search or filter jobs…')"
     :available-tokens="tokens"
     :value="filteredSearchValue"
-    :search-text-option-label="__('Search for this text (experiment)')"
+    :search-text-option-label="__('Search for this text')"
     terms-as-tokens
-    @submit="onSubmit"
-  />
-  <gl-filtered-search
-    v-else
-    :placeholder="s__('Jobs|Filter jobs')"
-    :available-tokens="tokens"
-    :value="filteredSearchValue"
     @submit="onSubmit"
   />
 </template>

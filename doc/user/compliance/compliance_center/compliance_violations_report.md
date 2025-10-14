@@ -18,6 +18,7 @@ title: Compliance violations report
 - Ability to create and edit compliance frameworks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) in GitLab 16.0.
 - New dynamic compliance violations report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12774) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `compliance_violations_report` and `enable_project_compliance_violations`. Disabled by default.
 - Feature flags `compliance_violations_report` and `enable_project_compliance_violations` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201027) in GitLab 18.3.
+- Feature flags `compliance_violations_report` and `enable_project_compliance_violations` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201027) in GitLab 18.5.
 
 {{< /history >}}
 

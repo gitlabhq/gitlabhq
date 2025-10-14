@@ -128,7 +128,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     it 'returns default work item type by base type without calling importer' do
       expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_types).and_call_original
       expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_widgets)
-      expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).not_to receive(:upsert_restrictions)
 
       is_expected.to eq(default_issue_type)
     end

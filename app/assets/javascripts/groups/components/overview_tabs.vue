@@ -24,7 +24,7 @@ import GroupsApp from './app.vue';
 import SubgroupsAndProjectsEmptyState from './empty_states/subgroups_and_projects_empty_state.vue';
 import SharedProjectsEmptyState from './empty_states/shared_projects_empty_state.vue';
 import SharedGroupsEmptyState from './empty_states/shared_groups_empty_state.vue';
-import InactiveProjectsEmptyState from './empty_states/inactive_projects_empty_state.vue';
+import InactiveSubgroupsAndProjectsEmptyState from './empty_states/inactive_subgroups_and_projects_empty_state.vue';
 
 export default {
   components: {
@@ -35,7 +35,7 @@ export default {
     GlSorting,
     SubgroupsAndProjectsEmptyState,
     SharedProjectsEmptyState,
-    InactiveProjectsEmptyState,
+    InactiveSubgroupsAndProjectsEmptyState,
     FilteredSearchAndSort,
   },
   inject: ['endpoints', 'initialSort', 'groupId'],
@@ -74,7 +74,7 @@ export default {
       {
         title: this.$options.i18n[ACTIVE_TAB_INACTIVE],
         key: ACTIVE_TAB_INACTIVE,
-        emptyStateComponent: markRaw(InactiveProjectsEmptyState),
+        emptyStateComponent: markRaw(InactiveSubgroupsAndProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_INACTIVE,
         service: new GroupsService(this.endpoints[ACTIVE_TAB_INACTIVE], this.initialSort),
         store: new GroupsStore(),

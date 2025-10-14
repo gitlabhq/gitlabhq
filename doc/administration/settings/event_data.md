@@ -58,7 +58,7 @@ To enable or disable event-level data collection:
 
 1. Sign in as a user with administrator access.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and Profiling**.
+1. Select **Settings** > **Metrics and Profiling**.
 1. Expand **Event tracking**.
 1. To enable the setting, select the checkbox **Enable event tracking**. To disable the setting, clear the checkbox.
 1. Select **Save changes**.

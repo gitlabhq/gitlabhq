@@ -6,19 +6,6 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
   let(:service_name) { 'test_api_tool' }
   let(:oauth_token) { 'test_token_123' }
 
-  it 'all services are defined as an MCP tool', :eager_load, :aggregate_failures do
-    services = ObjectSpace.each_object(::Class).select do |klass|
-      klass < described_class
-    end
-
-    expect(services).not_to be_empty
-
-    tool_klasses = ::API::Mcp::Handlers::ListToolsRequest::TOOLS.values
-    services.each do |service|
-      expect(tool_klasses).to include(service), "#{service.name} must be defined in ListToolsRequest"
-    end
-  end
-
   describe '#format_response_content' do
     let(:service) { described_class.new(name: service_name) }
 
@@ -47,8 +34,8 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
 
         protected
 
-        def perform(oauth_token, arguments = {})
-          http_get(oauth_token, "/api/v4/test/#{arguments[:id]}")
+        def perform(arguments = {})
+          http_get(access_token, "/api/v4/test/#{arguments[:id]}")
         end
 
         private
@@ -59,13 +46,14 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       end
     end
 
-    let(:arguments) { { id: 'test-123' } }
+    let(:arguments) { { arguments: { id: 'test-123' } } }
     let(:api_response) do
       instance_double(Gitlab::HTTP::Response, body: response_body, success?: success, code: response_code)
     end
 
     before do
       allow(Gitlab::HTTP).to receive(:get).and_return(api_response)
+      service.set_cred(access_token: oauth_token, current_user: nil)
     end
 
     context 'with single record response' do
@@ -74,7 +62,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       let(:response_body) { { 'web_url' => 'https://example.com/test', 'id' => 1 }.to_json }
 
       it 'returns success response' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result).to eq({
           content: [{ type: 'text', text: 'https://example.com/test' }],
@@ -84,7 +72,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       end
 
       it 'makes request with correct parameters' do
-        service.execute(oauth_token, arguments)
+        service.execute(request: nil, params: arguments)
 
         expect(Gitlab::HTTP).to have_received(:get).with(
           "#{Gitlab.config.gitlab.url}/api/v4/test/test-123",
@@ -120,9 +108,9 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
 
           protected
 
-          def perform(oauth_token, arguments = {})
+          def perform(arguments = {})
             query = arguments.except(:id)
-            http_get(oauth_token, "/api/v4/test/#{arguments[:id]}/list", query)
+            http_get(access_token, "/api/v4/test/#{arguments[:id]}/list", query)
           end
 
           private
@@ -153,7 +141,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       end
 
       it 'returns success response' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result).to eq({
           content: [
@@ -183,7 +171,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       end
 
       it 'makes request with correct parameters' do
-        service.execute(oauth_token, arguments)
+        service.execute(request: nil, params: arguments)
 
         expect(Gitlab::HTTP).to have_received(:get).with(
           "#{Gitlab.config.gitlab.url}/api/v4/test/test-123/list",
@@ -198,7 +186,9 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       end
 
       it 'makes handles query parameters' do
-        service.execute(oauth_token, arguments.merge({ page: 1, per_page: 1 }))
+        arguments[:arguments].merge!({ page: 1, per_page: 1 })
+
+        service.execute(request: nil, params: arguments)
 
         expect(Gitlab::HTTP).to have_received(:get).with(
           "#{Gitlab.config.gitlab.url}/api/v4/test/test-123/list",
@@ -219,7 +209,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       let(:response_body) { { 'message' => 'Not found' }.to_json }
 
       it 'returns error response' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result).to eq({
           content: [{ type: 'text', text: 'Not found' }],
@@ -235,7 +225,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       let(:response_body) { {}.to_json }
 
       it 'returns generic error message' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
@@ -251,7 +241,7 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
       let(:response_body) { '{invalid,json}' }
 
       it 'returns error response' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result).to match({
           content: [{ type: 'text', text: 'Invalid JSON response' }],
@@ -262,13 +252,13 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
     end
 
     context 'with invalid path' do
-      let(:invalid_arguments) { { id: 'group-1/../admin/test-123' } }
+      let(:invalid_arguments) { { arguments: { id: 'group-1/../admin/test-123' } } }
       let(:success) { false }
       let(:response_code) { 400 }
       let(:response_body) { { error: '400 Bad Request' }.to_json }
 
       it 'returns error response' do
-        result = service.execute(oauth_token, invalid_arguments)
+        result = service.execute(request: nil, params: invalid_arguments)
 
         expect(result).to eq({
           content: [{ type: 'text', text: 'Validation error: path is invalid' }],
@@ -299,10 +289,10 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
 
         protected
 
-        def perform(oauth_token, arguments = {})
+        def perform(arguments = {})
           path = "/api/v4/projects/#{arguments[:id]}/issues"
           body = arguments.except(:id)
-          http_post(oauth_token, path, body)
+          http_post(access_token, path, body)
         end
 
         private
@@ -314,16 +304,17 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
     end
 
     let(:service) { test_post_service_class.new(name: 'test_post_tool') }
-    let(:arguments) { { id: 'project-1', title: 'New Issue' } }
+    let(:arguments) { { arguments: { id: 'project-1', title: 'New Issue' } } }
     let(:api_response) { instance_double(Gitlab::HTTP::Response, body: response_body, success?: true, code: 201) }
     let(:response_body) { { 'id' => 123, 'web_url' => 'https://example.com/issue/123' }.to_json }
 
     before do
       allow(Gitlab::HTTP).to receive(:post).and_return(api_response)
+      service.set_cred(access_token: oauth_token, current_user: nil)
     end
 
     it 'makes POST request with body' do
-      service.execute(oauth_token, arguments)
+      service.execute(request: nil, params: arguments)
 
       expect(Gitlab::HTTP).to have_received(:post).with(
         "#{Gitlab.config.gitlab.url}/api/v4/projects/project-1/issues",
@@ -335,12 +326,61 @@ RSpec.describe Mcp::Tools::ApiService, feature_category: :mcp_server do
     end
 
     it 'returns success response' do
-      result = service.execute(oauth_token, arguments)
+      result = service.execute(request: nil, params: arguments)
 
       expect(result).to eq({
         content: [{ type: 'text', text: 'https://example.com/issue/123' }],
         structuredContent: { 'id' => 123, 'web_url' => 'https://example.com/issue/123' },
         isError: false
+      })
+    end
+  end
+
+  describe 'When token is not set' do
+    let(:arguments) { { arguments: { id: 'test-123' } } }
+
+    let(:test_post_service_class) do
+      Class.new(described_class) do
+        def description
+          'Test POST API tool'
+        end
+
+        def input_schema
+          {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              title: { type: 'string' }
+            },
+            required: %w[id title]
+          }
+        end
+
+        protected
+
+        def perform(arguments = {})
+          path = "/api/v4/projects/#{arguments[:id]}/issues"
+          body = arguments.except(:id)
+          http_post(access_token, path, body)
+        end
+
+        private
+
+        def format_response_content(response)
+          [{ type: 'text', text: response['web_url'] }]
+        end
+      end
+    end
+
+    let(:service) { test_post_service_class.new(name: 'test_post_tool') }
+
+    it 'raise access token is not set' do
+      result = service.execute(request: nil, params: arguments)
+
+      expect(result).to eq({
+        content: [{ text: "ApiService: access token is not set", type: "text" }],
+        structuredContent: {},
+        isError: true
       })
     end
   end

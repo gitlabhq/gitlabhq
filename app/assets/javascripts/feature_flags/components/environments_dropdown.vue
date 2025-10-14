@@ -133,7 +133,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="dropdown position-relative">
+    <div class="dropdown !gl-relative">
       <gl-search-box-by-type
         v-model.trim="environmentSearch"
         class="js-env-search"

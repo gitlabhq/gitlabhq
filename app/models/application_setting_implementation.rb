@@ -40,6 +40,7 @@ module ApplicationSettingImplementation
         after_sign_up_text: nil,
         akismet_enabled: false,
         akismet_api_key: nil,
+        allow_immediate_namespaces_deletion: true,
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
         allow_possible_spam: false,
@@ -214,6 +215,7 @@ module ApplicationSettingImplementation
         spam_check_api_key: nil,
         suggest_pipeline_enabled: true,
         terminal_max_session_time: 0,
+        terraform_state_encryption_enabled: true,
         throttle_authenticated_api_enabled: false,
         throttle_authenticated_api_period_in_seconds: 3600,
         throttle_authenticated_api_requests_per_period: 7200,
@@ -322,6 +324,9 @@ module ApplicationSettingImplementation
         project_api_limit: 400,
         project_invited_groups_api_limit: 60,
         projects_api_limit: 2000,
+        runner_jobs_request_api_limit: 2000,
+        runner_jobs_patch_trace_api_limit: 200,
+        runner_jobs_endpoints_api_limit: 200,
         user_contributed_projects_api_limit: 100,
         user_projects_api_limit: 300,
         user_starred_projects_api_limit: 100,
@@ -673,6 +678,13 @@ module ApplicationSettingImplementation
     end
 
     Hash[storages_map]
+  end
+
+  def allow_immediate_namespaces_deletion_for_user?(user)
+    # Keep the previous behavior when the feature flag is disabled
+    return true unless Feature.enabled?(:allow_immediate_namespaces_deletion, user)
+
+    allow_immediate_namespaces_deletion? || user&.can_admin_all_resources?
   end
 
   private

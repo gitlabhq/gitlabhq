@@ -22,7 +22,7 @@ function showVue3Help() {
   );
   console.warn(' ');
   console.warn(` - ${chalk.green('Vue 3 testing documentation:')} ${VUE_3_TESTING_DOCS_URL}`);
-  console.warn(` - ${chalk.green('Epic for fixing tests under Vue 3:')} w${VUE_3_TESTING_EPIC}`);
+  console.warn(` - ${chalk.green('Epic for fixing tests under Vue 3:')} ${VUE_3_TESTING_EPIC}`);
 }
 
 function parseArgumentsAndEnvironment() {

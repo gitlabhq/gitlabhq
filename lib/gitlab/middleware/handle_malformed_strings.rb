@@ -7,8 +7,6 @@ module Gitlab
     class HandleMalformedStrings
       include ActionController::HttpAuthentication::Basic
 
-      NULL_BYTE_REGEX = Regexp.new(Regexp.escape("\u0000")).freeze
-
       attr_reader :app
 
       def initialize(app)

@@ -553,14 +553,10 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             end.to change { source.members.count }.by(-1)
           end
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :members_delete do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :members_delete, use_second_scope: false do
             let(:current_user) { maintainer }
 
-            let(:another_member) { create(:user) }
-
-            before do
-              source.add_developer(another_member)
-            end
+            let(:another_member) { create(:user, developer_of: source) }
 
             # We rate limit scoped by the group / project
             let(:delete_paths) do

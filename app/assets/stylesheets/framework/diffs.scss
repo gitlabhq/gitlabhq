@@ -1,4 +1,3 @@
-@use "sass:map";
 @import './page_bundles/notes/diff_comments';
 @import './page_bundles/notes/image_comments';
 
@@ -46,7 +45,7 @@ $diff-file-header: 41px;
       z-index: $zindex-dropdown-menu;
     }
 
-    @media (max-width: map.get($grid-breakpoints, sm)-1) {
+    @include gl-container-width-down(sm, panel) {
       .file-header-content {
         width: 0;
         flex: 1;
@@ -57,7 +56,7 @@ $diff-file-header: 41px;
       }
     }
 
-    @media (min-width: map.get($grid-breakpoints, md)) {
+    @include gl-container-width-up(md, panel) {
       position: sticky;
       top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
       z-index: 120;
@@ -84,10 +83,17 @@ $diff-file-header: 41px;
     }
   }
 
-  @media (min-width: map.get($grid-breakpoints, md)) {
+  @include gl-container-width-up(md, panel) {
     &.conflict .file-title,
     &.conflict .file-title-flex-parent {
       top: $calc-application-header-height;
+    }
+  }
+
+  @include gl-container-width-up(md, panel, false) {
+    &.conflict .file-title,
+    &.conflict .file-title-flex-parent {
+      top: 0;
     }
   }
 
@@ -418,6 +424,18 @@ $diff-file-header: 41px;
   }
 }
 
+@include gl-container-width-up(md, panel, false) {
+  .panel-content {
+    .diff-file .file-title,
+    .diff-file .file-title-flex-parent {
+      &,
+      &.is-wiki {
+        top: calc(#{$mr-sticky-header-height} - 2px);
+      }
+    }
+  }
+}
+
 .code .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
   --highlight-border-color: #{$gl-color-blue-300};
   background-color: $gl-color-blue-50;
@@ -634,40 +652,6 @@ table.code {
   max-height: 50vh;
 }
 
-// Mobile
-@media (max-width: 480px) {
-  .diff-title {
-    margin: 0;
-
-    .file-mode {
-      display: none;
-    }
-  }
-
-  .diff-controls {
-    position: static;
-    text-align: center;
-  }
-}
-
-// Bigger screens
-@media (min-width: 481px) {
-  .diff-title {
-    margin-right: 200px;
-
-    .file-mode {
-      margin-left: 10px;
-    }
-  }
-
-  .diff-controls {
-    float: right;
-    position: absolute;
-    top: 5px;
-    right: 15px;
-  }
-}
-
 .diff-comments-more-count,
 .diff-notes-collapse,
 .inline-findings-collapse {
@@ -850,7 +834,7 @@ table.code {
   }
 }
 
-@media (max-width: map.get($grid-breakpoints, lg)-1) {
+@include gl-container-width-down(lg, panel) {
   .diffs .files {
     flex-direction: column;
   }

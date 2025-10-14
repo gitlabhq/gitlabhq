@@ -40,7 +40,11 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347788' do
         setup_project_integration
 
-        jenkins_integration = project.find_integration('jenkins')
+        jenkins_integration = nil
+        Support::Waiter.wait_until(max_duration: 10, sleep_interval: 1) do
+          jenkins_integration = project.find_integration('jenkins')
+        end
+
         expect(jenkins_integration).not_to be_nil, 'Jenkins integration did not save'
         expect(jenkins_integration[:active]).to be(true), 'Jenkins integration is not active'
 

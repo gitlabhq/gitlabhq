@@ -272,13 +272,15 @@ class Repository
     end
   end
 
-  def add_branch(user, branch_name, ref, expire_cache: true, skip_ci: false)
+  def add_branch(user, branch_name, ref, expire_cache: true, skip_ci: false, raise_on_invalid_ref: false)
     branch = raw_repository.add_branch(branch_name, user: user, target: ref, skip_ci: skip_ci)
 
     after_create_branch(expire_cache: expire_cache)
 
     branch
-  rescue Gitlab::Git::Repository::InvalidRef
+  rescue Gitlab::Git::Repository::InvalidRef => e
+    raise e if raise_on_invalid_ref
+
     false
   end
 
@@ -793,14 +795,6 @@ class Repository
     end
   end
 
-  def git_content_hash_for_path(sha, path)
-    key = "git_content_hash_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
-
-    cache.fetch(key) do
-      blob_at(sha, path)&.id
-    end
-  end
-
   def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
@@ -927,13 +921,6 @@ class Repository
     end
   end
 
-  def move_dir_files(user, path, previous_path, **options)
-    actions = move_dir_files_actions(path, previous_path, branch_name: options[:branch_name])
-    return if actions.blank?
-
-    commit_files(user, **options.merge(actions: actions))
-  end
-
   def delete_file(user, path, **options)
     options[:actions] = [{ action: :delete, file_path: path }]
 
@@ -1017,6 +1004,8 @@ class Repository
     user, commit, branch_name, message,
     start_branch_name: nil, start_project: project, dry_run: false
   )
+    target_sha = find_branch(branch_name)&.dereferenced_target&.id if branch_name.present?
+
     with_cache_hooks do
       raw_repository.revert(
         user: user,
@@ -1025,7 +1014,8 @@ class Repository
         message: message,
         start_branch_name: start_branch_name,
         start_repository: start_project.repository.raw_repository,
-        dry_run: dry_run
+        dry_run: dry_run,
+        target_sha: target_sha
       )
     end
   end

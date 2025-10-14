@@ -246,4 +246,8 @@ export default class EditBlob {
   getFileContent() {
     return this.editor?.getValue();
   }
+
+  getOriginalFilePath() {
+    return this.options.filePath;
+  }
 }

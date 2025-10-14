@@ -11,6 +11,7 @@ module Ci
           self.primary_key = :id
 
           scope :older_than_30_days, -> { where(last_used_date: ...30.days.ago.to_date) }
+          scope :within_last_30_days, -> { where(last_used_date: 30.days.ago.to_date..) }
 
           belongs_to :component, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :last_usages
           belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :component_last_usages

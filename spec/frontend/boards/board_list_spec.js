@@ -15,9 +15,11 @@ import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardCutLine from '~/boards/components/board_cut_line.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import listIssuesQuery from '~/boards/graphql/lists_issues.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
+import { namespaceWorkItemTypesQueryResponse } from 'ee_else_ce_jest/work_items/mock_data';
 import { mockIssues, mockIssuesMore, mockGroupIssuesResponse } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -33,6 +35,9 @@ describe('Board list component', () => {
   const findBoardListCount = () => wrapper.find('.board-list-count');
   const findBoardCardButtons = () => wrapper.findAll('a.board-card-button');
   const queryHandlerFailure = jest.fn().mockRejectedValue(new Error('error'));
+  const namespaceWorkItemTypesQueryHandler = jest
+    .fn()
+    .mockResolvedValue(namespaceWorkItemTypesQueryResponse);
 
   const maxIssueWeightOrCountWarningClass = '.gl-bg-red-50';
 
@@ -62,6 +67,7 @@ describe('Board list component', () => {
       wrapper = createComponent({
         apolloQueryHandlers: [
           [listIssuesQuery, jest.fn().mockResolvedValue(mockGroupIssuesResponse())],
+          [namespaceWorkItemTypesQuery, namespaceWorkItemTypesQueryHandler],
         ],
       });
       await waitForPromises();
@@ -340,6 +346,30 @@ describe('Board list component', () => {
 
       it('Board card move to position is not visible', () => {
         expect(findMoveToPositionComponent().exists()).toBe(false);
+      });
+    });
+
+    // it should not affect ce lists because there should not be any status lists
+    describe('when dragging between lists', () => {
+      beforeEach(async () => {
+        wrapper = createComponent({
+          componentProps: {
+            draggedType: 'ISSUE',
+          },
+        });
+
+        await waitForPromises();
+
+        startDrag();
+      });
+
+      it('should not mark the list as inapplicable', () => {
+        expect(wrapper.classes()).not.toContain('board-column-not-applicable');
+        expect(wrapper.find('.board-column-not-applicable-content').exists()).toBe(false);
+      });
+
+      it('should not show inapplicable message', () => {
+        expect(wrapper.find('.board-column-not-applicable-content').exists()).toBe(false);
       });
     });
   });

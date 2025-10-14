@@ -180,7 +180,7 @@ module Members
 
       assign_member_attributes
 
-      return add_member_role_error if member_role_too_high?
+      return add_authorization_error if role_too_high?
 
       commit_changes
     end
@@ -196,7 +196,7 @@ module Members
       end
     end
 
-    def member_role_too_high?
+    def role_too_high?
       return false if skip_authorization?
       return false if member_attributes[:access_level].blank?
 
@@ -265,7 +265,7 @@ module Members
       member.errors.add(:base, :unauthorized, message: msg)
     end
 
-    def add_member_role_error
+    def add_authorization_error
       msg = _("the member access level can't be higher than the current user's one")
 
       member.errors.add(:base, msg)

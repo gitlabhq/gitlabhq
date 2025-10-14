@@ -36,6 +36,7 @@ RSpec.describe 'Database schema',
       ai_duo_chat_events: %w[user_id],
       ai_troubleshoot_job_events: %w[user_id job_id],
       ai_usage_events: %w[user_id],
+      ai_events_counts: %w[user_id namespace_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
       approvals: %w[user_id project_id],
@@ -54,6 +55,7 @@ RSpec.describe 'Database schema',
       analytics_cycle_analytics_stage_event_hashes: %w[organization_id],
       audit_events: %w[author_id entity_id target_id],
       approval_merge_request_rules_users: %w[project_id],
+      authentication_event_archived_records: %w[user_id],
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
@@ -147,16 +149,16 @@ RSpec.describe 'Database schema',
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
       merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
-      merge_requests_merge_data: %w[merge_request_id project_id merge_user_id],
       namespaces: %w[owner_id parent_id],
       namespace_descendants: %w[namespace_id],
-      # adding FK for organization_id after the index is created
-      notes: %w[
-        author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id organization_id
-      ],
+      notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id],
+      notes_archived: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id organization_id],
+      label_links_archived: %w[label_id target_id namespace_id],
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
+      oauth_access_grant_archived_records: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
+      oauth_access_token_archived_records: %w[resource_owner_id application_id],
       oauth_applications: %w[owner_id],
       oauth_device_grants: %w[resource_owner_id application_id],
       packages_nuget_symbols: %w[project_id],
@@ -173,10 +175,13 @@ RSpec.describe 'Database schema',
       p_ci_job_annotations: %w[partition_id job_id project_id],
       p_ci_job_artifacts: %w[partition_id project_id job_id],
       p_ci_job_definitions: %w[partition_id],
+      p_ci_pipeline_artifact_states: %w[partition_id pipeline_artifact_id],
       p_ci_pipeline_variables: %w[partition_id pipeline_id project_id],
       p_ci_pipelines_config: %w[partition_id project_id],
       p_ci_builds_execution_configs: %w[partition_id],
       p_ci_stages: %w[partition_id project_id pipeline_id],
+      pool_repositories: %w[organization_id],
+      p_duo_workflows_checkpoints: %w[project_id namespace_id],
       project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
       project_data_transfers: %w[project_id namespace_id],
       project_error_tracking_settings: %w[sentry_project_id],
@@ -212,7 +217,6 @@ RSpec.describe 'Database schema',
       import_export_upload_uploads: %w[model_id],
       issuable_metric_image_uploads: %w[model_id],
       namespace_uploads: %w[model_id],
-      note_uploads: %w[model_id],
       organization_detail_uploads: %w[model_id],
       project_import_export_relation_export_upload_uploads: %w[model_id],
       project_topic_uploads: %w[model_id],
@@ -229,12 +233,21 @@ RSpec.describe 'Database schema',
       user_preferences: %w[dark_color_scheme_id],
       users_star_projects: %w[user_id],
       vulnerability_finding_links: %w[project_id],
+      vulnerability_flags: %w[project_id workflow_id],
       vulnerability_historical_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_identifiers: %w[external_id],
       vulnerability_occurrences: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
       vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
+      vulnerability_external_issue_links: %w[project_id vulnerability_occurrence_id],
+      vulnerability_issue_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      vulnerability_merge_request_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      vulnerability_severity_overrides: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      sbom_occurrences_vulnerabilities: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      vulnerability_representation_information: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      vulnerability_user_mentions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      vulnerability_state_transitions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       security_scans: %w[pipeline_id project_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
       dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
       vulnerability_archived_records: %w[archive_id], # having a FK on this table prevents partitions from being detached. See: https://gitlab.com/gitlab-org/gitlab/-/issues/547116
@@ -249,10 +262,11 @@ RSpec.describe 'Database schema',
       backup_vulnerability_external_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_merge_request_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerability_reads: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_severity_overrides: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_state_transitions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_user_mentions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
-      vulnerability_reads: %w[cluster_agent_id namespace_id security_project_tracked_context_id], # namespace_id is a denormalization of `project.namespace`. tracked_contexts cannot be a foreign key yet
+      vulnerability_reads: %w[cluster_agent_id namespace_id security_project_tracked_context_id vulnerability_occurrence_id], # namespace_id is a denormalization of `project.namespace`. tracked_contexts cannot be a foreign key yet. vulnerability_occurrence_id foreign key will be added at a later date
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
@@ -290,29 +304,33 @@ RSpec.describe 'Database schema',
       p_knowledge_graph_replicas: %w[namespace_id],
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
       work_item_related_link_restrictions: %w[source_type_id target_type_id],
-      sbom_vulnerability_scans: %w[project_id build_id] # referenced records are in different DB and no LFK as the table contains references to object storage
+      sbom_vulnerability_scans: %w[project_id build_id], # referenced records are in different DB and no LFK as the table contains references to object storage
+      security_trainings: %w[training_provider_id], # training_provider_id is a fixed items model reference.
+      background_operation_jobs_cell_local: %w[worker_id], # background operation workers partitions have to dropped independently.
+      background_operation_jobs: %w[worker_id], # background operation workers partitions have to dropped independently.
+      note_diff_files: %w[namespace_id] # Adding FK after indexes are created async
     }.with_indifferent_access.freeze
   end
 
   let(:ignored_tables_with_too_many_indexes) do
     {
       approval_merge_request_rules: 17,
-      ci_runners: 16,
       deployments: 18,
       epics: 19,
       events: 16,
-      group_type_ci_runners: 17,
-      instance_type_ci_runners: 17,
+      group_type_ci_runners: 16,
+      instance_type_ci_runners: 16,
       issues: 32,
       members: 21, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/work_items/520189
       merge_requests: 29,
       namespaces: 26,
-      notes: 16,
+      notes: 17,
       p_ci_builds: 26,
       p_ci_pipelines: 24,
       packages_package_files: 16,
       packages_packages: 27,
-      project_type_ci_runners: 17,
+      project_type_ci_runners: 16,
+      personal_access_tokens: 17, # We will be able to remove 3 indexes added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193375 after https://gitlab.com/gitlab-org/gitlab/-/issues/561260 is complete.
       projects: 55,
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
@@ -471,7 +489,8 @@ RSpec.describe 'Database schema',
         'ResourceLabelEvent' => %w[action],
         'User' => %w[layout dashboard project_view role],
         'Users::Callout' => %w[feature_name],
-        'Vulnerability' => %w[confidence] # this enum is in the process of being deprecated
+        'Vulnerability' => %w[confidence], # this enum is in the process of being deprecated
+        'Packages::Composer::Package' => %w[package_type] # temporary, until the packages_packages table is split
       }.freeze
     end
 
@@ -549,7 +568,8 @@ RSpec.describe 'Database schema',
 
         models.each do |model|
           # Skip migration models
-          next if model.name.include?('Gitlab::BackgroundMigration')
+          next if model.name.match?(/Gitlab::Background(?:Migration|Operation)/)
+
           next if ignored_jsonb_columns(model.name).include?(column_name)
 
           has_validator = model.validators.any? do |v|

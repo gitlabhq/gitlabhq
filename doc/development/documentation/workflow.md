@@ -496,8 +496,7 @@ Other documentation labels include `vale`, `docs-only`, and `docs-channel`. Thes
 
 ### Type labels
 
-All issues and merge requests must be classified into one of three work types: bug, feature, or maintenance.
-Add one of the following labels to an issue or merge request:
+All issues and merge requests to [projects that are part of the product](https://gitlab.com/gitlab-data/analytics/-/blob/master/transform/snowflake-dbt/seeds/seed_engineering/projects_part_of_product.csv) must be labeled with a work type. Handbook and Marketing site changes do not require the work type label. Add one of the following labels to an issue or merge request:
 
 - `type::feature`
 - `type::bug`

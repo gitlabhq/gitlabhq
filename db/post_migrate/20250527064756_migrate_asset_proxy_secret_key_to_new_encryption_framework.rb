@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class MigrateAssetProxySecretKeyToNewEncryptionFramework < Gitlab::Database::Migration[2.3]
   milestone '18.1'
   restrict_gitlab_migration gitlab_schema: :gitlab_main

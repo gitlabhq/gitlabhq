@@ -99,7 +99,7 @@ To execute a pipeline manually:
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
-1. (Optional) Enter any:
+1. Optional. Enter any:
    - [Inputs](../inputs/_index.md) required for the pipeline to run. Default values for inputs are prefilled,
      but can be modified. Input values must follow the expected type.
    - [CI/CD variables](../variables/_index.md). You can configure variables to have their
@@ -141,9 +141,9 @@ When you turn on this setting, users with the Developer role can view variable v
 To view manual pipeline variables:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Select **Display pipeline variables**.
-1. Go to **Build > Pipelines** and select a pipeline that was run manually.
+1. Go to **Build** > **Pipelines** and select a pipeline that was run manually.
 1. Select the **Manual Variables** tab.
 
 Variable values are masked by default. If you have the Developer role or higher,
@@ -331,8 +331,8 @@ preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be [tagged](../yaml/_index.md#tags) accordingly.
 
-Review the [documentation](merge_request_pipelines.md#control-access-to-protected-variables-and-runners) to understand how access to
-protected variables and runners work in the context of Merge request pipelines.
+Review how access to protected variables and runners work in the
+[context of Merge request pipelines](merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
 
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
@@ -564,7 +564,7 @@ This table lists the refspecs injected for each pipeline type:
 |-------------------------------------------------------------------|----------|
 | pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
-| [merge request pipeline](merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
+| [merge request pipeline](merge_request_pipelines.md)              | `+refs/pipelines/<id>:refs/pipelines/<id>` |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
@@ -573,17 +573,6 @@ deleted. It's therefore useful in some features such as [automatically stopping 
 and [merge trains](merge_trains.md) that might run pipelines after branch deletion.
 
 ## Troubleshooting
-
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-
-### Pipeline subscriptions continue after user deletion
-
-When a user [deletes their GitLab.com account](../../user/profile/account/delete_account.md#delete-your-own-account),
-the deletion does not occur for seven days. During this period, any [pipeline subscriptions created by that user](#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
-continue to run with the user's original permissions. To prevent unauthorized pipeline executions,
-immediately update pipeline subscription settings for the deleted user.
-
-<!--- end_remove -->
 
 ### Pre-filled variables do not show up in **New Pipeline** page
 

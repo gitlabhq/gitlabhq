@@ -245,6 +245,15 @@ export default {
     showScopedLabel(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
     },
+    createIssueNumberAriaLabel() {
+      const itemType = this.item.type;
+      const formattedItemType = `${itemType.charAt(0)}${itemType.slice(1).toLowerCase()}`;
+
+      return sprintf(__(`%{itemType} number %{itemIid}`), {
+        itemType: formattedItemType,
+        itemIid: this.item.iid,
+      });
+    },
   },
 };
 </script>
@@ -284,8 +293,9 @@ export default {
           }"
           class="gl-text-default hover:gl-text-default"
           data-testid="board-card-title-link"
+          aria-hidden="true"
           @mousemove.stop
-          @click.prevent
+          @click.exact.prevent
           >{{ item.title }}</a
         >
       </h3>
@@ -320,7 +330,13 @@ export default {
           >
             <work-item-type-icon
               v-if="showWorkItemTypeIcon"
+              :aria-label="createIssueNumberAriaLabel()"
               :work-item-type="item.type"
+              :show-derived-text="itemId"
+              class="gl-text-subtle"
+              icon-class="gl-flex-shrink-0 gl-fill-icon-subtle"
+              variant="subtle"
+              show-text
               show-tooltip-on-hover
             />
             <span
@@ -332,7 +348,9 @@ export default {
             >
               {{ directNamespaceReference }}
             </span>
-            {{ itemId }}
+            <span v-if="!showWorkItemTypeIcon" data-testid="work-item-id-textOnly">{{
+              itemId
+            }}</span>
           </span>
           <epic-countables
             v-if="shouldRenderEpicCountables"
@@ -346,7 +364,12 @@ export default {
             :closed-issues-weight="descendantWeightSum.closedIssues"
           />
           <span v-if="!isEpicBoard">
-            <issue-weight v-if="validIssueWeight(item)" class="gl-isolate" :weight="item.weight" />
+            <issue-weight
+              v-if="validIssueWeight(item)"
+              data-testid="issue-weight"
+              class="gl-isolate gl-mr-3"
+              :weight="item.weight"
+            />
             <issue-milestone
               v-if="item.milestone"
               data-testid="issue-milestone"
@@ -357,21 +380,24 @@ export default {
               v-if="item.iteration"
               data-testid="issue-iteration"
               :iteration="item.iteration"
-              class="gl-isolate gl-align-bottom"
+              class="gl-isolate gl-mr-3 gl-align-bottom"
             />
             <issue-due-date
               v-if="item.dueDate"
+              data-testid="issue-dueDate"
               class="gl-isolate"
               :date="item.dueDate"
               :closed="Boolean(item.closedAt)"
             />
             <issue-time-estimate
               v-if="item.timeEstimate"
-              class="gl-isolate"
+              data-testid="issue-estimate"
+              class="gl-isolate gl-mr-3"
               :estimate="item.timeEstimate"
             />
             <issue-health-status
               v-if="item.healthStatus"
+              data-testid="issue-healthStatus"
               class="gl-isolate"
               :health-status="item.healthStatus"
             />

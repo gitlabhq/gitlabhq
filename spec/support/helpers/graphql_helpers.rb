@@ -909,6 +909,12 @@ module GraphqlHelpers
     end
   end
 
+  def calculate_query_complexity(query_string)
+    query = GraphQL::Query.new(GitlabSchema, query_string)
+    analyzer = GraphQL::Analysis::AST::QueryComplexity
+    GraphQL::Analysis::AST.analyze_query(query, [analyzer]).first
+  end
+
   private
 
   def to_base_field(name_or_field, object_type)

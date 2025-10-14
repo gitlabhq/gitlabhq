@@ -368,21 +368,6 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
 
         worker.perform(pipeline_schedule.id, maintainer.id)
       end
-
-      context 'when notify_pipeline_schedule_owner_unavailable is not enabled' do
-        before do
-          stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
-        end
-
-        it 'does not sent an email notification or deactivate the pipeline schedule' do
-          expect(NotificationService).not_to receive(:pipeline_schedule_owner_unavailable)
-          expect(Gitlab::AppLogger).not_to receive(:error)
-
-          worker.perform(pipeline_schedule.id, maintainer.id)
-
-          expect(pipeline_schedule.reload.active).to be true
-        end
-      end
     end
 
     context 'when the schedule owner is still available' do

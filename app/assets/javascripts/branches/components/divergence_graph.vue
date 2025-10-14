@@ -59,13 +59,13 @@ export default {
 </script>
 
 <template>
-  <div :title="title" class="divergence-graph px-2 gl-hidden md:gl-block">
+  <div :title="title" class="divergence-graph gl-hidden !gl-px-3 @md/panel:gl-block">
     <template v-if="distance">
       <graph-bar :count="distance" :max-commits="maxCommits" position="full" />
     </template>
     <template v-else>
       <graph-bar :count="behindCount" :max-commits="maxCommits" position="left" />
-      <div class="graph-separator float-left mt-1"></div>
+      <div class="graph-separator !gl-float-left !gl-mt-2"></div>
       <graph-bar :count="aheadCount" :max-commits="maxCommits" position="right" />
     </template>
   </div>

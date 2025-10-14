@@ -61,7 +61,7 @@ export default {
 </script>
 <template>
   <div class="file-content code">
-    <div class="text-center py-4">
+    <div class="!gl-py-6 !gl-text-center">
       <gl-sprintf :message="$options.errorMessage">
         <template #reason>{{ renderErrorReason }}</template>
         <template #options>

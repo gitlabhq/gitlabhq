@@ -22,8 +22,8 @@ module QA
           click_element('nav-item-link', submenu_item: 'Password')
         end
 
-        def click_access_tokens
-          click_element('nav-item-link', submenu_item: 'Access tokens')
+        def click_personal_access_tokens
+          click_element('nav-item-link', submenu_item: 'Personal access tokens')
         end
       end
     end

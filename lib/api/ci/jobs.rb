@@ -238,7 +238,7 @@ module API
         helpers ::API::Helpers::KasHelpers
 
         before do
-          # Use primary for both main and ci database as authenticating in the scope of runners will load
+          # Use primary for both main and non-main databases as authenticating in the scope of runners will load
           # Ci::Build model and other standard authn related models like License, Project and User.
           ::Gitlab::Database::LoadBalancing::SessionMap
             .with_sessions.use_primary { authenticate! }

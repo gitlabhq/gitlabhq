@@ -18,5 +18,7 @@ module Environments
       length: { maximum: 255 },
       format: { with: Gitlab::Regex.environment_name_regex,
                 message: Gitlab::Regex.environment_name_regex_message }
+
+    attribute :options, ::Gitlab::Database::Type::SymbolizedJsonb.new
   end
 end

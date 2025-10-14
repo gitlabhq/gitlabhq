@@ -344,9 +344,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
           it 'returns links object for each finding', :aggregate_failures do
             links = report.findings.flat_map(&:links)
 
-            expect(links.map(&:url)).to match_array(['https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1020', 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1030',
-                                                     "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2137", "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2138",
-                                                     "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2139", "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2140"])
+            expect(links.map(&:url)).to match_array([
+              "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1020",
+              "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1030",
+              "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2137",
+              "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2138",
+              "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2139",
+              "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2140"
+            ])
             expect(links.map(&:name)).to match_array([nil, nil, nil, nil, nil, 'CVE-1030'])
             expect(links.size).to eq(6)
             expect(links.first).to be_a(::Gitlab::Ci::Reports::Security::Link)

@@ -65,6 +65,7 @@ export const noteableDataMock = {
   web_url: '/gitlab-org/gitlab-foss/issues/26',
   noteableType: 'Issue',
   blocked_by_issues: [],
+  archived: false,
 };
 
 export const lastFetchedAt = '1501862675';

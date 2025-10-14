@@ -69,6 +69,8 @@ resource :profile, only: [] do
       end
     end
 
+    resources :passkeys, only: [:new, :create, :destroy]
+
     resources :usage_quotas, only: [:index]
   end
 end

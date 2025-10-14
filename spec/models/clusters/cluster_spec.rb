@@ -816,10 +816,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when cluster is managed' do
-      before do
-        stub_feature_flags(ci_validate_config_options: false)
-      end
-
       let(:build_options) { { environment: { kubernetes: { namespace: 'ci yaml namespace' } } } }
 
       it 'returns the cached namespace if present, ignoring CI config' do
@@ -833,10 +829,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when cluster is not managed' do
-      before do
-        stub_feature_flags(ci_validate_config_options: false)
-      end
-
       let(:managed_cluster) { false }
       let(:build_options) { { environment: { kubernetes: { namespace: 'ci yaml namespace' } } } }
 

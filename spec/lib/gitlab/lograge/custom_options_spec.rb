@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability 
     end
 
     context 'when correlation_id is overridden' do
-      let(:correlation_id_key) { Labkit::Correlation::CorrelationId::LOG_KEY }
+      let(:correlation_id_key) { Labkit::Fields::CORRELATION_ID }
 
       before do
         event_payload[correlation_id_key] = '123456'

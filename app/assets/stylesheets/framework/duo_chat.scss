@@ -1,7 +1,7 @@
 @import 'framework/variables';
 @import 'framework/variables_overrides';
 
-#duo-chat {
+.duo-chat-layout {
   z-index: #{$zindex-modal-backdrop - 1};
 }
 

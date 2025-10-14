@@ -672,11 +672,11 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_projects?(level = self.visibility_level)
-    !projects.not_aimed_for_deletion.where('visibility_level > ?', level).exists?
+    !projects.not_aimed_for_deletion.with_visibility_level_greater_than(level).exists?
   end
 
   def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
-    !children.where('visibility_level > ?', level).exists?
+    !children.with_visibility_level_greater_than(level).exists?
   end
 
   def visibility_level_allowed?(level = self.visibility_level)
@@ -1157,16 +1157,12 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
-  def work_items_project_issues_list_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_project_issues_list, type: :beta)
-  end
-
   def work_items_group_issues_list_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items_group_issues_list, type: :beta)
   end
 
   def work_item_status_mvc2_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_mvc2, type: :wip)
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_mvc2, type: :beta)
   end
 
   def markdown_placeholders_feature_flag_enabled?
@@ -1175,6 +1171,10 @@ class Group < Namespace
 
   def glql_load_on_click_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click, type: :ops)
+  end
+
+  def allow_iframes_in_markdown_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
   # overriden in EE
@@ -1302,6 +1302,15 @@ class Group < Namespace
     return false unless deletion_schedule
 
     deletion_schedule.marked_for_deletion_on.future?
+  end
+
+  def assigning_role_too_high?(current_user, access_level)
+    return false if current_user.can_admin_all_resources?
+    return false unless access_level
+
+    max_access_level = max_member_access(current_user)
+
+    !Authz::Role.access_level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

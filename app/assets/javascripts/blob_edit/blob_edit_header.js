@@ -21,6 +21,9 @@ export default function initBlobEditHeader(editor) {
     blobName,
     branchAllowsCollaboration,
     lastCommitSha,
+    projectId,
+    projectPath,
+    newMergeRequestPath,
   } = el.dataset;
 
   return new Vue({
@@ -34,6 +37,9 @@ export default function initBlobEditHeader(editor) {
       targetBranch,
       blobName,
       lastCommitSha,
+      projectId,
+      projectPath,
+      newMergeRequestPath,
       emptyRepo: parseBoolean(emptyRepo),
       canPushCode: parseBoolean(canPushCode),
       canPushToBranch: parseBoolean(canPushToBranch),

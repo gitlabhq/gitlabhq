@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use the GitLab CI Lint tool to validate CI/CD configuration and simulate pipelines to find errors before jobs run.
 title: Validate GitLab CI/CD configuration
 ---
 
@@ -31,7 +32,7 @@ configuration added with the [`includes` keyword](_index.md#include).
 To check CI/CD configuration with the CI lint tool:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
+1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Select **Lint CI/CD sample**.
 1. Paste a copy of the CI/CD configuration you want to check into the text box.
@@ -51,7 +52,7 @@ Prerequisites:
 To simulate a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
+1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Select **Lint CI/CD sample**.
 1. Paste a copy of the CI/CD configuration you want to check into the text box.

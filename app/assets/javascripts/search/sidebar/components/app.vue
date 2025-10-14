@@ -84,6 +84,9 @@ export default {
     showWikiBlobsFilters() {
       return this.currentScope === SCOPE_WIKI_BLOBS;
     },
+    projectStudioEnabled() {
+      return window.gon?.features?.projectStudioEnabled;
+    },
   },
   beforeCreate() {
     if (!this.$store) {
@@ -91,8 +94,12 @@ export default {
     }
   },
   methods: {
-    toggleFiltersFromSidebar() {
-      toggleSuperSidebarCollapsed();
+    toggleFilters() {
+      if (this.projectStudioEnabled) {
+        this.$refs.mobileFilters.classList.toggle('gl-hidden');
+      } else {
+        toggleSuperSidebarCollapsed();
+      }
     },
   },
 };
@@ -100,8 +107,25 @@ export default {
 
 <template>
   <section>
-    <dom-element-listener selector="#js-open-mobile-filters" @click="toggleFiltersFromSidebar" />
-    <sidebar-portal>
+    <dom-element-listener selector="#js-open-mobile-filters" @click="toggleFilters" />
+    <div
+      v-if="projectStudioEnabled"
+      ref="mobileFilters"
+      class="filters -gl-ml-4 gl-hidden gl-min-w-30 @lg/panel:gl-block"
+      data-testid="search-filters"
+    >
+      <all-scopes-start-filters />
+      <scope-sidebar-navigation />
+      <issues-filters v-if="showIssuesFilters" />
+      <merge-requests-filters v-if="showMergeRequestFilters" />
+      <blobs-filters v-if="showBlobFilters" />
+      <projects-filters v-if="showProjectsFilters" />
+      <notes-filters v-if="showNotesFilters" />
+      <commits-filters v-if="showCommitsFilters" />
+      <milestones-filters v-if="showMilestonesFilters" />
+      <wiki-blobs-filters v-if="showWikiBlobsFilters" />
+    </div>
+    <sidebar-portal v-else>
       <div
         class="super-sidebar-context-header gl-m-0 gl-px-4 gl-py-3 gl-font-bold gl-leading-reset"
       >

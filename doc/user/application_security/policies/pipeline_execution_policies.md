@@ -370,15 +370,15 @@ The project becomes a security policy project, and the setting becomes available
 {{< alert type="note" >}}
 
 To create downstream pipelines using `$CI_JOB_TOKEN`, you need to make sure that projects and groups are authorized to request the security policy project.
-In the security policy project, go to **Settings > CI/CD > Job token permissions** and add the authorized groups and projects to the allowlist.
-If you don't see the **CI/CD** settings, go to **Settings > General > Visibility, project features, permissions** and enable **CI/CD**.
+In the security policy project, go to **Settings** > **CI/CD** > **Job token permissions** and add the authorized groups and projects to the allowlist.
+If you don't see the **CI/CD** settings, go to **Settings** > **General** > **Visibility, project features, permissions** and enable **CI/CD**.
 
 {{< /alert >}}
 
 #### Configuration
 
 1. In the policy project, select **Settings** > **General** > **Visibility, project features, permissions**.
-1. Enable the setting **Pipeline execution policies: Grant access to the CI/CD configurations for projects linked to this security policy project as the source for security policies**.
+1. Enable the **Pipeline execution policies** setting.
 1. In the policy project, create a file for the policy CI/CD configuration.
 
    ```yaml
@@ -635,6 +635,8 @@ The following diagram illustrates how variables defined at the project and polic
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Variable precedence in pipeline execution policies
+    accDescr: Policy variables take precedence over project variables when jobs are combined into the resulting pipeline.
 
 classDef yaml text-align:left
 
@@ -760,7 +762,7 @@ in a Git repository.
 {{< /alert >}}
 
 Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
-and cannot be overwritten from the outside, unless permitted by the [variables_override type](#variables_override-type) type.
+and cannot be overwritten from the outside, unless permitted by the [`variables_override` type](#variables_override-type).
 
 Variables can be shared with pipeline execution policies using group or project settings, which follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence) rules. However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
 
@@ -801,6 +803,52 @@ project-job:
 
 In this case, the job variable value `Project job variable value` takes precedence.
 
+### Prefill variables in manually-run pipelines
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527021) in GitLab 18.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
+This feature does not work with pipeline execution policies created before GitLab 18.5.
+To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
+For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
+
+{{< /alert >}}
+
+You can use the `description`, `value` and `options` keywords to define CI/CD variables
+that are [prefilled when a user runs a pipeline manually](../../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines).
+Use the description to provide relevant information, such as what the variable is used for and what the acceptable values are.
+
+You cannot prefill job-specific variables.
+
+In manually-triggered pipelines, the **New pipeline** page displays all pipeline variables that have a `description` defined in the CI/CD configuration, from all applicable policies.
+
+You must configure the prefilled variables as allowed using [`variables_override`](pipeline_execution_policies.md#variables_override-type),
+otherwise the values used when manually triggering the pipelines are ignored.
+
+#### Recreate pipeline execution policies
+
+To recreate a pipeline execution policy:
+
+<!-- markdownlint-disable MD044 -->
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure** > **Policies**.
+1. Select the pipeline execution policy you want to recreate.
+1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
+1. Next to the policies table, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and select **Delete**.
+1. Merge the generated merge request.
+1. Go back to **Secure** > **Policies** and select **New policy**.
+1. In the **Pipeline execution policy** section, select **Select policy**.
+1. In the **.yaml mode**, paste the contents of the old policy.
+1. Select **Update via merge request** and merge the generated merge request.
+
+<!-- markdownlint-enable MD044 -->
+
 ## Behavior with `[skip ci]`
 
 By default, to prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
@@ -836,27 +884,75 @@ pipeline_execution_policy:
 
 ### Customize enforced jobs based on project variables
 
-You can customize enforced jobs, based on the presence of a project variable. In this example,
-the value of `CS_IMAGE` is defined in the policy as `alpine:latest`. However, if the project
-also defines the value of `PROJECT_CS_IMAGE`, that value is used instead. The CI/CD variable must be a
-predefined project variable, not defined in the project's `.gitlab-ci.yml` file.
+Pipeline execution policies adapt their behavior based on project-specific variables.
+You can create flexible policies that provide sensible defaults while allowing individual
+projects to customize certain aspects of the enforced jobs.
+
+#### Variable evaluation
+
+Rules in pipeline execution policies (such as `if: $PROJECT_CS_IMAGE`) are evaluated during policy execution, not based on the project's context. This means:
+
+- Project variables are available in the policy using their standard names (for example, `$PROJECT_CS_IMAGE`).
+- Project variables can take precedence over the policy-defined variables.
+- The evaluation on which variable to use happens when GitLab constructs the policy pipeline.
+
+#### Variable naming patterns
+
+When you create customizable policies, follow these naming conventions:
+
+- Policy variables: Use standard names (for example, `CS_IMAGE`) for default values.
+- Project override variables: Use descriptive prefixes (for example, `PROJECT_CS_IMAGE`) to clearly indicate their purpose.
+
+This pattern prevents naming conflicts and makes the intent clear.
+
+#### Example: Container scanning with customizable image
+
+This example shows how to create a policy that uses a default container image but allows projects to specify their own image:
 
 ```yaml
 variables:
   CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:8"
-  CS_IMAGE: alpine:latest
+  CS_IMAGE: alpine:latest  # Default fallback value
 
 policy::container-security:
   stage: .pipeline-policy-pre
   rules:
-    - if: $PROJECT_CS_IMAGE
+    - if: $PROJECT_CS_IMAGE  # Check if project defined a custom image
       variables:
-        CS_IMAGE: $PROJECT_CS_IMAGE
-    - when: always
+        CS_IMAGE: $PROJECT_CS_IMAGE  # Use project's custom image
+    - when: always  # Always run the job (with default or custom image)
   script:
     - echo "CS_ANALYZER_IMAGE:$CS_ANALYZER_IMAGE"
     - echo "CS_IMAGE:$CS_IMAGE"
 ```
+
+How this works:
+
+1. Default behavior: If no `PROJECT_CS_IMAGE` is defined in the project, `CS_IMAGE` remains `alpine:latest`.
+1. Custom behavior: If a project defines `PROJECT_CS_IMAGE`, that value overrides `CS_IMAGE`.
+1. Rule evaluation: The `if: $PROJECT_CS_IMAGE` condition is evaluated in the policy context and can access project variables.
+1. Variable precedence: The policy's variable assignment takes precedence over the default value.
+
+To customize the container image, projects must define `PROJECT_CS_IMAGE` as a [project variable](../../../ci/variables/_index.md#for-a-project), not specify it in the `.gitlab-ci.yml` file.
+
+#### Summary of variable considerations
+
+Variable sources:
+
+- Project variables must be defined in the project's CI/CD settings, not in `.gitlab-ci.yml`.
+- Policies can also access group variables and instance variables using their standard names.
+- Policy variables take precedence over project variables when both are defined with the same name.
+
+Rule evaluation:
+
+- All `rules:` conditions in pipeline execution policies are evaluated when the policy executes. This means policies can access and react to project-specific variables.
+- The evaluation happens during pipeline construction, before any jobs execute.
+
+Best practices:
+
+- Use descriptive variable names with prefixes (for example, `PROJECT_*`) for project overrides.
+- Always provide sensible defaults in the policy.
+- Document the available customization variables for your users.
 
 ### Customize enforced jobs using `.gitlab-ci.yml` and artifacts
 

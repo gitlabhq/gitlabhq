@@ -9,6 +9,7 @@ title: Configure GitLab as an OAuth 2.0 authentication identity provider
 
 - Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
 - Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561778) in GitLab 18.5. Feature flag `ff_oauth_redirect_to_sso_login` removed.
 
 {{< /history >}}
 
@@ -60,7 +61,7 @@ To create a new application for your user:
 To create a new application for a group:
 
 1. Go to the desired group.
-1. On the left sidebar, select **Settings > Applications**.
+1. On the left sidebar, select **Settings** > **Applications**.
 1. Enter a **Name** and **Redirect URI**.
 1. Select OAuth 2 scopes as defined in [Authorized Applications](#view-all-authorized-applications).
 1. In the **Redirect URI**, enter the URL where users are sent after they authorize with GitLab.

@@ -6,7 +6,7 @@
 module VerifiesWithEmail
   extend ActiveSupport::Concern
   include ActionView::Helpers::DateHelper
-  include SessionsHelper
+  include VerifiesWithEmailHelper
 
   VERIFICATION_REASON_UNTRUSTED_IP = 'sign in from untrusted IP address'
   VERIFICATION_REASON_NEW_TOKEN_NEEDED = 'new unlock token needed'
@@ -46,6 +46,7 @@ module VerifiesWithEmail
       # If an email is provided, validate that it belongs to the user.
       # It is nil otherwise.
       secondary_email = fetch_confirmed_user_secondary_email(user, email_params[:email])
+      primary_email = user.email
 
       # Both `send_` methods will regenerate the respective code, making
       # the old one invalid.
@@ -76,6 +77,10 @@ module VerifiesWithEmail
         )
       end
 
+      if secondary_email.present? && secondary_email != primary_email
+        send_notification_to_primary_email(primary_email, secondary_email)
+      end
+
       render json: { status: :success }
     end
   end
@@ -85,6 +90,39 @@ module VerifiesWithEmail
     @redirect_url = after_sign_in_path_for(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     render layout: 'minimal'
+  end
+
+  def skip_verification_for_now
+    return respond_422 unless user = find_verification_user
+    return render_403 unless permitted_to_skip_email_otp_in_grace_period?(user)
+
+    handle_verification_success(
+      user,
+      :skipped,
+      'user chose to skip verification in grace period'
+    )
+
+    render json: {
+      status: :success,
+      redirect_path: users_skip_verification_confirmation_path
+    }
+  end
+
+  def skip_verification_confirmation
+    if permitted_to_view_skip_verification_confirmation?
+      render 'skip_verification_confirmation',
+        layout: 'minimal',
+        locals: {
+          redirect_url: after_sign_in_path_for(current_user),
+          email_otp_required_after: current_user.email_otp_required_after
+        }
+
+      # remove verification_user_id from session to indicate that skip verification workflow is done
+      # this ensures the confirmation page cannot be visited by user manually navigating to this path
+      session.delete(:verification_user_id)
+    else
+      render json: { status: :failure }
+    end
   end
 
   private
@@ -144,13 +182,8 @@ module VerifiesWithEmail
     treat_as_locked?(user) || !trusted_ip_address?(user) || require_email_based_otp?(user)
   end
 
-  def treat_as_locked?(user)
-    # A user can have #access_locked? return false, but we still want
-    # to treat as locked during sign in if they were sent an unlock
-    # token in the past.
-    # See https://docs.gitlab.com/security/unlock_user/#gitlabcom-users
-    # and https://gitlab.com/gitlab-org/gitlab/-/issues/560080.
-    user.access_locked? || user.unlock_token
+  def send_notification_to_primary_email(primary_email, secondary_email)
+    Notify.verification_instructions_sent_to_secondary_email(primary_email, secondary_email).deliver_later
   end
 
   def verify_email(user)
@@ -174,9 +207,7 @@ module VerifiesWithEmail
       elsif require_email_based_otp?(user)
         # We don't lock accounts for Email-based MFA. We just require
         # the token for successful sign in.
-        if !user.email_otp || token_expired?(user, :email_otp) # rubocop:disable Style/IfUnlessModifier -- This is easier to read
-          send_otp_with_email(user)
-        end
+        send_otp_with_email(user) if !user.email_otp || token_expired?(user, :email_otp)
       end
     end
 
@@ -209,7 +240,7 @@ module VerifiesWithEmail
       # Devise::Confirmable
       user.last_sign_in_at.present? &&
       user.email_otp_required_after.present? &&
-      user.email_otp_required_after <= Time.zone.now
+      (user.email_otp_required_after <= Time.zone.now || in_email_otp_grace_period?(user))
   end
 
   def verify_token(user, token)
@@ -225,7 +256,7 @@ module VerifiesWithEmail
     result = service.execute
 
     if result[:status] == :success
-      handle_verification_success(user)
+      handle_verification_success(user, :successful)
       render json: { status: :success, redirect_path: users_successful_verification_path }
     else
       handle_verification_failure(user, result[:reason], result[:message])
@@ -263,13 +294,13 @@ module VerifiesWithEmail
     log_verification(user, :failed_attempt, reason)
   end
 
-  def handle_verification_success(user)
+  def handle_verification_success(user, verification_result, log_message = '')
     # Unlock the user
     user.unlock_access!
     # If an email-otp was set, e.g. by this or a concurrent sign in
     # attempt, clear it, so that a new sign in must be performed.
     user.update(email_otp: nil)
-    log_verification(user, :successful)
+    log_verification(user, verification_result, log_message)
 
     sign_in(user)
 
@@ -278,8 +309,13 @@ module VerifiesWithEmail
     verify_known_sign_in
   end
 
-  def trusted_ip_address?(user)
-    AuthenticationEvent.initial_login_or_known_ip_address?(user, request.ip)
+  def permitted_to_view_skip_verification_confirmation?
+    current_user &&
+      Feature.enabled?(:email_based_mfa, current_user) &&
+      permitted_to_skip_email_otp_in_grace_period?(current_user) &&
+      # User should not be able to visit users_skip_verification_confirmation_path after
+      # finishing token verification OR after completing the skip verification workflow
+      session[:verification_user_id]
   end
 
   def prompt_for_email_verification(user)

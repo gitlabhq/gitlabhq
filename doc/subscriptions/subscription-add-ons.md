@@ -38,6 +38,13 @@ GitLab Duo Core is included automatically if you have:
 - GitLab 18.0 or later.
 - A Premium or Ultimate subscription.
 
+If you are a customer with an offline license, GitLab Duo Core is not available on
+GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI gateway.
+
+If you are a customer with an online license, you can use GitLab Duo Core in combination with
+GitLab Duo Self-Hosted, but to enable GitLab Duo Core you must select the GitLab AI vendor model
+for GitLab Duo Chat and Code Suggestions for the entire instance.
+
 If you are an existing customer from GitLab 17.11 or earlier, you must [turn on Web or IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo Core.
 
 If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
@@ -104,7 +111,7 @@ Prerequisites:
 - You must have the Owner role.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. Select **Purchase seats**.
 1. In the Customers Portal, in the **Add additional seats** field, enter the number of seats. The amount
@@ -147,7 +154,7 @@ Prerequisites:
 To use GitLab Duo features in any project or group, you must assign the user to a seat in at least one top-level group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
@@ -188,7 +195,7 @@ GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments
 ### For GitLab.com
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. On the bottom right, you can adjust the page display to show **50** or **100** items to increase the number of users available for selection.
 1. Select the users to assign or remove seats for:
    - To select multiple users, to the left of each user, select the checkbox.
@@ -261,7 +268,7 @@ Prerequisites:
 - You must have the Owner role.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. From the filter bar, select **Assigned seat** and **Yes**.
 1. User list is filtered to only users assigned a GitLab Duo seat.

@@ -1,4 +1,3 @@
-@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 $design-pin-diameter: 28px;
@@ -31,7 +30,7 @@ $design-pin-diameter-sm: 24px;
   min-width: 400px;
   flex-shrink: 4;
 
-  @media (min-width: $breakpoint-lg) {
+  @include gl-container-width-up(lg, panel) {
     width: 400px !important;
     flex-shrink: 0;
   }
@@ -204,7 +203,7 @@ $design-pin-diameter-sm: 24px;
   }
 }
 
-@media (max-width: map.get($grid-breakpoints, lg)) {
+@include gl-container-width-down(lg, panel) {
   .design-detail {
     overflow-y: scroll;
   }

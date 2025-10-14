@@ -59,10 +59,6 @@ export default {
       type: String,
       required: true,
     },
-    designId: {
-      type: String,
-      required: true,
-    },
     markdownPreviewPath: {
       type: String,
       required: false,

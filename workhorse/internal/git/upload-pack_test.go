@@ -2,7 +2,6 @@ package git
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -69,7 +68,7 @@ func TestUploadPackTimesOut(t *testing.T) {
 	a := &api.Response{GitalyServer: api.GitalyServer{Address: addr}}
 
 	_, err := handleUploadPack(NewHTTPResponseWriter(w), r, a)
-	require.True(t, errors.Is(err, context.DeadlineExceeded))
+	require.ErrorIs(t, err, context.DeadlineExceeded)
 }
 
 func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) string {

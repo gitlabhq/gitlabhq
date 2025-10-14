@@ -58,6 +58,44 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
           processor.execute
         end
       end
+
+      context 'when recipient is nil' do
+        let(:processor) { described_class.new(base_payload.merge({ 'severity' => 'permanent', 'recipient' => nil })) }
+
+        context 'when threshold is not exceeded' do
+          it 'uses global scope and does not log the failure' do
+            expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
+              :permanent_email_failure, scope: :global
+            ).and_call_original
+            expect(Gitlab::ErrorTracking::Logger).not_to receive(:error)
+
+            processor.execute
+          end
+        end
+
+        context 'when threshold is exceeded' do
+          before do
+            processor.execute
+          end
+
+          it 'uses global scope and logs the failure' do
+            expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
+              :permanent_email_failure, scope: :global
+            ).and_call_original
+            expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+              event: 'email_delivery_failure',
+              mailgun_event_id: base_payload['id'],
+              recipient: nil,
+              failure_type: 'permanent',
+              failure_reason: base_payload['reason'],
+              failure_code: base_payload['delivery-status']['code'],
+              failure_message: base_payload['delivery-status']['message']
+            )
+
+            processor.execute
+          end
+        end
+      end
     end
 
     context 'on temporary failure' do
@@ -99,6 +137,44 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
           )
 
           processor.execute
+        end
+      end
+
+      context 'when recipient is nil' do
+        let(:processor) { described_class.new(base_payload.merge({ 'severity' => 'temporary', 'recipient' => nil })) }
+
+        context 'when threshold is not exceeded' do
+          it 'uses global scope and does not log the failure' do
+            expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
+              :temporary_email_failure, scope: :global
+            ).and_call_original
+            expect(Gitlab::ErrorTracking::Logger).not_to receive(:error)
+
+            processor.execute
+          end
+        end
+
+        context 'when threshold is exceeded' do
+          before do
+            processor.execute
+          end
+
+          it 'uses global scope and logs the failure' do
+            expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
+              :temporary_email_failure, scope: :global
+            ).and_call_original
+            expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+              event: 'email_delivery_failure',
+              mailgun_event_id: base_payload['id'],
+              recipient: nil,
+              failure_type: 'temporary',
+              failure_reason: base_payload['reason'],
+              failure_code: base_payload['delivery-status']['code'],
+              failure_message: base_payload['delivery-status']['message']
+            )
+
+            processor.execute
+          end
         end
       end
     end

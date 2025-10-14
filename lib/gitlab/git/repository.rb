@@ -706,7 +706,7 @@ module Gitlab
         end
       end
 
-      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
+      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil)
         args = {
           user: user,
           commit: commit,
@@ -714,7 +714,8 @@ module Gitlab
           message: message,
           start_branch_name: start_branch_name,
           start_repository: start_repository,
-          dry_run: dry_run
+          dry_run: dry_run,
+          target_sha: target_sha
         }
 
         wrapped_gitaly_errors do

@@ -112,11 +112,11 @@ module Ci
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :variables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::PipelineVariable', inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :latest_builds, ->(pipeline) { in_partition(pipeline).latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
+    has_many :latest_successful_jobs, ->(pipeline) { in_partition(pipeline).latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
+    has_many :latest_finished_jobs, ->(pipeline) { in_partition(pipeline).latest.finished.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
     has_many :downloadable_artifacts, -> do
       not_expired.or(where_exists(Ci::Pipeline.artifacts_locked.where("#{Ci::Pipeline.quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id"))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
-    has_many :latest_successful_jobs, ->(pipeline) { in_partition(pipeline).latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
-    has_many :latest_finished_jobs, ->(pipeline) { in_partition(pipeline).latest.finished.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
 
     has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
 
@@ -342,6 +342,14 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
+        pipeline.run_after_commit do
+          Gitlab::EventStore.publish(
+            ::Ci::PipelineFinishedEvent.new(data: { pipeline_id: pipeline.id, status: pipeline.status })
+          )
+        end
+      end
+
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
           AutoMergeProcessWorker.perform_async({ 'pipeline_id' => self.id })
@@ -472,12 +480,6 @@ module Ci
 
     scope :with_reports, ->(reports_scope) do
       where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
-    end
-
-    scope :legacy_conservative_interruptible, -> do
-      where_not_exists(
-        Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).with_metadata_interruptible_false
-      )
     end
 
     scope :conservative_interruptible, -> do
@@ -1081,6 +1083,9 @@ module Ci
     def environments_in_self_and_project_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
+      #
+      # TODO: This metadata query can be removed when historical job environment
+      # records have been backfilled.
       expanded_environment_names =
         jobs_in_self_and_project_descendants.joins(:metadata)
                                       .where.not(Ci::BuildMetadata.table_name => { expanded_environment_name: nil })
@@ -1088,7 +1093,13 @@ module Ci
                                       .limit(100)
                                       .pluck(:expanded_environment_name)
 
-      Environment.where(project: project, name: expanded_environment_names).with_deployment(sha, status: deployment_status)
+      expanded_environment_names += Environments::Job
+        .where(ci_pipeline_id: self_and_project_descendants.pluck(:id))
+        .limit(100)
+        .distinct
+        .pluck(:expanded_environment_name)
+
+      Environment.where(project: project, name: expanded_environment_names.uniq).with_deployment(sha, status: deployment_status)
     end
 
     # With multi-project and parent-child pipelines
@@ -1362,6 +1373,23 @@ module Ci
     def modified_paths_since(compare_to_sha)
       strong_memoize_with(:modified_paths_since, compare_to_sha) do
         project.repository.diff_stats(project.repository.merge_base(compare_to_sha, sha), sha).paths
+      end
+    end
+
+    # Returns the changed paths from Gitaly ChangedPaths RPC
+    #
+    # The returned value is
+    # * Array: List of Gitlab::Git::ChangedPath objects
+    # * empty list: No paths were changed
+    def changed_paths
+      strong_memoize(:changed_paths) do
+        if merge_request?
+          merge_request.changed_paths
+        elsif branch_updated?
+          push_details.changed_paths
+        elsif external_pull_request?
+          external_pull_request.changed_paths
+        end
       end
     end
 

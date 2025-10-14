@@ -682,6 +682,10 @@ Gitlab/PolicyRuleBoolean:
     - 'app/policies/**/*'
     - 'ee/app/policies/**/*'
 
+Gitlab/PolicyConditionScope:
+  Include:
+    - '{,ee/,jh/}app/policies/**/*.rb'
+
 Cop/InjectEnterpriseEditionModule:
   Enabled: true
   Exclude:
@@ -823,6 +827,25 @@ API/GrapeArrayMissingCoerce:
     - 'ee/**/api/**/*.rb'
 
 API/ClassLevelAllowAccessWithScope:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/DescriptionDetail:
+  Enabled: true
+  Include:
+  - 'lib/**/api/**/*.rb'
+  - 'ee/lib/**/api/**/*.rb'
+
+API/DescriptionTags:
+  Enabled: true
+  SafeAutoCorrect: false
+  Include:
+  - 'lib/**/api/**/*.rb'
+  - 'ee/lib/**/api/**/*.rb'
+
+API/ParameterDescription:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'

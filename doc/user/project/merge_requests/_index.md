@@ -87,7 +87,7 @@ or:
 To view all merge requests for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 
 Or, to use a keyboard shortcut, press <kbd>g</kbd> + <kbd>m</kbd>.
 
@@ -98,7 +98,7 @@ Or, to use a keyboard shortcut, press <kbd>g</kbd> + <kbd>m</kbd>.
 To view merge requests for all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
 
@@ -138,7 +138,7 @@ To view the open merge requests for a file:
 To filter the list of merge requests:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Search or filter results**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
    - **By environment or deployment date**.
@@ -210,7 +210,7 @@ To assign the merge request to a user, use the `/assign @user` quick action in a
 a merge request, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
 1. Select **Edit**.
 1. Search for the user you want to assign, and select the user. GitLab Free allows one
@@ -251,7 +251,7 @@ Prerequisites:
 To close merge requests in the project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Scroll to the comment box at the bottom of the page.
 1. Following the comment box, select **Close merge request**.
 
@@ -348,7 +348,7 @@ To understand the history of a merge request, filter its activity feed to show y
 only the items that are relevant to you.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. Select a merge request.
 1. Scroll to **Activity**.
 1. On the right side of the page, select **Activity filter** to show the filter options.
@@ -373,36 +373,42 @@ only the items that are relevant to you.
 Your selection persists across all merge requests. You can also change the
 sort order by clicking the sort button on the right.
 
-## Resolve a thread
+## Manage comment threads
 
-When you want to finish a conversation in a merge request,
-[resolve a thread](../../discussions/_index.md#resolve-a-thread).
+Discussions in a merge request include single comments, and threads of comments. Open (unresolved)
+threads block the merge of a merge request, but single comments do not. When a thread's discussion
+is finished, [resolve the thread](../../discussions/_index.md#resolve-a-thread) to collapse its display.
+If a comment thread is important but should not block the merge request, move it to an issue to
+continue the discussion.
+
+### Expand all threads
 
 GitLab shows the number of open threads in the top right corner of a
-merge request, like this: `7 open threads`.
+merge request. This merge request has three open threads:
 
-### Move all open threads in a merge request to an issue
+![A merge request with three open threads, and the thread management options.](img/open_threads_v18_5.png)
 
-If you have multiple open threads in a merge request, you can
-create an issue to resolve them separately:
+To see all comments in the collapsed threads, expand the threads:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, in the top right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
-1. Select **Resolve all with new issue**.
-1. Fill out the fields in the new issue, and select **Create issue**.
+1. Select **Show all comments**.
 
-GitLab marks all threads as resolved, and adds a link from the merge request to
-the newly created issue.
+### Move open threads to an issue
 
-### Move one open thread in a merge request to an issue
+To move open threads to a new issue, and unblock a merge request:
+
+{{< tabs >}}
+
+{{< tab title="Move one thread" >}}
 
 If you have one specific open thread in a merge request, you can
 create an issue to resolve it separately:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, find the thread you want to move.
 1. Below the last reply to the thread, next to **Resolve thread**, select
    **Create issue to resolve thread** ({{< icon name="issue-new" >}}).
@@ -411,6 +417,27 @@ create an issue to resolve it separately:
 GitLab marks the thread as resolved, and adds a link from the merge request to
 the newly created issue.
 
+{{< /tab >}}
+
+{{< tab title="Move all open threads" >}}
+
+If you have multiple open threads in a merge request, you can
+create an issue to resolve them separately:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code** > **Merge requests** and find your merge request.
+1. In the merge request, in the top right, find the **Open threads**
+   dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
+1. Select **Resolve all with new issue**.
+1. Fill out the fields in the new issue, and select **Create issue**.
+
+GitLab marks all threads as resolved, and adds a link from the merge request to
+the newly created issue.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Prevent merge unless all threads are resolved
 
 You can prevent merge requests from merging while threads remain open.
@@ -418,7 +445,7 @@ When you enable this setting, the **Open threads** counter in a merge request
 is shown in orange while at least one thread remains open.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
 1. Select **Save changes**.
 
@@ -428,7 +455,7 @@ You can set merge requests to automatically resolve threads when a new push
 changes the lines they describe.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge options** section, select
    **Automatically resolve merge request diff threads when they become outdated**.
 1. Select **Save changes**.

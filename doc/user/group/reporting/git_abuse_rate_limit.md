@@ -40,7 +40,7 @@ If automatic banning is enabled, an email notification is sent when a user is ab
 
 ## Configure Git abuse rate limiting
 
-1. On the left sidebar, select **Settings > Reporting**.
+1. On the left sidebar, select **Settings** > **Reporting**.
 1. Update the Git abuse rate limit settings:
    1. Enter a number in the **Number of repositories** field, greater than or equal to `0` and less than or equal to `10,000`. This number specifies the maximum amount of unique repositories a user can download in the specified time period before they're banned. When set to `0`, Git abuse rate limiting is disabled.
    1. Enter a number in the **Reporting time period (seconds)** field, greater than or equal to `0` and less than or equal to `86,400` (10 days). This number specifies the time in seconds a user can download the maximum amount of repositories before they're banned. When set to `0`, Git abuse rate limiting is disabled.

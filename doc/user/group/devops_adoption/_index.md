@@ -78,7 +78,7 @@ Prerequisites:
 To view DevOps adoption:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > DevOps adoption**.
+1. Select **Analyze** > **DevOps adoption**.
 1. To view the features adopted by category in a month, hover over a bar.
 
 ## Add a subgroup to DevOps adoption
@@ -90,7 +90,7 @@ Prerequisites:
 To add a subgroup to the DevOps adoption report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > DevOps adoption**.
+1. Select **Analyze** > **DevOps adoption**.
 1. From the **Add or remove subgroups** dropdown list, select the subgroup you want to add.
 
 ## Remove a subgroup from DevOps adoption
@@ -102,7 +102,7 @@ Prerequisites:
 To remove a subgroup from the DevOps adoption report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > DevOps adoption**.
+1. Select **Analyze** > **DevOps adoption**.
 1. Either:
 
 - From the **Add or remove subgroups** dropdown list, clear the subgroup you want to remove.

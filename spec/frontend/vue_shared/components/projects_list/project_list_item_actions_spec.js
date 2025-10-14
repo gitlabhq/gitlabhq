@@ -1,17 +1,19 @@
 import { nextTick } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
-import projects from 'test_fixtures/api/users/projects/get.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   renderArchiveSuccessToast,
   renderUnarchiveSuccessToast,
   renderRestoreSuccessToast,
+  renderDeleteSuccessToast,
+  deleteParams,
 } from '~/vue_shared/components/projects_list/utils';
-import { archiveProject, unarchiveProject, restoreProject } from '~/rest_api';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { archiveProject, unarchiveProject, restoreProject, deleteProject } from '~/rest_api';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
+import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import {
   ACTION_EDIT,
   ACTION_RESTORE,
@@ -22,12 +24,19 @@ import {
 import { createAlert } from '~/alert';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
+import { projects } from './mock_data';
+
+const MOCK_DELETE_PARAMS = {
+  testParam: true,
+};
 
 jest.mock('~/vue_shared/components/projects_list/utils', () => ({
   ...jest.requireActual('~/vue_shared/components/projects_list/utils'),
   renderRestoreSuccessToast: jest.fn(),
   renderArchiveSuccessToast: jest.fn(),
   renderUnarchiveSuccessToast: jest.fn(),
+  renderDeleteSuccessToast: jest.fn(),
+  deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));
 jest.mock('~/alert');
 jest.mock('~/api/projects_api');
@@ -35,7 +44,7 @@ jest.mock('~/api/projects_api');
 describe('ProjectListItemActions', () => {
   let wrapper;
 
-  const [project] = convertObjectPropsToCamelCase(projects, { deep: true });
+  const [project] = projects;
 
   const editPath = '/foo/bar/edit';
   const projectWithActions = {
@@ -46,6 +55,10 @@ describe('ProjectListItemActions', () => {
 
   const defaultProps = {
     project: projectWithActions,
+    openMergeRequestsCount: '2',
+    openIssuesCount: '3',
+    forksCount: '4',
+    starCount: '5',
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -56,8 +69,15 @@ describe('ProjectListItemActions', () => {
 
   const findListActions = () => wrapper.findComponent(ListActions);
   const findListActionsLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findDeleteModal = () => wrapper.findComponent(DeleteModal);
+  const findDelayedDeletionModalFooter = () =>
+    wrapper.findComponent(ProjectListItemDelayedDeletionModalFooter);
   const fireAction = async (action) => {
     findListActions().props('actions')[action].action();
+    await nextTick();
+  };
+  const deleteModalFirePrimaryEvent = async () => {
+    findDeleteModal().vm.$emit('primary');
     await nextTick();
   };
 
@@ -278,12 +298,72 @@ describe('ProjectListItemActions', () => {
   });
 
   describe('when delete action is fired', () => {
-    beforeEach(() => {
-      findListActions().props('actions')[ACTION_DELETE].action();
+    beforeEach(async () => {
+      await fireAction(ACTION_DELETE);
     });
 
-    it('emits delete event', () => {
-      expect(wrapper.emitted('delete')).toEqual([[]]);
+    it('displays confirmation modal with correct props', () => {
+      expect(findDeleteModal().props()).toMatchObject({
+        visible: true,
+        confirmPhrase: project.fullPath,
+        nameWithNamespace: project.nameWithNamespace,
+        isFork: false,
+        mergeRequestsCount: '2',
+        issuesCount: '3',
+        forksCount: '4',
+        starsCount: '5',
+        confirmLoading: false,
+      });
+    });
+
+    it('renders modal footer', () => {
+      expect(findDelayedDeletionModalFooter().exists()).toBe(true);
+    });
+
+    describe('when deletion is confirmed', () => {
+      describe('when API call is successful', () => {
+        it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
+          deleteProject.mockResolvedValueOnce();
+
+          await deleteModalFirePrimaryEvent();
+          expect(deleteParams).toHaveBeenCalledWith(projectWithActions);
+          expect(deleteProject).toHaveBeenCalledWith(projectWithActions.id, MOCK_DELETE_PARAMS);
+          expect(findDeleteModal().props('confirmLoading')).toBe(true);
+
+          await waitForPromises();
+
+          expect(findDeleteModal().props('confirmLoading')).toBe(false);
+          expect(wrapper.emitted('refetch')).toEqual([[]]);
+          expect(renderDeleteSuccessToast).toHaveBeenCalledWith(projectWithActions);
+          expect(createAlert).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when API call is not successful', () => {
+        const error = new Error();
+
+        it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
+          deleteProject.mockRejectedValue(error);
+          await deleteModalFirePrimaryEvent();
+
+          expect(deleteParams).toHaveBeenCalledWith(projectWithActions);
+          expect(deleteProject).toHaveBeenCalledWith(projectWithActions.id, MOCK_DELETE_PARAMS);
+          expect(findDeleteModal().props('confirmLoading')).toBe(true);
+
+          await waitForPromises();
+
+          expect(findDeleteModal().props('confirmLoading')).toBe(false);
+
+          expect(wrapper.emitted('refetch')).toBeUndefined();
+          expect(createAlert).toHaveBeenCalledWith({
+            message:
+              'An error occurred deleting the project. Please refresh the page to try again.',
+            error,
+            captureError: true,
+          });
+          expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 });

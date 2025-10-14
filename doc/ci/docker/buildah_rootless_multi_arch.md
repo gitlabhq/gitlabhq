@@ -100,3 +100,25 @@ For multi-platform build issues:
 - Verify that base images in your `Dockerfile` support the target architectures.
 - Check that architecture-specific dependencies are available for all target platforms.
 - Consider using conditional statements in your `Dockerfile` for architecture-specific logic.
+
+### Error: `Error during unshare(CLONE_NEWUSER): Operation not permitted`
+
+When you use Buildah or [Docker BuildKit](using_buildkit.md) in rootless mode to build Docker images in CI/CD jobs,
+you might encounter an `Error during unshare(CLONE_NEWUSER): Operation not permitted`.
+
+This error occurs when the required security options are not set for rootless container builds.
+
+To resolve this issue, configure the `[runners.docker]` section in the runner's `config.toml` file:
+
+```toml
+[runners.docker]
+  privileged = true
+  security_opt = ["seccomp:unconfined", "apparmor:unconfined"]
+```
+
+{{< alert type="note" >}}
+
+Set `privileged = true` only in trusted environments because this setting grants extensive permissions to containers.
+Learn more about the [BuildKit rootless Docker builds and security requirements](https://github.com/moby/buildkit/blob/master/docs/rootless.md#docker).
+
+{{< /alert >}}

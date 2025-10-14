@@ -1,4 +1,6 @@
-.search-results-status.sm:gl-flex.gl-items-start.gl-justify-between.gl-my-4{ class: ('lg:gl-hidden' if @search_objects.to_a.empty?) }
+- classes = "@sm/panel:gl-flex"
+- classes += " @lg/panel:gl-hidden" if @search_objects.to_a.empty?
+.search-results-status.gl-items-start.gl-justify-between.gl-my-4{ class: classes }
   - unless @search_objects.to_a.empty?
     %div
       - unless @search_service_presenter.without_count?
@@ -16,8 +18,8 @@
         - elsif @group
           - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
           = safe_format(_("in group %{link_to_group}"), link_to_group: link_to_group)
-  .gl-flex.gl-gap-3.gl-mt-3.sm:gl-mt-0
-    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: 'lg:gl-hidden gl-grow md:gl-grow-0'}) do
+  .gl-flex.gl-gap-3.gl-mt-3{ class: "@sm/panel:gl-mt-0" }
+    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: '@lg/panel:gl-hidden gl-grow @md/panel:gl-grow-0'}) do
       = s_('GlobalSearch|Filters')
     - if @search_service_presenter.show_sort_dropdown? && !@search_objects.to_a.empty?
-      #js-search-sort{ data: { "search-sort-options" => search_sort_options.to_json }, class: "gl-grow md:gl-grow-0" }
+      #js-search-sort{ data: { "search-sort-options" => search_sort_options.to_json }, class: "gl-grow @md/panel:gl-grow-0" }

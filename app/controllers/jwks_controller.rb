@@ -53,6 +53,15 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
         .slice(:kty, :kid, :e, :n)
         .merge(use: 'sig', alg: 'RS256')
   end
+
+  def provider_response
+    response = super
+    if Feature.enabled?(:additional_oidc_discovery_claims, :instance)
+      response[:claims_supported] += %w[project_path ci_config_ref_uri ref_path sha environment jti]
+    end
+
+    response
+  end
 end
 
 JwksController.prepend_mod

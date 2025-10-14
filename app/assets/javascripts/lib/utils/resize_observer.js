@@ -1,4 +1,4 @@
-import { contentTop } from './common_utils';
+import { contentTop, findParentPanelScrollingEl } from './common_utils';
 
 /**
  * Watches for change in size of a container element (e.g. for lazy-loaded images)
@@ -22,24 +22,44 @@ export function scrollToTargetOnResize({
   let currentScrollPosition = 0;
   let userScrollOffset = 0;
 
+  let hasCheckedForPanel = false;
+  let scrollingElement;
+
   // start listening to scroll after the first keepTargetAtTop call
   let scrollListenerEnabled = false;
   let intersectionObserver = null;
 
   const containerEl = document.querySelector(container);
 
-  let { scrollHeight } = document.scrollingElement;
+  function getScrollingElement() {
+    const projectStudioEnabled = window.gon?.features?.projectStudioEnabled;
+
+    if (projectStudioEnabled && hasCheckedForPanel) {
+      return scrollingElement;
+    }
+
+    if (projectStudioEnabled && targetElement) {
+      scrollingElement = findParentPanelScrollingEl(targetElement) || document.scrollingElement;
+      hasCheckedForPanel = true;
+    } else {
+      scrollingElement = document.scrollingElement;
+    }
+
+    return scrollingElement;
+  }
+
+  let { scrollHeight } = getScrollingElement();
 
   const ro = new ResizeObserver((entries) => {
     entries.forEach(() => {
-      scrollHeight = document.scrollingElement.scrollHeight;
+      scrollHeight = getScrollingElement().scrollHeight;
       // eslint-disable-next-line no-use-before-define
       keepTargetAtTop();
     });
   });
 
   function handleScroll() {
-    const diff = document.scrollingElement.scrollHeight - scrollHeight;
+    const diff = getScrollingElement().scrollHeight - scrollHeight;
     if (Math.abs(diff) > 100) {
       return;
     }
@@ -78,14 +98,16 @@ export function scrollToTargetOnResize({
     if (!targetElement) return;
 
     const anchorTop = targetElement.getBoundingClientRect().top;
-    currentScrollPosition = document.scrollingElement.scrollTop;
+    const scroller = getScrollingElement();
+
+    currentScrollPosition = scroller.scrollTop;
 
     // Add scrollPosition as getBoundingClientRect is relative to viewport
     // Add the accumulated scroll offset to maintain relative position
     // subtract contentTop so it goes below sticky headers, rather than top of viewport
     targetTop = anchorTop + currentScrollPosition - userScrollOffset - contentTop();
 
-    document.scrollingElement.scrollTo({ top: targetTop, behavior: 'instant' });
+    scroller.scrollTo({ top: targetTop, behavior: 'instant' });
 
     if (!scrollListenerEnabled) {
       addScrollListener();

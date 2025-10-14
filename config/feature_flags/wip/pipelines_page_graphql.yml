@@ -1,0 +1,10 @@
+---
+name: pipelines_page_graphql
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/223264
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206924
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572262
+milestone: '18.5'
+group: group::pipeline execution
+type: wip
+default_enabled: false

@@ -94,7 +94,7 @@ Any other track label is considered `canary` (temporary).
 This allows GitLab to discover whether a deployment is stable or canary (temporary).
 
 After you configure the deploy boards, and the pipeline runs at least once,
-Go to the environments page under **Pipelines > Environments**.
+Go to the environments page under **Pipelines** > **Environments**.
 As the pipeline executes, deploy boards clearly mark canary pods, enabling
 quick and clear insight into the status of each environment and deployment.
 
@@ -129,7 +129,7 @@ or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md
 
 To use your [deploy board](deploy_boards.md):
 
-1. Go to **Operate > Environments** for your project.
+1. Go to **Operate** > **Environments** for your project.
 1. Set the new weight with the dropdown list on the right side.
 1. Confirm your selection.
 

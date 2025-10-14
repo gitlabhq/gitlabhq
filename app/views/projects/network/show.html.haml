@@ -1,7 +1,6 @@
 - title = _("Repository graph")
 - breadcrumb_title title
 - page_title title, @ref
-- network_path = project_network_path(@project, @ref, ref_type: @ref_type)
 
 .project-network-header.gl-flex.gl-flex-col.gl-overflow-hidden
   = render ::Layouts::PageHeadingComponent.new(title) do |c|
@@ -13,15 +12,7 @@
       .gl-min-w-26
         #js-graph-ref-switcher{ data: { project_id: @project.id, ref: @ref, network_path: project_network_path(@project, @ref, ref_type: @ref_type) } }
 
-      = form_tag network_path, method: :get, class: 'gl-grow gl-flex gl-flex-wrap gl-gap-3 gl-items-center network-form' do |f|
-        .gl-flex
-          = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: _("Git revision"), class: 'search-input form-control gl-form-input search-sha !gl-rounded-r-none'
-          = render Pajamas::ButtonComponent.new(type: :submit, icon: 'search', button_options: { class: '!gl-rounded-l-none -gl-ml-[1px]', 'aria-label': _("Search"), 'title': _("Search") })
-
-        .gl-mt-3
-          = render Pajamas::CheckboxTagComponent.new(name: :filter_ref, checked: @options[:filter_ref]) do |c|
-            - c.with_label do
-              = _("Begin with the selected commit")
+      #js-ref-search-form{ data: { network_path: project_network_path(@project, @ref, ref_type: @ref_type)} }
 
     - if @commit
       .network-graph.gl-overflow-scroll.gl-overflow-x-hidden{ tabindex: 0, role: 'figure', data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id, type: 'figure-branch-graph' } }

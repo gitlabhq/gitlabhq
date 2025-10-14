@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Subgroups
@@ -110,13 +110,13 @@ To change who can create subgroups on a group:
 
 - As a user with the Owner role on the group:
   1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Settings > General**.
+  1. Select **Settings** > **General**.
   1. Expand **Permissions and group features**.
   1. From **Roles allowed to create subgroups**, select an option.
   1. Select **Save changes**.
 - As an administrator:
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Overview > Groups** and find your group.
+  1. On the left sidebar, select **Overview** > **Groups** and find your group.
   1. In the group's row, select **Edit**.
   1. From the **Allowed to create subgroups** dropdown list, select an option.
   1. Select **Save changes**.
@@ -181,7 +181,7 @@ Group permissions for a member can be changed only by:
 To see if a member has inherited the permissions from a parent group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
    The member's inheritance is displayed in the **Source** column.
 
 Members list for an example subgroup **Four**:

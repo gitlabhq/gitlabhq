@@ -15,7 +15,7 @@ RSpec.shared_examples 'User updates wiki page' do
     allow(Gitlab::CurrentSettings).to receive(:diagramsnet_url).and_return(diagramsnet_url)
   end
 
-  context 'when wiki is empty', :js do
+  context 'when wiki is empty', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     before do
       visit(wiki_path(wiki))
 
@@ -58,7 +58,7 @@ RSpec.shared_examples 'User updates wiki page' do
     it_behaves_like 'wiki file attachments'
   end
 
-  context 'when wiki is not empty', :js do
+  context 'when wiki is not empty', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page') }
 
     before do
@@ -175,7 +175,7 @@ RSpec.shared_examples 'User updates wiki page' do
     it_behaves_like 'rich text editor - diagrams'
   end
 
-  context 'when the page is in a subdir', :js do
+  context 'when the page is in a subdir', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     let(:page_name) { 'page_name' }
     let(:page_dir) { "foo/bar/#{page_name}" }
     let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: page_dir, content: 'Home page') }
@@ -272,19 +272,23 @@ RSpec.shared_examples 'User updates wiki page' do
       visit wiki_page_path(wiki_page.wiki, wiki_page, action: :edit)
     end
 
-    it 'allows changing the path if the content does not change', :js do
+    # rubocop:disable Layout/LineLength -- short lived quarantine link
+    it 'allows changing the path if the content does not change', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
       fill_in :wiki_path, with: 'new-path'
       click_on 'Save changes'
 
       expect(page).to have_content('Wiki page was successfully updated.')
     end
+    # rubocop:enable Layout/LineLength
 
-    it 'shows a validation error when trying to change the content', :js do
+    # rubocop:disable Layout/LineLength -- short lived quarantine link
+    it 'shows a validation error when trying to change the content', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
       fill_in 'Content', with: 'new content'
       click_on 'Save changes'
 
       expect(page).to have_content('The form contains the following error:')
       expect(page).to have_content('Content is too long (11 B). The maximum size is 10 B.')
     end
+    # rubocop:enable Layout/LineLength
   end
 end

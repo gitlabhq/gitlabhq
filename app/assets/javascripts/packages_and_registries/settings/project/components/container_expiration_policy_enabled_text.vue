@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-col gl-gap-4 sm:gl-flex-row">
+  <div class="gl-flex gl-flex-col gl-gap-4 @sm/panel:gl-flex-row">
     <span class="gl-flex gl-items-center gl-gap-2" data-testid="enabled">
       <gl-icon name="check-circle-filled" variant="success" />{{ s__('ContainerRegistry|Enabled') }}
     </span>

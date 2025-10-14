@@ -254,6 +254,51 @@ describe('common_utils', () => {
     });
   });
 
+  describe('findParentPanelScrollingEl', () => {
+    afterEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    it('handles null/undefined elements', () => {
+      expect(commonUtils.findParentPanelScrollingEl(null)).toBeNull();
+      expect(commonUtils.findParentPanelScrollingEl(undefined)).toBeNull();
+    });
+
+    describe('when element is inside a panel', () => {
+      it.each`
+        panelType    | panelClass            | innerClass
+        ${'static'}  | ${'js-static-panel'}  | ${'js-static-panel-inner'}
+        ${'dynamic'} | ${'js-dynamic-panel'} | ${'js-dynamic-panel-inner'}
+      `('returns $panelType panel inner element', ({ panelClass, innerClass }) => {
+        document.body.innerHTML = `
+        <div class="${panelClass}">
+          <div class="${innerClass}">
+            <div id="test" />
+          </div>
+        </div>
+      `;
+
+        const element = document.getElementById('test');
+        const inner = document.querySelector(`.${innerClass}`);
+
+        expect(commonUtils.findParentPanelScrollingEl(element)).toBe(inner);
+      });
+    });
+
+    describe('when element is not inside a proper panel', () => {
+      it.each`
+        scenario      | html
+        ${'no panel'} | ${'<div id="test" />'}
+        ${'no inner'} | ${'<div class="js-static-panel"><div id="test" /></div>'}
+      `('returns null for $scenario', ({ html }) => {
+        document.body.innerHTML = html;
+        const element = document.getElementById('test');
+
+        expect(commonUtils.findParentPanelScrollingEl(element)).toBeNull();
+      });
+    });
+  });
+
   describe('scrollToElement*', () => {
     let parentElem;
     let elem;
@@ -367,6 +412,62 @@ describe('common_utils', () => {
         expect(window.scrollTo).toHaveBeenCalledWith({
           behavior: 'smooth',
           top: elementTopWithContext,
+        });
+      });
+    });
+
+    describe('when project studio is enabled', () => {
+      beforeEach(() => {
+        window.gon = {
+          features: {
+            projectStudioEnabled: true,
+          },
+        };
+      });
+
+      it('scrolls the static panel', () => {
+        const staticPanelContainer = document.createElement('div');
+        staticPanelContainer.classList.add('js-static-panel');
+
+        const staticPanelScroller = document.createElement('div');
+        staticPanelScroller.classList.add('js-static-panel-inner');
+
+        staticPanelContainer.appendChild(staticPanelScroller);
+
+        staticPanelScroller.appendChild(elem);
+
+        document.body.appendChild(staticPanelContainer);
+
+        jest.spyOn(staticPanelScroller, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
+
+        commonUtils.scrollToElement(elem);
+        expect(staticPanelScroller.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls the dynamic panel', () => {
+        const dynamicPanelContainer = document.createElement('div');
+        dynamicPanelContainer.classList.add('js-dynamic-panel');
+
+        const dynamicPanelScroller = document.createElement('div');
+        dynamicPanelScroller.classList.add('js-dynamic-panel-inner');
+
+        dynamicPanelContainer.appendChild(dynamicPanelScroller);
+
+        dynamicPanelScroller.appendChild(elem);
+
+        document.body.appendChild(dynamicPanelContainer);
+
+        jest.spyOn(dynamicPanelScroller, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
+
+        commonUtils.scrollToElement(elem);
+        expect(dynamicPanelScroller.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
         });
       });
     });

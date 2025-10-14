@@ -8,7 +8,7 @@ module Gitlab
       def signature
         super
 
-        Ssh::Signature.new(signature_text, signed_text, nil, tag_commit, @tag.user_email)
+        Ssh::Signature.new(signature_text, signed_text, nil, tag_commit)
       end
       strong_memoize_attr :signature
 

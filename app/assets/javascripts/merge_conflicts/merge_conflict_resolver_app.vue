@@ -191,7 +191,7 @@ export default {
       </div>
       <div class="resolve-conflicts-form gl-mt-6">
         <div class="form-group row">
-          <div class="col-md-8">
+          <div class="gl-col-md-8">
             <label class="label-bold" for="commit-message">
               {{ __('Commit message') }}
             </label>

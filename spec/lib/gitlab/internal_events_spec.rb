@@ -590,198 +590,6 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  describe 'Product Analytics tracking' do
-    let(:app_id) { 'foobar' }
-    let(:url) { 'http://localhost:4000' }
-    let(:sdk_client) { instance_double('GitlabSDK::Client', identify: true) }
-    let(:event_kwargs) { { user: user, project: project, send_snowplow_event: send_snowplow_event } }
-    let(:additional_properties) { {} }
-    let(:send_snowplow_event) { true }
-
-    before do
-      described_class.clear_memoization(:gitlab_sdk_client)
-
-      stub_env('GITLAB_ANALYTICS_ID', app_id)
-      stub_env('GITLAB_ANALYTICS_URL', url)
-
-      stub_feature_flags(internal_events_batching: true)
-
-      allow(GitlabSDK::Client)
-        .to receive(:new)
-        .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
-        .and_return(sdk_client)
-    end
-
-    after do
-      described_class.clear_memoization(:gitlab_sdk_client)
-    end
-
-    subject(:track_event) do
-      described_class.track_event(event_name, additional_properties: additional_properties, **event_kwargs)
-    end
-
-    shared_examples 'does not send a Product Analytics event' do
-      it 'does not call the Product Analytics Ruby SDK' do
-        expect(GitlabSDK::Client).not_to receive(:new)
-
-        track_event
-      end
-    end
-
-    it 'calls Product Analytics Ruby SDK', :aggregate_failures do
-      expect(sdk_client).to receive(:identify).with(user.id)
-      expect(sdk_client).to receive(:track)
-        .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
-
-      track_event
-    end
-
-    context 'when additional properties are passed' do
-      let(:additional_properties) do
-        {
-          label: 'label_name',
-          property: 'property_name',
-          value: 16.17
-        }
-      end
-
-      let(:tracked_attributes) do
-        {
-          project_id: project.id,
-          namespace_id: project.namespace.id,
-          additional_properties: additional_properties
-        }
-      end
-
-      it 'passes additional_properties to Product Analytics Ruby SDK', :aggregate_failures do
-        expect(sdk_client).to receive(:identify).with(user.id)
-        expect(sdk_client).to receive(:track).with(event_name, tracked_attributes)
-
-        track_event
-      end
-    end
-
-    context 'when GITLAB_ANALYTICS_ID is nil' do
-      let(:app_id) { nil }
-
-      it_behaves_like 'does not send a Product Analytics event'
-    end
-
-    context 'when GITLAB_ANALYTICS_URL is nil' do
-      let(:url) { nil }
-
-      it_behaves_like 'does not send a Product Analytics event'
-    end
-
-    context 'when send_snowplow_event is false' do
-      let(:send_snowplow_event) { false }
-
-      it_behaves_like 'does not send a Product Analytics event'
-    end
-
-    context 'with internal_events_batching FF off' do
-      before do
-        stub_feature_flags(internal_events_batching: false)
-      end
-
-      it 'passes buffer_size 1 to SDK client' do
-        expect(GitlabSDK::Client)
-          .to receive(:new)
-                .with(app_id: app_id, host: url, buffer_size: described_class::DEFAULT_BUFFER_SIZE)
-
-        track_event
-      end
-    end
-
-    context 'with early access program tracking' do
-      let(:namespace_participating) { false }
-      let(:namespace) do
-        settings = create(:namespace_settings, early_access_program_participant: namespace_participating)
-        create(:namespace, namespace_settings: settings)
-      end
-
-      let(:event_kwargs) do
-        { user: user, project: project, send_snowplow_event: send_snowplow_event, namespace: namespace }
-      end
-
-      shared_examples 'does not create early access program tracking event' do
-        it do
-          track_event
-
-          expect(user&.early_access_program_tracking_events).to be_blank
-        end
-      end
-
-      before do
-        allow(sdk_client).to receive(:track)
-          .with(event_name, { project_id: project&.id, namespace_id: namespace&.id })
-      end
-
-      context 'when early_access_program FF is enabled' do
-        before do
-          stub_feature_flags(early_access_program: true)
-        end
-
-        context 'without user' do
-          let(:user) { nil }
-
-          it_behaves_like 'does not create early access program tracking event'
-        end
-
-        context 'without namespace' do
-          let(:project) { nil }
-          let(:namespace) { nil }
-
-          it_behaves_like 'does not create early access program tracking event'
-        end
-
-        context 'with user' do
-          context 'when namespace is not early access program participant' do
-            it_behaves_like 'does not create early access program tracking event'
-          end
-
-          context 'when namespace is early access program participant' do
-            let(:namespace_participating) { true }
-            let(:event_name) { 'g_edit_by_snippet_ide' }
-            let(:user) { create(:user) }
-
-            before do
-              allow(sdk_client).to receive(:track)
-                .with(
-                  event_name,
-                  {
-                    project_id: project.id,
-                    namespace_id: namespace.id,
-                    additional_properties: additional_properties
-                  }
-                )
-            end
-
-            it 'creates user early access program event' do
-              described_class.track_event(
-                event_name, category: category, additional_properties: additional_properties, **event_kwargs
-              )
-
-              expect(user.early_access_program_tracking_events.size).to eq 1
-              expect(user.early_access_program_tracking_events.first)
-                .to have_attributes(
-                  event_name: 'g_edit_by_snippet_ide', category: 'InternalEventTracking'
-                )
-            end
-          end
-        end
-      end
-
-      context 'when early_access_program FF is disabled' do
-        before do
-          stub_feature_flags(early_access_program: false)
-        end
-
-        it_behaves_like 'does not create early access program tracking event'
-      end
-    end
-  end
-
   describe 'custom tracking classes' do
     let(:extra_properties) { { private_property: 'private_prop' } }
     let(:event_kwargs) do
@@ -966,145 +774,124 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  describe 'dynamic additional_properties extraction with feature flag' do
+  describe 'dynamic additional_properties extraction' do
     let(:user) { build(:user) }
     let(:project) { build(:project) }
 
-    context 'when merge_additional_properties_for_snowplow feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_additional_properties_for_snowplow: user)
-        allow(event_definition).to receive(:additional_properties).and_return({
-          label: {},
-          property: {},
-          value: {}
-        })
-      end
+    before do
+      allow(event_definition).to receive(:additional_properties).and_return({
+        label: {},
+        property: {},
+        value: {}
+      })
+    end
 
-      context 'when additional_properties is empty and kwargs contain matching keys' do
-        it 'extracts base properties from kwargs into additional_properties for snowplow tracking' do
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
+    context 'when additional_properties is empty and kwargs contain matching keys' do
+      it 'extracts base properties from kwargs into additional_properties for snowplow tracking' do
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          label: 'test_label',
+          property: 'test_property',
+          value: 42
+        )
+
+        expect_snowplow_tracking(
+          project.namespace,
+          {
             label: 'test_label',
             property: 'test_property',
             value: 42
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            {
-              label: 'test_label',
-              property: 'test_property',
-              value: 42
-            }
-          )
-        end
-
-        it 'does not extract properties when additional_properties is already provided' do
-          described_class.track_event(
-            event_name,
-            additional_properties: { label: 'existing_label' },
-            user: user,
-            project: project,
-            label: 'test_label',
-            property: 'test_property'
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            { label: 'existing_label' }
-          )
-        end
-
-        it 'only extracts properties that exist in event definition' do
-          allow(event_definition).to receive(:additional_properties).and_return({
-            label: {}
-          })
-
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
-            label: 'test_label',
-            property: 'test_property',
-            unknown_key: 'unknown_value'
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            { label: 'test_label' }
-          )
-        end
-
-        it 'extracts custom additional properties defined in event definition' do
-          allow(event_definition).to receive(:additional_properties).and_return({
-            label: {},
-            property: {},
-            custom_property: {}
-          })
-
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
-            label: 'test_label',
-            property: 'test_property',
-            custom_property: 'custom_value',
-            unknown_key: 'unknown_value'
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            {
-              label: 'test_label',
-              property: 'test_property'
-            },
-            extra: { custom_property: 'custom_value' }
-          )
-        end
-
-        it 'validates extracted properties and logs validation errors' do
-          allow(event_definition).to receive(:additional_properties).and_return({ value: {} })
-
-          # Override the validator mock to allow real validation
-          allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
-            allow(instance).to receive(:validate!).and_call_original
-          end
-
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-            an_instance_of(Gitlab::Tracking::EventValidator::InvalidPropertyTypeError),
-            hash_including(
-              event_name: event_name,
-              additional_properties: { value: 'invalid_string' }
-            )
-          )
-
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
-            value: 'invalid_string'
-          )
-        end
-      end
-    end
-
-    context 'when merge_additional_properties_for_snowplow feature flag is disabled' do
-      before do
-        stub_feature_flags(merge_additional_properties_for_snowplow: false)
+          }
+        )
       end
 
-      it 'does not extract properties from kwargs' do
+      it 'does not extract properties when additional_properties is already provided' do
         described_class.track_event(
           event_name,
+          additional_properties: { label: 'existing_label' },
           user: user,
           project: project,
           label: 'test_label',
           property: 'test_property'
         )
 
-        expect_snowplow_tracking(project.namespace, {})
+        expect_snowplow_tracking(
+          project.namespace,
+          { label: 'existing_label' }
+        )
+      end
+
+      it 'only extracts properties that exist in event definition' do
+        allow(event_definition).to receive(:additional_properties).and_return({
+          label: {}
+        })
+
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          label: 'test_label',
+          property: 'test_property',
+          unknown_key: 'unknown_value'
+        )
+
+        expect_snowplow_tracking(
+          project.namespace,
+          { label: 'test_label' }
+        )
+      end
+
+      it 'extracts custom additional properties defined in event definition' do
+        allow(event_definition).to receive(:additional_properties).and_return({
+          label: {},
+          property: {},
+          custom_property: {}
+        })
+
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          label: 'test_label',
+          property: 'test_property',
+          custom_property: 'custom_value',
+          unknown_key: 'unknown_value'
+        )
+
+        expect_snowplow_tracking(
+          project.namespace,
+          {
+            label: 'test_label',
+            property: 'test_property'
+          },
+          extra: { custom_property: 'custom_value' }
+        )
+      end
+
+      it 'validates extracted properties and logs validation errors' do
+        allow(event_definition).to receive(:additional_properties).and_return({ value: {} })
+
+        # Override the validator mock to allow real validation
+        allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
+          allow(instance).to receive(:validate!).and_call_original
+        end
+
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+          an_instance_of(Gitlab::Tracking::EventValidator::InvalidPropertyTypeError),
+          hash_including(
+            event_name: event_name,
+            additional_properties: { value: 'invalid_string' }
+          )
+        )
+
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          value: 'invalid_string'
+        )
       end
     end
   end

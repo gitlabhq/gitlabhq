@@ -25,12 +25,11 @@
   --system-footer-height: #{$system-footer-height};
 }
 
-@include media-breakpoint-up(sm) {
+@include gl-container-width-up(sm, panel) {
   .right-sidebar-collapsed {
     --application-bar-right: #{$right-sidebar-collapsed-width};
 
-    &.is-merge-request,
-    &.build-sidebar {
+    &.is-merge-request {
       --application-bar-right: 0px;
     }
   }
@@ -38,13 +37,9 @@
   .right-sidebar-expanded {
     --application-bar-right: #{$right-sidebar-width};
   }
-
-  .build-sidebar {
-    --application-bar-right: 0px;
-  }
 }
 
-@include media-breakpoint-up(xl) {
+@include gl-media-breakpoint-up(xl) {
   .page-with-super-sidebar {
     --application-bar-left: #{$super-sidebar-width};
   }
@@ -83,9 +78,6 @@
 
 .tab-content {
   overflow: visible;
-  @include media-breakpoint-down(sm) {
-    isolation: isolate;
-  }
 }
 
 pre {
@@ -341,7 +333,7 @@ li.note {
 
 // Make buttons/dropdowns full-width on mobile
 .full-width-mobile {
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     width: 100%;
 
     > .dropdown-menu,

@@ -58,7 +58,9 @@ The response is a list of agents with the following fields:
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents"
+curl \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents"
 ```
 
 Example response:
@@ -137,7 +139,9 @@ The response is a single agent with the following fields:
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/1"
+curl \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/1"
 ```
 
 Example response:
@@ -199,9 +203,11 @@ The response is the new agent with the following fields:
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents" \
-    -H "Content-Type:application/json" \
-    -X POST --data '{"name":"some-agent"}'
+curl --request POST \
+  --header "Private-Token: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents" \
+  --data '{"name":"some-agent"}'
 ```
 
 Example response:
@@ -244,7 +250,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/1
+curl --request DELETE \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/1"
 ```
 
 ## List tokens for an agent
@@ -287,7 +295,9 @@ The response is a list of tokens with the following fields:
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens"
+curl \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens"
 ```
 
 Example response:
@@ -365,7 +375,9 @@ The response is a single token with the following fields:
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/token/1"
+curl \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/token/1"
 ```
 
 Example response:
@@ -437,9 +449,11 @@ The `token` is only returned in the response of the `POST` endpoint and cannot b
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens" \
-    -H "Content-Type:application/json" \
-    -X POST --data '{"name":"some-token"}'
+curl --request POST \
+  --header "Private-Token: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens" \
+  --data '{"name":"some-token"}'
 ```
 
 Example response:
@@ -485,7 +499,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens/1
+curl --request DELETE \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens/1"
 ```
 
 ## Receptive agents
@@ -540,7 +556,9 @@ The response is a list of URL configurations with the following fields:
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations"
+curl \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations"
 ```
 
 Example response:
@@ -597,7 +615,9 @@ The response is a single URL configuration with the following fields:
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations/1"
+curl \
+  --header "Private-Token: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations/1"
 ```
 
 Example response:
@@ -658,9 +678,11 @@ The response is the new URL configuration with the following fields:
 Example request to create a URL configuration with a JWT token:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
-    -H "Content-Type:application/json" \
-    -X POST --data '{"url":"grpcs://agent.example.com:4242"}'
+curl --request POST \
+  --header "Private-Token: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
+  --data '{"url":"grpcs://agent.example.com:4242"}'
 ```
 
 Example response for JWT authentication:
@@ -677,9 +699,13 @@ Example response for JWT authentication:
 Example request to create a URL configuration using mTLS with a client certificate and key from the files `client.pem` and `client-key.pem`:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
-    -H "Content-Type:application/json" \
-    -X POST --data '{"url":"grpcs://agent.example.com:4242", "client_cert":"'"$(awk -v ORS='\\n' '1' client.pem)"'", "client_key": "'"$(awk -v ORS='\\n' '1' client-key.pem)"'"}'
+curl --request POST \
+  --header "Private-Token: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
+  --data '{"url":"grpcs://agent.example.com:4242", \
+           "client_cert":"'"$(awk -v ORS='\\n' '1' client.pem)"'", \
+           "client_key":"'"$(awk -v ORS='\\n' '1' client-key.pem)"'"}'
 ```
 
 Example response for mTLS:

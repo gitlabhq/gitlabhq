@@ -1,7 +1,7 @@
 ---
 RSpec/RepeatedSubjectCall:
   Exclude:
-    - 'ee/spec/controllers/projects/settings/repository_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects/settings/repository_controller_spec.rb'
     - 'ee/spec/graphql/mutations/compliance_management/frameworks/update_spec.rb'
     - 'ee/spec/graphql/mutations/vulnerabilities/bulk_dismiss_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/backfill_has_vulnerability_resolution_spec.rb'

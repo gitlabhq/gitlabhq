@@ -76,16 +76,16 @@ module Gitlab
           partition_id > values.max
         end
 
+        def fully_qualified_partition
+          quote_table_name(full_partition_name)
+        end
+
         private
 
         delegate :execute, :quote, :quote_table_name, to: :conn, private: true
 
         def full_partition_name
           format("%s.%s", @schema, partition_name)
-        end
-
-        def fully_qualified_partition
-          quote_table_name(full_partition_name)
         end
 
         def quoted_values

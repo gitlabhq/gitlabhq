@@ -45,7 +45,7 @@ To use secret push protection, you need to enable it for each project you want t
 Let's start by enabling it in a test project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Secure > Security configuration**.
+1. On the left sidebar, select **Secure** > **Security configuration**.
 1. Turn on the **Secret push protection** toggle.
 
 Next, you'll test secret push protection.

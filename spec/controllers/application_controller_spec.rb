@@ -297,6 +297,54 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
     end
 
+    describe '#sessionless_sign_in' do
+      let(:controller) { described_class.new }
+
+      before do
+        allow(controller).to receive(:request_authenticator).and_return(double(can_sign_in_bot?: false))
+      end
+
+      context 'with composite identity user', :request_store do
+        let(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+        let(:scoped_user) { create(:user) }
+
+        before do
+          ::Gitlab::Auth::Identity.new(service_account).link!(scoped_user)
+          scoped_user.composite_identity_enforced!
+        end
+
+        it 'signs in the scoped user without callbacks' do
+          expect(controller).to receive(:sign_in).with(
+            scoped_user,
+            hash_including(store: false, message: :sessionless_sign_in)
+          )
+
+          controller.send(:sessionless_sign_in, scoped_user)
+        end
+
+        it 'sets sessionless_sign_in flag' do
+          allow(controller).to receive(:sign_in)
+
+          controller.send(:sessionless_sign_in, scoped_user)
+
+          expect(controller.instance_variable_get(:@sessionless_sign_in)).to be true
+        end
+      end
+
+      context 'with regular user who can log in' do
+        let(:regular_user) { create(:user) }
+
+        it 'signs in with callbacks enabled' do
+          expect(controller).to receive(:sign_in).with(
+            regular_user,
+            hash_including(store: false, message: :sessionless_sign_in)
+          )
+
+          controller.send(:sessionless_sign_in, regular_user)
+        end
+      end
+    end
+
     describe '#two_factor_authentication_required?' do
       subject { controller.send :two_factor_authentication_required? }
 

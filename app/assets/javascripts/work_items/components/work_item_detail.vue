@@ -272,6 +272,7 @@ export default {
         this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
+          return;
         }
         if (!res.error) {
           this.error = null;
@@ -873,6 +874,15 @@ export default {
         this.$options.VALID_DESIGN_FILE_MIMETYPE.mimetype.includes(item.type),
       );
     },
+    preventDefaultConditionally(event) {
+      const $refs = this.$refs.workItemNotes?.$el.$refs;
+      const topForm = $refs.addNoteTop;
+      const bottomForm = $refs.addNoteBottom;
+
+      if (!topForm?.contains(event.target) && !bottomForm?.contains(event.target)) {
+        event.preventDefault();
+      }
+    },
     onDragEnter(event) {
       this.dragCounter += 1;
       this.isValidDragDataType(event);
@@ -930,8 +940,8 @@ export default {
       ref="workItemDetail"
       class="work-item-detail"
       data-testid="work-item-detail"
-      @dragstart.prevent.stop
-      @dragend.prevent.stop
+      @dragstart="preventDefaultConditionally"
+      @dragend="preventDefaultConditionally"
       @dragenter.prevent.stop="onDragEnter"
       @dragover.prevent.stop="onDragOver"
       @dragleave.prevent.stop="onDragLeaveMain"
@@ -1156,6 +1166,7 @@ export default {
                   v-if="hasDescriptionWidget"
                   :edit-mode="editMode"
                   :full-path="workItemFullPath"
+                  :is-group="isGroupWorkItem"
                   :work-item-id="workItem.id"
                   :work-item-iid="workItem.iid"
                   :update-in-progress="updateInProgress"
@@ -1204,13 +1215,13 @@ export default {
                       <duo-workflow-action
                         v-if="isDuoWorkflowEnabled"
                         :project-path="workItemFullPath"
-                        :title="__('Generate MR with Duo')"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
                         workflow-definition="issue_to_merge_request"
                         :agent-privileges="agentPrivileges"
                         size="medium"
-                      />
+                        >{{ __('Generate MR with Duo') }}</duo-workflow-action
+                      >
                     </div>
                   </div>
                 </div>
@@ -1333,6 +1344,7 @@ export default {
 
               <work-item-notes
                 v-if="workItemNotes"
+                ref="workItemNotes"
                 :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :work-item-iid="workItem.iid"

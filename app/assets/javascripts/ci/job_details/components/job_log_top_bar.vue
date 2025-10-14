@@ -45,10 +45,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    isScrollingDown: {
-      type: Boolean,
-      required: true,
-    },
     isJobLogSizeVisible: {
       type: Boolean,
       required: true,
@@ -162,12 +158,12 @@ export default {
       if (this.searchResults.length > 0) {
         this.$emit('searchResults', this.searchResults);
 
-        // BE returns zero based index, we need to add one to match the line numbers in the DOM
-        const firstSearchResult = `#L${this.searchResults[0].lineNumber + 1}`;
-        const logLine = document.querySelector(`.js-log-line ${firstSearchResult}`);
+        const { lineNumber } = this.searchResults[0];
+        const logLine = document.querySelector(`.js-log-line #L${lineNumber}`);
 
         if (logLine) {
-          setTimeout(() => scrollToElement(logLine));
+          const topBarHeight = this.$el.offsetHeight || 0;
+          setTimeout(() => scrollToElement(logLine, { offset: topBarHeight * -1 }));
 
           const message = sprintf(
             n__(
@@ -193,7 +189,9 @@ export default {
 };
 </script>
 <template>
-  <div class="top-bar gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-3">
+  <div
+    class="top-bar js-job-log-top-bar gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-3"
+  >
     <div class="gl-hidden gl-truncate @sm/panel:gl-block">
       <!-- truncated log information -->
       <span data-testid="showing-last">
@@ -254,7 +252,6 @@ export default {
           :title="$options.i18n.scrollToNextFailureButtonLabel"
           :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
           :disabled="shouldDisableJumpToFailures"
-          class="btn-scroll"
           data-testid="job-top-bar-scroll-to-failure"
           icon="soft-wrap"
           @click="handleScrollToNextFailure"
@@ -263,7 +260,6 @@ export default {
         <div v-gl-tooltip :title="$options.i18n.scrollToTopButtonLabel">
           <gl-button
             :disabled="isScrollTopDisabled"
-            class="btn-scroll"
             data-testid="job-top-bar-scroll-top"
             icon="scroll_up"
             :aria-label="$options.i18n.scrollToTopButtonLabel"
@@ -274,10 +270,8 @@ export default {
         <div v-gl-tooltip :title="$options.i18n.scrollToBottomButtonLabel">
           <gl-button
             :disabled="isScrollBottomDisabled"
-            class="js-scroll-bottom btn-scroll"
             data-testid="job-top-bar-scroll-bottom"
             icon="scroll_down"
-            :class="{ animate: isScrollingDown }"
             :aria-label="$options.i18n.scrollToBottomButtonLabel"
             @click="handleScrollToBottom"
           />
@@ -290,7 +284,6 @@ export default {
             :disabled="!fullScreenModeAvailable"
             :title="$options.i18n.enterFullscreen"
             :aria-label="$options.i18n.enterFullscreen"
-            class="btn-scroll"
             data-testid="job-top-bar-enter-fullscreen"
             icon="maximize"
             @click="handleFullscreenMode"
@@ -301,7 +294,6 @@ export default {
           v-if="fullScreenEnabled"
           :title="$options.i18n.exitFullScreen"
           :aria-label="$options.i18n.exitFullScreen"
-          class="btn-scroll"
           data-testid="job-top-bar-exit-fullscreen"
           icon="minimize"
           @click="handleExitFullscreenMode"

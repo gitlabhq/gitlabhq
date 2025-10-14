@@ -91,7 +91,7 @@ A GitLab administrator can approve or reject all deployments.
 To allow self-approval of a deployment job:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
 
@@ -109,7 +109,7 @@ Prerequisites:
 To approve or reject a deployment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the environment's name.
 1. Find the deployment and select its **Status badge**.
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
@@ -136,7 +136,7 @@ granted.
 To view the approval details of a deployment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the environment's name.
 1. Find the deployment and select its **Status badge**.
 
@@ -154,7 +154,7 @@ Review the status of your deployments, including whether a deployment is blocked
 To view your deployments:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the environment being deployed to.
 
 A deployment with the **blocked** label is blocked.

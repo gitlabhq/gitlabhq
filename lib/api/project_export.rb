@@ -73,7 +73,7 @@ module API
         end
         params do
           optional :description, type: String, desc: 'Override the project description'
-          optional :upload, type: Hash do
+          optional :upload, type: Hash, desc: 'Object that contains information on the upload' do
             optional :url, type: String, desc: 'The URL to upload the project'
             optional :http_method, type: String, default: 'PUT', values: %w[PUT POST],
               desc: 'HTTP method to upload the exported project'

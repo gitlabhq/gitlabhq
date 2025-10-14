@@ -204,7 +204,7 @@ export default {
                   v-for="(key, keyIndex) in keys"
                   :key="key"
                   class="gl-break-all"
-                  :class="{ 'mb-3 gl-font-semibold': keyIndex == 0 }"
+                  :class="{ '!gl-mb-5 gl-font-semibold': keyIndex == 0 }"
                 >
                   {{ item[key] }}
                   <gl-button

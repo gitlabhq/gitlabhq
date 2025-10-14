@@ -61,9 +61,10 @@ class NamespaceSetting < ApplicationRecord
   validates :step_up_auth_required_oauth_provider, presence: true, allow_nil: true
   validates :step_up_auth_required_oauth_provider, inclusion: { in: ->(_) {
     Gitlab::Auth::Oidc::StepUpAuthentication
-      .enabled_providers(scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE)
+      .enabled_providers(scope: Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE)
       .map(&:to_s)
   } }, allow_nil: true
+  validates :duo_agent_platform_request_count, numericality: { greater_than_or_equal_to: 0 }
 
   sanitizes! :default_branch_name
   nullify_if_blank :default_branch_name
@@ -95,6 +96,7 @@ class NamespaceSetting < ApplicationRecord
     math_rendering_limits_enabled
     lock_math_rendering_limits_enabled
     jwt_ci_cd_job_token_enabled
+    allow_personal_snippets
   ].freeze
 
   # matches the size set in the database constraint

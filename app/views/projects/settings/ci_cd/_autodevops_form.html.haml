@@ -20,7 +20,7 @@
   - settings_message = s_('CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work.').html_safe % { base_domain_link_start: base_domain_link_start, kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
 
 .row
-  .col-lg-12
+  .gl-col-lg-12
     = gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings') do |f|
       = form_errors(@project)
       %fieldset.builds-feature.js-auto-devops-settings

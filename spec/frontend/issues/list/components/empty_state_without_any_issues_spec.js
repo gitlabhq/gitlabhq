@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
@@ -27,17 +27,12 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findCsvImportExportDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findCreateProjectMessage = () => wrapper.findByTestId('create-project-message');
-  const findGlLink = () => wrapper.findComponent(GlLink);
-  const findIssuesHelpPageLink = () =>
-    wrapper.findByRole('link', { name: 'Learn more about issues.' });
-  const findJiraDocsLink = () =>
-    wrapper.findByRole('link', { name: 'Enable the Jira integration' });
+  const findJiraDocsLink = () => wrapper.findByRole('link', { name: 'See integration options' });
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
-  const findNewIssueLink = () => wrapper.findByRole('link', { name: 'New issue' });
+  const findCreateIssueLink = () => wrapper.findByRole('link', { name: 'Create issue' });
   const findNewProjectLink = () => wrapper.findByRole('link', { name: 'New project' });
 
-  const mountComponent = ({ props = {}, provide = {} } = {}) => {
+  const mountComponent = ({ props = {}, provide = {}, slots = {} } = {}) => {
     wrapper = mountExtended(EmptyStateWithoutAnyIssues, {
       propsData: {
         ...defaultProps,
@@ -50,6 +45,9 @@ describe('EmptyStateWithoutAnyIssues component', () => {
       stubs: {
         NewResourceDropdown: true,
       },
+      slots: {
+        ...slots,
+      },
     });
   };
 
@@ -59,53 +57,11 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         mountComponent();
 
         expect(findGlEmptyState().props('title')).toBe(
-          'Use issues to collaborate on ideas, solve problems, and plan work',
+          'Track bugs, plan features, and organize your work with issues',
         );
-      });
-
-      describe('description', () => {
-        it('renders issues docs link', () => {
-          mountComponent();
-
-          expect(findIssuesHelpPageLink().attributes('href')).toBe(
-            EmptyStateWithoutAnyIssues.issuesHelpPagePath,
-          );
-        });
-
-        describe('"create a project first" description', () => {
-          describe('when can create projects', () => {
-            describe('when showNewIssueDropdown is false', () => {
-              it('renders', () => {
-                mountComponent({ provide: { canCreateProjects: true } });
-
-                expect(findCreateProjectMessage().text()).toContain(
-                  'Issues exist in projects. To create an issue, first create a project.',
-                );
-              });
-            });
-
-            describe('when showNewIssueDropdown is true', () => {
-              it('renders', () => {
-                mountComponent({
-                  props: { showNewIssueDropdown: true },
-                  provide: { canCreateProjects: true },
-                });
-
-                expect(findCreateProjectMessage().text()).toContain(
-                  'Issues exist in projects. Select a project to create an issue, or create a project.',
-                );
-              });
-            });
-          });
-
-          describe('when cannot create projects', () => {
-            it('does not render', () => {
-              mountComponent({ provide: { canCreateProjects: false } });
-
-              expect(findCreateProjectMessage().exists()).toBe(false);
-            });
-          });
-        });
+        expect(findGlEmptyState().props('description')).toBe(
+          'Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+        );
       });
 
       describe('actions', () => {
@@ -135,12 +91,12 @@ describe('EmptyStateWithoutAnyIssues component', () => {
           });
         });
 
-        describe('"New issue" link', () => {
+        describe('"Create issue" link', () => {
           describe('when can show new issue link', () => {
             it('renders', () => {
               mountComponent({ provide: { showNewIssueLink: true } });
 
-              expect(findNewIssueLink().attributes('href')).toBe(defaultProvide.newIssuePath);
+              expect(findCreateIssueLink().attributes('href')).toBe(defaultProvide.newIssuePath);
             });
           });
 
@@ -148,7 +104,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
             it('does not render', () => {
               mountComponent({ provide: { showNewIssueLink: false } });
 
-              expect(findNewIssueLink().exists()).toBe(false);
+              expect(findCreateIssueLink().exists()).toBe(false);
             });
           });
         });
@@ -173,6 +129,16 @@ describe('EmptyStateWithoutAnyIssues component', () => {
               expect(findCsvImportExportDropdown().exists()).toBe(false);
               expect(findCsvImportExportButtons().exists()).toBe(false);
             });
+          });
+
+          it('does not render the default buttons when overriden using slot', () => {
+            mountComponent({
+              props: { showCsvButtons: true },
+              slots: { 'import-export-buttons': '<button></button>' },
+            });
+
+            expect(findCsvImportExportDropdown().exists()).toBe(false);
+            expect(findCsvImportExportButtons().exists()).toBe(false);
           });
         });
 
@@ -204,16 +170,10 @@ describe('EmptyStateWithoutAnyIssues component', () => {
       it('shows Jira integration information', () => {
         const paragraphs = wrapper.findAll('p');
         expect(paragraphs.at(1).text()).toContain('Using Jira for issue tracking?');
-        expect(paragraphs.at(2).text()).toMatchInterpolatedText(
-          'Enable the Jira integration to view your Jira issues in GitLab.',
-        );
-        expect(paragraphs.at(3).text()).toContain('This feature requires a Premium plan.');
       });
 
       it('renders Jira integration docs link', () => {
-        expect(findJiraDocsLink().attributes('href')).toBe(
-          '/help/integration/jira/configure#view-jira-issues',
-        );
+        expect(findJiraDocsLink().attributes('href')).toBe('/help/integration/jira/_index');
       });
     });
   });
@@ -225,15 +185,10 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
     it('renders empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
-        title: 'Use issues to collaborate on ideas, solve problems, and plan work',
+        title: 'Track bugs, plan features, and organize your work with issues',
         primaryButtonText: 'Register / Sign In',
         primaryButtonLink: defaultProvide.signInPath,
       });
-    });
-
-    it('renders issues docs link', () => {
-      expect(findGlLink().attributes('href')).toBe(EmptyStateWithoutAnyIssues.issuesHelpPagePath);
-      expect(findGlLink().text()).toBe('Learn more about issues.');
     });
   });
 });

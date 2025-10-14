@@ -25,6 +25,12 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
 
 ## Prerequisites
 
+{{< history >}}
+
+- **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
+
 - [Git Large File Storage (LFS)](../../../topics/git/lfs/_index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
   - On GitLab Self-Managed instances, a GitLab administrator must
@@ -38,7 +44,7 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
   Image thumbnails are stored as other uploads, and are not associated with a project but rather
   with a specific design model.
 
-  A GitLab administrator can verify the relative path of a hashed-stored project by going to **Admin area > Projects**
+  A GitLab administrator can verify the relative path of a hashed-stored project by going to **Admin area** > **Projects**
   and then selecting the project in question. The **Relative path** field contains `@hashed` in its value.
 
 If the requirements are not met, you are notified in the **Designs** section.
@@ -74,7 +80,7 @@ To view a design:
 The design you selected opens. You can then [zoom in](#zoom-in-on-a-design) on it or
 [create a comment](#add-a-comment-to-a-design).
 
-![Designs section](img/design_management_v14_10.png)
+![The 'Designs' section in a GitLab issue, displaying uploaded design mockups.](img/design_management_v14_10.png)
 
 When viewing a design, you can move to other designs. To do so, either:
 
@@ -128,10 +134,10 @@ To add a design to an issue:
 
    - Drag a file from your file browser and drop it in the drop zone in the **Designs** section.
 
-     ![Drag and drop design uploads](img/design_drag_and_drop_uploads_v13_2.png)
+     ![Uploading a new design by dragging and dropping it onto the issue page.](img/design_drag_and_drop_uploads_v13_2.png)
 
    - Take a screenshot or copy a local image file into your clipboard, hover your cursor over the
-     drop zone, and press <kbd>Control</kbd> or <kbd>Cmd</kbd> + <kbd>V</kbd>.
+     drop zone, and press <kbd>Control</kbd> or <kbd>Command</kbd> + <kbd>V</kbd>.
 
      When pasting images like this, keep the following in mind:
 
@@ -266,7 +272,7 @@ Prerequisites:
 
 To delete a comment from a design:
 
-1. On the comment you want to delete, select **More actions** {{< icon name="ellipsis_v" >}} **> Delete comment**.
+1. On the comment you want to delete, select **More actions** {{< icon name="ellipsis_v" >}} > **Delete comment**.
 1. On the confirmation dialog, select **Delete comment**.
 
 ## Resolve a discussion thread on a design

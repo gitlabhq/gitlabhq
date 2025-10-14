@@ -224,7 +224,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
       expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
-        error: new Error('oh no'),
+        error: new Error('1 out of 1 chunk(s) failed to update'),
         message: 'Something went wrong while bulk editing.',
       });
     });
@@ -232,42 +232,18 @@ describe('WorkItemBulkEditSidebar component', () => {
 
   describe('widget visibility', () => {
     it('shows the correct widgets', () => {
-      createComponent({
-        provide: { hasIssuableHealthStatusFeature: true },
-      });
+      createComponent();
 
       // visible
       expect(findStateComponent().exists()).toBe(true);
       expect(findAssigneeComponent().exists()).toBe(true);
       expect(findAddLabelsComponent().exists()).toBe(true);
       expect(findRemoveLabelsComponent().exists()).toBe(true);
-      expect(findHealthStatusComponent().exists()).toBe(true);
       expect(findSubscriptionComponent().exists()).toBe(true);
       expect(findConfidentialityComponent().exists()).toBe(true);
       expect(findMilestoneComponent().exists()).toBe(true);
       expect(findParentComponent().exists()).toBe(true);
       expect(findBulkMoveComponent().exists()).toBe(true);
-    });
-
-    it('shows the correct widgets on epics list', () => {
-      createComponent({
-        props: { isEpicsList: true },
-        provide: { hasIssuableHealthStatusFeature: true },
-      });
-
-      // visible
-      expect(findAssigneeComponent().exists()).toBe(true);
-      expect(findAddLabelsComponent().exists()).toBe(true);
-      expect(findRemoveLabelsComponent().exists()).toBe(true);
-      expect(findHealthStatusComponent().exists()).toBe(true);
-      expect(findSubscriptionComponent().exists()).toBe(true);
-      expect(findConfidentialityComponent().exists()).toBe(true);
-      expect(findMilestoneComponent().exists()).toBe(true);
-
-      // hidden
-      expect(findStateComponent().exists()).toBe(false);
-      expect(findParentComponent().exists()).toBe(false);
-      expect(findBulkMoveComponent().exists()).toBe(false);
     });
   });
 
@@ -557,14 +533,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"Parent" component', () => {
-    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
-      createComponent({
-        props: { isEpicsList },
-      });
-
-      expect(findParentComponent().exists()).toBe(!isEpicsList);
-    });
-
     it('updates parent when "Parent" component emits "input" event', async () => {
       createComponent({
         props: { isEpicsList: false },
@@ -666,6 +634,101 @@ describe('WorkItemBulkEditSidebar component', () => {
       findBulkMoveComponent().vm.$emit('moveFinish');
 
       expect(wrapper.emitted('finish')).toHaveLength(1);
+    });
+  });
+
+  describe('chunked bulk edit', () => {
+    it('chunks 80 items into 3 groups of 25 and 1 group of 5', async () => {
+      const manyItems = Array.from({ length: 80 }, (_, i) => ({
+        id: `gid://gitlab/WorkItem/${i + 1}`,
+        title: `Work Item ${i + 1}`,
+        workItemType: { id: 'gid://gitlab/WorkItems::Type/5' },
+      }));
+
+      // Create a handler that works for multiple calls
+      const chunkHandler = jest.fn().mockResolvedValue({
+        data: { workItemBulkUpdate: { updatedWorkItemCount: 25 } },
+      });
+
+      createComponent({
+        items: manyItems,
+        mutationHandler: chunkHandler,
+        props: { isEpicsList: false, fullPath: 'group/project' },
+      });
+      await waitForPromises();
+
+      findStateComponent().vm.$emit('input', 'reopen');
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
+      await waitForPromises();
+
+      expect(chunkHandler).toHaveBeenCalledTimes(4);
+
+      expect(chunkHandler).toHaveBeenNthCalledWith(1, {
+        input: {
+          fullPath: 'group/project',
+          ids: manyItems.slice(0, 25).map((item) => item.id),
+          stateEvent: 'REOPEN',
+        },
+      });
+
+      expect(chunkHandler).toHaveBeenNthCalledWith(2, {
+        input: {
+          fullPath: 'group/project',
+          ids: manyItems.slice(25, 50).map((item) => item.id),
+          stateEvent: 'REOPEN',
+        },
+      });
+
+      expect(chunkHandler).toHaveBeenNthCalledWith(3, {
+        input: {
+          fullPath: 'group/project',
+          ids: manyItems.slice(50, 75).map((item) => item.id),
+          stateEvent: 'REOPEN',
+        },
+      });
+
+      expect(chunkHandler).toHaveBeenNthCalledWith(4, {
+        input: {
+          fullPath: 'group/project',
+          ids: manyItems.slice(75, 80).map((item) => item.id),
+          stateEvent: 'REOPEN',
+        },
+      });
+    });
+
+    it('shows error when some chunks fail during bulk edit', async () => {
+      const manyItems = Array.from({ length: 26 }, (_, i) => ({
+        id: `gid://gitlab/WorkItem/${i + 1}`,
+        title: `Work Item ${i + 1}`,
+        workItemType: { id: 'gid://gitlab/WorkItems::Type/5' },
+      }));
+
+      const networkError = new Error('Network error');
+      const failingHandler = jest
+        .fn()
+        .mockResolvedValueOnce({ data: { workItemBulkUpdate: { updatedWorkItemCount: 25 } } })
+        .mockRejectedValueOnce(networkError);
+
+      createComponent({
+        items: manyItems,
+        mutationHandler: failingHandler,
+        props: { isEpicsList: false, fullPath: 'group/project' },
+      });
+      await waitForPromises();
+
+      findStateComponent().vm.$emit('input', 'reopen');
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
+      await waitForPromises();
+
+      const expectedError = new Error('1 out of 2 chunk(s) failed to update', {
+        cause: [networkError],
+      });
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: expectedError,
+        message: 'Something went wrong while bulk editing.',
+      });
     });
   });
 });

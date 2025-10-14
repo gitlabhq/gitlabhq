@@ -95,21 +95,27 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   describe 'GET #index' do
     let_it_be(:public_project) { create(:project, :public) }
 
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
-      let_it_be(:current_user) { user }
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit, use_second_scope: false do
+      let(:current_user) { user }
 
       before do
         sign_in current_user
       end
 
       def request
-        get project_merge_requests_path(public_project), params: { scope: 'all', search: 'test' }
+        get project_merge_requests_path(public_project), params: { scope: 'merge_requests', search: 'test' }
       end
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated do
       def request
-        get project_merge_requests_path(public_project), params: { scope: 'all', search: 'test' }
+        get project_merge_requests_path(public_project), params: { scope: 'merge_requests', search: 'test' }
+      end
+
+      def request_with_second_scope
+        get project_merge_requests_path(public_project),
+          params: { scope: 'merge_requests', search: 'test' },
+          headers: { 'REMOTE_ADDR' => '1.2.3.5' }
       end
     end
   end

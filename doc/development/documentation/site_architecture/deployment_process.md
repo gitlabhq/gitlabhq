@@ -7,7 +7,7 @@ title: Documentation deployments
 
 ## Deployment environments
 
-The [GitLab documentation site](https://docs.gitlab.com/) is a static site hosted by [GitLab Pages](../../../user/project/pages/_index.md).
+The [GitLab documentation site](https://docs.gitlab.com) is a static site hosted by [GitLab Pages](../../../user/project/pages/_index.md).
 The deployment is done by the [Pages deploy jobs](#pages-deploy-jobs).
 
 The website hosts documentation only for the [supported](https://about.gitlab.com/support/statement-of-support/#version-support) GitLab versions.

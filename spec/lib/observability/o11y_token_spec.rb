@@ -8,7 +8,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       Observability::GroupO11ySetting,
       o11y_service_url: 'https://o11y.example.com',
       o11y_service_user_email: 'test@example.com',
-      o11y_service_password: 'password123'
+      o11y_service_password: 'password123',
+      created_at: 1.hour.ago
     )
   end
 
@@ -28,6 +29,58 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
       code: 200,
       body: Gitlab::Json.dump(success_response)
     )
+  end
+
+  describe '#new_settings?' do
+    subject(:o11y_token) { described_class.new(o11y_settings) }
+
+    context 'when settings are created within the buffer time' do
+      let(:o11y_settings) do
+        instance_double(
+          Observability::GroupO11ySetting,
+          o11y_service_url: 'https://o11y.example.com',
+          o11y_service_user_email: 'test@example.com',
+          o11y_service_password: 'password123',
+          created_at: 2.minutes.ago
+        )
+      end
+
+      it 'returns true' do
+        expect(o11y_token.send(:new_settings?)).to be true
+      end
+    end
+
+    context 'when settings are created exactly at the buffer time boundary' do
+      let(:o11y_settings) do
+        instance_double(
+          Observability::GroupO11ySetting,
+          o11y_service_url: 'https://o11y.example.com',
+          o11y_service_user_email: 'test@example.com',
+          o11y_service_password: 'password123',
+          created_at: 5.minutes.ago
+        )
+      end
+
+      it 'returns false' do
+        expect(o11y_token.send(:new_settings?)).to be false
+      end
+    end
+
+    context 'when settings are created before the buffer time' do
+      let(:o11y_settings) do
+        instance_double(
+          Observability::GroupO11ySetting,
+          o11y_service_url: 'https://o11y.example.com',
+          o11y_service_user_email: 'test@example.com',
+          o11y_service_password: 'password123',
+          created_at: 10.minutes.ago
+        )
+      end
+
+      it 'returns false' do
+        expect(o11y_token.send(:new_settings?)).to be false
+      end
+    end
   end
 
   describe '.generate_tokens' do
@@ -92,7 +145,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
             Observability::GroupO11ySetting,
             o11y_service_url: nil,
             o11y_service_user_email: 'test@example.com',
-            o11y_service_password: 'password123'
+            o11y_service_password: 'password123',
+            created_at: 1.hour.ago
           )
         end
 
@@ -105,7 +159,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
             Observability::GroupO11ySetting,
             o11y_service_url: 'https://o11y.example.com',
             o11y_service_user_email: nil,
-            o11y_service_password: 'password123'
+            o11y_service_password: 'password123',
+            created_at: 1.hour.ago
           )
         end
 
@@ -118,7 +173,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
             Observability::GroupO11ySetting,
             o11y_service_url: 'https://o11y.example.com',
             o11y_service_user_email: 'test@example.com',
-            o11y_service_password: nil
+            o11y_service_password: nil,
+            created_at: 1.hour.ago
           )
         end
 
@@ -131,7 +187,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
             Observability::GroupO11ySetting,
             o11y_service_url: nil,
             o11y_service_user_email: nil,
-            o11y_service_password: nil
+            o11y_service_password: nil,
+            created_at: 1.hour.ago
           )
         end
 
@@ -154,20 +211,78 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
     end
 
     context 'when response is not successful' do
-      let(:http_response) do
-        instance_double(HTTParty::Response, code: '401', body: 'Unauthorized')
+      context 'when response code is 500 and settings are new' do
+        let(:o11y_settings) do
+          instance_double(
+            Observability::GroupO11ySetting,
+            o11y_service_url: 'https://o11y.example.com',
+            o11y_service_user_email: 'test@example.com',
+            o11y_service_password: 'password123',
+            created_at: 2.minutes.ago
+          )
+        end
+
+        let(:http_response) do
+          instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
+        end
+
+        before do
+          allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
+        end
+
+        it 'returns provisioning status without logging warning' do
+          aggregate_failures do
+            expect(Gitlab::AppLogger).not_to receive(:warn)
+            expect(generate_tokens).to eq({ status: :provisioning })
+          end
+        end
       end
 
-      before do
-        allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
+      context 'when response code is 500 and settings are not new' do
+        let(:o11y_settings) do
+          instance_double(
+            Observability::GroupO11ySetting,
+            o11y_service_url: 'https://o11y.example.com',
+            o11y_service_user_email: 'test@example.com',
+            o11y_service_password: 'password123',
+            created_at: 10.minutes.ago
+          )
+        end
+
+        let(:http_response) do
+          instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
+        end
+
+        before do
+          allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
+        end
+
+        it 'returns empty hash and logs warning' do
+          aggregate_failures do
+            expect(Gitlab::AppLogger).to receive(:warn)
+              .with("O11y authentication failed with status 500")
+
+            expect(generate_tokens).to eq({})
+          end
+        end
       end
 
-      it 'returns empty hash and logs warning' do
-        aggregate_failures do
-          expect(Gitlab::AppLogger).to receive(:warn)
-            .with("O11y authentication failed with status 401")
+      context 'when response code is not 500' do
+        let(:http_response) do
+          instance_double(HTTParty::Response, code: '401', body: 'Unauthorized')
+        end
 
-          expect(generate_tokens).to eq({})
+        before do
+          allow(Gitlab::HTTP).to receive(:post).and_return(http_response)
+        end
+
+        it 'returns empty hash and logs warning' do
+          aggregate_failures do
+            expect(Gitlab::AppLogger).to receive(:warn)
+              .with("O11y authentication failed with status 401")
+
+            expect(generate_tokens).to eq({})
+          end
         end
       end
     end
@@ -248,6 +363,88 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
     end
   end
 
+  describe '#parse_response' do
+    subject(:o11y_token) { described_class.new(o11y_settings) }
+
+    context 'when response code is 500 and settings are new' do
+      let(:o11y_settings) do
+        instance_double(
+          Observability::GroupO11ySetting,
+          o11y_service_url: 'https://o11y.example.com',
+          o11y_service_user_email: 'test@example.com',
+          o11y_service_password: 'password123',
+          created_at: 2.minutes.ago
+        )
+      end
+
+      let(:http_response) do
+        instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
+      end
+
+      it 'returns provisioning status' do
+        result = o11y_token.send(:parse_response, http_response)
+        expect(result).to eq({ status: :provisioning })
+      end
+    end
+
+    context 'when response code is 500 and settings are not new' do
+      let(:o11y_settings) do
+        instance_double(
+          Observability::GroupO11ySetting,
+          o11y_service_url: 'https://o11y.example.com',
+          o11y_service_user_email: 'test@example.com',
+          o11y_service_password: 'password123',
+          created_at: 10.minutes.ago
+        )
+      end
+
+      let(:http_response) do
+        instance_double(HTTParty::Response, code: '500', body: 'Internal Server Error')
+      end
+
+      it 'logs warning and returns empty hash' do
+        expect(Gitlab::AppLogger).to receive(:warn)
+          .with("O11y authentication failed with status 500")
+
+        result = o11y_token.send(:parse_response, http_response)
+        expect(result).to eq({})
+      end
+    end
+
+    context 'when response code is 200' do
+      let(:http_response) do
+        instance_double(
+          HTTParty::Response,
+          code: 200,
+          body: Gitlab::Json.dump(success_response)
+        )
+      end
+
+      it 'parses successful response' do
+        result = o11y_token.send(:parse_response, http_response)
+        expect(result).to eq(
+          userId: '123',
+          accessJwt: 'access_token_123',
+          refreshJwt: 'refresh_token_456'
+        )
+      end
+    end
+
+    context 'when response code is 401' do
+      let(:http_response) do
+        instance_double(HTTParty::Response, code: '401', body: 'Unauthorized')
+      end
+
+      it 'logs warning and returns empty hash' do
+        expect(Gitlab::AppLogger).to receive(:warn)
+          .with("O11y authentication failed with status 401")
+
+        result = o11y_token.send(:parse_response, http_response)
+        expect(result).to eq({})
+      end
+    end
+  end
+
   describe '#login_url' do
     subject(:o11y_token) { described_class.new(o11y_settings) }
 
@@ -285,7 +482,8 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
           Observability::GroupO11ySetting,
           o11y_service_url: base_url,
           o11y_service_user_email: 'test@example.com',
-          o11y_service_password: 'password123'
+          o11y_service_password: 'password123',
+          created_at: 1.hour.ago
         )
         o11y_token = described_class.new(o11y_settings)
 

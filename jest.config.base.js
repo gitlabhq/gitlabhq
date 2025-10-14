@@ -34,6 +34,9 @@ module.exports = (path, options = {}) => {
   };
   const globals = {};
 
+  const customElements = ['fe-island-duo-next'];
+  const isCE = (tag) => customElements.includes(tag);
+
   if (USE_VUE_3) {
     setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');
     Object.assign(vueModuleNameMappers, {
@@ -54,6 +57,7 @@ module.exports = (path, options = {}) => {
           compatConfig: {
             MODE: 2,
           },
+          isCustomElement: isCE,
         },
       },
     });
@@ -130,6 +134,7 @@ module.exports = (path, options = {}) => {
   if (isEE) {
     const rootDirEE = '<rootDir>/ee/app/assets/javascripts$1';
     const specDirEE = '<rootDir>/ee/spec/frontend/$1';
+    const feIslandsDirEE = '<rootDir>/ee/frontend_islands/apps/$1';
     Object.assign(moduleNameMapper, {
       '^ee(/.*)$': rootDirEE,
       '^ee_component(/.*)$': rootDirEE,
@@ -138,6 +143,7 @@ module.exports = (path, options = {}) => {
       '^ee_else_ce_jest/(.*)$': specDirEE,
       '^any_else_ce(/.*)$': rootDirEE,
       '^jh_else_ee(/.*)$': rootDirEE,
+      '^fe_islands(/.*)$': feIslandsDirEE,
       [TEST_FIXTURES_PATTERN]: `<rootDir>${TEST_FIXTURES_HOME_EE}$1`,
       ...extModuleNameMapperEE,
     });
@@ -269,6 +275,7 @@ module.exports = (path, options = {}) => {
       IS_EE: isEE,
       IS_JH: isJH,
       url: TEST_HOST,
+      customExportConditions: ['node', 'node-addons'],
     },
     testRunner: 'jest-jasmine2',
     prettierPath: undefined,
@@ -289,5 +296,6 @@ module.exports = (path, options = {}) => {
     Set nothing for CI, because we want to use the auto-logic for the cores
      */
     maxWorkers: process.env.CI ? '' : '60%',
+    testPathIgnorePatterns: ['<rootDir>/ee/frontend_islands'],
   };
 };

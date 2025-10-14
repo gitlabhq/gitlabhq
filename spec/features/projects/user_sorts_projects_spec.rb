@@ -48,12 +48,6 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     end
   end
 
-  before do
-    # Disable feature flag while it is a WIP.
-    # Feature specs for enabled feature flag will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/519658
-    stub_feature_flags(groups_overview_shared_vue_components: false)
-  end
-
   context "from explore projects", :js do
     before do
       sign_in(user)

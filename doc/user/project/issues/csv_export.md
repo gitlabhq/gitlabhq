@@ -14,7 +14,7 @@ title: Export issues to CSV
 
 {{< history >}}
 
-- The `IID`, `Type`, `Start Date`, and `Parent IID` columns [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4, [with a flag](../../../administration/feature_flags/_index.md) named `work_items_project_issues_list`. Enabled by default.
+- The `IID`, `Type`, `Start Date`, and `Parent IID` columns [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -48,12 +48,12 @@ Prerequisites:
 - You must have at least the Guest role.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attributes to filter by.
    For more information about filter options, see
    [Filter the list of issues](managing_issues.md#filter-the-list-of-issues).
-1. In the upper right, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Export as CSV**.
+1. In the upper right, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Export as CSV**.
 1. In the dialog, verify that the email address is correct, then select **Export issues**.
 
 All matching issues are exported, including those not shown on the first page.

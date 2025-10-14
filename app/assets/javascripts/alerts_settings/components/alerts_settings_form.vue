@@ -521,7 +521,7 @@ export default {
             </div>
           </template>
         </div>
-        <div class="gl-flex gl-flex-col gl-justify-start gl-gap-3 md:gl-flex-row">
+        <div class="gl-flex gl-flex-col gl-justify-start gl-gap-3 @md/panel:gl-flex-row">
           <gl-button
             :disabled="!canSubmitForm"
             variant="confirm"

@@ -51,7 +51,7 @@ describe('Source Viewer component', () => {
   const blameInfo =
     BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
-  const createComponent = ({ showBlame = true, blob = {} } = {}) => {
+  const createComponent = ({ showBlame = true, shouldPreloadBlame = false, blob = {} } = {}) => {
     fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
 
     wrapper = shallowMountExtended(SourceViewer, {
@@ -62,6 +62,7 @@ describe('Source Viewer component', () => {
         chunks: CHUNKS_MOCK,
         projectPath,
         currentRef,
+        shouldPreloadBlame,
         showBlame,
       },
     });
@@ -69,6 +70,7 @@ describe('Source Viewer component', () => {
 
   const findChunks = () => wrapper.findAllComponents(Chunk);
   const findBlameComponents = () => wrapper.findAllComponents(Blame);
+  const findBlameComponent = () => wrapper.findComponent(Blame);
   const triggerChunkAppear = async (chunkIndex = 0) => {
     findChunks().at(chunkIndex).vm.$emit('appear');
     await waitForPromises();
@@ -111,11 +113,6 @@ describe('Source Viewer component', () => {
   });
 
   describe('rendering', () => {
-    it('does not render a Blame component if the respective chunk for the blame has not appeared', async () => {
-      await waitForPromises();
-      expect(findBlameComponents()).toHaveLength(0);
-    });
-
     describe('DOM updates', () => {
       it('adds the necessary classes to the DOM', async () => {
         setHTMLFixture(SOURCE_CODE_CONTENT_MOCK);
@@ -127,11 +124,60 @@ describe('Source Viewer component', () => {
     });
 
     describe('Blame information', () => {
+      it('passes loading state to Blame component when data is not yet loaded', () => {
+        expect(findBlameComponent().exists()).toBe(true);
+
+        expect(findBlameComponent().props('isBlameLoading')).toBe(true);
+        expect(findBlameComponent().props('blameInfo')).toHaveLength(0);
+      });
+
+      it('passes loaded state to Blame component once blame data has loaded', async () => {
+        expect(findBlameComponent().props('isBlameLoading')).toBe(true);
+
+        await triggerChunkAppear();
+
+        expect(findBlameComponent().props('isBlameLoading')).toBe(false);
+        expect(findBlameComponent().props('blameInfo')).toHaveLength(blameInfo.length);
+      });
+
+      it('passes loading state again when showBlame is toggled off and back on', async () => {
+        await triggerChunkAppear();
+        expect(findBlameComponent().props('isBlameLoading')).toBe(false);
+
+        // Toggle showBlame off
+        await wrapper.setProps({ showBlame: false });
+        await nextTick();
+        expect(findBlameComponent().exists()).toBe(false);
+
+        // Toggle showBlame back on - should pass loading state
+        await wrapper.setProps({ showBlame: true });
+        await nextTick();
+        expect(findBlameComponent().exists()).toBe(true);
+        expect(findBlameComponent().props('isBlameLoading')).toBe(true);
+        expect(findBlameComponent().props('blameInfo')).toHaveLength(0);
+
+        // After chunk appears again, should pass loaded state
+        await triggerChunkAppear();
+        expect(findBlameComponent().props('isBlameLoading')).toBe(false);
+      });
       it('renders a Blame component when a chunk appears', async () => {
         await triggerChunkAppear();
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
         expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+      });
+
+      it('preloads blame data', async () => {
+        createComponent({ showBlame: false, shouldPreloadBlame: true });
+        await triggerChunkAppear();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({
+            filePath: BLOB_DATA_MOCK.path,
+            fullPath: projectPath,
+            ref: currentRef,
+          }),
+        );
       });
 
       it('calls the blame data query', async () => {

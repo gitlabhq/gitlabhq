@@ -3,7 +3,7 @@ table_name: system_access_group_microsoft_applications
 classes:
 - SystemAccess::GroupMicrosoftApplication
 feature_categories:
-- system_access
+- user_management
 description: Integration with Microsoft Azure application in SaaS
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172497
 milestone: '17.7'

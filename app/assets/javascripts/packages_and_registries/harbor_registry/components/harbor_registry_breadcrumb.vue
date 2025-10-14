@@ -64,5 +64,5 @@ export default {
 </script>
 
 <template>
-  <gl-breadcrumb :key="isLoaded" :items="allCrumbs" :auto-resize="false" />
+  <gl-breadcrumb v-if="isLoaded" :items="allCrumbs" />
 </template>

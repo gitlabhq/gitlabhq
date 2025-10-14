@@ -277,10 +277,16 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
     end
 
     context 'group has package of all types' do
-      package_types.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition -- `type` used in `let`
+      package_types.without('composer').each do |type| # rubocop:disable RSpec/UselessDynamicDefinition -- `type` used in `let`
         let_it_be("package_#{type}") { create("#{type}_package", project: project) }
 
         it_behaves_like 'with package type', type
+      end
+
+      context 'with composer package' do
+        let_it_be(:package_composer) { create(:composer_package_sti, project: project) }
+
+        it_behaves_like 'with package type', :composer
       end
     end
 
@@ -303,19 +309,10 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
     end
 
     context 'with invalid package_type' do
-      let(:params) { { package_type: 'invalid_type' } }
+      let(:package_type) { 'invalid_type' }
+      let(:params) { { package_type: } }
 
-      it { expect { subject }.to raise_exception(described_class::InvalidPackageTypeError) }
-    end
-
-    context 'when packages_class is not Packages::Package' do
-      let(:params) { { packages_class: ::Packages::TerraformModule::Package, package_type: :terraform_module } }
-
-      it 'does not call filter_by_package_type' do
-        expect(Packages::Package).not_to receive(:with_package_type)
-
-        subject
-      end
+      it { expect { subject }.to raise_exception(ArgumentError, "'#{package_type}' is not a valid package_type") }
     end
   end
 end

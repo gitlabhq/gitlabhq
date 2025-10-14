@@ -209,7 +209,7 @@ class SemgrepResultProcessor
     request = Net::HTTP::Put.new(uri)
     request["PRIVATE-TOKEN"] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
     request.set_form_data(
-      "add_labels" => "appsec-sast-ping::unresolved"
+      "add_labels" => "appsec-sast-ping::unresolved,AppSecWorkType::TriageRotation,Application Security Team"
     )
 
     response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|

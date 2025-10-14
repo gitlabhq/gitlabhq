@@ -13,6 +13,8 @@ module Gitlab
       end
 
       def call(env)
+        return @app.call(env) unless ::Gitlab::QueryLimiting.enabled?
+
         transaction, retval = ::Gitlab::QueryLimiting::Transaction.run do
           @app.call(env)
         end

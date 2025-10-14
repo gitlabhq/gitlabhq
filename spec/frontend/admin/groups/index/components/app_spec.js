@@ -2,12 +2,14 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
-import adminInactiveGroupsGraphQlResponse from 'test_fixtures/graphql/admin/inactive_groups.query.graphql.json';
-import adminGroupsGraphQlResponse from 'test_fixtures/graphql/admin/groups.query.graphql.json';
+import adminInactiveGroupsGraphQlResponse from 'test_fixtures/graphql/admin/inactive_admin_groups.query.graphql.json';
+import adminGroupsGraphQlResponse from 'test_fixtures/graphql/admin/admin_groups.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import AdminGroupsApp from '~/admin/groups/index/components/app.vue';
 import { createRouter } from '~/admin/groups/index/index';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import TabView from '~/groups_projects/components/tab_view.vue';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   SORT_OPTIONS,
@@ -26,7 +28,6 @@ import {
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import adminGroupsQuery from '~/admin/groups/index/graphql/queries/admin_groups.query.graphql';
-import groupsQuery from '~/admin/groups/index/graphql/queries/groups.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -49,7 +50,7 @@ describe('AdminGroupsApp', () => {
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
-    features = {},
+    stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
     const router = createRouter();
@@ -58,7 +59,7 @@ describe('AdminGroupsApp', () => {
     wrapper = mountFn(AdminGroupsApp, {
       apolloProvider,
       router,
-      provide: { glFeatures: { readAdminGroups: false, ...features } },
+      stubs,
     });
   };
 
@@ -80,8 +81,6 @@ describe('AdminGroupsApp', () => {
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
       filteredSearchInputPlaceholder: 'Search (3 character minimum)',
-      sortOptions: SORT_OPTIONS,
-      defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
         [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
         [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
@@ -94,30 +93,12 @@ describe('AdminGroupsApp', () => {
     });
   });
 
-  describe('when readAdminGroups feature flag is enabled', () => {
-    it('uses getAdminGroupsNew query', async () => {
-      const adminGroupsQueryHandler = jest
-        .fn()
-        .mockResolvedValue({ groups: { count: 0, nodes: [], pageInfo: {} } });
-
-      await createComponent({
-        mountFn: mountExtended,
-        features: { readAdminGroups: true },
-        handlers: [[adminGroupsQuery, adminGroupsQueryHandler]],
-      });
-
-      await waitForPromises();
-
-      expect(adminGroupsQueryHandler).toHaveBeenCalled();
-    });
-  });
-
   it('renders relative URL that supports relative_url_root', async () => {
     window.gon = { relative_url_root: '/gitlab' };
 
     await createComponent({
       mountFn: mountExtended,
-      handlers: [[groupsQuery, jest.fn().mockResolvedValue(adminGroupsGraphQlResponse)]],
+      handlers: [[adminGroupsQuery, jest.fn().mockResolvedValue(adminGroupsGraphQlResponse)]],
     });
     await waitForPromises();
 
@@ -139,7 +120,7 @@ describe('AdminGroupsApp', () => {
       mountFn: mountExtended,
       handlers: [
         [
-          groupsQuery,
+          adminGroupsQuery,
           jest.fn().mockResolvedValue({
             data: {
               groups: {
@@ -159,9 +140,13 @@ describe('AdminGroupsApp', () => {
   });
 
   it('allows deleting immediately on Inactive tab', async () => {
+    window.gon = { allow_immediate_namespaces_deletion: true };
+
     await createComponent({
       mountFn: mountExtended,
-      handlers: [[groupsQuery, jest.fn().mockResolvedValue(adminInactiveGroupsGraphQlResponse)]],
+      handlers: [
+        [adminGroupsQuery, jest.fn().mockResolvedValue(adminInactiveGroupsGraphQlResponse)],
+      ],
       route: { name: INACTIVE_TAB.value },
     });
 
@@ -177,7 +162,7 @@ describe('AdminGroupsApp', () => {
         mountFn: mountExtended,
         handlers: [
           [
-            groupsQuery,
+            adminGroupsQuery,
             jest.fn().mockResolvedValue({ data: { groups: { nodes: [], pageInfo: {} } } }),
           ],
         ],
@@ -206,4 +191,20 @@ describe('AdminGroupsApp', () => {
       });
     });
   });
+
+  it.each(ADMIN_GROUPS_TABS)(
+    'renders expected sort options and active sort option on $text tab',
+    async (tab) => {
+      await createComponent({
+        mountFn: mountExtended,
+        stubs: { TabView },
+        route: { name: tab.value },
+      });
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_UPDATED,
+      });
+    },
+  );
 });

@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
+import getIssuesCountsQuery from 'ee_else_ce/issues/dashboard/queries/get_issues_counts.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -20,13 +21,13 @@ import {
 } from 'jest/issues/list/mock_data';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_app.vue';
-import getIssuesCountsQuery from '~/issues/dashboard/queries/get_issues_counts.query.graphql';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import {
+  TOKEN_TITLE_STATUS,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -37,6 +38,7 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
+  TOKEN_TYPE_STATUS,
   TOKEN_TYPE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
@@ -71,6 +73,7 @@ describe('IssuesDashboardApp component', () => {
     hasOkrsFeature: true,
     hasQualityManagementFeature: true,
     hasScopedLabelsFeature: true,
+    hasStatusFeature: true,
     initialSort: CREATED_DESC,
     isPublicVisibilityRestricted: false,
     isSignedIn: true,
@@ -104,6 +107,7 @@ describe('IssuesDashboardApp component', () => {
 
   const mountComponent = ({
     provide = {},
+    props = {},
     issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse),
     issuesCountsQueryHandler = jest.fn().mockResolvedValue(issuesCountsQueryResponse),
     sortPreferenceMutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
@@ -117,6 +121,9 @@ describe('IssuesDashboardApp component', () => {
       provide: {
         ...defaultProvide,
         ...provide,
+      },
+      propsData: {
+        ...props,
       },
       stubs: {
         GlIntersperse: true,
@@ -168,6 +175,7 @@ describe('IssuesDashboardApp component', () => {
             hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
             hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
             hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
+            hasStatusFeature: defaultProvide.hasStatusFeature,
             hasManualSort: false,
           }),
         );
@@ -326,6 +334,59 @@ describe('IssuesDashboardApp component', () => {
       });
     });
 
+    describe('sort options', () => {
+      beforeEach(() => {
+        gon.features = { workItemStatusMvc2: true };
+      });
+
+      describe('when workItemStatusOnDashboard=true', () => {
+        it('includes Status in sort options', () => {
+          mountComponent({
+            provide: { hasStatusFeature: true, glFeatures: { workItemStatusOnDashboard: true } },
+          });
+
+          expect(findIssuableList().props('sortOptions')).toEqual([
+            expect.objectContaining({ title: 'Priority' }),
+            expect.objectContaining({ title: 'Created date' }),
+            expect.objectContaining({ title: 'Updated date' }),
+            expect.objectContaining({ title: 'Closed date' }),
+            expect.objectContaining({ title: 'Milestone due date' }),
+            expect.objectContaining({ title: 'Due date' }),
+            expect.objectContaining({ title: 'Popularity' }),
+            expect.objectContaining({ title: 'Label priority' }),
+            expect.objectContaining({ title: 'Title' }),
+            expect.objectContaining({ title: 'Health' }),
+            expect.objectContaining({ title: 'Status' }),
+            expect.objectContaining({ title: 'Weight' }),
+            expect.objectContaining({ title: 'Blocking' }),
+          ]);
+        });
+      });
+
+      describe('when workItemStatusOnDashboard=false', () => {
+        it('does not include Status in sort options', () => {
+          mountComponent({
+            provide: { hasStatusFeature: true, glFeatures: { workItemStatusOnDashboard: false } },
+          });
+
+          expect(findIssuableList().props('sortOptions')).toEqual([
+            expect.objectContaining({ title: 'Priority' }),
+            expect.objectContaining({ title: 'Created date' }),
+            expect.objectContaining({ title: 'Updated date' }),
+            expect.objectContaining({ title: 'Closed date' }),
+            expect.objectContaining({ title: 'Milestone due date' }),
+            expect.objectContaining({ title: 'Due date' }),
+            expect.objectContaining({ title: 'Popularity' }),
+            expect.objectContaining({ title: 'Label priority' }),
+            expect.objectContaining({ title: 'Title' }),
+            expect.objectContaining({ title: 'Health' }),
+            expect.objectContaining({ title: 'Weight' }),
+            expect.objectContaining({ title: 'Blocking' }),
+          ]);
+        });
+      });
+    });
+
     describe('state', () => {
       it('is set from the url params', () => {
         const initialState = STATUS_ALL;
@@ -405,6 +466,27 @@ describe('IssuesDashboardApp component', () => {
         { type: TOKEN_TYPE_MILESTONE },
         { type: TOKEN_TYPE_MY_REACTION },
         { type: TOKEN_TYPE_SEARCH_WITHIN },
+        { type: TOKEN_TYPE_SUBSCRIBED },
+        { type: TOKEN_TYPE_TYPE },
+      ]);
+    });
+
+    it('adds additional EE search tokens', () => {
+      const eeSearchTokens = [{ type: TOKEN_TYPE_STATUS, title: TOKEN_TITLE_STATUS }];
+      mountComponent({ props: { eeSearchTokens } });
+      const preloadedUsers = [{ ...mockCurrentUser, id: mockCurrentUser.id }];
+
+      expect(findIssuableList().props('searchTokens')).toMatchObject([
+        { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
+        { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+        { type: TOKEN_TYPE_CLOSED },
+        { type: TOKEN_TYPE_CONFIDENTIAL },
+        { type: TOKEN_TYPE_CREATED },
+        { type: TOKEN_TYPE_LABEL },
+        { type: TOKEN_TYPE_MILESTONE },
+        { type: TOKEN_TYPE_MY_REACTION },
+        { type: TOKEN_TYPE_SEARCH_WITHIN },
+        { type: TOKEN_TYPE_STATUS },
         { type: TOKEN_TYPE_SUBSCRIBED },
         { type: TOKEN_TYPE_TYPE },
       ]);

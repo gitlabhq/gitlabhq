@@ -21,10 +21,11 @@ describe('markdown_content.vue', () => {
   let wrapper;
   let mock;
 
-  const createWrapper = () => {
+  const createWrapper = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(MarkdownContent, {
       propsData: {
         value: MARKDOWN,
+        ...props,
       },
     });
   };
@@ -33,6 +34,7 @@ describe('markdown_content.vue', () => {
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findRawValue = () => wrapper.findByTestId('raw-value');
   const findMarkdown = () => wrapper.findByTestId('markdown');
 
   beforeEach(() => {
@@ -80,16 +82,49 @@ describe('markdown_content.vue', () => {
         .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, new Error('error'));
     });
 
-    it('shows the error message', async () => {
-      createWrapper();
-
-      await axios.waitForAll();
-      expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findAlert().props()).toMatchObject({
-        variant: 'danger',
-        dismissible: false,
+    describe('without fallbackOnError prop', () => {
+      beforeEach(() => {
+        createWrapper();
+        return axios.waitForAll();
       });
-      expect(findAlert().text()).toBe('Failed to format markdown.');
+
+      it('shows the error message', () => {
+        expect(findSkeletonLoader().exists()).toBe(false);
+        expect(findAlert().props()).toMatchObject({
+          variant: 'danger',
+          dismissible: false,
+        });
+        expect(findAlert().text()).toBe('Failed to format markdown.');
+      });
+
+      it('does not render the raw markdown value', () => {
+        expect(findRawValue().exists()).toBe(false);
+      });
+    });
+
+    describe('with fallbackOnError prop', () => {
+      beforeEach(() => {
+        createWrapper({
+          props: {
+            fallbackOnError: true,
+          },
+        });
+        return axios.waitForAll();
+      });
+
+      it('shows the error message with fallback text', () => {
+        expect(findSkeletonLoader().exists()).toBe(false);
+        expect(findAlert().props()).toMatchObject({
+          variant: 'danger',
+          dismissible: false,
+        });
+        expect(findAlert().text()).toBe('Failed to format markdown. Value rendered as plain text.');
+      });
+
+      it('renders the raw markdown value as fallback', () => {
+        expect(findRawValue().exists()).toBe(true);
+        expect(findRawValue().text()).toBe(MARKDOWN);
+      });
     });
   });
 });

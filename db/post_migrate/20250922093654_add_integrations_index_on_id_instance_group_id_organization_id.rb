@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+class AddIntegrationsIndexOnIdInstanceGroupIdOrganizationId < Gitlab::Database::Migration[2.3]
+  milestone '18.5'
+  disable_ddl_transaction!
+
+  INDEX_NAME = 'tmp_idx_integrations_on_id_instance_group_id_organization_id'
+
+  def up
+    add_concurrent_index(
+      :integrations,
+      :id,
+      where: 'instance = FALSE AND group_id IS NOT NULL AND organization_id IS NOT NULL',
+      name: INDEX_NAME
+    )
+  end
+
+  def down
+    remove_concurrent_index_by_name :integrations, INDEX_NAME
+  end
+end

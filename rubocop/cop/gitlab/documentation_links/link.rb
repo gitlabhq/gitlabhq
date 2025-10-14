@@ -120,7 +120,7 @@ module RuboCop
 
           def check_file_exists(node, docs_file_path)
             unless docs_file_exists?(docs_file_path)
-              add_offense(node.first_argument.loc.expression,
+              add_offense(node.first_argument,
                 message: format(MSG_FILE_NOT_FOUND, file_path: docs_file_path))
               return false
             end
@@ -130,7 +130,7 @@ module RuboCop
 
           def check_anchor_type(node, anchor)
             unless anchor.instance_of? String
-              loc = anchor_param(node)&.loc&.expression || node.first_argument.loc.expression
+              loc = anchor_param(node)&.source_range || node.first_argument.source_range
               add_offense(loc, message: MSG_ANCHOR_NOT_A_STRING)
               return false
             end
@@ -141,7 +141,7 @@ module RuboCop
           def check_anchor_exists(node, anchor, docs_file_path)
             return true if anchor_exists_in_markdown?(anchor, docs_file_path)
 
-            loc = anchor_param(node)&.loc&.expression || node.first_argument.loc.expression
+            loc = anchor_param(node)&.source_range || node.first_argument.source_range
 
             add_offense(loc, message: format(MSG_ANCHOR_NOT_FOUND, anchor: anchor, file_path: docs_file_path))
 

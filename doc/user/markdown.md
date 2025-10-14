@@ -671,6 +671,7 @@ You cannot use relative links to reference project files in a wiki
 page, or a wiki page in a project file. This limitation exists because wikis are always
 in separate Git repositories in GitLab. For example, `[I'm a reference-style link](style)`
 points to `wikis/style` only when the link is inside a wiki Markdown file.
+For more information, see [Wiki-specific Markdown](project/wiki/markdown.md).
 
 {{< /alert >}}
 
@@ -769,7 +770,7 @@ GitLab Flavored Markdown recognizes the following:
 | Specific group                                                                       | `@group_name`                                         |                                                |                                    |
 | Entire team                                                                          | [`@all`](discussions/_index.md#mentioning-all-members) |                                               |                                    |
 | Project                                                                              | `namespace/project>`                                  |                                                |                                    |
-| Issue                                                                                | ``#123`` or `[issue:123]`                             | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
+| Issue                                                                                | ``#123``, `GL-123`, or `[issue:123]`                  | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
 | [Work item](work_items/_index.md)                                                    | `[work_item:123]`                                     | `[work_item:namespace/project/123]`            | `[work_item:project/123]`          |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
 | Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
@@ -1460,7 +1461,11 @@ To generate a diagram or flowchart, write your text inside the `mermaid` block:
 
 ````markdown
 ```mermaid
-graph TD;
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Basic Mermaid diagram example
+    accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
+
   A-->B;
   A-->C;
   B-->D;
@@ -1471,7 +1476,11 @@ graph TD;
 When rendered, the example looks similar to:
 
 ```mermaid
-graph TD;
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Basic Mermaid diagram example
+    accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
+
   A-->B;
   A-->C;
   B-->D;
@@ -1482,7 +1491,11 @@ You can also include subgraphs:
 
 ````markdown
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Mermaid diagram with subgraphs
+    accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows.
+
   SubGraph1 --> SubGraph1Flow
 
   subgraph "SubGraph 1 Flow"
@@ -1502,7 +1515,11 @@ graph TB
 When rendered, the example looks similar to:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Mermaid diagram with subgraphs rendered
+    accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows as rendered.
+
   SubGraph1 --> SubGraph1Flow
 
   subgraph "SubGraph 1 Flow"
@@ -2003,6 +2020,14 @@ When rendered, the example looks similar to:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14389) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `markdown_placeholders`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Placeholders can be used to display certain types of changeable data, such as a project's title
 or latest tag. They are filled in each time the Markdown is rendered.

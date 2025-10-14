@@ -112,6 +112,10 @@ The type of mapping for user memberships depends on the
   membership. Full support for mapping shared memberships is proposed in
   [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
 
+[In GitLab 18.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/559224), when you create
+direct memberships while importing a project directly into an existing group, the
+[**Users cannot be added to projects in this group** setting](../access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) is respected.
+
 When mapping [inherited and shared](../../project/members/_index.md#membership-types) memberships, if the user
 has an existing membership in the destination namespace with a [higher role](../../permissions.md#roles) than
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
@@ -179,7 +183,7 @@ If you do not want to import all user memberships from the source instance, ensu
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../../administration/feature_flags/list.md) named `bulk_import_details_page`. Enabled by default.
 - Feature flag `bulk_import_details_page` removed in GitLab 16.8.
 - Details for partially completed and completed imports [added](https://gitlab.com/gitlab-org/gitlab/-/issues/437874) in GitLab 16.9.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443492) in GitLab 17.0, an **Imported** badge to indicate that designs, epics, issues, merge requests, notes (system notes and comments), snippets, and user profile activity were imported.
@@ -224,7 +228,7 @@ If required, you can cancel a running migration by using either the REST API or 
 
 ### Cancel with the REST API
 
-For information on cancelling a running migration with the REST API, see
+For information on canceling a running migration with the REST API, see
 [Cancel a migration](../../../api/bulk_imports.md#cancel-a-migration).
 
 ### Cancel with a Rails console
@@ -252,7 +256,7 @@ To cancel a running migration with a Rails console:
    bulk_import.fail_op!
    ```
 
-Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but prevents the
+Canceling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but prevents the
 destination instance from:
 
 - Asking the source instance for more projects to be exported.

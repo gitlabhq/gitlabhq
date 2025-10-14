@@ -3,16 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_and_projects do
-  let(:project) { create(:project, :public) }
-  let(:group) { create(:group, :public) }
-  let(:current_user) { create(:user) }
-  let(:access_requester_user) { create(:user) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:access_requester_user) { create(:user) }
   let(:access_requester) { source.requesters.find_by!(user_id: access_requester_user.id) }
   let(:opts) { {} }
   let(:params) { {} }
-  let(:custom_access_level) { Gitlab::Access::MAINTAINER }
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
+    let(:params) { { access_level: access_level_to_assign }.compact }
+    let(:access_level_to_assign) { nil }
+
     it 'raises Gitlab::Access::AccessDeniedError' do
       expect do
         described_class.new(current_user, params).execute(access_requester, **opts)
@@ -21,6 +23,8 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_a
   end
 
   shared_examples 'a service approving an access request' do
+    let(:access_level_to_assign) { Gitlab::Access::MAINTAINER }
+
     it 'succeeds' do
       expect do
         described_class.new(current_user, params).execute(access_requester, **opts)
@@ -52,21 +56,21 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_a
     end
 
     context 'with a custom access level' do
-      let(:params) { { access_level: custom_access_level } }
+      let(:params) { { access_level: access_level_to_assign } }
 
       it 'returns a ProjectMember with the custom access level' do
         result = described_class.new(current_user, params).execute(access_requester, **opts)
 
         member = result[:member]
-        expect(member.access_level).to eq(custom_access_level)
+
+        expect(member.access_level).to eq(access_level_to_assign)
       end
     end
   end
 
-  context 'when an access requester is found' do
+  context 'when an access request is made' do
     before do
-      project.request_access(access_requester_user)
-      group.request_access(access_requester_user)
+      source.request_access(access_requester_user)
     end
 
     context 'when current user is nil' do
@@ -107,60 +111,84 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_a
       end
     end
 
-    context 'when current user cannot approve access request to the project' do
-      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-        let(:source) { project }
+    context 'when the source is project' do
+      let(:source) { project }
+
+      context 'and current user is not a member' do
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
       end
 
-      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-        let(:source) { group }
+      context 'and current user is an inherited owner' do
+        before do
+          source.group.add_owner(current_user)
+        end
+
+        it_behaves_like 'a service approving an access request'
+
+        context 'when assigning owner access level' do
+          it_behaves_like 'a service approving an access request' do
+            let(:access_level_to_assign) { Gitlab::Access::OWNER }
+          end
+        end
+      end
+
+      context 'and current user is a maintainer' do
+        before do
+          source.add_maintainer(current_user)
+        end
+
+        it_behaves_like 'a service approving an access request'
+
+        context 'when assigning owner access level' do
+          it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+            let(:access_level_to_assign) { Gitlab::Access::OWNER }
+          end
+        end
+
+        context 'when assigning planner access level' do
+          it_behaves_like 'a service approving an access request' do
+            let(:access_level_to_assign) { Gitlab::Access::PLANNER }
+          end
+        end
+      end
+
+      context 'and current user is an owner' do
+        before do
+          source.add_owner(current_user)
+        end
+
+        context 'when assigning owner access level' do
+          it_behaves_like 'a service approving an access request' do
+            let(:access_level_to_assign) { Gitlab::Access::OWNER }
+          end
+        end
       end
     end
 
-    context 'when current user can approve access request to the project' do
-      before do
-        project.add_maintainer(current_user)
-        group.add_owner(current_user)
+    context 'when the source is group' do
+      let(:source) { group }
+
+      context 'and current user is not a member' do
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
       end
 
-      it_behaves_like 'a service approving an access request' do
-        let(:source) { project }
-      end
-
-      it_behaves_like 'a service approving an access request' do
-        let(:source) { group }
-      end
-    end
-
-    context 'in a project' do
-      let_it_be(:group_project) { create(:project, :public, group: create(:group, :public)) }
-
-      let(:source) { group_project }
-      let(:custom_access_level) { Gitlab::Access::OWNER }
-      let(:params) { { access_level: custom_access_level } }
-
-      before do
-        group_project.request_access(access_requester_user)
-      end
-
-      context 'maintainers' do
+      context 'and current user is a maintainer' do
         before do
-          group_project.add_maintainer(current_user)
+          source.add_maintainer(current_user)
         end
 
-        context 'cannot approve the access request of a requester to give them OWNER permissions' do
-          it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
-        end
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
       end
 
-      context 'owners' do
+      context 'and current user is an owner' do
         before do
-          # so that `current_user` is considered an `OWNER` in the project via inheritance.
-          group_project.group.add_owner(current_user)
+          source.add_owner(current_user)
         end
 
-        context 'can approve the access request of a requester to give them OWNER permissions' do
-          it_behaves_like 'a service approving an access request'
+        context 'when assigning owner access level' do
+          it_behaves_like 'a service approving an access request' do
+            let(:access_level_to_assign) { Gitlab::Access::OWNER }
+          end
         end
       end
     end

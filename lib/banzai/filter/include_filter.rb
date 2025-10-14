@@ -145,7 +145,7 @@ module Banzai
       end
 
       def ref
-        context[:ref] || repository&.root_ref
+        context[:commit_id] || context[:ref] || repository&.root_ref
       end
       strong_memoize_attr :ref
 

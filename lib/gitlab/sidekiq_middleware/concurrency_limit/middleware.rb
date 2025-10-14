@@ -37,6 +37,7 @@ module Gitlab
           yield
         ensure
           track_execution_end
+          cleanup_stale_trackers
         end
 
         private
@@ -45,6 +46,7 @@ module Gitlab
 
         def should_defer_schedule?
           return false if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
+          return false if disabled_for_worker?
           return false if job['at'] # scheduled jobs can be later assessed on enqueue
           return false if resumed?
           return false if worker_limit == 0
@@ -54,7 +56,7 @@ module Gitlab
 
         def should_defer_perform?
           return false if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
-
+          return false if disabled_for_worker?
           return false if resumed?
           return true if has_jobs_in_queue?
 
@@ -81,6 +83,12 @@ module Gitlab
           concurrency_service.track_execution_end(worker_name)
         end
 
+        def cleanup_stale_trackers
+          return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
+
+          concurrency_service.cleanup_stale_trackers(worker_name)
+        end
+
         def worker_limit
           @worker_limit ||= ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
         end
@@ -104,6 +112,15 @@ module Gitlab
 
         def current_context
           ::Gitlab::ApplicationContext.current
+        end
+
+        def disabled_for_worker?
+          Feature.enabled?(
+            :"disable_sidekiq_concurrency_limit_middleware_#{worker_name}", # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- need to check against worker name dynamically
+            Feature.current_request,
+            type: :worker,
+            default_enabled_if_undefined: false
+          )
         end
       end
     end

@@ -105,4 +105,55 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
       expect(response).to be_successful
     end
   end
+
+  describe GraphQL::Query, type: :request do
+    include GraphqlHelpers
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    describe 'shared groups' do
+      let_it_be(:shared_group_2) { create(:group, :private, name: "shared group 2") }
+      let_it_be(:group_group_link) { create(:group_group_link, shared_group: shared_group_2, shared_with_group: group) }
+
+      before do
+        shared_group.add_owner(user)
+      end
+
+      base_input_path = 'groups/show/graphql/queries/'
+      base_output_path = 'graphql/groups/'
+      query_name = 'shared_groups.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(query, current_user: user, variables: { full_path: group.full_path })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'shared projects' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_group_link) { create(:project_group_link, project: project, group: group) }
+
+      before do
+        project.add_owner(user)
+      end
+
+      base_input_path = 'groups/show/graphql/queries/'
+      base_output_path = 'graphql/projects/'
+      query_name = 'shared_projects.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(query, current_user: user, variables: { full_path: group.full_path })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+  end
 end

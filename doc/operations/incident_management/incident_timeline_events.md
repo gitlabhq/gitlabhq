@@ -34,7 +34,7 @@ They are grouped with dates and are listed in ascending order of the time when t
 To view the event timeline of an incident:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Incidents**.
+1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.
 
@@ -53,7 +53,7 @@ Prerequisites:
 To create a timeline event:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Incidents**.
+1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.
 1. Select **Add new timeline event**.
@@ -92,7 +92,7 @@ incidents are visible to anyone with access to the incident.
 To create a timeline event from a comment on the incident:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Incidents**.
+1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Create a comment or choose an existing comment.
 1. On the comment you want to add, select **Add comment to incident timeline** ({{< icon name="clock" >}}).
@@ -153,7 +153,7 @@ Prerequisites:
 To delete a timeline event:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Incidents**.
+1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.
 1. On the right of a timeline event, select **More actions** ({{< icon name="ellipsis_v" >}}) and then select **Delete**.

@@ -19,7 +19,7 @@ class DashboardController < Dashboard::ApplicationController
   before_action :check_filters_presence!, only: [:issues, :merge_requests, :search_merge_requests]
 
   before_action only: [:merge_requests] do
-    if request.query_string.present? && current_user.merge_request_dashboard_enabled?
+    if request.query_string.present?
       redirect_to merge_requests_search_dashboard_path(params: request.query_parameters), status: :moved_permanently
     end
   end
@@ -133,3 +133,5 @@ class DashboardController < Dashboard::ApplicationController
     end
   end
 end
+
+DashboardController.prepend_mod_with('DashboardController')

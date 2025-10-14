@@ -1,10 +1,13 @@
 <script>
 import { clamp } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
+import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { QUERIES } from '../constants';
 import eventHub from '../event_hub';
 
 const PER_PAGE = 20;
+const RETRY_COUNT = 3;
 
 export default {
   apollo: {
@@ -21,10 +24,20 @@ export default {
           ...this.mergeRequestQueryVariables,
         };
       },
-      error() {
-        this.error = true;
+      error(error) {
+        if (
+          error.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE &&
+          this.retryCount <= RETRY_COUNT
+        ) {
+          this.retryCount += 1;
+
+          this.$apollo.queries.mergeRequests.refetch();
+        } else {
+          this.error = true;
+          this.loading = false;
+        }
       },
-      result({ data }) {
+      result({ data, error }) {
         if (this.fromSubscription) {
           this.newMergeRequestIds = data?.currentUser?.mergeRequests?.nodes.reduce(
             (acc, mergeRequest) => {
@@ -39,9 +52,48 @@ export default {
           this.fromSubscription = false;
         } else {
           this.updateCurrentMergeRequestIds();
+
+          if (!data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage && window.gon.dot_com) {
+            const countWatcher = this.$watch(
+              'count',
+              () => {
+                if (this.count !== null) {
+                  if (this.count > this.mergeRequests?.nodes?.length) {
+                    // eslint-disable-next-line @gitlab/require-i18n-strings
+                    Sentry.captureException(new Error('Count mismatch - possible SAML issue'), {
+                      level: 'debug',
+                      tags: {
+                        samlBannerVisible: Boolean(
+                          document.querySelector('.js-saml-reauth-notice'),
+                        ).toString(),
+                        gitlabTeamMember: [...document.querySelectorAll('.js-saml-reauth-notice a')]
+                          .some((el) => el.innerText === 'gitlab-com')
+                          .toString(),
+                      },
+                      extra: {
+                        error,
+                        count: this.count,
+                        mergeRequestsCount: this.mergeRequests?.nodes?.length,
+                      },
+                    });
+                  }
+
+                  this.$nextTick(() => countWatcher());
+                }
+              },
+              { immediate: true },
+            );
+          }
         }
 
-        this.loading = false;
+        if (
+          (this.retryCount === RETRY_COUNT &&
+            error?.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE) ||
+          !error
+        ) {
+          this.loadedCount += 1;
+          this.loading = false;
+        }
       },
     },
     count: {
@@ -49,7 +101,7 @@ export default {
         return QUERIES[this.query].countQuery;
       },
       update(d) {
-        return d.currentUser?.mergeRequests?.count;
+        return d.currentUser?.mergeRequests?.count ?? 0;
       },
       variables() {
         return this.mergeRequestQueryVariables;
@@ -107,6 +159,8 @@ export default {
       newMergeRequestIds: [],
       fromSubscription: false,
       draftsCount: null,
+      retryCount: 0,
+      loadedCount: 0,
     };
   },
   computed: {
@@ -163,7 +217,7 @@ export default {
 
       await this.$apollo.queries.mergeRequests.fetchMore({
         variables: {
-          ...this.variables,
+          ...this.mergeRequestQueryVariables,
           perPage: PER_PAGE,
           afterCursor: this.mergeRequests?.pageInfo?.endCursor,
         },
@@ -182,7 +236,7 @@ export default {
     return this.$scopedSlots.default({
       mergeRequests: this.mergeRequests?.nodes || [],
       newMergeRequestIds: this.newMergeRequestIds || [],
-      count: this.count,
+      count: this.loadedCount ? this.count : null,
       hasNextPage: this.hasNextPage,
       loadMore: this.loadMore,
       loading: this.loading,

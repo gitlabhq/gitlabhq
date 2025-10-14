@@ -282,6 +282,7 @@ dependency-scanning:
       - "**/gl-sbom-*.cdx.json"
     reports:
       cyclonedx: "**/gl-sbom-*.cdx.json"
+      dependency_scanning: gl-dependency-scanning-report.json
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never

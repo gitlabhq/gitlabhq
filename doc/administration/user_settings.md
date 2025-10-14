@@ -16,13 +16,24 @@ You can modify settings for every user in your GitLab instance.
 
 ## Prerequisites
 
-- You must be an administrator of GitLab Self-Managed.
+- You must be an administrator for the instance.
 
 ## Prevent users from creating top-level groups
 
-By default, new users can create top-level groups. How you prevent users from creating top-level groups differs between new and existing users.
+Administrators can prevent users from creating top-level groups.
+
+These users:
+
+- Cannot create top-level groups.
+- Can create subgroups in groups where they have at least the Maintainer role,
+  depending on the [subgroup creation permissions](../user/group/subgroups/_index.md#change-who-can-create-subgroups)
+  for the group.
+
+This ability can be removed from all new users or only for specific existing users:
 
 ### For new users
+
+You can prevent all new users added to the instance from creating new top-level groups. This does not impact existing users.
 
 To prevent new users from creating top-level groups:
 
@@ -61,7 +72,7 @@ To prevent new users from creating top-level groups:
 
 ### For existing users
 
-To prevent existing users from creating top-level groups, use either:
+To prevent existing users from creating top-level groups while still allowing them to create subgroups, use either:
 
 - The [GitLab UI](admin_area.md#prevent-a-user-from-creating-top-level-groups).
 - The [User API](../api/users.md#modify-a-user) to modify the `can_create_group` setting.

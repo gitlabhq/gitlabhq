@@ -86,15 +86,13 @@ RSpec.describe Submodules::UpdateService, feature_category: :source_code_managem
             end
           end
 
-          # Can be re-enabled when problem from https://gitlab.com/gitlab-org/gitlab/-/issues/413964#note_1421909142
-          # is fixed
-          # context 'has traversal path' do
-          #   let(:submodule) { '../six' }
+          context 'has traversal path' do
+            let(:submodule) { '../six' }
 
-          #   it_behaves_like 'returns error result' do
-          #     let(:error_message) { 'Invalid submodule path' }
-          #   end
-          # end
+            it_behaves_like 'returns error result' do
+              let(:error_message) { 'Invalid submodule path' }
+            end
+          end
         end
 
         context 'commit_sha' do

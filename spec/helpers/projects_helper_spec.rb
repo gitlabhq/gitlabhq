@@ -1949,7 +1949,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(Gitlab::Json.parse(helper.dashboard_projects_app_data)).to eq(
         {
           'initial_sort' => 'created_desc',
-          'programming_languages' => ProgrammingLanguage.most_popular
+          'programming_languages' => ProgrammingLanguage.most_popular,
+          'base_path' => '/'
         }
       )
     end

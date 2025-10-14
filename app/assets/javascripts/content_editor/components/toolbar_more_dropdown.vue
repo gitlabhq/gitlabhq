@@ -15,6 +15,7 @@ export default {
   inject: ['tiptapEditor', 'contentEditor'],
   data() {
     return {
+      isDropdownOpen: false,
       glqlPopoverVisible: true,
       toggleId: uniqueId('dropdown-toggle-btn-'),
       items: [
@@ -33,17 +34,17 @@ export default {
         {
           text: __('Bullet list'),
           action: () => this.insertList('bulletList', 'listItem'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Ordered list'),
           action: () => this.insertList('orderedList', 'listItem'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Task list'),
           action: () => this.insertList('taskList', 'taskItem'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Horizontal rule'),
@@ -127,6 +128,8 @@ export default {
       text-sr-only
       right
       @click="glqlPopoverVisible = false"
+      @shown="isDropdownOpen = true"
+      @hidden="isDropdownOpen = false"
     >
       <template #list-item="{ item }">
         <span class="gl-flex gl-items-center gl-justify-between">
@@ -137,6 +140,8 @@ export default {
         </span>
       </template>
     </gl-disclosure-dropdown>
-    <gl-tooltip :target="toggleId" placement="top">{{ __('More options') }}</gl-tooltip>
+    <gl-tooltip v-if="!isDropdownOpen" :target="toggleId" placement="top">
+      {{ __('More options') }}
+    </gl-tooltip>
   </div>
 </template>

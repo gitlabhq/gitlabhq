@@ -29,13 +29,13 @@
         = s_('Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials.')
   = render_if_exists 'shared/ee/import_form', f: f, ci_cd_only: ci_cd_only
   .row
-    .form-group.col-md-6
+    .form-group.gl-col-md-6
       = f.label :import_url_user, class: 'label-bold' do
         %span
           = _('Username (optional)')
       = f.text_field :import_url_user, value: import_url.user, class: 'form-control gl-form-input', required: false, autocomplete: 'new-password'
 
-    .form-group.col-md-6
+    .form-group.gl-col-md-6
       = f.label :import_url_password, class: 'label-bold' do
         %span
           = _('Password (optional)')

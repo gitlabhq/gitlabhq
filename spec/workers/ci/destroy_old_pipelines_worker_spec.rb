@@ -8,10 +8,10 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
   let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 1.month.ago, locked: :unlocked) }
   let_it_be(:new_pipeline) { create(:ci_pipeline, project: project, created_at: 1.week.ago, locked: :unlocked) }
 
+  let(:cleanup_queue) { Ci::RetentionPolicies::ProjectsCleanupQueue.instance }
+
   before do
-    Gitlab::Redis::SharedState.with do |redis|
-      redis.rpush(Ci::ScheduleOldPipelinesRemovalCronWorker::QUEUE_KEY, [project.id])
-    end
+    cleanup_queue.enqueue!(project)
   end
 
   describe '#perform' do

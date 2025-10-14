@@ -45,7 +45,8 @@ Prerequisites:
 
 To configure approval rules:
 
-1. Go to your project's **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Settings** > **Merge requests**.
 1. Go to the **Merge request approvals** section.
 1. Set up your desired rules.
 
@@ -96,7 +97,7 @@ merge requests for your project or group.
 To view the approval status:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to **Code > Merge requests** and find your merge request.
+1. On the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. To view the merge request, select its title.
 1. Go to the merge request widget to see the approval status. In this example, you can approve the merge request:
 
@@ -122,10 +123,10 @@ Approver visibility depends on your project membership, and group privacy:
 The list of merge requests for [your project or group](../_index.md#view-merge-requests)
 shows the approval status for each merge request:
 
-|                                       Example                                       | Description                                                                                     |
-|:-----------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------|
-|         ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png)         | Required approvals are missing. ({{< icon name="approval" >}})                                  |
-|            ![Approvals are satisfied](img/approvals_satisfied_v17_1.png)            | Approvals are satisfied. ({{< icon name="check" >}})                                            |
+|                                       Example                                       | Description |
+|:-----------------------------------------------------------------------------------:|-------------|
+|         ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png)         | Required approvals are missing. ({{< icon name="approval" >}}) |
+|            ![Approvals are satisfied](img/approvals_satisfied_v17_1.png)            | Approvals are satisfied. ({{< icon name="check" >}}) |
 | ![Approvals are satisfied, and you approved](img/you_approvals_satisfied_v17_1.png) | Approvals are satisfied, and you are one of the approvers. ({{< icon name="approval-solid" >}}) |
 
 ### Individual reviewer status
@@ -151,7 +152,7 @@ To [re-request a review](../reviews/_index.md#re-request-a-review), select the *
 
 Eligible approvers can approve merge requests in two ways:
 
-1. Select **Approve** in the merge request widget.
+1. In the merge request widget, select **Approve**.
 1. Use the `/approve` [quick action](../../quick_actions.md) in a comment.
 
 Approved merge requests display a green check mark ({{< icon name="check-circle-filled" >}}) next to the user's name in the reviewer list.

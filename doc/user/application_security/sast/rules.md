@@ -12,22 +12,26 @@ title: SAST rules
 
 {{< /details >}}
 
-GitLab SAST uses a set of [analyzers](analyzers.md) to scan code for potential vulnerabilities.
-It automatically chooses which analyzers to run based on which programming languages are found in the repository.
+GitLab static application security testing (SAST) uses a set of [analyzers](analyzers.md) to scan
+code for potential vulnerabilities. It automatically chooses which analyzers to run based on which
+programming languages are found in the repository.
 
 Each analyzer processes the code, then uses rules to find possible weaknesses in source code.
 The analyzer's rules determine what types of weaknesses it reports.
 
 ## Scope of rules
 
-GitLab SAST focuses on security weaknesses and vulnerabilities. It does not aim to find general bugs or assess overall code quality or maintainability.
+SAST focuses on security weaknesses and vulnerabilities. It does not aim to find general bugs or assess overall code quality or maintainability.
 
 GitLab manages the detection ruleset with a focus on identifying actionable security weaknesses and vulnerabilities.
 The ruleset is designed to provide broad coverage against the most impactful vulnerabilities while minimizing false positives (reported vulnerabilities where no vulnerability exists).
 
-GitLab SAST is designed to be used in its default configuration, but you can [configure detection rules](#configure-rules-in-your-projects) if needed.
+SAST is designed to be used in its default configuration, but you can [configure detection rules](#configure-rules-in-your-projects) if needed.
 
 ## Source of rules
+
+The vulnerability detection rules used by SAST depends on the analyzer used, either GitLab Advanced
+SAST or the Semgrep-based analyzer.
 
 ### GitLab Advanced SAST
 
@@ -102,7 +106,7 @@ To control the rollout of rule changes, you can [pin SAST analyzers to a specifi
 If you want to make these changes at the same time across multiple projects, consider setting the variables in:
 
 - [Group-level CI/CD variables](../../../ci/variables/_index.md#for-a-group).
-- Custom CI/CD variables in a [Scan Execution Policy](../policies/scan_execution_policies.md).
+- Custom CI/CD variables in a [scan execution policy](../policies/scan_execution_policies.md).
 
 ## Report a problem with a GitLab SAST rule
 <!-- This title is intended to match common search queries users might make. -->
@@ -116,8 +120,8 @@ Contributions might address:
 
 If you believe a detection rule could be improved for all users, consider:
 
-- Submitting a merge request to [the `sast-rules` repository](https://gitlab.com/gitlab-org/security-products/sast-rules). See the [contribution instructions](https://gitlab.com/gitlab-org/security-products/sast-rules#contributing) for details.
-- Filing an issue in [the `gitlab-org/gitlab` issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/).
+- Submitting a merge request to the [`sast-rules` repository](https://gitlab.com/gitlab-org/security-products/sast-rules). See the [contribution instructions](https://gitlab.com/gitlab-org/security-products/sast-rules#contributing) for details.
+- Filing an issue in the [`gitlab-org/gitlab` issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/).
   - Post a comment that says `@gitlab-bot label ~"group::static analysis" ~"Category:SAST"` so your issue lands in the correct triage workflow.
 
 ## Important rule changes

@@ -1,0 +1,7 @@
+<%= say_hi(@user) %>
+
+<%= _('A WebAuthn device has been deleted from your GitLab account.') %>
+
+<%= _('- Device name: %{device_name}') % { device_name: sanitize_name(@device_name) } %>
+
+<%= re_enable_two_factor_authentication_text %>

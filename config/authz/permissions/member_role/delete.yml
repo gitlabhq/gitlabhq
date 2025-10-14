@@ -1,0 +1,4 @@
+---
+name: delete_member_role
+description: Grants the ability to delete member roles
+feature_category: system_access

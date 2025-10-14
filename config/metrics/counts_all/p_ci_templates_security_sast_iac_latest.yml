@@ -2,21 +2,23 @@
 data_category: optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_sast_iac_latest
 description: Count of distinct projects that included the Security/SAST-IaC.latest.gitlab-ci.yml template in a pipeline
-product_group: "static_analysis"
+product_group: static_analysis
 value_type: number
 status: active
-milestone: "14.5"
+milestone: '14.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73076
 time_frame:
 - 28d
 - 7d
-data_source: redis_hll
-instrumentation_class: RedisHLLMetric
+data_source: internal_events
 performance_indicator_type: []
 tiers:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - p_ci_templates_security_sast_iac_latest
+events:
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: security_sast_iac_latest
+    property: 'false'

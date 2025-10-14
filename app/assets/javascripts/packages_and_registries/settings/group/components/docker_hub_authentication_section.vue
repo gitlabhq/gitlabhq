@@ -91,7 +91,9 @@ export default {
         {{ errorMessage }}
       </gl-alert>
       <gl-form @submit.prevent="handleSubmit">
-        <div class="gl-flex gl-flex-col gl-gap-5 md:gl-flex-row md:gl-justify-between">
+        <div
+          class="gl-flex gl-flex-col gl-gap-5 @md/panel:gl-flex-row @md/panel:gl-justify-between"
+        >
           <gl-form-group
             class="gl-grow gl-basis-0"
             :label="s__('DependencyProxy|Identity')"

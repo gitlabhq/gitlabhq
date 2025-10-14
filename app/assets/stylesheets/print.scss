@@ -100,4 +100,24 @@
   .with-performance-bar .layout-page, .content-wrapper {
     padding-top: 0;
   }
+
+  .panels-container .panel-content-inner,
+  .panels-container .vue-portal-target .work-item-drawer-content {
+    height: auto !important;
+    overflow-y: visible !important;
+  }
+
+  .panel-content {
+    height: auto !important;
+    overflow: visible !important;
+    contain: none !important;
+  }
+
+  .paneled-view {
+    overflow: visible !important;
+  }
+
+  .page-with-panels .layout-page {
+    height: auto !important;
+  }
 }

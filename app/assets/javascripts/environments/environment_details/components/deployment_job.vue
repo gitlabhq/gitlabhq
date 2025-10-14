@@ -26,7 +26,10 @@ export default {
 };
 </script>
 <template>
-  <div v-if="job" class="gl-mb-2 gl-flex gl-flex-wrap gl-justify-end gl-gap-2 lg:gl-justify-start">
+  <div
+    v-if="job"
+    class="gl-mb-2 gl-flex gl-flex-wrap gl-justify-end gl-gap-2 @lg/panel:gl-justify-start"
+  >
     <component :is="jobPath ? 'gl-link' : 'span'" :href="jobPath">
       <gl-truncate :text="job.label" />
     </component>

@@ -11,9 +11,14 @@ title: CLI agents
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): No
 
 {{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): No
+
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -76,12 +81,12 @@ If you are on GitLab Self-Managed or GitLab Dedicated, you must
 ### AI model provider credentials
 
 To integrate your CLI agent with a third-party AI model provider, you must have access credentials.
-You can use an AI model provider API key or GitLab-managed credentials.
+You can use either an API key for that model provider or GitLab-managed credentials.
 
-#### AI model provider API key
+#### API keys
 
-To integrate your CLI agent with a third-party AI model provider, you need an API key
-for that model provider:
+To integrate your CLI agent with a third-party AI model provider,
+you can use an API key for that model provider:
 
 - For Anthropic Claude and Opencode, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
 - For OpenAI Codex, use an [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication).
@@ -109,19 +114,19 @@ The following environment variables are automatically injected when `injectGatew
 - `AI_FLOW_AI_GATEWAY_TOKEN`: the authentication token for AI Gateway
 - `AI_FLOW_AI_GATEWAY_HEADERS`: formatted headers for API requests
 
-GitLab-managed credentials are available only for Anthropic Claude.
+GitLab-managed credentials are available only for Anthropic Claude and Codex.
 
 ## Create a service account
 
 Prerequisites:
 
-- On GitLab.com, you must have the Owner role in the top-level group that the project belongs to.
-- On GitLab Self-Managed and GitLab Dedicated, you must either:
+- On GitLab.com, you must have the Owner role for the top-level group the project belongs to.
+- On GitLab Self-Managed and GitLab Dedicated, you must have one of the following:
+  - Administrator access to the instance.
+  - The Owner role for a top-level group and
+    [permission to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
-  - Be an administrator for the instance.
-  - Have the Owner role in a top-level group and [be allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
-
-There must be a unique [service account](../../user/profile/service_accounts.md)
+A unique [service account](../../user/profile/service_accounts.md) must exist
 for each project where you want to mention a CLI agent. The service account username
 is the name you mention when giving the CLI agent a task.
 
@@ -149,22 +154,22 @@ of the service account. If you enter the wrong name, the CLI agent does not work
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the project.
+- You must have at least the Maintainer role for the project.
 
 Add the following CI/CD variables to your project's settings:
 
-| Integration         | Environment Variable      | Definition |
-|---------------------|---------------------------|------------|
-| All                 | `GITLAB_TOKEN_<integration>`   | Personal access token for the service account user |
-| All                 | `GITLAB_HOST`                  | GitLab instance hostname (for example, `gitlab.com`) |
-| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`  | Anthropic API key (optional when `injectGatewayToken: true` is set) |
-| OpenAI Codex        | `OPENAI_API_KEY`               | OpenAI API key |
-| Amazon Q            | `AWS_SECRET_NAME`              | AWS Secret Manager secret name |
-| Amazon Q            | `AWS_REGION_NAME`              | AWS region name |
-| Amazon Q            | `AMAZON_Q_SIGV4`               | Amazon Q Sig V4 credentials |
-| Google Gemini CLI   | `GOOGLE_CREDENTIALS`           | JSON credentials file contents |
-| Google Gemini CLI   | `GOOGLE_CLOUD_PROJECT`         | Google Cloud project ID |
-| Google Gemini CLI   | `GOOGLE_CLOUD_LOCATION`        | Google Cloud project location |
+| Integration                | Environment variable         | Description |
+|----------------------------|------------------------------|-------------|
+| All                        | `GITLAB_TOKEN_<integration>` | Personal access token for the service account user. |
+| All                        | `GITLAB_HOST`                | GitLab instance hostname (for example, `gitlab.com`). |
+| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`          | Anthropic API key (optional when `injectGatewayToken: true` is set). |
+| OpenAI Codex               | `OPENAI_API_KEY`             | OpenAI API key. |
+| Amazon Q                   | `AWS_SECRET_NAME`            | AWS Secret Manager secret name. |
+| Amazon Q                   | `AWS_REGION_NAME`            | AWS region name. |
+| Amazon Q                   | `AMAZON_Q_SIGV4`             | Amazon Q Sig V4 credentials. |
+| Google Gemini CLI          | `GOOGLE_CREDENTIALS`         | JSON credentials file contents. |
+| Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
+| Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
 
 To add or update a variable in the project settings:
 
@@ -192,7 +197,7 @@ For more information, see how to [add CI/CD variables to a project's settings](.
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Developer role for the project.
 
 To tell GitLab how to run the CLI agent for your environment, in your project,
 create a flow configuration file. For example, `.gitlab/duo/flows/claude.yaml`.
@@ -243,29 +248,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information, then please post back a note to the merge request / issue so that the user can see it.
+
     </important>
     "
-  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Claude Code changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - GITLAB_TOKEN_CLAUDE
   - GITLAB_HOST
@@ -275,10 +269,12 @@ variables:
 
 ```yaml
 image: node:22-slim
+injectGatewayToken: true
 commands:
   - echo "Installing codex"
   - npm install --global @openai/codex
   - echo "Installing glab"
+  - export OPENAI_API_KEY=$AI_FLOW_AI_GATEWAY_TOKEN
   - export GITLAB_TOKEN=$GITLAB_TOKEN_CODEX
   - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
   - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
@@ -288,7 +284,31 @@ commands:
   - git config --global user.name "OpenAI Codex"
   - echo "Running Codex"
   - |
-    codex exec --dangerously-bypass-approvals-and-sandbox "
+    # Parse AI_FLOW_AI_GATEWAY_HEADERS (newline-separated "Key: Value" pairs)
+    header_str="{"
+    first=true
+    while IFS= read -r line; do
+      # skip empty lines
+      [ -z "$line" ] && continue
+      key="${line%%:*}"
+      value="${line#*: }"
+      if [ "$first" = true ]; then
+        first=false
+      else
+        header_str+=", "
+      fi
+      header_str+="\"$key\" = \"$value\""
+    done <<< "$AI_FLOW_AI_GATEWAY_HEADERS"
+    header_str+="}"
+
+    codex exec \
+      --config 'model_provider="gitlab"' \
+      --config 'model_providers.gitlab.name="GitLab Managed Codex"' \
+      --config 'model_providers.gitlab.base_url="https://cloud.gitlab.com/ai/v1/proxy/openai/v1"' \
+      --config 'model_providers.gitlab.env_key="OPENAI_API_KEY"' \
+      --config 'model_providers.gitlab.wire_api="responses"' \
+      --config "model_providers.gitlab.http_headers=${header_str}" \
+      --dangerously-bypass-approvals-and-sandbox "
     You are an AI assistant helping with GitLab operations.
 
     Context: $AI_FLOW_CONTEXT
@@ -299,32 +319,19 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
-    You don't need to commit or push up changes, those will be done automatically based on the file changes you make.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user Codex.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    glab mr create --title \"<title>\" --description \"<desc>\" --source-branch \"<branch>\" --target-branch \"<branch>\"
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+
     </important>
     "
-  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Codex changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
-  - OPENAI_API_KEY
   - GITLAB_TOKEN_CODEX
   - GITLAB_HOST
 ```
@@ -362,30 +369,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
-    You don't need to commit or push up changes, those will be done automatically based on the file changes you make.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+
     </important>
     "
-  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Codex changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - ANTHROPIC_API_KEY
   - GITLAB_TOKEN_OPENCODE
@@ -466,29 +461,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a MR doesn't already exist, create a new MR for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+
     </important>
     "
-  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Amazon Q Code changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN_AMAZON_Q@$GITLAB_HOST/internal-test/q-words-demo.git $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - GITLAB_TOKEN_AMAZON_Q
   - GITLAB_HOST
@@ -526,31 +510,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
 
-    When generating the shell commands, avoid using $(), <(), or >(), so you don't raise: Error executing tool run_shell_command: Command substitution using $(), <(), or >() is not allowed for security reasons
+    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+
     </important>
     "
-  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Gemini Code changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - GITLAB_TOKEN_GEMINI
   - GITLAB_HOST
@@ -559,26 +530,81 @@ variables:
   - GOOGLE_CLOUD_LOCATION
 ```
 
-## Configure a flow trigger
+#### Cursor CLI
+
+```yaml
+image: node:22-slim
+commands:
+  - echo "Installing Cursor"
+  - apt-get update --quiet && apt-get install --yes curl wget gnupg2 gpg git && rm --recursive --force /var/lib/apt/lists/*
+  - curl --silent --show-error --location "https://cursor.com/install" | bash
+  - echo "Installing glab"
+  - export GITLAB_TOKEN=$GITLAB_TOKEN_CURSOR
+  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
+  - apt-get install --yes glab
+  - echo "Configuring Git"
+  - git config --global user.email "cursor@gitlab.com"
+  - git config --global user.name "Cursor"
+  - echo "Running Cursor"
+  - |
+    $HOME/.local/bin/cursor-agent -p --force --output-format stream-json "--prompt "
+    You are an AI assistant helping with GitLab operations.
+
+    Context: $AI_FLOW_CONTEXT
+    Task: $AI_FLOW_INPUT
+    Event: $AI_FLOW_EVENT
+
+    Please execute the requested task using the available GitLab tools.
+    Be thorough in your analysis and provide clear explanations.
+
+    <important>
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user Cursor.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+
+    </important>
+    "
+variables:
+  - GITLAB_TOKEN_CURSOR
+  - GITLAB_HOST
+  - CURSOR_API_KEY
+```
+
+## Create a flow trigger
+
+{{< history >}}
+
+- **Assign** event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567787) in GitLab 18.5.
+
+{{< /history >}}
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the project.
+- You must have at least the Maintainer role for the project.
 
 The flow trigger links the service account, the flow configuration file, and the
 action that the user takes to trigger the CLI agent.
 
+To create a flow trigger:
+
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flow triggers**.
-1. Select **Create flow trigger**.
+1. Select **New flow trigger**.
 1. Complete the fields:
-   - **Description**: Enter a description for the flow trigger.
-   - **Event types**: Select one of the following event types:
-     - **Mention**.
-   - **Service account user**: From the **Service account user** dropdown list,
+   - In **Description**, enter a description for the flow trigger.
+   - From the **Event types** dropdown list, select one or more event types:
+     - **Mention**: when the service account user is mentioned in a comment on an issue or merge request.
+     - **Assign**: when the service account user is assigned to an issue or merge request.
+   - From the **Service account user** dropdown list,
      select the service account user.
-   - **Config Path**: Enter the location of the flow configuration file.
-     For example `.gitlab/duo/flows/claude.yaml`.
+   - In **Config path**, enter the location of the flow configuration file
+     (for example `.gitlab/duo/flows/claude.yaml`).
 1. Select **Create flow trigger**.
 
 You have created the flow trigger. Check that it appears in **Automate** > **Flow triggers**.
@@ -604,7 +630,7 @@ a task. The CLI agent then tries to accomplish that task, using the flow trigger
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Developer role for the project.
 
 1. In your project, open an issue, merge request, or epic.
 1. Add a comment on the task you want the CLI agent to complete, mentioning the service account user.

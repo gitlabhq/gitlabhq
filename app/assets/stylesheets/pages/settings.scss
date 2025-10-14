@@ -52,7 +52,7 @@
 .settings-section-no-bottom::after {
   padding-bottom: 0 !important;
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     @apply gl-pb-5;
   }
 }

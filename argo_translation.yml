@@ -2,6 +2,7 @@ source_language: en-us
 target_languages: [ja-jp]
 argo_request_key: GITTECH
 translation_mr_labels: [gitlab-translation-service]
+translation_mr_branch_name: docs-i18n/
 components:
   - name: Technical Documentation
     create_request: false
@@ -13,3 +14,11 @@ components:
       - 'doc/architecture/**'
       - 'doc/drawers/**'
       - 'doc/development/**'
+      - 'doc/user/markdown.md'
+
+  # Special files that need a specific template to process
+  - name: Technical Documentation markdown.md
+    create_request: false
+    paths:
+      - source: 'doc/user/markdown.md'
+        target: 'doc-locale/{{language}}/user/markdown.md'

@@ -75,7 +75,7 @@ you might get the error `Subscription not allowed to add...`.
 
 This issue occurs when you have an active subscription that:
 
-- Was [purchased through a reseller](../customers_portal.md#subscription-purchased-through-a-reseller).
+- Was [purchased through a reseller](../billing_account.md#subscription-purchased-through-a-reseller).
 - Is a multi-year subscription.
 
 To resolve this issue, contact your [GitLab sales representative](https://customers.gitlab.com/contact_us) to assist you with the purchase.

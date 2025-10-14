@@ -17,9 +17,22 @@ The purpose of this document is to provide guidance on:
 
 ### Introducing New Permissions
 
-Introduce a new permission only when absolutely necessary. Always try to use an existing one first. For example, there's no need for a `read_issue_description` permission when we already have `read_issue`, and both require the same role. Similarly, with `create_pipeline` available, we don't need `create_build`.
+Introduce a new permission only when absolutely necessary. Always try to use an existing one first. For example, there's no need for a `read_issue_description` permission when we already have `read_issue`, and both require the same level of access. As a general guideline, a permission can be reused when the subject and action are the same. In the previous example the subject would be an `issue` and the action would be `read`. There is no need to create a new permission for each attribute of an issue a user may be able to read.
 
-When introducing a new permission, always attempt to follow the naming conventions. Try to create a general permission, not a specific one. For example, it is better to add a permission `create_member_role` than `create_member_role_name`. If you're unsure, consult a Backend Engineer from the [Govern - Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/) for advice or approval for exceptions.
+An example for when you should introduce a permission is when the permission is very broad, such as `admin_project`. In this case the permission is vague and is granted to project maintainers.
+In theory, this permission can be used to control access to manage CI/CD variables in a project since that capability is granted to maintainers. Unfortunately, it is not clear by looking at the permission check what we are authorizing when a broad permission is used.
+Additionally using permissions such as `admin_cicd_variable` or `manage_cicd_variable` should be avoided because they imply different actions that are being authorized. Instead, the action should be specific such as `create_cicd_variable` or `read_cicd_variable`.
+Implementing granular permissions allows us to adhere to the principle of least privilege for custom roles and provides much more fine grained options for standard roles.
+
+### Permission Definition File
+
+Each permission should have a corresponding definition file. These files are used to build documentation and enable a permissions-first architecture around authorization logic.
+
+To generate a new definition file, run the following command.
+
+```shell
+bundle exec rails generate authz:permission <permission_name>
+```
 
 ### Naming Permissions
 
@@ -31,9 +44,7 @@ Our goal is for all permissions to follow a consistent pattern: `action_resource
 - `delete` - for deleting an object. For example, `delete_issue`.
 - `push` and `download` - these are specific actions for file-related permissions. Other industry terms can be permitted after a justification.
 
-We recognize that this set of actions is limited and not applicable to every feature. Here are some actions that, while necessary, should be rephrased to align with the above conventions:
-
-- `approve` - For example, `approve_merge_request`. Though `approve` suggests a lower role than `manage`, it could be rephrased as `create_merge_request_approval`.
+We recognize that this set of actions is limited and not applicable to every feature. If you're unsure about a new permission name, consult a member of the [Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization/#group-members) for advice or approval for exceptions.
 
 #### Preferred Actions
 

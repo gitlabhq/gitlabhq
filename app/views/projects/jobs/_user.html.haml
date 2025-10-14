@@ -1,7 +1,7 @@
 by
 %a{ href: user_path(@build.user) }
-  %span.gl-hidden.sm:gl-inline
+  %span.gl-hidden{ class: "@sm/panel:gl-inline" }
     = render Pajamas::AvatarComponent.new(@build.user, size: 24, alt: "")
     %strong{ data: { toggle: 'tooltip', placement: 'top', title: @build.user.to_reference } }
       = @build.user.name
-  %strong.gl-inline.sm:gl-hidden= @build.user.to_reference
+  %strong.gl-inline{ class: "@sm/panel:gl-hidden" }= @build.user.to_reference

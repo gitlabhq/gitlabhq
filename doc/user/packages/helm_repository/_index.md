@@ -111,7 +111,6 @@ upload:
 
 {{< alert type="note" >}}
 
-When requesting a package, GitLab considers only the most recent packages up to the configured limit (default is 1000 packages, configurable by administrators).
 For each package, only the most recent package file is returned.
 
 {{< /alert >}}

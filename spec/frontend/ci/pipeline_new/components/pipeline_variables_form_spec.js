@@ -1,5 +1,4 @@
 import { GlFormGroup, GlLoadingIcon } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -100,7 +99,8 @@ describe('PipelineVariablesForm', () => {
   const findInputsAdoptionBanner = () => wrapper.findComponent(InputsAdoptionBanner);
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row-container');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
-  const findRemoveButton = () => wrapper.findByTestId('remove-ci-variable-row');
+  const findRemoveButton = () => wrapper.findByTestId('remove-ci-variable-button');
+  const findRemoveButtonDesktop = () => wrapper.findByTestId('remove-ci-variable-button-desktop');
   const findMarkdown = () => wrapper.findComponent(Markdown);
   const findDropdownForVariable = () =>
     wrapper.findByTestId('pipeline-form-ci-variable-value-dropdown');
@@ -298,36 +298,33 @@ describe('PipelineVariablesForm', () => {
     });
   });
 
-  describe('variable removal', () => {
-    it('shows remove button with correct aria-label', async () => {
-      await createComponent({
-        props: { variableParams: { VAR1: 'value1', VAR2: 'value2' } },
-      });
-
-      expect(findRemoveButton().exists()).toBe(true);
-      expect(findRemoveButton().attributes('aria-label')).toBe('Remove variable');
-    });
-  });
-
-  describe('responsive design', () => {
-    it('uses secondary button category on mobile', async () => {
-      GlBreakpointInstance.getBreakpointSize.mockReturnValue('sm');
+  describe('variable removal with responsive design', () => {
+    beforeEach(async () => {
       await createComponent({
         props: { variableParams: { VAR1: 'value1' } },
       });
+    });
 
+    it('uses secondary button category on mobile', () => {
       expect(findRemoveButton().exists()).toBe(true);
+
+      expect(findRemoveButton().props('size')).toBe('medium');
+      expect(findRemoveButton().props('icon')).toBe('remove');
+      expect(findRemoveButton().props('disabled')).toBe(false);
       expect(findRemoveButton().props('category')).toBe('secondary');
+
+      expect(findRemoveButton().text()).toBe('Remove variable');
     });
 
-    it('uses tertiary button category on desktop', async () => {
-      GlBreakpointInstance.getBreakpointSize.mockReturnValue('md');
-      await createComponent({
-        props: { variableParams: { VAR1: 'value1' } },
-      });
+    it('uses tertiary button category on desktop', () => {
+      expect(findRemoveButtonDesktop().exists()).toBe(true);
 
-      expect(findRemoveButton().exists()).toBe(true);
-      expect(findRemoveButton().props('category')).toBe('tertiary');
+      expect(findRemoveButtonDesktop().props('size')).toBe('medium');
+      expect(findRemoveButtonDesktop().props('icon')).toBe('remove');
+      expect(findRemoveButtonDesktop().props('disabled')).toBe(false);
+      expect(findRemoveButtonDesktop().props('category')).toBe('tertiary');
+
+      expect(findRemoveButtonDesktop().attributes('aria-label')).toBe('Remove variable');
     });
   });
 

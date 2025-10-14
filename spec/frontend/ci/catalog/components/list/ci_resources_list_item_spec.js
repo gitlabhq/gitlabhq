@@ -112,7 +112,8 @@ describe('CiResourcesListItem', () => {
 
     it('hides the resource description on mobile devices', () => {
       const markdown = findMarkdown();
-      expect(markdown.classes()).toEqual(expect.arrayContaining(['gl-hidden', 'md:gl-block']));
+      expect(markdown.classes('gl-hidden')).toBe(true);
+      expect(markdown.classes('@md/panel:gl-block')).toBe(true);
     });
   });
 

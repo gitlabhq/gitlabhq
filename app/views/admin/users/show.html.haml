@@ -1,11 +1,11 @@
 - add_to_breadcrumbs _("Users"), admin_users_path
 - breadcrumb_title @user.name
 - page_title @user.name, _("Users")
-- list_item_classes = '!gl-grid md:gl-grid-cols-3 gl-gap-x-3'
+- list_item_classes = '!gl-grid @md/panel:gl-grid-cols-3 gl-gap-x-3'
 = render 'admin/users/head'
 
 .row
-  .col-md-6
+  .gl-col-md-6
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-2'}) do |c|
       - c.with_header do
         = @user.name
@@ -19,7 +19,7 @@
               = link_to user_path(@user) do
                 = @user.username
     -# Rendered on mobile only so order of cards can be different on desktop vs mobile
-    .md:gl-hidden
+    %div{ class: "@md/panel:gl-hidden" }
       = render 'admin/users/profile', user: @user
       = render 'admin/users/user_detail_note'
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-2'}) do |c|
@@ -197,6 +197,6 @@
     = render 'shared/custom_attributes', custom_attributes: @user.custom_attributes
 
   -# Rendered on desktop only so order of cards can be different on desktop vs mobile
-  .col-md-6.gl-hidden.md:gl-block
+  .gl-col-md-6.gl-hidden{ class: "@md/panel:gl-block" }
     = render 'admin/users/profile', user: @user
     = render 'admin/users/user_detail_note'

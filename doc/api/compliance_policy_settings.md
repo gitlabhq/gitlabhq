@@ -16,14 +16,9 @@ title: Compliance and policy settings API
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17392) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/550318) on GitLab Self-Managed in GitLab 18.3.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/17392) in GitLab 18.5. Feature flag `security_policies_csp` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 Use this API to interact with the security policy settings for your GitLab instance.
 

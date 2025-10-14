@@ -30,6 +30,10 @@ module QA
           element 'preferences-item'
         end
 
+        view 'app/assets/javascripts/super_sidebar/components/user_menu_project_studio_section.vue' do
+          element 'toggle-project-studio-link'
+        end
+
         view 'app/assets/javascripts/super_sidebar/components/user_menu_profile_item.vue' do
           element 'user-profile-link'
         end
@@ -101,6 +105,22 @@ module QA
           end
           # we need to close user menu because plain user link check will leave it open
           click_element 'user-avatar-content' if has_element?('user-profile-link', wait: 0)
+        end
+
+        def enable_project_studio
+          click_element 'user-avatar-content'
+
+          if find_element('toggle-project-studio-link').find('button[role="switch"]')['aria-checked'] == 'false'
+            QA::Runtime::Logger.info("Enabling Project Studio UI")
+            click_element 'toggle-project-studio-link'
+            expand_sidebar_if_collapsed
+          else
+            QA::Runtime::Logger.info("Project Studio UI already enabled!")
+          end
+
+          # Close user menu
+          click_element 'user-avatar-content' if has_element?('user-profile-link', wait: 0)
+          wait_for_requests
         end
 
         def not_signed_in?
@@ -179,11 +199,9 @@ module QA
         private
 
         def within_user_menu(&block)
-          within_element('super-sidebar') do
-            click_element 'user-avatar-content' unless has_element?('user-profile-link', wait: 1)
+          click_element 'user-avatar-content' unless has_element?('user-profile-link', wait: 1)
 
-            within_element('user-dropdown', &block)
-          end
+          within_element('user-dropdown', &block)
         end
       end
     end

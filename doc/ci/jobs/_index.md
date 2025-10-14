@@ -216,6 +216,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 {{< history >}}
 
 - Job name filter [added](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags/_index.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512149) in GitLab 18.5. Feature flags `populate_and_use_build_names_table` and `fe_search_build_by_name` removed.
 - Job kind filter [added](https://gitlab.com/gitlab-org/gitlab/-/issues/555434) in GitLab 18.3.
 
 {{< /history >}}
@@ -223,7 +224,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 To view jobs that ran in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Jobs**.
+1. Select **Build** > **Jobs**.
 
 You can filter the list by job status, source, name, and kind.
 
@@ -390,7 +391,7 @@ To retry a job from the job log:
 To retry a job from a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to retry.
 1. From the pipeline graph, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
 
@@ -400,7 +401,7 @@ If a pipeline has multiple failed or canceled jobs, you can retry all of them at
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Do one of the following:
-   - Select **Build > Pipelines**.
+   - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.
 1. For the pipeline with failed or canceled jobs, select **Retry all failed or canceled jobs** ({{< icon name="retry" >}}).
 
@@ -462,7 +463,7 @@ To cancel a job from the job log:
 To cancel a job from a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to cancel.
 1. From the pipeline graph, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
 
@@ -472,7 +473,7 @@ You can cancel all jobs in a running pipeline at once.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Do one of the following:
-   - Select **Build > Pipelines**.
+   - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.
 1. For the pipeline you want to cancel, select **Cancel the running pipeline** ({{< icon name="cancel" >}}).
 

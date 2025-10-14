@@ -1,0 +1,15 @@
+---
+table_name: virtual_registries_container_cache_entries
+classes:
+  - VirtualRegistries::Container::Cache::Entry
+feature_categories:
+  - virtual_registry
+description: Cache entry for the virtual registry for containers. Mainly the body
+  of a response of a container registry upstream for a file web request. Contains
+  references to an object storage file.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199567
+milestone: '18.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
+table_size: small

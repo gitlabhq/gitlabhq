@@ -43,7 +43,7 @@ module WorkItems
           :events, :assignment_events, :resource_state_events, :metrics,
           :incident_management_issuable_escalation_status, :incident_management_timeline_events, :issuable_severity,
           :sentry_issue, :alert_management_alert, :alert_management_alerts, :user_agent_detail, :zoom_meetings,
-          :search_data, :work_item_transition
+          :search_data, :work_item_transition, :work_item_description
         ]
       }.freeze
 

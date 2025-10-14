@@ -21,6 +21,16 @@ Ensure you review these instructions for:
 For additional information for Helm chart installations, see
 [the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0.html).
 
+## Required upgrade stops
+
+To provide a predictable upgrade schedule for instance administrators,
+required upgrade stops occur at versions:
+
+- `18.2`
+- `18.5`
+- `18.8`
+- `18.11`
+
 ## Issues to be aware of when upgrading from 16.11
 
 - [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
@@ -47,17 +57,37 @@ For additional information for Helm chart installations, see
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.5.0
+
+- A [post deployment migration](../../development/database/post_deployment_migrations.md)
+  `20250922202128_finalize_correct_design_management_designs_backfill` finalizes a
+  batched [background migration](../background_migrations.md) that was scheduled in 18.4.
+  If you skipped 18.4 in the upgrade path, the migration is fully executed when
+  post deployment migrations are run.
+  Execution time is directly related to the size of your `design_management_designs` table.
+  For most instances the migration should not take longer than 2 minutes, but for some larger instances,
+  it could take up to 10 minutes.
+  Please be patient and don't interrupt the migration process.
+
+## 18.4.2
+
+The Geo [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) that causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)` is fixed.
+
 ## 18.4.1
 
 GitLab 18.4.1, 18.3.3, and 18.2.7 introduced limits on JSON inputs to prevent denial of service attacks.
 GitLab responds to HTTP requests that exceed these limits with a `400 Bad Request` status.
 For more information, see [HTTP request limits](../../administration/instance_limits.md#http-request-limits).
 
+## 18.4.0
+
+- In secondary Geo sites, [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)`. Redundancies such as re-verification ensure eventual consistency, but RPO is significantly increased. Versions affected: 18.4.0 and 18.4.1.
+
 ## 18.3.0
 
 ### GitLab Duo
 
-A new worker `LdapAddOnSeatSyncWorker` was introduced, which could unintentionally remove all users from
+- A new worker `LdapAddOnSeatSyncWorker` was introduced, which could unintentionally remove all users from
 GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 and 18.3.2. See
 [issue 565064](https://gitlab.com/gitlab-org/gitlab/-/issues/565064) for details.
 
@@ -90,6 +120,13 @@ GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 a
 - GitLab 18.1.0 includes a fix for [issue 559196](https://gitlab.com/gitlab-org/gitlab/-/issues/559196) where Geo verification could fail for Pages deployments with long filenames. The fix prevents filename trimming on Geo secondary sites to maintain consistency during replication and verification.
 
 ## 18.0.0
+
+### Migrate Gitaly configuration from `git_data_dirs` to `storage`
+
+In GitLab 18.0 and later, you can no longer use the `git_data_dirs` setting to configure Gitaly storage locations.
+
+If you are still using `git_data_dirs`, you must
+[migrate your Gitaly configuration](https://docs.gitlab.com/omnibus/settings/configuration/#migrating-from-git_data_dirs) before upgrading to GitLab 18.0.
 
 ### Geo installations 18.0.0
 

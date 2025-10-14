@@ -89,7 +89,7 @@ export default {
 
 <template>
   <div class="row">
-    <div class="col-sm-12">
+    <div class="gl-col-sm-12">
       <gl-alert
         v-if="shouldShowError"
         class="gl-mb-3"
@@ -98,14 +98,14 @@ export default {
         >{{ apiError }}</gl-alert
       >
       <div class="file-holder gl-mb-3">
-        <div class="js-file-title file-title clearfix">
+        <div class="js-file-title file-title gl-clearfix">
           {{ __('Contents of .gitlab-ci.yml') }}
         </div>
         <source-editor v-model="content" file-name="*.yml" />
       </div>
     </div>
 
-    <div class="col-sm-12 gl-flex gl-justify-between">
+    <div class="gl-col-sm-12 gl-flex gl-justify-between">
       <div class="gl-flex gl-items-center">
         <gl-button
           class="gl-mr-4"
@@ -126,7 +126,7 @@ export default {
 
     <ci-lint-results
       v-if="showingResults"
-      class="col-sm-12 gl-mt-5"
+      class="gl-col-sm-12 gl-mt-5"
       :is-valid="isValid"
       :jobs="jobs"
       :errors="errors"

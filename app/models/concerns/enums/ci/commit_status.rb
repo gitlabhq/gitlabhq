@@ -30,6 +30,7 @@ module Enums
           environment_creation_failure: 21,
           deployment_rejected: 22,
           failed_outdated_deployment_job: 23,
+          runner_provisioning_timeout: 24,
           protected_environment_failure: 1_000,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,

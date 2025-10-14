@@ -52,7 +52,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
       allow(Import::PlaceholderReferences::PushService).to receive(:from_record).and_call_original
     end
 
-    it 'imports issue into destination project' do
+    it 'imports issue into destination project and creates work_item_description record' do
       pipeline.run
 
       expect(project.issues.count).to eq(1)
@@ -66,6 +66,16 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
         expect(imported_issue.author).to eq(user)
         expect(imported_issue.state).to eq('opened')
         expect(imported_issue.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
+
+        expect(imported_issue.work_item_description).to have_attributes(
+          work_item_id: imported_issue.id,
+          namespace_id: imported_issue.namespace_id,
+          description: imported_issue.description,
+          description_html: imported_issue.description_html,
+          last_edited_at: imported_issue.last_edited_at,
+          last_editing_user: imported_issue.last_edited_by,
+          lock_version: imported_issue.lock_version
+        )
       end
     end
 

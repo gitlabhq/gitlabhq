@@ -3,6 +3,7 @@ stage: Fulfillment
 group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Configure SCIM for GitLab.com groups
+description: Manage the user lifecycle with automated account provisioning.
 ---
 
 {{< details >}}
@@ -36,7 +37,7 @@ Prerequisites:
 To configure GitLab SAML SSO SCIM:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
    - Token from the **Your SCIM token** field.
@@ -322,7 +323,7 @@ accDescr: How removing users from your SCIM app removes them from GitLab groups.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../../../administration/feature_flags/list.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
 
 {{< /history >}}

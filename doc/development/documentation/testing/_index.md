@@ -94,15 +94,90 @@ To ensure quality across all our translated content, we've implemented testing f
 multiple languages. These tests mirror those used for the English version, but run on internationalized
 content in the `/doc-locale/` or `/docs-locale/` directories.
 
+### General translation linting
+
+The `docs-i18n-lint markdown` job runs general linting tests on all translated documentation:
+
+- **markdownlint**: Checks Markdown structure and formatting.
+- **Vale**: Runs general documentation style rules using the `gitlab_docs` filter.
+
+This job runs when any files in `/doc-locale/` or `/docs-locale/` are modified and provides baseline quality checks
+for all translated content.
+
 | Project | English Dir | Translation Dir | Linting Jobs |
 | ----- | ----- | ----- | ----- |
-| GitLab | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc-locale) | `docs-i18n-lint markdown` |
+| GitLab | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc-locale) | `docs-i18n-lint markdown` <br/> `docs-i18n-lint japanese-vale` |
 | GitLab Runner | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) | [`/docs-locale`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs-locale?ref_type=heads) | `docs:lint i18n markdown` |
 | Linux package | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc-locale) | `docs-lint-i18n markdown` <br/> `docs-lint-i18n content` |
 | Charts | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc-locale) | `check_docs_i18n_content` <br/> `check_docs_i18n_markdown` |
 | Operator | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc-locale) | `docs-i18n-lint content` <br/> `docs-i18n-lint markdown` |
 
-### Path verification of orphaned translation Files
+### Language-specific translation linting
+
+For languages with specific style requirements, we provide dedicated CI/CD jobs that run
+language-specific Vale rules. Each language has its own job that only runs when files
+in that language are modified.
+
+#### Japanese language support
+
+The `docs-i18n-lint japanese-vale` job runs Japanese-specific Vale linting:
+
+- Script: [`scripts/i18n_lint_language_vale.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/i18n_lint_language_vale.sh)
+- Configuration: `doc-locale/ja-jp/.vale.ini`
+- Vale filter: `locale_rules`
+- Triggers: Only runs when these files change:
+  - `doc-locale/ja-jp/**/*.md` - Japanese documentation files
+  - `doc-locale/ja-jp/.vale.ini` - Japanese Vale configuration
+  - `scripts/i18n_lint_language_vale.sh` - Universal language linting script
+
+The job uses environment variables to configure the universal script:
+
+```yaml
+variables:
+  LANGUAGE_CODE: "ja-jp"
+  LANGUAGE_NAME: "Japanese"
+```
+
+#### Adding new languages
+
+To add language-specific linting for additional languages:
+
+- Create language-specific Vale configuration at `doc-locale/LANGUAGE_CODE/.vale.ini`
+- Add a new CI job in `.gitlab/ci/docs.gitlab-ci.yml`:
+
+  ```yaml
+  docs-i18n-lint LANGUAGE-vale:
+    extends:
+      - .default-retry
+      - .docs:rules:docs-i18n-lint-LANGUAGE
+      - .docs-markdown-lint-image
+    stage: lint
+    needs: []
+    variables:
+      LANGUAGE_CODE: "LANGUAGE_CODE"     # e.g., "fr-fr", "de-de"
+      LANGUAGE_NAME: "LANGUAGE_NAME"     # e.g., "French", "German"
+    script:
+      - source ./scripts/utils.sh
+      - install_gitlab_gem
+      - scripts/i18n_lint_language_vale.sh
+  ```
+
+- Add triggering rules in `.gitlab/ci/rules.gitlab-ci.yml`:
+
+  ```yaml
+  .docs:rules:docs-i18n-lint-LANGUAGE:
+    rules:
+      - <<: *if-tech-docs-localization
+        changes:
+          - "doc-locale/LANGUAGE_CODE/**/*.md"
+          - "doc-locale/LANGUAGE_CODE/.vale.ini"
+          - "scripts/i18n_lint_language_vale.sh"
+  ```
+
+The universal script approach eliminates code duplication while maintaining language-specific
+customization through environment variables.
+
+### Path verification of orphaned translation files
 
 The `docs-i18n-lint paths` job fails if translated files in `/doc-locale` have no corresponding English source files. The job runs when:
 
@@ -352,6 +427,7 @@ We also run some documentation tests in these projects:
 - GitLab CLI: <https://gitlab.com/gitlab-org/cli/-/blob/main/.gitlab-ci.yml>
 - GitLab Development Kit:
   <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>
+- GitLab Docs website: <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
 - Gitaly: <https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml>
 - GitLab Duo Plugin for JetBrains: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/main/.gitlab-ci.yml>
 - GitLab Workflow extension for VS Code: <https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/.gitlab-ci.yml>

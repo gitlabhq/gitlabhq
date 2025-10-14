@@ -6,8 +6,8 @@
   %h4.gl-mt-0= s_("ProtectedBranch|Protect a branch")
 
   .form-group.row
-    = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-sm-12'
-    .col-sm-12
+    = f.label :name, s_('ProtectedBranch|Branch:'), class: 'gl-col-sm-12'
+    .gl-col-sm-12
       - if protected_branch_entity.is_a?(Group)
         = f.text_field :name, placeholder: 'prod*', class: 'form-control !gl-w-full gl-form-input-lg'
       - else
@@ -26,16 +26,16 @@
         - else
           = safe_format(s_('ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported. %{case_sensitive_link_start}Branch names are case-sensitive.%{case_sensitive_link_end}'), wildcards_link_tag_pair, case_sensitive_link_tag_pair, code_tag_pair)
   .form-group.row
-    = f.label :merge_access_levels_attributes, s_("ProtectedBranch|Allowed to merge:"), class: 'col-sm-12'
-    .col-sm-12
+    = f.label :merge_access_levels_attributes, s_("ProtectedBranch|Allowed to merge:"), class: 'gl-col-sm-12'
+    .gl-col-sm-12
       = yield :merge_access_levels
   .form-group.row
-    = f.label :push_access_levels_attributes, s_("ProtectedBranch|Allowed to push and merge:"), class: 'col-sm-12'
-    .col-sm-12
+    = f.label :push_access_levels_attributes, s_("ProtectedBranch|Allowed to push and merge:"), class: 'gl-col-sm-12'
+    .gl-col-sm-12
       = yield :push_access_levels
   .form-group.row
-    = f.label :allow_force_push, s_("ProtectedBranch|Allowed to force push:"), class: 'col-sm-12'
-    .col-sm-12
+    = f.label :allow_force_push, s_("ProtectedBranch|Allowed to force push:"), class: 'gl-col-sm-12'
+    .gl-col-sm-12
       = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
         label: s_("ProtectedBranch|Allowed to force push"),
         label_position: :hidden) do

@@ -97,7 +97,7 @@ To run secret detection automatically in the pipeline as the enforced global pol
 set up the policy at the highest level (in this case, for the top-level group).
 To create the new secret detection policy:
 
-1. Create the policy: In the same group `Secret Detection`, navigate to that group's **Secure > Policies** page.
+1. Create the policy: In the same group `Secret Detection`, navigate to that group's **Secure** > **Policies** page.
 1. Select **New policy**.
 1. Select **Scan execution policy**.
 1. Configure the policy: Give the policy name `Secret Detection Policy` and enter a description and select `Secret Detection` scan

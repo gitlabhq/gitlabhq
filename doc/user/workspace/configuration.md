@@ -73,7 +73,7 @@ Prerequisites:
 {{< tab title="From a project" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Edit > New workspace**.
+1. Select **Edit** > **New workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
    GitLab uses to create the workspace. By default, this is the branch you're viewing.
@@ -89,9 +89,9 @@ Prerequisites:
 {{< tab title="From a merge request" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code > Merge requests**.
+1. On the left sidebar, select **Code** > **Merge requests**.
 1. Select the merge request you want to create a workspace for.
-1. Select **Code > Open in Workspace**.
+1. Select **Code** > **Open in Workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
    GitLab uses to create the workspace. By default, this is the source branch of the merge request.

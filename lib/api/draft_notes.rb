@@ -48,7 +48,7 @@ module API
       end
 
       params :positional do
-        optional :position, type: Hash do
+        optional :position, type: Hash, desc: 'Position when creating a note' do
           requires :base_sha, type: String, desc: 'Base commit SHA in the source branch'
           requires :start_sha, type: String, desc: 'SHA referencing commit in target branch'
           requires :head_sha, type: String, desc: 'SHA referencing HEAD of this merge request'
@@ -62,14 +62,14 @@ module API
           optional :x, type: Integer, desc: 'X coordinate in the image'
           optional :y, type: Integer, desc: 'Y coordinate in the image'
 
-          optional :line_range, type: Hash, desc: 'Multi-line start and end' do
-            optional :start, type: Hash do
+          optional :line_range, type: Hash, desc: 'Line range for a multi-line note' do
+            optional :start, type: Hash, desc: 'Start line for a multi-line note' do
               optional :line_code, type: String, desc: 'Start line code for multi-line note'
               optional :type, type: String, desc: 'Start line type for multi-line note'
               optional :old_line, type: String, desc: 'Start old_line line number'
               optional :new_line, type: String, desc: 'Start new_line line number'
             end
-            optional :end, type: Hash do
+            optional :end, type: Hash, desc: 'End line for a multi-line note' do
               optional :line_code, type: String, desc: 'End line code for multi-line note'
               optional :type, type: String, desc: 'End line type for multi-line note'
               optional :old_line, type: String, desc: 'End old_line line number'

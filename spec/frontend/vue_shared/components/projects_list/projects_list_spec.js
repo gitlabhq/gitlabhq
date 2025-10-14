@@ -33,6 +33,7 @@ describe('ProjectsList', () => {
         showProjectIcon: false,
         listItemClass: defaultPropsData.listItemClass,
         timestampType: TIMESTAMP_TYPE_CREATED_AT,
+        includeMicrodata: false,
       })),
     );
   });

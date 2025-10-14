@@ -27,6 +27,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    includeMicrodata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     /**
      * Allows the parent component to override `isExpanded`.
      * This is needed when searching as we want the tree to be open after searching.
@@ -62,6 +67,7 @@ export default {
       const sharedProps = {
         listItemClass: this.item.hasChildren ? null : 'gl-pl-7',
         timestampType: this.timestampType,
+        includeMicrodata: this.includeMicrodata,
       };
 
       return this.item.type === LIST_ITEM_TYPE_PROJECT
@@ -126,7 +132,14 @@ export default {
 </script>
 
 <template>
-  <component :is="itemComponent" v-bind="itemProps" @refetch="onRefetch">
+  <component
+    :is="itemComponent"
+    v-bind="itemProps"
+    @refetch="onRefetch"
+    @hover-visibility="$emit('hover-visibility', $event)"
+    @hover-stat="$emit('hover-stat', $event)"
+    @click-avatar="$emit('click-avatar')"
+  >
     <template v-if="item.hasChildren" #children-toggle>
       <gl-button
         v-bind="expandButtonProps"
@@ -140,10 +153,14 @@ export default {
         :id="nestedItemsContainerId"
         :items="nestedGroupsProjectsListItems"
         :timestamp-type="timestampType"
+        :include-microdata="includeMicrodata"
         :expanded-override="expandedOverride"
         :class="nestedItemsContainerClasses"
         @load-children="$emit('load-children', $event)"
         @refetch="onRefetch"
+        @hover-visibility="$emit('hover-visibility', $event)"
+        @hover-stat="$emit('hover-stat', $event)"
+        @click-avatar="$emit('click-avatar')"
       >
         <li v-if="hasMoreChildren" class="gl-border-b gl-py-4 gl-pl-7">
           <div class="gl-flex gl-h-7 gl-items-center">

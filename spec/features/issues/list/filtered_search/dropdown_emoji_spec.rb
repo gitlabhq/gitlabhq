@@ -55,7 +55,7 @@ RSpec.describe 'Dropdown emoji', :js, feature_category: :team_planning do
         select_tokens 'My reaction', '='
 
         # List items 1-3 are None, Any, divider
-        expect(page).to have_css('.gl-filtered-search-suggestion-list li:nth-child(4)', text: award_emoji_star.name)
+        expect(page).to have_css('.gl-filtered-search-suggestion-list li:nth-child(5)', text: award_emoji_star.name)
       end
     end
   end

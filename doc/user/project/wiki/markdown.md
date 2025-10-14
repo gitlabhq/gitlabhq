@@ -12,11 +12,84 @@ title: Wiki-specific Markdown
 
 {{< /details >}}
 
+## Links
+
 The following topics show how links inside wikis behave.
 
-When linking to wiki pages, you should use the **page slug** rather than the page name.
+When you link to wiki pages, use the page slug rather than the page name.
+A page slug is the URL-friendly version of the page title, where spaces are replaced with hyphens
+and special characters are removed or converted.
+For example, a page titled "How to Use GitLab" has the slug `How-to-Use-GitLab`.
 
-## Direct page link
+### Wiki-style links
+
+In addition to standard [Markdown links](../../markdown.md#links), wikis support special wiki-style
+link syntax that provides a more convenient way to link between wiki pages.
+
+#### Double bracket syntax
+
+You can link to wiki pages using double brackets:
+
+```markdown
+[[Home]]
+```
+
+This syntax creates a link to a wiki page with the slug `Home`.
+If the page doesn't exist, when you select the link, you can create this page.
+
+When the page slug contains hyphens, the link displays the slug as-is:
+
+```markdown
+[[Home-page-new-slug]]
+```
+
+This displays `Home-page-new-slug` as the link text.
+
+#### Double bracket syntax with custom text
+
+If the page slug is different from the title you want to display, use the pipe (`|`) character to
+separate the display text from the page slug:
+
+```markdown
+[[How to use GitLab|how-to-use-gitlab]]
+```
+
+This displays "How to use GitLab" as the link text, but links to the page with the slug `how-to-use-gitlab`.
+
+You can also use this syntax to provide a more readable title for pages with hyphenated slugs:
+
+```markdown
+[[Home page (renamed)|Home-page-new-slug]]
+```
+
+This displays "Home page (renamed)" as the link text, but links to the page with the slug `Home-page-new-slug`.
+
+#### Alternative wiki page syntax
+
+You can also use the `[wiki_page:PAGE_SLUG]` syntax:
+
+```markdown
+[wiki_page:Home]
+```
+
+For cross-project references, specify the full project path:
+
+```markdown
+[wiki_page:namespace/project:Home]
+[wiki_page:group1/subgroup:Home]
+```
+
+#### Automatic URL recognition
+
+When you paste a full URL to a wiki page without any Markdown formatting, GitLab automatically converts it to a link and displays the page slug with spaces instead of hyphens:
+
+```markdown
+https://gitlab.com/namespace/project/-/wikis/Home-page-new-slug
+```
+
+This automatically renders as a link with the text "Home page new slug" (hyphens converted to spaces).
+
+### Direct page link
 
 A direct page link includes the slug for a page that points to that page,
 at the base level of the wiki.
@@ -24,10 +97,10 @@ at the base level of the wiki.
 This example links to a `documentation` page at the root of your wiki:
 
 ```markdown
-[Link to Documentation](documentation)
+[Link to Documentation](documentation-top-page)
 ```
 
-## Direct file link
+### Direct file link
 
 A direct file link points to a file extension for a file, relative to the current page.
 
@@ -38,7 +111,7 @@ it links to `<your_wiki>/documentation/file.md`:
 [Link to File](file.md)
 ```
 
-## Hierarchical link
+### Hierarchical link
 
 A hierarchical link can be constructed relative to the current wiki page by using relative paths like `./<page>` or
 `../<page>`.
@@ -71,7 +144,7 @@ it links to `<your_wiki>/documentation/main.md`:
 [Link to Related Page](../main.md)
 ```
 
-## Root link
+### Root link
 
 A root link starts with a `/` and is relative to the wiki root.
 
@@ -88,12 +161,6 @@ This example links to `<wiki_root>/documentation.md`:
 ```
 
 ## diagrams.net editor
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
-
-{{< /history >}}
 
 In wikis, you can use the [diagrams.net](https://app.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both

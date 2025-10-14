@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Disaster Recovery (Geo)
@@ -106,7 +106,7 @@ Note the following when promoting a secondary:
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
     1. On the left sidebar, at the bottom, select **Admin**.
-    1. Select **CI/CD > Runners** and remove them.
+    1. Select **CI/CD** > **Runners** and remove them.
   - Using the [Runners API](../../../api/runners.md).
 
 #### Promoting a **secondary** site running on a single node

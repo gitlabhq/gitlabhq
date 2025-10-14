@@ -1,0 +1,15 @@
+---
+description: User clicked the Code dropdown button on repository or project overview page
+internal_events: true
+action: click_code_dropdown
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: activation
+milestone: "18.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201841
+tiers:
+  - free
+  - premium
+  - ultimate

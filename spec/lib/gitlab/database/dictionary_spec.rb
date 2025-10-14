@@ -186,8 +186,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
 
         it 'returns the name of the migration that backfills the desired sharding key' do
           expect(database_dictionary.desired_sharding_key_migration_job_name)
-            .to eq(%w[BackfillBulkImportTrackersProjectId BackfillBulkImportTrackersNamespaceId
-              BackfillBulkImportTrackersOrganizationId])
+            .to eq('BackfillBulkImportTrackersShardingKey')
         end
       end
 

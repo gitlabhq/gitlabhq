@@ -48,7 +48,7 @@ To install the GDK:
    In this example, create and change to the `dev` directory:
 
    ```shell
-   mkdir ~/dev && cd "$_"
+   mkdir ~/dev && cd ~/dev
    ```
 
 1. Run the one-line installation command:

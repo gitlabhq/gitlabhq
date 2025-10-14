@@ -43,7 +43,7 @@ The development workflow for branches is:
 To view and manage your branches in the GitLab user interface:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code > Branches**.
+1. On the left sidebar, select **Code** > **Branches**.
 
 On this page, you can:
 
@@ -53,7 +53,6 @@ On this page, you can:
   Otherwise it is considered stale.
 
 - [Create new branches](#create-a-branch).
-- [Compare branches](#compare-branches).
 - [Delete merged branches](#delete-merged-branches).
 - See merge request links that point to the default branch.
 
@@ -71,7 +70,7 @@ Prerequisites:
 To create a new branch from the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
 1. In **Create from**, select the base of your branch: an existing branch, an existing
@@ -115,7 +114,7 @@ Prerequisites:
 To create a branch from an issue:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues** and find your issue.
+1. Select **Plan** > **Issues** and find your issue.
 1. Below the issue description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**.
 1. In the dialog, from the **Source (branch or tag)** dropdown list, select a source branch or tag.
@@ -140,7 +139,7 @@ Prerequisites:
 To create a branch directly from a task:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. In the issue list, find your task.
 1. Below the task description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**.
@@ -213,7 +212,7 @@ Prerequisites:
 To change the default pattern for branches created from issues:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**.
 1. Scroll to **Branch name template** and enter a value. The field supports these variables:
    - `%{id}`: The numeric ID of the issue.
@@ -243,37 +242,6 @@ GitLab uses this number to import data into the merge request:
 
 GitLab provides multiple methods to protect individual branches. These methods
 ensure your branches receive oversight and quality checks from their creation to their deletion. To view and edit branch protections, see [Branch rules](branch_rules.md).
-
-## Compare branches
-
-To compare branches in a repository:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Compare revisions**.
-1. Select the **Source** branch to search for your desired branch. Exact matches are
-   shown first. You can refine your search with operators:
-   - `^` matches the beginning of the branch name: `^feat` matches `feat/user-authentication`.
-   - `$` matches the end of the branch name: `widget$` matches `feat/search-box-widget`.
-   - `*` matches using a wildcard: `branch*cache*` matches `fix/branch-search-cache-expiration`.
-   - You can combine operators: `^chore/*migration$` matches `chore/user-data-migration`.
-1. Select the **Target** repository and branch. Exact matches are shown first.
-1. Below **Show changes**, select the method to compare branches:
-   <!-- vale gitlab_base.SubstitutionWarning = NO -->
-   <!-- Disable Vale gitlab_base.SubstitutionWarning rule so that Vale doesn't flag "since" -->
-   - **Only incoming changes from source** (default) shows differences from the source branch since
-     the latest common commit on both branches.
-     It doesn't include unrelated changes made to the target branch after the source branch was created.
-     This method uses the `git diff <from>...<to>`
-     [Git command](../../../../topics/git/commands.md).
-     To compare branches, this method uses the merge base instead of the actual commit, so
-     changes from cherry-picked commits are shown as new changes.
-   - **Include changes to target since source was created** shows all the differences between the two
-     branches.
-     This method uses the `git diff <from> <to>`
-     [Git command](../../../../topics/git/commands.md).
-   <!-- vale gitlab_base.SubstitutionWarning = YES -->
-1. Select **Compare** to show the list of commits, and changed files.
-1. Optional. To reverse the **Source** and **Target**, select **Swap revisions** ({{< icon name="substitute" >}}).
 
 ### Download branch comparisons
 
@@ -354,7 +322,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. In the upper right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
@@ -401,7 +369,7 @@ Prerequisites:
 To create a target branch workflow:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Scroll down to **Merge request branch workflow**
 1. Select **Add branch target**.
 1. For **Branch name pattern**, provide a string or wild card to compare against branch names.
@@ -440,13 +408,14 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Select **Delete** on the branch target you want to delete.
 
 ## Related topics
 
 - [Protected branches](protected.md)
 - [Branch rules](branch_rules.md)
+- [Compare revisions](../compare_revisions.md)
 - [Compare changes in merge requests](../../merge_requests/changes.md)
 - [Download merge request changes](../../merge_requests/changes.md#download-merge-request-changes)
 - [Branches API](../../../../api/branches.md)
@@ -505,7 +474,7 @@ Error: Could not set the default branch. Do you have a branch named 'HEAD' in yo
 To fix this problem:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. Search for a branch named `HEAD`.
 1. Make sure the branch has no uncommitted changes.
 1. Select **Delete branch**, then **Yes, delete branch**.

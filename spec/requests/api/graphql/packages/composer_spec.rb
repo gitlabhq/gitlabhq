@@ -5,7 +5,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
   include GraphqlHelpers
   include_context 'package details setup'
 
-  let_it_be(:package) { create(:composer_package, :last_downloaded_at, project: project) }
+  let_it_be(:package) { create(:composer_package_sti, :last_downloaded_at, project: project) }
   let_it_be(:composer_json) { { name: 'name', type: 'type', license: 'license', version: 1 } }
   let_it_be(:composer_metadatum) do
     # we are forced to manually create the metadatum, without using the factory to force the sha to be a string

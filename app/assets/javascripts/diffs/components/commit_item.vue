@@ -138,7 +138,7 @@ export default {
               class="commit-row-message item-title"
             ></a>
 
-            <span class="commit-row-message !gl-block sm:!gl-hidden"
+            <span class="commit-row-message !gl-block @sm/panel:!gl-hidden"
               >&middot; {{ commit.short_id }}</span
             >
 

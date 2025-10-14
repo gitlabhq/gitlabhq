@@ -74,13 +74,13 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
           expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
             .to receive(:perform_async).with(
               group.id,
-              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY, 'direct_members_only' => true }
+              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY.to_s, 'direct_members_only' => true }
             ).once
 
           expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
             .to receive(:perform_async).with(
               another_group.id,
-              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY, 'direct_members_only' => true }
+              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY.to_s, 'direct_members_only' => true }
             ).once
 
           subject.execute(links)

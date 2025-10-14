@@ -16,7 +16,7 @@ export default {
 
 <template>
   <div class="row gl-mt-5">
-    <div class="col-lg-3">
+    <div class="gl-col-lg-3">
       <img :src="forkIllustration" />
       <h4 class="">{{ s__('ForkProject|Fork project') }}</h4>
       <p>
@@ -29,7 +29,7 @@ export default {
         }}
       </p>
     </div>
-    <div class="col-lg-9">
+    <div class="gl-col-lg-9">
       <fork-form />
     </div>
   </div>

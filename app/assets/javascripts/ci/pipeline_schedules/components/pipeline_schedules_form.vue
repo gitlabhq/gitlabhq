@@ -304,7 +304,7 @@ export default {
     <gl-form-group
       :label="$options.i18n.description"
       label-for="schedule-description"
-      class="lg:gl-w-2/3"
+      class="@lg/panel:gl-w-2/3"
     >
       <gl-form-input
         id="schedule-description"
@@ -319,7 +319,7 @@ export default {
     <gl-form-group
       :label="$options.i18n.cronTimezoneText"
       label-for="user_timezone"
-      class="lg:gl-w-2/3"
+      class="@lg/panel:gl-w-2/3"
     >
       <timezone-dropdown
         id="schedule-timezone"
@@ -335,7 +335,7 @@ export default {
     <gl-form-group
       :label="$options.i18n.intervalPattern"
       label-for="schedule-interval"
-      class="lg:gl-w-2/3"
+      class="@lg/panel:gl-w-2/3"
     >
       <interval-pattern-input
         id="schedule-interval"
@@ -349,7 +349,7 @@ export default {
     <gl-form-group
       :label="$options.i18n.targetBranchTag"
       label-for="schedule-target-branch-tag"
-      class="lg:gl-w-2/3"
+      class="@lg/panel:gl-w-2/3"
     >
       <ref-selector
         id="schedule-target-branch-tag"
@@ -390,14 +390,14 @@ export default {
         type="submit"
         variant="confirm"
         data-testid="schedule-submit-button"
-        class="gl-w-full sm:gl-w-auto"
+        class="gl-w-full @sm/panel:gl-w-auto"
       >
         {{ buttonText }}
       </gl-button>
       <gl-button
         :href="schedulesPath"
         data-testid="schedule-cancel-button"
-        class="gl-w-full sm:gl-w-auto"
+        class="gl-w-full @sm/panel:gl-w-auto"
       >
         {{ $options.i18n.cancel }}
       </gl-button>

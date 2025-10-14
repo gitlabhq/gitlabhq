@@ -1,14 +1,9 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
-ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
 ee/spec/frontend/boards/components/board_new_issue_spec.js
-ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
-ee/spec/frontend/dependencies/components/direct_descendant_viewer_spec.js
-ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
-ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js
@@ -20,22 +15,11 @@ spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
 spec/frontend/helpers/init_simple_app_helper_spec.js
-spec/frontend/issuable/related_issues/components/related_issues_root_spec.js
 spec/frontend/issues/list/components/issues_list_app_spec.js
-spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js
 spec/frontend/issues/show/components/app_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
-spec/frontend/projects/settings/components/branch_rule_modal_spec.js
-spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js
-spec/frontend/ref/init_ambiguous_ref_modal_spec.js
-spec/frontend/releases/components/asset_links_form_spec.js
-spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js
-spec/frontend/tooltips/index_spec.js
-spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_popovers_spec.js
-spec/frontend/vue_shared/components/upload_dropzone/upload_dropzone_spec.js
-spec/frontend/work_items/components/work_item_description_rendered_spec.js

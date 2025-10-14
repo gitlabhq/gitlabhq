@@ -64,7 +64,7 @@ To see all merge requests that need your attention, use one of these methods:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. Scroll to the [merge request widget](../widgets.md) to see the mergeability and
    approval status for the merge request. For example, the lack of required approvals blocks this merge request:
@@ -86,7 +86,7 @@ your merge request, either use the `/assign_reviewer @user`
 [quick action](../../quick_actions.md#issues-merge-requests-and-epics) in any text field, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. To find a reviewer by name: on the right sidebar, in the **Reviewers** section, select **Edit**.
 1. To find a reviewer who fulfills an approval rule in GitLab Premium and Ultimate:
@@ -131,7 +131,7 @@ the author of the merge request can request a new review from the reviewer.
 To do this, either use the `/request_review @user` quick action in any text field on the merge request, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. If you have collapsed the right sidebar in the merge request, select the
    {{< icon name="chevron-double-lg-left" >}} **Expand Sidebar** to expand it.
@@ -159,7 +159,7 @@ To start your review of a merge request:
 
 1. Either:
    - Press <kbd>Shift</kbd> + <kbd>r</kbd> to go to your **Review requests** page.
-   - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) **> Review requests**.
+   - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
 <!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 
 1. Find your merge request, and select the title of the merge request to view it.
@@ -185,7 +185,7 @@ Next, submit your review.
 
 ### Resolve or reopen thread with a comment
 
-Review comments can also resolve or reopen [resolvable threads](../_index.md#resolve-a-thread).
+Review comments can also resolve or reopen comment threads.
 To resolve or reopen a thread when replying to a comment:
 
 1. In the comment text area, write your comment.
@@ -276,7 +276,7 @@ if both of the following are true:
 To remove your change request without submitting a new review:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
 1. Next to **Change requests must be approved by the requesting user**, select **Remove**:
@@ -289,7 +289,7 @@ If the user who requested changes is unavailable to re-review or approve,
 another user with permission to merge the merge request can override this check:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
 1. Next to **Change requests must be approved by the requesting user**, select **Bypass**:
@@ -334,6 +334,6 @@ Merge requests are related to these features:
 ## Related topics
 
 - [Compare changes in merge requests](../changes.md)
-- [Compare branches](../../repository/branches/_index.md#compare-branches)
+- [Compare revisions](../../repository/compare_revisions.md)
 - [Merge methods](../methods/_index.md)
 - [Draft Notes API](../../../../api/draft_notes.md)

@@ -32,7 +32,7 @@ specific group item is migrated:
    file for groups for your version on the destination. For example, for version 15.9:
    <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/gitlab/import_export/group/import_export.yml>.
 
-Any other group items are **not** migrated.
+Any other group items are not migrated.
 
 Group items that are migrated to the destination GitLab instance include:
 
@@ -75,6 +75,8 @@ Some group items are excluded from migration because they:
   - Pending member invitations
   - Push rules
 
+In addition, users and any [personal access tokens](../../profile/personal_access_tokens.md) they create are excluded from migration.
+
 ## Migrated project items
 
 {{< history >}}
@@ -104,7 +106,7 @@ specific project item is migrated:
    file for projects for your version on the destination. For example, for version 15.9:
    <https://gitlab.com/gitlab-org/gitlab/-/blob/15-9-stable-ee/lib/gitlab/import_export/project/import_export.yml>.
 
-Any other project items are **not** migrated.
+Any other project items are not migrated.
 
 If you choose not to migrate projects along with groups or if you want to retry a project migration, you can
 initiate project-only migrations using the [API](../../../api/bulk_imports.md).
@@ -209,6 +211,7 @@ Some project items are excluded from migration because they:
   - Webhooks
 - Are not supported:
   - Agents
+  - [Child CI/CD pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/571159)
   - Container registry
   - Custom fields
   - Environments
@@ -234,3 +237,5 @@ Some project items are excluded from migration because they:
 - Do not contain recoverable data:
   - Merge requests with no diff or source information
     (for more information, see [issue 537943](https://gitlab.com/gitlab-org/gitlab/-/issues/537943))
+
+In addition, users and any [personal access tokens](../../profile/personal_access_tokens.md) they create are excluded from migration.

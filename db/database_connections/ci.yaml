@@ -3,6 +3,8 @@ description: Cell-local GitLab database holding all CI pipelines, builds, etc.
 gitlab_schemas:
   - gitlab_internal
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
   - gitlab_ci
   - gitlab_ci_cell_local
 lock_gitlab_schemas:

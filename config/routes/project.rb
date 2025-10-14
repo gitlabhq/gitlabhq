@@ -466,6 +466,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :badges, only: [] do
           collection do
             constraints format: /svg/ do
+              get :custom
               get :release
             end
           end
@@ -503,6 +504,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               post :resolve
               delete :resolve, action: :unresolve
             end
+          end
+        end
+
+        resources :attestations, only: [] do
+          member do
+            get :download
           end
         end
       end

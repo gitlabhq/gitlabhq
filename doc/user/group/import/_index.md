@@ -72,7 +72,7 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-new-group-
 ## Known issues
 
 - Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a filename longer than 255 characters are not migrated.
-- In GitLab 16.1 and earlier, you should **not** use direct transfer with
+- In GitLab 16.1 and earlier, you should not use direct transfer with
   [scheduled scan execution policies](../../application_security/policies/scan_execution_policies.md).
 - For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
 - In GitLab 16.9 and earlier, because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the

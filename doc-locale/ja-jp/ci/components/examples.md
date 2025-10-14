@@ -7,31 +7,31 @@ title: CI/CDコンポーネントの例
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-## コンポーネントをTestする
+## コンポーネントをテストする {#test-a-component}
 
-コンポーネントの機能によっては、[コンポーネントのTest](_index.md#test-the-component)にはリポジトリに追加ファイルが必要になる場合があります。たとえば、特定のプログラミング言語で Lint、ビルド、Testを行うコンポーネントには、実際のソースコードサンプルが必要です。同じリポジトリにソースコードの例、設定ファイルなどを配置できます。
+コンポーネントの機能によっては、[コンポーネントをテストする](_index.md#test-the-component)ために、リポジトリに追加ファイルが必要になる場合があります。たとえば、特定のプログラミング言語でソフトウェアをlint、ビルド、テストするコンポーネントには、実際のソースコードのサンプルが必要です。ソースコードの例、設定ファイルなどを同じリポジトリに配置できます。
 
-たとえば、コード品質 CI/CDコンポーネントには、[Test用のコードサンプル](https://gitlab.com/components/code-quality/-/tree/main/src)がいくつかあります。
+たとえば、コード品質CI/CDコンポーネントには、[テスト用のコードサンプル](https://gitlab.com/components/code-quality/-/tree/main/src)がいくつかあります。
 
-### 例:Rust言語CI/CDコンポーネントをTestする
+### 例: Rust言語のCI/CDコンポーネントをテストする {#example-test-a-rust-language-cicd-component}
 
-コンポーネントの機能によっては、[コンポーネントのTest](_index.md#test-the-component)にはリポジトリに追加ファイルが必要になる場合があります。
+コンポーネントの機能によっては、[コンポーネントをテストする](_index.md#test-the-component)ために、リポジトリに追加ファイルが必要になる場合があります。
 
-Rustプログラミング言語の次の「hello world」の例では、簡略化のために`cargo` ツールチェーンを使用します。
+次に示すRustプログラミング言語の「hello world」の例では、簡略化のために`cargo`ツールチェーンを使用しています。
 
 1. CI/CDコンポーネントのルートディレクトリに移動します。
-1. `cargo init` コマンドを使用して、新しいRustプロジェクトを初期化します。
+1. `cargo init`コマンドを使用して、新しいRustプロジェクトを初期化します。
 
    ```shell
    cargo init
    ```
 
-   このコマンドは、`src/main.rs` 「hello world」の例を含む、必要なすべてのプロジェクトファイルを作成します。このステップは、`cargo build` を使用してコンポーネントジョブでRustソースコードをビルドするのに十分です。
+   このコマンドは、`src/main.rs`の「hello world」サンプルを含む、必要なすべてのプロジェクトファイルを作成します。コンポーネントジョブ内で`cargo build`を使用してRustソースコードをビルドするには、このステップだけで十分です。
 
    ```plaintext
    tree
@@ -45,7 +45,7 @@ Rustプログラミング言語の次の「hello world」の例では、簡略�
        └── build.yml
    ```
 
-1. コンポーネントにRustソースコードをビルドするジョブがあることを確認します（例：`templates/build.yml`）。
+1. Rustソースコードをビルドするジョブがコンポーネントに含まれていることを確認します。その例として、以下に`templates/build.yml`を示します。
 
    ```yaml
    spec:
@@ -65,11 +65,11 @@ Rustプログラミング言語の次の「hello world」の例では、簡略�
        - cargo build --verbose
    ```
 
-   この例:
+   この例では:
 
-   - `stage` インプットと `rust_version` インプットは、デフォルト値から変更できます。CI/CDジョブは、`build-` プレフィックスで始まり、`rust_version` インプットに基づいて名前を動的に作成します。コマンド `cargo build --verbose` は、Rustソースコードをコンパイルします。
+   - `stage`と`rust_version`の入力はデフォルト値から変更できます。CI/CDジョブは、`build-`プレフィックスで始まり、`rust_version`入力に基づいて名前を動的に作成します。コマンド`cargo build --verbose`でRustソースコードをコンパイルします。
 
-1. プロジェクトの `.gitlab-ci.yml` 設定ファイルで、コンポーネントの `build` テンプレートをTestします。
+1. プロジェクトの`.gitlab-ci.yml`設定ファイルで、コンポーネントの`build`テンプレートをテストします。
 
    ```yaml
    include:
@@ -81,7 +81,7 @@ Rustプログラミング言語の次の「hello world」の例では、簡略�
    stages: [build, test, release]
    ```
 
-1. Testなどを実行するには、Rustコードに追加の関数とテストを追加し、`templates/test.yml` で `cargo test` を実行するコンポーネントテンプレートとジョブを追加します。
+1. テストやその他の処理を実行するには、Rustコードに関数とテストを追加し、`cargo test`を実行するコンポーネントテンプレートとジョブを`templates/test.yml`に追加します。
 
    ```yaml
    spec:
@@ -101,7 +101,7 @@ Rustプログラミング言語の次の「hello world」の例では、簡略�
        - cargo test --verbose
    ```
 
-1. `test` コンポーネントテンプレートを含めることで、パイプラインで追加のジョブをTestします。
+1. `test`コンポーネントテンプレートを含めることで、パイプラインで追加のジョブをテストします。
 
    ```yaml
    include:
@@ -116,15 +116,15 @@ Rustプログラミング言語の次の「hello world」の例では、簡略�
    stages: [build, test, release]
    ```
 
-## CI/CDコンポーネントのパターン
+## CI/CDコンポーネントのパターン {#cicd-component-patterns}
 
 このセクションでは、CI/CDコンポーネントで一般的なパターンを実装するための実践的な例を示します。
 
-### ブール値のインプットを使用して、ジョブを条件付きでConfigureする
+### ブール値の入力を使用してジョブを条件付きで設定する {#use-boolean-inputs-to-conditionally-configure-jobs}
 
-`boolean` タイプのインプットと [`extends`](../yaml/_index.md#extends) 機能を組み合わせることで、2つの条件でジョブを構成できます。
+`boolean`型の入力と[`extends`](../yaml/_index.md#extends)機能を組み合わせることで、2つの条件分岐を持つジョブを構成できます。
 
-たとえば、`boolean` インプットを使用して複雑なキャッシュ動作をConfigureするには:
+たとえば、`boolean`入力を使用して複雑なキャッシュ動作を設定するには、次のようにします。
 
 ```yaml
 spec:
@@ -148,13 +148,13 @@ my-job:
   script: ... # run some fancy tooling
 ```
 
-このパターンは、ジョブの `extends` キーワードに `enable_special_caching` インプットを渡すことによって機能します。`enable_special_caching` が `true` か `false` かに応じて、定義済みの非表示ジョブ（`.my-component:enable_special_caching:true` または `.my-component:enable_special_caching:false`）から適切な設定が選択されます。
+このパターンは、ジョブの`extends`キーワードに`enable_special_caching`入力を渡すことによって機能します。`enable_special_caching`が`true`か`false`かに応じて、定義済みの非表示ジョブ（`.my-component:enable_special_caching:true`または`.my-component:enable_special_caching:false`）から適切な設定が選択されます。
 
-### `options` を使用してジョブを条件付きでConfigureする
+### `options`を使用してジョブを条件付きで設定する {#use-options-to-conditionally-configure-jobs}
 
-`if` および `elseif` の条件と同様の動作で、複数のオプションを使用してジョブを構成できます。任意の数の条件に対して、`string` タイプと複数の `options` を使用して [`extends`](../yaml/_index.md#extends) を使用します。
+複数のオプションを持つジョブを構成し、`if`や`elseif`の条件と同様の動作を実現できます。[`extends`](../yaml/_index.md#extends)に`string`型と複数の`options`を組み合わせることで、任意の数の条件を設定できます。
 
-たとえば、3つの異なるオプションを使用して複雑なキャッシュ動作をConfigureするには:
+たとえば、3つの異なるオプションを使用して複雑なキャッシュ動作を設定するには、次のようにします。
 
 ```yaml
 spec:
@@ -188,13 +188,13 @@ my-job:
   script: ... # run some fancy tooling
 ```
 
-この例では、`cache_mode` インプットは、`default`、`aggressive`、および `relaxed` のオプションを提供し、それぞれが異なる非表示ジョブに対応しています。`extends: '.my-component:cache_mode:$[[ inputs.cache_mode ]]'` でコンポーネントジョブを拡張することにより、ジョブは選択されたオプションに基づいて正しいキャッシュ設定を動的に継承します。
+この例では、`cache_mode`入力は`default`、`aggressive`、`relaxed`のオプションを提供し、それぞれ異なる非表示ジョブに対応しています。`extends: '.my-component:cache_mode:$[[ inputs.cache_mode ]]'`でコンポーネントジョブを拡張することにより、ジョブは選択されたオプションに基づいて正しいキャッシュ設定を動的に継承します。
 
-## CI/CDコンポーネントの移行例
+## CI/CDコンポーネントの移行例 {#cicd-component-migration-examples}
 
 このセクションでは、CI/CDテンプレートとパイプライン設定を再利用可能なCI/CDコンポーネントに移行するための実践的な例を示します。
 
-### CI/CDコンポーネントの移行例:Go
+### CI/CDコンポーネントの移行例: Go {#cicd-component-migration-example-go}
 
 ソフトウェア開発ライフサイクル全体のパイプラインは、複数のジョブとステージで構成できます。プログラミング言語用のCI/CDテンプレートは、単一のテンプレートファイルで複数のジョブを提供する場合があります。実践として、次のGo CI/CDテンプレートを移行する必要があります。
 
@@ -226,25 +226,25 @@ compile:
 
 {{< alert type="note" >}}
 
-すべてのジョブではなく、1つのジョブの移行から開始することもできます。以下の手順に従い、最初のイテレーションでは `build` CI/CDジョブのみを移行します。
+より段階的なアプローチとして、一度に1つのジョブを移行します。まず`build`ジョブから始め、その後`format`ジョブ、`test`ジョブの順に同じ手順を繰り返します。
 
 {{< /alert >}}
 
-CI/CDテンプレートの移行には、次の手順が含まれます:
+CI/CDテンプレートを移行するには、次の手順を実行します。
 
-1. CI/CDジョブと依存関係を分析し、移行アクションを定義します:
-   - `image` 設定はグローバルであるため、[ジョブ定義に移動する必要があります](_index.md#avoid-using-global-keywords)。
-   - `format` ジョブは、1つのジョブで複数の `go` コマンドを実行します。パイプラインの効率性を高めるために、`go test` コマンドは別のジョブに移動する必要があります。
-   - `compile` ジョブは `go build` を実行し、`build` に名前を変更する必要があります。
+1. CI/CDジョブと依存関係を分析し、移行アクションを定義します。
+   - `image`設定はグローバルであるため、[ジョブ定義に移動する必要があります](_index.md#avoid-using-global-keywords)。
+   - `format`ジョブは、1つのジョブで複数の`go`コマンドを実行します。パイプラインの効率性を高めるために、`go test`コマンドは別のジョブに移動する必要があります。
+   - `compile`ジョブは`go build`を実行しているため、`build`に名前を変更する必要があります。
 1. パイプラインの効率性を向上させるための最適化戦略を定義します。
-   - `stage` ジョブ属性は、さまざまなCI/CDパイプラインのコンシューマーを許可するように設定可能である必要があります。
-   - `image` キーは、ハードコードされたイメージtag `latest` を使用します。より柔軟で再利用可能なパイプラインのために、`latest` をデフォルト値として持つ [`golang_version` をインプットとして追加](../yaml/inputs.md)します。インプットは、Docker Hubイメージtagの値と一致する必要があります。
-   - `compile` ジョブは、バイナリをハードコードされたターゲットディレクトリ `mybinaries` にビルドします。これは、動的な[インプット](../yaml/inputs.md)とデフォルト値 `mybinaries` で強化できます。
-1. ジョブごとに1つのテンプレートに基づいて、新しいコンポーネントの[ディレクトリ構造](_index.md#directory-structure)のテンプレートを作成します。
+   - さまざまなCI/CDパイプラインの利用者が活用できるように、`stage`ジョブ属性は設定可能でなければなりません。
+   - `image`キーは、ハードコーディングされたイメージタグ`latest`を使用します。より柔軟で再利用可能なパイプラインにするため、`latest`をデフォルト値とする[`golang_version`を入力として](../inputs/_index.md)追加します。入力は、Docker Hubのイメージタグの値と一致する必要があります。
+   - `compile`ジョブは、バイナリをハードコーディングされたターゲットディレクトリ`mybinaries`にビルドします。これは、`mybinaries`をデフォルト値とする動的な[入力](../inputs/_index.md)として拡張できます。
+1. ジョブごとに1つのテンプレートを基にして、新しいコンポーネントのテンプレート用[ディレクトリ構造](_index.md#directory-structure)を作成します。
 
-   - テンプレートの名前は、`go` コマンドに従う必要があります（例：`format.yml`、`build.yml`、および `test.yml`）。
-   - 新しいプロジェクトを作成し、Gitリポジトリを初期化し、すべての変更を追加/コミットし、remote originを設定してプッシュします。CI/CDコンポーネントプロジェクトパスのURLを変更します。
-   - [コンポーネントを作成する](_index.md#write-a-component)ためのガイダンスで概説されているように、追加のファイルを作成します:`README.md`、`LICENSE.md`、`.gitlab-ci.yml`、`.gitignore`。次のShellコマンドは、Goコンポーネント構造を初期化します:
+   - テンプレートの名前は、`go`コマンドに従う必要があります（例: `format.yml`、`build.yml`、`test.yml`）。
+   - 新しいプロジェクトを作成し、Gitリポジトリを初期化し、すべての変更を追加/コミットし、リモートoriginを設定してプッシュします。CI/CDコンポーネントプロジェクトのパスに合わせてURLを変更します。
+   - [コンポーネントを作成する](_index.md#write-a-component)ためのガイダンスで概説されているように、追加のファイルとして`README.md`、`LICENSE.md`、`.gitlab-ci.yml`、`.gitignore`を作成します。次のShellコマンドは、Goコンポーネント構造を初期化します。
 
    ```shell
    git init
@@ -262,13 +262,13 @@ CI/CDテンプレートの移行には、次の手順が含まれます:
    git push
    ```
 
-1. CI/CDジョブをテンプレートとして作成します。`build` ジョブから開始します。
-   - `spec` セクションで、次のインプットを定義します:`stage`、`golang_version`、および `binary_directory`。
-   - `inputs.golang_version` にアクセスして、動的なジョブ名定義を追加します。
-   - `inputs.golang_version` にアクセスして、動的なGoイメージバージョンの同様のパターンを使用します。
-   - `inputs.stage` 値にステージを割り当てます。
-   - `inputs.binary_directory` からバイナリディレクターを作成し、`go build` のパラメータとして追加します。
-   - アーティファクトパスを `inputs.binary_directory` に定義します。
+1. CI/CDジョブをテンプレートとして作成します。`build`ジョブから開始します。
+   - `spec`セクションで、`stage`、`golang_version`、`binary_directory`の各入力を定義します。
+   - `inputs.golang_version`にアクセスして、動的なジョブ名の定義を追加します。
+   - `inputs.golang_version`にアクセスして、Goイメージのバージョンも同様に動的に指定します。
+   - `inputs.stage`値にステージを割り当てます。
+   - `inputs.binary_directory`からバイナリディレクトリを作成し、`go build`のパラメータとして追加します。
+   - アーティファクトのパスを`inputs.binary_directory`として定義します。
 
      ```yaml
      spec:
@@ -295,7 +295,7 @@ CI/CDテンプレートの移行には、次の手順が含まれます:
            - $[[ inputs.binary_directory ]]
      ```
 
-   - `format` ジョブテンプレートは同じパターンに従いますが、`stage` と `golang_version` インプットのみが必要です。
+   - `format`ジョブテンプレートは同じパターンに従いますが、必要なのは`stage`と`golang_version`の入力のみです。
 
      ```yaml
      spec:
@@ -316,7 +316,7 @@ CI/CDテンプレートの移行には、次の手順が含まれます:
          - go vet $(go list ./... | grep -v /vendor/)
      ```
 
-   - `test` ジョブテンプレートは同じパターンに従いますが、`stage` と `golang_version` インプットのみが必要です。
+   - `test`ジョブテンプレートは同じパターンに従いますが、必要なのは`stage`と`golang_version`の入力のみです。
 
      ```yaml
      spec:
@@ -336,10 +336,10 @@ CI/CDテンプレートの移行には、次の手順が含まれます:
          - go test -race $(go list ./... | grep -v /vendor/)
      ```
 
-1. コンポーネントをテストするには、`.gitlab-ci.yml` 設定ファイルを変更し、[Test](_index.md#test-the-component)を追加します。
+1. コンポーネントをテストするために、`.gitlab-ci.yml`設定ファイルを変更し、[テスト](_index.md#test-the-component)を追加します。
 
-   - `build` ジョブのインプットとして、`golang_version` に別の値を指定します。
-   - CI/CDコンポーネントパスのURLを変更します。
+   - `build`ジョブの入力として、`golang_version`に別の値を指定します。
+   - CI/CDコンポーネントのパスに合わせてURLを変更します。
 
      ```yaml
      stages: [format, build, test]
@@ -355,15 +355,15 @@ CI/CDテンプレートの移行には、次の手順が含まれます:
            golang_version: latest
      ```
 
-1. CI/CDコンポーネントをTestするためのGoソースコードを追加します。`go` コマンドは、ルートディレクトリに `go.mod` と `main.go` を含むGoプロジェクトを想定しています。
+1. CI/CDコンポーネントをテストするためのGoソースコードを追加します。`go`コマンドは、ルートディレクトリに`go.mod`と`main.go`を含むGo言語プロジェクトを想定しています。
 
-   - Goモジュールを初期化します。CI/CDコンポーネントパスのURLを変更します。
+   - Goモジュールを初期化します。CI/CDコンポーネントのパスに合わせてURLを変更します。
 
      ```shell
      go mod init example.gitlab.com/components/golang
      ```
 
-   - たとえば、`Hello, CI/CD component` を印刷するメイン関数を使用して、`main.go` ファイルを作成します。コードコメントを使用すると、[GitLab Duo コード提案](../../user/project/repository/code_suggestions/_index.md)を使用してGoコードを生成できます。
+   - たとえば、`Hello, CI/CD component`を出力するmain関数を持つ`main.go`ファイルを作成します。コードコメントを使用して、[GitLab Duoコード提案](../../user/project/repository/code_suggestions/_index.md)でGoコードを生成できます。
 
      ```go
      // Specify the package, import required packages
@@ -379,7 +379,7 @@ CI/CDテンプレートの移行には、次の手順が含まれます:
      }
      ```
 
-   - ディレクトリツリーは次のようになります:
+   - ディレクトリツリーは次のようになります。
 
      ```plaintext
      tree
@@ -394,11 +394,11 @@ CI/CDテンプレートの移行には、次の手順が含まれます:
          └── test.yml
      ```
 
-[CI/CDテンプレートをコンポーネントに変換する](_index.md#convert-a-cicd-template-to-a-component)セクションの残りの手順に従って、移行を完了します:
+[CI/CDテンプレートをコンポーネントに変換する](_index.md#convert-a-cicd-template-to-a-component)セクションの残りの手順に従って、移行を完了します。
 
 1. 変更をコミットしてプッシュし、CI/CDパイプラインの結果を検証します。
-1. [コンポーネントの作成](_index.md#write-a-component)に関するガイダンスに従って、`README.md` と `LICENSE.md` ファイルを更新します。
+1. [コンポーネントを作成する](_index.md#write-a-component)に記載されたガイダンスに従って、`README.md`と`LICENSE.md`ファイルを更新します。
 1. [コンポーネントをリリース](_index.md#publish-a-new-release)し、CI/CDカタログで検証します。
-1. CI/CDコンポーネントをステージ/本番環境に追加します。
+1. CI/CDコンポーネントをstagingステージ/本番環境に追加します。
 
-[GitLabが保持されるGoコンポーネント](https://gitlab.com/components/go)は、Go CI/CDテンプレートからの移行が成功した例を提供し、インプットとコンポーネントのベストプラクティスで強化されています。Gitの履歴を調べて詳細を確認できます。
+[GitLabが管理するGoコンポーネント](https://gitlab.com/components/go)は、Go CI/CDテンプレートからの移行の成功例を示しており、入力とコンポーネントのベストプラクティスによって強化されています。詳細については、Gitの履歴をご覧ください。

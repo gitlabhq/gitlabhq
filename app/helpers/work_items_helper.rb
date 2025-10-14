@@ -13,6 +13,7 @@ module WorkItemsHelper
         data[:project_import_jira_path] = project_import_jira_path(resource_parent)
         data[:can_import_work_items] = can?(current_user, :import_work_items, resource_parent).to_s
         data[:export_csv_path] = export_csv_project_issues_path(resource_parent)
+        data[:new_issue_path] = new_project_issue_path(resource_parent)
       end
     end
   end
@@ -53,7 +54,8 @@ module WorkItemsHelper
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,
-      show_new_work_item: can?(current_user, :create_work_item, resource_parent).to_s,
+      show_new_work_item: show_new_work_item_link?(resource_parent).to_s,
+      is_issue_repositioning_disabled: issue_repositioning_disabled(resource_parent).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s,
       new_project_path: new_project_path(namespace_id: group&.id),
       project_namespace_full_path:
@@ -64,7 +66,8 @@ module WorkItemsHelper
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s,
       rss_path: rss_path_for(resource_parent),
-      calendar_path: calendar_path_for(resource_parent)
+      calendar_path: calendar_path_for(resource_parent),
+      has_projects: has_group_projects?(resource_parent).to_s
     }
   end
 
@@ -77,18 +80,58 @@ module WorkItemsHelper
   end
 
   def rss_path_for(resource_parent)
+    params = safe_params.merge(rss_url_options)
+
     if resource_parent.is_a?(Group)
-      group_work_items_path(resource_parent, format: :atom)
+      # Remove id and use group_id instead for the route
+      params = params.except(:id)
+      url_for(params.merge(controller: 'groups/work_items', action: 'index', group_id: resource_parent.to_param))
     else
-      project_work_items_path(resource_parent, format: :atom)
+      url_for(params.merge(controller: 'projects/work_items',
+        action: 'rss',
+        namespace_id: resource_parent.namespace.to_param,
+        project_id: resource_parent.to_param))
     end
   end
 
   def calendar_path_for(resource_parent)
+    params = safe_params.merge(calendar_url_options)
+
     if resource_parent.is_a?(Group)
-      group_work_items_path(resource_parent, format: :ics)
+      # Remove id and use group_id instead for the route
+      params = params.except(:id)
+      url_for(params.merge(controller: 'groups/work_items', action: 'index', group_id: resource_parent.to_param))
     else
-      project_work_items_path(resource_parent, format: :ics)
+      url_for(params.merge(controller: 'projects/work_items',
+        action: 'calendar',
+        namespace_id: resource_parent.namespace.to_param,
+        project_id: resource_parent.to_param))
     end
+  end
+
+  def show_new_work_item_link?(resource_parent)
+    return false unless resource_parent
+    return false if resource_parent.self_or_ancestors_archived?
+
+    # We want to show the link to users that are not signed in, that way they
+    # get directed to the sign-in/sign-up flow and afterwards to the new issue page.
+    # Note that we do this only for the project issues page
+    return true if !resource_parent.is_a?(Group) && !current_user
+
+    can?(current_user, :create_work_item, resource_parent)
+  end
+
+  def issue_repositioning_disabled(resource_parent)
+    if resource_parent.is_a?(Group)
+      resource_parent.root_ancestor.issue_repositioning_disabled?
+    elsif resource_parent.is_a?(Project)
+      resource_parent.root_namespace.issue_repositioning_disabled?
+    end
+  end
+
+  def has_group_projects?(group)
+    return false unless group.is_a?(Group)
+
+    GroupProjectsFinder.new(group: group, current_user: current_user).execute.exists?
   end
 end

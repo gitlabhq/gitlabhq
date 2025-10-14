@@ -34,7 +34,7 @@ describe('tags list row', () => {
   const tagWithOCIMediaType = tagsMock[2];
   const tagWithListMediaType = tagsMock[3];
 
-  const defaultProps = { tag, isMobile: false, index: 0, canDelete: true };
+  const defaultProps = { tag, index: 0, canDelete: true };
 
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findName = () => wrapper.findByTestId('name');
@@ -133,12 +133,6 @@ describe('tags list row', () => {
       mountComponent();
 
       expect(getTooltipFor(findName()).value).toBe(tag.name);
-    });
-
-    it('on mobile has gl-max-w-20 class', () => {
-      mountComponent({ ...defaultProps, isMobile: true });
-
-      expect(findName().classes('gl-max-w-20')).toBe(true);
     });
   });
 

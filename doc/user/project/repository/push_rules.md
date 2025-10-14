@@ -37,6 +37,14 @@ Each regular expression is limited to 511 characters.
 
 For custom push rules use [server hooks](../../../administration/server_hooks.md).
 
+{{< alert type="note" >}}
+
+Push rules are bypassed during fork synchronization.
+When you [update your fork](forking_workflow.md#update-your-fork) from its upstream project, changes
+are applied directly without validation against the fork's push rules.
+
+{{< /alert >}}
+
 ## Enable global push rules
 
 You can create push rules for all new projects to inherit, but they can be overridden
@@ -64,7 +72,7 @@ To override global push rules for a specific project, or to update the rules
 for an existing project to match new global push rules:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
@@ -323,7 +331,7 @@ When you enable this rule:
 To enable the **Reject unsigned commits** push rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Select **Reject unsigned commits**.
 1. Select **Save push rules**.

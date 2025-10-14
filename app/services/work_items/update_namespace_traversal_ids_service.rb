@@ -31,9 +31,6 @@ module WorkItems
       # We can't eliminate the race condition, but any record with outdated traversal_ids will be corrected by
       # the subsequent worker.
       namespace.work_items.each_batch(column: :iid, of: BATCH_SIZE) do |batch|
-        # In the case that we see an issue with transferring large namespaces, we want to be able to stop the updates.
-        break unless Feature.enabled?(:update_work_item_traversal_ids_on_transfer, namespace)
-
         batch.update_all(
           ["namespace_traversal_ids = (SELECT traversal_ids FROM namespaces WHERE id = ?)", namespace.id]
         )

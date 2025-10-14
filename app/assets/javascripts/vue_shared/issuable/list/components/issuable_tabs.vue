@@ -70,7 +70,7 @@ export default {
         </template>
       </gl-tab>
     </gl-tabs>
-    <div class="nav-controls">
+    <div class="nav-controls gl-justify-end">
       <slot name="nav-actions"></slot>
     </div>
   </div>

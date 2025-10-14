@@ -99,7 +99,7 @@ RSpec.shared_examples 'labels sidebar widget' do
         end
       end
 
-      it 'creates new label' do
+      it 'creates new label', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/473315' do
         page.within(labels_widget) do
           fill_in 'Label name', with: 'wontfix'
           click_link 'Magenta-pink'

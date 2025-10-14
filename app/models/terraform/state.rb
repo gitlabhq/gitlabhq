@@ -91,8 +91,8 @@ module Terraform
       new_version.save!
     end
 
-    def parse_serial(file)
-      Gitlab::Json.parse(file)["serial"]
+    def parse_serial(data)
+      ::Gitlab::Terraform::StateParser.extract_serial(data)
     rescue JSON::ParserError
     end
   end

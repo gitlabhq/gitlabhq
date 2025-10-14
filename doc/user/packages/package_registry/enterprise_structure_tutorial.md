@@ -13,7 +13,7 @@ In this tutorial, you'll learn how to incorporate the GitLab package registry mo
 
 When you finish this tutorial, you'll know how to:
 
-1. [Set up a single root or **top-level group** to structure your work](#create-an-enterprise-structure).
+1. [Set up a single root or top-level group to structure your work](#create-an-enterprise-structure).
 1. [Configure projects for publishing packages with clear ownership](#set-up-a-top-level-group).
 1. [Set up top-level group package consumption for simplified access](#publish-packages).
 1. [Add deploy tokens so your team can access your organization's packages](#add-deploy-tokens).
@@ -178,7 +178,7 @@ This configuration automatically provides access to all packages across your org
 Next, we'll add a read-only deploy token. This token provides access to the packages stored in the subgroups and projects of the organization,
 so your teams can use them for development.
 
-1. In your top-level group, on the left sidebar, select **Settings > Repository**.
+1. In your top-level group, on the left sidebar, select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. Select **Add token**.
 1. Complete the fields, and set the scope to `read_repository`.
@@ -205,15 +205,15 @@ publish:
 
 Organizing your GitLab projects under one top-level group confers several benefits:
 
-- **Simplified configuration**
+- Simplified configuration:
   - One URL for all package access
   - Consistent setup across teams
   - Easy token rotation
-- **Clear ownership**
+- Clear ownership:
   - Packages stay with their source code
   - Teams maintain control over publishing
   - Version history is tied to project activity
-- **Natural organization**
+- Natural organization:
   - Your groups match your company structure
   - Teams can collaborate while remaining autonomous
 

@@ -5,11 +5,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Changelog entries
 ---
 
-This guide contains instructions for when and how to generate a changelog entry
-file, as well as information and history about our changelog process.
-
-## Overview
-
 Each list item, or **entry**, in our
 [`CHANGELOG.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md)
 file is generated from the subject line of a Git commit. Commits are included
@@ -17,23 +12,81 @@ when they contain the `Changelog` [Git trailer](https://git-scm.com/docs/git-int
 When generating the changelog, author and merge request details are added
 automatically.
 
-For a list of trailers, see [Add a trailer to a Git commit](../user/project/changelogs.md#add-a-trailer-to-a-git-commit).
+## How to generate a changelog entry
 
-An example of a Git commit to include in the changelog is the following:
+Git trailers are added when committing your changes. This can be done using your
+text editor of choice. To add a changelog:
 
-```plaintext
-Update git vendor to GitLab
+1. [Choose the trailer](../user/project/changelogs.md#add-a-trailer-to-a-git-commit)
+   that's appropriate for your use case.
 
-Now that we are using Gitaly to compile Git, the Git version isn't known
-from the manifest. Instead, we are getting the Gitaly version. Update our
-vendor field to be `gitlab` to avoid CVE matching old versions.
+   An example of a Git commit to include in the changelog is the following:
 
-Changelog: changed
-```
+   ```plaintext
+   Update git vendor to GitLab
 
-If your merge request has multiple commits,
-[make sure to add the `Changelog` entry to the first commit](changelog.md#how-to-generate-a-changelog-entry).
-This ensures that the correct entry is generated when commits are squashed.
+   Now that we are using Gitaly to compile Git, the Git version isn't known
+   from the manifest. Instead, we are getting the Gitaly version. Update our
+   vendor field to be `gitlab` to avoid CVE matching old versions.
+
+   Changelog: changed
+   ```
+
+1. Push your changes.
+
+If your merge request has multiple commits, make sure to add the `Changelog`
+entry to the first commit. This ensures that the correct entry is generated
+when commits are squashed.
+
+Adding the trailer to an existing commit requires either
+amending to the commit (if it's the most recent one), or an interactive rebase
+using `git rebase -i`.
+
+- To update the last commit, run the following:
+
+  ```shell
+  git commit --amend
+  ```
+
+  You can then add the `Changelog` trailer to the commit message. If you had
+  already pushed prior commits to your remote branch, you have to force push
+  the new commit:
+
+  ```shell
+  git push -f origin your-branch-name
+  ```
+
+- To edit older (or multiple commits), use `git rebase -i HEAD~N` where `N` is the
+  last N number of commits to rebase. For example, if you have three commits on your branch,
+  and only want to update the second commit, you need to run:
+
+  ```shell
+  git rebase -i HEAD~2
+  ```
+
+  This starts an interactive rebase session for the last two commits. When
+  started, Git presents you with a text editor with contents along the lines of
+  the following:
+
+  ```plaintext
+  pick B Subject of commit B
+  pick C Subject of commit C
+  ```
+
+  To update commit B, change the word `pick` to `reword`, then save and quit the
+  editor. Once closed, Git presents you with a new text editor instance to edit
+  the commit message of commit B. Add the trailer, then save and quit the editor.
+  If all went well, commit B is now updated.
+
+  Since you changed commits that already exist in your remote branch, you must use
+  the `--force-with-lease` flag when pushing to your remote branch:
+
+  ```shell
+  git push origin your-branch-name --force-with-lease
+  ```
+
+For more information about interactive rebases, take a look at
+[the Git documentation](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
 
 ### Overriding the associated merge request
 
@@ -71,7 +124,7 @@ MR: https://gitlab.com/foo/bar/-/merge_requests/123
 EE: true
 ```
 
-**Do not** add the trailer for changes that apply to both EE and CE.
+**Do not** add this trailer for changes that apply to both EE and CE.
 
 ## What warrants a changelog entry?
 
@@ -140,59 +193,6 @@ errors), and _when_ (searching commits with Elasticsearch).
 Use your best judgement and try to put yourself in the mindset of someone
 reading the compiled changelog. Does this entry add value? Does it offer context
 about _where_ and _why_ the change was made?
-
-## How to generate a changelog entry
-
-Git trailers are added when committing your changes. This can be done using your
-text editor of choice. Adding the trailer to an existing commit requires either
-amending to the commit (if it's the most recent one), or an interactive rebase
-using `git rebase -i`.
-
-To update the last commit, run the following:
-
-```shell
-git commit --amend
-```
-
-You can then add the `Changelog` trailer to the commit message. If you had
-already pushed prior commits to your remote branch, you have to force push
-the new commit:
-
-```shell
-git push -f origin your-branch-name
-```
-
-To edit older (or multiple commits), use `git rebase -i HEAD~N` where `N` is the
-last N number of commits to rebase. For example, if you have three commits on your branch,
-and only want to update the second commit, you need to run:
-
-```shell
-git rebase -i HEAD~2
-```
-
-This starts an interactive rebase session for the last two commits. When
-started, Git presents you with a text editor with contents along the lines of
-the following:
-
-```plaintext
-pick B Subject of commit B
-pick C Subject of commit C
-```
-
-To update commit B, change the word `pick` to `reword`, then save and quit the
-editor. Once closed, Git presents you with a new text editor instance to edit
-the commit message of commit B. Add the trailer, then save and quit the editor.
-If all went well, commit B is now updated.
-
-Since you changed commits that already exist in your remote branch, you must use
-the `--force-with-lease` flag when pushing to your remote branch:
-
-```shell
-git push origin your-branch-name --force-with-lease
-```
-
-For more information about interactive rebases, take a look at
-[the Git documentation](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
 
 ---
 

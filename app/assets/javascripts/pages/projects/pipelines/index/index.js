@@ -1,3 +1,12 @@
-import { initPipelinesIndex } from '~/ci/pipeline_details/pipelines_index';
+import {
+  initPipelinesIndex,
+  initPipelinesIndexGraphql,
+} from '~/ci/pipeline_details/pipelines_index';
 
-initPipelinesIndex();
+const shouldUseGraphql = gon?.features?.pipelinesPageGraphql;
+
+if (shouldUseGraphql) {
+  initPipelinesIndexGraphql();
+} else {
+  initPipelinesIndex();
+}

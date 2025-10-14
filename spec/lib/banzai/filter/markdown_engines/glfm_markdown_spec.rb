@@ -111,4 +111,59 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
       expect(engine.render('%{test}')).to eq expected
     end
   end
+
+  describe 'escaped reference chars' do
+    # In order to allow a user to short-circuit our reference shortcuts
+    # (such as # or !), the user should be able to escape them, like \#.
+    # The parser surrounds characters that were escaped in the source document
+    # with `<span data-escaped-char>...</span>`, such that our reference
+    # filters won't catch them.
+    #
+    # The list of characters to have such treatment is defined as
+    # Banzai::Filter::GlfmMarkdown::REFERENCE_CHARS, which is passed into
+    # ::GLFMMarkdown.to_html.
+    it 'ensure we handle all the GitLab reference characters', :eager_load do
+      reference_chars = ObjectSpace.each_object(Class).filter_map do |klass|
+        next unless klass.included_modules.include?(Referable)
+        next unless klass.respond_to?(:reference_prefix)
+        next unless klass.reference_prefix.length == 1
+
+        klass.reference_prefix
+      end.compact
+
+      expect(Banzai::Filter::MarkdownEngines::GlfmMarkdown::REFERENCE_CHARS).to include(*reference_chars)
+    end
+
+    it 'keeps reference chars escaped with <span data-escaped-char>' do
+      engine = described_class.new({ no_sourcepos: true })
+      markdown = Banzai::Filter::MarkdownEngines::GlfmMarkdown::REFERENCE_CHARS.map { |char| "\\#{char}" }.join(' ')
+      html = engine.render(markdown)
+
+      Banzai::Filter::MarkdownEngines::GlfmMarkdown::REFERENCE_CHARS.each do |item|
+        char = item == '&' ? '&amp;' : item
+
+        expect(html).to include("<span data-escaped-char>#{char}</span>")
+      end
+    end
+
+    it 'does not include <span data-escaped-char> for non-reference punctuation' do
+      engine = described_class.new({ no_sourcepos: true })
+
+      # rubocop:disable Style/StringConcatenation -- better format for escaping characters
+      markdown = %q(\"\'\*\+\,\-\.\/\;\<\=\>\?\[\]\`\|) + %q[\(\)\\\\]
+      # rubocop:enable Style/StringConcatenation
+
+      html = engine.render(markdown)
+
+      expect(html).not_to include('<span data-escaped-char')
+    end
+
+    it 'keeps html escaped text' do
+      engine = described_class.new({})
+      markdown = '[link](<foo\>)'
+      html = engine.render(markdown)
+
+      expect(html).to eq "<p data-sourcepos=\"1:1-1:14\">[link](&lt;foo&gt;)</p>\n"
+    end
+  end
 end

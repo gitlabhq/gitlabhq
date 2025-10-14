@@ -17,9 +17,10 @@ module MergeRequests
         trigger_user_merge_request_updated(merge_request)
         create_system_note(merge_request, user, has_unapproved)
 
-        user.invalidate_merge_request_cache_counts if user.merge_request_dashboard_enabled?
-        current_user.invalidate_merge_request_cache_counts if current_user.merge_request_dashboard_enabled?
+        user.invalidate_merge_request_cache_counts
+        current_user.invalidate_merge_request_cache_counts
         request_duo_code_review(merge_request) if user == duo_code_review_bot
+        execute_flow_triggers(merge_request, [user], :assign_reviewer)
 
         success
       end

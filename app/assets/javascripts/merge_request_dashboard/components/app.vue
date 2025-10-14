@@ -16,6 +16,7 @@ import MergeRequest from './merge_request.vue';
 import DraftsCount from './drafts_count.vue';
 
 export default {
+  name: 'MergeRequestDashboardRoot',
   apollo: {
     $subscribe: {
       // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -104,6 +105,9 @@ export default {
         .filter((l) => !l.hideCount)
         .map((list) => ({ query: list.query, variables: list.variables }));
     },
+    tabAttributes(tab) {
+      return { href: this.$router.resolve({ path: tab.key }).href };
+    },
   },
   mergeRequestIllustration,
   docsPath: helpPagePath('/user/project/merge_requests/homepage.html'),
@@ -139,6 +143,7 @@ export default {
         :key="tab.title"
         :active="tab.key === currentTab"
         :lazy="!visitedTabs.has(tab.key)"
+        :title-link-attributes="tabAttributes(tab)"
         data-testid="merge-request-dashboard-tab"
         @click="clickTab(tab)"
       >
@@ -176,11 +181,13 @@ export default {
             >
               <collapsible-section
                 :id="list.id"
+                :hide-count="list.hideCount"
                 :count="count"
                 :has-merge-requests="mergeRequests.length > 0"
                 :title="list.title"
                 :help-content="list.helpContent"
                 :loading="loading"
+                :error="error"
                 :new-merge-request-ids="newMergeRequestIds"
                 :merge-requests="mergeRequests"
                 :active-list="i === 0"

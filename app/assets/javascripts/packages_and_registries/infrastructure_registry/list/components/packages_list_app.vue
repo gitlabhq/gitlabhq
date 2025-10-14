@@ -44,7 +44,6 @@ export default {
   computed: {
     ...mapState({
       filter: (state) => state.filter,
-      selectedType: (state) => state.selectedType,
       packagesCount: (state) => state.pagination?.total,
     }),
     emptySearch() {
@@ -72,13 +71,7 @@ export default {
     this.checkDeleteAlert();
   },
   methods: {
-    ...mapActions([
-      'requestPackagesList',
-      'requestDeletePackage',
-      'setSelectedType',
-      'setSorting',
-      'setFilter',
-    ]),
+    ...mapActions(['requestPackagesList', 'requestDeletePackage', 'setSorting', 'setFilter']),
     onPageChanged(page) {
       return this.requestPackagesList({
         page,

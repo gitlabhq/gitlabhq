@@ -108,6 +108,162 @@ RSpec.describe Ci::CreatePipelineService,
           expect(bridge4.scoped_variables.to_hash).to include('PROVIDER' => 'vultr', 'STACK' => 'data')
         end
       end
+
+      context 'with matrix expressions in needs:parallel:matrix' do
+        let(:config) do
+          <<-EOY
+          .parallel-strat:
+            parallel:
+              matrix:
+                - TARGET: ["linux", "windows"]
+
+          build-job:
+            script: echo "Building for $TARGET"
+            parallel: !reference [.parallel-strat, parallel]
+
+          test-job:
+            script: echo "Testing for $TARGET"
+            parallel: !reference [.parallel-strat, parallel]
+            needs:
+              - job: build-job
+                parallel:
+                  matrix:
+                    - TARGET: $[[ matrix.TARGET ]]
+          EOY
+        end
+
+        it 'creates pipeline with correct job dependencies' do
+          expect(pipeline).to be_created_successfully
+          expect(pipeline.processables.count).to eq(4)
+
+          # Check build jobs were created
+          build_jobs = pipeline.processables.select { |job| job.name.start_with?('build-job:') }
+          expect(build_jobs.count).to eq(2)
+          expect(build_jobs.map(&:name)).to match_array([
+            'build-job: [linux]',
+            'build-job: [windows]'
+          ])
+
+          # Check test jobs were created
+          test_jobs = pipeline.processables.select { |job| job.name.start_with?('test-job:') }
+          expect(test_jobs.count).to eq(2)
+          expect(test_jobs.map(&:name)).to match_array([
+            'test-job: [linux]',
+            'test-job: [windows]'
+          ])
+
+          test_linux = find_job('test-job: [linux]')
+          test_windows = find_job('test-job: [windows]')
+
+          # Each test job should depend only on the corresponding build job
+          expect(test_linux.scheduling_type).to eq('dag')
+          expect(test_linux.needs.map(&:name)).to eq(['build-job: [linux]'])
+
+          expect(test_windows.scheduling_type).to eq('dag')
+          expect(test_windows.needs.map(&:name)).to eq(['build-job: [windows]'])
+        end
+
+        context 'with multi-dimensional matrix' do
+          let(:config) do
+            <<-EOY
+            .matrix_config: &matrix_config
+              parallel:
+                matrix:
+                  - OS: ["ubuntu", "alpine"]
+                    ARCH: ["amd64", "arm64"]
+
+            build:
+              stage: build
+              script: echo "Building $OS-$ARCH"
+              <<: *matrix_config
+
+            test:
+              stage: test
+              script: echo "Testing $OS-$ARCH"
+              needs:
+                - job: build
+                  parallel:
+                    matrix:
+                      - OS: $[[ matrix.OS ]]
+                        ARCH: $[[ matrix.ARCH ]]
+              <<: *matrix_config
+            EOY
+          end
+
+          it 'creates correct dependencies for multi-dimensional matrix' do
+            expect(pipeline).to be_created_successfully
+            expect(pipeline.processables.count).to eq(8) # 4 build + 4 test jobs
+
+            build_jobs = pipeline.processables.select { |job| job.name.start_with?('build:') }
+            test_jobs = pipeline.processables.select { |job| job.name.start_with?('test:') }
+
+            expected_combinations = [
+              '[ubuntu, amd64]',
+              '[ubuntu, arm64]',
+              '[alpine, amd64]',
+              '[alpine, arm64]'
+            ]
+
+            build_names = build_jobs.map(&:name).map { |n| n.sub('build: ', '') }
+            test_names = test_jobs.map(&:name).map { |n| n.sub('test: ', '') }
+
+            expect(build_names).to match_array(expected_combinations)
+            expect(test_names).to match_array(expected_combinations)
+
+            # Check that each test job depends on the corresponding build job
+            expected_combinations.each do |combination|
+              test_job = find_job("test: #{combination}")
+              expect(test_job.scheduling_type).to eq('dag')
+              expect(test_job.needs.map(&:name)).to eq(["build: #{combination}"])
+            end
+          end
+        end
+
+        context 'with mixed expressions and literal values' do
+          let(:config) do
+            <<-EOY
+            build:
+              script: echo "Building $OS-$ENV"
+              parallel:
+                matrix:
+                  - OS: ["linux", "windows"]
+                    ENV: ["dev", "prod"]
+
+            integration-test:
+              script: echo "Integration test"
+              parallel:
+                matrix:
+                  - OS: ["linux"]
+                    ENV: ["prod"]
+              needs:
+                - job: build
+                  parallel:
+                    matrix:
+                      - OS: $[[ matrix.OS ]]
+                        ENV: "prod"
+            EOY
+          end
+
+          it 'handles mixed matrix expressions and literal values' do
+            expect(pipeline).to be_created_successfully
+
+            # Build jobs: 2 OS x 2 ENV = 4 jobs
+            build_jobs = pipeline.processables.select { |job| job.name.start_with?('build:') }
+            expect(build_jobs.count).to eq(4)
+
+            # Integration test jobs: only 1 combination
+            test_jobs = pipeline.processables.select { |job| job.name.start_with?('integration-test:') }
+            expect(test_jobs.count).to eq(1)
+
+            test_job = test_jobs.first
+            expect(test_job.name).to eq('integration-test: [linux, prod]')
+
+            # Should only depend on the linux+prod build job
+            expect(test_job.scheduling_type).to eq('dag')
+            expect(test_job.needs.map(&:name)).to contain_exactly('build: [linux, prod]')
+          end
+        end
+      end
     end
   end
 

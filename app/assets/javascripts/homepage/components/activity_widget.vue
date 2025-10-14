@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlCollapsibleListbox, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlSkeletonLoader, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -43,7 +43,6 @@ export default {
     GlSkeletonLoader,
     GlCollapsibleListbox,
     BaseWidget,
-    GlIcon,
   },
   directives: {
     SafeHtml,
@@ -130,8 +129,8 @@ export default {
          * a proper GraphQL endpoint here.
          */
         const url = this.filter
-          ? `/dashboard/activity?limit=${MAX_EVENTS}&offset=0&filter=${this.filter}`
-          : `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`;
+          ? `${gon.relative_url_root || ''}/dashboard/activity?limit=${MAX_EVENTS}&offset=0&filter=${this.filter}`
+          : `${gon.relative_url_root || ''}/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`;
         const { data } = await axios.get(url);
         if (data?.html) {
           const parser = new DOMParser();
@@ -155,21 +154,10 @@ export default {
 </script>
 
 <template>
-  <base-widget @visible="reload">
+  <base-widget data-testid="homepage-activity-widget" @visible="reload">
     <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
       <div class="gl-flex gl-items-center gl-gap-2">
-        <h2 class="gl-heading-4 gl-m-0">{{ __('Activity') }}</h2>
-        <gl-icon
-          v-gl-tooltip.hover
-          :title="
-            s__(
-              'HomepageActivityWidget|Filter your activity feed to see different types of events.',
-            )
-          "
-          name="information-o"
-          class="gl-text-subtle"
-          :size="14"
-        />
+        <h2 class="gl-heading-4 gl-m-0">{{ __('Follow the latest updates') }}</h2>
       </div>
 
       <gl-collapsible-listbox
@@ -239,8 +227,8 @@ export default {
 }
 
 ::v-deep .user-profile-activity svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 ::v-deep .user-profile-activity:not(:last-child)::before {

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
+  let_it_be(:user2) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
   let_it_be(:repo_project) { create(:project, :public, :repository, group: group) }
@@ -479,6 +480,10 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
       def request
         get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
       end
+
+      def request_with_second_scope
+        get api(endpoint, user2), params: { scope: 'users', search: 'foo@bar.com' }
+      end
     end
 
     context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
@@ -668,6 +673,10 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         def request
           get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+        end
+
+        def request_with_second_scope
+          get api(endpoint, user2), params: { scope: 'users', search: 'foo@bar.com' }
         end
       end
 
@@ -1066,6 +1075,10 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         def request
           get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+        end
+
+        def request_with_second_scope
+          get api(endpoint, user2), params: { scope: 'users', search: 'foo@bar.com' }
         end
       end
 

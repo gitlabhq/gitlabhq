@@ -11,7 +11,7 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
 
   let(:user_params) { { username: user.username } }
 
-  let_it_be(:project_a) { create(:project, :public, name: 'ProjectA', path: 'Project-A', star_count: 30) }
+  let_it_be_with_reload(:project_a) { create(:project, :public, name: 'ProjectA', path: 'Project-A', star_count: 30) }
   let_it_be(:project_b) { create(:project, :private, name: 'ProjectB', path: 'Project-B', star_count: 20) }
   let_it_be(:project_c) { create(:project, :private, name: 'ProjectC', path: 'Project-C', star_count: 10) }
   let_it_be(:user, reload: true) { create(:user) }
@@ -369,6 +369,43 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
         .to contain_exactly(
           a_graphql_entity_for(project_b)
         )
+    end
+  end
+
+  describe "active" do
+    let(:current_user) { user }
+
+    before do
+      project_a.update!(archived: true)
+    end
+
+    context "when false" do
+      let(:query_without_active) do
+        graphql_query_for(:user, user_params, "starredProjects(active: false) { nodes { id } }")
+      end
+
+      it "returns only projects that are inactive" do
+        post_graphql(query_without_active, current_user: current_user)
+
+        expect(graphql_data_at(*path)).to contain_exactly(
+          a_graphql_entity_for(project_a)
+        )
+      end
+    end
+
+    context "when true" do
+      let(:query_with_active) do
+        graphql_query_for(:user, user_params, "starredProjects(active: true) { nodes { id } }")
+      end
+
+      it "returns active projects" do
+        post_graphql(query_with_active, current_user: current_user)
+
+        expect(graphql_data_at(*path)).to contain_exactly(
+          a_graphql_entity_for(project_b),
+          a_graphql_entity_for(project_c)
+        )
+      end
     end
   end
 

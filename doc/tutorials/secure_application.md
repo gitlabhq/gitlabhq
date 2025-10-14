@@ -25,6 +25,7 @@ Create fundamental scans to identify vulnerabilities.
 |-------|-------------|--------------------|
 | [Set up dependency scanning](dependency_scanning.md) | Learn how to detect vulnerabilities in an application's dependencies. | {{< icon name="star" >}} |
 | [Scan a Docker container for vulnerabilities](container_scanning/_index.md) | Learn how to use container scanning templates to add container scanning to your projects. | {{< icon name="star" >}} |
+| [A comprehensive guide to GitLab DAST](https://about.gitlab.com/blog/comprehensive-guide-to-gitlab-dast/) | Learn how to configure dynamic application security testing, perform scans, and implement security policies. | {{< icon name="star" >}} |
 
 ## Protect against secret exposure
 

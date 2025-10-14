@@ -27,7 +27,7 @@ your group, enabling you to use the same cluster across multiple projects.
 To view your group-level Kubernetes clusters:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Operate > Kubernetes**.
+1. Select **Operate** > **Kubernetes**.
 
 ## Cluster management project
 
@@ -85,7 +85,7 @@ your cluster, which can cause deployment jobs to fail.
 To clear the cache:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Operate > Kubernetes**.
+1. Select **Operate** > **Kubernetes**.
 1. Select your cluster.
 1. Expand **Advanced settings**.
 1. Select **Clear cluster cache**.

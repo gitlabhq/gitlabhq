@@ -66,7 +66,7 @@ To create an OAuth application on your GitLab Self-Managed instance:
 1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
 1. Copy the **Application ID** value.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. Select **Save changes**.
@@ -143,7 +143,7 @@ Alternatively, you might want to [install the GitLab for Jira Cloud app manually
 To set up your GitLab Self-Managed instance for Atlassian Marketplace installation in GitLab 15.7 and later:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Proxy URL**, enter `https://gitlab.com` to install the app from the Atlassian Marketplace.
 1. Select **Save changes**.
@@ -223,7 +223,7 @@ To support your GitLab Self-Managed instance with Jira Cloud, do one of the foll
 To set up your GitLab Self-Managed instance for manual installation in GitLab 15.7 and later:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Leave **Jira Connect Proxy URL** blank to install the app manually.
 1. Select **Save changes**.
@@ -297,7 +297,38 @@ Like the GitLab.com Marketplace listing, this method uses
 For more information about creating an Atlassian Marketplace listing, see the
 [Atlassian documentation](https://developer.atlassian.com/platform/marketplace/listing-connect-apps/#create-your-marketplace-listing).
 
+## Connect multiple GitLab instances
+
+Use the GitLab for Jira app to connect multiple GitLab instances to a single Jira Cloud instance.
+The installation methods depend on which instances you want to connect.
+
+Prerequisites:
+
+- Each instance requires separate OAuth authentication.
+- You must meet the prerequisites for each installation method.
+
+For GitLab.com + GitLab Self-Managed:
+
+- On GitLab.com: Use the Atlassian Marketplace installation.
+- On GitLab Self-managed instances: Install the app manually.
+
+For multiple GitLab Self-Managed instances:
+
+- On the first instance, either: Use the Atlassian Marketplace installation or install the app manually.
+- On other instances: Install the app manually.
+
+Jira Cloud displays a GitLab for Jira Cloud app for each installation.
+
+Only one GitLab instance per organization can use the official Atlassian Marketplace listing.
+
 ## Configure your GitLab instance to serve as a proxy
+
+{{< alert type="note" >}}
+
+For most users, this configuration is not necessary. To Jira Cloud with multiple instances,
+you can connect each instance with the GitLab for Jira Cloud app.
+
+{{< /alert >}}
 
 A GitLab instance can serve as a proxy for other GitLab instances through the GitLab for Jira Cloud app.
 You might want to use a proxy if you're managing multiple GitLab instances but only want to
@@ -306,7 +337,7 @@ You might want to use a proxy if you're managing multiple GitLab instances but o
 To configure your GitLab instance to serve as a proxy:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Select **Enable public key storage**.
 1. Select **Save changes**.
@@ -477,7 +508,7 @@ the reverse proxy FQDN as an additional JWT audience.
 To set an additional JWT audience:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Additional Audience URL**, enter the additional audience
    (for example, `https://gitlab.mycompany.com`).

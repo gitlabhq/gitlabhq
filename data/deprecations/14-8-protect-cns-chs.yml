@@ -24,8 +24,8 @@
     As part of this change, the following specific capabilities within GitLab
     are now deprecated, and are scheduled for removal in GitLab 15.0:
 
-    - The **Security & Compliance > Threat Monitoring** page.
-    - The `Network Policy` security policy type, as found on the **Security & Compliance > Policies** page.
+    - The **Security & Compliance** > **Threat Monitoring** page.
+    - The `Network Policy` security policy type, as found on the **Security & Compliance** > **Policies** page.
     - The ability to manage integrations with the following technologies through GitLab: AppArmor, Cilium, Falco, FluentD, and Pod Security Policies.
     - All APIs related to the above functionality.
 

@@ -108,6 +108,18 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
     end
   end
 
+  describe 'aliased unscoped url helpers' do
+    include Rails.application.routes.url_helpers
+
+    it 'aliases root_url as unscoped_root_url' do
+      expect(root_url).to eq(unscoped_root_url)
+    end
+
+    it 'aliases root_path as unscoped_root_path' do
+      expect(root_path).to eq(unscoped_root_path)
+    end
+  end
+
   describe '#root_path' do
     let(:helper) { :root }
     let(:organization_helper) { :organization_root }

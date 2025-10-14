@@ -422,6 +422,10 @@ a page's JavaScript entrypoint's dependencies and pass them all at once to the m
 scripts/frontend/migrate_to_container_queries.mjs $(scripts/frontend/find_frontend_files.mjs app/assets/javascripts/todos/index.js)
 ```
 
+Not every media query need be migrated as some media queries are needed for global behaviors.
+You may add your files to `scripts/frontend/lib/container_queries_migration_exclusions.txt` to
+exclude them from automatic migrations.
+
 To find partials a given HAML view depends on, navigate to the relevant page in your GDK, then run
 the following script in the browser's console to copy the list of files to the clipboard:
 

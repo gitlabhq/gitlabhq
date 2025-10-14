@@ -1,0 +1,14 @@
+- return unless show_email_otp_enrollment_callout?
+
+= render Pajamas::AlertComponent.new(variant: :info,
+    title: s_('EmailOTP|Enhanced authentication coming soon'),
+    dismissible: true,
+    alert_options: { class: 'js-persistent-callout',
+                     data: { feature_id: Users::CalloutsHelper::EMAIL_OTP_ENROLLMENT_CALLOUT,
+                             dismiss_endpoint: callouts_path,
+                             defer_links: 'true' }}) do |c|
+  = c.with_body do
+    = s_("EmailOTP|On %{date}, GitLab will begin requiring email one-time passcodes for your account. To avoid being locked out, make sure you can access your primary email address before this date.") % { date: l(current_user.email_otp_required_after.to_date, format: :long) }
+  = c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_emails_path, button_options: { class: 'deferred-link' }) do
+      = s_('EmailOTP|Review email addresses')

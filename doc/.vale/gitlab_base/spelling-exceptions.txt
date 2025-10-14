@@ -481,6 +481,7 @@ Iglu
 IIFEs
 Immer
 inclusivity
+inferencing
 inflector
 inflectors
 Ingress
@@ -687,6 +688,7 @@ offboards
 OIDs
 OKRs
 Okta
+Ollama
 OLM
 OmniAuth
 onboarding

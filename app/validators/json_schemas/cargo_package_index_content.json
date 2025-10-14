@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Cargo Package Index Content Schema",
+  "type": "object",
+  "required": [
+    "name",
+    "vers",
+    "deps",
+    "cksum"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "vers": {
+      "type": "string"
+    },
+    "deps": {
+      "type": "array"
+    },
+    "cksum": {
+      "type": "string"
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "features2": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "yanked": {
+      "type": "boolean"
+    },
+    "links": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "v": {
+      "type": "integer",
+      "enum": [
+        1,
+        2
+      ]
+    },
+    "rust_version": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

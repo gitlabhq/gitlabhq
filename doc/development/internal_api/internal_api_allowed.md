@@ -86,6 +86,12 @@ same manner as the standard repositories, and is more prone to the refs issue.
 
 ### Parallel push checks
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45668) in GitLab 13.6 [with a flag](../../administration/feature_flags/_index.md) named `parallel_push_checks`. Disabled by default.
+
+{{< /history >}}
+
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is not available. To make it available,

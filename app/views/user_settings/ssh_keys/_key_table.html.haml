@@ -3,7 +3,7 @@
 - if @keys.any?
   .table-holder
     %table.table.b-table.gl-table.b-table-stacked-md.-gl-mt-1.-gl-mb-2.ssh-keys-list{ data: { testid: 'ssh-keys-list' } }
-      %thead.gl-hidden.md:gl-table-header-group
+      %thead.gl-hidden{ class: "@md/panel:gl-table-header-group" }
         %tr
           %th= _('Title')
           %th= s_('Profiles|Key')

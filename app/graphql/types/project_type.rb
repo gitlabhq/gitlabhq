@@ -444,6 +444,11 @@ module Types
         description: 'ID of the job.'
     end
 
+    field :job_analytics,
+      resolver: Resolvers::Ci::JobAnalyticsResolver,
+      description: 'CI/CD job analytics for the project. Returns an error if ClickHouse is not configured.',
+      experiment: { milestone: '18.5' }
+
     field :pipelines,
       null: true,
       calls_gitaly: true,
@@ -500,7 +505,10 @@ module Types
     field :grafana_integration, Types::GrafanaIntegrationType,
       null: true,
       description: 'Grafana integration details for the project.',
-      resolver: Resolvers::Projects::GrafanaIntegrationResolver
+      deprecated: {
+        reason: 'Feature was removed in 16.0. Always returns null',
+        milestone: '18.3'
+      }
 
     field :snippets, Types::SnippetType.connection_type,
       null: true,
@@ -1103,6 +1111,10 @@ module Types
 
     def edit_path
       ::Gitlab::Routing.url_helpers.edit_project_path(project)
+    end
+
+    def grafana_integration
+      nil
     end
 
     private

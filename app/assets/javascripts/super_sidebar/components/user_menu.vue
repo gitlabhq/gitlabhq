@@ -21,6 +21,7 @@ import { logError } from '~/lib/logger';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
 import UserMenuProjectStudioSection from './user_menu_project_studio_section.vue';
+import UserCounts from './user_counts.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
 const DROPDOWN_X_OFFSET_BASE = -192;
@@ -49,6 +50,7 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     GlButton,
+    UserCounts,
     UserMenuProfileItem,
     UserMenuProjectStudioSection,
     SetStatusModal: () =>
@@ -213,6 +215,12 @@ export default {
         'current-clear-status-after': clearAfter || '',
       };
     },
+    showAdminButton() {
+      return (
+        this.isAdmin &&
+        (!this.data.admin_mode.admin_mode_feature_enabled || this.data.admin_mode.admin_mode_active)
+      );
+    },
     showEnterAdminModeItem() {
       return (
         this.data.admin_mode.user_is_admin &&
@@ -358,12 +366,12 @@ export default {
 
         <div
           v-if="projectStudioEnabled && hasEmoji"
-          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
+          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-justify-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
           :title="data.status.message"
         >
           <gl-emoji
             :data-name="data.status.emoji"
-            class="gl-pointer-events-none gl-ml-[0.09375rem] !gl-text-[1em]"
+            class="super-sidebar-status-emoji gl-pointer-events-none !gl-text-[1em]"
           />
         </div>
       </template>
@@ -371,6 +379,18 @@ export default {
       <gl-disclosure-dropdown-group>
         <user-menu-profile-item :user="data" />
       </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-item
+        v-if="projectStudioEnabled"
+        class="gl-border-t gl-flex gl-pt-2 md:gl-hidden"
+        data-testid="user-counts-item"
+      >
+        <user-counts
+          :sidebar-data="data"
+          class="gl-w-full"
+          counter-class="gl-button btn btn-default btn-default-tertiary"
+        />
+      </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
@@ -383,17 +403,6 @@ export default {
           <template #list-item>
             <gl-icon name="slight-smile" variant="subtle" class="gl-mr-2" />
             <span>{{ statusLabel }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
-
-        <gl-disclosure-dropdown-item
-          v-if="showTrialItem"
-          :item="trialItem"
-          data-testid="start-trial-item"
-        >
-          <template #list-item>
-            {{ trialItem.text }}
-            <gl-emoji data-name="rocket" />
           </template>
         </gl-disclosure-dropdown-item>
 
@@ -412,7 +421,7 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="projectStudioEnabled && isAdmin"
+          v-if="projectStudioEnabled && showAdminButton"
           :item="adminLinkItem"
           class="xl:gl-hidden"
           data-testid="admin-link"
@@ -420,24 +429,6 @@ export default {
           <template #list-item>
             <gl-icon name="admin" variant="subtle" class="gl-mr-2" />
             <span>{{ $options.i18n.adminArea }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
-
-        <gl-disclosure-dropdown-item
-          v-if="addBuyPipelineMinutesMenuItem"
-          ref="buyPipelineMinutesNotificationCallout"
-          :item="buyPipelineMinutesItem"
-          data-testid="buy-pipeline-minutes-item"
-        >
-          <template #list-item>
-            <span class="gl-flex gl-flex-col">
-              <span>{{ buyPipelineMinutesItem.text }} <gl-emoji data-name="clock9" /></span>
-              <span
-                v-if="data.pipeline_minutes.show_with_subtext"
-                class="small gl-pt-2 gl-text-sm gl-text-orange-800"
-                >{{ buyPipelineMinutesItem.warningText }}</span
-              >
-            </span>
           </template>
         </gl-disclosure-dropdown-item>
 
@@ -459,6 +450,38 @@ export default {
           <template #list-item>
             <gl-icon name="lock-open" variant="subtle" class="gl-mr-2" />
             <span>{{ $options.i18n.leaveAdminMode }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-group v-if="showTrialItem || addBuyPipelineMinutesMenuItem" bordered>
+        <gl-disclosure-dropdown-item
+          v-if="showTrialItem"
+          :item="trialItem"
+          data-testid="start-trial-item"
+        >
+          <template #list-item>
+            <span class="hotspot-pulse gl-flex gl-items-center gl-gap-2">
+              <gl-icon name="license" variant="subtle" class="gl-mr-2" />
+              {{ trialItem.text }}
+            </span>
+          </template>
+        </gl-disclosure-dropdown-item>
+
+        <gl-disclosure-dropdown-item
+          v-if="addBuyPipelineMinutesMenuItem"
+          ref="buyPipelineMinutesNotificationCallout"
+          :item="buyPipelineMinutesItem"
+          data-testid="buy-pipeline-minutes-item"
+        >
+          <template #list-item>
+            <gl-icon name="credit-card" variant="subtle" class="gl-mr-2" />
+            <span>{{ buyPipelineMinutesItem.text }}</span>
+            <span
+              v-if="data.pipeline_minutes.show_with_subtext"
+              class="gl-block gl-pt-2 gl-text-sm gl-text-warning"
+              >{{ buyPipelineMinutesItem.warningText }}</span
+            >
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>

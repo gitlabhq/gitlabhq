@@ -1,0 +1,9 @@
+mutation updateLabel($input: LabelUpdateInput!) {
+  labelUpdate(input: $input) {
+    label {
+      id
+      archived
+    }
+    errors
+  }
+}

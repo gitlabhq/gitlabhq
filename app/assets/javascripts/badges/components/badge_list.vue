@@ -109,14 +109,14 @@ export default {
       data-testid="badge-list"
     >
       <template #cell(name)="{ item }">
-        <label v-gl-tooltip class="label-bold str-truncated mb-0" :title="item.name">{{
+        <label v-gl-tooltip class="label-bold str-truncated !gl-mb-0" :title="item.name">{{
           item.name
         }}</label>
         <gl-badge>{{ badgeKindText(item) }}</gl-badge>
       </template>
 
       <template #cell(badge)="{ item }">
-        <div class="overflow-hidden">
+        <div class="!gl-overflow-hidden">
           <badge :image-url="item.renderedImageUrl" :link-url="item.renderedLinkUrl" />
         </div>
       </template>

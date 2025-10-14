@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFormInput, GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
 import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     isMobile() {
-      return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+      return ['sm', 'xs'].includes(PanelBreakpointInstance.getBreakpointSize());
     },
     removeButtonCategory() {
       return this.isMobile ? 'secondary' : 'tertiary';
@@ -267,7 +267,7 @@ export default {
       class="gl-mb-3 gl-pb-2"
       data-testid="node-pool-label-row-container"
     >
-      <div class="gl-flex gl-flex-col gl-items-stretch md:gl-flex-row">
+      <div class="gl-flex gl-flex-col gl-items-stretch @md/panel:gl-flex-row">
         <gl-form-input
           v-model="nodePoolLabel.key"
           :class="$options.formElementClasses"
@@ -285,18 +285,20 @@ export default {
         <template v-if="nodePoolLabels.length > 1">
           <gl-button
             v-if="canRemove(index)"
-            class="gl-mb-3 md:gl-ml-3"
+            class="gl-mb-3 @md/panel:gl-ml-3"
             data-testid="remove-node-pool-label"
             :category="removeButtonCategory"
             :aria-label="s__('Runners|Remove Node pool label')"
             @click="removeVariable(index)"
           >
             <gl-icon class="!gl-mr-0" name="remove" />
-            <span class="gl-ml-2 md:gl-hidden">{{ s__('Runners|Remove Node pool label') }}</span>
+            <span class="gl-ml-2 @md/panel:gl-hidden">{{
+              s__('Runners|Remove Node pool label')
+            }}</span>
           </gl-button>
           <gl-button
             v-else
-            class="gl-invisible gl-mb-3 gl-hidden md:gl-ml-3 md:gl-block"
+            class="gl-invisible gl-mb-3 gl-hidden @md/panel:gl-ml-3 @md/panel:gl-block"
             icon="remove"
             :aria-label="s__('Runners|Remove Node pool label')"
           />

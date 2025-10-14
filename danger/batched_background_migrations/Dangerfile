@@ -1,0 +1,5 @@
+# frozen_string_literal: true
+
+all_changed_files = git.modified_files + git.deleted_files
+
+batched_background_migration_modification_checks.find_migrations(all_changed_files)

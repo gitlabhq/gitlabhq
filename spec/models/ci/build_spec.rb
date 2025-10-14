@@ -28,7 +28,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   before do
     stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
-    stub_feature_flags(ci_validate_config_options: false)
   end
 
   it { is_expected.to belong_to(:runner) }
@@ -168,6 +167,41 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         expect(described_class.with_token_present).not_to include(old_build)
       end
     end
+
+    describe 'with_secure_reports_from_config_options' do
+      let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, options: {}) }
+      let(:job_types) { %w[sast secret_detection] }
+
+      subject(:query) { described_class.with_secure_reports_from_config_options(job_types) }
+
+      it { expect(query).to be_empty }
+
+      context 'when job definition has secure report options' do
+        let!(:build) { create(:ci_build, pipeline: pipeline, options: { artifacts: { reports: ['sast'] } }) }
+
+        it { expect(query).to contain_exactly(build) }
+      end
+    end
+
+    describe 'with_secure_reports_from_metadata_config_options' do
+      let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be_with_refind(:build_metadata) { build.ensure_metadata.tap(&:save!) }
+      let(:job_types) { %w[sast secret_detection] }
+
+      subject(:query) { described_class.with_secure_reports_from_metadata_config_options(job_types) }
+
+      it { expect(query).to be_empty }
+
+      context 'when build metadata has secure report options' do
+        before do
+          build_metadata.update_columns(config_options: { artifacts: { reports: ['sast'] } })
+        end
+
+        it { expect(query).to contain_exactly(build) }
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -184,14 +218,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       subject(:create_ci_build) { create(:ci_build, user: user, project: project, name: name) }
 
-      it 'tracks creation event' do
+      it 'tracks creation event with merged properties' do
         expect { create_ci_build }
           .to trigger_internal_events('create_ci_build')
           .with(
             category: 'InternalEventTracking',
             user: user,
             project: project,
-            additional_properties: { property: name }
+            property: name
           )
       end
     end
@@ -222,46 +256,63 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'with rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_created_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: build.project)
                                                      .and_return(true)
         end
 
-        it 'does not trigger GraphQL subscription when rate limited' do
-          expect_next(described_class).to receive(:execute_hooks)
-          expect(GraphqlTriggers).not_to receive(:ci_job_created)
+        %w[cancel! drop! run! skip! success!].each do |action|
+          shared_examples "when build receives #{action} event" do
+            it 'does not trigger GraphQL subscription ciJobProcessed' do
+              expect(GraphqlTriggers).not_to receive(:ci_job_processed).with(build)
 
-          create(:ci_build, pipeline: pipeline)
+              build.public_send(action)
+            end
+          end
         end
       end
 
       context 'without rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_created_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: build.project)
                                                      .and_return(false)
         end
 
-        context 'with feature flag enabled' do
-          it 'triggers GraphQL subscription ciJobCreated' do
-            expect_next(described_class).to receive(:execute_hooks)
+        context 'with ci_job_created_subscription turned on' do
+          %w[cancel! drop! run! skip! success!].each do |action|
+            shared_examples "when build receives #{action} event" do
+              it 'triggers GraphQL subscription ciJobProcessed' do
+                expect(GraphqlTriggers).to receive(:ci_job_processed).with(build)
 
-            expect(GraphqlTriggers).to receive(:ci_job_created).with(instance_of(described_class))
+                build.public_send(action)
+              end
+            end
 
-            create(:ci_build, pipeline: pipeline)
+            it_behaves_like "when build receives #{action} event"
+
+            context 'when FF `stop_writing_builds_metadata` is disabled' do
+              before do
+                stub_feature_flags(stop_writing_builds_metadata: false)
+              end
+
+              it_behaves_like "when build receives #{action} event"
+            end
           end
         end
 
-        context 'with feature flag turned off' do
+        context 'with ci_job_created_subscription feature flag turned off' do
           before do
             stub_feature_flags(ci_job_created_subscription: false)
           end
 
-          it 'does not trigger GraphQL subscription ciJobCreated' do
-            expect_next(described_class).to receive(:execute_hooks)
+          %w[cancel! drop! run! skip! success!].each do |action|
+            shared_examples "when build receives #{action} event" do
+              it 'does not trigger GraphQL subscription ciJobProcessed' do
+                expect(GraphqlTriggers).not_to receive(:ci_job_processed).with(build)
 
-            expect(GraphqlTriggers).not_to receive(:ci_job_created).with(instance_of(described_class))
-
-            create(:ci_build, pipeline: pipeline)
+                build.public_send(action)
+              end
+            end
           end
         end
       end
@@ -1342,7 +1393,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build has cache' do
       before do
-        allow(build).to receive(:options).and_return(options)
+        stub_ci_job_definition(build, options: options)
       end
 
       context 'when build has multiple caches' do
@@ -1523,7 +1574,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it do
-          is_expected.to eq(options[:cache].map { |entry| entry.merge(key: "#{entry[:key]}-non_protected") })
+          is_expected.to eq(
+            options[:cache].map { |entry| entry.merge(key: "#{entry[:key]}-non_protected").merge(fallback_keys: []) })
         end
 
         context 'and the cache have fallback keys' do
@@ -1545,7 +1597,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build does not have cache' do
       before do
-        allow(build).to receive(:options).and_return({})
+        stub_ci_job_definition(build, options: {})
       end
 
       it { is_expected.to be_empty }
@@ -1561,7 +1613,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context "with fallbacks keys" do
       before do
-        allow(build).to receive(:options).and_return({
+        stub_ci_job_definition(build, options: {
           cache: [{
             key: "key1",
             fallback_keys: %w[key2]
@@ -2261,8 +2313,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(build.options['image']).to be_nil
     end
 
-    it 'persist data in build metadata' do
-      expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
+    context 'when allowed to write metadata' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      let(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: []) }
+
+      it 'persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
+      end
     end
 
     it 'does not persist data in build' do
@@ -2702,7 +2762,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               allow(builder).to receive(:pipeline_variables_builder) { pipeline_variables_builder }
             end
 
-            allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+            stub_ci_job_definition(build, yaml_variables: [build_yaml_var])
             allow(build).to receive(:persisted_variables) { [] }
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
@@ -2736,7 +2796,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           before do
             environment = create(:environment, project: build.project, name: 'staging')
 
-            allow(build).to receive(:yaml_variables) { [{ key: 'YAML_VARIABLE', value: 'var', public: true }] }
+            stub_ci_job_definition(build, yaml_variables: [{ key: 'YAML_VARIABLE', value: 'var', public: true }])
             build.environment = 'staging'
 
             insert_expected_predefined_variables(
@@ -2777,7 +2837,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
             context 'when options is set' do
               before do
-                allow(build).to receive(:options).and_return(options)
+                stub_ci_job_definition(build, options: options)
               end
 
               context 'when options is empty' do
@@ -2806,7 +2866,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       context 'when the build has ID tokens' do
         before do
-          allow(build).to receive(:id_tokens).and_return({ 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } })
+          stub_ci_job_definition(build, id_tokens: { 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } })
         end
 
         it 'includes the tokens and excludes the predefined JWT variables' do
@@ -2950,6 +3010,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         let(:options) { { environment: { name: 'production', deployment_tier: 'development' } } }
 
         it 'uses tier from options' do
+          build.clear_memoization(:expanded_deployment_tier)
+
           is_expected.to include({ key: 'CI_ENVIRONMENT_TIER', value: 'development', public: true, masked: false })
         end
       end
@@ -3679,7 +3741,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        allow(build).to receive(:id_tokens).and_return({
+        stub_ci_job_definition(build, id_tokens: {
           'ID_TOKEN_1' => { 'aud' => 'developers' },
           'ID_TOKEN_2' => { 'aud' => 'maintainers' }
         })
@@ -3727,7 +3789,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        allow(build).to receive(:id_tokens).and_return({
+        stub_ci_job_definition(build, id_tokens: {
           'ID_TOKEN_1' => { 'aud' => '$CI_SERVER_URL' },
           'ID_TOKEN_2' => { 'aud' => 'https://$CI_SERVER_HOST' },
           'ID_TOKEN_3' => { 'aud' => ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
@@ -3769,7 +3831,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         build.update!(environment: 'production')
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        allow(build).to receive(:id_tokens).and_return({
+        stub_ci_job_definition(build, id_tokens: {
           'ID_TOKEN_1' => { 'aud' => '$ENVIRONMENT_SCOPED_VAR' },
           'ID_TOKEN_2' => { 'aud' => ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
         })
@@ -3974,8 +4036,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it_behaves_like 'having consistent representation'
 
-    it 'persist data in build metadata' do
-      expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
+    context 'when allowed to write to metadata' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it 'persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
+      end
     end
 
     it 'does not persist data in build' do
@@ -4197,14 +4265,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like 'saves data on transition'
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it_behaves_like 'saves data on transition'
-        end
       end
     end
 
@@ -4224,14 +4284,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like 'saves data on transition'
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it_behaves_like 'saves data on transition'
-        end
       end
     end
   end
@@ -4452,7 +4504,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         stub_pages_setting(enabled: enabled)
         build.update!(name: name)
-        allow(build).to receive(:options).and_return({ pages: pages_config })
+        stub_ci_job_definition(build, options: { pages: pages_config })
         stub_feature_flags(customizable_pages_job_name: true)
       end
 
@@ -4480,7 +4532,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     with_them do
       before do
-        allow(build).to receive_messages(options: options)
+        stub_ci_job_definition(build, options: options)
         allow(build).to receive(:pages_generator?).and_return(pages_generator)
         # Create custom variables to test that they are properly expanded in the `build.pages.publish` property
         create(:ci_job_variable, key: 'CUSTOM_FOLDER', value: 'custom_folder', job: build)
@@ -5002,7 +5054,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:options) { { allow_failure_criteria: { exit_codes: [1] } } }
 
       before do
-        allow(build).to receive(:options).and_return(options)
+        stub_ci_job_definition(build, options: options)
       end
 
       context 'when runner provides given feature' do
@@ -5035,32 +5087,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   it_behaves_like 'a degenerable job' do
+    before do
+      stub_feature_flags(stop_writing_builds_metadata: false)
+    end
+
     subject(:job) { create(:ci_build, pipeline: pipeline) }
   end
 
   describe '#invalid_dependencies' do
-    let!(:pre_stage_job_valid) { create(:ci_build, :manual, pipeline: pipeline, name: 'test1', stage_idx: 0) }
-    let!(:pre_stage_job_invalid) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
-    let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w[test1 test2] }) }
+    it 'returns invalid dependencies' do
+      dependencies_double = instance_double(Ci::BuildDependencies)
+      allow(Ci::BuildDependencies).to receive(:new).with(build).and_return(dependencies_double)
+      expect(dependencies_double).to receive(:invalid).and_return(['invalid_job'])
 
-    context 'when pipeline is locked' do
-      before do
-        build.pipeline.unlocked!
-      end
-
-      it 'returns invalid dependencies when expired' do
-        expect(job.invalid_dependencies).to eq([pre_stage_job_invalid])
-      end
-    end
-
-    context 'when pipeline is not locked' do
-      before do
-        build.pipeline.artifacts_locked!
-      end
-
-      it 'returns no invalid dependencies when expired' do
-        expect(job.invalid_dependencies).to eq([])
-      end
+      expect(build.invalid_dependencies).to eq(['invalid_job'])
     end
   end
 
@@ -5125,7 +5165,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when threshold variable is defined' do
       before do
-        allow(build).to receive(:yaml_variables).and_return([
+        stub_ci_job_definition(build, yaml_variables: [
           { key: 'SOME_VAR_1', value: 'SOME_VAL_1' },
           { key: 'DEGRADATION_THRESHOLD', value: '5' },
           { key: 'SOME_VAR_2', value: 'SOME_VAL_2' }
@@ -5137,7 +5177,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when threshold variable is not defined' do
       before do
-        allow(build).to receive(:yaml_variables).and_return([
+        stub_ci_job_definition(build, yaml_variables: [
           { key: 'SOME_VAR_1', value: 'SOME_VAL_1' },
           { key: 'SOME_VAR_2', value: 'SOME_VAL_2' }
         ])
@@ -5213,7 +5253,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'when in yaml variables' do
-          allow(build).to receive(:yaml_variables).and_return([{ key: 'CI_DEBUG_TRACE', value: value.to_s }])
+          stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_TRACE', value: value.to_s }])
 
           is_expected.to eq true
         end
@@ -5253,7 +5293,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'when in yaml variables' do
-          allow(build).to receive(:yaml_variables).and_return([{ key: 'CI_DEBUG_SERVICES', value: value.to_s }])
+          stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_SERVICES', value: value.to_s }])
 
           is_expected.to eq true
         end
@@ -5377,7 +5417,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:options) { {} }
 
     before do
-      allow(build).to receive(:options).and_return(options)
+      stub_ci_job_definition(build, options: options)
     end
 
     subject(:exit_codes_defined) do

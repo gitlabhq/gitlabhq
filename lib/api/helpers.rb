@@ -87,7 +87,17 @@ module API
 
       sudo!
 
-      validate_and_save_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+      unless sudo?
+        token = validate_and_save_access_token!(scopes: scopes_registered_for_endpoint)
+
+        if token
+          result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+            boundary: boundary_for_endpoint, permissions: permissions_for_endpoint, token: token
+          ).execute
+
+          raise Gitlab::Auth::GranularPermissionsError, result.message if result.error?
+        end
+      end
 
       save_current_user_in_env(@current_user) if @current_user
 
@@ -322,8 +332,8 @@ module API
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_project_merge_request(iid)
-      MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    def find_project_merge_request(iid, project: user_project)
+      MergeRequestsFinder.new(current_user, project_id: project.id).find_by!(iid: iid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -420,6 +430,10 @@ module API
       authorize! :admin_member_role
     end
 
+    def authorize_read_attestations!
+      authorize! :read_attestation, user_project
+    end
+
     def authorize_read_builds!
       authorize! :read_build, user_project
     end
@@ -436,8 +450,8 @@ module API
       authorize! :read_job_artifacts, build
     end
 
-    def authorize_destroy_artifacts!
-      authorize! :destroy_artifacts, user_project
+    def authorize_delete_job_artifact!
+      authorize! :delete_job_artifact, user_project
     end
 
     def authorize_cancel_builds!
@@ -1079,6 +1093,31 @@ module API
 
       project_features.all? do |project_feature|
         project.project_feature.access_level(project_feature) >= ProjectFeature::ENABLED
+      end
+    end
+
+    def authorization_settings
+      (respond_to?(:route_setting) && route_setting(:authorization)) || {}
+    end
+
+    def permissions_for_endpoint
+      return unless access_token.try(:granular?)
+
+      Array(authorization_settings[:permissions])
+    end
+
+    def boundary_for_endpoint
+      return unless access_token.try(:granular?)
+
+      case authorization_settings[:boundary_type]
+      when :standalone
+        ::Authz::Boundary.for(nil)
+      when :group
+        group = find_group(params[:group_id] || params[:id])
+        ::Authz::Boundary.for(group) if group
+      when :project
+        project = find_project(params[:project_id] || params[:id])
+        ::Authz::Boundary.for(project) if project
       end
     end
   end

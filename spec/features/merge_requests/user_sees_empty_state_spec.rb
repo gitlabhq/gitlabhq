@@ -17,7 +17,7 @@ RSpec.describe 'Merge request > User sees empty state', :js, feature_category: :
     visit project_merge_requests_path(project)
 
     expect(page).to have_selector('.gl-empty-state')
-    expect(page).to have_link 'New merge request', href: project_new_merge_request_path(project)
+    expect(page).to have_link 'Create merge request', href: project_new_merge_request_path(project)
   end
 
   context 'if there are merge requests' do
@@ -54,7 +54,7 @@ RSpec.describe 'Merge request > User sees empty state', :js, feature_category: :
 
       expect(page).to have_selector('.gl-empty-state')
       within('.gl-empty-state') do
-        expect(page).to have_link 'New merge request', href: /#{project_new_merge_request_path(forked_project)}$/
+        expect(page).to have_link 'Create merge request', href: /#{project_new_merge_request_path(forked_project)}$/
       end
     end
   end

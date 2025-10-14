@@ -14,6 +14,7 @@ organize your work, create and secure your application, and analyze its performa
 - [Manage your organization](../topics/set_up_organization.md)
 - [Organize work with projects](project/organize_work_with_projects.md)
 - [Plan and track work](../topics/plan_and_track.md)
+- [Manage authentication and authorization](../auth/_index.md)
 - [Use Git](../topics/git/_index.md)
 - [Manage your code](../topics/manage_code.md)
 - [Use CI/CD to build your application](../topics/build_your_application.md)

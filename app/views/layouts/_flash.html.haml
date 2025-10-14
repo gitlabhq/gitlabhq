@@ -19,6 +19,8 @@
       = value
     - elsif value == I18n.t('devise.failure.unconfirmed')
       = render 'shared/confirm_your_email_alert'
+    - elsif value == I18n.t('devise.failure.unauthenticated')
+      = render 'shared/sign_in_or_register_notice'
     - elsif value
       - is_value_hash = value.is_a?(Hash)
       = render Pajamas::AlertComponent.new(variant: type_to_variant[key], dismissible: closable.include?(key), alert_options: {class: "flash-#{key}", data: { testid: "alert-#{type_to_variant[key]}" }}) do |c|

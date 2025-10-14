@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-# rubocop:disable Mcp/UseApiService -- Tool does not depend on REST API
 module Mcp
   module Tools
-    class GetServerVersionService < BaseService
+    class GetServerVersionService < CustomService
       extend ::Gitlab::Utils::Override
 
       override :description
@@ -23,7 +22,7 @@ module Mcp
       protected
 
       override :perform
-      def perform(_access_token, _arguments = {}, _query = {})
+      def perform(_arguments = {})
         data = { version: Gitlab::VERSION, revision: Gitlab.revision }
         formatted_content = [{ type: 'text', text: data[:version] }]
         ::Mcp::Tools::Response.success(formatted_content, data)
@@ -31,4 +30,3 @@ module Mcp
     end
   end
 end
-# rubocop:enable Mcp/UseApiService

@@ -56,7 +56,7 @@ module API
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
         optional :packages_enabled, type: Boolean, desc: 'Deprecated: Use :package_registry_access_level instead. Enable project packages feature'
         optional :container_registry_enabled, type: Boolean, desc: 'Deprecated: Use :container_registry_access_level instead. Flag indication if the container registry is enabled for that project'
-        optional :container_expiration_policy_attributes, type: Hash do
+        optional :container_expiration_policy_attributes, type: Hash, desc: 'Object that contains information on the container expiration policy' do
           use :optional_container_expiration_policy_params
         end
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'

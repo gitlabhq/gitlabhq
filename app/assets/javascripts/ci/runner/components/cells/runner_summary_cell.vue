@@ -85,7 +85,7 @@ export default {
     </div>
     <div
       v-if="runner.version || runner.description"
-      class="gl-mb-2 gl-inline-flex gl-text-subtle md:gl-mb-0"
+      class="gl-mb-2 gl-inline-flex gl-text-subtle @md/panel:gl-mb-0"
     >
       <template v-if="firstVersion">
         <div class="gl-shrink-0">

@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Set up Geo for two single-node sites
@@ -75,7 +75,7 @@ When using [Docker Compose](../../../install/docker/installation.md#install-gitl
 
    This command uses the `external_url` defined in `/etc/gitlab/gitlab.rb`.
 
-1. Copy the configuration example from [Complete secondary site](#complete-secondary-site).
+1. Copy the configuration example from [Complete primary site](#complete-primary-site).
 
 1. Create a password for the `gitlab` database user and update Rail to use the new password.
 
@@ -624,7 +624,7 @@ You must manually replicate the secret file across all of your secondary sites, 
 
 1. Go to the primary node GitLab instance:
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. Select **Geo > Sites**.
+   1. Select **Geo** > **Sites**.
    1. Select **Add site**.
 
       ![Form to add a new site with three input fields: Name, External URL, and Internal URL (optional).](img/adding_a_secondary_v15_8.png)
@@ -679,7 +679,7 @@ If you convert an existing site to Geo, you should check that the clone method i
 On the primary site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. If you use Git over SSH:
    1. Ensure **Enabled Git access protocols** is set to **Both SSH and HTTP(S)**.
@@ -694,7 +694,7 @@ the primary site.
 After you sign in:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Verify that the site is correctly identified as a secondary Geo site, and that
    Geo is enabled.
 
@@ -705,6 +705,61 @@ site **Geo Sites** dashboard in your browser.
 ![The Geo Sites dashboard displaying the synchronization status.](img/geo_dashboard_v14_0.png)
 
 ## Example configurations
+
+### Complete primary site
+
+<!-- If you update this configuration example, also update the example in two_single_node_external_services.md -->
+
+This complete `gitlab.rb` configuration example is used for a Geo primary site:
+
+```ruby
+# Primary site configuration example
+
+## Geo Primary role
+roles(['geo_primary_role'])
+
+## The unique identifier for the Geo site
+gitlab_rails['geo_node_name'] = 'headquarters'
+
+## External URL
+external_url 'https://gitlab.example.com'
+
+## Database configuration
+gitlab_rails['db_password'] = 'your_database_password_here'
+postgresql['sql_user_password'] = 'md5_hash_of_your_database_password'
+postgresql['sql_replication_password'] = 'md5_hash_of_your_replication_password'
+
+## PostgreSQL network configuration
+postgresql['listen_address'] = '10.0.1.10'  # Primary site IP
+postgresql['md5_auth_cidr_addresses'] = ['10.0.1.10/32', '10.0.2.10/32']  # Primary and secondary IPs
+
+## Disable automatic migrations (handled centrally, and to avoid unplanned downtime)
+gitlab_rails['auto_migrate'] = false
+
+## SSL/TLS configuration
+nginx['listen_port'] = 80
+nginx['listen_https'] = false
+letsencrypt['enable'] = false
+
+## Object Storage configuration (optional)
+gitlab_rails['object_store']['enabled'] = true
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'region' => 'us-east-1',
+  'aws_access_key_id' => 'your_access_key',
+  'aws_secret_access_key' => 'your_secret_key'
+}
+
+## Monitoring configuration (optional)
+node_exporter['listen_address'] = '0.0.0.0:9100'
+gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
+gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '10.0.0.0/8']
+
+## Gitaly configuration
+gitaly['configuration'] = {
+  prometheus_listen_addr: '0.0.0.0:9236',
+}
+```
 
 ### Complete secondary site
 

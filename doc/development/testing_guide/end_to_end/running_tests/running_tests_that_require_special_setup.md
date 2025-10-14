@@ -170,7 +170,7 @@ The same would apply to GDK running with the instance address as `localhost` too
 
 ## Geo tests
 
-Geo end-to-end tests can run locally against a [Geo GDK setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/geo.md) or on Geo spun up in Docker containers.
+Geo end-to-end tests can run locally against a [Geo GDK setup](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/geo/) or on Geo spun up in Docker containers.
 
 ### Using Geo GDK
 

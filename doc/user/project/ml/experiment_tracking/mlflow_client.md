@@ -33,7 +33,7 @@ Prerequisites:
 - A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
 - The project ID. To find the project ID:
   1. On the left sidebar, select **Search or go to** and find your project.
-  1. Select **Settings > General**.
+  1. Select **Settings** > **General**.
 
 To use MLflow client compatibility from a local environment:
 

@@ -1,6 +1,5 @@
 <script>
-import { GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { GlSprintf, GlResizeObserverDirective } from '@gitlab/ui';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { __, s__, sprintf } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -18,7 +17,6 @@ export default {
     GlSprintf,
     PackageTags,
     MetadataItem,
-    GlBadge,
     TimeAgoTooltip,
     ProtectedBadge,
   },
@@ -36,11 +34,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      isDesktop: true,
-    };
   },
   computed: {
     packageLastDownloadedAtDisplay() {
@@ -67,24 +60,11 @@ export default {
       return Boolean(this.packageEntity?.protectionRuleExists);
     },
   },
-  mounted() {
-    this.checkBreakpoints();
-  },
-  methods: {
-    checkBreakpoints() {
-      this.isDesktop = GlBreakpointInstance.isDesktop();
-    },
-  },
 };
 </script>
 
 <template>
-  <title-area
-    v-gl-resize-observer="checkBreakpoints"
-    :title="packageEntity.name"
-    :avatar="packageIcon"
-    :inline-actions="false"
-  >
+  <title-area :title="packageEntity.name" :avatar="packageIcon" :inline-actions="false">
     <template #sub-header>
       <div data-testid="sub-header" class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-2">
         <gl-sprintf :message="$options.i18n.packageInfo">
@@ -96,24 +76,11 @@ export default {
         </gl-sprintf>
 
         <package-tags
-          v-if="isDesktop && hasTagsToDisplay"
+          v-if="hasTagsToDisplay"
           :tag-display-limit="2"
           :tags="packageEntity.tags.nodes"
           hide-label
         />
-
-        <!-- we need to duplicate the package tags on mobile to ensure proper styling inside the flex wrap -->
-        <template v-else-if="hasTagsToDisplay">
-          <gl-badge
-            v-for="(tag, index) in packageEntity.tags.nodes"
-            :key="index"
-            class="gl-my-1"
-            data-testid="tag-badge"
-            variant="info"
-          >
-            {{ tag.name }}
-          </gl-badge>
-        </template>
 
         <protected-badge
           v-if="showBadgeProtected"

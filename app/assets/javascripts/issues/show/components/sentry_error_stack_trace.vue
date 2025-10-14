@@ -31,13 +31,13 @@ export default {
 
 <template>
   <div>
-    <div :class="{ 'border-bottom-0': loadingStacktrace }" class="card card-slim mt-4 mb-0">
-      <div class="card-header border-bottom-0">
-        <h5 class="card-title my-1">{{ __('Stack trace') }}</h5>
+    <div :class="{ '!gl-border-b-0': loadingStacktrace }" class="card card-slim !gl-mb-0 !gl-mt-6">
+      <div class="card-header !gl-border-b-0">
+        <h5 class="card-title !gl-my-2">{{ __('Stack trace') }}</h5>
       </div>
     </div>
     <div v-if="loadingStacktrace" class="card">
-      <gl-loading-icon class="py-2" label="Fetching stack trace" size="sm" />
+      <gl-loading-icon class="!gl-py-3" label="Fetching stack trace" size="sm" />
     </div>
     <stacktrace v-else :entries="stacktrace" />
   </div>

@@ -11,8 +11,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
   let(:bridge) { nil }
 
   let(:variables_attributes) do
-    [{ key: 'first', secret_value: 'world' },
-     { key: 'second', secret_value: 'second_world' }]
+    [
+      { key: 'first', secret_value: 'world' },
+      { key: 'second', secret_value: 'second_world' }
+    ]
   end
 
   let(:source) { :push }
@@ -131,6 +133,37 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
         it_behaves_like 'assigns variables_attributes'
       end
+
+      context 'when source is :trigger with variables other then TRIGGER_PAYLOAD' do
+        let(:source) { :trigger }
+
+        let(:variables_attributes) do
+          [{ key: 'first', value: 'world' }]
+        end
+
+        it 'returns an insufficient permissions error' do
+          step.perform!
+
+          expect(pipeline.errors.full_messages).to eq(['Insufficient permissions to set pipeline variables'])
+        end
+      end
+
+      context 'when source is :trigger with no variables' do
+        let(:source) { :trigger }
+        let(:variables_attributes) { nil }
+
+        it_behaves_like 'does not break the chain'
+      end
+
+      context 'when source is :trigger with only TRIGGER_PAYLOAD' do
+        let(:source) { :trigger }
+
+        let(:variables_attributes) do
+          [{ key: 'TRIGGER_PAYLOAD', value: 'some payload' }]
+        end
+
+        it_behaves_like 'does not break the chain'
+      end
     end
   end
 
@@ -142,12 +175,24 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
     it_behaves_like 'does not break the chain'
 
     it_behaves_like 'assigns variables_attributes'
+
+    context "when source is :trigger and user has permissions to set pipeline variables" do
+      let(:source) { :trigger }
+
+      let(:variables_attributes) do
+        [{ key: 'first', value: 'world' }]
+      end
+
+      it_behaves_like 'does not break the chain'
+    end
   end
 
   context 'with duplicate pipeline variables' do
     let(:variables_attributes) do
-      [{ key: 'first', secret_value: 'world' },
-       { key: 'first', secret_value: 'second_world' }]
+      [
+        { key: 'first', secret_value: 'world' },
+        { key: 'first', secret_value: 'second_world' }
+      ]
     end
 
     it_behaves_like 'breaks the chain'

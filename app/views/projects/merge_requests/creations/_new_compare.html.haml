@@ -15,13 +15,13 @@
     = hidden_field_tag(:nav_source, params[:nav_source])
   .js-merge-request-new-compare.row{ data: mr_compare_form_data(current_user, @merge_request) }
     .gl-col-lg-6
-      .card-new-merge-request
+      %div
         %h2.gl-text-size-h2
           = _('Source branch')
         #js-source-project-dropdown{ data: { current_project: { value: f.object.source_project_id.to_s, text: f.object.source_project.full_path, refsUrl: refs_project_path(f.object.source_project) }.to_json, current_branch: { value: f.object.source_branch.presence, text: f.object.source_branch.presence }.to_json } }
 
     .gl-col-lg-6
-      .card-new-merge-request
+      %div
         %h2.gl-text-size-h2
           = _('Target branch')
         #js-target-project-dropdown{ data: { target_projects_path: target_projects_project_json_compare_index_path(@project), current_project: { value: f.object.target_project_id.to_s, text: f.object.target_project.full_path, refsUrl: refs_project_path(f.object.target_project) }.to_json, current_branch: { value: f.object.target_branch.presence, text: f.object.target_branch.presence }.to_json } }

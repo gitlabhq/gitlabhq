@@ -162,18 +162,21 @@ export default {
   <div
     :id="`${targetId}-flyout`"
     :style="flyoutStyle"
-    class="gl-fixed gl-z-9999 -gl-mx-1 gl-max-h-full gl-overflow-y-auto"
+    class="nav-flyout-menu gl-fixed gl-z-9999 -gl-mx-1"
     @mouseover="$emit('mouseover')"
     @mouseleave="$emit('mouseleave')"
   >
     <div
-      class="gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-subtle gl-p-2 gl-pb-1 gl-shadow-md dark:gl-bg-strong"
+      class="gl-rounded-lg gl-border-1 gl-border-solid gl-border-default gl-bg-subtle gl-p-2 gl-pb-1 gl-shadow-md dark:gl-bg-strong"
     >
       <header v-if="isIconOnly && title" class="gl-px-5 gl-py-2 gl-text-sm gl-font-bold">
         {{ title }}
       </header>
       <hr v-if="isIconOnly && title" class="-gl-mx-2 gl-my-2" />
-      <ul class="gl-min-w-20 gl-max-w-34 gl-list-none gl-p-0" @mouseenter="showSVG = false">
+      <ul
+        class="gl-m-0 gl-max-h-[70vh] gl-min-w-20 gl-max-w-34 gl-list-none gl-overflow-y-auto gl-p-0"
+        @mouseenter="showSVG = false"
+      >
         <nav-item
           v-for="item of items"
           :key="item.id"

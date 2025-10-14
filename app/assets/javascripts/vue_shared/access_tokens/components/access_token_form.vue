@@ -15,6 +15,7 @@ import { mapActions, mapState } from 'pinia';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { toISODateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
+import ErrorsAlert from '~/vue_shared/components/errors_alert.vue';
 
 import { useAccessTokens } from '../stores/access_tokens';
 import { defaultDate } from '../utils';
@@ -30,6 +31,7 @@ export default {
     GlFormTextarea,
     GlLink,
     GlSprintf,
+    ErrorsAlert,
     MaxExpirationDateMessage: () =>
       import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
   },
@@ -61,6 +63,7 @@ export default {
     const minDate = new Date(this.accessTokenMinDate);
     const expiresAt = defaultDate(maxDate);
     return {
+      showFormErrors: false,
       maxDate,
       minDate,
       values: { expiresAt, name: this.name, description: this.description, scopes: this.scopes },
@@ -68,6 +71,23 @@ export default {
   },
   computed: {
     ...mapState(useAccessTokens, ['busy']),
+    formErrors() {
+      const errors = [];
+
+      Object.keys(this.$options.fields).forEach((field) => {
+        const fieldValidators = this.$options.fields[field]?.validators ?? [];
+        const value = this.values[field];
+
+        fieldValidators.forEach((validator) => {
+          const errorMessage = validator(value);
+          if (errorMessage) {
+            errors.push(errorMessage);
+          }
+        });
+      });
+
+      return errors;
+    },
   },
   methods: {
     ...mapActions(useAccessTokens, ['createToken', 'setShowCreateForm']),
@@ -98,6 +118,12 @@ export default {
     },
     description: {
       label: s__('AccessTokens|Description'),
+      validators: [
+        formValidators.factory(
+          s__('AccessTokens|Description is too long (maximum is 255 characters).'),
+          (val) => val.length <= 255,
+        ),
+      ],
       groupAttrs: {
         optional: true,
         'optional-text': __('(optional)'),
@@ -106,6 +132,9 @@ export default {
     expiresAt: {
       label: s__('AccessTokens|Expiration date'),
       validators: [],
+      groupAttrs: {
+        class: 'gl-relative',
+      },
     },
     scopes: {
       label: s__('AccessTokens|Select scopes'),
@@ -130,8 +159,8 @@ export default {
       :fields="$options.fields"
       @submit="submit"
     >
-      <template #input(description)="{ id, input, value }">
-        <gl-form-textarea :id="id" :value="value" @input="input" />
+      <template #input(description)="{ id, input, value, validation }">
+        <gl-form-textarea :id="id" :value="value" :state="validation.state" @input="input" />
       </template>
 
       <template #group(expiresAt)-description>
@@ -183,6 +212,15 @@ export default {
       </template>
     </gl-form-fields>
 
+    <errors-alert
+      v-if="formErrors.length && showFormErrors"
+      class="gl-mt-5"
+      :scroll-on-error="false"
+      :title="s__('AccessTokens|The form contains the following errors:')"
+      :errors="formErrors"
+      @dismiss="showFormErrors = false"
+    />
+
     <div class="gl-flex gl-gap-3">
       <gl-button
         variant="confirm"
@@ -190,6 +228,7 @@ export default {
         class="js-no-auto-disable"
         :loading="busy"
         data-testid="create-token-button"
+        @click="showFormErrors = true"
       >
         {{ s__('AccessTokens|Create token') }}
       </gl-button>

@@ -12,6 +12,10 @@ module Types
 
     authorize :read_merge_request
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     expose_permissions Types::PermissionTypes::MergeRequest
 
     present_using MergeRequestPresenter
@@ -33,7 +37,8 @@ module Types
     field :draft, GraphQL::Types::Boolean, method: :draft?, null: false,
       description: 'Indicates if the merge request is a draft.'
     field :id, GraphQL::Types::ID, null: false,
-      description: 'ID of the merge request.'
+      description: 'ID of the merge request.',
+      scopes: [:api, :read_api, :ai_workflows]
     field :iid, GraphQL::Types::String, null: false,
       description: 'Internal ID of the merge request.'
     field :merge_when_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
@@ -65,7 +70,8 @@ module Types
     field :target_project_id, GraphQL::Types::Int, null: false,
       description: 'ID of the merge request target project.'
     field :title, GraphQL::Types::String, null: false,
-      description: 'Title of the merge request.'
+      description: 'Title of the merge request.',
+      scopes: [:api, :read_api, :ai_workflows]
     field :updated_at, Types::TimeType, null: false,
       description: 'Timestamp of when the merge request was last updated.'
 
@@ -262,7 +268,7 @@ module Types
     field :squash, GraphQL::Types::Boolean, null: false,
       description: <<~HEREDOC.squish
                    Indicates if the merge request is set to be squashed when merged.
-                   [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project)
+                   [Project settings](https://docs.gitlab.com/user/project/merge_requests/squash_and_merge/#configure-squash-options-for-a-project)
                    may override this value. Use `squash_on_merge` instead to take project squash options into account.
       HEREDOC
     field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,
@@ -359,7 +365,7 @@ module Types
     end
 
     def security_auto_fix
-      object.author == ::Users::Internal.security_bot
+      object.author == ::Users::Internal.for_organization(object.project.organization).security_bot
     end
 
     def merge_user

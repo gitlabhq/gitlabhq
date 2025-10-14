@@ -5,12 +5,10 @@ import { cloneDeep } from 'lodash';
 import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import TreeList from '~/repository/file_tree_browser/components/tree_list.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
@@ -36,27 +34,11 @@ describe('Tree List', () => {
 
     apolloProvider = createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]);
 
-    const recycleScrollerStub = stubComponent(
-      {
-        name: 'RecycleScroller',
-        props: {
-          items: { type: Array, required: true },
-          itemSize: { type: Number, required: true },
-          buffer: { type: Number, required: true },
-          keyField: { type: String, required: true },
-        },
-      },
-      {
-        template: `<div><slot v-for="(item, index) in items" :item="item" :index="index"></slot></div>`,
-      },
-    );
-
     wrapper = shallowMountExtended(TreeList, {
       apolloProvider,
       pinia,
       propsData: { projectPath: 'group/project', currentRef: 'main', refType: 'branch' },
       mocks: { $route: { params: {}, $apollo: { query: jest.fn() } } },
-      stubs: { RecycleScroller: recycleScrollerStub },
     });
 
     await waitForPromises();
@@ -67,7 +49,6 @@ describe('Tree List', () => {
   const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
 
   const findHeader = () => wrapper.find('h3');
-  const findRecycleScroller = () => wrapper.findComponent(RecycleScroller);
   const findFileRows = () => wrapper.findAllComponents(FileRow);
   const findFilterInput = () => wrapper.findComponent(GlFormInput);
   const findFilterIcon = () => wrapper.findComponent(GlIcon);
@@ -93,33 +74,6 @@ describe('Tree List', () => {
 
   it('renders file tree browser toggle', () => {
     expect(findFileTreeToggle().exists()).toBe(true);
-  });
-
-  it('renders recycle-scroller with correct props', () => {
-    const scroller = findRecycleScroller();
-    expect(scroller.props('items')).toEqual([
-      {
-        id: '/dir_1/dir_2-gid://123-0',
-        level: 0,
-        loading: false,
-        name: 'dir_2',
-        opened: false,
-        path: '/dir_1/dir_2',
-        routerPath: '/-/tree/main//dir_1/dir_2',
-        type: 'tree',
-      },
-      {
-        fileHash: 'abc123',
-        id: '/dir_1/file.txt-gid://456-0',
-        level: 0,
-        mode: '100644',
-        name: 'file.txt',
-        path: '/dir_1/file.txt',
-        routerPath: '/-/blob/main//dir_1/file.txt',
-      },
-    ]);
-
-    expect(scroller.props()).toMatchObject({ itemSize: 32, buffer: 100, keyField: 'id' });
   });
 
   it('renders file rows with correct props', () => {
@@ -161,6 +115,17 @@ describe('Tree List', () => {
     expect(toggleDirectory).toHaveBeenCalledWith(path);
   });
 
+  it('sets aria-setsize and aria-posinset relative to siblings at same level', async () => {
+    await createComponent();
+    const fileRows = findFileRows();
+
+    expect(fileRows.at(0).attributes('aria-setsize')).toBe('2');
+    expect(fileRows.at(0).attributes('aria-posinset')).toBe('1');
+
+    expect(fileRows.at(1).attributes('aria-setsize')).toBe('2');
+    expect(fileRows.at(1).attributes('aria-posinset')).toBe('2');
+  });
+
   describe('pagination', () => {
     beforeEach(() => {
       const paginatedResponse = cloneDeep(mockResponse);
@@ -169,7 +134,7 @@ describe('Tree List', () => {
     });
 
     it('renders a show more button when hasNextPage is true', () => {
-      expect(findRecycleScroller().props('items')[2]).toMatchObject({ isShowMore: true });
+      expect(findFileRows().at(2).props('file')).toMatchObject({ isShowMore: true });
     });
 
     it('fetches the next page', () => {
@@ -183,6 +148,17 @@ describe('Tree List', () => {
         nextPageCursor: 'cursor123',
         pageSize: 100,
       });
+    });
+
+    it('can filter with Show more button in the list', async () => {
+      const filterQuery = '/dir_1/dir_2';
+      expect(findFileRows()).toHaveLength(3); // Contains all items before filtering
+
+      findFilterInput().vm.$emit('input', filterQuery);
+      await nextTick();
+
+      expect(findFileRows()).toHaveLength(1); // Contains only one item after filtering
+      expect(findFileRows().at(0).props('file')).toMatchObject({ path: filterQuery });
     });
   });
 

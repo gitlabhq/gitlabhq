@@ -1,4 +1,3 @@
-@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .issuable-list {
@@ -37,7 +36,7 @@
       }
     }
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       .issuable-meta {
         .controls li {
           margin-right: 0;
@@ -79,7 +78,7 @@
       }
     }
 
-    @media(max-width: map.get($grid-breakpoints, lg)-1) {
+    @include gl-container-width-down(lg, panel) {
       .task-status,
       .issuable-due-date,
       .issuable-weight,

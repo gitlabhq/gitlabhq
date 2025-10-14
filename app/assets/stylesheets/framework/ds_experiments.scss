@@ -18,6 +18,12 @@
     @apply gl-rounded-lg;
   }
 
+  // Remove input border radius if next to button
+  .input-group:not(.has-validation)>.form-control:not(:last-child) {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
   // Decrease spacing between buttons
   // to align with optical spacing
   .gl-gap-3:has(> .gl-button) {
@@ -27,12 +33,17 @@
   // Filtered search button
   .input-group-prepend > div,
   .filtered-search-history-dropdown-toggle-button.gl-button,
-  .input-group-prepend .btn {
+  .input-group-prepend .btn:not([class*="emoji-picker-"]) {
     @apply gl-rounded-l-lg #{!important};
   }
 
-  .input-group-append .btn {
+  .input-group-append .btn:not(.gl-rounded-full):not(.\!gl-rounded-full) {
     @apply gl-rounded-r-lg #{!important};
+
+    // Only add border radius to last child in input/button group
+    &:not(:last-child) {
+      @apply gl-rounded-none #{!important};
+    }
   }
 
   // Increased border radii for GlModal
@@ -162,6 +173,7 @@
   // Profile readme
   // User calendar
   .board > .gl-rounded-base,
+  .board-card.gl-rounded-base,
   .profile-readme.read-more-container.gl-rounded-base,
   .read-more-trigger.gl-rounded-base,
   .user-calendar.gl-rounded-base {
@@ -171,24 +183,6 @@
   // Readme
   .read-more-trigger.gl-rounded-b-base {
     @apply gl-rounded-b-lg;
-  }
-
-}
-
-// GlBadge within GlButton variants
-
-:where(.application-chrome) {
-
-  // Primary confirm variant
-
-  .gl-button.btn-confirm:not(.btn-confirm-secondary) .gl-badge {
-    @apply gl-text-default gl-bg-default;
-  }
-
-  // Secondary confirm variant
-
-  .gl-button.btn-confirm.btn-confirm-secondary .gl-badge {
-    @apply gl-text-default gl-bg-neutral-100 dark:gl-bg-neutral-800;
   }
 
 }

@@ -21,6 +21,11 @@ export default {
       type: String,
       required: true,
     },
+    shouldPreloadBlame: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showBlame: {
       type: Boolean,
       required: false,
@@ -77,6 +82,12 @@ export default {
     },
   },
   watch: {
+    shouldPreloadBlame: {
+      handler(shouldPreload) {
+        if (!shouldPreload) return;
+        this.requestBlameInfo(this.fromLine, this.toLine);
+      },
+    },
     showBlame: {
       handler(isVisible) {
         toggleBlameClasses(this.blameData, isVisible);
@@ -116,7 +127,7 @@ export default {
       }
     },
     async requestBlameInfo(fromLine, toLine) {
-      if (!this.showBlame) return;
+      if (!this.showBlame && !this.shouldPreloadBlame) return;
 
       const { data } = await this.$apollo.query({
         query: blameDataQuery,

@@ -25,7 +25,7 @@ You can reset user passwords by using the UI, a Rake task, a Rails console, or t
 To reset a user password in the UI:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Identify a user account to update, select **Edit**.
 1. In the **Password** section, enter and confirm a new password.
 1. Select **Save changes**.

@@ -2,13 +2,13 @@
   = form_errors(application)
 
   = content_tag :div, class: 'form-group row' do
-    .col-12
+    .gl-col-12
       = f.label :name
       = f.text_field :name, class: 'form-control gl-form-input', data: { testid: 'name-field' }
       = doorkeeper_errors_for application, :name
 
   = content_tag :div, class: 'form-group row' do
-    .col-12
+    .gl-col-12
       = f.label :redirect_uri
       = f.text_area :redirect_uri, class: 'form-control gl-form-input', data: { testid: 'redirect-uri-field' }
       = doorkeeper_errors_for application, :redirect_uri
@@ -16,17 +16,17 @@
         Use one line per URI
 
   = content_tag :div, class: 'form-group row' do
-    .col-12
+    .gl-col-12
       = f.label :trusted
       = f.gitlab_ui_checkbox_component :trusted, _('Trusted applications are automatically authorized on GitLab OAuth flow. It\'s highly recommended for the security of users that trusted applications have the confidential setting set to true.'), checkbox_options: { data: { testid: 'trusted-checkbox' } }
 
   = content_tag :div, class: 'form-group row' do
-    .col-12
+    .gl-col-12
       = f.label :confidential
       = f.gitlab_ui_checkbox_component :confidential, _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
 
   .form-group.row
-    .col-12
+    .gl-col-12
       = f.label :scopes
       = render 'shared/tokens/scopes_form', prefix: 'authn_oauth_application', token: application, scopes: @scopes, f: f
 

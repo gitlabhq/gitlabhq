@@ -190,21 +190,22 @@
   }
 }
 
-// Used in EE for Web Terminal
-@mixin build-log-bar($height) {
+@mixin job-log-top-bar {
   height: auto;
-  min-height: $height;
+  min-height: 50px;
   padding: $grid-size;
   @apply gl-bg-section gl-border gl-border-section gl-text-default;
   box-shadow: 0 -6px 0 0 var(--gl-background-color-default);
-}
-
-@mixin job-log-top-bar {
-  @include build-log-bar(50px);
   z-index: 2;
   position: sticky;
-  top: calc(#{$calc-application-header-height} - 1px);
   @apply gl-rounded-t-lg;
+
+  top: calc(#{$calc-application-header-height} - 1px);
+
+  .page-with-panels & {
+    // Project studio overrides, should become the default.
+    top: -1px;
+  }
 }
 
 /*
@@ -376,17 +377,18 @@
   }
 }
 
-@mixin notes-media($condition, $breakpoint-width) {
-  @media (#{$condition}-width: ($breakpoint-width)) {
-    @content;
-  }
+@mixin notes-media($breakpoint-name) {
+  @include gl-container-width-down($breakpoint-name) { @content; }
 
   // Diff is side by side
   .notes-content.parallel & {
-    // We hide at double what we normally hide at because
-    // there are two columns of notes
-    @media (#{$condition}-width: (2 * $breakpoint-width)) {
-      @content;
+    $breakpoint-keys: map-keys($grid-breakpoints);
+    $current-index: index($breakpoint-keys, $breakpoint-name);
+
+    @if $current-index < length($breakpoint-keys) {
+      $parallel-breakpoint: nth($breakpoint-keys, $current-index + 1);
+
+      @include gl-container-width-down($parallel-breakpoint) { @content; }
     }
   }
 }
@@ -491,7 +493,6 @@
 
   @each $breakpoint in map.keys($breakpoints) {
     $breakpoint-value: breakpoint-min($breakpoint, $breakpoints);
-    $min: if($breakpoint-value, $breakpoint-value, "0px");
     $infix: breakpoint-infix($breakpoint, $breakpoints);
 
     @if $columns > 0 {
@@ -508,7 +509,7 @@
       @extend %grid-column; // stylelint-disable-line at-rule-disallowed-list
     }
 
-    @media (width >= #{$min}) {
+    @include gl-container-width-up($breakpoint) {
       // Provide basic `.gl-col-{bp}` classes for equal-width flexbox columns
       .gl-col#{$infix} {
         flex-basis: 0;

@@ -141,4 +141,16 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :gr
       expect(project_namespace.project.markdown_placeholders_feature_flag_enabled?).to be_truthy
     end
   end
+
+  describe '#max_member_access_for_user' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:project_namespace) { project.project_namespace }
+
+    it 'delegates to the project' do
+      expect(project).to receive(:max_member_access_for_user).with(user).and_return(Gitlab::Access::DEVELOPER)
+
+      expect(project_namespace.max_member_access_for_user(user)).to eq(Gitlab::Access::DEVELOPER)
+    end
+  end
 end

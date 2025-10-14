@@ -55,6 +55,11 @@ export default {
       required: false,
       default: '',
     },
+    buttonTitle: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -154,7 +159,7 @@ export default {
       <template #toggle>
         <gl-button
           v-gl-tooltip
-          :title="$options.i18n.addReaction"
+          :title="buttonTitle || $options.i18n.addReaction"
           :class="[toggleClass, { 'is-active': isVisible }]"
           class="add-reaction-button btn-icon gl-relative gl-h-full"
           data-testid="add-reaction-button"

@@ -122,7 +122,7 @@ This is one of the reasons that being able to customize and disable shortcuts is
 so important.
 
 One important way to make keyboard shortcuts more portable is to use the `mod`
-shortcut string, which resolves to `command` on Mac and `ctrl` otherwise.
+shortcut string, which resolves to <kbd>Command</kbd> on Mac and <kbd>Control</kbd> otherwise.
 
 See [Mousetrap's documentation](https://craig.is/killing/mice#api.bind.combo)
 for more information.

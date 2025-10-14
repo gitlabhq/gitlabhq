@@ -16,7 +16,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
   before do
     allow(group).to receive(:observability_group_o11y_setting).and_return(observability_setting)
     allow(Observability::O11yToken).to receive(:generate_tokens)
-      .with(observability_setting)
+      .with(any_args)
       .and_return({ 'testToken' => 'value' })
   end
 
@@ -56,7 +56,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
     context 'when auth tokens are blank' do
       before do
         allow(Observability::O11yToken).to receive(:generate_tokens)
-          .with(observability_setting)
+          .with(any_args)
           .and_return(nil)
       end
 
@@ -70,7 +70,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
 
       before do
         allow(Observability::O11yToken).to receive(:generate_tokens)
-          .with(observability_setting)
+          .with(any_args)
           .and_raise(exception)
         allow(Gitlab::ErrorTracking).to receive(:log_exception)
       end
@@ -134,6 +134,71 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
     end
   end
 
+  describe '#provisioning?' do
+    context 'when auth_tokens status is :provisioning' do
+      before do
+        allow(Observability::O11yToken).to receive(:generate_tokens)
+          .with(any_args)
+          .and_return({ 'status' => :provisioning })
+      end
+
+      it { expect(presenter.provisioning?).to be true }
+    end
+
+    context 'when auth_tokens status is not :provisioning' do
+      before do
+        allow(Observability::O11yToken).to receive(:generate_tokens)
+          .with(any_args)
+          .and_return({ 'status' => :ready })
+      end
+
+      it { expect(presenter.provisioning?).to be false }
+    end
+
+    context 'when auth_tokens is nil, empty, or has no status key' do
+      where(:tokens) do
+        [
+          nil,
+          {},
+          { 'token' => 'value' },
+          { 'status' => 'provisioning' } # string, not symbol
+        ]
+      end
+
+      with_them do
+        before do
+          allow(Observability::O11yToken).to receive(:generate_tokens)
+            .with(any_args)
+            .and_return(tokens)
+        end
+
+        it { expect(presenter.provisioning?).to be false }
+      end
+    end
+
+    context 'when group has no observability settings' do
+      let(:group_without_settings) { build_stubbed(:group) }
+      let(:presenter_without_settings) { described_class.new(group_without_settings, path) }
+
+      before do
+        allow(group_without_settings).to receive(:observability_group_o11y_setting).and_return(nil)
+      end
+
+      it { expect(presenter_without_settings.provisioning?).to be false }
+    end
+
+    context 'when token generation raises an exception' do
+      before do
+        allow(Observability::O11yToken).to receive(:generate_tokens)
+          .with(any_args)
+          .and_raise(StandardError.new('Token generation failed'))
+        allow(Gitlab::ErrorTracking).to receive(:log_exception)
+      end
+
+      it { expect(presenter.provisioning?).to be false }
+    end
+  end
+
   describe '#to_h' do
     it 'returns a hash with all required keys' do
       result = presenter.to_h
@@ -169,7 +234,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
     context 'when auth tokens are blank' do
       before do
         allow(Observability::O11yToken).to receive(:generate_tokens)
-          .with(observability_setting)
+          .with(any_args)
           .and_return(nil)
       end
 
@@ -183,7 +248,7 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
     context 'when auth tokens have camelCase keys' do
       before do
         allow(Observability::O11yToken).to receive(:generate_tokens)
-          .with(observability_setting)
+          .with(any_args)
           .and_return({ 'testToken' => 'value', 'anotherKey' => 'another_value' })
       end
 

@@ -60,9 +60,13 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
           response = subject
           access_token = response.payload[:access_token]
           namespace = resource.is_a?(Group) ? resource : resource.project_namespace
+          root = resource.root_ancestor
+          group_id = root.is_a?(Group) ? root.id : nil
           access_token.user.reload
 
           expect(access_token.user.confirmed?).to eq(true)
+          expect(access_token.group_id).to eq(group_id)
+          expect(access_token.user_type).to eq("project_bot")
           expect(access_token.user.user_type).to eq("project_bot")
           expect(access_token.user.created_by_id).to eq(user.id)
           expect(access_token.user.namespace.organization.id).to eq(resource.organization.id)
@@ -337,6 +341,15 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
         it_behaves_like 'allows creation of bot with valid params'
 
+        it 'sets user_type but not group_id for projects in a UserNamespace' do
+          expect(resource.namespace).to be_a(Namespaces::UserNamespace)
+
+          response = subject
+          access_token = response.payload[:access_token]
+          expect(access_token.group_id).to be_nil
+          expect(access_token.user_type).to eq('project_bot')
+        end
+
         context 'when user specifies an access level of OWNER for the bot' do
           let_it_be(:params) { { access_level: Gitlab::Access::OWNER } }
 
@@ -397,6 +410,41 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
             expect(resource.members.owners.map(&:user_id)).to include(bot_user.id)
           end
         end
+      end
+    end
+
+    context 'when resource is a sub-group' do
+      let_it_be(:resource_type) { 'group' }
+      let_it_be(:parent_group) { create(:group, :private, organization: organization) }
+      let_it_be(:child_group) { create(:group, :private, organization: organization, parent: parent_group) }
+      let_it_be(:resource) { child_group }
+
+      it_behaves_like 'when user does not have permission to create a resource bot'
+
+      context 'user with valid permission' do
+        before_all do
+          resource.add_owner(user)
+        end
+
+        it_behaves_like 'allows creation of bot with valid params'
+      end
+    end
+
+    context 'when resource is a project inside a sub-group' do
+      let_it_be(:resource_type) { 'project' }
+      let_it_be(:parent_group) { create(:group, :private, organization: organization) }
+      let_it_be(:child_group) { create(:group, :private, organization: organization, parent: parent_group) }
+      let_it_be(:child_project) { create(:project, :private, organization: organization, namespace: child_group) }
+      let_it_be(:resource) { child_project }
+
+      it_behaves_like 'when user does not have permission to create a resource bot'
+
+      context 'user with valid permission' do
+        before_all do
+          resource.add_owner(user)
+        end
+
+        it_behaves_like 'allows creation of bot with valid params'
       end
     end
   end

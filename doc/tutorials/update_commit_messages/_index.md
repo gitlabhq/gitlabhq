@@ -112,7 +112,7 @@ Now you are ready to update the commit messages:
    - If you already have a merge request open for your branch, you can check the
      **Commits** tab and use the total number of commits.
    - If you are working from a branch only:
-     1. Go to **Code > Commits**.
+     1. Go to **Code** > **Commits**.
      1. Select the dropdown list in the top left and find your branch.
      1. Find the oldest commit you want to update, and count how far back that commit is.
         For example, if you want to update the second and fourth commit, the count would be 4.
@@ -209,7 +209,7 @@ Now all that's left is to push these changes up to GitLab:
 
    - If you already have a merge request open for your branch, check the **Commits** tab.
    - If you are working from a branch only:
-     1. Go to **Code > Commits**.
+     1. Go to **Code** > **Commits**.
      1. Select the dropdown list in the top left and find your branch.
      1. Verify that the relevant commits in the list are now updated.
 

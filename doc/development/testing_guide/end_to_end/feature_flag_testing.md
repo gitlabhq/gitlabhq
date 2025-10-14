@@ -81,7 +81,7 @@ To view the individual test errors, click the `Pipeline` link and view the faili
 
 #### Running E2E tests against GDK
 
-If not already done, follow the instructions to [install GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/_index.md) as your local GitLab development environment.
+If not already done, follow the instructions to [install GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/) as your local GitLab development environment.
 
 After GDK is up and running, change the feature flag value in the rails console if needed.
 

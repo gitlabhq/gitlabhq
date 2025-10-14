@@ -13,7 +13,7 @@ module Gitlab
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config, :parallel_requests,
             :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
-            :pipeline_policy_context
+            :pipeline_policy_context, :component_data
 
           attr_accessor :total_file_size_in_bytes
 
@@ -25,7 +25,7 @@ module Gitlab
           # rubocop:disable Metrics/ParameterLists -- all arguments needed
           def initialize(
             project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
-            pipeline_config: nil, logger: nil, pipeline_policy_context: nil
+            pipeline_config: nil, logger: nil, pipeline_policy_context: nil, component_data: nil
           )
             @project = project
             @pipeline = pipeline
@@ -35,6 +35,7 @@ module Gitlab
             @variables = variables || Ci::Variables::Collection.new
             @pipeline_config = pipeline_config
             @pipeline_policy_context = pipeline_policy_context
+            @component_data = component_data || {}
             @expandset = []
             @parallel_requests = []
             @execution_deadline = 0
@@ -86,6 +87,7 @@ module Gitlab
               ctx.max_includes = max_includes
               ctx.max_total_yaml_size_bytes = max_total_yaml_size_bytes
               ctx.parallel_requests = parallel_requests
+              ctx.component_data = component_data
             end
           end
 
@@ -138,7 +140,7 @@ module Gitlab
           protected
 
           attr_writer :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
-            :parallel_requests
+            :parallel_requests, :component_data
 
           private
 

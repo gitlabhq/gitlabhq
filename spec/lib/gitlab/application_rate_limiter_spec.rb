@@ -73,6 +73,26 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
+    context 'when the scope is invalid' do
+      it 'raises an InvalidScopeError exception when scope is nil' do
+        expect { subject.throttled?(:test_action, scope: nil) }
+          .to raise_error(
+            Gitlab::ApplicationRateLimiter::InvalidScopeError,
+            "scope cannot be nil. Use :global for global rate limits."
+          )
+      end
+
+      it 'logs a warning when scope is nil' do
+        expect(Gitlab::AuthLogger).to receive(:warn).with(
+          message: 'Application_Rate_Limiter_Request_Without_Scope',
+          env: :test_action_request_limit
+        )
+
+        expect { subject.throttled?(:test_action, scope: nil) }
+          .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError)
+      end
+    end
+
     context 'when the key is valid' do
       it 'records the checked key in request storage', :request_store do
         subject.throttled?(:test_action, scope: [user])
@@ -327,6 +347,26 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       Gitlab::SafeRequestStore.begin!
       Gitlab::SafeRequestStore[resource_key] = threshold
       Gitlab::SafeRequestStore[resource_key_2] = threshold
+    end
+
+    context 'when the scope is invalid' do
+      it 'raises an InvalidScopeError exception when scope is nil' do
+        expect { subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval) }
+          .to raise_error(
+            Gitlab::ApplicationRateLimiter::InvalidScopeError,
+            "scope cannot be nil. Use :global for global rate limits."
+          )
+      end
+
+      it 'logs a warning when scope is nil' do
+        expect(Gitlab::AuthLogger).to receive(:warn).with(
+          message: 'Application_Rate_Limiter_Request_Without_Scope',
+          env: :test_action_request_limit
+        )
+
+        expect { subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval) }
+          .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError)
+      end
     end
 
     it 'records the checked key in request storage' do

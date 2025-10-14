@@ -51,6 +51,7 @@ class Projects::BlobController < Projects::ApplicationController
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
     push_frontend_feature_flag(:repository_file_tree_browser, @project)
+    push_frontend_feature_flag(:blob_edit_refactor, @project)
   end
 
   def new

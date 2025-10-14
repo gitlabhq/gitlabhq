@@ -17,6 +17,12 @@ function getAllDiscussionElements() {
 }
 
 function hasReachedPageEnd() {
+  const panel = document.querySelector('.js-static-panel-inner');
+
+  if (panel) {
+    return panel.scrollHeight <= Math.ceil(panel.scrollTop + panel.clientHeight);
+  }
+
   return document.body.scrollHeight <= Math.ceil(window.scrollY + window.innerHeight);
 }
 

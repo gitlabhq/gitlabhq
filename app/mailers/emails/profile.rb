@@ -230,6 +230,29 @@ module Emails
       )
     end
 
+    def enabled_two_factor_otp_email(user)
+      return unless user
+
+      @user = user
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("Two-factor authentication enabled - OTP"))
+      )
+    end
+
+    def enabled_two_factor_webauthn_email(user, device_name)
+      return unless user
+
+      @user = user
+      @device_name = device_name
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("Two-factor authentication enabled - WebAuthn"))
+      )
+    end
+
     def disabled_two_factor_email(user)
       return unless user
 
@@ -238,6 +261,29 @@ module Emails
       email_with_layout(
         to: @user.notification_email_or_default,
         subject: subject(_("Two-factor authentication disabled"))
+      )
+    end
+
+    def disabled_two_factor_otp_email(user)
+      return unless user
+
+      @user = user
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("One-time password authenticator deleted"))
+      )
+    end
+
+    def disabled_two_factor_webauthn_email(user, device_name)
+      return unless user
+
+      @user = user
+      @device_name = device_name
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("WebAuthn device deleted"))
       )
     end
 

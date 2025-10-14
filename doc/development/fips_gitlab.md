@@ -114,7 +114,7 @@ listed here that also do not work properly in FIPS mode:
 - [Dependency scanning](../user/application_security/dependency_scanning/_index.md) support for Gradle.
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/_index.md#resolve-a-vulnerability)
   for yarn projects.
-- [Static Application Security Testing (SAST)](../user/application_security/sast/_index.md)
+- [Static application security testing (SAST)](../user/application_security/sast/_index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/_index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
 - [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
@@ -360,7 +360,7 @@ downloaded from the [Red Hat developer's portal](https://developers.redhat.com).
 Registration is required.
 
 After the virtual machine is set up, you can follow the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
-installation instructions, including the [advanced instructions for RHEL](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#red-hat-enterprise-linux).
+installation instructions, including the [advanced instructions for RHEL](https://gitlab-org.gitlab.io/gitlab-development-kit/advanced/#red-hat-enterprise-linux).
 The `asdf` tool is not used for dependency management because it's essential to
 use the RedHat-provided Go compiler and other system dependencies.
 

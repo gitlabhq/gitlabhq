@@ -2,16 +2,6 @@
 
 .workflow-container {
   position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 20px;
-    width: 2px;
-    height: calc(100% - 40px);
-    background-color: var(--gl-status-info-icon-color);
-    z-index: 1;
-  }
 }
 
 .workflow-step {
@@ -31,6 +21,27 @@
     transition: all 0.2s ease;
   }
 
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18px;
+    width: 2px;
+    height: calc(100% + 2rem - 22px);
+    background-color: var(--gl-status-info-icon-color);
+    z-index: 2;
+    transition: all 0.2s ease;
+  }
+
+  // Hide line after the last step
+  &:last-child::after {
+    display: none;
+  }
+
+  &.active::after {
+    top: 20px;
+  }
+
   // Active step (current step)
   &.active::before {
     background-color: var(--gl-status-info-icon-color);
@@ -48,20 +59,4 @@
     background-color: var(--gl-background-color-default);
     border: 1px solid var(--gl-status-neutral-icon-color);
   }
-}
-
-.stepper-content {
-  margin-top: 1rem;
-  margin-left: -2rem;
-  padding-left: 2rem;
-  border-left: 2px solid transparent;
-}
-
-// Transition animations
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
 }

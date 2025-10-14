@@ -4,6 +4,7 @@ query getAdminProjectCounts(
   $programmingLanguageName: String
   $visibilityLevel: VisibilityLevelsEnum
   $namespacePath: ID
+  $lastRepositoryCheckFailed: Boolean
 ) {
   active: projects(
     active: true
@@ -12,6 +13,7 @@ query getAdminProjectCounts(
     programmingLanguageName: $programmingLanguageName
     visibilityLevel: $visibilityLevel
     namespacePath: $namespacePath
+    lastRepositoryCheckFailed: $lastRepositoryCheckFailed
   ) {
     count
   }
@@ -22,6 +24,7 @@ query getAdminProjectCounts(
     programmingLanguageName: $programmingLanguageName
     visibilityLevel: $visibilityLevel
     namespacePath: $namespacePath
+    lastRepositoryCheckFailed: $lastRepositoryCheckFailed
   ) {
     count
   }

@@ -89,7 +89,7 @@ To edit a text file in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the file you want to edit.
-1. Select **Edit > Edit single file**.
+1. Select **Edit** > **Edit single file**.
 1. Make your changes.
 1. Select **Commit changes**.
 1. In the **Commit message** field, enter a reason for the commit.
@@ -126,7 +126,7 @@ To preview a Markdown file in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the file you want to preview.
-1. Select **Edit > Edit single file**.
+1. Select **Edit** > **Edit single file**.
 1. Select the **Preview** tab.
 
 You can see a live Markdown preview alongside your content.
@@ -155,7 +155,7 @@ you can edit a file and commit changes. To do this:
 
 1. Go to the merge request.
 1. Go to the file you want to edit.
-1. Select **Edit > Edit single file**.
+1. Select **Edit** > **Edit single file**.
 1. Select **Commit changes**.
 1. In **Commit message**, enter a reason for the commit.
    The following information is provided: `Your changes can be committed to <branch-name> because a merge request is open.`

@@ -133,6 +133,7 @@ To reorder list items, when viewing an epic:
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200186) more bulk editing attributes in GitLab 18.3.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204037) bulk editing support for parent attribute in GitLab 18.5.
 
 {{< /history >}}
 
@@ -142,7 +143,7 @@ Prerequisites:
 
 To update multiple epics at the same time:
 
-1. In a group, go to **Epics > List**.
+1. In a group, go to **Epics** > **List**.
 1. Select **Bulk edit**. A sidebar on the right appears with editable fields.
 1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
@@ -157,6 +158,7 @@ When bulk editing epics in a group, you can edit the following attributes:
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
 - [Confidentiality](#make-an-epic-confidential)
+- [Parent](#add-a-parent-epic-to-an-epic)
 
 ## Prevent truncating descriptions with "Read more"
 
@@ -202,7 +204,6 @@ To show the sidebar again:
 
 {{< details >}}
 
-- Status: Beta
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -210,7 +211,7 @@ To show the sidebar again:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551805) in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551805) in GitLab 18.2. Moved from behind feature flag `work_items_beta`.
 
 {{< /history >}}
 
@@ -237,7 +238,7 @@ Prerequisites:
 To change the assignee on an epic:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**, then select your epic to view it.
+1. Select **Plan** > **Epics**, then select your epic to view it.
 1. On the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -271,11 +272,11 @@ Epic colors are visible in [roadmaps](../roadmap/_index.md) and [epic boards](ep
 
 On roadmaps, the timeline bars match the epic's color:
 
-![Epic color on roadmap](img/epic_color_roadmap_v17_0.png)
+![Epics differentiated by color in v17.0](img/epic_color_roadmap_v17_0.png)
 
 On epic boards, the color shows on the epic's card accent:
 
-![Epic color on epic boards](img/epic_accent_boards_v17_0.png)
+![Cards accented with their associated epic color in v17.0](img/epic_accent_boards_v17_0.png)
 
 ### Change an epic's color
 
@@ -292,7 +293,7 @@ Prerequisites:
 To change an epic's color:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select **New epic** or select an existing epic.
 1. On the right sidebar, in the **Color** section, select **Edit**.
 1. Select an existing color or enter an RGB or hex value.
@@ -383,7 +384,7 @@ Prerequisites:
 To view epics in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 
 ### Who can view an epic
 
@@ -471,7 +472,7 @@ To open an epic in the full page view:
 
 - Open the epic in a new tab. From the list of epics, either:
   - Right-click the epic and open it in a new browser tab.
-  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and select the epic.
+  - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the epic.
 - Select an epic, and from the drawer, in the top-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
 #### Set preference whether to open epics in a drawer
@@ -479,7 +480,7 @@ To open an epic in the full page view:
 To configure how epics open on the Epics page:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
 1. Toggle **Open items in side panel**:
    - **On** (default): Epics open in a drawer overlay.
@@ -517,7 +518,7 @@ You can filter the list of epics by:
 To filter:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select the field **Search or filter results**.
 1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
 1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
@@ -687,7 +688,7 @@ Prerequisites:
 To change the health status of an epic:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select a status.
@@ -876,7 +877,7 @@ Prerequisites:
 To add a parent epic:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Parent** section, select **Edit**.
 1. In the search box, enter part of the parent epic's title.
@@ -933,7 +934,7 @@ Prerequisites:
 
 To add a new epic as child epic:
 
-1. In an epic, in the **Child items** section, select **Add > Add a new epic**.
+1. In an epic, in the **Child items** section, select **Add** > **Add a new epic**.
 1. Select a group from the dropdown list. The epic's group is selected by default.
 1. Enter a title for the new epic.
 1. Select **Create epic**.
@@ -942,7 +943,7 @@ To add a new epic as child epic:
 
 To add an existing epic as child epic:
 
-1. In an epic, in the **Child items** section, select **Add > Add an existing epic**.
+1. In an epic, in the **Child items** section, select **Add** > **Add an existing epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
    - Search for the desired issue by entering part of the epic's title, then selecting the desired match. This search is only available for epics in the same group hierarchy.

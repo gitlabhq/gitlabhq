@@ -44,7 +44,7 @@ export default class UserOverviewBlock {
       const nothingHereBlock = containerEl.querySelector('.nothing-here-block');
 
       if (nothingHereBlock) {
-        nothingHereBlock.classList.add('p-5');
+        nothingHereBlock.classList.add('!gl-p-7');
       }
     }
 

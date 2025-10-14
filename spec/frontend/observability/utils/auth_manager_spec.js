@@ -68,48 +68,38 @@ describe('AuthManager', () => {
     it.each([
       ['gl-dark', 'dark'],
       ['gl-light', 'light'],
-      ['auto', 'light'],
-    ])('when system scheme is %s determine %s color mode', (systemScheme, expectedColorMode) => {
-      getSystemColorScheme.mockReturnValue(systemScheme);
+      ['gl-system', 'light'], // auto
+    ])(
+      'when system scheme is %s includes color mode %s as theme in authentication payload',
+      async (systemScheme, expectedColorMode) => {
+        getSystemColorScheme.mockReturnValue(systemScheme);
 
-      const manager = new AuthManager(
-        mockConfig.allowedOrigin,
-        mockConfig.authTokens,
-        mockConfig.targetPath,
-      );
+        const manager = new AuthManager(
+          mockConfig.allowedOrigin,
+          mockConfig.authTokens,
+          mockConfig.targetPath,
+        );
+        manager.setCallbacks(mockOnAuthSuccess, mockOnAuthError);
 
-      expect(manager.colorMode).toBe(expectedColorMode);
-      expect(getSystemColorScheme).toHaveBeenCalled();
-    });
+        await manager.sendAuthMessage(mockIframe, true);
 
-    it('includes color mode as theme in authentication payload', async () => {
-      getSystemColorScheme.mockReturnValue('gl-dark');
-
-      const manager = new AuthManager(
-        mockConfig.allowedOrigin,
-        mockConfig.authTokens,
-        mockConfig.targetPath,
-      );
-      manager.setCallbacks(mockOnAuthSuccess, mockOnAuthError);
-
-      await manager.sendAuthMessage(mockIframe, true);
-
-      expect(mockIframe.contentWindow.postMessage).toHaveBeenCalledWith(
-        {
-          type: MESSAGE_TYPES.JWT_LOGIN,
-          payload: {
-            ...mockAuthTokens,
-            nonce: 'mock-nonce-123',
-            timestamp: mockNow,
-            counter: 1,
-            targetPath: mockConfig.targetPath,
-            theme: 'dark',
+        expect(mockIframe.contentWindow.postMessage).toHaveBeenCalledWith(
+          {
+            type: MESSAGE_TYPES.JWT_LOGIN,
+            payload: {
+              ...mockAuthTokens,
+              nonce: 'mock-nonce-123',
+              timestamp: mockNow,
+              counter: 1,
+              targetPath: mockConfig.targetPath,
+              theme: expectedColorMode,
+            },
+            parentOrigin: window.location.origin,
           },
-          parentOrigin: window.location.origin,
-        },
-        mockConfig.allowedOrigin,
-      );
-    });
+          mockConfig.allowedOrigin,
+        );
+      },
+    );
   });
 
   const createMockIframe = (overrides = {}) => ({

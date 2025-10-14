@@ -17,7 +17,6 @@
   },
   "required": [
     "system_prompt",
-    "user_prompt",
     "tools"
   ],
   "additionalProperties": false

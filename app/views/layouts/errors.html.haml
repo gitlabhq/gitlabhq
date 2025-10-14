@@ -1,8 +1,9 @@
 !!! 5
-%html{ lang: I18n.locale }
+%html{ lang: I18n.locale, class: user_application_color_mode }
   %head
     %meta{ :content => "width=device-width, initial-scale=1", :name => "viewport" }
     %title= yield(:title)
+    = render 'layouts/application_color_mode_js'
     = universal_stylesheet_link_tag 'errors'
     = universal_stylesheet_link_tag 'application'
     = universal_stylesheet_link_tag 'fonts'

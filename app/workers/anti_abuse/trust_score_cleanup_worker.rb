@@ -13,6 +13,7 @@ module AntiAbuse
     def perform(user_id, source)
       user = User.find_by_id(user_id)
       return unless user
+      return if Feature.enabled?(:remove_trust_scores, user)
 
       cache_key = "abuse:trust_score_cleanup_worker:#{user.id}:#{source}"
       return if Rails.cache.exist?(cache_key)

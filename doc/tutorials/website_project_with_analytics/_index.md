@@ -66,7 +66,7 @@ You have to invite them to your project, so that they get access to all the file
 
 To invite a user to the `My website` project:
 
-1. In the project, select **Manage > Members**.
+1. In the project, select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Enter the user's **username**.
 1. From the **Role** dropdown list, select the **Developer** role or higher.
@@ -86,7 +86,7 @@ For example, for a website project like this one, the labels `feature request` a
 
 To create a project label, in the `My website` project:
 
-1. Select **Manage > Labels**.
+1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter `feature request`.
 1. Optional. In the **Description** field, enter additional information about how and when to use this label.
@@ -105,7 +105,7 @@ For a click-through demo of analytics features, see [the Value Stream Management
 
 To get started, create a value stream in the `My website` project:
 
-1. Select **Analyze > Value Stream Analytics**.
+1. Select **Analyze** > **Value Stream Analytics**.
 1. Select **New Value Stream**.
 1. Enter a name for the value stream, for example `My website value stream`.
 1. Select **Create from default template**.
@@ -116,7 +116,7 @@ To get started, create a value stream in the `My website` project:
 1. Select **Create value stream**.
 
 After you create the value stream, data starts collecting and loading.
-This process might take a while. When it's ready, the dashboard is displayed in **Analyze > Value Stream Analytics**.
+This process might take a while. When it's ready, the dashboard is displayed in **Analyze** > **Value Stream Analytics**.
 
 In the meantime, you can start creating an Insights report for your project.
 
@@ -157,13 +157,13 @@ To create an Insights report, in the `My website` project:
 1. Select **Commit changes**.
 
 Now you have an Insights bar chart that displays the number of issues with the label `~bug` created per month, for the past 12 months.
-You and project members with at least the Developer role can view the Insights report in **Analyze > Insights**.
+You and project members with at least the Developer role can view the Insights report in **Analyze** > **Insights**.
 
 ## View merge request and issue analytics
 
 In addition to the Insights reports, you can get detailed analytics on the merge requests and issues of your project.
 [Merge request analytics](../../user/analytics/merge_request_analytics.md) and [Issue analytics](../../user/group/issues_analytics/_index.md) display charts and tables with metrics such as assignees, merge request throughput, and issue status.
 
-To view merge request and issue analytics, in the `My website` project, select **Analyze > Merge request analytics** or **Analyze > Issue analytics**.
+To view merge request and issue analytics, in the `My website` project, select **Analyze** > **Merge request analytics** or **Analyze** > **Issue analytics**.
 
 That was it! Now you have an analytics-powered website project on which you can collaborate efficiently with your team.

@@ -28,9 +28,7 @@ describe('UserItem spec', () => {
     expect(findAvatarLabeled().props()).toMatchObject({
       label: 'Admin',
       subLabel: '@root',
-    });
-    expect(findAvatarLabeled().attributes()).toMatchObject({
-      size: '32',
+      size: 32,
       src: 'some/avatar.jpg',
     });
   });

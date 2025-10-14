@@ -27,6 +27,10 @@ RSpec.describe AntiAbuse::TrustScoreCleanupWorker, :clean_gitlab_redis_shared_st
   end
 
   context "when the user exists" do
+    before do
+      stub_feature_flags(remove_trust_scores: false)
+    end
+
     context "when the cache key exists" do
       it 'returns early' do
         expect(Rails.cache).to receive(:exist?).and_return(true)

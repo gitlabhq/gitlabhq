@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillTodosWithMultipleColumnShardingKey
+description: Backfill sharding key with exactly one of organization_id, group_id or project_id
+feature_category: notifications
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204559
+milestone: '18.5'
+queued_migration_version: 20251006130558
+finalized_by: # version of the migration that finalized this BBM

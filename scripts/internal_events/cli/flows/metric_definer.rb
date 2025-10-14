@@ -14,10 +14,10 @@ module InternalEventsCli
       STEPS = [
         'New Metric',
         'Type',
-        'Events',
+        'Config',
         'Scope',
         'Description',
-        'Copy event',
+        'Defaults',
         'Group',
         'Categories',
         'URL',
@@ -31,20 +31,17 @@ module InternalEventsCli
         @cli = cli
         @selected_event_paths = Array(starting_event)
         @metric = nil
-        @selected_filters = {}
+        @selected_filters = nil
       end
 
       def run
         type = prompt_for_metric_type
-        prompt_for_events(type)
 
-        return unless @selected_event_paths.any?
-
-        prompt_for_metrics
+        prompt_for_configuration(type)
 
         return unless metric
 
-        prompt_for_event_filters
+        metric.milestone = MILESTONE
         prompt_for_description
         prompt_for_metric_name
         defaults = prompt_for_copying_event_properties
@@ -73,7 +70,7 @@ module InternalEventsCli
       # ----- Prompts -----------------------------
 
       def prompt_for_metric_type
-        return if @selected_event_paths.any?
+        return :event_metric if @selected_event_paths.any?
 
         new_page!(on_step: 'Type', steps: STEPS)
 
@@ -89,100 +86,26 @@ module InternalEventsCli
         end
       end
 
-      def prompt_for_events(type)
-        return if @selected_event_paths.any?
-
-        new_page!(on_step: 'Events', steps: STEPS)
-
+      def prompt_for_configuration(type)
         case type
-        when :event_metric
-          cli.say "For robust event search, use the Metrics Dictionary: https://metrics.gitlab.com/snowplow\n\n"
-
-          @selected_event_paths = [cli.select(
-            'Which event does this metric track?',
-            get_event_options(events),
-            **select_opts,
-            **filter_opts(header_size: 7)
-          )]
-        when :aggregate_metric
-          cli.say "For robust event search, use the Metrics Dictionary: https://metrics.gitlab.com/snowplow\n\n"
-
-          @selected_event_paths = cli.multi_select(
-            'Which events does this metric track? (Space to select)',
-            get_event_options(events),
-            **multiselect_opts,
-            **filter_opts(header_size: 7)
-          )
         when :database_metric
-          cli.error DATABASE_METRIC_NOTICE
-          cli.say feedback_notice
-        end
-      end
-
-      def prompt_for_metrics
-        eligible_metrics = get_metric_options(selected_events)
-
-        if eligible_metrics.all? { |metric| metric[:disabled] }
-          cli.error ALL_METRICS_EXIST_NOTICE
-          cli.say feedback_notice
-
-          return
-        end
-
-        new_page!(on_step: 'Scope', steps: STEPS)
-        cli.say format_info('SELECTED EVENTS')
-        cli.say selected_events_filter_options.join
-        cli.say "\n"
-
-        @metric = cli.select(
-          'Which metrics do you want to add?',
-          eligible_metrics,
-          **select_opts,
-          **filter_opts,
-          per_page: 20,
-          &disabled_format_callback
-        )
-
-        assign_shared_attrs(:actions, :milestone) do
-          {
-            actions: selected_events.map(&:action).sort,
-            milestone: MILESTONE
-          }
-        end
-      end
-
-      def prompt_for_event_filters
-        return unless metric.filters_expected?
-
-        selected_unique_identifier = metric.identifier.value
-        event_count = selected_events.length
-        previous_inputs = {
-          'label' => nil,
-          'property' => nil,
-          'value' => nil
-        }
-
-        event_filters = selected_events.dup.flat_map.with_index do |event, idx|
-          print_event_filter_header(event, idx, event_count)
-
-          next if deselect_nonfilterable_event?(event) # prompts user
-
-          filter_values = event.additional_properties&.filter_map do |property, _|
-            next if selected_unique_identifier == property
-
-            prompt_for_property_filter(
-              event.action,
-              property,
-              previous_inputs[property]
-            )
+          # CLI doesn't load rails, so perform a simplified string <-> boolean check
+          if [nil, 'false', '0'].include? ENV['ENABLE_DATABASE_METRIC']
+            cli.error DATABASE_METRIC_NOTICE
+            cli.say feedback_notice
+            return
           end
 
-          previous_inputs.merge!(@selected_filters[event.action] || {})
-
-          find_filter_permutations(event.action, filter_values)
-        end.compact
-
-        bulk_assign(filters: event_filters)
+          db_metric_definer = InternalEventsCli::Subflows::DatabaseMetricDefiner.new(cli)
+          db_metric_definer.run
+          @metric = db_metric_definer.metric
+        when :event_metric, :aggregate_metric
+          event_metric_definer = InternalEventsCli::Subflows::EventMetricDefiner.new(cli, @selected_event_paths, type)
+          event_metric_definer.run
+          @metric = event_metric_definer.metric
+          @selected_filters = event_metric_definer.selected_filters
+          @selected_event_paths = event_metric_definer.selected_event_paths
+        end
       end
 
       def file_saved_context_message(attributes)
@@ -217,7 +140,7 @@ module InternalEventsCli
 
         return shared_values if defaults.none?
 
-        new_page!(on_step: 'Copy event', steps: STEPS)
+        new_page!(on_step: 'Defaults', steps: STEPS)
 
         cli.say <<~TEXT
           #{format_info('Convenient! We can copy these attributes from the event definition(s):')}
@@ -320,6 +243,7 @@ module InternalEventsCli
 
         outcome ||= '  No files saved.'
 
+        # TODO: change this message for database metrics https://gitlab.com/gitlab-org/gitlab/-/issues/464066
         cli.say <<~TEXT
           #{divider}
           #{format_info('Done with metric definitions!')}
@@ -337,18 +261,7 @@ module InternalEventsCli
 
         TEXT
 
-        actions = selected_events.map(&:action).join(', ')
-        next_step = cli.select("How would you like to proceed?", **select_opts) do |menu|
-          menu.enum "."
-
-          menu.choice "New Event -- define a new event", :new_event
-          menu.choice "New Metric -- define another metric for #{actions}", :new_metric_with_events
-          menu.choice "New Metric -- define another metric", :new_metric
-          choice = "View Usage -- look at code examples for event #{selected_events.first.action}"
-          menu.default choice
-          menu.choice choice, :view_usage
-          menu.choice 'Exit', :exit
-        end
+        next_step = get_next_step
 
         case next_step
         when :new_event
@@ -358,108 +271,15 @@ module InternalEventsCli
         when :new_metric
           MetricDefiner.new(cli).run
         when :view_usage
-          UsageViewer.new(cli, @selected_event_paths.first, selected_events.first).run
+          args = [cli]
+          args += [@selected_event_paths.first, selected_events.first] if metric.event_metric?
+          UsageViewer.new(*args).run
         when :exit
           cli.say feedback_notice
         end
       end
 
       # ----- Prompt-specific Helpers -------------
-
-      # Helper for #prompt_for_metrics
-      def selected_events_filter_options
-        filterable_events_selected = selected_events.any? { |event| event.additional_properties&.any? }
-
-        selected_events.map do |event|
-          filters = event.additional_properties&.keys
-          filter_phrase = if filters
-                            " (filterable by #{filters&.join(', ')})"
-                          elsif filterable_events_selected
-                            ' -- not filterable'
-                          end
-
-          "  - #{event.action}#{format_help(filter_phrase)}\n"
-        end
-      end
-
-      # Helper for #prompt_for_event_filters
-      def print_event_filter_header(event, idx, total)
-        cli.say "\n"
-        cli.say format_info(format_subheader('SETTING EVENT FILTERS', event.action, idx, total))
-
-        return unless event.additional_properties&.any?
-
-        event_filter_options = event.additional_properties.map do |property, attrs|
-          "  #{property}: #{attrs['description']}\n"
-        end
-
-        cli.say event_filter_options.join
-      end
-
-      # Helper for #prompt_for_event_filters
-      def deselect_nonfilterable_event?(event)
-        cli.say "\n"
-
-        return false if event.additional_properties&.any?
-        return false if cli.yes?("This event is not filterable. Should it be included in the metric?", **yes_no_opts)
-
-        selected_events.delete(event)
-        bulk_assign(actions: selected_events.map(&:action).sort)
-
-        true
-      end
-
-      # Helper for #prompt_for_event_filters
-      def prompt_for_property_filter(action, property, default)
-        formatted_prop = format_info(property)
-        prompt = "Count where #{formatted_prop} equals any of (comma-sep):"
-
-        inputs = prompt_for_text(prompt, default, **input_opts) do |q|
-          if property == 'value'
-            q.convert ->(input) { input.split(',').map(&:to_i).uniq }
-            q.validate %r{^(\d|\s|,)*$}
-            q.messages[:valid?] = "Inputs for #{formatted_prop} must be numeric"
-          elsif property == 'property' || property == 'label'
-            q.convert ->(input) { input.split(',').map(&:strip).uniq }
-          else
-            q.convert ->(input) do
-              input.split(',').map do |value|
-                val = value.strip
-                cast_if_numeric(val)
-              end.uniq
-            end
-          end
-        end
-
-        return unless inputs&.any?
-
-        @selected_filters[action] ||= {}
-        @selected_filters[action][property] = inputs.join(',')
-
-        inputs.map { |input| { property => input } }.uniq
-      end
-
-      def cast_if_numeric(text)
-        float = Float(text)
-        float % 1 == 0 ? float.to_i : float
-      rescue ArgumentError
-        text
-      end
-
-      # Helper for #prompt_for_event_filters
-      #
-      # Gets all the permutations of the provided property values.
-      # @param filters [Array] ex) [{ 'label' => 'red' }, { 'label' => 'blue' }, { value => 16 }]
-      # @return ex) [{ 'label' => 'red', value => 16 }, { 'label' => 'blue', value => 16 }]
-      def find_filter_permutations(action, filters)
-        # Define a filter for all events, regardless of the available props so NewMetric#events is correct
-        return [[action, {}]] unless filters&.any?
-
-        # Uses proc syntax to avoid spliting & type-checking `filters`
-        :product.to_proc.call(*filters).map do |filter|
-          [action, filter.reduce(&:merge)]
-        end
-      end
 
       # Helper for #prompt_for_description
       def selected_event_descriptions
@@ -479,7 +299,7 @@ module InternalEventsCli
         new_page!(on_step: 'Description', steps: STEPS)
 
         cli.say DESCRIPTION_INTRO
-        cli.say selected_event_descriptions.join
+        cli.say selected_event_descriptions.join if metric.event_metric?
 
         description_start = format_info("#{metric.description_prefix}...")
 
@@ -490,6 +310,8 @@ module InternalEventsCli
           #{format_info('Technical description:')} #{metric.technical_description}
 
         TEXT
+
+        # TODO: make the prompt more user friendly for db metrics https://gitlab.com/gitlab-org/gitlab/-/issues/464066
 
         description = prompt_for_text("  Finish the description: #{description_start}", multiline: true) do |q|
           q.required true
@@ -579,6 +401,34 @@ module InternalEventsCli
         defaults.delete(:product_categories) if defaults[:product_categories].empty?
 
         defaults
+      end
+
+      # Helper for #prompt_for_next_steps
+      def get_next_step
+        cli.select("How would you like to proceed?", **select_opts) do |menu|
+          menu.enum "."
+
+          menu.choice "New Event -- define a new event", :new_event
+
+          if metric.event_metric?
+            actions = selected_events.map(&:action).join(', ')
+            menu.choice "New Metric -- define another metric for #{actions}", :new_metric_with_events
+          end
+
+          menu.choice "New Metric -- define another metric", :new_metric
+
+          if metric.event_metric?
+            view_usage_message = "View Usage -- look at code examples for event #{selected_events.first.action}"
+            default = view_usage_message
+          else
+            view_usage_message = "View Usage -- look at code examples"
+            default = 'Exit'
+          end
+
+          menu.choice view_usage_message, :view_usage
+          menu.choice 'Exit', :exit
+          menu.default default
+        end
       end
 
       # ----- Shared Helpers ----------------------

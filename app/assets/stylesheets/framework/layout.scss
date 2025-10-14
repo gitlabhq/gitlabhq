@@ -49,10 +49,10 @@ html {
   .content {
     margin: 0;
 
-    @include media-breakpoint-down(xs) { margin-top: 20px; }
+    @include gl-container-width-down(sm, panel) { margin-top: 20px; }
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .container .title {
       padding-left: 15px !important;
     }
@@ -79,7 +79,7 @@ html {
   }
 
   .flex-alert {
-    @include media-breakpoint-up(lg) {
+    @include gl-container-width-up(lg, panel) {
       display: flex;
 
       .alert-message {
@@ -93,7 +93,7 @@ html {
     }
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     .alert-link-group {
       float: none;
       margin-top: $gl-padding-8;
@@ -126,12 +126,6 @@ html {
     margin-top: 0;
     margin-bottom: 0;
   }
-
-  .content-wrapper {
-    padding-bottom: 0;
-    flex: 1;
-    min-height: 0;
-  }
 }
 
 .gl-drawer-responsive {
@@ -145,7 +139,7 @@ html {
   box-shadow: none;
   @apply gl-bg-subtle gl-border-l;
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     min-width: unset;
     width: 100%;
   }

@@ -1,4 +1,4 @@
-- icon_classes = 'settings-list-icon gl-hidden sm:gl-block'
+- icon_classes = 'settings-list-icon gl-hidden @sm/panel:gl-block'
 
 %tr.key-list-item
   %td{ data: { label: _('Title'), testid: 'title' } }
@@ -12,7 +12,7 @@
       - else
         %span.gl-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
           = sprite_icon('warning-solid', css_class: icon_classes)
-      %span.gl-truncate.sm:gl-ml-3
+      %span.gl-truncate{ class: "@sm/panel:gl-ml-3" }
         = key.fingerprint
 
   %td{ data: { label: s_('Profiles|Usage type'), testid: 'usage-type' } }

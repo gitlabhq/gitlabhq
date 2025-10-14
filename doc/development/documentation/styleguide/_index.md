@@ -114,7 +114,7 @@ Hard-coded HTML is valid, although it's discouraged for a few reasons:
 - Custom markup has potential to break future site-wide changes or design system updates.
 - Custom markup does not have test coverage to ensure consistency across the site.
 - Custom markup might not be responsive or accessible.
-- Custom markup might not adhere to Pajamas guidelines.
+- Custom markup might not adhere to [Pajamas](https://design.gitlab.com) guidelines.
 - HTML and CSS in Markdown do not render on `/help`.
 - Hand-coding HTML can be error-prone. It's possible to break the page layout or other components with malformed HTML.
 
@@ -123,6 +123,10 @@ HTML is permitted if:
 - No equivalent exists in Markdown.
 - The content is reviewed and approved by a technical writer.
 - The need for a custom element is urgent and cannot wait for implementation by Technical Writing engineers.
+
+Any links created with HTML `<a>` tags must use absolute URLs as their
+`href` attributes. Unlike regular links, do not use relative links to
+Markdown files, as Hugo can only process and replace Markdown-formatted links.
 
 If you have an idea or request for a new element that would be useful on the Docs site,
 submit a [feature request](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/new?issuable_template=Default).
@@ -183,6 +187,7 @@ GitLab documentation uses the following shortcodes:
 - [Tabs](#tabs)
 - [Cards](#cards)
 - [Maintained versions](#maintained-versions)
+- [Collapsible panels](#collapsible-panels)
 
 ## Language
 
@@ -608,7 +613,14 @@ To represent missing information in a code block, use a comment or an [ellipsis]
 
 ### Keyboard commands
 
-Use the HTML `<kbd>` tag when referring to keystroke presses. For example:
+When writing about keystroke presses:
+
+- Use the HTML `<kbd>` tag.
+- Spell out the full name of the key, except for `Alt` ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml)).
+- Capitalize the first letter of the key if it's an action key, for example: `Shift`, `Command`, `Delete`.
+  Use lowercase if it's a letter, and use `↑`, `↓`, `←`, and `→` for arrows.
+
+For example:
 
 ```plaintext
 To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
@@ -1968,6 +1980,24 @@ For more information, see [issue 225](https://gitlab.com/gitlab-org/technical-wr
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.
 
+## Collapsible panels
+
+Collapsible panels are closed by default and require a title. In the rendered documentation,
+you must expand the panel to view the content inside it.
+
+```markdown
+{{</* collapsible title="Collapsible panel example" */>}}
+
+This content appears inside the collapsible panel.
+
+{{</* /collapsible */>}}
+```
+
+Only use collapsible panels on GitLab Duo pages in the [availability details](availability_details.md)
+section for information about supported LLMs, editors, and self-hosted model availability.
+
+Do not use collapsible panels for other content.
+
 ## Cards
 
 Use cards to create landing pages with links to sub-pages.
@@ -2019,8 +2049,8 @@ documentation site (`https://docs.gitlab.com`). In all other cases and in
 ## Plagiarism
 
 Do not copy and paste content from other sources unless it is a limited
-quotation with the source cited. Typically it is better to rephrase
-relevant information in your own words or link out to the other source.
+quotation with the source cited. Typically, it is better to rephrase
+relevant information in your own words or link to the source.
 
 ## Promising features in future versions
 

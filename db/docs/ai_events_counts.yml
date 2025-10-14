@@ -1,0 +1,13 @@
+---
+table_name: ai_events_counts
+classes:
+- Ai::EventsCount
+feature_categories:
+- value_stream_management
+description: Aggregated AI event counts for analytics. Partitioned by month.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205716
+milestone: '18.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

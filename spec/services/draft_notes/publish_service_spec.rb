@@ -164,8 +164,6 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
     it 'invalidates cache counts' do
       expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
 
-      stub_feature_flags(merge_request_dashboard: true)
-
       publish
     end
 

@@ -37,7 +37,7 @@ To apply rate limits to Git HTTP requests that do not contain authentication
 parameters, enable and configure these limits:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Git HTTP rate limits**.
 1. Select **Enable unauthenticated Git HTTP request rate limit**.
 1. Enter a value for **Max unauthenticated Git HTTP requests per period per user**.
@@ -60,7 +60,7 @@ To apply rate limits to Git HTTP requests that contain authentication
 parameters, enable and configure these limits:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Git HTTP rate limits**.
 1. Select **Enable authenticated Git HTTP request rate limit**.
 1. Enter a value for **Max authenticated Git HTTP requests per period per user**.

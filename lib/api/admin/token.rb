@@ -71,10 +71,6 @@ module API
           hidden true
         end
         delete do
-          if Feature.disabled?(:api_admin_token_revoke, current_user)
-            render_api_error!("'api_admin_token_revoke' feature flag is disabled", :not_found)
-          end
-
           identified_token = identify_token(params[:token])
 
           render_api_error!({ error: 'Not found' }, :not_found) if identified_token.revocable.nil?

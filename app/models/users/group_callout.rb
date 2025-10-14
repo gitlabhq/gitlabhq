@@ -38,9 +38,10 @@ module Users
       expired_duo_pro_trial_widget: 26, # EE-only
       expired_duo_enterprise_trial_widget: 27, # EE-only
       expired_trial_status_widget: 28, # EE-only
-      namespace_user_cap_reached_alert: 29 # EE-only,
+      namespace_user_cap_reached_alert: 29, # EE-only,
       # 30 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       # 31 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
+      duo_agent_platform_requested: 32 # EE-only,
     }
 
     validates :group, presence: true

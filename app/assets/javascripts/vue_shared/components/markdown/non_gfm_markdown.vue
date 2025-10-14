@@ -119,11 +119,19 @@ export default {
   </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 /* This is to override a margin caused by bootstrap */
 .non-gfm-markdown-block {
-  p {
+  :deep(p:last-of-type) {
     margin-bottom: 0;
+  }
+  /* All code blocks here should break to avoid overflow issues in consumer components */
+  :deep(code) {
+    word-break: break-all;
+  }
+
+  :deep(pre) {
+    white-space: pre-wrap;
   }
 }
 </style>

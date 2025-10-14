@@ -13,7 +13,7 @@ module API
             desc 'Drop jobs matching the given metadata from the Sidekiq queue'
             params do
               Gitlab::SidekiqQueue::ALLOWED_KEYS.each do |key|
-                optional key, type: String, allow_blank: false
+                optional key, type: String, desc: 'Metadata key to match', allow_blank: false
               end
 
               at_least_one_of(*Gitlab::SidekiqQueue::ALLOWED_KEYS)

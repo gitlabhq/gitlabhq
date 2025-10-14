@@ -22,7 +22,7 @@ You might get the following message prompting you to sign in to GitLab.com
 when you're already signed in:
 
 ```plaintext
-You need to sign in or sign up before continuing.
+Sign in or sign up before continuing.
 ```
 
 The GitLab for Jira Cloud app uses an iframe to add groups on the
@@ -53,7 +53,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 - In GitLab 15.8 and later:
 
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Settings > General**.
+  1. On the left sidebar, select **Settings** > **General**.
   1. Expand **GitLab for Jira App**.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.
@@ -271,6 +271,9 @@ For the second log, you might have one of the following scenarios:
         "uri":"/-/jira_connect/events/installed"
       }
       ```
+
+  - If `json.jira_status_code` is `404 Not Found` and `json.jira_body` contains the HTML of a typical GitLab 404 page, confirm that the
+    [integration allowlist](project_integration_management.md#integration-allowlist) on the self-managed instance allows the GitLab for Jira Cloud app.
 
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.

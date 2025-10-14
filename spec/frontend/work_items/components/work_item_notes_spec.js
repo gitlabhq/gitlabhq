@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -25,8 +26,12 @@ import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_i
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
 import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
 import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
-import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import { ASC, DESC } from '~/notes/constants';
+import {
+  DEFAULT_PAGE_SIZE_NOTES,
+  WIDGET_TYPE_NOTES,
+  WORK_ITEM_NOTES_SORT_ORDER_KEY,
+} from '~/work_items/constants';
+import { ASC, DESC, DISCUSSIONS_SORT_ENUM } from '~/notes/constants';
 import {
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
@@ -316,6 +321,7 @@ describe('WorkItemNotes component', () => {
         fullPath: 'test-path',
         iid: '1',
         pageSize: 20,
+        sort: DISCUSSIONS_SORT_ENUM[ASC],
       });
       expect(findAllSystemNotes()).toHaveLength(mockNotesWidgetResponse.discussions.nodes.length);
     });
@@ -341,16 +347,15 @@ describe('WorkItemNotes component', () => {
     });
 
     describe('when there is next page', () => {
-      beforeEach(async () => {
+      it('fetch more notes should be called', async () => {
         createComponent({ defaultWorkItemNotesQueryHandler: workItemMoreNotesQueryHandler });
         await waitForPromises();
-      });
 
-      it('fetch more notes should be called', async () => {
         expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
           fullPath: 'test-path',
           iid: '1',
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
+          sort: DISCUSSIONS_SORT_ENUM[ASC],
         });
 
         await nextTick();
@@ -360,6 +365,34 @@ describe('WorkItemNotes component', () => {
           iid: '1',
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
           after: mockMoreNotesWidgetResponse.discussions.pageInfo.endCursor,
+          sort: DISCUSSIONS_SORT_ENUM[ASC],
+        });
+      });
+
+      describe('when sort order is set to newest first by default', () => {
+        it('fetches notes in descending order', async () => {
+          useLocalStorageSpy();
+          localStorage.setItem(WORK_ITEM_NOTES_SORT_ORDER_KEY, DESC);
+
+          createComponent({ defaultWorkItemNotesQueryHandler: workItemMoreNotesQueryHandler });
+          await waitForPromises();
+
+          expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
+            fullPath: 'test-path',
+            iid: '1',
+            pageSize: DEFAULT_PAGE_SIZE_NOTES,
+            sort: DISCUSSIONS_SORT_ENUM[DESC],
+          });
+
+          await nextTick();
+
+          expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
+            fullPath: 'test-path',
+            iid: '1',
+            pageSize: DEFAULT_PAGE_SIZE_NOTES,
+            after: mockMoreNotesWidgetResponse.discussions.pageInfo.endCursor,
+            sort: DISCUSSIONS_SORT_ENUM[DESC],
+          });
         });
       });
     });

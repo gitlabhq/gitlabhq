@@ -10,6 +10,20 @@ FactoryBot.define do
     relative_position { RelativePositioning::START_POSITION }
     association :work_item_type
 
+    trait :with_work_item_description do
+      after(:create) do |issue|
+        create(
+          :work_item_description,
+          work_item_id: issue.id,
+          last_editing_user: issue.last_edited_by,
+          lock_version: issue.lock_version,
+          cached_markdown_version: issue.cached_markdown_version,
+          description: issue.description,
+          description_html: issue.description_html
+        )
+      end
+    end
+
     trait :confidential do
       confidential { true }
     end

@@ -86,6 +86,7 @@ RSpec.describe HomepageData, feature_category: :notifications do
           event_data = Gitlab::Json.parse(homepage_data[:last_push_event])
           expect(event_data['ref_name']).to eq(push_event.ref_name)
           expect(event_data['project']['web_url']).to eq(project.web_url)
+          expect(event_data['id']).to eq(push_event.id)
         end
       end
 
@@ -98,6 +99,7 @@ RSpec.describe HomepageData, feature_category: :notifications do
 
         it 'does not include last push widget data' do
           event_data = Gitlab::Json.parse(homepage_data[:last_push_event])
+          expect(event_data['id']).to eq(push_event.id)
           expect(event_data["show_widget"]).to be(false)
           expect(event_data["create_mr_path"]).to eq('/test/path')
         end
@@ -111,6 +113,7 @@ RSpec.describe HomepageData, feature_category: :notifications do
 
         it 'shows widget but not create MR button' do
           event_data = Gitlab::Json.parse(homepage_data[:last_push_event])
+          expect(event_data['id']).to eq(push_event.id)
           expect(event_data["show_widget"]).to be(true)
           expect(event_data["create_mr_path"]).to eq('')
         end

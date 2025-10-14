@@ -10,7 +10,7 @@ module RequestPayloadLogger
 
     payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
-    payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
+    payload[Labkit::Fields::CORRELATION_ID] = Labkit::Correlation::CorrelationId.current_id
 
     payload[:metadata] = Gitlab::ApplicationContext.current
 

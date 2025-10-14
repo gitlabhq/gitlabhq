@@ -8,6 +8,10 @@ RSpec.describe AntiAbuse::UserTrustScore, feature_category: :instance_resiliency
   let(:user_1_scores) { described_class.new(user1) }
   let(:user_2_scores) { described_class.new(user2) }
 
+  before do
+    stub_feature_flags(remove_trust_scores: false)
+  end
+
   describe '#spammer?' do
     context 'when the user is a spammer' do
       before do

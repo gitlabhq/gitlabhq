@@ -19,6 +19,18 @@ RSpec.describe API::Entities::Ci::Pipeline do
     end
   end
 
+  it 'exposes pipeline archived state' do
+    expect(pipeline).to receive(:archived?).and_return(true).once
+
+    expect(subject[:archived]).to be true
+  end
+
+  it 'exposes pipeline unarchived state' do
+    expect(pipeline).to receive(:archived?).and_return(false).once
+
+    expect(subject[:archived]).to be false
+  end
+
   it 'exposes pipeline user basic information' do
     expect(subject[:user].keys).to include(:avatar_url, :web_url)
   end

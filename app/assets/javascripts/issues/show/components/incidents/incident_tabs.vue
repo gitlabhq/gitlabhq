@@ -142,7 +142,7 @@ export default {
           item.classList.toggle('gl-hidden', !isSummaryTab);
         });
 
-        editButton?.classList.toggle('md:!gl-block', isSummaryTab);
+        editButton?.classList.toggle('@md/panel:!gl-block', isSummaryTab);
       }
     },
   },

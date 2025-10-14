@@ -18,7 +18,8 @@ module Enums
         design_management_designs: 10,
         incident_management_oncall_schedules: 11,
         ml_experiments: 12,
-        ml_candidates: 13
+        ml_candidates: 13,
+        slsa_attestations: 14
       }
     end
   end

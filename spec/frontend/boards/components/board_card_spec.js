@@ -102,6 +102,21 @@ describe('Board card', () => {
     window.gon = { features: {} };
   });
 
+  describe('accessible label for outer link', () => {
+    it('adds the issue id to link title correctly', () => {
+      mountComponent({
+        item: {
+          ...mockIssue,
+          iid: 1,
+          title: 'Accessible label test',
+        },
+      });
+      const accessibleLinkLabel = findBoardCardButton().attributes()['aria-label'];
+
+      expect(accessibleLinkLabel).toEqual('Issue number 1: Accessible label test');
+    });
+  });
+
   describe('when GlLabel is clicked in BoardCardInner', () => {
     it("doesn't call setSelectedBoardItemsMutation", async () => {
       mountComponent();

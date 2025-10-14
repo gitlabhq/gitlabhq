@@ -212,9 +212,9 @@ module Gitlab
       success
     end
 
-    def checkout_or_clone_version(version:, repo:, target_dir:, clone_opts: [])
+    def checkout_or_clone_version(version:, repo:, target_dir:, clone_opts: [], checkout_opts: [])
       clone_repo(repo, target_dir, clone_opts: clone_opts) unless Dir.exist?(target_dir)
-      checkout_version(get_version(version), target_dir)
+      checkout_version(get_version(version), target_dir, checkout_opts: checkout_opts)
     end
 
     # this function implements the same logic we have in omnibus for dealing with components version
@@ -230,12 +230,15 @@ module Gitlab
       run_command!(%W[#{Gitlab.config.git.bin_path} clone] + clone_opts + %W[-- #{repo} #{target_dir}])
     end
 
-    def checkout_version(version, target_dir)
+    def checkout_version(version, target_dir, checkout_opts: [])
       # Explicitly setting the git protocol version to v2 allows older Git binaries
       # to do have a shallow clone obtain objects by object ID.
       run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} config protocol.version 2])
       run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --quiet origin #{version}])
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout -f --quiet FETCH_HEAD --])
+      run_command!(
+        %W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout -f --quiet FETCH_HEAD] +
+        checkout_opts + %w[--]
+      )
     end
   end
 end

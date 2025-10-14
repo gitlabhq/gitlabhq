@@ -33,12 +33,12 @@ module API
             include ::Gitlab::Utils::StrongMemoize
 
             params :module_name do
-              requires :module_name, type: String, desc: '', regexp: API::NO_SLASH_URL_PART_REGEX
-              requires :module_system, type: String, regexp: API::NO_SLASH_URL_PART_REGEX
+              requires :module_name, type: String, desc: 'Name of the module', regexp: API::NO_SLASH_URL_PART_REGEX
+              requires :module_system, type: String, desc: 'System of the module', regexp: API::NO_SLASH_URL_PART_REGEX
             end
 
             params :module_version do
-              requires :module_version, type: String, desc: 'Module version', regexp: SEMVER_REGEX
+              requires :module_version, type: String, desc: 'Version of the module', regexp: SEMVER_REGEX
             end
 
             def module_namespace
@@ -48,7 +48,7 @@ module API
 
             def finder_params
               {
-                packages_class: ::Packages::TerraformModule::Package,
+                package_type: :terraform_module,
                 package_name: "#{params[:module_name]}/#{params[:module_system]}",
                 package_version: params[:module_version],
                 exact_name: true,

@@ -12,7 +12,7 @@ you can create a workflow that promotes transparency, accountability, and effici
 
 The process of planning work is part of a larger workflow:
 
-![Workflow](img/get_started_planning_v16_11.png)
+![Diagram of the main things to do in GitLab with the "Plan and track work" section highlighted.](img/get_started_planning_v16_11.png)
 
 ## Step 1: Define timelines
 

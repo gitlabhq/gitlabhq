@@ -32,6 +32,17 @@ RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integ
       expect(execute_service.success?).to eq(true)
     end
 
+    context 'with organization id' do
+      let(:organization) { create(:organization) }
+      let(:update_params) { { client_key: 'new_client_key', organization_id: organization.id } }
+
+      it 'updates organization id' do
+        expect(installation.organization_id).not_to eq(organization.id)
+
+        expect { execute_service }.to change { installation.organization_id }.to(organization.id)
+      end
+    end
+
     context 'and model validation fails' do
       let(:update_params) { { instance_url: 'invalid' } }
 

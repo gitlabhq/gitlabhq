@@ -130,7 +130,6 @@ Style/RedundantSelf:
     - 'app/uploaders/file_uploader.rb'
     - 'app/uploaders/gitlab_uploader.rb'
     - 'app/uploaders/object_storage.rb'
-    - 'app/workers/concerns/application_worker.rb'
     - 'app/workers/concerns/limited_capacity/worker.rb'
     - 'app/workers/concerns/project_start_import.rb'
     - 'app/workers/concerns/reenqueuer.rb'

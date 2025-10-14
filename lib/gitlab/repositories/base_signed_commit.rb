@@ -23,20 +23,14 @@ module Gitlab
 
         cached_signature = lazy_signature&.itself
 
-        # We need to update the cache if there is no user for a verified system commit.
-        # This is because of the introduction of mailmap. See https://gitlab.com/gitlab-org/gitlab/-/issues/425042#note_1997022896.
-        if cached_signature.present? && verified_system_user_missing?(cached_signature) && Feature.enabled?(
-          :check_for_mailmapped_commit_emails, @commit.project)
-          return @signature = update_signature!(cached_signature)
+        if cached_signature.present?
+          # only update the committer email without re verifying the cached signature
+          return @signature = update_committer_email!(cached_signature) if should_update_signature?(cached_signature)
+
+          return @signature = cached_signature
         end
 
-        return @signature = cached_signature if cached_signature.present?
-
         @signature = create_cached_signature!
-      end
-
-      def verified_system_user_missing?(cached_signature)
-        cached_signature.verified_system? && cached_signature.user.nil? && author_email.present?
       end
 
       def update_signature!(cached_signature)
@@ -59,12 +53,38 @@ module Gitlab
       end
       strong_memoize_attr :signer
 
-      def author_email
-        @signature_data.itself ? @signature_data[:author_email] : nil
+      def committer_email
+        @signature_data.itself ? @signature_data[:committer_email] : nil
       end
-      strong_memoize_attr :author_email
+      strong_memoize_attr :committer_email
 
       private
+
+      def update_committer_email!(cached_signature)
+        cached_signature.update!(committer_email: committer_email)
+        @signature = cached_signature
+      end
+
+      def should_update_signature?(cached_signature)
+        check_for_mailmapped_commit_emails? &&
+          verified_system_or_x509?(cached_signature) &&
+          committer_email_missing?(cached_signature)
+      end
+
+      def committer_email_missing?(cached_signature)
+        # cached_signature.committer_email referring to the persisted commited email in the db.
+        # committer_email.present? is checking for a committer email in the response from
+        # GetCommitSignaturesResponse rpc.
+        cached_signature.committer_email.nil? && committer_email.present?
+      end
+
+      def verified_system_or_x509?(cached_signature)
+        cached_signature.verified_system? || cached_signature.x509?
+      end
+
+      def check_for_mailmapped_commit_emails?
+        Feature.enabled?(:check_for_mailmapped_commit_emails, @commit.project)
+      end
 
       def signature_class
         raise NotImplementedError, '`signature_class` must be implemented by subclass`'

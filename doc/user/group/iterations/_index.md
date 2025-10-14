@@ -123,7 +123,7 @@ Prerequisites:
 To create an iteration cadence:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations**.
+1. Select **Plan** > **Iterations**.
 1. Select **New iteration cadence**.
 1. Enter the title and description of the iteration cadence.
 
@@ -146,7 +146,7 @@ To manually manage the created cadence, see [Create an iteration manually](#crea
 ### View the iterations list
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations**.
+1. Select **Plan** > **Iterations**.
 
 To view all the iterations in a cadence, ordered by descending date, select that iteration cadence.
 From there you can create a new iteration or select an iteration to get a more detailed view.
@@ -170,7 +170,7 @@ Prerequisites:
 To edit an iteration cadence:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations**.
+1. Select **Plan** > **Iterations**.
 1. To the right of the cadence you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and
    then select **Edit cadence**.
 1. Edit the fields.
@@ -185,7 +185,7 @@ To edit an iteration cadence:
 #### Turn on and off automatic scheduling for an iteration cadence
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations**.
+1. Select **Plan** > **Iterations**.
 1. To the right of the cadence for which you want to turn on or off automatic scheduling, select the
    vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit cadence**.
 1. Select or clear the **Enable automatic scheduling** checkbox.
@@ -240,7 +240,7 @@ Deleting an iteration cadence also deletes all iterations in that cadence.
 To delete an iteration cadence:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations**.
+1. Select **Plan** > **Iterations**.
 1. To the right of the cadence you want to delete, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete cadence**.
 1. Select **Delete cadence**.
 
@@ -277,7 +277,7 @@ Prerequisites:
 To create an iteration:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations**.
+1. Select **Plan** > **Iterations**.
 1. To the right of the cadence in which you want create an iteration, select the vertical ellipsis
    ({{< icon name="ellipsis_v" >}}) and then select **Add iteration**.
 1. Complete the fields.
@@ -299,7 +299,7 @@ Prerequisites:
 To edit an iteration:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations** and select an iteration cadence.
+1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select the iteration you want edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
 1. Edit the fields:
@@ -323,7 +323,7 @@ Prerequisites:
 To delete an iteration:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations** and select an iteration cadence.
+1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select the iteration you want edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete**.
 1. Select **Delete**.
@@ -342,7 +342,7 @@ Closed iteration reports show the total number of issues completed by the due da
 To view an iteration report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations** and select an iteration cadence.
+1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select an iteration.
 
 ### Iteration burndown and burnup charts
@@ -386,7 +386,7 @@ understanding of scope attributable to each label.
 To group issues by label:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Iterations** and select an iteration cadence.
+1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select an iteration.
 1. From the **Group by** dropdown list, select **Label**.
 1. From the **Filter by label** dropdown list, select the labels you want to group by.

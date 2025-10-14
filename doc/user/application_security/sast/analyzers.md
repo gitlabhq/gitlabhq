@@ -18,7 +18,7 @@ title: SAST analyzers
 
 {{< /history >}}
 
-Static Application Security Testing (SAST) uses analyzers
+Static application security testing (SAST) uses analyzers
 to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/_index.md#scanner), a third-party code analysis tool.
 
 The analyzers are published as Docker images that SAST uses to launch dedicated containers for each

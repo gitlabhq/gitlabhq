@@ -232,7 +232,7 @@ This endpoint is only available for Rails web workers. Sidekiq workers cannot be
 
 To disable those features for profiling/benchmarking set the `RAILS_PROFILE` environment variable to `true` before starting GitLab. For example when using GDK:
 
-- create a file [`env.runit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/runit.md#modifying-environment-configuration-for-services) in the root GDK directory
+- create a file [`env.runit`](https://gitlab-org.gitlab.io/gitlab-development-kit/contributing/runit/#using-environment-variables) in the root GDK directory
 - add `export RAILS_PROFILE=true` to your `env.runit` file
 - restart GDK with `gdk restart`
 

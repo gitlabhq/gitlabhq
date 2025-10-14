@@ -54,7 +54,7 @@ export default {
       class="gl-mt-2 gl-block gl-text-sm"
       target="_blank"
       data-testid="metric-docs-link"
-      >{{ __('Go to docs') }}
+      >{{ __('Learn more') }}
       <gl-icon name="external-link" class="gl-align-middle" />
     </gl-link>
   </gl-popover>

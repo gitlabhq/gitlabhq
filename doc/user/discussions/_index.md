@@ -28,7 +28,7 @@ Comments support [Markdown](../markdown.md) and [quick actions](../project/quick
 Two types of comments are available:
 
 - A standard comment.
-- A comment in a thread, which you can [resolve](../project/merge_requests/_index.md#resolve-a-thread).
+- A comment in a thread, which you can [resolve](../project/merge_requests/_index.md#manage-comment-threads).
 
 You can [suggest code changes](../project/merge_requests/reviews/suggestions.md) in your commit diff comment,
 which the user can accept through the user interface.
@@ -93,8 +93,8 @@ When you mention a group in a comment, every member of the group gets a to-do it
 added to their to-do list.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. For merge requests, select **Code > Merge requests**, and find your merge request.
-1. For issues, select **Plan > Issues**, and find your issue.
+1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
+1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
    For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
 1. Select **Comment**.
@@ -113,7 +113,7 @@ When you add comments to a merge request diff, these comments persist, even when
 To add a commit diff comment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**, and find your merge request.
+1. Select **Code** > **Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. Start a comment:
    - To comment on an entire file, find the file you want to comment on and,
@@ -132,7 +132,7 @@ To add a commit diff comment:
 
 The comment displays on the merge request's **Overview** tab.
 
-The comment is not displayed on your project's **Code > Commits** page.
+The comment is not displayed on your project's **Code** > **Commits** page.
 
 {{< alert type="note" >}}
 
@@ -189,8 +189,8 @@ Prerequisites:
 To lock an issue or merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. For merge requests, select **Code > Merge requests**, and find your merge request.
-1. For issues, select **Plan > Issues**, and find your issue.
+1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
+1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In the upper-right corner, select **Merge request actions** or **Issue actions**
    ({{< icon name="ellipsis_v" >}}), then select **Lock discussion**.
 
@@ -268,7 +268,7 @@ To change the activity sort order:
 1. Scroll down to the **Activity** heading.
 1. On the right side of the page, change the sort order:
    - **Issues and epics**: From the **Sort or filter** dropdown list, select **Newest first** or **Oldest first** (default).
-   - **Merge requests**: Use the sort direction arrow button to toggle between **Sort direction: Ascending** (oldest first, default) or **Sort direction: Descending (newest first)**.
+   - **Merge requests**: Use the sort direction arrow button to toggle between **Sort direction: Ascending** (oldest first, default) or **Sort direction: Descending** (newest first).
 
 ## View description change history
 
@@ -355,7 +355,7 @@ To resolve a thread:
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
 
-Additionally, in merge requests, you can [do more with threads](../project/merge_requests/_index.md#resolve-a-thread),
+Merge requests provide more flexible [thread management options](../project/merge_requests/_index.md#manage-comment-threads),
 such as:
 
 - Move open threads to a new issue.
@@ -368,12 +368,17 @@ such as:
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 

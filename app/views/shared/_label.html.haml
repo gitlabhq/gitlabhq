@@ -44,14 +44,6 @@
       - if can?(current_user, :admin_label, label)
         %li.gl-inline-block
           - can_promote = label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
-          .js-vue-label-actions{ data: {
-            label_id: label.id,
-            label_name: label.name,
-            label_color: label.color,
-            label_text_color: label.text_color,
-            subject_name: label.subject_name,
-            edit_path: label.edit_path,
-            destroy_path: label.destroy_path,
-            promote_path: can_promote ? promote_project_label_path(label.project, label) : '',
-            group_name: can_promote ? label.project.group.name : ''
-          } }
+          - label_data = { label_id: label.id, label_name: label.name, label_color: label.color, label_text_color: label.text_color, subject_name: label.subject_name, edit_path: label.edit_path, destroy_path: label.destroy_path, promote_path: can_promote ? promote_project_label_path(label.project, label) : '', group_name: can_promote ? label.project.group.name : '' }
+          - label_data[:archived] = label.archived.to_s if Feature.enabled?(:labels_archive, label.project)
+          .js-vue-label-actions{ data: label_data }

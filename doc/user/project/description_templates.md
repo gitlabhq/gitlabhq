@@ -58,7 +58,7 @@ Create a new description template as a Markdown (`.md`) file inside the `.gitlab
 To create a work item description template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Next to the default branch, select {{< icon name="plus" >}}.
 1. Select **New file**.
 1. Next to the default branch, in the **File name** text box, enter `.gitlab/issue_templates/mytemplate.md`,
@@ -82,7 +82,7 @@ For more information, see [creating merge requests](merge_requests/creating_merg
 To create a merge request description template for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Next to the default branch, select {{< icon name="plus" >}}.
 1. Select **New file**.
 1. Next to the default branch, in the **File name** text box, enter `.gitlab/merge_request_templates/mytemplate.md`,
@@ -181,7 +181,7 @@ Prerequisites:
 To re-use templates [you've created](description_templates.md#create-a-description-template):
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Templates**.
 1. From the dropdown list, select your template project as the template repository at group level.
 1. Select **Save changes**.
@@ -199,7 +199,7 @@ entered in the template.
 
 Prerequisites:
 
-- On your project's left sidebar, select **Settings > General** and expand **Visibility, project features, permissions**.
+- On your project's left sidebar, select **Settings** > **General** and expand **Visibility, project features, permissions**.
   Ensure issues or merge requests are set to either **Everyone with access** or **Only Project Members**.
 
 To set a default description template for merge requests, either:
@@ -211,7 +211,7 @@ To set a default description template for merge requests, either:
 - Users on GitLab Premium and Ultimate: set the default template in project settings:
 
   1. On the left sidebar, select **Search or go to** and find your project.
-  1. Select **Settings > Merge requests**.
+  1. Select **Settings** > **Merge requests**.
   1. In the **Default description template for merge requests** section, fill in the text area.
   1. Select **Save changes**.
 
@@ -224,7 +224,7 @@ To set a default description template for issues, either:
 - Users on GitLab Premium and Ultimate: set the default template in project settings:
 
   1. On the left sidebar, select **Search or go to** and find your project.
-  1. Select **Settings > General**.
+  1. Select **Settings** > **General**.
   1. Expand **Default description template for issues**.
   1. Fill in the text area.
   1. Select **Save changes**.

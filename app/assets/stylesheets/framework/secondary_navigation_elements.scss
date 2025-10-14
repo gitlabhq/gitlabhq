@@ -54,7 +54,7 @@
 .top-area {
   @apply gl-flex gl-border-b;
 
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg, panel) {
     flex-flow: column-reverse wrap;
   }
 
@@ -66,8 +66,7 @@
     line-height: 28px;
     white-space: normal;
 
-    /* Small devices (phones, 768px and lower) */
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       width: 100%;
     }
   }
@@ -85,8 +84,7 @@
       float: left;
     }
 
-    /* Small devices (phones, 768px and lower) */
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       width: 100%;
     }
   }
@@ -123,17 +121,17 @@
       position: relative;
     }
 
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       display: flex;
       align-items: center;
     }
 
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       flex: 0 0 100%;
       margin-top: $gl-padding-8;
     }
 
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       padding-bottom: 0;
       width: 100%;
 
@@ -194,7 +192,7 @@
     .nav-controls {
       width: auto;
 
-      @include media-breakpoint-down(xs) {
+      @include gl-container-width-down(sm, panel) {
         width: 100%;
       }
     }
@@ -328,17 +326,17 @@
   }
 
   &.activities {
-    display: flex;
     @apply gl-border-b;
+    display: flex;
     align-items: center;
+
+    @include gl-container-width-down(sm, panel) {
+      display: block;
+      overflow: visible;
+    }
 
     .nav-links {
       border-bottom: 0;
-    }
-
-    @include media-breakpoint-down(xs) {
-      display: block;
-      overflow: visible;
     }
   }
 }

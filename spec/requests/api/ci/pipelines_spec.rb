@@ -19,7 +19,8 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       sha: project.commit.id,
       ref: project.default_branch,
       user: user,
-      name: 'Build pipeline'
+      name: 'Build pipeline',
+      created_at: 1.day.ago
     )
   end
 
@@ -1022,12 +1023,37 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(response).to match_response_schema('public_api/v4/pipeline/detail')
       end
 
+      it 'has all the required keys in the response' do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
+
+        expect(json_response.keys).to contain_exactly(*%w[
+          id iid project_id sha ref status web_url created_at updated_at source name before_sha tag yaml_errors user
+          started_at finished_at committed_at duration queued_duration coverage detailed_status archived
+        ])
+      end
+
       it 'returns project pipeline', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['sha']).to match(/\A\h{40}\z/)
         expect(json_response['name']).to eq('Build pipeline')
+        expect(json_response['archived']).to be false
+      end
+
+      context 'with archived pipeline' do
+        before do
+          stub_application_setting(archive_builds_in_seconds: 3600)
+        end
+
+        it 'returns project archived pipeline', :aggregate_failures do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['sha']).to match(/\A\h{40}\z/)
+          expect(json_response['name']).to eq('Build pipeline')
+          expect(json_response['archived']).to be true
+        end
       end
 
       context 'with oauth token that has ai_workflows scope' do

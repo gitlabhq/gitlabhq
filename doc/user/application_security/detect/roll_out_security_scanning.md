@@ -157,7 +157,7 @@ Prerequisites:
 For each project in scope:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
+1. Select **Secure** > **Security configuration**.
 1. Expand **Security configuration**.
 1. Enable the appropriate application security testing based on your project's stack.
 
@@ -172,12 +172,12 @@ Introduce developers to the tools that provide visibility into security findings
 Developers can view security findings directly in pipeline results:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select the pipeline to review.
 1. In the pipeline details, select the **Security** tab to view detected vulnerabilities.
 
 For more details, see
-[View security scan results in pipelines](../vulnerability_report/pipeline.md).
+[View security scan results in pipelines](security_scanning_results.md).
 
 #### Merge request security widget
 
@@ -187,7 +187,7 @@ The security widget provides visibility into vulnerabilities detected in merge r
 1. Review the security widget to see detected vulnerabilities.
 1. Select **Expand** to see detailed findings.
 
-For more details, see [View security scan results in merge requests](security_scan_results.md).
+For more details, see [View security scan results in merge requests](security_scanning_results.md).
 
 #### VS Code integration with GitLab Workflow extension
 
@@ -256,7 +256,7 @@ review from a member of the application security team, providing an extra level 
 Configure approval policies to require security reviews:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Policies**.
+1. Select **Secure** > **Policies**.
 1. Select **New policy**
 1. In the **Merge request approval policy** pane, select **Select policy**.
 1. Add a merge request approval policy requiring approval from security team members.
@@ -343,7 +343,7 @@ Prerequisites:
   the groups in which application security testing is to be enabled.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Secure > Policies**.
+1. Select **Secure** > **Policies**.
 1. Create scan execution policies based on the application security testing configuration used
    during the pilot phase.
 

@@ -15,6 +15,7 @@ module Packages
     DETAILED_INFO_STATUSES = [:default, :deprecated].freeze
     STATUS_MESSAGE_MAX_LENGTH = 255
 
+    attribute :package_type, :integer, limit: 2
     enum :package_type, {
       maven: 1,
       npm: 2,
@@ -29,7 +30,8 @@ module Packages
       helm: 11,
       terraform_module: 12,
       rpm: 13,
-      ml_model: 14
+      ml_model: 14,
+      cargo: 15
     }
 
     enum :status, { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4, deprecated: 5 }
@@ -76,7 +78,6 @@ module Packages
     scope :with_version, ->(version) { where(version: version) }
     scope :with_version_like, ->(version) { where(arel_table[:version].matches(version)) }
     scope :without_version_like, ->(version) { where.not(arel_table[:version].matches(version)) }
-    scope :with_package_type, ->(package_type) { where(package_type: package_type) }
     scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
     scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
     scope :including_project_route, -> { includes(project: :route) }
@@ -92,6 +93,7 @@ module Packages
     end
 
     scope :preload_tags, -> { preload(:tags) }
+    scope :preload_project, -> { preload(:project) }
     scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
     scope :select_distinct_name, -> { select(:name).distinct }
 
@@ -145,7 +147,8 @@ module Packages
         terraform_module: 'Packages::TerraformModule::Package',
         nuget: 'Packages::Nuget::Package',
         npm: 'Packages::Npm::Package',
-        maven: 'Packages::Maven::Package'
+        maven: 'Packages::Maven::Package',
+        cargo: 'Packages::Cargo::Package'
       }.freeze
     end
 

@@ -15,7 +15,7 @@ However, it is advantageous to understand Git when you use GitLab for source con
 
 Learning Git is part of a larger workflow:
 
-![Workflow](img/get_started_git_v16_11.png)
+![Use Git in the Create stage of the GitLab DevOps lifecycle.](img/get_started_git_v16_11.png)
 
 ## Repositories
 

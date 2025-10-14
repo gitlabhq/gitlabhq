@@ -74,7 +74,7 @@ To enable API security testing, you must alter your GitLab CI/CD configuration Y
 To view the output of a security scan:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipelines**.
+1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select a vulnerability to view its details, including:
@@ -92,7 +92,7 @@ You can also download the security scan results:
 
 - In the pipeline's **Security** tab, select **Download results**.
 
-For more details, see the [pipeline security report](../vulnerability_report/pipeline.md).
+For more details, see the [pipeline security report](../detect/security_scanning_results.md).
 
 {{< alert type="note" >}}
 

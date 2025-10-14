@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'deployable'
+require Rails.root.join('spec/support/helpers/ci/job_factory_helpers')
 
 FactoryBot.define do
   factory :ci_build, class: 'Ci::Build', parent: :ci_processable do
@@ -47,11 +48,11 @@ FactoryBot.define do
       if evaluator.id_tokens
         # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
         # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
-        build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
-        next unless build.job_definition
+        if Feature.disabled?(:stop_writing_builds_metadata, build.project)
+          build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
+        end
 
-        updated_config = build.job_definition.config.merge(id_tokens: evaluator.id_tokens)
-        build.job_definition.write_attribute(:config, updated_config)
+        Ci::JobFactoryHelpers.mutate_temp_job_definition(build, id_tokens: evaluator.id_tokens)
       end
     end
 
@@ -62,6 +63,30 @@ FactoryBot.define do
 
       after(:build) do |build, evaluator|
         build.ensure_token if evaluator.generate_token
+      end
+    end
+
+    trait :waiting_for_runner_ack do
+      pending
+
+      transient do
+        ack_runner_manager { nil }
+      end
+
+      after(:create) do |build, evaluator|
+        # Use provided runner_manager or create one
+        runner_manager =
+          evaluator.ack_runner_manager || begin
+            # Ensure build has a runner
+            runner = build.runner || create(:ci_runner, :with_runner_manager)
+            build.update!(runner: runner) unless build.runner
+
+            # Create a runner_manager for the runner, if needed
+            runner.runner_managers.first || create(:ci_runner_machine, runner: runner)
+          end
+
+        # Set waiting for runner ack
+        build.set_waiting_for_runner_ack(runner_manager.id)
       end
     end
 
@@ -558,7 +583,6 @@ FactoryBot.define do
     trait :release_options do
       options do
         {
-          only: 'tags',
           script: ['make changelog | tee release_changelog.txt'],
           release: {
             name: 'Release $CI_COMMIT_SHA',

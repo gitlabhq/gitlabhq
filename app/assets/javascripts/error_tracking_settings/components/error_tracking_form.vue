@@ -22,7 +22,7 @@ export default {
     <div class="form-group">
       <label class="label-bold" for="error-tracking-api-host">{{ __('Sentry API URL') }}</label>
       <div class="row">
-        <div class="col-8 col-md-9 gl-pr-0">
+        <div class="gl-col-8 gl-col-md-9 gl-pr-0">
           <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->
           <gl-form-input
             id="error-tracking-api-host"
@@ -47,7 +47,7 @@ export default {
         {{ s__('ErrorTracking|Auth Token') }}
       </label>
       <div class="row">
-        <div class="col-8 col-md-9 gl-pr-0">
+        <div class="gl-col-8 gl-col-md-9 gl-pr-0">
           <gl-form-input
             id="error-tracking-token"
             :value="token"
@@ -56,7 +56,7 @@ export default {
             @input="updateToken"
           />
         </div>
-        <div class="col-4 col-md-3 gl-pl-0">
+        <div class="gl-col-4 gl-col-md-3 gl-pl-0">
           <gl-button
             class="js-error-tracking-connect gl-ml-2 gl-inline-flex"
             category="secondary"
@@ -69,7 +69,7 @@ export default {
 
           <gl-icon
             v-show="connectSuccessful"
-            class="js-error-tracking-connect-success align-middle gl-ml-2 gl-text-success"
+            class="js-error-tracking-connect-success gl-ml-2 !gl-align-middle gl-text-success"
             :aria-label="__('Projects Successfully Retrieved')"
             name="check"
           />

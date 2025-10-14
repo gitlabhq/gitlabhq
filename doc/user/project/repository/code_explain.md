@@ -10,12 +10,17 @@ title: Explain code in a file
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -42,7 +47,7 @@ To explain the code in a file:
 1. On the left side, select the question mark ({{< icon name="question" >}}).
    You might have to scroll to the first line of your selection to view it.
 
-   ![explain code in a file](img/explain_code_v17_1.png)
+   ![File view showing selected lines and the question mark icon which you can use to explain the code.](img/explain_code_v17_1.png)
 
 Duo Chat explains the code. It might take a moment for the explanation to be generated.
 

@@ -112,7 +112,7 @@ func (w *coupledWriter) Write(data []byte) (int, error) {
 		return 0, w.writeError
 	}
 
-	if w.busyReader.IsBusy() {
+	if w.IsBusy() {
 		n, err := w.tempfileWrite(data)
 		if err != nil {
 			w.writeError = fmt.Errorf("coupledWriter: %w", err)

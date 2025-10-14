@@ -192,10 +192,10 @@ following to `gitlab.rb` on each node:
 
 {{< alert type="note" >}}
 
-Do not store the GitLab application database and the Praefect
-database on the same PostgreSQL server if using [Geo](../../geo/_index.md).
-The replication state is internal to each instance of GitLab and should
-not be replicated.
+Praefect manages the Gitaly repository replication state using a database that is separate from the GitLab application database. When using [Geo](../../geo/_index.md) and Gitaly Cluster (Praefect), Praefect replication state is unique to each site. Each Geo site must have a separate, read-write PostgreSQL database instance to house the Praefect database.
+
+- Do not store the GitLab application database and the Praefect database on the same PostgreSQL server.
+- Do not configure the Praefect Postgres database on the Geo primary site to replicate to the Geo secondary sites.
 
 {{< /alert >}}
 
@@ -1486,7 +1486,7 @@ Particular attention should be shown to:
 1. Check that the Praefect storage is configured to store new repositories:
 
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Settings > Repository**.
+   1. On the left sidebar, select **Settings** > **Repository**.
    1. Expand the **Repository storage** section.
 
    Following this guide, the `default` storage should have weight 100 to store all new repositories.
@@ -1571,6 +1571,9 @@ specific storage nodes to host a repository.
 
 Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
 
+Do not reduce the replication factor of object pools. This can cause linked repositories to break.
+Object pools have relative paths that begin with `@pools/`.
+
 {{< /alert >}}
 
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
@@ -1583,6 +1586,13 @@ You can configure either:
 - A replication factor for an existing repository with the `set-replication-factor` subcommand.
 
 ### Configure default replication factor
+
+{{< alert type="warning" >}}
+
+Reducing the default replication when there are object pools can cause some linked repositories to break.
+Object pools have relative paths that begin with `@pools/`.
+
+{{< /alert >}}
 
 If `default_replication_factor` is unset, the repositories are always replicated on every storage node defined in
 `virtual_storages`. If a new storage node is introduced to the virtual storage, both new and existing repositories are

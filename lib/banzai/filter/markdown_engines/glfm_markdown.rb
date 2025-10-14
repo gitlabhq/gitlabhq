@@ -9,6 +9,10 @@ module Banzai
   module Filter
     module MarkdownEngines
       class GlfmMarkdown < Base
+        # Table of characters that need this special handling. It consists of
+        # the GitLab special reference characters.
+        REFERENCE_CHARS = %w[$ % # & @ ! ~ ^ :].freeze
+
         OPTIONS = {
           alerts: true,
           autolink: true,
@@ -22,6 +26,7 @@ module Banzai
           math_code: true,
           math_dollars: true,
           multiline_block_quotes: true,
+          only_escape_chars: REFERENCE_CHARS,
           placeholder_detection: true,
           relaxed_autolinks: true,
           sourcepos: true,

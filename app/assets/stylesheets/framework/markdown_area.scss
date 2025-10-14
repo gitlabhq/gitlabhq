@@ -34,7 +34,7 @@
     &.active {
       visibility: visible;
 
-      @include media-breakpoint-down(xs) {
+      @include gl-container-width-down(sm, panel) {
         flex: none;
         display: flex;
         justify-content: center;
@@ -128,7 +128,7 @@
   display: block;
 }
 
-@include media-breakpoint-down(xs) {
+@include gl-container-width-down(sm, panel) {
   .referenced-users {
     margin-right: 0;
   }

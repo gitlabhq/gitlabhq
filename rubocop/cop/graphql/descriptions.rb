@@ -149,7 +149,7 @@ module RuboCop
         # Returns a `Parser::Source::Range` of the first `this` encountered
         def locate_this(string)
           target = 'this'
-          range = string.heredoc? ? string.location.heredoc_body : string.location.expression
+          range = string.heredoc? ? string.location.heredoc_body : string.source_range
           index = range.source.index(target)
           range.adjust(begin_pos: index, end_pos: (index + target.length) - range.length)
         end

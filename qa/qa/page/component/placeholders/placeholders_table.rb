@@ -15,9 +15,12 @@ module QA
               include ConfirmModal
             end
 
+            base.view 'app/assets/javascripts/members/placeholders/components/placeholder_reassigned_actions.vue' do
+              element 'placeholder-reassigned'
+            end
+
             base.view 'app/assets/javascripts/members/placeholders/components/placeholders_table.vue' do
               element 'placeholder-status'
-              element 'placeholder-reassigned'
             end
           end
 

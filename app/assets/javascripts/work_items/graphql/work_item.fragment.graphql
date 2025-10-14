@@ -15,6 +15,7 @@ fragment WorkItem on WorkItem {
   confidential
   createdAt
   closedAt
+  userDiscussionsCount
   webUrl
   reference(full: true)
   createNoteEmail

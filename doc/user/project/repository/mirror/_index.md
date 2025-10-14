@@ -50,7 +50,7 @@ Prerequisites:
   or you must have a local copy of the key.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Add new**.
 1. Enter a **Git repository URL**. The repository must be accessible over `http://`, `https://`, `ssh://`, or `git://`.
@@ -83,7 +83,7 @@ For more information, see [Get your SSH public key](#get-your-ssh-public-key).
 To mirror a repository with SSH authentication:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Add new**.
 1. Enter a **Git repository URL**. Provide a URL in the format `ssh://gitlab.com/gitlab-org/gitlab.git`.
@@ -162,7 +162,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
 1. Select **Update now** ({{< icon name="retry" >}}).
@@ -177,7 +177,7 @@ GitLab supports these authentication methods:
 
 For a [project access token](../../settings/project_access_tokens.md) or
 [group access token](../../../group/settings/group_access_tokens.md),
-use the username (not token name) and the token as the password.
+use a non-blank value as a username and the token as the password.
 
 ### SSH authentication
 
@@ -203,7 +203,7 @@ authentication method, GitLab generates a public key for you. The non-GitLab ser
 needs this key to establish trust with your GitLab repository. To copy your SSH public key:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories**.
 1. Identify the correct repository, and select **Copy SSH public key** ({{< icon name="copy-to-clipboard" >}}).

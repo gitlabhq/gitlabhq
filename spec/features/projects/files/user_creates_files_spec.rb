@@ -30,7 +30,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
 
       it 'opens new file page' do
         find('.add-to-tree').click
-        click_link('New file')
+        click_button('New file')
 
         expect(page).to have_content('New file')
         expect(page).to have_button('Commit changes')
@@ -67,7 +67,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         visit(project_tree_path_root_ref)
 
         find('.add-to-tree').click
-        click_link('New file')
+        click_button('New file')
         expect(page).to have_selector('.file-editor')
       end
 

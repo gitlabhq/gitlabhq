@@ -67,10 +67,6 @@ module Ci
       where('NOT EXISTS (?)', needs)
     end
 
-    scope :with_metadata_interruptible_true, -> do
-      joins(:metadata).merge(Ci::BuildMetadata.with_interruptible)
-    end
-
     scope :with_interruptible_true, -> do
       where_exists(
         Ci::JobDefinitionInstance
@@ -150,6 +146,18 @@ module Ci
         processable.run_after_commit do
           processable.pipeline.cancel_async_on_job_failure
         end
+      end
+    end
+
+    def self.fabricate(attrs)
+      new(attrs).tap do |build|
+        job_definition = ::Ci::JobDefinition.fabricate(
+          config: attrs,
+          project_id: build.project_id,
+          partition_id: build.partition_id
+        )
+
+        build.temp_job_definition = job_definition
       end
     end
 

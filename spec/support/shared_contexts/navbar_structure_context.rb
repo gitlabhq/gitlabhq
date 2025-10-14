@@ -33,17 +33,6 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
 
-      if Gitlab.ee?
-        {
-          nav_item: _('Automate'),
-          nav_sub_items: [
-            _('Agent sessions'),
-            s_('AICatalog|Agents'),
-            s_('AICatalog|Flows')
-          ]
-        }
-      end,
-
       {
         nav_item: _('Code'),
         nav_sub_items: [
@@ -137,13 +126,6 @@ RSpec.shared_context 'project navbar structure' do
 end
 
 RSpec.shared_context 'group navbar structure' do
-  let(:analyze_nav_item) do
-    {
-      nav_item: _("Analyze"),
-      nav_sub_items: group_analytics_sub_nav_item
-    }
-  end
-
   let(:settings_nav_item) do
     {
       nav_item: _('Settings'),
@@ -173,6 +155,13 @@ RSpec.shared_context 'group navbar structure' do
     {
       nav_item: _("Secure"),
       nav_sub_items: [_("Audit events")]
+    }
+  end
+
+  let(:analyze_nav_item) do
+    {
+      nav_item: _("Analyze"),
+      nav_sub_items: [_("Data explorer")]
     }
   end
 
@@ -220,6 +209,7 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _("Operate"),
         nav_sub_items: [_("Kubernetes")]
       },
+      (analyze_nav_item if Gitlab.ee?),
       observability_nav_item
     ]
   end
@@ -242,10 +232,7 @@ RSpec.shared_context 'dashboard navbar structure' do
       },
       {
         nav_item: _("Merge requests"),
-        nav_sub_items: [
-          _('Assigned'),
-          _('Review requests')
-        ]
+        nav_sub_items: []
       },
       {
         nav_item: _("To-Do List"),

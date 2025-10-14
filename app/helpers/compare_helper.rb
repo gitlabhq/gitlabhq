@@ -56,7 +56,8 @@ module CompareHelper
       # The `from` and `to` params are inverted in the compare page. The route is `/compare/:from...:to`, but the UI
       # correctly shows `:to` as the "Source" (i.e. the `from` for MR), and `:from` as "Target" (i.e. the `to` for MR).
       data[:create_mr_path] =
-        if create_mr_button?(from: params[:to], to: params[:from], source_project: project, target_project: @target_project)
+        if create_mr_button?(from: params[:to], to: params[:from], source_project: project,
+          target_project: @target_project)
           create_mr_path(from: params[:to], to: params[:from], source_project: project, target_project: @target_project)
         else
           ''

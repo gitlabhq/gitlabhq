@@ -20,8 +20,8 @@ module Gitlab
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
       gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
-
-      add_browsersdk_tracking
+      gon.allow_immediate_namespaces_deletion =
+        Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
 
       # Sentry configurations for the browser client are done
       # via `Gitlab::CurrentSettings` from the Admin panel:
@@ -44,6 +44,7 @@ module Gitlab
       gon.secure                 = Gitlab.config.gitlab.https
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
+      gon.illustrations_path     = IconsHelper.illustrations_path
       gon.emoji_sprites_css_path = universal_path_to_stylesheet('emoji_sprites')
       gon.emoji_backend_version  = Gitlab::Emoji::EMOJI_VERSION
       gon.gridstack_css_path     = universal_path_to_stylesheet('lazy_bundles/gridstack')
@@ -97,16 +98,15 @@ module Gitlab
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_item_view_for_issues)
-      push_frontend_feature_flag(:merge_request_dashboard, current_user, type: :beta)
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
       push_frontend_feature_flag(:whats_new_featured_carousel)
-      push_frontend_feature_flag(:extensible_reference_filters, current_user)
       push_frontend_feature_flag(:paneled_view, current_user)
-      push_frontend_feature_flag(:disallow_immediate_deletion, current_user)
+      push_frontend_feature_flag(:image_lightboxes, current_user)
+      push_frontend_feature_flag(:archive_group)
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)
@@ -164,15 +164,6 @@ module Gitlab
       # may be an absolute URL.
       URI.join(Gitlab.config.gitlab.url,
         ActionController::Base.helpers.image_path('no_avatar.png')).to_s
-    end
-
-    def add_browsersdk_tracking
-      return unless Gitlab.com?
-
-      return if ENV['GITLAB_ANALYTICS_URL'].blank? || ENV['GITLAB_ANALYTICS_ID'].blank?
-
-      gon.analytics_url = ENV['GITLAB_ANALYTICS_URL']
-      gon.analytics_id = ENV['GITLAB_ANALYTICS_ID']
     end
 
     # `::Current.organization` is only valid within the context of a request,

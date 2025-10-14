@@ -32,7 +32,6 @@ Database/AvoidScopeTo:
     - 'lib/gitlab/background_migration/create_missing_nuget_symbol_files.rb'
     - 'lib/gitlab/background_migration/create_missing_terraform_module_metadata.rb'
     - 'lib/gitlab/background_migration/delete_duplicate_issuable_resource_links.rb'
-    - 'lib/gitlab/background_migration/delete_orphaned_groups.rb'
     - 'lib/gitlab/background_migration/delete_orphaned_packages_dependencies.rb'
     - 'lib/gitlab/background_migration/delete_orphaned_project_namespaces.rb'
     - 'lib/gitlab/background_migration/delete_orphans_approval_merge_request_rules2.rb'

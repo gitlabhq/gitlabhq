@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Fix CI/CD pipeline
+title: Fix CI/CD Pipeline Flow
 ---
 
 {{< details >}}
@@ -16,8 +16,8 @@ title: Fix CI/CD pipeline
 
 {{< history >}}
 
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
-- The `duo_workflow` flag must also be enabled, but it is enabled by default.
+- Introduced as [an experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with flags](../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci` and `ai_duo_agent_fix_pipeline_button`. `duo_workflow_in_ci` is enabled by default. `ai_duo_agent_fix_pipeline_button` is disabled by default. These flags can be enabled or disabled for the instance or project.
+- Enabled on GitLab.com and GitLab Self-Managed in 18.5.
 
 {{< /history >}}
 
@@ -28,7 +28,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The **Fix CI/CD pipeline** flow helps you automatically diagnose and fix issues in your GitLab CI/CD pipeline. This flow:
+The Fix CI/CD Pipeline Flow helps you automatically diagnose and fix issues in your GitLab CI/CD pipeline. This flow:
 
 - Analyzes pipeline failure logs and error messages.
 - Identifies configuration issues and syntax errors.
@@ -45,12 +45,11 @@ This flow is available in the GitLab UI only.
 
 ## Prerequisites
 
-To use this flow, you must have:
+To use this flow, you must:
 
-- An existing failed pipeline.
-- At least the Developer role in the project.
-- GitLab Duo [turned on and flows allowed to execute](../../gitlab_duo/turn_on_off.md).
-- Feature flags [`duo_workflow` and `duo_workflow_in_ci` enabled](../../../administration/feature_flags/_index.md).
+- Have an existing failed pipeline.
+- Have at least the Developer role in the project.
+- Meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
 
 ## Use the flow
 
@@ -59,7 +58,7 @@ To fix your CI/CD pipeline:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and open your merge request.
 1. Select the **Pipelines** tab.
-1. Under the **Actions** column, for the failed pipeline you want to fix, select **Fix pipeline with Duo**.
+1. In the rightmost column, for the failed pipeline you want to fix, select **Fix pipeline with Duo**.
 1. To monitor progress, select **Automate** > **Agent sessions**.
 
    After the session is complete, go back to your merge request.
@@ -67,7 +66,7 @@ To fix your CI/CD pipeline:
 
 ## What the flow analyzes
 
-The Fix CI/CD pipeline flow examines:
+The Fix CI/CD Pipeline Flow examines:
 
 - **Pipeline logs**: Error messages, failed job outputs, and exit codes.
 - **Merge request changes**: Changes that could have caused the failure.

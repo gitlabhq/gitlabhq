@@ -1,0 +1,11 @@
+fragment GroupPackagesSettings on Group {
+  id
+  dependencyProxySetting {
+    enabled
+    identity
+  }
+  dependencyProxyImageTtlPolicy {
+    ttl
+    enabled
+  }
+}

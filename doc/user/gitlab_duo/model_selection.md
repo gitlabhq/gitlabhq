@@ -10,7 +10,7 @@ title: GitLab Duo model selection
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com
 
 {{< /details >}}
 
@@ -37,6 +37,7 @@ If you select a specific LLM for a feature, the feature uses that LLM until you 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17570) for top-level groups in GitLab 18.1 with a [flag](../../administration/feature_flags/_index.md) named `ai_model_switching`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) to beta in GitLab 18.4.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.4.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/568112) model selection for GitLab Duo Agent Platform in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) called `duo_agent_platform_model_selection`. Disabled by default.
 
 {{< /history >}}
 
@@ -47,7 +48,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-On GitLab.com, you can select a model for top-level groups.
+On GitLab.com, you can select a model for a feature in a top-level group. The model that you select
+applies to that feature for all child groups and projects.
 
 Prerequisites:
 
@@ -67,6 +69,17 @@ To select a different LLM for a feature:
 1. For the feature you want to configure, select an LLM from the dropdown list.
 
 ![The GitLab UI for selecting a model at the top-group level.](img/configure_model_selections_v18_1.png)
+
+{{< alert type="note" >}}
+
+- Model selection for GitLab Duo Agentic Chat is independent from GitLab Duo Chat (Classic). You must configure each feature separately — changes to one won't affect the other.
+
+- In the IDE, model selection for Agentic Chat is applied only when the "Connection type" is set to websockets. The default connection type is gRPC.
+
+- The OpenAI models used in Agentic Duo Chat have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
+  Please leave your feedback about using OpenAI models in Agentic Duo Chat in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
+
+{{< /alert >}}
 
 #### Assign a default GitLab Duo namespace
 
@@ -101,41 +114,6 @@ To select a default namespace:
 1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.
 1. Select **Save changes**.
 
-### On GitLab Self-Managed
-
-{{< details >}}
-
-- Add-on: GitLab Duo Enterprise
-- Status: Beta
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19144) in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) named `instance_level_model_selection`. Set to beta and disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-On GitLab Self-Managed, you can select a model for a feature that applies to the entire instance. If you don't select a specific model, all GitLab Duo features inherit the default GitLab model.
-
-Prerequisites:
-
-- You must be an administrator.
-
-To select a model for a feature:
-
-1. In the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo**.
-1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
-1. For the feature you want to configure, select an LLM from the dropdown list.
-
 ## Troubleshooting
 
 When selecting models other than the default, you might encounter the following issues.
@@ -154,10 +132,6 @@ If you are assigned a seat in a project that has a specific LLM selected for [co
 - Code completion requests go through the GitLab monolith, which then selects the specified model to respond to these requests.
 
 This might cause increased latency with code completion requests.
-
-### Agentic Chat compatibility
-
-[Agentic Chat](../gitlab_duo_chat/agentic_chat.md) continues to use the default model regardless of the model you select for [Classic Duo Chat](../gitlab_duo_chat/_index.md) or its sub-features.
 
 ### No default GitLab Duo namespace
 

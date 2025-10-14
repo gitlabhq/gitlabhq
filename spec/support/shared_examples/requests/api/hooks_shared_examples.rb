@@ -671,10 +671,16 @@ RSpec.shared_examples 'test web-hook endpoint' do
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :web_hook_test do
+      let_it_be(:user2) { create(:user) }
+
       let(:current_user) { user }
 
       def request
         post api("#{hook_uri}/test/push_events", user), params: {}
+      end
+
+      def request_with_second_scope
+        post api("#{hook_uri}/test/push_events", user2), params: {}
       end
 
       context 'when ops flag is disabled' do
@@ -906,6 +912,10 @@ RSpec.shared_examples 'resend web-hook event endpoint' do
 
     def request
       post api("#{hook_uri}/events/#{log.id}/resend", current_user, admin_mode: current_user.admin?), params: {}
+    end
+
+    def request_with_second_scope
+      post api("#{hook_uri}/events/#{log.id}/resend", user2, admin_mode: user2.admin?), params: {}
     end
 
     context 'when ops flag is disabled' do

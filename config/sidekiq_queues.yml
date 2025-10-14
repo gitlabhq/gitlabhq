@@ -37,6 +37,10 @@
   - 1
 - - ai_active_context_code_saas_initial_indexing_event
   - 1
+- - ai_duo_workflows_code_review_timeout
+  - 1
+- - ai_duo_workflows_update_workflow_status_event
+  - 1
 - - ai_knowledge_graph_indexing_task
   - 1
 - - ai_repository_xray_scan_dependencies
@@ -120,6 +124,8 @@
 - - authz_user_group_member_roles_update_for_group
   - 1
 - - authz_user_group_member_roles_update_for_shared_group
+  - 1
+- - authz_user_project_member_roles_destroy_for_shared_project
   - 1
 - - auto_devops
   - 2
@@ -229,6 +235,8 @@
   - 1
 - - ci_parse_secure_file_metadata
   - 1
+- - ci_retry_stuck_waiting_job
+  - 1
 - - ci_runners_export_usage_csv
   - 1
 - - ci_runners_process_runner_version_update
@@ -246,6 +254,8 @@
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
 - - ci_user_cancel_pipeline
+  - 1
+- - ci_workloads_update_workload_status_event
   - 1
 - - click_house_buffer_sync
   - 1
@@ -481,8 +491,6 @@
   - 1
 - - gitlab_subscriptions_refresh_seats
   - 1
-- - gitlab_subscriptions_seat_assignments_group_links_create_or_update_seats
-  - 1
 - - gitlab_subscriptions_seat_assignments_member_transfers_create_group_seats
   - 1
 - - gitlab_subscriptions_seat_assignments_member_transfers_create_project_seats
@@ -659,6 +667,10 @@
   - 1
 - - merge_requests_process_merge_audit_event
   - 1
+- - merge_requests_refresh_approval
+  - 1
+- - merge_requests_refresh_pipeline
+  - 1
 - - merge_requests_refresh_web_hooks
   - 1
 - - merge_requests_remove_user_approval_rules
@@ -705,6 +717,8 @@
   - 1
 - - object_storage
   - 1
+- - observability_create_group_o11y_setting
+  - 2
 - - onboarding_add_on_seat_assignment_iterable_trigger
   - 1
 - - onboarding_create_iterable_trigger
@@ -923,6 +937,8 @@
   - 1
 - - search_zoekt_update_index_used_storage_bytes_event
   - 1
+- - secrets_management_deprovision_project_secrets_manager
+  - 1
 - - secrets_management_provision_project_secrets_manager
   - 1
 - - security_analyzer_namespace_statuses_adjustment
@@ -941,9 +957,19 @@
   - 1
 - - security_analyzers_status_setting_changed_update
   - 1
+- - security_attributes_cleanup_batch
+  - 1
+- - security_attributes_cleanup_project_to_security_attribute
+  - 1
+- - security_attributes_cleanup_schedule
+  - 1
 - - security_collect_policies_limit_audit_events
   - 1
 - - security_configuration_set_group_secret_push_protection
+  - 1
+- - security_configuration_set_group_validity_checks
+  - 1
+- - security_create_default_tracked_context
   - 1
 - - security_create_security_policy_project
   - 1
@@ -970,6 +996,8 @@
 - - security_pipeline_analyzers_status_update
   - 1
 - - security_pipeline_execution_policies_run_schedule
+  - 1
+- - security_policies_dismissal_preserve
   - 1
 - - security_policies_failed_pipelines_audit
   - 1
@@ -1000,6 +1028,8 @@
 - - security_scan_result_policies_delete_scan_result_policy_reads
   - 1
 - - security_scan_result_policies_fallback_behavior_tracking
+  - 1
+- - security_scan_result_policies_process_pipeline_completion
   - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
@@ -1123,6 +1153,8 @@
   - 1
 - - vulnerabilities_statistics_adjustment
   - 1
+- - vulnerabilities_trigger_false_positive_detection_workflow
+  - 1
 - - vulnerabilities_update_archived_attribute_of_vulnerability_reads
   - 1
 - - vulnerabilities_update_namespace_ids_of_vulnerability_reads
@@ -1136,8 +1168,6 @@
 - - vulnerability_external_issue_links_update_vulnerability_read
   - 1
 - - web_hook
-  - 1
-- - web_hooks_log_destroy
   - 1
 - - web_hooks_log_execution
   - 1

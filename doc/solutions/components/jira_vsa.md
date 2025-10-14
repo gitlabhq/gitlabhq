@@ -20,7 +20,7 @@ GitLab [Value Stream Analytics (VSA)](../../user/group/value_stream_analytics/_i
 
 For teams using Jira for issue tracking while leveraging GitLab for development, this integration enables automatic replication of Jira issues to GitLab in real-time. This ensures accurate VSA metrics without requiring teams to change their existing Jira workflows.
 
-The integration also populates the GitLab **Value Streams Dashboard** (Ultimate only), which provides an overview of key DevSecOps metrics and can be found under **Analyze > Analytics dashboards** in your GitLab project or group.
+The integration also populates the GitLab **Value Streams Dashboard** (Ultimate only), which provides an overview of key DevSecOps metrics and can be found under **Analyze** > **Analytics dashboards** in your GitLab project or group.
 
 **NOTE**: A similar integration exists for incident replication to generate specific DORA metrics (Change Failure Rate and Time to Restore Service). If you're interested in incident replication, refer to the [Jira Incident Replicator](jira_dora.md).
 
@@ -64,7 +64,7 @@ Each issue creation counts as 1 run, and each issue resolution counts as 1 run.
 
 First, we need to create a GitLab project access token with the necessary permissions to create and update issues via the API.
 
-1. Navigate to your GitLab project where you want Jira issues to be replicated. From the sidebar, go to **Settings > Access Tokens**.
+1. Navigate to your GitLab project where you want Jira issues to be replicated. From the sidebar, go to **Settings** > **Access Tokens**.
 1. Click **Add new token**.
 1. Set the following configuration:
    - **Token name**: `Jira VSA Integration` (or any descriptive name)
@@ -80,7 +80,7 @@ First, we need to create a GitLab project access token with the necessary permis
 
 To automatically create GitLab issues when Jira issues are created, we'll use [Jira automation](https://community.atlassian.com/t5/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828).
 
-1. Navigate to your Jira project. From the sidebar, head to **Project settings > Automation**.
+1. Navigate to your Jira project. From the sidebar, head to **Project settings** > **Automation**.
 1. Click **Create rule** at the top-right.
 1. For your trigger, search for and select **Issue created**. Click **Save**.
 1. *Optional*: Add conditions to filter which issues should be replicated. For example, you might want to add an **Issue fields condition** to only replicate issues of certain types or with specific labels.
@@ -143,7 +143,7 @@ Once your automation workflows are active, GitLab will begin receiving issue dat
 
 The **Value Streams Dashboard** is automatically populated with metrics from your replicated issues and is available with GitLab Ultimate:
 
-1. In your GitLab project or group, navigate to **Analyze > Analytics dashboards**
+1. In your GitLab project or group, navigate to **Analyze** > **Analytics dashboards**
 1. Click on **Value Streams Dashboard**
 1. You'll see metrics including Issues created, Issues closed, Lead time, and Cycle time
 
@@ -151,7 +151,7 @@ The **Value Streams Dashboard** is automatically populated with metrics from you
 
 For more detailed analytics and custom value streams (available with GitLab Premium and Ultimate):
 
-1. Navigate to **Analyze > Value stream analytics** in your GitLab project or group
+1. Navigate to **Analyze** > **Value stream analytics** in your GitLab project or group
 1. Click **New value stream** to create a custom value stream
 1. Configure stages and workflows according to your development process
 1. Metrics like lead time and new issues count will be automatically generated and displayed next to the stages you create

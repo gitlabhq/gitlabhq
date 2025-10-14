@@ -57,7 +57,6 @@ $item-remove-button-space: 42px;
 
   .item-title {
     flex-basis: 100%;
-    font-size: $gl-font-size-small;
 
     .sortable-link {
       color: $gray-900;
@@ -156,13 +155,13 @@ $item-remove-button-space: 42px;
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include gl-container-width-down(sm, panel) {
   .btn-sm.dropdown-toggle-split {
     max-width: 40px;
   }
 }
 
-@include media-breakpoint-up(sm) {
+@include gl-container-width-up(sm, panel) {
   .sortable-link {
     max-width: 90%;
   }
@@ -170,7 +169,7 @@ $item-remove-button-space: 42px;
 }
 
 /* Small devices (landscape phones, 768px and up) */
-@include media-breakpoint-up(md) {
+@include gl-container-width-up(md, panel) {
   .related-items-tree .item-contents,
   .item-body .item-title {
     max-width: 100%;
@@ -192,20 +191,14 @@ $item-remove-button-space: 42px;
 }
 
 /* Medium devices (desktops, 992px and up) */
-@include media-breakpoint-up(lg) {
-  .item-body {
-    .item-title {
-      font-size: $gl-font-size;
-    }
-
-    .item-meta .item-path-id {
-      font-size: inherit; // Base size given to `item-meta` is `$gl-font-size-small`
-    }
+@include gl-container-width-up(lg, panel) {
+  .item-body .item-meta .item-path-id {
+    font-size: inherit; // Base size given to `item-meta` is `$gl-font-size-small`
   }
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@include media-breakpoint-up(xl) {
+@include gl-container-width-up(xl, panel) {
   .item-body {
     .item-title {
       width: auto;

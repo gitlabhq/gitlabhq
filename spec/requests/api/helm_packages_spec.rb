@@ -15,6 +15,7 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
   let_it_be(:package2_file1) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', description: 'hello from stable channel') }
   let_it_be(:package2_file2) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', channel: 'test', description: 'hello from test channel') }
   let_it_be(:other_package) { create(:npm_package, project: project) }
+  let(:expect_metadatum) { package2_file1.helm_file_metadatum }
 
   let(:snowplow_gitlab_standard_context) { snowplow_context }
 
@@ -34,10 +35,16 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project_id}/packages/helm/#{channel}/index.yaml" }
 
     it 'enqueue a worker to sync a helm metadata cache' do
-      expect(Packages::Helm::CreateMetadataCacheWorker)
-        .to receive(:perform_async).with(project_id, channel)
+      allow(Packages::Helm::CreateMetadataCacheWorker).to receive(:bulk_perform_async_with_contexts)
 
       api_request
+      expect(Packages::Helm::CreateMetadataCacheWorker)
+        .to have_received(:bulk_perform_async_with_contexts) do |metadata, arguments_proc:, context_proc:|
+          expect(metadata.map(&:channel)).to match_array([channel])
+
+          expect(arguments_proc.call(expect_metadatum)).to eq([project_id, channel])
+          expect(context_proc.call(expect_metadatum)).to eq(project: project, user: nil)
+        end
     end
 
     context 'with a project id' do
@@ -106,18 +113,6 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
           metadata_cache.reload
           expect(metadata_cache.last_downloaded_at).to eq(Time.zone.now.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'))
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(packages_helm_metadata_cache: false)
-        end
-
-        it 'does not take response from metadata cache' do
-          expect(metadata_cache).not_to receive(:file)
-
-          api_request
         end
       end
 

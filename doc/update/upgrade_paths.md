@@ -38,11 +38,21 @@ In GitLab 17.5 and later, to provide a predictable upgrade schedule for instance
 at versions `x.2.z`, `x.5.z`, `x.8.z`, and `x.11.z`.
 
 To check available patch releases for a specific minor version, you can search for the minor version
-in the [GitLab package repository](https://packages.gitlab.com/gitlab). For example, to search for the latest
-GitLab 18.2 Enterprise Edition version, go to <https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=18.2>.
+in the [GitLab package repository](https://packages.gitlab.com/gitlab).
 
 If you're upgrading a GitLab Helm chart instance, see the
 [list of GitLab Helm chart mappings](https://docs.gitlab.com/charts/installation/version_mappings/#previous-chart-versions).
+
+### Required GitLab 18 upgrade stops
+
+Required upgrade stops occur at versions `18.2`, `18.5`, `18.8`, and `18.11`.
+
+You must upgrade to those versions of GitLab 18 before upgrading to later versions. For each version you upgrade to,
+see the [upgrade notes for GitLab 18](versions/gitlab_18_changes.md). If a version is not
+in the upgrade notes, then there's nothing specific about that version to be aware of.
+
+Find the patch releases in the GitLab package repository. For example, to search for the latest
+GitLab 18.2 Enterprise Edition version, go to <https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=18.2>.
 
 ### Required GitLab 17 upgrade stops
 
@@ -50,11 +60,11 @@ You must upgrade to these versions of GitLab 17 before upgrading to later versio
 
 | Required version | Notes |
 |:-----------------|:------|
-| 17.11.7          | Upgrade to the latest GitLab 17.11 patch release. See [upgrade notes for GitLab 17.11.0](versions/gitlab_17_changes.md#17110). |
-| 17.8.7           | Upgrade to the latest GitLab 17.8 patch release. See [upgrade notes for GitLab 17.8.0](versions/gitlab_17_changes.md#1780). |
-| 17.5.5           | Upgrade to the latest GitLab 17.5 patch release. See [upgrade notes for GitLab 17.5.0](versions/gitlab_17_changes.md#1750). |
-| 17.3.7           | Upgrade to the latest GitLab 17.3 release. See [upgrade notes for GitLab 17.3.0](versions/gitlab_17_changes.md#1730). |
-| 17.1.8           | Required only for instances with [large `ci_pipeline_messages` tables](versions/gitlab_17_changes.md#long-running-pipeline-messages-data-change). See [upgrade notes for GitLab 17.1.0](versions/gitlab_17_changes.md#1710).|
+| 17.11.7          | Upgrade to the latest GitLab 17.11 patch release. See [upgrade notes for GitLab 17.11.0](versions/gitlab_17_changes.md#upgrades-to-17110). |
+| 17.8.7           | Upgrade to the latest GitLab 17.8 patch release. See [upgrade notes for GitLab 17.8.0](versions/gitlab_17_changes.md#upgrades-to-1780). |
+| 17.5.5           | Upgrade to the latest GitLab 17.5 patch release. See [upgrade notes for GitLab 17.5.0](versions/gitlab_17_changes.md#upgrades-to-1750). |
+| 17.3.7           | Upgrade to the latest GitLab 17.3 release. See [upgrade notes for GitLab 17.3.0](versions/gitlab_17_changes.md#upgrades-to-1730). |
+| 17.1.8           | Required only for instances with [large `ci_pipeline_messages` tables](versions/gitlab_17_changes.md#long-running-pipeline-messages-data-change). See [upgrade notes for GitLab 17.1.0](versions/gitlab_17_changes.md#upgrades-to-1710).|
 
 ### Required GitLab 16 upgrade stops
 

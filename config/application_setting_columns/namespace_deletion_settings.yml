@@ -1,0 +1,12 @@
+---
+api_type:
+attr: namespace_deletion_settings
+clusterwide: true
+column: namespace_deletion_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description:
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

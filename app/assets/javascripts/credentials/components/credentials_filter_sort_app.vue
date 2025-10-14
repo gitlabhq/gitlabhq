@@ -69,7 +69,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
+  <div class="gl-flex gl-flex-col gl-gap-3 @md/panel:gl-flex-row">
     <gl-filtered-search
       class="gl-min-w-0 gl-grow"
       :value="tokens"

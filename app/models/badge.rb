@@ -33,6 +33,8 @@ class Badge < ApplicationRecord
 
   scope :with_name, ->(name) { where(name: name) }
 
+  before_validation :set_sharding_key_preference
+
   validates :link_url, :image_url, addressable_url: true
   validates :type, presence: true
 
@@ -47,6 +49,16 @@ class Badge < ApplicationRecord
   end
 
   private
+
+  def set_sharding_key_preference
+    return unless group_id.present? && project_id.present?
+
+    if respond_to?(:group)
+      self.group = nil
+    else
+      self.group_id = nil
+    end
+  end
 
   def build_rendered_url(url, project = nil)
     return url unless project

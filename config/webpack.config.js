@@ -129,6 +129,12 @@ const alias = {
     'app/assets/javascripts/lib/utils/icons_path.js',
   ),
 
+  // override loader path for illustrations.svg so we do not duplicate this asset
+  '@gitlab/svgs/dist/illustrations.svg': path.join(
+    ROOT_PATH,
+    'app/assets/javascripts/lib/utils/illustrations_path.js',
+  ),
+
   // prevent loading of index.js to avoid duplicate instances of classes
   graphql: path.join(ROOT_PATH, 'node_modules/graphql/index.mjs'),
 
@@ -156,6 +162,7 @@ if (IS_EE) {
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     jh_else_ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     any_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+    fe_islands: path.join(ROOT_PATH, 'ee/frontend_islands/apps'),
 
     // test-environment-only aliases duplicated from Jest config
     ee_else_ce_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),

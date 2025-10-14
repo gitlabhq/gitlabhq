@@ -82,10 +82,16 @@ For more information, see:
 - [Visualize your pipeline](pipeline_editor/_index.md#visualize-ci-configuration)
 - [Pipelines](pipelines/_index.md)
 
-## Step 4: Use CI/CD variables as part of jobs
+## Step 4: Use CI/CD variables and expressions as part of jobs
 
 GitLab CI/CD variables are key-value pairs you use to store and pass configuration settings
 and sensitive information, like passwords or API keys, to jobs in a pipeline.
+
+GitLab CI/CD expressions allow you to inject data dynamically into your pipeline configuration. The data available
+depends on the expression context. For example, the `inputs` context allows you to access information passed into the
+configuration file from a parent file or when a pipeline is run.
+
+### CI/CD variables
 
 Use CI/CD variables to customize jobs by making values defined elsewhere accessible to jobs.
 You can hard-code CI/CD variables in your `.gitlab-ci.yml` file, set them in your project settings,
@@ -105,6 +111,20 @@ For more information, see:
 
 - [CI/CD variables](variables/_index.md)
 - [Dynamically generated predefined variables](variables/predefined_variables.md)
+
+### CI/CD expressions
+
+CI/CD expressions use the `$[[ ]]` syntax and are evaluated when a pipeline is created. They are also evaluated during
+CI linting, so they can be tested in the Pipeline Editor.
+
+Expressions enable dynamic configuration based on different contexts:
+
+- **Inputs context** (`$[[ inputs.INPUT_NAME ]]`): Access typed parameters passed into configuration files with `include:inputs` or when a new pipeline is run
+- **Matrix context** (`$[[ matrix.IDENTIFIER ]]`): Access matrix values in job dependencies to create 1:1 mappings between matrix jobs.
+
+For more information, see:
+
+- [CI expressions](yaml/expressions.md)
 
 ## Step 5: Use CI/CD components
 

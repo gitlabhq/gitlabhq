@@ -40,6 +40,7 @@ tree:
       - design_versions:
         - actions:
           - :design # Duplicate export of issues.designs in order to link the record to both Issue and Action
+      - :work_item_description
       - :issue_assignees
       - :zoom_meetings
       - :sentry_issue
@@ -429,7 +430,6 @@ included_attributes:
   merge_request_commits_metadata:
     - :sha
     - :message
-    - :trailers
     - :authored_date
     - :committed_date
   merge_request_diff_commits:
@@ -556,7 +556,6 @@ included_attributes:
     - :coverage
     - :commit_id
     - :name
-    - :options
     - :allow_failure
     - :stage_idx
     - :tag
@@ -568,7 +567,6 @@ included_attributes:
     - :erased_at
     - :artifacts_expire_at
     - :environment
-    - :yaml_variables
     - :queued_at
     - :lock_version
     - :coverage_regex
@@ -774,6 +772,10 @@ included_attributes:
     - :close_auto_resolve_prometheus_alert
   work_item_type:
     - :base_type
+  work_item_description:
+    - :description
+    - :last_edited_at
+    - :last_edited_by_id
   note_diff_file:
     - :new_file
     - :renamed_file
@@ -955,6 +957,8 @@ excluded_attributes:
     - :processed
     - :id_convert_to_bigint
     - :stage_id_convert_to_bigint
+    - :options
+    - :yaml_variables
   builds: *statuses_excluded_definition
   generic_commit_statuses: *statuses_excluded_definition
   bridges: *statuses_excluded_definition

@@ -29,7 +29,7 @@ to GitLab code using the Web IDE.
    [from the results](https://gitlab.com/search?search=Syntax+highlighting&nav_source=navbar&project_id=41372369&group_id=60717473&search_code=true).
    In this case, `app/views/profiles/preferences/show.html.haml`.
 
-1. Open the file in Web IDE. Select **Edit > Open in Web IDE**.
+1. Open the file in Web IDE. Select **Edit** > **Open in Web IDE**.
 
    - Keyboard shortcut: <kbd>.</kbd>
 

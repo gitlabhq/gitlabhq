@@ -6,7 +6,7 @@ module Projects
       enable :read_branch_rule
       enable :create_branch_rule
       enable :update_branch_rule
-      enable :destroy_branch_rule
+      enable :delete_branch_rule
     end
 
     rule { can?(:update_branch_rule) }.enable :update_squash_option

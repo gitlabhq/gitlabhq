@@ -53,18 +53,18 @@ export default {
       const fullPath = {
         key: 'fullPath',
         label: s__('CICD|Group or project'),
-        tdClass: 'md:gl-w-3/5',
+        tdClass: '@md/panel:gl-w-3/5',
       };
       const policies = {
         key: 'jobTokenPolicies',
         label: s__('CICD|Permission configuration'),
-        class: '!gl-align-middle md:gl-w-2/5',
+        class: '!gl-align-middle @md/panel:gl-w-2/5',
       };
       const actions = {
         key: 'actions',
         label: __('Actions'),
-        class: 'gl-text-right md:!gl-pl-0',
-        tdClass: 'md:!gl-pb-0 md:!gl-pt-4',
+        class: 'gl-text-right @md/panel:!gl-pl-0',
+        tdClass: '@md/panel:!gl-pb-0 @md/panel:!gl-pt-4',
       };
 
       return [fullPath, policies, actions];

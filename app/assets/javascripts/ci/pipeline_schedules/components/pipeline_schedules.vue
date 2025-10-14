@@ -18,7 +18,6 @@ import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { reportToSentry } from '~/ci/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
@@ -85,7 +84,6 @@ export default {
     TakeOwnershipModal,
     PipelineScheduleEmptyState,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     projectPath: {
       default: '',
@@ -138,11 +136,7 @@ export default {
         // we use a manual subscribeToMore call due to issues with
         // the skip hook not working correctly for the subscription
         // and previousData object being an empty {} on init
-        if (
-          data?.project?.pipelineSchedules?.nodes?.length > 0 &&
-          this.shouldUseRealtimeStatus &&
-          !this.isSubscribed
-        ) {
+        if (data?.project?.pipelineSchedules?.nodes?.length > 0 && !this.isSubscribed) {
           // Prevent duplicate subscriptions on refetch
           this.isSubscribed = true;
 
@@ -283,9 +277,6 @@ export default {
         this.sortBy = values.sortBy;
         this.sortDesc = values.sortDesc;
       },
-    },
-    shouldUseRealtimeStatus() {
-      return this.glFeatures?.ciPipelineSchedulesStatusRealtime;
     },
   },
   watch: {

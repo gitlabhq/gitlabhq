@@ -26,6 +26,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     issuableGid: {
       type: String,
       required: true,
@@ -287,6 +292,7 @@ export default {
         <work-item-link-child-contents
           :child-item="childItem"
           :can-update="canUpdate"
+          :is-group="isGroup"
           :class="childItemClass"
           :show-labels="showLabels"
           :work-item-full-path="workItemFullPath"
@@ -301,6 +307,7 @@ export default {
       <work-item-children-wrapper
         v-if="isExpanded || showChildrenDropzone"
         :can-update="canUpdate"
+        :is-group="isGroup"
         :work-item-id="issuableGid"
         :work-item-type="workItemType"
         :children="displayableChildren"

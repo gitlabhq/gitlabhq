@@ -152,14 +152,13 @@ export default {
       key: 'selected',
       label: '',
       thClass: 'gl-w-3 !gl-pr-3',
-      tdClass: '!gl-flex lg:!gl-table-cell lg:!gl-pr-3',
+      tdClass: '!gl-flex @lg/panel:!gl-table-cell @lg/panel:!gl-pr-3',
     },
     {
       key: 'webUrl',
       label: s__('BulkImport|Source group'),
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      thClass: 'lg:!gl-pl-0 gl-w-1/2',
-      tdClass: 'lg:!gl-pl-0',
+      thClass: '@lg/panel:!gl-pl-0 gl-w-1/2',
+      tdClass: '@lg/panel:!gl-pl-0',
     },
     {
       key: 'importTarget',
@@ -174,7 +173,7 @@ export default {
     {
       key: 'actions',
       label: '',
-      tdClass: '!gl-flex lg:!gl-table-cell',
+      tdClass: '!gl-flex @lg/panel:!gl-table-cell',
     },
   ],
 
@@ -774,7 +773,7 @@ export default {
           />
         </div>
         <div
-          class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-subtle gl-px-5 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
+          class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-subtle gl-px-5 @md/panel:gl-flex @md/panel:gl-flex-row @md/panel:gl-items-center @md/panel:gl-justify-between"
         >
           <div class="gl-flex gl-w-full gl-items-center gl-gap-4 gl-pb-4">
             <span data-testid="selection-count">
@@ -872,7 +871,7 @@ export default {
           <template #cell(progress)="{ item: group }">
             <div class="gl-mt-2 gl-pt-1">
               <import-status-cell
-                class="gl-items-end lg:gl-items-start"
+                class="gl-items-end @lg/panel:gl-items-start"
                 :status="group.visibleStatus"
                 :has-failures="hasFailures(group)"
               />
@@ -884,13 +883,13 @@ export default {
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"
               :is-project-creation-allowed="group.flags.isProjectCreationAllowed"
+              class="gl-mb-3"
               @import-group="importGroup({ group, extraArgs: $event, index })"
             />
             <import-history-link
               v-if="showHistoryLink(group)"
               :id="group.progress.id"
               :history-path="historyShowPath"
-              class="gl-mt-3"
             />
           </template>
         </gl-table>

@@ -14,10 +14,14 @@ module QA
 
             fill_in 'app_otp', with: current_otp
 
-            if has_text?('Two-factor authentication failed', wait: 2)
-              new_otp = OnePassword::CLI.instance.new_otp(current_otp)
+            # In Chrome 138 we occasionally get `Unable to find xpath "/html"`
+            # https://github.com/teamcapybara/capybara/issues/2800
+            QA::Support::Retrier.retry_on_exception do
+              if has_text?('Two-factor authentication failed', wait: 2)
+                new_otp = OnePassword::CLI.instance.new_otp(current_otp)
 
-              fill_in 'app_otp', with: new_otp
+                fill_in 'app_otp', with: new_otp
+              end
             end
 
             authorize_app

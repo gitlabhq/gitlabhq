@@ -18,7 +18,7 @@ GitLab offers various features to speed up and simplify your infrastructure mana
 
 Infrastructure management is part of a larger workflow:
 
-![Workflow](img/get_started_managing_infrastructure_v16_11.png)
+![Manage infrastructure in the Release section of the GitLab DevOps lifecycle.](img/get_started_managing_infrastructure_v16_11.png)
 
 ## Step 1: Use code to manage your infrastructure
 

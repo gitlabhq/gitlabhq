@@ -15,72 +15,78 @@ title: GitLab Dedicated network access and security
 
 ## Bring your own domain (BYOD)
 
-You can use a [custom hostname](../../../subscriptions/gitlab_dedicated/_index.md#bring-your-own-domain) to access your GitLab Dedicated instance. You can also provide a custom hostname for the bundled container registry and Kubernetes Agent Server (KAS) services.
+By default, your GitLab Dedicated instance is accessible at a URL like `your-tenant.gitlab-dedicated.com`.
+With bring your own domain (BYOD), you can use your own custom domain name to access your GitLab Dedicated instance and its services.
+For example, you could access your instance at `gitlab.company.com` instead of `your-tenant.gitlab-dedicated.com`.
 
-### Let's Encrypt certificates
+When you add a custom domain:
 
-GitLab Dedicated integrates with [Let's Encrypt](https://letsencrypt.org/), a free, automated, and open source certificate authority. When you use a custom hostname, Let's Encrypt automatically issues and renews SSL/TLS certificates for your domain.
+- The domain is included in the external URL used to access your instance.
+- Any connections to your instance using the default `tenant.gitlab-dedicated.com` domain are no longer available.
 
-This integration uses the [`http-01` challenge](https://letsencrypt.org/docs/challenge-types/#http-01-challenge) to obtain certificates through Let's Encrypt.
+GitLab automatically manages SSL/TLS certificates for your custom domain using [Let's Encrypt](https://letsencrypt.org/).
+Let's Encrypt uses the [HTTP-01 challenge](https://letsencrypt.org/docs/challenge-types/#http-01-challenge)
+to verify domain ownership, which requires:
 
-### Set up DNS records
+- The CNAME record to be publicly resolvable through DNS.
+- The same public validation process for automatic certificate renewal every 90 days.
 
-To use a custom hostname with GitLab Dedicated, you must update your domain's DNS records.
+For instances configured with private networking (such as AWS PrivateLink), public DNS resolution
+ensures certificate management works properly, even when all other access is restricted to private networks.
+
+### Configure DNS records
+
+To use a custom domain, first update your domain's DNS records.
 
 Prerequisites:
 
 - Access to your domain host's DNS settings.
 
-To set up DNS records for a custom hostname with GitLab Dedicated:
+To set up DNS records for a custom domain with GitLab Dedicated:
 
 1. Sign in to your domain host's website.
-
 1. Go to the DNS settings.
-
-1. Add a `CNAME` record that points your custom hostname to your GitLab Dedicated tenant. For example:
+1. Add a `CNAME` record that points your custom domain to your GitLab Dedicated tenant. For example:
 
    ```plaintext
-    gitlab.my-company.com.  CNAME  my-tenant.gitlab-dedicated.com
+   gitlab.my-company.com.  CNAME  my-tenant.gitlab-dedicated.com
    ```
 
-1. Optional. If your domain has an existing `CAA` record, update it to include [Let's Encrypt](https://letsencrypt.org/docs/caa/) as a valid certificate authority. If your domain does not have any `CAA` records, you can skip this step. For example:
+1. Optional. If your domain has an existing `CAA` record, update it to include
+   [Let's Encrypt](https://letsencrypt.org/docs/caa/) as a valid certificate authority.
+   If your domain does not have any `CAA` records, you can skip this step. For example:
 
    ```plaintext
    example.com.  IN  CAA 0 issue "pki.goog"
    example.com.  IN  CAA 0 issue "letsencrypt.org"
    ```
 
-   In this example, the `CAA` record defines Google Trust Services (`pki.goog`) and Let's Encrypt (`letsencrypt.org`) as certificate authorities that are allowed to issue certificates for your domain.
+   In this example, the `CAA` record defines Google Trust Services (`pki.goog`) and
+   Let's Encrypt (`letsencrypt.org`) as certificate authorities that are allowed to issue certificates for your domain.
 
 1. Save your changes and wait for the DNS changes to propagate.
 
+Keep these DNS records in place as long as you use a custom domain with your GitLab Dedicated instance.
+
 {{< alert type="note" >}}
 
-DNS records must stay in place as long as you use the BYOD feature.
+Your custom domain must be publicly resolvable through DNS for SSL certificate management,
+even if you access your instance through private networks.
 
 {{< /alert >}}
 
-### DNS requirements for Let's Encrypt certificates
+### Request a custom domain
 
-When using custom hostnames with GitLab Dedicated, your domain must be publicly resolvable
-through DNS, even if you plan to access your instance through private networks only.
+After you configure DNS records, submit a
+[support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)
+to enable your custom domain.
 
-This public DNS requirement exists because:
+In your support ticket, specify:
 
-- Let's Encrypt uses the HTTP-01 challenge, which requires public internet access to verify
-  domain ownership.
-- The validation process must reach your custom hostname from the public internet through
-  the CNAME record that points to your GitLab Dedicated tenant.
-- Certificate renewal happens automatically every 90 days and uses the same public
-  validation process as the initial issuance.
-
-For instances configured with private networking (such as AWS PrivateLink), maintaining public
-DNS resolution ensures certificate renewal works properly, even when all other access is
-restricted to private networks.
-
-### Add your custom hostname
-
-To use a custom hostname with the [container registry](../../packages/container_registry.md) or the [GitLab agent server for Kubernetes](../../clusters/kas.md) on your existing GitLab Dedicated instance, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+- Your custom domain name.
+- Whether you need a custom domain for the bundled [container registry](../../packages/container_registry.md)
+  and [GitLab agent server for Kubernetes](../../clusters/kas.md).
+  For example, `registry.company.com` and `kas.company.com`.
 
 ## Custom certificate authority
 
@@ -98,7 +104,7 @@ For example, you might need to add a certificate authority to connect to:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
-1. Expand **Custom Certificate Authorities**.
+1. Expand **Custom certificates**.
 1. Select **+ Add Certificate**.
 1. Paste the certificate into the text box.
 1. Select **Save**.
@@ -386,32 +392,65 @@ If you are unable to use Switchboard to add a private hosted zone, you can open 
 
 ## IP allowlist
 
-GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist. Once the IP allowlist has been enabled, when an IP not on the allowlist tries to access your instance an `HTTP 403 Forbidden` response is returned.
+Control which IP addresses can access your instance with an IP allowlist.
+When you enable the IP allowlist, IP addresses not on the allowlist are blocked
+and receive an `HTTP 403 Forbidden` response when they try to access your instance.
 
-IP addresses that have been added to your IP allowlist can be viewed on the Configuration page in Switchboard. You can add or remove IP addresses from your allowlist with Switchboard.
+Use Switchboard to configure and manage your IP allowlist, or submit a support request if Switchboard is unavailable.
 
-### Add an IP to the allowlist with Switchboard
+### Add IP addresses to the allowlist with Switchboard
+
+To add IP addresses to the allowlist:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
-1. Expand **Allowed Source List Config / IP allowlist**.
-1. Turn on the **Enable** toggle.
-1. To add an IP address:
+1. Expand **IP allowlist**, then select **IP allowlist** to go to the IP allowlist page.
+1. To enable the IP allowlist, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Enabled**.
+1. Do one of the following:
 
-   1. Select **Add Item**.
-   1. In the **Address** text box, enter either:
+   - To add a single IP address:
+
+   1. Select **Add IP address**.
+   1. In the **IP address** text box, enter either:
       - A single IPv4 address (for example, `192.168.1.1`).
       - An IPv4 address range in CIDR notation (for example, `192.168.1.0/24`).
    1. In the **Description** text box, enter a description.
+   1. Select **Add**.
 
-   To add another address or range, repeat this step. IPv6 addresses are not supported.
+   - To import multiple IP addresses:
 
-1. Select **Save**.
-1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window. After the changes are applied, the IP addresses are added to the IP allowlist for your instance.
+   1. Select **Import**.
+   1. Upload a CSV file or paste a list of IP addresses.
+   1. Select **Continue**.
+   1. Fix any invalid or duplicate entries, then select **Continue**.
+   1. Review the changes, then select **Import**.
 
-### Add an IP to the allowlist with a Support Request
+1. At the top of the page, choose whether to apply the changes immediately or during the next maintenance window.
 
-If you are unable to use Switchboard to update your IP allowlist, you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and specify a comma separated list of IP addresses that can access your GitLab Dedicated instance.
+### Delete IP addresses from the allowlist with Switchboard
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **IP allowlist**, then select **IP allowlist** to go to the IP allowlist page.
+1. Do one of the following:
+
+   - To delete a single IP address:
+
+   1. Next to the IP address you want to remove, select the trash icon ({{< icon name="remove" >}}).
+   1. Select **Delete IP address**.
+
+   - To delete multiple IP addresses:
+
+   1. Select the checkboxes for the IP addresses you want to delete.
+   1. To select all IP addresses on the current page, select the checkbox in the header row.
+   1. Above the IP addresses table, select **Delete**.
+   1. Select **Delete** to confirm.
+
+1. At the top of the page, choose whether to apply the changes immediately or during the next maintenance window.
+
+### Add an IP to the allowlist with a support request
+
+If you are unable to use Switchboard to update your IP allowlist, open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and specify a comma-separated list of IP addresses that can access your instance.
 
 ### Enable OpenID Connect for your IP allowlist
 

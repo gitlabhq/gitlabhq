@@ -25,15 +25,15 @@ that improve performance and add new features.
 The work on the GitLab Self-Managed release of the registry metadata database feature
 is tracked in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
-By default, the container registry uses object storage to persist metadata
+By default, the container registry uses object storage or a local file system to persist metadata
 related to container images. This method to store metadata limits how efficiently
 the data can be accessed, especially data spanning multiple images, such as when listing tags.
 By using a database to store this data, many new features are possible, including
 [online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/online-garbage-collection.md)
 which removes old data automatically with zero downtime.
 
-This database works in conjunction with the object storage already used by the registry, but does not replace object storage.
-You must continue to maintain an object storage solution even after performing a metadata import to the metadata database.
+This database works in conjunction with the storage already used by the registry, but does not replace object storage or a file system.
+You must continue to maintain a storage solution even after performing a metadata import to the metadata database.
 
 For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database.html#create-the-database)
 in the Helm Charts documentation.
@@ -41,7 +41,7 @@ in the Helm Charts documentation.
 ## Enhancements
 
 The metadata database architecture supports performance improvements, bug fixes, and new features
-that are not available with the object storage metadata architecture. These enhancements include:
+that are not available with legacy metadata storage. These enhancements include:
 
 - Automatic [online garbage collection](../../user/packages/container_registry/delete_container_registry_images.md#garbage-collection)
 - [Storage usage visibility](../../user/packages/container_registry/reduce_container_registry_storage.md#view-container-registry-usage) for repositories, projects, and groups
@@ -53,7 +53,7 @@ that are not available with the object storage metadata architecture. These enha
 - Tracking and displaying tag publish timestamps (see [issue 290949](https://gitlab.com/gitlab-org/gitlab/-/issues/290949))
 - Sorting repository tags by additional attributes beyond name
 
-Due to technical constraints of the object storage metadata architecture, new features are only
+Due to technical constraints of legacy metadata storage, new features are only
 implemented for the metadata database version. Non-security bug fixes might be limited to the
 metadata database version.
 
@@ -63,6 +63,7 @@ metadata database version.
 - Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
 - Prior to 18.3, registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
+- Backup and restore jobs do not include the registry database. For more information, see [Backup with metadata database](#backup-with-metadata-database).
 
 ## Metadata database feature support
 
@@ -76,8 +77,10 @@ for the status of features related to the container registry database.
 
 Prerequisites:
 
-- GitLab 17.5 or later, GitLab 18.3 recommended.
+- GitLab 17.5 is the minimum required version, but GitLab 18.3 or later
+  is recommended due to the added improvements and easier configuration.
 - PostgreSQL database [within version requirements](../../install/requirements.md#postgresql). It must be accessible from the registry node.
+- If you use an external database, you must first set up the external database connection. For more information, see [Using an external database](#using-an-external-database).
 
 Follow the instructions that match your situation:
 
@@ -95,7 +98,7 @@ Follow the instructions that match your situation:
 - [Offline garbage collection](container_registry.md#container-registry-garbage-collection) is no longer required.
   The garbage collection command included with GitLab will safely exit when the database is enabled, but third-party
   commands, such as the one provided by the upstream registry, will delete data associated with tagged images.
-- Verify you have not automated offline garbage collection: **especially with a third-party command.**
+- Verify you have not automated offline garbage collection: especially with a third-party command.
 - You can first [reduce the storage of your registry](../../user/packages/container_registry/reduce_container_registry_storage.md)
   to speed up the process.
 - Back up [your container registry data](../backup_restore/backup_gitlab.md#container-registry)
@@ -132,7 +135,7 @@ Prerequisites:
 
 To enable the database:
 
-1. Edit `/etc/gitlab/gitlab.rb` by adding your database connection details, but start with the metadata database **disabled**:
+1. Edit `/etc/gitlab/gitlab.rb` by adding your database connection details, but start with the metadata database disabled:
 
    ```ruby
    registry['database'] = {
@@ -182,12 +185,12 @@ A few factors affect the duration of the import:
 - The size of your existing registry data.
 - The specifications of your PostgreSQL instance.
 - The number of registry instances running.
-- Network latency between the registry, PostgreSQL and your configured Object Storage.
+- Network latency between the registry, PostgreSQL and your configured storage.
 
-You **do not** need to do the following in preparation before importing:
+You do not need to do the following in preparation before importing:
 
-- **Allocate extra object storage space**: The import makes no significant writes to object storage.
-- **Run offline garbage collection**: While not harmful, offline garbage collection does not shorten the
+- Allocate extra object storage or file system space: The import makes no significant writes to this storage.
+- Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
 import enough to recoup the time spent running this command.
 
 {{< alert type="note" >}}
@@ -211,6 +214,11 @@ If your registry is too large to regularly run offline garbage collection,
 use the three-step import method to minimize the amount of read-only time
 significantly.
 
+If you use an external database, make sure you set up the
+external database connection before proceeding with a migration path.
+
+For more information, see [Using an external database](#using-an-external-database).
+
 #### One-step import
 
 {{< alert type="warning" >}}
@@ -224,7 +232,7 @@ Otherwise, data written during the import becomes inaccessible or leads to incon
 
 {{< tab title="GitLab 18.3 and later" >}}
 
-1. Ensure the database is **disabled** in the `registry['database']` section of your `/etc/gitlab/gitlab.rb` file:
+1. Ensure the database is disabled in the `registry['database']` section of your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    registry['database'] = {
@@ -294,7 +302,7 @@ Prerequisites:
 
 - Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
-1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
+1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database disabled:
 
    ```ruby
    registry['database'] = {
@@ -390,21 +398,14 @@ trying to minimize downtime while completing the import.
 
 Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 At the slower speed, registries with over 100TB of data could take longer than 48 hours.
-**You may continue to use the registry as normal while step one is being completed.**
 
-{{< alert type="warning" >}}
-
-It is [not yet possible](https://gitlab.com/gitlab-org/container-registry/-/issues/1162)
-to restart the import, so it's important to let the import run to completion.
-If you must halt the operation, you have to restart this step.
-
-{{< /alert >}}
+You may continue to use the registry as normal while step one is being completed.
 
 {{< tabs >}}
 
 {{< tab title="GitLab 18.3 and later" >}}
 
-1. Ensure the database is **disabled** in the `database` section to your `/etc/gitlab/gitlab.rb` file:
+1. Ensure the database is disabled in the `database` section to your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    registry['database'] = {
@@ -428,7 +429,7 @@ Prerequisites:
 
 - Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
-1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
+1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database disabled:
 
    ```ruby
    registry['database'] = {
@@ -606,7 +607,8 @@ You can now use the metadata database for all operations!
 Even though the registry is now fully using the database for its metadata, it
 does not yet have access to any potentially unused layer blobs, preventing these
 blobs from being removed by the online garbage collector.
-**You may continue to use the registry as normal while step three is being completed.**
+
+You may continue to use the registry as normal while step three is being completed.
 
 To complete the process, run the final step of the migration:
 
@@ -632,6 +634,34 @@ sudo gitlab-ctl registry-database import --step-three
 
 After that command exists successfully, registry metadata is now fully imported to the database.
 
+#### Restore interrupted imports
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1162) in GitLab 18.5.
+
+{{< /history >}}
+
+Skip repositories that you pre-imported within the last 72 hours to resume
+interrupted imports. Repositories are pre-imported either:
+
+- By completing step one of the three-step import process
+- By completing the one-step import process
+
+To restore interrupted imports, configure the `--pre-import-skip-recent` flag. Defaults to 72 hours.
+
+For example:
+
+```shell
+# Skip repositories imported within 6 hours from the start of the import command
+--pre-import-skip-recent 6h
+
+# Disable skipping behavior
+--pre-import-skip-recent 0
+```
+
+For more information about valid duration units, see [Go duration strings](https://pkg.go.dev/time#ParseDuration).
+
 #### Post import
 
 It may take approximately 48 hours post import to see your registry storage
@@ -644,9 +674,9 @@ to see how to monitor the progress and health of the online garbage collector.
 
 The container registry supports two types of migrations:
 
-- **Regular schema migrations**: Changes to the database structure that must run before deploying new application code, also known as pre-deployment migrations. These should be fast (no more than a few minutes) to avoid deployment delays.
+- Regular schema migrations: Changes to the database structure that must run before deploying new application code, also known as pre-deployment migrations. These should be fast (no more than a few minutes) to avoid deployment delays.
 
-- **Post-deployment migrations**: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtime.
+- Post-deployment migrations: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtime.
 
 By default, the registry applies both regular schema and post-deployment migrations simultaneously.
 To reduce downtime during upgrades, you can skip post-deployment migrations and apply them manually after the application starts.
@@ -853,7 +883,11 @@ Each Geo site requires a separate, site-specific:
 This diagram illustrates the data flow and basic architecture:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TB
+    accTitle: Geo architecture for the container registry metadata database
+    accDescr: The primary site sends events to the secondary site through the GitLab Rails notification system for Geo replication.
+
     subgraph "Primary site"
         P_Rails[GitLab Rails]
         P_Reg[Container registry]
@@ -1013,7 +1047,7 @@ which can happen if you:
 To resolve this issue, you must delete the existing entries in the tags table.
 You must truncate the table manually on your PostgreSQL instance:
 
-1. Edit `/etc/gitlab/gitlab.rb` and ensure the metadata database is **disabled**:
+1. Edit `/etc/gitlab/gitlab.rb` and ensure the metadata database is disabled:
 
    ```ruby
    registry['database'] = {

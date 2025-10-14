@@ -6,7 +6,7 @@ module Mutations
       class Destroy < BaseMutation
         graphql_name 'ArtifactDestroy'
 
-        authorize :destroy_artifacts
+        authorize :delete_job_artifact
 
         ArtifactID = ::Types::GlobalIDType[::Ci::JobArtifact]
 

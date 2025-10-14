@@ -1,0 +1,15 @@
+---
+description: User opened IntelliJ IDEA with HTTPS from the Code dropdown
+internal_events: true
+action: open_intellij_https
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: activation
+milestone: "18.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201841
+tiers:
+  - free
+  - premium
+  - ultimate

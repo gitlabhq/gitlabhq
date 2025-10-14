@@ -3,7 +3,7 @@
   padding: 10px 0;
   margin-bottom: 0;
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     display: flex;
     align-items: center;
 
@@ -18,7 +18,7 @@
     margin-left: 2px;
     flex-shrink: 0;
 
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       margin-left: 4px;
     }
 

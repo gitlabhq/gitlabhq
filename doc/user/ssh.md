@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use SSH keys to communicate with GitLab
-description: Understand how to use SSH keys with GitLab for secure authentication and repository access.
+description: Use SSH keys for secure authentication and communication with GitLab repositories.
 ---
 
 {{< details >}}
@@ -260,7 +260,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 
 Verify that your SSH key was added correctly.
 
-1. To ensure you're connecting to the correct server, check the server's SSH host keys fingerprint. For:
+1. To ensure you connect to the correct server, identify the SSH host key fingerprint. For:
    - GitLab.com, see the [SSH host keys fingerprints](gitlab_com/_index.md#ssh-host-keys-fingerprints) documentation.
    - GitLab Self-Managed or GitLab Dedicated, see `https://gitlab.example.com/help/instance_configuration#ssh-host-keys-fingerprints`
      where `gitlab.example.com` is the GitLab instance URL.
@@ -271,28 +271,19 @@ Verify that your SSH key was added correctly.
    ssh -T git@gitlab.example.com
    ```
 
-1. If this is the first time you are connecting, you should verify the
-   authenticity of the GitLab host. If you see a message like:
+   By default, connections use the `git` username, but administrators can [change the username](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
+
+1. On your first connection, you might need to verify the authenticity of the GitLab host.
+   Follow the on-screen prompts if you see a message like:
 
    ```plaintext
    The authenticity of host 'gitlab.example.com (35.231.145.151)' can't be established.
    ECDSA key fingerprint is SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw.
-   Are you sure you want to continue connecting (yes/no)? yes
-   Warning: Permanently added 'gitlab.example.com' (ECDSA) to the list of known hosts.
+   Are you sure you want to continue connecting (yes/no)?
    ```
 
-   Type `yes` and press <kbd>Enter</kbd>.
-
-1. Run the `ssh -T git@gitlab.example.com` command again. You should receive a _Welcome to GitLab, `@username`!_ message.
-
-If the welcome message doesn't appear, you can troubleshoot by running `ssh`
-in verbose mode:
-
-```shell
-ssh -Tvvv git@gitlab.example.com
-```
-
-By default, GitLab uses the `git` username to authenticate. It can be different if it was [changed by the administrator](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
+   You should receive a welcome message. If the message doesn't appear, you might need to
+   [troubleshoot your SSH connection](ssh_troubleshooting.md#general-ssh-troubleshooting).
 
 ## Update your SSH key passphrase
 

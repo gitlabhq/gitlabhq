@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab for Jira Cloudアプリ
 ---
@@ -8,13 +8,13 @@ title: GitLab for Jira Cloudアプリ
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 {{< alert type="note" >}}
 
-このページには、GitLab for Jira Cloudアプリのユーザー向けドキュメントが含まれています。管理者向けドキュメントについては、[GitLab for Jira Cloudアプリの管理](../../administration/settings/jira_cloud_app.md)を参照してください。
+このページには、GitLab for Jira Cloudアプリのユーザー向けドキュメントが掲載されています。管理者向けドキュメントについては、[GitLab for Jira Cloudアプリの管理](../../administration/settings/jira_cloud_app.md)を参照してください。
 
 {{< /alert >}}
 
@@ -28,14 +28,14 @@ GitLab.comでGitLab for Jira Cloudアプリを設定するには、[GitLab for J
 
 Jira Data CenterまたはJira Serverには、Atlassianが開発および管理している[Jira DVCSコネクタ](dvcs/_index.md)を使用してください。
 
-## Jiraに同期されたGitLabデータ
+## Jiraに同期されたGitLabデータ {#gitlab-data-synced-to-jira}
 
-グループをリンクした後、[JiraのイシューIDをメンション](development_panel.md#information-displayed-in-the-development-panel)すると、そのグループ内のすべてのプロジェクトでは、次のGitLabデータがJiraに同期されます。
+グループをリンクした後、そのグループ内のすべてのプロジェクトでは、[JiraのイシューIDをメンション](development_panel.md#information-displayed-in-the-development-panel)した際に次のGitLabデータがJiraに同期されます。
 
-- 既存のプロジェクトデータ（グループをリンクする前）:
-  - 最後の400件のマージリクエスト
-  - 最後の400個のブランチと、それらの各ブランチへの最後のコミット（GitLab 15.11以降）
-- 新しいプロジェクトデータ（グループをリンクした後）:
+- 既存のプロジェクトデータ（グループをリンクする前に作成）:
+  - 直近の400件のマージリクエスト
+  - 直近の400個のブランチと、それらの各ブランチへの最新のコミット（GitLab 15.11以降）
+- 新しいプロジェクトデータ（グループをリンクした後に作成）:
   - マージリクエスト
     - マージリクエスト作成者
   - ブランチ
@@ -45,12 +45,12 @@ Jira Data CenterまたはJira Serverには、Atlassianが開発および管理�
   - デプロイ
   - 機能フラグ
 
-## GitLab for Jira Cloudアプリをインストールする
+## GitLab for Jira Cloudアプリをインストールする {#install-the-gitlab-for-jira-cloud-app}
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com
+- 提供形態: GitLab.com
 
 {{< /details >}}
 
@@ -61,22 +61,22 @@ Jira Data CenterまたはJira Serverには、Atlassianが開発および管理�
 
 GitLab for Jira Cloudアプリをインストールするには、次の手順に従います。
 
-1. Jiraの上部のバーで、**アプリ ＞ その他のアプリを探す**を選択し、`GitLab for Jira Cloud`を検索します。
-1. **GitLab for Jira Cloud**を選択してから、**今すぐ取得**を選択します。
+1. Jiraの上部のバーで、**Apps > Explore more apps**（アプリ > その他のアプリを探す）を選択し、`GitLab for Jira Cloud`を検索します。
+1. **GitLab for Jira Cloud**を選択してから、**Get it now**（今すぐ入手）を選択します。
 
 または、[Atlassian Marketplaceからアプリを直接入手](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)してください。
 
 これで、[GitLab for Jira Cloudアプリを設定](#configure-the-gitlab-for-jira-cloud-app)できます。
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> 概要については、[Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com（Atlassian MarketplaceからGitLab.com向けのGitLab for Jira Cloudアプリをインストールする（英語））](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)を参照してください。
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>概要については、[Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)（GitLab.comにAtlassian MarketplaceからGitLab for Jira Cloudアプリをインストールする）を参照してください。
 <!-- Video published on 2024-10-30 -->
 
-## GitLab for Jira Cloudアプリを設定する
+## GitLab for Jira Cloudアプリを設定する {#configure-the-gitlab-for-jira-cloud-app}
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com
+- 提供形態: GitLab.com
 
 {{< /details >}}
 
@@ -95,14 +95,14 @@ GitLab for Jira Cloudアプリを1つ以上のGitLabグループにリンクす�
 
 <!-- markdownlint-disable MD044 -->
 
-1. Jiraの上部のバーで、**アプリ ＞ アプリの管理**を選択します。
+1. Jiraの上部のバーで、**Apps > Manage your apps**（アプリ > アプリの管理）を選択します。
 1. **GitLab for Jira**を展開します。アプリのインストール方法に応じて、アプリの名前は次のようになります。
-   - **GitLab for Jira（gitlab.com）**: [Atlassian Marketplaceからアプリをインストールした場合](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)。
-   - **GitLab for Jira （`<gitlab.example.com>`）**: [アプリを手動でインストールした場合](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)。
-1. **始める**を選択します。
-1. 任意。GitLab Self-ManagedをJiraにリンクするには、**GitLabのバージョンを変更**を選択します。
+   - **GitLab for Jira (gitlab.com)**: [Atlassian Marketplaceからアプリをインストールした場合](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)。
+   - **GitLab for Jira (`<gitlab.example.com>`)**: [アプリを手動でインストールした場合](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)。
+1. **Get started**（開始する）を選択します。
+1. オプション: GitLab Self-ManagedをJiraにリンクするには、**GitLabのバージョンを変更**を選択します。
    1. すべてのチェックボックスをオンにし、**次へ**を選択します。
-   1. **GitLabインスタンスURL**を入力し、**保存**を選択します。
+   1. **GitLabインスタンスのURL**を入力し、**保存**を選択します。
 1. **GitLabにサインイン**を選択します。
 
    {{< alert type="note" >}}
@@ -111,7 +111,7 @@ GitLab for Jira Cloudアプリを1つ以上のGitLabグループにリンクす�
 
    {{< /alert >}}
 
-1. **認証**を選択します。これで、グループのリストが表示されるようになります。
+1. **許可する**を選択します。これで、グループのリストが表示されるようになります。
 1. **グループをリンク**を選択します。
 1. グループにリンクするには、**リンク**を選択します。
 
@@ -119,57 +119,57 @@ GitLab for Jira Cloudアプリを1つ以上のGitLabグループにリンクす�
 
 GitLabグループにリンクした後:
 
-- そのグループ内のすべてのプロジェクトについて、データがJiraに同期されます。最初のデータ同期は、1分あたり20個のプロジェクトのバッチで実行されます。多数のプロジェクトを含むグループの場合、一部のプロジェクトのデータ同期は遅延します。
+- そのグループ内のすべてのプロジェクトのデータがJiraに同期されます。初回のデータ同期は、1分あたり20プロジェクトのバッチで実行されます。プロジェクト数の多いグループでは、一部のプロジェクトのデータ同期が遅れる場合があります。
 - GitLab for Jira Cloudアプリのインテグレーションは、グループとそのグループ内のすべてのサブグループまたはプロジェクトに対して自動的に有効になります。このインテグレーションにより、[Jira Service Managementを設定](#configure-jira-service-management)できるようになります。
 
-## Jira Service Managementを設定する
+## Jira Service Managementを設定する {#configure-jira-service-management}
 
 {{< history >}}
 
-- GitLab 17.2で`enable_jira_connect_configuration`という名前の[フラグ](../../administration/feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460663)されました。デフォルトで無効になっています。
-- GitLab 17.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467117)になりました。機能フラグ`enable_jira_connect_configuration`が削除されました。
+- GitLab 17.2で`enable_jira_connect_configuration`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/460663)されました。デフォルトでは無効になっています。
+- GitLab 17.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/467117)になりました。機能フラグ`enable_jira_connect_configuration`は削除されました。
 
 {{< /history >}}
 
 {{< alert type="note" >}}
 
-この機能はコミュニティのコントリビュートとして追加されたものであり、GitLabコミュニティのみによって開発および管理されています。
+この機能はコミュニティのコントリビュートとして追加され、GitLabコミュニティのみが開発および管理を行っています。
 
 {{< /alert >}}
 
 前提要件:
 
-- GitLab for Jira Cloudアプリが[インストール](#install-the-gitlab-for-jira-cloud-app)されている必要があります。
-- GitLab for Jira Cloudアプリの設定で[リンクされるGitLabグループ](#configure-the-gitlab-for-jira-cloud-app)。
+- GitLab for Jira Cloudアプリを[インストール](#install-the-gitlab-for-jira-cloud-app)している必要があります。
+- GitLab for Jira Cloudアプリの設定で[リンクするGitLabグループ](#configure-the-gitlab-for-jira-cloud-app)が存在する必要があります。
 
 GitLabをITサービスプロジェクトに接続して、デプロイを追跡できます。
 
-設定は、GitLabのGitLab for Jira Cloudアプリインテグレーションで行われます。インテグレーションは、[GitLabグループがリンク](#configure-the-gitlab-for-jira-cloud-app)された後、GitLabのグループ、そのサブグループ、およびプロジェクトに対して有効になります。
+設定は、GitLabのGitLab for Jira Cloudアプリインテグレーションで行います。[GitLabグループをリンク](#configure-the-gitlab-for-jira-cloud-app)すると、そのグループ、サブグループ、およびプロジェクトに対してインテグレーションが有効になります。
 
-GitLab for Jira Cloudアプリインテグレーションの有効化と無効化は、グループのリンクを通じて完全に自動的に行われ、GitLabインテグレーションフォームまたはAPIを介して行われることはありません。
+GitLab for Jira Cloudアプリインテグレーションの有効化と無効化は、グループのリンクを通じて完全に自動的に行われ、GitLabインテグレーションフォームやAPIを介して操作することはできません。
 
 Jira Service Managementで、次の手順を実行します。
 
-1. サービスプロジェクトで、**プロジェクトの設定 ＞ 変更の管理**に移動します。
-1. **パイプラインの接続 ＞ GitLab**を選択し、設定フローの最後にある**サービスID**をコピーします。
+1. サービスプロジェクトで、**Project settings > Change management**（プロジェクトの設定 > 変更管理）に移動します。
+1. **Connect Pipeline > GitLab**（パイプラインの接続 > GitLab）を選択し、設定フローの最後にある**Service ID**（サービスID）をコピーします。
 
 GitLabで、次の手順を実行します。
 
-1. 左側のサイドバーで、**検索または移動**を選択して、プロジェクトを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **設定 > インテグレーション**を選択します。
-1. **GitLab for Jira Cloudアプリ**を選択します。インテグレーションが無効になっている場合は、最初に[GitLabグループをリンク](#configure-the-gitlab-for-jira-cloud-app)して、グループ、そのサブグループ、およびプロジェクトに対して、GitLab for Jira Cloudアプリインテグレーションを有効にします。
-1. **サービスID**フィールドに、このプロジェクトにマップするサービスIDを入力します。複数のサービスIDを使用するには、各サービスIDの間にカンマを追加します。
+1. **GitLab for Jira Cloudアプリ**を選択します。インテグレーションが無効になっている場合は、まず[GitLabグループをリンク](#configure-the-gitlab-for-jira-cloud-app)します。これにより、そのグループ、サブグループ、プロジェクトに対して、GitLab for Jira Cloudアプリインテグレーションが有効になります。
+1. **サービスID**フィールドに、このプロジェクトにマップするサービスIDを入力します。複数のサービスIDを使用する場合は、各サービスIDをカンマで区切ります。
 
 最大100個のサービスをマップできます。
 
-Jiraでのデプロイ追跡の詳細については、[Set up deployment tracking（デプロイ追跡の設定）](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/)を参照してください。
+Jiraでのデプロイ追跡の詳細については、[Set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/)（デプロイ追跡の設定）を参照してください。
 
-### GitLabでデプロイゲートを設定する
+### GitLabでデプロイゲートを設定する {#set-up-deployment-gating-with-gitlab}
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 製品: GitLab.com
+- 提供形態: GitLab.com
 
 {{< /details >}}
 
@@ -181,55 +181,55 @@ Jiraでのデプロイ追跡の詳細については、[Set up deployment tracki
 
 {{< alert type="note" >}}
 
-この機能はコミュニティのコントリビュートとして追加されたものであり、GitLabコミュニティのみによって開発および管理されています。
+この機能はコミュニティのコントリビュートとして追加され、GitLabコミュニティのみが開発および管理を行っています。
 
 {{< /alert >}}
 
-デプロイゲートを設定して、変更リクエストの承認のために、そのリクエストをGitLabからJira Service Managementに送信することができます。デプロイゲートを使用すると、選択した環境へのGitLabのデプロイはすべてJira Service Managementに自動的に送信され、承認された場合にのみデプロイされます。
+デプロイゲートを設定して、GitLabの変更リクエストの承認を得るためにJira Service Managementに送信できます。デプロイゲートを使用すると、指定した環境へのGitLabのデプロイはすべてJira Service Managementに自動的に送信され、承認された場合にのみデプロイされます。
 
-#### サービスアカウントトークンを作成する
+#### サービスアカウントトークンを作成する {#create-the-service-account-token}
 
 GitLabでサービスアカウントトークンを作成するには、まずパーソナルアクセストークンを作成する必要があります。このトークンは、Jira Service ManagementでGitLabのデプロイを管理するために使用されるサービスアカウントトークンを認証します。
 
 サービスアカウントトークンを作成するには、次の手順に従います。
 
-1. [サービスアカウントユーザーを作成](../../api/user_service_accounts.md#create-a-service-account-user)します。
+1. [サービスアカウントユーザーを作成](../../api/service_accounts.md#create-an-instance-service-account)します。
 1. パーソナルアクセストークンを使用して、[サービスアカウントをグループまたはプロジェクトに追加](../../api/members.md#add-a-member-to-a-group-or-project)します。
 1. [サービスアカウントを保護環境に追加](../../ci/environments/protected_environments.md#protecting-environments)します。
-1. パーソナルアクセストークンを使用して、[サービスアカウントトークンを生成](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user)します。
+1. パーソナルアクセストークンを使用して、[サービスアカウントトークンを生成](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account)します。
 1. サービスアカウントトークンの値をコピーします。
 
-#### デプロイゲートを有効にする
+#### デプロイゲートを有効にする {#enable-deployment-gating}
 
-デプロイゲートを有効にするには:
+デプロイゲートを有効にするには、次の手順に従います。
 
 - GitLabで、次の手順を実行します。
 
-  1. 左側のサイドバーで、**検索または移動**を選択して、プロジェクトを見つけます。
+  1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
   1. **設定 > インテグレーション**を選択します。
   1. **GitLab for Jira Cloudアプリ**を選択します。
   1. **デプロイゲート**で、**デプロイゲートを有効にする**チェックボックスをオンにします。
-  1. **環境ティア**テキストボックスに、デプロイゲートを有効にする環境の名前を入力します。カンマで区切られた複数の環境名を入力できます（例: `production, staging, testing, development`）。小文字のみを使用してください。
-  1. **変更の保存**を選択します。
+  1. **環境ティア**テキストボックスに、デプロイゲートを有効にする環境の名前を入力します。複数の環境名を入力する場合は、カンマで区切ります（例: `production, staging, testing, development`）。小文字のみを使用してください。
+  1. **変更を保存**を選択します。
 
 - Jira Service Managementで、次の手順を実行します。
 
   1. [デプロイゲートを設定](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-gating/)します。
-  1. **サービスアカウントトークン**テキストボックスに、[GitLabからコピーしたサービスアカウントトークンの値を貼り付け](#create-the-service-account-token)ます。
+  1. **Service account token**（サービスアカウントトークン）テキストボックスに、[GitLabからコピーしたサービスアカウントトークンの値を貼り付け](#create-the-service-account-token)ます。
 
-#### サービスアカウントを保護環境に追加する
+#### サービスアカウントを保護環境に追加する {#add-the-service-account-to-protected-environments}
 
 GitLabの保護環境にサービスアカウントを追加するには、次の手順に従います。
 
-1. 左側のサイドバーで、**検索または移動**を選択して、プロジェクトを見つけます。
-1. **設定 ＞ CI/CD**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **設定 > CI/CD**を選択します。
 1. **保護環境**を展開し、**環境を保護**を選択します。
-1. **環境を選択**ドロップダウンリストから、保護する環境を選択します（例: **ステージ**）。
+1. **環境を選択**ドロップダウンリストから、保護する環境を選択します（例: **stagingステージ**）。
 1. **デプロイ許可**ドロップダウンリストから、この環境にデプロイできるユーザーを選択します（例: **デベロッパー + メンテナー**）。
 1. **承認者**ドロップダウンリストから、[作成したサービスアカウント](#create-the-service-account-token)を選択します。
 1. **保護**を選択します。
 
-#### APIリクエストの例
+#### APIリクエストの例 {#example-api-requests}
 
 - サービスアカウントユーザーを作成します。
 
@@ -253,55 +253,55 @@ GitLabの保護環境にサービスアカウントを追加するには、次�
   "https://gitlab.com/api/v4/groups/<group_id>/service_accounts/<service_account_id>/personal_access_tokens" --data "scopes[]=api,read_user,read_repository" --data "name=service_accounts_token"
   ```
 
-## GitLab for Jira Cloudアプリを更新する
+## GitLab for Jira Cloudアプリを更新する {#update-the-gitlab-for-jira-cloud-app}
 
 アプリのほとんどの更新は自動的に行われます。詳細については、[Atlassianのドキュメント](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/)を参照してください。
 
 アプリに追加の権限が必要な場合は、[Jiraで更新を手動で承認](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval)する必要があります。
 
-## セキュリティに関する考慮事項
+## セキュリティに関する考慮事項 {#security-considerations}
 
-GitLab for Jira Cloudアプリは、GitLabとJiraを接続します。データは2つのアプリケーション間で共有する必要があり、両方向でアクセス権を付与する必要があります。
+GitLab for Jira Cloudアプリは、GitLabとJiraを接続します。データは2つのアプリケーション間で共有する必要があり、双方向でアクセスを許可する必要があります。
 
-### JiraへのGitLabアクセス
+### GitLabからJiraへのアクセス {#gitlab-access-to-jira}
 
-[GitLab for Jira Cloudアプリを設定](#configure-the-gitlab-for-jira-cloud-app)すると、GitLabはJiraから**共有シークレットトークン**を受け取ります。このトークンは、Jiraプロジェクトに対して、GitLab `READ`、`WRITE`、および`DELETE`[アプリスコープ](https://developer.atlassian.com/cloud/jira/software/scopes-for-connect-apps/#scopes-for-atlassian-connect-apps)を付与します。これらのスコープは、Jiraプロジェクトの開発パネルで情報を更新するために必要です。このトークンは、アプリがインストールされているJiraプロジェクトを除いて、他のAtlassian製品へのGitLabアクセスを許可しません。
+[GitLab for Jira Cloudアプリを設定](#configure-the-gitlab-for-jira-cloud-app)すると、GitLabはJiraから**共有シークレットトークン**を受け取ります。このトークンは、Jiraプロジェクトに対する`READ`、`WRITE`、`DELETE`[アプリスコープ](https://developer.atlassian.com/cloud/jira/software/scopes-for-connect-apps/#scopes-for-atlassian-connect-apps)をGitLabに付与します。これらのスコープは、Jiraプロジェクトの開発パネル内の情報を更新するために必要です。このトークンは、アプリがインストールされているJiraプロジェクト以外のAtlassian製品に対して、GitLabのアクセスを許可するものではありません。
 
-トークンは`AES256-GCM`で暗号化され、GitLabに保存されます。JiraプロジェクトからGitLab for Jira Cloudアプリがアンインストールされると、GitLabはトークンを削除します。
+このトークンは`AES256-GCM`で暗号化され、GitLabに保存されます。JiraプロジェクトからGitLab for Jira Cloudアプリがアンインストールされると、GitLabはトークンを削除します。
 
-### GitLabへのJiraアクセス
+### JiraからGitLabへのアクセス {#jira-access-to-gitlab}
 
 Jiraは、GitLabへのアクセス権を取得しません。
 
-### GitLabからJiraに送信されるデータ
+### GitLabからJiraに送信されるデータ {#data-sent-from-gitlab-to-jira}
 
 Jiraに送信されるすべてのデータについては、[Jiraに同期されたGitLabデータ](#gitlab-data-synced-to-jira)を参照してください。
 
 Jiraに送信される特定のデータプロパティの詳細については、データ同期に関係する[シリアライザークラス](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/atlassian/jira_connect/serializers)を参照してください。
 
-### JiraからGitLabに送信されるデータ
+### JiraからGitLabに送信されるデータ {#data-sent-from-jira-to-gitlab}
 
-GitLab for Jira Cloudアプリがインストールまたはアンインストールされると、GitLabはJiraから[ライフサイクルイベント](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/#lifecycle)を受信します。イベントには、後続のライフサイクルイベントを検証したり、[Jiraにデータを送信する](#data-sent-from-gitlab-to-jira)ときに認証したりするための[トークン](#gitlab-access-to-jira)が含まれます。Jiraからのライフサイクルイベントリクエストは[検証](https://developer.atlassian.com/cloud/jira/platform/security-for-connect-apps/#validating-installation-lifecycle-requests)されます。
+GitLab for Jira Cloudアプリがインストールまたはアンインストールされると、GitLabはJiraから[ライフサイクルイベント](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/#lifecycle)を受信します。イベントには、後続のライフサイクルイベントを検証したり、[Jiraにデータを送信](#data-sent-from-gitlab-to-jira)する際に認証したりするための[トークン](#gitlab-access-to-jira)が含まれています。Jiraからのライフサイクルイベントリクエストは[検証](https://developer.atlassian.com/cloud/jira/platform/security-for-connect-apps/#validating-installation-lifecycle-requests)されます。
 
-Atlassian MarketplaceのGitLab for Jira Cloudアプリを使用するGitLab Self-Managedインスタンスの場合、GitLab.comはライフサイクルイベントを処理して、GitLab Self-Managedインスタンスに転送します。詳細については、[アプリのライフサイクルイベントのGitLab.com処理](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events)を参照してください。
+Atlassian MarketplaceのGitLab for Jira Cloudアプリを使用するGitLab Self-Managedインスタンスの場合、GitLab.comがライフサイクルイベントを処理し、GitLab Self-Managedインスタンスに転送します。詳細については、[GitLab.comにおけるアプリのライフサイクルイベントの処理](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events)を参照してください。
 
-### Jiraによって保存されるデータ
+### Jiraによって保存されるデータ {#data-stored-by-jira}
 
 [Jiraに送信されたデータ](#data-sent-from-gitlab-to-jira)は、Jiraによって保存され、[Jira開発パネル](development_panel.md)に表示されます。
 
 GitLab for Jira Cloudアプリがアンインストールされると、Jiraはこのデータを完全に削除します。このプロセスは非同期で行われ、数時間かかる場合があります。
 
-### Atlassian Marketplaceのプライバシーとセキュリティの詳細
+### Atlassian Marketplaceのプライバシーとセキュリティの詳細 {#privacy-and-security-details-in-the-atlassian-marketplace}
 
-詳細については、[privacy and security details of the Atlassian Marketplace listing（Atlassian Marketplaceリストのプライバシーとセキュリティの詳細）](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira-cloud?tab=privacy-and-security&hosting=cloud)を参照してください。
+詳細については、[Atlassian Marketplaceリストのプライバシーとセキュリティの詳細](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira-cloud?tab=privacy-and-security&hosting=cloud)を参照してください。
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
-GitLab for Jira Cloudアプリを操作する際に、以下の問題が発生する可能性があります。
+GitLab for Jira Cloudアプリを操作する際に、次の問題が発生する可能性があります。
 
 管理者向けドキュメントについては、[GitLab for Jira Cloudアプリの管理](../../administration/settings/jira_cloud_app_troubleshooting.md)を参照してください。
 
-### エラー: `Failed to link group`
+### エラー: `Failed to link group` {#error-failed-to-link-group}
 
 GitLab for Jira Cloudアプリを接続する際に、次のエラーが発生する場合があります。
 
@@ -309,6 +309,25 @@ GitLab for Jira Cloudアプリを接続する際に、次のエラーが発生�
 Failed to link group. Please try again.
 ```
 
-権限が不十分なため、Jiraからユーザー情報をフェッチきない場合、`403 Forbidden`が返されます。
+権限が不十分でJiraからユーザー情報を取得できない場合、`403 Forbidden`が返されます。
 
 この問題を解決するには、特定の[Jiraユーザー要件](../../administration/settings/jira_cloud_app.md#jira-user-requirements)を満たしていることを確認してください。
+
+### GitLabグループにリンクした後、Jiraコードが動作しない {#jira-code-does-not-work-after-linking-to-a-gitlab-group}
+
+[GitLab for Jira CloudアプリをGitLabグループにリンク](#configure-the-gitlab-for-jira-cloud-app)した後、[Jiraコード](https://support.atlassian.com/jira-software-cloud/docs/enable-code/)が動作しない場合があります。この問題を解決するには、BitbucketとJiraの両方を設定する必要があります。
+
+Bitbucketの設定:
+
+1. Atlassianアカウントにサインインします。
+1. ワークスペースを作成し、名前を入力します。
+
+Jiraの設定:
+
+1. **Projects**（プロジェクト）で、対象プロジェクトを選択します。
+1. **Development > Code**（開発 > コード）を選択します。
+1. **Connect Bitbucket > Link Bitbucket Cloud workspace**（Bitbucketに接続 > Bitbucket Cloudワークスペースにリンク）を選択します。
+1. Bitbucketで作成したワークスペースを選択します。
+1. **Grant access**（アクセスを許可）を選択します。
+
+これで、リポジトリがJiraコードに表示されます。

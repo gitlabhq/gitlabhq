@@ -8,7 +8,6 @@ export const MOCK_PAGE_INFO = {
 };
 
 export const MOCK_EXPERIMENT = {
-  id: 1,
   name: 'experiment',
   metadata: [],
   path: '/path/to/experiment',
@@ -20,7 +19,6 @@ export const MOCK_EXPERIMENT = {
 };
 
 export const MOCK_MODEL_EXPERIMENT = {
-  id: 1,
   name: 'experiment',
   metadata: [],
   path: '/path/to/experiment',

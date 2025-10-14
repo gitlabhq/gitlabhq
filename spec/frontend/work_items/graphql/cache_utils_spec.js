@@ -327,6 +327,18 @@ describe('work items graphql cache utils', () => {
       expect(findDiscussions(updatedNotes).at(-1)).toBe(newNote.discussion);
     });
 
+    it('adds a new discussion at the top when prepend is true', () => {
+      const currentNotes = mockWorkItemNotesByIidResponse.data;
+      const newNote = createWorkItemNoteResponse().data.createNote.note;
+
+      expect(findDiscussions(currentNotes)).toHaveLength(3);
+
+      const updatedNotes = updateCacheAfterCreatingNote(currentNotes, newNote, { prepend: true });
+
+      expect(findDiscussions(updatedNotes)).toHaveLength(4);
+      expect(findDiscussions(updatedNotes).at(0)).toBe(newNote.discussion);
+    });
+
     it('does not modify notes widget when newNote is undefined', () => {
       const currentNotes = mockWorkItemNotesByIidResponse.data;
       const newNote = undefined;

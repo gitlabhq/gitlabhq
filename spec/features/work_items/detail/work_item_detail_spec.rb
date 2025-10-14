@@ -29,7 +29,6 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(work_item_view_for_issues: true)
-    stub_feature_flags(work_items_project_issues_list: true)
   end
 
   shared_examples 'change type action is not displayed' do

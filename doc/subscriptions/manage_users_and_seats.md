@@ -108,7 +108,7 @@ If [restricted access](../user/group/manage.md#turn-on-restricted-access) is:
 
 You cannot buy seats for your subscription if either:
 
-- You purchased your subscription through an [authorized reseller](customers_portal.md#subscription-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
+- You purchased your subscription through an [authorized reseller](billing_account.md#subscription-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
 - You have a multi-year subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) to add more seats.
 
 To buy seats for a subscription:
@@ -129,10 +129,6 @@ You can also access the receipt in the Customers Portal under [**Invoices**](htt
 
 You can reduce seats only during subscription renewal.
 If you want to reduce the number of seats in your subscription, you can [renew for fewer seats](manage_subscription.md#renew-for-fewer-seats).
-
-If you want to reduce seats after you have renewed or purchased a subscription,
-open a ticket with the Billing team or contact your GitLab sales representative.
-For assistance, visit the [Contact us](https://customers.gitlab.com/contact_us) page in your Customers Portal account.
 
 ## Self-Managed billing and usage
 
@@ -262,6 +258,8 @@ GitLab has several features to help you manage the number of users. You can:
   and instead manage new users manually.
 - View a breakdown of users by role in the
   [Users statistics](../administration/admin_area.md#users-statistics) page.
+- [Turn on administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions).
+- [Prevent users with the Guest role from creating projects and groups](../administration/settings/account_and_limit_settings.md#prevent-non-members-from-creating-projects-and-groups).
 
 To increase the number of users covered by your license, [buy more seats](#buy-more-seats)
 during the subscription period. The cost of seats added during the subscription
@@ -342,7 +340,7 @@ The alert displays at the following intervals:
 To view a list of seats being used:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. Select the **Seats** tab.
 
 For each user, a list shows groups and projects where the user is a direct member.
@@ -358,7 +356,7 @@ The counts for **Max seats used** and **Seats owed** are updated once per day.
 To view your subscription information and a summary of seat counts:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Billing**.
+1. Select **Settings** > **Billing**.
 
 - The usage statistics are updated once per day, which may cause a difference between the information
   in the **Usage quotas** page and the **Billing page**.
@@ -371,7 +369,7 @@ You can view the users that use seats on your subscription.
 To search for a user's seat usage:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, in the search field, enter the user's name or username.
    The search string must have minimum three characters.
 
@@ -385,7 +383,7 @@ the search string `ami` results in a match, but `amr` does not.
 To export seat usage data as a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export list**.
 
 ### Export seat usage history
@@ -397,7 +395,7 @@ Prerequisites:
 To export seat usage history as a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export seat usage history**.
 
 The generated list contains all seats being used,
@@ -408,7 +406,7 @@ and is not affected by the current search.
 To remove a billable user from your GitLab.com subscription:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Billing**.
+1. Select **Settings** > **Billing**.
 1. In the **Seats currently in use** section, select **See usage**.
 1. In the row for the user you want to remove, on the right side, select **Remove user**.
 1. Re-type the username and select **Remove user**.

@@ -300,7 +300,7 @@ export default {
 <template>
   <div
     ref="presentationViewport"
-    class="overflow-auto gl-relative gl-h-full gl-w-full gl-p-5"
+    class="gl-relative gl-h-full gl-w-full !gl-overflow-auto gl-p-5"
     :style="presentationStyle"
     @mousedown="onPresentationMousedown"
     @mousemove="onPresentationMousemove"

@@ -6,8 +6,9 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
   let_it_be(:project) { create(:project) }
 
   let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(config: [header, content]) }
+  let(:yaml_context) { ::Gitlab::Ci::Config::Yaml::Context.new }
 
-  subject { described_class.new(result, arguments, []) }
+  subject { described_class.new(result, arguments, yaml_context) }
 
   context 'when input data is valid' do
     let(:header) do
@@ -144,8 +145,8 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
       subject.interpolate!
 
       expect(subject).not_to be_valid
-      expect(subject.errors).to include 'unknown input name provided: `abc` in `inputs.abc`'
-      expect(subject.error_message).to eq 'unknown input name provided: `abc` in `inputs.abc`'
+      expect(subject.errors).to include 'unknown interpolation provided: `abc` in `inputs.abc`'
+      expect(subject.error_message).to eq 'unknown interpolation provided: `abc` in `inputs.abc`'
     end
   end
 
@@ -167,7 +168,77 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
       expect(subject).not_to be_valid
       expect(subject.error_message)
-        .to eq 'unknown input name provided: `something` in `inputs.something.abc`'
+        .to eq 'unknown interpolation provided: `something` in `inputs.something.abc`'
+    end
+  end
+
+  context 'when using component interpolation' do
+    let(:yaml_context) do
+      ::Gitlab::Ci::Config::Yaml::Context.new(
+        variables: [],
+        component: { name: 'my-component', sha: 'abc123' }
+      )
+    end
+
+    context 'when component values are specified in spec' do
+      let(:header) do
+        { spec: { component: %w[name sha] } }
+      end
+
+      let(:content) do
+        { test: 'Component $[[ component.name ]] at $[[ component.sha ]]' }
+      end
+
+      let(:arguments) { {} }
+
+      it 'correctly interpolates component data' do
+        subject.interpolate!
+
+        expect(subject).to be_interpolated
+        expect(subject).to be_valid
+        expect(subject.to_hash).to eq({ test: 'Component my-component at abc123' })
+      end
+    end
+
+    context 'when component value not in spec is accessed' do
+      let(:header) do
+        { spec: { component: %w[name] } }
+      end
+
+      let(:content) do
+        { test: 'Component $[[ component.name ]] at $[[ component.sha ]]' }
+      end
+
+      let(:arguments) { {} }
+
+      it 'returns an error for unspecified component value' do
+        subject.interpolate!
+
+        expect(subject).not_to be_valid
+        expect(subject.errors).to include 'unknown interpolation provided: `sha` in `component.sha`'
+      end
+    end
+
+    context 'when both inputs and component are used' do
+      let(:header) do
+        { spec: { inputs: { env: nil }, component: %w[name] } }
+      end
+
+      let(:content) do
+        {
+          test: 'Deploy to $[[ inputs.env ]] using $[[ component.name ]]'
+        }
+      end
+
+      let(:arguments) { { env: 'production' } }
+
+      it 'correctly interpolates both inputs and component data' do
+        subject.interpolate!
+
+        expect(subject).to be_interpolated
+        expect(subject).to be_valid
+        expect(subject.to_hash).to eq({ test: 'Deploy to production using my-component' })
+      end
     end
   end
 

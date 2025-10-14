@@ -37,7 +37,7 @@ Prerequisites:
 - You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
 - Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
-  set in your project's **Settings > Merge requests**.
+  set in your project's **Settings** > **Merge requests**.
 
   [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22236), you can revert
   fast-forwarded commits from the GitLab UI if either:
@@ -48,7 +48,7 @@ Prerequisites:
 To revert merge request `Example`:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. From the secondary menu, select **Merged**, and select your merge request (here, `Example`).
 1. Scroll to the merge request reports area, and find the report showing the
    **Merged by** information.
@@ -82,14 +82,14 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. If you know the merge request that contains the commit:
-   1. Select **Code > Merge requests**, then select your merge request.
+   1. Select **Code** > **Merge requests**, then select your merge request.
    1. Select **Commits**, then select the title of the commit you want to revert.
       This displays the commit in the context of your merge request.
    1. Below the secondary menu, GitLab shows the message **Viewing commit `00001111`**,
       where `00001111` is the hash of the commit. Select the commit hash to show
       the commit's page.
 1. If you don't know the merge request the commit originated from:
-   1. Select **Code > Commits**.
+   1. Select **Code** > **Commits**.
    1. Select the title of the commit to display full information about the commit.
 1. In the upper-right corner, select **Options**, then select **Revert**.
 1. In **Revert in branch**, select the branch to revert your changes into.
@@ -167,7 +167,7 @@ Prerequisites:
 To redact text from your repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Redact text**.
 1. On the drawer, enter the text to redact.
@@ -175,10 +175,10 @@ To redact text from your repository:
 1. Select **Redact matching strings**.
 1. On the confirmation dialog, enter your project path.
 1. Select **Yes, redact matching strings**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**. Wait at least 30 minutes for the operation to complete.
-1. In the same **Settings > General > Advanced** section, select **Prune unreachable objects**.
+1. In the same **Settings** > **General** > **Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
 {{< alert type="note" >}}

@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Troubleshooting Dependency Scanning
+title: Troubleshooting dependency scanning
 ---
 
 {{< details >}}
@@ -42,12 +42,10 @@ You can replace `registry.gitlab.com/security-products/gemnasium-python:5` with 
 
 ### Working around missing support for certain languages or package managers
 
-As noted in the ["Supported languages" section](_index.md#supported-languages-and-package-managers)
-some dependency definition files are not yet supported.
-However, Dependency Scanning can be achieved if
-the language, a package manager, or a third-party tool
-can convert the definition file
-into a supported format.
+As noted in the [Supported languages](_index.md#supported-languages-and-package-managers) some
+dependency definition files are not yet supported. However, dependency scanning can be achieved if
+the language, a package manager, or a third-party tool can convert the definition file into a
+supported format.
 
 Generally, the approach is the following:
 
@@ -74,35 +72,17 @@ gemnasium-python-dependency_scanning:
     - poetry update --lock # Generates the lock file to be analyzed.
 ```
 
-### `Error response from daemon: error processing tar file: docker-tar: relocation error`
-
-This error occurs when the Docker version that runs the dependency scanning job is `19.03.0`.
-Consider updating to Docker `19.03.1` or greater. Older versions are not
-affected. Read more in
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").
-
-### Getting warning message `gl-dependency-scanning-report.json: no matching files`
-
-For information on this, see the [general Application Security troubleshooting section](../troubleshooting_application_security.md#getting-warning-messages--reportjson-no-matching-files).
-
-## `Error response from daemon: error processing tar file: docker-tar: relocation error`
-
-This error occurs when the Docker version that runs the dependency scanning job is `19.03.0`.
-Consider updating to Docker `19.03.1` or greater. Older versions are not
-affected. Read more in
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").
-
 ## Dependency scanning jobs are running unexpectedly
 
 The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
 uses the [`rules:exists`](../../../ci/yaml/_index.md#rulesexists)
 syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
 number. Because of this, and depending on the number of files in your repository, a dependency
-scanning job might be triggered even if the scanner doesn't support your project. For more details about this limitation, see [the `rules:exists` documentation](../../../ci/yaml/_index.md#rulesexists).
+scanning job might be triggered even if the scanner doesn't support your project. For more details about this limitation, see the [`rules:exists` documentation](../../../ci/yaml/_index.md#rulesexists).
 
 ## Error: `dependency_scanning is used for configuration only, and its script should not be executed`
 
-For information, see the [GitLab Secure troubleshooting section](../troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+For information, see [application security testing troubleshooting](../troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
 ## Import multiple certificates for Java-based projects
 
@@ -120,7 +100,7 @@ gemnasium-maven-dependency_scanning:
     - unset ADDITIONAL_CA_CERT_BUNDLE # unset the variable so that the analyzer doesn't duplicate the import
 ```
 
-## Dependency Scanning job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
+## Dependency scanning job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
 
 Docker-in-Docker is unsupported, and attempting to invoke it is the likely cause of this error.
 
@@ -157,21 +137,21 @@ If you have manually set `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE` for specific 
 and now must update your configuration to again get the latest patched versions of our
 analyzers, edit your `.gitlab-ci.yml` file and either:
 
-- Set your `DS_MAJOR_VERSION` to match the latest version as seen in
-  [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml#L17).
+- Set the `DS_MAJOR_VERSION` to match the version referenced in the
+  [Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml#L17).
 - If you hardcoded the `DS_ANALYZER_IMAGE` variable directly, change it to match the latest
-  line as found in our [current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml).
+  line as found in the [dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml).
   The line number varies depending on which scanning job you edited.
 
   For example, the `gemnasium-maven-dependency_scanning` job pulls the latest
   `gemnasium-maven` Docker image because `DS_ANALYZER_IMAGE` is set to
   `"$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"`.
 
-## Dependency Scanning of setuptools project fails with `use_2to3 is invalid` error
+## Dependency scanning of setuptools project fails with `use_2to3 is invalid` error
 
 Support for [2to3](https://docs.python.org/3/library/2to3.html)
 was [removed](https://setuptools.pypa.io/en/latest/history.html#v58-0-0)
-in `setuptools` version `v58.0.0`. Dependency Scanning (running `python 3.9`) uses `setuptools`
+in `setuptools` version `v58.0.0`. Dependency scanning (running `python 3.9`) uses `setuptools`
 version `58.1.0+`, which doesn't support `2to3`. Therefore, a `setuptools` dependency relying on
 `lib2to3` fails with this message:
 
@@ -187,7 +167,7 @@ gemnasium-python-dependency_scanning:
     - pip install setuptools==57.5.0
 ```
 
-## Dependency Scanning of projects using psycopg2 fails with `pg_config executable not found` error
+## Dependency scanning of projects using psycopg2 fails with `pg_config executable not found` error
 
 Scanning a Python project that depends on `psycopg2` can fail with this message:
 
@@ -225,7 +205,7 @@ In GitLab 17.0 and later, `gemnasium-maven` supports the `DS_GRADLE_RESOLUTION_P
 Consult the [Gradle dependency resolution documentation](https://docs.gradle.org/current/userguide/dependency_resolution.html) for guidance on
 fixing your `build.gradle` file. For more details, refer to [issue 482650](https://gitlab.com/gitlab-org/gitlab/-/issues/482650).
 
-Additionally, there is a known issue in `Kotlin 2.0.0` affecting dependency resolution, which is scheduled to be fixed in `Kotlin 2.0.20`.
+Additionally, there is a known issue in Kotlin 2.0.0 affecting dependency resolution, which is scheduled to be fixed in Kotlin 2.0.20.
 For more information, refer to [this issue](https://github.com/gradle/github-dependency-graph-gradle-plugin/issues/140#issuecomment-2230255380).
 
 ## Setting build constraints when scanning Go projects
@@ -253,7 +233,7 @@ variables:
   GOFLAGS: "-tags=test_feature"
 ```
 
-## Dependency Scanning of Go projects returns false positives
+## Dependency scanning of Go projects returns false positives
 
 The `go.sum` file contains an entry of every module that was considered while generating the project's [build list](https://go.dev/ref/mod#glos-build-list).
 Multiple versions of a module are included in the `go.sum` file, but the [MVS](https://go.dev/ref/mod#minimal-version-selection)
@@ -284,7 +264,7 @@ If using a `Pipfile.lock` generated by [`pipenv`](https://pipenv.pypa.io/), run 
 
 ## `ERROR: In --require-hashes mode, all requirements must have their versions pinned with ==`
 
-This error will occur if the requirements file was generated on a different platform than the one used by the GitLab Runner.
+This error occurs if the requirements file was generated on a different platform than the one used by the GitLab Runner.
 Support for targeting other platforms is tracked in [issue 416376](https://gitlab.com/gitlab-org/gitlab/-/issues/416376).
 
 ## Editable flags can cause dependency scanning for Python to hang
@@ -307,13 +287,15 @@ If you're using the Kubernetes executor, you may need to override the default Ku
 
 ## No `package-lock.json` file in NPM projects
 
-By default, the Dependency Scanning job runs only when there is a `package-lock.json` file in the repository. However, some NPM projects generate the `package-lock.json` file during the build process, instead of storing them in the Git repository.
+By default, the dependency scanning job runs only when there is a `package-lock.json` file in the
+repository. However, some NPM projects generate the `package-lock.json` file during the build
+process, instead of storing them in the Git repository.
 
 To scan dependencies in these projects:
 
 1. Generate the `package-lock.json` file in a build job.
 1. Store the generated file as an artifact.
-1. Modify the Dependency Scanning job to use the artifact and adjust its rules.
+1. Modify the dependency scanning job to use the artifact and adjust its rules.
 
 For example, your configuration might look like this:
 
@@ -342,22 +324,25 @@ gemnasium-dependency_scanning:
     - if: "$CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\\bdependency_scanning\\b/"
 ```
 
-## No Dependency Scanning job added to the pipeline
+## No dependency scanning job added to the pipeline
 
-The Dependency Scanning job uses rules to check if either lockfiles with dependencies or build-tool related files exist. If none of these files are detected, the job is not added to the pipeline, even if the lockfile are generated by another job in the pipeline.
+The dependency scanning job uses rules to check if either lockfiles with dependencies or build-tool
+related files exist. If none of these files are detected, the job is not added to the pipeline, even
+if the lockfile are generated by another job in the pipeline.
 
-If you experience this situation, ensure your repository contains [a supported file](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files),
-or a file indicating that a supported file is generated at runtime.
-Consider whether such files can be added to your repository to trigger the Dependency Scanning job.
+If you experience this situation, ensure your repository contains a
+[supported file](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files),
+or a file indicating that a supported file is generated at runtime. Consider whether such files can
+be added to your repository to trigger the dependency scanning job.
 
 If you believe that your repository does contain such files and the job is still not triggered, [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
 
 - The language and build tool you use.
 - What kind of lockfile you provide and where it gets generated.
 
-You can also contribute directly to the [Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml#L269-270).
+You can also contribute directly to the [dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml#L269-270).
 
-## Dependency Scanning fails with `gradlew: permission denied`
+## Dependency scanning fails with `gradlew: permission denied`
 
 The `permission denied` error on `gradlew` typically indicates that `gradlew` was checked into the repository without an executable bit set. The error might appear in your job with this message:
 
@@ -367,14 +352,50 @@ The `permission denied` error on `gradlew` typically indicates that `gradlew` wa
 
 Make the file executable by running `chmod +ux gradlew` locally and pushing it to your Git repository.
 
-## Dependency Scanning scanner is no longer `Gemnasium`
+## Dependency scanning scanner is no longer `Gemnasium`
 
-Historically, the scanner used by Dependency Scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/_index.md).
+Historically, the scanner used by dependency scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/_index.md).
 
-With the rollout of [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing Dependency Scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
+With the roll out of [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing dependency scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
 
-As we move forward with the rollout and ultimately replace the existing Gemnasium analyzer, the `GitLab SBoM Vulnerability Scanner` will be the only expected value for GitLab built-in Dependency Scanning feature.
+As we move forward with the roll out and ultimately replace the existing Gemnasium analyzer, the `GitLab SBoM Vulnerability Scanner` will be the only expected value for GitLab built-in dependency scanning feature.
 
 ## Dependency list for project not being updated based on latest SBOM
 
 When a pipeline has a failing job that would generate an SBOM, the `DeleteNotPresentOccurrencesService` does not execute, which prevents the dependency list from being changed or updated. This can occur even if there are other successful jobs that upload an SBOM, and the pipeline overall is successful. This is designed to prevent accidentally removing dependencies from the dependency list when related security scanning jobs fail. If the project dependency list is not updating as expected, check for any SBOM-related jobs that may have failed in the pipeline, and fix them or remove them.
+
+## Dependency scanning fails with `open /etc/ssl/certs/ca-certificates.crt: permission denied`
+
+This error typically indicates that the user running the container is not a part of the `root` group.
+Ensure that the user is a part of the group by running `id`.
+
+```shell
+$ id
+uid=1000(node) gid=0(root) groups=0(root),1000(node)
+```
+
+If you're running OpenShift or using the Kubernetes executor, ensure that you configure the runner to
+run using group ID (GID) 0.
+
+```toml
+[[runners]]
+[runners.kubernetes]
+    [runners.kubernetes.pod_security_context]
+    run_as_non_root = true
+    run_as_group = 0
+```
+
+## Error: `node with package name <package_name> does not exist`
+
+This issue occurs when the package manager, usually nuget, is unable to find the package. This might
+happen because the image used to build the application is different than the image used to run the
+dependency scan.
+
+To resolve this issue, use the same .NET SDK image that the dependency scanner uses to build your
+application. You can find the exact image by running:
+
+```shell
+curl --silent "https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/raw/master/build/gemnasium/alpine/Dockerfile" | grep "vrange-nuget-build" | grep "FROM"
+```
+
+Check the Dockerfile linked above for the current image version.

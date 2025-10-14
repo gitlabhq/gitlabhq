@@ -11,9 +11,9 @@ RSpec.describe ResolvesProject do
     end
   end
 
-  subject(:instance) { implementing_class.new }
-
   let_it_be(:project) { create(:project) }
+
+  subject(:instance) { implementing_class.new }
 
   it 'can resolve projects by path' do
     expect(sync(instance.resolve_project(full_path: project.full_path))).to eq(project)

@@ -359,15 +359,15 @@ requests. These placeholders are called variables, as explained in [using variab
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
-![Edit collection variable tab View](img/dast_api_postman_collection_edit_variable_v13_9.png)
+![Edit collection variable tab View](img/dast_api_postman_collection_edit_variable_v18_5.png)
 
 Or alternatively, you can add variables in an environment:
 
-![Edit environment variables View](img/dast_api_postman_environment_edit_variable_v13_9.png)
+![Edit environment variables View](img/dast_api_postman_environment_edit_variable_v18_5.png)
 
 You can then use the variables in sections such as URL, headers, and others:
 
-![Edit request using variables View](img/dast_api_postman_request_edit_v13_9.png)
+![Edit request using variables View](img/dast_api_postman_request_edit_v18_5.png)
 
 Postman has grown from a basic client tool with a nice UX experience to a more complex ecosystem that allows testing APIs with scripts, creating complex collections that trigger secondary requests, and setting variables along the way. Not every feature in the Postman ecosystem is supported. For example, scripts are not supported. The main focus of the Postman support is to ingest Postman Collection definitions that are used by the Postman Client and their related variables defined in the workspace, environments, and the collections themselves.
 
@@ -810,7 +810,7 @@ Follow these steps to view details of a vulnerability:
 
 1. You can view vulnerabilities in a project, or a merge request:
 
-   - In a project, go to the project's **Secure > Vulnerability report**
+   - In a project, go to the project's **Secure** > **Vulnerability report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API security testing vulnerabilities are available in a section labeled
@@ -826,10 +826,10 @@ Follow these steps to view details of a vulnerability:
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
    | Request             | The HTTP request that caused the vulnerability.                                         |
-   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like.|
+   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like. |
    | Actual Response     | Response received from test request.                                                    |
    | Evidence            | How we determined a vulnerability occurred.                                             |
-   | Identifiers         | The API security testing check used to find this vulnerability.                                     |
+   | Identifiers         | The API security testing check used to find this vulnerability.                         |
    | Severity            | Severity of the vulnerability.                                                          |
    | Scanner Type        | Scanner used to perform testing.                                                        |
 

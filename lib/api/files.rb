@@ -161,7 +161,7 @@ module API
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
-        optional :range, type: Hash do
+        optional :range, type: Hash, desc: 'Object that contains the blame range' do
           requires :start, type: Integer,
             desc: 'The first line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
           requires :end, type: Integer,

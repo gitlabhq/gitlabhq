@@ -2,8 +2,8 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Test with GitLab CI/CD and generate reports in merge requests
-description: Unit tests, integration tests, test reports, coverage, and quality assurance.
+title: Test with GitLab CI/CD
+description: Generate test reports, code quality analysis, and security scans that display in merge requests.
 ---
 
 {{< details >}}
@@ -13,37 +13,39 @@ description: Unit tests, integration tests, test reports, coverage, and quality 
 
 {{< /details >}}
 
-Use GitLab CI/CD to test the changes included in a feature branch. You can also
-display reports or link to important information directly from [merge requests](../../user/project/merge_requests/_index.md).
+Use GitLab CI/CD to test changes in feature branches. You can display test reports and
+link to important information directly in [merge requests](../../user/project/merge_requests/_index.md).
+
+## Testing and quality reports
+
+You can generate the following reports:
 
 | Feature                                                                                 | Description |
 | --------------------------------------------------------------------------------------- | ----------- |
-| [Accessibility Testing](accessibility_testing.md)                                       | Automatically report A11y violations for changed pages in merge requests. |
-| [Browser Performance Testing](browser_performance_testing.md)                           | Quickly determine the browser performance impact of pending code changes. |
-| [Load Performance Testing](load_performance_testing.md)                                 | Quickly determine the server performance impact of pending code changes. |
-| [Code coverage](code_coverage/_index.md)                                                | View test coverage results in merge requests, line-by-line coverage in file diffs, and overall metrics. |
-| [Code Quality](code_quality.md)                                                         | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area. |
-| [Display arbitrary job artifacts](../yaml/_index.md#artifactsexpose_as)                 | Configure CI pipelines with the `artifacts:expose_as` parameter to directly link to selected [artifacts](../jobs/job_artifacts.md) in merge requests. |
-| [Unit test reports](unit_test_reports.md)                                               | Configure your CI jobs to use Unit test reports, and let GitLab display a report on the merge request so that it's easier and faster to identify the failure without having to check the entire job log. |
-| [License Scanning](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) | Manage the licenses of your dependencies. |
-| [Metrics reports](metrics_reports.md)                                                   | Track custom metrics like memory usage and performance between branches in merge requests. |
-| [Fail fast testing](fail_fast_testing.md)                                               | Run a subset of your RSpec test suite, so failed tests stop the pipeline before the full suite of tests run, saving resources. |
+| [Accessibility testing](accessibility_testing.md)                                       | Detect accessibility violations for changed pages. |
+| [Browser performance testing](browser_performance_testing.md)                           | Measure browser performance impact of code changes. |
+| [Code coverage](code_coverage/_index.md)                                                | View test coverage results, line-by-line coverage in diffs, and overall metrics. |
+| [Code quality](code_quality.md)                                                         | Analyze source code quality with Code Climate. |
+| [Display arbitrary job artifacts](../yaml/_index.md#artifactsexpose_as)                 | Link to selected job artifacts using `artifacts:expose_as`. |
+| [Fail fast testing](fail_fast_testing.md)                                               | Stop pipelines early when RSpec tests fail. |
+| [License scanning](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) | Scan and manage dependency licenses. |
+| [Load performance testing](load_performance_testing.md)                                 | Measure server performance impact of code changes. |
+| [Metrics reports](metrics_reports.md)                                                   | Track custom metrics like memory usage and performance. |
+| [Unit test reports](unit_test_reports.md)                                               | View test results and identify failures without checking job logs. |
 
-## Security Reports
+## Security reports
 
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
-In addition to the previous reports listed, GitLab can do many types of [Security reports](../../user/application_security/_index.md),
-generated by scanning and reporting any vulnerabilities found in your project:
+You can generate [security reports](../../user/application_security/_index.md) by scanning your project for vulnerabilities:
 
-| Feature                                                                                      | Description |
-|----------------------------------------------------------------------------------------------|-------------|
-| [Container Scanning](../../user/application_security/container_scanning/_index.md)            | Analyze your Docker images for known vulnerabilities. |
-| [Dynamic Application Security Testing (DAST)](../../user/application_security/dast/_index.md) | Analyze your running web applications for known vulnerabilities. |
-| [Dependency Scanning](../../user/application_security/dependency_scanning/_index.md)          | Analyze your dependencies for known vulnerabilities. |
-| [Static Application Security Testing (SAST)](../../user/application_security/sast/_index.md)  | Analyze your source code for known vulnerabilities. |
+| Feature                                                                                       | Description |
+| --------------------------------------------------------------------------------------------- | ----------- |
+| [Container scanning](../../user/application_security/container_scanning/_index.md)            | Scan Docker images for vulnerabilities. |
+| [Dynamic application security testing (DAST)](../../user/application_security/dast/_index.md) | Scan running web applications for vulnerabilities. |
+| [Dependency scanning](../../user/application_security/dependency_scanning/_index.md)          | Scan dependencies for vulnerabilities. |
+| [Static application security testing (SAST)](../../user/application_security/sast/_index.md)  | Scan source code for vulnerabilities. |

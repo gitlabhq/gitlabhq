@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_projects do
+  include ListboxHelpers
   let(:user) { create :user }
   let(:project) { create :project, :repository, namespace: user.namespace }
   let(:ref_selector) { '.ref-selector' }
@@ -30,8 +31,11 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_proje
         end
       end
 
-      def click_show_only_selected_branch_checkbox
-        find('#filter_ref').click
+      def select_display_option(option_text)
+        page.within ".network-form" do
+          toggle_listbox
+          select_listbox_item(option_text)
+        end
       end
 
       before do
@@ -72,8 +76,8 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_proje
 
       it 'renders by commit sha of "v1.0.0"' do
         page.within ".network-form" do
-          fill_in 'extended_sha1', with: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
-          find('button').click
+          fill_in 'Enter a Git revision', with: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
+          click_button 'Search revision and rerender the graph'
         end
 
         expect(page).to have_selector ".network-graph"
@@ -91,13 +95,19 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_proje
           expect(page).to have_content 'Change some files'
         end
 
-        click_show_only_selected_branch_checkbox
+        select_display_option('Display up to revision')
+        page.within ".network-form" do
+          click_button 'Search revision and rerender the graph'
+        end
 
         page.within '.network-graph' do
           expect(page).not_to have_content 'Change some files'
         end
 
-        click_show_only_selected_branch_checkbox
+        select_display_option('Display full history')
+        page.within ".network-form" do
+          click_button 'Search revision and rerender the graph'
+        end
 
         page.within '.network-graph' do
           expect(page).to have_content 'Change some files'
@@ -106,8 +116,8 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_proje
 
       it 'renders error message when sha commit not exists' do
         page.within ".network-form" do
-          fill_in 'extended_sha1', with: ';'
-          find('button').click
+          fill_in 'Enter a Git revision', with: ';'
+          click_button 'Search revision and rerender the graph'
         end
 
         expect(page).to have_selector '[data-testid="alert-danger"]', text: "Git revision ';' does not exist."

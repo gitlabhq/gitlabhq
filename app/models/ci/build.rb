@@ -165,6 +165,10 @@ module Ci
 
     delegate :name, to: :project, prefix: true
 
+    delegate :set_waiting_for_runner_ack,
+      :heartbeat_runner_ack_wait, :cancel_wait_for_runner_ack, :runner_manager_id_waiting_for_ack,
+      to: :runner_ack_queue
+
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
 
@@ -204,6 +208,16 @@ module Ci
     end
 
     scope :with_secure_reports_from_config_options, ->(job_types) do
+      where_exists(
+        Ci::JobDefinitionInstance
+          .joins(:job_definition)
+          .scoped_job
+          .where("config -> 'options' -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
+      )
+    end
+
+    # TODO: remove this scope with `ci_builds_metadata`
+    scope :with_secure_reports_from_metadata_config_options, ->(job_types) do
       joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
 
@@ -245,7 +259,6 @@ module Ci
       run_after_commit { build.execute_hooks }
     end
 
-    after_commit :trigger_job_create_subscription, on: :create
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
 
@@ -407,6 +420,7 @@ module Ci
       after_transition any => any do |build|
         build.run_after_commit do
           trigger_job_status_change_subscription
+          trigger_job_processed_subscriptions
         end
       end
     end
@@ -440,6 +454,11 @@ module Ci
       Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
     end
 
+    # TODO: remove this method with `ci_builds_metadata`
+    def self.has_any_job_definition?
+      left_joins(:job_definition_instance).limit(1).pick(:job_id).present?
+    end
+
     def needs_maintainer_role_for_artifact_access?
       return false if job_artifacts_archive.nil?
 
@@ -450,15 +469,20 @@ module Ci
       GraphqlTriggers.ci_job_status_updated(self)
     end
 
-    def trigger_job_create_subscription
-      return unless Feature.enabled?(:ci_job_created_subscription, project)
-
-      return if Gitlab::ApplicationRateLimiter.throttled?(
-        :ci_job_created_subscription,
+    def ci_job_processed_rate_limited?
+      Gitlab::ApplicationRateLimiter.throttled?(
+        :ci_job_processed_subscription,
         scope: project
       )
+    end
 
-      GraphqlTriggers.ci_job_created(self)
+    def trigger_job_processed_subscriptions
+      return unless Feature.enabled?(:ci_job_created_subscription, project)
+
+      return if ci_job_processed_rate_limited?
+
+      GraphqlTriggers.ci_job_processed(self)
+      GraphqlTriggers.ci_job_processed_with_artifacts(self)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
@@ -961,7 +985,7 @@ module Ci
     end
 
     def invalid_dependencies
-      dependencies.invalid_local
+      dependencies.invalid
     end
 
     def valid_dependency?
@@ -1221,6 +1245,13 @@ module Ci
       super
     end
 
+    #
+    # Support for two-phase runner job acceptance acknowledgement
+    #
+    def waiting_for_runner_ack?
+      pending? && runner_id.present? && runner_manager_id_waiting_for_ack.present?
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1366,9 +1397,7 @@ module Ci
         'create_ci_build',
         project: project,
         user: user,
-        additional_properties: {
-          property: name
-        }
+        property: name
       )
     end
 
@@ -1378,6 +1407,10 @@ module Ci
 
     def prefix_and_partition_for_token
       TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
+    end
+
+    def runner_ack_queue
+      @runner_ack_queue ||= Gitlab::Ci::Build::RunnerAckQueue.new(self)
     end
   end
 end
