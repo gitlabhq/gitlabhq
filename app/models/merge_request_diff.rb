@@ -9,6 +9,7 @@ class MergeRequestDiff < ApplicationRecord
   include BulkInsertableAssociations
   include ShaAttribute
   include ObjectStorable
+  include FromUnion
 
   ignore_columns %i[
     id_convert_to_bigint
@@ -82,7 +83,7 @@ class MergeRequestDiff < ApplicationRecord
   scope :with_files, -> { without_states(:without_files, :empty) }
   scope :viewable, -> { without_state(:empty) }
   scope :by_head_commit_sha, ->(sha) { where(head_commit_sha: sha) }
-  scope :by_commit_sha, ->(sha) do
+  scope :by_commit_sha, ->(project, sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
       Gitlab::AppLogger.info(
         event: 'merge_request_diff_by_commit_sha_call',
@@ -90,7 +91,32 @@ class MergeRequestDiff < ApplicationRecord
       )
     end
 
-    joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
+    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+      # Need to serialize the SHAs when querying `merge_request_commits_metadata`
+      # table as `sha` column is binary and AR is not automatically serializing the SHA
+      # in this case.
+      #
+      # There are callers of this scope wherein `sha` is an array of `sha` so we need
+      # to handle that as well.
+      sha_array = Array.wrap(sha)
+      serialized_shas = sha_array.map { |s| Gitlab::Database::ShaAttribute.new.serialize(s) }
+
+      metadata_query =
+        MergeRequestDiff.joins(:merge_request_diff_commits)
+          .joins(
+            "INNER JOIN merge_request_commits_metadata ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id AND merge_request_commits_metadata.project_id = #{project.id}"
+          )
+          .where(merge_request_commits_metadata: { sha: serialized_shas })
+
+      diff_commits_query =
+        MergeRequestDiff
+          .joins(:merge_request_diff_commits)
+          .where(merge_request_diff_commits: { sha: sha })
+
+      from_union(metadata_query, diff_commits_query).reorder(nil)
+    else
+      joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
+    end
   end
 
   scope :by_project_id, ->(project_id) do

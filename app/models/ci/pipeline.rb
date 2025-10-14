@@ -1011,7 +1011,7 @@ module Ci
           MergeRequest.where(id: merge_request_id)
         else
           MergeRequest.where(source_project_id: project_id, source_branch: ref)
-            .by_commit_sha(sha)
+            .by_commit_sha(project, sha)
         end
     end
 

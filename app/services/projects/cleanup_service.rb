@@ -78,7 +78,7 @@ module Projects
     def cleanup_merge_request_diffs(old_commit_shas)
       merge_request_diffs = MergeRequestDiff
         .by_project_id(project.id)
-        .by_commit_sha(old_commit_shas)
+        .by_commit_sha(project, old_commit_shas)
 
       # It's important to run the ActiveRecord callbacks here
       merge_request_diffs.destroy_all # rubocop:disable Cop/DestroyAll

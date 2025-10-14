@@ -317,7 +317,7 @@ When you use Chat in a project in the GitLab UI, you can select a specific agent
 Prerequisites:
 
 - You must [add an agent to your project](../duo_agent_platform/agents/_index.md#add-an-agent-to-a-project)
-  from the AI catalog.
+  from the AI Catalog.
 
 To select an agent:
 

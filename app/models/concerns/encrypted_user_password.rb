@@ -49,6 +49,18 @@ module EncryptedUserPassword
     end
   end
 
+  def migrated_password?
+    return false if password_strategy != encryptor
+
+    if BCRYPT_STRATEGY == password_strategy
+      return true if bcrypt_password_matches_current_stretches?
+    elsif PBKDF2_SHA512_STRATEGY == password_strategy
+      return true if pbkdf2_password_matches_salt_length?
+    end
+
+    false
+  end
+
   private
 
   # Generates a hashed password for the configured encryption method
@@ -91,16 +103,10 @@ module EncryptedUserPassword
   def migrate_password!(password)
     # A note on ordering here:
     # Other code expects to use this function to switch between pbkdf2 and bcrypt.
-    # Hence, if password strategy != encryptor, we need to fail immediately and migrate.
+    # Hence, if password is unmigrated, we need to fail immediately and migrate.
     # Reversing this ordering will break tests in spec/models/concerns/encrypted_user_password_spec.rb.
 
-    if password_strategy == encryptor
-      if BCRYPT_STRATEGY == password_strategy
-        return true if bcrypt_password_matches_current_stretches?
-      elsif PBKDF2_SHA512_STRATEGY == password_strategy
-        return true if pbkdf2_password_matches_salt_length?
-      end
-    end
+    return true if migrated_password?
 
     skip_password_change_notification!
     # We get some password_change emails even when

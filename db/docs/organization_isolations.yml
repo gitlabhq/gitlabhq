@@ -1,0 +1,13 @@
+---
+table_name: organization_isolations
+classes:
+- Organizations::OrganizationIsolation
+feature_categories:
+- organization
+description: Tracks isolation state for organizations to enable isolation enforcement and related features
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572150
+milestone: '18.6'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

@@ -967,7 +967,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '.by_commit_sha' do
-    subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
+    subject(:by_commit_sha) { described_class.by_commit_sha(merge_request.project, sha) }
 
     let!(:merge_request) { create(:merge_request) }
 
@@ -1120,31 +1120,33 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '.by_related_commit_sha' do
-    subject { described_class.by_related_commit_sha(sha) }
+    let_it_be(:project) { create(:project, :repository) }
+
+    subject { described_class.by_related_commit_sha(project, sha) }
 
     context 'when commit is a squash commit' do
-      let!(:merge_request) { create(:merge_request, :merged, squash_commit_sha: sha) }
+      let!(:merge_request) { create(:merge_request, :merged, source_project: project, squash_commit_sha: sha) }
       let(:sha) { '123abc' }
 
       it { is_expected.to eq([merge_request]) }
     end
 
     context 'when commit is a part of the merge request' do
-      let!(:merge_request) { create(:merge_request) }
+      let!(:merge_request) { create(:merge_request, source_project: project) }
       let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
 
       it { is_expected.to eq([merge_request]) }
     end
 
     context 'when commit is a merge commit' do
-      let!(:merge_request) { create(:merge_request, :merged, merge_commit_sha: sha) }
+      let!(:merge_request) { create(:merge_request, :merged, source_project: project, merge_commit_sha: sha) }
       let(:sha) { '123abc' }
 
       it { is_expected.to eq([merge_request]) }
     end
 
     context 'when commit is a rebased fast-forward commit' do
-      let!(:merge_request) { create(:merge_request, :merged, merged_commit_sha: sha) }
+      let!(:merge_request) { create(:merge_request, :merged, source_project: project, merged_commit_sha: sha) }
       let(:sha) { '123abc' }
 
       it { is_expected.to eq([merge_request]) }
@@ -1152,16 +1154,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'when commit is a generated ref commit' do
       before do
-        create(:merge_request_generated_ref_commit, commit_sha: sha, merge_request: merge_request, project: merge_request.target_project)
+        create(:merge_request_generated_ref_commit, commit_sha: sha, merge_request: merge_request, project: project)
       end
 
-      let!(:merge_request) { create(:merge_request, :merged, merged_commit_sha: sha) }
+      let!(:merge_request) { create(:merge_request, :merged, project: project, merged_commit_sha: sha) }
 
       let(:sha) { 'generated-ref-commit-sha' }
       let(:shas) { %w[generated-ref-commit-sha] }
 
       it 'returns the merge requests for the shas' do
-        expect(described_class.by_related_commit_sha(shas)).to eq([merge_request])
+        expect(described_class.by_related_commit_sha(project, shas)).to eq([merge_request])
       end
     end
 
@@ -1172,7 +1174,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when commit is part of the merge request and a squash commit at the same time' do
-      let!(:merge_request) { create(:merge_request) }
+      let!(:merge_request) { create(:merge_request, source_project: project) }
       let(:sha) { merge_request.commits.first.id }
 
       before do

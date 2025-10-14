@@ -29,13 +29,17 @@ namespace :gitlab do
       puts "Password successfully updated for user with username #{username}."
     end
 
+    # This is an alias for :check_hashes for backwards compatibility.
     desc "GitLab | Password | Check status of password salts on FIPS systems"
-    task :fips_check_salts, [:print_usernames] => :environment do |_, args|
-      abort Rainbow('This command is only available on FIPS instances').red unless Gitlab::FIPS.enabled?
+    task :fips_check_salts, [:print_usernames] => :environment do |t, args|
+      alias_args = t.arg_names.map { |a| args[a] }
+      Rake::Task['gitlab:password:check_hashes'].invoke(*alias_args)
+    end
 
-      message = "Active users with unmigrated salts:"
+    desc "GitLab | Password | Check status of password hashes"
+    task :check_hashes, [:print_usernames] => :environment do |_, args|
+      message = "Active users with unmigrated hashes:"
       batch_size = 50
-      min_salt_len = 64
       count_total = 0
       count_unmigrated = 0
 
@@ -46,17 +50,13 @@ namespace :gitlab do
           count_total += 1
 
           begin
-            hash = user.encrypted_password
-            salt_len = Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512
-              .split_digest(hash)[:salt].length
+            unless user.migrated_password?
+              count_unmigrated += 1
+              puts user.username if args.print_usernames
+            end
           rescue StandardError => e
-            puts("Error getting salt for user #{user.username}: #{e.message}")
+            puts("Error getting hash for user #{user.username}: #{e.message}")
             next
-          end
-
-          if salt_len < min_salt_len
-            puts user.username if args.print_usernames
-            count_unmigrated += 1
           end
         end
       end

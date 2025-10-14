@@ -251,7 +251,7 @@ Before you upgrade:
    Any users who haven't completed this hash migration will be unable to sign in to
    Ubuntu 22 FIPS installations and will need to perform a password reset.
 
-   To find for users who have not migrated, use [this Rake task](../../administration/raketasks/password.md#check-password-salt-length)
+   To find for users who have not migrated, use [this Rake task](../../administration/raketasks/password.md#check-password-hashes)
    before upgrading to Ubuntu 22.04.
 
 1. Check the GitLab secrets JSON: Rails now requires stronger active dispatch salts to

@@ -104,7 +104,7 @@ Alternatively, you can use the API to protect an environment:
    For example, this group is called `protected-access-group` and has the group ID `9899826`. Note
    that the rest of the examples in these steps use this group.
 
-   ![Protected access group interface showing the New project button](img/protected_access_group_v13_6.png)
+   ![Protected access group interface with the New project button highlighted.](img/protected_access_group_v13_6.png)
 
 1. Use the API to add a user to the group as a reporter:
 

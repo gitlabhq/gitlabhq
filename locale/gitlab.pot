@@ -2571,10 +2571,10 @@ msgstr ""
 msgid "AICatalog|Choose a memorable name for your AI flow."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI Catalog."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI Catalog."
 msgstr ""
 
 msgid "AICatalog|Configuration"
@@ -2878,9 +2878,6 @@ msgid "AICatalog|Version"
 msgstr ""
 
 msgid "AICatalog|Visibility"
-msgstr ""
-
-msgid "AICatalog|Visibility level is required."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."

@@ -32,6 +32,9 @@ module Organizations
     has_many :system_hooks
 
     has_one :settings, class_name: "OrganizationSetting"
+    has_one :isolated_record, class_name: 'Organizations::OrganizationIsolation',
+      inverse_of: :organization, autosave: true
+
     has_one :organization_detail, inverse_of: :organization, autosave: true
 
     has_many :organization_users, inverse_of: :organization

@@ -24,7 +24,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    the script that sets commit build
    statuses in Bitbucket. Repository write permissions are required.
 
-   ![Bitbucket Cloud webhook](img/bitbucket_app_password_v10_6.png)
+   ![Bitbucket Cloud page showing the App password creation interface.](img/bitbucket_app_password_v10_6.png)
 
 1. In Bitbucket, from your repository, select **Clone**, then copy the URL that starts after `git clone`.
 
@@ -58,7 +58,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
    The webhook trigger should be set to **Repository Push**.
 
-   ![Bitbucket Cloud webhook](img/bitbucket_webhook_v10_6.png)
+   ![Bitbucket Cloud repository settings page displaying webhook configuration for GitLab mirroring.](img/bitbucket_webhook_v10_6.png)
 
    After saving, test the webhook by pushing a change to your Bitbucket
    repository.

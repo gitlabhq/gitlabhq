@@ -172,15 +172,52 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '.by_commit_sha' do
-    subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
 
-    let!(:merge_request) { create(:merge_request) }
+    let_it_be(:commits_metadata) do
+      create(
+        :merge_request_commits_metadata,
+        project: project,
+        sha: 'abc123'
+      )
+    end
 
-    context 'with sha contained in' do
-      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+    let_it_be(:diff_commit_with_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata_id: commits_metadata.id,
+        relative_order: 0,
+        sha: nil
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        relative_order: 1,
+        sha: 'def456'
+      )
+    end
+
+    subject(:by_commit_sha) { described_class.by_commit_sha(project, sha) }
+
+    context 'with sha contained in commits metadata' do
+      let(:sha) { 'abc123' }
 
       it 'returns merge request diffs' do
-        expect(by_commit_sha).to eq([merge_request.merge_request_diff])
+        expect(by_commit_sha).to eq([merge_request_diff])
+      end
+    end
+
+    context 'with sha contained in diff commits' do
+      let(:sha) { 'def456' }
+
+      it 'returns merge request diffs' do
+        expect(by_commit_sha).to eq([merge_request_diff])
       end
     end
 
@@ -189,6 +226,17 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
       it 'returns empty result' do
         expect(by_commit_sha).to be_empty
+      end
+    end
+
+    context 'when merge_request_diff_commits_dedup is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it 'returns merge request diffs matching SHA in diff commits' do
+        expect(described_class.by_commit_sha(project, 'abc123')).to be_empty
+        expect(described_class.by_commit_sha(project, 'def456')).to eq([merge_request_diff])
       end
     end
 

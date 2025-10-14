@@ -366,7 +366,7 @@ class MergeRequest < ApplicationRecord
   scope :including_target_project, -> do
     includes(:target_project)
   end
-  scope :by_commit_sha, ->(sha) do
+  scope :by_commit_sha, ->(project, sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
         event: 'merge_request_by_commit_sha_call',
@@ -374,7 +374,7 @@ class MergeRequest < ApplicationRecord
       )
     end
 
-    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
+    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(project, sha)).reorder(nil)
   end
   scope :by_merge_commit_sha, ->(sha) do
     where(merge_commit_sha: sha)
@@ -391,7 +391,7 @@ class MergeRequest < ApplicationRecord
   scope :by_generated_ref_commit_sha, ->(sha) do
     joins(:generated_ref_commits).where(p_generated_ref_commits: { commit_sha: sha })
   end
-  scope :by_related_commit_sha, ->(sha) do
+  scope :by_related_commit_sha, ->(project, sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
         event: 'merge_request_by_related_commit_sha_call',
@@ -401,7 +401,7 @@ class MergeRequest < ApplicationRecord
 
     from_union(
       [
-        by_commit_sha(sha),
+        by_commit_sha(project, sha),
         by_squash_commit_sha(sha),
         by_merge_commit_sha(sha),
         by_merged_commit_sha(sha),

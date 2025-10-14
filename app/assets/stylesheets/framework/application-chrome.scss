@@ -622,13 +622,13 @@
   // Light mode
   &:not(.gl-dark) {
     // default color to mute the gradient
-    --_shade-1: hsla(from var(--theme-color) h 25 95 / 90%);
+    --_shade-1: hsla(from var(--theme-color) h 25 93 / 95%);
     // alternative color
-    --_shade-2: hsl(from var(--theme-color) calc(h + 60) calc(s + 20) l);
+    --_shade-2: hsl(from var(--theme-color) calc(h + 10) calc(s + 20) l);
     // original color
-    --_shade-3: hsl(from var(--theme-color) h calc(s + 20) l);
+    --_shade-3: hsl(from var(--theme-color) h calc(s + 10) l);
     // bottom color
-    --_shade-4: hsla(from var(--theme-color) calc(h + 30) calc(s + 20) l / 40%);
+    --_shade-4: hsla(from var(--theme-color) calc(h + 20) calc(s + 20) l / 40%);
 
     // Temporarily unship this change as it introduced some regressions, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204009
     // --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 2%);
@@ -637,6 +637,7 @@
 
     body {
       background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.6), transparent 40vw),
         linear-gradient(var(--_shade-1), var(--_shade-1)),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 50vw),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-2), transparent 70vw),

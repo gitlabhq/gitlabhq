@@ -424,7 +424,7 @@ class Note < ApplicationRecord
   # or nil if it is a note on some other object.
   def merge_requests
     if for_commit?
-      project.merge_requests.by_commit_sha(commit_id)
+      project.merge_requests.by_commit_sha(project, commit_id)
     elsif for_merge_request?
       MergeRequest.id_in(noteable_id)
     end

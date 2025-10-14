@@ -20357,6 +20357,23 @@ CREATE SEQUENCE namespace_import_users_id_seq
 
 ALTER SEQUENCE namespace_import_users_id_seq OWNED BY namespace_import_users.id;
 
+CREATE TABLE namespace_isolations (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    isolated boolean DEFAULT false NOT NULL
+);
+
+CREATE SEQUENCE namespace_isolations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE namespace_isolations_id_seq OWNED BY namespace_isolations.id;
+
 CREATE TABLE namespace_ldap_settings (
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -21222,6 +21239,23 @@ CREATE TABLE organization_details (
     CONSTRAINT check_71dfb7807f CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_9fbd483b51 CHECK ((char_length(avatar) <= 255))
 );
+
+CREATE TABLE organization_isolations (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    isolated boolean DEFAULT false NOT NULL
+);
+
+CREATE SEQUENCE organization_isolations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_isolations_id_seq OWNED BY organization_isolations.id;
 
 CREATE TABLE organization_push_rules (
     id bigint NOT NULL,
@@ -31136,6 +31170,8 @@ ALTER TABLE ONLY namespace_deletion_schedules ALTER COLUMN namespace_id SET DEFA
 
 ALTER TABLE ONLY namespace_import_users ALTER COLUMN id SET DEFAULT nextval('namespace_import_users_id_seq'::regclass);
 
+ALTER TABLE ONLY namespace_isolations ALTER COLUMN id SET DEFAULT nextval('namespace_isolations_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_statistics ALTER COLUMN id SET DEFAULT nextval('namespace_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY namespaces ALTER COLUMN id SET DEFAULT nextval('namespaces_id_seq'::regclass);
@@ -31189,6 +31225,8 @@ ALTER TABLE ONLY operations_strategies_user_lists ALTER COLUMN id SET DEFAULT ne
 ALTER TABLE ONLY operations_user_lists ALTER COLUMN id SET DEFAULT nextval('operations_user_lists_id_seq'::regclass);
 
 ALTER TABLE ONLY organization_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('organization_cluster_agent_mappings_id_seq'::regclass);
+
+ALTER TABLE ONLY organization_isolations ALTER COLUMN id SET DEFAULT nextval('organization_isolations_id_seq'::regclass);
 
 ALTER TABLE ONLY organization_push_rules ALTER COLUMN id SET DEFAULT nextval('organization_push_rules_id_seq'::regclass);
 
@@ -34255,6 +34293,9 @@ ALTER TABLE ONLY namespace_details
 ALTER TABLE ONLY namespace_import_users
     ADD CONSTRAINT namespace_import_users_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY namespace_isolations
+    ADD CONSTRAINT namespace_isolations_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY namespace_ldap_settings
     ADD CONSTRAINT namespace_ldap_settings_pkey PRIMARY KEY (namespace_id);
 
@@ -34368,6 +34409,9 @@ ALTER TABLE ONLY organization_detail_uploads
 
 ALTER TABLE ONLY organization_details
     ADD CONSTRAINT organization_details_pkey PRIMARY KEY (organization_id);
+
+ALTER TABLE ONLY organization_isolations
+    ADD CONSTRAINT organization_isolations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY organization_push_rules
     ADD CONSTRAINT organization_push_rules_pkey PRIMARY KEY (id);
@@ -40917,6 +40961,8 @@ CREATE UNIQUE INDEX index_namespace_import_users_on_namespace_id ON namespace_im
 
 CREATE UNIQUE INDEX index_namespace_import_users_on_user_id ON namespace_import_users USING btree (user_id);
 
+CREATE UNIQUE INDEX index_namespace_isolations_on_namespace_id ON namespace_isolations USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_namespace_root_storage_statistics_on_namespace_id ON namespace_root_storage_statistics USING btree (namespace_id);
 
 CREATE INDEX index_namespace_settings_on_duo_features ON namespace_settings USING btree (duo_features_enabled, lock_duo_features_enabled) INCLUDE (namespace_id) WHERE (duo_features_enabled IS NOT NULL);
@@ -41158,6 +41204,8 @@ CREATE UNIQUE INDEX index_operations_user_lists_on_project_id_and_name ON operat
 CREATE UNIQUE INDEX index_ops_feature_flags_issues_on_feature_flag_id_and_issue_id ON operations_feature_flags_issues USING btree (feature_flag_id, issue_id);
 
 CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON operations_strategies_user_lists USING btree (strategy_id, user_list_id);
+
+CREATE UNIQUE INDEX index_organization_isolations_on_organization_id ON organization_isolations USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_organization_push_rules_on_organization_id ON organization_push_rules USING btree (organization_id);
 
@@ -50714,6 +50762,9 @@ ALTER TABLE ONLY vulnerability_management_policy_rules
 ALTER TABLE ONLY resource_weight_events
     ADD CONSTRAINT fk_rails_5eb5cb92a1 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY organization_isolations
+    ADD CONSTRAINT fk_rails_5f09cd0360 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY observability_logs_issues_connections
     ADD CONSTRAINT fk_rails_5f0f58ca3a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -51130,6 +51181,9 @@ ALTER TABLE ONLY import_placeholder_memberships
 
 ALTER TABLE ONLY ci_pipeline_messages
     ADD CONSTRAINT fk_rails_8d3b04e3e1_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_isolations
+    ADD CONSTRAINT fk_rails_8d495b2f4c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE incident_management_pending_alert_escalations
     ADD CONSTRAINT fk_rails_8d8de95da9 FOREIGN KEY (alert_id) REFERENCES alert_management_alerts(id) ON DELETE CASCADE;
