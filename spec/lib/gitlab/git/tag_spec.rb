@@ -17,6 +17,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       it { expect(tag.has_signature?).to be_falsey }
       it { expect(tag.signature_type).to eq(:NONE) }
       it { expect(tag.signature).to be_nil }
+      it { expect(tag.lazy_cached_signature).to be_nil }
       it { expect(tag.user_name).to eq("Dmitriy Zaporozhets") }
       it { expect(tag.user_email).to eq("dmitriy.zaporozhets@gmail.com") }
       it { expect(tag.date).to eq(Time.at(1393491299).utc) }
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       it { expect(tag.has_signature?).to be_truthy }
       it { expect(tag.signature_type).to eq(:X509) }
       it { expect(tag.signature).not_to be_nil }
+      it { expect(tag.lazy_cached_signature).to be_nil }
       it { expect(tag.user_name).to eq("Roger Meier") }
       it { expect(tag.user_email).to eq("r.meier@siemens.com") }
       it { expect(tag.date).to eq(Time.at(1574261780).utc) }
@@ -61,6 +63,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       it { expect(tag.signature_type).to eq(:PGP) }
       it { expect(tag.has_signature?).to be_truthy }
       it { expect(tag.signature).not_to be_nil }
+      it { expect(tag.lazy_cached_signature).to be_nil }
       it { expect(tag.user_name).to eq(gitaly_commit_author.name) }
       it { expect(tag.user_email).to eq(gitaly_commit_author.email) }
       it { expect(tag.date).to eq(Time.at(1574261780).utc) }
@@ -71,6 +74,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
         end
 
         it { expect(tag.signature).to be_nil }
+        it { expect(tag.lazy_cached_signature).to be_nil }
       end
     end
 
@@ -97,6 +101,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       it { expect(tag.signature_type).to eq(:SSH) }
       it { expect(tag.has_signature?).to be_truthy }
       it { expect(tag.signature).not_to be_nil }
+      it { expect(tag.lazy_cached_signature).not_to be_nil }
       it { expect(tag.user_email).to eq('test@example.com') }
 
       context 'when render_ssh_signed_tags_verification_status is not enabled' do
@@ -105,6 +110,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
         end
 
         it { expect(tag.signature).to be_nil }
+        it { expect(tag.lazy_cached_signature).to be_nil }
       end
     end
 

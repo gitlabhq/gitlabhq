@@ -34,7 +34,7 @@ module Keeps
   # ```
   class QuarantineFlakyTests < ::Gitlab::Housekeeper::Keep
     MINIMUM_REMAINING_RATE = 25
-    QUERY_URL_TEMPLATE = "https://gitlab.com/api/v4/projects/278964/issues/?order_by=updated_at&state=opened&labels[]=test&labels[]=failure::flaky-test&labels[]=%<flakiness_label>s&not[labels][]=QA&not[labels][]=quarantine&per_page=20"
+    QUERY_URL_TEMPLATE = "https://gitlab.com/api/v4/projects/69718754/issues/?order_by=updated_at&state=opened&labels[]=test&labels[]=failure::flaky-test&labels[]=%<flakiness_label>s&not[labels][]=QA&not[labels][]=quarantine&per_page=20"
     # https://rubular.com/r/OoeQIEwPkL1m7E
     EXAMPLE_LINE_REGEX = /\bit (?<description_and_metadata>[\w'",: \#\{\}]*(?:,\n)?[\w\'",: ]+?) do$/m
     FLAKINESS_LABELS = %w[flakiness::1 flakiness::2 severity::1].freeze
@@ -173,7 +173,7 @@ module Keeps
         headers: {
           'User-Agent' => "GitLab-Housekeeper/#{self.class.name}",
           'Content-type' => 'application/json',
-          'PRIVATE-TOKEN': ENV['HOUSEKEEPER_GITLAB_API_TOKEN']
+          'PRIVATE-TOKEN': ENV['GITLAB_QA_TEST_FAILURE_ISSUE_ACCESS_TOKEN']
         }
       )
 

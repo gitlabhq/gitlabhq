@@ -206,6 +206,12 @@ A **discrete, deterministic capability** an agent (or flow step) invokes to perf
 *Examples:* read GitLab issues, clone a repository, commit & push changes, call a REST API.
 Tools expose data or side-effects; they themselves perform **no reasoning**.
 
+### Third-party flow
+
+A flow defined as YAML that executes arbitrary steps in a container, similar to how our CI/CD works.
+Can be triggered by various actions like `@` mentioning users or assigning reviewers.
+Typically used to communicate with third-party AI tools or agents such as Claude Code.
+
 ## Flow types
 
 ### Current implementation

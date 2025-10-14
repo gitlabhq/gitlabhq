@@ -21,13 +21,13 @@ title: Instance-wide compliance and security policy management
 
 {{< /history >}}
 
-To apply security policies across multiple groups and projects from a single and centralized location, instance administrators can designate a compliance and security policy (CSP) group. This allows the instance administrators to:
+To apply security policies and compliance frameworks across multiple groups and projects from a single and centralized location, instance administrators can designate a compliance and security policy (CSP) group. This allows the instance administrators to:
 
 - Create and configure security policies that automatically apply across your instance.
-- Create compliance frameworks to make them available for other top-level groups.
+- Create centralized compliance frameworks to make them available for other top-level groups.
 - Scope policies to apply to compliance frameworks, groups, projects, or your entire instance.
 - View comprehensive policy coverage to understand which policies are active and where they're active.
-- Maintain centralized control while allowing teams to create their own additional policies.
+- Maintain centralized control while allowing teams to create their own additional policies and frameworks.
 
 ## Prerequisites
 
@@ -91,6 +91,19 @@ The selected group becomes your compliance and security policy group, serving as
 
 See the [compliance and security policy group](../user/application_security/policies/enforcement/compliance_and_security_policy_groups.md) documentation for security policies.
 
+### Centralized compliance framework management
+
+After you've designated a compliance and security policy group, you can create compliance frameworks that are automatically available to all top-level groups in your instance. This provides a consistent approach to compliance across your organization.
+
+Compliance frameworks created in the compliance and security policy group:
+
+- Are visible and available for other top-level groups in your instance.
+- Can be applied to projects by group owners.
+- Are read-only for users outside the compliance and security policy group.
+- Can be integrated with security policies for enhanced compliance enforcement.
+
+For detailed instructions on creating and managing centralized compliance frameworks, see [centralized compliance frameworks](../user/compliance/compliance_frameworks/centralized_compliance_frameworks.md).
+
 ## User workflows
 
 ### Instance administrators
@@ -99,16 +112,19 @@ Instance administrators can:
 
 1. **Designate a compliance and security policy group** from your existing top-level groups
 1. **Create security policies** in the designated group
+1. **Create compliance frameworks** in the designated group
 1. **Configure policy scope** to determine where policies apply
+1. **Scope policies to compliance frameworks** to enforce policies on projects with specific frameworks
 1. **View policy coverage** to understand which policies are active across groups and projects
-1. **Edit and manage** centralized policies as needed
+1. **Edit and manage** centralized policies and frameworks as needed
 
 ### Group administrators and owners
 
 Group administrators and owners can:
 
 - View all applicable policies in **Secure** > **Policies**, including both locally-defined and centrally-managed policies.
-- Create team-specific policies in addition to centrally-managed ones.
+- View and apply centralized compliance frameworks to projects in their groups.
+- Create policies and frameworks for specific groups or projects, in addition to centrally-managed policies and frameworks.
 - Understand policy sources with clear indicators that show whether policies come from your team or central administration.
 
 {{< alert type="note" >}}
@@ -122,6 +138,7 @@ The **Policies** page displays only the policies from the compliance and securit
 Project administrators and owners can:
 
 - View all applicable policies in **Secure** > **Policies**, including both locally-defined and centrally-managed policies.
+- View which compliance frameworks are applied to their projects, including centralized frameworks.
 - Create project-specific policies in addition to centrally-managed ones.
 - Understand policy sources with clear indicators that show whether policies come from your project, group, or central administration.
 
@@ -136,6 +153,7 @@ The **Policies** page displays only the policies from the compliance and securit
 Developers can:
 
 - View all security policies that apply to your work in the **Secure** > **Policies**.
+- View which compliance frameworks are applied to projects they work on.
 - Understand security and compliance requirements with clear visibility into centrally-mandated policies.
 
 ## Automate your migration from security policy projects
@@ -264,3 +282,10 @@ As this is a Beta release, we actively seek feedback from users. Share your expe
 
 - [GitLab Issues](https://gitlab.com/gitlab-org/gitlab/-/issues).
 - Your regular GitLab support channels.
+
+## Related topics
+
+- [Centralized compliance frameworks](../user/compliance/compliance_frameworks/centralized_compliance_frameworks.md)
+- [Compliance and security policy groups](../user/application_security/policies/enforcement/compliance_and_security_policy_groups.md)
+- [Compliance center](../user/compliance/compliance_center/_index.md)
+- [Compliance frameworks](../user/compliance/compliance_frameworks/_index.md)

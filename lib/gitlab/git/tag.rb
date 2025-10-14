@@ -104,6 +104,10 @@ module Gitlab
         signed_tag&.signature
       end
 
+      def lazy_cached_signature
+        signed_tag&.lazy_cached_signature
+      end
+
       def signed_tag
         return unless has_signature?
 

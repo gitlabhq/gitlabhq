@@ -49,6 +49,10 @@ export default {
       type: String,
       required: true,
     },
+    userPermissions: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -128,7 +132,7 @@ export default {
       return Boolean(this.pipelineName);
     },
     hasUpdatePipelinePermissions() {
-      return Boolean(this.pipeline?.userPermissions?.updatePipeline);
+      return Boolean(this.userPermissions?.updatePipeline);
     },
     hasSourceJob() {
       return Boolean(this.pipeline?.sourceJob?.id);

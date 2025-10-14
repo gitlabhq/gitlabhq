@@ -26,8 +26,8 @@ class Projects::TagsController < Projects::ApplicationController
 
       @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
 
-      # Instantiate signed tags so signatures can be batch loaded
-      @tags.each(&:signed_tag)
+      # Call signature_data so it can be batch loaded
+      @tags.each { |t| t.signed_tag&.signature_data }
 
       tag_names = @tags.map(&:name)
       @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)

@@ -21,6 +21,14 @@ import { pipelineWithUpstreamDownstream, wrappedPipelineReturn } from '../mock_d
 
 const processedPipeline = pipelineWithUpstreamDownstream(mockPipelineResponse);
 
+const firstDownstreamId = processedPipeline.downstream[0].id;
+const secondDownstreamId = processedPipeline.downstream[1].id;
+const mockPermissions = {
+  [processedPipeline.id]: { updatePipeline: true },
+  [firstDownstreamId]: { updatePipeline: true },
+  [secondDownstreamId]: { updatePipeline: false },
+};
+
 describe('Linked Pipelines Column', () => {
   const defaultProps = {
     columnTitle: 'Downstream',
@@ -32,6 +40,7 @@ describe('Linked Pipelines Column', () => {
       metricsPath: '',
       graphqlResourceEtag: 'this/is/a/path',
     },
+    userPermissions: mockPermissions,
   };
 
   let wrapper;
@@ -208,6 +217,61 @@ describe('Linked Pipelines Column', () => {
           await clickExpandButton();
           expect(findPipelineGraph().exists()).toBe(false);
         });
+      });
+    });
+  });
+
+  describe('permissions handling', () => {
+    const clickExpandButton = async () => {
+      await findExpandButton().trigger('click');
+      await waitForPromises();
+    };
+
+    describe('when permissions are provided via props', () => {
+      beforeEach(() => {
+        createComponentWithApollo({
+          mountFn: mount,
+          props: {
+            userPermissions: mockPermissions,
+          },
+        });
+      });
+
+      it('passes correct permissions to each linked pipeline', () => {
+        const linkedPipelines = findLinkedPipelineElements();
+
+        expect(linkedPipelines.at(0).props('userPermissions')).toEqual({
+          updatePipeline: true,
+        });
+        expect(linkedPipelines.at(1).props('userPermissions')).toEqual({
+          updatePipeline: false,
+        });
+      });
+
+      it('passes permissions to the expanded pipeline graph', async () => {
+        await clickExpandButton();
+
+        expect(findPipelineGraph().props('userPermissions')).toMatchObject({
+          updatePipeline: true,
+        });
+      });
+    });
+
+    describe('when permissions are not provided', () => {
+      beforeEach(() => {
+        createComponentWithApollo({
+          mountFn: mount,
+          props: {
+            userPermissions: {},
+          },
+        });
+      });
+
+      it('passes empty permissions to linked pipelines', () => {
+        const linkedPipelines = findLinkedPipelineElements();
+
+        expect(linkedPipelines.at(0).props('userPermissions')).toEqual({});
+        expect(linkedPipelines.at(1).props('userPermissions')).toEqual({});
       });
     });
   });

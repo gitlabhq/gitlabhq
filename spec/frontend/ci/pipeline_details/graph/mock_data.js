@@ -16,17 +16,43 @@ const groups = new Array(100).fill({
 mockPipelineResponseCopy.data.project.pipeline.stages.nodes[0].groups.nodes = groups;
 export const mockPipelineResponseWithTooManyJobs = mockPipelineResponseCopy;
 
+export const mockPipelinePermissions = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
+      pipeline: {
+        __typename: 'Pipeline',
+        id: 'gid://gitlab/Ci::Pipeline/123',
+        userPermissions: {
+          __typename: 'PipelinePermissions',
+          updatePipeline: true,
+        },
+        downstream: {
+          __typename: 'PipelineConnection',
+          nodes: [],
+        },
+        upstream: {
+          __typename: 'Pipeline',
+          id: 'gid://gitlab/Ci::Pipeline/122',
+          userPermissions: {
+            __typename: 'PipelinePermissions',
+            updatePipeline: false,
+          },
+        },
+      },
+    },
+  },
+};
+
 export const downstream = {
   nodes: [
     {
       id: 175,
-      iid: '31',
+      iid: '38',
       path: '/root/elemenohpee/-/pipelines/175',
       retryable: true,
       cancelable: false,
-      userPermissions: {
-        updatePipeline: true,
-      },
       status: {
         id: '70',
         group: 'success',
@@ -56,9 +82,6 @@ export const downstream = {
       path: '/root/abcd-dag/-/pipelines/181',
       retryable: true,
       cancelable: false,
-      userPermissions: {
-        updatePipeline: true,
-      },
       status: {
         id: '72',
         group: 'success',
@@ -91,9 +114,6 @@ export const upstream = {
   path: '/root/abcd-dag/-/pipelines/161',
   retryable: true,
   cancelable: false,
-  userPermissions: {
-    updatePipeline: true,
-  },
   status: {
     id: '74',
     group: 'success',
@@ -124,16 +144,9 @@ export const wrappedPipelineReturn = {
         iid: '38',
         complete: true,
         usesNeeds: true,
-        userPermissions: {
-          __typename: 'PipelinePermissions',
-          updatePipeline: true,
-        },
         downstream: {
           retryable: true,
           cancelable: false,
-          userPermissions: {
-            updatePipeline: true,
-          },
           __typename: 'PipelineConnection',
           nodes: [],
         },
@@ -143,9 +156,6 @@ export const wrappedPipelineReturn = {
           path: '/root/elemenohpee/-/pipelines/174',
           retryable: true,
           cancelable: false,
-          userPermissions: {
-            updatePipeline: true,
-          },
           __typename: 'Pipeline',
           status: {
             __typename: 'DetailedStatus',
@@ -204,7 +214,6 @@ export const wrappedPipelineReturn = {
                           id: '83',
                           kind: BUILD_KIND,
                           name: 'build_n',
-                          scheduledAt: null,
                           needs: {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
@@ -213,6 +222,8 @@ export const wrappedPipelineReturn = {
                             __typename: 'CiJobConnection',
                             nodes: [],
                           },
+                          scheduled: false,
+                          scheduledAt: null,
                           status: {
                             __typename: 'DetailedStatus',
                             id: '84',

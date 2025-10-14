@@ -12,6 +12,20 @@ module Gitlab
       end
       strong_memoize_attr :signature
 
+      def attributes
+        {
+          key_id: signature.signed_by_key&.id,
+          key_fingerprint_sha256: signature.key_fingerprint,
+          verification_status: signature.verification_status,
+          project: @repository.container,
+          object_name: @tag.id
+        }
+      end
+
+      def signature_class
+        ::Repositories::Tags::SshSignature
+      end
+
       private
 
       def tag_commit

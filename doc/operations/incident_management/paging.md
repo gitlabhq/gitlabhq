@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure notifications and paging for alerts and incidents in GitLab, including Slack, email, and escalation policies for on-call responders.
 title: Paging and notifications
 ---
 

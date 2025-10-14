@@ -26,12 +26,14 @@ describe('Linked pipeline', () => {
     type: DOWNSTREAM,
     expanded: false,
     isLoading: false,
+    userPermissions: { updatePipeline: true },
   };
 
   const upstreamProps = {
     ...downstreamProps,
     columnTitle: 'Upstream',
     type: UPSTREAM,
+    userPermissions: { updatePipeline: false },
   };
 
   const findButton = () => wrapper.findComponent(GlButton);
@@ -76,6 +78,7 @@ describe('Linked pipeline', () => {
       type: DOWNSTREAM,
       expanded: false,
       isLoading: false,
+      userPermissions: { updatePipeline: true },
     };
 
     beforeEach(() => {
@@ -361,11 +364,11 @@ describe('Linked pipeline', () => {
         beforeEach(() => {
           const pipelineWithTwoActions = {
             ...downstreamProps,
+            userPermissions: { updatePipeline: false },
             pipeline: {
               ...mockPipeline,
               cancelable: true,
               retryable: true,
-              userPermissions: { updatePipeline: false },
             },
           };
 
@@ -432,6 +435,7 @@ describe('Linked pipeline', () => {
       type: DOWNSTREAM,
       expanded: false,
       isLoading: true,
+      userPermissions: { updatePipeline: true },
     };
 
     beforeEach(() => {
@@ -450,6 +454,7 @@ describe('Linked pipeline', () => {
       type: DOWNSTREAM,
       expanded: false,
       isLoading: false,
+      userPermissions: { updatePipeline: true },
     };
 
     beforeEach(() => {

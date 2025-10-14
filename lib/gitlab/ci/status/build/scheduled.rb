@@ -18,7 +18,7 @@ module Gitlab
           end
 
           def status_tooltip
-            "delayed manual action (%{remainingTime})"
+            s_("ScheduledJob|delayed manual action (%{remainingTime})")
           end
 
           def self.matches?(build, user)

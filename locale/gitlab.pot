@@ -57769,6 +57769,9 @@ msgstr ""
 msgid "Scheduled to merge this merge request (%{strategy})."
 msgstr ""
 
+msgid "ScheduledJob|delayed manual action (%{remainingTime})"
+msgstr ""
+
 msgid "Schedules"
 msgstr ""
 

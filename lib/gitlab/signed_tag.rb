@@ -4,22 +4,80 @@ module Gitlab
   class SignedTag
     include Gitlab::Utils::StrongMemoize
 
+    def self.batch_read_cached_signatures(project, signed_tags)
+      signed_tags.group_by(&:signature_class).flat_map do |klass, signed_tags|
+        next [] unless klass
+
+        klass.by_project(project).by_object_name(signed_tags.map(&:object_name))
+      end
+    end
+
+    def self.batch_write_cached_signatures(signed_tags)
+      signed_tags.each(&:signature_data)
+
+      new_cached_signatures = signed_tags.filter_map(&:build_cached_signature)
+      new_cached_signatures.group_by(&:class).flat_map do |klass, tag_signatures|
+        klass.bulk_insert!(tag_signatures)
+      end
+      new_cached_signatures
+    end
+
     def initialize(repository, tag)
       @repository = repository
       @tag = tag
-      @signature_data = Gitlab::Git::Tag.extract_signature_lazily(repository, tag.id) if repository
+    end
+
+    def object_name
+      @tag.id
+    end
+
+    def signature_data
+      @signature_data ||= Gitlab::Git::Tag.extract_signature_lazily(@repository, @tag.id) if @repository
     end
 
     def signature
       return unless @tag.has_signature?
     end
 
+    def lazy_cached_signature
+      BatchLoader.for(self).batch(key: @repository.container.id) do |signed_tags, loader, args|
+        tags_by_id = signed_tags.group_by(&:object_name)
+        cache_hits = Set.new
+
+        # Read previously cached signatures
+        cached_signatures = Gitlab::SignedTag.batch_read_cached_signatures(args[:key], signed_tags)
+        cached_signatures.each do |tag_signature|
+          cache_hits.add(tag_signature.object_name)
+          loader.call(tags_by_id[tag_signature.object_name].first, tag_signature)
+        end
+
+        # Write signatures that were previously not cached
+        cache_misses = signed_tags.reject { |t| cache_hits.include?(t.object_name) }
+        new_cached_signatures = Gitlab::SignedTag.batch_write_cached_signatures(cache_misses)
+        new_cached_signatures.each do |tag_signature|
+          loader.call(tags_by_id[tag_signature.object_name].first, tag_signature)
+        end
+      end
+    end
+
+    def signature_class; end
+
+    def build_cached_signature
+      attrs = attributes
+      return if attrs.nil?
+
+      now = Time.now.utc
+      signature_class.new(attrs.merge(created_at: now, updated_at: now))
+    end
+
+    def attributes; end
+
     def signature_text
-      @signature_data&.fetch(0)
+      signature_data&.fetch(0)
     end
 
     def signed_text
-      @signature_data&.fetch(1)
+      signature_data&.fetch(1)
     end
   end
 end

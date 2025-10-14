@@ -135,6 +135,64 @@ Cache entries save their files in object storage in the [`dependency_proxy` buck
 
 Object storage usage counts towards the top-level group [object storage usage limit](../../storage_usage_quotas.md#view-storage).
 
+## Cleanup policies
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+
+{{< /history >}}
+
+Virtual registries cache packages from upstream registries to improve performance and availability. Over time, these cached entries can accumulate and consume significant storage space. Use cleanup policies to automatically manage cached content and reduce storage usage.
+
+A cleanup policy is a scheduled job that removes cached entries based on configurable rules. When a cleanup policy runs, it identifies cached entries that haven't been downloaded recently and removes them from storage.
+
+### Cleanup policies workflow
+
+In the virtual registry, cleanup policies:
+
+1. Identify cached entries that have not been downloaded within the specified retention period.
+1. Remove unused cached entries from object storage.
+1. Preserve frequently accessed cached entries to maintain performance.
+
+A cleanup policy affects only cached content from upstream registries. It does not affect:
+
+- Virtual registry configurations
+- Upstream registry settings
+- Packages stored in your project's package registry
+
+### Manage cleanup policies
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+- The virtual registry must be turned on for the group.
+
+Each top-level group can have only one cleanup policy.
+The cleanup policy applies to all virtual registries in that group.
+
+You can manage cleanup policies using the [Virtual registries cleanup policies API](../../../api/virtual_registries_cleanup_policies.md).
+
+### Cleanup policy settings
+
+Use the following settings to control a cleanup policy:
+
+- **Cadence**: Controls how frequently the cleanup policy runs. Available options include daily, weekly, and monthly intervals.
+- **Retention period**: Determines how long cached entries are kept after their last download. Entries that haven't been downloaded within this period are eligible for removal.
+
+### Monitor cleanup policy execution
+
+After a cleanup policy runs, you can view the following execution metrics:
+
+- When the policy last ran.
+- When the policy is scheduled to run next.
+- How many cached entries were removed.
+- Total storage space freed.
+- Any errors that occurred during execution.
+
+These metrics help you understand the effectiveness of your cleanup policy
+so you can adjust settings as needed.
+
 ## Performance considerations
 
 Virtual registry performance might vary based on factors like:

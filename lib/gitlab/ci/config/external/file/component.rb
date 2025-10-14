@@ -126,6 +126,7 @@ module Gitlab
 
               component_attrs.slice(*Config::Header::Component::ALLOWED_VALUES)
             end
+            strong_memoize_attr :component_yaml_context
           end
         end
       end

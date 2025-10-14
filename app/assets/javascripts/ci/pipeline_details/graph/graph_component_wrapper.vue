@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import { __, s__ } from '~/locale';
@@ -7,6 +8,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '~/ci/pipeline_details/constants';
 import getPipelineQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
 import { reportToSentry } from '~/ci/utils';
+import getPipelinePermissions from './graphql/queries/get_pipeline_permissions.query.graphql';
 import DismissPipelineGraphCallout from './graphql/mutations/dismiss_pipeline_notification.graphql';
 import {
   ACTION_FAILURE,
@@ -66,6 +68,7 @@ export default {
       showAlert: false,
       showJobCountWarning: false,
       showLinks: false,
+      userPermissions: {},
     };
   },
   errors: {
@@ -175,6 +178,40 @@ export default {
         }
       },
     },
+    userPermissions: {
+      query: getPipelinePermissions,
+      variables() {
+        return {
+          projectPath: this.pipelineProjectPath,
+          iid: this.pipelineIid,
+        };
+      },
+      update(data) {
+        const permissions = {};
+        const mainPipeline = data?.project?.pipeline;
+
+        if (mainPipeline?.userPermissions) {
+          const id = this.getPipelineId(mainPipeline.id);
+          permissions[id] = mainPipeline.userPermissions;
+        }
+
+        mainPipeline?.downstream?.nodes?.forEach((pipeline) => {
+          if (pipeline?.userPermissions) {
+            const id = this.getPipelineId(pipeline.id);
+            permissions[id] = pipeline.userPermissions;
+          }
+        });
+
+        if (mainPipeline?.upstream?.userPermissions) {
+          const id = this.getPipelineId(mainPipeline.upstream.id);
+          permissions[id] = mainPipeline.upstream.userPermissions;
+        }
+        return permissions;
+      },
+      error(err) {
+        reportToSentry(this.$options.name, new Error(err));
+      },
+    },
   },
   computed: {
     alert() {
@@ -268,6 +305,12 @@ export default {
     updateViewType(type) {
       this.currentViewType = type;
     },
+    getPipelineId(id) {
+      if (isGid(id)) {
+        return getIdFromGraphQLId(id);
+      }
+      return id;
+    },
   },
   i18n: {
     jobLimitWarning: {
@@ -322,6 +365,7 @@ export default {
       v-if="pipeline"
       :config-paths="configPaths"
       :pipeline="pipeline"
+      :user-permissions="userPermissions"
       :computed-pipeline-info="getPipelineInfo()"
       :skip-retry-modal="skipRetryModal"
       :show-links="showLinks"
