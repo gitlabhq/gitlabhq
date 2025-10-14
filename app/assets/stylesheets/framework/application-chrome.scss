@@ -44,7 +44,7 @@
   // Super topbar
   .super-topbar {
     @apply gl-pl-4 gl-pr-5 sm:gl-pr-3;
-    height: var(--header-height);
+    height: var(--top-bar-height);
 
     // Placeholder styles
     .topbar-search-button-placeholder {
@@ -185,7 +185,7 @@
   }
 
   .panel-content:has(.issue-boards-content, .group-epics-roadmap) {
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-2} - 1px);
+    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-2});
   }
 
   // work item drawer correct background colors
@@ -453,7 +453,7 @@
     }
 
     .work-item-drawer .issue-sticky-header:not(.merge-request-sticky-header) {
-      top: calc(#{$header-height} + 1px) !important;
+      top: $header-height !important;
 
       .work-item-sticky-header-text {
         @apply gl-px-6;

@@ -8,12 +8,9 @@ module Organizations
       TransferError = Class.new(StandardError)
       BATCH_SIZE = 50
 
-      attr_accessor :error
-
       def initialize(group:, new_organization:, current_user:)
         @group = group
         @new_organization = new_organization
-        @old_organization = @group.organization
         @current_user = current_user
       end
 
@@ -22,15 +19,19 @@ module Organizations
 
         Group.transaction do
           update_namespaces_and_projects
+          transfer_users
         end
 
         log_transfer_success
         ServiceResponse.success
+      rescue StandardError => e
+        log_transfer_error(e.message)
+        ServiceResponse.error(message: e.message)
       end
 
       private
 
-      attr_reader :group, :new_organization, :old_organization, :current_user
+      attr_reader :group, :new_organization, :current_user
 
       def update_namespaces_and_projects
         # `skope: Namespace` ensures we get both Group and ProjectNamespace types
@@ -48,19 +49,31 @@ module Organizations
         end
       end
 
+      def transfer_users
+        user_transfer_service.execute
+      end
+
       def transfer_allowed?
-        return true if transfer_validator.can_transfer?
+        transfer_validator.can_transfer? && user_transfer_service.can_transfer?
+      end
 
-        error_message = transfer_validator.error_message
+      def error
+        error_message = transfer_validator.error_message || user_transfer_service.can_transfer_error
 
-        self.error = format(
+        format(
           s_("TransferOrganization|Group organization transfer failed: %{error_message}"),
           error_message: error_message
         )
-
-        log_transfer_error(error_message)
-        false
       end
+
+      def user_transfer_service
+        Organizations::Users::TransferService.new(
+          group: group,
+          new_organization: new_organization,
+          current_user: current_user
+        )
+      end
+      strong_memoize_attr :user_transfer_service
 
       def transfer_validator
         Organizations::Groups::TransferValidator.new(

@@ -32,6 +32,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       updated_at
       closed_at
       web_url
+      web_path
       create_note_email
       reference
       archived

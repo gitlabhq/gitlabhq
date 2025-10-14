@@ -54,8 +54,7 @@ module MergeRequests
 
     def merge_requests_for_mapping(mapping, remaining)
       merge_request_diff_commit_rows =
-        MergeRequestDiffCommit
-          .oldest_merge_request_id_per_commit(@project.id, remaining)
+        oldest_merge_request_id_per_commit_rows(remaining)
 
       if Feature.enabled?(:include_generated_ref_commits_in_changelog, @project)
         generated_ref_commit_rows = GeneratedRefCommit.oldest_merge_request_id_per_commit(@project.id, remaining)
@@ -82,6 +81,17 @@ module MergeRequests
           mapping[row[:commit_sha]] = mr
         end
       end
+    end
+
+    def oldest_merge_request_id_per_commit_rows(shas)
+      commits_data_class =
+        if Feature.enabled?(:merge_request_diff_commits_dedup, @project)
+          MergeRequest::CommitsMetadata
+        else
+          MergeRequestDiffCommit
+        end
+
+      commits_data_class.oldest_merge_request_id_per_commit(@project.id, shas)
     end
   end
 end

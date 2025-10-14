@@ -113,7 +113,8 @@ module API
     def set_current_organization(user: current_user)
       ::Current.organization = Gitlab::Current::Organization.new(
         params: {},
-        user: user
+        user: user,
+        headers: request.headers
       ).organization
     end
 

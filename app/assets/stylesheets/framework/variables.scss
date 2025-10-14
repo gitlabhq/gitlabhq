@@ -127,7 +127,7 @@ $browser-scrollbar-size: 10px;
 /*
  * Misc
  */
-$header-height: 48px;
+$header-height: calc(3rem + 1px); //= 48px + 1px border
 $content-wrapper-padding: 56px;
 $header-zindex: 1000;
 $zindex-dropdown-menu: 300;
@@ -151,7 +151,7 @@ $system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $mr-sticky-header-height: 4.5rem;
 $mr-review-bar-height: calc(2rem + 16px);
-$top-bar-height: 48px;
+$top-bar-height: 3rem; //= 48px
 $work-item-sticky-header-height: 52px;
 $home-panel-title-row-height: 48px;
 $home-panel-avatar-mobile-size: 24px;

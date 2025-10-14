@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Integrate Jira with GitLab for real-time incident replication, enabling accurate DORA metrics tracking including Change Failure Rate and Time to Restore Service.
 title: Jira to GitLab DORA Integration
 ---
 

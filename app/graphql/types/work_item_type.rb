@@ -123,6 +123,9 @@ module Types
       method: :hidden?,
       description: 'Indicates the work item is hidden because the author has been banned.'
 
+    field :web_path, GraphQL::Types::String, null: true,
+      description: 'Web path of the object.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

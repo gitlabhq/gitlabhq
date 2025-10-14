@@ -307,7 +307,7 @@ the master username and password on your GitLab instance:
 1. In **Password**, enter the master password.
 1. Select **Save changes**.
 
-### Upgrade to a new Elasticsearch major version
+### Upgrade to a new Elasticsearch version
 
 {{< history >}}
 
@@ -321,7 +321,8 @@ Prerequisites:
   so searches do not fail with an `HTTP 500` error.
 - [Pause indexing](#pause-indexing) so changes can still be tracked.
 
-When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
+When you upgrade Elasticsearch to a new minor or major version,
+you do not have to change the GitLab configuration.
 When the Elasticsearch cluster is fully upgraded and active:
 
 1. Validate cluster connectivity, index, and search operations:

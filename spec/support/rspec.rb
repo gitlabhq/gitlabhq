@@ -12,6 +12,7 @@ require_relative 'helpers/fast_rails_root'
 
 require 'gitlab/rspec/all'
 require 'gitlab/utils/all'
+require 'gitlab_quality/test_tooling'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 
@@ -81,5 +82,25 @@ RSpec.configure do |config|
         example.location
       warn "Missing metadata feature_category: #{location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
     end
+  end
+
+  if ENV["CI"] && ENV["GLCI_EXPORT_TEST_METRICS"] == "true"
+    GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |config|
+      config.run_type = "backend-rspec-tests"
+
+      config.test_retried_proc = ->(example) {
+        ENV["RSPEC_RETRY_PROCESS"] == "true" || example.metadata[:retry_attempts].to_i > 0
+      }
+
+      config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
+        database: ENV["GLCI_CLICKHOUSE_METRICS_DB"],
+        table_name: ENV["GLCI_CLICKHOUSE_METRICS_TABLE"],
+        url: ENV["GLCI_CLICKHOUSE_METRICS_URL"],
+        username: ENV["GLCI_CLICKHOUSE_METRICS_USERNAME"],
+        password: ENV["GLCI_CLICKHOUSE_METRICS_PASSWORD"]
+      )
+    end
+
+    config.add_formatter GitlabQuality::TestTooling::TestMetricsExporter::Formatter
   end
 end

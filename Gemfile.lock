@@ -442,7 +442,7 @@ GEM
       cork
       nap
       open4 (~> 1.3)
-    click_house-client (0.8.0)
+    click_house-client (0.8.2)
       activerecord (>= 7.0, < 9.0)
       activesupport (>= 7.0, < 9.0)
       addressable (~> 2.8)
@@ -826,7 +826,7 @@ GEM
       omniauth (>= 1.3, < 3)
       pyu-ruby-sasl (>= 0.0.3.3, < 0.1)
       rubyntlm (~> 0.5)
-    gitlab_quality-test_tooling (2.20.3)
+    gitlab_quality-test_tooling (2.21.0)
       activesupport (>= 7.0, < 7.3)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -2119,7 +2119,7 @@ DEPENDENCIES
   carrierwave (~> 1.3)
   charlock_holmes (~> 0.7.9)
   circuitbox (= 2.0.0)
-  click_house-client (= 0.8.0)
+  click_house-client (= 0.8.2)
   commonmarker (~> 0.23.10)
   concurrent-ruby (~> 1.1)
   connection_pool (~> 2.5.3)
@@ -2209,7 +2209,7 @@ DEPENDENCIES
   gitlab-utils!
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.3.0)
-  gitlab_quality-test_tooling (~> 2.20.0)
+  gitlab_quality-test_tooling (~> 2.21.0)
   gon (~> 6.5.0)
   google-apis-androidpublisher_v3 (~> 0.86.0)
   google-apis-cloudbilling_v1 (~> 0.22.0)

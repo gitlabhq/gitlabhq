@@ -52,7 +52,7 @@ module TwCodeowners
     CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
     # CodeOwnerRule.new('Remote Development', ''),
     CodeOwnerRule.new('Import', '@ashrafkhamis'),
-    CodeOwnerRule.new('Knowledge', '@msedlakjakubowski'),
+    CodeOwnerRule.new('Knowledge', '@brendan777'),
     # CodeOwnerRule.new('MLOps', ''),
     # CodeOwnerRule.new('Mobile Devops', ''),
     CodeOwnerRule.new('Optimize', '@lciutacu'),

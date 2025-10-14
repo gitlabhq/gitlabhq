@@ -276,6 +276,7 @@ class Namespace < ApplicationRecord
   end
 
   scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
+  scope :for_owner, ->(owners) { where(owner: owners) }
 
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method

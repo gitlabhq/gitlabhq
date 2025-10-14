@@ -73,6 +73,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         'description' => work_item.description,
         'id' => work_item.to_gid.to_s,
         'iid' => work_item.iid.to_s,
+        'webPath' => Gitlab::UrlBuilder.build(work_item, only_path: true).to_s,
         'lockVersion' => work_item.lock_version,
         'state' => "OPEN",
         'title' => work_item.title,

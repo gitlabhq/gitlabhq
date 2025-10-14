@@ -52,6 +52,7 @@ To convert your issue to a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
+1. Select the issue you want to create a merge request for.
 1. Below the issue header, select **Generate MR with Duo**.
 1. Monitor progress by selecting **Automate** > **Sessions**.
 1. When the pipeline has successfully executed, a link to the merge request

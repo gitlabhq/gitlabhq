@@ -250,14 +250,6 @@ That's all of the required database changes.
 
     scope :available_verifiables, -> { joins(:cool_widget_state) }
 
-    scope :checksummed, -> {
-      joins(:cool_widget_state).where.not(cool_widget_states: { verification_checksum: nil })
-    }
-
-    scope :not_checksummed, -> {
-      joins(:cool_widget_state).where(cool_widget_states: { verification_checksum: nil })
-    }
-
     scope :with_verification_state, ->(state) {
       joins(:cool_widget_state)
         .where(cool_widget_states: { verification_state: verification_state_value(state) })

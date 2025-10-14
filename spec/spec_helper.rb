@@ -39,16 +39,10 @@ require 'axe-rspec'
 
 require 'gitlab/rspec_flaky'
 
-rspec_profiling_is_configured =
-  ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
-  ENV['RSPEC_PROFILING']
-branch_can_be_profiled =
-  (ENV['CI_COMMIT_REF_NAME'] == 'master' ||
-    ENV['CI_COMMIT_REF_NAME']&.include?('rspec-profile'))
+rspec_profiling_is_configured = ENV['RSPEC_PROFILING_POSTGRES_URL'].present? || ENV['RSPEC_PROFILING']
+branch_can_be_profiled = ENV['CI_COMMIT_REF_NAME'] == 'master' || ENV['CI_COMMIT_REF_NAME']&.include?('rspec-profile')
 
-if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
-  require 'rspec_profiling/rspec'
-end
+require 'rspec_profiling/rspec' if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
 
 Rainbow.enabled = false
 

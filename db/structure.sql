@@ -1113,6 +1113,33 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION sync_sharding_key_with_notes_table() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  note_project_id BIGINT;
+  note_namespace_id BIGINT;
+BEGIN
+  IF NEW."note_id" IS NULL OR NEW."namespace_id" IS NOT NULL THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT "project_id", "namespace_id"
+  INTO note_project_id, note_namespace_id
+  FROM "notes"
+  WHERE "id" = NEW."note_id";
+
+  IF note_project_id IS NOT NULL THEN
+    SELECT "project_namespace_id" FROM "projects"
+    INTO NEW."namespace_id" WHERE "projects"."id" = note_project_id;
+  ELSE
+    NEW."namespace_id" := note_namespace_id;
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION sync_to_p_sent_notifications_table() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -26598,7 +26625,8 @@ CREATE TABLE suggestions (
     lines_above integer DEFAULT 0 NOT NULL,
     lines_below integer DEFAULT 0 NOT NULL,
     outdated boolean DEFAULT false NOT NULL,
-    note_id bigint NOT NULL
+    note_id bigint NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE suggestions_id_seq
@@ -28779,6 +28807,25 @@ CREATE SEQUENCE vulnerability_statistics_id_seq
     CACHE 1;
 
 ALTER SEQUENCE vulnerability_statistics_id_seq OWNED BY vulnerability_statistics.id;
+
+CREATE TABLE vulnerability_triggered_workflows (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    vulnerability_occurrence_id bigint NOT NULL,
+    workflow_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    workflow_name smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_triggered_workflows_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_triggered_workflows_id_seq OWNED BY vulnerability_triggered_workflows.id;
 
 CREATE TABLE vulnerability_user_mentions (
     id bigint NOT NULL,
@@ -31800,6 +31847,8 @@ ALTER TABLE ONLY vulnerability_state_transitions ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY vulnerability_statistics ALTER COLUMN id SET DEFAULT nextval('vulnerability_statistics_id_seq'::regclass);
 
+ALTER TABLE ONLY vulnerability_triggered_workflows ALTER COLUMN id SET DEFAULT nextval('vulnerability_triggered_workflows_id_seq'::regclass);
+
 ALTER TABLE ONLY vulnerability_user_mentions ALTER COLUMN id SET DEFAULT nextval('vulnerability_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY web_hook_logs_daily ALTER COLUMN id SET DEFAULT nextval('web_hook_logs_daily_id_seq'::regclass);
@@ -33242,6 +33291,9 @@ ALTER TABLE packages_packages
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
+
+ALTER TABLE suggestions
+    ADD CONSTRAINT check_e69372e45f CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE redirect_routes
     ADD CONSTRAINT check_e82ff70482 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
@@ -35534,6 +35586,9 @@ ALTER TABLE ONLY vulnerability_state_transitions
 
 ALTER TABLE ONLY vulnerability_statistics
     ADD CONSTRAINT vulnerability_statistics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_triggered_workflows
+    ADD CONSTRAINT vulnerability_triggered_workflows_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
@@ -38102,6 +38157,8 @@ CREATE INDEX idx_pkgs_nuget_symbols_on_lowercase_signature_and_file_path ON pack
 CREATE INDEX idx_pkgs_on_project_id_name_version_on_installable_terraform ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 12) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_pkgs_project_id_lower_name_when_nuget_installable_version ON packages_packages USING btree (project_id, lower((name)::text)) WHERE ((package_type = 4) AND (version IS NOT NULL) AND (status = ANY (ARRAY[0, 1])));
+
+CREATE UNIQUE INDEX idx_pks_helm_metadata_caches_on_object_storage_key_project_id ON packages_helm_metadata_caches USING btree (object_storage_key, project_id);
 
 CREATE UNIQUE INDEX idx_pks_npm_metadata_caches_on_object_storage_key_project_id ON packages_npm_metadata_caches USING btree (object_storage_key, project_id);
 
@@ -41407,8 +41464,6 @@ CREATE INDEX index_packages_helm_file_metadata_on_pf_id_and_channel ON packages_
 
 CREATE INDEX index_packages_helm_file_metadata_on_project_id ON packages_helm_file_metadata USING btree (project_id);
 
-CREATE UNIQUE INDEX index_packages_helm_metadata_caches_on_object_storage_key ON packages_helm_metadata_caches USING btree (object_storage_key);
-
 CREATE UNIQUE INDEX index_packages_helm_metadata_caches_on_project_id_and_channel ON packages_helm_metadata_caches USING btree (project_id, channel);
 
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_maven_metadata USING btree (package_id, path);
@@ -42511,6 +42566,8 @@ CREATE INDEX index_subscriptions_on_user ON subscriptions USING btree (user_id);
 
 CREATE INDEX index_successful_authentication_events_for_metrics ON authentication_events USING btree (user_id, provider, created_at) WHERE (result = 1);
 
+CREATE INDEX index_suggestions_on_namespace_id ON suggestions USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_suggestions_on_note_id_and_relative_order ON suggestions USING btree (note_id, relative_order);
 
 CREATE UNIQUE INDEX index_system_access_group_microsoft_applications_on_group_id ON system_access_group_microsoft_applications USING btree (group_id);
@@ -43095,9 +43152,15 @@ CREATE INDEX index_vulnerability_statistics_on_letter_grade ON vulnerability_sta
 
 CREATE UNIQUE INDEX index_vulnerability_statistics_on_unique_project_id ON vulnerability_statistics USING btree (project_id);
 
+CREATE INDEX index_vulnerability_triggered_workflows_on_project_id ON vulnerability_triggered_workflows USING btree (project_id);
+
+CREATE INDEX index_vulnerability_triggered_workflows_on_workflow_id ON vulnerability_triggered_workflows USING btree (workflow_id);
+
 CREATE UNIQUE INDEX index_vulnerability_user_mentions_on_note_id ON vulnerability_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE INDEX index_vulnerability_user_mentions_on_project_id ON vulnerability_user_mentions USING btree (project_id);
+
+CREATE INDEX index_vulnerability_workflows_on_vuln_occurrence_id ON vulnerability_triggered_workflows USING btree (vulnerability_occurrence_id);
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON vulnerability_user_mentions USING btree (vulnerability_id) WHERE (note_id IS NULL);
 
@@ -46899,6 +46962,8 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER set_sharding_key_for_suggestions_on_insert_and_update BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
+
 CREATE TRIGGER set_sharding_key_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION get_sharding_key_from_notes_table();
 
 CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
@@ -48007,6 +48072,9 @@ ALTER TABLE ONLY namespaces
 
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_351dde3a84 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY suggestions
+    ADD CONSTRAINT fk_35c950f0d6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_35e88790f5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -50587,6 +50655,9 @@ ALTER TABLE ONLY design_management_designs
 
 ALTER TABLE ONLY issue_metrics
     ADD CONSTRAINT fk_rails_4bb543d85d FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_triggered_workflows
+    ADD CONSTRAINT fk_rails_4c3e45a9b7 FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_metrics_settings
     ADD CONSTRAINT fk_rails_4c6037ee4f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

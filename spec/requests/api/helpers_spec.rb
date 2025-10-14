@@ -411,6 +411,18 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         expect(Current.organization).to eq(other_user.organization)
       end
     end
+
+    context 'when a header is present' do
+      let_it_be(:header_organization) { create(:organization) }
+
+      it 'sets the organization from header' do
+        request.headers['X-GitLab-Organization-ID'] = header_organization.id.to_s
+
+        set_current_organization(user: user)
+
+        expect(Current.organization).to eq(header_organization)
+      end
+    end
   end
 
   describe '.handle_api_exception' do

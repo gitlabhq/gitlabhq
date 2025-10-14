@@ -1296,6 +1296,7 @@ vulnerability_finding:
   - finding_risk_score
   - cve_identifiers
   - cve_enrichments
+  - triggered_workflows
 scanner:
   - findings
   - security_findings

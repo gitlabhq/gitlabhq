@@ -3,6 +3,7 @@
 require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'factory_bot'
+require 'gitlab_quality/test_tooling'
 
 require_relative '../../qa'
 
@@ -55,6 +56,25 @@ RSpec.configure do |config|
   unless QA::Runtime::Env.dry_run
     config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
     config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
+
+    # TODO: after Formatters::TestMetricsFormatter removal, use GLCI_EXPORT_TEST_METRICS in Env.export_metrics? method
+    if QA::Runtime::Env.running_in_ci? && ENV["GLCI_EXPORT_TEST_METRICS"] == "true"
+      GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |config|
+        config.run_type = QA::Runtime::Env.run_type
+        config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
+        config.logger = QA::Runtime::Logger.logger
+
+        config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
+          database: ENV["GLCI_CLICKHOUSE_METRICS_DB"],
+          table_name: ENV["GLCI_CLICKHOUSE_METRICS_TABLE"],
+          url: ENV["GLCI_CLICKHOUSE_METRICS_URL"],
+          username: ENV["GLCI_CLICKHOUSE_METRICS_USERNAME"],
+          password: ENV["GLCI_CLICKHOUSE_METRICS_PASSWORD"]
+        )
+      end
+
+      config.add_formatter GitlabQuality::TestTooling::TestMetricsExporter::Formatter
+    end
   end
 
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', 'tmp/examples.txt')

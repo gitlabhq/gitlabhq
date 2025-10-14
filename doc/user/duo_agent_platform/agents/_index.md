@@ -23,8 +23,6 @@ title: Agents
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-- Agent tools [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569043) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agent_tools`. Disabled by default.
-- Feature flag `ai_catalog_agent_tools` removed in GitLab 18.5.
 
 {{< /history >}}
 
@@ -104,9 +102,9 @@ Prerequisites:
 To run an agent:
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, find and click on the agent you want to run.
-1. In the top right, click on `Test` button which opens a modal.
-1. Enter instructions, then select **Run**.
+1. Select **AI Catalog**.
+1. Select your agent, then select **Test**.
+1. On the dialog, enter your instructions, then select **Run**.
 
 The session starts on the associated project's **Agent sessions** page.
 

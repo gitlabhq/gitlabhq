@@ -199,7 +199,7 @@ ul.wiki-pages-list.content-list {
     column-gap: $overview-gap-width;
 
     .right-sidebar {
-      height: calc(100vh - #{$header-height} - #{$top-bar-height} - 0.5rem - 1px);
+      height: calc(100vh - #{$header-height} - #{$top-bar-height} - 0.5rem);
     }
   }
 }

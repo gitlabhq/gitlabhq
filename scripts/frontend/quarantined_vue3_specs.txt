@@ -1,6 +1,5 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
-ee/spec/frontend/approvals/project_settings/project_rules_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js

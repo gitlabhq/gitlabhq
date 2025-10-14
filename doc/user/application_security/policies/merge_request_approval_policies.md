@@ -909,6 +909,36 @@ merge request is updated, but not immediately when the vulnerability state chang
 To reflect vulnerability state changes in the policies immediately
 manually run the pipeline or push a new commit to the merge request.
 
+## Understanding security widget and policy bot discrepancies
+
+You may notice inconsistencies between what the merge request security widget displays and what the security bot comments indicate regarding vulnerabilities. These features use different data sources and comparison methods for security findings, which can result in differences in what they display.
+
+Data sources:
+
+- **Merge request security widget**: Compares results from the latest source branch pipeline with vulnerabilities previously stored in the database for the default branch.
+- **Security Bot (and approval policy logic)**: Compares results between actual pipeline artifacts, specifically between the latest successful target branch pipeline and the latest successful source branch pipeline.
+
+### Common scenarios where inconsistencies occur
+
+The difference in data sources can lead to inconsistent behavior in several scenarios.
+
+#### Missing or failed security scans in target branch
+
+When the latest pipeline on your target branch fails to run security scans properly (for example, due to a misconfiguration or job failures), the security bot might report new findings and require approval as a precautionary measure because it cannot compare results effectively. Meanwhile, the security widget might show no new vulnerabilities because it uses previously stored vulnerability data.
+
+#### Changes in target branch between comparisons
+
+If there are multiple commits on the target branch that change the security profile between when the widget makes its comparison and when the bot makes its comparison, results can differ.
+
+### Best practices for consistent results
+
+To minimize confusion when using these security features:
+
+- Ensure complete pipeline execution: Make sure security scans complete successfully on both source and target branches.
+- Maintain consistent CI/CD configuration: Avoid removing or breaking security scan configurations in your pipeline.
+- For new projects: Run a security scan on the default branch before creating merge requests to establish baseline vulnerability data.
+- Consider using scan execution policies: When combined with merge request approval policies, they help ensure security scans always run where needed.
+
 ## Troubleshooting
 
 ### Merge request rules widget shows a merge request approval policy is invalid or duplicated

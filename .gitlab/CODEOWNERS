@@ -620,6 +620,7 @@ lib/gitlab/checks/
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
 /doc/administration/gitlab_duo/ @sselhorn
+/doc/administration/gitlab_duo/model_selection.md @fneill
 /doc/administration/gitlab_duo_self_hosted/ @fneill
 /doc/administration/guest_users.md @idurham
 /doc/administration/housekeeping.md @eread
@@ -654,7 +655,7 @@ lib/gitlab/checks/
 /doc/administration/operations/moving_repositories.md @eread
 /doc/administration/package_information/ @axil @eread
 /doc/administration/packages/ @z_painter
-/doc/administration/pages/ @msedlakjakubowski
+/doc/administration/pages/ @brendan777
 /doc/administration/polling.md @axil @eread
 /doc/administration/raketasks/ @axil @eread
 /doc/administration/raketasks/keep_around.md @eread
@@ -703,6 +704,7 @@ lib/gitlab/checks/
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
 /doc/administration/settings/scim_setup.md @lciutacu
 /doc/administration/settings/security_and_compliance.md @rdickenson
+/doc/administration/settings/sidekiq_job_limits.md @axil
 /doc/administration/settings/sign_in_restrictions.md @idurham
 /doc/administration/settings/sign_up_restrictions.md @idurham
 /doc/administration/settings/slack_app.md @msedlakjakubowski
@@ -717,7 +719,7 @@ lib/gitlab/checks/
 /doc/administration/troubleshooting/ @axil @eread
 /doc/administration/uploads.md @axil @eread
 /doc/administration/user_settings.md @idurham
-/doc/administration/wikis/ @msedlakjakubowski
+/doc/administration/wikis/ @brendan777
 /doc/api/access_requests.md @idurham
 /doc/api/admin/data_management.md @axil
 /doc/api/admin/token.md @idurham
@@ -775,7 +777,7 @@ lib/gitlab/checks/
 /doc/api/group_security_settings.md @rlehmann1
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @ashrafkhamis
-/doc/api/group_wikis.md @msedlakjakubowski
+/doc/api/group_wikis.md @brendan777
 /doc/api/groups.md @z_painter
 /doc/api/import.md @ashrafkhamis
 /doc/api/instance_level_ci_variables.md @marcel.amirault
@@ -791,7 +793,7 @@ lib/gitlab/checks/
 /doc/api/license.md @lciutacu
 /doc/api/linked_epics.md @msedlakjakubowski
 /doc/api/lint.md @marcel.amirault
-/doc/api/markdown.md @msedlakjakubowski
+/doc/api/markdown.md @brendan777
 /doc/api/maven_virtual_registries.md @z_painter
 /doc/api/member_roles.md @idurham
 /doc/api/members.md @z_painter
@@ -808,8 +810,8 @@ lib/gitlab/checks/
 /doc/api/organizations.md @z_painter
 /doc/api/packages.md @z_painter
 /doc/api/packages/ @z_painter
-/doc/api/pages.md @msedlakjakubowski
-/doc/api/pages_domains.md @msedlakjakubowski
+/doc/api/pages.md @brendan777
+/doc/api/pages_domains.md @brendan777
 /doc/api/personal_access_tokens.md @idurham
 /doc/api/pipeline_schedules.md @lyspin
 /doc/api/pipeline_triggers.md @lyspin
@@ -878,7 +880,7 @@ lib/gitlab/checks/
 /doc/api/vulnerability_exports.md @rlehmann1
 /doc/api/vulnerability_findings.md @rlehmann1
 /doc/api/web_commits.md @brendan777
-/doc/api/wikis.md @msedlakjakubowski
+/doc/api/wikis.md @brendan777
 /doc/auth/ @idurham
 /doc/ci/_index.md @lyspin
 /doc/ci/caching/ @marcel.amirault
@@ -1019,7 +1021,7 @@ lib/gitlab/checks/
 /doc/tutorials/dependency_scanning.md @rdickenson
 /doc/tutorials/export_sbom.md @rdickenson
 /doc/tutorials/fuzz_testing/ @phillipwells
-/doc/tutorials/hugo/ @msedlakjakubowski
+/doc/tutorials/hugo/ @brendan777
 /doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil @eread
 /doc/tutorials/issue_triage/ @msedlakjakubowski
@@ -1029,6 +1031,7 @@ lib/gitlab/checks/
 /doc/tutorials/left_sidebar/ @kpaizee
 /doc/tutorials/merge_requests/ @aqualls
 /doc/tutorials/move_personal_project_to_group/ @z_painter
+/doc/tutorials/personal_homepage/ @kpaizee
 /doc/tutorials/pipeline_execution_policy/ @rlehmann1
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/reviews/ @aqualls
@@ -1054,6 +1057,7 @@ lib/gitlab/checks/
 /doc/user/application_security/get-started-security.md @phillipwells
 /doc/user/application_security/policies/ @rlehmann1
 /doc/user/application_security/secret_detection/ @phillipwells
+/doc/user/application_security/security_attributes/ @rlehmann1
 /doc/user/application_security/security_dashboard/ @rlehmann1
 /doc/user/application_security/security_inventory/ @rlehmann1
 /doc/user/application_security/vulnerabilities/_index.md @rlehmann1
@@ -1082,7 +1086,7 @@ lib/gitlab/checks/
 /doc/user/gitlab_duo/model_selection.md @fneill
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
-/doc/user/glql/ @msedlakjakubowski
+/doc/user/glql/ @brendan777
 /doc/user/group/_index.md @z_painter
 /doc/user/group/access_and_permissions.md @z_painter
 /doc/user/group/contribution_analytics/ @lciutacu
@@ -1110,7 +1114,7 @@ lib/gitlab/checks/
 /doc/user/group/troubleshooting.md @z_painter
 /doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @rsarangadharan
-/doc/user/markdown.md @msedlakjakubowski
+/doc/user/markdown.md @brendan777
 /doc/user/namespace/ @z_painter
 /doc/user/okrs.md @msedlakjakubowski
 /doc/user/organization/ @z_painter
@@ -1135,6 +1139,7 @@ lib/gitlab/checks/
 /doc/user/project/integrations/ @msedlakjakubowski
 /doc/user/project/integrations/bamboo.md @lyspin
 /doc/user/project/integrations/beyond_identity.md @brendan777
+/doc/user/project/integrations/confluence.md @brendan777
 /doc/user/project/integrations/emails_on_push.md @brendan777
 /doc/user/project/integrations/git_guardian.md @brendan777
 /doc/user/project/integrations/github.md @lyspin
@@ -1162,7 +1167,7 @@ lib/gitlab/checks/
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/organize_work_with_projects.md @z_painter
-/doc/user/project/pages/ @msedlakjakubowski
+/doc/user/project/pages/ @brendan777
 /doc/user/project/project_topics.md @z_painter
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
@@ -1180,13 +1185,13 @@ lib/gitlab/checks/
 /doc/user/project/system_notes.md @brendan777
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/troubleshooting.md @z_painter
-/doc/user/project/use_project_as_go_package.md @z_painter
-/doc/user/project/wiki/ @msedlakjakubowski
+/doc/user/project/use_project_as_go_package.md @brendan777
+/doc/user/project/wiki/ @brendan777
 /doc/user/project/working_with_projects.md @z_painter
 /doc/user/public_access.md @z_painter
 /doc/user/report_abuse.md @idurham
 /doc/user/reserved_names.md @z_painter
-/doc/user/rich_text_editor.md @msedlakjakubowski
+/doc/user/rich_text_editor.md @brendan777
 /doc/user/search/ @ashrafkhamis
 /doc/user/search/command_palette.md @kpaizee
 /doc/user/shortcuts.md @kpaizee

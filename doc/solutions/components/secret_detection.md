@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Configure GitLab Secret Detection with centralized custom rulesets to automatically detect PII and plaintext passwords across all projects in a top-level group.
 title: Secret Detection
 ---
 

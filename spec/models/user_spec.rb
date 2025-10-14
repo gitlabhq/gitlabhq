@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe User, feature_category: :user_profile do
+RSpec.describe User, :with_current_organization, feature_category: :user_profile do
   using RSpec::Parameterized::TableSyntax
 
   include ProjectForksHelper

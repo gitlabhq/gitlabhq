@@ -599,8 +599,6 @@ Prerequisites:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. If you're using Pages Access Control, edit the redirect URI in the GitLab Pages
-   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)System OAuth application to use the HTTPS protocol.
-1. If you're using Pages Access Control, edit the redirect URI in the GitLab Pages
    [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application) to use the HTTPS protocol.
 
 ### Custom domain verification

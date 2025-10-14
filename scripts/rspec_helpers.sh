@@ -398,6 +398,8 @@ function retry_failed_rspec_examples() {
   local previous_exit_status=$1
   local rspec_run_status=0
 
+  export RSPEC_RETRY_PROCESS=true
+
   if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" != "true" ]]; then
     echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
     exit $previous_exit_status

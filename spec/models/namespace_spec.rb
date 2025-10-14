@@ -802,6 +802,30 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         expect(result).not_to include(private_namespace, internal_namespace, public_namespace)
       end
     end
+
+    describe '.for_owner' do
+      let_it_be(:user1) { create(:user, :with_namespace) }
+      let_it_be(:user2) { create(:user, :with_namespace) }
+      let_it_be(:user3) { create(:user, :with_namespace) }
+
+      it 'returns namespaces that match for a single user' do
+        results = described_class.for_owner(user2)
+
+        expect(results.size).to eq(1)
+        expect(results.first).to eq(user2.namespace)
+      end
+
+      it 'returns namespaces that match any of the given owner ids when passed as array' do
+        results = described_class.for_owner([user1.id, user3.id])
+
+        expect(results.size).to eq(2)
+        expect(results).to match_array([user1.namespace, user3.namespace])
+      end
+
+      it 'returns an empty array if no matches are found' do
+        expect(described_class.for_owner(non_existing_record_id)).to be_empty
+      end
+    end
   end
 
   describe 'delegate' do

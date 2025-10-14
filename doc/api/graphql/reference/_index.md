@@ -46354,6 +46354,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the work item was last updated. |
 | <a id="workitemuserdiscussionscount"></a>`userDiscussionsCount` | [`Int!`](#int) | Number of user discussions in the work item. |
 | <a id="workitemuserpermissions"></a>`userPermissions` | [`WorkItemPermissions!`](#workitempermissions) | Permissions for the current user on the resource. |
+| <a id="workitemwebpath"></a>`webPath` | [`String`](#string) | Web path of the object. |
 | <a id="workitemweburl"></a>`webUrl` | [`String`](#string) | URL of the object. |
 | <a id="workitemworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Type assigned to the work item. |
 
@@ -49673,7 +49674,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionadmin_protected_branch"></a>`ADMIN_PROTECTED_BRANCH` | Create, read, update, and delete protected branches for a project. |
 | <a id="memberrolestandardpermissionadmin_protected_environments"></a>`ADMIN_PROTECTED_ENVIRONMENTS` | Create, read, update, and delete protected environments. |
 | <a id="memberrolestandardpermissionadmin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
-| <a id="memberrolestandardpermissionadmin_runners"></a>`ADMIN_RUNNERS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.1. **Status**: Experiment. Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
+| <a id="memberrolestandardpermissionadmin_runners"></a>`ADMIN_RUNNERS` | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
 | <a id="memberrolestandardpermissionadmin_security_attributes"></a>`ADMIN_SECURITY_ATTRIBUTES` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.2. **Status**: Experiment. Edit the security attributes belonging to a top-level group. |
 | <a id="memberrolestandardpermissionadmin_security_testing"></a>`ADMIN_SECURITY_TESTING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Edit and manage security testing configurations and settings. |
 | <a id="memberrolestandardpermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |

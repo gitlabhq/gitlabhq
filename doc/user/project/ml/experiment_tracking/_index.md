@@ -32,7 +32,7 @@ short-lived (results from hyperparameter tuning triggered by a merge request),
 but usually hold model runs that have a similar set of parameters measured
 by the same metrics.
 
-![List of experiments](img/experiments_v17_9.png)
+![Model experiment table showing models and their number of runs, creator and last activity.](img/experiments_v17_9.png)
 
 ## Model run
 
@@ -76,7 +76,7 @@ Trial artifacts are saved as packages. After an artifact is logged for a run, al
 
 You can associate runs to the CI job that created them, allowing quick links to the merge request, pipeline, and user that triggered the pipeline:
 
-![CI information in run detail](img/run_detail_ci_v17_9.png)
+![Run detail page displaying associated CI job, pipeline, and user information.](img/run_detail_ci_v17_9.png)
 
 ## View logged metrics
 

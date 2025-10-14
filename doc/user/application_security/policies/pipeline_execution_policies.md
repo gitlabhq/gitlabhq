@@ -815,7 +815,11 @@ In this case, the job variable value `Project job variable value` takes preceden
 {{< alert type="warning" >}}
 
 This feature does not work with pipeline execution policies created before GitLab 18.5.
-To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
+To use this feature with older pipeline execution policies, you can either:
+
+- Make any change to the existing YAML configuration files for the pipeline execution policies.
+- Copy, delete, and recreate the policies.
+
 For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
 
 {{< /alert >}}

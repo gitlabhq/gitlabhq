@@ -106,6 +106,11 @@ Cop/StaticTranslationDefinition:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/SaasFeatureAvailableOutsideEe:
+  Enabled: true
+  Exclude:
+    - 'ee/**/*'
+
 InternalAffairs/DeprecateCopHelper:
   Enabled: true
   Include:

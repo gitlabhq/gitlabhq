@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::Groups::TransferService, feature_category: :organization do
-  let_it_be(:user) { create(:user) }
+RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feature_category: :organization do
   let_it_be(:old_organization) { create(:organization) }
   let_it_be(:new_organization) { create(:organization) }
+  let_it_be(:user) { create(:user, organization: old_organization) }
   let_it_be_with_refind(:group) { create(:group, organization: old_organization) }
 
   let(:service) { described_class.new(group: group, new_organization: new_organization, current_user: user) }
@@ -28,22 +28,11 @@ RSpec.describe Organizations::Groups::TransferService, feature_category: :organi
         create(:project, namespace: nested_subgroup, organization: old_organization)
       end
 
-      before do
-        allow_next_instance_of(Organizations::Groups::TransferValidator) do |validator|
-          allow(validator).to receive(:can_transfer?).and_return(true)
-        end
-      end
-
       it 'returns success ServiceResponse' do
         result = service.execute
         expect(result).to be_a(ServiceResponse)
         expect(result).to be_success
-      end
-
-      it 'does not set error on successful transfer' do
-        service.execute
-
-        expect(service.error).to be_nil
+        expect(result.message).to be_nil
       end
 
       it 'executes within a database transaction' do
@@ -95,6 +84,10 @@ RSpec.describe Organizations::Groups::TransferService, feature_category: :organi
             create(:project, :private, namespace: group, organization: old_organization)
           end
 
+          before_all do
+            new_organization.add_owner(user)
+          end
+
           it 'updates visibility for groups with higher visibility than organization' do
             service.execute
 
@@ -141,6 +134,10 @@ RSpec.describe Organizations::Groups::TransferService, feature_category: :organi
 
           let_it_be_with_refind(:private_project) do
             create(:project, :private, namespace: group, organization: old_organization)
+          end
+
+          before_all do
+            new_organization.add_owner(user)
           end
 
           it 'does not update visibility for groups with lower visibility' do
@@ -195,6 +192,12 @@ RSpec.describe Organizations::Groups::TransferService, feature_category: :organi
 
         service.execute
       end
+
+      it 'updates users successfully' do
+        service.execute
+
+        expect(user.reload.organization_id).to eq(new_organization.id)
+      end
     end
 
     context 'when transfer validation fails' do
@@ -216,22 +219,6 @@ RSpec.describe Organizations::Groups::TransferService, feature_category: :organi
         result = service.execute
 
         expect(result.message).to eq("Group organization transfer failed: #{validator_error}")
-        expect(service.error).to eq("Group organization transfer failed: #{validator_error}")
-      end
-
-      it 'logs transfer error with correct payload' do
-        expect(Gitlab::AppLogger).to receive(:error).with(
-          hash_including(
-            message: "Group was not transferred to a new organization",
-            group_path: group.full_path,
-            group_id: group.id,
-            new_organization_path: new_organization.full_path,
-            new_organization_id: new_organization.id,
-            error_message: validator_error
-          )
-        )
-
-        service.execute
       end
 
       it 'does not update organization_id' do
@@ -249,6 +236,119 @@ RSpec.describe Organizations::Groups::TransferService, feature_category: :organi
         service.execute
 
         expect(project.reload.organization_id).to eq(original_organization_id)
+      end
+    end
+
+    context 'when user transfer service validation fails' do
+      let(:error) { "User transfer not allowed" }
+
+      before do
+        allow_next_instance_of(Organizations::Users::TransferService) do |user_service|
+          allow(user_service).to receive_messages(can_transfer?: false, can_transfer_error: error)
+        end
+      end
+
+      it 'returns error ServiceResponse' do
+        result = service.execute
+        expect(result).to be_a(ServiceResponse)
+        expect(result).to be_error
+      end
+
+      it 'sets formatted error message' do
+        result = service.execute
+
+        expect(result.message).to eq("Group organization transfer failed: #{error}")
+      end
+    end
+
+    context 'when user transfer service raises an exception within User.transaction' do
+      let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
+      let_it_be_with_refind(:nested_subgroup) { create(:group, parent: subgroup, organization: old_organization) }
+      let_it_be_with_refind(:project) { create(:project, namespace: group, organization: old_organization) }
+      let_it_be_with_refind(:subgroup_project) do
+        create(:project, namespace: subgroup, organization: old_organization)
+      end
+
+      let_it_be_with_refind(:nested_project) do
+        create(:project, namespace: nested_subgroup, organization: old_organization)
+      end
+
+      let(:error_message) { 'User transfer failed' }
+
+      before do
+        allow_next_instance_of(Organizations::Users::TransferService) do |user_service|
+          allow(user_service).to receive(:can_transfer?).and_return(true)
+          allow(user_service).to receive(:execute).and_raise(ActiveRecord::RecordNotUnique, error_message)
+        end
+      end
+
+      it 'returns error ServiceResponse' do
+        result = service.execute
+        expect(result).to be_a(ServiceResponse)
+        expect(result).to be_error
+        expect(result.message).to eq(error_message)
+      end
+
+      it 'logs transfer error with correct payload' do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: "Group was not transferred to a new organization",
+            group_path: group.full_path,
+            group_id: group.id,
+            new_organization_path: new_organization.full_path,
+            new_organization_id: new_organization.id,
+            error_message: error_message
+          )
+        )
+
+        service.execute
+      end
+
+      it 'rolls back all organization ID changes due to transaction failure' do
+        service.execute
+
+        expect(group.reload.organization_id).to eq(old_organization.id)
+        expect(subgroup.reload.organization_id).to eq(old_organization.id)
+        expect(nested_subgroup.reload.organization_id).to eq(old_organization.id)
+
+        expect(project.reload.organization_id).to eq(old_organization.id)
+        expect(subgroup_project.reload.organization_id).to eq(old_organization.id)
+        expect(nested_project.reload.organization_id).to eq(old_organization.id)
+
+        expect(project.project_namespace.reload.organization_id).to eq(old_organization.id)
+        expect(subgroup_project.project_namespace.reload.organization_id).to eq(old_organization.id)
+        expect(nested_project.project_namespace.reload.organization_id).to eq(old_organization.id)
+      end
+
+      context 'with visibility level changes that would have been made' do
+        let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+        let_it_be_with_refind(:public_subgroup) do
+          create(:group, :public, parent: group, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:public_project) do
+          create(:project, :public, namespace: group, organization: old_organization)
+        end
+
+        before_all do
+          new_organization.add_owner(user)
+        end
+
+        it 'rolls back visibility level changes for groups due to transaction failure' do
+          expect { service.execute }.not_to change { public_subgroup.reload.visibility_level }
+        end
+
+        it 'rolls back visibility level changes for projects due to transaction failure' do
+          expect { service.execute }.not_to change { public_project.reload.visibility_level }
+        end
+
+        it 'rolls back visibility level changes for project namespaces due to transaction failure' do
+          expect { service.execute }.not_to change { public_project.project_namespace.reload.visibility_level }
+        end
+      end
+
+      it 'does not update user organization due to transaction failure' do
+        expect { service.execute }.not_to change { user.reload.organization_id }
       end
     end
   end

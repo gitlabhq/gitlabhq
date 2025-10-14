@@ -182,4 +182,19 @@ RSpec.describe Suggestion do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe 'ensure sharding key trigger' do
+    let_it_be(:diff_note) { create(:diff_note_on_merge_request) }
+
+    it 'syncs `namespace_id` with note on create' do
+      expect(create(:suggestion, note: diff_note).reload.namespace_id).to eq(diff_note.project.project_namespace_id)
+    end
+
+    it 'syncs `namespace_id` with note on update' do
+      existing_suggestion = create(:suggestion, note: diff_note)
+      existing_suggestion.update!(namespace_id: nil)
+
+      expect(existing_suggestion.reload.namespace_id).to eq(diff_note.project.project_namespace_id)
+    end
+  end
 end
