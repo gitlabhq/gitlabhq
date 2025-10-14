@@ -102,5 +102,12 @@ RSpec.describe API::ProjectAvatar, feature_category: :groups_and_projects do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_avatar do
+      let(:user) { create(:user) }
+      let(:project) { create(:project, :public, :with_avatar) }
+      let(:boundary_object) { project }
+      let(:request) { get api(avatar_path(project), personal_access_token: pat) }
+    end
   end
 end

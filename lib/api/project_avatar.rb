@@ -13,6 +13,8 @@ module API
         tags %w[project_avatar]
         success code: 200
       end
+
+      route_setting :authorization, permissions: :read_avatar, boundary_type: :project
       get ':id/avatar' do
         avatar = user_project.avatar
 
