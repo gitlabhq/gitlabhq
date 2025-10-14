@@ -21,7 +21,7 @@ RSpec.shared_examples 'page with product usage data collection banner' do
 
     expect(page).to have_selector '[data-testid="product-usage-data-collection-banner"]'
 
-    page.within('[data-testid="product-usage-data-collection-banner"]') do
+    page.within('body.page-initialised [data-testid="product-usage-data-collection-banner"]') do
       expect(page).to have_selector('[data-track-action=dismiss_banner]')
       expect(page).to have_selector('[data-track-label=product_usage_data_collection_banner]')
       click_button "Dismiss product usage data collection notice"
