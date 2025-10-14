@@ -1,0 +1,4 @@
+---
+name: delete_wiki
+description: Grants the ability to delete wikis
+feature_category: wiki

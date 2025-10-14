@@ -257,9 +257,9 @@ export default {
     },
     gitpodActionText() {
       if (this.isBlob) {
-        return __('Open in Gitpod');
+        return __('Open in Ona');
       }
-      return this.gitpodText || __('Gitpod');
+      return this.gitpodText || __('Ona');
     },
     computedShowGitpodButton() {
       return this.isGitpodEnabledForInstance && this.isGitpodEnabledForUser && this.gitpodUrl;

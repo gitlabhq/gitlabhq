@@ -20,7 +20,7 @@ module QA
         # These are only values permitted in scenario class pipeline mappings
         #
         # @return [Array]
-        FUNCTIONAL_E2E_PIPELINE_TYPES = %i[test_on_cng test_on_gdk test_on_omnibus test_on_omnibus_nightly].freeze
+        FUNCTIONAL_E2E_PIPELINE_TYPES = %i[test_on_cng test_on_gdk test_on_omnibus].freeze
 
         # Additional pipeline types that will be created by simply copying pipeline definition without applying
         #   dynamic scaling logic
@@ -41,8 +41,7 @@ module QA
         RUNTIME_COEFFICIENT = {
           test_on_cng: 0.7, # cng supports parallel_tests, so less jobs are needed to retain target runtime
           test_on_gdk: 0.8, # gdk supports parallel_tests but is in general slower than other environments
-          test_on_omnibus: 1.0,
-          test_on_omnibus_nightly: 1.0
+          test_on_omnibus: 1.0
         }.freeze
 
         RULE_NEVER = "rules:\n  - when: never\n"

@@ -221,7 +221,7 @@ module PreferencesHelper
   end
 
   def gitpod_url_placeholder
-    Gitlab::CurrentSettings.gitpod_url.presence || 'https://gitpod.io/'
+    Gitlab::CurrentSettings.gitpod_url.presence || 'https://app.ona.com/'
   end
 
   # Ensure that anyone adding new options updates `localized_dashboard_choices` too

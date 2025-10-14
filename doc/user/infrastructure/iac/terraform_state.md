@@ -463,7 +463,7 @@ You can also use [the GraphQL API](../../../api/graphql/reference/_index.md#muta
 To remove a state file using the UI:
 
 1. On the left sidebar, select **Operate** > **Terraform states**.
-1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Remove state file and versions**.
+1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Remove state file and versions**.
 
 {{< /tab >}}
 
@@ -508,7 +508,7 @@ curl --request DELETE --header "Private-Token: <your_access_token>" \
 To lock or unlock a state file using the UI:
 
 1. On the left sidebar, select **Operate** > **Terraform states**.
-1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Lock** to lock or **Actions ({{< icon name="ellipsis_v" >}}) > Unlock**.
+1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Lock** to lock or **Actions** ({{< icon name="ellipsis_v" >}}) > **Unlock**.
 
 {{< /tab >}}
 
@@ -553,7 +553,7 @@ curl --header "Private-Token: <your_access_token>" \
 To download the latest state file using the UI:
 
 1. On the left sidebar, select **Operate** > **Terraform states**.
-1. In the **Actions** column, select **Actions ({{< icon name="ellipsis_v" >}}) > Download JSON**.
+1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Download JSON**.
 
 There is no way to download a specific version of the state using the UI.
 

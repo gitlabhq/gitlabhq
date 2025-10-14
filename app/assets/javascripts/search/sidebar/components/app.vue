@@ -111,7 +111,7 @@ export default {
     <div
       v-if="projectStudioEnabled"
       ref="mobileFilters"
-      class="filters -gl-ml-4 gl-hidden gl-min-w-30 @lg/panel:gl-block"
+      class="filters -gl-ml-4 gl-hidden gl-min-w-30 @md/panel:gl-block"
       data-testid="search-filters"
     >
       <all-scopes-start-filters />

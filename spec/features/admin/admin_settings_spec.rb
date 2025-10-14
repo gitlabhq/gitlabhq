@@ -370,16 +370,16 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.terminal_max_session_time).to eq(15)
       end
 
-      context 'Configure Gitpod' do
-        it 'changes gitpod settings' do
+      context 'Configure Ona' do
+        it 'changes ona settings' do
           page.within('#js-gitpod-settings') do
-            check 'Enable Gitpod integration'
-            fill_in 'Gitpod URL', with: 'https://gitpod.test/'
+            check 'Enable Ona integration'
+            fill_in 'Ona URL', with: 'https://ona.test/'
             click_button 'Save changes'
           end
 
           expect(page).to have_content 'Application settings saved successfully'
-          expect(current_settings.gitpod_url).to eq('https://gitpod.test/')
+          expect(current_settings.gitpod_url).to eq('https://ona.test/')
           expect(current_settings.gitpod_enabled).to be(true)
         end
       end

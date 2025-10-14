@@ -25,6 +25,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	gobpkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/gob"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
@@ -258,11 +259,30 @@ func (ro *routeEntry) isMatch(cleanedPath string, req *http.Request) bool {
 	return ok
 }
 
-func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config, dependencyProxyInjector *dependencyproxy.Injector) http.Handler {
+// ProxyOption defines a function type for configuring proxy middleware
+type ProxyOption func(http.Handler) http.Handler
+
+// WithSuccessTracking adds success tracking middleware to the proxy
+func WithSuccessTracking(tracker *healthcheck.SuccessTracker) ProxyOption {
+	return func(handler http.Handler) http.Handler {
+		if tracker == nil {
+			return handler
+		}
+		return healthcheck.BackendSuccessTrackingMiddleware(tracker)(handler)
+	}
+}
+
+func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config, dependencyProxyInjector *dependencyproxy.Injector, opts ...ProxyOption) http.Handler {
 	proxier := proxypkg.NewProxy(backend, version, rt)
 
+	// Apply optional middleware
+	var handler http.Handler = proxier
+	for _, opt := range opts {
+		handler = opt(handler)
+	}
+
 	return senddata.SendData(
-		sendfile.SendFile(apipkg.Block(proxier)),
+		sendfile.SendFile(apipkg.Block(handler)),
 		git.SendArchive,
 		git.SendBlob,
 		git.SendDiff,
@@ -283,7 +303,14 @@ func configureRoutes(u *upstream) {
 	api := u.APIClient
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude}
 	dependencyProxyInjector := dependencyproxy.NewInjector()
-	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector)
+
+	// Build proxy with optional success tracking
+	var proxyOpts []ProxyOption
+	if u.healthCheckServer != nil {
+		proxyOpts = append(proxyOpts, WithSuccessTracking(u.healthCheckServer.GetSuccessTracker()))
+	}
+
+	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector, proxyOpts...)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
 	assetsNotFoundHandler := NotFoundUnless(u.DevelopmentMode, proxy)

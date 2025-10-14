@@ -43,14 +43,72 @@
 
   // Super topbar
   .super-topbar {
-    @apply gl-fixed gl-w-full gl-left-0 gl-shrink-0 gl-py-0 gl-pl-4 gl-pr-5 sm:gl-pr-3;
-    top: $calc-system-headers-height;
+    @apply gl-pl-4 gl-pr-5 sm:gl-pr-3;
     height: var(--header-height);
 
     // Placeholder styles
     .topbar-search-button-placeholder {
       font-weight: 320;
       line-height: 1.25;
+    }
+
+    // Search button
+    .topbar-search-button {
+      @apply gl-text-subtle gl-border-alpha-dark-24 #{!important};
+
+      kbd {
+        @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
+      }
+    }
+
+    .topbar-search-button:not(:hover):not(:focus):not(:active) {
+      @apply dark:gl-bg-alpha-light-8 dark:gl-border-alpha-light-16 #{!important};
+    }
+  }
+
+  // Quick search overlay
+  #super-sidebar-search-modal {
+    @apply gl-pt-0;
+
+    /* stylelint-disable scss/at-rule-no-unknown */
+    @media (prefers-reduced-motion: no-preference) {
+      transition-property: opacity;
+      transition-timing-function: $gl-easing-out-cubic;
+
+      &.show {
+        opacity: 1;
+        transition-duration: 0.2s;
+
+        .modal-dialog {
+          scale: 1;
+          transition-duration: 0.2s;
+        }
+      }
+
+      &:not(.show) {
+        opacity: 0;
+        transition-duration: 0.1s;
+
+        .modal-dialog {
+          scale: 0.8;
+          transition-duration: 0.1s;
+        }
+      }
+
+      @starting-style {
+        opacity: 0;
+      }
+
+      .modal-dialog {
+        transform-origin: top center;
+        transform: none !important;
+        transition-property: scale;
+        transition-timing-function: $gl-easing-out-cubic;
+
+        @starting-style {
+          scale: 0.8;
+        }
+      }
     }
   }
 
@@ -107,66 +165,6 @@
     @apply gl-rounded-lg #{!important};
   }
 
-  // Search button
-  .super-topbar .topbar-search-button {
-    @apply gl-text-subtle gl-border-alpha-dark-24 #{!important};
-
-    kbd {
-      @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
-    }
-  }
-
-  .super-topbar .topbar-search-button:not(:hover):not(:focus):not(:active) {
-    @apply dark:gl-bg-alpha-light-8 dark:gl-border-alpha-light-16 #{!important};
-  }
-
-  // Quick search overlay
-  #super-sidebar-search-modal {
-    @apply gl-pt-0;
-
-    /* stylelint-disable scss/at-rule-no-unknown */
-    @media (prefers-reduced-motion: no-preference) {
-      transition-property: opacity;
-      transition-timing-function: $gl-easing-out-cubic;
-
-      &.show {
-        opacity: 1;
-        transition-duration: 0.2s;
-
-        .modal-dialog {
-          scale: 1;
-          transition-duration: 0.2s;
-        }
-      }
-
-      &:not(.show) {
-        opacity: 0;
-        transition-duration: 0.1s;
-
-        .modal-dialog {
-          scale: 0.8;
-          transition-duration: 0.1s;
-        }
-      }
-
-      @starting-style {
-        opacity: 0;
-      }
-
-      .modal-dialog {
-        transform-origin: top center;
-        transform: none !important;
-        transition-property: scale;
-        transition-timing-function: $gl-easing-out-cubic;
-
-        @starting-style {
-          scale: 0.8;
-        }
-      }
-    }
-  }
-
-
   // Position for search overlay when Performance bar is visible
   &.with-performance-bar #super-sidebar-search-modal {
     padding-top: $performance-bar-height;
@@ -179,11 +177,6 @@
     .gl-search-box-by-type-input-borderless {
       @apply gl-rounded-[0.75rem];
     }
-  }
-
-  // Organization switcher adjustment (light mode only)
-  &:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
-    @apply gl-bg-alpha-dark-6 gl-border-default;
   }
 
   .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
@@ -225,6 +218,7 @@
 
   // Layout
   &.page-with-panels .layout-page {
+    @apply gl-pt-0 #{!important};
     @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3 gl-h-full;
 
     @include media-breakpoint-up(lg) {
@@ -240,7 +234,6 @@
 
   // Unset fixed positions
   #js-peek,
-  .super-topbar,
   #super-sidebar,
   .header-logged-out {
     @apply gl-relative #{!important};
@@ -664,6 +657,10 @@
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 16%);
     }
 
+    .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
+      @apply gl-bg-alpha-dark-6 gl-border-default;
+    }
+
     .super-sidebar hr {
       border-color: var(--gl-color-alpha-dark-8);
     }
@@ -760,7 +757,6 @@
 
   }
 
-  .super-topbar,
   .super-sidebar:not(.super-sidebar-is-mobile),
   .super-sidebar .bottom-scrim,
   .super-sidebar .top-scrim {

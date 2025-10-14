@@ -68,6 +68,11 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   # How often to perform health checks
   check_interval = "10s"
 
+  # Duration to skip Rails readiness checks after a successful request
+  # This helps reduce load on the Rails server by avoiding redundant checks
+  # when recent requests have been successful.
+  rails_skip_interval = "20s"
+
   # Timeout for individual health check requests
   timeout = "5s"
 

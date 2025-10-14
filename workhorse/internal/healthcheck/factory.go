@@ -42,6 +42,8 @@ func CreateServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg prome
 			cfg.PumaControlURL,
 			cfg.Timeout.Duration,
 			logger,
+			WithSuccessChecker(server.GetOptimizedReadinessChecker()),
+			WithSkipInterval(cfg.RailsSkipInterval.Duration),
 		)
 		server.AddReadinessChecker(pumaReadinessChecker)
 	}

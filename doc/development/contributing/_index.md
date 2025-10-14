@@ -92,7 +92,7 @@ development environment that includes an installation of GitLab Self-Managed, sa
 and administrator access with which you can test functionality.
 
 - [GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md),
-packages GDK into a pre-configured virtual machine image that you can connect to with VS Code.
+packages GDK into a pre-configured container image that you can connect to with VS Code.
 Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md) to set up GDK-in-a-box.
 
   To install GDK and its dependencies, follow the steps in [Install the GDK development environment](first_contribution/configure-dev-env-gdk.md).

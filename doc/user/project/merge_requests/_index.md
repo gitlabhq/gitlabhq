@@ -197,10 +197,10 @@ change, and whether you need access to a development environment:
   <kbd>.</kbd> keyboard shortcut. Use this
   browser-based method to edit multiple files, or if you are not comfortable with Git commands.
   You cannot run tests from the Web IDE.
-- [Edit changes in Gitpod](../../../integration/gitpod.md#launch-gitpod-in-gitlab), if you
-  need a fully-featured environment to both edit files, and run tests afterward. Gitpod
+- [Edit changes in Ona](../../../integration/gitpod.md#launch-ona-in-gitlab), if you
+  need a fully-featured environment to both edit files, and run tests afterward. Ona
   supports running the GitLab Development Kit (GDK).
-  To use Gitpod, you must enable Gitpod in your user account.
+  To use Ona, you must enable Ona in your user account.
 - [Push changes from the command line](../../../topics/git/commands.md), if you are
   familiar with Git and the command line.
 

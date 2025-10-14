@@ -19,7 +19,7 @@
           - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
           = safe_format(_("in group %{link_to_group}"), link_to_group: link_to_group)
   .gl-flex.gl-gap-3.gl-mt-3{ class: "@sm/panel:gl-mt-0" }
-    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: '@lg/panel:gl-hidden gl-grow @md/panel:gl-grow-0'}) do
+    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: "#{project_studio_enabled? ? '@md/panel:gl-hidden' : '@lg/panel:gl-hidden'} gl-grow @md/panel:gl-grow-0"}) do
       = s_('GlobalSearch|Filters')
     - if @search_service_presenter.show_sort_dropdown? && !@search_objects.to_a.empty?
       #js-search-sort{ data: { "search-sort-options" => search_sort_options.to_json }, class: "gl-grow @md/panel:gl-grow-0" }

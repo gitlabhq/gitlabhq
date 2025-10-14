@@ -1648,20 +1648,20 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    context 'with gitpod settings' do
-      it 'is invalid if gitpod is enabled and no url is provided' do
+    context 'with ona settings' do
+      it 'is invalid if ona is enabled and no url is provided' do
         allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: nil)
 
         is_expected.to be_invalid
       end
 
-      it 'is invalid if gitpod is enabled and an empty url is provided' do
+      it 'is invalid if ona is enabled and an empty url is provided' do
         allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: '')
 
         is_expected.to be_invalid
       end
 
-      it 'is invalid if gitpod is enabled and an invalid url is provided' do
+      it 'is invalid if ona is enabled and an invalid url is provided' do
         allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: 'javascript:alert("test")//')
 
         is_expected.to be_invalid

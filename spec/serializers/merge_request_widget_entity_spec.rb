@@ -268,12 +268,12 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
     end
   end
 
-  describe 'when gitpod is disabled' do
+  describe 'when ona is disabled' do
     before do
       allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(false)
     end
 
-    it 'exposes gitpod attributes' do
+    it 'exposes ona attributes' do
       expect(subject).to include(
         show_gitpod_button: false,
         gitpod_url: nil,
@@ -282,13 +282,13 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
     end
   end
 
-  describe 'when gitpod is enabled' do
+  describe 'when ona is enabled' do
     before do
       allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(true)
       allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return("https://gitpod.example.com")
     end
 
-    it 'exposes gitpod attributes' do
+    it 'exposes ona attributes' do
       mr_url = Gitlab::Routing.url_helpers.project_merge_request_url(resource.project, resource)
 
       expect(subject).to include(
@@ -298,12 +298,12 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
       )
     end
 
-    describe 'when gitpod is enabled for user' do
+    describe 'when ona is enabled for user' do
       before do
         allow(user).to receive(:gitpod_enabled).and_return(true)
       end
 
-      it 'exposes gitpod_enabled as true' do
+      it 'exposes ona_enabled as true' do
         expect(subject[:gitpod_enabled]).to be(true)
       end
     end

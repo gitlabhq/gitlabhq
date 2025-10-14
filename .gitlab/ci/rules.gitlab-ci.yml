@@ -1616,6 +1616,8 @@
 
 .frontend:rules:fe-island:test:
   rules:
+    - <<: *if-not-ee
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-fork-merge-request
@@ -2087,17 +2089,6 @@
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
       changes: *backend-only-patterns
     - <<: *if-dot-com-gitlab-org-schedule
-
-.qa:rules:test-on-omnibus-nightly:
-  rules:
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-security-schedule
-      when: never
-    - <<: *if-default-branch-schedule-nightly
-      allow_failure: true
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:fulfillment-e2e-quarantine-report:
   rules:

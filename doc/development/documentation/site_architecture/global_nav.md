@@ -15,7 +15,7 @@ we want them to find topics nearby that are related to the content they're readi
 At the highest level, our global nav is **workflow-based**. Navigation needs to help users build a mental model of how to use GitLab.
 The levels under each of the higher workflow-based topics are the names of features. For example:
 
-**Use GitLab** (_workflow_) **> Build your application** (_workflow_) **> Get started** (_feature_)**> CI/CD** (_feature_) **> Pipelines** (_feature_)
+**Use GitLab** (_workflow_) > **Build your application** (_workflow_) > **Get started** (_feature_) > **CI/CD** (_feature_) > **Pipelines** (_feature_)
 
 While some older sections of the nav are alphabetical, the nav should primarily be workflow-based.
 

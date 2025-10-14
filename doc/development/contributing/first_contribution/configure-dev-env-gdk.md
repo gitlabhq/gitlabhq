@@ -14,7 +14,7 @@ sample projects, and administrator access with which you can test functionality.
 
 ![Home page of GitLab running in local development environment on port 3000](img/gdk_home_v15_11.png)
 
-If you prefer to use GDK in a local virtual machine, use the steps in [Configure GDK-in-a-box](configure-dev-env-gdk-in-a-box.md)
+If you prefer to use GDK in a local container, use the steps in [Configure GDK-in-a-box](configure-dev-env-gdk-in-a-box.md)
 
 [View an interactive demo of this step](https://gitlab.navattic.com/xtk20s8x).
 

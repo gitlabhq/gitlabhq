@@ -167,21 +167,6 @@ e2e:test-on-omnibus-ce:
     QA_RUN_TYPE: e2e-test-on-omnibus-ce
     PIPELINE_NAME: E2E Omnibus GitLab CE
 
-e2e:test-on-omnibus-ee-nightly:
-  extends:
-    - .e2e-trigger-base
-    - .omnibus-trigger-base
-    - .qa:rules:test-on-omnibus-nightly
-  needs:
-    - compile-production-assets
-    - build-qa-image
-    - e2e-test-pipeline-generate
-  variables:
-    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
-    QA_RUN_TYPE: nightly
-    PIPELINE_NAME: E2E Omnibus GitLab Nightly
-    DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-omnibus-nightly-pipeline.yml
-
 e2e:test-on-gdk:
   extends:
     - .e2e-trigger-base

@@ -292,7 +292,7 @@ func run(boot bootConfig, cfg config.Config) error {
 		defer healthCancel()
 	}
 
-	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb))
+	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb, healthCheckServer))
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)

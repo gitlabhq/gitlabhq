@@ -20,7 +20,7 @@ describe('SuperTopbar', () => {
   const OrganizationSwitcherStub = stubComponent(OrganizationSwitcher);
   const SearchModalStub = stubComponent(SearchModal);
 
-  const findSkipToLink = () => wrapper.findByTestId('super-sidebar-skip-to');
+  const findSkipToLink = () => wrapper.findByTestId('super-topbar-skip-to');
   const findAdminLink = () => wrapper.findByTestId('topbar-admin-link');
   const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
   const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');

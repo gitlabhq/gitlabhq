@@ -41,30 +41,6 @@ After an agent is registered and installed, the agent connection to the cluster 
 This approach means you can manage and configure your agent instances from GitLab itself,
 and you can scale a single installation to multiple tenants.
 
-## Receptive agents
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
-
-{{< /history >}}
-
-Receptive agents allow GitLab to integrate with Kubernetes clusters that cannot establish a network connection
-to the GitLab instance, but can be connected to by GitLab. For example, this can occur when:
-
-1. GitLab runs in a private network or behind a firewall, and is only accessible only through VPN.
-1. The Kubernetes cluster is hosted by a cloud provider, but is exposed to the internet or is reachable from the private network.
-
-When this feature is enabled, GitLab connects to the agent with the provided URL.
-You can use agents and receptive agents simultaneously.
-
 ## Supported Kubernetes versions for GitLab features
 
 GitLab supports the following Kubernetes versions. If you want to run
@@ -129,6 +105,30 @@ This channel is used for all communication between the agent and KAS:
   - A proxy in front of KAS might influence the maximum lifetime of connections. On GitLab.com, this is [two hours](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217). The grace period is 50% of the maximum lifetime.
 
 For detailed information about channel routing, see [Routing KAS requests in the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kas_request_routing.md).
+
+## Receptive agents
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+{{< /history >}}
+
+Receptive agents allow GitLab to integrate with Kubernetes clusters that cannot establish a network connection
+to the GitLab instance, but can be connected to by GitLab. For example, this can occur when:
+
+1. GitLab runs in a private network or behind a firewall, and is only accessible through VPN.
+1. The Kubernetes cluster is hosted by a cloud provider, but is exposed to the internet or is reachable from the private network.
+
+When this feature is enabled, GitLab connects to the agent with the provided URL.
+You can use agents and receptive agents simultaneously.
 
 ## Kubernetes integration glossary
 

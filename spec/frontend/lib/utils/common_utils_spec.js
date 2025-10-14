@@ -1,5 +1,16 @@
 import * as commonUtils from '~/lib/utils/common_utils';
 
+const makePanelHtmlStub = (
+  outerClass = 'js-static-panel',
+  innerClass = 'js-static-panel-inner',
+) => {
+  return `<div class="${outerClass}">
+    <div class="${innerClass}" id="scroller">
+      <div id="test" />
+    </div>
+  </div>`;
+};
+
 describe('common_utils', () => {
   describe('getPagePath', () => {
     const { getPagePath } = commonUtils;
@@ -254,6 +265,28 @@ describe('common_utils', () => {
     });
   });
 
+  describe('scrollTo', () => {
+    describe('when inside a panel', () => {
+      it('calls `scrollTo` on the panel', () => {
+        document.body.innerHTML = makePanelHtmlStub();
+        const target = document.getElementById('test');
+        const scroller = document.getElementById('scroller');
+        const scrollerSpy = jest.spyOn(scroller, 'scrollTo');
+
+        commonUtils.scrollTo({ top: 0 }, target);
+
+        expect(scrollerSpy).toHaveBeenCalledWith({ top: 0 });
+      });
+    });
+    describe('when not inside a panel', () => {
+      it('calls `scrollTo` on the window', () => {
+        const spy = jest.spyOn(window, 'scrollTo');
+        commonUtils.scrollTo({ top: 0 }, document.body);
+        expect(spy).toHaveBeenCalledWith({ top: 0 });
+      });
+    });
+  });
+
   describe('findParentPanelScrollingEl', () => {
     afterEach(() => {
       document.body.innerHTML = '';
@@ -270,13 +303,7 @@ describe('common_utils', () => {
         ${'static'}  | ${'js-static-panel'}  | ${'js-static-panel-inner'}
         ${'dynamic'} | ${'js-dynamic-panel'} | ${'js-dynamic-panel-inner'}
       `('returns $panelType panel inner element', ({ panelClass, innerClass }) => {
-        document.body.innerHTML = `
-        <div class="${panelClass}">
-          <div class="${innerClass}">
-            <div id="test" />
-          </div>
-        </div>
-      `;
+        document.body.innerHTML = makePanelHtmlStub(panelClass, innerClass);
 
         const element = document.getElementById('test');
         const inner = document.querySelector(`.${innerClass}`);

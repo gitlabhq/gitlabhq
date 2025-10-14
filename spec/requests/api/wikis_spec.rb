@@ -125,6 +125,14 @@ RSpec.describe API::Wikis, feature_category: :wiki do
         include_examples 'wikis API returns list of wiki pages'
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_wiki do
+      let(:user) { developer }
+      let(:project) { group_project }
+      let(:boundary_object) { project }
+      let!(:project_setup) { group_project.add_developer(user) }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/wikis/:slug' do
@@ -275,6 +283,14 @@ RSpec.describe API::Wikis, feature_category: :wiki do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_wiki do
+      let(:user) { developer }
+      let(:project) { group_project }
+      let(:boundary_object) { project }
+      let!(:project_setup) { group_project.add_developer(user) }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/wikis' do
@@ -306,6 +322,15 @@ RSpec.describe API::Wikis, feature_category: :wiki do
         end
 
         include_examples 'wiki API 403 Forbidden'
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_wiki do
+        let(:user) { developer }
+        let(:project) { group_project }
+        let(:boundary_object) { project }
+        let(:payload) { { title: "wiki-#{SecureRandom.hex(4)}", content: 'granular tokens' } }
+        let!(:project_setup) { group_project.add_developer(user) }
+        let(:request) { post api(url, personal_access_token: pat), params: payload }
       end
     end
 
@@ -530,6 +555,14 @@ RSpec.describe API::Wikis, feature_category: :wiki do
 
       include_examples 'wikis API updates wiki page'
     end
+
+    it_behaves_like 'authorizing granular token permissions', :update_wiki do
+      let(:user) { developer }
+      let(:project) { group_project }
+      let(:boundary_object) { project }
+      let!(:project_setup) { group_project.add_developer(user) }
+      let(:request) { put api(url, personal_access_token: pat), params: payload }
+    end
   end
 
   describe 'DELETE /projects/:id/wikis/:slug' do
@@ -661,6 +694,14 @@ RSpec.describe API::Wikis, feature_category: :wiki do
 
       include_examples 'wiki API 204 No Content'
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_wiki do
+      let(:user) { maintainer }
+      let(:project) { group_project }
+      let(:boundary_object) { project }
+      let!(:project_setup) { project.add_maintainer(user) }
+      let(:request) { delete api(url, personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/wikis/attachments' do
@@ -764,6 +805,14 @@ RSpec.describe API::Wikis, feature_category: :wiki do
 
         include_examples 'wiki API uploads wiki attachment'
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_wiki_attachment do
+      let(:user) { developer }
+      let(:project) { group_project }
+      let(:boundary_object) { project }
+      let!(:project_setup) { project.add_developer(user) }
+      let(:request) { post api(url, personal_access_token: pat), params: payload }
     end
   end
 end

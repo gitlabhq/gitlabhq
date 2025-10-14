@@ -25,8 +25,8 @@ RSpec.describe UserPresenter do
     end
   end
 
-  context 'Gitpod' do
-    let(:gitpod_url) { "https://gitpod.io" }
+  context 'Ona' do
+    let(:gitpod_url) { "https://app.ona.com" }
     let(:gitpod_application_enabled) { true }
 
     before do
@@ -34,7 +34,7 @@ RSpec.describe UserPresenter do
       allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return(gitpod_url)
     end
 
-    context 'Gitpod enabled for application' do
+    context 'Ona enabled for application' do
       describe '#preferences_gitpod_path' do
         it { expect(presenter.preferences_gitpod_path).to eq("/-/profile/preferences#user_gitpod_enabled") }
       end
@@ -47,7 +47,7 @@ RSpec.describe UserPresenter do
       end
     end
 
-    context 'Gitpod disabled for application' do
+    context 'Ona disabled for application' do
       let(:gitpod_application_enabled) { false }
 
       describe '#preferences_gitpod_path' do

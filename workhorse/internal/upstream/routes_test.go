@@ -162,7 +162,7 @@ func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
 	config.CircuitBreakerConfig.Enabled = true
 	config.CircuitBreakerConfig.ConsecutiveFailures = consecutiveFailures
 
-	upstreamHandler := newUpstream(*config, logrus.StandardLogger(), configureRoutes, nil, rdb)
+	upstreamHandler := newUpstream(*config, logrus.StandardLogger(), configureRoutes, nil, rdb, nil)
 	ws := httptest.NewServer(upstreamHandler)
 	defer ws.Close()
 

@@ -73,12 +73,10 @@ export default {
 </script>
 
 <template>
-  <header
-    class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
-  >
+  <header class="super-topbar gl-grid gl-grid-cols-[1fr_auto_1fr] gl-items-center">
     <gl-button
       class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
-      data-testid="super-sidebar-skip-to"
+      data-testid="super-topbar-skip-to"
       href="#content-body"
       variant="confirm"
     >
@@ -112,13 +110,13 @@ export default {
     <gl-button
       id="super-sidebar-search"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      button-text-classes="gl-flex gl-w-full gl-items-center"
+      button-text-classes="gl-flex gl-items-center"
       category="tertiary"
       class="topbar-search-button gl-max-w-88 !gl-rounded-[.75rem] !gl-bg-default !gl-pl-3 !gl-pr-2 hover:!gl-border-alpha-dark-40 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
       data-testid="super-topbar-search-button"
     >
       <gl-icon name="search" class="gl-shrink-0" />
-      <span class="topbar-search-button-placeholder gl-min-w-[24vw] gl-text-left gl-font-normal">{{
+      <span class="topbar-search-button-placeholder gl-min-w-[24vw] gl-text-left">{{
         $options.i18n.searchBtnText
       }}</span>
       <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-shadow-none md:gl-block">/</kbd>
@@ -138,7 +136,7 @@ export default {
           v-if="isLoggedIn"
           :sidebar-data="sidebarData"
           class="gl-hidden md:gl-flex"
-          counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
+          counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3"
         />
 
         <gl-button

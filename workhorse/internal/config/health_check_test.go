@@ -27,6 +27,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				MaxConsecutiveFailures: 1,
 				MinSuccessfulProbes:    1,
 				ReadinessProbeURL:      "http://localhost:8080/-/readiness",
+				RailsSkipInterval:      TomlDuration{Duration: 20 * time.Second},
 			},
 		},
 		{
@@ -45,6 +46,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				MaxConsecutiveFailures: 1,
 				MinSuccessfulProbes:    1,
 				ReadinessProbeURL:      "http://example.com:3000/-/readiness",
+				RailsSkipInterval:      TomlDuration{Duration: 20 * time.Second},
 			},
 		},
 		{
@@ -57,6 +59,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 					MaxConsecutiveFailures: 5,
 					MinSuccessfulProbes:    3,
 					ReadinessProbeURL:      "http://custom.com/-/readiness",
+					RailsSkipInterval:      TomlDuration{Duration: 60 * time.Second},
 				},
 			},
 			expected: &HealthCheckConfig{
@@ -66,6 +69,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				MaxConsecutiveFailures: 5,
 				MinSuccessfulProbes:    3,
 				ReadinessProbeURL:      "http://custom.com/-/readiness",
+				RailsSkipInterval:      TomlDuration{Duration: 60 * time.Second},
 			},
 		},
 		{
@@ -84,6 +88,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				MaxConsecutiveFailures: 1,                                        // default
 				MinSuccessfulProbes:    4,                                        // preserved
 				ReadinessProbeURL:      "http://custom.com/-/readiness",          // preserved
+				RailsSkipInterval:      TomlDuration{Duration: 20 * time.Second}, // default
 			},
 		},
 	}
@@ -99,6 +104,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				assert.Equal(t, tt.expected.MaxConsecutiveFailures, tt.config.HealthCheckListener.MaxConsecutiveFailures)
 				assert.Equal(t, tt.expected.MinSuccessfulProbes, tt.config.HealthCheckListener.MinSuccessfulProbes)
 				assert.Equal(t, tt.expected.ReadinessProbeURL, tt.config.HealthCheckListener.ReadinessProbeURL)
+				assert.Equal(t, tt.expected.RailsSkipInterval, tt.config.HealthCheckListener.RailsSkipInterval)
 			}
 		})
 	}
@@ -129,6 +135,7 @@ func TestApplyHealthCheckDefaults_WithBackendURL(t *testing.T) {
 	cfg.ApplyHealthCheckDefaults()
 
 	assert.Equal(t, "https://gitlab.example.com:8080/-/readiness", cfg.HealthCheckListener.ReadinessProbeURL)
-	assert.Equal(t, TomlDuration{Duration: 1 * time.Second}, cfg.HealthCheckListener.CheckInterval) // Preserved
-	assert.Equal(t, TomlDuration{Duration: 5 * time.Second}, cfg.HealthCheckListener.Timeout)       // Default applied
+	assert.Equal(t, TomlDuration{Duration: 1 * time.Second}, cfg.HealthCheckListener.CheckInterval)      // Preserved
+	assert.Equal(t, TomlDuration{Duration: 5 * time.Second}, cfg.HealthCheckListener.Timeout)            // Default applied
+	assert.Equal(t, TomlDuration{Duration: 20 * time.Second}, cfg.HealthCheckListener.RailsSkipInterval) // Default applied
 }

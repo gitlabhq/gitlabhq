@@ -7,8 +7,7 @@ module QA
         class ObjectStorage < All
           tags :object_storage
 
-          pipeline_mappings test_on_omnibus: %w[object-storage object-storage-aws object-storage-gcs],
-            test_on_omnibus_nightly: %w[object-storage object-storage-aws object-storage-gcs]
+          pipeline_mappings test_on_omnibus: %w[object-storage object-storage-aws object-storage-gcs]
         end
       end
     end

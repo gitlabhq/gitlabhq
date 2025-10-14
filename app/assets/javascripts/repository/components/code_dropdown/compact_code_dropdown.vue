@@ -133,7 +133,7 @@ export default {
     },
     gitPodAction() {
       return {
-        text: __('GitPod'),
+        text: __('Ona'),
         tracking: {
           action: 'click_consolidated_edit',
           label: 'gitpod',

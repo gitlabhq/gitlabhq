@@ -120,7 +120,6 @@ export default {
     :toggle-id="$options.toggleId"
     :dropdown-offset="dropdownOffset"
     class="super-sidebar-new-menu-dropdown"
-    :toggle-class="{ '!gl-rounded-lg': projectStudioEnabled }"
     data-testid="new-menu-toggle"
     @shown="dropdownOpen = true"
     @hidden="dropdownOpen = false"

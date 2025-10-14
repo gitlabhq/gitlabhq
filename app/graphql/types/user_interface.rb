@@ -161,7 +161,7 @@ module Types
       description: 'Saved reply authored by the user.'
 
     field :gitpod_enabled, GraphQL::Types::Boolean, null: true,
-      description: 'Whether Gitpod is enabled at the user level.'
+      description: 'Whether Ona is enabled at the user level.'
 
     field :user_preferences, ::Types::UserPreferencesType,
       null: true,
@@ -171,10 +171,10 @@ module Types
     field :preferences_gitpod_path,
       GraphQL::Types::String,
       null: true,
-      description: 'Web path to the Gitpod section within user preferences.'
+      description: 'Web path to the Ona section within user preferences.'
 
     field :profile_enable_gitpod_path, GraphQL::Types::String, null: true,
-      description: 'Web path to enable Gitpod for the user.'
+      description: 'Web path to enable Ona for the user.'
 
     field :user_achievements,
       Types::Achievements::UserAchievementType.connection_type,

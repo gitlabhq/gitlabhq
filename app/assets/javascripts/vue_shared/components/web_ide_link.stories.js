@@ -92,7 +92,7 @@ export const WithCustomText = {
   args: {
     ...defaultArgs,
     webIdeText: 'Custom Web IDE Text',
-    gitpodText: 'Custom Gitpod Text',
+    gitpodText: 'Custom Ona Text',
   },
 };
 

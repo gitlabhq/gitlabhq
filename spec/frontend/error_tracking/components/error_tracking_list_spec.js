@@ -539,7 +539,7 @@ describe('ErrorTrackingList', () => {
         it('fetches the next page of results', () => {
           window.scrollTo = jest.fn();
           findPagination().vm.$emit('input', 2);
-          expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0 });
           expect(actions.fetchPaginatedResults).toHaveBeenCalled();
           expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),

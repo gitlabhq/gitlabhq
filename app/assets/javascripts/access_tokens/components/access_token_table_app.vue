@@ -6,6 +6,7 @@ import {
   convertObjectPropsToCamelCase,
   normalizeHeaders,
   parseIntPagination,
+  scrollTo,
 } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
@@ -246,7 +247,7 @@ export default {
         this.currentPage = newPage;
         this.page = newPage;
       }
-      window.scrollTo({ top: 0 });
+      scrollTo({ top: 0 }, this.$refs.rootElement);
     },
   },
 };
@@ -254,7 +255,7 @@ export default {
 
 <template>
   <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
-    <div>
+    <div ref="root-element">
       <div>
         <gl-table
           data-testid="active-tokens"

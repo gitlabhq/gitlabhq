@@ -166,7 +166,7 @@ You can manually reconcile your deployment with its Flux resources.
 To trigger a reconciliation:
 
 1. On a dashboard, select the sync status badge of a Flux deployment.
-1. Select **Actions** ({{< icon name="ellipsis_v" >}}) **> Trigger reconciliation** ({{< icon name="retry" >}}).
+1. Select **Actions** ({{< icon name="ellipsis_v" >}}) > **Trigger reconciliation** ({{< icon name="retry" >}}).
 
 ### Suspend or resume Flux reconciliation
 
@@ -212,7 +212,7 @@ To restart a failed pod, delete it from the Kubernetes dashboard.
 To delete a pod:
 
 1. On the **Kubernetes overview** tab, find the pod you want to delete.
-1. Select **Actions** ({{< icon name="ellipsis_v" >}}) **> Delete pod** ({{< icon name="remove" >}}).
+1. Select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete pod** ({{< icon name="remove" >}}).
 
 You can also delete a pod from the pod details.
 

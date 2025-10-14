@@ -268,7 +268,6 @@ create_vulnerability_export
 create_vulnerability_feedback
 create_vulnerability_state_transition
 create_web_ide_terminal
-create_wiki
 create_work_item
 create_workspace
 daily_statistics
@@ -721,7 +720,6 @@ read_vulnerability_scanner
 read_vulnerability_statistics
 read_web_hook
 read_web_ide_terminal
-read_wiki
 read_wiki_page
 read_work_item
 read_work_item_lifecycle
@@ -866,7 +864,6 @@ update_virtual_registry
 update_vulnerability
 update_vulnerability_feedback
 update_web_ide_terminal
-update_wiki
 update_work_item
 update_workspace
 upload_alert_management_metric_image

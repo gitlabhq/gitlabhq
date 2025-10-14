@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
+import { scrollTo } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
 
 import { COMMON_STR, ACTIVE_TAB_INACTIVE } from '../constants';
@@ -106,7 +107,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
 
           createAlert({ message: COMMON_STR.FAILURE });
         });
@@ -149,7 +150,7 @@ export default {
         updatePagination: true,
       }).then((res) => {
         this.isLoading = false;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
 
         const currentPath = mergeUrlParams({ page }, window.location.href);
         window.history.replaceState(
@@ -194,7 +195,7 @@ export default {
       this.service
         .leaveGroup(this.targetGroup.leavePath)
         .then((res) => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
           this.store.removeGroup(this.targetGroup, this.targetParentGroup);
           this.$toast.show(res.data.notice);
         })

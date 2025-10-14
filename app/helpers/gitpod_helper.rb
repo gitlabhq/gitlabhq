@@ -2,6 +2,6 @@
 
 module GitpodHelper
   def gitpod_enable_description
-    s_('Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled.')
+    s_('Users can launch a development environment from a GitLab browser tab when the %{linkStart}Ona%{linkEnd} integration is enabled.')
   end
 end

@@ -199,6 +199,8 @@ type HealthCheckConfig struct {
 	MaxConsecutiveFailures int `toml:"max_consecutive_failures" json:"max_consecutive_failures"`
 	// MinSuccessfulProbes is the number of successful probes in a row required to be deemed ready (readiness only)
 	MinSuccessfulProbes int `toml:"min_successful_probes" json:"min_successful_probes"`
+	// RailsSkipInterval is the duration to skip Rails readiness checks after a successful request
+	RailsSkipInterval TomlDuration `toml:"rails_skip_interval" json:"rails_skip_interval"`
 }
 
 // Config holds the overall application configuration
@@ -354,6 +356,9 @@ func (c *Config) ApplyHealthCheckDefaults() {
 			readinessProbeURL = c.Backend.String() + "/-/readiness"
 		}
 		c.HealthCheckListener.ReadinessProbeURL = readinessProbeURL
+	}
+	if c.HealthCheckListener.RailsSkipInterval.Duration == 0 {
+		c.HealthCheckListener.RailsSkipInterval = TomlDuration{Duration: 20 * time.Second}
 	}
 }
 

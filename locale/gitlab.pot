@@ -30671,9 +30671,6 @@ msgstr ""
 msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running…"
 msgstr ""
 
-msgid "GitPod"
-msgstr ""
-
 msgid "GitSetup|Global"
 msgstr ""
 
@@ -30863,22 +30860,19 @@ msgstr ""
 msgid "Gitlab Duo Core"
 msgstr ""
 
-msgid "Gitpod"
+msgid "Gitpod|Enable Ona integration"
 msgstr ""
 
-msgid "Gitpod|Enable Gitpod integration"
+msgid "Gitpod|Ona URL"
 msgstr ""
 
-msgid "Gitpod|Gitpod URL"
+msgid "Gitpod|The URL to your Ona instance configured to read your GitLab projects, such as https://ona.example.com."
 msgstr ""
 
-msgid "Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com."
+msgid "Gitpod|To use the integration, each user must also enable Ona on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
 msgstr ""
 
-msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
-msgstr ""
-
-msgid "Gitpod|https://gitpod.example.com"
+msgid "Gitpod|https://ona.example.com"
 msgstr ""
 
 msgid "Give feedback"
@@ -45778,6 +45772,9 @@ msgstr ""
 msgid "OnDemandScans|at"
 msgstr ""
 
+msgid "Ona"
+msgstr ""
+
 msgid "Onboarding|If you can't find your organization, request an invite from your company's GitLab administrator."
 msgstr ""
 
@@ -45945,7 +45942,7 @@ msgstr ""
 msgid "Open evidence JSON in new tab"
 msgstr ""
 
-msgid "Open in Gitpod"
+msgid "Open in Ona"
 msgstr ""
 
 msgid "Open in Web IDE"
@@ -49688,7 +49685,7 @@ msgstr ""
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
 msgstr ""
 
-msgid "Preferences|Enable Gitpod integration"
+msgid "Preferences|Enable Ona integration"
 msgstr ""
 
 msgid "Preferences|Enable default text editor"
@@ -49719,9 +49716,6 @@ msgid "Preferences|Failed to save preferences."
 msgstr ""
 
 msgid "Preferences|For example: 30 minutes ago."
-msgstr ""
-
-msgid "Preferences|Gitpod"
 msgstr ""
 
 msgid "Preferences|Homepage"
@@ -49755,6 +49749,9 @@ msgid "Preferences|Must be a number between %{min} and %{max}"
 msgstr ""
 
 msgid "Preferences|Navigation"
+msgstr ""
+
+msgid "Preferences|Ona"
 msgstr ""
 
 msgid "Preferences|Preview"
@@ -61414,7 +61411,7 @@ msgstr ""
 msgid "SecurityReports|Tool"
 msgstr ""
 
-msgid "SecurityReports|Total count of %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
+msgid "SecurityReports|Total count of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
@@ -71742,7 +71739,7 @@ msgstr ""
 msgid "Users API rate limits"
 msgstr ""
 
-msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
+msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Ona%{linkEnd} integration is enabled."
 msgstr ""
 
 msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}."

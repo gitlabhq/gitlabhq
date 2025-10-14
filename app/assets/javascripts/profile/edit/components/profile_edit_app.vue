@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { GlForm, GlButton, GlFormGroup } from '@gitlab/ui';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToSnakeCase, scrollTo } from '~/lib/utils/common_utils';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
@@ -117,7 +117,7 @@ export default {
         });
 
         nextTick(() => {
-          window.scrollTo(0, 0);
+          scrollTo({ top: 0, left: 0 }, this.$el);
           this.uploadingProfile = false;
         });
       } catch (e) {

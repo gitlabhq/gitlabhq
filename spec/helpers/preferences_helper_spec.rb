@@ -434,21 +434,21 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       end
     end
 
-    context 'when Gitpod is enabled' do
+    context 'when Ona is enabled' do
       let(:gitpod_enabled) { true }
 
-      it 'includes Gitpod integration' do
+      it 'includes Ona integration' do
         expect(helper.integration_views).to include(
           a_hash_including({ name: 'gitpod', message_url: gitpod_url })
         )
       end
 
-      context 'when Gitpod url is not set' do
+      context 'when Ona url is not set' do
         let(:gitpod_url) { '' }
 
-        it 'includes Gitpod integration with default url' do
+        it 'includes Ona integration with default url' do
           expect(helper.integration_views).to include(
-            a_hash_including({ name: 'gitpod', message_url: 'https://gitpod.io/' })
+            a_hash_including({ name: 'gitpod', message_url: 'https://app.ona.com/' })
           )
         end
       end

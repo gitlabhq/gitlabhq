@@ -241,10 +241,10 @@ describe('Compact Code Dropdown component', () => {
 
     describe('conditional IDE items', () => {
       it.each`
-        scenario                           | config                                   | excludedItem
-        ${'Web IDE when disabled'}         | ${{ showWebIdeButton: false }}           | ${'Web IDE'}
-        ${'GitPod when user disabled'}     | ${{ isGitpodEnabledForUser: false }}     | ${'GitPod'}
-        ${'GitPod when instance disabled'} | ${{ isGitpodEnabledForInstance: false }} | ${'GitPod'}
+        scenario                        | config                                   | excludedItem
+        ${'Web IDE when disabled'}      | ${{ showWebIdeButton: false }}           | ${'Web IDE'}
+        ${'Ona when user disabled'}     | ${{ isGitpodEnabledForUser: false }}     | ${'Ona'}
+        ${'Ona when instance disabled'} | ${{ isGitpodEnabledForInstance: false }} | ${'Ona'}
       `('should not include $excludedItem in $scenario', ({ config, excludedItem }) => {
         createComponent(config);
 

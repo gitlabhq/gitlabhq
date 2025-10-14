@@ -453,16 +453,16 @@ To access your **Followers** and **Following** tabs:
 
 Give third-party services access to enhance the GitLab experience.
 
-### Integrate your GitLab instance with Gitpod
+### Integrate your GitLab instance with Ona
 
-Configure your GitLab instance with Gitpod when you want to launch and manage code directly from your GitLab browser. Gitpod automatically prepares and builds development environments for your projects.
+Configure your GitLab instance with Ona when you want to launch and manage code directly from your GitLab browser. Ona automatically prepares and builds development environments for your projects.
 
-To integrate with Gitpod:
+To integrate with Ona:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Find the **Integrations** section.
-1. Select the **Enable Gitpod integration** checkbox.
+1. Select the **Enable Ona integration** checkbox.
 1. Select **Save changes**.
 
 ### Integrate your GitLab instance with Sourcegraph

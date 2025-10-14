@@ -2,6 +2,7 @@
 import { GlButton, GlFilteredSearch, GlPagination, GlSorting } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import { scrollTo } from '~/lib/utils/common_utils';
 import { FILTER_OPTIONS, SORT_OPTIONS } from '~/access_tokens/constants';
 import { initializeValuesFromQuery } from '~/access_tokens/utils';
 
@@ -107,7 +108,7 @@ export default {
       this.setPage(page);
       this.$router.push({ query: this.urlParams });
       await this.fetchTokens();
-      window.scrollTo({ top: 0 });
+      scrollTo({ top: 0 }, this.$el);
     },
     async handlePopState() {
       const { filters, page, sorting } = initializeValuesFromQuery();
@@ -115,7 +116,7 @@ export default {
       this.setPage(page);
       this.setSorting(sorting);
       await this.fetchTokens();
-      window.scrollTo({ top: 0 });
+      scrollTo({ top: 0 }, this.$el);
     },
     handleSortChange(value) {
       this.setSorting({ value, isAsc: this.sorting.isAsc });

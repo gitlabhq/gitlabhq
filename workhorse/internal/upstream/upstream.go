@@ -7,23 +7,22 @@ package upstream
 
 import (
 	"fmt"
-	"os"
-	"sync"
-	"time"
-
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
+	"sync"
+	"time"
 
 	redis "github.com/redis/go-redis/v9"
 	"github.com/sebest/xff"
 	"github.com/sirupsen/logrus"
-
 	"gitlab.com/gitlab-org/labkit/correlation"
 
 	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
@@ -35,10 +34,12 @@ import (
 
 var (
 	// DefaultBackend is the default URL for the backend.
-	DefaultBackend         = helper.URLMustParse("http://localhost:8080")
+	DefaultBackend = helper.URLMustParse("http://localhost:8080")
+
 	requestHeaderBlacklist = []string{
 		upload.RewrittenFieldsHeader,
 	}
+
 	geoProxyAPIPollingInterval = 10 * time.Second
 )
 
@@ -61,14 +62,15 @@ type upstream struct {
 	mu                    sync.RWMutex
 	watchKeyHandler       builds.WatchKeyHandler
 	rdb                   *redis.Client
+	healthCheckServer     *healthcheck.Server // Can be nil
 }
 
 // NewUpstream creates a new HTTP handler for handling upstream requests based on the provided configuration.
-func NewUpstream(cfg config.Config, accessLogger *logrus.Logger, watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client) http.Handler {
-	return newUpstream(cfg, accessLogger, configureRoutes, watchKeyHandler, rdb)
+func NewUpstream(cfg config.Config, accessLogger *logrus.Logger, watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server) http.Handler {
+	return newUpstream(cfg, accessLogger, configureRoutes, watchKeyHandler, rdb, healthCheckServer)
 }
 
-func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback func(*upstream), watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client) http.Handler {
+func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback func(*upstream), watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server) http.Handler {
 	up := upstream{
 		Config:       cfg,
 		accessLogger: accessLogger,
@@ -77,6 +79,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 		geoProxyBackend:       &url.URL{},
 		watchKeyHandler:       watchKeyHandler,
 		rdb:                   rdb,
+		healthCheckServer:     healthCheckServer,
 	}
 	if up.geoProxyPollSleep == nil {
 		up.geoProxyPollSleep = time.Sleep

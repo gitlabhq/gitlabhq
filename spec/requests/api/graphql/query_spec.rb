@@ -24,11 +24,11 @@ RSpec.describe 'Query', feature_category: :shared do
       post_graphql(gitpod_enabled_query)
     end
 
-    context 'When Gitpod is enabled for the application' do
+    context 'When Ona is enabled for the application' do
       it { expect(graphql_data).to include('gitpodEnabled' => true) }
     end
 
-    context 'When Gitpod is disabled for the application' do
+    context 'When Ona is disabled for the application' do
       let(:gitpod_enabled) { false }
 
       it { expect(graphql_data).to include('gitpodEnabled' => false) }

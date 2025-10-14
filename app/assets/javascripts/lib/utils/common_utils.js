@@ -229,6 +229,10 @@ export const contentTop = () => {
   }, 0);
 };
 
+/**
+ * @param {Element} element The element to find the parent panel scrolling element for.
+ * @returns {Element | null}
+ */
 export const findParentPanelScrollingEl = (element) => {
   if (!element) return null;
   const staticPanel = element.closest('.js-static-panel');
@@ -240,6 +244,15 @@ export const findParentPanelScrollingEl = (element) => {
     return dynamicPanel.querySelector('.js-dynamic-panel-inner');
   }
   return null;
+};
+
+/**
+ * @param {ScrollToOptions} options The options to pass to Element.scrollTo
+ * @param {Element} element The element to use when searching for the correct scrolling element
+ */
+export const scrollTo = (options, element) => {
+  const scroller = findParentPanelScrollingEl(element) || window;
+  scroller.scrollTo(options);
 };
 
 /**

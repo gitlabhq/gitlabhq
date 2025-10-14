@@ -82,7 +82,7 @@ module Types
       description: "A user's frecently visited projects"
     field :gitpod_enabled, GraphQL::Types::Boolean,
       null: true,
-      description: "Whether Gitpod is enabled in application settings."
+      description: "Whether Ona is enabled in application settings."
     field :group, Types::GroupType,
       null: true,
       resolver: Resolvers::GroupResolver,

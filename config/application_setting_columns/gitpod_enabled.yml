@@ -5,7 +5,7 @@ clusterwide: false
 column: gitpod_enabled
 db_type: boolean
 default: 'false'
-description: "(**If enabled, requires**: `gitpod_url`) Enable [Gitpod integration](../integration/gitpod.md).
+description: "(**If enabled, requires**: `gitpod_url`) Enable [Ona integration](../integration/gitpod.md).
   Default is `false`."
 encrypted: false
 gitlab_com_different_than_default: true

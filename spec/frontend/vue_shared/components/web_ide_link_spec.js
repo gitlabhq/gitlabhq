@@ -67,7 +67,7 @@ const ACTION_GITPOD = {
   href: undefined,
   handle: expect.any(Function),
   secondaryText: 'Launch a ready-to-code development environment for your project.',
-  text: 'Gitpod',
+  text: 'Ona',
   attrs: {
     'data-testid': 'gitpod-menu-item',
   },
@@ -205,9 +205,9 @@ describe('vue_shared/components/web_ide_link', () => {
         showEditButton: false,
         isGitpodEnabledForInstance: true,
         isGitpodEnabledForUser: true,
-        gitpodText: 'Test Gitpod',
+        gitpodText: 'Test Ona',
       },
-      expectedActions: [ACTION_WEB_IDE, { ...ACTION_GITPOD, text: 'Test Gitpod' }],
+      expectedActions: [ACTION_WEB_IDE, { ...ACTION_GITPOD, text: 'Test Ona' }],
     },
     {
       props: { showEditButton: false },
@@ -223,7 +223,7 @@ describe('vue_shared/components/web_ide_link', () => {
       expectedActions: [
         { ...ACTION_WEB_IDE, text: 'Open in Web IDE' },
         ACTION_EDIT,
-        { ...ACTION_GITPOD, text: 'Open in Gitpod' },
+        { ...ACTION_GITPOD, text: 'Open in Ona' },
       ],
       featureFlagValue: true,
     },
@@ -308,7 +308,7 @@ describe('vue_shared/components/web_ide_link', () => {
     });
   });
 
-  describe('when gitpod editor action is available', () => {
+  describe('when ona editor action is available', () => {
     const GITPOD_URL = '/gitpod';
 
     beforeEach(() => {
@@ -322,7 +322,7 @@ describe('vue_shared/components/web_ide_link', () => {
       });
     });
 
-    it('visits GitPod URL when gitpod option is clicked', async () => {
+    it('visits Ona URL when ona option is clicked', async () => {
       expect(visitUrl).not.toHaveBeenCalled();
       await wrapper.findByTestId('gitpod-menu-item').find('button').trigger('click');
       expect(visitUrl).toHaveBeenCalledWith(GITPOD_URL, true);

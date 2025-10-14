@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: counts.user_preferences_user_gitpod_enabled
-description: Count of users with the GitPod integration enabled
+description: Count of users with the Ona integration enabled
 product_group: remote_development
 product_categories:
 - web_ide

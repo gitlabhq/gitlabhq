@@ -53,6 +53,14 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
       it 'returns a success response with the group' do
         expect(service_response).to be_success
       end
+
+      it 'publishes a GroupArchivedEvent' do
+        expect { service_response }.to publish_event(Namespaces::Groups::GroupArchivedEvent)
+                                         .with(
+                                           group_id: group.id,
+                                           root_namespace_id: group.root_ancestor.id
+                                         )
+      end
     end
 
     context 'when unarchiving fails' do

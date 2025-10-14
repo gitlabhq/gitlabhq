@@ -88,7 +88,7 @@ module Types
         description: 'Web path to edit .gitlab-ci.yml file.'
 
       field :gitpod_blob_url, GraphQL::Types::String, null: true,
-        description: 'URL to the blob within Gitpod.'
+        description: 'URL to the blob within Ona.'
 
       field :find_file_path, GraphQL::Types::String, null: true,
         description: 'Web path to find file.'

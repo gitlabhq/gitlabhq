@@ -400,7 +400,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       end
     end
 
-    context 'gitpod settings is enabled' do
+    context 'ona settings is enabled' do
       before do
         allow(Gitlab::CurrentSettings)
           .to receive(:gitpod_enabled)
@@ -466,7 +466,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       )
     end
 
-    context 'when user has gitpod enabled' do
+    context 'when user has ona enabled' do
       before do
         user.gitpod_enabled = true
       end
