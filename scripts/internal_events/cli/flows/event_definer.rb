@@ -20,6 +20,7 @@ module InternalEventsCli
         'Group',
         'Categories',
         'Tiers',
+        'Classification',
         'Save files'
       ].freeze
 
@@ -40,6 +41,7 @@ module InternalEventsCli
         prompt_for_product_group
         prompt_for_product_categories
         prompt_for_tier
+        prompt_for_classification
 
         outcome = create_event_file
         display_result(outcome)
@@ -216,6 +218,23 @@ module InternalEventsCli
           'Which tiers will the event be recorded on?',
           [%w[free premium ultimate], %w[premium ultimate], %w[ultimate]]
         )
+      end
+
+      def prompt_for_classification
+        new_page!(on_step: 'Classification', steps: STEPS)
+
+        cli.say CLASSIFICATION_INTRO
+
+        classification_choice = cli.select(
+          'Should this event have "classification: duo"?',
+          **select_opts
+        ) do |menu|
+          menu.enum "."
+          menu.choice 'Yes - this event is related to AI/Duo features', :duo
+          menu.choice 'No - this event is not related to AI/Duo features', :none
+        end
+
+        event.classification = 'duo' if classification_choice == :duo
       end
 
       def create_event_file

@@ -133,7 +133,7 @@ module Gitlab
           return SnowplowTracker::AsyncEmitter if Gitlab::CurrentSettings.snowplow_enabled?
           return SnowplowTracker::AsyncEmitter if disable_product_usage_event_logging?
 
-          SnowplowLoggingEmitter
+          ::Gitlab::Tracking::SnowplowLoggingEmitter
         end
 
         def emitter_options

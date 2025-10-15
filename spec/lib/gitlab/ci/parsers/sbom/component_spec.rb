@@ -31,26 +31,29 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Component, feature_category: :dependen
       end
 
       context "with license information" do
-        let(:license_name) { "card-verifier" }
-        let(:license_info) { { "licenses" => ["license" => { "name" => license_name }] } }
+        using RSpec::Parameterized::TableSyntax
 
-        before do
-          data.merge!(license_info)
+        where(:license_info, :expected_licenses) do
+          { "licenses" => ["license" => { "id" => "card-verifier" }] } |
+            [have_attributes(spdx_identifier: "card-verifier")]
+          { "licenses" => ["license" => { "id" => "card-verifier", "name" => "Card Verifier" }] } |
+            [have_attributes(spdx_identifier: "card-verifier", name: "Card Verifier")]
+          { "licenses" => ["license" => { "name" => "EPL-2.0" }] } |
+            [have_attributes(spdx_identifier: "EPL-2.0")]
+          { "licenses" => ["license" => { "name" => "BSD-2-Clause-NetBSD" }] } |
+            [have_attributes(name: "BSD-2-Clause-NetBSD")]
+          { "licenses" => [{ "expression" => "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0" }] } |
+            []
         end
 
-        it "sets the license information" do
-          is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::Component)
-          expect(component.licenses.count).to eq(1)
-          expect(component.licenses.first.name).to eq(license_name)
-        end
-
-        context "when the license is defined by an expression" do
-          let(:license_info) do
-            { "licenses" => [{ "expression" => "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0" }] }
+        with_them do
+          before do
+            data.merge!(license_info)
           end
 
-          it "ignores the license" do
-            expect(component.licenses).to be_empty
+          it "sets the license information" do
+            is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::Component)
+            expect(component.licenses).to match_array(expected_licenses)
           end
         end
       end

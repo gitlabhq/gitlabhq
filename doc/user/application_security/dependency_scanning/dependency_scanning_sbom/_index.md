@@ -304,7 +304,8 @@ build:
   script:
     - "pip install -r requirements.txt"
     - "pip install pipdeptree"
-    - "pipdeptree --json > pipdeptree.json"
+    # Run pipdeptree to get project's dependencies and exclude pipdeptree itself to avoid false positives
+    - "pipdeptree -e pipdeptree --json > pipdeptree.json"
   artifacts:
     when: on_success
     access: developer

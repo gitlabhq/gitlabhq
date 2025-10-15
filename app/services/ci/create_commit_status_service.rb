@@ -193,7 +193,10 @@ module Ci
     def pipeline_lock_params
       {
         ttl: (Feature.enabled?(:long_pipeline_lock_ttl, project) ? 1.minute : 5.seconds),
-        sleep_sec: 0.1.seconds,
+        # Retry over 10 seconds since the lock is long but the p99 is ~2 seconds
+        # We need to balance not keeping requests open with avoiding returning 409 which
+        # can result in a job stuck in running or pending
+        sleep_sec: 0.5.seconds,
         retries: 20
       }
     end

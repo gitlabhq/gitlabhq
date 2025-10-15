@@ -57,7 +57,7 @@ module Gitlab
 
           def licenses
             data.fetch('licenses', []).filter_map do |license_data|
-              license = License::Common.parse(license_data, container_scanning_component?)
+              license = License::Common.parse(license_data)
               next unless license
 
               license

@@ -8,7 +8,6 @@ description: Use the GitLab virtual registry to proxy, cache, and distribute pac
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -27,11 +26,14 @@ description: Use the GitLab virtual registry to proxy, cache, and distribute pac
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available in [beta](../../../policy/development_stages_support.md#beta).
-Review the documentation carefully before you use this feature.
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+The GitLab virtual registry is available as part of the GitLab [beta](../../../policy/development_stages_support.md#beta) program. While it is currently available on Premium and Ultimate, final availability and pricing will be announced when the virtual registry is generally available. 
+
+{{< /alert >}}
 Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries behind a single, well-known URL.
 
 With this approach, you can configure your applications to use one virtual registry instead of multiple upstream registries.

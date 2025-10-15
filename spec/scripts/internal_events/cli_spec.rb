@@ -60,6 +60,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "analytics_instrumentation\n", # Input group
           "service_ping \n", # Select product category
           "2\n", # Select [premium, ultimate]
+          "2\n", # No - this event is not related to AI/Duo features
           "y\n", # Create file
           "4\n" # Exit
         ]
@@ -130,6 +131,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "instrumentation\n", # Filter & select group
           " \n", # Select product category
           "2\n", # Select [premium, ultimate]
+          "2\n", # No - this event is not related to AI/Duo features
           "y\n", # Create file
           "4\n" # Exit
         ]

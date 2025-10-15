@@ -8,7 +8,6 @@ description: Use the Maven virtual registry to configure and manage multiple pri
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 

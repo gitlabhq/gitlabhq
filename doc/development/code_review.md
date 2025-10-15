@@ -185,7 +185,23 @@ by a reviewer before passing it to a maintainer as described in the
 | Changes related to authentication                                                                                                                                                | [Manage:Authentication](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authentication/#code-review) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
 | Changes related to custom roles or policies                                                                                                                                      | [Manage:Authorization Engineer](https://gitlab.com/gitlab-org/software-supply-chain-security/authorization/approvers/).                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
-1. Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
+1. Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code.
+   However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and
+   backend review.
+
+   For Haml template changes specifically:
+    - **Request backend review** when changes include Ruby logic, method calls,
+      variable assignments, conditionals, loops, data preparation, security checks,
+      or any server-side processing in the template.
+    - **Request frontend review** when changes affect DOM structure, CSS classes, 
+      HTML attributes, accessibility features, user interactions, and responsive design,
+      or visual presentation.
+    - **Request both reviews** for complex changes that involve both Ruby logic and significant UI modifications, or when
+      backend and frontend are intertwined (such as when backend serves data that is consumed by Vue or JavaScript), to
+      ensure both the backend functionality and frontend user experience are properly evaluated.
+      - **Example:** A Haml template that calls Ruby methods to prepare data attributes for
+        a Vue.js component (for example, `project_id: @project&.to_global_id`) would benefit from a backend review for Ruby logic
+        correctness and frontend review for the component integration.
 1. We encourage you to seek guidance from a database maintainer if your merge
    request is potentially introducing expensive queries. It is most efficient to comment
    on the line of code in question with the SQL queries so they can give their advice.

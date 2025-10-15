@@ -14477,6 +14477,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+        '409':
+          description: Another update to this commit status is in progress
       tags:
       - projects
       operationId: postApiV4ProjectsIdStatusesSha
