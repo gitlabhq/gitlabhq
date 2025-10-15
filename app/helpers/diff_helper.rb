@@ -296,7 +296,9 @@ module DiffHelper
   end
 
   def params_with_whitespace
-    hide_whitespace? ? safe_params.except(:w) : safe_params.merge(w: 1)
+    # w - ignore whitespace
+    w = hide_whitespace? ? 0 : 1
+    safe_params.merge(w: w)
   end
 
   def file_heading_id(diff_file)
@@ -347,6 +349,10 @@ module DiffHelper
   def commit_diff_whitespace_link(project, commit, options)
     url = project_commit_path(project, commit.id, params_with_whitespace)
     toggle_whitespace_link(url, options)
+  end
+
+  def commit_diff_whitespace_url(project, commit)
+    project_commit_path(project, commit.id, params_with_whitespace)
   end
 
   def diff_compare_whitespace_link(project, from, to, options)
