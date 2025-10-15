@@ -1453,10 +1453,10 @@
     stylelint-declaration-strict-value "1.10.4"
     stylelint-scss "6.0.0"
 
-"@gitlab/svgs@3.148.0":
-  version "3.148.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.148.0.tgz#b90d287992a9be8730dbf29ef54e832e89b0ad98"
-  integrity sha512-CAh/+AweCdzbLk8EmgL8wnF9CMHAymPS6TfYLIqdUG//kvkboKAC9spP80nuZeWdXzmmCE5q45hyL22bwDXbzQ==
+"@gitlab/svgs@3.149.0":
+  version "3.149.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.149.0.tgz#d0a35ae5f94ee2563d4343dda0aa1e0f191426ec"
+  integrity sha512-Jc4kKo1pE2Yf6c6Wod6gX9pb++AmMjiZ4r1Wn31f46pbpbtiaxv6kdKWWNgovrPwxyhRM2i653XJA1r2lWQM6w==
 
 "@gitlab/ui@123.7.0":
   version "123.7.0"
@@ -1487,10 +1487,10 @@
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-"@gitlab/web-ide@^0.0.1-dev-20250930153347":
-  version "0.0.1-dev-20250930153347"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250930153347.tgz#41b7d9231ce2beaeb81d62a15b2f9e4227f5e099"
-  integrity sha512-dBNLXezQ98H5bIvIgT2lBFDRaD3aQBVOxs/lZtYpIF78mbwcdCidzV8U/VsY6zdi7uGOB2Ki1Acyv7Z6ZHOZQA==
+"@gitlab/web-ide@^0.0.1-dev-20251014133113":
+  version "0.0.1-dev-20251014133113"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20251014133113.tgz#78158b4bff2f9f7b5bf7fc9108ffe446cf94b5fa"
+  integrity sha512-rz8hFtu6wJYl/GVtFwk/3WINRPZ/8h5cdgrBWc3+DFot3Voo7zlIjjeq7EmQKVJ4KdJLD2Xi223imw57frQKog==
 
 "@gleam-lang/highlight.js-gleam@^1.5.0":
   version "1.5.0"

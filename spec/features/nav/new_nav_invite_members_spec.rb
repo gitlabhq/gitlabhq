@@ -34,7 +34,8 @@ RSpec.describe 'new navigation toggle', :js, feature_category: :navigation do
       visit project_path(project)
     end
 
-    it 'the add menu contains invite members dropdown option and opens invite modal' do
+    it 'the add menu contains invite members dropdown option and opens invite modal',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/558312' do
       invite_members_from_menu
 
       page.within invite_modal_selector do

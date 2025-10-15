@@ -202,32 +202,28 @@ module Projects
       log_info("Attempting to destroy #{project.full_path} (#{project.id})")
     end
 
-    # Projects will have at least one merge_request_diff_commit for every commit
-    #   contained in every MR, which deleting via `project.destroy!` and
-    #   cascading deletes may exceed statement timeouts, causing failures.
-    #   (see https://gitlab.com/gitlab-org/gitlab/-/issues/346166)
+    # Removing merge_request_diff_files records may cause timeouts, so they
+    #   can be deleted in batches.
     #
-    # Removing merge_request_diff_files records may also cause timeouts, so they
-    #   can be deleted in batches as well.
+    # Note: MergeRequestDiffCommit records are now handled by the loose foreign key worker
+    #   after removing FK fk_rails_316aaceda3.
     #
     # rubocop: disable CodeReuse/ActiveRecord
     def destroy_mr_diff_relations!
       delete_batch_size = 1000
 
       project.merge_requests.each_batch(column: :iid, of: BATCH_SIZE) do |relation_ids|
-        [MergeRequestDiffCommit, MergeRequestDiffFile].each do |model|
-          loop do
-            inner_query = model
-              .select(:merge_request_diff_id, :relative_order)
-              .where(merge_request_diff_id: MergeRequestDiff.where(merge_request_id: relation_ids).select(:id))
-              .limit(delete_batch_size)
+        loop do
+          inner_query = MergeRequestDiffFile
+            .select(:merge_request_diff_id, :relative_order)
+            .where(merge_request_diff_id: MergeRequestDiff.where(merge_request_id: relation_ids).select(:id))
+            .limit(delete_batch_size)
 
-            deleted_rows = model
-              .where("(#{model.table_name}.merge_request_diff_id, #{model.table_name}.relative_order) IN (?)", inner_query) # rubocop:disable GitlabSecurity/SqlInjection
-              .delete_all
+          deleted_rows = MergeRequestDiffFile
+            .where("(merge_request_diff_files.merge_request_diff_id, merge_request_diff_files.relative_order) IN (?)", inner_query)
+            .delete_all
 
-            break if deleted_rows == 0
-          end
+          break if deleted_rows == 0
         end
       end
 

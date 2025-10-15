@@ -18,18 +18,6 @@ RSpec.describe LooseForeignKeys::MergeRequestDiffCommitCleanupWorker, feature_ca
       worker.perform
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(use_merge_request_diff_commit_cleanup_worker: false)
-      end
-
-      it 'does not execute cleanup' do
-        expect(LooseForeignKeys::ProcessDeletedRecordsService).not_to receive(:new)
-
-        worker.perform
-      end
-    end
-
     context 'when vacuum is running on merge_request_diff_commits table' do
       before do
         allow(Gitlab::Database::PostgresAutovacuumActivity).to receive(:for_tables)

@@ -5,7 +5,7 @@ RSpec/InstanceVariable:
     - 'ee/spec/controllers/ee/sessions_controller_spec.rb'
     - 'ee/spec/controllers/groups/groups_controller_spec.rb'
     - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
-    - 'ee/spec/controllers/passwords_controller_spec.rb'
+    - 'ee/spec/controllers/ee/passwords_controller_spec.rb'
     - 'ee/spec/features/markdown/markdown_spec.rb'
     - 'ee/spec/frontend/fixtures/dast_profiles.rb'
     - 'ee/spec/frontend/fixtures/epic.rb'

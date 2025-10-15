@@ -81,8 +81,8 @@ then
 fi
 
 # Do not use dashes (-) in filenames, use underscores (_) instead.
-# Number of filenames with dashes as of 2025-05-09
-FILE_NUMBER_DASHES=64
+# Number of filenames with dashes as of 2025-10-14
+FILE_NUMBER_DASHES=22
 FILE_FIND_DASHES=$(find doc -type f -name "*-*.md" | wc -l)
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for filenames containing dashes...${COLOR_RESET}\n"

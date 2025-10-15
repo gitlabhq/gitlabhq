@@ -6,8 +6,9 @@ module Gitlab
       module Sbom
         module License
           class Common
-            def self.parse(data)
-              new(data).parse
+            def self.parse(data, is_container_scanning)
+              license = is_container_scanning ? ContainerScanning.new(data) : new(data)
+              license.parse
             end
 
             def initialize(data)
@@ -16,25 +17,17 @@ module Gitlab
 
             def parse
               license = data['license']
+              return unless license
 
-              return if license.blank? || license.values_at('id', 'name').all?(&:blank?)
+              # A license must have either id or name
+              return unless license['id'].present? || license['name'].present?
 
-              check_license_name!(license)
               parsed_license(license)
             end
 
             private
 
             attr_reader :data
-
-            def check_license_name!(license)
-              # Trivy 0.65.0 has a bug where it puts license identifiers in the name field.
-              # To preserve license functionality for this specific version, we check if the name
-              # is a valid SPDX ID and move it to the correct field if so.
-              return unless ::Sbom::SPDX.valid_identifier?(license['name'])
-
-              license['id'] = license.delete('name')
-            end
 
             def parsed_license(license)
               ::Gitlab::Ci::Reports::Sbom::License.new(

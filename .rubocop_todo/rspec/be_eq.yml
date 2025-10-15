@@ -13,7 +13,7 @@ RSpec/BeEq:
     - 'ee/spec/controllers/ee/registrations_controller_spec.rb'
     - 'ee/spec/controllers/groups/contribution_analytics_controller_spec.rb'
     - 'ee/spec/controllers/groups/saml_group_links_controller_spec.rb'
-    - 'ee/spec/controllers/ldap/omniauth_callbacks_controller_spec.rb'
+    - 'ee/spec/controllers/ee/ldap/omniauth_callbacks_controller_spec.rb'
     - 'ee/spec/controllers/projects/imports_controller_spec.rb'
     - 'ee/spec/controllers/projects/issues_controller_spec.rb'
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'

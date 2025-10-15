@@ -220,15 +220,20 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       allow(project).to receive(:destroy!).and_return(true)
     end
 
-    [MergeRequestDiffCommit, MergeRequestDiffFile].each do |model|
-      it "deletes #{model} records of the merge request" do
-        merge_request_diffs = merge_request.merge_request_diffs
-        expect(merge_request_diffs.size).to eq(1)
+    it "deletes MergeRequestDiffFile records of the merge request" do
+      merge_request_diffs = merge_request.merge_request_diffs
+      expect(merge_request_diffs.size).to eq(1)
 
-        records_count = model.where(merge_request_diff_id: merge_request_diffs.first.id).count
+      records_count = MergeRequestDiffFile.where(merge_request_diff_id: merge_request_diffs.first.id).count
 
-        expect { destroy_project(project, user, {}) }.to change { model.count }.by(-records_count)
-      end
+      expect { destroy_project(project, user, {}) }.to change { MergeRequestDiffFile.count }.by(-records_count)
+    end
+
+    it "does not delete MergeRequestDiffCommit records directly (handled by loose foreign key worker)" do
+      merge_request_diffs = merge_request.merge_request_diffs
+      expect(merge_request_diffs.size).to eq(1)
+
+      expect { destroy_project(project, user, {}) }.not_to change { MergeRequestDiffCommit.count }
     end
 
     it 'deletes MergeRequest::CommitsMetadata records associated to project' do

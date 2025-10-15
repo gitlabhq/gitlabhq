@@ -8,6 +8,10 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
   let_it_be(:user) { create(:user, username: 'instrumentation-tester') }
 
   describe "logging" do
+    before do
+      stub_feature_flags(log_labkit_user_id: false)
+    end
+
     let_it_be(:common_log_info) do
       {
         "correlation_id" => be_a(String),

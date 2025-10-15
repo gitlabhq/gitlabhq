@@ -174,13 +174,13 @@ module API
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
-            optional :metrics, type: Array, default: [] do
+            optional :metrics, type: Array, desc: 'Array that contains metric information', default: [] do
               requires :key, type: String, desc: 'Name for the metric.'
               requires :value, type: Float, desc: 'Value of the metric.'
               requires :timestamp, type: Integer, desc: 'Unix timestamp in milliseconds when metric was recorded'
               optional :step, type: Integer, desc: 'Step at which the metric was recorded'
             end
-            optional :params, type: Array, default: [] do
+            optional :params, type: Array, desc: 'Array that contains paramater information', default: [] do
               requires :key, type: String, desc: 'Name for the metric.'
               requires :value, type: String, desc: 'Value of the metric.'
             end

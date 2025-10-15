@@ -3,6 +3,7 @@
 class AuthenticationEvent < ApplicationRecord
   include UsageStatistics
 
+  RETENTION_PERIOD = 1.year
   TWO_FACTOR = 'two-factor'
   TWO_FACTOR_WEBAUTHN = 'two-factor-via-webauthn-device'
   STANDARD = 'standard'

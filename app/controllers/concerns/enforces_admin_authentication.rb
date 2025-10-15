@@ -16,19 +16,12 @@ module EnforcesAdminAuthentication
       actions = Array(only)
 
       skip_before_action :authenticate_admin!, only: actions
-      before_action -> { authorize_ability!(ability) }, only: actions
+      prepend_before_action -> { authorize_ability!(ability) }, only: actions
     end
   end
 
   def authenticate_admin!
-    return render_404 unless user_is_admin?
-    return unless Gitlab::CurrentSettings.admin_mode
-
-    unless current_user_mode.admin_mode?
-      current_user_mode.request_admin_mode!
-      store_location_for(:redirect, request.fullpath) if storable_location?
-      redirect_to(new_admin_session_path, notice: _('Re-authentication required'))
-    end
+    attempt_admin_mode unless current_user&.can_admin_all_resources?
   end
 
   def storable_location?
@@ -37,13 +30,19 @@ module EnforcesAdminAuthentication
 
   private
 
-  def user_is_admin?
-    current_user.admin?
+  def authorize_ability!(ability)
+    attempt_admin_mode unless current_user&.can?(ability)
   end
 
-  def authorize_ability!(ability)
-    return authenticate_admin! if current_user.admin?
+  def attempt_admin_mode
+    return render_404 if in_admin_mode? || !current_user&.can_access_admin_area?
 
-    render_404 unless current_user.can?(ability)
+    current_user_mode.request_admin_mode!
+    store_location_for(:redirect, request.fullpath) if storable_location?
+    redirect_to(new_admin_session_path, notice: _('Re-authentication required'))
+  end
+
+  def in_admin_mode?
+    Gitlab::CurrentSettings.admin_mode && current_user_mode.admin_mode?
   end
 end

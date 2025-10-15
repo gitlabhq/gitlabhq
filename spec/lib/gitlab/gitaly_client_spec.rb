@@ -485,6 +485,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
     end
 
     context 'logging information in metadata' do
+      before do
+        stub_feature_flags(log_labkit_user_id: false)
+      end
+
       let(:user) { create(:user) }
 
       context 'user is added to application context' do

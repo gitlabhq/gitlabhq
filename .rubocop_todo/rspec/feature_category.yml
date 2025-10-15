@@ -1,7 +1,7 @@
 ---
 RSpec/FeatureCategory:
   Exclude:
-    - 'ee/spec/controllers/autocomplete_controller_spec.rb'
+    - 'ee/spec/controllers/ee/autocomplete_controller_spec.rb'
     - 'ee/spec/controllers/ee/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
     - 'ee/spec/controllers/users_controller_spec.rb'
@@ -249,8 +249,8 @@ RSpec/FeatureCategory:
     - 'ee/spec/graphql/types/incident_management/oncall_schedule_type_spec.rb'
     - 'ee/spec/graphql/types/incident_management/oncall_shift_type_spec.rb'
     - 'ee/spec/graphql/types/instance_security_dashboard_type_spec.rb'
-    - 'ee/spec/graphql/types/issue_connection_type_spec.rb'
-    - 'ee/spec/graphql/types/issue_type_spec.rb'
+    - 'ee/spec/graphql/ee/types/issue_connection_type_spec.rb'
+    - 'ee/spec/graphql/ee/types/issue_type_spec.rb'
     - 'ee/spec/graphql/types/iteration_type_spec.rb'
     - 'ee/spec/graphql/types/iterations/cadence_type_spec.rb'
     - 'ee/spec/graphql/types/json_string_type_spec.rb'

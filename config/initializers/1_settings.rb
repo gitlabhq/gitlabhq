@@ -503,6 +503,9 @@ end
 Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
 Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
+Settings.cron_jobs['authn_data_retention_authentication_event_archive_worker'] ||= {}
+Settings.cron_jobs['authn_data_retention_authentication_event_archive_worker']['cron'] ||= '10 6 * * *'
+Settings.cron_jobs['authn_data_retention_authentication_event_archive_worker']['job_class'] = 'Authn::DataRetention::AuthenticationEventArchiveWorker'
 Settings.cron_jobs['delete_expired_trigger_token_worker'] ||= {}
 Settings.cron_jobs['delete_expired_trigger_token_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['delete_expired_trigger_token_worker']['job_class'] = 'Ci::DeleteExpiredTriggerTokenWorker'

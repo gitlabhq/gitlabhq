@@ -1,7 +1,7 @@
 ---
 RSpec/BeforeAllRoleAssignment:
   Exclude:
-    - 'ee/spec/controllers/autocomplete_controller_spec.rb'
+    - 'ee/spec/controllers/ee/autocomplete_controller_spec.rb'
     - 'ee/spec/controllers/ee/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/ee/groups/settings/ci_cd_controller_spec.rb'
     - 'ee/spec/controllers/ee/groups/usage_quotas_controller_spec.rb'
@@ -221,11 +221,11 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/graphql/resolvers/vulnerability_severities_count_resolver_spec.rb'
     - 'ee/spec/graphql/types/asset_type_spec.rb'
     - 'ee/spec/graphql/types/boards/board_epic_type_spec.rb'
-    - 'ee/spec/graphql/types/ci/pipeline_type_spec.rb'
+    - 'ee/spec/graphql/ee/types/ci/pipeline_type_spec.rb'
     - 'ee/spec/graphql/types/dast_scanner_profile_type_spec.rb'
     - 'ee/spec/graphql/types/dast_site_validation_type_spec.rb'
     - 'ee/spec/graphql/types/instance_security_dashboard_type_spec.rb'
-    - 'ee/spec/graphql/types/issue_type_spec.rb'
+    - 'ee/spec/graphql/ee/types/issue_type_spec.rb'
     - 'ee/spec/graphql/types/pipeline_security_report_finding_type_spec.rb'
     - 'ee/spec/graphql/types/project_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_evidence_source_type_spec.rb'

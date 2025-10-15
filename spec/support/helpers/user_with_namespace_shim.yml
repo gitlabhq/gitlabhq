@@ -1,6 +1,6 @@
 ---
 - ee/spec/controllers/admin/users_controller_spec.rb
-- ee/spec/controllers/autocomplete_controller_spec.rb
+- ee/spec/controllers/ee/autocomplete_controller_spec.rb
 - ee/spec/controllers/ee/profiles/preferences_controller_spec.rb
 - ee/spec/controllers/ee/search_controller_spec.rb
 - ee/spec/controllers/groups/sso_controller_spec.rb
