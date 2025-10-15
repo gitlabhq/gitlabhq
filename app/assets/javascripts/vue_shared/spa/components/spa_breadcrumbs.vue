@@ -19,7 +19,8 @@ export default {
       const matchedRoutes = (this.$route?.matched || [])
         .map((route) => {
           const useRouteId = Boolean(route?.meta?.useId);
-          const to = route.parent ? { name: route.name } : { path: route.path };
+          const name = route.name || route.meta?.defaultRoute;
+          const to = route.parent ? { name } : { path: route.path };
           return {
             text: useRouteId && id ? String(id) : route.meta?.text,
             to,

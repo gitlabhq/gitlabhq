@@ -2082,7 +2082,7 @@
     - <<: *if-rails-branch-schedule
       when: never
     - !reference [".qa:rules:e2e-test-never-run", rules]
-    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual

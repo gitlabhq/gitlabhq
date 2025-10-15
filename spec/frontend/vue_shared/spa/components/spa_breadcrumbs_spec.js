@@ -105,17 +105,19 @@ describe('SpaBreadcrumbs', () => {
       );
     });
 
-    it('uses route param id as breadcrumb text when meta is missing', () => {
+    it('uses route param id as breadcrumb text when meta useId is true', () => {
       createWrapper(
         {},
         {
           params: { id: '123' },
           matched: [
             {
-              name: 'project-detail',
               path: '/projects/:id',
               parent: true,
-              meta: { useId: true },
+              meta: {
+                useId: true,
+                defaultRoute: 'project-detail',
+              },
             },
           ],
         },
@@ -172,7 +174,11 @@ describe('SpaBreadcrumbs', () => {
             },
             {
               path: '/projects/:id',
-              meta: { useId: true },
+              parent: true,
+              meta: {
+                useId: true,
+                defaultRoute: 'project-detail',
+              },
             },
             {
               path: '/projects/:id/project-issues',
@@ -188,7 +194,7 @@ describe('SpaBreadcrumbs', () => {
         { text: 'Home', href: '/' },
         { text: 'Projects', href: '/projects' },
         { text: 'All Projects', to: { path: '/projects' } },
-        { text: '456', to: { path: '/projects/:id' } },
+        { text: '456', to: { name: 'project-detail' } },
         { text: 'Issues', to: { name: 'project-issues' } },
       ];
 
