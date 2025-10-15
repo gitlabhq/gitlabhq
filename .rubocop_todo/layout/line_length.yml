@@ -1511,7 +1511,7 @@ Layout/LineLength:
     - 'ee/spec/services/alert_management/process_prometheus_alert_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/consistency_check_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/data_loader_service_spec.rb'
-    - 'ee/spec/services/analytics/cycle_analytics/stages/list_service_spec.rb'
+    - 'ee/spec/services/ee/analytics/cycle_analytics/stages/list_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/value_streams/update_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/enabled_namespaces/bulk_delete_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/enabled_namespaces/bulk_find_or_create_service_spec.rb'

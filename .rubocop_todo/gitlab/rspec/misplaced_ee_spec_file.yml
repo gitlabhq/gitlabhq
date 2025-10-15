@@ -216,7 +216,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/serializers/pipeline_serializer_spec.rb'
     - 'ee/spec/serializers/project_mirror_entity_spec.rb'
     - 'ee/spec/serializers/remote_mirror_entity_spec.rb'
-    - 'ee/spec/services/analytics/cycle_analytics/stages/list_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/value_streams/list_service_spec.rb'
     - 'ee/spec/services/application_settings/update_service_spec.rb'
     - 'ee/spec/services/applications/create_service_spec.rb'

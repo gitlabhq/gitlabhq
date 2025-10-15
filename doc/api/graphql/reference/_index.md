@@ -1750,26 +1750,6 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
-### `Query.semanticCodeSearch`
-
-{{< details >}}
-**Introduced** in GitLab 18.4.
-**Status**: Experiment.
-{{< /details >}}
-
-Semantically search for code in provided repositories.
-
-Returns [`[SemanticSearchCode!]`](#semanticsearchcode).
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="querysemanticcodesearchknn"></a>`knn` | [`Int`](#int) | KNN count. |
-| <a id="querysemanticcodesearchlimit"></a>`limit` | [`Int`](#int) | Max number of search results to return. |
-| <a id="querysemanticcodesearchproject"></a>`project` | [`ProjectInfoInput!`](#projectinfoinput) | Project to search, with optional path prefix. |
-| <a id="querysemanticcodesearchsearchterm"></a>`searchTerm` | [`String!`](#string) | Search term to search for. |
-
 ### `Query.snippets`
 
 Find Snippets visible to the current user.
@@ -43516,17 +43496,6 @@ Represents a URL related to a security training.
 | <a id="securitytrainingurlstatus"></a>`status` | [`TrainingUrlRequestStatus`](#trainingurlrequeststatus) | Status of the request to training provider. |
 | <a id="securitytrainingurlurl"></a>`url` | [`String`](#string) | URL of the link for security training content. |
 
-### `SemanticSearchCode`
-
-Code snippet returned by semantic search.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="semanticsearchcodecontent"></a>`content` | [`String!`](#string) | Content of the code snippet. |
-| <a id="semanticsearchcodepath"></a>`path` | [`String!`](#string) | File path to the code snippet. |
-
 ### `SentryDetailedError`
 
 A Sentry error.
@@ -55594,17 +55563,6 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcompliancecontrolstatusinputcompliancerequirementid"></a>`complianceRequirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Compliance requirement id of the statuses. |
-
-### `ProjectInfoInput`
-
-Project selector with optional path prefix for narrowing the search.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="projectinfoinputdirectorypath"></a>`directoryPath` | [`String`](#string) | Optional path prefix inside the repo (e.g., "app/models"). |
-| <a id="projectinfoinputprojectid"></a>`projectId` | [`Int!`](#int) | Numeric project ID. |
 
 ### `ProjectRequirementComplianceStatusInput`
 

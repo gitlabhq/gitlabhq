@@ -725,7 +725,7 @@ RSpec/NamedSubject:
     - 'ee/spec/serializers/vulnerability_entity_spec.rb'
     - 'ee/spec/serializers/vulnerability_note_entity_spec.rb'
     - 'ee/spec/services/admin/email_service_spec.rb'
-    - 'ee/spec/services/analytics/cycle_analytics/stages/list_service_spec.rb'
+    - 'ee/spec/services/ee/analytics/cycle_analytics/stages/list_service_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/value_streams/update_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/enabled_namespaces/find_or_create_service_spec.rb'
     - 'ee/spec/services/analytics/devops_adoption/snapshots/calculate_and_save_service_spec.rb'

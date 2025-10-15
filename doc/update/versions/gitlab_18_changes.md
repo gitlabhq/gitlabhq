@@ -31,11 +31,17 @@ required upgrade stops occur at versions:
 - `18.8`
 - `18.11`
 
-## Issues to be aware of when upgrading from 16.11
+## Issues to be aware of when upgrading from 17.11
 
 - [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
 
-## Issues to be aware of when upgrading from 17.11
+  {{< alert type="warning" >}}
+
+  Automatic database version upgrades only apply to single node instances when using the Linux package.
+  In all other cases, like Geo instances, PostgreSQL with high availability using the
+  Linux package, or using an external PostgreSQL database (like Amazon RDS), you must upgrade PostgreSQL manually. See [upgrading a Geo instance](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance) for detailed steps.
+
+  {{< /alert >}}
 
 - From September 29th, 2025 Bitnami will stop providing tagged PostgreSQL and Redis images. If you deploy GitLab 17.11 or earlier using the
   GitLab chart with bundled Redis or Postgres, you must manually update your values to use the legacy repository to prevent unexpected
