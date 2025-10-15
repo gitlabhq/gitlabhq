@@ -2,6 +2,7 @@
 stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure GitLab Geo replication between two single-node sites for disaster recovery, supporting Linux package and Docker installations.
 title: Set up Geo for two single-node sites
 ---
 

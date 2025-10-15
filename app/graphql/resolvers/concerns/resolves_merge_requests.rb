@@ -23,6 +23,7 @@ module ResolvesMergeRequests
     end
 
     validate_blob_path!(args)
+    validate_closed_range!(args)
 
     rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)
     rewrite_param_name(args, :assignee_wildcard_id, :assignee_id)
@@ -86,6 +87,28 @@ module ResolvesMergeRequests
 
     raise Gitlab::Graphql::Errors::ArgumentError,
       'createdAfter must be within the last 30 days to filter by blobPath'
+  end
+
+  def validate_closed_range!(args)
+    closed_after = args[:closed_after]
+    closed_before = args[:closed_before]
+
+    return if closed_after.nil? && closed_before.nil?
+
+    if closed_after.nil? || closed_before.nil?
+      raise Gitlab::Graphql::Errors::ArgumentError,
+        'You must provide both closedAfter and closedBefore.'
+    end
+
+    if closed_before < closed_after
+      raise Gitlab::Graphql::Errors::ArgumentError,
+        'closedBefore must be on or after closedAfter.'
+    end
+
+    return unless (closed_before - closed_after) > 2.years
+
+    raise Gitlab::Graphql::Errors::ArgumentError,
+      'Time between closedAfter and closedBefore must be 2 years or less.'
   end
 
   def non_stable_cursor_sort?(sort)

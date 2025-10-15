@@ -97,9 +97,6 @@ Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-bo
 
   To install GDK and its dependencies, follow the steps in [Install the GDK development environment](first_contribution/configure-dev-env-gdk.md).
 
-- Use [Gitpod](first_contribution/configure-dev-env-gitpod.md) for an in-browser remote development
-  environment that runs regardless of your local hardware, operating system, or software.
-
 ## Open a merge request
 
 1. Go to [the community fork on GitLab.com](https://gitlab.com/gitlab-community/gitlab).

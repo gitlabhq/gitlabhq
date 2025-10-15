@@ -205,8 +205,14 @@ the following sections and tables provide an alternative.
 {{< history >}}
 
 - The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags/_index.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
-
+- The `enforcement_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202746) in GitLab 18.4 [with flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 | Field               | Type               | Required | Possible values | Description                                              |
 |---------------------|--------------------|----------|-----------------|----------------------------------------------------------|
@@ -220,6 +226,7 @@ the following sections and tables provide an alternative.
 | `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
 | `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy .     |
+| `enforcement_type`  | `string`           | false    | `enforce`, `warn` | Defines how the policy is enforced. The default value (if not specified) is `enforce`, which blocks merge requests when violations are detected. The value `warn` allows merge requests to proceed but shows warnings and bot comments. |
 
 ## `scan_finding` rule type
 
@@ -435,7 +442,65 @@ the bot message is sent as long as at least one of those policies has the `send_
 
 {{< /history >}}
 
-When warn mode is enabled and a merge request triggers a security policy that doesn't require any additional approvers, a bot comment is added to the merge request. The comment directs users to the policy for more information.
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
+Warn mode allows security teams to test and validate the impact of security policies before applying full enforcement, reducing developer friction when applying new security policies. When a policy is configured with `enforcement_type: warn`, the merge request provides an option to bypass any merge request approval policy violations.
+
+When warn mode is enabled (`enforcement_type: warn`) and a merge request triggers a security policy violation, the policy enforcement is different in several ways:
+
+- Non-blocking validation: The policy generates informative bot comments listing the policy violations.
+- Optional approvals: Approvals are optional if the user bypasses the policy and provides the reasoning for the dismissal.
+- Enhanced auditing: After the merge request is merged with a bypassed security policy, audit events are created.
+- Vulnerability report integration: If a vulnerability was introduced by a merge request with a bypassed policy, the bypass details are visible in the vulnerability report.
+- Disabled approval settings: Approval setting overrides are not enforced.
+
+### Configuring warn mode
+
+To enable warn mode for a merge request approval policy, set the `enforcement_type` field to `warn`:
+
+```yaml
+approval_policy:
+  - name: Warn mode policy
+    description: ''
+    enabled: true
+    enforcement_type: warn
+    policy_scope:
+      projects:
+        excluding: []
+    rules:
+      - type: scan_finding
+        scanners:
+          - secret_detection
+        vulnerabilities_allowed: 0
+        severity_levels: []
+        vulnerability_states: []
+        branch_type: protected
+    actions:
+      - type: require_approval
+        approvals_required: 1
+        role_approvers:
+          - developer
+          - maintainer
+      - type: send_bot_message
+        enabled: true
+```
+
+### Supported rule types
+
+Warn mode supports the following rule types:
+
+- `scan_finding`: For security scan results
+- `any_merge_request`: For general merge request conditions
+
+{{< alert type="note" >}}
+
+The `license_finding` rule type is not supported with warn mode enforcement.
+
+{{< /alert >}}
 
 ## `approval_settings`
 
@@ -782,14 +847,34 @@ approval_policy:
     role_approvers:
     - owner
     - 1002816 # Example custom role identifier called "AppSec Engineer"
+- name: critical vulnerability CS approvals
+  description: high/critical severity level only for SAST scanning
+  enabled: true
+  enforcement_type: warn
+  rules:
+  - type: scan_finding
+    branch_type: default
+    scanners:
+    - sast
+    vulnerabilities_allowed: 0
+    severity_levels:
+    - critical
+    - high
+    vulnerability_states: []
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    role_approvers:
+    - maintainer
 ```
 
 In this example:
 
 - Every MR that contains new `critical` vulnerabilities identified by container scanning requires
   one approval from `alberto.dare`.
-- Every MR that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
+- Every merge request that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
   container scanning requires one approval from either a project member with the Owner role or a user with the custom role `AppSec Engineer`.
+- Every merge request that contains new `critical` or `high` severity vulnerabilities, identified by SAST scanning, triggers the warn mode policy. Warn mode generates a bot comment and blocks the merge request. A developer can then bypass the policy violation. Optionally, a maintainer can also approve the merge request.
 
 ## Example for Merge Request Approval Policy editor
 

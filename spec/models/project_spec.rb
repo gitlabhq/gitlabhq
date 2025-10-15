@@ -9658,16 +9658,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#work_items_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :work_items_feature_flag_enabled? }
-      let(:feature_flag) { :work_items }
-      let(:subject_project) { group_project }
-    end
-  end
-
   describe '#glql_load_on_click_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 

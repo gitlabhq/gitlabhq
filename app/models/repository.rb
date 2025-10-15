@@ -427,10 +427,6 @@ class Repository
     expire_method_caches(CACHED_METHODS)
   end
 
-  def expire_avatar_cache
-    expire_method_caches(%i[avatar])
-  end
-
   # Refreshes the method caches of this repository.
   #
   # types - An Array of file types (e.g. `:readme`) used to refresh extra

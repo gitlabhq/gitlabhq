@@ -142,7 +142,7 @@ dependencies are marked as [not found](#understanding-the-results).
 |-----------------------|---------------------------------------------|-----------------------|
 | Python<sup>1</sup>    | `pip`, `pipenv`<sup>2</sup>, `poetry`, `uv` | `.py`                 |
 | JavaScript/TypeScript | `npm`, `pnpm`, `yarn`                       | `.js`, `.ts`          |
-| Java                  | `maven`, `gradle`                           | `.java`               |
+| Java<sup>3</sup>      | `maven`, `gradle`                           | `.java`               |
 
 **Footnotes**:
 

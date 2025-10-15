@@ -862,6 +862,10 @@
       height: calc(var(--panel-content-inner-height) - var(--work-item-sticky-header-height) - 1.5rem + 1px) !important; // 1.5rem is to account for padding, the +1px is to account for a border
     }
   }
+
+  .work-item-drawer .work-item-overview-right-sidebar {
+    @apply gl-pb-10;
+  }
 }
 
 .duo-chat-panel {

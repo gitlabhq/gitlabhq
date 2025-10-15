@@ -12845,9 +12845,6 @@ msgstr ""
 msgid "Can't update snippet: %{err}"
 msgstr ""
 
-msgid "Canada"
-msgstr ""
-
 msgid "Canary"
 msgstr ""
 
@@ -25429,12 +25426,6 @@ msgstr ""
 msgid "DuoProDiscover|Write secure code faster and save time with Code Suggestions in more than 20 languages, available in your favorite IDE."
 msgstr ""
 
-msgid "DuoProTrial|Activate my trial"
-msgstr ""
-
-msgid "DuoProTrial|Apply your GitLab Duo Pro trial to an existing group"
-msgstr ""
-
 msgid "DuoProTrial|Chat within the IDE"
 msgstr ""
 
@@ -25459,13 +25450,7 @@ msgstr ""
 msgid "DuoProTrial|Sign in with a different account"
 msgstr ""
 
-msgid "DuoProTrial|Start your free Duo Pro trial"
-msgstr ""
-
 msgid "DuoProTrial|Start your free GitLab Duo Pro trial"
-msgstr ""
-
-msgid "DuoProTrial|Start your free GitLab Duo Pro trial on %{group_name}"
 msgstr ""
 
 msgid "DuoProTrial|Test Generation"
@@ -29149,9 +29134,6 @@ msgstr ""
 msgid "Frameworks"
 msgstr ""
 
-msgid "France"
-msgstr ""
-
 msgid "Free"
 msgstr ""
 
@@ -30141,9 +30123,6 @@ msgid "Geo|primary"
 msgstr ""
 
 msgid "Geo|secondary"
-msgstr ""
-
-msgid "Germany"
 msgstr ""
 
 msgid "Get a support subscription"
@@ -58243,6 +58222,63 @@ msgstr ""
 msgid "Secrets manager"
 msgstr ""
 
+msgid "SecretsManagerPermissions|An error occurred while enabling the secrets manager."
+msgstr ""
+
+msgid "SecretsManagerPermissions|An error occurred while fetching the secrets manager status."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Are you sure you want to remove permissions for %{principalName}?"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Can add new secrets"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Can authenticate with the secrets manager and related API endpoints."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Can permanently delete secrets."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Can read secret metadata but not the secret value."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Can update details of existing secrets."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Enable the secrets manager to securely store and manage sensitive information for this project."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Failed to create secrets manager permission. Please try again."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Failed to delete secrets manager permissions. Please try again."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Failed to fetch secrets manager permissions. Please try again later."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Permissions for secrets manager removed."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Remove secrets manager permissions?"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Secrets manager"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Secrets manager has been provisioned for this project."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Secrets manager permissions were successfully updated."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Secrets manager user permissions"
+msgstr ""
+
+msgid "SecretsManagerPermissions|Select the access scopes to grant to this user for the secrets manager and related API endpoints."
+msgstr ""
+
 msgid "Secrets|Add a description for the secret"
 msgstr ""
 
@@ -58255,13 +58291,7 @@ msgstr ""
 msgid "Secrets|Add secret"
 msgstr ""
 
-msgid "Secrets|An error occurred while enabling the Secrets Manager."
-msgstr ""
-
 msgid "Secrets|An error occurred while fetching secrets. Please make sure you have the proper permissions, or try again."
-msgstr ""
-
-msgid "Secrets|An error occurred while fetching the Secret manager status."
 msgstr ""
 
 msgid "Secrets|An error occurred while fetching the Secret manager status. Please try again."
@@ -58270,25 +58300,7 @@ msgstr ""
 msgid "Secrets|Are you sure you want to delete secret %{secretName}? This action cannot be undone, and the secret cannot be recovered."
 msgstr ""
 
-msgid "Secrets|Are you sure you want to remove permissions for %{principalName}?"
-msgstr ""
-
 msgid "Secrets|Are you sure you want to update secret %{secretName}? Saving these changes can cause disruptions, such as loss of access to connected services or failed deployments."
-msgstr ""
-
-msgid "Secrets|Can add new secrets"
-msgstr ""
-
-msgid "Secrets|Can authenticate with the Secrets Manager and related API endpoints."
-msgstr ""
-
-msgid "Secrets|Can permanently delete secrets."
-msgstr ""
-
-msgid "Secrets|Can read secret metadata but not the secret value."
-msgstr ""
-
-msgid "Secrets|Can update details of existing secrets."
 msgstr ""
 
 msgid "Secrets|Created"
@@ -58303,9 +58315,6 @@ msgstr ""
 msgid "Secrets|Edit %{name}"
 msgstr ""
 
-msgid "Secrets|Enable the Secrets Manager to securely store and manage sensitive information for this project."
-msgstr ""
-
 msgid "Secrets|Enter a new value to update secret"
 msgstr ""
 
@@ -58313,15 +58322,6 @@ msgid "Secrets|Enter a value for the secret"
 msgstr ""
 
 msgid "Secrets|Expires"
-msgstr ""
-
-msgid "Secrets|Failed to create Secrets manager permission. Please try again."
-msgstr ""
-
-msgid "Secrets|Failed to delete secrets manager permission. Please try again."
-msgstr ""
-
-msgid "Secrets|Failed to fetch secrets manager permissions. Please try again later."
 msgstr ""
 
 msgid "Secrets|Failed to load secret. Please try again later."
@@ -58339,16 +58339,10 @@ msgstr ""
 msgid "Secrets|New secret"
 msgstr ""
 
-msgid "Secrets|Permissions for secrets manager removed."
-msgstr ""
-
 msgid "Secrets|Please wait while we provision the Secrets Manager for you. Refresh at will."
 msgstr ""
 
 msgid "Secrets|Provisioning in progress"
-msgstr ""
-
-msgid "Secrets|Remove secrets manager permission?"
 msgstr ""
 
 msgid "Secrets|Secret %{secretName} has been deleted."
@@ -58357,28 +58351,13 @@ msgstr ""
 msgid "Secrets|Secret %{secretName} was successfully updated."
 msgstr ""
 
-msgid "Secrets|Secret Manager permissions were successfully updated."
-msgstr ""
-
 msgid "Secrets|Secrets"
-msgstr ""
-
-msgid "Secrets|Secrets Manager"
-msgstr ""
-
-msgid "Secrets|Secrets Manager has been provisioned for this project."
 msgstr ""
 
 msgid "Secrets|Secrets can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, secrets must be explicitly requested by a job."
 msgstr ""
 
-msgid "Secrets|Secrets manager user permissions"
-msgstr ""
-
 msgid "Secrets|Secure your sensitive information"
-msgstr ""
-
-msgid "Secrets|Select the access scopes to grant to this user for the Secret Manager and related API endpoints."
 msgstr ""
 
 msgid "Secrets|Stored secrets"
@@ -67708,9 +67687,6 @@ msgstr ""
 msgid "This title already exists."
 msgstr ""
 
-msgid "This trial is for"
-msgstr ""
-
 msgid "This user"
 msgstr ""
 
@@ -69912,12 +69888,6 @@ msgid "Unique identifier for the target message thread (topic in a forum supergr
 msgstr ""
 
 msgid "Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`)."
-msgstr ""
-
-msgid "United Kingdom"
-msgstr ""
-
-msgid "United States of America"
 msgstr ""
 
 msgid "Units|d"

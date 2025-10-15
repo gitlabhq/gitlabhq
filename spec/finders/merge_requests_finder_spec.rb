@@ -247,6 +247,31 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
       end
 
+      context 'filters by latest_closed_at date' do
+        before do
+          merge_request1.metrics.update!(latest_closed_at: 5.days.ago)
+          merge_request2.metrics.update!(latest_closed_at: 10.days.ago)
+        end
+
+        describe 'closed_after' do
+          subject { described_class.new(user, closed_after: 6.days.ago).execute }
+
+          it { is_expected.to eq([merge_request1]) }
+        end
+
+        describe 'closed_before' do
+          subject { described_class.new(user, closed_before: 6.days.ago).execute }
+
+          it { is_expected.to eq([merge_request2]) }
+        end
+
+        describe 'when both closed_after and closed_before is given' do
+          subject { described_class.new(user, closed_after: 15.days.ago, closed_before: 6.days.ago).execute }
+
+          it { is_expected.to eq([merge_request2]) }
+        end
+      end
+
       context 'merge_user filtering' do
         before do
           merge_request1.update!(state_id: MergeRequest.available_states[:merged])

@@ -645,6 +645,19 @@ class MergeRequest < ApplicationRecord
       .where(merge_request_diff_files: { old_path: path })
   end
 
+  scope :with_closed_between, ->(closed_after = nil, closed_before = nil) do
+    return all unless closed_after || closed_before
+
+    metrics_scope = MergeRequest::Metrics
+      .where(MergeRequest::Metrics.arel_table[:merge_request_id].eq(arel_table[:id]))
+      .where(MergeRequest::Metrics.arel_table[:target_project_id].eq(arel_table[:target_project_id]))
+
+    metrics_scope = metrics_scope.closed_after(closed_after) if closed_after
+    metrics_scope = metrics_scope.closed_before(closed_before) if closed_before
+
+    where(metrics_scope.select(1).arel.exists)
+  end
+
   def self.total_time_to_merge
     join_metrics
       .where(

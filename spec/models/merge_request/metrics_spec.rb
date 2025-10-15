@@ -11,8 +11,17 @@ RSpec.describe MergeRequest::Metrics do
   end
 
   describe 'scopes' do
-    let_it_be(:metrics_1) { create(:merge_request).metrics.tap { |m| m.update!(merged_at: 10.days.ago) } }
-    let_it_be(:metrics_2) { create(:merge_request).metrics.tap { |m| m.update!(merged_at: 5.days.ago) } }
+    let_it_be(:metrics_1) do
+      create(:merge_request).metrics.tap do |m|
+        m.update!(merged_at: 10.days.ago, latest_closed_at: 10.days.ago)
+      end
+    end
+
+    let_it_be(:metrics_2) do
+      create(:merge_request).metrics.tap do |m|
+        m.update!(merged_at: 5.days.ago, latest_closed_at: 5.days.ago)
+      end
+    end
 
     describe '.merged_after' do
       subject { described_class.merged_after(7.days.ago) }
@@ -35,6 +44,30 @@ RSpec.describe MergeRequest::Metrics do
 
       it "doesn't include record outside of the filter" do
         is_expected.not_to include([metrics_2])
+      end
+    end
+
+    describe '.closed_after' do
+      subject { described_class.closed_after(7.days.ago) }
+
+      it 'finds the record' do
+        is_expected.to eq([metrics_2])
+      end
+
+      it "doesn't include record outside of the filter" do
+        is_expected.not_to include(metrics_1)
+      end
+    end
+
+    describe '.closed_before' do
+      subject { described_class.closed_before(7.days.ago) }
+
+      it 'finds the record' do
+        is_expected.to eq([metrics_1])
+      end
+
+      it "doesn't include record outside of the filter" do
+        is_expected.not_to include(metrics_2)
       end
     end
 

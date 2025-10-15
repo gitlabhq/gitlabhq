@@ -172,7 +172,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/services/gitlab_subscriptions/create_company_lead_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/members/activity_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/trials/base_create_service_spec.rb'
     - 'ee/spec/services/groups/compliance_report_csv_service_spec.rb'
     - 'ee/spec/services/members/activate_service_spec.rb'
     - 'ee/spec/services/members/await_service_spec.rb'

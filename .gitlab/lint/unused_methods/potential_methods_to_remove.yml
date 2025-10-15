@@ -471,8 +471,6 @@ mark_for_retry!:
   file: app/models/remote_mirror.rb
 mirror_url_changed?:
   file: app/models/remote_mirror.rb
-expire_avatar_cache:
-  file: app/models/repository.rb
 blobs_metadata:
   file: app/models/repository.rb
 owner_class_attribute_default:

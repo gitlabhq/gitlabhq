@@ -192,7 +192,6 @@ Layout/ClassStructure:
     - 'ee/app/services/analytics/value_stream_dashboard/top_level_group_counter_service.rb'
     - 'ee/app/services/app_sec/dast/scan_configs/build_service.rb'
     - 'ee/app/services/click_house/data_ingestion/ci_finished_builds_sync_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/trials/base_create_service.rb'
     - 'ee/app/services/groups/schedule_bulk_repository_shard_moves_service.rb'
     - 'ee/app/services/incident_management/create_incident_sla_exceeded_label_service.rb'
     - 'ee/app/services/package_metadata/ingestion/advisory/advisory_ingestion_task.rb'

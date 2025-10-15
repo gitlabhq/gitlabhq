@@ -42,13 +42,7 @@ To get started, select the development option that works best for you:
   - No configuration or installation required.
   - Available within a few seconds.
 
-- [**Gitpod**](configure-dev-env-gitpod.md) - Most contributors should use this option.
-  - In-browser remote development environment that runs regardless of your local hardware,
-    operating system, or software.
-  - Make and preview remote changes in your local browser.
-  - Takes a few minutes to set up and is fully ready in thirty minutes.
-
-- GitLab Development Kit (GDK) and GDK-in-a-box - Fully local development.
+- GitLab Development Kit (GDK) and GDK-in-a-box - Fully local development (recommended).
 
   GDK is a local development environment that includes an installation of GitLab Self-Managed,
   sample projects, and administrator access with which you can test functionality.
