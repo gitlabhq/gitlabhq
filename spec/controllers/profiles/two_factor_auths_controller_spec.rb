@@ -517,7 +517,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       create(:user, :two_factor_via_webauthn)
     end
 
-    let(:webauthn_registration) { user.webauthn_registrations.first }
+    let(:webauthn_registration) { user.second_factor_webauthn_registrations.first }
     let(:webauthn_id) { webauthn_registration.id }
     let(:webauthn_name) { webauthn_registration.name }
     let(:current_password) { user.password }
@@ -530,11 +530,11 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
     end
 
     it 'destroys the webauthn device' do
-      count = user.webauthn_registrations.count
+      count = user.second_factor_webauthn_registrations.count
       go
 
       user.reload
-      expect(user.webauthn_registrations.count).to eq(count - 1)
+      expect(user.second_factor_webauthn_registrations.count).to eq(count - 1)
     end
 
     it 'redirects to the profile two factor authentication page' do

@@ -25,6 +25,9 @@
       "items": {
         "type": "string"
       }
+    },
+    "yaml_definition": {
+      "type": "string"
     }
   }
 }

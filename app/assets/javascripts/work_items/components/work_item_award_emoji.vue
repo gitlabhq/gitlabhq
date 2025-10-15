@@ -25,6 +25,11 @@ export default {
       required: false,
       default: false,
     },
+    workItemDiscussionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemId: {
       type: String,
       required: true,
@@ -47,7 +52,7 @@ export default {
   },
   computed: {
     canAwardEmoji() {
-      return isLoggedIn() && !this.workItemArchived;
+      return isLoggedIn() && !this.workItemArchived && !this.workItemDiscussionLocked;
     },
     currentUserId() {
       return window.gon.current_user_id;

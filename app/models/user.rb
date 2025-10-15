@@ -172,7 +172,8 @@ class User < ApplicationRecord
   has_many :expiring_soon_and_unnotified_personal_access_tokens, -> { expiring_and_not_notified_without_impersonation }, class_name: 'PersonalAccessToken'
 
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
-  has_many :webauthn_registrations
+  has_many :passkeys, -> { passkey }, class_name: 'WebauthnRegistration'
+  has_many :second_factor_webauthn_registrations, -> { second_factor_authenticator }, class_name: 'WebauthnRegistration'
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :saved_replies, class_name: '::Users::SavedReply'
   has_one :user_synced_attributes_metadata, autosave: true
@@ -843,7 +844,7 @@ class User < ApplicationRecord
 
   def self.without_two_factor
     where
-      .missing(:webauthn_registrations)
+      .missing(:second_factor_webauthn_registrations)
       .where(otp_required_for_login: false)
   end
 
@@ -1335,11 +1336,11 @@ class User < ApplicationRecord
   end
 
   def disable_webauthn!
-    self.webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
+    self.second_factor_webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
   end
 
   def destroy_webauthn_device(device_id)
-    self.webauthn_registrations.find(device_id).destroy
+    self.second_factor_webauthn_registrations.find(device_id).destroy
   end
 
   def reset_backup_codes!
@@ -1358,7 +1359,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_webauthn_enabled?
-    (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
+    second_factor_webauthn_registrations.any?
   end
 
   def needs_new_otp_secret?

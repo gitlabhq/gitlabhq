@@ -7,7 +7,7 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
   let(:current_user) { user }
 
   describe '#execute' do
-    let(:webauthn_registration) { user.webauthn_registrations.first }
+    let(:webauthn_registration) { user.second_factor_webauthn_registrations.first }
     let(:webauthn_id) { webauthn_registration.id }
     let(:webauthn_name) { webauthn_registration.name }
 
@@ -23,7 +23,7 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
           let(:current_user) { create(:user) }
 
           it 'does not destry the webauthn registration' do
-            expect { subject }.not_to change { user.webauthn_registrations.count }
+            expect { subject }.not_to change { user.second_factor_webauthn_registrations.count }
           end
 
           it 'does not remove the user backup codes' do
@@ -42,7 +42,7 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
 
         context 'for an admin' do
           it 'destroys the webauthn registration' do
-            expect { subject }.to change { user.webauthn_registrations.count }.by(-1)
+            expect { subject }.to change { user.second_factor_webauthn_registrations.count }.by(-1)
           end
 
           it 'removes the user backup codes' do
@@ -68,7 +68,7 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
 
       context 'when current user is calling the service' do
         it 'removes the webauth registrations' do
-          expect { subject }.to change { user.webauthn_registrations.count }.by(-1)
+          expect { subject }.to change { user.second_factor_webauthn_registrations.count }.by(-1)
         end
 
         it 'removes the user backup codes' do
@@ -99,7 +99,7 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
           end
 
           it 'removes the webauth registrations' do
-            expect { subject }.to change { user.webauthn_registrations.count }.by(-1)
+            expect { subject }.to change { user.second_factor_webauthn_registrations.count }.by(-1)
           end
 
           it 'does not remove the user backup codes' do
@@ -126,7 +126,7 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
       end
 
       it 'destroys the webauthn registration' do
-        expect { subject }.to change { user.webauthn_registrations.count }.by(-1)
+        expect { subject }.to change { user.second_factor_webauthn_registrations.count }.by(-1)
       end
 
       it 'does not remove the user backup codes' do

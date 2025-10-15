@@ -315,6 +315,7 @@ module API
           use :deprecated_filter_params
           use :filter_params
         end
+        route_setting :authorization, permissions: :read_runner, boundary_type: :project
         get ':id/runners' do
           runners = ::Ci::Runner.owned_or_instance_wide(user_project.id).with_api_entity_associations
           # scope is deprecated (for project runners), however api documentation still supports it.
@@ -336,6 +337,7 @@ module API
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
+        route_setting :authorization, permissions: :create_runner, boundary_type: :project
         post ':id/runners' do
           authorize! :create_runners, user_project # Ensure the user is allowed to create a runner on the target project
 
@@ -363,6 +365,7 @@ module API
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
+        route_setting :authorization, permissions: :delete_runner, boundary_type: :project
         delete ':id/runners/:runner_id' do
           runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
           authenticate_disable_runner!(runner_project)
@@ -391,6 +394,7 @@ module API
         params do
           use :filter_params
         end
+        route_setting :authorization, permissions: :read_runner, boundary_type: :group
         get ':id/runners' do
           runners = ::Ci::Runner.group_or_instance_wide(user_group).with_api_entity_associations
           runners = apply_filter(runners, params)
@@ -428,6 +432,7 @@ module API
           failure [[401, 'Unauthorized'], [403, 'Forbidden'], [404, 'Project Not Found']]
           tags %w[runners projects]
         end
+        route_setting :authorization, permissions: :reset_runner_registration_token, boundary_type: :project
         post ':id/runners/reset_registration_token' do
           project = find_project! user_project.id
           authorize! :update_runners_registration_token, project
@@ -449,6 +454,7 @@ module API
           failure [[401, 'Unauthorized'], [403, 'Forbidden'], [404, 'Group Not Found']]
           tags %w[runners groups]
         end
+        route_setting :authorization, permissions: :reset_runner_registration_token, boundary_type: :group
         post ':id/runners/reset_registration_token' do
           group = find_group! user_group.id
           authorize! :update_runners_registration_token, group

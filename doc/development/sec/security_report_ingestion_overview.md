@@ -27,7 +27,7 @@ An instance of `Vulnerabilities::MergeRequestLink` class. They are used to link 
 
 ### Security Finding
 
-An instance of `Security::Finding` class. These serve as a meta-data store of a specific vulnerability detected in a specific `Security::Scan`. They currently store **partial** finding data to improve performance of the pipeline security report. This class has been extended to store almost all required scan information so we can stop relying on job artifacts and is [due to be used in favor of `Vulnerability::Findings` soon.](https://gitlab.com/gitlab-org/gitlab/-/issues/393394)
+An instance of `Security::Finding` class. These serve as a meta-data store of a specific vulnerability detected in a specific `Security::Scan`. They store all the required scan information necessary for the [pipeline security report](../../user/application_security/detect/security_scanning_results.md#pipeline-security-report), the [pipeline.securityReportFindings](../../api/graphql/reference/_index.md#pipelinesecurityreportfindings) GraphQL field, and the [Vulnerability Findings](../../api/vulnerability_findings.md) REST API.
 
 ### Security Scan
 
@@ -39,11 +39,11 @@ An instance of the `Vulnerabilities::StateTransition` class. This model represen
 
 ### Vulnerability
 
-An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerability::Finding` which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in `Vulnerabilities::Finding` class. Every `Vulnerability` **must have** a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level.
+An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerabilities::Finding` record which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in `Vulnerabilities::Finding` class. Every `Vulnerability` **must have** a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level.
 
-### Finding
+### Vulnerability Finding
 
-An instance of `Vulnerabilities::Finding` class. A `Vulnerability::Finding` is a database only representation of a security finding which has been merged into the default branch of a project, as the same `Vulnerability` may be present in multiple places within a project. This class was previously called `Vulnerabilities::Occurrence`; after renaming the class, we kept the associated table name `vulnerability_occurrences` due to the effort involved in renaming large tables.
+An instance of `Vulnerabilities::Finding` class. A `Vulnerabilities::Finding` record is a database-only representation of a security finding which has been merged into the default branch of a project, as the same `Vulnerability` may be present in multiple places within a project. This class was previously called `Vulnerabilities::Occurrence`; after renaming the class, we kept the associated table name `vulnerability_occurrences` due to the effort involved in renaming large tables.
 
 ### Identifier
 
@@ -51,7 +51,7 @@ An instance of the `Vulnerabilities::Identifier` class. Each vulnerability is gi
 
 ### Vulnerability Read
 
-An instance of the `Vulnerabilities::Read` class. This is a denormalized record of `Vulnerability` and `Vulnerability::Finding` data to improve performance of filtered querying of vulnerability data to the front end.
+An instance of the `Vulnerabilities::Read` class. This is a denormalized record of `Vulnerability` and `Vulnerabilities::Finding` data to improve performance of filtered querying of vulnerability data to the front end.
 
 ### Remediation
 
@@ -113,7 +113,7 @@ Security Findings detected in scan run on the default branch are saved as `Vulne
 
 ## Vulnerability Read Creation
 
-`Vulnerability::Read` records are created via PostgreSQL database trigger upon the creation of a `Vulnerability::Finding` record and as such are part of our ingestion process, though they have no impact on it bar it's denormalization performance benefits on the report pages.
+`Vulnerability::Read` records are created via PostgreSQL database trigger upon the creation of a `Vulnerabilities::Finding` record and as such are part of our ingestion process, though they have no impact on it bar it's denormalization performance benefits on the report pages.
 
 This style of creation was intended to be fast and seamless, but has proven difficult to debug and maintain and may be [migrated to the application layer later](https://gitlab.com/gitlab-org/gitlab/-/issues/393912).
 

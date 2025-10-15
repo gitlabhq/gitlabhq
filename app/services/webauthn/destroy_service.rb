@@ -4,10 +4,10 @@ module Webauthn
   class DestroyService < BaseService
     attr_reader :webauthn_registration, :user, :current_user
 
-    def initialize(current_user, user, webauthn_registrations_id)
+    def initialize(current_user, user, second_factor_webauthn_registrations_id)
       @current_user = current_user
       @user = user
-      @webauthn_registration = user.webauthn_registrations.find(webauthn_registrations_id)
+      @webauthn_registration = user.second_factor_webauthn_registrations.find(second_factor_webauthn_registrations_id)
     end
 
     def execute

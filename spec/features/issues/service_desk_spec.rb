@@ -13,6 +13,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     # The following two conditions equate to ServiceDesk.supported == true
     allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)

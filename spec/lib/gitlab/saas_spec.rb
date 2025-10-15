@@ -25,24 +25,4 @@ RSpec.describe Gitlab::Saas, feature_category: :shared do
       is_expected.to eq('about.gitlab.com')
     end
   end
-
-  context 'for methods overridden in EE', unless: Gitlab.ee? do
-    describe '.feature_available?' do
-      subject { described_class.feature_available?(:some_feature) } # rubocop:disable Gitlab/FeatureAvailableUsage -- we are testing that no error is raised in FOSS here
-
-      it { is_expected.to be(false) }
-    end
-
-    describe '.enabled?' do
-      subject { described_class.enabled? }
-
-      it { is_expected.to be(false) }
-    end
-
-    describe '.feature_file_path' do
-      subject { described_class.feature_file_path('some_feature') }
-
-      it { is_expected.to be_nil }
-    end
-  end
 end

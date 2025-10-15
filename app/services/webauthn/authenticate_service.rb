@@ -13,7 +13,7 @@ module Webauthn
 
       webauthn_credential = WebAuthn::Credential.from_get(parsed_device_response)
       encoded_raw_id = Base64.strict_encode64(webauthn_credential.raw_id)
-      stored_webauthn_credential = @user.webauthn_registrations.find_by_credential_xid(encoded_raw_id)
+      stored_webauthn_credential = @user.second_factor_webauthn_registrations.find_by_credential_xid(encoded_raw_id)
 
       encoder = WebAuthn.configuration.encoder
 

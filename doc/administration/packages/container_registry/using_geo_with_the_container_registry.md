@@ -86,7 +86,35 @@ Prerequisites:
 
 In this scenario, the metadata database must be moved to an external PostgreSQL instance.
 
-To move the metadata database to an external PostgreSQL instance:
+1. Follow the steps here to [move the metadata database to an external PostgreSQL instance](../../postgresql/moving.md).
+1. Continue with the steps to [Add Geo support and container registry to an existing instance of GitLab](#add-geo-support-and-container-registry-to-an-existing-instance-of-gitlab).
 
-1. [Move the metadata database to an external PostgreSQL instance](../../postgresql/moving.md).
-1. [Add Geo support and a container registry to an existing instance of GitLab](#add-geo-support-and-container-registry-to-an-existing-instance-of-gitlab).
+## Migrate the container registry from legacy metadata
+
+In this scenario, you must migrate the container registry from legacy metadata
+to the external PostgreSQL metadata database on an existing Geo site.
+
+Prerequisites:
+
+- GitLab 17.3 or later (database metadata support)
+- Geo configured on primary and secondary sites
+- Container registries on both sites using legacy metadata
+- Both registries must have existing data (images pushed)
+
+### Migration Steps
+
+Downtime depends on the import method. For recommendations on import methods, see [How to choose the right import method](../container_registry_metadata_database.md#how-to-choose-the-right-import-method).
+
+{{< alert type="note" >}}
+
+The registry being migrated is read-only during the import.
+
+{{< /alert >}}
+
+During migration, the rest of Geo replication continues.
+
+To migrate your metadata database:
+
+1. On secondary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#existing-registries).
+1. On the primary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#existing-registries).
+1. Verify Geo replication continues working.

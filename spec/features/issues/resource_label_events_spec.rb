@@ -46,8 +46,6 @@ RSpec.describe 'List issue resource label events', :js, feature_category: :team_
         send_keys(:escape)
       end
 
-      visit project_issue_path(project, issue)
-
       expect(page).to have_css('.system-note', text: 'added bar foo labels')
     end
   end

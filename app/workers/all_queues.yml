@@ -3246,16 +3246,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
-- :name: bitbucket_server_import_import_pull_request_notes
-  :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace:
 - :name: bitbucket_server_import_stage_finish_import
   :worker_name: Gitlab::BitbucketServerImport::Stage::FinishImportWorker
   :feature_category: :importers

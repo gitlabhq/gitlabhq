@@ -56,21 +56,6 @@ module Gitlab
     def self.community_forum_url
       'https://forum.gitlab.com'
     end
-
-    # overridden in EE
-    def self.feature_available?(_feature)
-      false
-    end
-
-    # overridden in EE
-    def self.enabled?
-      false
-    end
-
-    # overridden in EE
-    def self.feature_file_path(_feature)
-      nil
-    end
   end
 end
 

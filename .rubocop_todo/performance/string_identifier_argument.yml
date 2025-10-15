@@ -199,7 +199,7 @@ Performance/StringIdentifierArgument:
     - 'spec/support/shared_examples/models/project_ci_cd_settings_shared_examples.rb'
     - 'spec/support/shared_examples/policies/project_policy_shared_examples.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/close_quick_action_shared_examples.rb'
-    - 'spec/support/shared_examples/quick_actions/issuable/time_tracking_quick_action_shared_examples.rb'
+    - 'spec/support/shared_examples/quick_actions/merge_request/time_tracking_quick_action_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/composer_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/graphql/projects/branch_protections/access_level_request_examples.rb'
     - 'spec/support/shared_examples/requests/api/helm_packages_shared_examples.rb'

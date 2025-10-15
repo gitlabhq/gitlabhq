@@ -28927,6 +28927,9 @@ CREATE TABLE webauthn_registrations (
     credential_xid text NOT NULL,
     name text NOT NULL,
     public_key text NOT NULL,
+    authentication_mode smallint DEFAULT 2 NOT NULL,
+    passkey_eligible boolean DEFAULT false NOT NULL,
+    last_used_at timestamp with time zone,
     CONSTRAINT check_2f02e74321 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_f5ab2b551a CHECK ((char_length(credential_xid) <= 1364))
 );

@@ -2,4 +2,3 @@
 Gitlab/SaasFeatureAvailableOutsideEe:
   Details: grace period
   Exclude:
-    - 'config/initializers/doorkeeper.rb'

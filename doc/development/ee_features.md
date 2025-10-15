@@ -648,6 +648,70 @@ SomeGem.configure do |config|
 end
 ```
 
+#### Extending initializers with class methods
+
+For more complex scenarios where you need to override class methods used in initializers,
+you can use the `prepend_mod_with` pattern similar to models. This approach mirrors how
+`app/models` can be extended and allows for clean separation of CE and EE logic.
+
+This pattern is particularly useful for SaaS-only features that need to be configured
+in initializers, where using `Gitlab.ee?` alone is insufficient because the feature
+should only be enabled on SaaS instances, not all EE instances.
+
+For example, in `config/initializers/doorkeeper.rb`:
+
+```ruby
+# The initializer calls a class method that can be overridden in EE
+allow_grant_flow_for_client do |grant_flow, client|
+  next false if Applications::CreateService.disable_ropc_for_all_applications?
+  # ... other logic
+end
+```
+
+In the CE service (`app/services/applications/create_service.rb`):
+
+```ruby
+module Applications
+  class CreateService
+    # Define class methods that return false by default but can be overridden in EE
+    def self.disable_ropc_for_all_applications?
+      false
+    end
+
+    # ... other methods
+  end
+end
+
+# Allow EE to extend this service
+Applications::CreateService.prepend_mod_with('Applications::CreateService')
+```
+
+In the EE extension (`ee/app/services/ee/applications/create_service.rb`):
+
+```ruby
+module EE
+  module Applications
+    module CreateService
+      def self.prepended(base)
+        base.singleton_class.prepend(ClassMethods)
+      end
+
+      module ClassMethods
+        extend ::Gitlab::Utils::Override
+
+        override :disable_ropc_for_all_applications?
+        def disable_ropc_for_all_applications?
+          ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications)
+        end
+      end
+    end
+  end
+end
+```
+
+This pattern allows initializers to call methods that have different behavior in CE vs EE,
+while keeping the initializer code itself unchanged between editions.
+
 ### Code in `config/routes`
 
 When we add `draw :admin` in `config/routes.rb`, the application tries to

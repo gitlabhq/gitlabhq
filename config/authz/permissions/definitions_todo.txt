@@ -282,7 +282,6 @@ delete_o11y_settings
 delete_pipl_user
 delete_project_secrets
 delete_project_subscription
-delete_runner
 delete_service_account
 delete_tag
 delete_user
@@ -659,7 +658,6 @@ read_resource_label_event
 read_resource_milestone_event
 read_resource_state_event
 read_resource_weight_event
-read_runner
 read_runner_cloud_provisioning_info
 read_runner_gke_provisioning_info
 read_runner_manager

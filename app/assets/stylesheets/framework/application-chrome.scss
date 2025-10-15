@@ -849,7 +849,8 @@
       width: calc-size(auto, size);
       /* stylelint-disable-next-line property-no-unknown */
       interpolate-size: allow-keywords;
-      transition: width .25s $gl-easing-out-cubic !important;
+      transition: width .25s $gl-easing-out-cubic,
+                  transform .25s $gl-easing-out-cubic !important;
     }
   }
 }

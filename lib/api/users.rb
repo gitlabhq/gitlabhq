@@ -229,7 +229,7 @@ module API
         entity = current_user&.can_read_all_resources? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
-          users = users.preload(:identities, :webauthn_registrations, :namespace, :followers, :followees, :user_preference, :user_detail)
+          users = users.preload(:identities, :second_factor_webauthn_registrations, :namespace, :followers, :followees, :user_preference, :user_detail)
         end
 
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })

@@ -126,4 +126,31 @@ RSpec.describe Mcp::Tools::CustomService, feature_category: :mcp_server do
       })
     end
   end
+
+  describe '#find_project' do
+    let_it_be(:namespace) { create(:group) }
+    let_it_be(:project) { create(:project, :public, namespace: namespace) }
+    let(:service) { test_get_service_class.new(name: service_name) }
+    let(:test_get_service_class) do
+      Class.new(described_class) do
+        def description
+          'Test custom tool'
+        end
+      end
+    end
+
+    context 'with project ID' do
+      it 'finds the project' do
+        found = service.find_project(project.id.to_s)
+        expect(found).to eq(project)
+      end
+    end
+
+    context 'with project full path' do
+      it 'finds the project' do
+        found = service.find_project(project.full_path.to_s)
+        expect(found).to eq(project)
+      end
+    end
+  end
 end

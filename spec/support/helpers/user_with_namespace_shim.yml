@@ -359,6 +359,7 @@
 - spec/features/issues/issue_detail_spec.rb
 - spec/features/issues/issue_sidebar_spec.rb
 - spec/features/issues/list/csv_spec.rb
+- spec/features/issues/list/user_resets_their_incoming_email_token_spec.rb
 - spec/features/issues/list/user_sorts_issues_spec.rb
 - spec/features/issues/markdown_toolbar_spec.rb
 - spec/features/issues/move_spec.rb
@@ -371,7 +372,6 @@
 - spec/features/issues/user_creates_branch_and_merge_request_spec.rb
 - spec/features/issues/user_edits_issue_spec.rb
 - spec/features/issues/user_interacts_with_awards_spec.rb
-- spec/features/issues/user_resets_their_incoming_email_token_spec.rb
 - spec/features/issues/user_toggles_subscription_spec.rb
 - spec/features/issues/user_uploads_file_to_note_spec.rb
 - spec/features/issues/user_uses_quick_actions_spec.rb

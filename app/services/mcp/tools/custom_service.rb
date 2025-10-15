@@ -19,6 +19,22 @@ module Mcp
           Response.error("CustomService: current_user is not set")
         end
       end
+
+      # rubocop: disable CodeReuse/ActiveRecord -- no need to redefine a scope for the built in method
+      def find_project(project_id)
+        projects = ::Project.without_deleted.not_hidden
+        project =
+          if ::API::Helpers::INTEGER_ID_REGEX.match?(project_id)
+            projects.find_by(id: project_id)
+          elsif project_id.include?('/')
+            projects.find_by_full_path(project_id, follow_redirects: true)
+          end
+
+        raise StandardError, "Project '#{project_id}' not found or inaccessible" unless project
+
+        project
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

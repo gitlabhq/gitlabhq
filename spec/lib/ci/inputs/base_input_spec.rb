@@ -69,4 +69,50 @@ RSpec.describe Ci::Inputs::BaseInput, feature_category: :pipeline_composition do
       expect(input.options).to eq(%w[default-value another-value])
     end
   end
+
+  describe '#required?' do
+    let(:input) { described_class.new(name: :test_input, spec: spec) }
+
+    context 'when input has a default value' do
+      it 'is not required' do
+        spec = { default: 'value' }
+        input = described_class.new(name: :test, spec: spec)
+        expect(input).not_to be_required
+      end
+    end
+
+    context 'when input has no default value' do
+      it 'requires user input' do
+        spec = {}
+        input = described_class.new(name: :test, spec: spec)
+        expect(input).to be_required
+      end
+    end
+
+    context 'when input has rules' do
+      context 'when there is a default in a rule' do
+        it 'is not required' do
+          spec = { rules: [{ if: 'condition', default: 'value' }] }
+          input = described_class.new(name: :test, spec: spec)
+          expect(input).not_to be_required
+        end
+      end
+
+      context 'when there is a fallback rule' do
+        it 'is not required' do
+          spec = { rules: [{ options: %w[a b] }] }
+          input = described_class.new(name: :test, spec: spec)
+          expect(input).not_to be_required
+        end
+      end
+
+      context 'when there is no default or fallback' do
+        it 'requires user input' do
+          spec = { rules: [{ if: 'condition', options: ['a'] }] }
+          input = described_class.new(name: :test, spec: spec)
+          expect(input).to be_required
+        end
+      end
+    end
+  end
 end

@@ -244,6 +244,8 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_many(:passkeys) }
+    it { is_expected.to have_many(:second_factor_webauthn_registrations) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }

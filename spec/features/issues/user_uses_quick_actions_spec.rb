@@ -11,6 +11,7 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
   include Features::NotesHelpers
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
   end
 
@@ -25,7 +26,7 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
     let(:source_issuable) { create(:issue, project: project, milestone: milestone, labels: [label_bug, label_feature]) }
 
     it_behaves_like 'close quick action', :issue
-    it_behaves_like 'issuable time tracker', :issue
+    it_behaves_like 'work item time tracker'
   end
 
   describe 'issue-only commands' do
@@ -34,15 +35,9 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
     let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
     before do
-      stub_feature_flags(work_item_view_for_issues: true)
       project.add_maintainer(user)
       sign_in(user)
       visit project_issue_path(project, issue)
-      wait_for_all_requests
-    end
-
-    after do
-      wait_for_requests
     end
 
     it_behaves_like 'create_merge_request quick action'

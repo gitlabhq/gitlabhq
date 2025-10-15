@@ -47,13 +47,13 @@ Formerly known as GitLab Duo Workflow, this flow:
 - Understands the context of your project structure, codebase, and history.
   You can also add your own context, such as relevant GitLab issues or merge requests.
 
-This flow is available in the VS Code IDE only.
+This flow is available in VS Code, Visual Studio, and JetBrains.
 
-## Use the Software Development Flow in VS Code
+## Use the Software Development Flow
 
 Prerequisites:
 
-- [Install and configure the GitLab extension for VS Code](../../../editor_extensions/visual_studio_code/setup.md) version 5.16.0 or later.
+- Install and configure [an editor extension](../../../editor_extensions/_index.md) for your IDE.
 - Ensure you meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
 
 To use the flow:
@@ -109,32 +109,16 @@ On your GitLab Self-Managed instance, you can view these events on the
 
 ## Risks
 
-The Software Development Flow is an experimental product and users should consider their
-circumstances before using this tool. It is subject to [the GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-This flow is an AI agent that is given some ability to perform actions on the user's behalf. AI tools based on LLMs are
-inherently unpredictable and you should take appropriate precautions.
+The Software Development Flow is a beta feature and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/). This tool uses an AI agent that can perform actions using your GitLab account. AI tools based on large language models can be unpredictable; review potential risks before use.
 
-The Software Development Flow in VS Code runs workflows on your local workstation.
-All the documented risks should be considered before using this
-product. The following risks are important to understand:
+The Software Development Flow in VS Code, JetBrains IDEs, and Visual Studio runs workflows on your local workstation. Consider all documented risks before enabling this product. Key risks include:
 
-1. The Software Development Flow has access to the local file system of the
-   project where you started running it. The flow respects your local `.gitignore` file,
-   but it can still access files that are not committed to the project and not called out in `.gitignore`.
-   Such files can contain credentials (for example, `.env` files).
-1. The Software Development Flow also gets access to a time-limited `ai_workflows` scoped GitLab
-   OAuth token with your user's identity. This token can be used to access
-  GitLab APIs on your behalf. This token is limited to the duration of
-   the workflow and only has access to certain APIs in GitLab.
-   Without user approval, the flow performs only read operations. By design, the token can still
-   perform write operations on the users behalf. You should consider
-   the access your user has in GitLab before running the flow.
-1. You should not give the Software Development Flow any additional credentials or secrets, in
-   goals or messages, as there is a chance it might end up using those in code
-   or other API calls.
+1. The Software Development Flow can access files in the project’s local file system, including files not tracked by Git or excluded in `.gitignore`. This may include sensitive information such as credentials in `.env` files.
+1. The Software Development Flow is granted a time-limited GitLab OAuth token with the `ai_workflows` scope, linked to your user identity. This token allows access to designated GitLab APIs for the duration of the workflow. By default, only read operations are performed without explicit approval, but write operations are possible based on your permissions.
+1. Do not provide the Software Development Flow with additional credentials or secrets (for example, in messages or goals), as these may be unintentionally used or exposed in code or API calls.
 
 ## Give feedback
 
-The Software Development Flow is an experiment and your feedback is crucial to improve it for you and others.
+The Software Development Flow is in beta and your feedback is crucial to improve it for you and others.
 To report issues or suggest improvements,
 [complete this survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu).

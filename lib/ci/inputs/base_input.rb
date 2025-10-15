@@ -53,8 +53,14 @@ module Ci
       #   inputs:
       #     website:
       # ```
+      # For rules-based inputs, check if any rule provides a default value (this functionality is under a feature
+      # flag).
       def required?
-        !spec.key?(:default)
+        !default_value_present?
+      end
+
+      def default_value_present?
+        spec.key?(:default) || has_default_through_rules?
       end
 
       def default
@@ -76,6 +82,16 @@ module Ci
       end
 
       private
+
+      def has_default_through_rules?
+        return false unless spec.key?(:rules) && spec[:rules].is_a?(Array)
+
+        spec[:rules].any? do |rule|
+          next false unless rule.is_a?(Hash)
+
+          rule.key?(:default) || !rule.key?(:if)
+        end
+      end
 
       def run_validations(value, default: false)
         value = coerced_value(value)

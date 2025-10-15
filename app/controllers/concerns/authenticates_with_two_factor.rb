@@ -103,9 +103,9 @@ module AuthenticatesWithTwoFactor
 
   # rubocop: disable CodeReuse/ActiveRecord
   def setup_webauthn_authentication(user)
-    if user.webauthn_registrations.present?
+    if user.second_factor_webauthn_registrations.present?
 
-      webauthn_registration_ids = user.webauthn_registrations.pluck(:credential_xid)
+      webauthn_registration_ids = user.second_factor_webauthn_registrations.pluck(:credential_xid)
 
       get_options = WebAuthn::Credential.options_for_get(
         allow: webauthn_registration_ids,

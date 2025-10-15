@@ -11,15 +11,19 @@
 #
 module Features
   module NotesHelpers
-    def add_note(text)
-      perform_enqueued_jobs do
-        page.within(".js-main-target-form") do
-          fill_in("note[note]", with: text)
-          find(".js-comment-submit-button").click
+    def add_note(text, issuable_type = nil)
+      if issuable_type == :issue
+        fill_in 'Add a reply', with: text
+        click_button 'Comment'
+      else
+        perform_enqueued_jobs do
+          page.within(".js-main-target-form") do
+            fill_in("note[note]", with: text)
+            find(".js-comment-submit-button").click
+          end
         end
+        wait_for_requests
       end
-
-      wait_for_requests
     end
 
     def edit_note(note_text_to_edit, new_note_text)
@@ -32,14 +36,17 @@ module Features
       wait_for_requests
     end
 
-    def preview_note(text)
+    def preview_note(text, issuable_type = nil)
       page.within('.js-main-target-form') do
-        filled_text = fill_in('note[note]', with: text)
-
-        # Wait for quick action prompt to load and then dismiss it with ESC
-        # because it may block the Preview button
-        wait_for_requests
-        filled_text.send_keys(:escape)
+        if issuable_type == :issue
+          fill_in 'Add a reply', with: text
+        else
+          filled_text = fill_in('note[note]', with: text)
+          # Wait for quick action prompt to load and then dismiss it with ESC
+          # because it may block the Preview button
+          wait_for_requests
+          filled_text.send_keys(:escape)
+        end
 
         click_button("Preview")
 

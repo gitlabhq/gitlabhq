@@ -9,6 +9,11 @@ module Applications
       false
     end
 
+    ## Overridden in EE
+    def self.disable_ropc_for_all_applications?
+      false
+    end
+
     # EE would override and use `request` arg
     def initialize(current_user, request, params)
       @current_user = current_user

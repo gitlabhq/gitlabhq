@@ -1182,6 +1182,7 @@ export default {
                   <work-item-award-emoji
                     v-if="workItemAwardEmoji"
                     :work-item-archived="workItem.archived"
+                    :work-item-discussion-locked="isDiscussionLocked"
                     :work-item-id="workItem.id"
                     :work-item-fullpath="workItemFullPath"
                     :award-emoji="workItemAwardEmoji.awardEmoji"

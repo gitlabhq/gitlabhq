@@ -2191,6 +2191,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
 
     it_behaves_like 'unauthorized access to runners list'
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:user) { users.first }
+      let(:boundary_object) { project }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
   end
 
   describe 'GET /groups/:id/runners' do
@@ -2327,6 +2333,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
 
     it_behaves_like 'unauthorized access to runners list'
+
+    it_behaves_like 'authorizing granular token permissions', :read_runner do
+      let(:user) { users.first }
+      let(:boundary_object) { group }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/runners' do
@@ -2477,6 +2489,13 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_runner do
+      let(:user) { users.first }
+      let(:runner) { create(:ci_runner, :project, projects: [project2]) }
+      let(:boundary_object) { project }
+      let(:request) { post api(path, personal_access_token: pat), params: params }
+    end
   end
 
   describe 'DELETE /projects/:id/runners/:runner_id' do
@@ -2559,6 +2578,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_runner do
+      let(:user) { users.first }
+      let(:boundary_object) { project2 }
+      let(:request) { delete api(path, personal_access_token: pat) }
     end
   end
 end

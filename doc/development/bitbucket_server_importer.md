@@ -60,7 +60,7 @@ for 24 hours so that it doesn't have to be searched for again.
 
 This worker imports notes (comments) for all merge requests.
 
-For every merge request, a job for the `Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker`
+For every merge request, a job for the `Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker`
 worker is scheduled which imports all standalone comments, inline comments, merge events, and
 approved events for the merge request.
 

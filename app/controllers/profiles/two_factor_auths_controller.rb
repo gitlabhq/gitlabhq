@@ -198,7 +198,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def setup_webauthn_registration
-    @registrations = webauthn_registrations
+    @registrations = second_factor_webauthn_registrations
     @webauthn_registration ||= WebauthnRegistration.new
 
     current_user.user_detail.update!(webauthn_xid: WebAuthn.generate_user_id) unless current_user.webauthn_xid
@@ -209,8 +209,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     gon.push(webauthn: { options: options })
   end
 
-  def webauthn_registrations
-    current_user.webauthn_registrations.map do |webauthn_registration|
+  def second_factor_webauthn_registrations
+    current_user.second_factor_webauthn_registrations.map do |webauthn_registration|
       {
         name: webauthn_registration.name,
         created_at: webauthn_registration.created_at,
@@ -222,7 +222,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def webauthn_options
     WebAuthn::Credential.options_for_create(
       user: { id: current_user.webauthn_xid, name: current_user.username },
-      exclude: current_user.webauthn_registrations.map(&:credential_xid),
+      exclude: current_user.second_factor_webauthn_registrations.map(&:credential_xid),
       authenticator_selection: { user_verification: 'discouraged' },
       rp: { name: 'GitLab' }
     )

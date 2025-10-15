@@ -7,12 +7,15 @@ RSpec.describe 'User interacts with awards', :js, feature_category: :team_planni
 
   let(:user) { create(:user) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   describe 'User interacts with awards in an issue' do
     let(:issue) { create(:issue, project: project) }
     let(:project) { create(:project) }
 
     before do
-      stub_feature_flags(work_item_view_for_issues: true)
       project.add_maintainer(user)
       sign_in(user)
 

@@ -18,6 +18,10 @@ RSpec.describe 'unsupported work item types use legacy issue views', :js, featur
     project.add_developer(user)
   end
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   shared_examples 'a work item that renders using the legacy issue view' do
     before do
       sign_in(user)
