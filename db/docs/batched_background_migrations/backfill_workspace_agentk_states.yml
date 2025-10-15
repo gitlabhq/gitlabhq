@@ -2,7 +2,7 @@
 migration_job_name: BackfillWorkspaceAgentkStates
 description: Creates desired_config for each workspace and fills it in the workspace_agentk_states table
 feature_category: workspaces
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199102
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203996
 milestone: '18.5'
 queued_migration_version: 20250905091200
-finalized_by: # [TBD] version of the migration that finalized this BBM
+finalized_by: 20251014164955

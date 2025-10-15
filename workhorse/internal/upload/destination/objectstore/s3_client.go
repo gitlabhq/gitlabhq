@@ -3,6 +3,7 @@ package objectstore
 import (
 	"context"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -43,6 +44,34 @@ var (
 	awsDebugEnabled  = os.Getenv("AWS_DEBUG") == "1"
 )
 
+func getRequestChecksumCalculation() aws.RequestChecksumCalculation {
+	requestChecksumCalculation := aws.RequestChecksumCalculationWhenRequired
+	if envValue := os.Getenv("AWS_REQUEST_CHECKSUM_CALCULATION"); envValue != "" {
+		switch strings.ToLower(envValue) {
+		case "when_supported":
+			requestChecksumCalculation = aws.RequestChecksumCalculationWhenSupported
+		case "when_required":
+			requestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
+		}
+	}
+
+	return requestChecksumCalculation
+}
+
+func getResponseChecksumCalculation() aws.ResponseChecksumValidation {
+	responseChecksumValidation := aws.ResponseChecksumValidationWhenRequired
+	if envValue := os.Getenv("AWS_RESPONSE_CHECKSUM_VALIDATION"); envValue != "" {
+		switch strings.ToLower(envValue) {
+		case "when_supported":
+			responseChecksumValidation = aws.ResponseChecksumValidationWhenSupported
+		case "when_required":
+			responseChecksumValidation = aws.ResponseChecksumValidationWhenRequired
+		}
+	}
+
+	return responseChecksumValidation
+}
+
 func (c *s3Client) isExpired() bool {
 	return time.Now().After(c.expiry)
 }
@@ -63,6 +92,8 @@ func setupS3Client(s3Credentials config.S3Credentials, s3Config config.S3Config)
 
 	options := []func(*awsConfig.LoadOptions) error{
 		awsConfig.WithRegion(s3Config.Region),
+		awsConfig.WithRequestChecksumCalculation(getRequestChecksumCalculation()),
+		awsConfig.WithResponseChecksumValidation(getResponseChecksumCalculation()),
 	}
 
 	if s3Credentials.AwsAccessKeyID != "" && s3Credentials.AwsSecretAccessKey != "" {

@@ -7,8 +7,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
   let(:options) { {} }
 
   describe '#generate' do
-    it 'returns empty JSON string' do
-      expect(generator.generate).to eq('{}')
+    it 'returns string with correct keys' do
+      expect(generator.generate.keys).to contain_exactly(:servers, :components, :security)
     end
   end
 end

@@ -6,7 +6,7 @@ module Users
     APPROACHING_SEAT_COUNT_THRESHOLD = 'approaching_seat_count_threshold'
 
     def show_invite_banner?(group)
-      Ability.allowed?(current_user, :admin_group, group) &&
+      Ability.allowed?(current_user, :invite_group_members, group) &&
         !just_created? &&
         !user_dismissed_for_group(INVITE_MEMBERS_BANNER, group) &&
         !multiple_members?(group)

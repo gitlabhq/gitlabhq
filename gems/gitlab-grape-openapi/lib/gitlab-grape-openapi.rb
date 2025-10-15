@@ -11,6 +11,8 @@ require_relative "gitlab/grape_openapi/converters/type_resolver"
 
 # Models
 require_relative "gitlab/grape_openapi/models/schema"
+require_relative "gitlab/grape_openapi/models/server"
+require_relative "gitlab/grape_openapi/models/security_scheme"
 
 module Gitlab
   module GrapeOpenapi

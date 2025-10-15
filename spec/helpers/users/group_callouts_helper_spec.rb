@@ -3,8 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Users::GroupCalloutsHelper do
-  let_it_be(:user, refind: true) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let(:user) { build_stubbed(:user) }
+  let(:group) { build_stubbed(:group) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -13,9 +13,15 @@ RSpec.describe Users::GroupCalloutsHelper do
   describe '.show_invite_banner?' do
     subject { helper.show_invite_banner?(group) }
 
-    context 'when user has the admin ability for the group' do
+    before do
+      # unless set up otherwise, we assume that the user is the only member of the group and its ancestor chain
+      allow(group).to receive(:member_count).and_return(1)
+      allow(group).to receive_message_chain(:members_with_parents, :count).and_return(1)
+    end
+
+    context 'when user has the invite_group_members ability for the group' do
       before do
-        group.add_owner(user)
+        allow(Ability).to receive(:allowed?).with(user, :invite_group_members, group).and_return(true)
       end
 
       context 'when the invite_members_banner has not been dismissed' do
@@ -29,60 +35,41 @@ RSpec.describe Users::GroupCalloutsHelper do
           it { is_expected.to eq(false) }
         end
 
-        context 'with concerning multiple members' do
-          let_it_be(:user_2) { create(:user) }
-
-          context 'on current group' do
+        context 'with other members' do
+          context 'when there are other members in the group' do
             before do
-              group.add_guest(user_2)
+              allow(group).to receive(:member_count).and_return(2)
             end
 
             it { is_expected.to eq(false) }
           end
 
-          context 'on current group that is a subgroup' do
-            let_it_be(:subgroup) { create(:group, parent: group) }
-
-            subject { helper.show_invite_banner?(subgroup) }
-
-            context 'with only one user on parent and this group' do
-              it { is_expected.to eq(true) }
+          context 'when there are other members within ancestor groups' do
+            before do
+              allow(group).to receive_message_chain(:members_with_parents, :count).and_return(2)
             end
 
-            context 'when another user is on this group' do
-              before do
-                subgroup.add_guest(user_2)
-              end
-
-              it { is_expected.to eq(false) }
-            end
-
-            context 'when another user is on the parent group' do
-              before do
-                group.add_guest(user_2)
-              end
-
-              it { is_expected.to eq(false) }
-            end
+            it { is_expected.to eq(false) }
           end
         end
       end
 
       context 'when the invite_members_banner has been dismissed' do
-        before do
-          create(
-            :group_callout,
-            user: user,
-            group: group,
-            feature_name: described_class::INVITE_MEMBERS_BANNER
-          )
+        let(:user) do
+          build(:user, group_callouts: [
+            build(:group_callout, group: group, feature_name: 'invite_members_banner')
+          ])
         end
 
         it { is_expected.to eq(false) }
       end
     end
 
-    context 'when user does not have admin ability for the group' do
+    context 'when user does not have invite_group_members ability for the group' do
+      before do
+        allow(Ability).to receive(:allowed?).with(user, :invite_group_members, group).and_return(false)
+      end
+
       it { is_expected.to eq(false) }
     end
   end

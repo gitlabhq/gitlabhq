@@ -1462,3 +1462,6 @@ Gitlab/NoHelpersInPresenters:
   Enabled: true
   Include:
     - '{,ee/,jh/}app/presenters/**/*.rb'
+
+Gitlab/PreventOrganizationFirst:
+  Enabled: true

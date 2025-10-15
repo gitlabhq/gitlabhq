@@ -1,14 +1,18 @@
 <script>
 import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import { reportToSentry } from '~/ci/utils';
+import { updateJobsNodes } from '~/ci/jobs_page/utils';
 import JobsSkeletonLoader from '~/ci/admin/jobs_table/components/jobs_skeleton_loader.vue';
 import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
 import { validateQueryString } from '~/ci/common/private/jobs_filtered_search/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import GetJobsCount from './graphql/queries/get_jobs_count.query.graphql';
+import jobProcessedSubscription from './graphql/subscriptions/ci_job_processed.subscription.graphql';
 import JobsTable from './components/jobs_table.vue';
 import JobsTableEmptyState from './components/jobs_table_empty_state.vue';
 import JobsTableTabs from './components/jobs_table_tabs.vue';
@@ -33,7 +37,7 @@ export default {
     JobsSkeletonLoader,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'projectId'],
   apollo: {
     jobs: {
       query: GetJobs,
@@ -54,6 +58,52 @@ export default {
       error(error) {
         this.error = this.$options.i18n.jobsFetchErrorMsg;
         reportToSentry(this.$options.name, error);
+      },
+      result({ data }) {
+        if (
+          data?.project?.jobs?.nodes?.length > 0 &&
+          this.jobSubscriptionFeatureFlagEnabled &&
+          !this.isSubscribed
+        ) {
+          // Prevent duplicate subscriptions
+          this.isSubscribed = true;
+          this.$apollo.queries.jobs.subscribeToMore({
+            document: jobProcessedSubscription,
+            variables: {
+              projectId: convertToGraphQLId(TYPENAME_PROJECT, this.projectId),
+            },
+            updateQuery(
+              previousData,
+              {
+                subscriptionData: {
+                  data: { ciJobProcessed },
+                },
+              },
+            ) {
+              if (ciJobProcessed) {
+                const jobs = previousData?.project?.jobs?.nodes || [];
+                const { updatedJobs, processedJobDone } = updateJobsNodes(jobs, ciJobProcessed);
+
+                if (!processedJobDone) {
+                  updatedJobs.unshift(ciJobProcessed);
+                }
+
+                return {
+                  ...previousData,
+                  project: {
+                    ...previousData.project,
+                    jobs: {
+                      ...previousData.project.jobs,
+                      nodes: updatedJobs,
+                    },
+                  },
+                };
+              }
+
+              return previousData;
+            },
+          });
+        }
       },
     },
     jobsCount: {
@@ -87,6 +137,7 @@ export default {
       pagination: {
         ...DEFAULT_PAGINATION,
       },
+      isSubscribed: false,
     };
   },
   computed: {
@@ -124,6 +175,9 @@ export default {
         kind: BUILD_KIND,
         ...validated,
       };
+    },
+    jobSubscriptionFeatureFlagEnabled() {
+      return this.glFeatures.ciJobCreatedSubscription;
     },
   },
   watch: {

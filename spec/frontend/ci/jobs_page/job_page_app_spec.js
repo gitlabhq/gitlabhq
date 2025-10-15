@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import getJobsQuery from '~/ci/jobs_page/graphql/queries/get_jobs.query.graphql';
 import getJobsCountQuery from '~/ci/jobs_page/graphql/queries/get_jobs_count.query.graphql';
+import jobProcessedSubscription from '~/ci/jobs_page/graphql/subscriptions/ci_job_processed.subscription.graphql';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import JobsTableApp from '~/ci/jobs_page/jobs_page_app.vue';
 import JobsTableTabs from '~/ci/jobs_page/components/jobs_table_tabs.vue';
@@ -27,8 +28,6 @@ import { DEFAULT_PAGINATION, JOBS_PER_PAGE } from '~/ci/jobs_page/constants';
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);
 
-jest.mock('~/graphql_shared/utils');
-
 const mockJobName = 'rspec-job';
 const mockJobSource = mockPushSourceToken.value.data;
 
@@ -38,6 +37,9 @@ describe('Job table app', () => {
   const successHandler = jest.fn().mockResolvedValue(mockJobsResponsePaginated);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
+  const emptySubHandler = jest.fn().mockImplementation(() => {
+    return new Promise(() => {});
+  });
 
   const countSuccessHandler = jest.fn().mockResolvedValue(mockJobsCountResponse);
 
@@ -49,10 +51,11 @@ describe('Job table app', () => {
   const findFilteredSearch = () => wrapper.findComponent(JobsFilteredSearch);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
-  const createMockApolloProvider = (handler, countHandler) => {
+  const createMockApolloProvider = (handler, countHandler, subHandler) => {
     const requestHandlers = [
       [getJobsQuery, handler],
       [getJobsCountQuery, countHandler],
+      [jobProcessedSubscription, subHandler],
     ];
 
     return createMockApollo(requestHandlers);
@@ -61,14 +64,19 @@ describe('Job table app', () => {
   const createComponent = ({
     handler = successHandler,
     countHandler = countSuccessHandler,
+    subHandler = emptySubHandler,
     mountFn = shallowMount,
+    realtimeEnabled = true,
   } = {}) => {
     wrapper = mountFn(JobsTableApp, {
       provide: {
         fullPath: projectPath,
-        glFeatures: {},
+        glFeatures: {
+          ciJobCreatedSubscription: realtimeEnabled,
+        },
+        projectId: '100',
       },
-      apolloProvider: createMockApolloProvider(handler, countHandler),
+      apolloProvider: createMockApolloProvider(handler, countHandler, subHandler),
     });
   };
 
@@ -751,6 +759,34 @@ describe('Job table app', () => {
         statuses: ['FAILED', 'SUCCESS', 'CANCELED'],
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
+      });
+    });
+  });
+
+  describe('subscription', () => {
+    it('calls subscription with correct variables', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(emptySubHandler).toHaveBeenCalledWith({ projectId: 'gid://gitlab/Project/100' });
+    });
+
+    it('does not make redundant subscription calls', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(emptySubHandler).toHaveBeenCalledTimes(1);
+    });
+
+    describe('with the feature flag turned off', () => {
+      it('does not call the subscription', async () => {
+        createComponent({ realtimeEnabled: false });
+
+        await waitForPromises();
+
+        expect(emptySubHandler).not.toHaveBeenCalled();
       });
     });
   });
