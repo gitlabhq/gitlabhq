@@ -111,7 +111,6 @@ InternalAffairs/CopDescriptionWithExample:
     - 'rubocop/cop/rspec/factory_bot/avoid_create.rb'
     - 'rubocop/cop/rspec/factory_bot/inline_association.rb'
     - 'rubocop/cop/rspec/factory_bot/strategy_in_callback.rb'
-    - 'rubocop/cop/rspec/web_mock_enable.rb'
     - 'rubocop/cop/safe_params.rb'
     - 'rubocop/cop/sidekiq/enforce_database_health_signal_deferral.rb'
     - 'rubocop/cop/sidekiq_api_usage.rb'

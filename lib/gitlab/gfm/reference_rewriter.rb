@@ -56,9 +56,9 @@ module Gitlab
       def needs_rewrite?
         strong_memoize(:needs_rewrite) do
           reference_type_attribute =
-            Banzai::Filter::References::ReferenceFilter::REFERENCE_TYPE_DATA_ATTRIBUTE
+            Banzai::Filter::References::ReferenceFilter::REFERENCE_TYPE_DATA_ATTRIBUTE_NAME
 
-          @text_html.include?(reference_type_attribute)
+          @text_html.include?("#{reference_type_attribute}=")
         end
       end
 

@@ -68,7 +68,8 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
       end
 
       it 'redacts an issue attached' do
-        doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue' data-issue='#{issue.id}'>foo</a>")
+        doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue'>foo</a>")
+        doc.css('a').first["data-issue"] = issue.id
 
         redactor.redact([doc])
 
@@ -76,7 +77,9 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
       end
 
       it 'redacts an external issue' do
-        doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue' data-external-issue='#{issue.id}' data-project='#{project.id}'>foo</a>")
+        doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue'>foo</a>")
+        doc.css('a').first["data-external-issue"] = issue.id
+        doc.css('a').first["data-project"] = project.id
 
         redactor.redact([doc])
 

@@ -60,9 +60,12 @@ module Banzai
             data  = data_attribute(project: project.id, external_issue: id)
             content = link_content || match
 
-            %(<a href="#{url}" #{data}
-                 title="#{escape_once(issue_title)}"
-                 class="#{klass}">#{content}</a>)
+            write_opening_tag("a", {
+              "href" => url,
+              "title" => issue_title,
+              "class" => klass,
+              **data
+            }) << content.to_s << "</a>"
           end
         end
 

@@ -340,7 +340,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
       result = reference_filter("See #{absolute_reference}")
 
       expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
-      expect(result.css('a').first.attr('data-original')).to eq absolute_reference
+      expect(result.css('a').first.attr('data-original')).to eq(absolute_reference)
       expect(result.content).to eq "See %#{milestone.title}"
     end
   end

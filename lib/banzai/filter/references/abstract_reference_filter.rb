@@ -230,9 +230,12 @@ module Banzai
 
               content = context[:link_text] || link_content || object_link_text(object, matches)
 
-              link = %(<a href="#{url}" #{data}
-                          title="#{escape_once(title)}"
-                          class="#{klass}">#{content}</a>)
+              link = write_opening_tag("a", {
+                "href" => url,
+                "title" => title,
+                "class" => klass,
+                **data
+              }) << content.to_s << "</a>"
 
               wrap_link(link, object)
             else
@@ -256,7 +259,7 @@ module Banzai
                       end
 
           {
-            original: escape_html_entities(text),
+            original: text,
             link: link_content,
             link_reference: link_reference,
             object_sym => object.id

@@ -90,11 +90,12 @@ module Banzai
           data = data_attribute(project: project.id)
           content = link_content || project.to_reference
 
-          link_tag(url, data, content, project.name)
-        end
-
-        def link_tag(url, data, link_content, title)
-          %(<a href="#{url}" #{data} class="#{link_class}" title="#{escape_once(title)}">#{link_content}</a>)
+          write_opening_tag("a", {
+            "href" => url,
+            "title" => project.name,
+            "class" => link_class,
+            **data
+          }) << content << "</a>"
         end
       end
     end

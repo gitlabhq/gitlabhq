@@ -54,28 +54,13 @@ RSpec.describe JwksController, feature_category: :system_access do
       let(:protocol) { 'https' }
       let(:additional_claims) { %w[project_path ci_config_ref_uri ref_path sha environment jti] }
 
-      context 'when additional_oidc_discovery_claims feature flag is enabled' do
-        before do
-          get "/.well-known/openid-configuration"
-        end
-
-        it 'includes additional claims in claims_supported' do
-          additional_claims.each do |claim|
-            expect(parsed_response['claims_supported']).to include(claim)
-          end
-        end
+      before do
+        get "/.well-known/openid-configuration"
       end
 
-      context 'when additional_oidc_discovery_claims feature flag is disabled' do
-        before do
-          stub_feature_flags(additional_oidc_discovery_claims: false)
-          get "/.well-known/openid-configuration"
-        end
-
-        it 'does not include additional claims in claims_supported' do
-          additional_claims.each do |claim|
-            expect(parsed_response['claims_supported']).not_to include(claim)
-          end
+      it 'includes additional claims in claims_supported' do
+        additional_claims.each do |claim|
+          expect(parsed_response['claims_supported']).to include(claim)
         end
       end
     end

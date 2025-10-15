@@ -25,7 +25,7 @@ and planning workflows in GitLab. It helps you organize, prioritize, and track w
 because it combines:
 
 - Product management expertise.
-- Awareness of GitLab planning objects, like issues, epics, milestones, boards, and roadmaps.
+- Awareness of GitLab planning objects, like issues and epics.
 
 Use GitLab Duo Planner when you need help with:
 
@@ -36,10 +36,6 @@ Use GitLab Duo Planner when you need help with:
 - Status reporting: Generating summaries of progress, risks, and blockers.
 - Backlog management: Identifying stale issues, duplicates, or items needing refinement.
 - Estimation: Suggesting relative sizing or effort estimates for work items.
-
-Duo Planner understands the GitLab implementation of planning features.
-For example, it knows the GitLab RICE scoring scales and can identify when
-work items are nearly complete based on acceptance criteria progress.
 
 ## Access GitLab Duo Planner
 

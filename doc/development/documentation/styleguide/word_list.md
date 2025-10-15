@@ -23,7 +23,8 @@ For guidance not on this page, we defer to these style guides:
 <!-- vale off -->
 
 <!-- Disable trailing punctuation in heading rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md026---trailing-punctuation-in-heading -->
-<!-- markdownlint-disable MD026 -->
+<!-- Proper names should have the correct capitalization rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md044---proper-names-should-have-the-correct-capitalization -->
+<!-- markdownlint-disable MD026 MD044 -->
 
 ## `.gitlab-ci.yml` file
 

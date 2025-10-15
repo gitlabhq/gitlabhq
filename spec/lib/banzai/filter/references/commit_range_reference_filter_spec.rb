@@ -68,7 +68,7 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
 
     it 'includes no title attribute' do
       doc = reference_filter("See #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq ""
+      expect(doc.css('a').first.attr('title')).to be_nil
     end
 
     it 'includes default classes' do

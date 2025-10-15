@@ -15,8 +15,10 @@ module Banzai
         include RequestStoreReferenceCache
         include Concerns::OutputSafety
         prepend Concerns::PipelineTimingCheck
+        include Concerns::HtmlWriter
 
-        REFERENCE_TYPE_DATA_ATTRIBUTE = 'data-reference-type='
+        REFERENCE_TYPE_ATTRIBUTE = :reference_type
+        REFERENCE_TYPE_DATA_ATTRIBUTE_NAME = "data-#{REFERENCE_TYPE_ATTRIBUTE.to_s.dasherize}".freeze
 
         class << self
           # Implement in child class
@@ -122,7 +124,7 @@ module Banzai
 
         private
 
-        # Returns a data attribute String to attach to a reference link
+        # Returns a Hash of attributes to attach to a reference link
         #
         # attributes - Hash, where the key becomes the data attribute name and the
         #              value is the data attribute value
@@ -130,28 +132,23 @@ module Banzai
         # Examples:
         #
         #   data_attribute(project: 1, issue: 2)
-        #   # => "data-reference-type=\"SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
+        #   # => {"data-reference-type" => "SomeReferenceFilter", "data-container" => "body",
+        #         "data-placement" => "top", "data-project" => 1, "data-issue" => 2}
         #
         #   data_attribute(project: 3, merge_request: 4)
-        #   # => "data-reference-type=\"SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
+        #   # => {"data-reference-type" => "SomeReferenceFilter", "data-container" => "body",
+        #         "data-placement" => "top", "data-project" => 3, "data-merge-request" => 4}
         #
-        # Returns a String
+        # Returns a Hash
         def data_attribute(attributes = {})
-          attributes = attributes.reject { |_, v| v.nil? }
-
-          # "data-reference-type=" attribute got moved into a constant because we need
-          # to use it on ReferenceRewriter class to detect if the markdown contains any reference
-          reference_type_attribute = "#{REFERENCE_TYPE_DATA_ATTRIBUTE}#{escape_once(self.class.reference_type)} "
+          attributes = attributes.compact
 
           attributes[:container] ||= 'body'
           attributes[:placement] ||= 'top'
+          attributes[REFERENCE_TYPE_ATTRIBUTE] = self.class.reference_type
           attributes.delete(:original) if context[:no_original_data]
 
-          attributes.map do |key, value|
-            %(data-#{key.to_s.dasherize}="#{escape_once(value)}")
-          end
-            .join(' ')
-            .prepend(reference_type_attribute)
+          attributes.transform_keys { |k| "data-#{k.to_s.dasherize}" }
         end
 
         def ignore_ancestor_query

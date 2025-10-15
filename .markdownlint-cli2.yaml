@@ -73,6 +73,7 @@ config:
       "Gitaly",
       "GitHub",
       "gitlab.vim",
+      "GitLab chart",
       "GitLab Geo",
       "GitLab Monitor",
       "GitLab Operator",

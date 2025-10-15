@@ -25,7 +25,7 @@ Before you upgrade GitLab, you must check that all existing background migration
 
 To update database tables in batches, GitLab can use batched background migrations. These migrations
 are created by GitLab developers and run automatically on upgrade. However, such migrations are
-limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
+limited in scope to help with migrating some `integer` database columns to `bigint`, which is needed to
 prevent integer overflow for some tables.
 
 Batched background migrations are handled by Sidekiq and

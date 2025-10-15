@@ -37718,7 +37718,7 @@ CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON d
 
 CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags USING btree (dast_profile_id);
 
-CREATE UNIQUE INDEX i_duo_workflows_events_on_correlation_id ON duo_workflows_events USING btree (correlation_id_value);
+CREATE UNIQUE INDEX i_duo_workflows_events_on_correlation_id_project_id ON duo_workflows_events USING btree (correlation_id_value, project_id);
 
 CREATE INDEX i_gitlab_subscription_histories_on_namespace_change_type_plan ON gitlab_subscription_histories USING btree (namespace_id, change_type, hosted_plan_id);
 

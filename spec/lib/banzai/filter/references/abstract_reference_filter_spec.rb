@@ -16,7 +16,7 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_cate
 
       data_attributes = filter_instance.data_attributes_for('xss &lt;img onerror=alert(1) src=x&gt;', project, issue, link_content: true)
 
-      expect(data_attributes[:original]).to eq('xss &amp;lt;img onerror=alert(1) src=x&amp;gt;')
+      expect(data_attributes[:original]).to eq('xss &lt;img onerror=alert(1) src=x&gt;')
     end
   end
 

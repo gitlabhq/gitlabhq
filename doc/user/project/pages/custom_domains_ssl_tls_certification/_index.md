@@ -207,7 +207,7 @@ Additionally:
 You can add more than one alias (custom domains and subdomains) to the same project.
 An alias can be understood as having many doors leading to the same room.
 
-All the aliases you've set to your site are listed on **Setting > Pages**.
+All the aliases you've set to your site are listed on **Setting** > **Pages**.
 From that page, you can view, add, and remove them.
 
 ### Redirect `www.domain.com` to `domain.com` with Cloudflare

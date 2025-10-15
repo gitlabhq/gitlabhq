@@ -24,7 +24,7 @@ or select one of the subsections in the navigation bar.
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab)
 - [Cloud Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG)
 - [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)
-- [GitLab Chart](https://gitlab.com/gitlab-org/charts/gitlab)
+- [GitLab chart](https://gitlab.com/gitlab-org/charts/gitlab)
 
 ### Components and tools
 
