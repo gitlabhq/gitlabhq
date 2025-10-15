@@ -2,7 +2,16 @@
 - blob = diff_file.blob
 - total_lines = blob.lines.size
 - total_lines -= 1 if total_lines > 0 && blob.lines.last.blank?
-- if diff_view == :parallel
-  = render "projects/diffs/parallel_view", diff_file: diff_file, total_lines: total_lines
+
+- if diff_file.whitespace_only?
+  .nothing-here-block
+    = _("File changed.")
+    = _("Contains only whitespace changes.")
+    - if current_controller?(:commit)
+      %a.gl-link{ href: commit_diff_whitespace_url(viewer.diff_file.repository.project, @commit) }
+        = s_('Diffs|Show whitespace changes') + '.'
 - else
-  = render "projects/diffs/text_file", diff_file: diff_file, total_lines: total_lines
+  - if diff_view == :parallel
+    = render "projects/diffs/parallel_view", diff_file: diff_file, total_lines: total_lines
+  - else
+    = render "projects/diffs/text_file", diff_file: diff_file, total_lines: total_lines

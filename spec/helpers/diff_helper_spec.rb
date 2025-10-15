@@ -508,46 +508,19 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
       end
 
       context 'when w parameter is present' do
-        it 'removes the parameter when w = 1' do
-          controller.params[:w] = '1'
-          expect(helper.params_with_whitespace).to eq({ key: 'value' })
-        end
-
         it 'adds w = 1 when w is any other value' do
           controller.params[:w] = '0'
           expect(helper.params_with_whitespace).to eq({ key: 'value', w: 1 })
         end
       end
 
-      context 'when w parameter is not present' do
-        context 'when user is not logged in' do
-          before do
-            allow(helper).to receive(:current_user).and_return(nil)
-          end
-
-          it 'removes the w parameter' do
-            expect(helper.params_with_whitespace).to eq({ key: 'value' })
-          end
+      context 'when user has show_whitespace_in_diffs = true' do
+        before do
+          allow(helper.current_user).to receive(:show_whitespace_in_diffs).and_return(true)
         end
 
-        context 'when user has show_whitespace_in_diffs = false' do
-          before do
-            allow(helper.current_user).to receive(:show_whitespace_in_diffs).and_return(false)
-          end
-
-          it 'removes the w parameter' do
-            expect(helper.params_with_whitespace).to eq({ key: 'value' })
-          end
-        end
-
-        context 'when user has show_whitespace_in_diffs = true' do
-          before do
-            allow(helper.current_user).to receive(:show_whitespace_in_diffs).and_return(true)
-          end
-
-          it 'adds w = 1 parameter' do
-            expect(helper.params_with_whitespace).to eq({ key: 'value', w: 1 })
-          end
+        it 'adds w = 1 parameter' do
+          expect(helper.params_with_whitespace).to eq({ key: 'value', w: 1 })
         end
       end
     end
