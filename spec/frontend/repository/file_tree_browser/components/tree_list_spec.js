@@ -14,6 +14,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { Mousetrap } from '~/lib/mousetrap';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
+import * as utils from '~/repository/file_tree_browser/utils';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -47,7 +48,7 @@ describe('Tree List', () => {
   beforeEach(() => createComponent());
 
   const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
-
+  const findTree = () => wrapper.find('[role="tree"]');
   const findHeader = () => wrapper.find('h3');
   const findFileRows = () => wrapper.findAllComponents(FileRow);
   const findFilterInput = () => wrapper.findComponent(GlFormInput);
@@ -380,6 +381,19 @@ describe('Tree List', () => {
 
       await waitForPromises();
       expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(2); // root + dir_0
+    });
+  });
+
+  describe('keyboard navigation', () => {
+    it('calls handleTreeKeydown when keydown is triggered on tree', async () => {
+      jest.spyOn(utils, 'handleTreeKeydown');
+      await createComponent();
+
+      findTree().trigger('keydown', { key: 'ArrowDown' });
+
+      expect(utils.handleTreeKeydown).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'keydown', key: 'ArrowDown' }),
+      );
     });
   });
 });

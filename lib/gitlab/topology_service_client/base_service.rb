@@ -17,7 +17,10 @@ module Gitlab
         @client ||= service_class.new(
           topology_service_address,
           service_credentials,
-          interceptors: [MetadataInterceptor.new],
+          interceptors: [
+            Gitlab::Cells::TopologyService::MetadataClient.new(
+              Gitlab.config.cell.topology_service_client.metadata)
+          ],
           **options
         )
       end

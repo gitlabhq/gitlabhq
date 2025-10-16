@@ -13,12 +13,13 @@ description: Upgrade a Linux package-based instance.
 
 {{< /details >}}
 
-Upgrade a Linux package installation to a later version of GitLab.
+The instructions for upgrading a Linux package instance depend on whether you have a single-node or multi-node
+GitLab instance. To upgrade a multi-node instance, see:
 
-You can perform upgrades with the GitLab instance online. When you execute the upgrade command, PostgreSQL, Redis, and
-Gitaly must be running.
+- [Upgrade a multi-node instance with downtime](../with_downtime.md).
+- [Upgrade a multi-node instance with zero downtime](../zero_downtime.md).
 
-To upgrade a Linux package instance:
+To upgrade a single-node GitLab instance:
 
 1. [Complete the initial steps](../upgrade.md#upgrade-gitlab) in the main GitLab upgrade documentation.
 1. Continue the upgrade by following the next sections.
@@ -33,6 +34,7 @@ Before you upgrade a Linux package instance:
 - If required, upgrade to a [supported operating system](../../install/package/_index.md).
 - When upgrading the operating system, if your `glibc` version changes, you must follow
   [upgrading operating systems for PostgreSQL](../../administration/postgresql/upgrading_os.md) to avoid corrupted indexes.
+- Ensure PostgreSQL, Redis, and Gitaly are running.
 
 The GitLab database is backed up before installing a newer GitLab version. You can skip this automatic database backup
 by creating an empty file at `/etc/gitlab/skip-auto-backup`:

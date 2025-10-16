@@ -260,9 +260,9 @@ When attempting `git push`, you can see:
 
 This combination of errors occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
 
-From GitLab 15.5, GitLab [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
-You should follow the [recommendations on upgrading external Gitaly](../../update/upgrade.md#external-gitaly) and upgrade Gitaly before the GitLab
-server.
+GitLab 15.5 and later [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
+You should [upgrade external Gitaly servers](../../update/plan_your_upgrade.md#upgrades-for-optional-features) before
+upgrading the GitLab server.
 
 ## Repository pushes fail with a `deny updating a hidden ref` error
 

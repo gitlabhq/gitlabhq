@@ -194,9 +194,9 @@ class ProjectsController < Projects::ApplicationController
     if @project.self_deletion_scheduled? &&
         ::Gitlab::Utils.to_boolean(params.permit(:permanently_delete)[:permanently_delete])
 
-      return access_denied! if Feature.enabled?(:disallow_immediate_deletion, current_user)
+      return destroy_immediately if Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
 
-      return destroy_immediately
+      return access_denied!
     end
 
     result = ::Projects::MarkForDeletionService.new(@project, current_user).execute

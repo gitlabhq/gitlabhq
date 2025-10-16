@@ -36,7 +36,7 @@ module Gitlab
               errors.push("Local file `#{masked_location}` does not have project!")
             end
 
-            def validate_content!
+            def validate_content_presence!
               if content.nil?
                 errors.push("Local file `#{masked_location}` does not exist!")
               elsif content.blank?

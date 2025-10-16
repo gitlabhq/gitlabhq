@@ -3,8 +3,8 @@ name: allow_immediate_namespaces_deletion
 description:
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569453
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205554
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/576726
 milestone: '18.5'
 group: group::organizations
-type: wip
+type: gitlab_com_derisk
 default_enabled: false

@@ -1,0 +1,10 @@
+---
+name: use_namespace_traversal_ids_for_work_items_finder
+description: This FF will be used in WorkItemsFinder to enable querying work_item hierarchies using namespace_traversal_ids.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562320
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206102
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577261
+milestone: '18.6'
+group: group::product planning
+type: wip
+default_enabled: false

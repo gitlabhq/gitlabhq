@@ -494,6 +494,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'UploadChecksumWorker' => 3,
         'Import::ReassignPlaceholderUserRecordsWorker' => 5,
         'Vulnerabilities::Statistics::AdjustmentWorker' => 3,
+        'Vulnerabilities::UpdateArchivedAttributeOfVulnerabilityStatisticsWorker' => 2,
+        'Vulnerabilities::UpdateArchivedAttributeOfVulnerabilityReadsWorker' => 2,
         'VulnerabilityExports::ExportDeletionWorker' => 3,
         'VulnerabilityExports::ExportWorker' => 3,
         'VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker' => 0,

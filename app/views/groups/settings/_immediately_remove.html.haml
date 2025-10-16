@@ -1,17 +1,23 @@
-- return if Feature.enabled?(:disallow_immediate_deletion, current_user)
-- return unless group.self_deletion_scheduled?
+- return unless can?(current_user, :remove_group, group)
+- return unless group.scheduled_for_deletion_in_hierarchy_chain?
 
 - remove_form_id = local_assigns.fetch(:remove_form_id, nil)
+- allow_immediate_namespaces_deletion = Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
+- immediate_deletion_available = group.self_deletion_scheduled? && allow_immediate_namespaces_deletion
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
   - c.with_header do
-    .gl-flex.gl-grow
-      %h4.gl-text-base.gl-leading-24.gl-m-0.gl-text-feedback-danger= _('Delete group immediately')
+    %h4.gl-text-base.gl-leading-24.gl-m-0
+      = s_('GroupSettings|Delete group')
 
   - c.with_body do
-    = form_tag(group, method: :delete, id: remove_form_id) do
-      %p= delete_immediately_namespace_scheduled_for_deletion_message(group)
+    - if immediate_deletion_available
+      = form_tag(group, method: :delete, id: remove_form_id) do
+        %p= delete_immediately_namespace_scheduled_for_deletion_message(group)
+        = hidden_field_tag(:permanently_remove, true)
+        = render 'groups/settings/remove_button', group: group, remove_form_id: remove_form_id, button_text: s_('GroupSettings|Delete immediately')
 
-      = hidden_field_tag(:permanently_remove, true)
-
-      = render 'groups/settings/remove_button', group: group, remove_form_id: remove_form_id, button_text: _('Delete group immediately')
+    - else
+      -# Immediate deletion not available: either because of ancestor, or instance setting
+      %p.gl-m-0
+        = self_or_ancestors_deletion_in_progress_or_scheduled_message(group)

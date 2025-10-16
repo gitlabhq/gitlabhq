@@ -233,7 +233,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
           button_text: button_text, has_security_policy_project: has_security_policy_project,
           permanently_remove: permanently_remove)
         expect(expected).to eq({
-          button_text: button_text.nil? ? "Delete group" : button_text,
+          button_text: button_text.nil? ? "Delete" : button_text,
           confirm_danger_message: confirm_remove_group_message(group, permanently_remove),
           remove_form_id: form_value_id,
           phrase: group.full_path,
@@ -333,7 +333,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     let(:project) { build(:project) }
     let(:base_button_data) do
       {
-        button_text: 'Delete project',
+        button_text: 'Delete',
         restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
         delayed_deletion_date: '2025-02-09',
         form_path: project_path(project),
@@ -347,26 +347,14 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       }
     end
 
-    let(:button_text) { nil }
-
-    subject(:data) { helper.project_delete_delayed_button_data(project, button_text) }
+    subject(:data) { helper.project_delete_delayed_button_data(project) }
 
     before do
       stub_application_setting(deletion_adjourned_period: 7)
     end
 
-    describe 'with default button text' do
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data)
-      end
-    end
-
-    describe 'with custom button text' do
-      let(:button_text) { 'Delete project immediately' }
-
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data.merge(button_text: 'Delete project immediately'))
-      end
+    it 'returns expected hash' do
+      expect(data).to match(base_button_data)
     end
   end
 
@@ -374,7 +362,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     let(:project) { build(:project) }
     let(:base_button_data) do
       {
-        button_text: 'Delete project',
+        button_text: 'Delete immediately',
         form_path: project_path(project, permanently_delete: true),
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
@@ -386,22 +374,10 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       }
     end
 
-    let(:button_text) { nil }
+    subject(:data) { helper.project_delete_immediately_button_data(project) }
 
-    subject(:data) { helper.project_delete_immediately_button_data(project, button_text) }
-
-    describe 'with default button text' do
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data)
-      end
-    end
-
-    describe 'with custom button text' do
-      let(:button_text) { 'Delete project immediately' }
-
-      it 'returns expected hash' do
-        expect(data).to match(base_button_data.merge(button_text: 'Delete project immediately'))
-      end
+    it 'returns expected hash' do
+      expect(data).to match(base_button_data)
     end
   end
 

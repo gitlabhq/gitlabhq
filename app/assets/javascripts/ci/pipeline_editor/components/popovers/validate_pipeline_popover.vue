@@ -20,6 +20,12 @@ export default {
     GlSprintf,
   },
   inject: ['simulatePipelineHelpPagePath'],
+  props: {
+    containerId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       showPopover: false,
@@ -33,6 +39,7 @@ export default {
 <template>
   <gl-popover
     :show.sync="showPopover"
+    :container="containerId"
     target="validate-pipeline-help"
     triggers="hover focus"
     placement="top"

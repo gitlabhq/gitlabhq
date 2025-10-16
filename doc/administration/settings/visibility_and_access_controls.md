@@ -102,6 +102,13 @@ To disable the restriction:
 
 {{< /history >}}
 
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 These protections help guard against accidental deletion of groups and projects on your instance.
 
 ### Retention period

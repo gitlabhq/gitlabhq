@@ -8,7 +8,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
-import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
 import BranchSelector from '~/ci/pipeline_editor/components/shared/branch_selector.vue';
 import CiValidate, { i18n } from '~/ci/pipeline_editor/components/validate/ci_validate.vue';
@@ -76,7 +75,6 @@ describe('Pipeline Editor Validate Tab', () => {
   const findCta = () => wrapper.findByTestId('simulate-pipeline-button');
   const findLintButton = () => wrapper.findByTestId('lint-button');
   const findDisabledCtaTooltip = () => wrapper.findByTestId('cta-tooltip');
-  const findHelpIcon = () => wrapper.findComponent(HelpIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBranchSelector = () => wrapper.findComponent(BranchSelector);
@@ -123,7 +121,8 @@ describe('Pipeline Editor Validate Tab', () => {
     });
 
     it('popover is set to render when hovering over help icon', () => {
-      expect(findPopover().props('target')).toBe(findHelpIcon().attributes('id'));
+      expect(findPopover().props('target')).toBe('validate-pipeline-help');
+      expect(findPopover().props('container')).toBe('pipeline-source-selector');
       expect(findPopover().props('triggers')).toBe('hover focus');
     });
 

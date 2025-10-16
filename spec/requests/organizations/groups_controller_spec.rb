@@ -308,7 +308,11 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
                 delete groups_organization_path(organization, id: group.to_param), params: params, as: :json
               end
 
-              describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+              describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
+                before do
+                  stub_application_setting(allow_immediate_namespaces_deletion: false)
+                end
+
                 it 'returns error' do
                   Sidekiq::Testing.fake! do
                     expect { gitlab_request }.not_to change { GroupDestroyWorker.jobs.size }
@@ -318,19 +322,13 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
                 end
               end
 
-              context 'when the :disallow_immediate_deletion feature flag is disabled' do
-                before do
-                  stub_feature_flags(disallow_immediate_deletion: false)
-                end
+              it 'deletes the group immediately' do
+                expect(GroupDestroyWorker).to receive(:perform_async)
 
-                it 'deletes the group immediately' do
-                  expect(GroupDestroyWorker).to receive(:perform_async)
+                gitlab_request
 
-                  gitlab_request
-
-                  expect(response).to have_gitlab_http_status(:ok)
-                  expect(json_response['message']).to include "Group '#{group.name}' is being deleted."
-                end
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response['message']).to include "Group '#{group.name}' is being deleted."
               end
             end
 

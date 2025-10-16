@@ -1279,7 +1279,11 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'when project is already marked for deletion' do
       let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
-      describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+      describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
+        before do
+          stub_application_setting(allow_immediate_namespaces_deletion: false)
+        end
+
         subject(:request) { delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true } }
 
         it 'returns error' do
@@ -1291,21 +1295,15 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         end
       end
 
-      context 'when the :disallow_immediate_deletion feature flag is disabled' do
-        before do
-          stub_feature_flags(disallow_immediate_deletion: false)
-        end
+      context 'when permanently_delete param is set' do
+        it 'deletes project right away' do
+          expect(ProjectDestroyWorker).to receive(:perform_async)
 
-        context 'when permanently_delete param is set' do
-          it 'deletes project right away' do
-            expect(ProjectDestroyWorker).to receive(:perform_async)
+          delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
 
-            delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
-
-            expect(project.reload.pending_delete).to eq(true)
-            expect(response).to have_gitlab_http_status(:found)
-            expect(response).to redirect_to(dashboard_projects_path)
-          end
+          expect(project.reload.pending_delete).to eq(true)
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(dashboard_projects_path)
         end
       end
 

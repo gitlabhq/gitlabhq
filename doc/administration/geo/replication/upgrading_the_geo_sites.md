@@ -50,7 +50,8 @@ and all **secondary** sites:
 1. SSH into each node of the **primary** site.
 1. [Upgrade GitLab on the **primary** site](../../../update/package/_index.md).
 1. Perform testing on the **primary** site, particularly if you paused replication in step 1 to protect DR.
-   For more information about post-upgrade testing, see [pre-upgrade and post-upgrade checks](../../../update/upgrade.md#pre-upgrade-and-post-upgrade-checks).
+   For more information about post-upgrade testing, see
+   [run upgrade health checks](../../../update/plan_your_upgrade.md#run-upgrade-health-checks).
 1. Ensure that the secrets in the `/etc/gitlab/gitlab-secrets.json` file of both the primary site and the secondary site are the same. The file must be the same on all of a site's nodes.
 1. SSH into each node of **secondary** sites.
 1. [Upgrade GitLab on each **secondary** site](../../../update/package/_index.md).

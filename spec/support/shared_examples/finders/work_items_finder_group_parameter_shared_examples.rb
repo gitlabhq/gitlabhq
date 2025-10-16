@@ -43,6 +43,49 @@ RSpec.shared_examples 'work items finder group parameter' do |expect_group_items
       end
     end
 
+    context 'with use_namespace_traversal_ids_for_work_items_finder feature flag disabled' do
+      let_it_be(:group_project) { create(:project, group: group) }
+      let_it_be(:group_project_work_item) { create(:work_item, author: user, project: group_project) }
+
+      before do
+        stub_feature_flags(use_namespace_traversal_ids_for_work_items_finder: false)
+      end
+
+      it 'returns only group level work items' do
+        if expect_group_items
+          expect(items).to contain_exactly(group_work_item)
+        else
+          expect(items).to be_empty
+        end
+      end
+
+      context 'when include_descendants is true and user can access all subgroups' do
+        before do
+          params[:include_descendants] = true
+          group.add_reporter(user)
+        end
+
+        it 'returns work_items in the group hierarchy' do
+          if expect_group_items
+            expect(items).to contain_exactly(
+              group_work_item,
+              group_project_work_item,
+              group_confidential_work_item,
+              subgroup_work_item,
+              subgroup_confidential_work_item,
+              subgroup2_work_item,
+              subgroup2_confidential_work_item,
+              item1,
+              item4,
+              item5
+            )
+          else
+            expect(items).to contain_exactly(item1, item4, item5, group_project_work_item)
+          end
+        end
+      end
+    end
+
     context 'when include_descendants is true' do
       before do
         params[:include_descendants] = true

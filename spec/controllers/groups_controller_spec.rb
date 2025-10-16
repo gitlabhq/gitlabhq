@@ -633,7 +633,11 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         context 'when permanently_remove param is set' do
           let(:params) { { permanently_remove: true } }
 
-          describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+          describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
+            before do
+              stub_application_setting(allow_immediate_namespaces_deletion: false)
+            end
+
             it 'returns error' do
               Sidekiq::Testing.fake! do
                 expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
@@ -656,32 +660,26 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
             end
           end
 
-          context 'when the :disallow_immediate_deletion feature flag is disabled' do
-            before do
-              stub_feature_flags(disallow_immediate_deletion: false)
+          context 'for a html request' do
+            it 'deletes the group immediately and redirects to root path' do
+              expect(GroupDestroyWorker).to receive(:perform_async)
+
+              subject
+
+              expect(response).to redirect_to(root_path)
+              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
             end
+          end
 
-            context 'for a html request' do
-              it 'deletes the group immediately and redirects to root path' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
+          context 'for a json request' do
+            let(:format) { :json }
 
-                subject
+            it 'deletes the group immediately and returns json with message' do
+              expect(GroupDestroyWorker).to receive(:perform_async)
 
-                expect(response).to redirect_to(root_path)
-                expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
-              end
-            end
+              subject
 
-            context 'for a json request' do
-              let(:format) { :json }
-
-              it 'deletes the group immediately and returns json with message' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
-
-                subject
-
-                expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
-              end
+              expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
             end
           end
         end

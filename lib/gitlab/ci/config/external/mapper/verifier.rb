@@ -41,7 +41,7 @@ module Gitlab
               files.each do |file| # rubocop:disable Style/CombinableLoops
                 verify_execution_time!
 
-                file.validate_content! if file.valid?
+                file.validate_content_presence! if file.valid?
 
                 file.load_and_validate_expanded_hash! if file.valid? && !@skip_load_content
 

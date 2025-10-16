@@ -57,7 +57,7 @@ module Gitlab
               end
             end
 
-            def validate_content!
+            def validate_content_presence!
               if content.nil?
                 errors.push("Project `#{masked_project_name}` file `#{masked_location}` does not exist!")
               elsif content.blank?

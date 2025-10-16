@@ -4025,21 +4025,45 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#all_commit_shas' do
-    context 'when merge request is persisted' do
-      let(:all_commit_shas) do
-        subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
+    let_it_be_with_refind(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:shas_from_commits) do
+      merge_request.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
+    end
+
+    subject(:all_commit_shas) { merge_request.all_commit_shas }
+
+    context 'when merge request is not persisted' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      context 'when compare commits are set in the service' do
+        let(:commit) { spy('commit') }
+        let(:merge_request) { build(:merge_request, source_project: project, compare_commits: [commit, commit]) }
+
+        it 'returns commits from compare commits temporary data' do
+          expect(all_commit_shas).to eq [commit, commit]
+        end
       end
 
+      context 'when compare commits are not set in the service' do
+        let(:merge_request) { build(:merge_request, source_project: project) }
+
+        it 'returns array with diff head sha element only' do
+          expect(all_commit_shas).to eq [merge_request.diff_head_sha]
+        end
+      end
+    end
+
+    shared_examples 'persisted merge request' do
       shared_examples 'returning all SHA' do
         it 'returns all SHAs from all merge_request_diffs' do
-          expect(subject.merge_request_diffs.size).to eq(2)
-          expect(subject.all_commit_shas).to match_array(all_commit_shas)
+          expect(merge_request.merge_request_diffs.size).to eq(2)
+          expect(all_commit_shas).to match_array(shas_from_commits)
         end
       end
 
       context 'with a completely different branch' do
         before do
-          subject.update!(target_branch: 'csv')
+          merge_request.update!(target_branch: 'csv')
         end
 
         it_behaves_like 'returning all SHA'
@@ -4047,36 +4071,50 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'with a branch having no difference' do
         before do
-          subject.update!(target_branch: 'branch-merged')
-          subject.reload # make sure commits were not cached
+          merge_request.update!(target_branch: 'branch-merged')
+          merge_request.reload # make sure commits were not cached
         end
 
         it_behaves_like 'returning all SHA'
       end
     end
 
-    context 'when merge request is not persisted' do
-      let_it_be(:project) { create(:project, :repository) }
+    context 'when `sha` data is only present in `merge_request_diff_commits` table' do
+      let(:commit_ids) { merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).pluck(:id) }
 
-      context 'when compare commits are set in the service' do
-        let(:commit) { spy('commit') }
+      before do
+        MergeRequest::CommitsMetadata.where(merge_request_diff_commits: commit_ids).delete_all
+      end
 
-        subject do
-          build(:merge_request, source_project: project, compare_commits: [commit, commit])
-        end
+      it_behaves_like 'persisted merge request'
+    end
 
-        it 'returns commits from compare commits temporary data' do
-          expect(subject.all_commit_shas).to eq [commit, commit]
+    context 'when `sha` data is only present in `merge_request_commits_metadata` table' do
+      before do
+        merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).map do |diff_commit|
+          diff_commit.update!(sha: nil)
         end
       end
 
-      context 'when compare commits are not set in the service' do
-        subject { build(:merge_request, source_project: project) }
+      it_behaves_like 'persisted merge request'
+    end
 
-        it 'returns array with diff head sha element only' do
-          expect(subject.all_commit_shas).to eq [subject.diff_head_sha]
+    context 'when `sha` data is distributed across both tables' do
+      before do
+        merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).sample(10).map do |diff_commit|
+          diff_commit.update!(merge_request_commits_metadata_id: nil)
         end
       end
+
+      it_behaves_like 'persisted merge request'
+    end
+
+    context 'when merge_request_diff_commits_dedup feature flag is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it_behaves_like 'persisted merge request'
     end
   end
 

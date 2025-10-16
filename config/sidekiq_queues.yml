@@ -1149,11 +1149,15 @@
   - 1
 - - vulnerabilities_namespace_statistics_process_project_transfer_events
   - 1
+- - vulnerabilities_namespace_statistics_recalculate_namespace_statistics
+  - 1
 - - vulnerabilities_process_archived_events
   - 1
 - - vulnerabilities_process_bulk_dismissed_events
   - 1
 - - vulnerabilities_process_bulk_redetected_events
+  - 1
+- - vulnerabilities_process_group_archived_events
   - 1
 - - vulnerabilities_process_transfer_events
   - 1
@@ -1164,6 +1168,8 @@
 - - vulnerabilities_trigger_false_positive_detection_workflow
   - 1
 - - vulnerabilities_update_archived_attribute_of_vulnerability_reads
+  - 1
+- - vulnerabilities_update_archived_attribute_of_vulnerability_statistics
   - 1
 - - vulnerabilities_update_namespace_ids_of_vulnerability_reads
   - 1

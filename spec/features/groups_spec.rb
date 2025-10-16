@@ -354,13 +354,13 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     end
 
     it 'focuses confirmation field on remove group' do
-      click_button('Delete group')
+      click_button('Delete')
 
       expect(page).to have_selector '#confirm_name_input:focus'
     end
 
     it 'marks the group for deletion' do
-      expect { remove_with_confirm('Delete group', group.path) }.to change {
+      expect { remove_with_confirm('Delete', group.path) }.to change {
         group.reload.self_deletion_scheduled?
       }.from(false).to(true)
       expect(page).to have_content "pending deletion"

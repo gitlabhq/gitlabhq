@@ -6,6 +6,7 @@ import {
   shouldStopPagination,
   hasMorePages,
   isExpandable,
+  handleTreeKeydown,
 } from '~/repository/file_tree_browser/utils';
 import { FTB_MAX_PAGES, FTB_MAX_DEPTH } from '~/repository/constants';
 
@@ -144,6 +145,48 @@ describe('File tree browser utilities', () => {
       ${new Array(FTB_MAX_DEPTH).fill('folder')}     | ${true}
     `('returns $expected for segments length $segments.length', ({ segments, expected }) => {
       expect(isExpandable(segments)).toBe(expected);
+    });
+  });
+
+  describe('handleTreeKeydown', () => {
+    let container;
+    let items;
+
+    const triggerKey = (key, fromIndex) => {
+      const event = new KeyboardEvent('keydown', { key, bubbles: true });
+      Object.defineProperty(event, 'target', { value: items[fromIndex], enumerable: true });
+      Object.defineProperty(event, 'currentTarget', { value: container, enumerable: true });
+      items[fromIndex].focus();
+      handleTreeKeydown(event);
+      return event;
+    };
+
+    beforeEach(() => {
+      container = document.createElement('div');
+      container.setAttribute('role', 'tree');
+      container.innerHTML = `
+      <button role="treeitem">Item 0</button>
+      <button role="treeitem">Item 1</button>
+      <button role="treeitem">Item 2</button>
+    `;
+      document.body.appendChild(container);
+      items = container.querySelectorAll('[role="treeitem"]');
+    });
+
+    afterEach(() => document.body.removeChild(container));
+
+    describe.each`
+      key            | from | to
+      ${'ArrowDown'} | ${0} | ${1}
+      ${'ArrowUp'}   | ${1} | ${0}
+      ${'ArrowUp'}   | ${0} | ${0}
+      ${'ArrowDown'} | ${2} | ${2}
+    `('$key from item $from', ({ key, from, to }) => {
+      it(`moves focus to item ${to}`, () => {
+        triggerKey(key, from);
+
+        expect(document.activeElement).toBe(items[to]);
+      });
     });
   });
 });

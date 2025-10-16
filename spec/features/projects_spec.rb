@@ -6,6 +6,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
   include ProjectForksHelper
   include MobileHelpers
   include ListboxHelpers
+  include Namespaces::DeletableHelper
 
   describe 'template' do
     let(:user) { create(:user) }
@@ -280,36 +281,94 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     end
   end
 
-  describe 'removal', :with_current_organization, :js do
+  describe 'project deletion', :with_current_organization, :js, :freeze_time do
     let_it_be(:user) { create(:user, organization: current_organization) }
+    let_it_be(:admin) { create(:user, :admin, organization: current_organization) }
     let_it_be(:group) { create(:group, :public, owners: user) }
     let_it_be_with_reload(:project_to_delete) { create(:project, group: group) }
 
     before do
       stub_application_setting(deletion_adjourned_period: 7)
-      sign_in user
-      visit edit_project_path(project_to_delete)
     end
 
-    it 'deletes project delayed and is restorable', :freeze_time do
-      deletion_adjourned_period = ::Gitlab::CurrentSettings.deletion_adjourned_period
-      deletion_date = (Time.now.utc + deletion_adjourned_period.days).strftime('%F')
-
-      expect(page).to have_content("This action will place this project, including all its resources, in a pending deletion state for #{deletion_adjourned_period} days, and delete it permanently on #{deletion_date}.")
-
-      click_button "Delete project"
-
-      expect(page).to have_content("This project can be restored until #{deletion_date}.")
-
-      fill_in 'confirm_name_input', with: project_to_delete.path_with_namespace
+    def remove_with_confirm(button_text, confirm_with)
+      click_button button_text
+      fill_in 'confirm_name_input', with: confirm_with
       click_button 'Yes, delete project'
       wait_for_requests
+    end
 
-      expect(page).to have_content("This project is pending deletion, and will be deleted on #{deletion_date}. Repository and other project resources are read-only.")
+    context 'when project is not marked for deletion' do
+      before do
+        sign_in user
+        visit edit_project_path(project_to_delete)
+      end
 
-      visit inactive_dashboard_projects_path
+      it 'deletes project delayed and is restorable' do
+        expect(page).to have_content("This action will place this project, including all its resources, in a pending deletion state for 7 days, and delete it permanently on #{permanent_deletion_date_formatted}.")
 
-      expect(page).to have_content(project_to_delete.name_with_namespace)
+        remove_with_confirm("Delete", project_to_delete.path_with_namespace)
+
+        expect(page).to have_content("This project is pending deletion, and will be deleted on #{permanent_deletion_date_formatted}. Repository and other project resources are read-only.")
+
+        visit inactive_dashboard_projects_path
+
+        expect(page).to have_content(project_to_delete.name_with_namespace)
+      end
+    end
+
+    context 'when project is marked for deletion' do
+      let_it_be_with_reload(:project_aimed_for_deletion) { create(:project, :aimed_for_deletion, group: group) }
+
+      context 'when "Allow immediate deletion" setting is enabled' do
+        before do
+          sign_in user
+          visit edit_project_path(project_aimed_for_deletion)
+        end
+
+        it 'allows immediate deletion', :sidekiq_inline do
+          remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
+
+          expect(page).to have_content "Project '#{project_aimed_for_deletion.full_name}' is being deleted"
+        end
+      end
+
+      context 'when "Allow immediate deletion" setting is disabled' do
+        before do
+          stub_application_setting(allow_immediate_namespaces_deletion: false)
+        end
+
+        context 'when allow_immediate_namespaces_deletion feature flag is disabled' do
+          before do
+            stub_feature_flags(allow_immediate_namespaces_deletion: false)
+            sign_in user
+            visit edit_project_path(project_aimed_for_deletion)
+          end
+
+          it 'allows immediate deletion', :sidekiq_inline do
+            remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
+
+            expect(page).to have_content "Project '#{project_aimed_for_deletion.full_name}' is being deleted"
+          end
+        end
+
+        it 'allows immediate deletion for admins', :enable_admin_mode, :sidekiq_inline do
+          sign_in admin
+          visit edit_project_path(project_aimed_for_deletion)
+
+          remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
+
+          expect(page).to have_content "Project '#{project_aimed_for_deletion.full_name}' is being deleted"
+        end
+
+        it 'does not allow immediate deletion' do
+          sign_in user
+          visit edit_project_path(project_aimed_for_deletion)
+
+          expect(page).not_to have_button('Delete immediately')
+          expect(page).to have_content("This project is pending deletion, and will be deleted on #{permanent_deletion_date_formatted(project_aimed_for_deletion)}. Repository and other project resources are read-only.")
+        end
+      end
     end
   end
 

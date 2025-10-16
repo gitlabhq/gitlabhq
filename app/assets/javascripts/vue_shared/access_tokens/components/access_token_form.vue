@@ -59,11 +59,13 @@ export default {
       this.$options.fields.expiresAt.validators.push(
         formValidators.required(s__('AccessTokens|Expiration date is required.')),
       );
+    } else {
+      this.$options.fields.expiresAt.validators.length = 0;
     }
     const minDate = new Date(this.accessTokenMinDate);
     const expiresAt = defaultDate(maxDate);
     return {
-      showFormErrors: false,
+      formErrors: [],
       maxDate,
       minDate,
       values: { expiresAt, name: this.name, description: this.description, scopes: this.scopes },
@@ -71,23 +73,6 @@ export default {
   },
   computed: {
     ...mapState(useAccessTokens, ['busy']),
-    formErrors() {
-      const errors = [];
-
-      Object.keys(this.$options.fields).forEach((field) => {
-        const fieldValidators = this.$options.fields[field]?.validators ?? [];
-        const value = this.values[field];
-
-        fieldValidators.forEach((validator) => {
-          const errorMessage = validator(value);
-          if (errorMessage) {
-            errors.push(errorMessage);
-          }
-        });
-      });
-
-      return errors;
-    },
   },
   methods: {
     ...mapActions(useAccessTokens, ['createToken', 'setShowCreateForm']),
@@ -96,6 +81,26 @@ export default {
     },
     reset() {
       this.setShowCreateForm(false);
+    },
+    // this cannot be handled with 'submit' event
+    // since 'submit' event is only triggered when there are no validation errors
+    // so emitting this with @click handler on submit button
+    setFormErrors() {
+      const errors = [];
+
+      Object.keys(this.$options.fields).forEach((field) => {
+        const fieldValidators = this.$options.fields[field]?.validators ?? [];
+        const value = this.values[field];
+
+        fieldValidators.forEach((validator) => {
+          const errorMessage = validator(value);
+          if (errorMessage && !errors.includes(errorMessage)) {
+            errors.push(errorMessage);
+          }
+        });
+      });
+
+      this.formErrors = errors;
     },
     submit() {
       const expiresAt = this.values.expiresAt ? toISODateFormat(this.values.expiresAt) : null;
@@ -147,94 +152,99 @@ export default {
 </script>
 
 <template>
-  <gl-form
-    id="token-create-form"
-    class="gl-rounded-base gl-bg-subtle gl-p-5"
-    @submit.prevent
-    @reset="reset"
-  >
-    <gl-form-fields
-      v-model="values"
-      form-id="token-create-form"
-      :fields="$options.fields"
-      @submit="submit"
-    >
-      <template #input(description)="{ id, input, value, validation }">
-        <gl-form-textarea :id="id" :value="value" :state="validation.state" @input="input" />
-      </template>
-
-      <template #group(expiresAt)-description>
-        <max-expiration-date-message :max-date="maxDate" />
-      </template>
-
-      <template #input(expiresAt)="{ id, input, validation, value }">
-        <gl-datepicker
-          show-clear-button
-          :max-date="maxDate"
-          :min-date="minDate"
-          :input-id="id"
-          :state="validation.state"
-          :value="value"
-          :target="null"
-          data-testid="expiry-date-field"
-          @input="input"
-          @clear="clearDatepicker"
-        />
-      </template>
-
-      <template #group(scopes)-label-description>
-        <gl-sprintf
-          :message="
-            s__(
-              'AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}.',
-            )
-          "
-        >
-          <template #link="{ content }">
-            <gl-link :href="$options.helpScopes" target="_blank">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </template>
-
-      <template #input(scopes)="{ id, input, validation, value }">
-        <gl-form-checkbox-group :id="id" :state="validation.state" :checked="value" @input="input">
-          <gl-form-checkbox
-            v-for="scope in accessTokenAvailableScopes"
-            :key="scope.value"
-            :value="scope.value"
-            :state="validation.state"
-            :data-testid="`${scope.value}-checkbox`"
-          >
-            {{ scope.value }}
-            <template #help>{{ scope.text }}</template>
-          </gl-form-checkbox>
-        </gl-form-checkbox-group>
-      </template>
-    </gl-form-fields>
-
+  <div>
     <errors-alert
-      v-if="formErrors.length && showFormErrors"
       class="gl-mt-5"
-      :scroll-on-error="false"
       :title="s__('AccessTokens|The form contains the following errors:')"
       :errors="formErrors"
-      @dismiss="showFormErrors = false"
+      @dismiss="formErrors = []"
     />
 
-    <div class="gl-flex gl-gap-3">
-      <gl-button
-        variant="confirm"
-        type="submit"
-        class="js-no-auto-disable"
-        :loading="busy"
-        data-testid="create-token-button"
-        @click="showFormErrors = true"
+    <gl-form
+      id="token-create-form"
+      class="gl-rounded-base gl-bg-subtle gl-p-5"
+      @submit.prevent
+      @reset="reset"
+    >
+      <gl-form-fields
+        v-model="values"
+        form-id="token-create-form"
+        :fields="$options.fields"
+        @submit="submit"
       >
-        {{ s__('AccessTokens|Create token') }}
-      </gl-button>
-      <gl-button variant="default" type="reset">
-        {{ __('Cancel') }}
-      </gl-button>
-    </div>
-  </gl-form>
+        <template #input(description)="{ id, input, value, validation }">
+          <gl-form-textarea :id="id" :value="value" :state="validation.state" @input="input" />
+        </template>
+
+        <template #group(expiresAt)-description>
+          <max-expiration-date-message :max-date="maxDate" />
+        </template>
+
+        <template #input(expiresAt)="{ id, input, validation, value }">
+          <gl-datepicker
+            show-clear-button
+            :max-date="maxDate"
+            :min-date="minDate"
+            :input-id="id"
+            :state="validation.state"
+            :value="value"
+            :target="null"
+            data-testid="expiry-date-field"
+            @input="input"
+            @clear="clearDatepicker"
+          />
+        </template>
+
+        <template #group(scopes)-label-description>
+          <gl-sprintf
+            :message="
+              s__(
+                'AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}.',
+              )
+            "
+          >
+            <template #link="{ content }">
+              <gl-link :href="$options.helpScopes" target="_blank">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+
+        <template #input(scopes)="{ id, input, validation, value }">
+          <gl-form-checkbox-group
+            :id="id"
+            :state="validation.state"
+            :checked="value"
+            @input="input"
+          >
+            <gl-form-checkbox
+              v-for="scope in accessTokenAvailableScopes"
+              :key="scope.value"
+              :value="scope.value"
+              :state="validation.state"
+              :data-testid="`${scope.value}-checkbox`"
+            >
+              {{ scope.value }}
+              <template #help>{{ scope.text }}</template>
+            </gl-form-checkbox>
+          </gl-form-checkbox-group>
+        </template>
+      </gl-form-fields>
+
+      <div class="gl-flex gl-gap-3">
+        <gl-button
+          variant="confirm"
+          type="submit"
+          class="js-no-auto-disable"
+          :loading="busy"
+          data-testid="create-token-button"
+          @click="setFormErrors"
+        >
+          {{ s__('AccessTokens|Create token') }}
+        </gl-button>
+        <gl-button variant="default" type="reset">
+          {{ __('Cancel') }}
+        </gl-button>
+      </div>
+    </gl-form>
+  </div>
 </template>

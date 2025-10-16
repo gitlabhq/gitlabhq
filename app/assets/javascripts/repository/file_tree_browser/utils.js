@@ -79,3 +79,30 @@ export const hasMorePages = (directoryContents) => Boolean(directoryContents.pag
  * @returns {boolean} True if the path can be expanded
  */
 export const isExpandable = (segments) => segments.length > 0 && segments.length <= FTB_MAX_DEPTH;
+
+/**
+ * Handles keyboard navigation for ARIA tree view pattern
+ * @param {KeyboardEvent} event - The keyboard event
+ */
+export const handleTreeKeydown = (event) => {
+  const items = Array.from(event.currentTarget.querySelectorAll('[role="treeitem"]'));
+  const target = event.target.closest('[role="treeitem"]');
+  const currentIndex = target ? items.indexOf(target) : -1;
+
+  if (currentIndex === -1) return;
+
+  let nextIndex;
+  switch (event.key) {
+    case 'ArrowDown':
+      nextIndex = Math.min(currentIndex + 1, items.length - 1);
+      break;
+    case 'ArrowUp':
+      nextIndex = Math.max(currentIndex - 1, 0);
+      break;
+    default:
+      return;
+  }
+
+  event.preventDefault();
+  items[nextIndex]?.focus();
+};

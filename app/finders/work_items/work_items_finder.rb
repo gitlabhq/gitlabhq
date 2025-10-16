@@ -36,6 +36,25 @@ module WorkItems
       by_parent_wildcard_id(items)
     end
 
+    def by_parent(items)
+      return super unless use_namespace_traversal_ids_filtering?
+
+      items_within_hierarchy = items.within_namespace_hierarchy(ancestor_group)
+                                    .with_group_level_and_project_issues_enabled(
+                                      include_group_level_items: include_group_work_items?,
+                                      exclude_projects: exclude_projects?
+                                    )
+
+      # If the state filter is not present in the params we manually add it to filter all available states
+      # This is needed because state_id is required for index utilization
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/562319
+      unless state_filter_passed?
+        items_within_hierarchy = items_within_hierarchy.with_state(*klass.available_state_names)
+      end
+
+      items_within_hierarchy
+    end
+
     def by_widgets(items)
       WorkItems::WidgetDefinition.available_widgets.each do |widget_class|
         widget_filter = widget_filter_for(widget_class)
@@ -108,6 +127,31 @@ module WorkItems
 
     def with_namespace_cte
       false
+    end
+
+    def user_can_access_subgroup_work_items?
+      Ability.allowed?(current_user, :read_all_resources) || ancestor_group.member?(current_user)
+    end
+
+    def use_namespace_traversal_ids_filtering?
+      return false unless params.group?
+      return false unless ::Feature.enabled?(:use_namespace_traversal_ids_for_work_items_finder, current_user)
+      return false unless include_descendants?
+      return false unless user_can_access_subgroup_work_items?
+
+      true
+    end
+
+    def include_group_work_items?
+      false
+    end
+
+    def state_filter_passed?
+      params[:state].present? && params[:state].to_s != 'all'
+    end
+
+    def ancestor_group
+      include_ancestors? ? params.group.root_ancestor : params.group
     end
 
     def include_descendants?

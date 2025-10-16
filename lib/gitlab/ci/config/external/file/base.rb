@@ -85,7 +85,7 @@ module Gitlab
               raise NotImplementedError, 'subclass must implement `validate_context!`'
             end
 
-            def validate_content!
+            def validate_content_presence!
               errors.push("Included file `#{masked_location}` is empty or does not exist!") if content.blank?
             end
 

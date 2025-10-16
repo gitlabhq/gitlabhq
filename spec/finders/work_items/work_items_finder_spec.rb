@@ -13,6 +13,41 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     it_behaves_like 'work items finder group parameter', expect_group_items: false
   end
 
+  context 'with namespace_traversal_ids_filtering' do
+    include_context '{Issues|WorkItems}Finder#execute context', :work_item
+
+    let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group, author: user) }
+    let_it_be(:group_project_work_item) { create(:work_item, project: project1, author: user) }
+
+    let_it_be(:subgroup_work_item) { create(:work_item, :group_level, namespace: subgroup, author: user) }
+
+    let(:params) { { group_id: group, include_descendants: true } }
+    let(:scope) { 'all' }
+
+    before do
+      group.add_developer(user)
+    end
+
+    it 'only returns project level work_items' do
+      expect(items).to contain_exactly(item1, item4, item5, group_project_work_item)
+    end
+
+    it 'generates query with condition to filter out work_items without project_id' do
+      result_sql = items.to_sql
+      expect(result_sql).to include('"issues"."project_id" IS NOT NULL')
+    end
+
+    it 'generates query with namespace_traversal_id filtering' do
+      result_sql = items.to_sql
+
+      expect(result_sql).to include("namespace_traversal_ids[1] = #{group.id}")
+                            .or(
+                              include('"issues"."namespace_traversal_ids" >=')
+                              .and(include('"issues"."namespace_traversal_ids" <'))
+                            )
+    end
+  end
+
   context 'with start and end date filtering' do
     include_context '{Issues|WorkItems}Finder#execute context', :work_item
 

@@ -384,7 +384,7 @@ export default {
             {{ headerReference }}
           </gl-link>
           <gl-button
-            v-gl-tooltip
+            v-gl-tooltip.bottom
             data-testid="work-item-drawer-copy-button"
             :title="copyTooltipText"
             category="tertiary"
@@ -396,7 +396,7 @@ export default {
           />
         </div>
         <gl-button
-          v-gl-tooltip
+          v-gl-tooltip.bottom
           data-testid="work-item-drawer-link-button"
           :href="activeItem.webUrl"
           :title="$options.i18n.openTooltipText"
@@ -407,11 +407,13 @@ export default {
           @click="redirectToWorkItem"
         />
         <gl-button
+          v-gl-tooltip.bottom
           class="gl-drawer-close-button"
           category="tertiary"
           icon="close"
           size="small"
           :aria-label="$options.i18n.closePanelText"
+          :title="$options.i18n.closePanelText"
           @click="handleClose"
         />
       </div>

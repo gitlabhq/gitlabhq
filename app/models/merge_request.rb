@@ -2281,7 +2281,11 @@ class MergeRequest < ApplicationRecord
   def all_commit_shas
     return commit_shas unless persisted?
 
-    all_commits.pluck(:sha).uniq
+    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+      all_commit_shas_from_metadata
+    else
+      all_commits.pluck(:sha).uniq
+    end
   end
   strong_memoize_attr :all_commit_shas
 
@@ -2823,6 +2827,23 @@ class MergeRequest < ApplicationRecord
     !!diff_head_pipeline
       &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
       &.exists?
+  end
+
+  def all_commit_shas_from_metadata
+    commits_subquery = all_commits.select(:merge_request_commits_metadata_id)
+    migrated_shas = MergeRequest::CommitsMetadata
+                      .joins(
+                        "INNER JOIN (#{commits_subquery.to_sql}) AS diff_commits " \
+                          "ON diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id"
+                      )
+                      .where(project_id: project_id)
+                      .pluck(:sha)
+
+    # We need to query SHAs from `merge_request_diff_commits` table to account
+    # for records that don't have `merge_request_commits_metadata_id` populated yet
+    unmigrated_shas = all_commits.where(merge_request_commits_metadata_id: nil).pluck(:sha)
+
+    (migrated_shas + unmigrated_shas).uniq
   end
 end
 

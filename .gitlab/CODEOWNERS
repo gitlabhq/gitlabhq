@@ -65,6 +65,9 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /spec/frontend_integration/
 /ee/spec/frontend_integration/
 
+^[Frontend dependency patches] @markrian @xanf @thutterer
+/patches/
+
 [Data Seeder] @gl-dx
 /ee/db/seeds/data_seeder/
 /scripts/data_seeder/

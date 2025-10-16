@@ -30989,6 +30989,9 @@ Describes the usage of consumables by users under the subscription.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersusagetotalusersusingcredits"></a>`totalUsersUsingCredits` | [`Int`](#int) | Total number of users consuming GitLab Credits. |
+| <a id="gitlabsubscriptionusageusersusagetotalusersusingoverage"></a>`totalUsersUsingOverage` | [`Int`](#int) | Total number of users consuming overage. |
+| <a id="gitlabsubscriptionusageusersusagetotalusersusingpool"></a>`totalUsersUsingPool` | [`Int`](#int) | Total number of users consuming pool GitLab Credits. |
 | <a id="gitlabsubscriptionusageusersusageusers"></a>`users` | [`GitlabSubscriptionUsageUsersConnection`](#gitlabsubscriptionusageusersconnection) | List of users with their usage data. (see [Connections](#connections)) |
 
 ### `GoogleCloudArtifactRegistryDockerImage`

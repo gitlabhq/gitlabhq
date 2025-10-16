@@ -54,7 +54,7 @@ module Gitlab
               errors.push('Unable to use components outside of a project context')
             end
 
-            def validate_content!
+            def validate_content_presence!
               errors.push(component_result.message) unless content.present?
             end
 

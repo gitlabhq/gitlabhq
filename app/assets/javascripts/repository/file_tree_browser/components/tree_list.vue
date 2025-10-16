@@ -22,6 +22,7 @@ import {
   shouldStopPagination,
   hasMorePages,
   isExpandable,
+  handleTreeKeydown,
 } from '../utils';
 
 export default {
@@ -351,6 +352,9 @@ export default {
       const siblings = this.siblingMap.get(`${item.parentPath || ''}-${item.level}`);
       return [siblings.length, siblings.indexOf(item.id) + 1];
     },
+    onTreeKeydown(event) {
+      handleTreeKeydown(event);
+    },
   },
   filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
 };
@@ -399,6 +403,7 @@ export default {
         v-if="filteredFlatFilesList.length"
         class="gl-h-full gl-min-h-0 gl-flex-grow gl-overflow-y-auto"
         role="tree"
+        @keydown="onTreeKeydown"
       >
         <file-row
           v-for="(item, index) in filteredFlatFilesList"

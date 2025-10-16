@@ -2,8 +2,7 @@
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
   - c.with_header do
-    .gl-flex.gl-grow
-      %h4.gl-text-base.gl-leading-24.gl-m-0.gl-text-feedback-danger= _('Delete group')
+    %h4.gl-text-base.gl-leading-24.gl-m-0= _('Delete group')
 
   - c.with_body do
     = form_tag(group, method: :delete, id: remove_form_id) do
