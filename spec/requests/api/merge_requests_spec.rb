@@ -2329,22 +2329,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end.to start_covered_experience(:create_merge_request)
       end
 
-      context 'when covered_experience_create_merge_request feature flag is disabled' do
-        before do
-          stub_feature_flags(covered_experience_create_merge_request: false)
-        end
-
-        it 'creates merge request without starting covered experience' do
-          mr_count = MergeRequest.count
-
-          expect do
-            post api("/projects/#{project.id}/merge_requests", user), params: params
-          end.not_to start_covered_experience(:create_merge_request)
-
-          expect(MergeRequest.count).to eq(mr_count + 1)
-        end
-      end
-
       it 'creates a new merge request when assignee_id is empty' do
         params[:assignee_id] = ''
 

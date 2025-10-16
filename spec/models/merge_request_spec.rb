@@ -124,7 +124,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'reduces database queries when accessing preloaded associations' do
-        merge_requests = described_class.preload_latest_diff_commit.where(id: merge_request.id)
+        merge_requests = described_class.preload_latest_diff_commit(project).where(id: merge_request.id)
 
         expect do
           merge_requests.each do |mr|
@@ -143,7 +143,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       if with_metadata
         it 'includes merge_request_commits_metadata in preloads' do
-          result = described_class.preload_latest_diff_commit.where(id: merge_request.id)
+          result = described_class.preload_latest_diff_commit(project).where(id: merge_request.id)
           preload_hash = result.preload_values.first
           diff_commits_preloads = preload_hash[:latest_merge_request_diff][:merge_request_diff_commits]
 
@@ -154,7 +154,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       else
         it 'excludes merge_request_commits_metadata from preloads' do
-          result = described_class.preload_latest_diff_commit.where(id: merge_request.id)
+          result = described_class.preload_latest_diff_commit(project).where(id: merge_request.id)
           preload_hash = result.preload_values.first
           diff_commits_preloads = preload_hash[:latest_merge_request_diff][:merge_request_diff_commits]
 
@@ -181,16 +181,58 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         mr_without_diff = create(:merge_request, :unique_branches, source_project: project, target_project: project)
         mr_without_diff.update_column(:latest_merge_request_diff_id, nil)
 
-        expect { described_class.preload_latest_diff_commit.where(id: mr_without_diff.id).to_a }.not_to raise_error
+        expect { described_class.preload_latest_diff_commit(project).where(id: mr_without_diff.id).to_a }.not_to raise_error
       end
 
       it 'handles empty commits collection' do
         empty_mr = create(:merge_request, :unique_branches, source_project: project, target_project: project)
         empty_mr.merge_request_diff.merge_request_diff_commits.delete_all
 
-        merge_requests = described_class.preload_latest_diff_commit.where(id: empty_mr.id)
+        merge_requests = described_class.preload_latest_diff_commit(project).where(id: empty_mr.id)
 
         expect { merge_requests.first.latest_merge_request_diff.merge_request_diff_commits.to_a }.not_to raise_error
+      end
+    end
+
+    context 'when project parameter is nil' do
+      it 'preloads with metadata structure by default' do
+        result = described_class.preload_latest_diff_commit(nil).where(id: merge_request.id)
+        preload_hash = result.preload_values.first
+        diff_commits_preloads = preload_hash[:latest_merge_request_diff][:merge_request_diff_commits]
+
+        expect(diff_commits_preloads).to be_an(Array)
+        expect(diff_commits_preloads.first).to be_a(Hash)
+        expect(diff_commits_preloads.first).to have_key(:merge_request_commits_metadata)
+        expect(diff_commits_preloads.first[:merge_request_commits_metadata]).to include(:commit_author, :committer)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'preloads without metadata structure' do
+          result = described_class.preload_latest_diff_commit(nil).where(id: merge_request.id)
+          preload_hash = result.preload_values.first
+          diff_commits_preloads = preload_hash[:latest_merge_request_diff][:merge_request_diff_commits]
+
+          expect(diff_commits_preloads).to be_an(Array)
+          expect(diff_commits_preloads).to include(:commit_author, :committer)
+          expect(diff_commits_preloads).not_to include(hash_including(:merge_request_commits_metadata))
+        end
+      end
+
+      it 'does not raise errors when accessing associations' do
+        merge_requests = described_class.preload_latest_diff_commit(nil).where(id: merge_request.id)
+
+        expect do
+          merge_requests.each do |mr|
+            mr.latest_merge_request_diff.merge_request_diff_commits.each do |commit|
+              commit.commit_author
+              commit.committer
+            end
+          end
+        end.not_to raise_error
       end
     end
   end

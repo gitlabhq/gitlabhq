@@ -25,12 +25,12 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
 
   let(:snowplow_gitlab_standard_context) { snowplow_context }
 
-  def snowplow_context(user_role: :developer)
-    if user_role == :anonymous
-      { project: project, namespace: project.namespace, property: 'i_package_rubygems_user' }
-    else
-      { project: project, namespace: project.namespace, property: 'i_package_rubygems_user', user: user }
-    end
+  def snowplow_context(user_role: :developer, token_type: :personal_access_token)
+    context = { project: project, namespace: project.namespace, property: 'i_package_rubygems_user' }
+
+    context[:user] = user unless user_role == :anonymous || token_type == :deploy_token
+
+    context
   end
 
   shared_examples 'when feature flag is disabled' do
@@ -180,11 +180,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
         let(:snowplow_gitlab_standard_context) do
-          if token_type == :deploy_token
-            snowplow_context.merge(user: deploy_token)
-          else
-            snowplow_context(user_role: user_role)
-          end
+          snowplow_context(user_role: user_role, token_type: token_type)
         end
 
         before do
@@ -363,16 +359,8 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:user_headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
         let(:headers) { user_headers.merge(workhorse_headers) }
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: snowplow_user, property: 'i_package_rubygems_user' } }
-        let(:snowplow_user) do
-          case token_type
-          when :deploy_token
-            deploy_token
-          when :job_token
-            job.user
-          else
-            user
-          end
+        let(:snowplow_gitlab_standard_context) do
+          snowplow_context(user_role: user_role, token_type: token_type)
         end
 
         before do

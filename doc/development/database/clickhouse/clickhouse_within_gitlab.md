@@ -336,6 +336,43 @@ module ClickHouse
 end
 ```
 
+### ClickHouse worker tagging
+
+All ClickHouse-related Sidekiq workers are tagged with the `clickhouse` tag to enable customers to move these workers to a separate Sidekiq shard for better resource isolation and performance optimization.
+
+The `tags` metadata field should be added to all workers that interact with ClickHouse:
+
+```ruby
+# events_sync_worker.rb
+# frozen_string_literal: true
+
+module ClickHouse
+  class EventsSyncWorker
+    include ApplicationWorker
+    include ClickHouseWorker
+
+    idempotent!
+    queue_namespace :cronjob
+    data_consistency :delayed
+    feature_category :value_stream_management
+    tags :clickhouse
+
+    def perform
+      # Worker implementation
+    end
+  end
+end
+```
+
+This tagging allows customers to:
+
+- Route ClickHouse workers to dedicated Sidekiq processes or servers
+- Apply different resource limits and scaling policies to ClickHouse workloads
+- Monitor and troubleshoot ClickHouse-related background jobs separately
+- Implement custom retry policies or error handling for ClickHouse operations
+
+For more information about Sidekiq worker tagging and routing, see the [Sidekiq documentation](../../sidekiq/_index.md).
+
 ## GraphQL usage
 
 Use GraphQL to paginate ClickHouse queries with the same external interface as

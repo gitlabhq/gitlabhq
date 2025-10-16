@@ -50,7 +50,7 @@ module Mutations
         project = authorized_find!(project_path)
         params = parse_arguments(attributes)
 
-        ::Gitlab::CoveredExperience.start_covered_experience_create_merge_request(project, **params)
+        Labkit::CoveredExperience.start(:create_merge_request, **params)
 
         merge_request = ::MergeRequests::CreateService.new(
           project: project,

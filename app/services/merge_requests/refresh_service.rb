@@ -91,7 +91,7 @@ module MergeRequests
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.opened
         .preload_project_and_latest_diff
-        .preload_latest_diff_commit
+        .preload_latest_diff_commit(@project)
         .where(target_branch: @push.branch_name).to_a
         .select(&:diff_head_commit)
         .select do |merge_request|

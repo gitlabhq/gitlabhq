@@ -188,7 +188,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def start_covered_experience_create_mr
-    Gitlab::CoveredExperience.start_covered_experience_create_merge_request(project)
+    Labkit::CoveredExperience.start(:create_merge_request)
   end
 end
 

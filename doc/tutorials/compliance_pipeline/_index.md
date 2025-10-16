@@ -5,7 +5,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Create a compliance pipeline (deprecated)'
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 
@@ -17,7 +17,7 @@ title: 'Tutorial: Create a compliance pipeline (deprecated)'
 {{< alert type="warning" >}}
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
-and is planned for removal in 18.0. Use [pipeline execution policy type](../../user/application_security/policies/pipeline_execution_policies.md) instead.
+and is planned for removal in 19.0. Use [pipeline execution policy type](../../user/application_security/policies/pipeline_execution_policies.md) instead.
 This change is a breaking change. For more information, see the [migration guide](../../user/compliance/compliance_pipelines.md#pipeline-execution-policies-migration).
 
 {{< /alert >}}

@@ -9,7 +9,7 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/finders/license_template_finder_spec.rb'
     - 'ee/spec/finders/projects/integrations/jira/issues_finder_spec.rb'
     - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
-    - 'ee/spec/finders/template_finder_spec.rb'
+    - 'ee/spec/finders/ee/template_finder_spec.rb'
     - 'ee/spec/graphql/mutations/dast_scanner_profiles/create_spec.rb'
     - 'ee/spec/graphql/mutations/dast_site_profiles/create_spec.rb'
     - 'ee/spec/graphql/mutations/dast_site_profiles/delete_spec.rb'

@@ -103,7 +103,9 @@ export default {
           path: exp.path,
         },
         candidateCountColumn: exp.candidateCount,
-        creatorColumn: { ...exp.creator, iid: getIdFromGraphQLId(exp.creator.id) },
+        creatorColumn: exp.creator
+          ? { ...exp.creator, iid: getIdFromGraphQLId(exp.creator.id) }
+          : null,
         lastActivityColumn: exp.updatedAt,
       }));
     },

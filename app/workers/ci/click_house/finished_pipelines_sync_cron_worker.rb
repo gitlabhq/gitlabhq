@@ -9,6 +9,7 @@ module Ci
       queue_namespace :cronjob
       data_consistency :delayed
       feature_category :fleet_visibility
+      tags :clickhouse
       loggable_arguments 1
 
       def perform(*args)

@@ -57,11 +57,11 @@ To install the GDK:
    curl "https://gitlab.com/gitlab-org/gitlab-development-kit/-/raw/main/support/install" | bash
    ```
 
-   This script clones the GitLab Development Kit (GDK) repository into a new subdirectory, and sets up necessary dependencies using the `asdf` version manager (including Ruby, Node.js, PostgreSQL, Redis, and more).
+   This script clones the GitLab Development Kit (GDK) repository into a new subdirectory, and sets up necessary dependencies using the `mise` version manager (including Ruby, Node.js, PostgreSQL, Redis, and more).
 
    {{< alert type="note" >}}
 
-   If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
+   If you're using another tool version manager for those dependencies, refer to the [tool version manager](#use-a-different-tool-version-manager) to avoid conflicts.
 
    {{< /alert >}}
 
@@ -80,12 +80,18 @@ To install the GDK:
    If you have any problems with the installation, you can use this output as
    part of [troubleshooting](#troubleshoot-gdk).
 
-1. After the installation is complete,
-   copy the `source` command from the message corresponding to your shell
-   from the message `INFO: To make sure GDK commands are available in this shell`:
+1. After the installation is complete, you might need to activate `mise`:
+
+   For `bash`:
 
    ```shell
-   source ~/.asdf/asdf.sh
+   eval "$(mise activate bash)"
+   ```
+
+   For `zsh`:
+
+   ```shell
+   eval "$(mise activate zsh)"
    ```
 
 1. Go to the directory where the GDK was installed:
@@ -138,6 +144,28 @@ To confirm it was successful:
 If you get errors, run `gdk doctor` to troubleshoot.
 For more advanced troubleshooting, continue to the [Troubleshoot GDK](#troubleshoot-gdk) section.
 
+## Use a different tool version manager
+
+If you are using a different tool version manager in your system, you may encounter issues as only `mise` as a tool version manager is officially supported.
+
+When using `asdf` as your tool version manager, you can use the following command to migrate to `mise`:
+
+1. Run the migration command:
+
+   ```shell
+   gdk rake mise:migrate
+   ```
+
+Refer to the [migration instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/mise/#how-to-migrate) for more information.
+
+In case you want to continue using a different tool version manager, you need to configure the GDK for it.
+
+1. Set GDK not to use the default tool version manager:
+
+   ```shell
+   gdk config set tool_version_manager.enabled false
+   ```
+
 ## Troubleshoot GDK
 
 {{< alert type="note" >}}
@@ -157,28 +185,6 @@ If `gdk doctor` returns Node or Ruby-related errors, run:
 yarn install && bundle install
 bundle exec rails db:migrate RAILS_ENV=development
 ```
-
-### Error: No version is set for command
-
-If you already use another version manager in your system, you may encounter the "No version is set for command <command>" error.
-To resolve this issue, you can temporarily comment out the sourcing of `asdf.sh` in your shell:
-
-1. Open your shell configuration file (for example, `.zshrc`, `.bashrc`):
-
-   ```shell
-   nano <path-to-shell-config>
-   ```
-
-1. Comment out the following line:
-
-   ```shell
-   # Added by GDK bootstrap
-   # source ~/.asdf/asdf.sh
-   ```
-
-1. After making these changes, restart your shell or terminal session for the modifications to take effect.
-
-To use `asdf` again, revert any previous changes.
 
 ## Change the code
 

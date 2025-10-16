@@ -337,7 +337,7 @@ Review how access to protected variables and runners work in the
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 ## Trigger a pipeline when an upstream project is rebuilt (deprecated)
 

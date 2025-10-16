@@ -220,6 +220,12 @@ The pipeline status badge is based on specific Git revisions (branches). Ensure 
 
 ## Custom badges
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180832) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `custom_project_badges`. Disabled by default.
+
+{{< /history >}}
+
 Custom badges allows changing the following attributes:
 
 - `key_text`

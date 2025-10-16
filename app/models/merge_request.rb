@@ -476,8 +476,8 @@ class MergeRequest < ApplicationRecord
   scope :preload_metrics, ->(relation) { preload(metrics: relation) }
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
 
-  scope :preload_latest_diff_commit, -> do
-    if Feature.enabled?(:merge_request_diff_commits_dedup)
+  scope :preload_latest_diff_commit, ->(project) do
+    if Feature.enabled?(:merge_request_diff_commits_dedup, project)
       preload(latest_merge_request_diff: {
         merge_request_diff_commits: [{
           merge_request_commits_metadata: [:commit_author, :committer]

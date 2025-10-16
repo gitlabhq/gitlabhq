@@ -109,7 +109,7 @@ module API
         service.execute
 
         category = args.delete(:category) || self.options[:for].name
-        args[:user] = current_user if current_user
+        args[:user] = current_user if current_user.is_a?(User)
         event_name = "i_package_#{scope}_user"
         ::Gitlab::Tracking.event(
           category,

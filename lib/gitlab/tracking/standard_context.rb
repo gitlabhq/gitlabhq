@@ -10,12 +10,12 @@ module Gitlab
       def initialize(
         namespace: nil, project_id: nil, user: nil,
         feature_enabled_by_namespace_ids: nil, **extra)
-        check_argument_type(:namespace, namespace, [Namespace])
-        check_argument_type(:project_id, project_id, [Integer])
-        check_argument_type(:user, user, [User, DeployToken])
+        check_argument_type(:namespace, namespace, Namespace)
+        check_argument_type(:project_id, project_id, Integer)
+        check_argument_type(:user, user, User)
 
         plan_name = get_plan_name(namespace)
-        check_argument_type(:plan_name, plan_name, [String])
+        check_argument_type(:plan_name, plan_name, String)
 
         @namespace = namespace
         @plan_name = plan_name
@@ -89,11 +89,11 @@ module Gitlab
         user.user_type
       end
 
-      def check_argument_type(argument_name, argument_value, allowed_classes)
-        return if argument_value.nil? || allowed_classes.any? { |allowed_class| argument_value.is_a?(allowed_class) }
+      def check_argument_type(argument_name, argument_value, allowed_class)
+        return if argument_value.nil? || argument_value.is_a?(allowed_class)
 
         exception = "Invalid argument type passed for #{argument_name}. " \
-          "Should be one of #{allowed_classes.map(&:to_s)}"
+          "Should be #{allowed_class}"
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ArgumentError.new(exception))
       end
 

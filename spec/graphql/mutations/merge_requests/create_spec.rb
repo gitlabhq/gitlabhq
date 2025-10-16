@@ -136,14 +136,6 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
         it 'starts covered experience for create_merge_request' do
           expect { subject }.to start_covered_experience(:create_merge_request)
         end
-
-        context 'when covered_experience_create_merge_request feature flag is disabled' do
-          it 'does not start covered experience for create_merge_request' do
-            stub_feature_flags(covered_experience_create_merge_request: false)
-
-            expect { subject }.not_to start_covered_experience(:create_merge_request)
-          end
-        end
       end
     end
 

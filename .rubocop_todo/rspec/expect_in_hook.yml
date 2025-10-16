@@ -11,7 +11,7 @@ RSpec/ExpectInHook:
     - 'ee/spec/features/projects/settings/ee/service_desk_setting_spec.rb'
     - 'ee/spec/finders/license_template_finder_spec.rb'
     - 'ee/spec/finders/projects/integrations/jira/issues_finder_spec.rb'
-    - 'ee/spec/finders/template_finder_spec.rb'
+    - 'ee/spec/finders/ee/template_finder_spec.rb'
     - 'ee/spec/graphql/mutations/gitlab_subscriptions/activate_spec.rb'
     - 'ee/spec/helpers/ee/ci/runners_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups_helper_spec.rb'

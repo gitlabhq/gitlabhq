@@ -207,6 +207,14 @@ ul.related-merge-requests > li gl-emoji {
   right: var(--application-bar-right);
   width: auto;
   top: $calc-application-header-height;
+
+  .right-sidebar-collapsed & {
+    padding-right: $right-sidebar-collapsed-width;
+  }
+
+  .right-sidebar-expanded & {
+    padding-right: $right-sidebar-width;
+  }
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class

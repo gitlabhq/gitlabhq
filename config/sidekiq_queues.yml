@@ -129,6 +129,8 @@
   - 1
 - - authz_user_project_member_roles_destroy_for_shared_project
   - 1
+- - authz_user_project_member_roles_update_for_shared_project
+  - 1
 - - auto_devops
   - 2
 - - auto_merge

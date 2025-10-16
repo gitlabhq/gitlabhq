@@ -1583,11 +1583,11 @@ The following configuration options should be set in `/etc/gitlab/gitlab.rb` on 
 | `gitlab_rails['registry_key_path']`        | File path where the `internal_key` is stored. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). |
 | `gitlab_rails['registry_issuer']`          | Token issuer name. Must match between registry and GitLab configurations. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/attributes/default.rb#L153). |
 
-<!--- start_remove The following content will be removed on remove_date: '2025/08/15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< alert type="warning" >}}
 
-Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in 18.0. Use Signature Version 4 instead. This is a breaking change. For more information, see [issue 1449](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
+Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in 19.0. Use Signature Version 4 instead. This is a breaking change. For more information, see [issue 1449](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
 
 {{< /alert >}}
 

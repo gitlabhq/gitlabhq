@@ -117,14 +117,6 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
           end
         end
 
-        context 'when user is not of User class' do
-          subject { described_class.new(user: build_stubbed(:deploy_token)) }
-
-          it 'passes nil to the context' do
-            expect(json_data[:user_id]).to be_nil
-          end
-        end
-
         context 'when user is an instance of User' do
           it 'hold the pseudonymized user id value', :aggregate_failures do
             expect(json_data[:user_id]).to eq(hashed_user_id)

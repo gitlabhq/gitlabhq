@@ -6,7 +6,7 @@ title: Compliance pipelines (deprecated)
 description: Compliance pipelines (deprecated in 17.3, planned to be removed in 19.0) enables centralized CI/CD control for labeled projects. Replaced by pipeline execution policies.
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 

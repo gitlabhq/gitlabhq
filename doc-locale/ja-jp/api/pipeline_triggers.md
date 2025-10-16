@@ -8,13 +8,13 @@ title: パイプライントリガートークンAPI
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-[APIを介したパイプラインのトリガー](../ci/triggers/_index.md)について詳細を確認できます。
+このAPIを使用して、[パイプラインをトリガー](../ci/triggers/_index.md)します。
 
-## プロジェクトトリガートークンをリストする
+## プロジェクトのトリガートークンのリストを取得する {#list-project-trigger-tokens}
 
 プロジェクトのパイプライントリガートークンのリストを取得します。
 
@@ -24,10 +24,11 @@ GET /projects/:id/triggers
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers"
 ```
 
 ```json
@@ -46,7 +47,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 認証済みユーザーがトリガートークンを作成した場合、トリガートークンは完全に表示されます。他のユーザーが作成したトリガートークンは、4文字に短縮されます。
 
-## トリガートークンの詳細を取得する
+## トリガートークンの詳細を取得する {#get-trigger-token-details}
 
 プロジェクトのパイプライントリガートークンの詳細を取得します。
 
@@ -56,11 +57,12 @@ GET /projects/:id/triggers/:trigger_id
 
 | 属性    | 型           | 必須 | 説明 |
 |--------------|----------------|----------|-------------|
-| `id`         | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `trigger_id` | 整数        | はい      | トリガーID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers/5"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers/5"
 ```
 
 ```json
@@ -75,7 +77,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## トリガートークンを作成する
+## トリガートークンを作成する {#create-a-trigger-token}
 
 プロジェクトのパイプライントリガートークンを作成します。
 
@@ -86,11 +88,13 @@ POST /projects/:id/triggers
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
 | `description` | 文字列         | はい      | トリガー名 |
-| `id`          | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form description="my description" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers"
 ```
 
 ```json
@@ -105,7 +109,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## パイプライントリガートークンを更新する
+## パイプライントリガートークンを更新する {#update-a-pipeline-trigger-token}
 
 プロジェクトのパイプライントリガートークンを更新します。
 
@@ -115,13 +119,15 @@ PUT /projects/:id/triggers/:trigger_id
 
 | 属性     | 型           | 必須 | 説明 |
 |---------------|----------------|----------|-------------|
-| `id`          | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `trigger_id`  | 整数        | はい      | トリガーID |
 | `description` | 文字列         | いいえ       | トリガー名 |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers/10"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form description="my description" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers/10"
 ```
 
 ```json
@@ -136,7 +142,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## パイプライントリガートークンを削除する
+## パイプライントリガートークンを削除する {#remove-a-pipeline-trigger-token}
 
 プロジェクトのパイプライントリガートークンを削除します。
 
@@ -146,18 +152,22 @@ DELETE /projects/:id/triggers/:trigger_id
 
 | 属性    | 型           | 必須 | 説明 |
 |--------------|----------------|----------|-------------|
-| `id`         | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
+| `id`         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths) |
 | `trigger_id` | 整数        | はい      | トリガーID |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers/5"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers/5"
 ```
 
-## トークンでパイプラインをトリガーする
+## トークンでパイプラインをトリガーする {#trigger-a-pipeline-with-a-token}
 
 {{< history >}}
 
-- `inputs`属性は、GitLab 17.10で`ci_inputs_for_pipelines`という名前の[フラグ](../administration/feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/519958)されました。デフォルトでは無効になっています。
+- `inputs`属性は、GitLab 17.10で`ci_inputs_for_pipelines`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/519958)されました。デフォルトでは無効になっています。
+- `inputs`属性は、GitLab 17.11で[GitLab.com、GitLab Self-Managed、GitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/525504)になりました。
+- `inputs`属性は、GitLab 18.1で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/536548)になりました。機能フラグ`ci_inputs_for_pipelines`は削除されました。
 
 {{< /history >}}
 
@@ -175,11 +185,11 @@ POST /projects/:id/trigger/pipeline
 
 | 属性   | 型           | 必須 | 説明 |
 |-------------|----------------|----------|-------------|
-| `id`        | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`        | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `ref`       | 文字列         | はい      | パイプラインを実行するブランチまたはタグ。 |
 | `token`     | 文字列         | はい      | トリガートークンまたはCI/CDジョブトークン。 |
 | `variables` | ハッシュ           | いいえ       | パイプライン変数を含むキーと値の文字列のマップ。例: `{ VAR1: "value1", VAR2: "value2" }`。 |
-| `inputs`    | ハッシュ           | いいえ       | パイプラインの作成時に使用するインプットのマップ（キーと値のペア）。必要な機能フラグ: `ci_inputs_for_pipelines` |
+| `inputs`    | ハッシュ           | いいえ       | パイプラインの作成時に使用するインプットのマップ（キーと値のペア）。 |
 
 [変数](../ci/variables/_index.md)を使用したリクエストの例:
 
@@ -187,18 +197,16 @@ POST /projects/:id/trigger/pipeline
 curl --request POST \
   --form "variables[VAR1]=value1" \
   --form "variables[VAR2]=value2" \
-  "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
+  --url "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
-[インプット](../ci/yaml/inputs.md)を使用したリクエストの例:
-
-_必要な[機能フラグ](feature_flags.md): `ci_inputs_for_pipelines`_
+[インプット](../ci/inputs/_index.md)を使用したリクエストの例:
 
 ```shell
 curl --request POST \
   --header "Content-Type: application/json" \
   --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}' \
-  "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
+  --url "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
 応答の例:

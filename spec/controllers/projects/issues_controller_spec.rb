@@ -1637,16 +1637,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       expect { create_merge_request }.to start_covered_experience(:create_merge_request)
     end
 
-    context 'when covered_experience_create_merge_request feature flag is disabled' do
-      before do
-        stub_feature_flags(covered_experience_create_merge_request: false)
-      end
-
-      it 'does not start covered experience' do
-        expect { create_merge_request }.not_to start_covered_experience(:create_merge_request)
-      end
-    end
-
     def create_merge_request
       post(
         :create_merge_request,

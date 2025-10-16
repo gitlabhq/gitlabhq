@@ -414,7 +414,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :clickhouse
   :queue_namespace: :cronjob
 - :name: cronjob:ci_delete_expired_trigger_token
   :worker_name: Ci::DeleteExpiredTriggerTokenWorker
@@ -3464,7 +3465,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :clickhouse
   :queue_namespace:
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker

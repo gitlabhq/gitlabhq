@@ -47,7 +47,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
 
     if blob.present?
       event_name = tracking_event_name(object_type: :blob, from_cache: true)
-      track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
+      track_package_event(event_name, :dependency_proxy, namespace: group, user: tracking_user)
 
       send_upload(blob.file, ssrf_params: ssrf_params)
     else
@@ -75,7 +75,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     )
 
     event_name = tracking_event_name(object_type: :blob, from_cache: false)
-    track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
+    track_package_event(event_name, :dependency_proxy, namespace: group, user: tracking_user)
 
     head :ok
   end
@@ -107,7 +107,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     end
 
     event_name = tracking_event_name(object_type: :manifest, from_cache: false)
-    track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
+    track_package_event(event_name, :dependency_proxy, namespace: group, user: tracking_user)
 
     head :ok
   end
@@ -127,7 +127,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     content_type = manifest.content_type
 
     event_name = tracking_event_name(object_type: :manifest, from_cache: from_cache)
-    track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
+    track_package_event(event_name, :dependency_proxy, namespace: group, user: tracking_user)
 
     send_upload(
       manifest.file,
@@ -210,5 +210,9 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
 
   def allow_localhost?
     Gitlab.dev_or_test_env? || Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+  end
+
+  def tracking_user
+    auth_user if auth_user.is_a?(User)
   end
 end

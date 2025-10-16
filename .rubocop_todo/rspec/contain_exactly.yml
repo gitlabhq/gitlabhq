@@ -11,7 +11,7 @@ RSpec/ContainExactly:
     - 'ee/spec/finders/licenses_finder_spec.rb'
     - 'ee/spec/finders/security/project_security_exclusions_finder_spec.rb'
     - 'ee/spec/finders/security/scan_result_policies/findings_finder_spec.rb'
-    - 'ee/spec/finders/users_finder_spec.rb'
+    - 'ee/spec/finders/ee/users_finder_spec.rb'
     - 'ee/spec/finders/work_items/widgets/filters/requirement_legacy_spec.rb'
     - 'ee/spec/graphql/resolvers/iterations_resolver_spec.rb'
     - 'ee/spec/graphql/types/ai/message_role_enum_spec.rb'

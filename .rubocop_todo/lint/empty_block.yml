@@ -3,7 +3,7 @@ Lint/EmptyBlock:
   Exclude:
     - 'config/application.rb'
     - 'ee/spec/factories/incident_management/escalation_rules.rb'
-    - 'ee/spec/finders/snippets_finder_spec.rb'
+    - 'ee/spec/finders/ee/snippets_finder_spec.rb'
     - 'ee/spec/graphql/types/epic_type_spec.rb'
     - 'ee/spec/graphql/types/incident_management/escalation_rule_input_type_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'

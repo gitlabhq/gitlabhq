@@ -50,7 +50,7 @@ Performance/StringIdentifierArgument:
     - 'ee/lib/gitlab/graphql/aggregations/issuables/lazy_links_aggregate.rb'
     - 'ee/spec/controllers/groups/iterations_controller_spec.rb'
     - 'ee/spec/factories/protected_branches.rb'
-    - 'ee/spec/graphql/mutations/groups/update_spec.rb'
+    - 'ee/spec/graphql/ee/mutations/groups/update_spec.rb'
     - 'ee/spec/helpers/push_rules_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/hook_data/merge_request_builder_spec.rb'
     - 'ee/spec/lib/ee/sidebars/projects/menus/packages_registries_menu_spec.rb'

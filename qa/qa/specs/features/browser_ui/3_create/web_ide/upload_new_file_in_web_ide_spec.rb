@@ -32,9 +32,8 @@ module QA
       end
 
       context 'with a new file', quarantine: {
-        only: { pipeline: %i[staging staging-canary] },
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/527274',
-        type: :flaky
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1603',
+        type: :stale
       } do
         context 'when the file is an image',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390007' do
