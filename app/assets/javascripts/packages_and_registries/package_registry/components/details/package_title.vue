@@ -2,7 +2,8 @@
 import { GlSprintf, GlResizeObserverDirective } from '@gitlab/ui';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { __, s__, sprintf } from '~/locale';
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import { newDate } from '~/lib/utils/datetime_utility';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import { PACKAGE_TYPE_NUGET } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
@@ -38,7 +39,7 @@ export default {
   computed: {
     packageLastDownloadedAtDisplay() {
       return sprintf(this.$options.i18n.lastDownloadedAt, {
-        dateTime: formatDate(this.packageEntity.lastDownloadedAt, 'mmm d, yyyy'),
+        dateTime: localeDateFormat.asDate.format(newDate(this.packageEntity.lastDownloadedAt)),
       });
     },
     packageTypeDisplay() {

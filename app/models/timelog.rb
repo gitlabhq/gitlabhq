@@ -87,11 +87,6 @@ class Timelog < ApplicationRecord
     self.project_id = issuable.project_id
   end
 
-  # Rails5 defaults to :touch_later, overwrite for normal touch
-  def belongs_to_touch_method
-    :touch
-  end
-
   def ensure_namespace_id
     self.namespace_id = if merge_request.present?
                           merge_request.project&.project_namespace_id

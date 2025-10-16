@@ -475,8 +475,6 @@ owner_class_attribute_default:
   file: app/models/service_desk/custom_email_verification.rb
 valid_secret_token?:
   file: app/models/snippet.rb
-belongs_to_touch_method:
-  file: app/models/timelog.rb
 unmergeable?:
   file: app/models/todo.rb
 merge_train_removed?:

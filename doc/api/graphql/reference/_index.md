@@ -19417,6 +19417,30 @@ The edge type for [`LinkedWorkItemType`](#linkedworkitemtype).
 | <a id="linkedworkitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="linkedworkitemtypeedgenode"></a>`node` | [`LinkedWorkItemType`](#linkedworkitemtype) | The item at the end of the edge. |
 
+#### `MavenUpstreamConnection`
+
+The connection type for [`MavenUpstream`](#mavenupstream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="mavenupstreamconnectionedges"></a>`edges` | [`[MavenUpstreamEdge]`](#mavenupstreamedge) | A list of edges. |
+| <a id="mavenupstreamconnectionnodes"></a>`nodes` | [`[MavenUpstream]`](#mavenupstream) | A list of nodes. |
+| <a id="mavenupstreamconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MavenUpstreamEdge`
+
+The edge type for [`MavenUpstream`](#mavenupstream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mavenupstreamedgenode"></a>`node` | [`MavenUpstream`](#mavenupstream) | The item at the end of the edge. |
+
 #### `MavenVirtualRegistryConnection`
 
 The connection type for [`MavenVirtualRegistry`](#mavenvirtualregistry).
@@ -32723,6 +32747,27 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamsid"></a>`id` | [`ID`](#id) | Value stream id. |
 
+##### `Group.virtualRegistriesPackagesMavenUpstreams`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Maven upstream registries registered to the group. Returns null if the `maven_virtual_registry` feature flag is disabled.
+
+Returns [`MavenUpstreamConnection`](#mavenupstreamconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvirtualregistriespackagesmavenupstreamsupstreamname"></a>`upstreamName` | [`String`](#string) | Search upstreams by name. |
+
 ##### `Group.vulnerabilities`
 
 Vulnerabilities reported on the projects in the group and its subgroups.
@@ -34510,6 +34555,7 @@ Represents the upstream registries of a Maven virtual registry.
 | <a id="mavenupstreammetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
 | <a id="mavenupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
 | <a id="mavenupstreamregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenVirtualRegistryConnection!`](#mavenvirtualregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
+| <a id="mavenupstreamregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
 | <a id="mavenupstreamregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
 | <a id="mavenupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |

@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module RSpec
       module FactoryBot
-        # This cop encourages the use of inline associations in FactoryBot.
+        # Encourages the use of inline associations in FactoryBot.
         # The explicit use of `create` and `build` is discouraged.
         #
         # See https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#inline-definition

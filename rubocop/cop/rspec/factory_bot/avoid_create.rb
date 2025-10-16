@@ -6,7 +6,7 @@ module RuboCop
   module Cop
     module RSpec
       module FactoryBot
-        # This cop checks for the creation of ActiveRecord objects in serializers specs specs
+        # Checks for the creation of ActiveRecord objects in serializers specs
         #
         # @example
         #
