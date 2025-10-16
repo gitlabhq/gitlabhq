@@ -219,13 +219,17 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
   end
 
   it "recognizes known queries from our frontend" do
+    allow(::Gitlab::Webpack::FileLoader).to receive(:load).with('graphql_known_operations.yml')
+      .and_return(['currentUser'].to_yaml)
+    ::Gitlab::Webpack::GraphqlKnownOperations.clear_memoization!
+
     query = <<~GQL
-      query abuseReportQuery { currentUser{ username} }
+      query currentUser { currentUser{ username} }
     GQL
 
     expect(Gitlab::Metrics::RailsSlis.graphql_query_apdex).to receive(:increment).with({
       labels: {
-        endpoint_id: "graphql:abuseReportQuery",
+        endpoint_id: "graphql:currentUser",
         feature_category: 'not_owned',
         query_urgency: :default
       },
@@ -233,7 +237,7 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
     })
 
     expect(Gitlab::GraphqlLogger).to receive(:info).with(a_hash_including({
-      "meta.caller_id" => "graphql:abuseReportQuery"
+      "meta.caller_id" => "graphql:currentUser"
     }))
 
     post_graphql(query, current_user: user)

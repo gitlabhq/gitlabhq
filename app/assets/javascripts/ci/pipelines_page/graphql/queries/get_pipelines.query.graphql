@@ -5,12 +5,12 @@ query getPipelines(
   $fullPath: ID!
   $first: Int
   $last: Int
-  $prevPageCursor: String = ""
-  $nextPageCursor: String = ""
+  $after: String = ""
+  $before: String = ""
 ) {
   project(fullPath: $fullPath) {
     id
-    pipelines(first: $first, last: $last, after: $nextPageCursor, before: $prevPageCursor) {
+    pipelines(first: $first, last: $last, after: $after, before: $before) {
       nodes {
         id
         iid

@@ -243,12 +243,6 @@ module Types
       description: 'Find an abuse report.',
       resolver: Resolvers::AbuseReportResolver
 
-    field :abuse_report_labels, ::Types::AntiAbuse::AbuseReportLabelType.connection_type,
-      null: true,
-      experiment: { milestone: '16.3' },
-      description: 'Abuse report labels.',
-      resolver: Resolvers::AbuseReportLabelsResolver
-
     field :ml_model, ::Types::Ml::ModelType,
       null: true,
       experiment: { milestone: '16.7' },

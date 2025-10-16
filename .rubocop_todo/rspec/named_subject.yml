@@ -2500,7 +2500,6 @@ RSpec/NamedSubject:
     - 'spec/requests/api/graphql/mutations/achievements/revoke_spec.rb'
     - 'spec/requests/api/graphql/mutations/achievements/update_spec.rb'
     - 'spec/requests/api/graphql/mutations/achievements/update_user_achievement_priorities_spec.rb'
-    - 'spec/requests/api/graphql/mutations/admin/abuse_report_labels/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/boards/destroy_spec.rb'
     - 'spec/requests/api/graphql/mutations/ci/pipeline_trigger/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/ci/pipeline_trigger/delete_spec.rb'

@@ -216,7 +216,61 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         end
       end
 
-      context "when attempting to resolve a disscussion" do
+      context "when using line_range position parameters" do
+        let!(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+
+        context "when showing the current broken situation for line types" do
+          it "returns a 400 Bad Request when old_line/new_line is a number" do
+            position = draft_note.position.to_h.merge(
+              line_range: {
+                start: {
+                  line_code: 'abc',
+                  type: 'new',
+                  old_line: 10,
+                  new_line: 11
+                },
+                end: {
+                  line_code: 'def',
+                  type: 'new',
+                  old_line: 10,
+                  new_line: 11
+                }
+              }
+            )
+
+            post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
+              params: { note: 'Test note', position: position }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+
+          it "returns a 400 Bad Request when old_line/new_line is a string" do
+            position = draft_note.position.to_h.merge(
+              line_range: {
+                start: {
+                  line_code: 'abc',
+                  type: 'new',
+                  old_line: "10",
+                  new_line: "11"
+                },
+                end: {
+                  line_code: 'def',
+                  type: 'new',
+                  old_line: "12",
+                  new_line: "13"
+                }
+              }
+            )
+
+            post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
+              params: { note: 'Test note', position: position }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+      end
+
+      context "when attempting to resolve a discussion" do
         context "when providing a non-existant ID" do
           it "returns a 400 Bad Request" do
             create_draft_note(

@@ -260,7 +260,7 @@ class User < ApplicationRecord
   has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notification_settings
   has_many :award_emoji, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :triggers, -> { Feature.enabled?(:trigger_token_expiration) ? not_expired : self }, class_name: 'Ci::Trigger', foreign_key: :owner_id
+  has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger', foreign_key: :owner_id
   has_many :audit_events, foreign_key: :author_id, inverse_of: :user
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 

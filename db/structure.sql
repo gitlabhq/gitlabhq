@@ -9556,48 +9556,6 @@ CREATE SEQUENCE abuse_report_events_id_seq
 
 ALTER SEQUENCE abuse_report_events_id_seq OWNED BY abuse_report_events.id;
 
-CREATE TABLE abuse_report_label_links (
-    id bigint NOT NULL,
-    abuse_report_id bigint NOT NULL,
-    abuse_report_label_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
-);
-
-CREATE SEQUENCE abuse_report_label_links_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE abuse_report_label_links_id_seq OWNED BY abuse_report_label_links.id;
-
-CREATE TABLE abuse_report_labels (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    cached_markdown_version integer,
-    title text NOT NULL,
-    color text,
-    description text,
-    description_html text,
-    organization_id bigint,
-    CONSTRAINT check_034642a23f CHECK ((char_length(description) <= 500)),
-    CONSTRAINT check_7957e7e95f CHECK ((char_length(description_html) <= 1000)),
-    CONSTRAINT check_c7a15f74dc CHECK ((char_length(color) <= 7)),
-    CONSTRAINT check_e264245e2a CHECK ((char_length(title) <= 255))
-);
-
-CREATE SEQUENCE abuse_report_labels_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE abuse_report_labels_id_seq OWNED BY abuse_report_labels.id;
-
 CREATE TABLE abuse_report_notes (
     id bigint NOT NULL,
     abuse_report_id bigint NOT NULL,
@@ -30405,10 +30363,6 @@ ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_
 
 ALTER TABLE ONLY abuse_report_events ALTER COLUMN id SET DEFAULT nextval('abuse_report_events_id_seq'::regclass);
 
-ALTER TABLE ONLY abuse_report_label_links ALTER COLUMN id SET DEFAULT nextval('abuse_report_label_links_id_seq'::regclass);
-
-ALTER TABLE ONLY abuse_report_labels ALTER COLUMN id SET DEFAULT nextval('abuse_report_labels_id_seq'::regclass);
-
 ALTER TABLE ONLY abuse_report_notes ALTER COLUMN id SET DEFAULT nextval('abuse_report_notes_id_seq'::regclass);
 
 ALTER TABLE ONLY abuse_report_user_mentions ALTER COLUMN id SET DEFAULT nextval('abuse_report_user_mentions_id_seq'::regclass);
@@ -32723,12 +32677,6 @@ ALTER TABLE ONLY abuse_events
 
 ALTER TABLE ONLY abuse_report_events
     ADD CONSTRAINT abuse_report_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY abuse_report_label_links
-    ADD CONSTRAINT abuse_report_label_links_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY abuse_report_labels
-    ADD CONSTRAINT abuse_report_labels_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY abuse_report_notes
     ADD CONSTRAINT abuse_report_notes_pkey PRIMARY KEY (id);
@@ -38427,18 +38375,6 @@ CREATE INDEX index_abuse_report_events_on_abuse_report_id ON abuse_report_events
 CREATE INDEX index_abuse_report_events_on_organization_id ON abuse_report_events USING btree (organization_id);
 
 CREATE INDEX index_abuse_report_events_on_user_id ON abuse_report_events USING btree (user_id);
-
-CREATE INDEX index_abuse_report_label_links_on_abuse_report_label_id ON abuse_report_label_links USING btree (abuse_report_label_id);
-
-CREATE UNIQUE INDEX index_abuse_report_label_links_on_report_id_and_label_id ON abuse_report_label_links USING btree (abuse_report_id, abuse_report_label_id);
-
-CREATE INDEX index_abuse_report_labels_on_description_trigram ON abuse_report_labels USING gin (description gin_trgm_ops);
-
-CREATE INDEX index_abuse_report_labels_on_organization_id ON abuse_report_labels USING btree (organization_id);
-
-CREATE UNIQUE INDEX index_abuse_report_labels_on_title ON abuse_report_labels USING btree (title);
-
-CREATE INDEX index_abuse_report_labels_on_title_trigram ON abuse_report_labels USING gin (title gin_trgm_ops);
 
 CREATE INDEX index_abuse_report_notes_on_abuse_report_id ON abuse_report_notes USING btree (abuse_report_id);
 
@@ -47731,9 +47667,6 @@ ALTER TABLE ONLY redirect_routes
 ALTER TABLE ONLY scan_result_policies
     ADD CONSTRAINT fk_159e8f8f79 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE NOT VALID;
 
-ALTER TABLE ONLY abuse_report_labels
-    ADD CONSTRAINT fk_15a161dfa4 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_15d2a7a4ae FOREIGN KEY (deploy_key_id) REFERENCES keys(id) ON DELETE CASCADE;
 
@@ -51904,14 +51837,8 @@ ALTER TABLE ONLY vs_code_settings
 ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
     ADD CONSTRAINT fk_rails_e07e457a27 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY abuse_report_label_links
-    ADD CONSTRAINT fk_rails_e15ea8b6bc FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY label_priorities
     ADD CONSTRAINT fk_rails_e161058b0f FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY abuse_report_label_links
-    ADD CONSTRAINT fk_rails_e1a10f7c4e FOREIGN KEY (abuse_report_label_id) REFERENCES abuse_report_labels(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_rails_e1ac527425 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

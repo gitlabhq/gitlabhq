@@ -17,8 +17,6 @@ class AbuseReportsFinder
   end
 
   def execute
-    @reports = reports.with_labels if Feature.enabled?(:abuse_report_labels)
-
     filter_reports
     aggregate_reports
     sort_reports

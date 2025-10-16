@@ -403,11 +403,6 @@ tests = [
     ]
   },
   {
-    explanation: 'Map FOSS GraphQL resolvers to request specs',
-    changed_file: 'app/graphql/resolvers/abuse_report_labels_resolver.rb',
-    expected: ['spec/requests/api/graphql/abuse_report_labels_spec.rb']
-  },
-  {
     explanation: 'Map FOSS GraphQL resolvers to request query specs',
     changed_file: 'app/graphql/resolvers/achievements/user_achievements_resolver.rb',
     expected: ['spec/requests/api/graphql/achievements/user_achievements_query_spec.rb']
@@ -416,11 +411,6 @@ tests = [
     explanation: 'Map EE GraphQL resolvers to request specs',
     changed_file: 'ee/app/graphql/resolvers/geo/registries_resolver.rb',
     expected: ['ee/spec/requests/api/graphql/geo/registries_spec.rb']
-  },
-  {
-    explanation: 'Map FOSS GraphQL mutations to request specs',
-    changed_file: 'app/graphql/mutations/admin/abuse_report_labels/create.rb',
-    expected: ['spec/requests/api/graphql/mutations/admin/abuse_report_labels/create_spec.rb']
   },
   {
     explanation: 'Map EE GraphQL mutations to request specs',

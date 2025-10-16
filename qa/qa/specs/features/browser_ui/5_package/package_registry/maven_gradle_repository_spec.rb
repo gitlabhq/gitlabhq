@@ -86,14 +86,32 @@ module QA
       end
 
       context 'with other token types' do
-        let(:build_gradle) do
+        let(:published_java_source) do
           {
-            file_path: 'build.gradle',
+            file_path: 'src/main/java/com/gitlab/qa/HelloWorld.java',
+            content: <<~JAVA
+              package com.gitlab.qa;
+
+              public class HelloWorld {
+                  public static String getMessage() {
+                      return "Hello from published package!";
+                  }
+              }
+            JAVA
+          }
+        end
+
+        let(:publish_gradle) do
+          {
+            file_path: 'publish.gradle',
             content: <<~GRADLE
             plugins {
               id 'java'
               id 'maven-publish'
             }
+
+            group '#{group_id}'
+            version '#{package_version}'
 
             repositories {
               maven {
@@ -108,13 +126,6 @@ module QA
                 }
               }
             }
-
-            dependencies {
-              implementation group: '#{group_id}', name: '#{artifact_id}', version: '#{package_version}'
-            }
-
-            group '#{group_id}'
-            version '#{package_version}'
 
             publishing {
               publications {
@@ -140,9 +151,56 @@ module QA
           }
         end
 
+        let(:consumer_java_source) do
+          {
+            file_path: 'src/main/java/TestApp.java',
+            content: <<~JAVA
+              import com.gitlab.qa.HelloWorld;
+
+              public class TestApp {
+                  public static void main(String[] args) {
+                      System.out.println(HelloWorld.getMessage());
+                  }
+              }
+            JAVA
+          }
+        end
+
+        let(:install_gradle) do
+          {
+            file_path: 'install.gradle',
+            content: <<~GRADLE
+              plugins {
+                id 'java'
+              }
+
+              group 'install-group'
+              version '3.3.7'
+
+              repositories {
+                maven {
+                  url "#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/maven"
+                  credentials(HttpHeaderCredentials) {
+                    name = '#{maven_header_name}'
+                    value = "#{token}"
+                  }
+                  allowInsecureProtocol = true
+                  authentication {
+                    header(HttpHeaderAuthentication)
+                  }
+                }
+              }
+
+              dependencies {
+                implementation '#{group_id}:#{artifact_id}:#{package_version}'
+              }
+            GRADLE
+          }
+        end
+
         before do
-          with_fixtures([build_gradle]) do |dir|
-            Service::DockerRun::Gradle.new(dir, artifact_id).publish_and_install!
+          with_fixtures([published_java_source, publish_gradle, consumer_java_source, install_gradle]) do |dir|
+            Service::DockerRun::Gradle.new(dir, artifact_id:, package_version:).publish_and_install!
           end
         end
 

@@ -99,7 +99,7 @@ module QA
           max_duration: wait
         ) do
           pipeline = pipeline_finder.call
-          pipeline[:status] == status
+          pipeline && pipeline[:status] == status
         end
       end
     end

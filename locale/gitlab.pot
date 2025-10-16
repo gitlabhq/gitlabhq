@@ -7808,9 +7808,6 @@ msgstr ""
 msgid "An error occurred while fetching label colors."
 msgstr ""
 
-msgid "An error occurred while fetching labels, please try again."
-msgstr ""
-
 msgid "An error occurred while fetching lock information, please try again."
 msgstr ""
 
@@ -7980,9 +7977,6 @@ msgid "An error occurred while saving the settings."
 msgstr ""
 
 msgid "An error occurred while saving your settings. Try saving them again."
-msgstr ""
-
-msgid "An error occurred while searching for labels, please try again."
 msgstr ""
 
 msgid "An error occurred while subscribing to this page. Please try again later."
@@ -24744,12 +24738,6 @@ msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
 msgid "DuoAgenticChat|Duo Agent"
-msgstr ""
-
-msgid "DuoAgenticChat|Duo is your general development assistant"
-msgstr ""
-
-msgid "DuoAgenticChat|GitLab Duo Agent"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
@@ -43550,9 +43538,6 @@ msgid "No label"
 msgstr ""
 
 msgid "No labels"
-msgstr ""
-
-msgid "No labels found"
 msgstr ""
 
 msgid "No labels with such name or description"

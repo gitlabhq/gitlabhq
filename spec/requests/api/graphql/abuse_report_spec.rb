@@ -38,35 +38,6 @@ RSpec.describe 'Querying an Abuse Report', feature_category: :insider_threat do
     end
   end
 
-  describe 'labels' do
-    let_it_be(:abuse_report_label) { create(:abuse_report_label, title: 'Label') }
-    let_it_be(:abuse_report) { create(:abuse_report, labels: [abuse_report_label]) }
-
-    let(:labels_response) do
-      graphql_data_at(:abuse_report, :labels, :nodes)
-    end
-
-    let(:abuse_report_fields) do
-      <<~GRAPHQL
-        labels {
-          nodes {
-            id
-            title
-            description
-            color
-            textColor
-          }
-        }
-      GRAPHQL
-    end
-
-    it 'returns labels' do
-      expect(labels_response).to contain_exactly(
-        a_graphql_entity_for(abuse_report_label)
-      )
-    end
-  end
-
   describe 'notes' do
     let_it_be(:abuse_report) { create(:abuse_report) }
     let_it_be(:note_1) { create(:abuse_report_note, abuse_report: abuse_report) }

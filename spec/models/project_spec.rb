@@ -245,6 +245,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.lfs_objects.to_a).to eql([lfs_object])
     end
 
+    describe '#triggers' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:expired_trigger) { create(:ci_trigger, expires_at: 5.years.ago, project: project) }
+      let_it_be(:valid_trigger) { create(:ci_trigger, expires_at: 1.month.from_now, project: project) }
+
+      it 'returns non-expired triggers by default' do
+        expect(project.triggers).to contain_exactly(valid_trigger)
+      end
+    end
+
     describe 'maintainers association' do
       let_it_be(:project) { create(:project) }
       let_it_be(:maintainer1) { create(:user) }

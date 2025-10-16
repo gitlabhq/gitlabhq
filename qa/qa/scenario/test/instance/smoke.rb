@@ -13,6 +13,8 @@ module QA
           include SharedAttributes
 
           tags :smoke
+
+          pipeline_mappings test_on_cng: %w[cng-relative-url]
         end
       end
     end

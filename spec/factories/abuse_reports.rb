@@ -41,9 +41,5 @@ FactoryBot.define do
         }
       end
     end
-
-    trait :with_labels do
-      labels { [association(:abuse_report_label)] }
-    end
   end
 end

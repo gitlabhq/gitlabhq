@@ -72,28 +72,17 @@ RSpec.describe Ci::PipelineTriggers::CreateService, feature_category: :continuou
         end
       end
 
-      context 'when expiration beyond max expiration date' do
+      context 'when expiration beyond max expiration date', :freeze_time do
         let(:expires_at) { DateTime.now + 100.years }
 
         max_expiry_date = Date.current.advance(days: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS)
         error_text = format(_("must be before %{expiry_date}"), expiry_date: max_expiry_date)
 
-        it 'fails validation when trigger_token_expiration feature flag on',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524233' do
-          stub_feature_flags(trigger_token_expiration: true)
-
+        it 'fails validation' do
           response = service.execute
 
           expect(response.error?).to be(true)
           expect(Gitlab::Json.parse(response.errors[0])['expires_at'][0]).to eq(error_text)
-        end
-
-        it 'passes validation when trigger_token_expiration feature flag off' do
-          stub_feature_flags(trigger_token_expiration: false)
-
-          response = service.execute
-
-          expect(response.success?).to be(true)
         end
       end
     end

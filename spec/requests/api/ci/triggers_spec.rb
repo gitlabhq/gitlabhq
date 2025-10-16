@@ -394,21 +394,6 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
-
-        it 'creates trigger when feature flag turned off' do
-          stub_feature_flags(trigger_token_expiration: false)
-
-          date = DateTime.now + 20.years
-
-          expect do
-            post api("/projects/#{project.id}/triggers", user),
-              params: { description: 'trigger', expires_at: date.iso8601(3) }
-          end.to change { project.triggers.count }.by(1)
-
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to include('description' => 'trigger')
-          expect(json_response).to include('expires_at' => nil)
-        end
       end
 
       context 'when expiration is invalid date string' do

@@ -464,7 +464,7 @@ class Project < ApplicationRecord
   has_many :runner_projects, class_name: 'Ci::RunnerProject', inverse_of: :project
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
-  has_many :triggers, ->(project) { Feature.enabled?(:trigger_token_expiration, project) ? not_expired : self }, class_name: 'Ci::Trigger'
+  has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger'
   has_many :secure_files, class_name: 'Ci::SecureFile', dependent: :restrict_with_error
   has_many :environments
   has_many :environments_for_dashboard, -> { from(with_rank.unfoldered.available, :environments).where('rank <= 3') }, class_name: 'Environment'

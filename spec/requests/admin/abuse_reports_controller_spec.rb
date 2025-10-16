@@ -53,9 +53,8 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
 
   describe 'PUT #update' do
     let_it_be(:report) { create(:abuse_report) }
-    let_it_be(:label1) { create(:abuse_report_label, title: 'Uno') }
 
-    let(:params) { { label_ids: [Gitlab::GlobalId.build(label1, id: label1.id).to_s] } }
+    let(:params) { {} }
     let(:expected_params) { ActionController::Parameters.new(params).permit! }
 
     subject(:request) { put admin_abuse_report_path(report, params) }

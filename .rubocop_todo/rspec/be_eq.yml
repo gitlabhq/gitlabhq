@@ -1199,7 +1199,6 @@ RSpec/BeEq:
     - 'spec/serializers/pipeline_details_entity_spec.rb'
     - 'spec/serializers/project_import_entity_spec.rb'
     - 'spec/services/achievements/update_user_achievement_service_spec.rb'
-    - 'spec/services/admin/abuse_report_labels/create_service_spec.rb'
     - 'spec/services/alert_management/metric_images/upload_service_spec.rb'
     - 'spec/services/authorized_project_update/find_records_due_for_refresh_service_spec.rb'
     - 'spec/services/authorized_project_update/project_recalculate_per_user_service_spec.rb'

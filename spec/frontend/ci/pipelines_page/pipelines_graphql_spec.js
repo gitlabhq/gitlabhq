@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { createAlert } from '~/alert';
@@ -35,6 +35,12 @@ describe('Pipelines app', () => {
 
   const findTable = () => wrapper.findComponent(PipelinesTable);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+
+  const triggerNextPage = async () => {
+    findPagination().vm.$emit('next');
+    await waitForPromises();
+  };
 
   describe('default', () => {
     beforeEach(() => {
@@ -65,8 +71,8 @@ describe('Pipelines app', () => {
         first: 15,
         fullPath: 'gitlab-org/gitlab',
         last: null,
-        nextPageCursor: '',
-        prevPageCursor: '',
+        before: null,
+        after: null,
       });
 
       await waitForPromises();
@@ -84,6 +90,46 @@ describe('Pipelines app', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while loading pipelines',
       });
+    });
+  });
+
+  describe('pagination', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('handles pagination visibility while loading', async () => {
+      expect(findPagination().exists()).toBe(false);
+
+      await waitForPromises();
+
+      expect(findPagination().exists()).toBe(true);
+    });
+
+    it('passes correct props to pagination', async () => {
+      await waitForPromises();
+
+      expect(findPagination().props()).toMatchObject({
+        startCursor: 'eyJpZCI6IjcwMSJ9',
+        endCursor: 'eyJpZCI6IjY3NSJ9',
+        hasNextPage: true,
+        hasPreviousPage: false,
+      });
+    });
+
+    it('updates query variables when going to next page', async () => {
+      await waitForPromises();
+
+      await triggerNextPage();
+
+      expect(successHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        first: 15,
+        last: null,
+        before: null,
+        after: 'eyJpZCI6IjY3NSJ9',
+      });
+      expect(findPagination().props()).toMatchObject({});
     });
   });
 });

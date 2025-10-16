@@ -105,8 +105,6 @@ count_within_namespaces:
   file: ee/app/models/ee/group.rb
 provisioned_by_this_group?:
   file: ee/app/models/ee/group_member.rb
-rebase_commit_is_different?:
-  file: ee/app/models/ee/merge_request.rb
 old_path_with_namespace_for:
   file: ee/app/models/ee/namespace.rb
 default_plan?:

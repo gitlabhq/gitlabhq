@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['AbuseReport'], feature_category: :insider_threat do
-  let(:fields) { %w[id labels discussions notes] }
+  let(:fields) { %w[id discussions notes] }
 
   specify { expect(described_class.graphql_name).to eq('AbuseReport') }
 

@@ -294,16 +294,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'returns non-expired triggers by default' do
         expect(user.triggers).to contain_exactly(valid_trigger)
       end
-
-      context 'with FF trigger_token_expiration disabled' do
-        before do
-          stub_feature_flags(trigger_token_expiration: false)
-        end
-
-        it 'returns all triggers by default' do
-          expect(user.triggers).to contain_exactly(expired_trigger, valid_trigger)
-        end
-      end
     end
 
     it do

@@ -144,7 +144,6 @@
     "CiJob"
   ],
   "LabelInterface": [
-    "AbuseReportLabel",
     "Label"
   ],
   "MarkdownPaths": [

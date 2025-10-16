@@ -118,6 +118,8 @@ GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 a
 ## 18.1.0
 
 - Elasticsearch indexing might fail with `strict_dynamic_mapping_exception` errors for Elasticsearch version 7. To resolve, see the "Possible fixes" section in [issue 566413](https://gitlab.com/gitlab-org/gitlab/-/issues/566413).
+- GitLab versions 18.1.0 and 18.1.1 show errors in PostgreSQL logs such as `ERROR:  relation "ci_job_artifacts" does not exist at ...`. 
+  These errors in the logs can be safely ignored but could trigger monitoring alerts, including on Geo sites. To resolve this issue, update to GitLab 18.1.2 or later.
 
 ### Geo installations 18.1.0
 

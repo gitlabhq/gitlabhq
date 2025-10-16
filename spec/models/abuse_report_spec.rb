@@ -20,15 +20,6 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to have_many(:notes) }
     it { is_expected.to have_many(:user_mentions).class_name('AntiAbuse::Reports::UserMention') }
 
-    it do
-      is_expected.to have_many(:label_links).inverse_of(:abuse_report).class_name('AntiAbuse::Reports::LabelLink')
-    end
-
-    it do
-      is_expected.to have_many(:labels).through(:label_links).source(:abuse_report_label)
-        .class_name('AntiAbuse::Reports::Label')
-    end
-
     it "aliases reporter to author" do
       expect(subject.author).to be(subject.reporter)
     end
