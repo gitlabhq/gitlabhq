@@ -3234,11 +3234,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     using RSpec::Parameterized::TableSyntax
 
     where(:role, :expected_name) do
-      :guest      | 'guest'
-      :reporter   | 'reporter'
-      :developer  | 'developer'
-      :maintainer | 'maintainer'
-      :owner      | 'owner'
+      :guest      | 'Guest'
+      :reporter   | 'Reporter'
+      :developer  | 'Developer'
+      :maintainer | 'Maintainer'
+      :owner      | 'Owner'
     end
 
     with_them do
@@ -3282,7 +3282,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns the role from the project' do
-        expect(project_namespace.user_role(user)).to eq('developer')
+        expect(project_namespace.user_role(user)).to eq('Developer')
       end
     end
   end

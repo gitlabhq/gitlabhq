@@ -38,7 +38,7 @@ Create custom agents to accomplish specific tasks, like creating
 merge requests or reviewing code. Or, use the AI Catalog to discover
 agents created by GitLab.
 
-When you're ready to interact with an agent, you can add it to a project or execute a test run.
+When you're ready to interact with an agent, you can enable it or execute a test run.
 
 ## Prerequisites
 
@@ -77,17 +77,17 @@ To create an agent:
 
 The agent is added to the AI Catalog.
 
-## Add an agent to a project
+## Enable an agent
 
-Add an agent to a project to use it with Chat.
+Enable an agent in a project to use it with Chat.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog** and find the agent you want to add.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Add to project**.
+1. Select **AI Catalog** and find the agent you want to enable.
+1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Enable in project**.
 
 The agent appears on the project's **Agents** page.
 

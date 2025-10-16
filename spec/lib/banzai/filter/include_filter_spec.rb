@@ -13,7 +13,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   let_it_be(:wiki_data) { "---\ntitle: Foo\n---\nincluded text" }
   let_it_be(:max_includes) { 10 }
 
-  let_it_be(:filter_context) do
+  let_it_be(:context) do
     {
       project: project,
       max_includes: max_includes,
@@ -23,7 +23,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
     }
   end
 
-  let_it_be(:filter_wiki_context) do
+  let_it_be(:wiki_context) do
     {
       project: project,
       max_includes: max_includes,
@@ -43,11 +43,11 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   end
 
   it 'works for wikis' do
-    expect(filter(text_include, filter_wiki_context)).to eq file_data
+    expect(filter(text_include, wiki_context)).to eq file_data
   end
 
   it 'works for blobs' do
-    expect(filter(text_include, filter_context)).to eq file_data
+    expect(filter(text_include, context)).to eq file_data
   end
 
   it 'does not work for non-wiki/blob' do
@@ -68,25 +68,25 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
 
       with_them do
         it 'does not change the text' do
-          expect(filter(markdown, filter_context)).to eq markdown
+          expect(filter(markdown, context)).to eq markdown
         end
       end
     end
 
     context 'when correct syntax' do
       it 'recognizes file syntax' do
-        expect(filter('::include{file=file.md}', filter_context)).to eq file_data
+        expect(filter('::include{file=file.md}', context)).to eq file_data
       end
 
       it 'recognizes file syntax with space' do
         allow(project.repository).to receive(:blob_at).with(ref, 'file two.md').and_return(file_blob)
         allow(Gitlab::Git::Blob).to receive(:find).with(project.repository, ref, 'file two.md').and_return(file_blob)
 
-        expect(filter('::include{file=file two.md}', filter_context)).to eq file_data
+        expect(filter('::include{file=file two.md}', context)).to eq file_data
       end
 
       it 'recognizes url syntax' do
-        expect(filter('::include{file=https://example.com}', filter_context))
+        expect(filter('::include{file=https://example.com}', context))
           .to eq '[https://example.com](https://example.com)'
       end
     end
@@ -95,13 +95,13 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
       allow(Gitlab::Utils::Gsub).to receive(:gsub_with_limit)
         .with(anything, anything, limit: anything).and_yield(0 => 'foo')
 
-      expect(filter('::include{file=file.md}', filter_context)).to eq 'foo'
+      expect(filter('::include{file=file.md}', context)).to eq 'foo'
     end
   end
 
   context 'when reading a file in the repository' do
     it 'returns the blob contents' do
-      expect(filter(text_include, filter_context)).to eq file_data
+      expect(filter(text_include, context)).to eq file_data
     end
 
     context 'when the blob does not exist' do
@@ -110,14 +110,14 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
       end
 
       it 'replaces text with error' do
-        expect(filter('::include{file=missing.md}', filter_context))
+        expect(filter('::include{file=missing.md}', context))
           .to eq "**Error including '[missing.md](missing.md)' : not found**\n"
       end
     end
 
     it 'allows at most N blob includes' do
       text = "#{text_include}\n" * (max_includes + 1)
-      result = filter(text, filter_context)
+      result = filter(text, context)
 
       expect(result).to start_with("#{file_data}\n" * max_includes)
       expect(result.chomp).to end_with(text_include)
@@ -132,7 +132,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
       end
 
       it 'strips any frontmatter' do
-        expect(filter('::include{file=wiki.md}', filter_wiki_context)).to eq file_data
+        expect(filter('::include{file=wiki.md}', wiki_context)).to eq file_data
       end
     end
   end
@@ -149,12 +149,12 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
       end
 
       it 'does not allow url includes' do
-        expect(filter(http_include, filter_context)).to eq '[http://example.com](http://example.com)'
-        expect(filter(https_include, filter_context)).to eq '[https://example.com](https://example.com)'
+        expect(filter(http_include, context)).to eq '[http://example.com](http://example.com)'
+        expect(filter(https_include, context)).to eq '[https://example.com](https://example.com)'
       end
 
       it 'allows non-url includes' do
-        expect(filter(text_include, filter_context)).to include 'included text'
+        expect(filter(text_include, context)).to include 'included text'
       end
     end
 
@@ -166,14 +166,14 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
       it 'fetches the data using a GET request' do
         stub_request(:get, http_url).to_return(status: 200, body: 'something')
 
-        expect(filter(http_include, filter_context)).to eq 'something'
+        expect(filter(http_include, context)).to eq 'something'
       end
 
       context 'when the URI returns 404' do
         it 'raises NoData' do
           stub_request(:get, http_url).to_return(status: 404, body: 'not found')
 
-          expect(filter(http_include, filter_context))
+          expect(filter(http_include, context))
             .to eq "**Error including '[http://example.com](http://example.com)' : not readable**\n"
         end
       end
@@ -182,7 +182,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
         it 'rescues the error' do
           allow(Gitlab::Git::Blob).to receive(:find).with(project.repository, ref, anything).and_return(nil)
 
-          expect(filter(invalid_url, filter_context))
+          expect(filter(invalid_url, context))
             .to eq "**Error including '[http://example.com/foo bar](http://example.com/foo bar)' : not found**\n"
         end
       end
@@ -191,7 +191,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
         stub_request(:get, http_url).to_return(status: 200, body: 'something')
 
         text = "#{http_include}\n" * (max_includes + 1)
-        result = filter(text, filter_context)
+        result = filter(text, context)
 
         expect(result).to start_with("something\n" * max_includes)
         expect(result.chomp).to end_with(http_include)
@@ -202,7 +202,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
   context 'when including' do
     it 'truncates to our size limits' do
       text = "#{text_include}\n" * max_includes
-      result = filter(text, filter_context.merge(limit: 10))
+      result = filter(text, context.merge(limit: 10))
 
       expect(result).to eq('include...')
     end

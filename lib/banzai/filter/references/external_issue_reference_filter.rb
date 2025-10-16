@@ -12,6 +12,16 @@ module Banzai
         self.reference_type = :external_issue
         self.object_class   = ExternalIssue
 
+        def self.external_issues_cached(project, attribute)
+          cached_attributes = Gitlab::SafeRequestStore[:banzai_external_issues_tracker_attributes] ||= Hash.new { |h, k| h[k] = {} }
+          cached_attributes[project.id][attribute] = project.public_send(attribute) if cached_attributes[project.id][attribute].nil? # rubocop:disable GitlabSecurity/PublicSend
+          cached_attributes[project.id][attribute]
+        end
+
+        def self.default_issues_tracker?(project)
+          external_issues_cached(project, :default_issues_tracker?)
+        end
+
         # Public: Find `JIRA-123` issue references in text
         #
         #   references_in(text, pattern) do |match, issue|
@@ -38,7 +48,7 @@ module Banzai
 
         def call
           # Early return if the project isn't using an external tracker
-          return doc if project.nil? || default_issues_tracker?
+          return doc if project.nil? || self.class.default_issues_tracker?(project)
 
           super
         end
@@ -55,13 +65,11 @@ module Banzai
         # links have `gfm` and `gfm-issue` class names attached for styling.
         def object_link_filter(text, pattern, link_content: nil, link_reference: false)
           references_in(text) do |match, id|
-            url = url_for_issue(id)
             klass = reference_class(:issue)
             data  = data_attribute(project: project.id, external_issue: id)
             content = link_content || match
 
             write_opening_tag("a", {
-              "href" => url,
               "title" => issue_title,
               "class" => klass,
               **data
@@ -69,37 +77,52 @@ module Banzai
           end
         end
 
-        def url_for_issue(issue_id)
-          return '' if project.nil?
-
-          url = if only_path?
-                  project.external_issue_tracker.issue_path(issue_id)
-                else
-                  project.external_issue_tracker.issue_url(issue_id)
-                end
-
-          # Ensure we return a valid URL to prevent possible XSS.
-          URI.parse(url).to_s
-        rescue URI::InvalidURIError
-          ''
-        end
-
-        def default_issues_tracker?
-          external_issues_cached(:default_issues_tracker?)
-        end
-
         def object_reference_pattern
-          external_issues_cached(:external_issue_reference_pattern)
+          self.class.external_issues_cached(project, :external_issue_reference_pattern)
         end
 
         def issue_title
           "Issue in #{project.external_issue_tracker.title}"
         end
 
-        def external_issues_cached(attribute)
-          cached_attributes = Gitlab::SafeRequestStore[:banzai_external_issues_tracker_attributes] ||= Hash.new { |h, k| h[k] = {} }
-          cached_attributes[project.id][attribute] = project.public_send(attribute) if cached_attributes[project.id][attribute].nil? # rubocop:disable GitlabSecurity/PublicSend
-          cached_attributes[project.id][attribute]
+        # Called from PostProcessPipeline to add hrefs to anchors created above.
+        #
+        # We might be operating on cached HTML which already has hrefs;
+        # replace them anyway, as they could be out of date.
+        class LinkResolutionFilter < HTML::Pipeline::Filter
+          def call
+            # Early return if the project isn't using an external tracker
+            return doc if project.nil? || ExternalIssueReferenceFilter.default_issues_tracker?(project)
+
+            doc.xpath(query).each do |node|
+              node["href"] = url_for_issue(node["data-external-issue"])
+            end
+
+            doc
+          end
+
+          def query
+            @query ||= %{descendant-or-self::a[
+              @data-reference-type="external_issue" and boolean(@data-external-issue)
+            ]}
+          end
+
+          def project
+            context[:project]
+          end
+
+          def url_for_issue(issue_id)
+            url = if context[:only_path]
+                    project.external_issue_tracker.issue_path(issue_id)
+                  else
+                    project.external_issue_tracker.issue_url(issue_id)
+                  end
+
+            # Ensure we return a valid URL to prevent possible XSS.
+            URI.parse(url).to_s
+          rescue URI::InvalidURIError
+            ''
+          end
         end
       end
     end

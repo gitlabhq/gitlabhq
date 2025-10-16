@@ -5,40 +5,51 @@ require 'spec_helper'
 RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
   it_behaves_like 'sanitize pipeline'
 
+  describe ':reference_filter_nodes reuse' do
+    let_it_be(:project) { create(:project, :public) }
+
+    it 'links an internal issues and keep updated nodes in result[:reference_filter_nodes]', :aggregate_failures do
+      issue = create(:issue, project: project)
+      markdown = "text #{issue.to_reference(project, full: true)}"
+
+      result = described_class.call(markdown, project: project)
+      link = result[:output].css('a').first
+      text = result[:output].children.first
+
+      expect(link['href']).to eq(Gitlab::Routing.url_helpers.project_issue_path(project, issue))
+      expect(result[:reference_filter_nodes]).to eq([text])
+    end
+
+    it 'executes :each_node only once for first reference filter' do
+      issue = create(:issue, project: project)
+      markdown = "text #{issue.to_reference(project, full: true)}"
+
+      # The pipeline is run twice, once for the issue title, another for the markdown.
+      expect_any_instance_of(Banzai::Filter::References::ReferenceFilter).to receive(:each_node).twice.and_call_original
+
+      described_class.call(markdown, project: project)
+    end
+  end
+
   describe 'integration between parsing regular and external issue references' do
     let_it_be(:project) { create(:project, :with_redmine_integration, :public) }
 
+    # The ExternalIssueReferenceFilter once did all its work in the GfmPipeline --- now it still finds
+    # the references, but doesn't resolve the link hrefs, which is done in the PostProcessPipeline.
+    # To verify regular and external issue references still play together nicely, we run the content
+    # through the GfmPipeline and PostProcessPipeline.
+    def gfm_then_postprocess(markdown, context)
+      gfm_doc = described_class.to_document(markdown, context)
+      Banzai::Pipeline::PostProcessPipeline.to_document(gfm_doc, described_class.transform_context(context))
+    end
+
     context 'when internal issue tracker is enabled' do
       context 'when shorthand pattern #ISSUE_ID is used' do
-        it 'links an internal issues and keep updated nodes in result[:reference_filter_nodes]', :aggregate_failures do
-          issue = create(:issue, project: project)
-          markdown = "text #{issue.to_reference(project, full: true)}"
-
-          result = described_class.call(markdown, project: project)
-          link = result[:output].css('a').first
-          text = result[:output].children.first
-
-          expect(link['href']).to eq(Gitlab::Routing.url_helpers.project_issue_path(project, issue))
-          expect(result[:reference_filter_nodes]).to eq([text])
-        end
-      end
-
-      it 'executes :each_node only once for first reference filter' do
-        issue = create(:issue, project: project)
-        markdown = "text #{issue.to_reference(project, full: true)}"
-
-        # The pipeline is run twice, once for the issue title, another for the markdown.
-        expect_any_instance_of(Banzai::Filter::References::ReferenceFilter).to receive(:each_node).twice.and_call_original
-
-        described_class.call(markdown, project: project)
-      end
-
-      context 'when shorthand pattern #ISSUE_ID is used' do
-        it 'links an internal issue  if it exists' do
+        it 'links an internal issue if it exists' do
           issue = create(:issue, project: project)
           markdown = issue.to_reference(project, full: true)
 
-          result = described_class.call(markdown, project: project)[:output]
+          result = gfm_then_postprocess(markdown, project: project)
           link = result.css('a').first
 
           expect(link['href']).to eq(
@@ -49,7 +60,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
         it 'does not link any issue if it does not exist on GitLab' do
           markdown = '#12'
 
-          result = described_class.call(markdown, project: project)[:output]
+          result = gfm_then_postprocess(markdown, project: project)
           expect(result.css('a')).to be_empty
         end
       end
@@ -57,10 +68,26 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
       it 'allows to use long external reference syntax for Redmine' do
         markdown = 'API_32-12'
 
-        result = described_class.call(markdown, project: project)[:output]
+        result = gfm_then_postprocess(markdown, project: project)
         link = result.css('a').first
 
         expect(link['href']).to eq 'http://issues.example.com/issues/12'
+      end
+
+      it 'populates references and creates an anchor using external reference syntax' do
+        # Test the regular pipeline only, without post-processing; no href,
+        # but should do everything else.
+        markdown = 'API_32-12'
+
+        result = described_class.call(markdown, project: project)
+
+        # We don't expect this to produce a node here.
+        expect(result[:reference_filter_nodes]).to eq([])
+
+        link = result[:output].css('a').first
+
+        expect(link['href']).to be_nil
+        expect(link['data-external-issue']).to eq("12")
       end
 
       it 'parses cross-project references to regular issues' do
@@ -68,7 +95,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
         issue = create(:issue, project: other_project)
         markdown = issue.to_reference(project, full: true)
 
-        result = described_class.call(markdown, project: project)[:output]
+        result = gfm_then_postprocess(markdown, project: project)
         link = result.css('a').first
 
         expect(link['href']).to eq(
@@ -86,7 +113,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
       it 'allows to use shorthand external reference syntax for Redmine' do
         markdown = '#12'
 
-        result = described_class.call(markdown, project: project)[:output]
+        result = gfm_then_postprocess(markdown, project: project)
         link = result.css('a').first
 
         expect(link['href']).to eq 'http://issues.example.com/issues/12'
@@ -95,7 +122,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
       it 'allows to use long external reference syntax for Redmine' do
         markdown = 'API_32-12'
 
-        result = described_class.call(markdown, project: project)[:output]
+        result = gfm_then_postprocess(markdown, project: project)
         link = result.css('a').first
 
         expect(link['href']).to eq 'http://issues.example.com/issues/12'
@@ -106,7 +133,7 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :markdown do
         issue = create(:issue, project: other_project)
         markdown = issue.to_reference(project, full: true)
 
-        result = described_class.call(markdown, project: project)[:output]
+        result = gfm_then_postprocess(markdown, project: project)
         link = result.css('a').first
 
         expect(link['href']).to eq(

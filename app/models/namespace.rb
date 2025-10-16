@@ -859,7 +859,7 @@ class Namespace < ApplicationRecord
     return unless user && !user_namespace?
 
     user_access = max_member_access_for_user(user)
-    Gitlab::Access.human_access(user_access)&.downcase
+    Gitlab::Access.human_access(user_access)
   end
 
   private

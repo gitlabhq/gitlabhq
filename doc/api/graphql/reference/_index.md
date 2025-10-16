@@ -30945,8 +30945,11 @@ Describes the usage of consumables under the subscription.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageenddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusagelastupdated"></a>`lastUpdated` | [`ISO8601DateTime`](#iso8601datetime) | Date and time when the usage data was last updated. |
 | <a id="gitlabsubscriptionusagepoolusage"></a>`poolUsage` | [`GitlabSubscriptionPoolUsage`](#gitlabsubscriptionpoolusage) | Consumption usage for the subscription shared pool. |
+| <a id="gitlabsubscriptionusagepurchasecreditspath"></a>`purchaseCreditsPath` | [`String`](#string) | URL to purchase GitLab Credits. |
+| <a id="gitlabsubscriptionusagestartdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusageusersusage"></a>`usersUsage` | [`GitlabSubscriptionUsageUsersUsage`](#gitlabsubscriptionusageusersusage) | Consumption usage for users under the subscription. |
 
 ### `GitlabSubscriptionUsageUserUsage`

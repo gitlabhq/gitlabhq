@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature_category: :markdown do
   include FilterSpecHelper
 
+  # The ExternalIssueReferenceFilter takes place in two parts; the filter itself, and
+  # ExternalIssueReferenceFilter::LinkResolutionFilter, which is run in the PostProcessPipeline and adds the href.
+  # Here we additionally run the LinkResolutionFilter to assert the final results.
+  def filter(markdown, context = {})
+    doc = super
+    described_class::LinkResolutionFilter.call(doc, filter_context(context))
+  end
+
   let_it_be_with_refind(:project) { create(:project) }
 
   shared_examples_for "external issue tracker" do
@@ -23,7 +31,7 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
     end
 
     it 'ignores valid references when using default tracker' do
-      expect(project).to receive(:default_issues_tracker?).and_return(true)
+      expect(project).to receive(:default_issues_tracker?).twice.and_return(true)
 
       exp = act = "Issue #{reference}"
       expect(filter(act).to_html).to eq exp

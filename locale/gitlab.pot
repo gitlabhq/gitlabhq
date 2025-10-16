@@ -2476,28 +2476,19 @@ msgstr ""
 msgid "AICatalog|Access rights"
 msgstr ""
 
-msgid "AICatalog|Add this %{itemType} to a project"
-msgstr ""
-
-msgid "AICatalog|Add to project"
-msgstr ""
-
-msgid "AICatalog|Agent added successfully to %{name}."
-msgstr ""
-
 msgid "AICatalog|Agent configuration"
 msgstr ""
 
-msgid "AICatalog|Agent could not be added: %{agentName}"
+msgid "AICatalog|Agent created."
 msgstr ""
 
-msgid "AICatalog|Agent created successfully."
-msgstr ""
-
-msgid "AICatalog|Agent deleted successfully."
+msgid "AICatalog|Agent deleted."
 msgstr ""
 
 msgid "AICatalog|Agent does not exist"
+msgstr ""
+
+msgid "AICatalog|Agent enabled in %{name}."
 msgstr ""
 
 msgid "AICatalog|Agent not found."
@@ -2506,7 +2497,7 @@ msgstr ""
 msgid "AICatalog|Agent removed successfully from this project."
 msgstr ""
 
-msgid "AICatalog|Agent updated successfully."
+msgid "AICatalog|Agent updated."
 msgstr ""
 
 msgid "AICatalog|Agents"
@@ -2593,6 +2584,30 @@ msgstr ""
 msgid "AICatalog|Copy of"
 msgstr ""
 
+msgid "AICatalog|Could not create agent in the project. Check that the project meets the %{link_start}prerequisites%{link_end} and try again."
+msgstr ""
+
+msgid "AICatalog|Could not create flow. Try again."
+msgstr ""
+
+msgid "AICatalog|Could not enable agent in the project. Check that the project meets the %{link_start}prerequisites%{link_end} and try again."
+msgstr ""
+
+msgid "AICatalog|Could not enable agent: %{agentName}"
+msgstr ""
+
+msgid "AICatalog|Could not enable flow in the project. Try again. %{error}"
+msgstr ""
+
+msgid "AICatalog|Could not enable flow: %{flowName}"
+msgstr ""
+
+msgid "AICatalog|Could not update agent. Try again."
+msgstr ""
+
+msgid "AICatalog|Could not update flow. Try again."
+msgstr ""
+
 msgid "AICatalog|Create a session that uses this agent."
 msgstr ""
 
@@ -2647,6 +2662,12 @@ msgstr ""
 msgid "AICatalog|Edit flow"
 msgstr ""
 
+msgid "AICatalog|Enable %{itemType} in a project"
+msgstr ""
+
+msgid "AICatalog|Enable in project"
+msgstr ""
+
 msgid "AICatalog|Explore AI Catalog agents"
 msgstr ""
 
@@ -2668,22 +2689,19 @@ msgstr ""
 msgid "AICatalog|Flow"
 msgstr ""
 
-msgid "AICatalog|Flow added successfully to %{name}."
-msgstr ""
-
 msgid "AICatalog|Flow configuration"
 msgstr ""
 
-msgid "AICatalog|Flow could not be added: %{flowName}"
+msgid "AICatalog|Flow created."
 msgstr ""
 
-msgid "AICatalog|Flow created successfully."
-msgstr ""
-
-msgid "AICatalog|Flow deleted successfully."
+msgid "AICatalog|Flow deleted."
 msgstr ""
 
 msgid "AICatalog|Flow does not exist"
+msgstr ""
+
+msgid "AICatalog|Flow enabled in %{name}."
 msgstr ""
 
 msgid "AICatalog|Flow node"
@@ -2698,7 +2716,7 @@ msgstr ""
 msgid "AICatalog|Flow removed successfully from this project."
 msgstr ""
 
-msgid "AICatalog|Flow updated successfully."
+msgid "AICatalog|Flow updated."
 msgstr ""
 
 msgid "AICatalog|Flows"
@@ -2809,24 +2827,6 @@ msgstr ""
 msgid "AICatalog|Test run executed successfully, see %{linkStart}Session %{workflowId}%{linkEnd}."
 msgstr ""
 
-msgid "AICatalog|The agent could not be added to the project. Check that the project meets the %{link_start}prerequisites%{link_end} and try again."
-msgstr ""
-
-msgid "AICatalog|The agent could not be updated. Try again."
-msgstr ""
-
-msgid "AICatalog|The flow could not be added to the project. Try again. %{error}"
-msgstr ""
-
-msgid "AICatalog|The flow could not be added. Try again."
-msgstr ""
-
-msgid "AICatalog|The flow could not be created. Try again."
-msgstr ""
-
-msgid "AICatalog|The flow could not be updated. Try again."
-msgstr ""
-
 msgid "AICatalog|The item consumer must belong to only one organization, group, or project"
 msgstr ""
 
@@ -2836,7 +2836,7 @@ msgstr ""
 msgid "AICatalog|Third-party flow"
 msgstr ""
 
-msgid "AICatalog|This %{itemType} is private and can only be added to the project it was created in. Duplicate the agent to use the same configuration in other projects."
+msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in. Duplicate the agent to use the same configuration in other projects."
 msgstr ""
 
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"
