@@ -129,6 +129,8 @@ class Issue < ApplicationRecord
     inverse_of: :work_item,
     autosave: true
 
+  has_one :work_item_transition, class_name: 'WorkItems::Transition', inverse_of: :work_item
+
   alias_method :escalation_status, :incident_management_issuable_escalation_status
 
   accepts_nested_attributes_for :issuable_severity, update_only: true

@@ -79,7 +79,7 @@ This user has:
 Your merge request homepage shows more information about these merge requests. To see it,
 use any of these methods:
 
-- Use the <kbd>Shift</kbd> + <kbd>m</kbd> [keyboard shortcut](../../shortcuts.md).
+- Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../shortcuts.md).
 - On the left sidebar, select **Merge requests** ({{< icon name="merge-request-open">}}).
 - On the left sidebar, select **Search or go to**, then from the dropdown list, select **Merge requests**.
 

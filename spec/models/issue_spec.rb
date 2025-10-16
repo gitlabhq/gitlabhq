@@ -37,6 +37,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:customer_relations_contacts) }
     it { is_expected.to have_many(:incident_management_timeline_events) }
     it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::IssueAssignmentEvent').inverse_of(:issue) }
+    it { is_expected.to have_one(:work_item_transition).class_name('::WorkItems::Transition') }
 
     describe '#assignees_by_name_and_id' do
       it 'returns users ordered by name ASC, id DESC' do

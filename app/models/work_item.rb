@@ -21,7 +21,6 @@ class WorkItem < Issue
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
   has_one :weights_source, class_name: 'WorkItems::WeightsSource'
-  has_one :work_item_transition, class_name: 'WorkItems::Transition', inverse_of: :work_item
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',

@@ -83,6 +83,7 @@ export default {
     return {
       isReplying: false,
       isResolving: false,
+      // eslint-disable-next-line vue/no-unused-properties -- `resolveAsThread` is used by the `resolvable` mixin
       resolveAsThread: true,
     };
   },
@@ -92,7 +93,6 @@ export default {
       'getNoteableData',
       'userCanReply',
       'showJumpToNextDiscussion',
-      'getUserData',
     ]),
     diffFile() {
       const diffFile = this.discussion.diff_file;
@@ -105,9 +105,6 @@ export default {
           `/-/blob/${diffFile.content_sha}/${diffFile.new_path}`,
         ),
       };
-    },
-    currentUser() {
-      return this.getUserData;
     },
     isLoggedIn() {
       return isLoggedIn();
@@ -174,7 +171,7 @@ export default {
          * https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19118
          *
          * For most diff discussions we should have a `diff_file`.
-         * However in some cases we might we might not have this object.
+         * However in some cases we might not have this object.
          * In these we need to check if the `original_position.position_type`
          * is either a file or an image, doing this allows us to still
          * render the reply actions.
@@ -217,6 +214,7 @@ export default {
     ...mapActions(useNotes, [
       'saveNote',
       'removePlaceholderNotes',
+      // eslint-disable-next-line vue/no-unused-properties -- toggleResolveNote() used by the `Resolvable` mixin
       'toggleResolveNote',
       'removeConvertedDiscussion',
       'expandDiscussion',

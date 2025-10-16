@@ -4,7 +4,7 @@ import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -16,6 +16,7 @@ import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { makeDrawerItemFullPath, makeDrawerUrlParam, canRouterNav } from '../utils';
+import WorkItemMetadataProvider from './work_item_metadata_provider.vue';
 
 export default {
   name: 'WorkItemDrawer',
@@ -29,6 +30,7 @@ export default {
     GlButton,
     MountingPortal,
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
+    WorkItemMetadataProvider,
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -75,9 +77,6 @@ export default {
   computed: {
     activeItemFullPath() {
       return makeDrawerItemFullPath(this.activeItem, this.fullPath, this.issuableType);
-    },
-    modalIsGroup() {
-      return this.issuableType.toLowerCase() === TYPE_EPIC;
     },
     headerReference() {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);
@@ -353,19 +352,20 @@ export default {
       </div>
     </template>
     <template #default>
-      <work-item-detail
-        :key="activeItem.iid"
-        :work-item-iid="activeItem.iid"
-        :work-item-full-path="activeItemFullPath"
-        :modal-is-group="modalIsGroup"
-        :is-board="isBoard"
-        is-drawer
-        class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
-        @deleteWorkItem="deleteWorkItem"
-        @work-item-updated="handleWorkItemUpdated"
-        @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
-        v-on="$listeners"
-      />
+      <work-item-metadata-provider :full-path="activeItemFullPath">
+        <work-item-detail
+          :key="activeItem.iid"
+          :work-item-iid="activeItem.iid"
+          :work-item-full-path="activeItemFullPath"
+          :is-board="isBoard"
+          is-drawer
+          class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
+          @deleteWorkItem="deleteWorkItem"
+          @work-item-updated="handleWorkItemUpdated"
+          @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
+          v-on="$listeners"
+        />
+      </work-item-metadata-provider>
     </template>
   </gl-drawer>
   <mounting-portal v-else-if="open" mount-to="#contextual-panel-portal" append>
@@ -417,19 +417,20 @@ export default {
           @click="handleClose"
         />
       </div>
-      <work-item-detail
-        :key="activeItem.iid"
-        :work-item-iid="activeItem.iid"
-        :work-item-full-path="activeItemFullPath"
-        :modal-is-group="modalIsGroup"
-        :is-board="isBoard"
-        is-drawer
-        class="js-dynamic-panel-inner work-item-drawer-content !gl-pt-0 @xl/panel:!gl-px-6"
-        @deleteWorkItem="deleteWorkItem"
-        @work-item-updated="handleWorkItemUpdated"
-        @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
-        v-on="$listeners"
-      />
+      <work-item-metadata-provider :full-path="activeItemFullPath">
+        <work-item-detail
+          :key="activeItem.iid"
+          :work-item-iid="activeItem.iid"
+          :work-item-full-path="activeItemFullPath"
+          :is-board="isBoard"
+          is-drawer
+          class="js-dynamic-panel-inner work-item-drawer-content !gl-pt-0 @xl/panel:!gl-px-6"
+          @deleteWorkItem="deleteWorkItem"
+          @work-item-updated="handleWorkItemUpdated"
+          @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
+          v-on="$listeners"
+        />
+      </work-item-metadata-provider>
     </div>
   </mounting-portal>
 </template>

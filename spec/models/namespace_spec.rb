@@ -991,6 +991,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
   end
 
+  it_behaves_like 'an isolatable', :namespace
+
   describe 'archive and unarchive' do
     let_it_be(:namespace) { create(:group) }
 

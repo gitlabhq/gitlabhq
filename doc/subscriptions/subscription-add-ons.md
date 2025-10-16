@@ -38,23 +38,21 @@ GitLab Duo Core is included automatically if you have:
 - GitLab 18.0 or later.
 - A Premium or Ultimate subscription.
 
+If you are an existing customer from GitLab 17.11 or earlier,
+you must [turn on Web or IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo Core.
+
+If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
+
+To view which roles can access GitLab Duo Core, see [GitLab Duo group permissions](../user/permissions.md#gitlab-duo-group-permissions).
+
+### GitLab Duo Self-Hosted
+
 If you are a customer with an offline license, GitLab Duo Core is not available on
 GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI gateway.
 
 If you are a customer with an online license, you can use GitLab Duo Core in combination with
 GitLab Duo Self-Hosted, but to enable GitLab Duo Core you must select the GitLab AI vendor model
 for GitLab Duo Chat and Code Suggestions for the entire instance.
-
-If you are an existing customer from GitLab 17.11 or earlier, you must [turn on Web or IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo Core.
-
-If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
-
-Users assigned the following roles have access to GitLab Duo Core:
-
-- Reporter
-- Developer
-- Maintainer
-- Owner
 
 ### GitLab Duo Core limits
 

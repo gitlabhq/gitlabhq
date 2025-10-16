@@ -8,6 +8,6 @@ description: https://docs.gitlab.com/ee/user/project/releases/#release-evidence
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17217
 milestone: '12.4'
 gitlab_schema: gitlab_main_org
-table_size: small
+table_size: medium
 sharding_key:
   project_id: projects

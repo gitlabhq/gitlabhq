@@ -226,6 +226,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
   end
 
+  it_behaves_like 'an isolatable', :organization
+
   describe '#owner_user_ids' do
     let_it_be(:organization_users) { create_list(:organization_user, 3, :owner, organization: organization) }
 

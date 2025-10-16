@@ -5,7 +5,6 @@ exports[`Work Item Note Replying should have the note body and header 1`] = `
   actiontext=""
   author="[object Object]"
   emailparticipant=""
-  noteabletype=""
   noteurl=""
   showspinner="true"
 />

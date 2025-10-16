@@ -40,7 +40,7 @@ To review a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Either:
-   - Press <kbd>Shift</kbd> + <kbd>r</kbd> to go to your **Review requests** page.
+   - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Review requests** page.
    - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
 <!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 

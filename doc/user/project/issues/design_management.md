@@ -137,7 +137,7 @@ To add a design to an issue:
      ![Uploading a new design by dragging and dropping it onto the issue page.](img/design_drag_and_drop_uploads_v13_2.png)
 
    - Take a screenshot or copy a local image file into your clipboard, hover your cursor over the
-     drop zone, and press <kbd>Control</kbd> or <kbd>Command</kbd> + <kbd>V</kbd>.
+     drop zone, and press <kbd>Control</kbd> or <kbd>Command</kbd>+<kbd>V</kbd>.
 
      When pasting images like this, keep the following in mind:
 

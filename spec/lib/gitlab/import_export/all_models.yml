@@ -86,10 +86,17 @@ issues:
 - dates_source
 - current_status
 - work_item_description
+- work_item_transition
 work_item_description:
 - namespace
 - work_item
 - last_editing_user
+work_item_transition:
+- namespace
+- work_item
+- promoted_to_epic
+- duplicated_to
+- moved_to
 work_item_type:
 - issues
 - namespace

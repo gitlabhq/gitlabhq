@@ -44,7 +44,7 @@ helps you track your work. It sorts your work into clear categories to help you:
 
 To see your merge request homepage on GitLab.com, either:
 
-- Use the <kbd>Shift</kbd> + <kbd>m</kbd> [keyboard shortcut](../../user/shortcuts.md).
+- Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../user/shortcuts.md).
 - On the left sidebar, select **Merge requests**.
 
 It's organized into three tabs, to help you focus on what needs your attention right now, while

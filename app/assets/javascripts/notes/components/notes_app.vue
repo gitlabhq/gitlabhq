@@ -87,10 +87,8 @@ export default {
   },
   data() {
     return {
-      currentFilter: null,
       renderSkeleton: !this.shouldShow,
       aiLoading: null,
-      isInitialEventTriggered: false,
       previewNote: null,
     };
   },
@@ -148,11 +146,9 @@ export default {
     ...mapState(useNotes, [
       'isNotesFetched',
       'convertedDisscussionIds',
-      'getNotesDataByProp',
       'isLoading',
       'isFetching',
       'commentsDisabled',
-      'getNoteableData',
       'userCanReply',
       'sortDirection',
       'timelineEnabled',
@@ -273,9 +269,7 @@ export default {
   methods: {
     ...mapActions(useNotes, [
       'toggleAward',
-      'setLastFetchedAt',
       'setTargetNoteHash',
-      'toggleDiscussion',
       'expandDiscussion',
       'startTaskList',
       'convertToDiscussion',

@@ -190,7 +190,6 @@ RSpec.describe 'Database schema',
       push_event_payloads: %w[project_id],
       redirect_routes: %w[source_id],
       repository_languages: %w[programming_language_id],
-      resource_label_events: %w[namespace_id], # FK to be added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197676
       routes: %w[source_id],
       security_findings: %w[project_id],
       sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id namespace_id], # namespace_id FK will be added to partitioned table

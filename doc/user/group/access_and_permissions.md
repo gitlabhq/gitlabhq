@@ -175,7 +175,7 @@ To restrict group access by domain:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
-1. In the **Restrict membership by email** field, enter the domain names to allow.
+1. In the **Restrict membership by email domain** text box, enter the domain names to allow.
 1. Select **Save changes**.
 
 The next time you attempt to add a user to the group, their [primary email](../profile/_index.md#change-your-primary-email)
@@ -193,9 +193,9 @@ When you share a group, both the source and target namespaces must allow the dom
 
 {{< alert type="note" >}}
 
-Removing a domain from the **Restrict membership by email** list does not remove existing users with that domain from the group or its projects.
+Removing a domain from the **Restrict membership by email domain** list does not remove existing users with that domain from the group or its projects.
 Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
-Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email** list.
+Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email domain** list.
 
 {{< /alert >}}
 

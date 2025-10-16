@@ -366,13 +366,13 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.[this.namespace].workItemStateCounts ?? {};
+        return data?.[this.namespace]?.workItemStateCounts ?? {};
       },
       skip() {
         return isEmpty(this.pageParams);
       },
       result({ data }) {
-        const { all } = data?.[this.namespace].workItemStateCounts ?? {};
+        const { all } = data?.[this.namespace]?.workItemStateCounts ?? {};
 
         if (!this.isInitialLoadComplete) {
           this.hasAnyIssues = Boolean(all);

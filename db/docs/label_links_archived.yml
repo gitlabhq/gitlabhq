@@ -10,3 +10,4 @@ description: Temporary archive table for orphaned label_links during namespace_i
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206448
 milestone: '18.5'
 gitlab_schema: gitlab_main_org
+table_size: small

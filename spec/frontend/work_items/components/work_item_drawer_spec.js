@@ -16,11 +16,14 @@ import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
-import workItemMetadataQuery from '~/work_items/graphql/work_item_metadata.query.graphql';
+import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { visitUrl, updateHistory, setUrlParams, removeParams } from '~/lib/utils/url_utility';
 import { makeDrawerUrlParam } from '~/work_items/utils';
-import { mockProjectPermissionsQueryResponse } from '../mock_data';
+import {
+  mockProjectPermissionsQueryResponse,
+  workItemMetadataProviderResponse,
+} from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -92,7 +95,7 @@ describe('WorkItemDrawer', () => {
       apolloProvider: createMockApollo([
         [deleteWorkItemMutation, deleteWorkItemMutationHandler],
         [workspacePermissionsQuery, workspacePermissionsHandler],
-        [workItemMetadataQuery, jest.fn().mockResolvedValue({ data: {} })],
+        [workItemMetadataQuery, jest.fn().mockResolvedValue(workItemMetadataProviderResponse)],
       ]),
     });
   };
@@ -283,18 +286,6 @@ describe('WorkItemDrawer', () => {
         expect(findWorkItem().props('workItemFullPath')).toBe('gitlab-org/gitlab');
       });
     });
-  });
-
-  it('passes modalIsGroup as undefined if issuableType is issue', () => {
-    createComponent();
-
-    expect(findWorkItem().props('modalIsGroup')).toBe(false);
-  });
-
-  it('passes modalIsGroup as true if issuableType is epic', () => {
-    createComponent({ issuableType: TYPE_EPIC });
-
-    expect(findWorkItem().props('modalIsGroup')).toBe(true);
   });
 
   describe('when redirecting to full screen view', () => {

@@ -9356,3 +9356,47 @@ export const workItemsCsvExportFailureResponse = {
     },
   ],
 };
+
+export const workItemMetadataProviderResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      licensedFeatures: {
+        hasIssueWeightsFeature: true,
+        hasIterationsFeature: true,
+        hasOkrsFeature: true,
+        hasSubepicsFeature: true,
+        hasIssuableHealthStatusFeature: true,
+        hasEpicsFeature: true,
+        hasScopedLabelsFeature: true,
+        hasQualityManagementFeature: true,
+        hasLinkedItemsEpicsFeature: true,
+        hasIssueDateFilterFeature: false,
+        hasWorkItemStatusFeature: true,
+        __typename: 'NamespaceAvailableFeatures',
+      },
+      linkPaths: {
+        issuesList: '/flightjs/Flight/-/issues',
+        contributionGuidePath: '/flightjs/Flight/-/blob/master/CONTRIBUTING.md',
+        epicsList: '/groups/flightjs/-/epics',
+        groupIssues: '/groups/flightjs/-/issues',
+        labelsFetch:
+          '/flightjs/Flight/-/labels.json?include_ancestor_groups=true\u0026only_group_labels=true',
+        labelsManage: '/flightjs/Flight/-/labels',
+        newProject: '/projects/new?namespace_id=33',
+        register: '/users/sign_up?redirect_to_referer=yes',
+        reportAbuse: '/-/abuse_reports/add_category',
+        signIn: '/users/sign_in?redirect_to_referer=yes',
+        issuesSettings: '/groups/flightjs/-/settings/issues',
+        userExportEmail: 'admin@example.com',
+        emailsHelpPagePath: '/help/development/emails.md#email-namespace',
+        markdownHelpPath: '/help/user/markdown.md',
+        quickActionsHelpPath: '/help/user/project/quick_actions.md',
+        newWorkItemEmailAddress: null,
+        __typename: 'ProjectNamespaceLinks',
+      },
+      userPermissions: { createWorkItem: true, __typename: 'NamespacePermissions' },
+      __typename: 'Namespace',
+    },
+  },
+};

@@ -5,7 +5,6 @@ import { mapState, mapActions } from 'pinia';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
@@ -20,12 +19,7 @@ import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import { renderMarkdown, updateNoteErrorMessage } from '../utils';
-import {
-  getStartLineNumber,
-  getEndLineNumber,
-  getLineClasses,
-  commentLineOptions,
-} from './multiline_comment_utils';
+import { getStartLineNumber, getEndLineNumber, getLineClasses } from './multiline_comment_utils';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
 import NoteHeader from './note_header.vue';
@@ -80,16 +74,12 @@ export default {
       required: false,
       default: false,
     },
-    diffLines: {
-      type: Array,
-      required: false,
-      default: null,
-    },
     discussionRoot: {
       type: Boolean,
       required: false,
       default: false,
     },
+    // eslint-disable-next-line vue/no-unused-properties -- discussionResolvePath used by the `Resolvable` mixin
     discussionResolvePath: {
       type: String,
       required: false,
@@ -128,12 +118,13 @@ export default {
       isRequesting: false,
       isResolving: false,
       commentLineStart: {},
+      // eslint-disable-next-line vue/no-unused-properties -- `resolveAsThread` is used by the `resolvable` mixin
       resolveAsThread: true,
     };
   },
   computed: {
     ...mapState(useLegacyDiffs, ['getDiffFileByHash']),
-    ...mapState(useNotes, ['targetNoteHash', 'getNoteableData', 'getUserData', 'commentsDisabled']),
+    ...mapState(useNotes, ['targetNoteHash', 'getNoteableData', 'getUserData']),
     isEditing: {
       get() {
         return this.note.isEditing ?? this.isEditingLocal;
@@ -233,10 +224,6 @@ export default {
 
       return this.line && this.startLineNumber !== this.endLineNumber;
     },
-    commentLineOptions() {
-      const lines = this.diffFile[INLINE_DIFF_LINES_KEY].length;
-      return commentLineOptions(lines, this.commentLineStart, this.line.line_code);
-    },
     diffFile() {
       let fileResolvedFromAvailableSource;
 
@@ -285,6 +272,7 @@ export default {
       'deleteNote',
       'removeNote',
       'updateNote',
+      // eslint-disable-next-line vue/no-unused-properties -- toggleResolveNote() used by the `Resolvable` mixin
       'toggleResolveNote',
       'updateAssignees',
       'setSelectedCommentPositionHover',
@@ -500,7 +488,6 @@ export default {
           :note-id="note.id"
           :is-internal-note="note.internal"
           :is-imported="note.imported"
-          :noteable-type="noteableType"
           :email-participant="note.external_author"
         >
           <template #note-header-info>

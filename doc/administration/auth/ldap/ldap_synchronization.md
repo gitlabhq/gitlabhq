@@ -339,7 +339,7 @@ To take advantage of group sync, group Owners or users with the [Maintainer role
 {{< alert type="note" >}}
 
 If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
-[setting the group sync worker interval](#adjust-ldap-group-sync-schedule) to be greater than the 1 hour default.
+setting the group sync worker interval to be greater than the 1 hour default.
 
 {{< /alert >}}
 
@@ -805,7 +805,11 @@ any number of factors. This benchmark was extreme and most instances don't
 have near this many users or groups. Disk speed, database performance,
 network and LDAP server response time affects these metrics.
 
-### Adjust LDAP user sync schedule
+## Adjust LDAP sync schedule
+
+You can change the time and interval when LDAP synchronizes users, groups, and Duo add-on seats.
+
+### For users
 
 By default, GitLab runs a worker once per day at 01:30 AM server time to
 check and update GitLab users against LDAP.
@@ -912,7 +916,7 @@ sync to run once every 12 hours at the top of the hour.
 
 {{< /tabs >}}
 
-### Adjust LDAP group sync schedule
+### For groups
 
 By default, GitLab runs a group sync process every hour, on the hour.
 The values shown are in cron format. If needed, you can use a
@@ -1018,9 +1022,9 @@ sync to run once every two hours at the top of the hour.
 
 {{< /tabs >}}
 
-### Adjust LDAP Duo add-on seat sync schedule
+### For Duo add-on seats
 
-By default, GitLab runs a Duo add-on seat sync process daily at 02:00 AM server time to
+By default, GitLab runs a Duo add-on seat sync process once per day at 02:00 AM server time to
 check LDAP group membership and assign or remove Duo add-on seats accordingly.
 
 {{< alert type="warning" >}}
@@ -1120,7 +1124,3 @@ You can manually configure LDAP Duo add-on seat sync times by setting configurat
 {{< /tab >}}
 
 {{< /tabs >}}
-
-## Troubleshooting
-
-See our [administrator guide to troubleshooting LDAP](ldap-troubleshooting.md).

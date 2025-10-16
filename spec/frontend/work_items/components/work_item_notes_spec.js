@@ -130,6 +130,7 @@ describe('WorkItemNotes component', () => {
     isWorkItemConfidential = false,
     parentId = null,
     propsData = {},
+    isGroup = false,
   } = {}) => {
     setHTMLFixture(`
       <div class="work-item-overview">
@@ -160,6 +161,9 @@ describe('WorkItemNotes component', () => {
           },
         },
       ),
+      provide: {
+        isGroup,
+      },
       propsData: {
         fullPath: 'test-path',
         workItemId,
@@ -637,6 +641,7 @@ describe('WorkItemNotes component', () => {
       };
       createComponent({
         defaultWorkItemNotesQueryHandler: jest.fn().mockResolvedValue(groupWorkItemNotes),
+        isGroup: true,
       });
       await waitForPromises();
 

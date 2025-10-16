@@ -68,8 +68,8 @@ VS Code and JetBrains IDEs:
 In VS Code, you can troubleshoot some issues by viewing debugging logs.
 
 1. Open local debugging logs:
-   - On macOS: <kbd>Command</kbd> + <kbd>,</kbd>
-   - On Windows and Linux: <kbd>Control</kbd> + <kbd>,</kbd>
+   - On macOS: <kbd>Command</kbd>+<kbd>,</kbd>
+   - On Windows and Linux: <kbd>Control</kbd>+<kbd>,</kbd>
 1. Search for the setting **GitLab: Debug** and enable it.
 1. Open the language server logs:
    1. In VS Code, select **View** > **Output**.

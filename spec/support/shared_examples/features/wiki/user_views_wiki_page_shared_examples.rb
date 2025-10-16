@@ -24,7 +24,7 @@ RSpec.shared_examples 'User views a wiki page' do
     sign_in(user)
   end
 
-  context 'when wiki is empty', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when wiki is empty', :js do
     before do
       visit wiki_path(wiki)
 
@@ -37,15 +37,18 @@ RSpec.shared_examples 'User views a wiki page' do
         click_on('Create page')
       end
 
+      wait_for_requests
+    end
+
+    it 'gives feedback that the page was created' do
       expect(page).to have_content('Wiki page was successfully created.')
     end
 
     it 'shows the history of a page that has a path', :js do
       expect(page).to have_current_path(%r{one/two/three-test})
 
-      first(:link, text: 'three').click
-
       more_actions_dropdown.click
+
       click_on('Page history')
 
       expect(page).to have_current_path(%r{one/two/three-test})
@@ -86,7 +89,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page does not have history', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when a page does not have history' do
     before do
       visit(wiki_page_path(wiki, wiki_page))
     end
@@ -123,7 +126,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has history', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when a page has history' do
     before do
       wiki_page.update(message: 'updated home', content: 'updated [some link](other-page)') # rubocop:disable Rails/SaveBang
     end
@@ -209,7 +212,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has special characters in its title', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when a page has special characters in its title' do
     let(:title) { '<foo> !@#$%^&*()[]{}=_+\'"\\|<>? <bar>' }
 
     before do
@@ -224,14 +227,14 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has XSS in its title or content', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when a page has XSS in its title or content' do
     let(:title) { '<script>alert("title")<script>' }
 
     before do
       wiki_page.update(title: title, content: 'foo <script>alert("content")</script> bar') # rubocop:disable Rails/SaveBang
     end
 
-    it 'safely displays the page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+    it 'safely displays the page' do
       visit(wiki_page_path(wiki, wiki_page))
 
       expect(page).to have_selector('[data-testid="page-heading"]', text: title)
@@ -239,7 +242,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has XSS in its message', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when a page has XSS in its message' do
     before do
       wiki_page.update(message: '<script>alert(true)<script>', content: 'XSS update') # rubocop:disable Rails/SaveBang
     end
@@ -251,7 +254,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when a page has headings', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when a page has headings' do
     before do
       wiki_page.update(content: "# Heading 1\n\n## Heading 1.1\n\n### Heading 1.1.1\n\n# Heading 2") # rubocop:disable Rails/SaveBang -- not an ActiveRecord
     end
@@ -270,7 +273,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  context 'when page has invalid content encoding', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when page has invalid content encoding' do
     let(:content) { (+'whatever').force_encoding('ISO-8859-1') }
 
     before do
@@ -290,7 +293,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
-  it 'opens a default wiki page', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  it 'opens a default wiki page', :js do
     visit wiki.container.web_url
 
     within_testid('super-sidebar') do

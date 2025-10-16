@@ -309,7 +309,6 @@ export default {
             :show-spinner="isUpdating"
             :created-at="note.createdAt"
             :note-id="noteId"
-            :noteable-type="noteableType"
             :email-participant="note.externalAuthor"
             :is-internal-note="note.internal"
           >

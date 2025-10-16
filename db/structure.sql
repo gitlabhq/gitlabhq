@@ -23913,6 +23913,40 @@ CREATE TABLE project_pages_metadata (
     onboarding_complete boolean DEFAULT false NOT NULL
 );
 
+CREATE TABLE project_push_rules (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    max_file_size integer DEFAULT 0 NOT NULL,
+    member_check boolean DEFAULT false NOT NULL,
+    prevent_secrets boolean DEFAULT false NOT NULL,
+    commit_committer_name_check boolean DEFAULT false NOT NULL,
+    deny_delete_tag boolean,
+    reject_unsigned_commits boolean,
+    commit_committer_check boolean,
+    reject_non_dco_commits boolean,
+    commit_message_regex text,
+    branch_name_regex text,
+    commit_message_negative_regex text,
+    author_email_regex text,
+    file_name_regex text,
+    CONSTRAINT check_02434ac6ef CHECK ((char_length(author_email_regex) <= 511)),
+    CONSTRAINT check_295b330afd CHECK ((char_length(commit_message_regex) <= 511)),
+    CONSTRAINT check_5423d3cb99 CHECK ((char_length(commit_message_negative_regex) <= 2047)),
+    CONSTRAINT check_b99be14656 CHECK ((char_length(file_name_regex) <= 511)),
+    CONSTRAINT check_c0e6f89741 CHECK ((char_length(branch_name_regex) <= 511))
+);
+
+CREATE SEQUENCE project_push_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_push_rules_id_seq OWNED BY project_push_rules.id;
+
 CREATE TABLE project_relation_export_uploads (
     id bigint NOT NULL,
     project_relation_export_id bigint NOT NULL,
@@ -25021,7 +25055,8 @@ CREATE TABLE resource_label_events (
     created_at timestamp with time zone NOT NULL,
     reference text,
     imported_from smallint DEFAULT 0 NOT NULL,
-    namespace_id bigint NOT NULL
+    namespace_id bigint NOT NULL,
+    CONSTRAINT check_614704e750 CHECK ((num_nonnulls(epic_id, issue_id, merge_request_id) = 1))
 );
 
 CREATE SEQUENCE resource_label_events_id_seq
@@ -25804,7 +25839,7 @@ CREATE TABLE security_policy_dismissals (
     updated_at timestamp with time zone NOT NULL,
     project_id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
-    security_policy_id bigint NOT NULL,
+    security_policy_id bigint,
     user_id bigint,
     security_findings_uuids text[] DEFAULT '{}'::text[],
     dismissal_types smallint[] DEFAULT '{}'::smallint[] NOT NULL,
@@ -31413,6 +31448,8 @@ ALTER TABLE ONLY project_import_data ALTER COLUMN id SET DEFAULT nextval('projec
 
 ALTER TABLE ONLY project_mirror_data ALTER COLUMN id SET DEFAULT nextval('project_mirror_data_id_seq'::regclass);
 
+ALTER TABLE ONLY project_push_rules ALTER COLUMN id SET DEFAULT nextval('project_push_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY project_relation_export_uploads ALTER COLUMN id SET DEFAULT nextval('project_relation_export_uploads_id_seq'::regclass);
 
 ALTER TABLE ONLY project_relation_exports ALTER COLUMN id SET DEFAULT nextval('project_relation_exports_id_seq'::regclass);
@@ -34828,6 +34865,9 @@ ALTER TABLE ONLY project_mirror_data
 
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT project_pages_metadata_pkey PRIMARY KEY (project_id);
+
+ALTER TABLE ONLY project_push_rules
+    ADD CONSTRAINT project_push_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_relation_export_uploads
     ADD CONSTRAINT project_relation_export_uploads_pkey PRIMARY KEY (id);
@@ -41732,6 +41772,8 @@ CREATE UNIQUE INDEX index_project_mirror_data_on_project_id ON project_mirror_da
 
 CREATE INDEX index_project_mirror_data_on_status ON project_mirror_data USING btree (status);
 
+CREATE UNIQUE INDEX index_project_push_rules_on_project_id ON project_push_rules USING btree (project_id);
+
 CREATE INDEX index_project_relation_export_upload_id ON project_relation_export_uploads USING btree (project_relation_export_id);
 
 CREATE INDEX index_project_relation_export_uploads_on_project_id ON project_relation_export_uploads USING btree (project_id);
@@ -48384,6 +48426,9 @@ ALTER TABLE ONLY project_access_tokens
 ALTER TABLE ONLY issue_metrics
     ADD CONSTRAINT fk_5fc5653bb3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY resource_label_events
+    ADD CONSTRAINT fk_60a3881b58 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_60b12fcda3 FOREIGN KEY (awarded_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -48987,6 +49032,9 @@ ALTER TABLE ONLY issue_tracker_data
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_9ed5cf0600 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_push_rules
+    ADD CONSTRAINT fk_9ed8a48c44 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_9f1814eb36 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -49327,7 +49375,7 @@ ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_c188f0dba4 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY security_policy_dismissals
-    ADD CONSTRAINT fk_c2379f1e97 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_c2379f1e97_new FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_c2a5562923 FOREIGN KEY (source_id) REFERENCES sbom_sources(id) ON DELETE CASCADE;

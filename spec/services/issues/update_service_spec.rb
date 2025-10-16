@@ -153,19 +153,19 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           end
         end
 
-        context 'when upserting raises an error' do
+        context 'when upserting has no effect' do
           before do
-            allow(WorkItems::Description).to receive(:upsert).and_raise(ActiveRecord::ActiveRecordError)
+            allow(WorkItems::Description).to receive(:upsert).and_return(ActiveRecord::Result.new([], []))
           end
 
           it 'does not save the updates on the record and tracks the error' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-              a_kind_of(ActiveRecord::ActiveRecordError),
+            expect(Gitlab::AppLogger).to receive(:info).with(
               hash_including(
                 issue_id: issue.id,
-                message: /^Failed to upsert description/i
+                message: /^Failed to upsert work_item_description/i
               )
             )
+            expect(Gitlab::AppLogger).to receive(:info).and_call_original
 
             expect { update_issue(opts) }.to not_change { issue.reload.description }
               .and not_change { issue.state_id }

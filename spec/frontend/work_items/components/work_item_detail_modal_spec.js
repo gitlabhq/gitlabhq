@@ -66,6 +66,7 @@ describe('WorkItemDetailModal component', () => {
         groupPath: '',
         hasSubepicsFeature: false,
         hasLinkedItemsEpicsFeature: true,
+        isGroup: false,
       },
       stubs: {
         GlModal,
@@ -84,7 +85,6 @@ describe('WorkItemDetailModal component', () => {
       workItemIid: '1',
       workItemFullPath: '',
       isDrawer: false,
-      modalIsGroup: null,
       isBoard: false,
     });
   });

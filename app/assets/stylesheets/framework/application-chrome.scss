@@ -413,7 +413,7 @@
 
   // Fix design management fullscreen display in panels
   .panel-content:has(.design-detail) {
-    @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none gl-z-1 #{!important};
+    @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none gl-z-1 gl-h-screen #{!important};
   }
 
   // Vue portal height

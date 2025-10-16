@@ -156,6 +156,9 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{config/authz/permissions/*.yml,app/policies/*,rb.ee/app/policies/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
+    check-deprecated-files:
+      tags: backend frontend view haml
+      run: scripts/lint/check_deprecated_files.rb
 
   scripts:
     'merge_conflicts':

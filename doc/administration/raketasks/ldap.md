@@ -65,7 +65,7 @@ waiting for the next scheduled group sync to be run.
 {{< alert type="note" >}}
 
 If you'd like to change the frequency at which a group sync is performed,
-[adjust the cron schedule](../auth/ldap/ldap_synchronization.md#adjust-ldap-group-sync-schedule)
+[adjust the cron schedule](../auth/ldap/ldap_synchronization.md#adjust-ldap-sync-schedule)
 instead.
 
 {{< /alert >}}

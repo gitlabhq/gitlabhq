@@ -53,8 +53,8 @@ Prerequisites:
 To search for, then clone, a GitLab project:
 
 1. Open the Command Palette by pressing:
-   - MacOS: <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
-   - Windows: <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
+   - MacOS: <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - Windows: <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Run the **Git: Clone** command.
 1. Select either GitHub or GitLab as a repository source.
 1. Search for, then select, a **Repository name**.
@@ -75,8 +75,8 @@ Prerequisites:
 To browse a GitLab repository in read-only mode:
 
 1. Open the Command Palette by pressing:
-   - MacOS: <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
-   - Windows: <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
+   - MacOS: <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - Windows: <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Run the **GitLab: Open Remote Repository** command.
 1. Select **Open in current window**, **Open in new window**, or **Add to workspace**.
 1. To add a repository, select `Enter gitlab-remote URL`, then enter the `gitlab-remote://` URL for your desired project.

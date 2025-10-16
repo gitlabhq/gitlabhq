@@ -7,6 +7,7 @@ module Organizations
     include Gitlab::VisibilityLevel
     include Gitlab::Routing.url_helpers
     include FeatureGate
+    include Organizations::Isolatable
 
     DEFAULT_ORGANIZATION_ID = 1
 

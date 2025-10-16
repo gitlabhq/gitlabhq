@@ -35,11 +35,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         .class_name('::WorkItems::ParentLink')
         .with_foreign_key('work_item_parent_id')
     end
-
-    it 'has one `work_item_transition`' do
-      is_expected.to have_one(:work_item_transition)
-        .class_name('::WorkItems::Transition')
-    end
   end
 
   describe '.work_item_children_by_relative_position' do

@@ -164,7 +164,7 @@ describe('WorkItemDetail component', () => {
     workItemsAlphaEnabled = false,
     hasSubepicsFeature = true,
     router = true,
-    modalIsGroup = null,
+    isGroup = false,
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
     allowedChildrenTypesHandler = allowedChildrenTypesSuccessHandler,
@@ -190,7 +190,6 @@ describe('WorkItemDetail component', () => {
         isModal,
         workItemIid,
         isDrawer,
-        modalIsGroup,
       },
       data() {
         return {
@@ -206,6 +205,7 @@ describe('WorkItemDetail component', () => {
         },
         hasSubepicsFeature,
         groupPath: 'group',
+        isGroup,
         hasLinkedItemsEpicsFeature,
       },
       stubs: {
@@ -1087,7 +1087,7 @@ describe('WorkItemDetail component', () => {
 
     it('does not call permisisons query for a group work item', async () => {
       createComponent({
-        modalIsGroup: true,
+        isGroup: true,
         workspacePermissionsHandler: workspacePermissionsAllowedHandler,
       });
       await waitForPromises();
@@ -1290,8 +1290,8 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('calculates correct isGroup prop for attributes wrapper', () => {
-    it('equal to modalIsGroup prop when provided', async () => {
-      createComponent({ modalIsGroup: true });
+    it('equal to isGroup injection when provided', async () => {
+      createComponent({ isGroup: true });
       await waitForPromises();
 
       expect(findWorkItemAttributesWrapper().props('isGroup')).toBe(true);

@@ -70,7 +70,7 @@ You can view merge requests for your project, group, or yourself.
 
 {{< tab title="You're participating in" >}}
 
-To view all merge requests on the homepage, use the <kbd>Shift</kbd> + <kbd>m</kbd>
+To view all merge requests on the homepage, use the <kbd>Shift</kbd>+<kbd>m</kbd>
 keyboard shortcut, or:
 
 1. On the left sidebar, select the **Merge requests** icon.
@@ -89,7 +89,7 @@ To view all merge requests for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests**.
 
-Or, to use a keyboard shortcut, press <kbd>g</kbd> + <kbd>m</kbd>.
+Or, to use a keyboard shortcut, press <kbd>g</kbd>+<kbd>m</kbd>.
 
 {{< /tab >}}
 

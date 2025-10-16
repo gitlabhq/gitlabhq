@@ -99,6 +99,7 @@ PUT /application/plan_limits
 | `pypi_max_file_size`              | integer | no       | Maximum PyPI package file size in bytes. |
 | `terraform_module_max_file_size`  | integer | no       | Maximum Terraform Module package file size in bytes. |
 | `storage_size_limit`              | integer | no       | Maximum storage size for the root namespace in MiB. |
+| `web_hook_calls`                  | integer | no       | Maximum number of times a webhook can be called per minute per top-level namespace. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571738) in GitLab 18.5. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/plan_limits?plan_name=default&conan_max_file_size=3221225472"

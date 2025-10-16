@@ -45,16 +45,13 @@ After your merge request is created, look for a message from **GitLab Bot**. Thi
 ## What to work on
 
 You don't need an issue to update the documentation, but if you're looking for open issues to work on,
-[review the list of documentation issues curated specifically for new contributors](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=documentation&label_name%5B%5D=docs-only&label_name%5B%5D=Seeking%20community%20contributions&first_page_size=20).
+[review the list of documentation issues curated specifically for new contributors](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=documentation&label_name%5B%5D=docs-only&label_name%5B%5D=quick%20win&first_page_size=20).
 
 When you find an issue you'd like to work on:
 
 - If the issue is already assigned to someone, pick a different one.
-- If the issue is unassigned, add a comment and ask to work on the issue. For a Hackathon, use `@docs-hackathon`. Otherwise, use `@gl-docsteam`. For example:
-
-  ```plaintext
-  @docs-hackathon I would like to work on this issue
-  ```
+- If the issue is unassigned, review the issue description for instructions on how to contribute. Some issues can be worked on by multiple contributors, and you don't need to be assigned to the issue to work on it.
+  Otherwise, add a comment (mention the author) and ask to work on the issue.
 
 You can try installing and running the [Vale linting tool](testing/vale.md)
 and fixing the resulting issues.

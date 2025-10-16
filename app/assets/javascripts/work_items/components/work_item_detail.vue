@@ -18,7 +18,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
@@ -159,6 +158,7 @@ export default {
       from: 'duoRemoteFlowsAvailability',
       default: false,
     },
+    isGroup: {},
   },
   props: {
     isModal: {
@@ -180,11 +180,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    modalIsGroup: {
-      type: Boolean,
-      required: false,
-      default: null,
     },
     isDrawer: {
       type: Boolean,
@@ -307,7 +302,7 @@ export default {
         };
       },
       skip() {
-        return this.isGroupWorkItem || this.workItemLoading;
+        return this.isGroup || this.workItemLoading;
       },
       update(data) {
         return data.workspace?.userPermissions ?? defaultWorkspacePermissions;
@@ -502,9 +497,6 @@ export default {
     workItemPresent() {
       return !isEmpty(this.workItem);
     },
-    isGroupWorkItem() {
-      return Boolean(this.modalIsGroup ?? this.workItem.namespace?.id.includes(TYPENAME_GROUP));
-    },
     isSaving() {
       return this.filesToBeSaved.length > 0;
     },
@@ -573,7 +565,7 @@ export default {
         parentId: this.parentWorkItemId,
         workItemAuthorId: this.workItemAuthorId,
         canCreateRelatedItem: this.workItemLinkedItems !== undefined,
-        isGroup: this.isGroupWorkItem,
+        isGroup: this.isGroup,
         widgets: this.widgets,
         allowedChildTypes: this.allowedChildTypes,
         namespaceFullName: this.namespaceFullName,
@@ -1166,7 +1158,7 @@ export default {
                   v-if="hasDescriptionWidget"
                   :edit-mode="editMode"
                   :full-path="workItemFullPath"
-                  :is-group="isGroupWorkItem"
+                  :is-group="isGroup"
                   :work-item-id="workItem.id"
                   :work-item-iid="workItem.iid"
                   :update-in-progress="updateInProgress"
@@ -1242,7 +1234,7 @@ export default {
                   :full-path="workItemFullPath"
                   :work-item="workItem"
                   :group-path="groupPath"
-                  :is-group="isGroupWorkItem"
+                  :is-group="isGroup"
                   @error="updateError = $event"
                   @attributesUpdated="$emit('attributesUpdated', $event)"
                 />
@@ -1266,7 +1258,7 @@ export default {
                 :work-item-iid="iid"
                 :work-item-full-path="workItemFullPath"
                 :work-item-web-url="workItem.webUrl"
-                :is-group="isGroupWorkItem"
+                :is-group="isGroup"
                 :upload-error="designUploadError"
                 :upload-error-variant="designUploadErrorVariant"
                 :is-saving="isSaving"
@@ -1298,7 +1290,7 @@ export default {
               <work-item-tree
                 v-if="showWorkItemTree"
                 :full-path="workItemFullPath"
-                :is-group="isGroupWorkItem"
+                :is-group="isGroup"
                 :work-item-type="workItemType"
                 :parent-work-item-type="workItem.workItemType.name"
                 :work-item-id="workItem.id"
@@ -1317,7 +1309,7 @@ export default {
               />
               <work-item-relationships
                 v-if="workItemLinkedItems"
-                :is-group="isGroupWorkItem"
+                :is-group="isGroup"
                 :work-item-id="workItem.id"
                 :work-item-iid="iid"
                 :work-item-full-path="workItemFullPath"

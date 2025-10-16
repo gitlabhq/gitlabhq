@@ -1303,7 +1303,7 @@ Users deleted from the LDAP server:
 - [No longer consume a license](../../moderate_users.md).
 
 However, these users can continue to use Git with SSH until the next time the
-[LDAP check cache runs](ldap_synchronization.md#adjust-ldap-user-sync-schedule).
+[LDAP check cache runs](ldap_synchronization.md#adjust-ldap-sync-schedule).
 
 To delete the account immediately, you can manually
 [block the user](../../moderate_users.md#block-a-user).
