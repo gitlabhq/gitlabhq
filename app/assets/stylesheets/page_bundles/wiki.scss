@@ -2,7 +2,18 @@
 @import 'components/content_editor';
 
 .wiki-page-header {
-  @include gl-container-width-up(md, panel) {
+  @apply gl-flex;
+  @apply gl-items-center;
+
+  > * {
+      @apply gl-flex-grow;
+  }
+
+  .wiki-sidebar-header-toggle {
+    flex-grow: 0;
+  }
+
+  @include gl-container-width-up(md) {
     &.has-sidebar-toggle {
       padding-right: 0;
     }
@@ -13,17 +24,85 @@
   }
 }
 
-.right-sidebar.wiki-sidebar {
-  &.right-sidebar-collapsed {
-    display: none;
+.wiki-overview {
+  @apply gl-relative
+}
+
+.has-wiki-sidebar {
+  .content-wrapper {
+    padding-right: 0 !important;
+    @apply gl-transition-padding;
+    @apply motion-reduce:gl-transition-none;
+  }
+
+  &:has(.wiki-sidebar.sidebar-expanded) {
+    @include gl-container-width-up(sm) {
+      .content-wrapper:not(.paneled-view) {
+        padding-left: $right-sidebar-width;
+      }
+    }
+
+    .wiki-sidebar-header-toggle {
+      @apply gl-hidden;
+    }
+  }
+}
+
+@mixin wiki-sidebar-lg-mod {
+  @apply gl-border-none;
+  left: auto;
+  right: 100%;
+  position: absolute;
+}
+
+@mixin wiki-sidebar-container-lg-mod {
+  @apply gl-pr-4;
+  @apply gl-pt-2;
+  position: sticky;
+
+  .toggle-close {
+    @apply gl-hidden;
+  }
+}
+
+.wiki-sidebar {
+  @apply gl-border-r;
+  @apply gl-bg-default;
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  right: auto;
+  left: 0;
+  z-index: 200;
+
+  @include gl-container-width-up(lg) {
+    @include wiki-sidebar-lg-mod;
+  }
+
+  &.sidebar-collapsed {
+    @apply gl-border-none;
+
+    .sidebar-container {
+      width: 0;
+      overflow: hidden;
+    }
   }
 
   .sidebar-container {
-    padding-right: 100px;
-    height: 100%;
-    overflow-y: scroll;
+    @apply gl-transition-all;
+    @apply motion-reduce:gl-transition-none;
+    top: $calc-application-header-height;
+    bottom: $calc-application-footer-height;
+    z-index: 200;
+    overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    width: $wiki-sidebar-inner-width;
+    position: relative;
+
+    @include gl-container-width-up(lg) {
+      @include wiki-sidebar-container-lg-mod;
+    }
   }
 
   li > .wiki-list {
@@ -33,10 +112,8 @@
       @apply dark:gl-bg-neutral-900;
     }
 
-    &:hover {
-      a {
-        color: var(--gl-text-color-default);
-      }
+    a {
+      color: var(--gl-text-color-default);
     }
 
     &:hover, &:focus, &:focus-within {
@@ -191,26 +268,62 @@ ul.wiki-pages-list.content-list {
   }
 }
 
-.page-with-panels .paneled-view .wiki-overview {
-  @include gl-container-width-up(lg, panel) {
-    $overview-gap-width: 2rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    column-gap: $overview-gap-width;
+.paneled-view {
+  .wiki-overview {
+    @include gl-container-width-up(lg) {
+      $overview-gap-width: 2rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: $overview-gap-width;
 
-    .right-sidebar {
-      height: calc(100vh - #{$header-height} - #{$top-bar-height} - 0.5rem);
+      .wiki-sidebar {
+        position: relative;
+        right: auto;
+      }
+
+      .sidebar-container {
+        padding-right: 0;
+      }
     }
   }
-}
 
-.paneled-view.content-wrapper:has(.wiki-page-header),
-.paneled-view.content-wrapper:has(.wiki-page-details) {
-  .container-limited.project-highlight-puc {
-    max-width: 100%;
+  &.content-wrapper:has(.wiki-page-header),
+  &.content-wrapper:has(.wiki-page-details) {
+    .container-limited.project-highlight-puc {
+      max-width: 100%;
+    }
+
+    @include gl-container-width-up(lg) {
+      padding-right: 0 !important;
+    }
   }
 
-  @include gl-container-width-up(lg, panel) {
-    padding-right: 0 !important;
+ .wiki-sidebar {
+    .sidebar-container {
+      top: 0;
+    }
+ }
+}
+
+/*
+* Remove the below after the UI has been fully migrated to paneled views.
+* These make the breakpoint queries backwards compatible when gl-container-width
+* is not available.
+*/
+html:not(.page-with-panels) {
+  @include media-breakpoint-up(sm) {
+    .has-wiki-sidebar:has(.wiki-sidebar.sidebar-expanded) .content-wrapper {
+        padding-left: $wiki-sidebar-inner-width;
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+    .wiki-sidebar {
+      @include wiki-sidebar-lg-mod;
+    }
+
+    .sidebar-container {
+      @include wiki-sidebar-container-lg-mod;
+    }
   }
 }

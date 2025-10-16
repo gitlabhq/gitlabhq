@@ -6,8 +6,12 @@ set -euo pipefail
 
 ref=${REF:-master}
 tmp=$(mktemp -d)
-git clone --single-branch --branch "$ref" https://gitlab.com/gitlab-org/gitlab.git --no-checkout --depth 1 "${tmp}"
+git clone https://gitlab.com/gitlab-org/gitlab.git --no-checkout --depth 1 "${tmp}"
+
 cd "${tmp}"
+git fetch --depth 1 origin "$ref"
+git checkout FETCH_HEAD
+
 git sparse-checkout init --cone; git sparse-checkout add spec ee/spec; git checkout
 echo "Checked out ${ref}"
 mv spec /opt/gitlab/embedded/service/gitlab-rails; mv ee/spec /opt/gitlab/embedded/service/gitlab-rails/ee

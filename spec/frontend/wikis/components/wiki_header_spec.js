@@ -66,6 +66,7 @@ describe('wikis/components/wiki_header', () => {
   const findEditButton = () => wrapper.findByTestId('wiki-edit-button');
   const findSubscribeButton = () => wrapper.findByTestId('wiki-subscribe-button');
   const findLastVersion = () => wrapper.findByTestId('wiki-page-last-version');
+  const findSidebarToggle = () => wrapper.findByTestId('wiki-sidebar-toggle');
 
   describe('renders', () => {
     beforeEach(() => {
@@ -90,6 +91,11 @@ describe('wikis/components/wiki_header', () => {
       buildWrapper({ lastVersion: false });
 
       expect(findLastVersion().exists()).toBe(false);
+    });
+
+    it('renders sidebar toggle', () => {
+      expect(findSidebarToggle().exists()).toBe(true);
+      expect(findSidebarToggle().attributes('aria-label')).toBe('Toggle sidebar');
     });
   });
 

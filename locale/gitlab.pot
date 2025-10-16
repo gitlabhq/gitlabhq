@@ -74424,6 +74424,9 @@ msgstr ""
 msgid "Wiki|View all pages"
 msgstr ""
 
+msgid "Wiki|Wiki Pages"
+msgstr ""
+
 msgid "Wiki|Wiki actions"
 msgstr ""
 

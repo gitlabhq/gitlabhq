@@ -130,7 +130,7 @@ pre-push:
     custom_roles_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{ee/config/custom_abilities/*yml,doc/user/custom_roles/abilities.md,tooling/custom_roles/docs/templates/custom_abilities.md.erb}'
+      glob: '{ee/config/feature_flags/**/custom_ability_*.yml,ee/config/custom_abilities/*.yml,doc/user/custom_roles/abilities.md,tooling/custom_roles/docs/templates/custom_abilities.md.erb,ee/{lib/,spec/}tasks/gitlab/custom_roles/*}'
       run: bundle exec rake gitlab:custom_roles:check_docs
     verify_job_token_policies:
       tags: backend

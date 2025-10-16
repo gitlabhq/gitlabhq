@@ -1,0 +1,141 @@
+# What's New entries for GitLab 18.5
+# File name 202510160001_18_05.yml
+# Generated on Tue Oct 14 14:11:42 2025
+
+- name: GitLab Duo Planner, a specialized agent and Product Manager team member
+  description: |
+    Collaborate with GitLab Duo Planner, a GitLab Duo agent built to support product managers directly within GitLab. Instead of manually chasing updates, prioritizing work, or summarizing planning data, GitLab Duo Planner helps you analyze backlogs, apply frameworks like RICE or MoSCoW, and surface what truly needs your attention. It's like having a proactive teammate who understands your planning workflow and works with you to make better, faster decisions. This feature is currently in beta. Please provide feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/issues/576622).
+  stage: plan
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/planner/
+  image_url: https://about.gitlab.com/images/18_5/duo_planner.png
+  published_at: 2025-10-16
+  release: 18.5
+
+- name: GitLab Security Analyst Agent for Duo Agent Catalog (beta)
+  description: |
+    In GitLab 18.5, we are releasing the GitLab Security Analyst Agent as a beta feature, available in the AI Catalog. To use the GitLab Security Analyst Agent in specific projects, select and enable the agent in GitLab Duo Chat (Agentic). The agent can perform the following tasks:
+
+    - List all vulnerabilities in a given project.
+    - Get detailed vulnerability information, including CVE data and EPSS scores.
+    - Confirm and dismiss vulnerabilities.
+    - Update vulnerability severity levels.
+    - Revert vulnerability status back to `detected`.
+    - Create vulnerability issues, or link vulnerabilities to existing issues.
+
+    With the GitLab Security Analyst Agent, users can perform tedious security workflows through AI-powered automation and intelligent analysis, enabling engineers to focus on genuine threats while the GitLab Security Analyst Agent handles repetitive assessment and documentation. Please note that The GitLab Security Analyst Agent using GitLab Duo Chat is only available for Ultimate customers with the GitLab Duo add-on.
+
+    This feature is in beta, and we welcome your feedback in [issue 576916](https://gitlab.com/gitlab-org/gitlab/-/issues/576916).
+  stage: software_supply_chain_security
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/
+  image_url: https://about.gitlab.com/images/18_5/security_analyst_agent.png
+  published_at: 2025-10-16
+  release: 18.5
+
+- name: Maven virtual registry now available in beta
+  description: |
+    GitLab 18.5 introduces a comprehensive web-based interface for Maven virtual registry management. Previously, platform engineers could only configure and manage virtual registries through API calls, which makes routine maintenance tasks cumbersome and requires specialized knowledge.
+
+    This web-based approach significantly reduces operational overhead for platform engineering teams. Common tasks, like clearing stale cache entries, reordering upstreams for performance optimization, and testing connectivity are now point-and-click operations. Development teams gain better visibility into their dependency configuration, enabling more informed discussions about build performance and security policies.
+
+    The Maven virtual registry remains in beta for GitLab Premium and Ultimate customers. Current beta limitations include a maximum of 20 virtual registries per top-level group and 20 upstreams per virtual registry.
+
+    We invite enterprise customers to participate in the Maven virtual registry beta program to help shape the final release. Please consider sharing feedback and suggestions in [issue 543045](https://gitlab.com/gitlab-org/gitlab/-/issues/543045).
+  stage: package
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/packages/virtual_registry/maven/#manage-virtual-registries
+  image_url: https://img.youtube.com/vi/CiOZJPhAvaI/hqdefault.jpg
+  published_at: 2025-10-16
+  release: 18.5
+
+- name: Pick up where you left off on the new personal homepage
+  description: |
+    You can now access a new personal homepage that consolidates all your important GitLab activities in one place, making it easier to pick up where you left off. The homepage brings together your to-do items, assigned issues, merge requests, review requests, and recently viewed content, helping you navigate GitLab's large surface area and stay focused on what matters the most to you.
+  stage: growth
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/tutorials/personal_homepage/
+  image_url: https://about.gitlab.com/images/18_5/personal_homepage.png
+  published_at: 2025-10-16
+  release: 18.5
+
+- name: Model selection for GitLab Duo Chat (Agentic) in VS Code and JetBrains IDEs
+  description: |
+    Easily choose your preferred AI model right in GitLab Duo Chat, now available in the VS Code and JetBrains IDEs. Use the dropdown list in the GitLab Duo Chat panel to select among Claude, GPT, and other supported models. Model availability is managed by your organization admins, ensuring you have access to the right models for your workflow.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/#select-an-llm-for-a-feature
+  image_url: https://about.gitlab.com/images/18_5/ide-model-selection.png
+  published_at: 2025-10-16
+  release: 18.5
+
+- name: GPT-5 now available as a model option for GitLab Duo Chat (Agentic)
+  description: |
+    OpenAI GPT-5 is now available as a GitLab AI Vendor model when selecting a model for GitLab Duo Agent Platform. When configured by Owners of a top-level group on GitLab.com and instance Administrators on Self-Managed and Dedicated, end-users can select to use GPT-5 with GitLab Duo features. Top-level owners and administrators can continue to set organization-wide model preferences through namespace or instance settings, or allow end-user to choose from all available GitLab AI Vendor models.
+
+    To get started using GPT-5, select your preferred model from the model dropdown list in GitLab Duo Chat.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo_chat/agentic_chat/#select-a-model
+  image_url: https://about.gitlab.com/images/18_5/GPT5_Now_Available.png
+  published_at: 2025-10-16
+  release: 18.5
+
+- name: Instance-wide compliance and security policy management
+  description: |
+    Enterprise users want to manage their compliance frameworks and security policies across multiple top-level groups.
+    This is often the case when all groups in an instance:
+
+    - Share the same compliance frameworks. For example, when all projects in a group must adhere to the ISO 27001 standard.
+    - Enforce similar security policies. For example, when all groups share the same pipeline execution policy.
+
+    With GitLab 18.5, we introduce compliance and security policy groups to centralize the management of security policies and compliance frameworks on an instance for GitLab Self-Managed
+    and Dedicated instances. With this release, you can now create, configure, and allocate compliance frameworks and
+    security policies from a single top-level group and enforce them across all of the other top-level groups across your instance.
+
+    With a compliance and security policy group, you have a single source of truth
+    where you can manage and edit your compliance frameworks and security policies.
+    Security and compliance users within the group can then apply compliance frameworks and security policies to all the projects across the instance.
+
+    Compliance and security policy groups make it easier to manage and enforce your compliance and security
+    needs across your instance. However, groups still retain the ability to create their own compliance
+    frameworks and security policies to address specific situations or workflows that can arise in those groups.
+
+    This feature is for GitLab Self-Managed and Dedicated customers. GitLab.com customers can
+    manage frameworks and policies centrally within a single top-level group or namespace using security policy projects.
+
+    Learn more about compliance and security policy groups for [compliance frameworks](https://docs.gitlab.com/user/compliance/compliance_frameworks/centralized_compliance_frameworks/) and [security policies](https://docs.gitlab.com/user/application_security/policies/enforcement/compliance_and_security_policy_groups/).
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/security/compliance_security_policy_management/
+  image_url: https://img.youtube.com/vi/TrQCeWsdj1A/hqdefault.jpg
+  published_at: 2025-10-16
+  release: 18.5
+
+- name: DAST authentication scripts
+  description: |
+    You can now add scripts to your CI/CD configurations to automate DAST authentication workflows. Authentication scripts enable automating complex authentication flows, including support for time-based, one-time passwords (OTP MFA).
+
+    This enhancement helps your team maintain critical security controls while conducting thorough, automated security scans. By supporting real-world authentication scenarios, scripts reduce friction and ensure accurate security assessments of production software.
+  stage: application_security_testing
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/dast/browser/configuration/authentication_scripts/
+  image_url: https://img.youtube.com/vi/EIAPBbFJuuk/hqdefault.jpg
+  published_at: 2025-10-16
+  release: 18.5

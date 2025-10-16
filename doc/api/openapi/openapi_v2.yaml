@@ -40503,6 +40503,13 @@ paths:
         type: integer
         format: int32
         required: true
+      - in: query
+        name: include_projects
+        description: Include projects in the response. Set to false to improve performance
+          for runners with many projects.
+        type: boolean
+        default: true
+        required: false
       responses:
         '200':
           description: Get runner's details

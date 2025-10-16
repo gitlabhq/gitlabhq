@@ -166,12 +166,13 @@ module API
         end
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'
+          optional :include_projects, type: Boolean, desc: 'Include projects in the response. Set to false to improve performance for runners with many projects.', default: true
         end
         get ':id' do
           runner = get_runner(params[:id])
           authenticate_show_runner!(runner)
 
-          present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
+          present runner, with: Entities::Ci::RunnerDetails, current_user: current_user, include_projects: params[:include_projects]
         end
 
         desc "Get a list of all runner's managers" do

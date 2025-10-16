@@ -903,6 +903,7 @@
   - "ee/lib/ee/gitlab/audit/type/definition.rb"
 
 .custom-roles-patterns: &custom-roles-patterns
+  - "ee/config/feature_flags/**/custom_ability_*.yml"
   - "ee/config/custom_abilities/*.yml"
   - "doc/user/custom_roles/abilities.md"
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"

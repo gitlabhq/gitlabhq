@@ -9,9 +9,10 @@
 
 = form_errors(@page, truncate: :title)
 
-.wiki-overview
+.wiki-overview{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-xl limit-container-width" : nil }
+  = render 'shared/wikis/sidebar'
   .wiki-page-details
-    %div{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-limited limit-container-width" : nil }
+    %div
       #js-vue-wiki-app{ data: {
         testid: 'wiki-app',
         container_id: @wiki.container.id,
@@ -48,4 +49,3 @@
         page_author_email: page_version.author_email,
       } }
 
-  = render 'shared/wikis/sidebar'

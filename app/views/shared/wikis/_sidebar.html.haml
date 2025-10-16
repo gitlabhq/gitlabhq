@@ -2,13 +2,8 @@
 - edit_sidebar_text = @sidebar_page ? s_('Wiki|Edit custom sidebar') : s_('Wiki|Add custom sidebar')
 - has_wiki_pages = @wiki_pages_count && @wiki_pages_count > 0
 
-%aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar.gl-hidden{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
-  .js-wiki-sidebar-resizer
+%aside.wiki-sidebar.js-wiki-sidebar.sidebar-collapsed{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
   .sidebar-container
-    .block.gl-mb-3.gl-mx-5.gl-mt-5.gl-block{ class: '@sm/panel:gl-hidden !gl-pt-0' }
-      %a.gutter-toggle.gl-float-right.gl-block.js-sidebar-wiki-toggle{ class: '@sm/panel:gl-hidden', href: "#" }
-        = sprite_icon('chevron-double-lg-right', css_class: 'gl-icon')
-
     - if @sidebar_error.present?
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
 
@@ -16,21 +11,26 @@
       .js-wiki-toc
 
     .blocks-container{ class: '!gl-px-3 !gl-my-5' }
-      .gl-flex.gl-place-content-between.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
-        .gl-flex.gl-items-center
+      .gl-flex.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
+        .toggle-close.block.gl-block.gl-flex-none.gl-mr-3{ class: '!gl-pt-0' }
+          = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'chevron-double-lg-left', button_options: { class: 'gutter-toggle js-sidebar-wiki-toggle-close' })
+
+        .gl-flex.gl-items-center.gl-overflow-hidden
           - if @sidebar_page
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: "js-wiki-list-expand-button wiki-list-expand-button gl-mr-2", data: { testid: 'expand-pages-list' } })
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: "js-wiki-list-collapse-button wiki-list-collapse-button gl-mr-2", data: { testid: 'expand-pages-list' } })
-          %h2.gl-text-lg.gl-my-0.gl-mr-3= s_('Wiki|Pages')
-          = gl_badge_tag @wiki_pages_count
+          %h2.gl-text-lg.gl-my-0.gl-mr-3.gl-whitespace-nowrap= s_('Wiki|Wiki Pages')
 
-        - if has_wiki_pages && can?(current_user, :create_wiki, @wiki)
-          - if @sidebar_page
-            - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
-          - else
-            - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, view: 'create')
-          - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
-          = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'settings', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
+        .gl-flex-1
+
+        .gl-flex-none
+          - if has_wiki_pages && can?(current_user, :create_wiki, @wiki)
+            - if @sidebar_page
+              - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
+            - else
+              - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, view: 'create')
+            - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
+            = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'settings', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
 
       #js-wiki-sidebar-entries{
         data: {

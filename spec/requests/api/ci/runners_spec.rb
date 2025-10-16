@@ -740,6 +740,36 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
             expect(json_response['maintenance_note']).not_to be_nil
             expect(json_response['maintenance_note']).to eq(runner.maintenance_note)
           end
+
+          context 'with include_projects=false' do
+            let(:query) { { include_projects: false } }
+
+            it 'returns runner details without projects', :request_store do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).not_to include('projects')
+            end
+          end
+
+          context 'with include_projects=true' do
+            let(:query) { { include_projects: true } }
+
+            it 'returns runner details with projects' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['projects']).to be_an(Array)
+              expect(json_response['projects']).to contain_exactly(
+                a_hash_including(
+                  'id' => project.id,
+                  'name' => project.name,
+                  'path' => project.path,
+                  'path_with_namespace' => project.full_path
+                )
+              )
+            end
+          end
         end
 
         context 'when runner is shared' do

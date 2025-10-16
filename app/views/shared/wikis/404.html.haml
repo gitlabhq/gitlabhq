@@ -26,6 +26,8 @@
   - primary_button_link = wiki_page_path(@wiki, params[:id], view: 'create')
   - description = messages.dig(:writable, :body)
 
+= render 'shared/wikis/sidebar'
+
 = render Pajamas::EmptyStateComponent.new(svg_path: illustration,
   title: title,
   primary_button_text: primary_button_text,
@@ -34,5 +36,3 @@
 
   - c.with_description do
     = description
-
-= render 'shared/wikis/sidebar'

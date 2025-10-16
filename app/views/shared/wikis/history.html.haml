@@ -4,46 +4,46 @@
 - wiki_page_title @page, _('History')
 - add_page_specific_style 'page_bundles/wiki'
 
-.wiki-page-header.has-sidebar-toggle
-  = render ::Layouts::PageHeadingComponent.new(_('History')) do |c|
-    - c.with_actions do
-      #js-vue-wiki-more-actions{ data: {
-        clone_ssh_url: ssh_clone_url_to_repo(@wiki),
-        clone_http_url: http_clone_url_to_repo(@wiki),
-        wiki_url: wiki_path(@wiki),
-        new_url: wiki_path(@wiki, action: :new),
-        templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-      } }
-
+.wiki-overview{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-xl limit-container-width" : nil }
+  = render 'shared/wikis/sidebar'
+  %div
+    .wiki-page-header
       = wiki_sidebar_toggle_button
+      = render ::Layouts::PageHeadingComponent.new(_('History')) do |c|
+        - c.with_actions do
+          #js-vue-wiki-more-actions{ data: {
+            clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+            clone_http_url: http_clone_url_to_repo(@wiki),
+            wiki_url: wiki_path(@wiki),
+            new_url: wiki_path(@wiki, action: :new),
+            templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+          } }
 
-= render ::Layouts::CrudComponent.new(_('Versions'),
-  icon: 'history',
-  count: @commits_count) do |c|
-  - c.with_body do
-    .table-holder{ data: { testid: 'wiki-history-table' } }
-      %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2.wiki-history
-        %thead.gl-hidden{ class: '@md/panel:gl-table-header-group' }
-          %tr
-            %th= _('Version')
-            %th= _('Author')
-            %th= _('Diff')
-            %th= _('Last updated')
-        %tbody
-          - @commits.each_with_index do |commit, i|
-            %tr
-              %td{ data: { label: _('Version') } }
-                = link_to wiki_page_path(@wiki, @page, version_id: commit.id) do
-                  v#{@commits_count - i}
-              %td{ data: { label: _('Author') } }
-                = commit.author_name
-              %td{ data: { label: _('Diff') } }
-                .commit-content
-                  = link_to wiki_page_path(@wiki, @page, action: :diff, version_id: commit.id), { title: commit.message } do
-                    = commit.message
-              %td{ data: { label: _('Last updated') } }
-                = time_ago_with_tooltip(commit.authored_date)
-  - c.with_pagination do
-    = paginate @commits, theme: 'gitlab'
-
-= render 'shared/wikis/sidebar'
+    = render ::Layouts::CrudComponent.new(_('Versions'),
+      icon: 'history',
+      count: @commits_count) do |c|
+      - c.with_body do
+        .table-holder{ data: { testid: 'wiki-history-table' } }
+          %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2.wiki-history
+            %thead.gl-hidden{ class: '@md/panel:gl-table-header-group' }
+              %tr
+                %th= _('Version')
+                %th= _('Author')
+                %th= _('Diff')
+                %th= _('Last updated')
+            %tbody
+              - @commits.each_with_index do |commit, i|
+                %tr
+                  %td{ data: { label: _('Version') } }
+                    = link_to wiki_page_path(@wiki, @page, version_id: commit.id) do
+                      v#{@commits_count - i}
+                  %td{ data: { label: _('Author') } }
+                    = commit.author_name
+                  %td{ data: { label: _('Diff') } }
+                    .commit-content
+                      = link_to wiki_page_path(@wiki, @page, action: :diff, version_id: commit.id), { title: commit.message } do
+                        = commit.message
+                  %td{ data: { label: _('Last updated') } }
+                    = time_ago_with_tooltip(commit.authored_date)
+      - c.with_pagination do
+        = paginate @commits, theme: 'gitlab'

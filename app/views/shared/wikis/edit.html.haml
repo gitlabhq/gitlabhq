@@ -8,7 +8,8 @@
 
 = form_errors(@page, truncate: :title)
 
-.wiki-overview
+.wiki-overview{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-xl limit-container-width" : nil }
+  = render 'shared/wikis/sidebar', editing: true
   .wiki-page-details
     #js-vue-wiki-edit-app{ data: {
       testid: 'wiki-page-edit-app',
@@ -22,5 +23,3 @@
       templates: templates.to_json,
       templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
     } }
-
-  = render 'shared/wikis/sidebar', editing: true

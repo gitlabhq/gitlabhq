@@ -170,7 +170,20 @@ export default {
   <div
     class="js-wiki-page-header wiki-page-header has-sidebar-toggle detail-page-header gl-flex gl-flex-wrap gl-border-b-0 !gl-pt-0"
   >
-    <page-heading :heading="pageHeadingComputed" class="gl-w-full">
+    <page-heading class="gl-w-full">
+      <template #heading>
+        <gl-button
+          v-gl-tooltip.html
+          data-testid="wiki-sidebar-toggle"
+          icon="list-bulleted"
+          category="tertiary"
+          class="wiki-sidebar-header-toggle js-sidebar-wiki-toggle-open gl-mr-2"
+          :aria-label="__('Toggle sidebar')"
+        />
+        <span>
+          {{ pageHeadingComputed }}
+        </span>
+      </template>
       <template v-if="!isEditingPath" #actions>
         <gl-button
           v-if="showEditButton"
@@ -194,12 +207,6 @@ export default {
             :class="{ '!gl-text-status-info': wikiPage.subscribed }"
           />
         </gl-button>
-        <gl-button
-          v-gl-tooltip.html
-          icon="chevron-double-lg-left"
-          class="js-sidebar-wiki-toggle @sm/panel:gl-hidden"
-          :aria-label="__('Toggle sidebar')"
-        />
         <wiki-more-dropdown />
       </template>
       <template v-if="lastVersion" #description>
