@@ -146,7 +146,7 @@ describe('Merge requests query component', () => {
 
     expect(slotSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        count: 0,
+        count: null,
         mergeRequests: expect.arrayContaining([
           expect.objectContaining({
             title,

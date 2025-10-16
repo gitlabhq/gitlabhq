@@ -1930,9 +1930,6 @@ msgstr ""
 msgid "- Create, update, or delete a merge request."
 msgstr ""
 
-msgid "- Device name: %{device_name}"
-msgstr ""
-
 msgid "- Event"
 msgid_plural "- Events"
 msgstr[0] ""
@@ -2209,10 +2206,16 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
-msgid "A WebAuthn device has been deleted from your GitLab account."
+msgid "A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was deleted from your account."
 msgstr ""
 
-msgid "A WebAuthn device has been registered to your GitLab account."
+msgid "A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was registered to your account."
+msgstr ""
+
+msgid "A WebAuthn device, named %{device_name}, was deleted from your account."
+msgstr ""
+
+msgid "A WebAuthn device, named %{device_name}, was registered to your account."
 msgstr ""
 
 msgid "A basic folder structure and sample files for a CI/CD components project."
@@ -2299,10 +2302,10 @@ msgstr ""
 msgid "A non-confidential work item cannot have a confidential parent."
 msgstr ""
 
-msgid "A one-time password (OTP) authenticator has been deleted from your GitLab account."
+msgid "A one-time password (OTP) authenticator was deleted from your account."
 msgstr ""
 
-msgid "A one-time password (OTP) authenticator has been registered to your GitLab account."
+msgid "A one-time password (OTP) authenticator was registered to your account."
 msgstr ""
 
 msgid "A parent must be provided when bulk updating issuables"
@@ -23799,9 +23802,6 @@ msgstr ""
 msgid "Device name"
 msgstr ""
 
-msgid "Device name: %{device_name}"
-msgstr ""
-
 msgid "DeviceAuth|Authorize"
 msgstr ""
 
@@ -33667,10 +33667,10 @@ msgstr ""
 msgid "IMPORTANT: Use this setting only for VERY strict auditing purposes. When turned on, nobody will be able to remove the label from any merge requests after they are merged. In addition, nobody will be able to turn off this setting or delete this label."
 msgstr ""
 
-msgid "INFO: Your SSH key has expired. Please generate a new key."
+msgid "INFO: Your SSH key expires soon. Please generate a new key."
 msgstr ""
 
-msgid "INFO: Your SSH key is expiring soon. Please generate a new key."
+msgid "INFO: Your SSH key has expired. Please generate a new key."
 msgstr ""
 
 msgid "IP '%{value}' is not a valid CIDR: %{message}"
@@ -38518,6 +38518,9 @@ msgid "Learn more about Service Desk"
 msgstr ""
 
 msgid "Learn more about X.509 signed commits"
+msgstr ""
+
+msgid "Learn more about authentication requirements: "
 msgstr ""
 
 msgid "Learn more about custom project templates"
@@ -45794,6 +45797,9 @@ msgid "One-time password authenticator deleted"
 msgstr ""
 
 msgid "One-time password authenticator has been deleted!"
+msgstr ""
+
+msgid "One-time password authenticator registered"
 msgstr ""
 
 msgid "Online license"
@@ -64346,6 +64352,15 @@ msgstr ""
 msgid "Step 4."
 msgstr ""
 
+msgid "Step-up authentication already completed"
+msgstr ""
+
+msgid "Step-up authentication required"
+msgstr ""
+
+msgid "Step-up authentication required."
+msgstr ""
+
 msgid "Still loading…"
 msgstr ""
 
@@ -67278,6 +67293,9 @@ msgstr ""
 msgid "This group is scheduled to be deleted on %{date}. You are about to delete this group, including its subgroups and projects, immediately. This action cannot be undone."
 msgstr ""
 
+msgid "This group requires additional authentication. Please sign in with your OAuth provider to continue."
+msgstr ""
+
 msgid "This group will be deleted on %{date} because its parent group is scheduled for deletion."
 msgstr ""
 
@@ -69499,12 +69517,6 @@ msgid "Two-factor authentication"
 msgstr ""
 
 msgid "Two-factor authentication disabled"
-msgstr ""
-
-msgid "Two-factor authentication enabled - OTP"
-msgstr ""
-
-msgid "Two-factor authentication enabled - WebAuthn"
 msgstr ""
 
 msgid "Two-factor authentication for admin mode"
@@ -73619,6 +73631,9 @@ msgstr ""
 msgid "WebAuthn device deleted"
 msgstr ""
 
+msgid "WebAuthn device registered"
+msgstr ""
+
 msgid "WebAuthn devices"
 msgstr ""
 
@@ -77223,10 +77238,10 @@ msgstr ""
 msgid "Your Projects' Activity"
 msgstr ""
 
-msgid "Your SSH key has expired"
+msgid "Your SSH key expires soon"
 msgstr ""
 
-msgid "Your SSH key is expiring soon."
+msgid "Your SSH key has expired"
 msgstr ""
 
 msgid "Your SSH key was deleted"

@@ -140,7 +140,7 @@ def make_change!(change)
     change.abort!
     return
   end
-  
+
   # Perform changes and return completed change object
   perform_changes(change)
   change
@@ -171,6 +171,49 @@ variables described below.
 Note: By default all `.rb` files in the `./keeps/` directory (not recursively)
 will be loaded by the `gitlab-housekeeper` command. So it is assumed you place
 the keeps in there.
+
+## CLI Options
+
+The `gitlab-housekeeper` command supports several options to customize its behavior:
+
+```sh
+bundle exec gitlab-housekeeper -h
+```
+
+### Available Options
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--push-when-approved` | Push code even if there is an existing MR with approvals. By default we do not force push code if the MR has any approvals. | `bundle exec gitlab-housekeeper --push-when-approved` |
+| `-b, --target-branch=BRANCH` | Target branch to use. Defaults to master. | `bundle exec gitlab-housekeeper -b main` |
+| `-m, --max-mrs=M` | Limit of MRs to create. Defaults to 1. | `bundle exec gitlab-housekeeper -m 5` |
+| `-d, --dry-run` | Dry-run only. Print the MR titles, descriptions and diffs | `bundle exec gitlab-housekeeper -d` |
+| `-k, --keeps` | Require keeps specified (comma-separated) | `bundle exec gitlab-housekeeper -k OverdueFinalizeBackgroundMigration,AnotherKeep` |
+| `--filter-identifiers` | Skip any changes where none of the identifiers match these regexes. The identifiers is an array, so at least one element must match at least one regex. | `bundle exec gitlab-housekeeper --filter-identifiers "DeleteOldFeatureFlags,.*_feature_flag"` |
+| `-h, --help` | Prints help information | `bundle exec gitlab-housekeeper -h` |
+
+### Usage Examples
+
+```bash
+# Basic usage
+bundle exec gitlab-housekeeper -k Keeps::PrettyUselessKeep -d -m 3
+bundle exec gitlab-housekeeper -b main -m 1
+
+# Keep selection (run only specific keeps)
+bundle exec gitlab-housekeeper -k "DeleteOldFeatureFlags,RubocopFixer" -d -m 5
+
+# Identifier filtering (fine-grained control within keeps)
+bundle exec gitlab-housekeeper --filter-identifiers "my_feature_flag" -d -m 1
+bundle exec gitlab-housekeeper --filter-identifiers "users" -d -m 2
+
+# Filter by file patterns (useful for quarantine changes affecting specific files)
+bundle exec gitlab-housekeeper --filter-identifiers "spec/.*_spec\.rb" -d -m 3
+
+# Combined keep selection + identifier filtering
+bundle exec gitlab-housekeeper -k "RubocopFixer" --filter-identifiers "Style/.*" -d -m 5
+# Filter by table names (useful for database-related keeps)
+bundle exec gitlab-housekeeper -k "InitializeBigIntConversion" --filter-identifiers "users" -d -m 2
+```
 
 ## Running for real
 
@@ -238,6 +281,49 @@ keeps periodically. Here are some places where it is being run today:
 1. In our [`engineering-productivity` team scheduled pipelines](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/edf362f52d81ecb8e4934c357cb567384af106a5/.gitlab-ci.yml#L68). This is the default place to add new keeps.
 1. In our [`database-testing` scheduled pipelines](https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/blob/ebbd9a18547376d2a6e89cf95a6ce12c8d1f133d/db-testing.yml#L402). This is the place to add keeps which need to read from a production Postgres archive.
 
+## Troubleshooting
+
+### Git Conflicts and Branch Issues
+
+When developing a keep locally, you may encounter git-related errors that cause the keep to fail and exit. This commonly happens when your local branch is not up-to-date with the default comparison branch (master).
+
+**Common Scenario**: You've added new files locally during development, and the keep fails with unhelpful error messages about git conflicts.
+
+**Root Cause**: GitLab Housekeeper uses the `master` branch as the default comparison branch. If your local `master` branch is behind the remote `master` branch, or if you have uncommitted changes, this can cause conflicts when the tool tries to create branches and commits.
+
+**Solution**: Ensure your local repository is clean and up-to-date:
+
+```bash
+# Stash any uncommitted changes
+git stash
+
+# Switch to master and pull latest changes
+git checkout master
+git pull origin master
+
+# Rebase your feature branch (if working on one)
+git checkout your-feature-branch
+git rebase master
+
+# Now run housekeeper
+bundle exec gitlab-housekeeper -k YourKeep -d
+```
+
+**Alternative**: Use the `--target-branch` option to specify a different base branch:
+
+```bash
+bundle exec gitlab-housekeeper -b your-current-branch -k YourKeep -d
+```
+
+### Keep-Specific Issues
+
+If a keep fails during execution:
+
+1. **Check the keep's comments**: Most keeps include usage examples and required environment variables in their header comments
+2. **Run with dry-run first**: Always test with `-d` flag before creating actual MRs
+3. **Check file permissions**: Ensure the keep has permission to modify the files it targets
+4. **Verify project state**: Some keeps expect certain files or configurations to exist
+
 ## Architecture Details
 
 ### The two-method approach
@@ -245,14 +331,14 @@ keeps periodically. Here are some places where it is being run today:
 **Why this approach?** The runner needs to check various conditions after `each_identified_change` but before
 actual file modifications:
 - Whether a closed MR already exists for this change
-- Whether the change matches filter identifiers  
+- Whether the change matches filter identifiers
 - Whether we've hit the maximum MR limit
 - Other early-exit conditions
 
 Performing expensive operations (file modifications, database resets, API calls) before these checks
 would be wasteful and could cause issues if the change gets skipped.
 
-This separation allows the runner to perform validation checks (like checking if an MR already exists, 
+This separation allows the runner to perform validation checks (like checking if an MR already exists,
 filter matching, etc.) before doing expensive file modifications and side effects.
 
 ## Using Housekeeper in other projects

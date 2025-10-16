@@ -2567,8 +2567,6 @@ class Project < ApplicationRecord
     return true unless group || namespace
     return level <= group.visibility_level if group
 
-    return true unless Feature.enabled?(:user_namespace_allowed_visibility, namespace)
-
     level <= namespace.visibility_level
   end
 

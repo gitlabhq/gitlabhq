@@ -5559,6 +5559,7 @@ CREATE TABLE p_ai_active_context_code_repositories (
     indexed_at timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    last_queried_at timestamp with time zone,
     CONSTRAINT check_b253d453c7 CHECK ((char_length(last_commit) <= 64))
 )
 PARTITION BY RANGE (project_id);
@@ -14864,7 +14865,8 @@ CREATE TABLE commit_user_mentions (
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
     commit_id character varying NOT NULL,
-    note_id bigint NOT NULL
+    note_id bigint NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE commit_user_mentions_id_seq
@@ -33276,6 +33278,9 @@ ALTER TABLE work_item_custom_statuses
 ALTER TABLE packages_packages
     ADD CONSTRAINT check_d6301aedeb CHECK ((char_length(status_message) <= 255)) NOT VALID;
 
+ALTER TABLE commit_user_mentions
+    ADD CONSTRAINT check_ddd6f289f4 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
 
@@ -39438,6 +39443,8 @@ CREATE INDEX index_clusters_on_project_id ON clusters USING btree (project_id);
 
 CREATE INDEX index_clusters_on_user_id ON clusters USING btree (user_id);
 
+CREATE INDEX index_commit_user_mentions_on_namespace_id ON commit_user_mentions USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_commit_user_mentions_on_note_id ON commit_user_mentions USING btree (note_id);
 
 CREATE INDEX index_compliance_framework_security_policies_on_namespace_id ON compliance_framework_security_policies USING btree (namespace_id);
@@ -41259,6 +41266,8 @@ CREATE INDEX index_organizations_on_name_trigram ON organizations USING gin (nam
 CREATE INDEX index_organizations_on_path_trigram ON organizations USING gin (path gin_trgm_ops);
 
 CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name), id);
+
+CREATE INDEX index_p_ai_active_context_code_repositories_on_last_queried_at ON ONLY p_ai_active_context_code_repositories USING btree (last_queried_at);
 
 CREATE INDEX index_p_catalog_resource_sync_events_on_id_where_pending ON ONLY p_catalog_resource_sync_events USING btree (id) WHERE (status = 1);
 
@@ -46940,6 +46949,8 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER set_sharding_key_for_commit_user_mentions_on_insert_and_update BEFORE INSERT OR UPDATE ON commit_user_mentions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
+
 CREATE TRIGGER set_sharding_key_for_suggestions_on_insert_and_update BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
 CREATE TRIGGER set_sharding_key_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION get_sharding_key_from_notes_table();
@@ -47891,6 +47902,9 @@ ALTER TABLE ONLY issuable_slas
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_283fb4ad36 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY commit_user_mentions
+    ADD CONSTRAINT fk_2840265c3f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT fk_2867e9284c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

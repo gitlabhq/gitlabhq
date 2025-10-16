@@ -47,6 +47,33 @@ For deprecation reviewers (Technical Writers only):
 -->
 
 <div class="js-deprecation-filters"></div>
+<div class="milestone-wrapper" data-milestone="23.0">
+
+## GitLab 23.0
+
+<div class="deprecation " data-milestone="23.0">
+
+### Replace `threshold` with `maxretries` for container registry notifications
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.1</span>
+- Removal in GitLab <span class="milestone">23.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1243).
+
+</div>
+
+You can configure the container registry to send [webhook notifications](https://docs.gitlab.com/administration/packages/container_registry/#configure-container-registry-notifications) in response to events happening in the registry. The configuration uses the `threshold` and `backoff` parameters to specify how many failures are allowed before backing off for a period of time before retrying.
+
+The problem is that the event will be held in memory forever until it is successful or the registry is shut down. This is not ideal as it can cause high memory and CPU usage on the registry side if the events are not sent properly. It will also delay any new events added to the queue of events.
+
+A new `maxretries` parameter has been added to control how many times an event will be retried before dropping the event. As such, we have deprecated the `threshold` parameter in favor of `maxretries` so that events are not held in memory forever.
+
+**Backward compatibility:** The registry automatically translates existing `threshold` configurations to equivalent `maxretries` values based on your configured `backoff` duration. You will see a deprecation warning in logs showing the translated value. While your existing configuration continues to work, we recommend explicitly setting `maxretries` to avoid automatic translation.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="21.0">
 
 ## GitLab 21.0
@@ -723,26 +750,6 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 The GraphQL field `take_ownership_pipeline_schedule` will be deprecated. To
 determine if a user can take ownership of a pipeline schedule, use the
 `admin_pipeline_schedule` field instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### Replace `threshold` with `maxretries` for container registry notifications
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.1</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1243).
-
-</div>
-
-You can configure the container registry to send [webhook notifications](https://docs.gitlab.com/administration/packages/container_registry/#configure-container-registry-notifications) in response to events happening in the registry. The configuration uses the `threshold` and `backoff` parameters to specify how many failures are allowed before backing off for a period of time before retrying.
-
-The problem is that the event will be held in memory forever until it is successful or the registry is shut down. This is not ideal as it can cause high memory and CPU usage on the registry side if the events are not sent properly. It will also delay any new events added to the queue of events.
-
-A new `maxretries` parameter has been added to control how many times an event will be retried before dropping the event. As such, we have deprecated the `threshold` parameter in favor of `maxretries` so that events are not held in memory forever.
 
 </div>
 

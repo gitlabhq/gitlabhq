@@ -1107,8 +1107,7 @@ Read more about the container registry notifications configuration options in th
 
 {{< alert type="warning" >}}
 
-Support for the `threshold` parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243)
-in GitLab 17.0, and is planned for removal in 18.0. Use `maxretries` instead.
+The threshold parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) in GitLab 17.0, and is planned for removal in 23.0. Use `maxretries` instead. The registry automatically translates existing threshold configurations to equivalent `maxretries` values based on your configured `backoff` duration, and emits a deprecation warning in logs showing the translated value. While your existing configuration continues to work, you should set `maxretries` to avoid automatic translation.
 
 {{< /alert >}}
 

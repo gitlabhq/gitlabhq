@@ -3611,20 +3611,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
       it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
       it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(user_namespace_allowed_visibility: false)
-        end
-
-        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
-        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
-        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
-
-        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
-        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
-        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
-      end
     end
   end
 

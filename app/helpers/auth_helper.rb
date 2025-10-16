@@ -166,7 +166,13 @@ module AuthHelper
   end
 
   def step_up_auth_params(provider_name, step_up_auth_scope)
-    return {} if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+    return {} if step_up_auth_scope.blank?
+
+    return {} if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user) &&
+      step_up_auth_scope.to_s == ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_ADMIN_MODE.to_s
+
+    return {} if Feature.disabled?(:omniauth_step_up_auth_for_namespace, current_user) &&
+      step_up_auth_scope.to_s == ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE.to_s
 
     # Get provider configuration for step up auth scope
     provider_config = Gitlab::Auth::OAuth::Provider

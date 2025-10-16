@@ -20,11 +20,6 @@ export default {
   },
   mixins: [Tracking.mixin({ label: 'right_sidebar' })],
   props: {
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     projectEmailsEnabled: {
       type: Boolean,
       required: false,
@@ -47,6 +42,7 @@ export default {
     },
   },
   computed: {
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is used by the `Tracking` mixin
     tracking() {
       return {
         // eslint-disable-next-line no-underscore-dangle

@@ -143,6 +143,49 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
           expect(service.logger.observations_hash).to eq({})
         end
       end
+
+      context 'with external validation service configured' do
+        let(:validation_service_url) { 'https://validation-service.external/' }
+        let(:validation_service_response) { instance_double(HTTParty::Response, code: 200) }
+
+        let(:loggable_data) do
+          {
+            'pipeline_validate_external_payload_duration_s' => a_kind_of(Numeric),
+            'pipeline_validate_external_request_duration_s' => a_kind_of(Numeric)
+          }
+        end
+
+        before do
+          stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
+          allow(::Gitlab::HTTP).to receive(:post).and_return(validation_service_response)
+        end
+
+        it 'logs external validation payload and request durations separately' do
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(a_hash_including(loggable_data))
+            .and_call_original
+
+          # We also expect some logs from Gitlab::Ci::Pipeline::CommandLogger,
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(hash_including("class" => "Gitlab::Ci::Pipeline::CommandLogger"))
+            .and_call_original
+
+          expect(pipeline).to be_created_successfully
+        end
+
+        it 'collects external validation metrics in observations' do
+          expect(pipeline).to be_created_successfully
+
+          observations = service.logger.observations_hash
+
+          expect(observations).to include(
+            'pipeline_validate_external_payload_duration_s' => a_kind_of(Numeric),
+            'pipeline_validate_external_request_duration_s' => a_kind_of(Numeric)
+          )
+        end
+      end
     end
 
     context 'when the size exceeds the threshold' do

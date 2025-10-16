@@ -12,7 +12,6 @@ RSpec.describe BulkImports::Configuration, type: :model, feature_category: :impo
     it { is_expected.to validate_length_of(:access_token).is_at_most(255) }
 
     it { is_expected.to validate_presence_of(:url) }
-    it { is_expected.to validate_presence_of(:access_token) }
   end
 
   describe '#safe_url' do

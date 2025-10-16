@@ -197,6 +197,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
     resources :observability, only: [:show]
 
+    resources :step_up_auths, only: [:new]
+
     post :preview_markdown
 
     post '/restore' => '/groups#restore', as: :restore

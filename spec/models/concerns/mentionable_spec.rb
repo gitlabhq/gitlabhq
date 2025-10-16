@@ -246,6 +246,62 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
       let(:note) { create(:note_on_commit) }
       let(:mentionable) { note.noteable }
     end
+
+    context 'with sharding_key trigger' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project, :public, :repository) }
+      let_it_be(:commit) { project.commit }
+
+      let(:note) { create(:note_on_commit, commit_id: commit.id, project: project) }
+      let(:note_desc) { user.to_reference }
+      let(:mentionable) { note.noteable }
+
+      context 'with user mention creation' do
+        it 'syncs value with notes column namespace_id' do
+          note.update!(note: note_desc)
+          # delete user mentions created when saving the note
+          mentionable.user_mentions.delete_all
+
+          expect { note.store_mentions! }.to change { mentionable.user_mentions.count }.by(1)
+          expect(mentionable.user_mentions.last.namespace_id).to eq(note.namespace_id)
+        end
+
+        it 'syncs value with notes project namespace' do
+          note.update!(note: note_desc)
+          note.update_column(:namespace_id, nil)
+          mentionable.user_mentions.delete_all
+
+          expect { note.store_mentions! }.to change { mentionable.user_mentions.count }.by(1)
+          expect(mentionable.user_mentions.last.namespace_id).to eq(note.project.project_namespace_id)
+        end
+      end
+
+      context 'with user mention update' do
+        let(:note) { create(:note_on_commit, commit_id: commit.id, project: project) }
+
+        it 'syncs value with notes column namespace_id' do
+          note.update!(note: note_desc)
+          mentionable.user_mentions.last.update_column(:namespace_id, nil)
+
+          # updates user mention created when saving the note
+          expect { note.store_mentions! }.not_to change { mentionable.user_mentions.count }
+
+          expect(mentionable.user_mentions.count).to eq 1
+          expect(mentionable.user_mentions.last.reload.namespace_id).to eq(note.namespace_id)
+        end
+
+        it 'syncs value with notes column project_id' do
+          note.update!(note: note_desc)
+          mentionable.user_mentions.last.update_column(:namespace_id, nil)
+          note.update_column(:namespace_id, nil)
+
+          expect { note.store_mentions! }.not_to change { mentionable.user_mentions.count }
+
+          expect(mentionable.user_mentions.count).to eq 1
+          expect(mentionable.user_mentions.last.reload.namespace_id).to eq(note.project.project_namespace_id)
+        end
+      end
+    end
   end
 
   describe 'load mentions' do

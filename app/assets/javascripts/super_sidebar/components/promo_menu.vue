@@ -66,7 +66,7 @@ export default {
     </gl-button>
     <template v-else>
       <gl-disclosure-dropdown
-        icon="hamburger"
+        icon="ellipsis_v"
         category="tertiary"
         :toggle-text="__('Menu')"
         text-sr-only

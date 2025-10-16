@@ -68,28 +68,101 @@ RSpec.describe TwoFactor::DestroyOtpService, feature_category: :system_access do
           it 'disables the OTP authenticator of the user' do
             expect { execute }.to change { user.reload.two_factor_otp_enabled? }.from(true).to(false)
           end
-
-          it 'sends the user a notification email' do
-            expect_next_instance_of(NotificationService) do |notification|
-              expect(notification).to receive(:disabled_two_factor).with(user, :otp)
-            end
-
-            execute
-          end
         end
 
         context 'when disabling their own OTP authenticator' do
-          let(:current_user) { create(:user, :two_factor_via_otp) }
-          let(:user) { current_user }
+          context 'when only OTP is enabled' do
+            let(:current_user) { create(:user, :two_factor_via_otp) }
+            let(:user) { current_user }
 
-          it_behaves_like 'disables OTP authenticator'
+            it_behaves_like 'disables OTP authenticator'
+
+            it 'removes the user backup codes' do
+              execute
+              expect(user.otp_backup_codes).to be_nil
+            end
+
+            it 'sends the user a notification emails' do
+              expect_next_instance_of(NotificationService) do |notification|
+                expect(notification).to receive(:disabled_two_factor).with(user, :otp)
+              end
+
+              expect_next_instance_of(NotificationService) do |notification|
+                expect(notification).to receive(:disabled_two_factor).with(user)
+              end
+
+              execute
+            end
+          end
+
+          context 'when multiple 2FA methods are enabled' do
+            let(:current_user) do
+              create(:user, :two_factor_via_otp, :two_factor_via_webauthn, registrations_count: 1)
+            end
+
+            let(:user) { current_user }
+
+            it_behaves_like 'disables OTP authenticator'
+
+            it 'does not remove the user backup codes' do
+              expect { execute }.not_to change { user.otp_backup_codes }
+            end
+
+            it 'sends the user a notification email' do
+              expect_next_instance_of(NotificationService) do |notification|
+                expect(notification).to receive(:disabled_two_factor).with(user, :otp)
+              end
+
+              execute
+            end
+          end
         end
 
         context 'when admin disables the OTP authenticator of another user', :enable_admin_mode do
           let(:current_user) { create(:admin) }
-          let(:user) { create(:user, :two_factor_via_otp) }
 
-          it_behaves_like 'disables OTP authenticator'
+          context 'when only OTP is enabled' do
+            let(:user) { create(:user, :two_factor_via_otp) }
+
+            it_behaves_like 'disables OTP authenticator'
+
+            it 'removes the user backup codes' do
+              execute
+              expect(user.otp_backup_codes).to be_nil
+            end
+
+            it 'sends the user a notification emails' do
+              expect_next_instance_of(NotificationService) do |notification|
+                expect(notification).to receive(:disabled_two_factor).with(user, :otp)
+              end
+
+              expect_next_instance_of(NotificationService) do |notification|
+                expect(notification).to receive(:disabled_two_factor).with(user)
+              end
+
+              execute
+            end
+          end
+
+          context 'when multiple 2FA methods are enabled' do
+            let(:user) do
+              create(:user, :two_factor_via_otp, :two_factor_via_webauthn, registrations_count: 1)
+            end
+
+            it_behaves_like 'disables OTP authenticator'
+
+            it 'does not remove the user backup codes' do
+              expect { execute }.not_to change { user.otp_backup_codes }
+            end
+
+            it 'sends the user a notification email' do
+              expect_next_instance_of(NotificationService) do |notification|
+                expect(notification).to receive(:disabled_two_factor).with(user, :otp)
+              end
+
+              execute
+            end
+          end
         end
       end
     end

@@ -6,6 +6,12 @@ class Groups::ApplicationController < ApplicationController
   include SortingHelper
   include SortingPreference
 
+  # TODO: Include EnforcesStepUpAuthenticationForNamespace when finalizing the implementation
+  # of step-up authentication for groups. This is necessary in order to enforce additional
+  # OAuth-based authentication for sensitive group resources based on namespace configuration.
+  # See app/controllers/concerns/enforces_step_up_authentication_for_namespace.rb
+  # Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207665#note_2825918460
+
   layout 'group'
 
   skip_before_action :authenticate_user!

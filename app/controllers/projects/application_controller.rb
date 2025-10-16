@@ -6,6 +6,12 @@ class Projects::ApplicationController < ApplicationController
   include RoutableActions
   include SafeFormatHelper
 
+  # TODO: Include EnforcesStepUpAuthenticationForNamespace when finalizing the implementation
+  # of step-up authentication for projects. This is necessary in order to enforce additional
+  # OAuth-based authentication for sensitive project resources based on namespace configuration.
+  # See app/controllers/concerns/enforces_step_up_authentication_for_namespace.rb
+  # Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207665#note_2825918460
+
   skip_before_action :authenticate_user!
   before_action :project
   before_action :repository

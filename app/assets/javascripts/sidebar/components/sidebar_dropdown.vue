@@ -189,6 +189,7 @@ export default {
       };
     },
   },
+  expose: ['show'],
   methods: {
     isAttributeChecked(attributeId) {
       return (

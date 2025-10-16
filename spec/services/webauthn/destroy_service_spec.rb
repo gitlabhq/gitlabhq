@@ -112,8 +112,6 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
                 { device_name: webauthn_name })
             end
 
-            expect(NotificationService).not_to receive(:new)
-
             subject
           end
         end
@@ -138,8 +136,6 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
           expect(notification).to receive(:disabled_two_factor).with(user, :webauthn,
             { device_name: webauthn_name })
         end
-
-        expect(NotificationService).not_to receive(:new)
 
         subject
       end

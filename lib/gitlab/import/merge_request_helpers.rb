@@ -8,9 +8,17 @@ module Gitlab
       # @param attributes [Hash]
       # @return MergeRequest::Metrics
       def create_merge_request_metrics(attributes)
+        retries ||= 0
         metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request) # rubocop: disable CodeReuse/ActiveRecord -- no need to move this to ActiveRecord model
         metric.update(attributes)
         metric
+      rescue ActiveRecord::RecordNotUnique => e
+        # Multiple jobs may attempt to create the metrics simultaneously
+        sleep 1
+        retries += 1
+        retry if retries < 5
+
+        raise e
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

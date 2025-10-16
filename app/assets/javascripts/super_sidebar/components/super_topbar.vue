@@ -102,7 +102,11 @@ export default {
         :aria-label="$options.i18n.menuLabel"
       />
 
-      <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
+      <promo-menu
+        v-if="!isLoggedIn"
+        :pricing-url="sidebarData.compare_plans_url"
+        class="gl-hidden lg:gl-flex"
+      />
 
       <organization-switcher v-if="shouldShowOrganizationSwitcher" class="gl-hidden md:gl-block" />
     </div>
@@ -169,6 +173,11 @@ export default {
         >
           {{ isSaas ? __('Get free trial') : __('Register') }}
         </gl-button>
+        <promo-menu
+          v-if="!isLoggedIn"
+          :pricing-url="sidebarData.compare_plans_url"
+          class="gl-flex lg:gl-hidden"
+        />
       </template>
     </div>
 

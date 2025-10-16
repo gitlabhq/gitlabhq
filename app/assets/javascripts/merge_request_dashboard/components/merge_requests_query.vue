@@ -38,6 +38,15 @@ export default {
         }
       },
       result({ data, error }) {
+        if (
+          (this.retryCount === RETRY_COUNT &&
+            error?.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE) ||
+          !error
+        ) {
+          this.loadedCount += 1;
+          this.loading = false;
+        }
+
         if (this.fromSubscription) {
           this.newMergeRequestIds = data?.currentUser?.mergeRequests?.nodes.reduce(
             (acc, mergeRequest) => {
@@ -53,12 +62,12 @@ export default {
         } else {
           this.updateCurrentMergeRequestIds();
 
-          if (!data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage && window.gon.dot_com) {
+          if (!data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage && this.loadedCount === 1) {
             const countWatcher = this.$watch(
               'count',
               () => {
                 if (this.count !== null) {
-                  if (this.count > this.mergeRequests?.nodes?.length) {
+                  if (this.count > this.mergeRequests?.nodes?.length && this.loadedCount === 1) {
                     // eslint-disable-next-line @gitlab/require-i18n-strings
                     Sentry.captureException(new Error('Count mismatch - possible SAML issue'), {
                       level: 'debug',
@@ -85,15 +94,6 @@ export default {
             );
           }
         }
-
-        if (
-          (this.retryCount === RETRY_COUNT &&
-            error?.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE) ||
-          !error
-        ) {
-          this.loadedCount += 1;
-          this.loading = false;
-        }
       },
     },
     count: {
@@ -101,7 +101,7 @@ export default {
         return QUERIES[this.query].countQuery;
       },
       update(d) {
-        return d.currentUser?.mergeRequests?.count ?? 0;
+        return d.currentUser?.mergeRequests?.count ?? null;
       },
       variables() {
         return this.mergeRequestQueryVariables;

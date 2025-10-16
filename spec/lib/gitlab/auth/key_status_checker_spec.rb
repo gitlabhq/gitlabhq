@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Auth::KeyStatusChecker do
     context 'for a key expiring in the next 7 days' do
       let(:key) { expiring_soon_key }
 
-      it { is_expected.to eq('INFO: Your SSH key is expiring soon. Please generate a new key.') }
+      it { is_expected.to eq('INFO: Your SSH key expires soon. Please generate a new key.') }
     end
 
     context 'for a key expiring after the next 7 days' do

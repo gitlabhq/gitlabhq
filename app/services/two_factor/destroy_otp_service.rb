@@ -11,7 +11,14 @@ module TwoFactor
 
       result = disable_two_factor_otp
 
-      notify_on_success(user) if result[:status] == :success
+      if result[:status] == :success
+        notify_on_success(user)
+
+        unless user.two_factor_enabled?
+          user.reset_backup_codes!
+          notification_service.disabled_two_factor(user)
+        end
+      end
 
       result
     end

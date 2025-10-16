@@ -555,7 +555,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
         include_examples 'valid use case'
 
-        it_behaves_like 'has the correct subject', /Your SSH key is expiring soon/
+        it_behaves_like 'has the correct subject', /Your SSH key expires soon/
         it_behaves_like 'has the correct body text', /SSH keys with the following fingerprints are scheduled to expire soon/
       end
 
@@ -695,7 +695,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject(/^Two-factor authentication enabled - OTP$/i)
+        is_expected.to have_subject(_("One-time password authenticator registered"))
       end
 
       it 'includes a link to two-factor authentication settings page' do
@@ -715,7 +715,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject(/^Two-factor authentication enabled - WebAuthn$/i)
+        is_expected.to have_subject(_("WebAuthn device registered"))
       end
 
       it 'includes the device name' do
@@ -743,7 +743,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject(/^Two-factor authentication disabled$/i)
+        is_expected.to have_subject(_("Two-factor authentication disabled"))
       end
 
       it 'includes a link to two-factor authentication settings page' do
@@ -765,7 +765,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject(/^One-time password authenticator deleted$/i)
+        is_expected.to have_subject(_("One-time password authenticator deleted"))
       end
 
       it 'includes a link to two-factor authentication settings page' do
@@ -787,7 +787,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject(/^WebAuthn device deleted$/i)
+        is_expected.to have_subject(_("WebAuthn device deleted"))
       end
 
       it 'includes the device name' do

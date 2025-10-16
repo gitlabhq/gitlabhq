@@ -981,7 +981,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key is expiring soon. Please generate a new key.'])
+            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key expires soon. Please generate a new key.'])
           end
         end
 

@@ -39,6 +39,11 @@
   // When using panels, remove top padding
   &.page-with-panels .layout-page {
     @apply gl-pt-0 #{!important};
+
+    // If AI panels are disabled.
+    &:has(.paneled-view.ai-panels:not(.ai-panel)) {
+      @apply gl-pb-3;
+    }
   }
 
   // Super topbar

@@ -58,12 +58,18 @@ module Gitlab
                 'X-Gitlab-Token' => validation_service_token
               }.compact
 
-              Gitlab::HTTP.post(
-                validation_service_url,
-                timeout: validation_service_timeout,
-                headers: headers,
-                body: validation_service_payload.to_json
-              )
+              request_body = logger.instrument(:pipeline_validate_external_payload, once: true) do
+                validation_service_payload.to_json
+              end
+
+              logger.instrument(:pipeline_validate_external_request, once: true) do
+                Gitlab::HTTP.post(
+                  validation_service_url,
+                  timeout: validation_service_timeout,
+                  headers: headers,
+                  body: request_body
+                )
+              end
             end
 
             def validation_service_timeout

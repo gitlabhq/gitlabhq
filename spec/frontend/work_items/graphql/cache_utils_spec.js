@@ -119,8 +119,8 @@ describe('work items graphql cache utils', () => {
   describe('addHierarchyChildren', () => {
     it('updates the work item with new children', () => {
       const mockCache = {
-        readQuery: () => mockCacheData,
-        writeQuery: jest.fn(),
+        identify: jest.fn().mockReturnValue(`WorkItem:${id}`),
+        modify: jest.fn(),
       };
 
       addHierarchyChildren({
@@ -130,56 +130,77 @@ describe('work items graphql cache utils', () => {
         childrenIds: [childrenWorkItems[1].id, childrenWorkItems[0].id],
       });
 
-      expect(mockCache.writeQuery).toHaveBeenCalledWith({
-        query: getWorkItemTreeQuery,
-        variables: { id },
-        data: {
-          workItem: {
-            id: 'gid://gitlab/WorkItem/10',
-            title: 'Work item',
-            widgets: [
-              {
-                type: WIDGET_TYPE_HIERARCHY,
-                hasChildren: true,
-                count: 3,
-                children: {
-                  nodes: [
-                    childrenWorkItems[0],
-                    {
-                      id: 'gid://gitlab/WorkItem/20',
-                      title: 'Child',
-                    },
-                    // closed work item
-                    childrenWorkItems[1],
-                  ],
-                },
-              },
-            ],
+      const { fields } = mockCache.modify.mock.calls[0][0];
+      const result = fields.widgets(
+        [
+          {
+            __typename: 'WorkItemWidgetHierarchy',
+            children: { nodes: [{ __typename: 'WorkItem', id: 'gid://gitlab/WorkItem/99' }] },
+            count: 1,
+            hasChildren: true,
           },
+        ],
+        {
+          readField: (field, ref) => {
+            // eslint-disable-next-line no-underscore-dangle
+            if (field === '__typename') return ref.__typename;
+            if (field === 'children') return ref.children;
+            if (field === 'count') return ref.count;
+            if (field === 'hasChildren') return ref.hasChildren;
+            return undefined;
+          },
+          toReference: (obj) => obj,
         },
-      });
+      );
+
+      expect(result[0]).toEqual(
+        expect.objectContaining({
+          __typename: 'WorkItemWidgetHierarchy',
+          hasChildren: true,
+          count: 3,
+          children: expect.objectContaining({
+            nodes: expect.arrayContaining([
+              expect.objectContaining({ id: childrenWorkItems[0].id }),
+              expect.objectContaining({ id: 'gid://gitlab/WorkItem/99' }),
+              expect.objectContaining({ id: childrenWorkItems[1].id }),
+            ]),
+          }),
+        }),
+      );
     });
 
     it('does not update the work item when there is no cache data', () => {
       const mockCache = {
-        readQuery: () => {},
-        writeQuery: jest.fn(),
+        identify: jest.fn().mockReturnValue(`WorkItem:${id}`),
+        modify: jest.fn(),
       };
 
-      const children = [
-        {
-          id: 'gid://gitlab/WorkItem/30',
-          title: 'New child 1',
-        },
-        {
-          id: 'gid://gitlab/WorkItem/31',
-          title: 'New child 3',
-        },
-      ];
+      const workItem = {
+        id: 'gid://gitlab/WorkItem/10',
+        widgets: [{ __typename: 'WorkItemWidgetHierarchy' }],
+      };
 
-      addHierarchyChildren({ cache: mockCache, id, workItem: children });
+      addHierarchyChildren({
+        cache: mockCache,
+        id,
+        workItem,
+        childrenIds: [],
+      });
 
-      expect(mockCache.writeQuery).not.toHaveBeenCalled();
+      const { fields } = mockCache.modify.mock.calls[0][0];
+      const result = fields.widgets([{ __typename: 'WorkItemWidgetHierarchy' }], {
+        readField: (field) => {
+          if (field === 'count') return 0;
+          if (field === 'children') return { nodes: [] };
+          if (field === 'hasChildren') return false;
+          if (field === '__typename') return 'WorkItemWidgetHierarchy';
+          return undefined;
+        },
+        toReference: () => null,
+      });
+
+      expect(result[0].children?.nodes ?? []).toHaveLength(0);
+      expect(result[0].count).toBe(0);
     });
   });
 

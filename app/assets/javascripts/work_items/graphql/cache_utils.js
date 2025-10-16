@@ -207,40 +207,44 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
 };
 
 export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
-  const queryArgs = {
-    query: getWorkItemTreeQuery,
-    variables: {
-      id,
+  const newChildren = findHierarchyWidgetChildren(workItem);
+
+  cache.modify({
+    id: cache.identify({ __typename: 'WorkItem', id }),
+    fields: {
+      widgets(existingWidgets = [], { readField, toReference }) {
+        return existingWidgets.map((widgetRef) => {
+          if (readField('__typename', widgetRef) !== 'WorkItemWidgetHierarchy') {
+            return widgetRef;
+          }
+
+          const existingChildrenConnection = readField('children', widgetRef) || {};
+          const existingNodes = existingChildrenConnection.nodes || [];
+
+          const childrenToAdd = newChildren.filter((child) => childrenIds.includes(child.id));
+
+          const openRefs = [];
+          const closedRefs = [];
+
+          for (const child of childrenToAdd) {
+            // eslint-disable-next-line no-underscore-dangle
+            const ref = toReference({ __typename: child.__typename || 'WorkItem', id: child.id });
+            // eslint-disable-next-line no-continue
+            if (!ref) continue;
+            (child.state === STATE_CLOSED ? closedRefs : openRefs).push(ref);
+          }
+
+          const mergedNodes = [...openRefs, ...existingNodes, ...closedRefs];
+
+          return {
+            ...widgetRef,
+            children: { ...existingChildrenConnection, nodes: mergedNodes },
+            hasChildren: readField('hasChildren', widgetRef) || mergedNodes.length > 0,
+            count: (readField('count', widgetRef) || 0) + childrenToAdd.length,
+          };
+        });
+      },
     },
-  };
-  const sourceData = cache.readQuery(queryArgs);
-
-  if (!sourceData) {
-    return;
-  }
-
-  cache.writeQuery({
-    ...queryArgs,
-    data: produce(sourceData, (draftState) => {
-      const widget = findHierarchyWidget(draftState?.workItem);
-      const newChildren = findHierarchyWidgetChildren(workItem);
-
-      const existingChildren = findHierarchyWidgetChildren(draftState?.workItem);
-
-      const childrenToAdd = newChildren.filter((item) => {
-        return childrenIds.includes(item.id);
-      });
-
-      for (const item of childrenToAdd) {
-        if (item.state === STATE_CLOSED) {
-          existingChildren.push(item);
-        } else {
-          existingChildren.unshift(item);
-        }
-      }
-      widget.hasChildren = childrenToAdd?.length > 0;
-      widget.count += childrenToAdd.length;
-    }),
   });
 };
 

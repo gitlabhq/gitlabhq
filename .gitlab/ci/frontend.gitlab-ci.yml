@@ -103,7 +103,7 @@ build-vite-prod:
     - yarn vite-prod
   allow_failure: true
   artifacts:
-    expire_in: 1h
+    expire_in: 1d
     paths:
       - public/assets/vite/
 

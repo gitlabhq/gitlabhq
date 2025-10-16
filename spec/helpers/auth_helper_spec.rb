@@ -758,7 +758,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     let(:current_user) { instance_double('User', flipper_id: '1') }
 
-    let(:oidc_setting_with_step_up_auth) do
+    let(:oidc_setting_with_admin_mode_step_up) do
       GitlabSettings::Options.new(
         name: "openid_connect",
         step_up_auth: {
@@ -772,12 +772,34 @@ RSpec.describe AuthHelper, feature_category: :system_access do
       )
     end
 
-    let(:oidc_setting_without_step_up_auth_params) do
-      GitlabSettings::Options.new(name: "openid_connect",
-        step_up_auth: { admin_mode: { id_token: { required: { acr: 'gold' } } } })
+    let(:oidc_setting_with_namespace_step_up) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          namespace: {
+            params: {
+              claims: { acr_values: 'silver' },
+              prompt: 'login'
+            }
+          }
+        }
+      )
     end
 
-    let(:oidc_setting_without_step_up_auth) do
+    let(:oidc_setting_without_step_up_params) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: { acr: 'gold' }
+            }
+          }
+        }
+      )
+    end
+
+    let(:oidc_setting_without_step_up) do
       GitlabSettings::Options.new(name: "openid_connect")
     end
 
@@ -785,32 +807,73 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     before do
       allow(helper).to receive(:current_user).and_return(current_user)
+
       stub_omniauth_setting(enabled: true, providers: omniauth_setting_providers)
     end
 
     # rubocop:disable Layout/LineLength -- Ensure one-line table syntax for better readability
-    where(:omniauth_setting_providers, :provider_name, :scope, :expected_result) do
-      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode, 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
-      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | 'admin_mode' | { step_up_auth_scope: 'admin_mode', 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
-      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | nil          | {}
-      [ref(:oidc_setting_with_step_up_auth)]           | 'missing_provider_name' | :admin_mode  | {}
-      [ref(:oidc_setting_with_step_up_auth)]           | nil                     | nil          | {}
+    where(:omniauth_setting_providers, :provider_name, :scope, :expected_params) do
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode, 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'openid_connect'        | 'admin_mode' | { step_up_auth_scope: 'admin_mode', 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'openid_connect'        | nil          | {}
+      [ref(:oidc_setting_with_admin_mode_step_up)] | 'missing_provider_name' | :admin_mode  | {}
+      [ref(:oidc_setting_with_admin_mode_step_up)] | nil                     | nil          | {}
 
-      []                                               | 'openid_connect'        | :admin_mode  | {}
-      [ref(:oidc_setting_without_step_up_auth)]        | 'openid_connect'        | :admin_mode  | {}
-      [ref(:oidc_setting_without_step_up_auth_params)] | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode }
+      []                                           | 'openid_connect'        | :admin_mode  | {}
+      [ref(:oidc_setting_without_step_up)]         | 'openid_connect'        | :admin_mode  | {}
+      [ref(:oidc_setting_without_step_up_params)]  | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode }
+
+      [ref(:oidc_setting_with_namespace_step_up)]  | 'openid_connect'        | :namespace   | { step_up_auth_scope: :namespace, 'claims' => '{"acr_values":"silver"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_namespace_step_up)]  | 'openid_connect'        | 'namespace'  | { step_up_auth_scope: 'namespace', 'claims' => '{"acr_values":"silver"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_without_step_up)]         | 'openid_connect'        | :namespace   | {}
     end
     # rubocop:enable Layout/LineLength
 
     with_them do
-      it { is_expected.to eq expected_result }
+      it { is_expected.to eq expected_params }
+    end
 
-      context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
-        before do
-          stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+    context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
+      before do
+        stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+      end
+
+      let(:omniauth_setting_providers) { [oidc_setting_with_admin_mode_step_up] }
+      let(:provider_name) { 'openid_connect' }
+      let(:scope) { :admin_mode }
+
+      it { is_expected.to eq({}) }
+
+      context 'when scope :namespace is given' do
+        let(:omniauth_setting_providers) { [oidc_setting_with_namespace_step_up] }
+        let(:scope) { :namespace }
+
+        it 'works as expected because feature flag for scope :admin_mode is disabled' do
+          is_expected
+            .to eq({ step_up_auth_scope: :namespace, 'claims' => '{"acr_values":"silver"}', 'prompt' => 'login' })
         end
+      end
+    end
 
-        it { is_expected.to eq({}) }
+    context 'when feature flag :omniauth_step_up_auth_for_namespace is disabled' do
+      before do
+        stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+      end
+
+      let(:omniauth_setting_providers) { [oidc_setting_with_namespace_step_up] }
+      let(:provider_name) { 'openid_connect' }
+      let(:scope) { :namespace }
+
+      it { is_expected.to eq({}) }
+
+      context 'when scope :admin_mode is given' do
+        let(:omniauth_setting_providers) { [oidc_setting_with_admin_mode_step_up] }
+        let(:scope) { :admin_mode }
+
+        it 'works as expected because feature flag for scope :namespace' do
+          is_expected
+            .to eq({ step_up_auth_scope: :admin_mode, 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' })
+        end
       end
     end
   end

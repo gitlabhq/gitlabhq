@@ -1,8 +1,6 @@
 %p
   = say_hi(@user)
 %p
-  = _('A WebAuthn device has been deleted from your GitLab account.')
-  %ul
-    %li= _('Device name: %{device_name}') % { device_name: sanitize_name(@device_name) }
+  = safe_format(_('A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was deleted from your account.'), tag_pair(tag.code, :codeOpen, :codeClose), device_name: @device_name)
 %p
   = re_enable_two_factor_authentication_text(format: :html)

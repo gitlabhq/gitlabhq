@@ -1,5 +1,4 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "ee_else_ce/work_items/graphql/work_item_permissions.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
 
 fragment WorkItemHierarchy on WorkItem {
@@ -12,10 +11,11 @@ fragment WorkItemHierarchy on WorkItem {
   title
   confidential
   userPermissions {
-    ...WorkItemPermissions
+    updateWorkItem
+    adminParentLink
+    setWorkItemMetadata
   }
-  widgets {
-    type
+  widgets(onlyTypes: [HIERARCHY]) {
     ... on WorkItemWidgetHierarchy {
       type
       hasChildren
@@ -67,7 +67,9 @@ fragment WorkItemHierarchy on WorkItem {
           closedAt
           webUrl
           reference(full: true)
-          widgets {
+          widgets(
+            onlyTypes: [HIERARCHY, ASSIGNEES, LABELS, LINKED_ITEMS, MILESTONE, START_AND_DUE_DATE]
+          ) {
             ... on WorkItemWidgetHierarchy {
               type
               hasChildren
@@ -88,6 +90,5 @@ fragment WorkItemHierarchy on WorkItem {
         }
       }
     }
-    ...WorkItemMetadataWidgets
   }
 }
