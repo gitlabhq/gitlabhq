@@ -440,6 +440,40 @@ If you get a `404 Page Not Found` response from GitLab Pages:
 
 Without the `pages:deploy` job, the updates to your GitLab Pages site are never published.
 
+If you're using a separate Pages server with `namespace_in_path` enabled, see
+[404 error when UI shows incorrect URL](#404-error-page-not-found-when-pages-ui-shows-incorrect-url).
+
+## 404 error: Page not found when Pages UI shows incorrect URL
+
+If you configured and enabled `namespace_in_path` on a [separate GitLab Pages server](_index.md#running-gitlab-pages-on-a-separate-server)
+you might get a `404 Page not found` error.
+
+This error occurs when the `namespace_in_path` setting is misconfigured or missing on the GitLab Pages
+server or main GitLab server.
+
+The [global setting](_index.md#global-settings) `namespace_in_path` determines the URL structure for
+GitLab Pages sites. Both the GitLab server and the GitLab Pages server must have identical values for this setting.
+
+To resolve this error:
+
+1. Open the `/etc/gitlab/gitlab.rb` file:
+
+   1. Verify your GitLab server configuration is:
+
+      ```ruby
+      gitlab_pages['namespace_in_path'] = true
+      ```
+
+   1. Ensure your GitLab Pages server configuration is the same:
+
+      ```ruby
+         gitlab_pages['namespace_in_path'] = true
+      ```
+
+1. Save the file.
+1. [Reconfigure GitLab](../restart_gitlab.md) on both servers for the
+   changes to take effect.
+
 ## 503 error `Client authentication failed due to unknown client`
 
 If Pages is a registered OAuth application and [access control is enabled](../../user/project/pages/pages_access_control.md), this error indicates that the authentication token stored in `/etc/gitlab/gitlab-secrets.json` has become invalid:

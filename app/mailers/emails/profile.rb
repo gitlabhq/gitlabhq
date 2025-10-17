@@ -241,15 +241,17 @@ module Emails
       )
     end
 
-    def enabled_two_factor_webauthn_email(user, device_name)
+    def enabled_two_factor_webauthn_email(user, device_name, type = :webauthn)
       return unless user
 
       @user = user
       @device_name = device_name
+      @type = type
 
       email_with_layout(
         to: @user.notification_email_or_default,
-        subject: subject(_("WebAuthn device registered"))
+        subject: subject(
+          type == :webauthn ? _("WebAuthn device registered") : _("Passkey registered"))
       )
     end
 
@@ -275,15 +277,16 @@ module Emails
       )
     end
 
-    def disabled_two_factor_webauthn_email(user, device_name)
+    def disabled_two_factor_webauthn_email(user, device_name, type = :webauthn)
       return unless user
 
       @user = user
       @device_name = device_name
+      @type = type
 
       email_with_layout(
         to: @user.notification_email_or_default,
-        subject: subject(_("WebAuthn device deleted"))
+        subject: subject(type == :webauthn ? _("WebAuthn device deleted") : _("Passkey deleted"))
       )
     end
 

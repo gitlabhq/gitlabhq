@@ -27,13 +27,11 @@ RSpec.describe 'user_settings/passwords/edit.html.haml', feature_category: :syst
       assign(:user, user_without_passkeys)
     end
 
-    it 'displays an alert to add passkeys' do
+    it 'displays an alert to add passkeys with a learn more link' do
       render
 
-      learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noopener')
-      expect(rendered).to include(safe_format(s_('ProfilesAuthentication|Add a passkey to sign in securely with your ' \
-        'trusted device. %{link_start}Learn more about passkeys%{link_end}.'),
-        tag_pair(learn_more_link, :link_start, :link_end)))
+      expect(rendered).to include('Add a passkey to sign in securely with your trusted device. ' \
+        '<a target="_blank" rel="noreferrer" href="/help/auth/passkeys.md">Learn more about passkeys</a>.')
     end
 
     it 'displays an `Add passkey` button' do

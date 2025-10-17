@@ -55,6 +55,7 @@ module Gitlab
 
           def deduplicatable_job?
             return false if scheduled_deferred_job?
+            return false if skip_deduplicate_on_resumed_job? && concurrency_limit_resumed?
 
             !duplicate_job.scheduled? || duplicate_job.options[:including_scheduled]
           end
@@ -63,6 +64,14 @@ module Gitlab
           # note that the schedule enq will push the jobs out of the zset with `deferred: true`
           def scheduled_deferred_job?
             duplicate_job.scheduled? && duplicate_job.deferred?
+          end
+
+          def skip_deduplicate_on_resumed_job?
+            Gitlab::Utils.to_boolean(ENV.fetch('REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE', 'false'))
+          end
+
+          def concurrency_limit_resumed?
+            duplicate_job.concurrency_limit_resumed?
           end
 
           def check!

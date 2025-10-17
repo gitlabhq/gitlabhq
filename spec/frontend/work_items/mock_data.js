@@ -5786,7 +5786,8 @@ export const workItemsWithSubChildQueryResponse = {
             state: 'OPEN',
             title: 'a group level work item 103',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -5832,7 +5833,8 @@ export const workItemsWithSubChildQueryResponse = {
             state: 'OPEN',
             title: 'a group level work item 102',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/34',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/34',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -5899,7 +5901,8 @@ export const workItemsQueryResponseNoLabels = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/32',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/32',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -5939,7 +5942,8 @@ export const workItemsQueryResponseNoLabels = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -6000,7 +6004,8 @@ export const workItemsQueryResponseNoAssignees = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/2',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/2',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -6050,7 +6055,8 @@ export const workItemsQueryResponseNoAssignees = {
             state: 'OPEN',
             title: 'a group level work item',
             updatedAt: '',
-            webUrl: 'web/url',
+            webPath: '/toolbox/gitlab-smoke-tests/-/issues/3',
+            webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/3',
             userDiscussionsCount: 0,
             widgets: [
               {
@@ -6107,7 +6113,8 @@ export const combinedQueryResultExample = [
     state: 'OPEN',
     title: 'a group level work item',
     updatedAt: '',
-    webUrl: 'web/url',
+    webPath: '/toolbox/gitlab-smoke-tests/-/issues/32',
+    webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/32',
     userDiscussionsCount: 0,
     widgets: [
       {
@@ -6164,7 +6171,8 @@ export const combinedQueryResultExample = [
     state: 'OPEN',
     title: 'a group level work item',
     updatedAt: '',
-    webUrl: 'web/url',
+    webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
+    webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
     userDiscussionsCount: 0,
     widgets: [
       {

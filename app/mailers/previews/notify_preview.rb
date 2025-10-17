@@ -289,16 +289,24 @@ class NotifyPreview < ActionMailer::Preview
     Notify.two_factor_otp_attempt_failed_email(user, '127.0.0.1').message
   end
 
+  def enabled_two_factor_passkey_email
+    Notify.enabled_two_factor_webauthn_email(user, 'MacBook Touch ID', :passkey).message
+  end
+
   def enabled_two_factor_otp_email
     Notify.enabled_two_factor_otp_email(user).message
   end
 
   def enabled_two_factor_webauthn_email
-    Notify.enabled_two_factor_webauthn_email(user, 'Macbook Touch ID').message
+    Notify.enabled_two_factor_webauthn_email(user, 'MacBook Touch ID').message
   end
 
   def disabled_two_factor_email
     Notify.disabled_two_factor_email(user).message
+  end
+
+  def disabled_two_factor_passkey_email
+    Notify.disabled_two_factor_webauthn_email(user, 'MacBook Touch ID', :passkey).message
   end
 
   def disabled_two_factor_otp_email
@@ -306,7 +314,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def disabled_two_factor_webauthn_email
-    Notify.disabled_two_factor_webauthn_email(user, 'Macbook Touch ID').message
+    Notify.disabled_two_factor_webauthn_email(user, 'MacBook Touch ID').message
   end
 
   def new_email_address_added_email

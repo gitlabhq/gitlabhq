@@ -680,8 +680,28 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
-  describe 'enabled two-factor authentication email' do
+  describe 'enabled two-factor authentication emails' do
     let_it_be(:user) { create(:user) }
+
+    describe 'Passkey' do
+      subject { Notify.enabled_two_factor_webauthn_email(user, 'MacBook Touch ID', :passkey) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(_('Passkey registered'))
+      end
+
+      it 'includes a link to two-factor authentication settings page' do
+        is_expected.to have_body_text(profile_two_factor_auth_path)
+      end
+    end
 
     describe 'One-time password authenticator' do
       subject { Notify.enabled_two_factor_otp_email(user) }
@@ -704,7 +724,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     describe 'WebAuthn device' do
-      subject { Notify.enabled_two_factor_webauthn_email(user, 'Macbook Touch ID') }
+      subject { Notify.enabled_two_factor_webauthn_email(user, 'MacBook Touch ID') }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -719,7 +739,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'includes the device name' do
-        is_expected.to have_body_text('Macbook Touch ID')
+        is_expected.to have_body_text('MacBook Touch ID')
       end
 
       it 'includes a link to two-factor authentication settings page' do
@@ -751,6 +771,32 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
     end
 
+    describe 'Passkey' do
+      let_it_be(:user) { create(:user) }
+
+      subject { Notify.disabled_two_factor_webauthn_email(user, 'MacBook Touch ID', :passkey) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject(_("Passkey deleted"))
+      end
+
+      it 'includes the device name' do
+        is_expected.to have_body_text('MacBook Touch ID')
+      end
+
+      it 'includes a link to two-factor authentication settings page' do
+        is_expected.to have_body_text(profile_two_factor_auth_path)
+      end
+    end
+
     describe 'OTP' do
       let_it_be(:user) { create(:user) }
 
@@ -776,7 +822,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     describe 'WebAuthn' do
       let_it_be(:user) { create(:user) }
 
-      subject { Notify.disabled_two_factor_webauthn_email(user, 'Macbook Touch ID') }
+      subject { Notify.disabled_two_factor_webauthn_email(user, 'MacBook Touch ID') }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -791,7 +837,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'includes the device name' do
-        is_expected.to have_body_text('Macbook Touch ID')
+        is_expected.to have_body_text('MacBook Touch ID')
       end
 
       it 'includes a link to two-factor authentication settings page' do

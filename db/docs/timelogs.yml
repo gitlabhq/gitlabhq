@@ -7,6 +7,6 @@ feature_categories:
 description: Time spend data recorded by users on issues
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/870
 milestone: '8.14'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514588
 table_size: small

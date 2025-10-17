@@ -1268,6 +1268,7 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
 - For jobs that time out:
   - `after_script` commands do not execute by default.
   - You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
+- Using `after_script` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 **Execution timing and file inclusion**:
 
@@ -1909,6 +1910,8 @@ for example to override:
 - The configuration for a job added with [`include`](#include).
 
 For more information about caches, see [Caching in GitLab CI/CD](../caching/_index.md).
+
+Using `cache` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 ---
 
@@ -3080,6 +3083,10 @@ rspec 2.7:
 In this example, the `ruby:3.0` image is the default for all jobs in the pipeline.
 The `rspec 2.7` job does not use the default, because it overrides the default with
 a job-specific `image` section.
+
+**Additional details**:
+
+- Using `image` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 **Related topics**:
 
@@ -5736,6 +5743,10 @@ In this example, GitLab launches two containers for the job:
 - A Ruby container that runs the `script` commands.
 - A PostgreSQL container. The `script` commands in the Ruby container can connect to
   the PostgreSQL database at the `db-postgres` hostname.
+
+**Additional details**:
+
+- Using `services` at the top level, but not in the `default` section, is [deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 **Related topics**:
 

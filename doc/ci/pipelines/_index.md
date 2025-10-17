@@ -574,6 +574,17 @@ and [merge trains](merge_trains.md) that might run pipelines after branch deleti
 
 ## Troubleshooting
 
+<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
+
+### Pipeline subscriptions continue after user deletion
+
+When a user [deletes their GitLab.com account](../../user/profile/account/delete_account.md#delete-your-own-account),
+the deletion does not occur for seven days. During this period, any [pipeline subscriptions created by that user](#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
+continue to run with the user's original permissions. To prevent unauthorized pipeline executions,
+immediately update pipeline subscription settings for the deleted user.
+
+<!--- end_remove -->
+
 ### Pre-filled variables do not show up in **New Pipeline** page
 
 If the predefined variables for a pipeline are [defined in a separate file](../yaml/includes.md),

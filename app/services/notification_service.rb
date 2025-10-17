@@ -49,7 +49,10 @@ class NotificationService
   def enabled_two_factor(user, type, options = {})
     return unless user.can?(:receive_notifications)
 
-    if type == :webauthn
+    case type
+    when :passkey
+      mailer.enabled_two_factor_webauthn_email(user, options[:device_name], :passkey).deliver_later
+    when :webauthn
       mailer.enabled_two_factor_webauthn_email(user, options[:device_name]).deliver_later
     else
       mailer.enabled_two_factor_otp_email(user).deliver_later
@@ -59,9 +62,12 @@ class NotificationService
   def disabled_two_factor(user, type = :two_factor, options = {})
     return unless user.can?(:receive_notifications)
 
-    if type == :webauthn
+    case type
+    when :passkey
+      mailer.disabled_two_factor_webauthn_email(user, options[:device_name], :passkey).deliver_later
+    when :webauthn
       mailer.disabled_two_factor_webauthn_email(user, options[:device_name]).deliver_later
-    elsif type == :otp
+    when :otp
       mailer.disabled_two_factor_otp_email(user).deliver_later
     else
       mailer.disabled_two_factor_email(user).deliver_later

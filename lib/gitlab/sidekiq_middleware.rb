@@ -37,6 +37,12 @@ module Gitlab
       def self.configurator
         ->(chain) do
           middlewares.each { |middleware| chain.add(middleware) }
+
+          if Gitlab::Utils.to_boolean(ENV.fetch('REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE', 'false'))
+            chain.insert_after(
+              ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client,
+              ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client)
+          end
         end
       end
     end
@@ -97,6 +103,13 @@ module Gitlab
           middlewares(metrics: metrics, arguments_logger: arguments_logger, skip_jobs: skip_jobs).each do |middleware|
             chain.add(middleware)
           end
+
+          if Gitlab::Utils.to_boolean(ENV.fetch('REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE', 'false'))
+            chain.insert_before(
+              ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
+              ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server)
+          end
+
           ::Gitlab::SidekiqMiddleware::ServerMetrics.initialize_process_metrics if metrics
         end
       end

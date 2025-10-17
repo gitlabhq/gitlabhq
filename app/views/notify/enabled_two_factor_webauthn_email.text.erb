@@ -1,5 +1,13 @@
 <%= say_hi(@user) %>
 
-<%= _('A WebAuthn device, named %{device_name}, was registered to your account.') % { device_name: sanitize_name(@device_name) } %>
+<% if @type == :webauthn %>
+  <%= _('A WebAuthn device, named "%{device_name}", was registered to your account.') % { device_name: sanitize_name(@device_name) } %>
 
-<%= manage_two_factor_authentication_text %>
+  <%= manage_two_factor_authentication_text %>
+<% else %>
+  <%= format(_('A passkey, named "%{device_name}", was registered to your account.'), device_name: sanitize_name(@device_name)) %>
+
+  <%= format(_("Next time you sign in, select the sign-in with passkey option and follow your device's instructions to authenticate and access your account. To learn more about passkeys, visit %{learn_more}"), learn_more: help_page_url('auth/passkeys.md')) %>
+
+  <%= manage_passkeys %>
+<% end %>

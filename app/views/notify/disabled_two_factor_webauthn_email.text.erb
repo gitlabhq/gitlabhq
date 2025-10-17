@@ -1,5 +1,11 @@
 <%= say_hi(@user) %>
 
-<%= _('A WebAuthn device, named %{device_name}, was deleted from your account.') % { device_name: sanitize_name(@device_name) } %>
+<% if @type == :webauthn %>
+  <%= _('A WebAuthn device, named "%{device_name}", was deleted from your account.') % { device_name: sanitize_name(@device_name) } %>
 
-<%= re_enable_two_factor_authentication_text %>
+  <%= re_enable_two_factor_authentication_text %>
+<% else %>
+  <%= format(_('A passkey, named "%{device_name}", was deleted from your account.'), device_name: sanitize_name(@device_name)) %>
+
+  <%= manage_passkeys %>
+<% end %>

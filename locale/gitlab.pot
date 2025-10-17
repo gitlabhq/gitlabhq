@@ -1160,6 +1160,9 @@ msgstr ""
 msgid "%{link_start}Communication Preference Center%{link_end}."
 msgstr ""
 
+msgid "%{link_start}Visit your account settings%{link_end} to manage your passkeys and other authentication methods."
+msgstr ""
+
 msgid "%{link}How to use SSH keys%{link_end}?"
 msgstr ""
 
@@ -2206,16 +2209,16 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
+msgid "A WebAuthn device, named \"%{device_name}\", was deleted from your account."
+msgstr ""
+
+msgid "A WebAuthn device, named \"%{device_name}\", was registered to your account."
+msgstr ""
+
 msgid "A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was deleted from your account."
 msgstr ""
 
 msgid "A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was registered to your account."
-msgstr ""
-
-msgid "A WebAuthn device, named %{device_name}, was deleted from your account."
-msgstr ""
-
-msgid "A WebAuthn device, named %{device_name}, was registered to your account."
 msgstr ""
 
 msgid "A basic folder structure and sample files for a CI/CD components project."
@@ -2309,6 +2312,18 @@ msgid "A one-time password (OTP) authenticator was registered to your account."
 msgstr ""
 
 msgid "A parent must be provided when bulk updating issuables"
+msgstr ""
+
+msgid "A passkey, named \"%{device_name}\", was deleted from your account."
+msgstr ""
+
+msgid "A passkey, named \"%{device_name}\", was registered to your account."
+msgstr ""
+
+msgid "A passkey, named %{codeOpen}%{device_name}%{codeClose}, was deleted from your account."
+msgstr ""
+
+msgid "A passkey, named %{codeOpen}%{device_name}%{codeClose}, was registered to your account."
 msgstr ""
 
 msgid "A personal access token, named %{code_start}%{token_name}%{code_end}, has been revoked."
@@ -43348,6 +43363,12 @@ msgstr ""
 msgid "Next step in review workflow"
 msgstr ""
 
+msgid "Next time you sign in, select the sign-in with passkey option and follow your device's instructions to authenticate and access your account. %{link_start}Learn more about passkeys.%{link_end}"
+msgstr ""
+
+msgid "Next time you sign in, select the sign-in with passkey option and follow your device's instructions to authenticate and access your account. To learn more about passkeys, visit %{learn_more}"
+msgstr ""
+
 msgid "Next update"
 msgstr ""
 
@@ -47433,6 +47454,12 @@ msgid "Passed"
 msgstr ""
 
 msgid "Passed on"
+msgstr ""
+
+msgid "Passkey deleted"
+msgstr ""
+
+msgid "Passkey registered"
 msgstr ""
 
 msgid "Password"
@@ -68305,6 +68332,9 @@ msgid "To learn more about this project, read %{link_to_wiki}"
 msgstr ""
 
 msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
+msgstr ""
+
+msgid "To manage your passkeys and other authentication methods, visit %{two_factor_link}"
 msgstr ""
 
 msgid "To merge, either the title or description must reference a Jira issue."

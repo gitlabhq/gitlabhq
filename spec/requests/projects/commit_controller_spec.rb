@@ -6,6 +6,111 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.owner }
 
+  describe 'GET #discussions' do
+    let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
+    let_it_be(:commit) { project.commit_by(oid: sha) }
+
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: sha
+      }
+    end
+
+    let(:send_request) { get discussions_namespace_project_commit_path(params) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'with a valid commit' do
+      it 'returns all discussions in trimmed format' do
+        create(:note_on_commit, project: project, commit_id: sha)
+
+        send_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to eq('application/json; charset=utf-8')
+
+        json_response = Gitlab::Json.parse(response.body)
+        expect(json_response).to have_key('discussions')
+        expect(json_response['discussions']).to be_an(Array)
+
+        # Check that the response doesn't contain the extra fields
+        if json_response['discussions'].any?
+          discussion = json_response['discussions'].first
+          expect(discussion).to have_key('id')
+          expect(discussion).to have_key('reply_id')
+          expect(discussion).to have_key('confidential')
+          expect(discussion).to have_key('diff_discussion')
+          expect(discussion).to have_key('notes')
+
+          # These fields should NOT be present in the trimmed response format
+          expect(discussion).not_to have_key('project_id')
+          expect(discussion).not_to have_key('commit_id')
+          expect(discussion).not_to have_key('expanded')
+          expect(discussion).not_to have_key('for_commit')
+          expect(discussion).not_to have_key('individual_note')
+          expect(discussion).not_to have_key('resolvable')
+          expect(discussion).not_to have_key('truncated_diff_lines')
+          expect(discussion).not_to have_key('active')
+          expect(discussion).not_to have_key('line_code')
+          expect(discussion).not_to have_key('diff_file')
+          expect(discussion).not_to have_key('original_position')
+          expect(discussion).not_to have_key('discussion_path')
+          expect(discussion).not_to have_key('positions')
+          expect(discussion).not_to have_key('line_codes')
+        end
+      end
+
+      it 'returns empty discussions array when no discussions exist' do
+        send_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        json_response = Gitlab::Json.parse(response.body)
+        expect(json_response).to have_key('discussions')
+        expect(json_response['discussions']).to eq([])
+      end
+
+      it 'includes both diff discussions and regular discussions' do
+        # Create a regular note
+        create(:note_on_commit, project: project, commit_id: sha)
+
+        # Create a diff note
+        create(:diff_note_on_commit, project: project, commit_id: sha)
+
+        send_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        json_response = Gitlab::Json.parse(response.body)
+
+        expect(json_response).to have_key('discussions')
+        expect(json_response['discussions'].length).to eq(2)
+
+        # Check we have both types
+        discussions = json_response['discussions']
+        diff_discussions = discussions.select { |d| d['diff_discussion'] }
+        regular_discussions = discussions.reject { |d| d['diff_discussion'] }
+
+        expect(diff_discussions).not_to be_empty
+        expect(regular_discussions).not_to be_empty
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(rapid_diffs_on_commit_show: false)
+        end
+
+        it 'returns 404' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe '#rapid_diffs' do
     let_it_be(:sha) { "913c66a37b4a45b9769037c55c2d238bd0942d2e" }
     let_it_be(:commit) { project.commit_by(oid: sha) }

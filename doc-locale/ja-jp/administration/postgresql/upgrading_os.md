@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: PostgreSQLが動作しているオペレーティングシステムをアップグレードする
+title: PostgreSQL用のオペレーティングシステムをアップグレードする
 ---
 
 {{< alert type="warning" >}}
@@ -23,7 +23,7 @@ PostgreSQLが動作しているオペレーティングシステムをアップ�
 
 GitLabが計画しているこの問題への対処方法の詳細については、[エピック8573](https://gitlab.com/groups/gitlab-org/-/epics/8573)を参照してください。
 
-## バックアップと復元
+## バックアップと復元 {#backup-and-restore}
 
 バックアップと復元は、インデックスを含むデータベース全体を再作成します。
 
@@ -36,21 +36,21 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 
 1. `pg_dump`またはGitLabのバックアップツールを使用して、PostgreSQLデータベースをバックアップします。このとき、[`db`を除くすべてのデータタイプを除外](../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup)します（データベースのみをバックアップします）。
 1. すべてのPostgreSQLノードで、OSをアップグレードします。
-1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../package_information/supported_os.md#update-gitlab-package-sources-after-upgrading-the-os)します。
+1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../../update/package/_index.md#upgrade-the-operating-system-optional)します。
 1. すべてのPostgreSQLノードに、同じGitLabバージョンの新しいGitLabパッケージをインストールします。
 1. バックアップからPostgreSQLデータベースを復元します。
-1. すべてのノードで、GitLabを起動します。
+1. すべてのノードでGitLabを起動します。
 
-**利点**:
+利点:
 
 - 簡単に実行できます。
 - データベースにおけるインデックスやテーブルの肥大化を解消し、ディスク使用量を削減できます。
 
-**欠点**:
+欠点:
 
-- データベースのサイズが大きくなるほどダウンタイムが長くなり、いずれ問題になる可能性があります。所要時間は多くの要因に左右されますが、データベースが100 GBを超える場合は、24時間程度かかることがあります。
+- データベースのサイズが大きくなるほどダウンタイムが長くなり、いずれ問題になる可能性があります。所要時間は多くの要因に左右されますが、データベースが100 GBを超える場合は、24時間程度かかることがあります。
 
-### Geoセカンダリサイトを使用したバックアップと復元
+### Geoセカンダリサイトを含む環境でのバックアップと復元 {#backup-and-restore-with-geo-secondary-sites}
 
 1. 計画的なダウンタイムを確保します。すべてのサイトのすべてのノードで、不要なGitLabサービスを停止します。
 
@@ -61,7 +61,7 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 
 1. プライマリサイトで、`pg_dump`またはGitLabのバックアップツールを使用して、PostgreSQLデータベースをバックアップします。このとき、[`db`を除くすべてのデータタイプを除外](../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup)します（データベースのみをバックアップします）。
 1. すべてのサイトのすべてのPostgreSQLノードで、OSをアップグレードします。
-1. すべてのサイトのすべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../package_information/supported_os.md#update-gitlab-package-sources-after-upgrading-the-os)します。
+1. すべてのサイトのすべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../../update/package/_index.md#upgrade-the-operating-system-optional)します。
 1. すべてのサイトのすべてのPostgreSQLノードに、同じGitLabバージョンの新しいGitLabパッケージをインストールします。
 1. プライマリサイトで、バックアップからPostgreSQLデータベースを復元します。
 1. 必要に応じて、セカンダリサイトをウォームスタンバイとして利用できなくなるリスクを踏まえた上で、プライマリサイトの使用を開始します。
@@ -69,9 +69,9 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 1. セカンダリサイトがユーザーからのトラフィックを受信する場合は、GitLabを起動する前に、リードレプリカデータベースの同期が完了するのを待機してください。
 1. すべてのサイトのすべてのノードで、GitLabを起動します。
 
-## すべてのインデックスを再構築する
+## すべてのインデックスを再構築する {#rebuild-all-indexes}
 
-[すべてのインデックスを再構築します](https://www.postgresql.org/docs/14/sql-reindex.html)。
+[すべてのインデックスを再構築する](https://www.postgresql.org/docs/16/sql-reindex.html)。
 
 1. 計画的なダウンタイムを確保します。すべてのノードで、不要なGitLabサービスを停止します。
 
@@ -81,7 +81,7 @@ GitLabが計画しているこの問題への対処方法の詳細について�
    ```
 
 1. すべてのPostgreSQLノードで、OSをアップグレードします。
-1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../package_information/supported_os.md#update-gitlab-package-sources-after-upgrading-the-os)します。
+1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../../update/package/_index.md#upgrade-the-operating-system-optional)します。
 1. すべてのPostgreSQLノードに、同じGitLabバージョンの新しいGitLabパッケージをインストールします。
 1. [データベースコンソール](../troubleshooting/postgresql.md#start-a-database-console)で、すべてのインデックスを再構築します。
 
@@ -93,22 +93,22 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 1. データベースのインデックスを再構築した後は、影響を受けたすべての照合順序についてバージョンを更新する必要があります。現在の照合順序バージョンを記録するようにシステムカタログを更新するには、次の手順に従います。
 
    ```sql
-   ALTER COLLATION <collation_name> REFRESH VERSION;
+   ALTER DATABASE gitlabhq_production REFRESH COLLATION VERSION;
    ```
 
-1. すべてのノードで、GitLabを起動します。
+1. すべてのノードでGitLabを起動します。
 
-**利点**:
+利点:
 
 - 簡単に実行できます。
-- さまざまな要因によっては、バックアップと復元よりも高速な場合があります。
+- さまざまな要因次第で、バックアップと復元よりも高速な場合があります。
 - データベースにおけるインデックスの肥大化を解消し、ディスク使用量を削減できます。
 
-**欠点**:
+欠点:
 
 - データベースのサイズが大きくなるほどダウンタイムが長くなり、いずれ問題になる可能性があります。
 
-### Geoセカンダリサイトを含む環境ですべてのインデックスを再構築する
+### Geoセカンダリサイトを含む環境ですべてのインデックスを再構築する {#rebuild-all-indexes-with-geo-secondary-sites}
 
 1. 計画的なダウンタイムを確保します。すべてのサイトのすべてのノードで、不要なGitLabサービスを停止します。
 
@@ -118,7 +118,7 @@ GitLabが計画しているこの問題への対処方法の詳細について�
    ```
 
 1. すべてのPostgreSQLノードで、OSをアップグレードします。
-1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../package_information/supported_os.md#update-gitlab-package-sources-after-upgrading-the-os)します。
+1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../../update/package/_index.md#upgrade-the-operating-system-optional)します。
 1. すべてのPostgreSQLノードに、同じGitLabバージョンの新しいGitLabパッケージをインストールします。
 1. プライマリサイトの[データベースコンソール](../troubleshooting/postgresql.md#start-a-database-console)で、すべてのインデックスを再構築します。
 
@@ -130,13 +130,13 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 1. データベースのインデックスを再構築した後は、影響を受けたすべての照合順序についてバージョンを更新する必要があります。現在の照合順序バージョンを記録するようにシステムカタログを更新するには、次の手順に従います。
 
    ```sql
-   ALTER COLLATION <collation_name> REFRESH VERSION;
+   ALTER DATABASE <database_name> REFRESH COLLATION VERSION;
    ```
 
 1. セカンダリサイトがユーザーからのトラフィックを受信する場合は、GitLabを起動する前に、リードレプリカデータベースの同期が完了するのを待機してください。
 1. すべてのサイトのすべてのノードで、GitLabを起動します。
 
-## 影響を受けたインデックスのみを再構築する
+## 影響を受けたインデックスのみを再構築する {#rebuild-only-affected-indexes}
 
 これは、GitLab.comで採用されているアプローチと似ています。このプロセスの詳細や、さまざまなインデックスがどのように扱われたかについては、[PostgreSQLデータベースクラスターにおいてオペレーティングシステムをアップグレード](https://about.gitlab.com/blog/2022/08/12/upgrading-database-os/)した際のブログ記事を参照してください。
 
@@ -148,7 +148,7 @@ GitLabが計画しているこの問題への対処方法の詳細について�
    ```
 
 1. すべてのPostgreSQLノードで、OSをアップグレードします。
-1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../package_information/supported_os.md#update-gitlab-package-sources-after-upgrading-the-os)します。
+1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../../update/package/_index.md#upgrade-the-operating-system-optional)します。
 1. すべてのPostgreSQLノードに、同じGitLabバージョンの新しいGitLabパッケージをインストールします。
 1. [影響を受けたインデックスを特定](https://wiki.postgresql.org/wiki/Locale_data_changes#What_indexes_are_affected)します。
 1. [データベースコンソール](../troubleshooting/postgresql.md#start-a-database-console)で、影響を受けた各インデックスを再構築します。
@@ -161,22 +161,22 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 1. 不正なインデックスを再構築した後は、照合順序を更新する必要があります。現在の照合順序バージョンを記録するようにシステムカタログを更新するには、次の手順に従います。
 
    ```sql
-   ALTER COLLATION <collation_name> REFRESH VERSION;
+   ALTER DATABASE <database_name> REFRESH COLLATION VERSION;
    ```
 
-1. すべてのノードで、GitLabを起動します。
+1. すべてのノードでGitLabを起動します。
 
-**利点**:
+利点:
 
 - 影響を受けていないインデックスの再構築にダウンタイムを費やす必要がありません。
 
-**欠点**:
+欠点:
 
 - ミスが発生する可能性が高くなります。
 - 移行中に発生した予期しない問題に対応するには、PostgreSQLの専門知識が求められます。
 - データベースの肥大化がそのまま残ります。
 
-### Geoセカンダリサイトを含む環境で影響を受けたインデックスのみを再構築する
+### Geoセカンダリサイトを含む環境で影響を受けたインデックスのみを再構築する {#rebuild-only-affected-indexes-with-geo-secondary-sites}
 
 1. 計画的なダウンタイムを確保します。すべてのサイトのすべてのノードで、不要なGitLabサービスを停止します。
 
@@ -186,7 +186,7 @@ GitLabが計画しているこの問題への対処方法の詳細について�
    ```
 
 1. すべてのPostgreSQLノードで、OSをアップグレードします。
-1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../package_information/supported_os.md#update-gitlab-package-sources-after-upgrading-the-os)します。
+1. すべてのPostgreSQLノードで、[OSのアップグレード後にGitLabのパッケージソースを更新](../../update/package/_index.md#upgrade-the-operating-system-optional)します。
 1. すべてのPostgreSQLノードに、同じGitLabバージョンの新しいGitLabパッケージをインストールします。
 1. [影響を受けたインデックスを特定](https://wiki.postgresql.org/wiki/Locale_data_changes#What_indexes_are_affected)します。
 1. プライマリサイトの[データベースコンソール](../troubleshooting/postgresql.md#start-a-database-console)で、影響を受けた各インデックスを再構築します。
@@ -199,13 +199,13 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 1. 不正なインデックスを再構築した後は、照合順序を更新する必要があります。現在の照合順序バージョンを記録するようにシステムカタログを更新するには、次の手順に従います。
 
    ```sql
-   ALTER COLLATION <collation_name> REFRESH VERSION;
+   ALTER DATABASE <database_name> REFRESH COLLATION VERSION;
    ```
 
 1. 既存のPostgreSQLストリーミングレプリケーションが、再構築されたインデックスの変更をリードレプリカデータベースにレプリケートするはずです。
 1. すべてのサイトのすべてのノードで、GitLabを起動します。
 
-## `glibc` バージョンを確認する
+## `glibc`のバージョンを確認する {#checking-glibc-versions}
 
 使用されている`glibc`のバージョンを確認するには、`ldd --version`を実行します。
 
@@ -225,7 +225,7 @@ GitLabが計画しているこの問題への対処方法の詳細について�
 
 一方、PostgreSQLがすでに`glibc` 2.28以上の環境で問題なく動作している場合は、特に対応を行わなくてもインデックスは引き続き正常に機能するはずです。たとえば、PostgreSQLをRedHat Enterprise 8（`glibc` 2.28）でしばらく実行しており、RedHat Enterprise 9（`glibc` 2.34）にアップグレードする場合、照合順序に関する問題は発生しないと考えられます。
 
-### `glibc`の照合順序バージョンを確認する
+### `glibc`の照合順序バージョンを確認する {#verifying-glibc-collation-versions}
 
 PostgreSQL 13以降では、次のSQLクエリを使用して、データベースの照合順序バージョンがシステムと一致することを確認できます。
 
@@ -237,7 +237,7 @@ FROM pg_collation
 WHERE collprovider = 'c';
 ```
 
-### 照合順序が一致していない例
+### 照合順序が一致している例 {#matching-collation-example}
 
 たとえば、Ubuntu 22.04システムでは、適切にインデックスが作成されたシステムの出力は次のようになります。
 
@@ -258,7 +258,7 @@ WHERE collprovider = 'c';
 (6 rows)
 ```
 
-### 照合順序が一致しない例
+### 照合順序が一致しない例 {#mismatched-collation-example}
 
 一方、Ubuntu 18.04から22.04にアップグレードした際にインデックスを再構築していない場合、次のように出力されることがあります。
 
@@ -279,21 +279,19 @@ WHERE collprovider = 'c';
 (6 rows)
 ```
 
-## ストリーミングレプリケーション
+## ストリーミングレプリケーション {#streaming-replication}
 
 破損したインデックスの問題は、PostgreSQLストリーミングレプリケーションに影響を与えます。ロケールデータが異なるレプリカに対する読み取りを許可する前に、[すべてのインデックスを再構築](#rebuild-all-indexes)するか、[影響を受けたインデックスのみを再構築](#rebuild-only-affected-indexes)する必要があります。
 
-## Geoのその他のバリエーション
+## Geoのその他のバリエーション {#additional-geo-variations}
 
-上記のアップグレード手順は固定されたものではありません。Geoでは冗長なインフラストラクチャが存在するため、もっと多くの選択肢がある可能性があります。ユースケースに合わせて手順を変更することもできますが、その場合は必ず、複雑さが増すことも考慮に入れたうえで比較検討を行ってください。次に例を示します。
+前述のアップグレード手順は固定されたものではありません。Geoでは冗長なインフラストラクチャが存在するため、もっと多くの選択肢がある可能性があります。ユースケースに合わせて手順を変更することもできますが、その場合は必ず、複雑さが増すことも考慮に入れたうえで比較検討を行ってください。次に例を示します。
 
 プライマリサイトおよび他のセカンダリサイトのOSアップグレード中に障害が発生した場合に備えて、セカンダリサイトをウォームスタンバイとして確保するには、次の手順に従います。
 
 1. セカンダリサイトのデータがプライマリサイトの変更によって影響を受けないように、セカンダリサイトを一時停止します。
 1. プライマリサイトでOSアップグレードを実行します。
-1. OSアップグレードが失敗し、プライマリサイトが回復不能になった場合は、セカンダリサイトをプロモートします。
-1. ユーザーをセカンダリサイトにルーティングして、後ほど再試行します。
-1. これにより、最新状態のセカンダリサイトがなくなる点に注意してください。
+1. OSアップグレードが失敗し、プライマリサイトが回復不能になった場合は、セカンダリサイトをプロモートし、ユーザーをセカンダリサイトにルーティングして、後ほど再試行します。これにより、最新状態のセカンダリサイトがなくなります。
 
 OSアップグレード中にユーザーにGitLabへの読み取り専用アクセスを提供するには（部分的なダウンタイム）、次の手順に従います。
 

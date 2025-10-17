@@ -1,6 +1,15 @@
 %p
   = say_hi(@user)
-%p
-  = safe_format(_('A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was registered to your account.'), tag_pair(tag.code, :codeOpen, :codeClose), device_name: @device_name)
-%p
-  = manage_two_factor_authentication_text(format: :html)
+- if @type == :webauthn
+  %p
+    = safe_format(_('A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was registered to your account.'), tag_pair(tag.code, :codeOpen, :codeClose), device_name: @device_name)
+  %p
+    = manage_two_factor_authentication_text(format: :html)
+- else
+  %p
+    = safe_format(_('A passkey, named %{codeOpen}%{device_name}%{codeClose}, was registered to your account.'), tag_pair(tag.code, :codeOpen, :codeClose), device_name: @device_name)
+  %p
+    - learn_more_link = link_to('', help_page_url('auth/passkeys.md'), target: '_blank', rel: 'noreferrer')
+    = safe_format(_("Next time you sign in, select the sign-in with passkey option and follow your device's instructions to authenticate and access your account. %{link_start}Learn more about passkeys.%{link_end}"), tag_pair(learn_more_link, :link_start, :link_end))
+  %p
+    = manage_passkeys(format: :html)

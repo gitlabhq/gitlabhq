@@ -990,6 +990,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   describe '#enabled_two_factor' do
     let_it_be(:user) { create(:user) }
 
+    describe 'Passkey' do
+      subject { notification.enabled_two_factor(user, :passkey, device_name: 'MacBook Touch ID') }
+
+      it 'sends email to the user' do
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', :passkey, mail: 'enabled_two_factor_webauthn_email')
+      end
+    end
+
     describe 'Time-based OTP' do
       subject { notification.enabled_two_factor(user, :otp) }
 
@@ -999,10 +1007,10 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     describe 'WebAuthn' do
-      subject { notification.enabled_two_factor(user, :webauthn, device_name: 'Macbook Touch ID') }
+      subject { notification.enabled_two_factor(user, :webauthn, device_name: 'MacBook Touch ID') }
 
       it 'sends email to the user' do
-        expect { subject }.to have_enqueued_email(user, 'Macbook Touch ID', mail: 'enabled_two_factor_webauthn_email')
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', mail: 'enabled_two_factor_webauthn_email')
       end
     end
   end
@@ -1018,6 +1026,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
+    describe 'Passkey' do
+      subject { notification.disabled_two_factor(user, :passkey, device_name: 'MacBook Touch ID') }
+
+      it 'sends email to the user' do
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', :passkey, mail: 'disabled_two_factor_webauthn_email')
+      end
+    end
+
     describe 'Time-based OTP' do
       subject { notification.disabled_two_factor(user, :otp) }
 
@@ -1027,10 +1043,10 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     describe 'WebAuthn' do
-      subject { notification.disabled_two_factor(user, :webauthn, device_name: 'Macbook Touch ID') }
+      subject { notification.disabled_two_factor(user, :webauthn, device_name: 'MacBook Touch ID') }
 
       it 'sends email to the user' do
-        expect { subject }.to have_enqueued_email(user, 'Macbook Touch ID', mail: 'disabled_two_factor_webauthn_email')
+        expect { subject }.to have_enqueued_email(user, 'MacBook Touch ID', mail: 'disabled_two_factor_webauthn_email')
       end
     end
   end

@@ -2,7 +2,7 @@
 # File name 202510160001_18_05.yml
 # Generated on Tue Oct 14 14:11:42 2025
 
-- name: GitLab Duo Planner, a specialized agent and Product Manager team member
+- name: GitLab Duo Planner, a specialized agent and Product Manager team member (beta)
   description: |
     Collaborate with GitLab Duo Planner, a GitLab Duo agent built to support product managers directly within GitLab. Instead of manually chasing updates, prioritizing work, or summarizing planning data, GitLab Duo Planner helps you analyze backlogs, apply frameworks like RICE or MoSCoW, and surface what truly needs your attention. It's like having a proactive teammate who understands your planning workflow and works with you to make better, faster decisions. This feature is currently in beta. Please provide feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/issues/576622).
   stage: plan
@@ -16,7 +16,7 @@
 
 - name: GitLab Security Analyst Agent for Duo Agent Catalog (beta)
   description: |
-    In GitLab 18.5, we are releasing the GitLab Security Analyst Agent as a beta feature, available in the AI Catalog. To use the GitLab Security Analyst Agent in specific projects, select and enable the agent in GitLab Duo Chat (Agentic). The agent can perform the following tasks:
+    In GitLab 18.5, we are releasing the GitLab Security Analyst Agent as a beta feature, available in the AI Catalog. To use the GitLab Security Analyst Agent in specific projects, select and enable the agent in GitLab Duo Agentic Chat. The agent can perform the following tasks:
 
     - List all vulnerabilities in a given project.
     - Get detailed vulnerability information, including CVE data and EPSS scores.
@@ -25,7 +25,7 @@
     - Revert vulnerability status back to `detected`.
     - Create vulnerability issues, or link vulnerabilities to existing issues.
 
-    With the GitLab Security Analyst Agent, users can perform tedious security workflows through AI-powered automation and intelligent analysis, enabling engineers to focus on genuine threats while the GitLab Security Analyst Agent handles repetitive assessment and documentation. Please note that The GitLab Security Analyst Agent using GitLab Duo Chat is only available for Ultimate customers with the GitLab Duo add-on.
+    With the GitLab Security Analyst Agent, users can perform tedious security workflows through AI-powered automation and intelligent analysis, enabling engineers to focus on genuine threats while the GitLab Security Analyst Agent handles repetitive assessment and documentation. Please note that the GitLab Security Analyst Agent using GitLab Duo Chat is only available for Ultimate customers with the GitLab Duo add-on.
 
     This feature is in beta, and we welcome your feedback in [issue 576916](https://gitlab.com/gitlab-org/gitlab/-/issues/576916).
   stage: software_supply_chain_security
@@ -67,7 +67,7 @@
   published_at: 2025-10-16
   release: 18.5
 
-- name: Model selection for GitLab Duo Chat (Agentic) in VS Code and JetBrains IDEs
+- name: Model selection for GitLab Duo Agentic Chat in VS Code and JetBrains IDEs
   description: |
     Easily choose your preferred AI model right in GitLab Duo Chat, now available in the VS Code and JetBrains IDEs. Use the dropdown list in the GitLab Duo Chat panel to select among Claude, GPT, and other supported models. Model availability is managed by your organization admins, ensuring you have access to the right models for your workflow.
   stage: ai-powered
@@ -79,7 +79,7 @@
   published_at: 2025-10-16
   release: 18.5
 
-- name: GPT-5 now available as a model option for GitLab Duo Chat (Agentic)
+- name: GPT-5 now available as a model option for GitLab Duo Agentic Chat
   description: |
     OpenAI GPT-5 is now available as a GitLab AI Vendor model when selecting a model for GitLab Duo Agent Platform. When configured by Owners of a top-level group on GitLab.com and instance Administrators on Self-Managed and Dedicated, end-users can select to use GPT-5 with GitLab Duo features. Top-level owners and administrators can continue to set organization-wide model preferences through namespace or instance settings, or allow end-user to choose from all available GitLab AI Vendor models.
 

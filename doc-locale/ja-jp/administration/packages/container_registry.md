@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLabコンテナレジストリの管理
+description: お好みのバックエンドストレージで各プロジェクトが独自のDockerイメージを保存できるようにするGitLabコンテナレジストリを管理します。
 ---
 
 {{< details >}}
@@ -22,34 +23,34 @@ GitLabコンテナレジストリを使用すると、すべてのプロジェ�
 
 Distribution Registryの詳細については、以下を参照してください。
 
-- [Configuration](https://distribution.github.io/distribution/about/configuration/)（設定（英語））
-- [Storage drivers](https://distribution.github.io/distribution/storage-drivers/)（ストレージドライバー（英語））
-- [Deploy a registry server](https://distribution.github.io/distribution/about/deploying/)（レジストリサーバーをデプロイする（英語））
+- [Configuration](https://distribution.github.io/distribution/about/configuration/)（設定）
+- [Storage drivers](https://distribution.github.io/distribution/storage-drivers/)（ストレージドライバー）
+- [Deploy a registry server](https://distribution.github.io/distribution/about/deploying/)（レジストリサーバーをデプロイする）
 
 このドキュメントは管理者向けガイドです。GitLabコンテナレジストリの使用方法については、[ユーザードキュメント](../../user/packages/container_registry/_index.md)を参照してください。
 
-## コンテナレジストリを有効にする
+## コンテナレジストリを有効にする {#enable-the-container-registry}
 
 コンテナレジストリを有効にするプロセスは、使用するインストールのタイプによって異なります。
 
-### Linuxパッケージのインストール
+### Linuxパッケージインストール {#linux-package-installations}
 
 Linuxパッケージを使用してGitLabをインストールした場合、コンテナレジストリはデフォルトで使用できるときと、そうでないときがあります。
 
 組み込みの[Let's Encryptインテグレーション](https://docs.gitlab.com/omnibus/settings/ssl/#enable-the-lets-encrypt-integration)を使用している場合、コンテナレジストリは、GitLabドメインのポート5050で自動的に有効になって使用できるようになります。
 
-そうでない場合、コンテナレジストリは有効になりません。コンテナレジストリを有効にするには、次の操作を行います。
+そうでない場合、コンテナレジストリは有効になりません。有効にするには、次の手順に従います。
 
 - [GitLabドメイン](#configure-container-registry-under-an-existing-gitlab-domain)用にコンテナレジストリを設定できます。
 - または、[別のドメイン](#configure-container-registry-under-its-own-domain)用にコンテナレジストリを設定できます。
 
 コンテナレジストリは、デフォルトでHTTPSで動作します。HTTPを使用できますが、推奨されておらず、このドキュメントでは扱いません。
 
-### Helmチャートによるインストール
+### Helmチャートによるインストール {#helm-charts-installations}
 
 Helmチャートによるインストールについては、Helmチャートに関するドキュメントの[コンテナレジストリを使用する](https://docs.gitlab.com/charts/charts/registry/)を参照してください。
 
-### 自己コンパイルによるインストール
+### 自己コンパイルによるインストール {#self-compiled-installations}
 
 GitLabインストールを自分でコンパイルした場合は、次の手順に従います。
 
@@ -72,7 +73,7 @@ registry:
 
 各設定項目の意味は次のとおりです。
 
-| パラメーター | 説明 |
+| パラメータ | 説明 |
 | --------- | ----------- |
 | `enabled` | `true`または`false`。GitLabでレジストリを有効にします。デフォルトで、`false`です。 |
 | `host`    | レジストリが実行され、ユーザーが使用できるホストURL。 |
@@ -101,18 +102,18 @@ auth:
 
 {{< /alert >}}
 
-## コンテナレジストリドメインの設定
+## コンテナレジストリドメインの設定 {#container-registry-domain-configuration}
 
 レジストリの外部ドメインは、次のいずれかの方法で設定できます。
 
-- [既存のGitLabドメインを使用します](#configure-container-registry-under-an-existing-gitlab-domain)。レジストリはポートをリッスンし、GitLabのTLS証明書を再利用します。
+- [既存のGitLabドメインを使用します](#configure-container-registry-under-an-existing-gitlab-domain)。レジストリはポートでリッスンし、GitLabのTLS証明書を再利用します。
 - [完全に別のドメイン](#configure-container-registry-under-its-own-domain)とその新しいTLS証明書を使用します。
 
 コンテナレジストリにはTLS証明書が必要なため、コストが考慮事項となる場合があります。
 
 コンテナレジストリを初めて設定する前に、この点を考慮してください。
 
-### 既存のGitLabドメインでコンテナレジストリを設定する
+### 既存のGitLabドメインでコンテナレジストリを設定する {#configure-container-registry-under-an-existing-gitlab-domain}
 
 既存のGitLabドメインを使用するようにコンテナレジストリが設定されている場合、ポートでコンテナレジストリを公開できます。これにより、既存のGitLab TLS証明書を再利用できます。
 
@@ -158,7 +159,7 @@ GitLabドメインが`https://gitlab.example.com`で、外部へのポートが`
 
 証明書プロバイダーがCAバンドル証明書を提供している場合は、それらの証明書をTLS証明書ファイルに追加します。
 
-管理者は、コンテナレジストリが`5678`などの任意のポートでリッスンすることを望むかもしれません。しかし、レジストリとアプリケーションサーバーは、ポート`80`および`443`のみでリッスンするAWSアプリケーションロードバランサーの背後にあります。管理者は、`registry_external_url`のポート番号を削除することができるため、HTTPまたはHTTPSが想定されます。次に、ロードバランサーをポート`80`または`443`から任意のポートにマップするルールが適用されます。これは、ユーザーがコンテナレジストリの`docker login`の例に依存している場合に重要です。次に例を示します。
+管理者は、コンテナレジストリが`5678`などの任意のポートでリッスンすることを望むかもしれません。しかし、レジストリとアプリケーションサーバーは、ポート`80`および`443`のみでリッスンするAWSアプリケーションロードバランサーの背後にあります。管理者は`registry_external_url`のポート番号を削除して、HTTPまたはHTTPSが想定されるようにすることができます。その結果、ロードバランサーをレジストリにマップするルールが適用され、ポート`80`または`443`から任意のポートに変更されます。これは、ユーザーがコンテナレジストリの`docker login`の例に依存している場合に重要です。次に例を示します。
 
 ```ruby
 registry_external_url '<https://registry-gitlab.example.com>'
@@ -192,7 +193,7 @@ registry_nginx['listen_port'] = 5678
 docker login <gitlab.example.com:5050>
 ```
 
-### 独自のドメインでコンテナレジストリを設定する
+### 独自のドメインでコンテナレジストリを設定する {#configure-container-registry-under-its-own-domain}
 
 独自のドメインを使用するようにレジストリが設定されている場合は、その特定のドメイン（例: `registry.example.com`）のTLS証明書が必要です。既存のGitLabドメインのサブドメインでホストされている場合は、ワイルドカード証明書が必要になる場合があります。たとえば、`*.gitlab.example.com`は`registry.gitlab.example.com`に一致するワイルドカードであり、`*.example.com`とは異なります。
 
@@ -252,7 +253,7 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 docker login <registry.gitlab.example.com>
 ```
 
-## コンテナレジストリをサイト全体で無効にする
+## コンテナレジストリをサイト全体で無効にする {#disable-container-registry-site-wide}
 
 これらの手順に従ってレジストリを無効にしても、既存のDockerイメージは削除されません。Dockerイメージの削除は、レジストリアプリケーション自体によって処理されます。
 
@@ -285,7 +286,7 @@ docker login <registry.gitlab.example.com>
 
 {{< /tabs >}}
 
-## 新しいプロジェクトのコンテナレジストリをサイト全体で無効にする
+## 新しいプロジェクトのコンテナレジストリをサイト全体で無効にする {#disable-container-registry-for-new-projects-site-wide}
 
 コンテナレジストリが有効になっている場合、すべての新しいプロジェクトで使用可能になります。この機能を無効にして、プロジェクトのオーナーがコンテナレジストリを自分で有効にできるようにするには、次の手順に従います。
 
@@ -293,7 +294,7 @@ docker login <registry.gitlab.example.com>
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-1. `/etc/gitlab/gitlab.rb`を編集して、次の行を追加します:
+1. `/etc/gitlab/gitlab.rb`を編集して、次の行を追加します。
 
    ```ruby
    gitlab_rails['gitlab_default_projects_features_container_registry'] = false
@@ -324,17 +325,17 @@ docker login <registry.gitlab.example.com>
 
 {{< /tabs >}}
 
-### トークンの持続時間を増やす
+### トークンの持続時間を増やす {#increase-token-duration}
 
 GitLabでは、コンテナレジストリのトークンは5分ごとに期限切れになります。トークンの持続時間を増やすには、次の手順に従います。
 
-1. 左側のサイドバーの下部にある**管理者**を選択します。
+1. 左側のサイドバーの下部で、**管理者**を選択します。
 1. **設定 > CI/CD**を選択します。
 1. **コンテナレジストリ**を展開します。
 1. **認証トークンの持続時間（分）**の値を更新します。
-1. **変更の保存**を選択します。
+1. **変更を保存**を選択します。
 
-## コンテナレジストリのストレージを設定する
+## コンテナレジストリのストレージを設定する {#configure-storage-for-the-container-registry}
 
 {{< alert type="note" >}}
 
@@ -361,7 +362,7 @@ GitLabでは、コンテナレジストリのトークンは5分ごとに期限�
 
 ほとんどのS3互換サービス（[MinIO](https://min.io/)など）はコンテナレジストリで動作するはずですが、AWS S3のサポートのみが保証されています。サードパーティのS3実装の正しさは保証できないため、問題のデバッグは可能ですが、AWS S3バケットに対して問題を再現できない限り、レジストリにパッチを適用することはできません。
 
-### ファイルシステムを使用する
+### ファイルシステムを使用する {#use-file-system}
 
 ファイルシステムにイメージを保存する場合は、以下の手順に従って、コンテナレジストリのストレージパスを変更できます。
 
@@ -405,7 +406,7 @@ Linuxパッケージのインストールでイメージが保存されるデフ
 
 {{< /tabs >}}
 
-### オブジェクトストレージを使用する
+### オブジェクトストレージを使用する {#use-object-storage}
 
 ローカルファイルシステムの代わりに、オブジェクトストレージにコンテナレジストリイメージを保存する場合は、サポートされているストレージドライバーのいずれかを設定できます。
 
@@ -417,7 +418,7 @@ GitLabは、ファイルシステムに保存されていないDockerイメー�
 
 {{< /alert >}}
 
-#### Linuxパッケージのインストールのオブジェクトストレージを設定する
+#### Linuxパッケージのインストールのオブジェクトストレージを設定する {#configure-object-storage-for-linux-package-installations}
 
 コンテナレジストリのオブジェクトストレージを設定するには、次の手順に従います。
 
@@ -447,6 +448,12 @@ AWS SDK v1を使用するS3ストレージドライバーは、GitLab 17.10で[�
 
 <!--- end_remove -->
 
+`s3_v2`ドライバー（ベータ版）はAWS SDK v2を使用し、認証に対して署名バージョン4のみをサポートします。このドライバーについては、パフォーマンスと信頼性が向上しているほか、古い署名方法のサポートが非推奨になったため、AWS認証要件との互換性が確保されています。詳細については、[エピック16272](https://gitlab.com/groups/gitlab-org/-/epics/16272)を参照してください。
+
+各ドライバーのすべての設定パラメータのリストについては、[`s3_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v1.md)および[`s3_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v2.md)を参照してください。
+
+S3ストレージドライバーを設定するには、次のいずれかの設定を`/etc/gitlab/gitlab.rb`ファイルに追加します。
+
 ```ruby
 # Deprecated: Will be removed in GitLab 19.0
 registry['storage'] = {
@@ -458,7 +465,11 @@ registry['storage'] = {
     'regionendpoint' => '<your-s3-regionendpoint>'
   }
 }
+```
 
+または
+
+```ruby
 # Beta: s3_v2 driver
 registry['storage'] = {
   's3_v2' => {
@@ -471,9 +482,30 @@ registry['storage'] = {
 }
 ```
 
-`s3_v2`ドライバー（ベータ版）はAWS SDK v2を使用し、認証に対して署名バージョン4のみをサポートします。このドライバーについては、パフォーマンスと信頼性が向上しているほか、古い署名方法のサポートが段階的に廃止されているため、AWS認証要件との互換性が確保されています。詳細については、[エピック16272](https://gitlab.com/groups/gitlab-org/-/epics/16272)を参照してください。
+セキュリティを強化するため、`accesskey`パラメータと`secretkey`パラメータを使用せずに、静的な認証情報の代わりにIAMロールを使用できます。
 
-セキュリティを強化するために、`accesskey`パラメーターと`secretkey`パラメーターを省略して、静的な認証情報の代わりにIAMロールを使用できます。
+ストレージコストの増加を防ぐため、S3バケットで、不完全なマルチパートアップロードをパージするようにライフサイクルポリシーを設定します。コンテナレジストリは、これらを自動的にクリーンアップしません。不完全なマルチパートアップロードの3日間という有効期限ポリシーは、ほとんどの利用パターンに適しています。
+
+{{< alert type="note" >}}
+
+`loglevel`設定は、[`s3_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v1.md#configuration-parameters)ドライバーと[`s3_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v2.md#configuration-parameters)ドライバーで異なります。正しくないドライバーに`loglevel`を設定すると、この設定は無視され、警告メッセージが表示されます。
+
+{{< /alert >}}
+
+`s3_v2`ドライバーでMinIOを使用する場合は、`checksum_disabled`パラメータを追加して、AWSチェックサムを無効にします。
+
+```ruby
+registry['storage'] = {
+  's3_v2' => {
+    'accesskey' => '<s3-access-key>',
+    'secretkey' => '<s3-secret-key-for-access-key>',
+    'bucket' => '<your-s3-bucket>',
+    'region' => '<your-s3-region>',
+    'regionendpoint' => '<your-s3-regionendpoint>',
+    'checksum_disabled' => true
+  }
+}
+```
 
 S3 VPCエンドポイントの場合:
 
@@ -490,11 +522,13 @@ registry['storage'] = {
 }
 ```
 
-- `regionendpoint`は、MinIOなどのS3互換サービスを設定する場合、またはAWS S3 VPCエンドポイントを使用する場合にのみ必要です。
-- `<your-s3-bucket>`は、既存のバケットの名前である必要があり、サブディレクトリを含めることはできません。
-- `pathstyle`は`true`に設定して、bucket_name.host/objectではなく、host/bucket_name/object形式のパスを使用する必要があります。AWS S3の場合は、`false`に設定します。
+S3設定パラメータ:
 
-S3 APIからの503エラーを回避するために、S3への接続にレート制限を設定できます。
+- `<your-s3-bucket>`: 既存のバケットの名前。サブディレクトリを含めることはできません。
+- `regionendpoint`: MinIOやAWS S3 VPCエンドポイントのようなS3互換サービスを使用する場合に必要です。
+- `pathstyle`: URL形式を制御します。`host/bucket_name/object`（ほとんどのS3互換サービス）にするには`true`に、`bucket_name.host/object`（AWS S3）にするには`false`に設定します。
+
+S3 APIからの503エラーを回避するために、`maxrequestspersecond`パラメータを追加して、接続に対するレート制限を設定します。
 
 ```ruby
 registry['storage'] = {
@@ -513,19 +547,23 @@ registry['storage'] = {
 
 {{< tab title="Azure" >}}
 
-Azure Storagドライバーは、Microsoft Azure Blob Storageと連携します。
+Azure Storageドライバーは、Microsoft Azure Blob Storageと連携します。
 
 {{< alert type="warning" >}}
 
-従来のAzure Storagドライバーは、GitLab 17.10で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/523096)となり、GitLab 19.0で削除される予定です。従来のAzure Storagドライバーは、GitLab 17.10で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/523096)となり、GitLab 19.0で削除される予定です。
+従来のAzure Storageドライバーは、GitLab 17.10で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/523096)となり、GitLab 19.0で削除される予定です。
 
-代わりに`azure_v2`ドライバー（ベータ版）を使用してください。このドライバーでは、パフォーマンスと信頼性が向上しており、最新の認証方法がサポートされます。これは破壊的な変更ですが、新しいドライバーは広範にテストされており、ほとんどの設定でスムーズな移行を行うことができます。
+代わりに`azure_v2`ドライバー（ベータ）を使用してください。このドライバーでは、パフォーマンスと信頼性が向上しており、最新の認証方法がサポートされます。これは破壊的な変更ですが、新しいドライバーは広範にテストされており、ほとんどの設定でスムーズな移行を行うことができます。
 
 本番環境にデプロイする前に、非本番環境で新しいドライバーをテストして、環境および使用パターンに固有のエッジケースを特定して対処してください。
 
 [イシュー525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855)を使用して、イシューやフィードバックを報告してください。
 
 {{< /alert >}}
+
+各ドライバーのすべての設定パラメータのリストについては、[`azure_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v1.md)および[`azure_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v2.md)を参照してください。
+
+Azure Storageドライバーを設定するには、次のいずれかの設定を`/etc/gitlab/gitlab.rb`ファイルに追加します。
 
 ```ruby
 # Deprecated: Will be removed in GitLab 19.0
@@ -536,7 +574,11 @@ registry['storage'] = {
     'container' => '<container_name>'
   }
 }
+```
 
+または
+
+```ruby
 # Beta: azure_v2 driver
 registry['storage'] = {
   'azure_v2' => {
@@ -550,7 +592,7 @@ registry['storage'] = {
 }
 ```
 
-デフォルトでは、Azure Storagドライバーは`core.windows.net realm`を使用します。Azureセクションでレルムに別の値を設定できます（たとえば、Azure Government Cloudの場合は`core.usgovcloudapi.net`）。
+デフォルトでは、Azure Storageドライバーは`core.windows.net realm`を使用します。Azureセクションでレルムに別の値を設定できます（たとえば、Azure Government Cloudの場合は`core.usgovcloudapi.net`）。
 
 {{< /tab >}}
 
@@ -569,13 +611,13 @@ registry['storage'] = {
 }
 ```
 
-GitLabは、[利用可能なすべてのパラメーター](https://docs.docker.com/registry/storage-drivers/gcs/)をサポートしています。
+GitLabは、[利用可能なすべてのパラメータ](https://docs.docker.com/registry/storage-drivers/gcs/)をサポートしています。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-#### 自己コンパイルによるインストール
+#### 自己コンパイルによるインストール {#self-compiled-installations-1}
 
 ストレージドライバーの設定は、Dockerレジストリをデプロイしたときに作成されたレジストリ設定YAMLファイルで行います。
 
@@ -597,7 +639,7 @@ storage:
 
 `<your-s3-bucket>`は、既存のバケットの名前である必要があり、サブディレクトリを含めることはできません。
 
-#### ダウンタイムなしでオブジェクトストレージに移行する
+#### ダウンタイムなしでオブジェクトストレージに移行する {#migrate-to-object-storage-without-downtime}
 
 {{< alert type="warning" >}}
 
@@ -607,15 +649,15 @@ storage:
 
 コンテナレジストリを停止せずにストレージを移行するには、コンテナレジストリを読み取り専用モードに設定します。大規模なインスタンスでは、コンテナレジストリをしばらくの間、読み取り専用モードにする必要があります。この間、コンテナレジストリからプルすることはできますが、プッシュすることはできません。
 
-1. オプション: 移行するデータ量を減らすには、[ガベージコレクションツールをダウンタイムなしで](#performing-garbage-collection-without-downtime)実行します。
-1. この例では、`aws` CLIを使用します。以前にCLIを設定していない場合は、`sudo aws configure`を実行して、認証情報を設定する必要があります。管理者以外のユーザーはコンテナレジストリフォルダーにアクセスできない可能性が高いため、`sudo`を使用するようにしてください。認証情報の設定を確認するには、[`ls`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/ls.html) を実行して、すべてのバケットをリストします。
+1. （オプション）移行するデータ量を減らすには、[ガベージコレクションツールをダウンタイムなしで](#performing-garbage-collection-without-downtime)実行します。
+1. この例では、`aws`コマンドラインインターフェースを使用します。以前にコマンドラインインターフェースを設定していない場合は、`sudo aws configure`を実行して、認証情報を設定する必要があります。管理者以外のユーザーはコンテナレジストリフォルダーにアクセスできない可能性が高いため、`sudo`を使用するようにしてください。認証情報の設定を確認するには、[`ls`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/ls.html) を実行して、すべてのバケットをリストします。
 
    ```shell
    sudo aws --endpoint-url <https://your-object-storage-backend.com> s3 ls
    ```
 
    AWSをバックエンドとして使用している場合、[`--endpoint-url`](https://docs.aws.amazon.com/cli/latest/reference/#options)は必要ありません。
-1. たとえば、`aws` CLI [`cp`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)または[`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)コマンドを使用して、初期データをS3バケットにコピーします。`docker`フォルダーをバケット内のトップレベルフォルダーとして保持する必要があります。
+1. たとえば、`aws`コマンドラインインターフェース[`cp`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)または[`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)コマンドを使用して、初期データをS3バケットにコピーします。`docker`フォルダーをバケット内のトップレベルフォルダーとして保持する必要があります。
 
    ```shell
    sudo aws --endpoint-url <https://your-object-storage-backend.com> s3 sync registry s3://mybucket
@@ -656,7 +698,7 @@ storage:
 1. [ストレージにS3バケットを使用](#use-object-storage)するようにレジストリを設定します。
 1. 変更を有効にするには、レジストリを`read-write`モードに戻し、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
 
-#### Azureオブジェクトストレージに移行する
+#### Azureオブジェクトストレージに移行する {#moving-to-azure-object-storage}
 
 {{< tabs >}}
 
@@ -692,7 +734,7 @@ storage:
 
 デフォルトでは、Azure Storageドライバーは`core.windows.net`レルムを使用します。`azure`セクションで`realm`に別の値を設定できます（たとえば、Azure Government Cloudの場合は`core.usgovcloudapi.net`）。
 
-### ストレージドライバーのリダイレクトを無効にする
+### ストレージドライバーのリダイレクトを無効にする {#disable-redirect-for-storage-driver}
 
 デフォルトでは、リモートバックエンドで設定されたレジストリにアクセスするユーザーは、ストレージドライバーのデフォルトバックエンドにリダイレクトされます。たとえば、`s3`ストレージドライバーを使用してレジストリを設定できます。このストレージドライバーは、リクエストをリモートS3バケットにリダイレクトして、GitLabサーバーの負荷を軽減します。
 
@@ -749,9 +791,9 @@ storage:
 
 {{< /tabs >}}
 
-#### 暗号化されたS3バケット
+#### 暗号化されたS3バケット {#encrypted-s3-buckets}
 
-デフォルトで[SSE-S3またはSSE-KMS暗号化が有効になっている](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html)S3バケットに対して、AWS KMSによるサーバー側の暗号化を使用できます。カスタマーマスターキー（CMK）とSSE-C暗号化は、リクエストごとに暗号化キーを送信する必要があるため、サポートされていません。
+[デフォルトでSSE-S3またはSSE-KMS暗号化が有効になっている](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html)S3バケットに対して、AWS KMSによるサーバー側の暗号化を使用できます。カスタマーマスターキー（CMK）とSSE-C暗号化は、リクエストごとに暗号化キーを送信する必要があるため、サポートされていません。
 
 SSE-S3の場合は、レジストリ設定の`encrypt`オプションを有効にする必要があります。これ行う方法は、GitLabをインストールした方法によって異なります。インストール方法に応じて、次の手順に従ってください。
 
@@ -799,11 +841,11 @@ SSE-S3の場合は、レジストリ設定の`encrypt`オプションを有効�
 
 {{< /tabs >}}
 
-### ストレージの制限
+### ストレージの制限 {#storage-limitations}
 
-ストレージの制限はないため、ユーザーは任意のサイズのDockerイメージを無制限にアップロードできます。この設定は、将来のリリースで設定可能になる予定です。
+ストレージの制限がなければ、ユーザーは任意のサイズのDockerイメージを無制限にアップロードできます。この設定は、将来のリリースで設定可能になるはずです。
 
-## レジストリの内部ポートを変更する
+## レジストリの内部ポートを変更する {#change-the-registrys-internal-port}
 
 レジストリサーバーはデフォルトでポート`5000`のlocalhostでリッスンします。これは、レジストリサーバーが接続を受け入れるアドレスです。次の例では、レジストリのポートを`5010`に設定します。
 
@@ -836,11 +878,11 @@ SSE-S3の場合は、レジストリ設定の`encrypt`オプションを有効�
 
 {{< /tabs >}}
 
-## プロジェクトごとにコンテナレジストリを無効にする
+## プロジェクトごとにコンテナレジストリを無効にする {#disable-container-registry-per-project}
 
 GitLabインスタンスでレジストリが有効になっているが、プロジェクトに必要ない場合は、[プロジェクトの設定からレジストリを無効にする](../../user/project/settings/_index.md#configure-project-features-and-permissions)ことができます。
 
-## GitLabを認証エンドポイントとして外部コンテナレジストリを使用する
+## GitLabを認証エンドポイントとして外部コンテナレジストリを使用する {#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint}
 
 {{< alert type="warning" >}}
 
@@ -850,7 +892,7 @@ GitLabでのサードパーティコンテナレジストリの使用は、GitLa
 
 外部コンテナレジストリを使用すると、コンテナレジストリに関連付けられている一部の機能が使用できなくなったり、[固有のリスク](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries)が発生したりする場合があります。
 
-インテグレーションを機能させるには、JSON Web Tokenを使用してGitLabで認証するように外部レジストリを設定する必要があります。[外部レジストリのランタイム設定](https://distribution.github.io/distribution/about/configuration/#token)には、次のエントリが**必ず**含まれている必要があります。
+インテグレーションを機能させるには、JSON Webトークンを使用してGitLabで認証するように外部レジストリを設定する必要があります。[外部レジストリのランタイム設定](https://distribution.github.io/distribution/about/configuration/#token)には、次のエントリが**必ず**含まれている必要があります。
 
 ```yaml
 auth:
@@ -863,7 +905,7 @@ auth:
 
 これらのエントリがない場合、レジストリログインはGitLabで認証できません。また、GitLabは、`registry.example.com/group/project/image-name:tag`や`registry.example.com/group/project/my/image-name:tag`など、プロジェクト階層下の[ネストされたイメージ名](../../user/packages/container_registry/_index.md#naming-convention-for-your-container-images)を認識せず、`registry.example.com/group/project:tag`のみを認識します。
 
-### Linuxパッケージのインストール
+### Linuxパッケージインストール {#linux-package-installations-1}
 
 GitLabを外部コンテナレジストリの認証エンドポイントとして使用できます。
 
@@ -902,7 +944,7 @@ GitLabを外部コンテナレジストリの認証エンドポイントとし�
 
 1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
 
-### 自己コンパイルによるインストール
+### 自己コンパイルによるインストール {#self-compiled-installations-2}
 
 1. `/home/git/gitlab/config/gitlab.yml`を開き、`registry`の下の設定を編集します。
 
@@ -919,11 +961,11 @@ GitLabを外部コンテナレジストリの認証エンドポイントとし�
      issuer: gitlab-issuer
    ```
 
-   これらのパラメーターの意味については、[こちら](#enable-the-container-registry)をご覧ください。
+   これらのパラメータの意味については、[こちら](#enable-the-container-registry)をご覧ください。
 
 1. ファイルを保存して、[GitLabを再起動](../restart_gitlab.md#self-compiled-installations)し、変更を有効にします。
 
-## コンテナレジストリ通知を設定する
+## コンテナレジストリ通知を設定する {#configure-container-registry-notifications}
 
 レジストリで発生するイベントに応じてWebhook通知を送信するようにコンテナレジストリを設定できます。
 
@@ -931,7 +973,7 @@ GitLabを外部コンテナレジストリの認証エンドポイントとし�
 
 {{< alert type="warning" >}}
 
-`threshold`パラメーターのサポートは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/container-registry/-/issues/1243)となり、18.0で削除される予定です。代わりに`maxretries`を使用してください。
+`threshold`パラメータのサポートは、GitLab 17.0で[非推奨](https://gitlab.com/gitlab-org/container-registry/-/issues/1243)となり、18.0で削除される予定です。代わりに`maxretries`を使用してください。
 
 {{< /alert >}}
 
@@ -941,7 +983,7 @@ GitLabを外部コンテナレジストリの認証エンドポイントとし�
 
 {{< tab title="Linuxパッケージ（Omnibus）" >}}
 
-Linuxパッケージのインストールで通知エンドポイントを設定するには、次の手順に従います。
+Linuxパッケージインストールで通知エンドポイントを設定するには、次の手順に従います。
 
 1. `/etc/gitlab/gitlab.rb`を編集します。
 
@@ -996,7 +1038,7 @@ notifications:
 
 {{< /tabs >}}
 
-## クリーンアップポリシーを実行する
+## クリーンアップポリシーを実行する {#run-the-cleanup-policy}
 
 前提要件:
 
@@ -1008,9 +1050,9 @@ notifications:
 
 1. [プロジェクトごとのディスク容量使用量を確認](#registry-disk-space-usage-by-project)して、クリーンアップが必要なプロジェクトを特定します。
 1. GitLab Railsコンソールを使用してクリーンアップポリシーを実行し、イメージタグを削除します。
-1. [ガベージコレクションを実行](#container-registry-garbage-collection)して、参照されていないレイヤとタグ付けされていないマニフェストを削除します。
+1. [ガベージコレクションを実行](#container-registry-garbage-collection)して、参照されていないレイヤーとタグ付けされていないマニフェストを削除します。
 
-### プロジェクトごとのレジストリディスク容量使用量
+### プロジェクトごとのレジストリディスク容量使用量 {#registry-disk-space-usage-by-project}
 
 各プロジェクトで使用されるディスク容量を確認するには、[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)で次のスクリプトを実行します。
 
@@ -1055,7 +1097,7 @@ end
 
 {{< alert type="note" >}}
 
-このスクリプトは、コンテナイメージレイヤに基づいてサイズを計算します。レイヤは複数のプロジェクト間で共有できるため、結果はおおよその数値ですが、プロジェクト間の相対的なディスク使用量を示すことができます。
+このスクリプトは、コンテナイメージレイヤーに基づいてサイズを計算します。レイヤーは複数のプロジェクト間で共有できるため、結果はおおよその数値ですが、プロジェクト間の相対的なディスク使用量を示すことができます。
 
 {{< /alert >}}
 
@@ -1099,7 +1141,7 @@ projects.each do |p|
 end
 ```
 
-## コンテナレジストリのメタデータデータベース
+## コンテナレジストリのメタデータデータベース {#container-registry-metadata-database}
 
 {{< details >}}
 
@@ -1116,7 +1158,11 @@ end
 
 メタデータデータベースは、オンラインガベージコレクションなど、多くの新しいレジストリ機能を有効にするほか、多くのレジストリ操作の効率を向上させます。詳細については、[コンテナレジストリのメタデータデータベース](container_registry_metadata_database.md)のページを参照してください。
 
-## コンテナレジストリのガベージコレクション
+## コンテナレジストリのガベージコレクション {#container-registry-garbage-collection}
+
+前提要件:
+
+- Linuxパッケージまたは[GitLab Helmチャート](https://docs.gitlab.com/charts/charts/registry/#garbage-collection)を使用して、GitLabをインストールしている必要があります。
 
 {{< alert type="note" >}}
 
@@ -1124,27 +1170,29 @@ Amazon S3ライフサイクルなどのオブジェクトストレージプロ�
 
 {{< /alert >}}
 
-コンテナレジストリはかなりの量のストレージ容量を使用する可能性があるため、[ストレージの使用量を削減](../../user/packages/container_registry/reduce_container_registry_storage.md)することをおすすめします。リストされているオプションの中で最も効果的なのはタグの削除です。ただし、タグを削除するだけではイメージレイヤは削除されず、基盤となるイメージマニフェストのタグが削除されたままになります。
+コンテナレジストリはかなりの量のストレージ容量を使用する可能性があるため、[ストレージの使用量を削減](../../user/packages/container_registry/reduce_container_registry_storage.md)することをおすすめします。リストされているオプションの中で最も効果的なのはタグの削除です。ただし、タグを削除するだけではイメージレイヤーは削除されず、基盤となるイメージマニフェストのタグが削除されたままになります。
 
-より効果的に容量を解放するために、コンテナレジストリには、参照されていないレイヤと（オプションで）タグ付けされていないマニフェストを削除できるガベージコレクターがあります。
+より効果的に容量を解放するために、コンテナレジストリには、参照されていないレイヤーと（オプションで）タグ付けされていないマニフェストを削除できるガベージコレクターがあります。
 
-ガベージコレクターを起動するには、`gitlab-ctl`が提供する`registry-garbage-collect`コマンドを使用します。
+ガベージコレクターを開始するには、次の`gitlab-ctl`コマンドを実行します。
 
-{{< alert type="warning" >}}
-
-このコマンドは、ガベージコレクションの前にコンテナレジストリをシャットダウンし、ガベージコレクションが完了した後にのみコンテナレジストリを再起動します。ダウンタイムを回避したい場合は、コンテナレジストリを手動で[読み取り専用モードに設定して、`gitlab-ctl`をバイパスできます](#performing-garbage-collection-without-downtime)。
-
-{{< /alert >}}
+```shell
+sudo gitlab-ctl registry-garbage-collect
+```
 
 ガベージコレクションの実行に必要な時間は、コンテナレジストリのデータサイズに比例します。
 
-前提要件:
+{{< alert type="warning" >}}
 
-- Linuxパッケージまたは[GitLab Helmチャート](https://docs.gitlab.com/charts/charts/registry/#garbage-collection)を使用して、GitLabをインストールしている必要があります。
+`registry-garbage-collect`コマンドは、ガベージコレクションの前にコンテナレジストリをシャットダウンし、ガベージコレクションが完了した後にのみコンテナレジストリを再起動します。ダウンタイムを回避したい場合は、コンテナレジストリを手動で[読み取り専用モードに設定して、`gitlab-ctl`をバイパスできます](#performing-garbage-collection-without-downtime)。
 
-### コンテンツアドレス可能なレイヤについて理解する
+このコマンドは、メタデータがオブジェクトストレージにある場合にのみ実行されます。このコマンドは、[コンテナレジストリメタデータデータベース](#container-registry-metadata-database)が有効になっている場合には実行されません。
 
-最初にイメージをビルドする次の例を考えてみましょう。
+{{< /alert >}}
+
+### コンテンツアドレス可能なレイヤーについて理解する {#understanding-the-content-addressable-layers}
+
+初めてイメージをビルドする次の例を考えてみましょう。
 
 ```shell
 # This builds a image with content of sha256:<111111...>
@@ -1162,9 +1210,9 @@ docker push <my.registry.com>/<my.group>/<my.project>:latest
 
 これで、`latest`タグは`sha256:<222222...>`のマニフェストを指します。レジストリのアーキテクチャにより、`latest`タグを介して直接アクセスできなくなったとしても、イメージ`<my.registry.com>/<my.group>/<my.project>@sha256:<111111...>`をプルすると、このデータにアクセスできます。
 
-### 参照されていないレイヤを削除する
+### 参照されていないレイヤーを削除する {#remove-unreferenced-layers}
 
-イメージレイヤは、コンテナレジストリストレージの大部分を占めています。イメージマニフェストがレイヤを参照していない場合、レイヤは参照されていないと見なされます。参照されていないレイヤは、コンテナレジストリのガベージコレクターのデフォルトのターゲットです。
+イメージレイヤーは、コンテナレジストリストレージの大部分を占めています。イメージマニフェストがレイヤーを参照していない場合、レイヤーは参照されていないと見なされます。参照されていないレイヤーは、コンテナレジストリのガベージコレクターのデフォルトのターゲットです。
 
 設定ファイルのデフォルトの場所を変更しなかった場合は、次のコマンドを実行します。
 
@@ -1178,13 +1226,13 @@ sudo gitlab-ctl registry-garbage-collect
 sudo gitlab-ctl registry-garbage-collect /path/to/config.yml
 ```
 
-[タグ付けされていないマニフェストと参照されていないレイヤをすべて削除](#removing-untagged-manifests-and-unreferenced-layers)して、追加の容量を回復することもできます。
+[タグ付けされていないマニフェストと参照されていないレイヤーをすべて削除](#removing-untagged-manifests-and-unreferenced-layers)して、追加の容量を回復することもできます。
 
-### タグ付けされていないマニフェストと参照されていないレイヤを削除する
+### タグ付けされていないマニフェストと参照されていないレイヤーを削除する {#removing-untagged-manifests-and-unreferenced-layers}
 
-デフォルトでは、コンテナレジストリのガベージコレクターはタグ付けされていないイメージを無視し、ユーザーはタグ付けされていないイメージをdigestでプルし続けることができます。また、ユーザーは将来、イメージに再度タグ付けして、GitLab UIとAPIで再び表示できるようにすることもできます。
+デフォルトでは、コンテナレジストリのガベージコレクターはタグ付けされていないイメージを無視し、ユーザーはタグ付けされていないイメージをダイジェストでプルし続けることができます。また、ユーザーは将来、イメージに再度タグ付けして、GitLab UIとAPIで再び表示できるようにすることもできます。
 
-タグ付けされていないイメージと、これらのイメージによって排他的に参照されるレイヤに関心がない場合は、それらをすべて削除できます。`registry-garbage-collect`コマンドで`-m`フラグを使用します。
+タグ付けされていないイメージと、これらのイメージによって排他的に参照されるレイヤーに関心がない場合は、それらをすべて削除できます。`registry-garbage-collect`コマンドで`-m`フラグを使用します。
 
 ```shell
 sudo gitlab-ctl registry-garbage-collect -m
@@ -1192,9 +1240,9 @@ sudo gitlab-ctl registry-garbage-collect -m
 
 タグ付けされていないイメージの削除について迷っている場合は、続行する前にレジストリデータをバックアップしてください。
 
-### ダウンタイムなしでガベージコレクションを実行する
+### ダウンタイムなしでガベージコレクションを実行する {#performing-garbage-collection-without-downtime}
 
-コンテナレジストリをオンラインに保ちながらガベージコレクションを実行するには、レジストリを読み取り専用モードにし、組み込みの`gitlab-ctl registry-garbage-collect`コマンドを回避します。
+コンテナレジストリをオンラインに保ちながらガベージコレクションを実行するには、レジストリを読み取り専用モードにし、組み込みの`gitlab-ctl registry-garbage-collect`コマンドをバイパスします。
 
 コンテナレジストリが読み取り専用モードの場合、イメージをプルできますが、プッシュすることはできません。コンテナレジストリは、ガベージコレクションの全期間にわたって読み取り専用のままでなければなりません。
 
@@ -1258,7 +1306,7 @@ sudo gitlab-ctl registry-garbage-collect -m
    sudo gitlab-ctl reconfigure
    ```
 
-### スケジュールに従ってガベージコレクションを実行する
+### スケジュールに従ってガベージコレクションを実行する {#running-the-garbage-collection-on-schedule}
 
 理想的には、レジストリが使用されていないときに、レジストリのガベージコレクションを週に1回定期的に実行する必要があります。最も簡単な方法は、週に1回定期的に実行される新しいcrontabジョブを追加することです。
 
@@ -1272,9 +1320,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 5 4 * * 0  root gitlab-ctl registry-garbage-collect
 ```
 
-[タグ付けされていないマニフェストと参照されていないレイヤを削除](#removing-untagged-manifests-and-unreferenced-layers)するには、`-m`フラグを追加することをおすすめします。
+[タグ付けされていないマニフェストと参照されていないレイヤーを削除](#removing-untagged-manifests-and-unreferenced-layers)するには、`-m`フラグを追加することをおすすめします。
 
-### ガベージコレクションを停止する
+### ガベージコレクションを停止する {#stop-garbage-collection}
 
 ガベージコレクションを停止することを想定している場合は、[ダウンタイムなしでガベージコレクションを実行する](#performing-garbage-collection-without-downtime)で説明されているように、ガベージコレクションを手動で実行する必要があります。その後、<kbd>Control</kbd>+<kbd>C</kbd>を押して、ガベージコレクションを停止できます。
 
@@ -1282,25 +1330,25 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 また、プロセスのマークフェーズ中に進行状況や結果を保存する方法はありません。blobが削除され始めると初めて、永続的な処理が行われます。
 
-### 継続的なゼロダウンタイムのガベージコレクション
+### 継続的なゼロダウンタイムのガベージコレクション {#continuous-zero-downtime-garbage-collection}
 
 [メタデータデータベース](container_registry_metadata_database.md)に移行すると、ガベージコレクションのスケジュールを設定したり、読み取り専用モードを要求したりすることなく、バックグラウンドでガベージコレクションを実行できます。
 
-## コンポーネントごとのスケーリング
+## コンポーネントごとのスケーリング {#scaling-by-component}
 
-このセクションでは、コンポーネントごとにレジストリトラフィックが増加するに伴い、パフォーマンス上のボトルネックが発生する可能性について簡単に説明します。各サブセクションは、小さいレジストリワークロードに役立つものから大きいワークロードに役立つものへと至る推奨事項によっておおまかに順序付けられています。レジストリは[リファレンスアーキテクチャ](../reference_architectures/_index.md)に含まれておらず、1秒あたりのシート数またはリクエスト数を対象にしたスケーリングガイドはありません。
+このセクションでは、コンポーネントごとにレジストリトラフィックが増加するに伴い、パフォーマンス上のボトルネックが発生する可能性について簡単に説明します。各サブセクションは、小さいレジストリワークロードに役立つものから大きいワークロードに役立つものへと至る、おおまかな推奨事項順に記載されています。レジストリは[リファレンスアーキテクチャ](../reference_architectures/_index.md)に含まれておらず、シート数または1秒あたりのリクエスト数を対象にしたスケーリングガイドはありません。
 
-### データベース
+### データベース {#database}
 
 1. **別個のデータベースに移行する**: データベースの負荷が増加するにつれて、レジストリのメタデータデータベースを別個の物理データベースに移動して、垂直方向にスケールしてください。別個のデータベースを使用すると、レジストリによって生成されるトラフィックを分離しながら、レジストリデータベースで使用できるリソースの量を増やすことができます。
 1. **HA PostgreSQLサードパーティソリューションに移行する**: [Praefect](../reference_architectures/5k_users.md#praefect-ha-postgresql-third-party-solution)と同様に、評価の高いプロバイダーまたはソリューションに移行すると、HAが実現し、マルチノードレジストリデプロイが簡単になります。レジストリはネイティブのPostgresパーティション、トリガー、および関数を多用するため、これらをサポートするプロバイダーを選択する必要があります。
 
-### レジストリサーバー
+### レジストリサーバー {#registry-server}
 
 1. **別個のノードに移行する**: [別個のノード](#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations)への移行は、垂直方向にスケールして、コンテナレジストリのサーバープロセスで使用できるリソースを増やす方法の1つです。
-1. **ロードバランサーの背後で複数のレジストリノードを実行する:** レジストリは1つの大きなノードで大量のトラフィックを処理できますが、レジストリは通常、複数のデプロイで水平方向にスケールするように設計されています。複数の小さなノードを設定すると、自動スケールなどの手法も有効になります。
+1. **ロードバランサーの背後で複数のレジストリノードを実行する**: レジストリは1つの大きなノードで大量のトラフィックを処理できますが、レジストリは通常、複数のデプロイで水平にスケールするように設計されています。複数の小さなノードを設定すると、オートスケールなどの手法も有効になります。
 
-### Redisキャッシュ
+### Redisキャッシュ {#redis-cache}
 
 [Redis](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#redis)キャッシュを有効にすると、パフォーマンスが向上するだけでなく、リポジトリの名前変更などの機能も有効になります。
 
@@ -1308,25 +1356,25 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 1. **Redis Sentinel**: Redis Sentinelもサポートされており、キャッシュをHAにすることができます。
 1. **Redis Cluster**: Redis Clusterは、デプロイの拡大に合わせて、さらにスケールするために使用することもできます。
 
-### ストレージ
+### ストレージ {#storage}
 
 1. **ローカルファイルシステム**: ローカルファイルシステムはデフォルトであり、比較的高いパフォーマンスを発揮しますが、マルチノードデプロイや大量のレジストリデータには適していません。
 1. **オブジェクトストレージ**: [オブジェクトストレージを使用](#use-object-storage)して、大量のレジストリデータの実用的なストレージを実現します。オブジェクトストレージは、マルチノードレジストリデプロイにも適しています。
 
-### オンラインガベージコレクション
+### オンラインガベージコレクション {#online-garbage-collection}
 
 1. **デフォルトを調整する**: オンラインガベージコレクションが[レビューキュー](container_registry_metadata_database.md#queue-monitoring)を確実にクリアしない場合は、[`gc`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#gc)設定セクションの`manifests`および`blobs`セクションで`interval`設定を調整できます。デフォルトは`5s`ですが、たとえば`500ms`のように、ミリ秒単位で設定することもできます。
-1. **レジストリサーバーで水平方向にスケールする**: マルチノードデプロイでレジストリアプリケーションを水平方向にスケールしている場合、設定を変更する必要なしに、オンラインガベージコレクションは自動的にスケールします。
+1. **レジストリサーバーで水平にスケールする**: マルチノードデプロイでレジストリアプリケーションを水平方向にスケールしている場合、設定を変更する必要なしに、オンラインガベージコレクションは自動的にスケールします。
 
-## 別々のノードでGitLabとレジストリを設定する（Linuxパッケージのインストール）
+## 別々のノードでGitLabとレジストリを設定する（Linuxパッケージインストール） {#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations}
 
 デフォルトでは、GitLabパッケージは、両方のサービスが同じノードで実行されることを前提としています。サービスを別々のノードで実行するには、個別の設定必要です。
 
-### 設定オプション
+### 設定オプション {#configuration-options}
 
 次の設定オプションは、それぞれのノードの`/etc/gitlab/gitlab.rb`で設定する必要があります。
 
-#### レジストリノードの設定
+#### レジストリノードの設定 {#registry-node-settings}
 
 | オプション                                     | 説明 |
 | ------------------------------------------ | ----------- |
@@ -1350,7 +1398,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 <!--- end_remove -->
 
-#### GitLabノードの設定
+#### GitLabノードの設定 {#gitlab-node-settings}
 
 | オプション                              | 説明 |
 | ----------------------------------- | ----------- |
@@ -1362,7 +1410,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 | `gitlab_rails['registry_key_path']` | レジストリで使用される証明書キーのファイルパス。 |
 | `gitlab_rails['internal_key']`      | GitLabで使用されるトークン署名キーのコンテンツ。 |
 
-### ノードをセットアップする
+### ノードをセットアップする {#set-up-the-nodes}
 
 別々のノードでGitLabとコンテナレジストリを設定するには、次の手順に従います。
 
@@ -1419,59 +1467,70 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
    1. ファイルの権限が正しいことを確認します。
    1. 両方のノードで`sudo gitlab-ctl reconfigure`を実行します。
 
-## GitLabコンテナレジストリのアーキテクチャ
+## コンテナレジストリのアーキテクチャ {#container-registry-architecture}
 
-GitLabレジストリは、ユーザーが独自のDockerイメージを保存するために使用するものです。レジストリはクライアントに面しているため、レジストリは、Webサーバー（またはロードバランサー、略してLB）で直接公開されます。
+ユーザーは、独自のDockerイメージをコンテナレジストリに保存できます。レジストリはクライアントに面しているため、レジストリはWebサーバーまたはロードバランサー（LB）に直接公開されます。
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
-    A[User] --->|1: Docker login<br>on port 443| C{Frontend load<br>balancer}
-    C --->|2: connection attempt<br>without token fails| D[Registry]
-    C --->|5: connect with <br>token succeeds| D[Registry]
-    C --->|3: Docker<br>requests token| E[API frontend]
-    E --->|4:API returns<br>signed token| C
+    accTitle: Container registry authentication flow
+    accDescr: Shows how users authenticate with the container registry with GitLab API to push and pull Docker images
+
+    A[User] --->|1: Docker loginon port 443| C{Frontend loadbalancer}
+    C --->|2: connection attemptwithout token fails| D[Container registry]
+    C --->|5: connect with token succeeds| D[Container registry]
+    C --->|3: Dockerrequests token| E[API frontend]
+    E --->|4:API returnssigned token| C
 
     linkStyle 1 stroke-width:4px,stroke:red
     linkStyle 2 stroke-width:4px,stroke:green
 ```
 
-上記の図で説明されているフロー:
+認証フローには、次の手順が含まれます。
 
-1. ユーザーはクライアントで`docker login registry.gitlab.example`を実行します。これにより、ポート443でWebサーバー（またはLB）に到達します。
-1. Webサーバーは、レジストリバックエンドプールに接続します（デフォルトでは、ポート5000を使用）。ユーザーが有効なトークンを提供しなかったため、レジストリは、401 HTTPコードと、トークンを取得するURL（レジストリ設定の`token_realm`）を返します。これはGitLab APIを指します。
-1. 次に、DockerクライアントはGitLab APIに接続して、トークンを取得します。
-1. APIはレジストリキーでトークンに署名し、Dockerクライアントに渡します。
-1. Dockerクライアントは、APIから受信したトークンを使用して再度ログインします。これで、Dockerイメージをプッシュしたり、プルしたりできます。
+1. ユーザーはクライアントで`docker login registry.gitlab.example`を実行します。このリクエストは、ポート443でWebサーバー（またはLB）に到達します。
+1. Webサーバーは、レジストリのバックエンドプールに接続します（デフォルトではポート5000）。ユーザーが有効なトークンを持っていないため、レジストリは`401 Unauthorized` HTTPコードと、トークンを取得するためのURLを返します。このURLは、レジストリ設定の[`token_realm`](#registry-node-settings)によって定義され、GitLab APIを指します。
+1. DockerクライアントはGitLab APIに接続して、トークンを取得します。
+1. APIはレジストリキーでトークンに署名して、Dockerクライアントに送信します。
+1. Dockerクライアントは、APIから受信したトークンを使用して再度ログインします。これで、認証されたクライアントはDockerイメージをプッシュおよびプルできるようになりました。
 
 参照: <https://distribution.github.io/distribution/spec/auth/token/>
 
-### GitLabとレジストリ間の通信
+### GitLabとコンテナレジストリ間の通信 {#communication-between-gitlab-and-the-container-registry}
 
-レジストリにはユーザーを内部的に認証する方法がないため、GitLabに依存して認証情報を検証します。レジストリとGitLab間の接続は、TLSで暗号化されています。キーは、GitLabがトークンに署名するために使用され、証明書は、レジストリが署名を検証するために使用されます。デフォルトでは、自己署名証明書とキーのペアがすべてのインストールに対して生成されます。これは必要に応じてオーバーライドできます。
+コンテナレジストリはユーザーを内部的に認証できないため、GitLabを介して認証情報を検証します。レジストリとGitLab間の接続は、TLSで暗号化されています。
 
-GitLabは、レジストリの秘密キーを使用してレジストリを操作します。レジストリリクエストが送信されると、有効期間の短い（10分）新しいネームスペース制限トークンが生成され、秘密キーで署名されます。次に、レジストリは、署名が、設定で指定されたレジストリ証明書と一致することを確認し、操作を許可します。GitLabバックグラウンドジョブの処理（Sidekiq経由）もレジストリとやり取りします。これらのジョブはレジストリと直接通信して、イメージの削除を処理します。
+GitLabは秘密キーを使用してトークンに署名し、レジストリは証明書によって提供される公開キーを使用して署名を検証します。
 
-## サードパーティレジストリから移行する
+デフォルトでは、自己署名証明書とキーのペアがすべてのインストールに対して生成されます。レジストリ設定の[`internal_key`](#registry-node-settings)設定を使用して、この動作をオーバーライドできます。
+
+次の手順は、通信フローについて説明しています。
+
+1. GitLabは、レジストリの秘密キーを使用してレジストリを操作します。レジストリリクエストが送信されると、有効期間の短い（10分）ネームスペース制限トークンが生成され、秘密キーで署名されます。
+1. レジストリは、署名が、設定で指定されたレジストリ証明書と一致することを検証し、操作を許可します。
+1. GitLabは、Sidekiqを介してバックグラウンドジョブを処理します。このとき、レジストリともやり取りします。これらのジョブはレジストリと直接通信して、イメージの削除を処理します。
+
+## サードパーティレジストリから移行する {#migrate-from-a-third-party-registry}
 
 GitLabでの外部コンテナレジストリの使用は、GitLab 15.8で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)となり、GitLab 16.0でサポートが終了しました。詳細については、[非推奨に関する通知](../../update/deprecations.md#use-of-third-party-container-registries-is-deprecated)を参照してください。
 
-このインテグレーションはGitLab 16.0で無効になっていませんが、イシューのデバッグと修正のサポートは提供されなくなりました。また、このインテグレーションの開発は終了し、新機能で強化されなくなりました。新しいGitLabコンテナレジストリバージョンがGitLab Self-Managedで利用可能になった後（エピック[5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)を参照）、サードパーティレジストリ機能は完全に削除される可能性があります。GitLabコンテナレジストリのみがサポートされる予定です。
+このインテグレーションはGitLab 16.0で無効になっていませんが、問題のデバッグと修正のサポートは提供されなくなりました。また、このインテグレーションの開発は終了し、新機能で強化されなくなりました。新しいGitLabコンテナレジストリバージョンがGitLab Self-Managedで利用可能になった後（エピック[5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)を参照）、サードパーティレジストリ機能は完全に削除される可能性があります。GitLabコンテナレジストリのみがサポートされる予定です。
 
-このセクションでは、管理者がサードパーティレジストリからGitLabコンテナレジストリに移行するためのガイダンスを提供します。使用しているサードパーティコンテナレジストリがここにリストされていない場合は、[フィードバックイシュー](https://gitlab.com/gitlab-org/container-registry/-/issues/958)でユースケースについて説明してください。
+このセクションでは、サードパーティレジストリからGitLabコンテナレジストリに移行するための管理者向けガイダンスを提供します。使用しているサードパーティコンテナレジストリがここにリストされていない場合は、[フィードバックイシュー](https://gitlab.com/gitlab-org/container-registry/-/issues/958)でユースケースについて説明してください。
 
 以下のすべての手順については、まずテスト環境で試してみる必要があります。本番環境でレプリケートする前に、すべてが期待どおりに動作し続けることを確認してください。
 
-### Docker Distribution Registry
+### Docker Distribution Registry {#docker-distribution-registry}
 
 [Docker Distribution Registry](https://docs.docker.com/registry/)はCNCFに寄贈され、現在は[Distribution Registry](https://distribution.github.io/distribution/)として知られています。このレジストリは、GitLabコンテナレジストリの基盤となるオープンソースの実装です。GitLabコンテナレジストリは、サポートされているすべてのストレージバックエンドを含む、Distribution Registryによって提供される基本機能と互換性があります。GitLabコンテナレジストリに移行するには、このページの手順に従い、Distribution Registryと同じストレージバックエンドを使用します。GitLabコンテナレジストリでは、Distribution Registryに使用しているのと同じ設定を使用できるはずです。
 
-## コンテナイメージ削除の最大再試行回数
+## コンテナイメージ削除の最大再試行回数 {#max-retries-for-deleting-container-images}
 
 {{< history >}}
 
-- GitLab 17.5で`set_delete_failed_container_repository`という名前の[フラグ](../feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/480652)されました。デフォルトで無効になっています。
-- GitLab 17.6で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/490354)になりました。機能フラグ`set_delete_failed_container_repository`が削除されました。
+- GitLab 17.5で`set_delete_failed_container_repository`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/480652)されました。デフォルトでは無効になっています。
+- GitLab 17.6で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/490354)になりました。機能フラグ`set_delete_failed_container_repository`は削除されました。
 
 {{< /history >}}
 

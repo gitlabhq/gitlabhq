@@ -1,6 +1,12 @@
 %p
   = say_hi(@user)
-%p
-  = safe_format(_('A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was deleted from your account.'), tag_pair(tag.code, :codeOpen, :codeClose), device_name: @device_name)
-%p
-  = re_enable_two_factor_authentication_text(format: :html)
+- if @type == :webauthn
+  %p
+    = safe_format(_('A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was deleted from your account.'), tag_pair(tag.code, :codeOpen, :codeClose), device_name: @device_name)
+  %p
+    = re_enable_two_factor_authentication_text(format: :html)
+- else
+  %p
+    = safe_format(_('A passkey, named %{codeOpen}%{device_name}%{codeClose}, was deleted from your account.'), tag_pair(tag.code, :codeOpen, :codeClose), device_name: @device_name)
+  %p
+    = manage_passkeys(format: :html)
