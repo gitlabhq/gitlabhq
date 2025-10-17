@@ -4,7 +4,6 @@ ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js
-spec/frontend/ci/pipeline_editor/pipeline_editor_app_spec.js
 spec/frontend/ci/runner/components/registration/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/content_editor/components/wrappers/paragraph_spec.js
 spec/frontend/design_management/pages/design/index_spec.js

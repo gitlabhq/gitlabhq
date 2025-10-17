@@ -62,6 +62,7 @@ const defaultProvide = {
 };
 
 Vue.use(GlToast);
+Vue.use(VueApollo);
 
 describe('Pipeline editor app component', () => {
   let wrapper;
@@ -73,9 +74,12 @@ describe('Pipeline editor app component', () => {
   let mockLatestCommitShaQuery;
   const showToastMock = jest.fn();
 
-  const createComponent = ({ options = {}, provide = {}, stubs = {} } = {}) => {
+  const createComponent = ({ options = {}, provide = {}, stubs = {}, data = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
       provide: { ...defaultProvide, ...provide },
+      data() {
+        return data;
+      },
       stubs,
       ...options,
     });
@@ -85,9 +89,8 @@ describe('Pipeline editor app component', () => {
     provide = {},
     stubs = {},
     withUndefinedBranch = false,
+    data = {},
   } = {}) => {
-    Vue.use(VueApollo);
-
     const handlers = [
       [getBlobContent, mockBlobContentData],
       [ciLintMutation, mockCiLintData],
@@ -131,7 +134,7 @@ describe('Pipeline editor app component', () => {
       apolloProvider: mockApollo,
     };
 
-    createComponent({ provide, stubs, options });
+    createComponent({ provide, stubs, options, data });
 
     return waitForPromises();
   };
@@ -233,7 +236,7 @@ describe('Pipeline editor app component', () => {
 
     describe('when file exists', () => {
       beforeEach(async () => {
-        await createComponentWithApollo();
+        await createComponentWithApollo({ data: { currentBranch: mockDefaultBranch } });
       });
 
       it('shows pipeline editor home component', () => {
@@ -264,6 +267,7 @@ describe('Pipeline editor app component', () => {
           stubs: {
             PipelineEditorEmptyState,
           },
+          data: { currentBranch: mockDefaultBranch },
         });
       });
 
@@ -347,7 +351,10 @@ describe('Pipeline editor app component', () => {
       describe('and the commit mutation succeeds', () => {
         beforeEach(async () => {
           window.scrollTo = jest.fn();
-          await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
+          await createComponentWithApollo({
+            stubs: { PipelineEditorMessages },
+            data: { currentBranch: mockDefaultBranch },
+          });
 
           findEditorHome().vm.$emit('commit', { type: COMMIT_SUCCESS });
         });

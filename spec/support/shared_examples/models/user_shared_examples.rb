@@ -111,7 +111,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       ai_vectorizable_file_uploads
       alert_management_alert_metric_image_uploads
       appearance_uploads
-      approval_policy_merge_request_bypass_events
       bulk_import_export_upload_uploads
       import_export_uploads
       issuable_metric_image_uploads

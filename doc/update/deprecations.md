@@ -111,6 +111,28 @@ The metadata database provides better performance, reliability, and enables new 
 
 <div class="deprecation breaking-change" data-milestone="20.0">
 
+### Dependency Scanning for JavaScript vendored libraries
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
+</div>
+
+The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
+provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
+
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
+
+A replacement feature will be developed with [Dependency Scanning on vendored libraries](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="20.0">
+
 ### Dependency Scanning upgrades to the GitLab SBOM Vulnerability Scanner
 
 <div class="deprecation-notes">
@@ -275,6 +297,28 @@ The configuration arguments disabled for authentication tokens are:
 - `--maintenance-note`
 
 This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ci/runners/runners_scope/) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="20.0">
+
+### Resolve a vulnerability for Dependency Scanning on Yarn projects
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
+</div>
+
+The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature for Yarn projects
+provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
+
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
+
+A replacement feature is planned as part of the [Auto Remediation vision](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
 
 </div>
 
@@ -535,28 +579,6 @@ or migrate to another security feature like [GitLab Advanced SAST](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Dependency Scanning for JavaScript vendored libraries
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
-
-</div>
-
-The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
-provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
-
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
-
-A replacement feature will be developed with [Dependency Scanning on vendored libraries](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Enforce keyset pagination on audit event API
 
 <div class="deprecation-notes">
@@ -750,28 +772,6 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 The GraphQL field `take_ownership_pipeline_schedule` will be deprecated. To
 determine if a user can take ownership of a pipeline schedule, use the
 `admin_pipeline_schedule` field instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### Resolve a vulnerability for Dependency Scanning on Yarn projects
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
-
-</div>
-
-The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature for Yarn projects
-provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
-
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
-
-A replacement feature is planned as part of the [Auto Remediation vision](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
 
 </div>
 

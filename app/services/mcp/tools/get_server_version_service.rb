@@ -10,6 +10,11 @@ module Mcp
         'Get the current version of MCP server.'
       end
 
+      override :authorize!
+      def authorize!(_params)
+        true
+      end
+
       override :input_schema
       def input_schema
         {

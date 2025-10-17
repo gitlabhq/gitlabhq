@@ -156,7 +156,7 @@ PATH
 PATH
   remote: vendor/gems/gitlab-duo-workflow-service-client
   specs:
-    gitlab-duo-workflow-service-client (0.5)
+    gitlab-duo-workflow-service-client (0.6)
       grpc
 
 PATH
@@ -2183,7 +2183,7 @@ DEPENDENCIES
   gitlab-cloud-connector (~> 1.26)
   gitlab-crystalball (~> 1.1.0)
   gitlab-dangerfiles (~> 4.10.0)
-  gitlab-duo-workflow-service-client (~> 0.4)!
+  gitlab-duo-workflow-service-client (~> 0.6)!
   gitlab-experiment (~> 1.0.0)
   gitlab-fog-azure-rm (~> 2.4.0)
   gitlab-glfm-markdown (~> 0.0.36)

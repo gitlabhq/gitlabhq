@@ -73,6 +73,7 @@ The **Metric trends** table displays metrics for the last six months, with month
 - Duo RCA usage [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
 - Duo RCA usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
 - Duo RCA usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
+- Duo features usage [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -101,6 +102,8 @@ The **Metric trends** table displays metrics for the last six months, with month
   Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
 
   {{< /alert >}}
+
+- **Duo features usage**: Number of contributors who used any GitLab Duo feature.
 
 ### Development metrics
 

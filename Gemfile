@@ -176,7 +176,7 @@ gem 'gitlab-topology-service-client', '~> 0.1',
   feature_category: :cell
 
 # Duo Workflow
-gem 'gitlab-duo-workflow-service-client', '~> 0.4',
+gem 'gitlab-duo-workflow-service-client', '~> 0.6',
   path: 'vendor/gems/gitlab-duo-workflow-service-client',
   feature_category: :agent_foundations
 

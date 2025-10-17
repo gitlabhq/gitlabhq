@@ -6403,6 +6403,12 @@ msgstr ""
 msgid "AiImpactAnalytics|Duo RCA usage"
 msgstr ""
 
+msgid "AiImpactAnalytics|Duo features usage"
+msgstr ""
+
+msgid "AiImpactAnalytics|Number of contributors who used any GitLab Duo feature."
+msgstr ""
+
 msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."
 msgstr ""
 

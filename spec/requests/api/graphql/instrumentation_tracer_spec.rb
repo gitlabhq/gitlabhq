@@ -15,7 +15,6 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
     let_it_be(:common_log_info) do
       {
         "correlation_id" => be_a(String),
-        :trace_type => "execute_query",
         :query_fingerprint => be_a(String),
         :duration_s => be_a(Float),
         :operation_fingerprint => be_a(String),

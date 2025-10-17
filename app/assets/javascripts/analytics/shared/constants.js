@@ -198,6 +198,7 @@ export const AI_METRICS = {
   DUO_CHAT_USAGE_RATE: 'duo_chat_usage_rate',
   DUO_USAGE_RATE: 'duo_usage_rate',
   DUO_RCA_USAGE_RATE: 'duo_rca_usage_rate',
+  DUO_USED_COUNT: 'duo_used_count',
 };
 
 export const VALUE_STREAM_METRIC_DISPLAY_UNITS = {
@@ -408,6 +409,12 @@ export const VALUE_STREAM_METRIC_METADATA = {
     docsLink: helpPagePath('user/gitlab_duo/use_cases', {
       anchor: 'root-cause-analysis-use-cases',
     }),
+  },
+  [AI_METRICS.DUO_USED_COUNT]: {
+    description: s__('AiImpactAnalytics|Number of contributors who used any GitLab Duo feature.'),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/feature_summary'),
   },
   ...PIPELINE_ANALYTICS_METRIC_METADATA,
 };

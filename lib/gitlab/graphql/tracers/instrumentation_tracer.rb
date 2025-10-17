@@ -82,7 +82,6 @@ module Gitlab
 
           analysis_info = query.context[:gl_analysis]&.transform_keys { |key| "query_analysis.#{key}" }
           info = {
-            trace_type: 'execute_query',
             query_fingerprint: query.fingerprint,
             duration_s: duration_s,
             operation_name: query.operation_name,

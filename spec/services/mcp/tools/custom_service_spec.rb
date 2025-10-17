@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mcp::Tools::CustomService, feature_category: :mcp_server do
   let(:service_name) { 'test_api_tool' }
   let(:current_user) { create(:user) }
+  let(:project) { create :project, :repository }
 
   describe '#format_response_content' do
     let(:service) { described_class.new(name: service_name) }
@@ -17,14 +18,24 @@ RSpec.describe Mcp::Tools::CustomService, feature_category: :mcp_server do
   context 'when custom tool perform without error' do
     before do
       service.set_cred(access_token: nil, current_user: current_user)
+      project.add_developer(current_user)
     end
 
-    let(:arguments) { { arguments: {} } }
+    let(:arguments) { { arguments: { project_id: project.id.to_s } } }
     let(:service) { test_get_service_class.new(name: service_name) }
     let(:test_get_service_class) do
       Class.new(described_class) do
         def description
           'Test custom tool'
+        end
+
+        def auth_ability
+          :read_code
+        end
+
+        def auth_target(params)
+          project_id = params.dig(:arguments, :project_id)
+          find_project(project_id)
         end
 
         def input_schema
@@ -62,14 +73,24 @@ RSpec.describe Mcp::Tools::CustomService, feature_category: :mcp_server do
   context 'when custom tool perform with error' do
     before do
       service.set_cred(access_token: nil, current_user: current_user)
+      project.add_developer(current_user)
     end
 
-    let(:arguments) { { arguments: {} } }
+    let(:arguments) { { arguments: { project_id: project.id.to_s } } }
     let(:service) { test_get_service_class.new(name: service_name) }
     let(:test_get_service_class) do
       Class.new(described_class) do
         def description
           'Test custom tool'
+        end
+
+        def auth_ability
+          :read_code
+        end
+
+        def auth_target(params)
+          project_id = params.dig(:arguments, :project_id)
+          find_project(project_id)
         end
 
         def input_schema
@@ -91,7 +112,7 @@ RSpec.describe Mcp::Tools::CustomService, feature_category: :mcp_server do
     let(:success) { true }
     let(:response_code) { 200 }
 
-    it 'returns success response' do
+    it 'returns Tool execution failed response' do
       result = service.execute(request: nil, params: arguments)
 
       expect(result).to eq({
@@ -102,28 +123,157 @@ RSpec.describe Mcp::Tools::CustomService, feature_category: :mcp_server do
     end
   end
 
-  context 'when current_user is not set' do
-    let(:arguments) { { arguments: {} } }
+  context 'when authorize! failed for custom tools' do
     let(:service) { test_get_service_class.new(name: service_name) }
     let(:test_get_service_class) do
       Class.new(described_class) do
         def description
           'Test custom tool'
         end
+
+        def auth_ability
+          :read_code
+        end
+
+        def auth_target(params)
+          project_id = params.dig(:arguments, :project_id)
+          find_project(project_id)
+        end
+
+        def input_schema
+          {
+            type: 'object',
+            properties: {},
+            required: []
+          }
+        end
       end
     end
 
     let(:success) { true }
     let(:response_code) { 200 }
+    let(:current_user) { create(:user) }
 
-    it 'raise current_user is not set' do
-      result = service.execute(request: nil, params: arguments)
+    context 'when current_user is not set' do
+      let(:arguments) { { arguments: {} } }
 
-      expect(result).to eq({
-        content: [{ text: "CustomService: current_user is not set", type: "text" }],
-        structuredContent: {},
-        isError: true
-      })
+      it 'raise current_user is not set' do
+        result = service.execute(request: nil, params: arguments)
+        expect(result).to eq({
+          content: [{ text: "CustomService: current_user is not set", type: "text" }],
+          structuredContent: {},
+          isError: true
+        })
+      end
+    end
+
+    context 'when current_user is set' do
+      before do
+        service.set_cred(current_user: current_user)
+      end
+
+      context 'when user lacks permission' do
+        let(:arguments) { { arguments: { project_id: project.id.to_s } } }
+
+        it 'raises Gitlab::Access::AccessDeniedError' do
+          result = service.execute(request: nil, params: arguments)
+          expect(result).to eq({
+            content: [
+              {
+                text: "Tool execution failed: CustomService: User #{current_user.id} " \
+                  "does not have permission to read_code for target #{project.id}",
+                type: "text"
+              }
+            ],
+            structuredContent: {},
+            isError: true
+          })
+        end
+      end
+    end
+
+    context 'when auth_ability is not implemented' do
+      let(:test_get_service_class) do
+        Class.new(described_class) do
+          def description
+            'Test custom tool'
+          end
+
+          def auth_target(params)
+            params.dig(:arguments, :project_id)
+          end
+
+          def input_schema
+            {
+              type: 'object',
+              properties: {},
+              required: []
+            }
+          end
+        end
+      end
+
+      before do
+        service.set_cred(access_token: nil, current_user: current_user)
+        project.add_developer(current_user)
+      end
+
+      context 'when current_user is not set' do
+        let(:arguments) { { arguments: { project_id: project.id.to_s } } }
+
+        it 'raise current_user is not set' do
+          result = service.execute(request: nil, params: arguments)
+          expect(result).to eq({
+            content: [
+              { text: "Tool execution failed: #auth_ability should be implemented in a subclass", type: "text" }
+            ],
+            structuredContent: {},
+            isError: true
+          })
+        end
+      end
+    end
+
+    context 'when auth_target is not implemented' do
+      let(:test_get_service_class) do
+        Class.new(described_class) do
+          def description
+            'Test custom tool'
+          end
+
+          def auth_ability
+            :read_code
+          end
+
+          def input_schema
+            {
+              type: 'object',
+              properties: {},
+              required: []
+            }
+          end
+        end
+      end
+
+      before do
+        service.set_cred(access_token: nil, current_user: current_user)
+        project.add_developer(current_user)
+      end
+
+      context 'when current_user is not set' do
+        let(:arguments) { { arguments: { project_id: project.id.to_s } } }
+
+        it 'raise current_user is not set' do
+          result = service.execute(request: nil, params: arguments)
+          expect(result).to eq({
+            content: [
+              { text: "Tool execution failed: #auth_target should be implemented in a subclass", type: "text" }
+            ],
+            structuredContent: {},
+            isError: true
+          })
+        end
+      end
     end
   end
 
