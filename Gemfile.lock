@@ -1634,7 +1634,7 @@ GEM
       json
     recursive-open-struct (1.1.3)
     redcarpet (3.6.0)
-    redis (5.4.1)
+    redis (5.4.0)
       redis-client (>= 0.22.0)
     redis-actionpack (5.5.0)
       actionpack (>= 5)
@@ -1644,8 +1644,8 @@ GEM
       connection_pool
     redis-cluster-client (0.13.5)
       redis-client (~> 0.24)
-    redis-clustering (5.4.1)
-      redis (= 5.4.1)
+    redis-clustering (5.4.0)
+      redis (= 5.4.0)
       redis-cluster-client (>= 0.10.0)
     redis-namespace (1.11.0)
       redis (>= 4)
@@ -2368,7 +2368,7 @@ DEPENDENCIES
   rbtrace (~> 0.4)
   re2 (~> 2.15)
   recaptcha (~> 5.12)
-  redis (~> 5.4.0)
+  redis (= 5.4.0)
   redis-actionpack (~> 5.5.0)
   redis-client (~> 0.25)
   redis-cluster-client (~> 0.13)
