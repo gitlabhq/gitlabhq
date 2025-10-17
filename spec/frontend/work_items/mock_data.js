@@ -9403,7 +9403,11 @@ export const workItemMetadataProviderResponse = {
         newWorkItemEmailAddress: null,
         __typename: 'ProjectNamespaceLinks',
       },
-      userPermissions: { createWorkItem: true, __typename: 'NamespacePermissions' },
+      userPermissions: {
+        createWorkItem: true,
+        adminLabel: true,
+        __typename: 'NamespacePermissions',
+      },
       __typename: 'Namespace',
     },
   },

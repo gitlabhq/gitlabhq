@@ -97,4 +97,4 @@ When working with the security inventory, you might encounter the following issu
 
 ### Security inventory menu item missing
 
-Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has the Developer role or higher.
+Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has at least the Developer role.

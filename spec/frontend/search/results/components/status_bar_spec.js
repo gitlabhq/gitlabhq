@@ -101,6 +101,7 @@ describe('GlobalSearchStatusBar', () => {
       });
     });
   });
+
   describe('group status message', () => {
     describe('multiple results', () => {
       beforeEach(() => {
@@ -256,6 +257,14 @@ describe('GlobalSearchStatusBar', () => {
     it('does not render the status bar', () => {
       expect(wrapper.text()).toContain('Showing 0 code results for test in group Group Full Name.');
       expect(wrapper.text()).toContain('Showing 1–0 out of 0 files');
+    });
+  });
+
+  describe('Filters toggle button', () => {
+    it('is shown only on small screens', () => {
+      createComponent();
+
+      expect(wrapper.find('#js-open-mobile-filters').classes()).toContain('@md/panel:gl-hidden');
     });
   });
 });

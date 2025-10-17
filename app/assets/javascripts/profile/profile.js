@@ -77,6 +77,7 @@ export default class Profile {
         });
       })
       .then(() => {
+        // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
         window.scrollTo(0, 0);
         // Enable submit button after requests ends
         self.form.find(':input[disabled]').enable();

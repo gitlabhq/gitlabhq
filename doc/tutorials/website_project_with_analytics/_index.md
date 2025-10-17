@@ -69,7 +69,7 @@ To invite a user to the `My website` project:
 1. In the project, select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Enter the user's **username**.
-1. From the **Role** dropdown list, select the **Developer** role or higher.
+1. From the **Role** dropdown list, select at least the **Developer** role.
    Users must have at least the Developer role to view analytics and contribute to issues and merge requests.
 1. Optional. In the **Access expiration date** picker, select a date.
    This step is recommended if the invited member is expected to contribute to the project only for a limited time.

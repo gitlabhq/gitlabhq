@@ -6,8 +6,8 @@ import {
   convertObjectPropsToCamelCase,
   normalizeHeaders,
   parseIntPagination,
-  scrollTo,
 } from '~/lib/utils/common_utils';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import { __, s__, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';

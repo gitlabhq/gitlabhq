@@ -80,6 +80,6 @@ When working with the security attributes, you might encounter the following iss
 
 ### Security configuration menu item missing
 
-Some users do not have the required permissions to access the **Security configuration** menu item. The menu item only displays for groups when the authenticated user has the Maintainer role or higher.
+Some users do not have the required permissions to access the **Security configuration** menu item. The menu item only displays for groups when the authenticated user has at least the Maintainer role.
 
 To manage security attributes, ask a maintainer to complete the configuration changes or request the Maintainer role from your administrator, if necessary.

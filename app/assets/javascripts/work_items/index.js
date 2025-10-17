@@ -26,7 +26,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   addShortcutsExtension(ShortcutsNavigation);
 
   const {
-    canAdminLabel,
     canBulkUpdate,
     fullPath,
     groupPath,
@@ -51,7 +50,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     isSignedIn,
     hasEpicsFeature,
     showNewWorkItem,
-    canCreateEpic,
     autocompleteAwardEmojisPath,
     hasScopedLabelsFeature,
     hasQualityManagementFeature,
@@ -115,7 +113,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     router,
     apolloProvider,
     provide: {
-      canAdminLabel: parseBoolean(canAdminLabel),
       canBulkUpdate: parseBoolean(canBulkUpdate),
       duoRemoteFlowsAvailability: parseBoolean(duoRemoteFlowsAvailability),
       fullPath,
@@ -144,7 +141,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       workItemType,
       hasEpicsFeature: parseBoolean(hasEpicsFeature),
       showNewWorkItem: parseBoolean(showNewWorkItem),
-      canCreateEpic: parseBoolean(canCreateEpic),
       autocompleteAwardEmojisPath,
       hasQualityManagementFeature: parseBoolean(hasQualityManagementFeature),
       canBulkEditEpics: parseBoolean(canBulkEditEpics),

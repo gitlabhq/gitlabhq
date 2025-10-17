@@ -176,7 +176,7 @@ export const isMetaEnterKeyPair = (e) => isMetaKey(e) && e.key === 'Enter';
 /**
  * Get the current computed outer height for given selector.
  */
-export const getOuterHeight = (selector) => {
+const getOuterHeight = (selector) => {
   const element = document.querySelector(selector);
 
   if (!element) {
@@ -244,15 +244,6 @@ export const findParentPanelScrollingEl = (element) => {
     return dynamicPanel.querySelector('.js-dynamic-panel-inner');
   }
   return null;
-};
-
-/**
- * @param {ScrollToOptions} options The options to pass to Element.scrollTo
- * @param {Element} element The element to use when searching for the correct scrolling element
- */
-export const scrollTo = (options, element) => {
-  const scroller = findParentPanelScrollingEl(element) || window;
-  scroller.scrollTo(options);
 };
 
 /**

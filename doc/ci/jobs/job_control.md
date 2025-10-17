@@ -81,8 +81,8 @@ To run a manual job and specify additional variables:
 Any project member with permissions to run a manual job can retry the job and view the variables
 that were provided when the job was initially run. This includes:
 
-- In public projects: Users with the Developer role or higher.
-- In private or internal projects: Users with the Guest role or higher.
+- In public projects: Users with at least the Developer role.
+- In private or internal projects: Users with at least the Guest role.
 
 Consider this visibility when entering sensitive information as manual job variables.
 

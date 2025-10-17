@@ -40,7 +40,7 @@ Status checks fail if they stay in the pending state for more than two minutes.
 
 External status check responses can be viewed by:
 
-- Users with Reporter role or higher permissions in the project
+- Users with at least the Reporter role in the project
 - Any authenticated user who can view the merge request when the project has internal visibility
 
 This means that if you have an internal project, any logged-in user who can access the merge request can view the external status check responses.

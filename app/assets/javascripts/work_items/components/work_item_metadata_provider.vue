@@ -37,6 +37,7 @@ export default {
       emailsHelpPagePath: computed(() => this.metadata.emailsHelpPagePath),
       markdownHelpPath: computed(() => this.metadata.markdownHelpPath),
       quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
+      canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
     };

@@ -10,7 +10,7 @@ export default {
   inject: ['isIconOnly'],
   computed: {
     icon() {
-      return 'sidebar';
+      return this.isIconOnly ? 'collapse-right' : 'collapse-left';
     },
     text() {
       return this.isIconOnly

@@ -8,7 +8,7 @@
         = @project.name
         = visibility_level_content(@project, css_class: 'visibility-icon gl-inline-flex', icon_variant: 'subtle')
         - if @project.catalog_resource
-          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(@project.catalog_resource), css_class: 'gl-mx-0' }
+          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(@project.catalog_resource), css_class: 'gl-mx-0', is_published: @project.catalog_resource.published? }
         - if @project.group
           = render_if_exists 'shared/tier_badge', source: @project
         = render 'shared/projects/badges', project: @project

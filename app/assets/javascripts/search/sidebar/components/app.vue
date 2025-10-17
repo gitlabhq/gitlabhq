@@ -107,7 +107,11 @@ export default {
 
 <template>
   <section>
-    <dom-element-listener selector="#js-open-mobile-filters" @click="toggleFilters" />
+    <dom-element-listener
+      selector="#js-open-mobile-filters"
+      :use-event-delegation="true"
+      @click="toggleFilters"
+    />
     <div
       v-if="projectStudioEnabled"
       ref="mobileFilters"

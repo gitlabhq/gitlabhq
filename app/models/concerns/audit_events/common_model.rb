@@ -53,12 +53,22 @@ module AuditEvents
         { id: [:desc] }
       end
 
-      def order_by(method)
-        case method.to_s
-        when 'created_asc'
-          order(id: :asc)
+      def order_by(method, use_created_at: false)
+        # use_created_at=false maintains cursor compatibility for CombinedAuditEventFinder
+        if use_created_at
+          case method.to_s
+          when 'created_asc'
+            order(created_at: :asc, id: :asc)
+          else
+            order(created_at: :desc, id: :desc)
+          end
         else
-          order(id: :desc)
+          case method.to_s
+          when 'created_asc'
+            order(id: :asc)
+          else
+            order(id: :desc)
+          end
         end
       end
 

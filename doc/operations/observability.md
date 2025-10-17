@@ -62,7 +62,7 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 
 ## Prerequisites
 
-- You must have Developer role or higher to the group
+- You must have at least the Developer role for the group
 - Your group must have GitLab Observability enabled
 
 ## Request access to GitLab Observability

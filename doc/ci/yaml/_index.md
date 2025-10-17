@@ -1724,8 +1724,8 @@ You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in 
 
 - `all` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous, guest, and reporter users.
-- `developer`: Artifacts in the job are only available for download by users with the Developer role or higher.
-- `maintainer`: Artifacts in the job are only available for download by users with the Maintainer role or higher.
+- `developer`: Artifacts in the job are only available for download by users with at least the Developer role.
+- `maintainer`: Artifacts in the job are only available for download by users with at least the Maintainer role.
 - `none`: Artifacts in the job are not available for download by anyone.
 
 **Example of `artifacts:access`**:

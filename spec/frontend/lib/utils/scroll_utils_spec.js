@@ -3,8 +3,20 @@ import {
   isScrolledToTop,
   scrollDown,
   scrollUp,
+  scrollTo,
 } from '~/lib/utils/scroll_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+
+const makePanelHtmlStub = (
+  outerClass = 'js-static-panel',
+  innerClass = 'js-static-panel-inner',
+) => {
+  return `<div class="${outerClass}">
+    <div class="${innerClass}" id="scroller">
+      <div id="test" />
+    </div>
+  </div>`;
+};
 
 describe('scroll utils', () => {
   let windowScrollTo;
@@ -105,6 +117,28 @@ describe('scroll utils', () => {
       scrollUp();
 
       expect(windowScrollTo).toHaveBeenCalledWith({ top: 0 });
+    });
+  });
+
+  describe('scrollTo', () => {
+    describe('when inside a panel', () => {
+      it('calls `scrollTo` on the panel', () => {
+        document.body.innerHTML = makePanelHtmlStub();
+        const target = document.getElementById('test');
+        const scroller = document.getElementById('scroller');
+        const scrollerSpy = jest.spyOn(scroller, 'scrollTo');
+
+        scrollTo({ top: 0 }, target);
+
+        expect(scrollerSpy).toHaveBeenCalledWith({ top: 0 });
+      });
+    });
+    describe('when not inside a panel', () => {
+      it('calls `scrollTo` on the window', () => {
+        const spy = jest.spyOn(window, 'scrollTo');
+        scrollTo({ top: 0 }, document.body);
+        expect(spy).toHaveBeenCalledWith({ top: 0 });
+      });
     });
   });
 });

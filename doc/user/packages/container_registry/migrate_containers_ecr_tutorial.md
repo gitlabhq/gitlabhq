@@ -21,7 +21,7 @@ When you put it all together, your `.gitlab-ci.yml` should look similar to the [
 
 You must have:
 
-- Maintainer role or higher in your GitLab project
+- At least the Maintainer role in your GitLab project
 - Access to your AWS account with permissions to create IAM users
 - Your AWS account ID
 - Your AWS region where ECR repositories are located

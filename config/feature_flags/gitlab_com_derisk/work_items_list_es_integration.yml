@@ -1,0 +1,10 @@
+---
+name: work_items_list_es_integration
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/544820
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201477
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561475
+milestone: '18.4'
+group: group::knowledge
+type: gitlab_com_derisk
+default_enabled: false

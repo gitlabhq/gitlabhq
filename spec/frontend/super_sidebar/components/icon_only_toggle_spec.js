@@ -26,7 +26,7 @@ describe('IconOnlyToggle', () => {
     });
 
     it('renders button with correct icon', () => {
-      expect(findButton().props('icon')).toBe('sidebar');
+      expect(findButton().props('icon')).toBe('collapse-left');
     });
 
     it('displays shrink text', () => {
@@ -44,7 +44,7 @@ describe('IconOnlyToggle', () => {
     });
 
     it('renders button with correct icon', () => {
-      expect(findButton().props('icon')).toBe('sidebar');
+      expect(findButton().props('icon')).toBe('collapse-right');
     });
 
     it('does not display text content', () => {

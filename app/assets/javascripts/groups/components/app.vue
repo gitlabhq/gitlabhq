@@ -3,7 +3,7 @@ import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
-import { scrollTo } from '~/lib/utils/common_utils';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import { __, s__, sprintf } from '~/locale';
 
 import { COMMON_STR, ACTIVE_TAB_INACTIVE } from '../constants';

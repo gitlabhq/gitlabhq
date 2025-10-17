@@ -13,10 +13,12 @@ function disableScrollToLink(e) {
   // replaceHistory won't highlight the element
   window.location.hash = hash;
   // prevent scrolling to the target element
+  // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
   window.scrollTo(pageXOffset, pageYOffset);
   // the very top of the page behaves differently, we have to run this again
   if (pageYOffset !== window.pageYOffset) {
     requestAnimationFrame(() => {
+      // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
       window.scrollTo(pageXOffset, pageYOffset);
     });
   }

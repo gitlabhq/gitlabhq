@@ -23,7 +23,7 @@ description: Control who can push or delete container tags with role-based prote
 
 Control who can push and delete container tags in your project.
 
-By default, users with the Developer role or higher can push and delete image tags in all project container repositories.
+By default, users with at least the Developer role can push and delete image tags in all project container repositories.
 With tag protection rules, you can:
 
 - Restrict pushing and deleting tags to specific user roles.

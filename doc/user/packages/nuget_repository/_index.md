@@ -714,7 +714,7 @@ Deleting a package is a permanent action that cannot be undone.
 
 Prerequisites:
 
-- You must have the [Maintainer](../../permissions.md#project-members-permissions) role or higher in the project.
+- You must have at least the [Maintainer](../../permissions.md#project-members-permissions) role in the project.
 - You must have both the package name and version.
 
 To delete a package with the NuGet CLI:

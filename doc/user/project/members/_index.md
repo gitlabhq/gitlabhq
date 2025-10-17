@@ -88,7 +88,7 @@ In the previous example:
 Git is a distributed version control system (DVCS).
 Everyone who works with the source code has a local copy of the complete repository.
 
-In GitLab, every project member with the Reporter role or higher can clone the repository to create
+In GitLab, every project member with at least the Reporter role can clone the repository to create
 a local copy.
 Users can upload the full repository anywhere after they obtain a local copy, including:
 

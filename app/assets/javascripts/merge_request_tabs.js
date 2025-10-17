@@ -287,6 +287,7 @@ export default class MergeRequestTabs {
     if (storedPosition == null) return;
 
     setTimeout(() => {
+      // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
       window.scrollTo({
         top: storedPosition > 0 ? storedPosition : 0,
         left: 0,
@@ -430,11 +431,13 @@ export default class MergeRequestTabs {
 
         // scrollBehavior is only available in browsers that support scrollToOptions
         if ('scrollBehavior' in document.documentElement.style && shouldScroll) {
+          // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
           window.scrollTo({
             top: scrollDestination,
             behavior: 'smooth',
           });
         } else {
+          // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
           window.scrollTo(0, scrollDestination);
         }
       }

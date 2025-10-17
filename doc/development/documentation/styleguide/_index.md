@@ -616,9 +616,11 @@ To represent missing information in a code block, use a comment or an [ellipsis]
 When writing about keystroke presses:
 
 - Use the HTML `<kbd>` tag.
+- Do not use spaces between `<kbd>` tags in key combinations.
 - Spell out the full name of the key, except for `Alt` ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml)).
-- Capitalize the first letter of the key if it's an action key, for example: `Shift`, `Command`, `Delete`.
-  Use lowercase if it's a letter, and use `↑`, `↓`, `←`, and `→` for arrows.
+- Use uppercase for the first letter of the key if it's an action key. For example, `Shift`, `Command`, `Delete`.
+- Use uppercase if the key is a letter.
+- Use `↑`, `↓`, `←`, and `→` for arrows.
 
 For example:
 

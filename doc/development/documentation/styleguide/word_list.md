@@ -107,6 +107,22 @@ When you create a user, you choose an access level: **Regular**, **Auditor**, or
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
+When a specific access level is required, use one of these patterns:
+
+- You must have **at least** the Administrator access level.
+- You must have the Administrator access level **or higher**.
+- You must be an Administrator.
+
+When there is no specific access level, use **minimum** access level as a noun phrase. For example:
+
+- The **minimum** access level for push is the minimum role required to push a package.
+
+Use **higher** and **lower** to describe the hierarchy:
+
+- **Higher** access levels have more permissions.
+- Administrator is a **higher** access level than Regular.
+- Regular is a **lower** access level than Administrator.
+
 ## add
 
 Use **add** when an object already exists. If the object does not exist yet, use [**create**](#create) instead.
@@ -2079,6 +2095,13 @@ Use the specific prepositional phrase instead:
 
 ## permissions
 
+When comparing the permissions required for certain actions, use **more** or **fewer**.
+For example:
+
+- The Guest role has fewer permissions than the Developer role.
+- To get more permissions, you must have a higher role.
+- The Owner role has the most permissions.
+
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
 Permissions are not the same as [**access levels**](#access-level).
@@ -2294,6 +2317,10 @@ Instead of:
 
 - You must have the Owner role of the group.
 
+When referring to the minimum role a user must have to perform an action, use **at least**:
+
+- You must have at least the Developer role.
+
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
 Two types of roles exist: [custom](#custom-role) and [default](#default-role).
@@ -2354,6 +2381,19 @@ To specify offerings and operating systems use:
 - **hosted runners on Windows for GitLab.com**
 
 Do not use **hosted runners** without the **GitLab-** prefix or without the offering or operating system.
+
+## rules
+
+When describing rules and their behavior, use:
+
+- **Restrictive** to describe rules that limit or constrain actions.
+- **Permissive** to describe rules that allow or enable actions.
+
+For example:
+
+- This rule is more restrictive than the default setting.
+- Permissive rules allow broader access.
+- When multiple rules match, the most restrictive rule applies.
 
 ## (s)
 

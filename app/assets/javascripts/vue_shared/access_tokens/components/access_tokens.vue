@@ -2,7 +2,7 @@
 import { GlButton, GlFilteredSearch, GlPagination, GlSorting } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import { scrollTo } from '~/lib/utils/common_utils';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import { FILTER_OPTIONS, SORT_OPTIONS } from '~/access_tokens/constants';
 import { initializeValuesFromQuery } from '~/access_tokens/utils';
 

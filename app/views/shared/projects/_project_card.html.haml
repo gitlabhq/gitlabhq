@@ -49,7 +49,7 @@
         .gl-mt-3.-gl-ml-1
           = render "shared/projects/topics", project: project.present(current_user: current_user)
       - if project.catalog_resource
-        = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-mt-2' }
+        = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-mt-2', is_published: project.catalog_resource.published? }
 
       - if explore_projects_tab? && project_license_name(project)
         %span.gl-inline-flex.gl-items-center.gl-mr-3

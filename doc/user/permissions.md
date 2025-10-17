@@ -895,7 +895,7 @@ Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/
 - Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
 - Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
-To work around the issue, give these users the Guest role or higher to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
+To work around the issue, give these users at least the Guest role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
 
 ## Related topics
 

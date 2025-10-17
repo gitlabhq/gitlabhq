@@ -64,6 +64,20 @@ RSpec.configure do |config|
         config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
         config.logger = QA::Runtime::Logger.logger
 
+        config.extra_metadata_columns = [
+          "default_branch_pipeline Bool",
+          "default_branch_scheduled_pipeline Bool",
+          "merge_request_pipeline Bool"
+        ]
+        config.custom_metrics_proc = ->(_example) {
+          default_branch = ENV["CI_COMMIT_REF_NAME"] == ENV["CI_DEFAULT_BRANCH"]
+          {
+            default_branch_pipeline: default_branch,
+            default_branch_scheduled_pipeline: default_branch && ENV["SCHEDULE_TYPE"].present?,
+            merge_request_pipeline: ENV["CI_MERGE_REQUEST_IID"].present?
+          }
+        }
+
         config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
           database: ENV["GLCI_CLICKHOUSE_METRICS_DB"],
           table_name: ENV["GLCI_CLICKHOUSE_METRICS_TABLE"],

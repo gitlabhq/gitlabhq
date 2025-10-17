@@ -1,3 +1,5 @@
+import { findParentPanelScrollingEl } from './common_utils';
+
 const SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
 
 const getScrollContainer = () => {
@@ -33,6 +35,7 @@ export const scrollDown = (scrollContainer = getScrollContainer()) => {
   if (scrollContainer) {
     scrollContainer.scrollTo({ top: scrollContainer.scrollHeight });
   } else {
+    // eslint-disable-next-line no-restricted-properties
     window.scrollTo({ top: document.body.scrollHeight });
   }
 };
@@ -41,6 +44,16 @@ export const scrollUp = (scrollContainer = getScrollContainer()) => {
   if (scrollContainer) {
     scrollContainer.scrollTo({ top: 0 });
   } else {
+    // eslint-disable-next-line no-restricted-properties
     window.scrollTo({ top: 0 });
   }
+};
+
+/**
+ * @param {ScrollToOptions} options The options to pass to Element.scrollTo
+ * @param {Element} element The element to use when searching for the correct scrolling element
+ */
+export const scrollTo = (options, element) => {
+  const scroller = findParentPanelScrollingEl(element) || window;
+  scroller.scrollTo(options);
 };

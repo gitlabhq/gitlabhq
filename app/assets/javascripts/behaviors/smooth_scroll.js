@@ -13,6 +13,7 @@ export function scrollBehavior() {
 export function smoothScrollTo(options) {
   const behavior = scrollBehavior();
 
+  // eslint-disable-next-line no-restricted-properties -- we should remove this method and move to `scrollTo`.
   window.scrollTo({ ...options, behavior });
 }
 

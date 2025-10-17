@@ -19,10 +19,84 @@ title: Guidelines for implementing Enterprise Edition features
 
 ## Runtime modes in development
 
-1. **EE Unlicensed**: this is what you have from a plain GDK installation, if you've installed from the [main repository](https://gitlab.com/gitlab-org/gitlab)
-1. **EE licensed**: when you [add a valid license to your GDK](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/gitlab.md#adding-a-license-from-staging-customers-portal-to-your-gdk)
+1. **EE Unlicensed**: this is what you have from a plain GDK installation, if you've installed from
+   the [main repository](https://gitlab.com/gitlab-org/gitlab)
+1. **EE licensed**: when
+   you [add a valid license to your GDK](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/gitlab.md#adding-a-license-from-staging-customers-portal-to-your-gdk)
 1. **GitLab.com SaaS**: when you [simulate SaaS](#simulate-a-saas-instance)
 1. **CE**: in any of the states above, when you [simulate CE](#simulate-a-ce-instance-with-a-licensed-gdk)
+
+## Feature implementation decision flow
+
+The following diagram illustrates how to decide where and how to implement features across the CE/EE/SaaS layers:
+
+```mermaid
+flowchart TD
+    A[Developer wants to implement a feature] --> B{What type of feature?}
+
+    B -->|CE Feature| C[Implement in main codebase]
+    B -->|EE Licensed Feature| D[EE Feature Path]
+    B -->|SaaS-only Feature| E[SaaS Feature Path]
+
+    C --> C1[Place code in app/, lib/, etc.]
+    C --> C2[Write tests in spec/]
+    C --> C3[No license checks needed]
+
+    D --> D1{New or extending existing?}
+    D1 -->|New EE Feature| D2[Place in ee/ directory]
+    D1 -->|Extending CE| D3[Create EE module with prepend_mod]
+
+    D2 --> D4[Add to ee/app/models/gitlab_subscriptions/features.rb]
+    D3 --> D4
+    D4 --> D5{Which plan?}
+    D5 -->|Premium| D6[Add to PREMIUM_FEATURES]
+    D5 -->|Ultimate| D7[Add to ULTIMATE_FEATURES]
+    D5 -->|Global/Instance| D8[Add to GLOBAL_FEATURES]
+
+    D6 --> D9[Guard with project.licensed_feature_available?]
+    D7 --> D9
+    D8 --> D10[Guard with License.feature_available?]
+    D9 --> D11[Write tests in ee/spec/]
+    D10 --> D11
+    D11 --> D12[Use stub_licensed_features in tests]
+
+    E --> E1[Add feature to FEATURES in ee/lib/ee/gitlab/saas.rb]
+    E1 --> E2[Create YAML definition in ee/config/saas_features/]
+    E2 --> E3[Use bin/saas-feature.rb tool]
+    E3 --> E4[Guard with Gitlab::Saas.feature_available?]
+    E4 --> E5{Extending CE feature?}
+    E5 -->|Yes| E6[Create EE module that extends CE]
+    E5 -->|No| E7[Create new EE-only code]
+    E6 --> E8[Use prepend_mod pattern]
+    E7 --> E9[Place directly in ee/ directory]
+    E8 --> E10[Write tests in ee/spec/]
+    E9 --> E10
+    E10 --> E11[Use stub_saas_features helper]
+
+    classDef ceStyle fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
+    classDef eeStyle fill:#fff8e1,stroke:#f57c00,stroke-width:2px,color:#000000
+    classDef saasStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
+    classDef startStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000000
+
+    class A startStyle
+    class C,C1,C2,C3 ceStyle
+    class D,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12 eeStyle
+    class E,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11 saasStyle
+```
+
+This diagram shows the three main implementation layers:
+
+- **CE (Green)**: Community Edition features with no licensing requirements.
+  If your target audience is **free users on GitLab.com**, follow the **SaaS** decision path
+- **EE (Orange)**: Enterprise Edition features requiring Premium/Ultimate licenses
+- **SaaS (Pink)**: Features exclusive to GitLab.com SaaS instances
+
+Key decision points:
+
+- **File placement**: CE code goes in main directories, EE code in `ee/` subdirectories
+- **Feature guards**: Different methods for each layer (`licensed_feature_available?`, `License.feature_available?`,
+  `Gitlab::Saas.feature_available?`)
+- **Testing approaches**: Each layer has specific helpers and metadata for testing
 
 ## SaaS-only feature
 

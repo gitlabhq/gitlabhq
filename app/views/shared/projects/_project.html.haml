@@ -46,7 +46,7 @@
         = visibility_level_content(project, css_class: 'gl-mr-2', icon_css_class: 'gl-fill-icon-subtle')
 
         - if project.catalog_resource
-          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-self-center gl-mr-2' }
+          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-self-center gl-mr-2', is_published: project.catalog_resource.published? }
 
         - if explore_projects_tab? && project_license_name(project)
           %span.gl-inline-flex.gl-items-center.gl-mr-3

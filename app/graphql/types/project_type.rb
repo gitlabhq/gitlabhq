@@ -235,6 +235,11 @@ module Types
       null: true,
       description: 'Path to the project catalog resource.'
 
+    field :is_published, GraphQL::Types::Boolean,
+      experiment: { milestone: '18.6' },
+      null: true,
+      description: 'Indicates if a project\'s catalog resource is published.'
+
     field :public_jobs, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if there is public access to pipelines and job details of the project, ' \
@@ -991,6 +996,10 @@ module Types
       return unless project.catalog_resource
 
       Gitlab::Routing.url_helpers.explore_catalog_path(project.catalog_resource)
+    end
+
+    def is_published # rubocop:disable Naming/PredicateName -- disabled to match the field name.
+      project&.catalog_resource&.published?
     end
 
     def statistics

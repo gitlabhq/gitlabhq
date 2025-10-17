@@ -24,7 +24,7 @@ import AccessorUtils from '~/lib/utils/accessor';
 import { __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { scrollTo } from '~/lib/utils/common_utils';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import {
   trackErrorListViewsOptions,
   trackErrorStatusUpdateOptions,

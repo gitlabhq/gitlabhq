@@ -265,28 +265,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('scrollTo', () => {
-    describe('when inside a panel', () => {
-      it('calls `scrollTo` on the panel', () => {
-        document.body.innerHTML = makePanelHtmlStub();
-        const target = document.getElementById('test');
-        const scroller = document.getElementById('scroller');
-        const scrollerSpy = jest.spyOn(scroller, 'scrollTo');
-
-        commonUtils.scrollTo({ top: 0 }, target);
-
-        expect(scrollerSpy).toHaveBeenCalledWith({ top: 0 });
-      });
-    });
-    describe('when not inside a panel', () => {
-      it('calls `scrollTo` on the window', () => {
-        const spy = jest.spyOn(window, 'scrollTo');
-        commonUtils.scrollTo({ top: 0 }, document.body);
-        expect(spy).toHaveBeenCalledWith({ top: 0 });
-      });
-    });
-  });
-
   describe('findParentPanelScrollingEl', () => {
     afterEach(() => {
       document.body.innerHTML = '';

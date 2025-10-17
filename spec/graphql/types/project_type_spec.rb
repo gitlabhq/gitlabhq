@@ -47,7 +47,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
-      protectable_branches available_deploy_keys explore_catalog_path
+      protectable_branches available_deploy_keys explore_catalog_path is_published
       container_protection_tag_rules pages_force_https pages_use_unique_domain ci_pipeline_creation_request
       ci_pipeline_creation_inputs marked_for_deletion_on permanent_deletion_date
       merge_request_title_regex merge_request_title_regex_description
@@ -1490,6 +1490,44 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       it 'returns correct path for explore_catalog_path' do
         expect(explore_catalog_path).to eq("/explore/catalog/#{project.path_with_namespace}")
       end
+    end
+  end
+
+  describe 'is_published' do
+    let_it_be(:user) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            isPublished
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    subject(:is_published) { response.dig('data', 'project', 'isPublished') }
+
+    context 'when project is not a catalog resource' do
+      let_it_be(:project) { create(:project, :public) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when project is a catalog resource and is not published' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when project is a catalog resource and is published' do
+      let_it_be(:project) { create(:project, :public, :catalog_resource_with_components, create_tag: '1.0.0') }
+      let_it_be(:catalog_resource) { create(:ci_catalog_resource, project: project, state: :published) }
+
+      it { is_expected.to eq(true) }
     end
   end
 

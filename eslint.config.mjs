@@ -343,6 +343,18 @@ export default [
             'Use `visitUrl` in `jh_else_ce/lib/utils/url_utility` to avoid cross-site leaks.',
         },
         {
+          object: 'window',
+          property: 'scrollTo',
+          message:
+            'Use `scrollTo` in `~/lib/utils/scroll_utils.js` to ensure scrolling inside your scrolling containers or panels.',
+        },
+        {
+          object: 'window',
+          property: 'scroll',
+          message:
+            'Use `scrollTo` in `~/lib/utils/scroll_utils.js` to ensure scrolling inside your scrolling containers or panels.',
+        },
+        {
           object: 'vm',
           property: '$delete',
           message:

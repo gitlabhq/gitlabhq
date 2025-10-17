@@ -146,7 +146,7 @@ To view manual pipeline variables:
 1. Go to **Build** > **Pipelines** and select a pipeline that was run manually.
 1. Select the **Manual Variables** tab.
 
-Variable values are masked by default. If you have the Developer role or higher,
+Variable values are masked by default. If you have at least the Developer role,
 you can select the eye icon to reveal values.
 
 #### Prefill variables in manual pipelines
