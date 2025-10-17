@@ -2633,6 +2633,7 @@ Input type: `AiCatalogFlowCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowcreateaddtoprojectwhencreated"></a>`addToProjectWhenCreated` | [`Boolean`](#boolean) | Whether to add to the project upon creation. |
 | <a id="mutationaicatalogflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogflowcreatedescription"></a>`description` | [`String!`](#string) | Description for the flow. |
 | <a id="mutationaicatalogflowcreatename"></a>`name` | [`String!`](#string) | Name for the flow. |

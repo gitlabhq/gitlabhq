@@ -14,7 +14,7 @@ title: Spamcheck anti-spam service
 
 {{< alert type="warning" >}}
 
-Spamcheck is available to all tiers, but only on instances using GitLab Enterprise Edition (EE). For [licensing reasons](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), it is not included in the GitLab Community Edition (CE) package. You can [migrate from CE to EE](../../update/package/convert_to_ee.md).
+Spamcheck is available to all tiers, but only on instances using GitLab Enterprise Edition (EE). For [licensing reasons](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), it is not included in the GitLab Community Edition (CE) package. You can [migrate from CE to EE](../../update/convert_to_ee/package.md).
 
 {{< /alert >}}
 

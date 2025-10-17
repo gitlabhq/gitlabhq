@@ -103,7 +103,6 @@
 - './ee/spec/features/issues/list/blocking_issues_spec.rb'
 - './ee/spec/features/issues/list/filtered_search/filter_issues_by_iteration_spec.rb'
 - './ee/spec/features/issues/list/filtered_search/filter_issues_by_multiple_assignees_spec.rb'
-- './ee/spec/features/issues/list/filtered_search/filter_issues_epic_spec.rb'
 - './ee/spec/features/issues/list/filtered_search/filter_issues_weight_spec.rb'
 - './ee/spec/features/issues/list/sub_nav_ee_spec.rb'
 - './ee/spec/features/issues/list/user_bulk_edits_issues_spec.rb'

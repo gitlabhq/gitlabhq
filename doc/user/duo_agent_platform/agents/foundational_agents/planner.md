@@ -48,7 +48,7 @@ Prerequisites:
 1. Open an issue, epic, or merge request in your project.
 1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
    A drawer opens on the right side of your screen.
-1. From the agent dropdown list, select **Duo Planner**.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Duo Planner**.
 1. Enter your planning-related question or request. To get the best results from your request:
 
    - Provide context about your request, like URLs, filter criteria, or scope.

@@ -215,7 +215,7 @@ To avoid having a breaking change affect your integrations, you should:
 - Familiarize yourself with the [deprecation and removal process](#deprecation-and-removal-process).
 - Frequently [verify your API calls against the future breaking-change schema](#verify-against-the-future-breaking-change-schema).
 
-For GitLab Self-Managed, [downgrading](../../downgrade_ee_to_ce/_index.md) from an EE instance to CE causes breaking changes.
+For GitLab Self-Managed, [reverting](../../update/convert_to_ee/revert.md) from an EE instance to CE causes breaking changes.
 
 ### Breaking change exemptions
 

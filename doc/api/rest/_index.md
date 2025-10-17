@@ -507,4 +507,4 @@ notice:
   [experimental or beta](../../policy/development_stages_support.md).
 - Fields behind a feature flag and disabled by default.
 
-For GitLab Self-Managed, [downgrading](../../downgrade_ee_to_ce/_index.md) from an EE instance to CE causes breaking changes.
+For GitLab Self-Managed, [reverting](../../update/convert_to_ee/revert.md) from an EE instance to CE causes breaking changes.

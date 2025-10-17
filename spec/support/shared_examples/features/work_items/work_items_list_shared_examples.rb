@@ -121,4 +121,11 @@ RSpec.shared_examples 'parent filter' do
     expect(page).to have_link(work_item_2.title)
     expect(page).not_to have_link(child_item.title)
   end
+
+  it 'shows parent in the filtered search dropdown' do
+    select_tokens 'Parent', '='
+
+    # "None", "Any", "Epic without parent", "Child epic" and "Parent epic"
+    expect_suggestion_count expected_count
+  end
 end

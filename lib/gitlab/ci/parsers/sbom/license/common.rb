@@ -6,24 +6,26 @@ module Gitlab
       module Sbom
         module License
           class Common
-            def self.parse(data, is_container_scanning)
-              license = is_container_scanning ? ContainerScanning.new(data) : new(data)
-              license.parse
+            def self.parse(data)
+              new(data).parse
             end
 
             def initialize(data)
               @data = data
             end
 
+            # rubocop:disable Gitlab/NoCodeCoverageComment -- method is tested in EE
+            # :nocov:
+            # Overridden in EE
             def parse
               license = data['license']
-              return unless license
 
-              # A license must have either id or name
-              return unless license['id'].present? || license['name'].present?
+              return if license.blank? || license.values_at('id').all?(&:blank?)
 
               parsed_license(license)
             end
+            # :nocov:
+            # rubocop:enable Gitlab/NoCodeCoverageComment
 
             private
 
@@ -42,3 +44,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Parsers::Sbom::License::Common.prepend_mod

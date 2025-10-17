@@ -6,9 +6,4 @@
 
 %h1.gl-sr-only= page_title
 
-- if @group.work_items_group_issues_list_feature_flag_enabled?
-  #js-work-items{ data: work_items_data(@group, current_user).merge(is_group_issues_list: 'true') }
-- else
-  .js-issues-list-root{ data: group_issues_list_data(@group, current_user) }
-  - if can?(current_user, :admin_issue, @group) && @group.licensed_feature_available?(:group_bulk_edit)
-    = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
+#js-work-items{ data: work_items_data(@group, current_user).merge(is_group_issues_list: 'true') }

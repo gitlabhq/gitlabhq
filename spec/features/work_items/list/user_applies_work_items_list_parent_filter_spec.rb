@@ -28,6 +28,7 @@ RSpec.describe 'User applies parent filter', :js, feature_category: :team_planni
         let(:parent_item) { issue }
         let(:child_item) { task }
         let(:work_item_2) { task_without_parent }
+        let(:expected_count) { 3 }
       end
     end
 
@@ -41,6 +42,7 @@ RSpec.describe 'User applies parent filter', :js, feature_category: :team_planni
         let(:parent_item) { issue }
         let(:child_item) { task }
         let(:work_item_2) { task_without_parent }
+        let(:expected_count) { 3 }
       end
     end
   end

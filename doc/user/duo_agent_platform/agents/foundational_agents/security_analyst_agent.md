@@ -48,7 +48,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
    A drawer opens on the right side of your screen.
-1. From the agent dropdown list, select **Security Analyst Agent**.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Security Analyst Agent**.
 1. Enter your security-related question or request. To get the best results from your request:
 
    - Provide context about your security requirements and risk tolerance.

@@ -10,7 +10,7 @@ title: Observability
 {{< details >}}
 
 - Tier: Free
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experimental
 
 {{< /details >}}

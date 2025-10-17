@@ -1153,10 +1153,6 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
-  def work_items_group_issues_list_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_group_issues_list, type: :beta)
-  end
-
   def work_item_status_mvc2_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_item_status_mvc2, type: :beta)
   end

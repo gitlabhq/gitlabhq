@@ -76,10 +76,9 @@ dast:
 
 ### Site profile validation
 
-Site profile validation reduces the risk of running an active scan against the wrong website. A site
-must be validated before an active scan can run against it. Site profile validation is not a security feature.
-If necessary, you can run an active DAST scan without validation by using a
-[pipeline scan](browser/configuration/enabling_the_analyzer.md).
+Site profile validation reduces the risk of running an active scan against the wrong website. You must validate a site to run an on-demand scan against it.
+
+Site profile validation is not a security feature. If necessary, you can run DAST against an unvalidated site with a [pipeline scan](browser/configuration/enabling_the_analyzer.md).
 
 Each of the site validation methods are equivalent in functionality, so use whichever is most suitable:
 

@@ -39,12 +39,13 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Global keywords](#global-keywords) that configure pipeline behavior:
 
-  | Keyword                 | Description |
-  |-------------------------|:------------|
-  | [`default`](#default)   | Custom default values for job keywords. |
-  | [`include`](#include)   | Import configuration from other YAML files. |
-  | [`stages`](#stages)     | The names and order of the pipeline stages. |
-  | [`workflow`](#workflow) | Control what types of pipeline run. |
+  | Keyword                           | Description |
+  |-----------------------------------|:------------|
+  | [`default`](#default)             | Custom default values for job keywords. |
+  | [`include`](#include)             | Import configuration from other YAML files. |
+  | [`stages`](#stages)               | The names and order of the pipeline stages. |
+  | [`variables`](#default-variables) | Define default CI/CD variables for all jobs in the pipeline. |
+  | [`workflow`](#workflow)           | Control what types of pipeline run. |
 
 - [Header keywords](#header-keywords)
 
@@ -86,14 +87,8 @@ A GitLab CI/CD pipeline configuration includes:
   | [`tags`](#tags)                               | List of tags that are used to select a runner. |
   | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting. |
   | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger. |
+  | [`variables`](#job-variables)                 | Define CI/CD variables for individual jobs. |
   | [`when`](#when)                               | When to run job. |
-
-- [CI/CD variables](#variables)
-
-  | Keyword                                   | Description |
-  |:------------------------------------------|:------------|
-  | [Default `variables`](#default-variables) | Define default CI/CD variables for all jobs in the pipeline. |
-  | [Job `variables`](#job-variables)         | Define CI/CD variables for individual jobs. |
 
 - [Deprecated keywords](deprecated_keywords.md) that are no longer recommended for use.
 

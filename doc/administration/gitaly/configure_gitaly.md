@@ -1108,7 +1108,7 @@ Prometheus query to see the hit rate:
 sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_cache_total{type=~"(hit)|(miss)"}[5m]))
 ```
 
-Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
+Configure the `cat-file` cache in the Gitaly configuration file.
 
 ## Configure commit signing for GitLab UI commits
 

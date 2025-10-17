@@ -83,7 +83,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/admin/security/policy_settings"
 ```
 
-For more information, see the [policy settings API documentation](../api/policy_settings.md).
+For more information, see the [policy settings API documentation](../api/compliance_policy_settings.md).
 
 The selected group becomes your compliance and security policy group, serving as the central place to manage security policies and compliance frameworks across your instance.
 

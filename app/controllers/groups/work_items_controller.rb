@@ -16,7 +16,6 @@ module Groups
       push_force_frontend_feature_flag(:glql_load_on_click, !!group&.glql_load_on_click_feature_flag_enabled?)
       push_frontend_feature_flag(:issues_list_drawer, group)
       push_frontend_feature_flag(:work_item_planning_view, group)
-      push_frontend_feature_flag(:work_items_group_issues_list, group&.root_ancestor)
     end
 
     before_action :handle_new_work_item_path, only: [:show]

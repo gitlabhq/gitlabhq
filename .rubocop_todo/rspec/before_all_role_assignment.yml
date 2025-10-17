@@ -92,7 +92,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/features/issues/gfm_autocomplete_ee_spec.rb'
     - 'ee/spec/features/issues/issue_sidebar_spec.rb'
     - 'ee/spec/features/issues/list/filtered_search/filter_issues_by_health_spec.rb'
-    - 'ee/spec/features/issues/list/filtered_search/filter_issues_epic_spec.rb'
     - 'ee/spec/features/issues/list/filtered_search/filter_issues_weight_spec.rb'
     - 'ee/spec/features/issues/list/user_bulk_edits_issues_spec.rb'
     - 'ee/spec/features/issues/list/user_sees_empty_state_spec.rb'

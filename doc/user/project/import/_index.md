@@ -469,7 +469,7 @@ For more information, see [skip confirmation when administrators reassign placeh
 The reassignment process must be fully completed before you:
 
 - [Move an imported group in the same GitLab instance](../../group/manage.md#transfer-a-group).
-- [Move an imported project to a different group](../settings/migrate_projects.md).
+- [Move an imported project to a different group](../working_with_projects.md#transfer-a-project).
 - Duplicate an imported issue.
 - Promote an imported issue to an epic.
 

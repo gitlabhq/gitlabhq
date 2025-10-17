@@ -779,9 +779,8 @@ Specific information applies to installations using Geo:
 ### Self-compiled installations
 
 - A new method of configuring paths for the GitLab secret and custom hooks is preferred in GitLab 16.4 and later:
-  1. Update your configuration `[gitlab] secret_file` to [configure the path](../../administration/gitaly/reference.md) to the GitLab secret token.
-  1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to [configure the path](../../administration/gitaly/reference.md) to
-     server-side custom hooks.
+  1. Update your configuration `[gitlab] secret_file` to configure the path to the GitLab secret token.
+  1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to configure the path to server-side custom hooks.
   1. Remove the `[gitlab-shell] dir` configuration.
 
 ### Geo installations

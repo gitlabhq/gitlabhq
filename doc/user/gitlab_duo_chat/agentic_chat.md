@@ -322,7 +322,7 @@ Prerequisites:
 To select an agent:
 
 1. In the GitLab UI, open GitLab Duo Chat.
-1. In the upper-right corner of the drawer, select **New chat**.
+1. In the upper-right corner of the drawer, select **New chat** ({{< icon name="duo-chat-new" >}}).
 1. In the dropdown list, select a custom agent. If you have not set up any custom
    agents, there is no dropdown list, and Chat uses the default GitLab Duo agent.
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.

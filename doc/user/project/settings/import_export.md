@@ -156,7 +156,7 @@ and vice versa, assuming [compatibility](#compatibility) is met.
 
 If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose
 data that is retained only in the Enterprise Edition. For more information, see
-[downgrading from EE to CE](../../../downgrade_ee_to_ce/_index.md).
+[reverting from EE to CE](../../../update/convert_to_ee/revert.md).
 
 ### Export a project and its data
 
@@ -386,7 +386,7 @@ Professional Services team.
 - You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)
   and vice versa. The Enterprise Edition retains some group data that isn't part of the Community Edition. If you're
   exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information,
-  see [downgrading from EE to CE](../../../downgrade_ee_to_ce/_index.md).
+  see [reverting from EE to CE](../../../update/convert_to_ee/revert.md).
 
 The maximum import file size depends on whether you import to GitLab Self-Managed or GitLab.com:
 

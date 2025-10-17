@@ -17,7 +17,7 @@ GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authen
 - You can configure GitLab so your users can sign in with their Kerberos credentials.
 - You can use Kerberos to [prevent](https://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
 
-Kerberos is only available on instances that use GitLab Enterprise Edition (EE). If you're running GitLab Community Edition (CE), you can [convert from GitLab CE to GitLab EE](../update/package/convert_to_ee.md).
+Kerberos is only available on instances that use GitLab Enterprise Edition (EE). If you're running GitLab Community Edition (CE), you can [convert from GitLab CE to GitLab EE](../update/convert_to_ee/package.md).
 
 {{< alert type="warning" >}}
 

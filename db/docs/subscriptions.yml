@@ -9,5 +9,6 @@ description: Subscriptions between users and subscribable objects; such as issue
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/410d25c8ca8afabb25e5f89b36e3cfd09ffe6f87
 milestone: '7.9'
 gitlab_schema: gitlab_main_user
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514590
+sharding_key:
+  user_id: users
 table_size: small
