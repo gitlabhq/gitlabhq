@@ -1058,6 +1058,12 @@ To resolve this, instead of binding the `/tmp` folder, bind specific files or fo
 
 This error means a timeout occurred. To resolve it, add the `TRIVY_TIMEOUT` environment variable to the `container_scanning` job with a sufficiently long duration.
 
+### No vulnerabilities detected on images based on an old image
+
+Trivy does not scan operating system images that are no longer receiving any updates.
+
+Making this visible in the UI is proposed in [issue 433325](https://gitlab.com/gitlab-org/gitlab/-/issues/433325).
+
 ## Changes
 
 Changes to the container scanning analyzer can be found in the project's

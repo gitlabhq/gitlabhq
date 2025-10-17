@@ -20,11 +20,20 @@ class InvitesController < ApplicationController
     accept if skip_invitation_prompt?
   end
 
+  # Note: This action is rarely reached in the normal flow because:
+  # - New users auto-accept pending invitations during registration
+  # - Existing users auto-accept invitations
+  #
+  # This action primarily handles the edge case where an existing user changes
+  # their email address and then clicks an invitation link like:
+  # http://gitlab.com/-/invites/L4KRHEoQxsc_1nrH5sCg?invite_type=initial_email
   def accept
-    if current_user_matches_invite? && member.accept_invite!(current_user)
+    response = Members::AcceptInviteService.new(current_user, member: @member).execute
+
+    if response.success?
       redirect_to invite_details[:path], notice: helpers.invite_accepted_notice(member)
     else
-      redirect_back_or_default(options: { alert: _("The invitation could not be accepted.") })
+      redirect_back_or_default(options: { alert: response.message })
     end
   end
 

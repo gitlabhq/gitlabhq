@@ -165,5 +165,14 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
       expect(html).to eq "<p data-sourcepos=\"1:1-1:14\">[link](&lt;foo&gt;)</p>\n"
     end
+
+    it 'handles emphasis in CJK text correctly' do
+      engine = described_class.new({})
+      markdown = '**わ〜い！強調記号ができます！**問題なし！'
+      html = engine.render(markdown)
+
+      expect(html).to eq("<p data-sourcepos=\"1:1-1:61\"><strong data-sourcepos=\"1:1-1:46\">" \
+        "わ〜い！強調記号ができます！</strong>問題なし！</p>\n")
+    end
   end
 end

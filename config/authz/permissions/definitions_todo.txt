@@ -309,7 +309,6 @@ destroy_issue_board_list
 destroy_issue_link
 destroy_iteration
 destroy_label
-destroy_licenses
 destroy_merge_request
 destroy_milestone
 destroy_note
