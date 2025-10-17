@@ -474,31 +474,6 @@ For more information about updating your storage driver configuration, see [use 
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Behavior change for protected variables and multi-project pipelines
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.10</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/432328).
-
-</div>
-
-In some cases, users with sufficient permissions in a project could forward protected variables to an unsecure project, so this change is a security enhancement that minimizes the risk of protected variable values being exposed.
-
-While [forwarding CI/CD variables](https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#pass-cicd-variables-to-a-downstream-pipeline) through downstream pipelines is useful for some workflows, [protected variables](https://docs.gitlab.com/ci/variables/#protect-a-cicd-variable) require additional care. They are intended for use only with specific protected branches or tags.
-
-In GitLab 19.0, variable forwarding will be updated to ensure protected variables are only passed in specific situations:
-
-- Project-level protected variables can only be forwarded to downstream pipelines in the same project (child pipelines).
-- Group-level protected variables can only be forwarded to downstream pipelines of projects that belong to the same group as the source project.
-
-If your pipeline relies on forwarding protected variables, update your configuration to either conform to the two options above, or avoid forwarding protected variables.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### CodeClimate-based Code Quality scanning will be removed
 
 <div class="deprecation-notes">

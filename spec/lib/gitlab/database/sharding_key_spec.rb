@@ -153,7 +153,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       sharding_key.each do |column_name, referenced_table_name|
         expect(column_exists?(table_name, column_name)).to eq(true),
           "Could not find sharding key column #{table_name}.#{column_name}"
-        expect(referenced_table_name).to be_in(allowed_sharding_key_referenced_tables)
+        expect(referenced_table_name).to be_in(allowed_sharding_key_referenced_tables),
+          "#{table_name} uses an incorrect sharding_key (#{referenced_table_name}). " \
+            "Allowed values: #{allowed_sharding_key_referenced_tables.to_sentence}"
 
         if allowed_to_be_missing_foreign_key.include?("#{table_name}.#{column_name}")
           expect(has_foreign_key?(table_name, column_name)).to eq(false),
@@ -331,7 +333,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
       "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463",
       "suggestions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550696",
-      "commit_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550692"
+      "commit_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550692",
+      "note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550695"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }

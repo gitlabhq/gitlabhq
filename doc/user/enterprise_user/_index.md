@@ -69,12 +69,12 @@ To add a custom domain for a group:
      - If you want to provide your own SSL/TLS certificate, select
        **Manually enter certificate information**. You can also add a certificate and key later.
 
-        {{< alert type="note" >}}
+       {{< alert type="note" >}}
 
-        A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
-        if you are not using GitLab Pages.
+       A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
+       if you are not using GitLab Pages.
 
-        {{< /alert >}}
+       {{< /alert >}}
 
 1. Select **Add Domain**.
    GitLab saves the domain information.
@@ -87,17 +87,17 @@ To add a custom domain for a group:
 
 After successful verification, the domain status changes to **Verified** and can be used for enterprise user management.
 
-   {{< alert type="note" >}}
+{{< alert type="note" >}}
 
-   Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
-   Until it completes, the domain remains unverified in GitLab.
+Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
+Until it completes, the domain remains unverified in GitLab.
 
-   If the domain is still unverified after seven days, GitLab automatically removes the domain.
+If the domain is still unverified after seven days, GitLab automatically removes the domain.
 
-   After verification, GitLab periodically reverifies the domain. To avoid potential issues,
-   maintain the `TXT` record on your domain provider.
+After verification, GitLab periodically reverifies the domain. To avoid potential issues,
+maintain the `TXT` record on your domain provider.
 
-   {{< /alert >}}
+{{< /alert >}}
 
 ### View group domains
 

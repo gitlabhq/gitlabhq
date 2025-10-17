@@ -2,28 +2,34 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: リリースAPI
+title: プロジェクトリリースAPI
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-このAPIを使用して、[リリースエントリ](../../user/project/releases/_index.md)を操作します。
+このAPIは、プロジェクトの[リリース](../../user/project/releases/_index.md)を処理するために使用します。
+
+{{< alert type="note" >}}
+
+グループのリリースを処理する場合は、[グループリリースAPI](../group_releases.md)を参照してください。
 
 リンクをリリースアセットとして操作するには、[リリースリンクAPI](links.md)を参照してください。
 
-## 認証
+{{< /alert >}}
+
+## 認証 {#authentication}
 
 認証の場合、リリースAPIは次のいずれかを受け入れます。
 
-- `PRIVATE-TOKEN`ヘッダーを使用した[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)。
-- `JOB-TOKEN`ヘッダーを使用した[GitLab CI/CDジョブトークン](../../ci/jobs/ci_job_token.md)`$CI_JOB_TOKEN`。
+- `PRIVATE-TOKEN`ヘッダーを使用した[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)
+- `JOB-TOKEN`ヘッダーを使用した[GitLab CI/CDジョブトークン](../../ci/jobs/ci_job_token.md)`$CI_JOB_TOKEN`
 
-## リリースをリストする
+## リリースをリストする {#list-releases}
 
 リリースのページネーションされたリストを返します。`released_at`でソートされています。
 
@@ -33,23 +39,23 @@ GET /projects/:id/releases
 
 | 属性     | 型           | 必須 | 説明                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
 | `order_by`    | 文字列         | いいえ       | 順序として使用するフィールド。`released_at`（デフォルト）または`created_at`。 |
-| `sort`        | 文字列         | いいえ       | 順序の方向。降順の場合は`desc`（デフォルト）、または昇順の場合は`asc`。 |
-| `include_html_description` | ブール値        | いいえ       | `true`の場合、応答には、リリースの説明のHTMLレンダリングされたMarkdownが含まれます。   |
+| `sort`        | 文字列         | いいえ       | 並び替えの方向。降順の場合は`desc`（デフォルト）、昇順の場合は`asc`。 |
+| `include_html_description` | ブール値        | いいえ       | `true`の場合、応答には、リリースの説明のMarkdownのHTMLレンダリングが含まれます。   |
 
 成功した場合、[`200 OK`](../rest/troubleshooting.md#status-codes)と次の応答属性を返します。
 
 | 属性                             | 型   | 説明                                      |
 |:--------------------------------------|:-------|:-------------------------------------------------|
-| `[]._links`                           | オブジェクト | リリースのリンク。                            |
-| `[]._links.closed_issues_url`         | 文字列 | リリースのクローズされたイシューのHTTP URL。         |
-| `[]._links.closed_merge_requests_url` | 文字列 | リリースのクローズされたマージリクエストのHTTP URL。 |
-| `[]._links.edit_url`                  | 文字列 | リリースの編集ページのHTTP URL。             |
-| `[]._links.merged_merge_requests_url` | 文字列 | リリースのマージされたマージリクエストのHTTP URL。 |
-| `[]._links.opened_issues_url`         | 文字列 | リリースのオープンイシューのHTTP URL。           |
-| `[]._links.opened_merge_requests_url` | 文字列 | リリースのオープンマージリクエストのHTTP URL。   |
-| `[]._links.self`                      | 文字列 | リリースのHTTP URL。                         |
+| `[]._links`                           | オブジェクト | リリースのリンク                            |
+| `[]._links.closed_issues_url`         | 文字列 | リリースの完了イシューのHTTP URL         |
+| `[]._links.closed_merge_requests_url` | 文字列 | リリースの完了マージリクエストのHTTP URL |
+| `[]._links.edit_url`                  | 文字列 | リリースの編集ページのHTTP URL             |
+| `[]._links.merged_merge_requests_url` | 文字列 | リリースのマージ済みのマージリクエストのHTTP URL |
+| `[]._links.opened_issues_url`         | 文字列 | リリースの未完了イシューのHTTP URL           |
+| `[]._links.opened_merge_requests_url` | 文字列 | リリースの未完了マージリクエストのHTTP URL   |
+| `[]._links.self`                      | 文字列 | リリースのHTTP URL                         |
 
 リクエストの例:
 
@@ -248,7 +254,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## タグ名でリリースを取得する
+## タグ名でリリースを取得する {#get-a-release-by-a-tag-name}
 
 指定されたタグのリリースを取得します。
 
@@ -258,22 +264,22 @@ GET /projects/:id/releases/:tag_name
 
 | 属性                  | 型           | 必須 | 説明                                                                         |
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`                       | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。  |
+| `id`                       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。  |
 | `tag_name`                 | 文字列         | はい      | リリースが関連付けられているGitタグ。                                         |
-| `include_html_description` | ブール値        | いいえ       | `true`の場合、応答には、リリースの説明のHTMLレンダリングされたMarkdownが含まれます。   |
+| `include_html_description` | ブール値        | いいえ       | `true`の場合、応答には、リリースの説明のMarkdownのHTMLレンダリングが含まれます。   |
 
 成功した場合、[`200 OK`](../rest/troubleshooting.md#status-codes)と次の応答属性を返します。
 
 | 属性                             | 型   | 説明                                      |
 |:--------------------------------------|:-------|:-------------------------------------------------|
-| `[]._links`                           | オブジェクト | リリースのリンク。                            |
-| `[]._links.closed_issues_url`         | 文字列 | リリースのクローズされたイシューのHTTP URL。         |
-| `[]._links.closed_merge_requests_url` | 文字列 | リリースのクローズされたマージリクエストのHTTP URL。 |
-| `[]._links.edit_url`                  | 文字列 | リリースの編集ページのHTTP URL。             |
-| `[]._links.merged_merge_requests_url` | 文字列 | リリースのマージされたマージリクエストのHTTP URL。 |
-| `[]._links.opened_issues_url`         | 文字列 | リリースのオープンイシューのHTTP URL。           |
-| `[]._links.opened_merge_requests_url` | 文字列 | リリースのオープンマージリクエストのHTTP URL。   |
-| `[]._links.self`                      | 文字列 | リリースのHTTP URL。                         |
+| `[]._links`                           | オブジェクト | リリースのリンク                            |
+| `[]._links.closed_issues_url`         | 文字列 | リリースの完了イシューのHTTP URL         |
+| `[]._links.closed_merge_requests_url` | 文字列 | リリースの完了マージリクエストのHTTP URL |
+| `[]._links.edit_url`                  | 文字列 | リリースの編集ページのHTTP URL             |
+| `[]._links.merged_merge_requests_url` | 文字列 | リリースのマージ済みのマージリクエストのHTTP URL |
+| `[]._links.opened_issues_url`         | 文字列 | リリースの未完了イシューのHTTP URL           |
+| `[]._links.opened_merge_requests_url` | 文字列 | リリースの未完了マージリクエストのHTTP URL   |
+| `[]._links.self`                      | 文字列 | リリースのHTTP URL                         |
 
 リクエストの例:
 
@@ -400,7 +406,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## リリースアセットをダウンロードする
+## リリースアセットをダウンロードする {#download-a-release-asset}
 
 {{< history >}}
 
@@ -416,7 +422,7 @@ GET /projects/:id/releases/:tag_name/downloads/:direct_asset_path
 
 | 属性                  | 型           | 必須 | 説明                                                                         |
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`                       | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。  |
+| `id`                       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。  |
 | `tag_name`                 | 文字列         | はい      | リリースが関連付けられているGitタグ。                                         |
 | `direct_asset_path`        | 文字列         | はい      | リンクを[作成](links.md#create-a-release-link)または[更新](links.md#update-a-release-link)するときに指定された、リリースアセットファイルへのパス。 |
 
@@ -426,7 +432,7 @@ GET /projects/:id/releases/:tag_name/downloads/:direct_asset_path
 curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/downloads/bin/asset.exe"
 ```
 
-### 最新のリリースを取得する
+### 最新のリリースを取得する {#get-the-latest-release}
 
 {{< history >}}
 
@@ -436,13 +442,13 @@ curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.ex
 
 最新のリリース情報には、永続的なAPI URLからアクセスできます。
 
-URLの形式は次のとおりです。
+URLの形式:
 
 ```plaintext
 GET /projects/:id/releases/permalink/latest
 ```
 
-リリースタグを必要とする他のGET APIを呼び出すには、サフィックスを`permalink/latest` APIパスに付加します。
+リリースタグを必要とする他のGET APIを呼び出すには、`permalink/latest` APIパスにサフィックスを付加します。
 
 たとえば、最新の[リリースエビデンス](#collect-release-evidence)を取得するには、次の形式を使用できます。
 
@@ -456,11 +462,11 @@ GET /projects/:id/releases/permalink/latest/evidence
 GET /projects/:id/releases/permalink/latest/downloads/bin/asset.exe
 ```
 
-#### ソートの設定
+#### 並べ替えの設定 {#sorting-preferences}
 
-デフォルトでは、GitLabは`released_at`時間を使用してリリースを取得します。クエリパラメーター`?order_by=released_at`の使用はオプションであり、`?order_by=semver`のサポートは、[イシュー352945](https://gitlab.com/gitlab-org/gitlab/-/issues/352945)で追跡されています。
+デフォルトでは、GitLabは`released_at`時間を使用してリリースをフェッチします。クエリパラメータ`?order_by=released_at`の使用はオプションであり、`?order_by=semver`のサポートは、[イシュー352945](https://gitlab.com/gitlab-org/gitlab/-/issues/352945)で追跡されています。
 
-## リリースを作成する
+## リリースを作成する {#create-a-release}
 
 リリースを作成します。リリースを作成するには、プロジェクトへのデベロッパーレベルのアクセスが必要です。
 
@@ -470,19 +476,19 @@ POST /projects/:id/releases
 
 | 属性          | 型            | 必須                    | 説明                                                                                                                      |
 | -------------------| --------------- | --------                    | -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | 整数/文字列  | はい                         | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。                                              |
+| `id`               | 整数または文字列  | はい                         | プロジェクトのID、または[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。                                              |
 | `name`             | 文字列          | いいえ                          | リリース名。                                                                                                                |
 | `tag_name`         | 文字列          | はい                         | リリースの作成元のタグ。                                                                                  |
 | `tag_message`      | 文字列          | いいえ                          | 新しい注釈付きタグを作成する場合に使用するメッセージ。                                                                                  |
-| `description`      | 文字列          | いいえ                          | リリースの説明。[Markdown](../../user/markdown.md)を使用できます。                                                  |
+| `description`      | 文字列          | いいえ                          | リリースに関する説明。[Markdown](../../user/markdown.md)を使用できます。                                                  |
 | `ref`              | 文字列          | はい（`tag_name`が存在しない場合） | `tag_name`で指定されたタグが存在しない場合、リリースは`ref`から作成され、`tag_name`でタグ付けされます。コミットSHA、別のタグ名、またはブランチ名にすることができます。 |
 | `milestones`       | 文字列の配列 | いいえ                          | リリースが関連付けられている各マイルストーンのタイトル。[GitLab Premium](https://about.gitlab.com/pricing/)のお客様は、グループマイルストーンを指定できます。                                                                      |
 | `assets:links`     | ハッシュの配列   | いいえ                          | アセットリンクの配列。                                                                                                        |
 | `assets:links:name`| 文字列          | `assets:links`で必要 | リンクの名前。リンク名は、リリース内で一意である必要があります。                                                              |
 | `assets:links:url` | 文字列          | `assets:links`で必要 | リンクのURL。リンクURLは、リリース内で一意である必要があります。                                                                |
 | `assets:links:direct_asset_path` | 文字列     | いいえ | [ダイレクトアセットリンク](../../user/project/releases/release_fields.md#permanent-links-to-release-assets)のオプションのパス。 |
-| `assets:links:link_type` | 文字列     | いいえ | リンクの種類: `other`、`runbook`、`image`、`package`。デフォルトは`other`です。 |
-| `released_at`      | 日時        | いいえ                          | リリースの日付と時刻。デフォルトは現在の時刻です。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。[今後](../../user/project/releases/_index.md#upcoming-releases)または[過去](../../user/project/releases/_index.md#historical-releases)のリリースを作成する場合にのみ、このフィールドを指定します。  |
+| `assets:links:link_type` | 文字列     | いいえ | リンクの種類: `other`、`runbook`、`image`、`package`。`other`がデフォルトです。 |
+| `released_at`      | 日時        | いいえ                          | リリースの日時。デフォルトは現在の時刻です。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。このフィールドは、[今後の](../../user/project/releases/_index.md#upcoming-releases)リリースまたは[過去の](../../user/project/releases/_index.md#historical-releases)リリースを作成する場合のみ指定します。  |
 
 リクエストの例:
 
@@ -597,23 +603,23 @@ curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_ac
 }
 ```
 
-### グループマイルストーン
+### グループマイルストーン {#group-milestones}
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 製品: GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 プロジェクトに関連付けられたグループマイルストーンは、[リリースを作成する](#create-a-release)および[リリースを更新する](#update-a-release)のAPIコールの`milestones`配列で指定できます。プロジェクトのグループに関連付けられたマイルストーンのみを指定でき、祖先グループのマイルストーンを追加するとエラーが発生します。
 
-## リリースエビデンスを収集する
+## リリースエビデンスを収集する {#collect-release-evidence}
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 製品: GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
@@ -625,7 +631,7 @@ POST /projects/:id/releases/:tag_name/evidence
 
 | 属性     | 型           | 必須 | 説明                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
 | `tag_name`    | 文字列         | はい      | リリースが関連付けられているGitタグ。                                         |
 
 リクエストの例:
@@ -640,7 +646,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 200
 ```
 
-## リリースを更新する
+## リリースを更新する {#update-a-release}
 
 {{< history >}}
 
@@ -648,7 +654,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 {{< /history >}}
 
-リリースを更新します。リリースを更新するには、プロジェクトへのデベロッパーレベルのアクセスが必要です。
+リリースを更新します。リリースを更新するには、プロジェクトに対するデベロッパーレベルのアクセス権が必要です。
 
 ```plaintext
 PUT /projects/:id/releases/:tag_name
@@ -656,10 +662,10 @@ PUT /projects/:id/releases/:tag_name
 
 | 属性     | 型            | 必須 | 説明                                                                                                 |
 | ------------- | --------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| `id`          | 整数/文字列  | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。                         |
+| `id`          | 整数または文字列  | はい      | プロジェクトのID、または[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。                         |
 | `tag_name`    | 文字列          | はい      | リリースが関連付けられているGitタグ。                                                                 |
 | `name`        | 文字列          | いいえ       | リリース名。                                                                                           |
-| `description` | 文字列          | いいえ       | リリースの説明。[Markdown](../../user/markdown.md)を使用できます。                             |
+| `description` | 文字列          | いいえ       | リリースに関する説明。[Markdown](../../user/markdown.md)を使用できます。                             |
 | `milestones`  | 文字列の配列 | いいえ       | リリースに関連付ける各マイルストーンのタイトル。[GitLab Premium](https://about.gitlab.com/pricing/)のお客様は、グループマイルストーンを指定できます。リリースからすべてのマイルストーンを削除するには、`[]`を指定します。 |
 | `released_at` | 日時        | いいえ       | リリースが準備完了になる/なった日付。ISO 8601形式（`2019-03-15T08:00:00Z`）で指定します。          |
 
@@ -753,9 +759,9 @@ curl --header 'Content-Type: application/json' --request PUT --data '{"name": "n
 }
 ```
 
-## リリースを削除する
+## リリースを削除する {#delete-a-release}
 
-リリースを削除します。リリースを削除しても、関連付けられているタグは削除されません。リリースを削除するには、プロジェクトへのメンテナーレベルのアクセスが必要です。
+リリースを削除します。リリースを削除しても、関連付けられているタグは削除されません。リリースを削除するには、プロジェクトに対するメンテナーレベルのアクセス権が必要です。
 
 ```plaintext
 DELETE /projects/:id/releases/:tag_name
@@ -763,7 +769,7 @@ DELETE /projects/:id/releases/:tag_name
 
 | 属性     | 型           | 必須 | 説明                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
+| `id`          | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](../rest/_index.md#namespaced-paths)。 |
 | `tag_name`    | 文字列         | はい      | リリースが関連付けられているGitタグ。                                         |
 
 リクエストの例:
@@ -836,13 +842,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 }
 ```
 
-## 今後のリリース
+## 将来のリリース {#upcoming-releases}
 
 `released_at`属性が将来の日付に設定されたリリースは、[UIで](../../user/project/releases/_index.md#upcoming-releases)**今後のリリース**としてラベル付けされます。
 
-また、[APIからリリースが要求された](#list-releases)場合、`release_at`属性が将来の日付に設定された各リリースに対して、追加の属性`upcoming_release`（trueに設定）が応答の一部として返されます。
+また、[APIからリリースがリクエストされた](#list-releases)場合、`release_at`属性が将来の日付に設定された各リリースに対して、追加の属性`upcoming_release`（trueに設定）が応答の一部として返されます。
 
-## 過去のリリース
+## 過去のリリース {#historical-releases}
 
 {{< history >}}
 
@@ -852,4 +858,4 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 `released_at`属性が過去の日付に設定されたリリースは、[UIで](../../user/project/releases/_index.md#historical-releases)**過去のリリース**としてラベル付けされます。
 
-また、[APIからリリースが要求された](#list-releases)場合、`release_at`属性が過去の日付に設定された各リリースに対して、追加の属性`historical_release`（trueに設定）が応答の一部として返されます。
+また、[APIからリリースがリクエストされた](#list-releases)場合、`release_at`属性が過去の日付に設定された各リリースに対して、追加の属性`historical_release`（trueに設定）が応答の一部として返されます。

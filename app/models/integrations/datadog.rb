@@ -3,6 +3,7 @@
 module Integrations
   class Datadog < Integration
     include HasWebHook
+    include HasAvatar
 
     DEFAULT_DOMAIN = 'datadoghq.com'
     URL_TEMPLATE = 'https://webhook-intake.%{datadog_domain}/api/v2/webhook'

@@ -400,6 +400,31 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
 
+      context 'for mcp scope' do
+        let(:mcp_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
+
+        context 'with GET requests' do
+          it 'allows access to issues scope' do
+            create(:issue, project: project, title: 'awesome issue')
+
+            get api(endpoint, oauth_access_token: mcp_token), params: { scope: 'issues', search: 'awesome' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).not_to be_empty
+          end
+        end
+
+        context 'without mcp scope' do
+          let(:limited_token) { create(:oauth_access_token, user: user, scopes: [:read_user]) }
+
+          it 'denies access' do
+            get api(endpoint, oauth_access_token: limited_token), params: { scope: 'issues', search: 'awesome' }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+
       context 'global search is disabled for the given scope' do
         it 'returns forbidden response' do
           allow_next_instance_of(SearchService) do |instance|

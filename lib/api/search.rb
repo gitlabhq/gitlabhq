@@ -4,6 +4,7 @@ module API
   class Search < ::API::Base
     include PaginationParams
     include APIGuard
+    include ::API::Concerns::McpAccess
 
     SCOPE_ENTITY = {
       merge_requests: Entities::MergeRequestBasic,
@@ -26,6 +27,7 @@ module API
     end
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
+    allow_mcp_access_read
 
     feature_category :global_search
     urgency :low

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
-  let(:ommiauth_provider_config) do
+  let(:omniauth_provider_config) do
     GitlabSettings::Options.new(
       name: "openid_connect",
       step_up_auth: {
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
     subject { described_class.enabled_for_provider?(provider_name: oauth_auth_hash.provider, scope: scope) }
 
     before do
-      stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+      stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
     end
 
     where(:required_id_token_claims, :included_id_token_claims, :oauth_auth_hash, :scope, :expected_result) do
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
     end
 
     before do
-      stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+      stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
     end
 
     # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
     subject { described_class.succeeded?(session) }
 
     before do
-      stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+      stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
     end
 
     # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
@@ -166,6 +166,62 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
 
     with_them do
       it { is_expected.to eq expected_result }
+    end
+
+    describe '.succeeded? with expiration' do
+      include ActiveSupport::Testing::TimeHelpers
+
+      let(:current_time) { Time.current }
+      let(:valid_timestamp) { current_time.to_i + 30.minutes.to_i }
+      let(:expired_timestamp) { current_time.to_i - 1.hour.to_i }
+
+      let(:session_with_expired_step_up_auth) do
+        {
+          'omniauth_step_up_auth' => {
+            'openid_connect' => {
+              'admin_mode' => {
+                'state' => 'succeeded',
+                'exp_timestamp' => expired_timestamp
+              }
+            }
+          }
+        }
+      end
+
+      let(:session_with_valid_step_up_auth) do
+        {
+          'omniauth_step_up_auth' => {
+            'openid_connect' => {
+              'admin_mode' => {
+                'state' => 'succeeded',
+                'exp_timestamp' => valid_timestamp
+              }
+            }
+          }
+        }
+      end
+
+      around do |example|
+        travel_to(current_time) { example.run }
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
+      end
+
+      context 'with required claims configuration' do
+        let(:required_id_token_claims) { { 'acr' => 'https://refeds.org/profile/mfa' } }
+
+        it 'returns false for expired sessions even if they were successful' do
+          result = described_class.succeeded?(session_with_expired_step_up_auth)
+          expect(result).to be false
+        end
+
+        it 'returns true for valid non-expired sessions' do
+          result = described_class.succeeded?(session_with_valid_step_up_auth)
+          expect(result).to be true
+        end
+      end
     end
   end
 
@@ -192,7 +248,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
     end
 
     before do
-      stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+      stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
     end
 
     it 'removes the step-up auth data for the given scope from all providers' do

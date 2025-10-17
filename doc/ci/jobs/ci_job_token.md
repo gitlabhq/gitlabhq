@@ -42,7 +42,7 @@ CI/CD job tokens can access the following resources:
 | [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | Used as the `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) to authenticate with the container registry associated with the job's project. |
 | [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                  | Used to authenticate with the registry. |
 | [Terraform module registry](../../user/packages/terraform_module_registry/_index.md)                  | Used to authenticate with the registry. |
-| [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                               | Used by the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files) tool to use secure files in jobs. |
+| [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                               | Used by the [`glab securefile`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/securefile) command to use secure files in jobs. |
 | [Container registry API](../../api/container_registry.md)                                             | Can authenticate only with the container registry associated with the job's project. |
 | [Deployments API](../../api/deployments.md)                                                           | Can access all endpoints in this API. |
 | [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |

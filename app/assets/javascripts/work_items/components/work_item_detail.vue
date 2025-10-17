@@ -939,46 +939,6 @@ export default {
       @dragleave.prevent.stop="onDragLeaveMain"
       @drop.prevent.stop="onDrop"
     >
-      <work-item-sticky-header
-        v-if="showIntersectionObserver"
-        :current-user-todos="currentUserTodos"
-        :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
-        :parent-work-item-confidentiality="parentWorkItemConfidentiality"
-        :full-path="workItemFullPath"
-        :is-modal="isModal"
-        :is-drawer="isDrawer"
-        :work-item="workItem"
-        :is-sticky-header-showing="isStickyHeaderShowing"
-        @hideStickyHeader="hideStickyHeader"
-        @showStickyHeader="showStickyHeader"
-        @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-        @toggleWorkItemConfidentiality="toggleConfidentiality"
-        @error="updateError = $event"
-        @promotedToObjective="$emit('promotedToObjective', iid)"
-        @workItemTypeChanged="workItemTypeChanged"
-        @toggleEditMode="enableEditMode"
-        @workItemStateUpdated="$emit('workItemStateUpdated')"
-        @toggleReportAbuseModal="toggleReportAbuseModal"
-        @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
-      >
-        <template #actions>
-          <work-item-actions
-            v-if="workItemPresent"
-            v-bind="workItemActionProps"
-            :update-in-progress="updateInProgress"
-            @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-            @toggleWorkItemConfidentiality="toggleConfidentiality"
-            @error="updateError = $event"
-            @promotedToObjective="$emit('promotedToObjective', iid)"
-            @workItemStateUpdated="$emit('workItemStateUpdated')"
-            @workItemTypeChanged="workItemTypeChanged"
-            @toggleReportAbuseModal="toggleReportAbuseModal"
-            @workItemCreated="handleWorkItemCreated"
-            @toggleSidebar="handleToggleSidebar"
-            @toggleTruncationEnabled="handleTruncationEnabled"
-          />
-        </template>
-      </work-item-sticky-header>
       <section class="work-item-view">
         <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
           s__('WorkItem|Edit work item')
@@ -1144,6 +1104,48 @@ export default {
                 </div>
               </div>
             </div>
+            <work-item-sticky-header
+              v-if="showIntersectionObserver"
+              :current-user-todos="currentUserTodos"
+              :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
+              :parent-work-item-confidentiality="parentWorkItemConfidentiality"
+              :full-path="workItemFullPath"
+              :is-modal="isModal"
+              :is-drawer="isDrawer"
+              :work-item="workItem"
+              :is-sticky-header-showing="isStickyHeaderShowing"
+              @hideStickyHeader="hideStickyHeader"
+              @showStickyHeader="showStickyHeader"
+              @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
+              @toggleWorkItemConfidentiality="toggleConfidentiality"
+              @error="updateError = $event"
+              @promotedToObjective="$emit('promotedToObjective', iid)"
+              @workItemTypeChanged="workItemTypeChanged"
+              @toggleEditMode="enableEditMode"
+              @workItemStateUpdated="$emit('workItemStateUpdated')"
+              @toggleReportAbuseModal="toggleReportAbuseModal"
+              @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
+            >
+              <template #actions>
+                <work-item-actions
+                  v-if="workItemPresent"
+                  v-bind="workItemActionProps"
+                  :update-in-progress="updateInProgress"
+                  @deleteWorkItem="
+                    $emit('deleteWorkItem', { workItemType, workItemId: workItem.id })
+                  "
+                  @toggleWorkItemConfidentiality="toggleConfidentiality"
+                  @error="updateError = $event"
+                  @promotedToObjective="$emit('promotedToObjective', iid)"
+                  @workItemStateUpdated="$emit('workItemStateUpdated')"
+                  @workItemTypeChanged="workItemTypeChanged"
+                  @toggleReportAbuseModal="toggleReportAbuseModal"
+                  @workItemCreated="handleWorkItemCreated"
+                  @toggleSidebar="handleToggleSidebar"
+                  @toggleTruncationEnabled="handleTruncationEnabled"
+                />
+              </template>
+            </work-item-sticky-header>
             <div
               data-testid="work-item-overview"
               class="work-item-overview"

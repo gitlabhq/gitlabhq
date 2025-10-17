@@ -120,7 +120,10 @@ The following are sample `fastlane/Fastfile` and `.gitlab-ci.yml` files with thi
     stage: build
     script:
       - apt update -y && apt install -y curl
-      - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+      - wget https://gitlab.com/gitlab-org/cli/-/releases/v1.74.0/downloads/glab_1.74.0_linux_amd64.deb
+      - apt install ./glab_1.74.0_linux_amd64.deb
+      - glab auth login --hostname $CI_SERVER_FQDN --job-token $CI_JOB_TOKEN
+      - glab securefile download --all --output-dir .secure_files/
       - fastlane build
   ```
 

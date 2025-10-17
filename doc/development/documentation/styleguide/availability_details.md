@@ -336,15 +336,3 @@ merge request, or epic. For example:
 The voting strategy [in GitLab 13.4 and later](https://issue-link) requires the primary and secondary
 voters to agree.
 ```
-
-## Administrator documentation for availability details
-
-Topics that are only for instance administrators should have the `GitLab Self-Managed` tier.
-Instance administrator documentation often includes sections that mention:
-
-- Changing the `gitlab.rb` or `gitlab.yml` files.
-- Accessing the rails console or running Rake tasks.
-- Doing things in the **Admin** area.
-
-These pages should also mention if the tasks can only be accomplished by an
-instance administrator.

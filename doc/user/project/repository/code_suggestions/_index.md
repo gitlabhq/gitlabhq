@@ -102,10 +102,10 @@ might be available. To view all available suggestions:
 1. Hover over the code completion suggestion.
 1. Scroll through the alternatives. Either:
    - Use keyboard shortcuts:
-     - On a Mac, press <kbd>Option</kbd> + <kbd>\[</kbd> to view the previous suggestion,
-       and press <kbd>Option</kbd> + <kbd>]</kbd> to view the next suggestion.
-     - On Linux and Windows, press <kbd>Alt</kbd> + <kbd>\[</kbd> to view the previous suggestion,
-       and press <kbd>Alt</kbd> + <kbd>]</kbd> to view the next suggestion.
+     - On a Mac, press <kbd>Option</kbd>+<kbd>\[</kbd> to view the previous suggestion,
+       and press <kbd>Option</kbd>+<kbd>]</kbd> to view the next suggestion.
+     - On Linux and Windows, press <kbd>Alt</kbd>+<kbd>\[</kbd> to view the previous suggestion,
+       and press <kbd>Alt</kbd>+<kbd>]</kbd> to view the next suggestion.
    - On the dialog that's displayed, select the right or left arrow to see next or previous options.
 1. Press <kbd>Tab</kbd> to apply the suggestion you prefer.
 

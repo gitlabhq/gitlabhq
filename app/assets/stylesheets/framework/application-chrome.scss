@@ -165,9 +165,21 @@
     }
   }
 
-  // Super sidebar active item
+  // Super sidebar item
   .super-sidebar-nav-item {
     @apply gl-rounded-lg #{!important};
+  }
+
+  // Application background item hover/focus states
+  .super-sidebar .super-sidebar-nav-item,
+  .dashboard-shortcuts-button,
+  .ai-nav-icon,
+  #create-menu-toggle {
+    &:hover,
+    &:focus,
+    &.with-mouse-over-flyout {
+      @apply gl-bg-alpha-dark-6 dark:gl-bg-alpha-light-8 #{!important};
+    }
   }
 
   // Position for search overlay when Performance bar is visible
@@ -346,8 +358,7 @@
     }
 
     .ai-nav-icon-active,
-    .ai-nav-icon-active:hover,
-    .ai-nav-icon:hover {
+    .ai-nav-icon-active:hover {
       background-color: var(--super-sidebar-nav-item-current-bg);
       color: var(--super-sidebar-accent-color-fg);
     }
@@ -685,8 +696,7 @@
     }
 
     .ai-panel .ai-nav-icon-active,
-    .ai-panel .ai-nav-icon-active:hover,
-    .ai-panel .ai-nav-icon:hover {
+    .ai-panel .ai-nav-icon-active:hover {
       background-color: var(--super-sidebar-nav-item-current-bg);
     }
 
@@ -755,8 +765,7 @@
     }
 
     .ai-panel .ai-nav-icon-active,
-    .ai-panel .ai-nav-icon-active:hover,
-    .ai-panel .ai-nav-icon:hover {
+    .ai-panel .ai-nav-icon-active:hover {
       color: var(--super-sidebar-accent-color-fg);
       background-color: var(--super-sidebar-nav-item-current-bg);
     }

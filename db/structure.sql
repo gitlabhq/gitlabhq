@@ -16151,6 +16151,29 @@ CREATE SEQUENCE design_user_mentions_id_seq
 
 ALTER SEQUENCE design_user_mentions_id_seq OWNED BY design_user_mentions.id;
 
+CREATE TABLE designated_beneficiaries (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    type smallint NOT NULL,
+    name text NOT NULL,
+    relationship text,
+    email text,
+    CONSTRAINT check_6f552fd9ec CHECK ((char_length(relationship) <= 255)),
+    CONSTRAINT check_a9a32c82cb CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_db6bb32865 CHECK ((char_length(email) <= 255))
+);
+
+CREATE SEQUENCE designated_beneficiaries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE designated_beneficiaries_id_seq OWNED BY designated_beneficiaries.id;
+
 CREATE TABLE detached_partitions (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -20643,6 +20666,7 @@ CREATE TABLE note_metadata (
     email_participant text,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
+    namespace_id bigint,
     CONSTRAINT check_40aa5ff1c6 CHECK ((char_length(email_participant) <= 255))
 );
 
@@ -30869,6 +30893,8 @@ ALTER TABLE ONLY design_management_versions ALTER COLUMN id SET DEFAULT nextval(
 
 ALTER TABLE ONLY design_user_mentions ALTER COLUMN id SET DEFAULT nextval('design_user_mentions_id_seq'::regclass);
 
+ALTER TABLE ONLY designated_beneficiaries ALTER COLUMN id SET DEFAULT nextval('designated_beneficiaries_id_seq'::regclass);
+
 ALTER TABLE ONLY detached_partitions ALTER COLUMN id SET DEFAULT nextval('detached_partitions_id_seq'::regclass);
 
 ALTER TABLE ONLY diff_note_positions ALTER COLUMN id SET DEFAULT nextval('diff_note_positions_id_seq'::regclass);
@@ -33252,6 +33278,9 @@ ALTER TABLE bulk_import_trackers
 ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
 
+ALTER TABLE note_metadata
+    ADD CONSTRAINT check_67a890ebba CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
@@ -33731,6 +33760,9 @@ ALTER TABLE ONLY design_management_versions
 
 ALTER TABLE ONLY design_user_mentions
     ADD CONSTRAINT design_user_mentions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY designated_beneficiaries
+    ADD CONSTRAINT designated_beneficiaries_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY detached_partitions
     ADD CONSTRAINT detached_partitions_pkey PRIMARY KEY (id);
@@ -39733,6 +39765,8 @@ CREATE INDEX index_design_user_mentions_on_namespace_id ON design_user_mentions 
 
 CREATE UNIQUE INDEX index_design_user_mentions_on_note_id ON design_user_mentions USING btree (note_id);
 
+CREATE INDEX index_designated_beneficiaries_on_user_id ON designated_beneficiaries USING btree (user_id);
+
 CREATE UNIQUE INDEX index_diff_note_positions_on_note_id_and_diff_type ON diff_note_positions USING btree (note_id, diff_type);
 
 CREATE INDEX index_dingtalk_tracker_data_on_integration_id ON dingtalk_tracker_data USING btree (integration_id);
@@ -41058,6 +41092,8 @@ CREATE INDEX index_non_sql_service_pings_on_organization_id ON non_sql_service_p
 CREATE UNIQUE INDEX index_non_sql_service_pings_on_recorded_at ON non_sql_service_pings USING btree (recorded_at);
 
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON note_diff_files USING btree (diff_note_id);
+
+CREATE INDEX index_note_metadata_on_namespace_id ON note_metadata USING btree (namespace_id);
 
 CREATE INDEX index_note_metadata_on_note_id ON note_metadata USING btree (note_id);
 
@@ -46949,6 +46985,8 @@ CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCIN
 
 CREATE TRIGGER set_sharding_key_for_commit_user_mentions_on_insert_and_update BEFORE INSERT OR UPDATE ON commit_user_mentions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
+CREATE TRIGGER set_sharding_key_for_note_metadata_on_insert_and_update BEFORE INSERT OR UPDATE ON note_metadata FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
+
 CREATE TRIGGER set_sharding_key_for_suggestions_on_insert_and_update BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
 CREATE TRIGGER set_sharding_key_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION get_sharding_key_from_notes_table();
@@ -47924,6 +47962,9 @@ ALTER TABLE ONLY resource_link_events
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_2a0421d824 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY note_metadata
+    ADD CONSTRAINT fk_2a22435354 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY personal_access_token_granular_scopes
     ADD CONSTRAINT fk_2a2bab7170 FOREIGN KEY (personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE CASCADE;
@@ -50480,6 +50521,9 @@ ALTER TABLE ONLY merge_request_reviewers
 
 ALTER TABLE ONLY group_merge_request_approval_settings
     ADD CONSTRAINT fk_rails_37b6b4cdba FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY designated_beneficiaries
+    ADD CONSTRAINT fk_rails_37fe9f8417 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_project_distribution_keys
     ADD CONSTRAINT fk_rails_3834a11264 FOREIGN KEY (distribution_id) REFERENCES packages_debian_project_distributions(id) ON DELETE CASCADE;

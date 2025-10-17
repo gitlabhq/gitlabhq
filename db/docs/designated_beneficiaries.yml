@@ -1,0 +1,13 @@
+---
+table_name: designated_beneficiaries
+classes:
+  - Users::DesignatedBeneficiary
+feature_categories:
+  - system_access
+description: Table to store designated account manager(s) and successor(s) in case of incapacity or death.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208356
+milestone: '18.6'
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
+table_size: small

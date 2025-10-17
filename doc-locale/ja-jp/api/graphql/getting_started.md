@@ -1,22 +1,21 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Developer Experience
+group: API
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GraphQL APIクエリとミューテーションの実行
+title: GraphQL APIのクエリとミューテーションの実行
+description: "例を挙げてGraphQLのクエリとミューテーションを実行するためのガイドです。"
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-このガイドでは、GitLab GraphQL APIの基本的な使用方法を説明します。
+このドキュメントでは、GitLab GraphQL APIの基本的な使用方法を説明します。
 
-API自体の開発に携わりたいデベロッパー向けの実装の詳細については、[GraphQL APIスタイルガイド](../../development/api_graphql_styleguide.md)をお読みください。
-
-## 実行の例
+## 実行例 {#running-examples}
 
 ここで説明する例は、以下を使用して実行できます。
 
@@ -24,11 +23,11 @@ API自体の開発に携わりたいデベロッパー向けの実装の詳細�
 - [コマンドライン](#command-line)。
 - [Railsコンソール](#rails-console)。
 
-### GraphiQL
+### GraphiQL {#graphiql}
 
-GraphiQL（「グラフィカル」と発音）を使用すると、実際のGraphQLクエリをAPIに対してインタラクティブに実行できます。GraphiQLは、ハイライトした構文とオートコンプリートを備えたUIを提供することで、スキーマを簡単に調べられるようにします。
+GraphiQL（「グラフィカル」と発音）を使用すると、実際のGraphQLクエリをAPIに対してインタラクティブに実行できます。ハイライトした構文とオートコンプリート機能を備えたUIが用意されているため、スキーマを簡単に調べることができます。
 
-ほとんどの人にとって、GraphiQLの使用は、GitLab GraphQL APIを調べる最も簡単な方法です。
+ほとんどの場合、GraphiQLを使用するのが、GitLab GraphQL APIを調べる最も簡単な方法です。
 
 GraphiQLは以下でも使用できます。
 
@@ -39,34 +38,38 @@ GraphiQLは以下でも使用できます。
 
 使用を開始するには、[クエリとミューテーションの例](#queries-and-mutations)を参照してください。
 
-### コマンドライン
+### コマンドライン {#command-line}
 
-ローカルコンピューターでコマンドラインを使用して、`curl`リクエストでGraphQLクエリを実行できます。リクエストは、クエリをペイロードとして`/api/graphql`に`POST`します。ベアラートークンとして使用する[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)を生成して、リクエストを承認できます。詳細については、[GraphQL認証](_index.md#authentication)を参照してください。
+ローカルコンピューターのコマンドラインで、`curl`リクエストでGraphQLクエリを実行できます。リクエストは、クエリをペイロードとして`/api/graphql`に`POST`します。ベアラートークンとして使用する[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)を生成して、リクエストを認証できます。詳細については、[GraphQL認証](_index.md#authentication)を参照してください。
 
-例:
+例: 
 
 ```shell
 GRAPHQL_TOKEN=<your-token>
-curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
-     --header "Content-Type: application/json" --request POST \
-     --data "{\"query\": \"query {currentUser {name}}\"}"
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+  --header "Content-Type: application/json" \
+  --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
-クエリ文字列に文字列をネストするには、データを一重引用符で囲むか、<code>\\\\</code>で文字列をエスケープします。
+クエリ文字列に文字列をネストするには、データを一重引用符で囲むか、` \\ `で文字列をエスケープします。
 
 ```shell
-curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
-    --header "Content-Type: application/json" --request POST \
-    --data '{"query": "query {project(fullPath: \"<group>/<subgroup>/<project>\") {jobs {nodes {id duration}}}}"}'
-      # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer $GRAPHQL_TOKEN" \
+  --header "Content-Type: application/json" \
+  --data '{"query": "query {project(fullPath: \"<group>/<subgroup>/<project>\") {jobs {nodes {id duration}}}}"}'
+  # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
 ```
 
-### Railsコンソール
+### Railsコンソール {#rails-console}
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
@@ -90,7 +93,7 @@ result = GitlabSchema.execute(query, variables: variables, context: { current_us
 result.to_h
 ```
 
-## クエリとミューテーション
+## クエリとミューテーション {#queries-and-mutations}
 
 GitLab GraphQL APIを使用すると、以下を実行できます。
 
@@ -103,9 +106,9 @@ GitLab GraphQL APIでは、`id`は[グローバルID](https://graphql.org/learn/
 
 {{< /alert >}}
 
-[GitLab GraphQLスキーマ](reference/_index.md)は、クライアントがクエリできるオブジェクトやフィールド、対応するデータ型を示しています。
+[GitLab GraphQLのスキーマ](reference/_index.md)は、クライアントがクエリできるオブジェクトやフィールド、対応するデータ型を示しています。
 
-例: `gitlab-org`グループ内で現在認証されているユーザーがアクセスできる（制限まで）すべてのプロジェクトの名前のみを取得します。
+例: `gitlab-org`グループ内で現在認証されているユーザーが（制限まで）アクセスできるすべてのプロジェクトの名前のみを取得します。
 
 ```graphql
 query {
@@ -134,9 +137,9 @@ query {
 }
 ```
 
-### グラフ走査
+### グラフトラバーサル {#graph-traversal}
 
-子ノードを取得する場合は、次の構文を使用します。
+子のノードを取得する場合は、次の構文を使用します。
 
 - `edges { node { } }`構文。
 - 短い形式の`nodes { }`構文。
@@ -161,23 +164,23 @@ query {
 
 クエリの詳細: [GraphQLドキュメント](https://graphql.org/learn/queries/)
 
-### 認証
+### 認証 {#authorization}
 
 GitLabにサインインして[GraphiQL](#graphiql)を使用すると、すべてのクエリが認証済みユーザーとして実行されます。詳細については、[GraphQL認証](_index.md#authentication)を参照してください。
 
-### ミューテーション
+### ミューテーション {#mutations}
 
-ミューテーションは、データに変更を加えます。新しいレコードを更新、削除、または作成できます。通常、ミューテーションはInputTypeと変数を使用しますが、ここにはどちらも表示されません。
+ミューテーションは、データに変更を加えます。新しいレコードを更新、削除、または作成できます。通常、ミューテーションはInputTypeと変数を使用しますが、ここにはどちらも示しません。
 
 ミューテーションには以下があります。
 
 - インプット。たとえば、どの絵文字リアクションを追加するか、どのオブジェクトに絵文字リアクションを追加するかなどの引数です。
-- returnストートメント。つまり、成功した場合に何を取得したいか。
-- エラー。念のため、何がうまくいかなかったのかを常に尋ねてください。
+- 戻り値の指定。つまり、成功した場合に何を戻したいかです。
+- エラー。念のため、エラーの詳細を常に確認してください。
 
-#### 作成ミューテーション
+#### 作成ミューテーション {#creation-mutations}
 
-例: お茶を飲みましょう - イシューに`:tea:`リアクション絵文字を追加します。
+例: お茶を飲みましょう。イシューに`:tea:`リアクション絵文字を追加します。
 
 ```graphql
 mutation {
@@ -218,7 +221,7 @@ mutation {
 }
 ```
 
-#### 更新ミューテーション
+#### 更新ミューテーション {#update-mutations}
 
 作成したノートの結果`id`が表示されたら、それをメモしてください。編集して、より早く飲めるようにしましょう。
 
@@ -236,9 +239,9 @@ mutation {
 }
 ```
 
-#### 削除ミューテーション
+#### 削除ミューテーション {#deletion-mutations}
 
-お茶がなくなってしまったので、コメントを削除しましょう。
+お茶がなくなったので、コメントを削除しましょう。
 
 ```graphql
 mutation {
@@ -269,9 +272,9 @@ mutation {
 
 ミューテーションの詳細: [GraphQLドキュメント](https://graphql.org/learn/queries/#mutations)。
 
-### プロジェクト設定を更新する
+### プロジェクト設定を更新する {#update-project-settings}
 
-単一のGraphQLミューテーションで複数のプロジェクト設定を更新できます。この例は、`CI_JOB_TOKEN`スコープの動作における[大きな変更](../../update/deprecations.md#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement)の回避策です。
+単一のGraphQLミューテーションで複数のプロジェクト設定を更新できます。この例は、`CI_JOB_TOKEN`スコーピングの動作における[大きな変更](../../update/deprecations.md#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement)の回避策です。
 
 ```graphql
 mutation DisableCI_JOB_TOKENscope {
@@ -284,15 +287,15 @@ mutation DisableCI_JOB_TOKENscope {
 }
 ```
 
-### イントロスペクションクエリ
+### イントロスペクションクエリ {#introspection-queries}
 
 クライアントは、[イントロスペクションクエリ](https://graphql.org/learn/introspection/)を行うことにより、スキーマに関する情報についてGraphQLエンドポイントにクエリできます。
 
-[GraphiQL Query Explorer](#graphiql)は、イントロスペクションクエリを使用して以下を行います。
+[GraphiQLクエリエクスプローラー](#graphiql)は、イントロスペクションクエリを使用して以下を行います。
 
-- GitLab GraphQLスキーマに関する知識を取得します。
-- オートコンプリートを行います。
-- インタラクティブな`Docs`タブを提供します。
+- GitLab GraphQLスキーマに関する知識を取得する。
+- オートコンプリートを行う。
+- インタラクティブな`Docs`タブを提供する。
 
 例: スキーマ内のすべての型名を取得します。
 
@@ -306,7 +309,7 @@ mutation DisableCI_JOB_TOKENscope {
 }
 ```
 
-例: イシューに関連付けられたすべてのフィールドを取得します。`kind`は、`OBJECT`、`SCALAR`、`INTERFACE`のような型のenum値を示します。
+例: イシューに関連付けられたすべてのフィールドを取得します。`kind`は、`OBJECT`、`SCALAR`、`INTERFACE`のような型のenum値を取得します。
 
 ```graphql
 query IssueTypes {
@@ -326,9 +329,9 @@ query IssueTypes {
 
 イントロスペクションの詳細: [GraphQLドキュメント](https://graphql.org/learn/introspection/)
 
-### クエリの複雑さ
+### クエリの複雑さ {#query-complexity}
 
-クエリの計算された[複雑さのスコアと制限](_index.md#maximum-query-complexity)は、`queryComplexity`をクエリすることでクライアントに公開できます。
+クエリで算出された[複雑さのスコアと制限](_index.md#maximum-query-complexity)は、`queryComplexity`をクエリすることでクライアントに公開できます。
 
 ```graphql
 query {
@@ -343,7 +346,7 @@ query {
 }
 ```
 
-## ソート
+## ソート {#sorting}
 
 GitLab GraphQLエンドポイントの一部では、オブジェクトのコレクションをソートする方法を指定できます。スキーマで許可されているものだけでソートできます。
 
@@ -363,13 +366,13 @@ query {
 }
 ```
 
-## ページネーション
+## ページネーション {#pagination}
 
-ページネーションは、最初の10件など、レコードのサブセットのみを要求する方法です。さらに必要な場合は、`please give me the next ten records`のような形式で、サーバーから次の10件を再度リクエストできます。
+ページネーションは、最初の10件など、レコードのサブセットのみをリクエストする方法です。さらに必要な場合は、`give me the next ten records`のような形式で、サーバーから次の10件を再度リクエストできます。
 
 デフォルトでは、GitLab GraphQL APIはページごとに100件のレコードを返します。この動作を変更するには、`first`引数または`last`引数を使用します。どちらの引数も値を受け取ります。`first: 10`は最初の10件のレコードを返し、`last: 10`は最後の10件のレコードを返します。ページごとに返されるレコード数には制限があり、通常は`100`です。
 
-例: 最初の2つのイシューのみを取得します（スライス）。`cursor`フィールドは位置を示し、その取得を基準にしてさらにレコードを取得できます。
+例: 最初の2つのイシューのみを取得します（データの切り出し）。`cursor`フィールドは、そのレコードを基準として、次のレコードを取得するための位置情報を提供します。
 
 ```graphql
 query {
@@ -390,7 +393,7 @@ query {
 }
 ```
 
-例: 次の3つを取得します。（カーソル値`eyJpZCI6IjI3MDM4OTMzIiwiY3JlYXRlZF9hdCI6IjIwMTktMTEtMTQgMDU6NTY6NDQgVVRDIn0`は異なる場合がありますが、上記の2番目のイシューに対して返される`cursor`値です。）
+例: 次の3つを取得します（カーソル値`eyJpZCI6IjI3MDM4OTMzIiwiY3JlYXRlZF9hdCI6IjIwMTktMTEtMTQgMDU6NTY6NDQgVVRDIn0`は異なる場合がありますが、上記の2番目のイシューに対して返される`cursor`値です）。
 
 ```graphql
 query {
@@ -414,11 +417,11 @@ query {
 
 ページネーションとカーソルの詳細: [GraphQLドキュメント](https://graphql.org/learn/pagination/)
 
-## クエリURLを変更する
+## クエリURLを変更する {#changing-the-query-url}
 
-GraphQLリクエストを別のURLに送信する必要がある場合があります。たとえば、`GeoNode`クエリは、セカンダリジオサイトのURLに対してのみ機能します。
+GraphQLリクエストを別のURLに送信する必要がある場合があります。`GeoNode`クエリがその例で、セカンダリGeoサイトのURLに対してのみ機能します。
 
-GraphiQL EplorerでGraphQLリクエストのURLを変更するには、GraphiQLのヘッダー領域（左下の領域、変数があるところ）にカスタムヘッダーを設定します。
+GraphiQL ExplorerでGraphQLリクエストのURLを変更するには、GraphiQLのヘッダー領域（左下の領域、変数があるところ）にカスタムヘッダーを設定します。
 
 ```JSON
 {

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :system_access do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:session) { { 'omniauth_step_up_auth' => { provider => { scope => { 'state' => 'requested' } } } } }
   let(:provider) { 'openid_connect' }
   let(:scope) { 'admin_mode' }
@@ -38,30 +40,44 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
     end
   end
 
-  describe '#requested?, #succeeded?, #failed?' do
+  describe '#requested?, #succeeded?, #failed?, #expired?' do
     using RSpec::Parameterized::TableSyntax
 
+    let(:session) { { 'omniauth_step_up_auth' => step_up_auth_session } }
+    let(:expiration_data) { { 'exp_timestamp' => 1.hour.ago.to_i } }
+
     # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
-    where(:session, :provider, :scope, :expected_requested?, :expected_succeeded?, :expected_failed?) do
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'requested' } } } } | 'openid_connect' | :admin_mode | true  | false | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | 'openid_connect' | :admin_mode | false | true  | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' } } } }    | 'openid_connect' | :admin_mode | false | false | true
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => {} } } }                         | 'openid_connect' | :admin_mode | false | false | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } } }  | 'openid_connect' | :admin_mode | false | false | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } } }  | 'openid_connect' | :namespace  | false | true  | false
-      { 'omniauth_step_up_auth' => { 'openid_connect' => {} } }                                             | 'openid_connect' | :admin_mode | false | false | false
-      { 'omniauth_step_up_auth' => { 'other_provider' => { 'admin_mode' => { 'state' => 'requested' } } } } | 'openid_connect' | :admin_mode | false | false | false
-      { 'omniauth_step_up_auth' => { 'other_provider' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | 'openid_connect' | :admin_mode | false | false | false
-      { 'omniauth_step_up_auth' => {} }                                                                     | 'openid_connect' | :admin_mode | false | false | false
-      {}                                                                                                    | 'openid_connect' | :admin_mode | false | false | false
-      nil                                                                                                   | 'openid_connect' | :admin_mode | false | false | false
+    where(:step_up_auth_session, :provider, :scope, :expected_requested?, :expected_succeeded?, :expected_failed?, :expected_expired?) do
+      { 'openid_connect' => { 'admin_mode' => { 'state' => 'requested' } } }                             | 'openid_connect' | :admin_mode | true  | false | false | false
+      { 'openid_connect' => { 'admin_mode' => { 'state' => 'succeeded' } } }                             | 'openid_connect' | :admin_mode | false | true  | false | false
+      { 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' } } }                                | 'openid_connect' | :admin_mode | false | false | true | false
+      { 'openid_connect' => { 'admin_mode' => { 'state' => 'expired' } } }                               | 'openid_connect' | :admin_mode | false | false | false | true
+      { 'openid_connect' => { 'admin_mode' => {} } }                                                     | 'openid_connect' | :admin_mode | false | false | false | false
+      { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } }                              | 'openid_connect' | :admin_mode | false | false | false | false
+      { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } } }                              | 'openid_connect' | :namespace  | false | true  | false | false
+      { 'openid_connect' => { 'namespace' => { 'state' => 'expired' } } }                                | 'openid_connect' | :namespace  | false | false | false | true
+      { 'openid_connect' => {} }                                                                         | 'openid_connect' | :admin_mode | false | false | false | false
+      { 'other_provider' => { 'admin_mode' => { 'state' => 'requested' } } }                             | 'openid_connect' | :admin_mode | false | false | false | false
+      { 'other_provider' => { 'admin_mode' => { 'state' => 'succeeded' } } }                             | 'openid_connect' | :admin_mode | false | false | false | false
+      { 'other_provider' => { 'admin_mode' => { 'state' => 'expired' } } }                               | 'openid_connect' | :admin_mode | false | false | false | false
+      {}                                                                                                 | 'openid_connect' | :admin_mode | false | false | false | false
+      nil                                                                                                | 'openid_connect' | :admin_mode | false | false | false | false
+
+      # With expiration
+      lazy { { 'openid_connect' => { 'admin_mode' => { 'state' => 'requested', **expiration_data } } } } | 'openid_connect' | :admin_mode | true  | false | false | true
+      lazy { { 'openid_connect' => { 'admin_mode' => { 'state' => 'succeeded', **expiration_data } } } } | 'openid_connect' | :admin_mode | false | false | false | true
+      lazy { { 'openid_connect' => { 'namespace' => { 'state' => 'expired', **expiration_data } } } }    | 'openid_connect' | :namespace  | false | false | false | true
     end
     # rubocop:enable Layout/LineLength
 
     with_them do
-      it { is_expected.to have_attributes(requested?: expected_requested?) }
-      it { is_expected.to have_attributes(succeeded?: expected_succeeded?) }
-      it { is_expected.to have_attributes(failed?: expected_failed?) }
+      it 'has the expected attributes' do
+        expect(flow).to have_attributes(
+          requested?: expected_requested?,
+          succeeded?: expected_succeeded?,
+          failed?: expected_failed?,
+          expired?: expected_expired?)
+      end
     end
   end
 
@@ -128,6 +144,35 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
   end
 
   describe '#succeed!' do
+    let(:current_time) { Time.current }
+    let(:exp_timestamp) { current_time.to_i + 30.minutes.to_i }
+
+    around do |example|
+      travel_to(current_time) { example.run }
+    end
+
+    context 'when oidc_id_token_claims contains exp claim' do
+      let(:oidc_id_token_claims) { { 'exp' => exp_timestamp } }
+
+      it 'sets the state to authenticated and includes expiration data' do
+        expect { flow.succeed!(oidc_id_token_claims) }.to change { flow.succeeded? }.from(false).to(true)
+
+        session_data = session.dig('omniauth_step_up_auth', provider, scope)
+        expect(session_data['exp_timestamp']).to eq(exp_timestamp)
+      end
+    end
+
+    context 'when oidc_id_token_claims does not contain exp claim' do
+      let(:oidc_id_token_claims_without_exp) { { 'other_claim' => 'value' } }
+
+      it 'sets the state to authenticated without expiration data' do
+        expect { flow.succeed!(oidc_id_token_claims_without_exp) }.to change { flow.succeeded? }.from(false).to(true)
+
+        session_data = session.dig('omniauth_step_up_auth', provider, scope)
+        expect(session_data.keys).not_to include('exp_timestamp')
+      end
+    end
+
     it 'sets the state to authenticated' do
       expect { flow.succeed! }.to change { flow.succeeded? }.from(false).to(true)
     end

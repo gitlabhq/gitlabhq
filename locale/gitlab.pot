@@ -64388,6 +64388,9 @@ msgstr ""
 msgid "Step-up authentication required."
 msgstr ""
 
+msgid "Step-up authentication session has expired. Please authenticate again."
+msgstr ""
+
 msgid "Still loading…"
 msgstr ""
 

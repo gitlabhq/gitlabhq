@@ -7,6 +7,13 @@ title: Troubleshooting Git
 description: Tips to resolve Git issues.
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 Sometimes things don't work the way they should or as you might expect when
 you're using Git. Here are some tips on troubleshooting and resolving issues
 with Git.
@@ -44,9 +51,9 @@ Git includes a complete set of [traces for debugging Git commands](https://git-s
 - `GIT_TRACE_PACKET=1`: enables packet-level tracing for network operations.
 - `GIT_CURL_VERBOSE=1`: enables `curl`'s verbose output, which [may include credentials](https://curl.se/docs/manpage.html#-v).
 
-## Broken pipe errors on `git push`
+## `Broken pipe` errors on `git push`
 
-'Broken pipe' errors can occur when attempting to push to a remote repository.
+`Broken pipe` errors can occur when attempting to push to a remote repository.
 When pushing you usually see:
 
 ```plaintext
@@ -107,7 +114,7 @@ This should be done cautiously and only if you have server access.
       sudo gitlab-ctl reconfigure
       ```
 
-### Stream 0 was not closed cleanly
+### Error: `stream 0 was not closed cleanly`
 
 If you see this error, it may be caused by a slow internet connection:
 
@@ -150,8 +157,8 @@ To configure SSH on the client side:
   ```
 
 - On Windows, if you are using PuTTY, go to your session properties, then
-  go to "Connection" and under "Sending of null packets to keep
-  session active", set `Seconds between keepalives (0 to turn off)` to `60`.
+  go to **Connection** and under **Sending of null packets to keep session active**,
+  set `Seconds between keepalives (0 to turn off)` to `60`.
 
 To configure SSH on the server side, edit `/etc/ssh/sshd_config` and add:
 
@@ -264,7 +271,7 @@ remote: Calculating new repository size... (canceled after 729ms)
 This could be used to further investigate what operation is performing poorly
 and provide GitLab with more information on how to improve the service.
 
-### Error: Operation timed out
+### Error: `Operation timed out`
 
 If you encounter an error like this when using Git, it usually indicates a network issue:
 
@@ -281,7 +288,7 @@ To help identify the underlying issue:
   To learn about MTR and how to read its output, see the Cloudflare article
   [What is My Traceroute (MTR)?](https://www.cloudflare.com/en-gb/learning/network-layer/what-is-mtr/).
 
-## Error: transfer closed with outstanding read data remaining
+## Error: `transfer closed with outstanding read data remaining`
 
 Sometimes, when cloning old or large repositories, the following error is shown when running `git clone` over HTTP:
 
@@ -310,7 +317,14 @@ To decrease the cloning depth to `1`, run:
     GIT_DEPTH: 1
   ```
 
-## Password expired error on Git fetch with SSH for LDAP user
+## `Your password expired` error on Git fetch with SSH for LDAP user
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If `git fetch` returns this `HTTP 403 Forbidden` error on GitLab Self-Managed,
 the password expiration date (`users.password_expires_at`) for this user in the
@@ -348,7 +362,7 @@ To resolve this issue, you can update the password expiration by either:
 
 The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332455).
 
-## Error on Git fetch: "HTTP Basic: Access Denied"
+## Error on Git fetch: `HTTP Basic: Access Denied`
 
 If you receive an `HTTP Basic: Access denied` error when using Git over HTTP(S),
 refer to the [two-factor authentication troubleshooting guide](../../user/profile/account/two_factor_authentication_troubleshooting.md).
@@ -379,6 +393,13 @@ To resolve this, specify a username string. Use one of the following methods, re
   ```
 
 ## `401` errors logged during successful `git clone`
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When cloning a repository with HTTP, the
 [`production_json.log`](../../administration/logs/_index.md#production_jsonlog) file
@@ -441,6 +462,19 @@ your IP address has been blocked by the failed-authentication ban:
 fatal: unable to access 'https://gitlab.com/group/project.git/': The requested URL returned error: 403
 ```
 
+The failed authentication ban limits differ depending if you are using a
+[GitLab Self-Managed](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
+or [GitLab SaaS](../../user/gitlab_com/_index.md#ip-blocks).
+
+### Check logs for failed authentications
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 The `403` can be seen in the [`production_json.log`](../../administration/logs/_index.md#production_jsonlog):
 
 ```json
@@ -475,7 +509,3 @@ If your IP address has been blocked, a corresponding log entry exists in the
     "request_method":"GET",
     "path":"/group/project.git/info/refs?service=git-upload-pack"}
 ```
-
-The failed authentication ban limits differ depending if you are using a
-[GitLab Self-Managed](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
-or [GitLab SaaS](../../user/gitlab_com/_index.md#ip-blocks).

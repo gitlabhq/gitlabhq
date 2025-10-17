@@ -1899,12 +1899,50 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(user.reload.bio).to eq('')
     end
 
-    it "updates user with organization" do
-      put api(path, admin, admin_mode: true), params: { organization: 'GitLab' }
+    context 'with param :organization' do
+      context 'when existing attribute :organization is blank' do
+        before do
+          user.update!(user_detail_organization: '')
+        end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['organization']).to eq('GitLab')
-      expect(user.reload.user_detail_organization).to eq('GitLab')
+        it 'updates user with organization' do
+          put api(path, admin, admin_mode: true), params: { organization: 'GitLab' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['organization']).to eq('GitLab')
+          expect(user.reload.user_detail_organization).to eq('GitLab')
+        end
+      end
+
+      context 'when existing attribute :organization is present' do
+        before do
+          user.update!(user_detail_organization: 'Other org')
+        end
+
+        it 'updates user without organization' do
+          put api(path, admin, admin_mode: true), params: {}
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['organization']).to eq('Other org')
+          expect(user.reload.user_detail_organization).to eq('Other org')
+        end
+
+        it 'updates user with empty organization' do
+          put api(path, admin, admin_mode: true), params: { organization: '' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['organization']).to eq('')
+          expect(user.reload.user_detail_organization).to eq('')
+        end
+
+        it 'updates user with nil organization' do
+          put api(path, admin, admin_mode: true), params: { organization: nil }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['organization']).to eq('')
+          expect(user.reload.user_detail_organization).to eq('')
+        end
+      end
     end
 
     it 'updates user with avatar' do

@@ -40,13 +40,14 @@ export class ToolbarExtension {
 
   static setupVue(el) {
     client.cache.writeQuery({ query: getToolbarItemsQuery, data: { items: { nodes: [] } } });
-    const ToolbarComponent = Vue.extend(SourceEditorToolbar);
 
-    const toolbar = new ToolbarComponent({
+    return new Vue({
       el,
       apolloProvider,
+      render(createElement) {
+        return createElement(SourceEditorToolbar);
+      },
     });
-    toolbar.$mount();
   }
 
   /**

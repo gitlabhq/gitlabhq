@@ -18,6 +18,14 @@ module Gitlab
           worker_partition
         ].freeze
 
+        TIMEOUT_EXCEPTIONS = [
+          ActiveRecord::AdapterTimeout,
+          ActiveRecord::ConnectionTimeoutError,
+          ActiveRecord::QueryCanceled,
+          ActiveRecord::StatementTimeout,
+          ActiveRecord::LockWaitTimeout
+        ].freeze
+
         included do |job_class|
           REQUIRED_COLUMNS.each do |column|
             validates column, presence: true

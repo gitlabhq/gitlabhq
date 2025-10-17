@@ -55,7 +55,7 @@ Your [merge request homepage](../homepage.md) shows your merge requests in progr
 awaiting review from you. The merge requests you need to review are in the **Review requested** category.
 To see all merge requests that need your attention, use one of these methods:
 
-- Press the <kbd>Shift</kbd> + <kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
+- Press the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
 - On the left sidebar, select **Merge requests** ({{< icon name="merge-request">}}).
 - On the left sidebar, select **Search or go to** then, from the dropdown list, select **Merge requests I'm working on**.
 
@@ -158,7 +158,7 @@ your status from **Awaiting review** ({{< icon name="dash-circle">}}) to
 To start your review of a merge request:
 
 1. Either:
-   - Press <kbd>Shift</kbd> + <kbd>r</kbd> to go to your **Review requests** page.
+   - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Review requests** page.
    - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
 <!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 

@@ -171,7 +171,7 @@ To search for a file, press <kbd>t</kbd> anywhere in your project, or:
 
    ![Find file button](img/file_finder_v17_2.png)
 
-1. Optional. To narrow the search options, press <kbd>Command</kbd> + <kbd>K</kbd> or
+1. Optional. To narrow the search options, press <kbd>Command</kbd>+<kbd>K</kbd> or
    select **Commands** on the lower right corner of the dialog:
    - For **Pages or actions**, enter <kbd>></kbd>.
    - For **Users**, enter <kbd>@</kbd>.
