@@ -669,6 +669,35 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
         expect(execute_update).to be_falsey
       end
     end
+
+    context 'with inheritance from parent group' do
+      let_it_be_with_reload(:grandparent_group) { group }
+      let_it_be_with_reload(:parent_group) { create(:group, :private, parent: grandparent_group) }
+      let_it_be_with_reload(:group) { create(:group, :private, parent: parent_group) }
+      let_it_be(:user) { create(:user, owner_of: group) }
+
+      before do
+        grandparent_group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+      end
+
+      context 'when updating to disabled (nil)' do
+        let(:params) { { step_up_auth_required_oauth_provider: nil } }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when updating with valid provider' do
+        let(:params) { { step_up_auth_required_oauth_provider: 'openid_connect_aad' } }
+
+        it { is_expected.to be_falsey }
+
+        it 'does not change step_up_auth_required_oauth_provider value' do
+          expect { execute_update }
+            .to not_change { group.reload.namespace_settings.step_up_auth_required_oauth_provider }
+            .and not_change { group.reload.namespace_settings.step_up_auth_required_oauth_provider_from_self_or_inherited }
+        end
+      end
+    end
   end
 
   context 'updating default_branch_protection' do

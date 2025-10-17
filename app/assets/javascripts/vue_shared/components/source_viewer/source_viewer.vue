@@ -3,6 +3,8 @@ import { debounce } from 'lodash';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import LineHighlighter from '~/blob/line_highlighter';
 import { EVENT_ACTION, EVENT_LABEL_VIEWER, CODEOWNERS_FILE_NAME } from './constants';
@@ -147,6 +149,7 @@ export default {
           filePath: this.blob.path,
           fromLine: chunk.startingFrom + 1,
           toLine: chunk.startingFrom + chunk.totalLines,
+          ignoreRevs: parseBoolean(getParameterByName('ignore_revs')),
         },
       });
 

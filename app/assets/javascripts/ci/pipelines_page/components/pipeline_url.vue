@@ -208,7 +208,7 @@ export default {
           <gl-link
             v-if="mergeRequestRef"
             :href="mergeRequestRef.path || mergeRequestRef.webPath"
-            class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
+            class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
             data-testid="merge-request-ref"
             @click="trackClick('click_mr_ref')"
             >{{ mergeRequestRef.iid }}</gl-link
@@ -216,7 +216,7 @@ export default {
           <gl-link
             v-else
             :href="refUrl"
-            class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
+            class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
             data-testid="commit-ref-name"
             @click="trackClick('click_commit_name')"
             >{{ commitRef.name || pipeline.ref }}</gl-link
@@ -236,7 +236,7 @@ export default {
         />
         <gl-link
           :href="commitUrl"
-          class="gl-mr-0 gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
+          class="gl-mr-0 gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
           data-testid="commit-short-sha"
           @click="trackClick('click_commit_sha')"
           >{{ commitShortSha }}</gl-link

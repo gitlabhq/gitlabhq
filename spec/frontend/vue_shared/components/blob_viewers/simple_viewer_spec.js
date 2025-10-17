@@ -8,7 +8,7 @@ import {
 } from '~/vue_shared/components/blob_viewers/constants';
 import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-
+import * as urlUtility from '~/lib/utils/url_utility';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
 
@@ -98,6 +98,7 @@ describe('Blob Simple Viewer component', () => {
 
     describe('Blame component', () => {
       beforeEach(() => {
+        jest.spyOn(urlUtility, 'getParameterByName').mockReturnValue('true');
         createComponent({ propsData: { showBlame: true } });
       });
       it('renders a Blame component with correct props', async () => {
@@ -119,6 +120,7 @@ describe('Blob Simple Viewer component', () => {
             fullPath: 'test',
             ref: 'test',
             toLine: MAX_BLAME_LINES,
+            ignoreRevs: true,
           }),
         );
       });

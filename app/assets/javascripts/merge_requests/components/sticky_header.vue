@@ -218,7 +218,7 @@ export default {
                 <gl-link
                   :title="getNoteableData.source_branch"
                   :href="getNoteableData.source_branch_path"
-                  class="ref-container gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-px-2 gl-text-sm gl-font-monospace"
+                  class="ref-container gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-px-2 gl-font-monospace gl-text-sm"
                   data-testid="source-branch"
                 >
                   <span
@@ -247,7 +247,7 @@ export default {
                 <gl-link
                   :title="getNoteableData.target_branch"
                   :href="getNoteableData.target_branch_path"
-                  class="ref-container gl-ml-2 gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-px-2 gl-text-sm gl-font-monospace"
+                  class="ref-container gl-ml-2 gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-px-2 gl-font-monospace gl-text-sm"
                 >
                   {{ getNoteableData.target_branch }}
                 </gl-link>

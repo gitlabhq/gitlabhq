@@ -243,13 +243,6 @@ That's all of the required database changes.
 
     has_one :cool_widget_state, autosave: false, inverse_of: :cool_widget, class_name: 'Geo::CoolWidgetState'
 
-    # Override the `all` default if not all records can be replicated. For an
-    # example of an existing Model that needs to do this, see
-    # `EE::MergeRequestDiff`.
-    # scope :available_replicables, -> { all }
-
-    scope :available_verifiables, -> { joins(:cool_widget_state) }
-
     scope :with_verification_state, ->(state) {
       joins(:cool_widget_state)
         .where(cool_widget_states: { verification_state: verification_state_value(state) })

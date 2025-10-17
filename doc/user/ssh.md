@@ -547,6 +547,47 @@ Alternative tools include:
 - [Cygwin](https://www.cygwin.com)
 - [PuTTYgen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 0.81 and later (earlier versions are [vulnerable to disclosure attacks](https://www.openwall.com/lists/oss-security/2024/04/15/6))
 
+## Disable SSH Keys for enterprise users
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `enterprise_disable_ssh_keys`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group that the enterprise user belongs to.
+
+Disabling the SSH Keys of a group's [enterprise users](enterprise_user/_index.md):
+
+- Stops the enterprise users from adding new SSH Keys. This behavior applies
+  even if an enterprise user is also an administrator of the group.
+- Disables the existing SSH Keys of the enterprise users.
+
+{{< alert type="warning" >}}
+
+Disabling SSH Keys for enterprise users does not disable deployment keys for [service accounts](profile/service_accounts.md).
+
+{{< /alert >}}
+
+To disable the enterprise users' SSH Keys:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Enterprise users**, select **Disable SSH Keys**.
+1. Select **Save changes**.
+
+When you delete or block an enterprise user account, their personal SSH Keys are automatically revoked.
+
 ## Overriding SSH settings on the GitLab server
 
 GitLab integrates with the system-installed SSH daemon and designates a user

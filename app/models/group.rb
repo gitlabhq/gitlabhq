@@ -186,6 +186,7 @@ class Group < Namespace
     :setup_for_company,
     :step_up_auth_required_oauth_provider,
     :step_up_auth_required_oauth_provider=,
+    :step_up_auth_required_oauth_provider_from_self_or_inherited,
     to: :namespace_settings
   )
 

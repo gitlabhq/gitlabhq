@@ -6,7 +6,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:subgroup, refind: true) { create(:group, parent: group) }
+  let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
   let(:namespace_settings) { group.namespace_settings }
 
   it_behaves_like 'sanitizable', :namespace_settings, %i[default_branch_name]
@@ -732,6 +732,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
       before do
         stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config_with_step_up_auth])
+        allow(Devise).to receive(:omniauth_providers).and_return([ommiauth_provider_config_with_step_up_auth.name])
       end
 
       it { is_expected.to validate_inclusion_of(:step_up_auth_required_oauth_provider).in_array([ommiauth_provider_config_with_step_up_auth.name]) }
@@ -739,6 +740,99 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       it { is_expected.to allow_value(ommiauth_provider_config_with_step_up_auth.name).for(:step_up_auth_required_oauth_provider) }
       it { is_expected.to allow_value('').for(:step_up_auth_required_oauth_provider) }
       it { is_expected.not_to allow_value('google_oauth2').for(:step_up_auth_required_oauth_provider).with_message('is not included in the list') }
+
+      context 'when parent group defines step-up auth provider' do
+        let_it_be_with_reload(:subsubgroup) { create(:group, parent: subgroup) }
+
+        subject { subsubgroup.namespace_settings }
+
+        before do
+          group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+        end
+
+        it { is_expected.not_to allow_value('openid_connect').for(:step_up_auth_required_oauth_provider).with_message("cannot be changed because it is inherited from parent group \"#{group.name}\"") }
+        it { is_expected.to allow_value(nil).for(:step_up_auth_required_oauth_provider) }
+      end
+    end
+  end
+
+  describe '#step_up_auth_required_oauth_provider_inherited_namespace_setting and #step_up_auth_required_oauth_provider_from_self_or_inherited' do
+    let_it_be_with_reload(:group) { group }
+    let_it_be_with_reload(:subgroup) { subgroup }
+    let_it_be_with_reload(:subsubgroup) { create(:group, parent: subgroup) }
+
+    let(:step_up_provider_oidc) do
+      GitlabSettings::Options.new(
+        name: 'oidc',
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: { acr: 'gold' }
+            }
+          }
+        }
+      )
+    end
+
+    let(:step_up_provider_oidc_aad) do
+      GitlabSettings::Options.new(
+        name: 'oidc_aad',
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: [step_up_provider_oidc, step_up_provider_oidc_aad])
+      allow(Devise).to receive(:omniauth_providers).and_return([step_up_provider_oidc.name, step_up_provider_oidc_aad.name])
+
+      subsubgroup.namespace_settings.update!(step_up_auth_required_oauth_provider: subsubgroup_step_up_provider)
+      subgroup.namespace_settings.update!(step_up_auth_required_oauth_provider: subgroup_step_up_provider)
+      group.namespace_settings.update!(step_up_auth_required_oauth_provider: group_step_up_provider)
+    end
+
+    where(:group_step_up_provider, :subgroup_step_up_provider, :subsubgroup_step_up_provider, :test_group, :expected_inherited_namespace, :expected_provider_from_self_or_inherited) do
+      # Test inheritance precedence (most distant ancestor wins)
+      'oidc_aad' | 'oidc' | nil    | ref(:subsubgroup) | ref(:group)    | 'oidc_aad'
+      'oidc_aad' | nil    | nil    | ref(:subsubgroup) | ref(:group)    | 'oidc_aad'
+      nil        | 'oidc' | nil    | ref(:subsubgroup) | ref(:subgroup) | 'oidc'
+
+      # Test own value takes precedence over inheritance
+      nil        | 'oidc' | 'oidc' | ref(:subsubgroup) | ref(:subgroup) | 'oidc'
+      nil        | nil    | 'oidc' | ref(:subsubgroup) | nil            | 'oidc'
+
+      # Test middle level inheritance
+      'oidc_aad' | nil    | nil    | ref(:subgroup)    | ref(:group)    | 'oidc_aad'
+      nil        | 'oidc' | nil    | ref(:subgroup)    | nil            | 'oidc'
+
+      # Test root level (no inheritance possible)
+      'oidc_aad' | nil    | nil    | ref(:group)       | nil            | 'oidc_aad'
+
+      # Test no providers anywhere
+      nil        | nil    | nil    | ref(:subsubgroup) | nil            | nil
+      nil        | nil    | nil    | ref(:subgroup)    | nil            | nil
+      nil        | nil    | nil    | ref(:group)       | nil            | nil
+    end
+
+    with_them do
+      describe '#step_up_auth_required_oauth_provider_inherited_namespace_setting' do
+        subject { test_group.namespace_settings.step_up_auth_required_oauth_provider_inherited_namespace_setting&.namespace }
+
+        it { is_expected.to eq expected_inherited_namespace }
+      end
+
+      describe '#step_up_auth_required_oauth_provider_from_self_or_inherited' do
+        subject { test_group.namespace_settings&.step_up_auth_required_oauth_provider_from_self_or_inherited }
+
+        it { is_expected.to eq expected_provider_from_self_or_inherited }
+      end
     end
   end
 end

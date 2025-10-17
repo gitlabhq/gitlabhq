@@ -53,3 +53,5 @@ module UserSettings
     end
   end
 end
+
+UserSettings::SshKeysController.prepend_mod

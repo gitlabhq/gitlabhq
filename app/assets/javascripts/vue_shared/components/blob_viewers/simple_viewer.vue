@@ -1,5 +1,7 @@
 <script>
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import Blame from '../source_viewer/components/blame_info.vue';
 import { calculateBlameOffset, shouldRender, toggleBlameClasses } from '../source_viewer/utils';
 import blameDataQuery from '../source_viewer/queries/blame_data.query.graphql';
@@ -137,6 +139,7 @@ export default {
           filePath: this.blobPath,
           fromLine,
           toLine,
+          ignoreRevs: parseBoolean(getParameterByName('ignore_revs')),
         },
       });
 

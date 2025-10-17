@@ -241,6 +241,24 @@ See also how to [prevent your runner registration workflow from breaking](https:
 
 <div class="deprecation breaking-change" data-milestone="20.0">
 
+### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.1</span>
+- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414236).
+
+</div>
+
+You can use GraphQL to query the amount of storage used by the GitLab Dependency Proxy. However, the `dependencyProxyTotalSizeInBytes` field is limited to about 2 gigabytes, which is not always large enough for the Dependency Proxy. As a result, `dependencyProxyTotalSizeInBytes` is deprecated and will be removed in GitLab 20.0.
+
+Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="20.0">
+
 ### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
 <div class="deprecation-notes">
@@ -297,6 +315,24 @@ The configuration arguments disabled for authentication tokens are:
 - `--maintenance-note`
 
 This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ci/runners/runners_scope/) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="20.0">
+
+### Removal of `migrationState` field in `ContainerRepository` GraphQL API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/459869).
+
+</div>
+
+The `migrationState` field in the `ContainerRepositoryType` of the GitLab GraphQL API will be removed in GitLab 20.0. This deprecation is part of our efforts to streamline and improve our API.
+
+To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ContainerRepositoryType`. Remove any references to the `migrationState` field and adjust your application logic accordingly.
 
 </div>
 
@@ -642,24 +678,6 @@ Update any GraphQL queries that use the `currentUser.todos.target` field to use 
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.1</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414236).
-
-</div>
-
-You can use GraphQL to query the amount of storage used by the GitLab Dependency Proxy. However, the `dependencyProxyTotalSizeInBytes` field is limited to about 2 gigabytes, which is not always large enough for the Dependency Proxy. As a result, `dependencyProxyTotalSizeInBytes` is deprecated and will be removed in GitLab 17.0.
-
-Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`
 
 <div class="deprecation-notes">
@@ -711,24 +729,6 @@ Starting in GitLab 18.0, the maximum [number of jobs in active pipelines](https:
 The [pipeline subscriptions](https://docs.gitlab.com/ci/pipelines/#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated) feature is deprecated and will no longer be supported as of GitLab 18.0, with complete removal scheduled for GitLab 19.0. Pipeline subscriptions are used to run downstream pipelines based on tag pipelines in upstream projects.
 
 Instead, use [CI/CD jobs with pipeline trigger tokens](https://docs.gitlab.com/ci/triggers/#use-a-cicd-job) to trigger pipelines when another pipeline runs. This method is more reliable and flexible than pipeline subscriptions.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### Removal of `migrationState` field in `ContainerRepository` GraphQL API
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.6</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/459869).
-
-</div>
-
-The `migrationState` field in the `ContainerRepositoryType` of the GitLab GraphQL API will be removed in GitLab 18.0. This deprecation is part of our efforts to streamline and improve our API.
-
-To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ContainerRepositoryType`. Remove any references to the `migrationState` field and adjust your application logic accordingly.
 
 </div>
 

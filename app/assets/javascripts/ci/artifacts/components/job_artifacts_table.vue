@@ -556,7 +556,7 @@ export default {
           </gl-link>
           <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="commit" :size="12" class="gl-mr-2" />
-            <gl-link :href="item.commitPath" class="gl-text-sm gl-text-default gl-font-monospace">
+            <gl-link :href="item.commitPath" class="gl-font-monospace gl-text-sm gl-text-default">
               {{ item.shortSha }}
             </gl-link>
           </span>
@@ -564,7 +564,7 @@ export default {
         <div>
           <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="branch" :size="12" class="gl-mr-1" />
-            <gl-link :href="item.refPath" class="gl-text-sm gl-text-default gl-font-monospace">
+            <gl-link :href="item.refPath" class="gl-font-monospace gl-text-sm gl-text-default">
               {{ item.refName }}
             </gl-link>
           </span>

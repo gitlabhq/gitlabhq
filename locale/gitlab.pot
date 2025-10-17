@@ -32490,6 +32490,9 @@ msgstr ""
 msgid "GroupSettings|Delete immediately"
 msgstr ""
 
+msgid "GroupSettings|Disable SSH Keys"
+msgstr ""
+
 msgid "GroupSettings|Disable personal access tokens"
 msgstr ""
 
@@ -32560,6 +32563,9 @@ msgid "GroupSettings|Hide email address from public profile"
 msgstr ""
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
+msgstr ""
+
+msgid "GroupSettings|If enabled, enterprise users cannot use SSH Keys. %{learn_more_link}."
 msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise users cannot use personal access tokens. %{learn_more_link}."
@@ -32634,6 +32640,9 @@ msgstr ""
 msgid "GroupSettings|Select the project containing your custom Insights file."
 msgstr ""
 
+msgid "GroupSettings|Selected step-up authentication provider for this namespace"
+msgstr ""
+
 msgid "GroupSettings|Service access tokens expiration enforced setting was not saved"
 msgstr ""
 
@@ -32647,6 +32656,9 @@ msgid "GroupSettings|Settings that apply only to enterprise users associated wit
 msgstr ""
 
 msgid "GroupSettings|Step-up authentication"
+msgstr ""
+
+msgid "GroupSettings|Step-up authentication is inherited from parent group \"%{parent_group_name}\" and cannot be changed at this level."
 msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
@@ -32707,6 +32719,9 @@ msgid "GroupSettings|You must have the Owner role in the target group"
 msgstr ""
 
 msgid "GroupSettings|You will need to update your local repositories to point to the new location."
+msgstr ""
+
+msgid "GroupSettings|cannot be changed because it is inherited from parent group \"%{parent_name}\""
 msgstr ""
 
 msgid "GroupSettings|cannot be changed by you"

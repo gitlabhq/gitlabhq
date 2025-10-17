@@ -66,6 +66,8 @@ class NamespaceSetting < ApplicationRecord
   } }, allow_nil: true
   validates :duo_agent_platform_request_count, numericality: { greater_than_or_equal_to: 0 }
 
+  validate :validate_step_up_auth_inheritance, if: :will_save_change_to_step_up_auth_required_oauth_provider?
+
   sanitizes! :default_branch_name
   nullify_if_blank :default_branch_name
 
@@ -176,6 +178,32 @@ class NamespaceSetting < ApplicationRecord
     allow_enterprise_bypass_placeholder_confirmation? && enterprise_bypass_expires_at.present? && enterprise_bypass_expires_at.future?
   end
 
+  # Returns the namespace_setting that provides the inherited step-up auth provider (excluding self)
+  # This is the base method that all other inheritance methods build upon
+  def step_up_auth_required_oauth_provider_inherited_namespace_setting
+    # Use traversal_ids for efficient ancestor lookup
+    # traversal_ids is an array like [root_id, parent_id, ..., current_id]
+    # We need to exclude self (current_id is the last element)
+    ancestor_ids = namespace.traversal_ids[0..-2] # All except the last element (self)
+
+    return if ancestor_ids.empty?
+
+    # Single optimized query using traversal_ids
+    # Order by position in traversal_ids array (root first, so most distant ancestor has precedence)
+    @step_up_auth_inherited_setting ||= self.class
+      .joins(:namespace)
+      .where(namespace_id: ancestor_ids)
+      .where.not(step_up_auth_required_oauth_provider: nil)
+      .order(Arel.sql("array_position(ARRAY[#{ancestor_ids.join(',')}]::bigint[], namespace_settings.namespace_id)"))
+      .includes(:namespace)
+      .first
+  end
+
+  # Returns the active/effective step-up auth provider, considering inheritance from parent groups
+  def step_up_auth_required_oauth_provider_from_self_or_inherited
+    step_up_auth_required_oauth_provider_inherited_namespace_setting&.step_up_auth_required_oauth_provider || step_up_auth_required_oauth_provider
+  end
+
   private
 
   def validate_enterprise_bypass_expires_at
@@ -192,6 +220,19 @@ class NamespaceSetting < ApplicationRecord
     elsif enterprise_bypass_expires_at > max_date
       errors.add(:enterprise_bypass_expires_at, s_('BulkImports|The date must not be more than one year in the future.'))
     end
+  end
+
+  def validate_step_up_auth_inheritance
+    # Use the base method to check inheritance and get parent info in one call
+    inherited_namespace_setting = step_up_auth_required_oauth_provider_inherited_namespace_setting
+    return unless inherited_namespace_setting
+
+    errors.add(:step_up_auth_required_oauth_provider,
+      format(
+        s_('GroupSettings|cannot be changed because it is inherited from parent group "%{parent_name}"'),
+        parent_name: inherited_namespace_setting.namespace.name
+      )
+    )
   end
 
   def set_pipeline_variables_default_role

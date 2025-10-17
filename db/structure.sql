@@ -20531,6 +20531,7 @@ CREATE TABLE namespace_settings (
     duo_remote_flows_enabled boolean,
     lock_duo_remote_flows_enabled boolean DEFAULT false NOT NULL,
     duo_agent_platform_request_count integer DEFAULT 0 NOT NULL,
+    disable_ssh_keys boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_d9644d516f CHECK ((char_length(step_up_auth_required_oauth_provider) <= 255)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),

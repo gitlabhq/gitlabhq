@@ -190,6 +190,7 @@ reduce the security footprint of your users.
 
 - [Disable password authentication](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
 - [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
+- [Disable SSH Keys](../../user/ssh.md#disable-ssh-keys-for-enterprise-users).
 - [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).
 
 ### Restrict group and project creation
@@ -253,11 +254,14 @@ the user, you can choose to either:
 
 ### Release an enterprise user
 
-You can remove enterprise management features from a user account. Removing an enterprise user might be required if, for
-example, a user wants to keep their GitLab account after leaving their company. Releasing a user
-does not alter their account roles or permissions, but removes the management options
-for the group Owner. If you need to permanently remove the account, you should
-[delete the user](#delete-an-enterprise-user) instead.
+You can remove enterprise management features from a user account. You might need to
+do this if, for example, a user wants to keep their GitLab account after leaving their
+company. When you release a user, their account roles and permissions remain the same,
+but the group Owner loses management options for that user. For example, the released
+user can access authentication methods that the group Owner previously disabled.
+
+If you need to permanently remove the account, [delete the user](#delete-an-enterprise-user)
+instead.
 
 To release the user, GitLab support must update the user's primary email address to an
 email address from a non-verified domain. This action automatically releases the account.

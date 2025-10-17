@@ -10,6 +10,7 @@ import {
   EVENT_LABEL_VIEWER,
   CODEOWNERS_FILE_NAME,
 } from '~/vue_shared/components/source_viewer/constants';
+import * as urlUtility from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
@@ -78,6 +79,7 @@ describe('Source Viewer component', () => {
 
   beforeEach(() => {
     jest.spyOn(Tracking, 'event');
+    jest.spyOn(urlUtility, 'getParameterByName').mockReturnValue('true');
     return createComponent();
   });
 
@@ -188,6 +190,7 @@ describe('Source Viewer component', () => {
             filePath: BLOB_DATA_MOCK.path,
             fullPath: projectPath,
             ref: currentRef,
+            ignoreRevs: true,
           }),
         );
       });

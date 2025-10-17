@@ -34,3 +34,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::UserSettings::Menus::SshKeysMenu.prepend_mod

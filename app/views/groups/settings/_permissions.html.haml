@@ -42,6 +42,7 @@
           .label-description
             = s_('GroupSettings|Settings that apply only to enterprise users associated with this group.')
         = render_if_exists 'groups/settings/enterprise_users_pats', f: f, group: @group
+        = render_if_exists 'groups/settings/enterprise_users_ssh_keys', f: f, group: @group
         = render_if_exists 'groups/settings/hide_email_on_profile', f: f, group: @group
         = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group
         = render_if_exists 'groups/settings/allow_personal_snippets', f: f, group: @group

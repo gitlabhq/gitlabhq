@@ -4,7 +4,7 @@ import { debounce, escape } from 'lodash';
 
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isValidURL } from '~/lib/utils/url_utility';
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
@@ -129,7 +129,6 @@ export default {
       error: '',
       textInputAttrs: {
         class: '!gl-min-w-fit',
-        'aria-label': s__("WorkItem|Search existing items or enter an item's URL or reference ID"),
       },
     };
   },
@@ -240,6 +239,7 @@ export default {
     <gl-token-selector
       ref="tokenSelector"
       v-model="workItemsToAdd"
+      :aria-label="s__('WorkItem|Search existing items or enter an item\'s URL or reference ID')"
       :dropdown-items="availableWorkItems"
       :loading="isLoading"
       :placeholder="s__('WorkItem|Search existing items or enter an item\'s URL or reference ID')"

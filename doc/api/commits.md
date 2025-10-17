@@ -1017,8 +1017,8 @@ If the commit is associated with a merge request, target the commit in the merge
 
 When you set a commit status:
 
-- Existing pipelines are searched first to append the job to
-- If no suitable pipeline exists, a new pipeline is created with `CI_PIPELINE_SOURCE: external`
+- Existing pipelines are searched first to append the job to.
+- If no suitable pipeline exists, a new pipeline is created with `CI_PIPELINE_SOURCE: external`.
 
 For more information, see [external commit statuses](../ci/ci_cd_for_external_repos/external_commit_statuses.md).
 
@@ -1029,17 +1029,13 @@ Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-dupl
 
 {{< /alert >}}
 
-#### Conflicts
-
-If an update is already in progress for a SHA/ref combination, a `409` error is returned.
-Retry the request to handle this error.
-
-#### Pipeline Limits
-
 If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline):
 
 - If `pipeline_id` is specified, a `422` error is returned: `The number of jobs has exceeded the limit`.
 - Otherwise, a new pipeline is created.
+
+If an update is already in progress for a SHA/ref combination, a `409` error is returned.
+To handle this error, retry the request.
 
 ```plaintext
 POST /projects/:id/statuses/:sha

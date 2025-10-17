@@ -118,7 +118,7 @@ export default {
         </gl-sprintf>
       </template>
       <template #targetBranch>
-        <span class="gl-font-bold gl-font-monospace" data-testid="widget-target-branch">{{
+        <span class="gl-font-monospace gl-font-bold" data-testid="widget-target-branch">{{
           targetBranchEscaped
         }}</span>
       </template>

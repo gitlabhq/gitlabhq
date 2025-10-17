@@ -3,7 +3,7 @@
 
 Create this issue under https://gitlab.com/gitlab-org/security/gitlab
 
-Set the title to: `Description of the original issue`
+Set the title to: `Title of the original issue`
 -->
 
 ## Prior to starting the security work
