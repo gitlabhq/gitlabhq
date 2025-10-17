@@ -19985,6 +19985,9 @@ msgstr ""
 msgid "Create snippet"
 msgstr ""
 
+msgid "Create subgroup"
+msgstr ""
+
 msgid "Create testing scenarios by defining project conditions in your development platform."
 msgstr ""
 
@@ -32736,12 +32739,6 @@ msgstr ""
 msgid "GroupsEmptyState|A group is a collection of several projects"
 msgstr ""
 
-msgid "GroupsEmptyState|Create project"
-msgstr ""
-
-msgid "GroupsEmptyState|Create subgroup"
-msgstr ""
-
 msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group."
 msgstr ""
 
@@ -32749,6 +32746,9 @@ msgid "GroupsEmptyState|No groups found"
 msgstr ""
 
 msgid "GroupsEmptyState|No public or internal groups"
+msgstr ""
+
+msgid "GroupsEmptyState|Organize your work with projects and subgroups"
 msgstr ""
 
 msgid "GroupsEmptyState|Other groups this group has been %{linkStart}invited to%{linkEnd} will appear here."
@@ -32775,10 +32775,7 @@ msgstr ""
 msgid "GroupsEmptyState|This group has not been invited to any other projects."
 msgstr ""
 
-msgid "GroupsEmptyState|Use groups to manage multiple projects and members."
-msgstr ""
-
-msgid "GroupsEmptyState|Use projects to store and access issues, wiki pages, and other GitLab features."
+msgid "GroupsEmptyState|Use projects to store Git repositories and collaborate on issues. Use subgroups as folders to organize related projects and manage team access."
 msgstr ""
 
 msgid "GroupsEmptyState|You do not have necessary permissions to create a subgroup or project in this group. Please contact an owner of this group to create a new subgroup or project."
@@ -58520,10 +58517,16 @@ msgstr ""
 msgid "SecurityAttributes|All changes saved"
 msgstr ""
 
+msgid "SecurityAttributes|An error has occurred while applying security attributes."
+msgstr ""
+
 msgid "SecurityAttributes|An error has occurred while deleting the security attribute."
 msgstr ""
 
 msgid "SecurityAttributes|An error has occurred while deleting the security category."
+msgstr ""
+
+msgid "SecurityAttributes|An error has occurred while removing the security attribute."
 msgstr ""
 
 msgid "SecurityAttributes|An error has occurred while saving the security attribute."

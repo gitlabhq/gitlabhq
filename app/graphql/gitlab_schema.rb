@@ -35,6 +35,8 @@ class GitlabSchema < GraphQL::Schema
 
   lazy_resolve ::Gitlab::Graphql::Lazy, :force
 
+  complexity_cost_calculation_mode(:legacy)
+
   class << self
     def multiplex(queries, **kwargs)
       kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context]) unless kwargs.key?(:max_complexity)

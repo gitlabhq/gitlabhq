@@ -1064,10 +1064,7 @@ module Ci
 
     def builds_in_self_and_project_descendants
       latest_pipelines = self_and_project_descendants.preload(:source_bridge)
-
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        latest_pipelines = latest_pipelines.reject { |pipeline| pipeline&.source_bridge&.retried? }
-      end
+      latest_pipelines = latest_pipelines.reject { |pipeline| pipeline&.source_bridge&.retried? }
 
       Ci::Build.in_partition(self).latest.where(pipeline: latest_pipelines)
     end
@@ -1262,35 +1259,19 @@ module Ci
     end
 
     def can_generate_codequality_reports?
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
-      else
-        complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
-      end
+      complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
     end
 
     def test_report_summary
       strong_memoize(:test_report_summary) do
-        if Feature.enabled?(:show_child_reports_in_mr_page, project)
-          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results_in_self_and_descendants)
-        else
-          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
-        end
+        Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results_in_self_and_descendants)
       end
     end
 
     def test_reports
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
-          latest_test_report_builds_in_self_and_project_descendants.find_each do |build|
-            build.collect_test_reports!(test_reports)
-          end
-        end
-      else
-        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
-          latest_test_report_builds.find_each do |build|
-            build.collect_test_reports!(test_reports)
-          end
+      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
+        latest_test_report_builds_in_self_and_project_descendants.find_each do |build|
+          build.collect_test_reports!(test_reports)
         end
       end
     end
@@ -1304,33 +1285,17 @@ module Ci
     end
 
     def codequality_reports
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
-          latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
-            build.collect_codequality_reports!(codequality_reports)
-          end
-        end
-      else
-        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
-          latest_report_builds(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
-            build.collect_codequality_reports!(codequality_reports)
-          end
+      Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+        latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
+          build.collect_codequality_reports!(codequality_reports)
         end
       end
     end
 
     def terraform_reports
-      if Feature.enabled?(:show_child_reports_in_mr_page, project)
-        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
-            build.collect_terraform_reports!(terraform_reports)
-          end
-        end
-      else
-        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-          latest_report_builds(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
-            build.collect_terraform_reports!(terraform_reports)
-          end
+      ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+        latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+          build.collect_terraform_reports!(terraform_reports)
         end
       end
     end
@@ -1559,11 +1524,7 @@ module Ci
 
     def has_test_reports?
       strong_memoize(:has_test_reports) do
-        if Feature.enabled?(:show_child_reports_in_mr_page, project)
-          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:test)).exists?
-        else
-          has_reports?(::Ci::JobArtifact.of_report_type(:test))
-        end
+        latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:test)).exists?
       end
     end
 

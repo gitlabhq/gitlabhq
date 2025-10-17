@@ -28,7 +28,8 @@ class Label < ApplicationRecord
   after_save :unprioritize_all!, if: -> { saved_change_to_attribute?(:archived) && archived }
 
   validate :ensure_lock_on_merge_allowed
-  validate :exactly_one_parent
+  validates_with ExactlyOnePresentValidator, fields: [:group, :project, :organization], error_key: :parent,
+    message: ->(fields) { format(_("exactly one of %{parent_types} is required"), parent_types: fields.join(', ')) }
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
 
   # we validate the description against DESCRIPTION_LENGTH_MAX only for labels being created and on updates if
@@ -290,13 +291,6 @@ class Label < ApplicationRecord
   end
 
   private
-
-  def exactly_one_parent
-    parent_types = [:group, :project, :organization]
-    return if parent_types.count { |assoc| association(assoc).load_target } == 1
-
-    errors.add(:parent, format(_("exactly one of %{parent_types} is required"), parent_types: parent_types.join(', ')))
-  end
 
   def validate_description_length?
     return false unless description_changed?

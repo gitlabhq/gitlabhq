@@ -1012,8 +1012,29 @@ Example response:
 
 ### Set commit pipeline status
 
-Add or update the pipeline status of a commit. If the commit is associated with a merge request,
-the API call must target the commit in the merge request's source branch.
+Add or update the status of a commit represented by a job in an `external` stage.
+If the commit is associated with a merge request, target the commit in the merge request's source branch.
+
+When you set a commit status:
+
+- Existing pipelines are searched first to append the job to
+- If no suitable pipeline exists, a new pipeline is created with `CI_PIPELINE_SOURCE: external`
+
+For more information, see [external commit statuses](../ci/ci_cd_for_external_repos/external_commit_statuses.md).
+
+{{< alert type="note" >}}
+
+When duplicate pipelines exist for the same commit, it can be ambiguous which pipeline receives the external status.
+Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-duplicate-pipelines).
+
+{{< /alert >}}
+
+#### Conflicts
+
+If an update is already in progress for a SHA/ref combination, a `409` error is returned.
+Retry the request to handle this error.
+
+#### Pipeline Limits
 
 If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline):
 

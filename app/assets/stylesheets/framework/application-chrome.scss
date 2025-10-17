@@ -772,9 +772,7 @@
 
   }
 
-  .super-sidebar:not(.super-sidebar-is-mobile),
-  .super-sidebar .bottom-scrim,
-  .super-sidebar .top-scrim {
+  .super-sidebar:not(.super-sidebar-is-mobile) {
     background: transparent !important;
   }
 

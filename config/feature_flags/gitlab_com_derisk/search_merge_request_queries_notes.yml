@@ -1,0 +1,10 @@
+---
+name: search_merge_request_queries_notes
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572590
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206377
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/573750
+milestone: '18.6'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false

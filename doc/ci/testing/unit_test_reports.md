@@ -187,7 +187,7 @@ The test name is copied to your clipboard.
 
 ## View test results in pipelines
 
-View all test suites and cases in pipeline details.
+View all test suites and cases in pipeline details, including results from child pipelines.
 
 To view pipeline test results:
 

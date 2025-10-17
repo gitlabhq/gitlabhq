@@ -65,17 +65,20 @@ To create an agent:
 1. On the left sidebar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**.
 1. Select **New agent**.
-1. Complete the fields:
-   1. **Project**: From the dropdown list, select a project. This is the agent's associated project.
-   1. **Name**: Enter the name of your agent.
-   1. **Description**: Enter a description of the agent.
-   1. **Tools**: Optional. Select which built-in tools the agent can use.
-      For example, select **Create issue** if you want the agent to be able to create issues automatically.
-   1. **System prompt**: Enter guidelines to define the agent's personality or shape how it behaves.
-   1. **Visibility level**: Choose whether the agent is public or private.
+1. Under **Basic information**:
+   1. In **Display name**, enter a name for the agent.
+   1. In **Description**, enter a description for the agent.
+1. Under **Access rights**:
+   1. For **Visibility**, select **Private** or **Public**.
+   1. From the **Source project** dropdown list, select a project for the agent.
+1. Under **Prompts**, in **System prompt**, enter a prompt to define
+   the agent's personality, expertise, and behavior.
+1. Optional. Under **Available tools**, from the **Tools** dropdown list,
+   select which tools the agent can access.
+   For example, for the agent to create issues automatically, select **Create issue**.
 1. Select **Create agent**.
 
-The agent is added to the AI Catalog.
+The agent now appears in the AI Catalog.
 
 ## Enable an agent
 

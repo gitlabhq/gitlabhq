@@ -2073,11 +2073,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    if Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.has_test_reports?
-    else
-      diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
-    end
+    !!diff_head_pipeline&.has_test_reports?
   end
 
   # rubocop: disable Metrics/AbcSize -- Despite being long, this method is quite straightforward. Splitting it in smaller chunks would likely reduce readability.
@@ -2123,11 +2119,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_terraform_reports?
-    if Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:terraform))
-    else
-      diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
-    end
+    !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
   def compare_accessibility_reports
@@ -2167,11 +2159,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    if Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
-    else
-      diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
-    end
+    !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
   end
 
   def compare_codequality_reports

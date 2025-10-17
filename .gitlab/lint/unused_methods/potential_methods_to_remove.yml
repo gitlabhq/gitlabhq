@@ -161,8 +161,6 @@ from_dependency_scanning?:
   file: ee/app/models/package_metadata/advisory.rb
 set_validity_checks!:
   file: ee/app/models/project_security_setting.rb
-requirement_issue_sync_error!:
-  file: ee/app/models/requirements_management/requirement.rb
 last_linked_owner?:
   file: ee/app/models/saml_provider.rb
 index_in:

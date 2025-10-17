@@ -465,18 +465,18 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     end
 
     context 'when user has subgroup creation permissions but not project creation permissions' do
-      it 'only displays "New subgroup" button' do
+      it 'only displays "Create subgroup" button' do
         visit group_path(group)
 
         within_testid 'group-buttons' do
-          expect(page).to have_link('New subgroup')
-          expect(page).not_to have_link('New project')
+          expect(page).to have_link(_('Create subgroup'))
+          expect(page).not_to have_link(_('Create project'))
         end
       end
     end
 
     context 'when user has project creation permissions but not subgroup creation permissions' do
-      it 'only displays "New project" button' do
+      it 'only displays "Create project" button' do
         group.update!(project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         user = create(:user)
 
@@ -486,21 +486,21 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
         visit group_path(group)
         within_testid 'group-buttons' do
-          expect(page).to have_link('New project')
-          expect(page).not_to have_link('New subgroup')
+          expect(page).to have_link(_('Create project'))
+          expect(page).not_to have_link(_('Create subgroup'))
         end
       end
     end
 
     context 'when user has project and subgroup creation permissions' do
-      it 'displays "New subgroup" and "New project" buttons' do
+      it 'displays "Create subgroup" and "Create project" buttons' do
         group.update!(project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
 
         visit group_path(group)
 
         within_testid 'group-buttons' do
-          expect(page).to have_link('New subgroup')
-          expect(page).to have_link('New project')
+          expect(page).to have_link(_('Create subgroup'))
+          expect(page).to have_link(_('Create project'))
         end
       end
     end
@@ -522,19 +522,19 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
           )
         end
 
-        it 'does not display the "New project" button' do
+        it 'does not display the "Create project" button' do
           visit group_path(group)
 
           within_testid 'group-buttons' do
-            expect(page).not_to have_link('New project')
+            expect(page).not_to have_link(_('Create project'))
           end
         end
 
-        it 'does not display the "New subgroup" button' do
+        it 'does not display the "Create subgroup" button' do
           visit group_path(group)
 
           within_testid 'group-buttons' do
-            expect(page).not_to have_link('New subgroup')
+            expect(page).not_to have_link(_('Create subgroup'))
           end
         end
       end

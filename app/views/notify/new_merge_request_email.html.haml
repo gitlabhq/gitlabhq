@@ -10,8 +10,6 @@
   = assignees_label(@merge_request)
 .reviewer
   = reviewers_label(@merge_request)
-.approvers
-  = render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter
 
 - if @merge_request.description
   .md.gl-mt-5

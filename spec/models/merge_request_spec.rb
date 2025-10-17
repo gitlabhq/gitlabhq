@@ -3460,17 +3460,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'returns true if head pipeline is finished' do
         expect(subject).to eq(true)
       end
-
-      context 'when feature flags are disabled' do
-        before do
-          stub_feature_flags(show_child_reports_in_mr_page: false)
-          stub_feature_flags(show_child_security_reports_in_mr_widget: false)
-        end
-
-        it 'returns false regardless of child pipeline reports' do
-          expect(subject).to eq(false)
-        end
-      end
     end
   end
 

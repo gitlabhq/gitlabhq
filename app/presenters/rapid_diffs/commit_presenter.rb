@@ -18,6 +18,10 @@ module RapidDiffs
       diff_file_project_commit_path(resource.project, resource.id)
     end
 
+    def discussions_endpoint
+      discussions_namespace_project_commit_path(project.namespace, resource.project, resource.id)
+    end
+
     override(:reload_stream_url)
     def reload_stream_url(offset: nil, diff_view: nil)
       diffs_stream_project_commit_path(

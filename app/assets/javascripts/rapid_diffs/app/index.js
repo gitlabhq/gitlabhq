@@ -10,7 +10,7 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/quirks/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
-import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapters';
+import { VIEWER_ADAPTERS } from '~/rapid_diffs/app/adapter_configs/base';
 import { camelizeKeys } from '~/lib/utils/object_utils';
 import { disableBrokenContentVisibility } from '~/rapid_diffs/app/quirks/content_visibility_fix';
 import { useApp } from '~/rapid_diffs/stores/app';

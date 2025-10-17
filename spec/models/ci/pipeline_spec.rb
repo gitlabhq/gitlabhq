@@ -4766,16 +4766,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'does not return builds from previous child pipelines' do
           expect(builds).to contain_exactly(build, new_child_build)
         end
-
-        context 'when feature flag show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'returns all child pipeline builds' do
-            expect(builds).to contain_exactly(build, child_build, new_child_build)
-          end
-        end
       end
     end
 
@@ -5285,14 +5275,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let_it_be(:child_pipeline) { create(:ci_pipeline, :with_codequality_report, child_of: pipeline) }
 
         it { expect(subject).to be_truthy }
-
-        context 'with FF show_child_reports_in_mr_page disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it { expect(subject).to be_falsey }
-        end
       end
     end
   end
@@ -5322,16 +5304,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'aggregates reports from all pipelines' do
           expect(subject.total).to include(time: 1.26, count: 6, success: 0, failed: 0, skipped: 0, error: 6)
         end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
-          end
-        end
       end
     end
 
@@ -5349,16 +5321,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'aggregates reports from all pipelines' do
           expect(subject.total).to include(time: 0.42, count: 2, success: 0, failed: 0, skipped: 0, error: 2)
-        end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
-          end
         end
       end
     end
@@ -5412,18 +5374,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.success_count).to be(5)
           expect(subject.failed_count).to be(5)
         end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total_count).to be(7)
-            expect(subject.success_count).to be(5)
-            expect(subject.failed_count).to be(2)
-          end
-        end
       end
     end
 
@@ -5472,16 +5422,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.total_count).to be(3)
           expect(subject.success_count).to be(0)
           expect(subject.failed_count).to be(3)
-        end
-
-        context 'when FF show_child_reports_in_mr_page is disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'only shows parent summary' do
-            expect(subject.total_count).to be(0)
-          end
         end
       end
     end
@@ -5565,16 +5505,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns codequality report with collected data' do
           expect(codequality_reports.degradations_count).to eq(3)
         end
-
-        context 'with FF show_child_reports_in_mr_page disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'returns codequality reports without degradations' do
-            expect(codequality_reports.degradations).to be_empty
-          end
-        end
       end
     end
   end
@@ -5598,16 +5528,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'returns a terraform plan with child data' do
           expect(terraform_reports.plans.count).to eq(3)
-        end
-
-        context 'with FF show_child_reports_in_mr_page disabled' do
-          before do
-            stub_feature_flags(show_child_reports_in_mr_page: false)
-          end
-
-          it 'does not show child pipeline reports' do
-            expect(terraform_reports.plans.count).to eq(2)
-          end
         end
       end
     end

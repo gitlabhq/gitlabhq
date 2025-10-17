@@ -1,6 +1,6 @@
 - if !lazy?
-  - helpers.add_page_startup_api_call diffs_stats_endpoint
-  - helpers.add_page_startup_api_call diff_files_endpoint
+  - prefetch_endpoints.each do |endpoint|
+    - helpers.add_page_startup_api_call endpoint
   - if diffs_stream_url
     - helpers.content_for :startup_js do
       - javascript_tag nonce: content_security_policy_nonce do

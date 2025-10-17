@@ -580,7 +580,7 @@ variables:
 
 {{< history >}}
 
-- **Assign** event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567787) in GitLab 18.5.
+- **Assign** and **Assign reviewer** event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567787) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -596,18 +596,24 @@ To create a flow trigger:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flow triggers**.
 1. Select **New flow trigger**.
-1. Complete the fields:
-   - In **Description**, enter a description for the flow trigger.
-   - From the **Event types** dropdown list, select one or more event types:
-     - **Mention**: when the service account user is mentioned in a comment on an issue or merge request.
-     - **Assign**: when the service account user is assigned to an issue or merge request.
-   - From the **Service account user** dropdown list,
-     select the service account user.
-   - In **Config path**, enter the location of the flow configuration file
-     (for example `.gitlab/duo/flows/claude.yaml`).
+1. In **Description**, enter a description for the flow trigger.
+1. From the **Event types** dropdown list, select one or more event types:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
+1. From the **Service account user** dropdown list,
+   select the service account user.
+1. For **Configuration source**, select one of the following:
+   - **AI Catalog**: From the flows configured for this project,
+     select a flow for the trigger to execute.
+   - **Configuration path**: Enter the path to the flow configuration file
+     (for example, `.gitlab/duo/flows/claude.yaml`).
 1. Select **Create flow trigger**.
 
-You have created the flow trigger. Check that it appears in **Automate** > **Flow triggers**.
+The flow trigger now appears in **Automate** > **Flow triggers**.
 
 You can now mention the CLI agent by its service account username in a comment to accomplish
 a task. The CLI agent then tries to accomplish that task, using the flow trigger defined by the user.

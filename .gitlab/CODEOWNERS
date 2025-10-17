@@ -463,7 +463,7 @@ Dangerfile
 /ee/app/assets/javascripts/metrics/
 /ee/app/assets/javascripts/tracing/
 
-^[Analytics Instrumentation] @gitlab-org/analytics-section/analytics-instrumentation/engineers
+[Analytics Instrumentation] @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /ee/lib/gitlab/usage_data_counters/
 /ee/lib/ee/gitlab/usage_data.rb
 /lib/gitlab/usage_data.rb
@@ -473,6 +473,8 @@ Dangerfile
 /ee/lib/ee/gitlab/usage/
 /config/metrics/
 /ee/config/metrics/
+/config/events/
+/ee/config/events/
 /app/workers/gitlab_service_ping_worker.rb
 /spec/workers/gitlab_service_ping_worker_spec.rb
 /ee/spec/lib/gitlab/usage_data_counters/
@@ -483,6 +485,8 @@ Dangerfile
 /ee/spec/lib/ee/gitlab/usage_data_counters/
 /ee/spec/lib/ee/gitlab/usage/
 /ee/spec/config/metrics/
+/app/assets/javascripts/tracking/
+/scripts/internal_events/
 
 ^[Growth Experiments] @gitlab-org/growth/experiment-devs
 /app/experiments/

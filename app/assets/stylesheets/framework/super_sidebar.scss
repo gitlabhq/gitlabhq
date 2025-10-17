@@ -682,6 +682,10 @@ $scroll-scrim-height: 2.25rem;
 
     .top-scrim {
       background: linear-gradient(180deg, var(--gl-color-alpha-dark-8) 0%, $transparent-rgba 100%);
+
+      .gl-dark & {
+        background: linear-gradient(180deg, var(--gl-color-alpha-dark-24) 0%, $transparent-rgba 100%);
+      }
     }
   }
 
@@ -690,7 +694,11 @@ $scroll-scrim-height: 2.25rem;
     margin-top: -$scroll-scrim-height;
 
     .bottom-scrim {
-      background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-background-color-default));
+      background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-color-alpha-dark-8));
+
+      .gl-dark & {
+        background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-color-alpha-dark-24));
+      }
     }
   }
 

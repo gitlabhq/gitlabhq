@@ -67,18 +67,6 @@
   published_at: 2025-10-16
   release: 18.5
 
-- name: Model selection for GitLab Duo Agentic Chat in VS Code and JetBrains IDEs
-  description: |
-    Easily choose your preferred AI model right in GitLab Duo Chat, now available in the VS Code and JetBrains IDEs. Use the dropdown list in the GitLab Duo Chat panel to select among Claude, GPT, and other supported models. Model availability is managed by your organization admins, ensuring you have access to the right models for your workflow.
-  stage: ai-powered
-  self-managed: true
-  gitlab-com: true
-  available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/#select-an-llm-for-a-feature
-  image_url: https://about.gitlab.com/images/18_5/ide-model-selection.png
-  published_at: 2025-10-16
-  release: 18.5
-
 - name: GPT-5 now available as a model option for GitLab Duo Agentic Chat
   description: |
     OpenAI GPT-5 is now available as a GitLab AI Vendor model when selecting a model for GitLab Duo Agent Platform. When configured by Owners of a top-level group on GitLab.com and instance Administrators on Self-Managed and Dedicated, end-users can select to use GPT-5 with GitLab Duo features. Top-level owners and administrators can continue to set organization-wide model preferences through namespace or instance settings, or allow end-user to choose from all available GitLab AI Vendor models.

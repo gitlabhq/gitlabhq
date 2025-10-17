@@ -15,6 +15,8 @@ module RapidDiffs
       @presenter = presenter
     end
 
+    protected
+
     def app_data
       {
         diffs_stream_url: diffs_stream_url,
@@ -28,6 +30,10 @@ module RapidDiffs
         update_user_endpoint: update_user_endpoint,
         lazy: lazy?
       }
+    end
+
+    def prefetch_endpoints
+      [diffs_stats_endpoint, diff_files_endpoint]
     end
 
     def update_user_endpoint
