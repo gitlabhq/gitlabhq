@@ -124,11 +124,11 @@ To add a commit diff comment:
 1. Enter your comment.
 1. Submit your comment:
    - To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
-     - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
-     - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+     - macOS: <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>Enter</kbd>
+     - All other OSes: <kbd>Shift</kbd>+<kbd>Control</kbd>+<kbd>Enter</kbd>
    - To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
-     - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
-     - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
+     - macOS: <kbd>Command</kbd>+<kbd>Enter</kbd>
+     - All other OSes: <kbd>Control</kbd>+<kbd>Enter</kbd>
 
 The comment displays on the merge request's **Overview** tab.
 

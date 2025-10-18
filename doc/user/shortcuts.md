@@ -33,18 +33,18 @@ These shortcuts are available in most areas of GitLab:
 | Keyboard shortcut                  | Description |
 |------------------------------------|-------------|
 | <kbd>?</kbd>                       | Show or hide the shortcut reference sheet. |
-| <kbd>Shift</kbd> + <kbd>h</kbd>    | Go to the homepage. |
-| <kbd>Shift</kbd> + <kbd>p</kbd>    | Go to your **Projects** page. |
-| <kbd>Shift</kbd> + <kbd>g</kbd>    | Go to your **Groups** page. |
-| <kbd>Shift</kbd> + <kbd>a</kbd>    | Go to your **Activity** page. |
-| <kbd>Shift</kbd> + <kbd>l</kbd>    | Go to your **Milestones** page. |
-| <kbd>Shift</kbd> + <kbd>s</kbd>    | Go to your **Snippets** page. |
+| <kbd>Shift</kbd>+<kbd>h</kbd>      | Go to the homepage. |
+| <kbd>Shift</kbd>+<kbd>p</kbd>      | Go to your **Projects** page. |
+| <kbd>Shift</kbd>+<kbd>g</kbd>      | Go to your **Groups** page. |
+| <kbd>Shift</kbd>+<kbd>a</kbd>      | Go to your **Activity** page. |
+| <kbd>Shift</kbd>+<kbd>l</kbd>      | Go to your **Milestones** page. |
+| <kbd>Shift</kbd>+<kbd>s</kbd>      | Go to your **Snippets** page. |
 | <kbd>s</kbd> / <kbd>/</kbd>        | Put cursor in the search bar. |
 | <kbd>f</kbd>                       | Focus filter bar |
-| <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your **Issues** page. |
-| <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your **Merge requests** page. |
-| <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your **Review requests** page. |
-| <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your **To-Do List** page. |
+| <kbd>Shift</kbd>+<kbd>i</kbd>      | Go to your **Issues** page. |
+| <kbd>Shift</kbd>+<kbd>m</kbd>      | Go to your **Merge requests** page. |
+| <kbd>Shift</kbd>+<kbd>r</kbd>      | Go to your **Review requests** page. |
+| <kbd>Shift</kbd>+<kbd>t</kbd>      | Go to your **To-Do List** page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
 | <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
@@ -58,8 +58,8 @@ descriptions):
 | macOS shortcut                                       | Windows shortcut                                     | Description |
 |------------------------------------------------------|------------------------------------------------------|-------------|
 | <kbd>↑</kbd>                                         | <kbd>↑</kbd>                                         | Edit your last comment. You must be in a blank text field below a thread, and you must already have at least one comment in the thread. |
-| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | Toggle Markdown preview when editing text in a text field that has **Write** and **Preview** tabs at the top. |
-| <kbd>Command</kbd> + <kbd>b</kbd>                    | <kbd>Control</kbd> + <kbd>b</kbd>                    | Bold the selected text (surround it with `**`). |
+| <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>p</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>p</kbd> | Toggle Markdown preview when editing text in a text field that has **Write** and **Preview** tabs at the top. |
+| <kbd>Command</kbd>+<kbd>b</kbd>                    | <kbd>Control</kbd> + <kbd>b</kbd>                    | Bold the selected text (surround it with `**`). |
 | <kbd>Command</kbd> + <kbd>i</kbd>                    | <kbd>Control</kbd> + <kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | Strike through the selected text (surround it with `~~`). |
 | <kbd>Command</kbd> + <kbd>k</kbd>                    | <kbd>Control</kbd> + <kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
