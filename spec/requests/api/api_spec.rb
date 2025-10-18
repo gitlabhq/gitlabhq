@@ -604,9 +604,14 @@ RSpec.describe API::API, feature_category: :system_access do
 
     shared_examples 'audited request' do
       it 'adds audit log' do
+        token_scope = token.scopes.to_s.split.map(&:to_sym)
         expect(::Gitlab::Audit::Auditor).to receive(:audit).with(hash_including({
           name: 'api_request_access_with_scope',
-          message: "API request with token scopes [:ai_workflows] - GET /api/v4#{path}"
+          message: "API request with token scopes #{token_scope} - GET /api/v4#{path}",
+          author: request_author,
+          additional_details: hash_including({
+            scoped_user_id: user.id
+          })
         })).and_call_original
 
         subject
@@ -630,6 +635,7 @@ RSpec.describe API::API, feature_category: :system_access do
 
       context 'when token with ai_workflows scope is used' do
         let(:status) { :ok }
+        let(:request_author) { user }
 
         it_behaves_like 'audited request'
 
@@ -639,6 +645,23 @@ RSpec.describe API::API, feature_category: :system_access do
 
           it_behaves_like 'audited request'
         end
+      end
+
+      context 'when composite identity token is used' do
+        let_it_be(:service_account_user) { create(:user, :service_account, composite_identity_enforced: true) }
+        let_it_be(:token) do
+          create(:oauth_access_token, user: service_account_user, scopes: [:ai_workflows, "user:#{user.id}"])
+        end
+
+        let(:status) { :ok }
+        let(:request_author) { service_account_user }
+
+        before do
+          project.add_developer(service_account_user)
+          ::Gitlab::Auth::Identity.link_from_web_request(service_account: service_account_user, scoped_user: user)
+        end
+
+        it_behaves_like 'audited request'
       end
 
       context 'when token with ai_workflows scope is not used' do

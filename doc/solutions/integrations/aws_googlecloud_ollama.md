@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Step-by-step guide for deploying GitLab Duo Self-Hosted with a self-hosted LLM on Ollama, covering AWS and Google Cloud setups, AI Gateway integration, and feature configuration.
 title: 'GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with Ollama Integration'
 ---
 

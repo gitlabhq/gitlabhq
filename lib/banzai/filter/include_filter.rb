@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'glfm_markdown'
+
 module Banzai
   module Filter
     # Detect include / transclusion syntax. Include the specified file/url, replacing
@@ -14,7 +16,7 @@ module Banzai
       include Gitlab::Utils::StrongMemoize
 
       # This regex must be able to handle `\n` or `\r\n` line endings
-      REGEX = Regexp.new('^::include\{file=(?<include>.{1,1024})}([\r\n]?$|\z)',
+      REGEX = Regexp.new('^::include\{file=(?<include>.{1,1024})}(?=\R|\z)',
         timeout: Banzai::Filter::Concerns::TimeoutFilterHandler::RENDER_TIMEOUT)
 
       def call
@@ -24,13 +26,7 @@ module Banzai
         @total_included = 0
 
         @text = Gitlab::Utils::Gsub.gsub_with_limit(@text, REGEX, limit: max_includes) do |match_data|
-          filename = match_data[:include]
-
-          if filename
-            read_lines(filename)
-          else
-            match_data[0]
-          end
+          read_lines(match_data[:include])
         end
 
         @text = Banzai::Filter::TruncateSourceFilter.new(@text, context).call if @total_included > 0
@@ -178,11 +174,11 @@ module Banzai
       end
 
       def markdown_link(url)
-        "[#{url}](#{url})"
+        "[#{::GLFMMarkdown.escape_commonmark_inline(url)}](#{::GLFMMarkdown.escape_commonmark_link_destination(url)})"
       end
 
       def error_message(filename, reason)
-        "**Error including '#{markdown_link(filename)}' : #{reason}**\n"
+        "**Error including '#{markdown_link(filename)}': #{reason}**"
       end
     end
   end

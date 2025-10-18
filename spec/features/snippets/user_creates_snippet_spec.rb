@@ -144,11 +144,8 @@ RSpec.describe 'User creates snippet', :with_current_organization, :js, feature_
 
       # Adds a cache buster for checking if the image exists as Selenium is now handling the cached requests
       # not anymore as requests when they come straight from memory cache.
-      # accept_confirm is needed because of https://gitlab.com/gitlab-org/gitlab/-/issues/262102
       reqs = inspect_requests do
-        visit("#{link}?ran=#{SecureRandom.base64(20)}") do
-          page.driver.browser.switch_to.alert.accept
-        end
+        visit("#{link}?ran=#{SecureRandom.base64(20)}")
       end
       expect(reqs.first.status_code).to eq(200)
     end

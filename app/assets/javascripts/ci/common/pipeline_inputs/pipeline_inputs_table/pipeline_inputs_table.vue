@@ -82,7 +82,11 @@ export default {
         </span>
       </template>
       <template #cell(description)="{ item }">
-        <markdown v-if="hasDescription(item.description)" :markdown="item.description" />
+        <markdown
+          v-if="hasDescription(item.description)"
+          :markdown="item.description"
+          :with-images="true"
+        />
         <gl-icon v-else name="dash" :size="12" />
       </template>
       <template #cell(type)="{ item }">

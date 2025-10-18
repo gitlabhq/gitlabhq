@@ -87,15 +87,8 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
 
       it 'recognizes url syntax' do
         expect(filter('::include{file=https://example.com}', context))
-          .to eq '[https://example.com](https://example.com)'
+          .to eq '[https://example\\.com](<https://example.com>)'
       end
-    end
-
-    it 'handles case where the include filename is nil' do
-      allow(Gitlab::Utils::Gsub).to receive(:gsub_with_limit)
-        .with(anything, anything, limit: anything).and_yield(0 => 'foo')
-
-      expect(filter('::include{file=file.md}', context)).to eq 'foo'
     end
   end
 
@@ -110,8 +103,8 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
       end
 
       it 'replaces text with error' do
-        expect(filter('::include{file=missing.md}', context))
-          .to eq "**Error including '[missing.md](missing.md)' : not found**\n"
+        expect(filter("::include{file=missing.md}\n", context))
+          .to eq "**Error including '[missing\\.md](<missing.md>)': not found**\n"
       end
     end
 
@@ -141,7 +134,8 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
     let_it_be(:http_url) { 'http://example.com' }
     let_it_be(:http_include) { '::include{file=http://example.com}' }
     let_it_be(:https_include) { '::include{file=https://example.com}' }
-    let_it_be(:invalid_url) { '::include{file=http://example.com/foo bar}' }
+    let_it_be(:space_include) { '::include{file=http://example.com/foo bar}' }
+    let_it_be(:bad_include) { '::include{file=https://example.com/esc)aped}' }
 
     context 'when wiki_asciidoc_allow_uri_includes is false' do
       before do
@@ -149,8 +143,12 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
       end
 
       it 'does not allow url includes' do
-        expect(filter(http_include, context)).to eq '[http://example.com](http://example.com)'
-        expect(filter(https_include, context)).to eq '[https://example.com](https://example.com)'
+        expect(filter(http_include, context)).to eq '[http://example\.com](<http://example.com>)'
+        expect(filter(https_include, context)).to eq '[https://example\.com](<https://example.com>)'
+      end
+
+      it 'does not allow urls that break the link syntax' do
+        expect(filter(bad_include, context)).to eq '[https://example\.com/esc\)aped](<https://example.com/esc)aped>)'
       end
 
       it 'allows non-url includes' do
@@ -174,7 +172,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
           stub_request(:get, http_url).to_return(status: 404, body: 'not found')
 
           expect(filter(http_include, context))
-            .to eq "**Error including '[http://example.com](http://example.com)' : not readable**\n"
+            .to eq "**Error including '[http://example\\.com](<http://example.com>)': not readable**"
         end
       end
 
@@ -182,8 +180,8 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
         it 'rescues the error' do
           allow(Gitlab::Git::Blob).to receive(:find).with(project.repository, ref, anything).and_return(nil)
 
-          expect(filter(invalid_url, context))
-            .to eq "**Error including '[http://example.com/foo bar](http://example.com/foo bar)' : not found**\n"
+          expect(filter(space_include, context))
+            .to eq "**Error including '[http://example\\.com/foo bar](<http://example.com/foo bar>)': not found**"
         end
       end
 

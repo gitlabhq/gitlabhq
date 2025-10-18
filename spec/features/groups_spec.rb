@@ -29,6 +29,10 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
         find("input[name='group[visibility_level]'][value='#{Gitlab::VisibilityLevel::PUBLIC}']").click
         click_button 'Create group'
 
+        # Waiting for page to load to ensure changes are saved in the backend
+        expect(page).to have_content 'successfully created'
+        wait_for_requests
+
         group = Group.find_by(name: 'test-group')
 
         expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
@@ -201,9 +205,11 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
         find("input[name='group[visibility_level]'][value='#{Gitlab::VisibilityLevel::PUBLIC}']").click
         click_button 'Create group'
 
-        group = Group.find_by(name: 'with-default-active-integration')
-
+        # Waiting for page to load to ensure changes are saved in the backend
         expect(page).to have_content("Group with-default-active-integration was successfully created.")
+        wait_for_requests
+
+        group = Group.find_by(name: 'with-default-active-integration')
 
         visit(group_settings_integrations_path(group))
 

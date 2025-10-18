@@ -63,6 +63,10 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
 
         find_by_testid('project-features-save-button').send_keys(:return)
 
+        # Waiting for page to load to ensure changes are saved in the backend
+        expect(page).to have_content('successfully updated')
+        wait_for_requests
+
         visit project_settings_merge_requests_path(project)
 
         expect(page).to have_content('Page not found')
@@ -89,6 +93,10 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
         end
 
         find_by_testid('project-features-save-button').send_keys(:return)
+
+        # Waiting for page to load to ensure changes are saved in the backend
+        expect(page).to have_content('successfully updated')
+        wait_for_requests
 
         visit project_settings_merge_requests_path(project)
 
@@ -123,6 +131,10 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
       end
 
       find_by_testid('project-features-save-button').send_keys(:return)
+
+      # Waiting for page to load to ensure changes are saved in the backend
+      expect(page).to have_content('successfully updated')
+      wait_for_requests
 
       visit project_settings_merge_requests_path(project)
 

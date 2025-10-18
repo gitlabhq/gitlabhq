@@ -52,7 +52,7 @@ RSpec.shared_examples 'work items comments' do |type|
   end
 
   context 'for work item note actions signed in user with developer role' do
-    let_it_be(:owner) { create(:user) }
+    let_it_be_with_refind(:owner) { create(:user) }
 
     before do
       project.add_owner(owner)
@@ -327,7 +327,7 @@ RSpec.shared_examples 'work items description' do
   end
 
   context 'on conflict' do
-    let_it_be(:other_user) { create(:user) }
+    let_it_be_with_refind(:other_user) { create(:user) }
     let(:expected_warning) { 'Someone edited the description at the same time you did.' }
 
     before do
@@ -650,8 +650,8 @@ end
 RSpec.shared_examples 'work items iteration' do
   include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
-  let_it_be(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
-  let_it_be(:iteration) do
+  let_it_be_with_refind(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
+  let_it_be_with_refind(:iteration) do
     create(
       :iteration,
       iterations_cadence: iteration_cadence,
@@ -661,7 +661,7 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  let_it_be(:iteration2) do
+  let_it_be_with_refind(:iteration2) do
     create(
       :iteration,
       iterations_cadence: iteration_cadence,
@@ -738,7 +738,8 @@ RSpec.shared_examples 'work items time tracking' do
     expect(page).to have_button 'estimate'
   end
 
-  it 'adds and deletes time entries and view report', :aggregate_failures do
+  it 'adds and deletes time entries and view report',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/570667' do
     add_time_entry('1d', 'First summary')
     add_time_entry('2d', 'Second summary')
     wait_for_all_requests

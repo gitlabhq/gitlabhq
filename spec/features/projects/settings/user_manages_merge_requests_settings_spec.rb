@@ -55,7 +55,11 @@ RSpec.describe 'Projects > Settings > User manages merge request settings', feat
         visit edit_project_path(project)
 
         find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
-        find_by_testid('project-features-save-button').send_keys(:return)
+        find_by_testid('project-features-save-button').click
+
+        # Waiting for page to load to ensure MR settings are saved in the backend
+        expect(page).to have_content('successfully updated')
+        wait_for_requests
 
         visit project_settings_merge_requests_path(project)
 
@@ -76,7 +80,11 @@ RSpec.describe 'Projects > Settings > User manages merge request settings', feat
         visit edit_project_path(project)
 
         find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
-        find_by_testid('project-features-save-button').send_keys(:return)
+        find_by_testid('project-features-save-button').click
+
+        # Waiting for page to load to ensure MR settings are saved in the backend
+        expect(page).to have_content('successfully updated')
+        wait_for_requests
 
         visit project_settings_merge_requests_path(project)
 
@@ -100,8 +108,12 @@ RSpec.describe 'Projects > Settings > User manages merge request settings', feat
 
       within('.sharing-permissions-form') do
         find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
-        find_by_testid('project-features-save-button').send_keys(:return)
+        find_by_testid('project-features-save-button').click
       end
+
+      # Waiting for page to load to ensure MR settings are saved in the backend
+      expect(page).to have_content('successfully updated')
+      wait_for_requests
 
       visit project_settings_merge_requests_path(project)
 

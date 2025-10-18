@@ -357,6 +357,7 @@ export default {
             v-if="descriptions[variable.key]"
             class="gl-text-subtle"
             :markdown="descriptions[variable.key]"
+            :with-images="true"
           />
         </div>
         <template #description>

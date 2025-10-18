@@ -28,6 +28,12 @@ export default {
       type: String,
       required: true,
     },
+    /* Including images expose potential security risks. Always use this with controlled and or API sanitized data */
+    withImages: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -64,7 +70,14 @@ export default {
   },
   methods: {
     getSafeHtml(markdown) {
-      return sanitize(marked.parse(markdown), markdownConfig);
+      const markdownConfigWithoutImg = this.withImages
+        ? markdownConfig
+        : {
+            ...markdownConfig,
+            ALLOWED_TAGS: markdownConfig.ALLOWED_TAGS.filter((tag) => tag !== 'img'),
+          };
+
+      return sanitize(marked.parse(markdown), markdownConfigWithoutImg);
     },
     setHoverOn(key) {
       this.hoverMap = { ...this.hoverMap, [key]: true };

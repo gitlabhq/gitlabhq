@@ -252,6 +252,7 @@ export default {
             v-if="resource.description"
             class="gl-hidden @md/panel:gl-block"
             :markdown="truncatedDescription"
+            :with-images="true"
           />
           <div
             v-if="hasComponents"

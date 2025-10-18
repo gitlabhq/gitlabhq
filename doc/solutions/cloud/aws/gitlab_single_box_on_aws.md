@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Guide to provision a single GitLab instance on AWS using Marketplace subscriptions or official GitLab AMIs, including CE/EE editions and licensing considerations.
 title: Provision GitLab on a single EC2 instance in AWS
 ---
 

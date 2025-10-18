@@ -29,6 +29,10 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       click_button('Create project')
     end
 
+    # Waiting for page to load to project is created in the backend
+    expect(page).to have_content("successfully created")
+    wait_for_requests
+
     project = Project.last
 
     expect(page).to have_current_path(project_path(project), ignore_query: true)
@@ -55,6 +59,10 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
     page.within('#content-body') do
       click_button('Create project')
     end
+
+    # Waiting for page to load to project is created in the backend
+    expect(page).to have_content("successfully created")
+    wait_for_requests
 
     project = Project.last
 
@@ -85,6 +93,10 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       page.within('#content-body') do
         click_button('Create project')
       end
+
+      # Waiting for page to load to project is created in the backend
+      expect(page).to have_content("successfully created")
+      wait_for_requests
 
       project = Project.last
 
@@ -127,7 +139,9 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
 
       click_button('Create project')
 
+      # Waiting for page to load to project is created in the backend
       expect(page).to have_content("Project 'A Subgroup Project' was successfully created")
+      wait_for_requests
 
       project = Project.last
 
@@ -156,7 +170,9 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
         click_button('Create project')
       end
 
+      # Waiting for page to load to project is created in the backend
       expect(page).to have_content("Project 'a-new-project' was successfully created")
+      wait_for_requests
 
       project = Project.find_by(name: 'a-new-project')
       expect(project.namespace).to eq(group)
@@ -182,10 +198,13 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
         click_button('Create project')
       end
 
+      # Waiting for page to load to project is created in the backend
+      expect(page).to have_content("Project 'With Default Integration' was successfully created")
+      wait_for_requests
+
       project = Project.last
 
       expect(page).to have_current_path(project_path(project), ignore_query: true)
-      expect(page).to have_content("Project 'With Default Integration' was successfully created")
 
       visit(project_settings_integrations_path(project))
 

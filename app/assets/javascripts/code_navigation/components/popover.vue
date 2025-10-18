@@ -104,7 +104,13 @@ export default {
               ref="code-output"
               class="code code-syntax-highlight-theme highlight !gl-m-0 !gl-whitespace-normal !gl-border-0 !gl-bg-transparent"
             ><doc-line v-for="(tokens, tokenIndex) in hover.tokens" :key="tokenIndex" :language="hover.language" :tokens="tokens" /></pre>
-            <markdown v-else ref="doc-output" class="gl-p-3" :markdown="hover.value" />
+            <markdown
+              v-else
+              ref="doc-output"
+              class="gl-p-3"
+              :markdown="hover.value"
+              :with-images="true"
+            />
           </div>
         </div>
         <div
