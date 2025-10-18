@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
   end
 
   context 'when bridge job is passed in as parameter' do
-    let(:ci_config_path) { nil }
+    let(:ci_config_path) { 'path/to/config.yml' }
     let(:bridge) { build_stubbed(:ci_bridge) }
 
     before do
@@ -40,7 +40,25 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
     it 'returns the content already available in command' do
       expect(config.source).to eq(:bridge_source)
       expect(config.content).to eq('the-yaml')
-      expect(config.url).to be_nil
+      expect(config.url).to eq("localhost/#{project.full_path}//path/to/config.yml")
+    end
+
+    context "when FF is disabled" do
+      before do
+        stub_feature_flags(sigstore_child_pipelines_fix: false)
+      end
+
+      it 'preserves the original behaviour' do
+        expect(config.url).to be_nil
+      end
+    end
+
+    context "with nil ci_config_path" do
+      let(:ci_config_path) { nil }
+
+      it 'returns the default location' do
+        expect(config.url).to end_with("localhost/#{project.full_path}//.gitlab-ci.yml")
+      end
     end
   end
 

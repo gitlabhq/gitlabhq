@@ -1,0 +1,10 @@
+---
+name: sigstore_child_pipelines_fix
+description:
+  feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422146
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208180
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577193
+milestone: '18.6'
+group: group::pipeline security
+type: gitlab_com_derisk
+default_enabled: false

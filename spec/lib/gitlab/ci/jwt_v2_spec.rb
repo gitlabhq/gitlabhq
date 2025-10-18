@@ -294,15 +294,51 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       end
 
       describe 'claims delegated to mapper' do
+        where(:source) do
+          [
+            :repository_source,
+            :bridge_source
+          ]
+        end
+
+        with_them do
+          let(:project_config) do
+            instance_double(
+              Gitlab::Ci::ProjectConfig,
+              url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
+              source: source
+            )
+          end
+
+          it 'delegates claims to Gitlab::Ci::JwtV2::ClaimMapper' do
+            expect(Gitlab::Ci::ProjectConfig).to receive(:new).with(
+              project: target_project,
+              sha: pipeline.sha,
+              pipeline_source: pipeline.source.to_sym,
+              pipeline_source_bridge: pipeline.source_bridge
+            ).and_return(project_config)
+
+            expect(payload[:project_id]).to eq(forked_project.id.to_s)
+            expect(payload[:ci_config_ref_uri]).to eq("#{project_config.url}@#{pipeline.source_ref_path}")
+            expect(payload[:ci_config_sha]).to eq(pipeline.sha)
+          end
+        end
+      end
+
+      context "when FF is disabled and bridge source" do
+        before do
+          stub_feature_flags(sigstore_child_pipelines_fix: false)
+        end
+
         let(:project_config) do
           instance_double(
             Gitlab::Ci::ProjectConfig,
             url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
-            source: :repository_source
+            source: :bridge_source
           )
         end
 
-        it 'delegates claims to Gitlab::Ci::JwtV2::ClaimMapper' do
+        it 'preserves original behaviour' do
           expect(Gitlab::Ci::ProjectConfig).to receive(:new).with(
             project: target_project,
             sha: pipeline.sha,
@@ -310,9 +346,8 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
             pipeline_source_bridge: pipeline.source_bridge
           ).and_return(project_config)
 
-          expect(payload[:project_id]).to eq(forked_project.id.to_s)
-          expect(payload[:ci_config_ref_uri]).to eq("#{project_config.url}@#{pipeline.source_ref_path}")
-          expect(payload[:ci_config_sha]).to eq(pipeline.sha)
+          expect(payload[:ci_config_ref_uri]).to be_nil
+          expect(payload[:ci_config_sha]).to be_nil
         end
       end
     end

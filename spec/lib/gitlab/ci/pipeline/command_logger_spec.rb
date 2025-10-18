@@ -81,7 +81,6 @@ RSpec.describe Gitlab::Ci::Pipeline::CommandLogger, feature_category: :continuou
         {
           'correlation_id' => a_kind_of(String),
           'pipeline_command.project_id' => project.id,
-          'pipeline_command.current_user_id' => project.owner.id,
           'pipeline_id' => pipeline.id,
           'pipeline_persisted' => true
         }

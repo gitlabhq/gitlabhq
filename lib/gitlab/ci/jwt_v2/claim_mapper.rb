@@ -5,7 +5,8 @@ module Gitlab
     class JwtV2
       class ClaimMapper
         MAPPER_FOR_CONFIG_SOURCE = {
-          repository_source: ClaimMapper::Repository
+          repository_source: ClaimMapper::Repository,
+          bridge_source: ClaimMapper::Bridge
         }.freeze
 
         def initialize(project_config, pipeline)
