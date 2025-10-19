@@ -293,11 +293,6 @@ export const scrollToElement = (element, options = {}) => {
   }
 };
 
-export const scrollToElementWithContext = (element, options) => {
-  const offsetMultiplier = -0.1;
-  return scrollToElement(element, { ...options, offset: window.innerHeight * offsetMultiplier });
-};
-
 /**
  * Returns a function that can only be invoked once between
  * each browser screen repaint.

@@ -390,37 +390,6 @@ describe('common_utils', () => {
       });
     });
 
-    describe('scrollToElementWithContext', () => {
-      // This is what the implementation of scrollToElementWithContext
-      // scrolls to, in case we change tha implementation
-      // it needs to be adjusted
-      const elementTopWithContext = elemTop - windowHeight * 0.1;
-
-      it('with HTMLElement scrolls with context', () => {
-        commonUtils.scrollToElementWithContext(elem);
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elementTopWithContext,
-        });
-      });
-
-      it('with Selector scrolls with context', () => {
-        commonUtils.scrollToElementWithContext(`#${id}`);
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elementTopWithContext,
-        });
-      });
-
-      it('passes through behaviour', () => {
-        commonUtils.scrollToElementWithContext(`#${id}`, { behavior: 'smooth' });
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elementTopWithContext,
-        });
-      });
-    });
-
     describe('when project studio is enabled', () => {
       beforeEach(() => {
         window.gon = {
