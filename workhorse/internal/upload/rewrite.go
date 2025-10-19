@@ -152,6 +152,9 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 		return err
 	}
 
+	// Mark if LSIF processing is being performed
+	opts.LsifProcessing = rew.filter.IsLsifProcessing()
+
 	ctx := r.Context()
 	inputReader, err := rew.filter.TransformContents(ctx, filename, p)
 	if err != nil {
@@ -165,12 +168,11 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 
 	fh, err := destination.Upload(ctx, inputReader, -1, filename, opts)
 	if err != nil {
-		switch err {
-		case destination.ErrEntityTooLarge, exif.ErrRemovingExif:
+		// Check for specific errors using errors.Is to handle wrapped errors
+		if errors.Is(err, destination.ErrEntityTooLarge) || errors.Is(err, exif.ErrRemovingExif) {
 			return err
-		default:
-			return fmt.Errorf("persisting multipart file: %w", err)
 		}
+		return fmt.Errorf("persisting multipart file: %w", err)
 	}
 
 	fields, err := fh.GitLabFinalizeFields(name)

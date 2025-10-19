@@ -181,3 +181,7 @@ func (a *artifactsUploadProcessor) TransformContents(ctx context.Context, filena
 
 	return a.SavedFileTracker.TransformContents(ctx, filename, r)
 }
+
+func (a *artifactsUploadProcessor) IsLsifProcessing() bool {
+	return a.processLSIF
+}
