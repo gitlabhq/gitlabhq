@@ -277,6 +277,7 @@ Returns [`AiCatalogItem`](#aicatalogitem).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
+| <a id="queryaicatalogitemshowsoftdeleted"></a>`showSoftDeleted` | [`Boolean`](#boolean) | Whether to show the item if it has been soft-deleted. Defaults to `false`. |
 
 ### `Query.aiCatalogItemConsumer`
 

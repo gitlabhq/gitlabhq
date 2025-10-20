@@ -80,12 +80,25 @@ The right architecture size depends primarily on your environment's expected pea
 
 Each architecture is designed to handle specific RPS targets for different types of requests (API, Web, Git). These details are described in the **Testing Methodology** section on each page.
 
-Finding out the RPS can depend notably on the specific environment setup and monitoring stack. Some potential options include:
+For comprehensive RPS analysis and data-driven sizing decisions, see [reference architecture sizing](sizing.md), which
+provides:
 
-- [GitLab Prometheus](../monitoring/prometheus/_index.md#sample-prometheus-queries) with queries like `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)`.
-- [`get-rps` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb?ref_type=heads) from GitLab Support.
+- Detailed PromQL queries for extracting peak and sustained RPS metrics.
+- Workload pattern analysis to identify component-specific adjustments.
+- Assessment methodology for monorepos, network usage, and growth planning.
+
+For quick RPS estimation, some potential options include:
+
+- [Prometheus](../monitoring/prometheus/_index.md#sample-prometheus-queries) queries, such as:
+
+  ```prometheus
+  sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)
+  ```
+
+- [`get-rps` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb?ref_type=heads)
+  from GitLab support.
 - Other monitoring solutions.
-- Load Balancer statistics.
+- Load balancer statistics.
 
 If you can't determine your RPS, we provide an alternative sizing method based on equivalent User Count by Load Category. This count is mapped to typical RPS values, considering both manual and automated usage.
 
@@ -251,6 +264,12 @@ same architecture as the primary or if each site is configured for HA.
 ### Large monorepos / Additional workloads
 
 [Large monorepos](#large-monorepos) or significant [additional workloads](#additional-workloads) can affect the performance of the environment notably. Some adjustments may be required depending on the context.
+
+For comprehensive analysis of these factors, see [reference architecture sizing](sizing.md), which provides:
+
+- Detailed assessment methodology for monorepo impacts on infrastructure.
+- Component-specific scaling recommendations for different workload patterns.
+- Network bandwidth analysis for heavy data transfer scenarios.
 
 If this situation applies to you, reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/)
 for further guidance.
