@@ -9,6 +9,8 @@ class Groups::BoardsController < Groups::ApplicationController
     push_frontend_feature_flag(:board_multi_select, group)
     push_frontend_feature_flag(:issues_list_drawer, group)
     push_force_frontend_feature_flag(:work_items_beta, !!group&.work_items_beta_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_item_tasks_on_boards,
+      !!group&.work_item_tasks_on_boards_feature_flag_enabled?)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
 

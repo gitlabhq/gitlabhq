@@ -9,6 +9,7 @@ ignore_in_report: true
 {{< details >}}
 
 - Tier: Ultimate
+- Offering: GitLab.com
 - Status: Experiment
 
 {{< /details >}}

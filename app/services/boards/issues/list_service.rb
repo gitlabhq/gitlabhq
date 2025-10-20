@@ -56,7 +56,7 @@ module Boards
       end
 
       def should_include_task?
-        parent&.work_items_beta_feature_flag_enabled?
+        parent&.work_items_beta_feature_flag_enabled? || parent&.work_item_tasks_on_boards_feature_flag_enabled?
       end
 
       def item_model

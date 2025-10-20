@@ -43,13 +43,13 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
 
   def create_params
     transformed_params
-      .permit(:client_key, :shared_secret, :base_url)
+      .permit(:client_key, :shared_secret, :base_url, :display_url)
       .merge(organization_id: Current.organization.id)
   end
 
   def update_params
     transformed_params
-      .permit(:shared_secret, :base_url)
+      .permit(:shared_secret, :base_url, :display_url)
       .merge(organization_id: Current.organization.id)
   end
 

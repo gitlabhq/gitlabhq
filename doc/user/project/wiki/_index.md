@@ -401,7 +401,7 @@ replaces the default sidebar navigation:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Wiki**.
-1. In the upper-right corner of the page, select **Add custom sidebar** ({{< icon name="settings" >}}).
+1. In the upper-left corner of the page, select **Add custom sidebar** ({{< icon name="settings" >}}).
 1. When complete, select **Save changes**.
 
 A `_sidebar` example, formatted with Markdown:

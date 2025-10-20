@@ -12,7 +12,11 @@ describe('IssueBoardFilter', () => {
 
   const findBoardsFilteredSearch = () => wrapper.findComponent(BoardFilteredSearch);
 
-  const createComponent = ({ isSignedIn = false } = {}) => {
+  const createComponent = ({
+    isSignedIn = false,
+    workItemsBetaEnabled = false,
+    workItemTasksOnBoardsEnabled = false,
+  } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
       propsData: {
         boardId: 'gid://gitlab/Board/1',
@@ -23,6 +27,10 @@ describe('IssueBoardFilter', () => {
         releasesFetchPath: '/releases',
         fullPath: 'gitlab-org',
         isGroupBoard: true,
+        glFeatures: {
+          workItemsBeta: workItemsBetaEnabled,
+          workItemTasksOnBoards: workItemTasksOnBoardsEnabled,
+        },
       },
       mocks: {
         $apollo: {},
@@ -67,5 +75,46 @@ describe('IssueBoardFilter', () => {
         expect(findBoardsFilteredSearch().props('tokens')).toEqual(orderBy(tokens, ['title']));
       },
     );
+
+    it('does not have `Task` in work item type filter token when `workItemsBeta` or `workItemTasksOnBoards` is disabled', () => {
+      createComponent({
+        isSignedIn: true,
+        workItemsBetaEnabled: false,
+        workItemTasksOnBoardsEnabled: false,
+      });
+
+      const issuesToken = findBoardsFilteredSearch()
+        .props('tokens')
+        .find(({ type }) => type === 'type');
+
+      expect(issuesToken.options).toHaveLength(2);
+      expect(issuesToken.options).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ title: 'Incident' }),
+          expect.objectContaining({ title: 'Issue' }),
+        ]),
+      );
+    });
+
+    it('has `Task` in work item type filter token when `workItemsBeta` or `workItemTasksOnBoards` is enabled', () => {
+      createComponent({
+        isSignedIn: true,
+        workItemsBetaEnabled: true,
+        workItemTasksOnBoardsEnabled: true,
+      });
+
+      const issuesToken = findBoardsFilteredSearch()
+        .props('tokens')
+        .find(({ type }) => type === 'type');
+
+      expect(issuesToken.options).toHaveLength(3);
+      expect(issuesToken.options).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ title: 'Incident' }),
+          expect.objectContaining({ title: 'Issue' }),
+          expect.objectContaining({ title: 'Task' }),
+        ]),
+      );
+    });
   });
 });

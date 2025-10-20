@@ -527,39 +527,6 @@ BEGIN
 END
 $$;
 
-CREATE FUNCTION get_sharding_key_from_notes_table() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-  note_organization_id BIGINT;
-  note_project_id BIGINT;
-  note_namespace_id BIGINT;
-BEGIN
-  IF NEW."note_id" IS NULL OR num_nonnulls(NEW."namespace_id", NEW."organization_id") = 1 THEN
-    RETURN NEW;
-  END IF;
-
-  SELECT "organization_id", "project_id", "namespace_id"
-  INTO note_organization_id, note_project_id, note_namespace_id
-  FROM "notes"
-  WHERE "id" = NEW."note_id";
-
-  IF note_organization_id IS NOT NULL THEN
-    NEW."organization_id" := note_organization_id;
-    NEW."namespace_id" := NULL;
-  ELSIF note_project_id IS NOT NULL THEN
-    SELECT "project_namespace_id" FROM "projects"
-    INTO NEW."namespace_id" WHERE "projects"."id" = note_project_id;
-    NEW."organization_id" := NULL;
-  ELSE
-    NEW."namespace_id" := note_namespace_id;
-    NEW."organization_id" := NULL;
-  END IF;
-
-  RETURN NEW;
-END
-$$;
-
 CREATE FUNCTION gitlab_schema_prevent_write() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18808,8 +18775,10 @@ CREATE TABLE jira_connect_installations (
     base_url character varying,
     instance_url text,
     organization_id bigint,
+    display_url text,
     CONSTRAINT check_4c6abed669 CHECK ((char_length(instance_url) <= 255)),
-    CONSTRAINT check_dc0d039821 CHECK ((organization_id IS NOT NULL))
+    CONSTRAINT check_dc0d039821 CHECK ((organization_id IS NOT NULL)),
+    CONSTRAINT check_fb61e0d5f7 CHECK ((char_length(display_url) <= 255))
 );
 
 CREATE SEQUENCE jira_connect_installations_id_seq
@@ -33291,6 +33260,9 @@ ALTER TABLE merge_request_cleanup_schedules
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE system_note_metadata
+    ADD CONSTRAINT check_9135b6f0b6 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE related_epic_links
     ADD CONSTRAINT check_a6d9d7c276 CHECK ((issue_link_id IS NOT NULL)) NOT VALID;
 
@@ -33320,9 +33292,6 @@ ALTER TABLE redirect_routes
 
 ALTER TABLE note_diff_files
     ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE system_note_metadata
-    ADD CONSTRAINT check_f2c4e04565 CHECK ((num_nonnulls(namespace_id, organization_id) = 1)) NOT VALID;
 
 ALTER TABLE ci_runner_taggings_group_type
     ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
@@ -42602,8 +42571,6 @@ CREATE INDEX index_system_note_metadata_on_namespace_id ON system_note_metadata 
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
 
-CREATE INDEX index_system_note_metadata_on_organization_id ON system_note_metadata USING btree (organization_id);
-
 CREATE INDEX index_tag_gpg_signatures_on_gpg_key_id ON tag_gpg_signatures USING btree (gpg_key_id);
 
 CREATE INDEX index_tag_gpg_signatures_on_gpg_key_subkey_id ON tag_gpg_signatures USING btree (gpg_key_subkey_id);
@@ -46984,13 +46951,13 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER set_namespace_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
+
 CREATE TRIGGER set_sharding_key_for_commit_user_mentions_on_insert_and_update BEFORE INSERT OR UPDATE ON commit_user_mentions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
 CREATE TRIGGER set_sharding_key_for_note_metadata_on_insert_and_update BEFORE INSERT OR UPDATE ON note_metadata FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
 CREATE TRIGGER set_sharding_key_for_suggestions_on_insert_and_update BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
-
-CREATE TRIGGER set_sharding_key_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION get_sharding_key_from_notes_table();
 
 CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
 
@@ -48086,9 +48053,6 @@ ALTER TABLE ONLY user_project_callouts
 
 ALTER TABLE ONLY projects_branch_rules_squash_options
     ADD CONSTRAINT fk_33b614a558 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY system_note_metadata
-    ADD CONSTRAINT fk_3434d396c6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_3448c97865 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;

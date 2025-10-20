@@ -409,6 +409,13 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaifoundationalchatagentsnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace where the chat is present. |
+| <a id="queryaifoundationalchatagentsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project where the chat is present. |
+
 ### `Query.aiMessages`
 
 {{< details >}}

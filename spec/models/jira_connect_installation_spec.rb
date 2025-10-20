@@ -18,6 +18,10 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
     it { is_expected.to allow_value('https://test.atlassian.net').for(:base_url) }
     it { is_expected.not_to allow_value('not/a/url').for(:base_url) }
 
+    it { is_expected.to allow_value('https://test.atlassian.net').for(:display_url) }
+    it { is_expected.to allow_value(nil).for(:display_url) }
+    it { is_expected.not_to allow_value('not/a/url').for(:display_url) }
+
     it { is_expected.to allow_value('https://test.atlassian.net').for(:instance_url) }
     it { is_expected.not_to allow_value('not/a/url').for(:instance_url) }
   end
