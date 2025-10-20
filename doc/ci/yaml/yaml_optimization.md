@@ -447,6 +447,8 @@ test-vars-2:
 
 There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using `!reference` tags with the [`parallel:matrix` keyword](_index.md#parallelmatrix).
 
+You cannot use [CI/CD inputs](../inputs/_index.md) in `!reference` tags, because `!reference` tags are evaluated before input interpolation.
+
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
 
 {{< history >}}

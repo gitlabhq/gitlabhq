@@ -2,6 +2,8 @@ import {
   defaultDate,
   serializeParams,
   update15DaysFromNow,
+  resetCreatedTime,
+  utcExpiredDate,
 } from '~/vue_shared/access_tokens/utils';
 
 // Current date, `new Date()`, for these tests is 2020-07-06
@@ -88,5 +90,21 @@ describe('update2WeekFromNow', () => {
     const result = update15DaysFromNow(param);
     expect(result).not.toBe(param);
     expect(result[0].filters).not.toBe(param[0].filters);
+  });
+});
+
+describe('resetCreatedTime', () => {
+  it('returns a transformed datetime', () => {
+    expect(resetCreatedTime('2025-10-13T19:56:59.460Z')).toBe('2025-10-13T00:00:00.000Z');
+  });
+});
+
+describe('utcExpiredDate', () => {
+  it('returns a UTC date', () => {
+    expect(utcExpiredDate('2025-10-13')).toEqual(new Date('2025-10-13T00:00:00.000Z'));
+  });
+
+  it('returns a null', () => {
+    expect(utcExpiredDate(null)).toBeNull();
   });
 });

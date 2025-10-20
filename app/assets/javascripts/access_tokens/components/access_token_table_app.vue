@@ -9,6 +9,7 @@ import {
 } from '~/lib/utils/common_utils';
 import { scrollTo } from '~/lib/utils/scroll_utils';
 import { __, s__, sprintf } from '~/locale';
+import { resetCreatedTime, utcExpiredDate } from '~/vue_shared/access_tokens/utils';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -250,6 +251,8 @@ export default {
       scrollTo({ top: 0 }, this.$refs.rootElement);
     },
   },
+  resetCreatedTime,
+  utcExpiredDate,
 };
 </script>
 
@@ -274,7 +277,7 @@ export default {
           </template>
 
           <template #cell(createdAt)="{ item: { createdAt } }">
-            <user-date :date="createdAt" />
+            <user-date :date="$options.resetCreatedTime(createdAt)" />
           </template>
 
           <template #head(lastUsedAt)="{ label }">
@@ -305,7 +308,11 @@ export default {
           <template #cell(expiresAt)="{ item: { expiresAt, expired, expiresSoon } }">
             <template v-if="expiresAt">
               <span v-if="expired" class="gl-text-danger">{{ $options.i18n.expired }}</span>
-              <time-ago-tooltip v-else :class="{ 'text-warning': expiresSoon }" :time="expiresAt" />
+              <time-ago-tooltip
+                v-else
+                :class="{ 'text-warning': expiresSoon }"
+                :time="$options.utcExpiredDate(expiresAt)"
+              />
             </template>
             <span v-else v-gl-tooltip :title="$options.i18n.tokenValidity">{{
               $options.i18n.emptyDateField

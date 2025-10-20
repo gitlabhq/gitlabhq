@@ -8,6 +8,7 @@ import {
   parseIntPagination,
 } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
+import { resetCreatedTime, utcExpiredDate } from '~/vue_shared/access_tokens/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
@@ -88,6 +89,8 @@ export default {
       await this.fetchData(newPage.toString());
     },
   },
+  resetCreatedTime,
+  utcExpiredDate,
 };
 </script>
 
@@ -104,7 +107,7 @@ export default {
       :busy="busy"
     >
       <template #cell(createdAt)="{ item: { createdAt } }">
-        <user-date :date="createdAt" />
+        <user-date :date="$options.resetCreatedTime(createdAt)" />
       </template>
 
       <template #head(lastUsedAt)="{ label }">
@@ -127,7 +130,7 @@ export default {
         }}</span>
         <template v-else>
           <span>{{ $options.i18n.expired }}</span>
-          <time-ago-tooltip :time="expiresAt" />
+          <time-ago-tooltip :time="$options.utcExpiredDate(expiresAt)" />
         </template>
       </template>
     </gl-table>

@@ -93,16 +93,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       'X-Total': defaultActiveAccessTokens.length,
     };
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet().reply(
-      HTTP_STATUS_OK,
-      [
-        {
-          active_access_tokens: defaultActiveAccessTokens,
-          total: defaultActiveAccessTokens.length,
-        },
-      ],
-      headers,
-    );
+    mockAxios.onGet().reply(HTTP_STATUS_OK, defaultActiveAccessTokens, headers);
   });
 
   afterEach(() => {
@@ -502,16 +493,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
             'X-Per-Page': 20,
             'X-Total': accessTokens.length,
           };
-          mockAxios.onGet().reply(
-            HTTP_STATUS_OK,
-            [
-              {
-                active_access_tokens: accessTokens,
-                total: accessTokens.length,
-              },
-            ],
-            headers,
-          );
+          mockAxios.onGet().reply(HTTP_STATUS_OK, accessTokens, headers);
           createComponent({ initialActiveAccessTokens: accessTokens, backendPagination: true });
         });
 

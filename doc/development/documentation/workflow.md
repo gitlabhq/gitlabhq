@@ -371,6 +371,22 @@ For complex features split over multiple merge requests:
   documentation to the last MR that must be merged before a feature is
   considered released. This is often, but not always, a frontend MR.
 
+### Delete instead of hiding documentation
+
+Do not use HTML comments to hide documentation that was added before the feature was ready, that is unfinished,
+or for other similar reasons. Hiding documentation is problematic for several reasons:
+
+- Features can be delayed indefinitely by unexpected blockers.
+- Hidden documentation becomes outdated as features evolve during development.
+- Dropped features leave orphaned content that clutters the repository until discovered.
+
+If documentation needs to be removed because it was added prematurely, delete it. In the merge
+request that removes the content, add a link to the merge request that added it originally. If it's 
+needed in the future, you can use Git history, or the earlier MR, to recover the content 
+and add it back.
+
+To avoid documentation being added prematurely, development teams should consider including documentation with the code.
+
 ## UI text
 
 ### Planning and authoring

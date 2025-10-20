@@ -55,6 +55,7 @@ export default {
   },
   data() {
     const maxDate = this.accessTokenMaxDate ? new Date(this.accessTokenMaxDate) : null;
+    maxDate?.setUTCHours(0, 0, 0, 0); // Mutation in-place; sets the UTC time to zero
     if (maxDate) {
       this.$options.fields.expiresAt.validators.push(
         formValidators.required(s__('AccessTokens|Expiration date is required.')),
@@ -63,6 +64,7 @@ export default {
       this.$options.fields.expiresAt.validators.length = 0;
     }
     const minDate = new Date(this.accessTokenMinDate);
+    minDate.setUTCHours(0, 0, 0, 0); // Mutation in-place; sets the UTC time to zero
     const expiresAt = defaultDate(maxDate);
     return {
       formErrors: [],

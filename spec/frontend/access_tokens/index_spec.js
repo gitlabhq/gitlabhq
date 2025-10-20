@@ -25,7 +25,7 @@ describe('access tokens', () => {
   describe('initAccessTokenTableApp', () => {
     const accessTokenType = 'personal access token';
     const accessTokenTypePlural = 'personal access tokens';
-    const initialActiveAccessTokens = [{ revoked_path: '1' }];
+    const initialActiveAccessTokens = [{ createdAt: '2023-09-08', revoked_path: '1' }];
 
     it('mounts the component and provides required values', () => {
       setHTMLFixture(

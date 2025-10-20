@@ -326,5 +326,7 @@ To migrate from one Jira site to another in GitLab and maintain your Jira issues
 1. Follow the steps in [configure the integration](#configure-the-integration).
 1. Enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
 
-To update existing Jira issue references in GitLab to use the new Jira site URL, you must
-[invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).
+In GitLab 18.6 and later, existing Jira issue references are automatically updated to use the new Jira site URL.
+
+In GitLab 18.5 and earlier, you must
+[invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache) to update existing Jira issue references.

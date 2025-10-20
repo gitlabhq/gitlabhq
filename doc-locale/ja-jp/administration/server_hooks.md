@@ -1,14 +1,15 @@
 ---
-stage: Systems
+stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Gitサーバーフック
+description: Gitサーバーフックを設定します。
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -33,13 +34,13 @@ GitLab管理者は、`gitaly`コマンドを使用してサーバーフックを
 
 `gitaly`コマンドへのアクセス権がない場合は、サーバーフックの代替手段として以下を使用できます。
 
-- [Webhook](../user/project/integrations/webhooks.md)
-- [GitLab CI/CD](../ci/_index.md)
-- [プッシュルール](../user/project/repository/push_rules.md)（ユーザーが設定可能なGitフックのインターフェース）
+- [Webhook](../user/project/integrations/webhooks.md)。
+- [GitLab CI/CD](../ci/_index.md)。
+- [プッシュルール](../user/project/repository/push_rules.md)（ユーザーが設定可能なGitフックのインターフェース）。
 
 [Geo](geo/_index.md)は、サーバーフックをセカンダリノードにレプリケートしません。
 
-## リポジトリのサーバーフックを設定する
+## リポジトリのサーバーフックを設定する {#set-server-hooks-for-a-repository}
 
 {{< history >}}
 
@@ -65,12 +66,12 @@ GitLab管理者は、`gitaly`コマンドを使用してサーバーフックを
       - 複数のサーバーフックを作成するには、フックタイプに対応する名前のディレクトリを作成します。たとえば、`pre-receive`サーバーフックの場合、ディレクトリ名は`pre-receive.d`にします。そのディレクトリに、フックのファイルを配置します。
 
    1. サーバーフックファイルが実行可能であり、バックアップファイルのパターン（`*~`）に一致していないことを確認します。サーバーフックは、tarballのルートにある`custom_hooks`ディレクトリに配置されている必要があります。
-   1. tarコマンドを使用して、カスタムフックアーカイブを作成します。例: `tar -cf custom_hooks.tar custom_hooks`
-1. 必要なオプションを指定して`hooks set`サブコマンドを実行し、リポジトリのGitフックを設定します。例: `cat custom_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`
+   1. tarコマンドを使用して、カスタムフックアーカイブを作成します。例: `tar -cf custom_hooks.tar custom_hooks`。
+1. 必要なオプションを指定して`hooks set`サブコマンドを実行し、リポジトリのGitフックを設定します。例: `cat custom_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`。
 
    - ノードに接続するには、そのノードの有効なGitaly設定のパスを`--config`フラグで指定する必要があります。
-   - カスタムフックのtarballは、`stdin`を通じて渡す必要があります。例: `cat custom_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`
-1. Gitalyクラスターを使用している場合は、すべてのGitalyノードで`hooks set`サブコマンドを実行する必要があります。詳細については、[Gitalyクラスターのサーバーフック](#server-hooks-on-a-gitaly-cluster)を参照してください。
+   - カスタムフックのtarballは、`stdin`を通じて渡す必要があります。例: `cat custom_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`。
+1. Gitalyクラスター（Praefect）を使用している場合は、すべてのGitalyノードで`hooks set`サブコマンドを実行する必要があります。詳細については、[Server hooks on a Gitaly Cluster (Praefect)](#server-hooks-on-a-gitaly-cluster-praefect)を参照してください。
 
 サーバーフックコードが正しく実装されていれば、次回Gitフックがトリガーされたときにそのコードが実行されるはずです。
 
@@ -84,17 +85,17 @@ GitLab管理者は、`gitaly`コマンドを使用してサーバーフックを
 1. **概要 > プロジェクト**に移動し、サーバーフックを追加するプロジェクトを選択します。
 1. 表示されたページで、**相対パス**の値を確認します。サーバーフックは、このパスに配置する必要があります。
    - [ハッシュ化されたストレージ](repository_storage_paths.md#hashed-storage)を使用している場合、相対パスの解釈については、[ハッシュ化されたストレージパスを変換する](repository_storage_paths.md#translate-hashed-storage-paths)を参照してください。
-   - [ハッシュ化されたストレージ](repository_storage_paths.md#hashed-storage)を使用していない場合:
+   - [ハッシュ化されたストレージ](repository_storage_paths.md#hashed-storage)を使用していない場合は、以下のとおりです。
      - Linuxパッケージインストールの場合、パスは通常`/var/opt/gitlab/git-data/repositories/<group>/<project>.git`です。
      - 自己コンパイルによるインストールの場合、パスは通常`/home/git/repositories/<group>/<project>.git`です。
 1. ファイルシステムで、正しい場所に`custom_hooks`という新しいディレクトリを作成します。
-1. 新しい`custom_hooks`ディレクトリで:
+1. 新しい`custom_hooks`ディレクトリで、以下を実行します。
    - 単一のサーバーフックを作成するには、フックタイプに対応する名前のファイルを作成します。たとえば、`pre-receive`サーバーフックの場合、ファイル名は拡張子なしで`pre-receive`にします。
    - 複数のサーバーフックを作成するには、フックタイプに対応する名前のディレクトリを作成します。たとえば、`pre-receive`サーバーフックの場合、ディレクトリ名は`pre-receive.d`にします。そのディレクトリに、フックのファイルを配置します。
-1. **サーバーフックのファイルを実行可能にし**、Gitユーザーが所有していることを確認します。
+1. サーバーフックのファイルを実行可能にし、Gitユーザーが所有していることを確認します。
 1. サーバーフックが期待どおりに動作するようにコードを記述します。Gitサーバーフックは、任意のプログラミング言語で作成できます。言語の種類に応じて、スクリプトの先頭に[シバン](https://en.wikipedia.org/wiki/Shebang_(Unix))を記述してください。たとえば、Rubyでスクリプトを記述する場合、シバンはおそらく`#!/usr/bin/env ruby`となります。
 1. フックファイルがバックアップファイルのパターン（`*~`）に一致していないことを確認します。
-1. Gitalyクラスターを使用している場合は、すべてのGitalyノードでこのプロセスを繰り返す必要があります。詳細については、[Gitalyクラスターのサーバーフック](#server-hooks-on-a-gitaly-cluster)を参照してください。
+1. Gitalyクラスター（Praefect）を使用している場合は、すべてのGitalyノードでこのプロセスを繰り返す必要があります。詳細については、[Server hooks on a Gitaly Cluster (Praefect)](#server-hooks-on-a-gitaly-cluster-praefect)を参照してください。
 
 サーバーフックコードが正しく実装されていれば、次回Gitフックがトリガーされたときにそのコードが実行されるはずです。
 
@@ -102,23 +103,20 @@ GitLab管理者は、`gitaly`コマンドを使用してサーバーフックを
 
 {{< /tabs >}}
 
-### Gitalyクラスターのサーバーフック
+### Gitaly Clusterのサーバーフック（Praefect） {#server-hooks-on-a-gitaly-cluster-praefect}
 
-[Gitalyクラスター](gitaly/_index.md)を使用している場合、単一のリポジトリがPraefect内の複数のGitalyストレージにレプリケートされることがあります。そのため、フックスクリプトは、リポジトリのレプリカが存在するすべてのGitalyノードにコピーする必要があります。これを実現するには、該当バージョンに対応したカスタムリポジトリフックの設定手順に従い、各ストレージに対して同様の作業を繰り返します。
+[Gitaly Cluster](gitaly/praefect/_index.md)を使用している場合、単一のリポジトリがPraefect内の複数のGitalyストレージにレプリケートされることがあります。そのため、フックスクリプトは、リポジトリのレプリカが存在するすべてのGitalyノードにコピーする必要があります。これを実現するには、該当バージョンに対応したカスタムリポジトリフックの設定手順に従い、各ストレージに対して同様の作業を繰り返します。
 
-スクリプトのコピー先は、リポジトリの保存場所によって異なります。
+スクリプトのコピー先は、リポジトリの保存場所によって異なります。GitLab 15.3以降では、新しいリポジトリは、ハッシュストレージパスではなく、[Praefectによって生成されたレプリカパス](gitaly/praefect/_index.md#praefect-generated-replica-paths)を使用して作成されます。レプリカパスを特定するには、`-relative-path`を使用してGitLabのハッシュ化されたストレージパスとして想定される値を指定し、[Praefectのリポジトリメタデータをクエリ](gitaly/praefect/troubleshooting.md#view-repository-metadata)します。
 
-- GitLab 15.2以前では、GitalyクラスターはGitLabアプリケーションから報告される[ハッシュ化されたストレージパス](repository_storage_paths.md#hashed-storage)を使用します。
-- GitLab 15.3以降では、新しいリポジトリは、ハッシュ化されたストレージパスではなく、[Praefectによって生成されたレプリカパス](gitaly/_index.md#praefect-generated-replica-paths)を使用して作成されます。レプリカパスを特定するには、`-relative-path`を使用してGitLabのハッシュ化されたストレージパスとして想定される値を指定し、[Praefectのリポジトリメタデータをクエリ](gitaly/troubleshooting_gitaly_cluster.md#view-repository-metadata)します。
-
-## すべてのリポジトリに適用されるグローバルサーバーフックを作成する
+## すべてのリポジトリに適用されるグローバルサーバーフックを作成する {#create-global-server-hooks-for-all-repositories}
 
 すべてのリポジトリに適用されるGitフックを作成するには、グローバルサーバーフックを設定します。グローバルサーバーフックは、以下にも適用されます。
 
 - [プロジェクトおよびグループのWiki](../user/project/wiki/_index.md)リポジトリ。これらのストレージディレクトリ名は、`<id>.wiki.git`という形式になります。
 - プロジェクトの[設計管理](../user/project/issues/design_management.md)リポジトリ。これらのストレージディレクトリ名は、`<id>.design.git`という形式になります。
 
-### サーバーフックのディレクトリを選択する
+### サーバーフックのディレクトリを選択する {#choose-a-server-hook-directory}
 
 グローバルサーバーフックを作成する前に、使用するディレクトリを選択する必要があります。
 
@@ -127,12 +125,12 @@ Linuxパッケージインストールの場合、ディレクトリは`gitaly['
 - コメントアウトを解除して、`/var/opt/gitlab/gitaly/custom_hooks`ディレクトリのデフォルトの提案を使用する。
 - 独自の設定を追加する。
 
-自己コンパイルでインストールした場合:
+自己コンパイルによるインストールの場合、以下のとおりです。
 
 - ディレクトリは`[hooks]`セクションの`gitaly/config.toml`で設定します。ただし、`gitaly/config.toml`の値が空白または存在しない場合、GitLabは`gitlab-shell/config.yml`の`custom_hooks_dir`の値を優先します。
 - デフォルトのディレクトリは`/home/git/gitlab-shell/hooks`です。
 
-### グローバルサーバーフックを作成する
+### グローバルサーバーフックを作成する {#create-the-global-server-hook}
 
 すべてのリポジトリに適用されるグローバルサーバーフックを作成するには、次の手順に従います。
 
@@ -143,7 +141,7 @@ Linuxパッケージインストールの場合、ディレクトリは`gitaly['
 
 サーバーフックコードが正しく実装されていれば、次回Gitフックがトリガーされたときにそのコードが実行されるはずです。フックは、フックタイプ別サブディレクトリ内で、ファイル名のアルファベット順に実行されます。
 
-## リポジトリのサーバーフックを削除する
+## リポジトリのサーバーフックを削除する {#remove-server-hooks-for-a-repository}
 
 {{< history >}}
 
@@ -178,7 +176,7 @@ cat empty_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set -
 
 {{< /tabs >}}
 
-## チェーンされたサーバーフック
+## チェーンされたサーバーフック {#chained-server-hooks}
 
 GitLabではサーバーフックをチェーンで実行できます。GitLabは、次の順序でサーバーフックを検索し、実行します。
 
@@ -192,7 +190,7 @@ GitLabではサーバーフックをチェーンで実行できます。GitLab�
 - ファイル名のアルファベット順に実行されます。
 - ゼロ以外の値でフックが終了すると、実行を停止します。
 
-## サーバーフックで使用可能な環境変数
+## サーバーフックで使用可能な環境変数 {#environment-variables-available-to-server-hooks}
 
 任意の環境変数をサーバーフックに渡すことはできますが、サポートされている環境変数のみを使用する必要があります。
 
@@ -200,11 +198,11 @@ GitLabではサーバーフックをチェーンで実行できます。GitLab�
 
 | 環境変数 | 説明                                                                                                                                                |
 |:---------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GL_ID`              | プッシュを開始したユーザーまたはSSH鍵のGitLab識別子。例: `user-2234`、`key-4`                                                         |
+| `GL_ID`              | プッシュを開始したユーザーまたはSSHキーのGitLab識別子。例: `user-2234`、`key-4`。                                                         |
 | `GL_PROJECT_PATH`    | GitLabプロジェクトのパス。                                                                                                               |
 | `GL_PROTOCOL`        | この変更に使用するプロトコル。次のいずれかになります。`http`（HTTPを使用したGit `push`）、`ssh`（SSHを使用したGit `push`）、`web`（その他すべての操作）。 |
 | `GL_REPOSITORY`      | `project-<id>`。`id`はプロジェクトのIDです。                                                                                                        |
-| `GL_USERNAME`        | プッシュを開始したユーザーのGitLabユーザー名。                                                                                                       |
+| `GL_USERNAME`        | プッシュを開始したユーザーのGitLabのユーザー名。                                                                                                       |
 
 次のGit環境変数は、`pre-receive`および`post-receive`サーバーフックでサポートされています。
 
@@ -212,10 +210,10 @@ GitLabではサーバーフックをチェーンで実行できます。GitLab�
 |:-----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `GIT_ALTERNATE_OBJECT_DIRECTORIES` | 検疫環境における代替オブジェクトディレクトリ。[Gitの`receive-pack`のドキュメント](https://git-scm.com/docs/git-receive-pack#_quarantine_environment)を参照してください。 |
 | `GIT_OBJECT_DIRECTORY`             | 検疫環境におけるGitLabプロジェクトのパス。[Gitの`receive-pack`のドキュメント](https://git-scm.com/docs/git-receive-pack#_quarantine_environment)を参照してください。          |
-| `GIT_PUSH_OPTION_COUNT`            | [プッシュオプション](../topics/git/commit.md#push-options)の数。[Gitの`pre-receive`のドキュメント](https://git-scm.com/docs/githooks#pre-receive)を参照してください。                                                          |
+| `GIT_PUSH_OPTION_COUNT`            | [プッシュオプション](../topics/git/commit.md#push-options)の数。Gitの`pre-receive`のドキュメントを参照してください。                                                          |
 | `GIT_PUSH_OPTION_<i>`              | [プッシュオプション](../topics/git/commit.md#push-options)の値。ここで、`i`は`0`から`GIT_PUSH_OPTION_COUNT - 1`までの値です。[Gitの`pre-receive`のドキュメント](https://git-scm.com/docs/githooks#pre-receive)を参照してください。      |
 
-## カスタムエラーメッセージ
+## カスタムエラーメッセージ {#custom-error-messages}
 
 コミットが拒否された場合や、Gitフックの実行中にエラーが発生した場合に、GitLab UIにカスタムエラーメッセージを表示することができます。カスタムエラーメッセージを表示するには、次のようなスクリプトを使用します。
 
