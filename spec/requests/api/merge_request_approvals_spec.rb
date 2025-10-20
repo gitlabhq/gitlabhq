@@ -42,6 +42,50 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
         post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", approver), params: extra_params
       end
 
+      context 'when the publish_review param is not set' do
+        it 'approves the merge request' do
+          expect(DraftNotes::PublishService).not_to receive(:new)
+
+          approve
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when the publish_review param is false' do
+        it 'approves the merge request' do
+          expect(DraftNotes::PublishService).not_to receive(:new)
+
+          approve(publish_review: false)
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when the publish_review param is true' do
+        it 'approves the merge request' do
+          expect_next_instance_of(::DraftNotes::PublishService) do |service|
+            expect(service).to receive(:execute).and_call_original
+          end
+
+          approve(publish_review: true)
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        context 'when publish service returns an error' do
+          it 'returns an error and does not approve the merge request' do
+            expect_next_instance_of(::DraftNotes::PublishService) do |service|
+              expect(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Error'))
+            end
+
+            approve(publish_review: true)
+
+            expect(response).to have_gitlab_http_status(:internal_server_error)
+          end
+        end
+      end
+
       context 'when the sha param is not set' do
         it 'approves the merge request' do
           approve

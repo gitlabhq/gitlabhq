@@ -1,5 +1,5 @@
 import { throttle } from 'lodash';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import LineHighlighter from '~/blob/line_highlighter';
 
 const noop = () => {};

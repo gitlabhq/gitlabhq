@@ -1,4 +1,6 @@
-import { findParentPanelScrollingEl } from './common_utils';
+import $ from 'jquery';
+import { defer } from 'lodash';
+import { contentTop } from './common_utils';
 
 const SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
 
@@ -50,10 +52,74 @@ export const scrollUp = (scrollContainer = getScrollContainer()) => {
 };
 
 /**
+ * @param {Element} element The element to find the parent panel scrolling element for.
+ * @returns {Element | null}
+ */
+export const findParentPanelScrollingEl = (element) => {
+  if (!element) return null;
+  const staticPanel = element.closest('.js-static-panel');
+  if (staticPanel) {
+    return staticPanel.querySelector('.js-static-panel-inner');
+  }
+  const dynamicPanel = element.closest('.js-dynamic-panel');
+  if (dynamicPanel) {
+    return dynamicPanel.querySelector('.js-dynamic-panel-inner');
+  }
+  return null;
+};
+
+/**
  * @param {ScrollToOptions} options The options to pass to Element.scrollTo
  * @param {Element} element The element to use when searching for the correct scrolling element
  */
 export const scrollTo = (options, element) => {
   const scroller = findParentPanelScrollingEl(element) || window;
   scroller.scrollTo(options);
+};
+
+/**
+ * Scrolls to the top of a particular element.
+ *
+ * @param {jQuery | HTMLElement | String} element The target jQuery element, HTML element, or query selector to scroll to.
+ * @param {Object} [options={}] Object containing additional options.
+ * @param {Number} [options.duration=200] The scroll animation duration.
+ * @param {Number} [options.offset=0] The scroll offset.
+ * @param {String} [options.behavior=smooth|auto] The scroll animation behavior.
+ * @param {HTMLElement | String} [options.parent] The parent HTML element or query selector to scroll.
+ */
+export const scrollToElement = (element, options = {}) => {
+  let scrollingEl = window;
+  let el = element;
+  if (element instanceof $) {
+    // eslint-disable-next-line prefer-destructuring
+    el = element[0];
+  } else if (typeof el === 'string') {
+    el = document.querySelector(element);
+  }
+  if (window.gon?.features?.projectStudioEnabled) {
+    scrollingEl = findParentPanelScrollingEl(el) || window;
+  }
+
+  if (el && el.getBoundingClientRect) {
+    // In the previous implementation, jQuery naturally deferred this scrolling.
+    // Unfortunately, we're quite coupled to this implementation detail now.
+    defer(() => {
+      const {
+        duration = 200,
+        offset = 0,
+        behavior = duration ? 'smooth' : 'auto',
+        parent,
+      } = options;
+      const scrollTop = scrollingEl.scrollTop ?? scrollingEl.pageYOffset;
+      const y = el.getBoundingClientRect().top + scrollTop + offset - contentTop();
+
+      if (parent && typeof parent === 'string') {
+        scrollingEl = document.querySelector(parent);
+      } else if (parent) {
+        scrollingEl = parent;
+      }
+
+      scrollingEl.scrollTo({ top: y, behavior });
+    });
+  }
 };

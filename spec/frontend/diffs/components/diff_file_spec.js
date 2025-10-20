@@ -22,7 +22,8 @@ import eventHub from '~/diffs/event_hub';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 import { clearDraft } from '~/lib/utils/autosave';
-import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
+import { isElementStuck } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
@@ -36,6 +37,7 @@ import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/scroll_utils');
 jest.mock('~/lib/utils/autosave');
 jest.mock('~/alert');
 jest.mock('~/notes/mixins/diff_line_note_form', () => ({

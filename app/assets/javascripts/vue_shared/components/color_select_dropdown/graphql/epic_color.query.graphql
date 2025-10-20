@@ -1,9 +1,0 @@
-query epicColor($fullPath: ID!, $iid: ID) {
-  workspace: group(fullPath: $fullPath) {
-    id
-    issuable: epic(iid: $iid) {
-      id
-      color
-    }
-  }
-}

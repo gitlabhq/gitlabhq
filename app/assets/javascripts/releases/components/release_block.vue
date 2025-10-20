@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash, setUrlParams } from '~/lib/utils/url_utility';
 import { BACK_URL_PARAM, CREATED_ASC } from '~/releases/constants';

@@ -44,7 +44,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/models/ci/minutes/additional_pack.rb'
     - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/member.rb'
-    - 'ee/app/models/ee/plan.rb'
     - 'ee/app/models/ee/project_statistics.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/policies/ee/global_policy.rb'

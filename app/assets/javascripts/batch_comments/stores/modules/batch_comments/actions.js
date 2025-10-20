@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { createAlert } from '~/alert';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { __ } from '~/locale';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { updateNoteErrorMessage } from '~/notes/utils';

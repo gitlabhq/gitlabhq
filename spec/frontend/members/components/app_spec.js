@@ -4,13 +4,15 @@ import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
-import * as commonUtils from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import MembersApp from '~/members/components/app.vue';
 import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import { MEMBERS_TAB_TYPES, TAB_QUERY_PARAM_VALUES } from '~/members/constants';
 import { RECEIVE_MEMBER_ROLE_ERROR, HIDE_ERROR } from '~/members/store/mutation_types';
 import mutations from '~/members/store/mutations';
+
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('MembersApp', () => {
   Vue.use(Vuex);
@@ -46,10 +48,6 @@ describe('MembersApp', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findFilterSortContainer = () => wrapper.findComponent(FilterSortContainer);
 
-  beforeEach(() => {
-    commonUtils.scrollToElement = jest.fn();
-  });
-
   afterEach(() => {
     store = null;
   });
@@ -73,7 +71,7 @@ describe('MembersApp', () => {
 
       await waitForPromises();
 
-      expect(commonUtils.scrollToElement).toHaveBeenCalledWith(alert.element);
+      expect(scrollToElement).toHaveBeenCalledWith(alert.element);
     });
   });
 
@@ -86,7 +84,7 @@ describe('MembersApp', () => {
       await nextTick();
 
       expect(findAlert().exists()).toBe(false);
-      expect(commonUtils.scrollToElement).not.toHaveBeenCalled();
+      expect(scrollToElement).not.toHaveBeenCalled();
     });
   });
 

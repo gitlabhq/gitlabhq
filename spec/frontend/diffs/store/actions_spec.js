@@ -34,13 +34,14 @@ import {
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import diffsEventHub from '~/diffs/event_hub';
-import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
+import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { diffMetadata } from '../mock_data/diff_metadata';
 
 jest.mock('~/alert');
-
+jest.mock('~/lib/utils/scroll_utils');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 confirmAction.mockResolvedValueOnce(false);
 
@@ -60,7 +61,6 @@ describe('DiffsStoreActions', () => {
     jest.spyOn(window.history, 'pushState');
     jest.spyOn(commonUtils, 'historyPushState');
     jest.spyOn(commonUtils, 'handleLocationHash').mockImplementation(() => null);
-    jest.spyOn(commonUtils, 'scrollToElement').mockImplementation(() => null);
     jest.spyOn(utils, 'convertExpandLines').mockImplementation(() => null);
     jest.spyOn(utils, 'idleCallback').mockImplementation(() => null);
     ['requestAnimationFrame', 'requestIdleCallback'].forEach((method) => {
@@ -1368,7 +1368,7 @@ describe('DiffsStoreActions', () => {
           expect(commonUtils.historyPushState).toHaveBeenCalledWith(new URL(`${TEST_HOST}/#test`), {
             skipScrolling: true,
           });
-          expect(commonUtils.scrollToElement).toHaveBeenCalledWith('.diff-files-holder', {
+          expect(scrollToElement).toHaveBeenCalledWith('.diff-files-holder', {
             duration: 0,
           });
           expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
@@ -1463,7 +1463,7 @@ describe('DiffsStoreActions', () => {
       diffActions.renderFileForDiscussionId({ rootState, state: localState, commit }, '123');
 
       expect($emit).toHaveBeenCalledTimes(1);
-      expect(commonUtils.scrollToElement).toHaveBeenCalledTimes(1);
+      expect(scrollToElement).toHaveBeenCalledTimes(1);
     });
 
     it('jumps to discussion on already rendered and expanded file', () => {
@@ -1473,7 +1473,7 @@ describe('DiffsStoreActions', () => {
 
       expect(commit).not.toHaveBeenCalled();
       expect($emit).toHaveBeenCalledTimes(1);
-      expect(commonUtils.scrollToElement).not.toHaveBeenCalled();
+      expect(scrollToElement).not.toHaveBeenCalled();
     });
   });
 

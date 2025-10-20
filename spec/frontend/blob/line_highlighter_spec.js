@@ -3,7 +3,7 @@ import htmlStaticLineHighlighter from 'test_fixtures_static/line_highlighter.htm
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import LineHighlighter from '~/blob/line_highlighter';
 import { updateHash } from '~/blob/state';
-import * as utils from '~/lib/utils/common_utils';
+import * as utils from '~/lib/utils/scroll_utils';
 
 jest.mock('~/blob/state');
 

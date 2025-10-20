@@ -53,6 +53,29 @@ Or for a Node.js project:
 image: node:20-alpine
 ```
 
+#### Custom image requirements
+
+If you use a custom Docker image, ensure that the following commands are available for the agent to function correctly:
+
+- `git`
+- `wget`
+- `tar`
+- `chmod`
+
+Most base images include these commands by default. However, minimal images (like `alpine` variants)
+might require you to install them explicitly. If needed, you can install missing commands in the
+[setup script configuration](#configure-setup-scripts).
+
+Additionally, depending on the tool calls made by agents during flow execution, other common utilities may be required.
+
+For example, if you use an Alpine-based image:
+
+```yaml
+image: python:3.11-alpine
+setup_script:
+  - apk add --no-cache git wget tar bash
+```
+
 ### Configure setup scripts
 
 You can define setup scripts that run before your flow executes. This is useful for installing dependencies, configuring environments, or performing any necessary initialization.

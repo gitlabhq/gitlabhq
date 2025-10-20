@@ -1,4 +1,5 @@
-import { contentTop, findParentPanelScrollingEl } from './common_utils';
+import { contentTop } from './common_utils';
+import { findParentPanelScrollingEl } from './scroll_utils';
 
 /**
  * Watches for change in size of a container element (e.g. for lazy-loaded images)

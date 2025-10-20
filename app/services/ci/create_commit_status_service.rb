@@ -207,7 +207,6 @@ module Ci
         namespace_id: project.namespace_id,
         project_id: project.id,
         pipeline_id: params[:pipeline_id],
-        current_user_id: current_user.id,
         subscription_plan: project.actual_plan_name,
         message: 'Project tried to create more jobs than the quota allowed'
       )

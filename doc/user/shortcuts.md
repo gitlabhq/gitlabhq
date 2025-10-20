@@ -59,13 +59,13 @@ descriptions):
 |------------------------------------------------------|------------------------------------------------------|-------------|
 | <kbd>↑</kbd>                                         | <kbd>↑</kbd>                                         | Edit your last comment. You must be in a blank text field below a thread, and you must already have at least one comment in the thread. |
 | <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>p</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>p</kbd> | Toggle Markdown preview when editing text in a text field that has **Write** and **Preview** tabs at the top. |
-| <kbd>Command</kbd>+<kbd>b</kbd>                    | <kbd>Control</kbd> + <kbd>b</kbd>                    | Bold the selected text (surround it with `**`). |
-| <kbd>Command</kbd> + <kbd>i</kbd>                    | <kbd>Control</kbd> + <kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
-| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | Strike through the selected text (surround it with `~~`). |
-| <kbd>Command</kbd> + <kbd>k</kbd>                    | <kbd>Control</kbd> + <kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
-| <kbd>Command</kbd> + <kbd>[</kbd>                    | <kbd>Control</kbd> + <kbd>[</kbd>                    | Outdent text. |
-| <kbd>Command</kbd> + <kbd>]</kbd>                    | <kbd>Control</kbd> + <kbd>]</kbd>                    | Indent text. |
-| <kbd>Command</kbd> + <kbd>Enter</kbd>                | <kbd>Control</kbd> + <kbd>Enter</kbd>                | Submit or save changes |
+| <kbd>Command</kbd>+<kbd>b</kbd>                    | <kbd>Control</kbd>+<kbd>b</kbd>                    | Bold the selected text (surround it with `**`). |
+| <kbd>Command</kbd>+<kbd>i</kbd>                    | <kbd>Control</kbd>+<kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
+| <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>x</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>x</kbd> | Strike through the selected text (surround it with `~~`). |
+| <kbd>Command</kbd>+<kbd>k</kbd>                    | <kbd>Control</kbd>+<kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
+| <kbd>Command</kbd>+<kbd>[</kbd>                    | <kbd>Control</kbd>+<kbd>[</kbd>                    | Outdent text. |
+| <kbd>Command</kbd>+<kbd>]</kbd>                    | <kbd>Control</kbd>+<kbd>]</kbd>                    | Indent text. |
+| <kbd>Command</kbd>+<kbd>Enter</kbd>                | <kbd>Control</kbd>+<kbd>Enter</kbd>                | Submit or save changes |
 
 The shortcuts for editing in text fields are always enabled, even if other
 keyboard shortcuts are disabled.
@@ -77,23 +77,23 @@ relatively quickly to work, and they take you to another page in the project.
 
 | Keyboard shortcut           | Description |
 |-----------------------------|-------------|
-| <kbd>g</kbd> + <kbd>o</kbd> | Go to the **Project overview** page. |
-| <kbd>g</kbd> + <kbd>v</kbd> | Go to the project **Activity** page (**Manage** > **Activity**). |
-| <kbd>g</kbd> + <kbd>r</kbd> | Go to the project **Releases** page (**Deploy** > **Releases**). |
-| <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) (**Code** > **Repository**). |
+| <kbd>g</kbd>+<kbd>o</kbd> | Go to the **Project overview** page. |
+| <kbd>g</kbd>+<kbd>v</kbd> | Go to the project **Activity** page (**Manage** > **Activity**). |
+| <kbd>g</kbd>+<kbd>r</kbd> | Go to the project **Releases** page (**Deploy** > **Releases**). |
+| <kbd>g</kbd>+<kbd>f</kbd> | Go to the [project files](#project-files) (**Code** > **Repository**). |
 | <kbd>t</kbd>                | Open the project file search dialog. (**Code** > **Repository**, select **Find Files**). |
-| <kbd>g</kbd> + <kbd>c</kbd> | Go to the project **Commits** page (**Code** > **Commits**). |
-| <kbd>g</kbd> + <kbd>n</kbd> | Go to the [**Repository graph**](#repository-graph) page (**Code** > **Repository graph**). |
-| <kbd>g</kbd> + <kbd>d</kbd> | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
-| <kbd>g</kbd> + <kbd>i</kbd> | Go to the project **Issues** page (**Plan** > **Issues**). |
+| <kbd>g</kbd>+<kbd>c</kbd> | Go to the project **Commits** page (**Code** > **Commits**). |
+| <kbd>g</kbd>+<kbd>n</kbd> | Go to the [**Repository graph**](#repository-graph) page (**Code** > **Repository graph**). |
+| <kbd>g</kbd>+<kbd>d</kbd> | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
+| <kbd>g</kbd>+<kbd>i</kbd> | Go to the project **Issues** page (**Plan** > **Issues**). |
 | <kbd>i</kbd>                | Go to the **New Issue** page (**Plan** > **Issues**, select **New issue** ). |
-| <kbd>g</kbd> + <kbd>b</kbd> | Go to the project **Issue boards** page (**Plan** > **Issue boards**). |
-| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project **Merge requests** page (**Code** > **Merge requests**). |
-| <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD **Pipelines** page (**Build** > **Pipelines**). |
-| <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD **Jobs** page (**Build** > **Jobs**). |
-| <kbd>g</kbd> + <kbd>e</kbd> | Go to the project **Environments** page (**Operate** > **Environments**). |
-| <kbd>g</kbd> + <kbd>k</kbd> | Go to the project **Kubernetes clusters** integration page (**Operate** > **Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |
-| <kbd>g</kbd> + <kbd>s</kbd> | Go to the project **Snippets** page (**Code** > **Snippets**). |
+| <kbd>g</kbd>+<kbd>b</kbd> | Go to the project **Issue boards** page (**Plan** > **Issue boards**). |
+| <kbd>g</kbd>+<kbd>m</kbd> | Go to the project **Merge requests** page (**Code** > **Merge requests**). |
+| <kbd>g</kbd>+<kbd>p</kbd> | Go to the CI/CD **Pipelines** page (**Build** > **Pipelines**). |
+| <kbd>g</kbd>+<kbd>j</kbd> | Go to the CI/CD **Jobs** page (**Build** > **Jobs**). |
+| <kbd>g</kbd>+<kbd>e</kbd> | Go to the project **Environments** page (**Operate** > **Environments**). |
+| <kbd>g</kbd>+<kbd>k</kbd> | Go to the project **Kubernetes clusters** integration page (**Operate** > **Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |
+| <kbd>g</kbd>+<kbd>s</kbd> | Go to the project **Snippets** page (**Code** > **Snippets**). |
 | <kbd>g</kbd> + <kbd>w</kbd> | Go to the project wiki (**Plan** > **Wiki**), if enabled. |
 | <kbd>.</kbd>                | Open the Web IDE. |
 

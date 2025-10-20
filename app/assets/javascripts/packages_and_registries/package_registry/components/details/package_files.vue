@@ -15,7 +15,7 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { __, s__ } from '~/locale';
 import FileSha from '~/packages_and_registries/package_registry/components/details/file_sha.vue';
 import Tracking from '~/tracking';

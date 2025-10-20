@@ -31,7 +31,6 @@ export default {
     :aria-label="$options.i18n.title"
     :href="externalUrl"
     is-unsafe-link
-    size="small"
     class="external-url"
     target="_blank"
     icon="external-link"

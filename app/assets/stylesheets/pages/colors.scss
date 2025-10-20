@@ -1,33 +1,5 @@
 @use "sass:math";
 
-.color-item {
-  display: flex;
-}
-
-.color-item-color {
-  flex-shrink: 0;
-  margin-right: $gl-spacing-scale-3;
-  top: 0;
-}
-
-.right-sidebar-collapsed {
-  .color-item {
-    padding-top: $gl-spacing-scale-3;
-  }
-
-  .color-item-color {
-    margin: 0;
-  }
-
-  .color-item-text {
-    display: none;
-  }
-}
-
-.warning-title {
-  color: var(--gray-900, $gray-900);
-}
-
 .suggest-colors {
   padding-top: 3px;
 

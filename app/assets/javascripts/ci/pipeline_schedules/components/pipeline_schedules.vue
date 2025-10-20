@@ -16,7 +16,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { reportToSentry } from '~/ci/utils';
 import Tracking from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';

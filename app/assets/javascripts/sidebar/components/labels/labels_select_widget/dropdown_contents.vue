@@ -95,9 +95,6 @@ export default {
       }
       return 'dropdown-contents-labels-view';
     },
-    dropdownTitle() {
-      return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
-    },
     buttonText() {
       if (!this.localSelectedLabels.length) {
         return this.dropdownButtonText || __('Label');
@@ -181,6 +178,7 @@ export default {
     hideDropdown() {
       this.$refs.dropdown.hide();
     },
+    // eslint-disable-next-line vue/no-unused-properties -- showDropdown() is used in the component's public API
     showDropdown() {
       this.$refs.dropdown.show();
     },

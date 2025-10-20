@@ -169,7 +169,7 @@ export default {
       class="commit-title gl-mb-2"
       data-testid="commit-title-container"
     >
-      <span v-if="commitTitle" class="gl-flex">
+      <span v-if="commitTitle">
         <tooltip-on-truncate
           :title="commitTitle"
           class="-gl-mb-3 -gl-ml-3 -gl-mr-3 -gl-mt-3 gl-grow gl-truncate gl-p-3"

@@ -4119,9 +4119,6 @@ msgstr ""
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
-msgid "Add a new issue"
-msgstr ""
-
 msgid "Add a numbered list"
 msgstr ""
 
@@ -4159,9 +4156,6 @@ msgid "Add an SSH key for secure access to GitLab. %{help_link_start}Learn more%
 msgstr ""
 
 msgid "Add an SSH key to your GitLab account"
-msgstr ""
-
-msgid "Add an existing issue"
 msgstr ""
 
 msgid "Add an impersonation token"
@@ -4231,9 +4225,6 @@ msgid "Add exception(s)"
 msgstr ""
 
 msgid "Add exclusions"
-msgstr ""
-
-msgid "Add existing confidential %{issuableType}"
 msgstr ""
 
 msgid "Add existing issue"
@@ -13410,9 +13401,6 @@ msgstr ""
 msgid "Cherry-pick this merge request"
 msgstr ""
 
-msgid "Child issues and epics"
-msgstr ""
-
 msgid "Child item removed successfully."
 msgstr ""
 
@@ -15770,18 +15758,6 @@ msgid "ColorPicker|Enter any hex color or choose one of the suggested colors bel
 msgstr ""
 
 msgid "ColorPicker|Enter any hex color."
-msgstr ""
-
-msgid "ColorWidget|An error occurred while updating color."
-msgstr ""
-
-msgid "ColorWidget|Assign epic color"
-msgstr ""
-
-msgid "ColorWidget|Color"
-msgstr ""
-
-msgid "ColorWidget|Error fetching epic color."
 msgstr ""
 
 msgid "Colorize messages"
@@ -19937,9 +19913,6 @@ msgstr ""
 msgid "Create new %{name} by email"
 msgstr ""
 
-msgid "Create new confidential %{issuableType}"
-msgstr ""
-
 msgid "Create new domain"
 msgstr ""
 
@@ -20289,9 +20262,6 @@ msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue
 msgstr ""
 
 msgid "Creating"
-msgstr ""
-
-msgid "Creating epic"
 msgstr ""
 
 msgid "Creator"
@@ -26815,48 +26785,6 @@ msgstr ""
 msgid "Epics, issues, and merge requests"
 msgstr ""
 
-msgid "Epics|Add a new epic"
-msgstr ""
-
-msgid "Epics|Add an existing epic"
-msgstr ""
-
-msgid "Epics|Are you sure you want to remove %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
-msgstr ""
-
-msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
-msgstr ""
-
-msgid "Epics|Learn more about linking child issues and epics"
-msgstr ""
-
-msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
-msgstr ""
-
-msgid "Epics|Remove epic"
-msgstr ""
-
-msgid "Epics|Remove issue"
-msgstr ""
-
-msgid "Epics|Something went wrong while creating child epics."
-msgstr ""
-
-msgid "Epics|Something went wrong while creating issue."
-msgstr ""
-
-msgid "Epics|Something went wrong while fetching child epics."
-msgstr ""
-
-msgid "Epics|Something went wrong while moving item."
-msgstr ""
-
-msgid "Epics|Something went wrong while ordering item."
-msgstr ""
-
-msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
-msgstr ""
-
 msgid "Erased"
 msgstr ""
 
@@ -28040,9 +27968,6 @@ msgid "Failed to get ref."
 msgstr ""
 
 msgid "Failed to load"
-msgstr ""
-
-msgid "Failed to load Roadmap"
 msgstr ""
 
 msgid "Failed to load additional diffs information. Try reloading the page."
@@ -36385,9 +36310,6 @@ msgstr ""
 msgid "Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project."
 msgstr ""
 
-msgid "Issue|Title"
-msgstr ""
-
 msgid "It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong.We advise you to %{jihu_url} before continuing."
 msgstr ""
 
@@ -43157,12 +43079,6 @@ msgstr ""
 msgid "New code quality findings"
 msgstr ""
 
-msgid "New confidential epic title "
-msgstr ""
-
-msgid "New confidential issue title"
-msgstr ""
-
 msgid "New custom emoji"
 msgstr ""
 
@@ -43179,9 +43095,6 @@ msgid "New environment"
 msgstr ""
 
 msgid "New epic"
-msgstr ""
-
-msgid "New epic title"
 msgstr ""
 
 msgid "New error tracking access token has been generated!"
@@ -43215,9 +43128,6 @@ msgid "New issue"
 msgid_plural "New issues"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "New issue title"
-msgstr ""
 
 msgid "New iteration created"
 msgstr ""
@@ -55451,9 +55361,6 @@ msgstr ""
 msgid "Roadmap settings"
 msgstr ""
 
-msgid "Roadmap view"
-msgstr ""
-
 msgid "Role"
 msgstr ""
 
@@ -57852,9 +57759,6 @@ msgid "Search"
 msgstr ""
 
 msgid "Search (3 character minimum)"
-msgstr ""
-
-msgid "Search a group"
 msgstr ""
 
 msgid "Search an environment spec"
@@ -62919,6 +62823,9 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "Sign-ups are currently disabled. Please contact a GitLab administrator if you need an account."
+msgstr ""
+
 msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}."
 msgstr ""
 
@@ -63484,9 +63391,6 @@ msgid "Something went wrong while fetching comments. Please try again."
 msgstr ""
 
 msgid "Something went wrong while fetching description changes. Please try again."
-msgstr ""
-
-msgid "Something went wrong while fetching details"
 msgstr ""
 
 msgid "Something went wrong while fetching projects"
@@ -64862,9 +64766,6 @@ msgstr ""
 msgid "SuggestedColors|Gray"
 msgstr ""
 
-msgid "SuggestedColors|Green"
-msgstr ""
-
 msgid "SuggestedColors|Green-cyan"
 msgstr ""
 
@@ -64875,12 +64776,6 @@ msgid "SuggestedColors|Magenta-pink"
 msgstr ""
 
 msgid "SuggestedColors|Orange"
-msgstr ""
-
-msgid "SuggestedColors|Purple"
-msgstr ""
-
-msgid "SuggestedColors|Red"
 msgstr ""
 
 msgid "SuggestedColors|Rose red"
@@ -66439,9 +66334,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "The page could not be displayed because it timed out."
-msgstr ""
-
-msgid "The parent epic is confidential and can only contain confidential epics and issues"
 msgstr ""
 
 msgid "The parent group is archived. This group and its data are %{strong_open}read-only%{strong_close}."
@@ -78913,15 +78805,6 @@ msgid "issue"
 msgid_plural "issues"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "issues at risk"
-msgstr ""
-
-msgid "issues need attention"
-msgstr ""
-
-msgid "issues on track"
-msgstr ""
 
 msgid "it is larger than %{limit}"
 msgstr ""

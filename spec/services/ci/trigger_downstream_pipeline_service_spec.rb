@@ -36,7 +36,6 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
             a_hash_including(
               class: described_class.name,
               project_id: project.id,
-              current_user_id: user.id,
               pipeline_sha: pipeline.sha,
               subscription_plan: project.actual_plan_name,
               downstream_type: downstream_type,

@@ -4,7 +4,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { uniq, escape } from 'lodash';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import * as Emoji from '~/emoji';
 import { dispose, fixTitle } from '~/tooltips';
 import { createAlert } from '~/alert';

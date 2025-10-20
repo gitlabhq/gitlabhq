@@ -26,6 +26,7 @@ class RegistrationsController < Devise::RegistrationsController
     check_rate_limit!(:user_sign_up, scope: request.ip)
     invite_email # set for failure path so we still remember we are invite in form
   end
+  before_action :ensure_signup_enabled, only: [:new, :create]
 
   feature_category :instance_resiliency
 
@@ -372,6 +373,13 @@ class RegistrationsController < Devise::RegistrationsController
   # overridden by EE module
   def track_error(new_user)
     track_weak_password_error(new_user, self.class.name, 'create')
+  end
+
+  def ensure_signup_enabled
+    return if Gitlab::CurrentSettings.signup_enabled?
+
+    redirect_to new_user_session_path,
+      alert: _('Sign-ups are currently disabled. Please contact a GitLab administrator if you need an account.')
   end
 end
 

@@ -1,12 +1,8 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { contentTop, findParentPanelScrollingEl } from '~/lib/utils/common_utils';
+import { contentTop } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 
 jest.mock('~/lib/utils/common_utils');
-
-findParentPanelScrollingEl.mockImplementation((args) =>
-  jest.requireActual('~/lib/utils/common_utils').findParentPanelScrollingEl(args),
-);
 
 function mockStickyHeaderSize(val) {
   contentTop.mockReturnValue(val);

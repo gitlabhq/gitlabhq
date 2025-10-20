@@ -2,7 +2,7 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { GlAlert, GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 
 import FormUrlMaskItem from './form_url_mask_item.vue';

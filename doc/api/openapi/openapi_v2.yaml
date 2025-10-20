@@ -61764,6 +61764,9 @@ definitions:
       sha:
         type: string
         description: When present, must have the HEAD SHA of the source branch
+      publish_review:
+        type: boolean
+        description: When `true` submits pending review comments
       approval_password:
         type: string
         description: Current user's password if project is set to require explicit

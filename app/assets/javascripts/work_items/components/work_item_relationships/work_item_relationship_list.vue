@@ -1,7 +1,8 @@
 <script>
 import DraggableList from 'vuedraggable';
 
-import { isLoggedIn, scrollToElement } from '~/lib/utils/common_utils';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';

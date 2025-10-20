@@ -17,7 +17,7 @@ import { useBatchComments } from '~/batch_comments/store';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { fetchPolicies } from '~/lib/graphql';
 import toast from '~/vue_shared/plugins/global_toast';

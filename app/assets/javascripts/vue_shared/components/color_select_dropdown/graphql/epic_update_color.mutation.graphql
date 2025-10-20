@@ -1,9 +1,0 @@
-mutation updateEpicColor($input: UpdateEpicInput!) {
-  updateIssuableColor: updateEpic(input: $input) {
-    issuable: epic {
-      id
-      color
-    }
-    errors
-  }
-}

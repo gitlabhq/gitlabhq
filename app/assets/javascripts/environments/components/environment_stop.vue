@@ -76,7 +76,6 @@ export default {
     :aria-label="stopLabel"
     :class="{ 'gl-pointer-events-none': isLoadingState }"
     data-testid="stop-environment-button"
-    size="small"
     icon="stop"
     variant="danger"
     @click="onClick"

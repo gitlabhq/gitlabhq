@@ -1,10 +1,10 @@
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import RelatedIssuesBadge from '~/observability/components/related_issues_badge.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 
 jest.mock('~/alert');
-jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('RelatedIssuesBadge', () => {
   let wrapper;

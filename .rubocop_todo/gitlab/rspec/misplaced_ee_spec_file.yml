@@ -135,7 +135,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/models/milestone_spec.rb'
     - 'ee/spec/models/namespace_setting_spec.rb'
     - 'ee/spec/models/note_spec.rb'
-    - 'ee/spec/models/plan_spec.rb'
     - 'ee/spec/models/project_ci_cd_setting_spec.rb'
     - 'ee/spec/models/project_feature_spec.rb'
     - 'ee/spec/models/project_import_data_spec.rb'

@@ -3,7 +3,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import Log from '~/ci/job_details/components/log/log.vue';
 import LogLine from '~/ci/job_details/components/log/line.vue';
 import LogLineHeader from '~/ci/job_details/components/log/line_header.vue';
@@ -13,10 +13,7 @@ import { mockJobLog, mockJobLogLineCount } from './mock_data';
 
 const mockPagePath = 'project/-/jobs/99';
 
-jest.mock('~/lib/utils/common_utils', () => ({
-  ...jest.requireActual('~/lib/utils/common_utils'),
-  scrollToElement: jest.fn(),
-}));
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('Job Log', () => {
   let wrapper;

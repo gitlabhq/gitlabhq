@@ -12,8 +12,6 @@ module Ci
     BATCH_SIZE = 100
 
     def perform
-      return if Feature.disabled?(:delete_expired_trigger_tokens, :instance)
-
       ::Ci::Trigger.ready_for_deletion.each_batch(of: BATCH_SIZE) do |relation|
         relation.delete_all
       end

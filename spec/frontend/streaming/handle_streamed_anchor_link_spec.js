@@ -1,11 +1,11 @@
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import { handleStreamedAnchorLink } from '~/streaming/handle_streamed_anchor_link';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import LineHighlighter from '~/blob/line_highlighter';
 import { TEST_HOST } from 'spec/test_constants';
 
-jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/scroll_utils');
 jest.mock('~/blob/line_highlighter');
 
 describe('handleStreamedAnchorLink', () => {

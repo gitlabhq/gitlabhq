@@ -4,6 +4,8 @@ import {
   scrollDown,
   scrollUp,
   scrollTo,
+  findParentPanelScrollingEl,
+  scrollToElement,
 } from '~/lib/utils/scroll_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -138,6 +140,188 @@ describe('scroll utils', () => {
         const spy = jest.spyOn(window, 'scrollTo');
         scrollTo({ top: 0 }, document.body);
         expect(spy).toHaveBeenCalledWith({ top: 0 });
+      });
+    });
+  });
+
+  describe('findParentPanelScrollingEl', () => {
+    afterEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    it('handles null/undefined elements', () => {
+      expect(findParentPanelScrollingEl(null)).toBeNull();
+      expect(findParentPanelScrollingEl(undefined)).toBeNull();
+    });
+
+    describe('when element is inside a panel', () => {
+      it.each`
+        panelType    | panelClass            | innerClass
+        ${'static'}  | ${'js-static-panel'}  | ${'js-static-panel-inner'}
+        ${'dynamic'} | ${'js-dynamic-panel'} | ${'js-dynamic-panel-inner'}
+      `('returns $panelType panel inner element', ({ panelClass, innerClass }) => {
+        document.body.innerHTML = makePanelHtmlStub(panelClass, innerClass);
+
+        const element = document.getElementById('test');
+        const inner = document.querySelector(`.${innerClass}`);
+
+        expect(findParentPanelScrollingEl(element)).toBe(inner);
+      });
+    });
+
+    describe('when element is not inside a proper panel', () => {
+      it.each`
+        scenario      | html
+        ${'no panel'} | ${'<div id="test" />'}
+        ${'no inner'} | ${'<div class="js-static-panel"><div id="test" /></div>'}
+      `('returns null for $scenario', ({ html }) => {
+        document.body.innerHTML = html;
+        const element = document.getElementById('test');
+
+        expect(findParentPanelScrollingEl(element)).toBeNull();
+      });
+    });
+  });
+
+  describe('scrollToElement*', () => {
+    let parentElem;
+    let elem;
+    const windowHeight = 550;
+    const elemTop = 100;
+    const parentId = 'parent_scroll_test';
+    const id = 'scroll_test';
+
+    beforeEach(() => {
+      parentElem = document.createElement('div');
+      parentElem.id = parentId;
+      elem = document.createElement('div');
+      elem.id = id;
+      parentElem.appendChild(elem);
+      document.body.appendChild(parentElem);
+
+      window.innerHeight = windowHeight;
+      window.mrTabs = { currentAction: 'show' };
+
+      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+      jest.spyOn(parentElem, 'scrollTo').mockImplementation(() => {});
+      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
+    });
+
+    afterEach(() => {
+      window.scrollTo.mockRestore();
+      parentElem.scrollTo.mockRestore();
+      Element.prototype.getBoundingClientRect.mockRestore();
+      elem.remove();
+      parentElem.remove();
+    });
+
+    describe('scrollToElement with HTMLElement', () => {
+      it('scrolls to element', () => {
+        scrollToElement(elem);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls to element with offset', () => {
+        const offset = 50;
+        scrollToElement(elem, { offset });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop + offset,
+        });
+      });
+
+      it('scrolls to element within a parent', () => {
+        scrollToElement(elem, { parent: parentElem });
+        expect(parentElem.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+    });
+
+    describe('scrollToElement with Selector', () => {
+      it('scrolls to element', () => {
+        scrollToElement(`#${id}`);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls to element with offset', () => {
+        const offset = 50;
+        scrollToElement(`#${id}`, { offset });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop + offset,
+        });
+      });
+
+      it('scrolls to element within a parent', () => {
+        scrollToElement(`#${id}`, { parent: `#${parentId}` });
+        expect(parentElem.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+    });
+
+    describe('when project studio is enabled', () => {
+      beforeEach(() => {
+        window.gon = {
+          features: {
+            projectStudioEnabled: true,
+          },
+        };
+      });
+
+      it('scrolls the static panel', () => {
+        const staticPanelContainer = document.createElement('div');
+        staticPanelContainer.classList.add('js-static-panel');
+
+        const staticPanelScroller = document.createElement('div');
+        staticPanelScroller.classList.add('js-static-panel-inner');
+
+        staticPanelContainer.appendChild(staticPanelScroller);
+
+        staticPanelScroller.appendChild(elem);
+
+        document.body.appendChild(staticPanelContainer);
+
+        jest.spyOn(staticPanelScroller, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
+
+        scrollToElement(elem);
+        expect(staticPanelScroller.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls the dynamic panel', () => {
+        const dynamicPanelContainer = document.createElement('div');
+        dynamicPanelContainer.classList.add('js-dynamic-panel');
+
+        const dynamicPanelScroller = document.createElement('div');
+        dynamicPanelScroller.classList.add('js-dynamic-panel-inner');
+
+        dynamicPanelContainer.appendChild(dynamicPanelScroller);
+
+        dynamicPanelScroller.appendChild(elem);
+
+        document.body.appendChild(dynamicPanelContainer);
+
+        jest.spyOn(dynamicPanelScroller, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
+
+        scrollToElement(elem);
+        expect(dynamicPanelScroller.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
       });
     });
   });

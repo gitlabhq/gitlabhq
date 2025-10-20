@@ -42,7 +42,6 @@ module Ci
       ::Gitlab::AppJsonLogger.info(
         class: self.class.name,
         project_id: project.id,
-        current_user_id: current_user.id,
         pipeline_sha: pipeline.sha,
         subscription_plan: project.actual_plan_name,
         downstream_type: bridge.triggers_child_pipeline? ? 'child' : 'multi-project',

@@ -1300,7 +1300,7 @@
 - './ee/spec/models/namespaces/free_user_cap_spec.rb'
 - './ee/spec/models/namespaces/storage/root_size_spec.rb'
 - './ee/spec/models/path_lock_spec.rb'
-- './ee/spec/models/plan_spec.rb'
+- './ee/spec/models/ee/plan_spec.rb'
 - './ee/spec/models/preloaders/environments/protected_environment_preloader_spec.rb'
 - './ee/spec/models/productivity_analytics_spec.rb'
 - './ee/spec/models/project_alias_spec.rb'

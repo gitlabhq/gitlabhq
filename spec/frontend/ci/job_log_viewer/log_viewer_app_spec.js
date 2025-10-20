@@ -1,7 +1,7 @@
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { createAlert } from '~/alert';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 
@@ -13,7 +13,7 @@ import { fetchLogLines } from '~/ci/job_log_viewer/lib/generate_stream';
 
 jest.mock('~/alert');
 jest.mock('~/ci/job_log_viewer/lib/generate_stream');
-jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/scroll_utils');
 
 const mockLog = [{ content: [{ text: 'line' }], sections: [] }];
 const mockLogWithTimestamp = [

@@ -3,6 +3,7 @@ package duoworkflow
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
@@ -32,8 +33,11 @@ func Handler(rails *api.API) http.Handler {
 		}
 		defer func() { _ = runner.Close() }()
 
+		start := time.Now()
 		if err := runner.Execute(r.Context()); err != nil {
-			log.WithRequest(r).WithError(err).Error()
+			log.WithRequest(r).WithError(err).WithFields(log.Fields{
+				"duration_ms": time.Since(start).Milliseconds(),
+			}).Error()
 		}
 	}, "")
 }

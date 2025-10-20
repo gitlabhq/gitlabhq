@@ -9,8 +9,8 @@ import {
   isMetaClick,
   NO_SCROLL_TO_HASH_CLASS,
   parseBoolean,
-  scrollToElement,
 } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';

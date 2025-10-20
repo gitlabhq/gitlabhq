@@ -4,7 +4,8 @@ import { cloneDeep } from 'lodash';
 import { produce } from 'immer';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
-import { isLoggedIn, scrollToElement } from '~/lib/utils/common_utils';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { s__ } from '~/locale';

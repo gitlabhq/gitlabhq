@@ -2,7 +2,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import LogLine from './line.vue';
 import LogLineHeader from './line_header.vue';

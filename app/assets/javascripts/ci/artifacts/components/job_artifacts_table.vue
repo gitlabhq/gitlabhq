@@ -17,7 +17,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { updateHistory, getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';

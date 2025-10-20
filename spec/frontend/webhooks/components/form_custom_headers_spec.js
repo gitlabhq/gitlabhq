@@ -1,13 +1,13 @@
 import { nextTick } from 'vue';
 
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/scroll_utils';
 import FormCustomHeaders from '~/webhooks/components/form_custom_headers.vue';
 import FormCustomHeaderItem from '~/webhooks/components/form_custom_header_item.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
-jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('FormCustomHeaders', () => {
   let wrapper;
