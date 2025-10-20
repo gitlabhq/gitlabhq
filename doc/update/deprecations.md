@@ -800,26 +800,6 @@ For more information about updating your storage driver configuration, see [use 
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Slack notifications integration
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435909).
-
-</div>
-
-As we're consolidating all Slack capabilities into the
-GitLab for Slack app, we've deprecated the Slack notifications
-integration.
-Use the GitLab for Slack app to manage notifications
-to your Slack workspace.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Subscription related API endpoints in the public API are deprecated
 
 <div class="deprecation-notes">

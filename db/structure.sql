@@ -12523,7 +12523,8 @@ CREATE TABLE badges (
     type character varying NOT NULL,
     name character varying(255),
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_22ac1b6d3a CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE badges_id_seq
@@ -33217,9 +33218,6 @@ ALTER TABLE ONLY chat_teams
 
 ALTER TABLE epic_issues
     ADD CONSTRAINT check_048dce81f3 CHECK ((work_item_parent_link_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE badges
-    ADD CONSTRAINT check_22ac1b6d3a CHECK ((num_nonnulls(group_id, project_id) = 1)) NOT VALID;
 
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;

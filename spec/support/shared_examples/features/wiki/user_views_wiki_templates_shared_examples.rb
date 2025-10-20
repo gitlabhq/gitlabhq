@@ -32,17 +32,15 @@ RSpec.shared_examples 'User views wiki templates' do
     visit(wiki_path(wiki, action: :templates))
   end
 
-  it 'shows a link to create a new template', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  it 'shows a link to create a new template' do
     expect(page).to have_link('New template')
   end
 
-  # rubocop:disable Layout/LineLength -- short lived quarantine link
-  it 'shows an edit button to each template listed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  it 'shows an edit button to each template listed' do
     expect(templates_li).to all have_link(title: 'Edit template')
   end
-  # rubocop:enable Layout/LineLength
 
-  context 'when ordered by title', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when ordered by title' do
     let(:pages_ordered_by_title) { [wiki_template2, wiki_template3, wiki_template1] }
 
     context 'when asc' do
@@ -68,8 +66,7 @@ RSpec.shared_examples 'User views wiki templates' do
     end
   end
 
-  # rubocop:disable Layout/LineLength -- short lived quarantine link
-  context 'when listing more templates than allowed items per page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when listing more templates than allowed items per page' do
     let(:items_per_page) { 1 }
 
     before do
@@ -88,5 +85,4 @@ RSpec.shared_examples 'User views wiki templates' do
       end
     end
   end
-  # rubocop:enable Layout/LineLength
 end

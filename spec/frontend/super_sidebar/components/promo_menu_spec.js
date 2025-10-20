@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PromoMenu from '~/super_sidebar/components/promo_menu.vue';
 
@@ -8,6 +8,8 @@ describe('PromoMenu', () => {
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findExploreButton = () => wrapper.findByTestId('explore-button');
   const findMenu = () => wrapper.findByTestId('menu');
+  const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
+  const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
 
   const createComponent = (props = {}, provideOverrides = {}) => {
     wrapper = shallowMountExtended(PromoMenu, {
@@ -18,6 +20,10 @@ describe('PromoMenu', () => {
       provide: {
         isSaas: false,
         ...provideOverrides,
+      },
+      stubs: {
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
       },
     });
   };
@@ -69,6 +75,23 @@ describe('PromoMenu', () => {
           text: 'Pricing',
         }),
       );
+    });
+
+    it('renders buttons', () => {
+      createComponent(
+        {
+          sidebarData: {
+            allow_signup: true,
+            new_user_registration_path: '/register',
+            sign_in_visible: true,
+            sign_in_path: '/sign-in',
+          },
+        },
+        { isSaas: true },
+      );
+
+      expect(findSigninButton().props('href')).toBe('/sign-in');
+      expect(findSignupButton().props('href')).toBe('/register');
     });
   });
 });

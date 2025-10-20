@@ -157,24 +157,25 @@ export default {
       </template>
       <template v-else>
         <gl-button
-          v-if="sidebarData.sign_in_visible"
-          :href="sidebarData.sign_in_path"
-          class="!gl-rounded-lg"
-          data-testid="topbar-signin-button"
-        >
-          {{ __('Sign in') }}
-        </gl-button>
-        <gl-button
           v-if="sidebarData.allow_signup"
           :href="sidebarData.new_user_registration_path"
           variant="confirm"
-          class="topbar-signup-button !gl-rounded-lg"
+          class="topbar-signup-button gl-hidden lg:gl-flex"
           data-testid="topbar-signup-button"
         >
           {{ isSaas ? __('Get free trial') : __('Register') }}
         </gl-button>
+        <gl-button
+          v-if="sidebarData.sign_in_visible"
+          :href="sidebarData.sign_in_path"
+          class="gl-hidden lg:gl-flex"
+          data-testid="topbar-signin-button"
+        >
+          {{ __('Sign in') }}
+        </gl-button>
         <promo-menu
           v-if="!isLoggedIn"
+          :sidebar-data="sidebarData"
           :pricing-url="sidebarData.compare_plans_url"
           class="gl-flex lg:gl-hidden"
         />

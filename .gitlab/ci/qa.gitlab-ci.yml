@@ -34,6 +34,7 @@
     RELEASE_IMAGE_TAG: "${CI_COMMIT_SHA}-ruby${RUBY_VERSION}"  # This contains a RUBY_VERSION suffix because Omnibus build is depending on the RUBY_VERSION
   inherit:
     variables:
+      - SCHEDULE_TYPE # used by TestMetricsExporter to detect runs in master scheduled pipeline
       - BUNDLE_WITHOUT
   trigger:
     strategy: depend
@@ -46,6 +47,7 @@
     QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"
   inherit:
     variables:
+      - SCHEDULE_TYPE # used by TestMetricsExporter to detect runs in master scheduled pipeline
       - BUNDLE_WITHOUT
       - OMNIBUS_GITLAB_CACHE_UPDATE
       - OMNIBUS_GITLAB_CACHE_EDITION

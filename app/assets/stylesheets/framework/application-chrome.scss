@@ -46,6 +46,11 @@
     }
   }
 
+  // Free trial button
+  .topbar-signup-button {
+    @apply gl-bg-neutral-800 gl-border-neutral-800 dark:gl-bg-neutral-100 dark:gl-border-neutral-100 #{!important};
+  }
+
   // Super topbar
   .super-topbar {
     @apply gl-pl-4 gl-pr-5 sm:gl-pr-3;

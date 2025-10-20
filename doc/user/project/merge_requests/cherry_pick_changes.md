@@ -29,6 +29,8 @@ In this example, a Git repository has two branches: `develop` and `main`.
 Commit `B` is cherry-picked from the `develop` branch after commit `E` in the `main` branch.
 Commit `G` is added after the cherry-pick:
 
+<!-- Diagram reused in doc/topics/git/cherry_pick.md -->
+
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
@@ -128,7 +130,8 @@ Commits cherry-picked outside the GitLab UI or API do not add a system note.
 ## Select a different parent commit
 
 When you cherry-pick a merge commit in the GitLab UI, the mainline is always the
-first parent. Use the command line to cherry-pick with a different mainline. For more information, see [Cherry-pick a merge commit with Git](../../../topics/git/cherry_pick.md#cherry-pick-a-merge-commit).
+first parent. Use the command line to cherry-pick with a different mainline. For more information, see
+[Copy the contents of an entire branch](../../../topics/git/cherry_pick.md#copy-the-contents-of-an-entire-branch).
 
 ## Related topics
 

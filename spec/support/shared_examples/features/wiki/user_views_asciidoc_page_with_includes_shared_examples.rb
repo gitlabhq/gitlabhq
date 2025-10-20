@@ -19,7 +19,7 @@ RSpec.shared_examples 'User views AsciiDoc page with includes' do
     sign_in(user)
   end
 
-  context 'when the file being included exists', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when the file being included exists', :js do
     it 'includes the file contents' do
       visit(wiki_page_path(wiki, wiki_page))
 
@@ -61,7 +61,7 @@ RSpec.shared_examples 'User views AsciiDoc page with includes' do
     end
   end
 
-  context 'when the file being included does not exist', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when the file being included does not exist', :js do
     before do
       included_wiki_page.delete
     end
