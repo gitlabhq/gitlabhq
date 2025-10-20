@@ -9,7 +9,9 @@ HealthCheck.setup do |config|
   # This isn't supported natively by the gem so we implement a custom check for this.
   # See https://github.com/Purple-Devs/health_check/pull/148
   config.add_custom_check('all_migrations') do
-    ActiveRecord::Migration.check_all_pending!
+    # `check_all_pending!` mutates the `ActiveRecord::Base` connection pool so we use
+    # `#check_pending_migrations` because it uses a separate `ActiveRecord::PendingMigrationConnection`
+    ActiveRecord::Migration.check_pending_migrations
     ''
   rescue ActiveRecord::PendingMigrationError => ex
     ex.message
