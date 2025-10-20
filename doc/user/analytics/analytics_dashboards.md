@@ -48,6 +48,8 @@ The following built-in dashboards are available:
 
 - [**Value Streams Dashboard**](value_streams_dashboard.md) displays metrics related to DevOps performance, security exposure, and workstream optimization.
 - [**GitLab Duo and SDLC trends**](duo_and_sdlc_trends.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
+- [**DORA Metrics Dashboard**](dora_metrics_charts.md) displays the evolution of each DORA metric over time.
+- [**Merge request analytics**](merge_request_analytics.md) displays metrics for merge request throughput and mean time to merge.
 
 ## Custom dashboards
 

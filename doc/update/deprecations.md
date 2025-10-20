@@ -699,22 +699,6 @@ To prepare for the 19.0 removal, update all pipeline execution policies that use
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Pipeline job limits extended to the Commits API
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.7</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/436361).
-
-</div>
-
-Starting in GitLab 18.0, the maximum [number of jobs in active pipelines](https://docs.gitlab.com/administration/instance_limits/#number-of-jobs-in-active-pipelines) will also apply when creating jobs using the [Commits API](https://docs.gitlab.com/api/commits/#set-the-pipeline-status-of-a-commit). Review your integration to ensure it stays within the configured job limits.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Pipeline subscriptions
 
 <div class="deprecation-notes">
@@ -1278,6 +1262,27 @@ Also review the cert-manager release notes:
 
 - [Release Notes 1.12 - 1.16](https://cert-manager.io/docs/releases/upgrading/upgrading-1.12)
 - [Release Notes 1.17](https://cert-manager.io/docs/releases/upgrading/upgrading-1.16-1.17)
+
+</div>
+</div>
+
+<div class="milestone-wrapper" data-milestone="18.1">
+
+## GitLab 18.1
+
+<div class="deprecation breaking-change" data-milestone="18.1">
+
+### Pipeline job limits extended to the Commits API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.1</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/436361).
+
+</div>
+
+Starting in GitLab 18.0, the maximum [number of jobs in active pipelines](https://docs.gitlab.com/administration/instance_limits/#number-of-jobs-in-active-pipelines) will also apply when creating jobs using the [Commits API](https://docs.gitlab.com/api/commits/#set-the-pipeline-status-of-a-commit). Review your integration to ensure it stays within the configured job limits.
 
 </div>
 </div>

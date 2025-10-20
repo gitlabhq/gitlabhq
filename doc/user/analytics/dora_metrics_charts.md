@@ -12,13 +12,12 @@ title: DevOps Research and Assessment (DORA) metrics charts
 
 {{< /details >}}
 
-CI/CD analytics page display metrics and charts for [DevOps Research and Assessment (DORA) metrics](dora_metrics.md).
-The charts display the evolution of each DORA metric over time, for the last week, month, 90 days, or 180 days.
+The [DevOps Research and Assessment (DORA) metrics](dora_metrics.md) dashboard displays the evolution of each DORA metric over time, for the last week, month, 90 days, or 180 days.
 This information provides insights into the health of your organization.
 
-## View CI/CD analytics
+## View DORA metrics analytics
 
-You can view CI/CD analytics for a group or project.
+You can view the DORA metrics dashboard for a group or project.
 
 Prerequisites:
 
@@ -26,25 +25,16 @@ Prerequisites:
 
 ### For a group
 
-To view CI/CD analytics for a group:
+To view the DORA metrics dashboard for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze** > **CI/CD analytics**.
-
-The page displays metrics and charts for:
-
-- Release statistics
-- DORA metrics
+1. Select **Analyze** > **Analytics Dashboards**.
+1. Select **DORA metrics dashboard**.
 
 ### For a project
 
-To view CI/CD analytics for a project:
+To view the DORA metrics dashboard for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze** > **CI/CD analytics**.
-
-The page displays metrics and charts for:
-
-- Pipelines
-- DORA metrics
-- Project quality
+1. Select **Analyze** > **Analytics Dashboards**.
+1. Select **DORA metrics dashboard**.
