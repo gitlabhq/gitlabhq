@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHookLog, feature_category: :webhooks do
+RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
+  using RSpec::Parameterized::TableSyntax
+
   it { is_expected.to belong_to(:web_hook) }
 
   it { is_expected.to serialize(:request_headers).as(Hash) }
@@ -11,21 +13,63 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
 
   it { is_expected.to validate_presence_of(:web_hook) }
 
-  describe '.recent' do
-    let(:hook) { build(:project_hook) }
+  describe '.created_between' do
+    let_it_be(:hook) { create(:project_hook) }
+    let_it_be(:oldest_log) { create(:web_hook_log, web_hook: hook, created_at: 6.hours.ago) }
+    let_it_be(:middle_log) { create(:web_hook_log, web_hook: hook, created_at: 4.hours.ago) }
+    let_it_be(:newest_log) { create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago) }
 
-    it 'does not return web hook logs that are too old' do
-      create(:web_hook_log, web_hook: hook, created_at: 10.days.ago)
+    let(:start_time) { 5.hours.ago }
+    let(:end_time) { newest_log.created_at }
 
-      expect(described_class.recent.size).to be_zero
+    subject(:created_between) { described_class.created_between(start_time, end_time) }
+
+    it 'returns webhook logs created between given timestamps inclusive in descending order' do
+      expect(created_between.to_a).to eq([newest_log, middle_log])
     end
 
-    it 'returns the web hook logs in descending order' do
-      hook1 = create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago)
-      hook2 = create(:web_hook_log, web_hook: hook, created_at: 1.hour.ago)
-      hooks = described_class.recent.to_a
+    context 'with invalid timestamp arguments' do
+      where(:start_time, :end_time, :error_message) do
+        nil         | 1.hour.ago  | '`start_time` and `end_time` must be present'
+        5.hours.ago | nil         | '`start_time` and `end_time` must be present'
+        nil         | nil         | '`start_time` and `end_time` must be present'
+        1.hour.ago  | 5.hours.ago | '`start_time` must be before `end_time`'
+        8.days.ago  | 5.days.ago  | '`start_time` to `end_time` range must be within the last 7 days'
+      end
 
-      expect(hooks).to eq([hook2, hook1])
+      with_them do
+        it 'raises an ArgumentError' do
+          expect { created_between }.to raise_error(ArgumentError, error_message)
+        end
+      end
+    end
+  end
+
+  describe '.recent' do
+    let_it_be(:hook) { create(:project_hook) }
+    let_it_be(:too_old_log) { create(:web_hook_log, web_hook: hook, created_at: 8.days.ago) }
+    let_it_be(:oldest_log)  { create(:web_hook_log, web_hook: hook, created_at: 3.days.ago) }
+    let_it_be(:middle_log)  { create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago) }
+    let_it_be(:newest_log)  { create(:web_hook_log, web_hook: hook, created_at: 1.hour.ago) }
+
+    it 'returns the web hook logs within the last 2 days in descending order by default' do
+      expect(described_class.recent).to eq([newest_log, middle_log])
+    end
+
+    it 'allows querying up to 7 days ago' do
+      expect(described_class.recent(7)).to eq([newest_log, middle_log, oldest_log])
+    end
+
+    it 'raises an error for querying more than 7 days ago' do
+      expect { described_class.recent(8) }.to raise_error(
+        ArgumentError, '`recent` scope can only provide up to 7 days of log records'
+      )
+    end
+  end
+
+  describe '.max_recent_days_ago' do
+    it 'returns MAX_RECENT_DAYS.ago timestamp at the beginning of the day' do
+      expect(described_class.max_recent_days_ago).to eq(described_class::MAX_RECENT_DAYS.days.ago.beginning_of_day)
     end
   end
 
@@ -252,6 +296,49 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
       let(:request_headers) { {} }
 
       it { expect(web_hook_log.request_headers['X-Gitlab-Token']).to be_nil }
+    end
+  end
+
+  describe 'header list methods' do
+    let(:web_hook_log) { build(:web_hook_log) }
+
+    shared_examples 'listing HTTP headers as an array of hashes' do |attribute|
+      it 'converts a hash of headers to an array of hashes with standardized keys' do
+        web_hook_log.assign_attributes(
+          attribute => { 'Content-Type' => 'application/json', 'CustomHeader' => 'some custom header value 1' }
+        )
+
+        expected_headers_list = [
+          { name: 'Content-Type', value: 'application/json' },
+          { name: 'CustomHeader', value: 'some custom header value 1' }
+        ]
+
+        expect(headers_list).to match_array(expected_headers_list)
+      end
+
+      it 'returns an empty array for nil headers' do
+        web_hook_log.assign_attributes(attribute => nil)
+
+        expect(headers_list).to eq([])
+      end
+    end
+
+    describe '#request_headers_list' do
+      subject(:headers_list) { web_hook_log.request_headers_list }
+
+      it_behaves_like 'listing HTTP headers as an array of hashes', :request_headers
+
+      it 'redacts X-Gitlab-Token' do
+        web_hook_log.request_headers = { 'X-Gitlab-Token' => 'secret_token' }
+
+        expect(headers_list).to match_array([{ name: 'X-Gitlab-Token', value: _('[REDACTED]') }])
+      end
+    end
+
+    describe '#response_headers_list' do
+      subject(:headers_list) { web_hook_log.response_headers_list }
+
+      it_behaves_like 'listing HTTP headers as an array of hashes', :response_headers
     end
   end
 

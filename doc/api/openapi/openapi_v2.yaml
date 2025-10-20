@@ -68211,6 +68211,46 @@ definitions:
                 type: integer
                 format: int32
                 description: Packages files verification failed count
+              packages_nuget_symbols_count:
+                type: integer
+                format: int32
+                description: NuGet symbols count
+              packages_nuget_symbols_checksum_total_count:
+                type: integer
+                format: int32
+                description: NuGet symbols checksum total count
+              packages_nuget_symbols_checksummed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols checksummed count
+              packages_nuget_symbols_checksum_failed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols checksum failed count
+              packages_nuget_symbols_synced_count:
+                type: integer
+                format: int32
+                description: NuGet symbols synced count
+              packages_nuget_symbols_failed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols failed count
+              packages_nuget_symbols_registry_count:
+                type: integer
+                format: int32
+                description: NuGet symbols registry count
+              packages_nuget_symbols_verification_total_count:
+                type: integer
+                format: int32
+                description: NuGet symbols verification total count
+              packages_nuget_symbols_verified_count:
+                type: integer
+                format: int32
+                description: NuGet symbols verified count
+              packages_nuget_symbols_verification_failed_count:
+                type: integer
+                format: int32
+                description: NuGet symbols verification failed count
               terraform_state_versions_count:
                 type: integer
                 format: int32
@@ -68939,6 +68979,26 @@ definitions:
         type: string
       uploads_verification_failed_count:
         type: string
+      packages_nuget_symbols_count:
+        type: string
+      packages_nuget_symbols_checksum_total_count:
+        type: string
+      packages_nuget_symbols_checksummed_count:
+        type: string
+      packages_nuget_symbols_checksum_failed_count:
+        type: string
+      packages_nuget_symbols_synced_count:
+        type: string
+      packages_nuget_symbols_failed_count:
+        type: string
+      packages_nuget_symbols_registry_count:
+        type: string
+      packages_nuget_symbols_verification_total_count:
+        type: string
+      packages_nuget_symbols_verified_count:
+        type: string
+      packages_nuget_symbols_verification_failed_count:
+        type: string
       git_fetch_event_count_weekly:
         type: string
       git_push_event_count_weekly:
@@ -69018,6 +69078,10 @@ definitions:
       uploads_synced_in_percentage:
         type: string
       uploads_verified_in_percentage:
+        type: string
+      packages_nuget_symbols_synced_in_percentage:
+        type: string
+      packages_nuget_symbols_verified_in_percentage:
         type: string
       repositories_count:
         type: string

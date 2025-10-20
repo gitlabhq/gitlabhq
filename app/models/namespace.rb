@@ -123,9 +123,6 @@ class Namespace < ApplicationRecord
   has_many :bot_users, through: :bot_user_details, source: :user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail'
 
-  has_one :deletion_schedule, class_name: 'Namespaces::DeletionSchedule'
-  delegate :deleting_user, :marked_for_deletion_at, to: :deletion_schedule, allow_nil: true
-
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :organization, presence: true
   validates :name,

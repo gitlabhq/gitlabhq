@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_category: :code_review_workflow do
   include MergeRequestDiffHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let!(:project) { create(:project, :repository) }
 
   let(:user) { create(:user) }
 

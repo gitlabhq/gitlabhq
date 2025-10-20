@@ -44,6 +44,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     vulnerability_feedback
     wiki_page_meta
     WikiPage::Meta
+    packages_nuget_symbol_registry
   ]
   inflect.acronym 'CDN'
   inflect.acronym 'EE'

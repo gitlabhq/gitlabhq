@@ -64,8 +64,8 @@ See also [guidelines for heading levels in Markdown](../styleguide/_index.md#hea
 If inline links are not sufficient, you can create a section called **Related topics**
 and include an unordered list of related topics. This topic should be above the Troubleshooting section.
 
-Links in this section should be brief and scannable. They are usually not
-full sentences, and so should not end in a period.
+The link text should be brief and scannable.
+Use topic titles (not complete sentences) and do not end them with periods.
 
 ```markdown
 ## Related topics

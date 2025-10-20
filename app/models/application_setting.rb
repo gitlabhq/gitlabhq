@@ -1025,7 +1025,11 @@ class ApplicationSetting < ApplicationRecord
     json_schema: { filename: "application_setting_vscode_extension_marketplace", detail_errors: true }
 
   jsonb_accessor :vscode_extension_marketplace,
-    vscode_extension_marketplace_enabled: [:boolean, { default: false, store_key: :enabled }]
+    vscode_extension_marketplace_enabled: [:boolean, { default: false, store_key: :enabled }],
+    vscode_extension_marketplace_extension_host_domain: [
+      :string,
+      { default: ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN, store_key: :extension_host_domain }
+    ]
 
   jsonb_accessor :editor_extensions,
     enable_language_server_restrictions: [:boolean, { default: false }],

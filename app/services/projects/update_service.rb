@@ -55,14 +55,7 @@ module Projects
     private
 
     def update_project!
-      if Feature.disabled?(:replicate_deletion_schedule_operations, project)
-        return project.update!(params.except(*non_assignable_project_params))
-      end
-
-      project.transaction do
-        project.deletion_schedule&.destroy! if params[:remove_deletion_schedule]
-        project.update!(params.except(*non_assignable_project_params))
-      end
+      project.update!(params.except(*non_assignable_project_params))
     end
 
     def ensure_ci_cd_settings
@@ -361,7 +354,7 @@ module Projects
     end
 
     def non_assignable_project_params
-      [:default_branch, :remove_deletion_schedule]
+      [:default_branch]
     end
   end
 end

@@ -59,7 +59,7 @@ that you can incorporate into the development of customer applications,
 including but not limited to:
 
 - [Security configuration](../user/application_security/detect/security_configuration.md)
-- [Container Scanning](../user/application_security/container_scanning/_index.md)
+- [Container scanning](../user/application_security/container_scanning/_index.md)
 - [Dependency Scanning](../user/application_security/dependency_scanning/_index.md)
 - [Static application security testing](../user/application_security/sast/_index.md)
 - [Infrastructure as Code (IaC) Scanning](../user/application_security/iac_scanning/_index.md)

@@ -106,6 +106,14 @@ module StubObjectStorage
     )
   end
 
+  def stub_nuget_symbol_object_storage(**params)
+    stub_object_storage_uploader(
+      config: Gitlab.config.packages.object_store,
+      uploader: ::Packages::Nuget::SymbolUploader,
+      **params
+    )
+  end
+
   def debian_distribution_release_file_object_storage(**params)
     stub_object_storage_uploader(
       config: Gitlab.config.packages.object_store,

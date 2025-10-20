@@ -142,6 +142,14 @@ module WebHooks
         token.present? ? SECRET_MASK : nil
       end
 
+      def masked_url_variables
+        url_variables.present? ? url_variables.keys.map { |k| { key: k } } : []
+      end
+
+      def masked_custom_headers
+        custom_headers.present? ? custom_headers.keys.map { |k| { key: k } } : []
+      end
+
       def validate_public_url?
         true
       end

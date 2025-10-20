@@ -1,5 +1,5 @@
 import { start } from '@gitlab/web-ide';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import Tracking from '~/tracking';
 import { getLineRangeFromHash } from '~/lib/utils/url_utility';
@@ -34,30 +34,35 @@ export const initGitlabWebIDE = async (el) => {
     extensionMarketplaceSettings: extensionMarketplaceSettingsJSON,
     settingsContextHash,
     signOutPath,
+    extensionHostDomain,
+    extensionHostDomainChanged,
   } = el.dataset;
 
-  const webIdeWorkbenchConfig = await getWebIDEWorkbenchConfig();
-  const container = setupIdeContainer(el);
-  const editorFont = editorFontJSON
-    ? convertObjectPropsToCamelCase(JSON.parse(editorFontJSON), { deep: true })
-    : null;
-  const forkInfo = forkInfoJSON ? JSON.parse(forkInfoJSON) : null;
-  const extensionMarketplaceSettings = extensionMarketplaceSettingsJSON
-    ? convertObjectPropsToCamelCase(JSON.parse(extensionMarketplaceSettingsJSON), { deep: true })
-    : undefined;
-
-  const oauthConfig = getOAuthConfig(el.dataset);
-  const httpHeaders = oauthConfig
-    ? undefined
-    : // Use same headers as defined in axios_utils (not needed in oauth)
-      {
-        [csrf.headerKey]: csrf.token,
-        'X-Requested-With': 'XMLHttpRequest',
-      };
-
-  const lineRange = getLineRangeFromHash();
-
   try {
+    const webIdeWorkbenchConfig = await getWebIDEWorkbenchConfig({
+      extensionHostDomain,
+      extensionHostDomainChanged: parseBoolean(extensionHostDomainChanged),
+    });
+    const container = setupIdeContainer(el);
+    const editorFont = editorFontJSON
+      ? convertObjectPropsToCamelCase(JSON.parse(editorFontJSON), { deep: true })
+      : null;
+    const forkInfo = forkInfoJSON ? JSON.parse(forkInfoJSON) : null;
+    const extensionMarketplaceSettings = extensionMarketplaceSettingsJSON
+      ? convertObjectPropsToCamelCase(JSON.parse(extensionMarketplaceSettingsJSON), { deep: true })
+      : undefined;
+
+    const oauthConfig = getOAuthConfig(el.dataset);
+    const httpHeaders = oauthConfig
+      ? undefined
+      : // Use same headers as defined in axios_utils (not needed in oauth)
+        {
+          [csrf.headerKey]: csrf.token,
+          'X-Requested-With': 'XMLHttpRequest',
+        };
+
+    const lineRange = getLineRangeFromHash();
+
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
     const { ready } = await start(container.element, {
       ...getBaseConfig(),

@@ -21,7 +21,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       followed_users
       following_users
       members
-      namespace_deletion_schedules
       group_members
       project_members
       created_namespace_details

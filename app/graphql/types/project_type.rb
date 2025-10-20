@@ -892,6 +892,12 @@ module Types
       null: false,
       description: "Project's Pages site uses a unique subdomain."
 
+    field :webhook, ::Types::WebHooks::ProjectHookType,
+      null: true,
+      resolver: Resolvers::WebHooks::ProjectHooksResolver.single,
+      experiment: { milestone: '18.5' },
+      description: 'A single project webhook.'
+
     def ci_pipeline_creation_request(request_id:)
       ::Ci::PipelineCreation::Requests.get_request(object, request_id)
     end

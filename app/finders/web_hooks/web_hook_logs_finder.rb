@@ -2,7 +2,7 @@
 
 module WebHooks
   class WebHookLogsFinder
-    attr_accessor :hooks, :params, :current_user
+    attr_accessor :hook, :params, :current_user
 
     def initialize(hook, current_user, params = {})
       @hook = hook
@@ -11,16 +11,17 @@ module WebHooks
     end
 
     def execute
-      return WebHookLog.none unless authorized?(@hook)
+      return WebHookLog.none unless authorized?
 
-      logs = @hook.web_hook_logs
+      logs = hook.web_hook_logs
       logs = by_status_code(logs)
-      logs.recent(WebHookLog::MAX_RECENT_DAYS)
+      logs = by_created_at(logs)
+      by_id(logs)
     end
 
     private
 
-    def authorized?(hook)
+    def authorized?
       Ability.allowed?(current_user, :read_web_hook, hook)
     end
 
@@ -43,6 +44,18 @@ module WebHooks
       else
         status_string
       end
+    end
+
+    def by_created_at(logs)
+      return logs.created_between(params[:start_time], params[:end_time]) if params[:start_time] || params[:end_time]
+
+      logs.recent(::WebHookLog::MAX_RECENT_DAYS)
+    end
+
+    def by_id(logs)
+      return logs unless params[:id]
+
+      logs.id_in(params[:id])
     end
   end
 end

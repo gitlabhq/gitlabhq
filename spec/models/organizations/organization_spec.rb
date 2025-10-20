@@ -24,6 +24,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
 
     it { is_expected.to have_many(:users).through(:organization_users).inverse_of(:organizations) }
     it { is_expected.to have_many(:organization_users).inverse_of(:organization) }
+    it { is_expected.to have_many :pool_repositories }
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :snippets }
     it { is_expected.to have_many :snippet_repositories }

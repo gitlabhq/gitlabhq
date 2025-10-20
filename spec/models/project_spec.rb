@@ -10440,6 +10440,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
       expect(project.ensure_pool_repository).to be_a(PoolRepository)
     end
+
+    it 'sets the organization to its own organization' do
+      expect(project.ensure_pool_repository.organization)
+        .to eq(project.organization)
+    end
   end
 
   describe '#assigning_role_too_high?' do

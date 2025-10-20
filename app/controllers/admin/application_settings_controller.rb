@@ -38,6 +38,7 @@ module Admin
     feature_category :observability, [:reset_error_tracking_access_token]
     feature_category :global_search, [:search]
     feature_category :environment_management, [:usage_quotas]
+    feature_category :editor_extensions, [:reset_vscode_extension_marketplace_extension_host_domain]
 
     VALID_SETTING_PANELS = %w[general repository
       ci_cd reporting metrics_and_profiling
@@ -102,6 +103,13 @@ module Admin
 
       redirect_to general_admin_application_settings_path,
         notice: _('New error tracking access token has been generated!')
+    end
+
+    def reset_vscode_extension_marketplace_extension_host_domain
+      ::WebIde::ExtensionMarketplace.reset_extension_host_domain!
+
+      redirect_to general_admin_application_settings_path(anchor: 'js-web-ide-settings'),
+        notice: _('The Web IDE extension host domain was restored to its default value.')
     end
 
     def clear_repository_check_states

@@ -105,12 +105,18 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
         it 'includes extension marketplace settings and settings context hash' do
           expect(WebIde::ExtensionMarketplace).to receive(:webide_extension_marketplace_settings)
             .with(user: user).and_return(settings)
+          expect(WebIde::ExtensionMarketplace).to receive(:extension_host_domain)
+            .and_return('web-ide.net')
+          expect(WebIde::ExtensionMarketplace).to receive(:extension_host_domain_changed?)
+            .and_return(true)
 
           actual = helper.ide_data(project: nil, fork_info: fork_info, params: params)
 
           expect(actual).to include({
             'extension-marketplace-settings' => settings.to_json,
-            'settings-context-hash' => expected_settings_hash
+            'settings-context-hash' => expected_settings_hash,
+            'extension-host-domain' => 'web-ide.net',
+            'extension-host-domain-changed' => "true"
           })
         end
       end

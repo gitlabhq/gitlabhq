@@ -38,7 +38,7 @@ and reduces navigation complexity.
 This feature is an [experiment](../policy/development_stages_support.md).
 To test this feature on GitLab Self-Managed: Contact your GitLab administrator.
 
-To report a bug, create an issue under [epic 19602](https://gitlab.com/groups/gitlab-org/-/epics/19602).
+Provide feedback in [issue 577554](https://gitlab.com/gitlab-org/gitlab/-/issues/577554).
 
 ![Projects page with the new UI.](img/paneled_view_projects_v18_5.png)
 

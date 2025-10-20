@@ -351,6 +351,7 @@ module ApplicationSettingImplementation
         top_level_group_creation_enabled: true,
         ropc_without_client_credentials: true,
         vscode_extension_marketplace_enabled: false,
+        vscode_extension_marketplace_extension_host_domain: ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
         git_push_pipeline_limit: 4,

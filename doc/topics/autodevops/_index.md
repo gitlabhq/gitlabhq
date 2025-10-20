@@ -35,15 +35,15 @@ For an introduction to Auto DevOps, watch [Auto DevOps](https://youtu.be/0Tc0YYB
 
 Auto DevOps supports development during each of the [DevOps stages](stages.md).
 
-| Stage | Auto DevOps feature |
-|---------|-------------|
-| Build | [Auto Build](stages.md#auto-build) |
-| Build | [Auto Dependency Scanning](stages.md#auto-dependency-scanning) |
-| Test | [Auto Test](stages.md#auto-test) |
-| Test | [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) |
-| Test | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
-| Test | [Auto Code Quality](stages.md#auto-code-quality) |
-| Test | [Auto Container Scanning](stages.md#auto-container-scanning) |
+| Stage  | Auto DevOps feature |
+|--------|---------------------|
+| Build  | [Auto Build](stages.md#auto-build) |
+| Build  | [Auto Dependency Scanning](stages.md#auto-dependency-scanning) |
+| Test   | [Auto Test](stages.md#auto-test) |
+| Test   | [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) |
+| Test   | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
+| Test   | [Auto Code Quality](stages.md#auto-code-quality) |
+| Test   | [Auto container scanning](stages.md#auto-container-scanning) |
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
 | Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |

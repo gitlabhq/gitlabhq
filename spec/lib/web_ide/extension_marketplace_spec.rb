@@ -97,4 +97,52 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
       it { is_expected.to match(expectation) }
     end
   end
+
+  describe '#extension_host_domain' do
+    subject(:extension_host_domain) { described_class.extension_host_domain }
+
+    context 'when vscode_extension_marketplace_extension_host_domain is set to default' do
+      before do
+        Gitlab::CurrentSettings.update!(
+          vscode_extension_marketplace_extension_host_domain: 'cdn.web-ide.gitlab-static.net'
+        )
+      end
+
+      it { is_expected.to eq('cdn.web-ide.gitlab-static.net') }
+    end
+
+    context 'when vscode_extension_marketplace_extension_host_domain is set to custom domain' do
+      before do
+        Gitlab::CurrentSettings.update!(
+          vscode_extension_marketplace_extension_host_domain: 'custom-cdn.example.com'
+        )
+      end
+
+      it { is_expected.to eq('custom-cdn.example.com') }
+    end
+  end
+
+  describe '#extension_host_domain_changed?' do
+    subject(:extension_host_domain_changed) { described_class.extension_host_domain_changed? }
+
+    context 'when extension_host_domain is set to default value' do
+      before do
+        Gitlab::CurrentSettings.update!(
+          vscode_extension_marketplace_extension_host_domain: 'cdn.web-ide.gitlab-static.net'
+        )
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when extension_host_domain is set to custom domain' do
+      before do
+        Gitlab::CurrentSettings.update!(
+          vscode_extension_marketplace_extension_host_domain: 'custom-cdn.example.com'
+        )
+      end
+
+      it { is_expected.to be(true) }
+    end
+  end
 end

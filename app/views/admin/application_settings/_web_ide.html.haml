@@ -1,0 +1,30 @@
+= render ::Layouts::SettingsBlockComponent.new(_('Web IDE'),
+  id: 'js-web-ide-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('AdminSettings|Configure the Web IDE extension host domain.')
+  - c.with_body do
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-web-ide-settings'), html: { class: 'fieldset-form' } do |f|
+      - if @application_setting.errors[:vscode_extension_marketplace].present?
+        = render Pajamas::AlertComponent.new(variant: :danger,
+          title: s_('AdminSettings|Could not update extension host domain'),
+          dismissible: false,
+          alert_options: { id: 'error_explanation', class: 'gl-mb-5' }) do |alert|
+          - alert.with_body do
+            = s_('AdminSettings|The extension host domain provided is not a valid domain name.')
+
+      %fieldset
+        .form-group
+          = f.label :vscode_extension_marketplace_extension_host_domain, s_('AdminSettings|Extension host domain'), class: 'label-bold'
+          = f.text_field :vscode_extension_marketplace_extension_host_domain, class: 'form-control gl-form-input', required: true
+          .form-text.gl-text-subtle
+            = s_("AdminSettings|Wildcard domain used to isolate the execution of 3rd-party code in the Web IDE. Restarting the GitLab instance is required after changing this field is updated.")
+
+      = f.submit _('Save changes'), pajamas_button: true
+      = render Pajamas::ButtonComponent.new(method: :put,
+        variant: 'danger',
+        category: 'secondary',
+        href: reset_vscode_extension_marketplace_extension_host_domain_admin_application_settings_url,
+        button_options: { data: { confirm: s_('AdminSettings|Are you sure you want to revert to the default extension host domain?'),
+          confirm_btn_variant: 'danger' } }) do
+        = s_('AdminSettings|Restore default domain')

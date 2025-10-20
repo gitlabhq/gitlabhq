@@ -322,7 +322,7 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 #### `agent` example
 
 ```yaml
-- name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
+- name: Enforce container scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
   enabled: true
   rules:
   - type: schedule
@@ -355,7 +355,7 @@ Define how scheduled scans are distributed over time with the `time_window` obje
 #### `time_window` example
 
 ```yaml
-- name: Enforce Container Scanning with a time window of 1 hour
+- name: Enforce container scanning with a time window of 1 hour
   enabled: true
   rules:
   - type: schedule
@@ -547,8 +547,8 @@ scan_execution_policy:
   - scan: secret_detection
     scan_settings:
       ignore_default_before_after_script: true
-- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+- name: Enforce Secret Detection and container scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
   enabled: true
   rules:
   - type: pipeline
@@ -578,8 +578,8 @@ You can use this example in the YAML mode of the [scan execution policy editor](
 It corresponds to a single object from the previous example.
 
 ```yaml
-name: Enforce Secret Detection and Container Scanning in every default branch pipeline
-description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+name: Enforce Secret Detection and container scanning in every default branch pipeline
+description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
 enabled: true
 rules:
   - type: pipeline

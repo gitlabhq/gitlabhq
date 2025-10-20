@@ -5,8 +5,46 @@ require 'spec_helper'
 RSpec.describe PoolRepository, feature_category: :source_code_management do
   describe 'associations' do
     it { is_expected.to belong_to(:shard) }
+    it { is_expected.to belong_to(:organization).optional(true) }
     it { is_expected.to belong_to(:source_project) }
     it { is_expected.to have_many(:member_projects) }
+  end
+
+  describe 'before_validation callbacks' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_organization) { create(:organization) }
+
+    context 'when organization is not set' do
+      it 'assigns organization from the source project' do
+        pool_repo = build(
+          :pool_repository,
+          source_project: project,
+          organization: nil
+        )
+
+        expect(pool_repo.organization).to be_nil
+        pool_repo.valid?
+        expect(pool_repo.organization).to eq(pool_repo.source_project.organization)
+      end
+    end
+
+    # This is an edge case because the key would initially be based on the
+    # project's key, but the test exists to prove that we early return if
+    # the organization exists.
+    context 'when organization is set' do
+      it 'retains the same organization' do
+        pool_repo = build(
+          :pool_repository,
+          source_project: project,
+          organization: other_organization
+        )
+
+        expect(pool_repo.organization).not_to be_nil
+        pool_repo.valid?
+        expect(pool_repo.organization).not_to eq(project.organization)
+        expect(pool_repo.organization).to eq(other_organization)
+      end
+    end
   end
 
   describe 'validations' do

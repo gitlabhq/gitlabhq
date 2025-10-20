@@ -5116,6 +5116,9 @@ msgstr ""
 msgid "AdminSettings|Allow users to make their profiles private"
 msgstr ""
 
+msgid "AdminSettings|Are you sure you want to revert to the default extension host domain?"
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
@@ -5140,7 +5143,13 @@ msgstr ""
 msgid "AdminSettings|Configure product analytics to track events within your project applications."
 msgstr ""
 
+msgid "AdminSettings|Configure the Web IDE extension host domain."
+msgstr ""
+
 msgid "AdminSettings|Configure when dormant projects should be automatically deleted. %{linkStart}What are dormant projects?%{linkEnd}"
+msgstr ""
+
+msgid "AdminSettings|Could not update extension host domain"
 msgstr ""
 
 msgid "AdminSettings|Cube API URL"
@@ -5237,6 +5246,9 @@ msgid "AdminSettings|Enforce PIPL compliance for all users"
 msgstr ""
 
 msgid "AdminSettings|Enforce invitation flow for groups and projects"
+msgstr ""
+
+msgid "AdminSettings|Extension host domain"
 msgstr ""
 
 msgid "AdminSettings|Feed token"
@@ -5410,6 +5422,9 @@ msgstr ""
 msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
 msgstr ""
 
+msgid "AdminSettings|Restore default domain"
+msgstr ""
+
 msgid "AdminSettings|Restricted visibility levels"
 msgstr ""
 
@@ -5512,6 +5527,9 @@ msgstr ""
 msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
 msgstr ""
 
+msgid "AdminSettings|The extension host domain provided is not a valid domain name."
+msgstr ""
+
 msgid "AdminSettings|The host of your data collector instance."
 msgstr ""
 
@@ -5579,6 +5597,9 @@ msgid "AdminSettings|When disabled, runner registration tokens are disabled from
 msgstr ""
 
 msgid "AdminSettings|When to delete dormant projects"
+msgstr ""
+
+msgid "AdminSettings|Wildcard domain used to isolate the execution of 3rd-party code in the Web IDE. Restarting the GitLab instance is required after changing this field is updated."
 msgstr ""
 
 msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled."
@@ -29620,6 +29641,12 @@ msgid "Geo|Nothing to synchronize"
 msgstr ""
 
 msgid "Geo|Nothing to verify"
+msgstr ""
+
+msgid "Geo|NuGet Symbol"
+msgstr ""
+
+msgid "Geo|NuGet Symbols"
 msgstr ""
 
 msgid "Geo|Object Storage replication"
@@ -65928,6 +65955,9 @@ msgstr ""
 msgid "The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`)."
 msgstr ""
 
+msgid "The Web IDE extension host domain was restored to its default value."
+msgstr ""
+
 msgid "The XML file must be less than %{max_size} MB."
 msgstr ""
 
@@ -73581,6 +73611,9 @@ msgid "WebIDE|Quickly and easily edit multiple files in your project."
 msgstr ""
 
 msgid "WebIDE|Quickly and easily edit multiple files in your project. Press . to open"
+msgstr ""
+
+msgid "WebIDE|The Web IDE does not have a valid extension host domain and it could not be initialized."
 msgstr ""
 
 msgid "WebIdeOAuthCallback|Close tab"

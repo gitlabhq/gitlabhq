@@ -187,7 +187,7 @@ The jobs are separated into stages:
   - The `code_quality` job checks the code quality and is allowed to fail
     ([Auto Code Quality](../stages.md#auto-code-quality))
   - The `container_scanning` job checks the Docker container if it has any
-    vulnerabilities and is allowed to fail ([Auto Container Scanning](../stages.md#auto-container-scanning))
+    vulnerabilities and is allowed to fail ([auto container scanning](../stages.md#auto-container-scanning))
   - The `dependency_scanning` job checks if the application has any dependencies
     susceptible to vulnerabilities and is allowed to fail
     ([Auto Dependency Scanning](../stages.md#auto-dependency-scanning))

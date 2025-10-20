@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_category: :code_review_workflow do
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { project.creator }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let!(:project) { create(:project, :public, :repository) }
+  let!(:user) { project.creator }
+  let!(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
     project.add_maintainer(user)
@@ -136,11 +136,11 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   end
 
   describe 'Merge request discussions' do
-    let_it_be(:first_discussion) do
+    let!(:first_discussion) do
       create(:discussion_note_on_merge_request, noteable: merge_request, project: project).to_discussion
     end
 
-    let_it_be(:second_discussion) do
+    let!(:second_discussion) do
       create(:discussion_note_on_merge_request, noteable: merge_request, project: project).to_discussion
     end
 

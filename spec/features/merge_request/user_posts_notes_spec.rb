@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_review_workflow do
   include NoteInteractionHelpers
-  let_it_be(:project) { create(:project, :repository) }
+  let!(:project) { create(:project, :repository) }
 
   let(:user) { project.creator }
   let(:merge_request) do

@@ -475,6 +475,31 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           end
         end
       end
+
+      context 'Web IDE Settings' do
+        it 'changes and restores web ide extension host domain setting' do
+          default_host_domain = ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN
+
+          page.within('#js-web-ide-settings') do
+            expect(page).to have_field('Extension host domain', with: default_host_domain)
+
+            fill_in 'Extension host domain', with: 'example.com'
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.vscode_extension_marketplace_extension_host_domain)
+            .to eq('example.com')
+
+          page.within('#js-web-ide-settings') do
+            click_link 'Restore default domain'
+          end
+
+          expect(page).to have_content 'The Web IDE extension host domain was restored to its default value.'
+          expect(current_settings.vscode_extension_marketplace_extension_host_domain)
+            .to eq(default_host_domain)
+        end
+      end
     end
 
     context 'Integrations page' do

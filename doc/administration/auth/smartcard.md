@@ -121,8 +121,16 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328074) in GitLab 16.9.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/514025) `reverse_issuer_and_subject` and `reverse_issuer_and_serial_number` formats in GitLab 17.11.
+- `issuer_and_subject`, `reverse_issuer_and_subject`, and `subject` formats [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208209) in GitLab 18.6 [with a flag](../feature_flags/_index.md) named `smartcard_ad_formats_v2`. Enabled by default. Disable this flag to revert these formats to the previous versions.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The functionality of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 Active Directory does not support the `certificateExactMatch` rule or the `userCertificate` attribute. Most tools for certificate-based authentication such as smart cards use the `altSecurityIdentities` attribute, which can contain multiple certificates for each user. The data in the field must match [one of the formats Microsoft recommends](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-certificate-based-authentication-certificateuserids#supported-patterns-for-certificate-user-ids).
 
@@ -136,11 +144,12 @@ Use the following attributes to customize the field GitLab checks and the format
 | -------------------------- | ------------------------------------------------------------ |
 | `principal_name`           | `X509:<PN>alice@example.com`                                 |
 | `rfc822_name`              | `X509:<RFC822>bob@example.com`                               |
-| `subject`                  | `X509:<S>DC=com,DC=example,OU=UserAccounts,CN=dennis`        |
-| `issuer_and_serial_number` | `X509:<I>DC=com,DC=example,CN=CONTOSO-DC-CA<SR>1181914561`   |
-| `issuer_and_subject`       | `X509:<I>DC=com,DC=example,CN=EXAMPLE-DC-CA<S>DC=com,DC=example,OU=UserAccounts,CN=cynthia` |
-| `reverse_issuer_and_serial_number` | `X509:<I>CN=CONTOSO-DC-CA,DC=example,DC=com<SR>1181914561`   |
-| `reverse_issuer_and_subject`   | `X509:<I>CN=EXAMPLE-DC-CA,DC=example,DC=com<S>DC=com,DC=example,OU=UserAccounts,CN=cynthia` |
+| `subject`                  | `X509:<S>CN=dennis,OU=UserAccounts,DC=example,DC=com`        |
+| `issuer_and_serial_number` | `X509:<I>CN=CONTOSO-DC-CA,DC=example,DC=com<SR>1181914561`   |
+| `issuer_and_subject`       | `X509:<I>CN=EXAMPLE-DC-CA,DC=example,DC=com<S>CN=cynthia,OU=UserAccounts,DC=example,DC=com` |
+| `reverse_issuer_and_serial_number` | `X509:<I>DC=com,DC=example,CN=CONTOSO-DC-CA<SR>1181914561`   |
+| `reverse_issuer_and_subject`   | `X509:<I>DC=com,DC=example,CN=CONTOSO-DC-CA<S>CN=cynthia,OU=UserAccounts,DC=example,DC=com` |
+| `reverse_issuer_and_reverse_subject`   | `X509:<I>DC=com,DC=example,CN=CONTOSO-DC-CA<S>DC=com,DC=example,OU=UserAccounts,CN=cynthia` |
 
 For `issuer_and_serial_number`, the `<SR>` portion is in reverse-byte-order, with the least-significant byte first. For more information, see [how to map a user to a certificate using the altSecurityIdentities attribute](https://learn.microsoft.com/en-us/archive/blogs/spatdsg/howto-map-a-user-to-a-certificate-via-all-the-methods-available-in-the-altsecurityidentities-attribute).
 

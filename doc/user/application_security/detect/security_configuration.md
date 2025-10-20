@@ -55,7 +55,7 @@ To enable the following security scanning tools, with default settings, enable
 - [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 - [Auto DAST](../../../topics/autodevops/stages.md#auto-dast)
 - [Auto Dependency Scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
-- [Auto Container Scanning](../../../topics/autodevops/stages.md#auto-container-scanning)
+- [Auto container scanning](../../../topics/autodevops/stages.md#auto-container-scanning)
 
 While you cannot directly customize Auto DevOps, you can
 [include the Auto DevOps template in your project's `.gitlab-ci.yml` file](../../../topics/autodevops/customize.md#customize-gitlab-ciyml)
@@ -162,7 +162,7 @@ By default, GitLab security scanners use `registry.gitlab.com/security-products`
 base address for Docker images. You can override this for most scanners by setting the CI/CD variable
 `SECURE_ANALYZERS_PREFIX` to another location. This affects all scanners at once.
 
-The [Container Scanning](../container_scanning/_index.md) analyzer is an exception, and it
+The [container scanning](../container_scanning/_index.md) analyzer is an exception, and it
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
 the instructions for
 [Running container scanning in an offline environment](../container_scanning/_index.md#running-container-scanning-in-an-offline-environment).
@@ -197,7 +197,7 @@ For more information about overriding security jobs, see:
 
 - [Overriding SAST jobs](../sast/_index.md#overriding-sast-jobs).
 - [Overriding Dependency Scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
-- [Overriding Container Scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
+- [Overriding container scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
 - [Overriding Secret Detection jobs](../secret_detection/pipeline/configure.md).
 - [Overriding DAST jobs](../dast/browser/_index.md).
 

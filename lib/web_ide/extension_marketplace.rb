@@ -2,6 +2,8 @@
 
 module WebIde
   module ExtensionMarketplace
+    DEFAULT_EXTENSION_HOST_DOMAIN = 'cdn.web-ide.gitlab-static.net'
+
     # Returns true if the ExtensionMarketplace feature is enabled from application settings
     #
     # @return [Boolean]
@@ -34,6 +36,20 @@ module WebIde
     # @return [Hash]
     def self.webide_extension_marketplace_settings(user:)
       Settings.get_single_setting(:vscode_extension_marketplace_view_model, user: user)
+    end
+
+    def self.reset_extension_host_domain!
+      Gitlab::CurrentSettings.update!(
+        vscode_extension_marketplace_extension_host_domain: DEFAULT_EXTENSION_HOST_DOMAIN
+      )
+    end
+
+    def self.extension_host_domain
+      Gitlab::CurrentSettings.vscode_extension_marketplace_extension_host_domain
+    end
+
+    def self.extension_host_domain_changed?
+      extension_host_domain != DEFAULT_EXTENSION_HOST_DOMAIN
     end
   end
 end

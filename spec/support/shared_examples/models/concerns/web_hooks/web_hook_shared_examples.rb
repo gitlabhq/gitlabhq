@@ -566,4 +566,36 @@ RSpec.shared_examples 'a webhook' do |factory:|
       it { expect(hook.masked_token).to eq described_class::SECRET_MASK }
     end
   end
+
+  describe '#masked_url_variables' do
+    subject(:hook) { build(factory, url_variables: { 'abc' => 'supers3cret', 'def' => 'foobar' }) }
+
+    it 'returns url_variables keys' do
+      expect(hook.masked_url_variables).to contain_exactly({ key: 'abc' }, { key: 'def' })
+    end
+
+    context 'when url_variables is not present' do
+      it 'returns an empty array' do
+        hook.url_variables = nil
+
+        expect(hook.masked_url_variables).to eq([])
+      end
+    end
+  end
+
+  describe '#masked_custom_headers' do
+    subject(:hook) { build(factory, custom_headers: { 'Custom-Header1' => 'value1', 'Custom-Header2' => 'value2' }) }
+
+    it 'returns custom_headers keys' do
+      expect(hook.masked_custom_headers).to contain_exactly({ key: 'Custom-Header1' }, { key: 'Custom-Header2' })
+    end
+
+    context 'when custom_headers is not present' do
+      it 'returns an empty array' do
+        hook.custom_headers = nil
+
+        expect(hook.masked_custom_headers).to eq([])
+      end
+    end
+  end
 end

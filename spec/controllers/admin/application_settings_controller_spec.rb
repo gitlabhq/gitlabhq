@@ -531,6 +531,33 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
+  describe 'PUT #reset_vscode_extension_marketplace_extension_host_domain', feature_category: :editor_extensions do
+    before do
+      Gitlab::CurrentSettings.update!(
+        vscode_extension_marketplace_extension_host_domain: 'custom-cdn.example.com'
+      )
+      sign_in(admin)
+    end
+
+    subject { put :reset_vscode_extension_marketplace_extension_host_domain }
+
+    it 'resets vscode_extension_marketplace_extension_host_domain' do
+      expect(ApplicationSetting.current.vscode_extension_marketplace_extension_host_domain)
+        .not_to eq(::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN)
+
+      subject
+
+      expect(ApplicationSetting.current.vscode_extension_marketplace_extension_host_domain)
+        .to eq(::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN)
+    end
+
+    it 'redirects the user to application settings page' do
+      subject
+
+      expect(response).to redirect_to(general_admin_application_settings_path(anchor: 'js-web-ide-settings'))
+    end
+  end
+
   describe 'GET #lets_encrypt_terms_of_service' do
     include LetsEncryptHelpers
 

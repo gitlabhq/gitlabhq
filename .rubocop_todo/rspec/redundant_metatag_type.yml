@@ -396,7 +396,6 @@ RSpec/RedundantMetatagType:
     - 'spec/models/namespace/traversal_hierarchy_spec.rb'
     - 'spec/models/namespace_setting_spec.rb'
     - 'spec/models/namespace_statistics_spec.rb'
-    - 'spec/models/namespaces/deletion_schedule_spec.rb'
     - 'spec/models/namespaces/project_namespace_spec.rb'
     - 'spec/models/namespaces/sync_event_spec.rb'
     - 'spec/models/namespaces/user_namespace_spec.rb'

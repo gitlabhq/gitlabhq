@@ -190,8 +190,8 @@ The [`artifacts:expire_in`](_index.md#artifactsexpire_in) value is set to `1 wee
 
 {{< /details >}}
 
-The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/_index.md).
-The collected Container Scanning report uploads to GitLab as an artifact.
+The `container_scanning` report collects [container scanning vulnerabilities](../../user/application_security/container_scanning/_index.md).
+The collected container scanning report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in:
 

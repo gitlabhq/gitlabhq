@@ -34,12 +34,6 @@ RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects 
         expect(project.deleting_user).to be_nil
       end
 
-      it 'destroys deletion schedule' do
-        execute
-
-        expect(project.project_namespace.reload.deletion_schedule).to be_nil
-      end
-
       it 'logs the restore' do
         allow(Gitlab::AppLogger).to receive(:info)
         expect(::Gitlab::AppLogger).to receive(:info)

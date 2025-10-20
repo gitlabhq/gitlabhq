@@ -13,7 +13,10 @@ const GITLAB_WEB_IDE_VERSION = require('@gitlab/web-ide/package.json').version;
 
 const { pdfJsCopyFilesPatterns } = require('./pdfjs.constants');
 
-const GITLAB_WEB_IDE_PATH = path.join('gitlab-vscode', GITLAB_WEB_IDE_VERSION, '/');
+const GITLAB_WEB_IDE_PATH = path.join(
+  `gitlab-web-ide-vscode-workbench-${GITLAB_WEB_IDE_VERSION}`,
+  '/',
+);
 const GITLAB_WEB_IDE_OUTPUT_PATH = path.join(WEBPACK_OUTPUT_PATH, GITLAB_WEB_IDE_PATH);
 const GITLAB_WEB_IDE_PUBLIC_PATH = path.join(WEBPACK_PUBLIC_PATH, GITLAB_WEB_IDE_PATH);
 

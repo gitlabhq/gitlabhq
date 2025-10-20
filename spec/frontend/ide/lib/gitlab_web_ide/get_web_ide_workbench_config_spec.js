@@ -14,6 +14,10 @@ jest.mock('~/ide/lib/gitlab_web_ide/get_gitlab_url');
 describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
   const TEST_GITLAB_WEB_IDE_PUBLIC_PATH = 'test/gitlab-web-ide/public/path';
   const GITLAB_URL = 'https://gitlab.example.com';
+  const DEFAULT_PARAMETERS = {
+    extensionHostDomain: 'web-ide-example.net',
+    extensionHostDomainChanged: false,
+  };
 
   useMockLocationHelper();
   stubCrypto();
@@ -33,7 +37,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
       beforeEach(async () => {
         window.location.protocol = 'http:';
 
-        config = await getWebIDEWorkbenchConfig();
+        config = await getWebIDEWorkbenchConfig(DEFAULT_PARAMETERS);
       });
 
       it('does not call pingWorkbench', () => {
@@ -49,25 +53,44 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
       });
     });
 
+    describe('when the extensionHostDomain changed', () => {
+      let config;
+
+      beforeEach(async () => {
+        config = await getWebIDEWorkbenchConfig({
+          ...DEFAULT_PARAMETERS,
+          extensionHostDomainChanged: true,
+        });
+      });
+
+      it('appends /assets/webpack to the URL paths', () => {
+        expect(config).toEqual({
+          crossOriginExtensionHost: true,
+          workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/assets/webpack/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+          extensionsHostBaseUrl: `https://{{uuid}}.${DEFAULT_PARAMETERS.extensionHostDomain}/assets/webpack/gitlab-web-ide-vscode-workbench-${packageJSON.version}/vscode`,
+        });
+      });
+    });
+
     describe('when pingWorkbench is successful', () => {
       beforeEach(() => {
         pingWorkbench.mockResolvedValueOnce();
       });
 
       it('returns workbench configuration based on cdn.web-ide.gitlab-static.net', async () => {
-        const config = await getWebIDEWorkbenchConfig();
+        const config = await getWebIDEWorkbenchConfig(DEFAULT_PARAMETERS);
 
         expect(pingWorkbench).toHaveBeenCalledWith({
           el: document.body,
           config: {
-            workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+            workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
             gitlabUrl: 'https://gitlab.example.com',
           },
         });
         expect(config).toEqual({
           crossOriginExtensionHost: true,
-          workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
-          extensionsHostBaseUrl: `https://{{uuid}}.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}/vscode`,
+          workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+          extensionsHostBaseUrl: `https://{{uuid}}.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}/vscode`,
         });
       });
     });
@@ -78,12 +101,12 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
       });
 
       it('return workbenchConfiguration based on gitlabUrl', async () => {
-        const result = await getWebIDEWorkbenchConfig();
+        const result = await getWebIDEWorkbenchConfig(DEFAULT_PARAMETERS);
 
         expect(pingWorkbench).toHaveBeenCalledWith({
           el: document.body,
           config: {
-            workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+            workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
             gitlabUrl: 'https://gitlab.example.com',
           },
         });
@@ -110,8 +133,8 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
         window.location.origin = origin;
         window.gon.current_username = currentUsername;
 
-        expect(await buildWorkbenchUrl()).toBe(
-          `https://workbench-${result}.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+        expect(await buildWorkbenchUrl(DEFAULT_PARAMETERS)).toBe(
+          `https://workbench-${result}.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
         );
       },
     );

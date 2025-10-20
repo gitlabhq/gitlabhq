@@ -299,8 +299,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
         valid_runner_registrars: ApplicationSettingImplementation::VALID_RUNNER_REGISTRAR_TYPES,
-        vscode_extension_marketplace: { 'enabled' => false },
+        vscode_extension_marketplace: {
+          'enabled' => false,
+          'extension_host_domain' => ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN
+        },
         vscode_extension_marketplace_enabled?: false,
+        vscode_extension_marketplace_extension_host_domain:
+          ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
         wiki_page_max_content_bytes: 5.megabytes
@@ -2470,6 +2475,34 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       setting.vscode_extension_marketplace_enabled = false
 
       expect(setting.vscode_extension_marketplace).to eq({ "enabled" => false, "preset" => "open_vsx" })
+    end
+  end
+
+  describe '#vscode_extension_marketplace_extension_host_domain' do
+    context 'with valid domain' do
+      it { is_expected.to allow_value({ extension_host_domain: 'foo.net' }).for(:vscode_extension_marketplace) }
+      it { is_expected.to allow_value({ extension_host_domain: 'cdn.foo.net' }).for(:vscode_extension_marketplace) }
+    end
+
+    context "with invalid domain" do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:domain) do
+        %w[
+          foo
+          invalid domain
+          http://foo.com
+          example..com
+          -example.com
+          example.com-
+          .example.com
+          example.com.
+        ]
+      end
+
+      with_them do
+        it { is_expected.not_to allow_value({ extension_host_domain: domain }).for(:vscode_extension_marketplace) }
+      end
     end
   end
 

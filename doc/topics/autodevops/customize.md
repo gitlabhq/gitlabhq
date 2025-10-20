@@ -116,11 +116,11 @@ You can override this behavior by defining specific variables:
 | Image Path | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` for branch pipelines. `$CI_REGISTRY_IMAGE` for tag pipelines. | `$CI_APPLICATION_REPOSITORY` |
 | Image Tag | `$CI_COMMIT_SHA` for branch pipelines. `$CI_COMMIT_TAG` for tag pipelines. | `$CI_APPLICATION_TAG` |
 
-These variables also affect Auto Build and Auto Container Scanning. If you don't want to build and push an image to
+These variables also affect Auto Build and auto container scanning. If you don't want to build and push an image to
 `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`, include only `Jobs/Deploy.gitlab-ci.yml`, or
 [skip the `build` jobs](cicd_variables.md#job-skipping-variables).
 
-If you use Auto Container Scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
+If you use auto container scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
 also update `$CS_DEFAULT_BRANCH_IMAGE`. For more information, see
 [Setting the default branch image](../../user/application_security/container_scanning/_index.md#setting-the-default-branch-image).
 

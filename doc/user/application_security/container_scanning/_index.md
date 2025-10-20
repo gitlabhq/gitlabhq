@@ -19,8 +19,8 @@ vulnerabilities appear in your base images or operating system's packages, conta
 identifies them and provides a remediation path for those that it can.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  For an overview, see [Container Scanning - Advanced Security Testing](https://www.youtube.com/watch?v=C0jn2eN5MAs).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Container Scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
+  For an overview, see [Container scanning - Advanced Security Testing](https://www.youtube.com/watch?v=C0jn2eN5MAs).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up container scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
 - For an introductory tutorial, see [Scan a Docker container for vulnerabilities](../../../tutorials/container_scanning/_index.md).
 
 Container scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
@@ -180,7 +180,7 @@ Additional ways to see container scanning results:
 
 After you are confident in the container scanning results for a single project, you can extend its implementation to additional projects:
 
-- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Container Scanning settings across groups.
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply container scanning settings across groups.
 - If you have unique requirements, container scanning can be run in [offline environments](#running-container-scanning-in-an-offline-environment).
 
 ## Supported distributions
@@ -929,7 +929,7 @@ Container Scanning for Registry populates the vulnerability report only when a n
 
 ### Enabling Container Scanning for Registry
 
-To enable container scanning for the GitLab Container Registry:
+To enable Container Scanning for the GitLab Container Registry:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
@@ -937,7 +937,7 @@ To enable container scanning for the GitLab Container Registry:
 
 ### Use with offline or air-gapped environments
 
-To use Container Scanning for Registry in an offline or air-gapped environment, you must use a local copy of the container scanning analyzer image. Because this feature is managed by the GitLab Security Policy Bot, the analyzer image cannot be configured by editing the `.gitlab-ci.yml` file.
+To use container scanning for registry in an offline or air-gapped environment, you must use a local copy of the container scanning analyzer image. Because this feature is managed by the GitLab Security Policy Bot, the analyzer image cannot be configured by editing the `.gitlab-ci.yml` file.
 
 Instead, you must override the default scanner image by setting the `CS_ANALYZER_IMAGE` CI/CD
 variable in the GitLab UI. The dynamically-created scanning job inherits variables defined in the
@@ -1027,7 +1027,7 @@ docker: Error response from daemon: failed to copy xattrs: failed to set xattr "
 This is a result of a bug in Docker which is now [fixed](https://github.com/containerd/continuity/pull/138 "fs: add WithAllowXAttrErrors CopyOpt").
 To prevent the error, ensure the Docker version that the runner is using is
 `18.09.03` or higher. For more information, see
-[issue #10241](https://gitlab.com/gitlab-org/gitlab/-/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").
+[issue #10241](https://gitlab.com/gitlab-org/gitlab/-/issues/10241 "Investigate why container scanning is not working with NFS mounts").
 
 ### Getting warning message `gl-container-scanning-report.json: no matching files`
 

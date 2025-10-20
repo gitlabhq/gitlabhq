@@ -520,7 +520,7 @@ The following scanners are supported by this feature:
   Automatic patch creation is only available for Node.js projects managed with
   `yarn`. Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
 
-- [Container Scanning](../container_scanning/_index.md).
+- [Container scanning](../container_scanning/_index.md).
 
 To resolve a vulnerability, you can either:
 

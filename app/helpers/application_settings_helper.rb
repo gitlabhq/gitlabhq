@@ -636,6 +636,7 @@ module ApplicationSettingsHelper
       :minimum_language_server_version,
       :vscode_extension_marketplace,
       :vscode_extension_marketplace_enabled,
+      :vscode_extension_marketplace_extension_host_domain,
       :reindexing_minimum_index_size,
       :reindexing_minimum_relative_bloat_size,
       :anonymous_searches_allowed,

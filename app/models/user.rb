@@ -192,7 +192,6 @@ class User < ApplicationRecord
   # Namespaces
   has_many :members
   has_many :member_namespaces, through: :members
-  has_many :namespace_deletion_schedules, class_name: '::Namespaces::DeletionSchedule', inverse_of: :deleting_user
 
   # Groups
   has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, class_name: 'GroupMember'

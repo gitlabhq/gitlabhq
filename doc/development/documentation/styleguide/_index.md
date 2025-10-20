@@ -463,7 +463,7 @@ Follow these guidelines for punctuation.
 
 <!-- vale gitlab_base.Repetition = NO -->
 
-- End full sentences with a period, including full sentences in tables.
+- End complete sentences with a period.
 - Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/OxfordComma.yml).)
 
 <!-- vale gitlab_base.Repetition = YES -->
@@ -651,8 +651,8 @@ Use lists to present information in a format that is easier to scan.
   For example, do not start some items with nouns and others with verbs.
 - Start all items with a capital letter.
 - Give all items the same punctuation.
-- Do not use a period if the item is not a full sentence.
-- Use a period after every full sentence.
+- Do not use a period if the item is not a complete sentence.
+- Use a period after every complete sentence.
   Do not use semicolons or commas.
 - Add a colon (`:`) after the introductory phrase.
   For example:
