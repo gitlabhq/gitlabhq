@@ -391,8 +391,6 @@ reopenable?:
   file: app/models/merge_request.rb
 can_be_closed?:
   file: app/models/merge_request.rb
-can_be_merged_via_command_line_by?:
-  file: app/models/merge_request.rb
 short_merge_commit_sha:
   file: app/models/merge_request.rb
 find_assignee:

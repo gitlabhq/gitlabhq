@@ -1908,11 +1908,6 @@ class MergeRequest < ApplicationRecord
     access.can_update_branch?(target_branch)
   end
 
-  def can_be_merged_via_command_line_by?(user)
-    access = ::Gitlab::UserAccess.new(user, container: project)
-    access.can_push_to_branch?(target_branch)
-  end
-
   def only_allow_merge_if_pipeline_succeeds?
     project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
   end
