@@ -280,20 +280,7 @@ module Gitlab
       end
 
       def error_response(error, status)
-        message = case error
-                  when ::Gitlab::Json::StreamValidator::DepthLimitError
-                    "Parameters nested too deeply"
-                  when ::Gitlab::Json::StreamValidator::ArraySizeLimitError
-                    "Array parameter too large"
-                  when ::Gitlab::Json::StreamValidator::HashSizeLimitError
-                    "Hash parameter too large"
-                  when ::Gitlab::Json::StreamValidator::ElementCountLimitError
-                    "Too many total parameters"
-                  when ::Gitlab::Json::StreamValidator::BodySizeExceededError
-                    "JSON body too large"
-                  else
-                    "Invalid JSON: limit exceeded"
-                  end
+        message = ::Gitlab::Json::StreamValidator.user_facing_error_message(error)
 
         [
           status,

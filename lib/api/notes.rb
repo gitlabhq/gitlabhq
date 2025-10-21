@@ -112,20 +112,25 @@ module API
             Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
           check_rate_limit! :notes_create, scope: current_user, users_allowlist: allowlist
           noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
-
+          validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
           opts = {
             note: params[:body],
             noteable_type: noteable.class.name,
             noteable_id: noteable.id,
             internal: params[:internal] || params[:confidential],
             created_at: params[:created_at],
-            merge_request_diff_head_sha: params[:merge_request_diff_head_sha]
+            merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
+            scope_validator: validator
           }
 
-          note = create_note(noteable, opts)
+          begin
+            note = create_note(noteable, opts)
 
-          process_note_creation_result(note) do
-            present note, with: Entities.const_get(note.class.name, false)
+            process_note_creation_result(note) do
+              present note, with: Entities.const_get(note.class.name, false)
+            end
+          rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+            forbidden!(error.message)
           end
         end
 

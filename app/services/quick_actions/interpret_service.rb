@@ -12,6 +12,8 @@ module QuickActions
     include Gitlab::QuickActions::RelateActions
     include Gitlab::QuickActions::WorkItemActions
 
+    QuickActionsNotAllowedError = Class.new(StandardError)
+
     attr_reader :quick_action_target
 
     # Counts how many commands have been executed.
