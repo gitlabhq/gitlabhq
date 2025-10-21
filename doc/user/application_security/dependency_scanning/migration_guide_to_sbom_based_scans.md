@@ -107,6 +107,16 @@ Based on customer feedback after releasing the Beta of this feature, we have dec
   When you're ready to fully migrate to the new dependency scanning analyzer, you'll need to adjust how you programmatically access scan results. Instead of reading job artifacts, you'll use GitLab GraphQL API, specifically the ([`Pipeline.securityReportFindings` resource](../../../api/graphql/reference/_index.md#pipelinesecurityreportfindings)).
 </details>
 
+### Compliance framework considerations
+
+When migrating to SBOM-based dependency scanning, be aware of potential impacts on compliance frameworks:
+
+- The "Dependency scanning running" compliance control may fail on GitLab Self-Managed instances (from 18.4) when using SBOM-based scanning because it expects the traditional `gl-dependency-scanning-report.json` artifact.
+- This issue does not affect GitLab.com (SaaS) instances.
+- If your organization uses compliance frameworks with dependency scanning controls, test the migration in a non-production environment first.
+
+For more information, see [compliance framework compatibility](dependency_scanning_sbom/_index.md#compliance-framework-compatibility).
+
 ## Identify affected projects
 
 Understanding which of your projects need attention for this migration is an important first step. The most significant impact will be on your Java and Python projects, because the way they handle dependencies is changing fundamentally.

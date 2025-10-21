@@ -75,7 +75,10 @@ class EventsFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_target_type(events)
-    return events unless Event::TARGET_TYPES[params[:target_type]]
+    target_type = Event::TARGET_TYPES[params[:target_type]]
+
+    return events unless target_type
+    return events.for_project if target_type == Project
 
     events.where(target_type: Event::TARGET_TYPES[params[:target_type]].name)
   end

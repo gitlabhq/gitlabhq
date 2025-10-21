@@ -135,6 +135,52 @@ RSpec.describe Event, feature_category: :user_profile do
       end
     end
 
+    describe '.for_project' do
+      subject { described_class.for_project }
+
+      context 'when target_type is Project' do
+        let_it_be(:event) { create(:event, target: project) }
+
+        it { is_expected.to contain_exactly(event) }
+      end
+
+      context 'when target_type is nil' do
+        context 'with project actions' do
+          let_it_be(:project_action_events) do
+            described_class::PROJECT_ACTIONS.map do |action|
+              create(:event, target: nil, action: action, project: project)
+            end
+          end
+
+          let_it_be(:orphaned_project_action_events) do
+            described_class::PROJECT_ACTIONS.map do |action|
+              create(:event, target: nil, action: action, project: nil)
+            end
+          end
+
+          it 'only return events with defined project' do
+            is_expected.to match_array(project_action_events)
+            is_expected.not_to include(*orphaned_project_action_events)
+          end
+        end
+
+        context 'with non-project actions' do
+          let_it_be(:non_project_action_event) { create(:event, target: nil, action: :pushed, project: project) }
+          let_it_be(:orphaned_non_project_action_event) { create(:event, target: nil, action: :pushed, project: nil) }
+
+          it 'excludes all non-project action events regardless of project presence' do
+            is_expected.not_to include(non_project_action_event, orphaned_non_project_action_event)
+          end
+        end
+      end
+
+      context 'when target_type is not Project' do
+        let_it_be(:non_project_event) { create(:event, :for_issue) }
+
+        it { is_expected.not_to include(non_project_event) }
+      end
+    end
+
     describe '.created_at' do
       it 'can find the right event' do
         time = 1.day.ago
@@ -240,6 +286,101 @@ RSpec.describe Event, feature_category: :user_profile do
       expect(event.tag?).to be_falsey
       expect(event.branch_name).to eq("master")
       expect(event.author).to eq(user)
+    end
+  end
+
+  describe '#target_id' do
+    context 'when target_id is present' do
+      let(:issue) { create(:issue, project: project) }
+      let(:event) { build(:event, target: issue, project: project) }
+
+      it 'returns the target_id' do
+        expect(event.target_id).to eq(issue.id)
+      end
+    end
+
+    context 'when target_id is not present but action is a PROJECT_ACTION' do
+      let(:event) { build(:event, target: nil, project: project, action: :created) }
+
+      it 'returns the project_id as fallback' do
+        expect(event.target_id).to eq(project.id)
+      end
+    end
+
+    context 'when target_id is not present and action is not a PROJECT_ACTION' do
+      let(:event) { build(:event, target: nil, project: project, action: :commented) }
+
+      it 'returns nil' do
+        expect(event.target_id).to be_nil
+      end
+    end
+  end
+
+  describe '#target_type' do
+    context 'when target_type is present' do
+      let(:issue) { create(:issue, project: project) }
+      let(:event) { build(:event, target: issue, project: project) }
+
+      it 'returns the target_type' do
+        expect(event.target_type).to eq('Issue')
+      end
+    end
+
+    context 'when target_type is not present but action is a PROJECT_ACTION' do
+      let(:event) { build(:event, target: nil, project: project, action: :joined) }
+
+      it 'returns Project as fallback' do
+        expect(event.target_type).to eq('Project')
+      end
+    end
+
+    context 'when target_type is not present and action is not a PROJECT_ACTION' do
+      let(:event) { build(:event, target: nil, project: project, action: :pushed) }
+
+      it 'returns nil' do
+        expect(event.target_type).to be_nil
+      end
+    end
+  end
+
+  describe '#target' do
+    context 'when target is present' do
+      let(:issue) { create(:issue, project: project) }
+      let(:event) { build(:event, target: issue, project: project) }
+
+      it 'returns the target' do
+        expect(event.target).to eq(issue)
+      end
+    end
+
+    context 'when target is not present but action is a PROJECT_ACTION' do
+      let(:event) { build(:event, target: nil, project: project, action: :created) }
+
+      it 'returns the project as fallback' do
+        expect(event.target).to eq(project)
+      end
+    end
+
+    context 'when target is not present and action is not a PROJECT_ACTION' do
+      let(:event) { build(:event, target: nil, project: project, action: :commented) }
+
+      it 'returns nil' do
+        expect(event.target).to be_nil
+      end
+    end
+
+    it 'eager loads the author of an event target' do
+      create(:closed_issue_event)
+
+      events = described_class.preload(:target).all.to_a
+      count = ActiveRecord::QueryRecorder
+        .new { events.first.target.author }.count
+
+      # This expectation exists to make sure the test doesn't pass when the
+      # author is for some reason not loaded at all.
+      expect(events.first.target.author).to be_an_instance_of(User)
+
+      expect(count).to be_zero
     end
   end
 
@@ -1194,25 +1335,9 @@ RSpec.describe Event, feature_category: :user_profile do
     end
 
     it 'returns false for a regular event without a target' do
-      event = build(:event)
+      event = build(:event, action: :updated)
 
       expect(event).not_to be_body
-    end
-  end
-
-  describe '#target' do
-    it 'eager loads the author of an event target' do
-      create(:closed_issue_event)
-
-      events = described_class.preload(:target).all.to_a
-      count = ActiveRecord::QueryRecorder
-        .new { events.first.target.author }.count
-
-      # This expectation exists to make sure the test doesn't pass when the
-      # author is for some reason not loaded at all.
-      expect(events.first.target.author).to be_an_instance_of(User)
-
-      expect(count).to be_zero
     end
   end
 
@@ -1308,7 +1433,7 @@ RSpec.describe Event, feature_category: :user_profile do
 
       with_them do
         it 'with correct name and method' do
-          event = build(:event, trait)
+          event = build(:event, trait, project: project)
 
           expect(event.action_name).to eq(action_name)
         end

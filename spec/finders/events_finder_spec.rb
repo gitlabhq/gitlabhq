@@ -112,4 +112,22 @@ RSpec.describe EventsFinder do
       expect(events).to be_empty
     end
   end
+
+  context 'when target_type param is provided' do
+    context 'when "project"' do
+      let_it_be(:project) { public_project }
+
+      let_it_be(:project_event) { create(:project_event, project: project, target: project) }
+      let_it_be(:legacy_project_event) { create(:project_event, project: project, target: nil, action: :created) }
+
+      let_it_be(:event_with_nil_target_type) { create(:event, project: project, target: nil, action: :pushed) }
+      let_it_be(:event_with_other_target_type) { create(:event, :for_issue, project: project) }
+
+      subject { described_class.new(scope: 'all', current_user: user, target_type: 'project').execute }
+
+      it { is_expected.to contain_exactly(project_event, legacy_project_event) }
+      it { is_expected.not_to include(event_with_nil_target_type) }
+      it { is_expected.not_to include(event_with_other_target_type) }
+    end
+  end
 end

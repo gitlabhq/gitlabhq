@@ -102,7 +102,7 @@ RSpec.describe 'ActivityStream GraphQL Query', feature_category: :user_profile d
             "action" => "JOINED",
             "author" => { "name" => followed_user_1.name },
             "project" => { "name" => project.name },
-            "target" => nil
+            "target" => { "fullPath" => project.full_path }
           }
         ]
       )

@@ -95,7 +95,7 @@ FactoryBot.define do
       target { design }
     end
 
-    factory :project_created_event do
+    factory :project_event, aliases: [:project_created_event] do
       project factory: :project
       action { :created }
       target { association(:project) }

@@ -29,6 +29,7 @@ class Event < ApplicationRecord
 
   private_constant :ACTIONS
 
+  PROJECT_ACTIONS = [:created, :joined, :left, :expired].freeze
   WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
   DESIGN_ACTIONS = [:created, :updated, :destroyed].freeze
   TEAM_ACTIONS = [:joined, :left, :expired].freeze
@@ -89,6 +90,19 @@ class Event < ApplicationRecord
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
   scope :for_issue, -> { where(target_type: ISSUE_TYPES) }
   scope :for_merge_request, -> { where(target_type: 'MergeRequest') }
+  scope :for_project, -> do
+    table = arel_table
+
+    legacy_condition = table.grouping(
+      table[:target_type].eq(nil)
+        .and(table[:action].in(PROJECT_ACTIONS))
+        .and(table[:project_id].not_eq(nil))
+    )
+
+    project_condition = table[:target_type].eq('Project')
+
+    where(legacy_condition.or(project_condition))
+  end
   scope :for_fingerprint, ->(fingerprint) do
     fingerprint.present? ? where(fingerprint: fingerprint) : none
   end
@@ -187,10 +201,7 @@ class Event < ApplicationRecord
   end
 
   def created_project_action?
-    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/565789 is complete
-    no_target_type = !target && target_type.nil?
-
-    (project? || no_target_type) && created_action?
+    project? && created_action?
   end
 
   def created_wiki_page?
@@ -235,6 +246,27 @@ class Event < ApplicationRecord
 
   def project?
     target_type == 'Project'
+  end
+
+  def target_id
+    return super if super.present?
+    return project_id if action && PROJECT_ACTIONS.include?(action.to_sym)
+
+    nil
+  end
+
+  def target_type
+    return super if super.present?
+    return 'Project' if action && PROJECT_ACTIONS.include?(action.to_sym) && project_id
+
+    nil
+  end
+
+  def target
+    return super if super.present?
+    return project if action && PROJECT_ACTIONS.include?(action.to_sym)
+
+    nil
   end
 
   def milestone
@@ -446,7 +478,7 @@ class Event < ApplicationRecord
   private
 
   def permission_object
-    if target_id.present?
+    if self[:target_id].present?
       target
     else
       project

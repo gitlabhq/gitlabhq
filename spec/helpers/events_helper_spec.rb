@@ -333,7 +333,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
 
     context 'for non-matching events' do
-      let(:event) { create(:event, :created) }
+      let(:event) { create(:event, :created, target: nil, project: nil) }
 
       it 'returns no preposition' do
         expect(helper.event_preposition(event)).to be_nil

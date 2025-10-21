@@ -929,3 +929,14 @@ The analyzer image contains minimal dependencies to decrease the image's attack 
 As a result, utilities commonly found in other images, like `grep`, are missing from the image.
 This may result in a warning like `/usr/bin/bash: line 3: grep: command not found` to appear in
 the job log. This warning does not impact the results of the analyzer and can be ignored.
+
+### Compliance framework compatibility
+
+When using SBOM-based dependency scanning on GitLab Self-Managed instances, there are compatibility considerations with compliance frameworks:
+
+- GitLab.com (SaaS): The "Dependency scanning running" compliance control works correctly with SBOM-based dependency scanning.
+- GitLab Self-Managed from 18.4: The "Dependency scanning running" compliance control may fail when using SBOM-based dependency scanning (`DS_ENFORCE_NEW_ANALYZER: 'true'`) because the traditional `gl-dependency-scanning-report.json` artifact is not generated.
+
+Workaround for Self-Managed instances: If you need to pass compliance framework checks that require the "Dependency scanning running" control, you can use the `v2` template (`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`) which generates both SBOM and dependency scanning reports
+
+For more information about compliance controls, see [GitLab compliance controls](../../../compliance/compliance_frameworks/_index.md#gitlab-compliance-controls).
