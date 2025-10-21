@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.3.5 (2025-10-21)
+
+### Fixed (3 changes)
+
+- [Downgrade redis-rb gem to v5.4.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c70390c57627b25f78a942083ba3b74533fcf38)
+- [Fix the undefined method id for nil:NilClass in WorkItem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bd440fa6f27f70c634bc9645a9026104a08c8f1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208109))
+- [Prevent session creation for sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/133098a99deaa183b3a48956287b66fa26f110d4)
+
+### Security (7 changes)
+
+- [Non-group members can be added to projects even though the "Users cannot be...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/df730b1ca1d1ae481bca03824c2f10cfb5baaecc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5279))
+- [Ensure NPM upload cannot exceed plan limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7bec383074374690f2a5b5f9e1b1791b5582036) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5429))
+- [Limit JSON request payload for /-/collect_events](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eabab1c4adb4919b4bcd0211b8bb0b7263cb0a76) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5405))
+- [Track pull mirror updates using gitaly_context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/86dee006dcb389a2cce881ace18f27800637ba9b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5412))
+- [Reject quick actions for ai_workflows scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d1577ee72eacf3c0b3f9aa8f531c8b4a1604f990) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5374))
+- [Use CE policy for runner ability check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ca704d588d90378f4f80e46808274d6edb1072ae) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5415))
+- [Limit depth, size and total elements when parsing JSON string](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ad3192d19fdeaad97211e6cdbd0ea52f7e4fb5a7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5408))
+
 ## 18.3.4 (2025-10-08)
 
 ### Fixed (2 changes)
