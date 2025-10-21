@@ -7,6 +7,8 @@
 module Gitlab
   module Auth
     class ScopeValidator
+      attr_reader :request_authenticator
+
       def initialize(api_user, request_authenticator)
         @api_user = api_user
         @request_authenticator = request_authenticator
@@ -22,3 +24,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::ScopeValidator.prepend_mod

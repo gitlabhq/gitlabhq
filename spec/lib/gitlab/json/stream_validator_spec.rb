@@ -5,6 +5,23 @@ require 'spec_helper'
 RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
+  describe '.user_facing_error_message' do
+    subject(:error_message) { described_class.user_facing_error_message(exception_class.new) }
+
+    where(:expected_error_message, :exception_class) do
+      "Parameters nested too deeply" | described_class::DepthLimitError
+      "Array parameter too large" | described_class::ArraySizeLimitError
+      "Hash parameter too large" | described_class::HashSizeLimitError
+      "Too many total parameters" | described_class::ElementCountLimitError
+      "JSON body too large" | described_class::BodySizeExceededError
+      "Invalid JSON: limit exceeded" | StandardError
+    end
+
+    with_them do
+      it { is_expected.to eq(expected_error_message) }
+    end
+  end
+
   describe 'parsing valid JSON' do
     let(:options) do
       {

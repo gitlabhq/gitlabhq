@@ -151,6 +151,7 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/maven/*path/:file_name/authorize` | Workhorse authorize the maven package file upload |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/maven/*path/:file_name` | Upload the maven package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | Create or Update the given tag for the given NPM package and version |
+| Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/npm/:package_name/authorize` | Authorize NPM package upload |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/npm/:package_name` | Create or deprecate NPM package |
 | Packages: Read | `READ_PACKAGES` | `GET /groups/:id/-/packages/maven/*path/:file_name` | Download the maven package file at a group level |
 | Packages: Read | `READ_PACKAGES` | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | Get all tags for a given an NPM package |
