@@ -2,6 +2,8 @@
 
 module Members
   class ApproveAccessRequestService < Members::BaseService
+    include Members::MembershipLockValidation
+
     def execute(access_requester, skip_authorization: false, skip_log_audit_event: false)
       validate_access!(access_requester) unless skip_authorization
 

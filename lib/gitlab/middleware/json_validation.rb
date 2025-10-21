@@ -12,6 +12,10 @@ module Gitlab
     class JsonValidation
       RACK_ENV_METADATA_KEY = "gitlab.json.validation.metadata"
 
+      COLLECT_EVENTS_PATH = %r{
+        \A/-/collect_events\z
+      }xi
+
       TERRAFORM_STATE_PATH = %r{
         \A/api/v4/projects/
         (?<id>
@@ -61,6 +65,14 @@ module Gitlab
       }.freeze
 
       ROUTE_CONFIGS = [
+        # Stricter limits for collect_events endpoint
+        {
+          regex: COLLECT_EVENTS_PATH,
+          methods: %i[post],
+          limits: DEFAULT_LIMITS.merge({
+            max_json_size_bytes: 10.megabytes
+          })
+        },
         # The application setting max_terraform_state_size_bytes limits this file size already
         {
           regex: TERRAFORM_STATE_PATH,

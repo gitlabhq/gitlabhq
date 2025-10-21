@@ -1,0 +1,19 @@
+{
+  "id": "10",
+  "package_name": "@root/npm-test",
+  "_id": "@root/npm-test",
+  "name": "@root/npm-test",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "dist-tags": {
+    "latest": "1.0.1"
+  },
+  "versions": {
+    "1.0.1": {
+      "name": "@root/npm-test",
+      "deprecated": "This version is deprecated"
+    },
+    "1.0.2": {
+      "name": "@root/npm-test"
+    }
+  }
+}
