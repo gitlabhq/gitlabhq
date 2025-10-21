@@ -375,7 +375,7 @@ export default {
         contentElement &&
         isElementStuck(this.$refs.header.$el)
       ) {
-        scrollToElement(contentElement, { duration: 0 });
+        scrollToElement(contentElement, { behavior: 'auto' });
       }
 
       if (!this.hasDiff && !collapsingNow && this.file?.viewer?.expandable) {

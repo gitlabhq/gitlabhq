@@ -82,7 +82,7 @@ export default class ZenMode {
     if (this.active_textarea) {
       Mousetrap.unpause();
       this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
-      scrollToElement(this.active_textarea, { duration: 0, offset: -100 });
+      scrollToElement(this.active_textarea, { behavior: 'auto', offset: -100 });
       this.active_textarea.attr('style', this.storedStyle);
 
       autosize(this.active_textarea);

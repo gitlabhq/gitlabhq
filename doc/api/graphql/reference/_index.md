@@ -1205,7 +1205,7 @@ Returns [`MavenUpstream`](#mavenupstream).
 
 Find a Maven virtual registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
 
-Returns [`MavenVirtualRegistry`](#mavenvirtualregistry).
+Returns [`MavenRegistry`](#mavenregistry).
 
 #### Arguments
 
@@ -19431,6 +19431,29 @@ The edge type for [`LinkedWorkItemType`](#linkedworkitemtype).
 | <a id="linkedworkitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="linkedworkitemtypeedgenode"></a>`node` | [`LinkedWorkItemType`](#linkedworkitemtype) | The item at the end of the edge. |
 
+#### `MavenRegistryConnection`
+
+The connection type for [`MavenRegistry`](#mavenregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenregistryconnectionedges"></a>`edges` | [`[MavenRegistryEdge]`](#mavenregistryedge) | A list of edges. |
+| <a id="mavenregistryconnectionnodes"></a>`nodes` | [`[MavenRegistry]`](#mavenregistry) | A list of nodes. |
+| <a id="mavenregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MavenRegistryEdge`
+
+The edge type for [`MavenRegistry`](#mavenregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mavenregistryedgenode"></a>`node` | [`MavenRegistry`](#mavenregistry) | The item at the end of the edge. |
+
 #### `MavenUpstreamConnection`
 
 The connection type for [`MavenUpstream`](#mavenupstream).
@@ -19454,29 +19477,6 @@ The edge type for [`MavenUpstream`](#mavenupstream).
 | ---- | ---- | ----------- |
 | <a id="mavenupstreamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mavenupstreamedgenode"></a>`node` | [`MavenUpstream`](#mavenupstream) | The item at the end of the edge. |
-
-#### `MavenVirtualRegistryConnection`
-
-The connection type for [`MavenVirtualRegistry`](#mavenvirtualregistry).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mavenvirtualregistryconnectionedges"></a>`edges` | [`[MavenVirtualRegistryEdge]`](#mavenvirtualregistryedge) | A list of edges. |
-| <a id="mavenvirtualregistryconnectionnodes"></a>`nodes` | [`[MavenVirtualRegistry]`](#mavenvirtualregistry) | A list of nodes. |
-| <a id="mavenvirtualregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `MavenVirtualRegistryEdge`
-
-The edge type for [`MavenVirtualRegistry`](#mavenvirtualregistry).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mavenvirtualregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="mavenvirtualregistryedgenode"></a>`node` | [`MavenVirtualRegistry`](#mavenvirtualregistry) | The item at the end of the edge. |
 
 #### `MemberApprovalConnection`
 
@@ -31251,7 +31251,7 @@ GPG signature for a signed commit.
 | <a id="groupmarkedfordeletion"></a>`markedForDeletion` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group or any ancestor is scheduled to be deleted. |
 | <a id="groupmarkedfordeletionon"></a>`markedForDeletionOn` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group was scheduled to be deleted. |
 | <a id="groupmathrenderinglimitsenabled"></a>`mathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are used for the group. |
-| <a id="groupmavenvirtualregistries"></a>`mavenVirtualRegistries` {{< icon name="warning-solid" >}} | [`MavenVirtualRegistryConnection`](#mavenvirtualregistryconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Maven virtual registries registered to the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
+| <a id="groupmavenvirtualregistries"></a>`mavenVirtualRegistries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection`](#mavenregistryconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Maven virtual registries registered to the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupmergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
@@ -34702,6 +34702,20 @@ Maven metadata.
 | <a id="mavenmetadatapath"></a>`path` | [`String!`](#string) | Path of the Maven package. |
 | <a id="mavenmetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 
+### `MavenRegistry`
+
+Represents a Maven virtual registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenregistrydescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="mavenregistryid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
+| <a id="mavenregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
+| <a id="mavenregistryupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
+| <a id="mavenregistryupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstream!]`](#mavenupstream) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
+
 ### `MavenRegistryUpstream`
 
 Represents the upstream registries of a Maven virtual registry.
@@ -34715,7 +34729,7 @@ Represents the upstream registries of a Maven virtual registry.
 
 ### `MavenUpstream`
 
-Represents the upstream registries of a Maven virtual registry.
+Represents a Maven upstream registry.
 
 #### Fields
 
@@ -34726,25 +34740,11 @@ Represents the upstream registries of a Maven virtual registry.
 | <a id="mavenupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
 | <a id="mavenupstreammetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
 | <a id="mavenupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
-| <a id="mavenupstreamregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenVirtualRegistryConnection!`](#mavenvirtualregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
+| <a id="mavenupstreamregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection!`](#mavenregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
 | <a id="mavenupstreamregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
 | <a id="mavenupstreamregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
 | <a id="mavenupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
-
-### `MavenVirtualRegistry`
-
-Represents a Maven virtual registry.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mavenvirtualregistrydescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
-| <a id="mavenvirtualregistryid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
-| <a id="mavenvirtualregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
-| <a id="mavenvirtualregistryupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
-| <a id="mavenvirtualregistryupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstream!]`](#mavenupstream) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
 
 ### `MemberApproval`
 

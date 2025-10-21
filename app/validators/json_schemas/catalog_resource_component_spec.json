@@ -28,6 +28,18 @@
           }
         }
       }
+    },
+    "component": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "name",
+          "sha",
+          "version"
+        ]
+      },
+      "uniqueItems": true
     }
   },
   "additionalProperties": false

@@ -2,48 +2,14 @@
 
 module QA
   module Support
-    # Common tools for use with influxdb metrics setup
+    # Common tools for use with test metrics setup
     #
-    module InfluxdbTools
-      # @return [String] bucket for storing all test run metrics
-      INFLUX_TEST_METRICS_BUCKET = "e2e-test-stats"
-      # @return [String] bucket for storing metrics from main runs
-      INFLUX_MAIN_TEST_METRICS_BUCKET = "e2e-test-stats-main"
-      # @return [Array] live environment names
+    module TestMetricsTools
       LIVE_ENVS = %w[staging staging-canary staging-ref canary preprod production].freeze
 
       private
 
       delegate :ci_project_name, to: "QA::Runtime::Env"
-
-      # Query client
-      #
-      # @return [QueryApi]
-      def query_api
-        @query_api ||= influx_client.create_query_api
-      end
-
-      # Write client
-      #
-      # @return [WriteApi]
-      def write_api
-        @write_api ||= influx_client.create_write_api
-      end
-
-      # InfluxDb client
-      #
-      # @return [InfluxDB2::Client]
-      def influx_client
-        @influx_client ||= InfluxDB2::Client.new(
-          ENV["QA_INFLUXDB_URL"] || raise("Missing QA_INFLUXDB_URL env variable"),
-          ENV["QA_INFLUXDB_TOKEN"] || raise("Missing QA_INFLUXDB_TOKEN env variable"),
-          bucket: INFLUX_TEST_METRICS_BUCKET,
-          org: "gitlab-qa",
-          precision: InfluxDB2::WritePrecision::NANOSECOND,
-          read_timeout: ENV["QA_INFLUXDB_TIMEOUT"]&.to_i || 60,
-          open_timeout: ENV["QA_INFLUXDB_TIMEOUT"]&.to_i || 60
-        )
-      end
 
       # Test run type
       # Automatically infer for staging (`gstg`, `gstg-cny`, `gstg-ref`), canary, preprod or production env

@@ -20,7 +20,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     let_it_be(:component_yaml) do
       <<~YAML
       spec:
-        component: [name, sha]
+        component: [name, sha, version]
         inputs:
           compiler:
             default: gcc
@@ -33,7 +33,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       test:
         script:
           - echo "Building with $[[ inputs.compiler ]] and optimization level $[[ inputs.optimization_level ]]"
-          - echo "Component $[[ component.name ]] / $[[ component.sha ]]"
+          - echo "Component $[[ component.name ]] / $[[ component.sha ]] / $[[ component.version ]]"
       YAML
     end
 
@@ -80,7 +80,73 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           test_job = pipeline.builds.find { |build| build.name == 'test' }
           expect(test_job.options[:script]).to eq([
             'echo "Building with gcc and optimization level 2"',
-            "echo \"Component #{component_name} / #{component_sha}\""
+            "echo \"Component #{component_name} / #{component_sha} / #{component_version}\""
+          ])
+        end
+      end
+
+      context 'when the component path is with a partial version' do
+        let_it_be(:component_path) do
+          "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@0.1"
+        end
+
+        it 'creates a pipeline with correct jobs' do
+          response = execute
+          pipeline = response.payload
+
+          expect(response).to be_success
+          expect(pipeline).to be_created_successfully
+
+          expect(pipeline.builds.map(&:name)).to contain_exactly('test')
+
+          test_job = pipeline.builds.find { |build| build.name == 'test' }
+          expect(test_job.options[:script]).to eq([
+            'echo "Building with gcc and optimization level 2"',
+            "echo \"Component #{component_name} / #{component_sha} / #{component_version}\""
+          ])
+        end
+      end
+
+      context 'when the component path is with latest' do
+        let_it_be(:component_path) do
+          "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@~latest"
+        end
+
+        it 'creates a pipeline with correct jobs' do
+          response = execute
+          pipeline = response.payload
+
+          expect(response).to be_success
+          expect(pipeline).to be_created_successfully
+
+          expect(pipeline.builds.map(&:name)).to contain_exactly('test')
+
+          test_job = pipeline.builds.find { |build| build.name == 'test' }
+          expect(test_job.options[:script]).to eq([
+            'echo "Building with gcc and optimization level 2"',
+            "echo \"Component #{component_name} / #{component_sha} / #{component_version}\""
+          ])
+        end
+      end
+
+      context 'when the component path is with sha' do
+        let_it_be(:component_path) do
+          "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@#{component_sha}"
+        end
+
+        it 'creates a pipeline with correct jobs without version' do
+          response = execute
+          pipeline = response.payload
+
+          expect(response).to be_success
+          expect(pipeline).to be_created_successfully
+
+          expect(pipeline.builds.map(&:name)).to contain_exactly('test')
+
+          test_job = pipeline.builds.find { |build| build.name == 'test' }
+          expect(test_job.options[:script]).to eq([
+            'echo "Building with gcc and optimization level 2"',
+            "echo \"Component #{component_name} / #{component_sha} / \""
           ])
         end
 

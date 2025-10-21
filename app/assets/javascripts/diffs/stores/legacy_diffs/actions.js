@@ -730,7 +730,7 @@ export function goToFile({ path }) {
     const newUrl = new URL(window.location);
     newUrl.hash = fileHash;
     historyPushState(newUrl, { skipScrolling: true });
-    scrollToElement('.diff-files-holder', { duration: 0 });
+    scrollToElement('.diff-files-holder', { behavior: 'auto' });
 
     if (!this.isTreePathLoaded(path)) {
       this.fetchFileByFile();

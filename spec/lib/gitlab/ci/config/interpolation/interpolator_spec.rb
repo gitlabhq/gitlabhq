@@ -176,17 +176,17 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     let(:yaml_context) do
       ::Gitlab::Ci::Config::Yaml::Context.new(
         variables: [],
-        component: { name: 'my-component', sha: 'abc123' }
+        component: { name: 'my-component', sha: 'abc123', version: '1.0.0' }
       )
     end
 
     context 'when component values are specified in spec' do
       let(:header) do
-        { spec: { component: %w[name sha] } }
+        { spec: { component: %w[name sha version] } }
       end
 
       let(:content) do
-        { test: 'Component $[[ component.name ]] at $[[ component.sha ]]' }
+        { test: 'Component $[[ component.name ]] at $[[ component.sha ]] version $[[ component.version ]]' }
       end
 
       let(:arguments) { {} }
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
         expect(subject).to be_interpolated
         expect(subject).to be_valid
-        expect(subject.to_hash).to eq({ test: 'Component my-component at abc123' })
+        expect(subject.to_hash).to eq({ test: 'Component my-component at abc123 version 1.0.0' })
       end
     end
 
@@ -221,12 +221,12 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
     context 'when both inputs and component are used' do
       let(:header) do
-        { spec: { inputs: { env: nil }, component: %w[name] } }
+        { spec: { inputs: { env: nil }, component: %w[name version] } }
       end
 
       let(:content) do
         {
-          test: 'Deploy to $[[ inputs.env ]] using $[[ component.name ]]'
+          test: 'Deploy to $[[ inputs.env ]] using $[[ component.name ]] v$[[ component.version ]]'
         }
       end
 
@@ -237,7 +237,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
         expect(subject).to be_interpolated
         expect(subject).to be_valid
-        expect(subject.to_hash).to eq({ test: 'Deploy to production using my-component' })
+        expect(subject.to_hash).to eq({ test: 'Deploy to production using my-component v1.0.0' })
       end
     end
   end

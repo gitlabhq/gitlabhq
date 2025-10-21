@@ -24,8 +24,6 @@ describe('content/components/wrappers/paragraph', () => {
   };
 
   const createWrapper = (node) => {
-    document.body.innerHTML = `<div class="ProseMirror"><div id="paragraph-wrapper"></div></div>`;
-
     wrapper = mountExtended(ParagraphWrapper, {
       propsData: {
         node,
@@ -41,7 +39,6 @@ describe('content/components/wrappers/paragraph', () => {
         }),
         NodeViewWrapper: stubComponent(NodeViewWrapper),
       },
-      attachTo: '#paragraph-wrapper',
     });
   };
 

@@ -297,6 +297,74 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     end
   end
 
+  describe '#matched_version' do
+    let_it_be(:project) do
+      create(
+        :project, :custom_repo,
+        files: {
+          'templates/secret-detection.yml' => 'image: alpine_1',
+          'templates/dast/template.yml' => 'image: alpine_2',
+          'templates/dast/another-template.yml' => 'image: alpine_3',
+          'templates/dast/another-folder/template.yml' => 'image: alpine_4'
+        }
+      )
+    end
+
+    let_it_be(:catalog_resource) { create(:ci_catalog_resource, :published, project: project) }
+    let_it_be(:commit) { project.repository.commit }
+    let_it_be(:project_path) { project.full_path }
+
+    before_all do
+      project.add_maintainer(user)
+
+      create(
+        :release, :with_catalog_resource_version,
+        project: project, tag: '0.1.0', author: user, sha: commit.id
+      )
+
+      create(
+        :release, :with_catalog_resource_version,
+        project: project, tag: '0.1.2', author: user, sha: commit.id
+      )
+    end
+
+    subject(:matched_version) { path.matched_version }
+
+    context 'when using a full semantic version' do
+      let(:address) { "acme.com/#{project_path}/secret-detection@0.1.0" }
+
+      it { is_expected.to eq '0.1.0' }
+    end
+
+    context 'when using a partial semantic version' do
+      let(:address) { "acme.com/#{project_path}/secret-detection@0.1" }
+
+      it { is_expected.to eq '0.1.2' }
+    end
+
+    context 'when using ~latest' do
+      let(:address) { "acme.com/#{project_path}/secret-detection@~latest" }
+
+      it { is_expected.to eq '0.1.2' }
+    end
+
+    context 'when using a SHA' do
+      let(:address) { "acme.com/#{project_path}/secret-detection@#{commit.id}" }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when project is not a catalog resource' do
+      let(:address) { "acme.com/#{project_path}/secret-detection@0.1.0" }
+
+      before do
+        catalog_resource.destroy!
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#invalid_usage_for_latest?' do
     let_it_be(:project) { create(:project) }
     let(:project_path) { project.full_path }

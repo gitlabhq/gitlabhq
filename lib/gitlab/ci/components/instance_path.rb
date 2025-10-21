@@ -42,47 +42,74 @@ module Gitlab
         def sha
           return unless project
 
-          find_version_sha(version)
+          find_version_sha
         end
         strong_memoize_attr :sha
 
+        def matched_version
+          find_catalog_version&.semver&.to_s
+        end
+        strong_memoize_attr :matched_version
+
         def invalid_usage_for_latest?
-          @version == LATEST && project && project.catalog_resource.nil?
+          version == LATEST && project && project.catalog_resource.nil?
         end
 
         def invalid_usage_for_partial_semver?
-          @version.match?(SHORTHAND_SEMVER_PATTERN) && project && project.catalog_resource.nil?
+          version.match?(SHORTHAND_SEMVER_PATTERN) && project && project.catalog_resource.nil?
         end
 
         private
 
         attr_reader :version
 
-        def find_version_sha(version)
+        def find_version_sha
           return find_latest_sha if version == LATEST
 
-          sha_by_shorthand_semver(version) || sha_by_released_tag(version) || sha_by_ref(version)
+          sha_by_shorthand_semver || sha_by_released_tag || sha_by_ref
+        end
+
+        def find_catalog_version
+          return unless project.catalog_resource
+
+          if version == LATEST
+            catalog_resource_version_latest
+          elsif version.match?(SHORTHAND_SEMVER_PATTERN)
+            catalog_resource_version_by_short_semver
+          else
+            project.catalog_resource.versions.by_name(version).first
+          end
         end
 
         def find_latest_sha
           return unless project.catalog_resource
 
-          project.catalog_resource.versions.latest&.sha
+          catalog_resource_version_latest&.sha
         end
 
-        def sha_by_shorthand_semver(version)
+        def sha_by_shorthand_semver
           return unless version.match?(SHORTHAND_SEMVER_PATTERN)
           return unless project.catalog_resource
 
-          major, minor = version.split(".")
-          project.catalog_resource.versions.latest(major, minor)&.sha
+          catalog_resource_version_by_short_semver&.sha
         end
 
-        def sha_by_released_tag(version)
+        def catalog_resource_version_latest
+          project.catalog_resource.versions.latest
+        end
+        strong_memoize_attr :catalog_resource_version_latest
+
+        def catalog_resource_version_by_short_semver
+          major, minor = version.split(".")
+          project.catalog_resource.versions.latest(major, minor)
+        end
+        strong_memoize_attr :catalog_resource_version_by_short_semver
+
+        def sha_by_released_tag
           project.releases.find_by_tag(version)&.sha
         end
 
-        def sha_by_ref(version)
+        def sha_by_ref
           project.commit(version)&.id
         end
 

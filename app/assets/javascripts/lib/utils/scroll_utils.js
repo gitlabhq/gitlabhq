@@ -8,6 +8,15 @@ const getScrollContainer = () => {
   return document.querySelector(SCROLL_CONTAINER_SELECTOR);
 };
 
+const getScrollBehavior = (behavior = 'smooth') => {
+  if (behavior === 'smooth' && window.matchMedia(`(prefers-reduced-motion: reduce)`).matches) {
+    // Check if user prefers reduced motion, return 'auto' if true, otherwise return 'smooth'.
+    // This helps support accessibility preferences for users who experience motion sickness.
+    return 'auto';
+  }
+  return behavior;
+};
+
 /**
  * Checks if container (or document if container is not found) is scrolled
  * down all the way to the bottom
@@ -82,9 +91,8 @@ export const scrollTo = (options, element) => {
  *
  * @param {jQuery | HTMLElement | String} element The target jQuery element, HTML element, or query selector to scroll to.
  * @param {Object} [options={}] Object containing additional options.
- * @param {Number} [options.duration=200] The scroll animation duration.
- * @param {Number} [options.offset=0] The scroll offset.
- * @param {String} [options.behavior=smooth|auto] The scroll animation behavior.
+ * @param {Number} [options.offset=0] Scroll offset.
+ * @param {'smooth'|'auto'|'instant'} [options.behavior='smooth'] Scroll behavior. Defaults to `smooth` unless user has `prefers-reduced-motion: reduce` enabled
  * @param {HTMLElement | String} [options.parent] The parent HTML element or query selector to scroll.
  */
 export const scrollToElement = (element, options = {}) => {
@@ -104,12 +112,8 @@ export const scrollToElement = (element, options = {}) => {
     // In the previous implementation, jQuery naturally deferred this scrolling.
     // Unfortunately, we're quite coupled to this implementation detail now.
     defer(() => {
-      const {
-        duration = 200,
-        offset = 0,
-        behavior = duration ? 'smooth' : 'auto',
-        parent,
-      } = options;
+      const { offset = 0, parent } = options;
+      const behavior = getScrollBehavior(options?.behavior);
       const scrollTop = scrollingEl.scrollTop ?? scrollingEl.pageYOffset;
       const y = el.getBoundingClientRect().top + scrollTop + offset - contentTop();
 
@@ -129,14 +133,8 @@ export const scrollToElement = (element, options = {}) => {
  * @param {ScrollToOptions} [options] - Additional scroll options
  */
 export function smoothScrollTo(options) {
-  // Check if user prefers reduced motion, return 'auto' if true, otherwise return 'smooth'.
-  // This helps support accessibility preferences for users who experience motion sickness.
-  const behavior = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches
-    ? 'auto'
-    : 'smooth';
-
   // eslint-disable-next-line no-restricted-properties -- we should remove this method and move to `scrollTo`.
-  window.scrollTo({ ...options, behavior });
+  window.scrollTo({ ...options, behavior: getScrollBehavior() });
 }
 
 /**

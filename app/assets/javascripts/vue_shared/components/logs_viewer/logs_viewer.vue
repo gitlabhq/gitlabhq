@@ -57,7 +57,7 @@ export default {
 
           const el = document.getElementById(lineIdToScroll);
           if (el) {
-            scrollToElement(el, { duration: 0 });
+            scrollToElement(el, { behavior: 'auto' });
             if (!this.isFollowing) {
               unwatch();
             }

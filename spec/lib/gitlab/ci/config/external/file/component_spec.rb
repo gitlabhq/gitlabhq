@@ -35,7 +35,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       path: 'templates/my_component.yml',
       project: project,
       sha: 'my_component_sha',
-      name: 'my_component'
+      name: 'my_component',
+      version: nil
     })
   end
 
@@ -170,7 +171,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         component: {
           project: project,
           sha: 'my_component_sha',
-          name: 'my_component'
+          name: 'my_component',
+          version: nil
         }
       )
     end
@@ -187,7 +189,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         variables: context.variables,
         component_data: {
           name: 'my_component',
-          sha: 'my_component_sha'
+          sha: 'my_component_sha',
+          version: nil
         }
       )
     end

@@ -25,6 +25,9 @@ export default {
     canDownloadCode: {
       default: true,
     },
+    fileType: {
+      default: '',
+    },
   },
   props: {
     rawPath: {
@@ -89,6 +92,12 @@ export default {
         environmentName: this.environmentName,
       });
     },
+    isPdfFile() {
+      return this.fileType?.includes('pdf');
+    },
+    openInNewWindowUrl() {
+      return setUrlParams({ inline: true }, relativePathToAbsolute(this.rawPath, getBaseURL()));
+    },
   },
   methods: {
     onCopy() {
@@ -141,6 +150,19 @@ export default {
       data-testid="download-button"
       target="_blank"
       icon="download"
+      category="primary"
+      variant="default"
+    />
+    <gl-button
+      v-if="!isEmpty && isPdfFile"
+      v-gl-tooltip.hover
+      :aria-label="s__('BlobViewer|Open in a new window')"
+      :title="s__('BlobViewer|Open in a new window')"
+      :href="openInNewWindowUrl"
+      data-testid="open-new-window-button"
+      target="_blank"
+      rel="noopener noreferrer"
+      icon="external-link"
       category="primary"
       variant="default"
     />

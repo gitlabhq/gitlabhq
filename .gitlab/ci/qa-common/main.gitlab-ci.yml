@@ -107,16 +107,6 @@ stages:
   script:
     - bundle exec rake "knapsack:upload_example_runtimes[$QA_JSON_REPORT_FILE_PATTERN]"
 
-.export-test-metrics:
-  extends:
-    - .qa-install
-  stage: report
-  when: always
-  variables:
-    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
-  script:
-    - bundle exec rake "ci:export_test_metrics[$QA_METRICS_REPORT_FILE_PATTERN]"
-
 .export-code-paths-mapping:
   extends:
     - .qa-install

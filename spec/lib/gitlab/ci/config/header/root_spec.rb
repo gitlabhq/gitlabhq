@@ -136,13 +136,13 @@ RSpec.describe Gitlab::Ci::Config::Header::Root, feature_category: :pipeline_com
       let(:header_hash) do
         {
           spec: {
-            component: %w[name sha]
+            component: %w[name sha version]
           }
         }
       end
 
       it 'returns the component value as symbols' do
-        expect(config.spec_component_value).to match_array([:name, :sha])
+        expect(config.spec_component_value).to match_array([:name, :sha, :version])
       end
     end
 
@@ -183,14 +183,14 @@ RSpec.describe Gitlab::Ci::Config::Header::Root, feature_category: :pipeline_com
             inputs: {
               foo: { default: 'bar' }
             },
-            component: %w[name]
+            component: %w[name version]
           }
         }
       end
 
       it 'returns both values correctly' do
         expect(config.spec_inputs_value).to eq({ foo: { default: 'bar' } })
-        expect(config.spec_component_value).to match_array([:name])
+        expect(config.spec_component_value).to match_array([:name, :version])
       end
     end
   end

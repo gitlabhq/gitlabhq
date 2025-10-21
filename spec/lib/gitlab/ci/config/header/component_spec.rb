@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Component, feature_category: :pipelin
 
   describe 'validations' do
     context 'when config is an array of valid strings' do
-      let(:config) { %w[name sha] }
+      let(:config) { %w[name sha version] }
 
       it 'passes validations' do
         expect(component).to be_valid
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Component, feature_category: :pipelin
     end
 
     context 'when config contains invalid values' do
-      let(:config) { %w[name invalid_key] }
+      let(:config) { %w[name invalid_key version] }
 
       it 'fails validations' do
         expect(component).not_to be_valid
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Component, feature_category: :pipelin
     end
 
     context 'when config contains non-string values' do
-      let(:config) { ['name', 123] }
+      let(:config) { ['name', 123, 'version'] }
 
       it 'fails validations' do
         expect(component).not_to be_valid
@@ -65,19 +65,19 @@ RSpec.describe Gitlab::Ci::Config::Header::Component, feature_category: :pipelin
     subject(:value) { component.value }
 
     context 'when config is valid' do
-      let(:config) { %w[name sha] }
+      let(:config) { %w[name sha version] }
 
-      it { is_expected.to match_array([:name, :sha]) }
+      it { is_expected.to match_array([:name, :sha, :version]) }
     end
 
     context 'when config has duplicate values' do
-      let(:config) { %w[name name sha] }
+      let(:config) { %w[name version name sha] }
 
-      it { is_expected.to match_array([:name, :sha]) }
+      it { is_expected.to match_array([:name, :version, :sha]) }
     end
 
     context 'when config has invalid values' do
-      let(:config) { %w[name invalid] }
+      let(:config) { %w[name version invalid] }
 
       it { is_expected.to be_empty }
     end

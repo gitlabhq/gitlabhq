@@ -398,8 +398,6 @@ Layout/ClassStructure:
     - 'qa/qa/runtime/release.rb'
     - 'qa/qa/service/cluster_provider/gcloud.rb'
     - 'qa/qa/support/parallel_pipeline_jobs.rb'
-    - 'qa/qa/tools/ci/test_metrics.rb'
-    - 'qa/qa/tools/migrate_influx_data_to_gcs.rb'
     - 'rubocop/cop/migration/ensure_factory_for_table.rb'
     - 'rubocop/cop/rails/migration_timestamp.rb'
     - 'rubocop/cop_todo.rb'

@@ -168,7 +168,7 @@ export default {
   watch: {
     activeChildItemId(newVal) {
       if (!newVal && this.lastActiveElement) {
-        scrollToElement(this.lastActiveElement, { offset: -80, duration: 0 });
+        scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
         this.lastActiveElement = null;
       }
     },
@@ -547,7 +547,7 @@ export default {
       }
       this.$nextTick(() => {
         this.lastActiveElement = event.target;
-        scrollToElement(this.lastActiveElement, { offset: -80, duration: 0 });
+        scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
       });
     },
     openChild(id) {

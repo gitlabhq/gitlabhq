@@ -185,7 +185,7 @@ describe('scroll utils', () => {
     });
   });
 
-  describe('scrollToElement*', () => {
+  describe('scrollToElement', () => {
     let parentElem;
     let elem;
     const windowHeight = 550;
@@ -226,6 +226,22 @@ describe('scroll utils', () => {
         });
       });
 
+      it('scrolls to element with behavior: auto', () => {
+        scrollToElement(elem, { behavior: 'auto' });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'auto',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls to element with behavior: instant', () => {
+        scrollToElement(elem, { behavior: 'instant' });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'instant',
+          top: elemTop,
+        });
+      });
+
       it('scrolls to element with offset', () => {
         const offset = 50;
         scrollToElement(elem, { offset });
@@ -240,6 +256,36 @@ describe('scroll utils', () => {
         expect(parentElem.scrollTo).toHaveBeenCalledWith({
           behavior: 'smooth',
           top: elemTop,
+        });
+      });
+
+      describe('when prefers-reduced-motion: reduce', () => {
+        beforeEach(() => {
+          jest.spyOn(window, 'matchMedia').mockReturnValueOnce({ matches: true });
+        });
+
+        it('overrides smooth behavior', () => {
+          scrollToElement(elem, { behavior: 'smooth' });
+          expect(window.scrollTo).toHaveBeenCalledWith({
+            top: elemTop,
+            behavior: 'auto',
+          });
+        });
+
+        it('does not override auto behavior', () => {
+          scrollToElement(elem, { behavior: 'auto' });
+          expect(window.scrollTo).toHaveBeenCalledWith({
+            top: elemTop,
+            behavior: 'auto',
+          });
+        });
+
+        it('does not override instant behavior', () => {
+          scrollToElement(elem, { behavior: 'instant' });
+          expect(window.scrollTo).toHaveBeenCalledWith({
+            top: elemTop,
+            behavior: 'instant',
+          });
         });
       });
     });
@@ -342,7 +388,7 @@ describe('scroll utils', () => {
     describe('smoothScrollTo', () => {
       describe('when user prefers reduced motion', () => {
         beforeEach(() => {
-          jest.spyOn(window, 'matchMedia').mockReturnValue({ matches: true });
+          jest.spyOn(window, 'matchMedia').mockReturnValueOnce({ matches: true });
         });
 
         it('calls scrollTo with the provided options', () => {
@@ -350,7 +396,7 @@ describe('scroll utils', () => {
 
           expect(scrollToSpy).toHaveBeenCalledWith({
             top: 100,
-            behavior: expect.stringMatching('auto'),
+            behavior: 'auto',
           });
         });
       });
@@ -365,7 +411,7 @@ describe('scroll utils', () => {
 
           expect(scrollToSpy).toHaveBeenCalledWith({
             top: 100,
-            behavior: expect.stringMatching('smooth'),
+            behavior: 'smooth',
           });
         });
       });

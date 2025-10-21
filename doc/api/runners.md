@@ -646,8 +646,8 @@ Prerequisites:
 GET /projects/:id/runners
 GET /projects/:id/runners?scope=active
 GET /projects/:id/runners?type=project_type
-GET /projects/:id/runners/all?status=online
-GET /projects/:id/runners/all?paused=true
+GET /projects/:id/runners?status=online
+GET /projects/:id/runners?paused=true
 GET /projects/:id/runners?tag_list=tag1,tag2
 ```
 

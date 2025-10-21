@@ -117,7 +117,8 @@ module Gitlab
               {
                 project: component_payload.fetch(:project),
                 sha: component_payload.fetch(:sha),
-                name: component_payload.fetch(:name)
+                name: component_payload.fetch(:name),
+                version: component_payload.fetch(:version)
               }
             end
 

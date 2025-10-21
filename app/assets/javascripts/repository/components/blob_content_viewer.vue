@@ -122,7 +122,11 @@ export default {
     },
   },
   provide() {
-    return { blobHash: uniqueId(), currentRef: computed(() => this.currentRef) };
+    return {
+      blobHash: uniqueId(),
+      currentRef: computed(() => this.currentRef),
+      fileType: computed(() => this.viewer.fileType),
+    };
   },
   props: {
     path: {

@@ -1,5 +1,5 @@
 import { createWrapper } from '@vue/test-utils';
-import Vue from 'vue';
+import { defineComponent, h } from 'vue';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
@@ -9,7 +9,8 @@ describe('Breadcrumbs utils', () => {
   let wrapper;
   const mockRouter = jest.fn();
 
-  const MockComponent = Vue.component('MockComponent', {
+  const MockComponent = defineComponent({
+    name: 'MockComponent',
     props: {
       allStaticBreadcrumbs: {
         type: Array,
@@ -20,8 +21,9 @@ describe('Breadcrumbs utils', () => {
         required: true,
       },
     },
-    render: (createElement) =>
-      createElement('span', {
+    render: () =>
+      h('span', {
+        'data-testid': 'mock-component',
         attrs: {
           'data-testid': 'mock-component',
         },
@@ -76,10 +78,9 @@ describe('Breadcrumbs utils', () => {
         wrapper = createWrapper(
           injectVueAppBreadcrumbs(mockRouter, MockComponent, mockApolloProvider),
         );
+
         expect(wrapper.exists()).toBe(true);
-        expect(
-          document.querySelectorAll('#js-vue-page-breadcrumbs + [data-testid="mock-component"]'),
-        ).toHaveLength(1);
+        expect(document.querySelectorAll('[data-testid="mock-component"]')).toHaveLength(1);
       });
     });
 

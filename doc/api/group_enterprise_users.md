@@ -12,9 +12,9 @@ title: Group enterprise users API
 
 {{< /details >}}
 
-Use this API to interact with enterprise users accounts. For more information, see [enterprise users](../user/enterprise_user/_index.md).
+Use these API endpoints to interact with enterprise users accounts. For more information, see [enterprise users](../user/enterprise_user/_index.md).
 
-This API endpoint only works for top-level groups. Users do not have to be a member of the group.
+These API endpoints only work for top-level groups. Users do not have to be a member of the group.
 
 Prerequisites:
 
@@ -200,6 +200,101 @@ Example response:
   ]
 }
 ```
+
+## Modify an enterprise user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199248) in GitLab 18.6.
+
+{{< /history >}}
+
+Updates attributes for a specified enterprise user.
+
+```plaintext
+PATCH /groups/:id/enterprise_users/:user_id
+```
+
+Supported attributes:
+
+| Attribute        | Type           | Required | Description |
+|:-----------------|:---------------|:---------|:------------|
+| `id`             | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `user_id`        | integer        | yes      | ID of user account. |
+| `name`           | string         | no       | Name of the user account. |
+| `email`          | string         | no       | Email address of the user account. Must be from a verified [group domain](../user/enterprise_user/_index.md#manage-group-domains). |
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" --data "email=new-email@example.com" --data "name=New name" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+```
+
+If successful, returns `200 OK`.
+
+Example of successful response:
+
+```json
+{
+  "id": 66,
+  "username": "user22",
+  "name": "New name",
+  "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/xxx?s=80&d=identicon",
+  "web_url": "http://my.gitlab.com/user22",
+  "created_at": "2021-09-10T12:48:22.381Z",
+  "bio": "",
+  "location": null,
+  "public_email": "",
+  "linkedin": "",
+  "twitter": "",
+  "website_url": "",
+  "organization": null,
+  "job_title": "",
+  "pronouns": null,
+  "bot": false,
+  "work_information": null,
+  "followers": 0,
+  "following": 0,
+  "local_time": null,
+  "last_sign_in_at": null,
+  "confirmed_at": "2021-09-10T12:48:22.330Z",
+  "last_activity_on": null,
+  "email": "new-email@example.com",
+  "theme_id": 1,
+  "color_scheme_id": 1,
+  "projects_limit": 100000,
+  "current_sign_in_at": null,
+  "identities": [
+    {
+      "provider": "group_saml",
+      "extern_uid": "2435223452345",
+      "saml_provider_id": 1
+    }
+  ],
+  "can_create_group": true,
+  "can_create_project": true,
+  "two_factor_enabled": false,
+  "external": false,
+  "private_profile": false,
+  "commit_email": "user22@example.org",
+  "shared_runners_minutes_limit": null,
+  "extra_shared_runners_minutes_limit": null,
+  "scim_identities": [
+    {
+      "extern_uid": "2435223452345",
+      "group_id": 1,
+      "active": true
+    }
+  ]
+}
+```
+
+Other possible responses:
+
+- `400 Bad Request`: Validation errors.
+- `403 Forbidden`: The authenticated user is not an Owner.
+- `404 Not found`: User can not be found.
 
 ## Delete an enterprise user
 

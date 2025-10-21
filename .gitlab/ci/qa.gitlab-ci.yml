@@ -29,6 +29,7 @@
     GLCI_ASSETS_IMAGE_TAG: $GLCI_ASSETS_IMAGE_TAG
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID # This is needed by trigger-omnibus-env and build-cng-env jobs
     PARENT_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    QA_EXPORT_TEST_METRICS: "true"  # Export test metrics to GCS bucket
     REGISTRY_GROUP: $REGISTRY_GROUP
     REGISTRY_HOST: $REGISTRY_HOST
     RELEASE_IMAGE_TAG: "${CI_COMMIT_SHA}-ruby${RUBY_VERSION}"  # This contains a RUBY_VERSION suffix because Omnibus build is depending on the RUBY_VERSION

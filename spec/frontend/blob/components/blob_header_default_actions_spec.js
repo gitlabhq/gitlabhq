@@ -38,6 +38,7 @@ describe('Blob Header Default Actions', () => {
     const findCopyButton = () => wrapper.findByTestId('copy-contents-button');
     const findViewRawButton = () => wrapper.findByTestId('viewRawButton');
     const findDownloadButton = () => wrapper.findByTestId('download-button');
+    const findOpenNewWindowButton = () => wrapper.findByTestId('open-new-window-button');
 
     it('gl-button-group component', () => {
       expect(findButtonGroup().exists()).toBe(true);
@@ -97,6 +98,31 @@ describe('Blob Header Default Actions', () => {
       findCopyButton().vm.$emit('click');
 
       expect(wrapper.emitted('copy')).toHaveLength(1);
+    });
+
+    it('renders "Open in new window" button with inline=true in URL for PDF files', () => {
+      const pdfPath = '/namespace/project/-/raw/main/sample.pdf';
+      createComponent(
+        { rawPath: pdfPath },
+        { fileType: 'application/pdf', blobHash: 'abc123', canDownloadCode: true },
+      );
+
+      const button = findOpenNewWindowButton();
+      expect(button.exists()).toBe(true);
+      expect(button.attributes('href')).toEqual(
+        'http://test.host/namespace/project/-/raw/main/sample.pdf?inline=true',
+      );
+    });
+
+    it('does not render button for any non-PDF files', () => {
+      const nonPdfFiles = ['file.txt', 'file.docx', 'image.jpg', 'archive.zip'];
+      nonPdfFiles.forEach((path) => {
+        createComponent(
+          { rawPath: `/namespace/project/-/raw/main/${path}` },
+          { fileType: 'text/plain', blobHash: 'abc123', canDownloadCode: true },
+        );
+        expect(findOpenNewWindowButton().exists()).toBe(false);
+      });
     });
   });
 

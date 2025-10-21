@@ -1940,7 +1940,6 @@
 .qa:e2e-test-schedule-variables: &qa-e2e-test-schedule-variables
   CREATE_TEST_FAILURE_ISSUES: "true"
   PROCESS_TEST_RESULTS: "true"
-  QA_SAVE_TEST_METRICS: "true"
 
 .qa:rules:e2e-schedule-nightly:
   rules:
@@ -2008,7 +2007,6 @@
         ARCH: amd64,arm64
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
-        QA_SAVE_TEST_METRICS: "true"
 
 .qa:rules:test-on-omnibus-ce:follow-up:
   rules:
@@ -2026,7 +2024,6 @@
         ARCH: amd64,arm64
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
-        QA_SAVE_TEST_METRICS: "true"
 
 .qa:rules:e2e:test-on-gdk:
   rules:

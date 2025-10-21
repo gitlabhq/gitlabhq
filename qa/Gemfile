@@ -24,7 +24,6 @@ gem 'rspec-parameterized', '~> 2.0.0'
 gem 'octokit', '~> 9.2.0', require: false
 gem "faraday-retry", "~> 2.3", ">= 2.3.2"
 gem 'zeitwerk', '~> 2.7', '>= 2.7.3'
-gem 'influxdb-client', '~> 3.2'
 gem 'terminal-table', '~> 4.0.0', require: false
 gem 'slack-notifier', '~> 2.4', require: false
 gem 'fog-google', '~> 1.26', require: false

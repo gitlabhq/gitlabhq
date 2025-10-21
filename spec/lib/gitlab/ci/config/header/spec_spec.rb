@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
   context 'when spec contains component configuration' do
     let(:spec_hash) do
       {
-        component: %w[name sha]
+        component: %w[name sha version]
       }
     end
 
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
     end
 
     it 'returns the component value' do
-      expect(config.component_value).to match_array([:name, :sha])
+      expect(config.component_value).to match_array([:name, :sha, :version])
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
             default: 'bar'
           }
         },
-        component: %w[name]
+        component: %w[name version]
       }
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
 
     it 'returns both values correctly' do
       expect(config.inputs_value).to eq({ foo: { default: 'bar' } })
-      expect(config.component_value).to match_array([:name])
+      expect(config.component_value).to match_array([:name, :version])
     end
   end
 

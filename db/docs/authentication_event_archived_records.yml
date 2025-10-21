@@ -10,7 +10,7 @@ description: |
   We will drop this table once retention policy is implemented and confirmed, in 3-4 milestones.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
 milestone: '18.5'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_user
 notes: |
   Temporary table for archiving authentication events during retention implementation.
   Will be dropped after verification period.

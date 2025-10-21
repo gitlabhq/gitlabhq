@@ -31,7 +31,8 @@ module Ci
             path: result.path,
             project: component_path.project,
             sha: component_path.sha,
-            name: component_path.component_name
+            name: component_path.component_name,
+            version: component_path.matched_version
           })
         elsif component_path.invalid_usage_for_latest?
           ServiceResponse.error(

@@ -6,7 +6,7 @@ module QA
   module Support
     module Formatters
       class TestMetricsFormatter < RSpec::Core::Formatters::BaseFormatter
-        include Support::InfluxdbTools
+        include Support::TestMetricsTools
         include Support::GcsTools
         include Support::Repeater
         include Support::Retrier
@@ -25,13 +25,11 @@ module QA
           parse_execution_data(notification.examples)
 
           export_test_metrics
-          save_test_metrics
         end
 
         private
 
         delegate :export_metrics?,
-          :save_metrics_json?,
           :ci_job_url,
           :ci_job_name,
           :rspec_retried?,
@@ -50,7 +48,7 @@ module QA
 
         alias_method :parse_execution_data, :execution_data
 
-        # Export metrics directly to InfluxDb or GCS bucket
+        # Export metrics directly to GCS bucket
         #
         # @return [void]
         def export_test_metrics
@@ -58,44 +56,12 @@ module QA
 
           push_test_metrics
           push_fabrication_metrics
-          push_code_runtime_metrics
-        end
-
-        # Save metrics in json file
-        #
-        # @return [void]
-        def save_test_metrics
-          return log(:info, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
-
-          file = File.join('tmp', metrics_file_name(prefix: 'test', with_pipeline_id_postfix: false))
-
-          File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
-        rescue StandardError => e
-          log(:error, "Failed to save test execution metrics, error: #{e}")
-        end
-
-        # Upload test execution metrics
-        #
-        # @return [void]
-        def push_test_metrics
-          push_test_metrics_to_influxdb
-          push_test_metrics_to_gcs
-        end
-
-        # Push test execution metrics to InfluxDB
-        #
-        # @return [void]
-        def push_test_metrics_to_influxdb
-          write_api.write(data: execution_data)
-          log(:info, "Pushed #{execution_data.length} test execution entries to influxdb")
-        rescue StandardError => e
-          log(:error, "Failed to push test execution metrics to influxdb, error: #{e}")
         end
 
         # Push test execution metrics to GCS
         #
         # @return [void]
-        def push_test_metrics_to_gcs
+        def push_test_metrics
           init_gcs_client! # init client and exit early if mandatory configuration is missing
           retry_on_exception(sleep_interval: 30, message: 'Failed to push test metrics to GCS') do
             gcs_client.put_object(
@@ -111,7 +77,7 @@ module QA
           log(:error, "Failed to push test execution metrics to gcs, error: #{e}")
         end
 
-        # Push resource fabrication metrics to influxdb
+        # Push resource fabrication metrics to GCS bucket
         #
         # @return [void]
         def push_fabrication_metrics
@@ -121,20 +87,7 @@ module QA
 
           return if data.empty?
 
-          push_fabrication_metrics_influxdb(data)
           push_fabrication_metrics_gcs(data)
-        end
-
-        # Push code runtime metrics to influxdb
-        #
-        # @return [void]
-        def push_code_runtime_metrics
-          return if method_call_data.empty?
-
-          write_api.write(data: method_call_data)
-          log(:info, "Pushed #{method_call_data.length} code runtime entries to influxdb")
-        rescue StandardError => e
-          log(:error, "Failed to push code runtime metrics to influxdb, error: #{e}")
         end
 
         # Push resource fabrication metrics to GCS
@@ -155,17 +108,6 @@ module QA
           end
         rescue StandardError => e
           log(:error, "Failed to push test fabrication metrics to gcs, error: #{e}")
-        end
-
-        # Push resource fabrication metrics to InfluxDB
-        #
-        # @param [Hash] data fabrication data hash
-        # @return [void]
-        def push_fabrication_metrics_influxdb(data)
-          write_api.write(data: data)
-          log(:info, "Pushed #{data.length} resource fabrication entries to influxdb")
-        rescue StandardError => e
-          log(:error, "Failed to push fabrication metrics to influxdb, error: #{e}")
         end
 
         # Init client raising error if configuration variables are missing
@@ -198,8 +140,7 @@ module QA
           name.join
         end
 
-        # Transform example to influxdb compatible metrics data
-        # https://github.com/influxdata/influxdb-client-ruby#data-format
+        # Transform example to compatible metrics data
         #
         # @param [RSpec::Core::Example] example
         # @return [Hash]
@@ -438,7 +379,7 @@ module QA
         # @param [String] message
         # @return [void]
         def log(level, message)
-          QA::Runtime::Logger.public_send(level, "[influxdb exporter]: #{message}")
+          QA::Runtime::Logger.public_send(level, "[GCS metrics exporter]: #{message}")
         end
 
         # Example location

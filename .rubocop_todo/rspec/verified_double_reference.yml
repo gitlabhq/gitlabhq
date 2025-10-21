@@ -84,7 +84,6 @@ RSpec/VerifiedDoubleReference:
     - 'qa/spec/support/formatters/test_metrics_formatter_spec.rb'
     - 'qa/spec/support/helpers/masker_spec.rb'
     - 'qa/spec/tools/ci/code_paths_mapping_spec.rb'
-    - 'qa/spec/tools/ci/test_metrics_spec.rb'
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/commands/sidekiq_cluster/cli_spec.rb'
     - 'spec/components/pajamas/concerns/checkbox_radio_label_with_help_text_spec.rb'

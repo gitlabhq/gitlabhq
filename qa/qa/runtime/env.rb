@@ -504,10 +504,6 @@ module QA
         enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: false)
       end
 
-      def save_metrics_json?
-        enabled?(ENV['QA_SAVE_TEST_METRICS'], default: false)
-      end
-
       def ee_license
         return ENV["QA_EE_LICENSE"] if ENV["QA_EE_LICENSE"]
 

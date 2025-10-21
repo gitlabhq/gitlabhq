@@ -121,13 +121,6 @@ namespace :ci do
     end
   end
 
-  desc "Export test run metrics to influxdb"
-  task :export_test_metrics, [:glob] do |_, args|
-    raise("Metrics file glob pattern is required") unless args[:glob]
-
-    QA::Tools::Ci::TestMetrics.export(args[:glob])
-  end
-
   desc "Export backend code paths mapping to GCP"
   task :export_code_paths_mapping, [:glob] do |_, args|
     raise("Code paths mapping JSON glob pattern is required") unless args[:glob]

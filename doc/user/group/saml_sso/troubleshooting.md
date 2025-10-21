@@ -219,13 +219,28 @@ For convenience, we've included some [example resources](example_saml_config.md)
 
 ### Calculate the fingerprint
 
-When configuring the `idp_cert_fingerprint` you should use a SHA256 fingerprint whenever possible. SHA1 is also supported, but is not recommended. You can calculate the fingerprint by running the following command on the certificate file:
+When configuring the `idp_cert_fingerprint`, you should use a SHA256 fingerprint whenever possible. SHA1 is also supported, but is not recommended. To calculate the fingerprint, run the following command on the certificate file:
 
 ```shell
 openssl x509 -in <certificate.crt> -noout -fingerprint -sha256
 ```
 
 Replace `<certificate.crt>` with the name of the certificate file.
+
+{{< alert type="note" >}}
+
+In GitLab 17.11 and later, the fingerprint algorithm is
+[automatically detected](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184530)
+based on fingerprint length.
+
+In GitLab 17.10 and earlier, SHA1 is the default fingerprint algorithm.
+To use a SHA256 fingerprint, you must specify the algorithm:
+
+```ruby
+idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+```
+
+{{< /alert >}}
 
 ## SSO Certificate updates
 

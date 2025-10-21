@@ -13,7 +13,7 @@ module Gitlab
         class Component < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
 
-          ALLOWED_VALUES = %i[name sha].freeze
+          ALLOWED_VALUES = %i[name sha version].freeze
           ALLOWED_VALUES_TO_S = ALLOWED_VALUES.map(&:to_s).freeze
 
           validations do

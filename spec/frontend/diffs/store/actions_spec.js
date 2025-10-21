@@ -1355,7 +1355,7 @@ describe('DiffsStoreActions', () => {
           expect(historyPushState).toHaveBeenCalledWith(new URL(`${TEST_HOST}#test`), {
             skipScrolling: true,
           });
-          expect(scrollToElement).toHaveBeenCalledWith('.diff-files-holder', { duration: 0 });
+          expect(scrollToElement).toHaveBeenCalledWith('.diff-files-holder', { behavior: 'auto' });
         });
 
         it('loads the file and then scrolls to it', async () => {
@@ -1369,7 +1369,7 @@ describe('DiffsStoreActions', () => {
             skipScrolling: true,
           });
           expect(scrollToElement).toHaveBeenCalledWith('.diff-files-holder', {
-            duration: 0,
+            behavior: 'auto',
           });
           expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
         });

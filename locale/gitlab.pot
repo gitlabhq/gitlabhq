@@ -10954,6 +10954,9 @@ msgstr ""
 msgid "BlobViewer|If you delete the file, it will be removed from the branch %{branch}."
 msgstr ""
 
+msgid "BlobViewer|Open in a new window"
+msgstr ""
+
 msgid "BlobViewer|Open raw"
 msgstr ""
 
@@ -13284,6 +13287,9 @@ msgstr ""
 msgid "Characters over limit"
 msgstr ""
 
+msgid "Chat is not available."
+msgstr ""
+
 msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}"
 msgstr ""
 
@@ -14049,9 +14055,6 @@ msgid "CiVariable|Variable %{key} has been successfully added."
 msgstr ""
 
 msgid "CiVariable|Variable %{key} has been updated."
-msgstr ""
-
-msgid "Classic Chat Placeholder"
 msgstr ""
 
 msgid "Classification Label (optional)"
@@ -57398,6 +57401,9 @@ msgstr ""
 msgid "ScanResultPolicy|Is not"
 msgstr ""
 
+msgid "ScanResultPolicy|KEV status"
+msgstr ""
+
 msgid "ScanResultPolicy|License is:"
 msgstr ""
 
@@ -57551,6 +57557,9 @@ msgstr ""
 msgid "ScanResultPolicy|Select service accounts"
 msgstr ""
 
+msgid "ScanResultPolicy|Select this option if you want the policy to block the merge request (or warn the user if the policy is in warn mode) only if it includes vulnerabilities that are actively exploited according to their KEV status. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "ScanResultPolicy|Select token exceptions"
 msgstr ""
 
@@ -57591,6 +57600,12 @@ msgid "ScanResultPolicy|Use time window for target pipeline comparison"
 msgstr ""
 
 msgid "ScanResultPolicy|Users"
+msgstr ""
+
+msgid "ScanResultPolicy|Vulnerabilities that %{boldStart}are not%{boldEnd} being exploited."
+msgstr ""
+
+msgid "ScanResultPolicy|Vulnerabilities that %{boldStart}are%{boldEnd} being exploited."
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"

@@ -39,7 +39,8 @@ export default {
   },
   methods: {
     async updateNodeView() {
-      const isRootElement = this.$el.parentElement?.classList.contains('ProseMirror');
+      const parent = this.$el.parentElement;
+      const isRootElement = parent?.classList.contains('ProseMirror') || !parent?.parentElement;
       const content = this.contentEditor.serializer.serialize({ doc: this.node.content }) || '';
 
       this.hasQuickAction = isRootElement && quickActionRegex.test(content);
