@@ -443,8 +443,8 @@ specifically the number of projects and those projects' sizes.
 
 {{< alert type="warning" >}}
 
-**Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health**.
-**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required**.
+Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
 If you believe this applies to you, contact us for additional guidance as required.
 
 {{< /alert >}}

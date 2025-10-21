@@ -26,10 +26,11 @@ You can:
 - [Protect production secrets](#protect-production-secrets)
 - [Separate project for deployments](#separate-project-for-deployments)
 
-If you are using a continuous deployment workflow and want to ensure that concurrent deployments to the same environment do not happen, you should enable the following options:
+If you are using a continuous deployment workflow and want to ensure that concurrent deployments to the same environment do not happen,
+you should:
 
-- [Ensure only one deployment job runs at a time](#ensure-only-one-deployment-job-runs-at-a-time)
-- [Prevent outdated deployment jobs](#prevent-outdated-deployment-jobs)
+- [Ensure only one deployment job runs at a time](#ensure-only-one-deployment-job-runs-at-a-time).
+- [Prevent outdated deployment jobs](#prevent-outdated-deployment-jobs).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [How to secure your CD pipelines/workflow](https://www.youtube.com/watch?v=Mq3C1KveDc0).
@@ -57,14 +58,14 @@ deploy:
  resource_group: prod
 ```
 
-Example of a problematic pipeline flow **before** using the resource group:
+Example of a problematic pipeline flow without the resource group:
 
 1. `deploy` job in Pipeline-A starts running.
 1. `deploy` job in Pipeline-B starts running. *This is a concurrent deployment that could cause an unexpected result.*
 1. `deploy` job in Pipeline-A finished.
 1. `deploy` job in Pipeline-B finished.
 
-The improved pipeline flow **after** using the resource group:
+The improved pipeline flow with the resource group:
 
 1. `deploy` job in Pipeline-A starts running.
 1. `deploy` job in Pipeline-B attempts to start, but waits for the first `deploy` job to finish.
@@ -88,7 +89,7 @@ This creates a race condition where the older deployment finishes later,
 overwriting the "newer" deployment.
 
 You can prevent older deployment jobs from running when a newer deployment
-job is started by enabling the [Prevent outdated deployment jobs](../pipelines/settings.md#prevent-outdated-deployment-jobs) feature.
+job is started with the [**Prevent outdated deployment jobs**](../pipelines/settings.md#prevent-outdated-deployment-jobs) setting.
 
 When an older deployment job starts, it fails and is labeled:
 
@@ -120,14 +121,14 @@ When a rollback is required, you must run a new pipeline with a previous commit.
 
 ### Example
 
-Example of a problematic pipeline flow **before** enabling Prevent outdated deployment jobs:
+Example of a problematic pipeline flow with the **Prevent outdated deployment jobs** setting disabled:
 
 1. Pipeline-A is created on the default branch.
 1. Later, Pipeline-B is created on the default branch (with a newer commit SHA).
 1. The `deploy` job in Pipeline-B finishes first, and deploys the newer code.
 1. The `deploy` job in Pipeline-A finished later, and deploys the older code, **overwriting** the newer (latest) deployment.
 
-The improved pipeline flow **after** enabling Prevent outdated deployment jobs:
+The improved pipeline flow with the setting enabled:
 
 1. Pipeline-A is created on the default branch.
 1. Later, Pipeline-B is created on the default branch (with a newer SHA).

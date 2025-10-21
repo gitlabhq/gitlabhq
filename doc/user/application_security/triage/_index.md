@@ -81,7 +81,7 @@ Bulk triage low-risk vulnerabilities to focus on the most important ones.
 
 - Vulnerabilities are sometimes detected but no longer detected in subsequent CI/CD pipelines. In
   this instance the vulnerability's activity is labeled as **No longer detected**. You might choose
-  to dismiss these vulnerabilities if their severity is **low** or **info**. Use the filter
+  to dismiss these vulnerabilities if their severity is **Low** or **Info**. Use the filter
   **Activity: No longer detected** in the vulnerability report to select them and change their
   status to **Dismissed**. You can also automate this by using a
   [vulnerability management policy](../policies/vulnerability_management_policy.md).

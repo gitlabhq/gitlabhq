@@ -19,10 +19,10 @@ The release tag name should include the release version. GitLab uses [Semantic V
 for our releases, and we recommend you do too. Use `(Major).(Minor).(Patch)`, as detailed in the
 [GitLab Policy for Versioning](../../../policy/maintenance.md#versioning).
 
-For example, for GitLab version `16.1.1`:
+For example, for GitLab version `16.10.1`:
 
 - `16` represents the major version. The major release was `16.0.0`, but often referred to as `16.0`.
-- `10` represents the minor version. The minor release was `16.1.0`, but often referred to as `16.1`.
+- `10` represents the minor version. The minor release was `16.10.0`, but often referred to as `16.10`.
 - `1` represents the patch number.
 
 Any part of the version number can be multiple digits, for example, `16.10.11`.
@@ -59,12 +59,12 @@ binaries, or other related materials. These can be both internal or external
 links from your GitLab instance.
 Each link as an asset has the following attributes:
 
-| Attribute   | Description                                                                                                  | Required |
-|-------------|--------------------------------------------------------------------------------------------------------------|----------|
-| `name`      | The name of the link.                                                                                        | Yes      |
-| `url`       | The URL to download a file.                                                                                  | Yes      |
-| `filepath`  | The redirect link to the `url`. Must start with a slash (`/`). See [this section](#permanent-links-to-release-assets) for more information. | No       |
-| `link_type` | The content kind of what users can download with `url`. See [this section](#link-types) for more information. | No       |
+| Attribute   | Required | Description |
+|-------------|----------|-------------|
+| `name`      | Yes      | The name of the link. |
+| `url`       | Yes      | The URL to download a file. |
+| `filepath`  | No       | The redirect link to the `url`. Must start with a slash (`/`). See [this section](#permanent-links-to-release-assets) for more information. |
+| `link_type` | No       | The content kind of what users can download with `url`. See [this section](#link-types) for more information. |
 
 #### Permanent links to release assets
 
@@ -109,8 +109,8 @@ If the release is private, you need to provide a personal access token with eith
 a `private_token` query parameter or a `HTTP_PRIVATE_TOKEN` header when making the request. For example:
 
 ```shell
-curl --location --output filename "https://gitlab.example.com/my-group/my-project/-/releases/myrelease/downloads</path-to-file>?private_token=<your_access_token>"
-curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/my-group/my-project/-/releases/myrelease/downloads</path-to-file>
+curl --location --output filename "https://gitlab.example.com/my-group/my-project/-/releases/myrelease/downloads/<path-to-file>?private_token=<your_access_token>"
+curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/my-group/my-project/-/releases/myrelease/downloads/<path-to-file>"
 ```
 
 #### Permanent links to latest release assets

@@ -107,34 +107,34 @@ A rate limit for [downloading repository archives](../api/repositories.md#get-fi
 available. The limit applies to the project and to the user initiating the download either through
 the UI or the API.
 
-The **rate limit** is 5 requests per minute per user.
+The rate limit is 5 requests per minute per user.
 
 ### Webhook Testing
 
 There is a rate limit for [testing webhooks](../user/project/integrations/webhooks.md#test-a-webhook), which prevents abuse of the webhook functionality.
 
-The **rate limit** is 5 requests per minute per user.
+The rate limit is 5 requests per minute per user.
 
 ### Users sign up
 
 There is a rate limit per IP address on the `/users/sign_up` endpoint. This is to mitigate attempts to misuse the endpoint. For example, to mass
 discover usernames or email addresses in use.
 
-The **rate limit** is 20 calls per minute per IP address.
+The rate limit is 20 calls per minute per IP address.
 
 ### Update username
 
 There is a rate limit on how frequently a username can be changed. This is enforced to mitigate misuse of the feature. For example, to mass discover
 which usernames are in use.
 
-The **rate limit** is 10 calls per minute per authenticated user.
+The rate limit is 10 calls per minute per authenticated user.
 
 ### Username exists
 
 There is a rate limit for the internal endpoint `/users/:username/exists`, used upon sign up to check if a chosen username has already been taken.
 This is to mitigate the risk of misuses, such as mass discovery of usernames in use.
 
-The **rate limit** is 20 calls per minute per IP address.
+The rate limit is 20 calls per minute per IP address.
 
 ### Project Jobs API endpoint
 
@@ -147,7 +147,7 @@ The **rate limit** is 20 calls per minute per IP address.
 
 There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
 
-The **rate limit** defaults to 600 calls per authenticated user. You can [configure the rate limit](../administration/settings/user_and_ip_rate_limits.md).
+The rate limit defaults to 600 calls per authenticated user. You can [configure the rate limit](../administration/settings/user_and_ip_rate_limits.md).
 
 ### AI action
 
@@ -159,7 +159,7 @@ The **rate limit** defaults to 600 calls per authenticated user. You can [config
 
 There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent from abusing this endpoint.
 
-The **rate limit** is 160 calls per 8 hours per authenticated user.
+The rate limit is 160 calls per 8 hours per authenticated user.
 
 ### Delete a member using the API
 
@@ -171,7 +171,7 @@ The **rate limit** is 160 calls per 8 hours per authenticated user.
 
 There is a rate limit for [removing project or group members using the API endpoints](../api/members.md#remove-a-member-from-a-group-or-project) `/groups/:id/members` or `/project/:id/members`.
 
-The **rate limit** is 60 deletions per minute.
+The rate limit is 60 deletions per minute.
 
 ### Repository blob and file access
 
@@ -201,13 +201,13 @@ the API.
 
 There is a rate limit for notification emails related to a project or group.
 
-The **rate limit** is 1,000 notifications per 24 hours per project or group per user.
+The rate limit is 1,000 notifications per 24 hours per project or group per user.
 
 ### GitHub import
 
 There is a rate limit for triggering project imports from GitHub.
 
-The **rate limit** is 6 triggered imports per minute per user.
+The rate limit is 6 triggered imports per minute per user.
 
 ### FogBugz import
 
@@ -219,21 +219,21 @@ The **rate limit** is 6 triggered imports per minute per user.
 
 There is a rate limit for triggering project imports from FogBugz.
 
-The **rate limit** is 1 triggered import per minute per user.
+The rate limit is 1 triggered import per minute per user.
 
 ### Commit diff files
 
 This is a rate limit for expanded commit diff files (`/[group]/[project]/-/commit/[:sha]/diff_files?expanded=1`),
 which is enforced to prevent from abusing this endpoint.
 
-The **rate limit** is 6 requests per minute per user (authenticated) or per IP address (unauthenticated).
+The rate limit is 6 requests per minute per user (authenticated) or per IP address (unauthenticated).
 
 ### Changelog generation
 
 There is a rate limit per user per project on the `:id/repository/changelog` endpoint. This is to mitigate attempts to misuse the endpoint.
 The rate limit is shared between GET and POST actions.
 
-The **rate limit** is 5 calls per minute per user per project.
+The rate limit is 5 calls per minute per user per project.
 
 ## Troubleshooting
 

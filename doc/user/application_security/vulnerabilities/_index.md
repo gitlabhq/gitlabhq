@@ -242,11 +242,13 @@ We are actively working to expand coverage to more types of vulnerabilities.
 
 Vulnerability Resolution sometimes cannot generate a suggested fix. Common causes include:
 
-- **False positive detected**: Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+- False positive detected:
+  - Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
   - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
-- **Temporary or unexpected error**: The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+- Temporary or unexpected error:
+  - The error message may state that `an unexpected error has occurred`, `the upstream AI provider request timed out`, `something went wrong`, or a similar cause.
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
@@ -299,15 +301,17 @@ Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org
 
 Vulnerability Resolution in a merge request sometimes cannot generate a suggested fix. Common causes include:
 
-- **False positive detected**: Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+- False positive detected:
+  - Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
   - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
-- **Temporary or unexpected error**: The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+- Temporary or unexpected error:
+  - The error message may state that `an unexpected error has occurred`, `the upstream AI provider request timed out`, `something went wrong`, or a similar cause.
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
-- **Resolution target could not be found in the merge request, unable to create suggestion:**
+- `Resolution target could not be found in the merge request, unable to create suggestion` error:
   - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../detect/security_scanning_results.md).
 
 ## Vulnerability code flow
