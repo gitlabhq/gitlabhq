@@ -1046,7 +1046,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   end
 
   describe 'POST /projects/:id/repository/files/:file_path' do
-    let(:file_path) { FFaker::Guid.guid }
+    let(:file_path) { FFaker::UUID.uuidv4 }
 
     let(:params) do
       {
@@ -1157,7 +1157,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
             it_behaves_like 'creates a new file in the project repo' do
               let(:current_user) { user }
-              let(:file_path) { FFaker::Guid.guid }
+              let(:file_path) { FFaker::UUID.uuidv4 }
             end
           end
 
@@ -1369,7 +1369,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
 
     describe 'when files are deleted' do
-      let(:file_path) { FFaker::Guid.guid }
+      let(:file_path) { FFaker::UUID.uuidv4 }
 
       before do
         create_file_in_repo(project, 'master', 'master', file_path, 'Test file')

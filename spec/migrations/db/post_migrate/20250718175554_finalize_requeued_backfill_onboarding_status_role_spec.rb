@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RequeueBackfillOnboardingStatusRole, migration: :gitlab_main, feature_category: :onboarding do
+RSpec.describe FinalizeRequeuedBackfillOnboardingStatusRole, migration: :gitlab_main, feature_category: :onboarding do
   it 'is a no-op migration' do
     expect { migrate! }.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
 

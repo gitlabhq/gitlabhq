@@ -40897,6 +40897,9 @@ msgstr ""
 msgid "Merge request fast-forward merges"
 msgstr ""
 
+msgid "Merge request homepage"
+msgstr ""
+
 msgid "Merge request must be open."
 msgstr ""
 
@@ -40910,6 +40913,9 @@ msgid "Merge request not merged"
 msgstr ""
 
 msgid "Merge request reports"
+msgstr ""
+
+msgid "Merge request reviews"
 msgstr ""
 
 msgid "Merge request status"
@@ -59901,6 +59907,9 @@ msgid_plural "SecurityOrchestration|On runners with the tags:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityOrchestration|Only allowed in warn mode."
+msgstr ""
+
 msgid "SecurityOrchestration|Only custom roles with the permission to approve merge requests are shown"
 msgstr ""
 
@@ -60496,6 +60505,9 @@ msgid "SecurityOrchestration|Vulnerability management"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability management policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Warn in merge request"
 msgstr ""
 
 msgid "SecurityOrchestration|Warn mode"
@@ -70335,16 +70347,10 @@ msgstr ""
 msgid "UsageBilling|Purchase monthly commitment"
 msgstr ""
 
-msgid "UsageBilling|Status"
-msgstr ""
-
 msgid "UsageBilling|Total credits used"
 msgstr ""
 
 msgid "UsageBilling|Total users (active users)"
-msgstr ""
-
-msgid "UsageBilling|Unknown"
 msgstr ""
 
 msgid "UsageBilling|Usage Billing"

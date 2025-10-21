@@ -16,6 +16,10 @@ module Gitlab
           s_('CiStatusLabel|passed with warnings')
         end
 
+        def status_tooltip
+          label
+        end
+
         def icon
           'status_warning'
         end

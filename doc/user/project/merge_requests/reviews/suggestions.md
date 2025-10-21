@@ -28,7 +28,9 @@ merge request, authored by the user who suggested the changes.
      select **Add a comment to this line** ({{< icon name="comment" >}}).
    - To select more lines:
      1. Hover over the line number, and select **Add a comment to this line** ({{< icon name="comment" >}}):
+
         ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
+
      1. Select and drag your selection to include all desired lines. To
         learn more, see [Multi-line suggestions](#multi-line-suggestions).
    - To comment on an entire file instead of specific lines, in the header for the file,
@@ -132,6 +134,20 @@ After you apply a suggestion, GitLab:
 - Creates a new commit with the changes.
 - (If the user has the Developer role) Pushes the suggested change directly into
   the codebase in the merge request's branch.
+
+## Reject suggestions
+
+Prerequisites:
+
+- You must be the author of the merge request, or have at least the Developer role for the project.
+
+To reject a suggested change directly from the merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code** > **Merge requests** and find your merge request.
+1. Find the comment containing the suggestion you want to reject.
+1. Optional. Add a reply stating the reason for rejecting the suggestion.
+1. Select **Resolve thread**.
 
 ## Configure the commit message for applied suggestions
 

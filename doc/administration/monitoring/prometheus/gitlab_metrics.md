@@ -206,6 +206,10 @@ The following metrics are available:
 | `successful_login_captcha_total`                                               | Gauge     |  11.0 |                                                                         | Counter of successful CAPTCHA attempts during login |
 | `upload_file_does_not_exist`                                                   | Counter   |  10.7 |                                                                         | Number of times an upload record could not find its file. |
 | `user_session_logins_total`                                                    | Counter   |   9.4 |                                                                         | Counter of how many users have logged in since GitLab was started or restarted |
+| `validity_check_network_errors_total`                                          | Counter   |  18.6 | `partner`, `error_class`                                                | Total network errors during partner token verification API calls. Ultimate only. |
+| `validity_check_partner_api_duration_seconds`                                  | Histogram |  18.6 | `partner`                                                               | Partner API response time in seconds for token verification requests. Ultimate only. |
+| `validity_check_partner_api_requests_total`                                    | Counter   |  18.6 | `partner`, `status`, `error_type`                                       | Total partner API verification requests with success/failure status. Ultimate only. |
+| `validity_check_rate_limit_hits_total`                                         | Counter   |  18.6 | `limit_type`                                              | Total rate limit hits during partner token verification. Ultimate only. |
 
 ## Metrics controlled by a feature flag
 
@@ -574,6 +578,38 @@ Metrics to track various [Git LFS](https://git-lfs.com/) functionality.
 | `gitlab_sli_lfs_check_objects_error_total`         | Counter | 16.10 | Number of check LFS object errors in total |
 | `gitlab_sli_lfs_validate_link_objects_total`       | Counter | 16.10 | Number of validated LFS linked objects in total |
 | `gitlab_sli_lfs_validate_link_objects_error_total` | Counter | 16.10 | Number of validated LFS linked object errors in total |
+
+## Secret Detection Partner Token verification metrics
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208292) in GitLab 18.6.
+
+{{< /history >}}
+
+Metrics to track Secret Detection partner token verification with external partner APIs (AWS, GCP, Postman, etc.).
+
+| Metric                                            | Type      | Since | Labels                                        | Description |
+|:--------------------------------------------------|:----------|:------|:----------------------------------------------|:------------|
+| `validity_check_partner_api_duration_seconds`     | Histogram | 18.6  | `partner`                                     | Tracks API response time for partner token verification requests. Histogram buckets: [0.1, 0.25, 0.5, 1, 2, 5, 10] seconds. |
+| `validity_check_partner_api_requests_total`       | Counter   | 18.6  | `partner`, `status`, `error_type`             | Total number of partner API verification requests. `status` can be `success` or `failure`. `error_type` is included only for failures (e.g., `network_error`, `rate_limit`, `response_error`). |
+| `validity_check_network_errors_total`             | Counter   | 18.6  | `partner`, `error_class`                      | Total network errors during partner API calls. `error_class` indicates the type of error (e.g., `Timeout`, `ConnectionRefused`, `HTTPError`). |
+| `validity_check_rate_limit_hits_total`            | Counter   | 18.6  | `limit_type`                    | Total rate limit hits during token verification. `limit_type` corresponds to the partner rate limit key (e.g., `partner_aws_api`, `partner_gcp_api`, `partner_postman_api`). |
+
+### Partner labels
+
+The `partner` label can have the following values:
+
+- `aws` - Amazon Web Services tokens
+- `gcp` - Google Cloud Platform tokens
+- `postman` - Postman API tokens
 
 ## Metrics shared directory
 

@@ -356,12 +356,23 @@ your review. It's time to think broadly, one last time.
    username, in case they work from to-do items. State clearly:
    - What's your overall finding?
    - Are you finished reviewing, or do you want to see this merge request again after more work is done?
-1. Select [**Submit your review**](../../user/project/merge_requests/reviews/_index.md#submit-a-review)
-   (or use the `/submit_review` quick action) to publish all comments in your review.
-   Submitting your review also runs any [quick actions](../../user/project/quick_actions.md)
-   those review comments contain.
-   - If the changes look good, select **Approve**.
-   - If the changes need more work, select **Request changes**.
+1. On the top right, select **Your review** to show details about your review:
+
+   ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](../../user/project/merge_requests/reviews/img/review_drawer_v18_3.png)
+
+1. Review your pending comments. Edit them as needed.
+1. Select the outcome of your review.
+
+   - **Approve**: Leave feedback and approve the changes.
+   - **Comment**: Leave general feedback without an explicit approval or change request.
+   - **Request changes**: Block the merge request from merging until the author
+     addresses your feedback.
+
+1. Optional. Write a summary of your review. GitLab Premium and Ultimate users can select
+   **Add summary** ({{< icon name="tanuki-ai">}}) to create a summary for you. Include any
+   quick actions you want performed.
+
+You can also use the `/submit_review` [quick action](../../user/project/quick_actions.md) in the text of a non-review comment.
 
 If you [approve a merge request](../../user/project/merge_requests/approvals/_index.md#approve-a-merge-request)
 and are shown in the reviewer list, a green check mark {{< icon name="check-circle-filled" >}}

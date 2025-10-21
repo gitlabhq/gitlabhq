@@ -15,7 +15,7 @@ module Banzai
       end
 
       def extra_element_attrs(element)
-        attrs = { preload: 'metadata' }
+        attrs = { preload: 'metadata', class: 'gl-rounded-lg' }
 
         attrs[:height] = element[:height] if element[:height]
         attrs[:width] = element[:width] if element[:width]

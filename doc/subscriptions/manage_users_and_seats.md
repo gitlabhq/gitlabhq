@@ -280,15 +280,15 @@ to your instance.
 
 {{< /details >}}
 
-A GitLab.com subscription uses a concurrent (_seat_) model.
-You pay for a subscription according to the maximum number of users assigned to the top-level group,
+A GitLab.com subscription uses a concurrent (seat) model.
+You choose a number of seats for users who can use the subscription at the same time,
+and pay for a subscription according to the maximum number of users assigned to the top-level group,
 its subgroups and projects during the billing period.
-You can add and remove users during the subscription period without incurring additional charges,
-as long as the total users at any given time doesn't exceed the subscription count.
-If the total users exceeds your subscription count, you will incur an overage,
-which must be paid at your next [reconciliation](quarterly_reconciliation.md).
 
-A top-level group can be [changed](../user/group/manage.md#change-a-groups-path) like any other group.
+You can add and remove users during the subscription period without incurring additional charges,
+as long as the total number of users at any given time doesn't exceed the number of seats in the subscription.
+If you add more users and exceed the number of purchased seats, you incur an overage,
+which will be included in your next [invoice](quarterly_reconciliation.md).
 
 ### Seats owed
 

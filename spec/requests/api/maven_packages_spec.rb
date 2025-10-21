@@ -715,14 +715,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           subject { download_file_with_token(file_name: 'unknown-file.jar') }
 
           it_behaves_like 'returning response status', :unauthorized
-
-          context 'when maven_packages_unauthorized_with_public_registries is disabled' do
-            before do
-              stub_feature_flags(maven_packages_unauthorized_with_public_registries: false)
-            end
-
-            it_behaves_like 'returning response status', :not_found
-          end
         end
       end
 

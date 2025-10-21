@@ -64,9 +64,11 @@ module PreferencesHelper
       groups: _("Your Groups"),
       todos: _("Your To-Do List"),
       issues: _("Assigned issues"),
-      merge_requests: _("Assigned merge requests"),
+      merge_requests: _("Merge request homepage"),
       operations: _("Operations Dashboard"),
-      homepage: _("Personal homepage")
+      homepage: _("Personal homepage"),
+      assigned_merge_requests: _("Assigned merge requests"),
+      review_merge_requests: _("Merge request reviews")
     }.compact.with_indifferent_access.freeze
   end
 

@@ -48,6 +48,8 @@ async function observeMergeRequestFinishingPreparation({ apollo, signaler }) {
         if (preparationUpdate.data.mergeRequestMergeStatusUpdated?.preparedAt) {
           signaler.$emit(EVT_MR_PREPARED);
           preparationSubscriber.unsubscribe();
+        } else {
+          signaler.$emit(EVT_MR_DIFF_GENERATED, currentStatus.data.project.mergeRequest);
         }
       });
     } else {

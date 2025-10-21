@@ -72,9 +72,7 @@ module API
           path: params[:path],
           file_name: params[:file_name]
         ) do
-          unauthorized! if no_package_found && !current_user && params[:target].is_a?(::Group) &&
-            ::Feature.enabled?(:maven_packages_unauthorized_with_public_registries, params[:target])
-
+          unauthorized! if no_package_found && !current_user && params[:target].is_a?(::Group)
           not_found!('Package') if no_package_found
 
           case format

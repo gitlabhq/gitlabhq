@@ -11,7 +11,6 @@ Database/AvoidScopeTo:
     - 'lib/gitlab/background_migration/backfill_has_issues_for_external_issue_links.rb'
     - 'lib/gitlab/background_migration/backfill_namespaces_redirect_routes_namespace_id.rb'
     - 'lib/gitlab/background_migration/backfill_nuget_normalized_version.rb'
-    - 'lib/gitlab/background_migration/backfill_onboarding_status_role.rb'
     - 'lib/gitlab/background_migration/backfill_or_drop_ci_pipeline_on_project_id.rb'
     - 'lib/gitlab/background_migration/backfill_organization_id_on_fork_networks.rb'
     - 'lib/gitlab/background_migration/backfill_p_ci_pipeline_variables_project_id.rb'

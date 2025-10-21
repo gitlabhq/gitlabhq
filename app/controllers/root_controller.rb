@@ -23,6 +23,28 @@ class RootController < Dashboard::ProjectsController
 
   CACHE_CONTROL_HEADER = 'no-store'
 
+  DASHBOARD_PATHS = {
+    'projects' => ->(context) {
+      context.dashboard_projects_path if Feature.enabled?(:personal_homepage, context.current_user)
+    },
+    'stars' => ->(context) { context.starred_dashboard_projects_path },
+    'member_projects' => ->(context) { context.member_dashboard_projects_path },
+    'your_activity' => ->(context) { context.activity_dashboard_path },
+    'project_activity' => ->(context) { context.activity_dashboard_path(filter: 'projects') },
+    'starred_project_activity' => ->(context) { context.activity_dashboard_path(filter: 'starred') },
+    'followed_user_activity' => ->(context) { context.activity_dashboard_path(filter: 'followed') },
+    'groups' => ->(context) { context.dashboard_groups_path },
+    'todos' => ->(context) { context.dashboard_todos_path },
+    'issues' => ->(context) { context.issues_dashboard_path(assignee_username: context.current_user.username) },
+    'merge_requests' => ->(context) { context.merge_requests_dashboard_path },
+    'assigned_merge_requests' => ->(context) {
+      context.merge_requests_search_dashboard_path(assignee_username: context.current_user.username)
+    },
+    'review_merge_requests' => ->(context) {
+      context.merge_requests_search_dashboard_path(reviewer_username: context.current_user.username)
+    }
+  }.freeze
+
   def index
     @homepage_app_data = homepage_app_data(current_user)
     if Feature.enabled?(:personal_homepage, current_user)
@@ -48,32 +70,17 @@ class RootController < Dashboard::ProjectsController
   end
 
   def redirect_logged_user
-    case current_user.effective_dashboard_for_routing
-    when 'projects'
-      redirect_to(dashboard_projects_path) if Feature.enabled?(:personal_homepage, current_user)
-    when 'stars'
-      flash.keep
-      redirect_to(starred_dashboard_projects_path)
-    when 'member_projects'
-      flash.keep
-      redirect_to(member_dashboard_projects_path)
-    when 'your_activity'
-      redirect_to(activity_dashboard_path)
-    when 'project_activity'
-      redirect_to(activity_dashboard_path(filter: 'projects'))
-    when 'starred_project_activity'
-      redirect_to(activity_dashboard_path(filter: 'starred'))
-    when 'followed_user_activity'
-      redirect_to(activity_dashboard_path(filter: 'followed'))
-    when 'groups'
-      redirect_to(dashboard_groups_path)
-    when 'todos'
-      redirect_to(dashboard_todos_path)
-    when 'issues'
-      redirect_to(issues_dashboard_path(assignee_username: current_user.username))
-    when 'merge_requests'
-      redirect_to(merge_requests_dashboard_path(assignee_username: current_user.username))
-    end
+    dashboard_for_routing = current_user.effective_dashboard_for_routing
+
+    redirect_path = dashboard_redirect_path(dashboard_for_routing)
+
+    flash.keep if %w[stars member_projects].include?(dashboard_for_routing)
+
+    redirect_to(redirect_path) if redirect_path
+  end
+
+  def dashboard_redirect_path(dashboard_type)
+    DASHBOARD_PATHS[dashboard_type]&.call(self)
   end
 
   def redirect_to_home_page_url?

@@ -11,6 +11,10 @@ module Gitlab
         @timeout = timeout
       end
 
+      def cell_id
+        @cell_id ||= Gitlab.config.cell.id
+      end
+
       private
 
       def client
@@ -27,10 +31,6 @@ module Gitlab
 
       def options
         { timeout: @timeout || DEFAULT_TIMEOUT_IN_SECONDS }
-      end
-
-      def cell_id
-        @cell_id ||= Gitlab.config.cell.id
       end
 
       def service_credentials

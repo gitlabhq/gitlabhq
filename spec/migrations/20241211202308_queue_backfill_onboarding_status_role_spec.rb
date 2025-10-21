@@ -4,17 +4,9 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe QueueBackfillOnboardingStatusRole, migration: :gitlab_main, feature_category: :onboarding do
-  let!(:batched_migration) { described_class::MIGRATION }
+  it 'is a no-op migration' do
+    expect { migrate! }.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
 
-  it 'does not schedules a new batched migration' do
-    reversible_migration do |migration|
-      migration.before -> {
-        expect(batched_migration).not_to have_scheduled_batched_migration
-      }
-
-      migration.after -> {
-        expect(batched_migration).not_to have_scheduled_batched_migration
-      }
-    end
+    expect { schema_migrate_down! }.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
   end
 end

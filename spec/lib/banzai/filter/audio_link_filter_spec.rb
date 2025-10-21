@@ -28,7 +28,7 @@ RSpec.describe Banzai::Filter::AudioLinkFilter, feature_category: :markdown do
       expect(container.name).to eq 'span'
       expect(container['class']).to eq 'media-container audio-container'
 
-      audio, link = container.children
+      link, audio = container.children
 
       expect(audio.name).to eq 'audio'
       expect(audio['src']).to eq src
@@ -103,7 +103,7 @@ RSpec.describe Banzai::Filter::AudioLinkFilter, feature_category: :markdown do
 
       expect(container['class']).to eq 'media-container audio-container'
 
-      audio, link = container.children
+      link, audio = container.children
 
       expect(audio['src']).to eq proxy_src
       expect(audio['data-canonical-src']).to eq canonical_src

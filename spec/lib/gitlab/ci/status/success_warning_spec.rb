@@ -17,6 +17,10 @@ RSpec.describe Gitlab::Ci::Status::SuccessWarning, feature_category: :continuous
     it { expect(subject.label).to eq 'passed with warnings' }
   end
 
+  describe '#status_tooltip' do
+    it { expect(subject.status_tooltip).to eq 'passed with warnings' }
+  end
+
   describe '#icon' do
     it { expect(subject.icon).to eq 'status_warning' }
   end

@@ -1001,7 +1001,14 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
     context 'when group data' do
       let_it_be(:group) { create(:group) }
-      let(:group_metadata) { { issues_path: issues_group_path(group), mr_path: merge_requests_group_path(group) } }
+
+      let(:group_metadata) do
+        {
+          issues_path: issues_group_path(group),
+          mr_path: merge_requests_group_path(group, assignee_username: user.username)
+        }
+      end
+
       let(:scope) { 'issues' }
 
       it 'adds the :group, :group_metadata, and :scope correctly to hash' do
@@ -1022,11 +1029,17 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       let_it_be(:project_group) { create(:group) }
       let_it_be(:project) { create(:project, group: project_group) }
       let(:project_metadata) do
-        { issues_path: project_issues_path(project), mr_path: project_merge_requests_path(project) }
+        {
+          issues_path: project_issues_path(project),
+          mr_path: project_merge_requests_path(project, assignee_username: user.username)
+        }
       end
 
       let(:group_metadata) do
-        { issues_path: issues_group_path(project_group), mr_path: merge_requests_group_path(project_group) }
+        {
+          issues_path: issues_group_path(project_group),
+          mr_path: merge_requests_group_path(project_group, assignee_username: user.username)
+        }
       end
 
       it 'adds the :group and :group-metadata from the project correctly to hash' do
@@ -1042,16 +1055,16 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
       context 'when feature issues is not available' do
         let(:feature_available) { false }
-        let(:project_metadata) { { mr_path: project_merge_requests_path(project) } }
 
         before do
           allow(project).to receive(:feature_available?).and_call_original
           allow(project).to receive(:feature_available?).with(:issues, current_user).and_return(feature_available)
+          allow(project).to receive(:feature_available?).with(:merge_requests, current_user).and_return(feature_available)
         end
 
-        it 'adds the :project and :project-metadata correctly to hash' do
+        it 'adds the :project and :project-metadata without mr_path' do
           expect(header_search_context[:project]).to eq({ id: project.id, name: project.name })
-          expect(header_search_context[:project_metadata]).to eq(project_metadata)
+          expect(header_search_context[:project_metadata]).to eq({})
         end
       end
 

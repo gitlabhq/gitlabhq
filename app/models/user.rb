@@ -421,7 +421,9 @@ class User < ApplicationRecord
     merge_requests: 7,
     operations: 8,
     followed_user_activity: 9,
-    homepage: 12
+    homepage: 12,
+    assigned_merge_requests: 13,
+    review_merge_requests: 14
   }
 
   # Override enum setter for `dashboard` to support flipped mapping for rollout

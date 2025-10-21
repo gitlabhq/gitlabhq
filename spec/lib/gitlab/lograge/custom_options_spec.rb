@@ -17,7 +17,6 @@ RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability 
       {
         params: params,
         user_id: 'test',
-        cf_ray: SecureRandom.hex,
         cf_request_id: SecureRandom.hex,
         metadata: { 'meta.user' => 'jane.doe' },
         request_urgency: :default,
@@ -60,7 +59,6 @@ RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability 
     end
 
     it 'adds Cloudflare headers' do
-      expect(subject[:cf_ray]).to eq(event.payload[:cf_ray])
       expect(subject[:cf_request_id]).to eq(event.payload[:cf_request_id])
     end
 

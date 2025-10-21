@@ -1092,6 +1092,62 @@ pipeline execution policy job:
     - echo "$PROJECT_VAR"
 ```
 
+### Include variables from the project configuration in a pipeline execution policy
+
+Pipeline execution policies run in their own isolated context, which means variables defined in a project's `.gitlab-ci.yml` file are not automatically available to the policy jobs. However, you can include project-defined variables by referencing a separate variables file from your project.
+
+Use this approach when:
+
+- You need to use custom naming conventions for Docker containers.
+- You want to maintain project-specific configurations that the policy should respect.
+- You have multiple containers with different names but built from the same project.
+
+#### Example: Include project variables file
+
+Create a variables file in your project repository (for example, `gitlab-variables.yml`):
+
+```yaml
+# gitlab-variables.yml
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  CS_IMAGE: ${CI_REGISTRY_IMAGE}:build
+  CUSTOM_VARIABLE: "custom-value"
+```
+
+In your pipeline execution policy configuration, include this variables file:
+
+```yaml
+# Pipeline execution policy configuration
+include:
+  - project: $CI_PROJECT_PATH
+    ref: $CI_COMMIT_SHA
+    file: 'gitlab-variables.yml'
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  stage: test
+  before_script:
+    - echo "CS_IMAGE = $CS_IMAGE"
+    - echo "CUSTOM_VARIABLE = $CUSTOM_VARIABLE"
+```
+
+This configuration:
+
+1. Includes the `gitlab-variables.yml` file from the project being scanned.
+1. Makes the variables defined in that file available to the policy jobs.
+1. Allows each project to define its own variable values while maintaining a consistent policy structure.
+
+#### Important considerations
+
+- Variable precedence: Variables included from the project file follow the standard [variable precedence rules](#precedence-of-variables-in-pipeline-execution-policies) for pipeline execution policies.
+- File location: The variables file can be located anywhere in your project repository. Use a descriptive name and location to make it easy to find and maintain.
+- Avoid including full CI/CD configuration: When you use this approach, include only the variables file, not the entire `.gitlab-ci.yml`. Including the full CI/CD configuration can cause job duplication.
+- Security: Don't store sensitive information in the variables file. Use [CI/CD variables](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui) defined in the project or group settings for sensitive data.
+
+#### Alternative: Use project CI/CD settings
+
+If you don't require dynamically set variables, you can set a constant in the project's CI/CD settings (**Settings** > **CI/CD** > **Variables**) instead of using a separate file. These variables are automatically available to pipeline execution policy jobs without additional configuration.
+
 ### Enforce a variable's value by using a pipeline execution policy
 
 The value of a variable defined in a pipeline execution policy overrides the value of a group or policy variable with the same name.

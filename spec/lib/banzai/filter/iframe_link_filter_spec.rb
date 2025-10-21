@@ -30,7 +30,7 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
       expect(container.name).to eq 'span'
       expect(container['class']).to eq 'media-container img-container'
 
-      iframe, link = container.children
+      link, iframe = container.children
 
       expect(iframe.name).to eq 'img'
       expect(iframe['src']).to eq src
@@ -119,7 +119,7 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
 
       expect(container['class']).to eq 'media-container img-container'
 
-      iframe, link = container.children
+      link, iframe = container.children
 
       expect(iframe['src']).to eq proxy_src
       expect(iframe['data-canonical-src']).to eq canonical_src

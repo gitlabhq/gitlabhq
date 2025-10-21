@@ -109,19 +109,15 @@ To configure a self-hosted model:
 1. Select **Add self-hosted model**.
 1. Complete the fields:
    - **Deployment name**: Enter a name to uniquely identify the model deployment, for example, `Mixtral-8x7B-it-v0.1 on GCP`.
-   - **Model family**: Select the model family the deployment belongs to. You can select either of the following:
-
-     - A [supported model family](supported_models_and_hardware_requirements.md#supported-models).
-     - **General** to [use your own model](supported_models_and_hardware_requirements.md#compatible-models) that is not explicitly supported by GitLab.
+   - **Model family**: Select the model family the deployment belongs to. You can select either a supported or compatible model.
    - **Endpoint**: Enter the URL where the model is hosted.
-     - For more information about configuring the endpoint for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#endpoint-configuration).
    - **API key**: Optional. Add an API key if you need one to access the model.
    - **Model identifier**: This is a required field. The value of this field is based on your deployment method, and should match the following structure:
 
      | Deployment method | Format | Example |
      |-------------|---------|---------|
      | vLLM | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
-     | Bedrock | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
+     | Amazon Bedrock | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
      | Azure OpenAI | `azure/<model ID of the model>` | `azure/gpt-35-turbo` |
 
      - For Amazon Bedrock models:
@@ -147,7 +143,7 @@ To configure a self-hosted model:
 
 For more information about:
 
-- Configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#find-the-model-name).
+- Configuring the endpoint and model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#find-the-model-name).
 - Configuring Amazon Bedrock models with cross-region inferencing, see the
   [Amazon supported regions and models for inference profiles documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html)
 
@@ -159,7 +155,7 @@ Prerequisites:
 - You must have an Premium or Ultimate license.
 - You must have a GitLab Duo Enterprise license add-on.
 
-To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models and features:
+To enable self-hosted beta models and features:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
@@ -186,12 +182,14 @@ Prerequisites:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
-   - If the **Configure GitLab Duo Self-Hosted** button is not available, synchronize your
-     subscription after purchase:
-     1. On the left sidebar, select **Subscription**.
-     1. In **Subscription details**, to the right of **Last sync**, select
-        synchronize subscription ({{< icon name="retry" >}}).
 1. Select the **AI-native features** tab.
+
+If the **Configure GitLab Duo Self-Hosted** button is not available, synchronize your
+subscription after purchase:
+
+1. On the left sidebar, select **Subscription**.
+1. In **Subscription details**, to the right of **Last sync**, select
+   synchronize subscription ({{< icon name="retry" >}}).
 
 ### Configure the feature to use a self-hosted model
 
@@ -252,10 +250,8 @@ If your setup of GitLab Duo Self-Hosted stops you from accessing the GitLab docu
 
 ### Disable GitLab Duo features
 
-To disable a feature, you must explicitly select **Disabled** when configuring a feature or sub-feature.
-
-- Not choosing a model for a sub-feature is insufficient.
-- For Chat sub-features, not selecting a model causes that sub-feature to [fall back to using the model configured for **General Chat**](#gitlab-duo-chat-sub-feature-fall-back-configuration).
+GitLab Duo features remain turned on even if you have not chosen a model for a sub-feature. If you don't select a model for a 
+sub-feature of GitLab Duo Chat, it uses the model configured for **General Chat** instead.
 
 To disable a GitLab Duo feature or sub-feature:
 
@@ -268,3 +264,9 @@ To disable a GitLab Duo feature or sub-feature:
    For example, to specifically disable the `Write Test` and `Refactor Code` features, select **Disabled**:
 
    ![Disabling GitLab Duo Feature](img/gitlab_duo_self_hosted_disable_feature_v17_11.png)
+
+## Related topics
+
+- [Supported models](supported_models_and_hardware_requirements.md#supported-models)
+- [Compatible models](supported_models_and_hardware_requirements.md#compatible-models)
+- [GitLab Duo Self-Hosted configuration types](_index.md#configuration-types)

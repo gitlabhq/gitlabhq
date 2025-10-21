@@ -49,19 +49,15 @@ export default {
 
       return __('Issues');
     },
-    issueAsWorkItem() {
-      return (
-        !this.isGroup &&
-        this.glFeatures.workItemViewForIssues &&
-        this.glFeatures.workItemsProjectIssuesList
-      );
+    workItemsViewEnabled() {
+      return this.glFeatures.workItemViewForIssues || this.isWorkItemOnly || this.isGroup;
     },
     crumbs() {
       const indexCrumb = {
         text: this.listName,
       };
 
-      if (this.isWorkItemOnly || this.isGroup || this.issueAsWorkItem) {
+      if (this.workItemsViewEnabled) {
         indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
       } else {
         indexCrumb.href = this.listPath;

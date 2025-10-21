@@ -217,13 +217,19 @@ module SearchHelper
         hash[:group] = { id: search_group.id, name: search_group.name, full_name: search_group.full_name }
         hash[:group_metadata] = {
           issues_path: issues_group_path(search_group),
-          mr_path: merge_requests_group_path(search_group)
+          mr_path: merge_requests_group_path(search_group, assignee_username: current_user&.username)
         }
       end
 
       if search_has_project?
         hash[:project] = { id: @project.id, name: @project.name }
-        hash[:project_metadata] = { mr_path: project_merge_requests_path(@project) }
+        hash[:project_metadata] = {}
+
+        if @project.feature_available?(:merge_requests, current_user)
+          mr_path = project_merge_requests_path(@project, assignee_username: current_user&.username)
+          hash[:project_metadata][:mr_path] = mr_path
+        end
+
         if @project.feature_available?(:issues, current_user)
           hash[:project_metadata][:issues_path] =
             project_issues_path(@project)

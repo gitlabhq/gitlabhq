@@ -184,6 +184,26 @@ describe('Job Log Line', () => {
       expect(links.at(2).attributes('href')).toBe(httpsUrl);
     });
 
+    it('renders a link when URL is wrapped with single or double quotes', () => {
+      const mockUrlOne = 'https://gitlab.com/gitlab-org/gitlab';
+      const mockUrlTwo = 'https://gitlab.example.com';
+
+      createComponent(mockProps({ text: `'${mockUrlOne}' "${mockUrlTwo}"` }));
+
+      const links = findLinks();
+
+      expect(links).toHaveLength(2);
+      expect(findLine().text()).toBe(`'${mockUrlOne}' "${mockUrlTwo}"`);
+
+      // First link - single quoted
+      expect(links.at(0).text()).toBe(mockUrlOne);
+      expect(links.at(0).attributes('href')).toBe(mockUrlOne);
+
+      // Second link - double quoted
+      expect(links.at(1).text()).toBe(mockUrlTwo);
+      expect(links.at(1).attributes('href')).toBe(mockUrlTwo);
+    });
+
     it('renders text with symbols in it', () => {
       const text = 'apt-get update < /dev/null > /dev/null';
       createComponent(mockProps({ text }));

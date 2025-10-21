@@ -58,6 +58,7 @@ module Banzai
         link_content = element['title'] || element['alt']
 
         link_element_attrs = {
+          class: 'gl-text-sm gl-text-subtle gl-mb-1',
           href: element['src'],
           target: '_blank',
           rel: 'noopener noreferrer',
@@ -76,8 +77,8 @@ module Banzai
         container_element_attrs = { class: "media-container #{media_type}-container" }
 
         doc.document.create_element('span', container_element_attrs).tap do |container|
-          container.add_child(media_element(doc, element))
           container.add_child(download_link(doc, element))
+          container.add_child(media_element(doc, element))
         end
       end
     end

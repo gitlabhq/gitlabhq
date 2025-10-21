@@ -355,8 +355,6 @@ note_target_id:
   file: app/models/event.rb
 recent_repository_update?:
   file: app/models/event.rb
-keyids:
-  file: app/models/gpg_key.rb
 get_ids_by_ids_or_paths:
   file: app/models/group.rb
 blocked_owners:

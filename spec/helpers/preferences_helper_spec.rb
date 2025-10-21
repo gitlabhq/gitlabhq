@@ -65,7 +65,9 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
         { text: "Your Groups", value: 'groups' },
         { text: "Your To-Do List", value: 'todos' },
         { text: "Assigned issues", value: 'issues' },
-        { text: "Assigned merge requests", value: 'merge_requests' }
+        { text: "Merge request homepage", value: 'merge_requests' },
+        { text: "Assigned merge requests", value: 'assigned_merge_requests' },
+        { text: "Merge request reviews", value: 'review_merge_requests' }
       ]
     end
 
