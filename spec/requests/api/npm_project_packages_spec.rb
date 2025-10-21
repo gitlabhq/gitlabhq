@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
+RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
+  include WorkhorseHelpers
 
   include_context 'npm api setup'
 
@@ -295,28 +296,92 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     end
   end
 
+  describe 'PUT /api/v4/projects/:id/packages/npm/:package_name/authorize' do
+    include_context 'workhorse headers'
+
+    let(:encoded_package_name) { package_name.sub('/', '%2f') }
+    let(:url) { api("/projects/#{project.id}/packages/npm/#{encoded_package_name}/authorize") }
+    let(:headers) { build_token_auth_header(token.plaintext_token) }
+
+    subject(:request) { put url, headers: headers, as: :json }
+
+    context 'with workhorse headers' do
+      let(:headers) { super().merge(workhorse_headers) }
+
+      before do
+        project.actual_limits.update!(npm_max_file_size: 1.megabyte)
+      end
+
+      context 'with a reporter' do
+        before_all do
+          project.add_reporter(user)
+        end
+
+        it_behaves_like 'returning response status with message', status: :forbidden, message: '403 Forbidden'
+      end
+
+      context 'with a developer' do
+        before_all do
+          project.add_developer(user)
+        end
+
+        it 'authorizes the upload' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(json_response).to include(
+            'TempPath' => Packages::Npm::PackageFileUploader.workhorse_local_upload_path,
+            'MaximumSize' => 1.megabyte
+          )
+          expect(json_response['RemoteObject']).to be_nil
+        end
+      end
+    end
+
+    context 'without workhorse headers' do
+      it_behaves_like 'returning response status with message', status: :forbidden, message: '403 Forbidden'
+    end
+  end
+
   describe 'PUT /api/v4/projects/:id/packages/npm/:package_name' do
+    let(:url) { api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}") }
+    let(:headers) { build_token_auth_header(token.plaintext_token) }
+
+    let(:fixture_file_path) { 'npm/payload.json' }
+    let(:fixture_file_content) { fixture_file("packages/#{fixture_file_path}").gsub('@root/npm-test', package_name).gsub('1.0.1', package_version) }
+    let(:params) { { file: temp_file('test-npm-upload', content: fixture_file_content) } }
+    let(:package_name) { "@#{group.path}/my_package_name" }
+
+    let_it_be(:package_version) { '1.0.1' }
+
     before do
       project.add_developer(user)
     end
 
-    subject(:upload_package_with_token) { upload_with_token(package_name, params) }
-
     shared_examples 'handling invalid record with 400 error' do |error_message|
       it 'handles an ActiveRecord::RecordInvalid exception with 400 error' do
-        expect { upload_package_with_token }
-          .not_to change { ::Packages::Npm::Package.for_projects(project).count }
-
+        expect { request }.not_to change { ::Packages::Npm::Package.for_projects(project).count }
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq(error_message)
       end
+    end
+
+    subject(:request) do
+      workhorse_finalize(
+        url,
+        method: :put,
+        file_key: :file,
+        params: params,
+        headers: headers,
+        send_rewritten_field: true
+      )
     end
 
     context 'when params are correct' do
       context 'invalid package record' do
         context 'invalid package name' do
           let(:package_name) { "@#{group.path}/my_inv@@lid_package_name" }
-          let(:params) { upload_params(package_name: package_name) }
 
           it_behaves_like 'handling invalid record with 400 error', "Validation failed: Name #{Gitlab::Regex.npm_package_name_regex_message}"
           it_behaves_like 'not a package tracking event'
@@ -325,9 +390,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         context 'invalid package version' do
           using RSpec::Parameterized::TableSyntax
 
-          let(:package_name) { "@#{group.path}/my_package_name" }
-
-          where(:version) do
+          where(:package_version) do
             [
               '1',
               '1.2',
@@ -338,58 +401,47 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           end
 
           with_them do
-            let(:params) { upload_params(package_name: package_name, package_version: version) }
-
             it_behaves_like 'handling invalid record with 400 error', "Validation failed: Version #{Gitlab::Regex.semver_regex_message}"
             it_behaves_like 'not a package tracking event'
           end
         end
 
         context 'invalid package attachment data' do
-          let(:package_name) { "@#{group.path}/my_package_name" }
-          let(:params) { upload_params(package_name: package_name, file: 'npm/payload_with_empty_attachment.json') }
+          let(:fixture_file_path) { 'npm/payload_with_empty_attachment.json' }
 
           it_behaves_like 'handling invalid record with 400 error', 'Attachment data is empty.'
           it_behaves_like 'not a package tracking event'
         end
+
+        context 'invalid json document' do
+          let(:fixture_file_content) { 'this_is_not_json' }
+
+          it_behaves_like 'handling invalid record with 400 error', 'Invalid json'
+        end
+
+        context 'missing versions key' do
+          let(:fixture_file_content) { Gitlab::Json.parse(super()).tap { |h| h.delete('versions') }.to_json }
+
+          it_behaves_like 'handling invalid record with 400 error', 'Versions key is missing from the JSON upload'
+        end
       end
 
       context 'valid package params' do
-        let_it_be(:version) { '1.2.3' }
-
-        let(:params) { upload_params(package_name: package_name, package_version: version) }
         let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_npm_user' } }
 
         shared_examples 'handling upload with different authentications' do
           context 'with access token' do
             it_behaves_like 'a package tracking event', 'API::NpmPackages', 'push_package'
-
             it_behaves_like 'a successful package creation'
           end
 
-          it 'creates npm package with file with job token' do
-            expect { upload_with_job_token(package_name, params) }
-              .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
-              .and change { Packages::PackageFile.count }.by(1)
+          context 'with a job token' do
+            let(:headers) { build_token_auth_header(job.token) }
 
-            expect(response).to have_gitlab_http_status(:ok)
-          end
+            it_behaves_like 'a successful package creation'
 
-          context 'with an authenticated job token' do
-            let!(:job) { create(:ci_build, user: user) }
-
-            before do
-              Grape::Endpoint.before_each do |endpoint|
-                expect(endpoint).to receive(:current_authenticated_job) { job }
-              end
-            end
-
-            after do
-              Grape::Endpoint.before_each nil
-            end
-
-            it 'creates the package metadata' do
-              upload_package_with_token
+            it 'links the correct pipeline' do
+              request
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(project.reload.packages.find(json_response['id']).last_build_info.pipeline).to eq job.pipeline
@@ -399,18 +451,14 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         shared_examples 'uploading the package' do
           it 'uploads the package' do
-            expect { upload_package_with_token }
-              .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
-
+            expect { request }.to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
         context 'with a scoped name' do
-          let(:package_name) { "@#{group.path}/my_package_name" }
-
           it_behaves_like 'enforcing job token policies', :admin_packages do
-            let(:request) { upload_package(package_name, params.merge(job_token: target_job.token)) }
+            let(:headers) { build_token_auth_header(target_job.token) }
           end
 
           it_behaves_like 'handling upload with different authentications'
@@ -434,7 +482,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           let_it_be(:second_project) { create(:project, namespace: namespace) }
 
           context 'following the naming convention' do
-            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@#{group.path}/test", version: version) }
+            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@#{group.path}/test", version: package_version) }
 
             let(:package_name) { "@#{group.path}/test" }
 
@@ -442,14 +490,14 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             it_behaves_like 'not a package tracking event'
 
             context 'with a new version' do
-              let_it_be(:version) { '4.5.6' }
+              let_it_be(:package_version) { '4.5.6' }
 
               it_behaves_like 'uploading the package'
             end
           end
 
           context 'not following the naming convention' do
-            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@any_scope/test", version: version) }
+            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@any_scope/test", version: package_version) }
 
             let(:package_name) { "@any_scope/test" }
 
@@ -459,34 +507,26 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       end
 
       context 'package creation fails' do
-        let(:package_name) { "@#{group.path}/my_package_name" }
-        let(:params) { upload_params(package_name: package_name) }
-
         before do
-          create(:npm_package, project: project, version: '1.0.1', name: "@#{group.path}/my_package_name")
+          create(:npm_package, project: project, version: package_version, name: "@#{group.path}/my_package_name")
         end
 
         it_behaves_like 'not a package tracking event'
 
         it 'returns an error if the package already exists' do
-          expect { upload_package_with_token }
-            .not_to change { ::Packages::Npm::Package.for_projects(project).count }
-
+          expect { request }.not_to change { ::Packages::Npm::Package.for_projects(project).count }
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['error']).to eq('Package already exists.')
         end
 
-        it_behaves_like 'does not enqueue a worker to sync a npm metadata cache' do
-          subject { upload_package_with_token }
-        end
+        it_behaves_like 'does not enqueue a worker to sync a npm metadata cache'
       end
 
       context 'with dependencies' do
-        let(:package_name) { "@#{group.path}/my_package_name" }
-        let(:params) { upload_params(package_name: package_name, file: 'npm/payload_with_duplicated_packages.json') }
+        let(:fixture_file_path) { 'npm/payload_with_duplicated_packages.json' }
 
         it 'creates npm package with file and dependencies' do
-          expect { upload_package_with_token }
+          expect { request }
             .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
             .and change { Packages::Dependency.count }.by(4)
@@ -497,12 +537,26 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         context 'with existing dependencies' do
           before do
-            name = "@#{group.path}/existing_package"
-            upload_with_token(name, upload_params(package_name: name, file: 'npm/payload_with_duplicated_packages.json'))
+            other_name = "@#{group.path}/existing_package"
+            other_url = api("/projects/#{project.id}/packages/npm/#{other_name.sub('/', '%2f')}")
+
+            other_fixture_file_content = fixture_file("packages/npm/payload_with_duplicated_packages.json")
+              .gsub('@root/npm-test', other_name)
+              .gsub('1.0.1', package_version)
+            other_params = { file: temp_file('test-npm-upload', content: other_fixture_file_content) }
+
+            workhorse_finalize(
+              other_url,
+              method: :put,
+              file_key: :file,
+              params: other_params,
+              headers: headers,
+              send_rewritten_field: true
+            )
           end
 
           it 'reuses them' do
-            expect { upload_package_with_token }
+            expect { request }
               .to change { ::Packages::Npm::Package.for_projects(project).count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
               .and not_change { Packages::Dependency.count }
@@ -512,9 +566,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       end
 
       context 'when the lease to create a package is already taken' do
-        let(:version) { '1.0.1' }
-        let(:params) { upload_params(package_name: package_name, package_version: version) }
-        let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
+        let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{package_version}" }
 
         before do
           stub_exclusive_lease_taken(lease_key, timeout: Packages::Npm::CreatePackageService::DEFAULT_LEASE_TIMEOUT)
@@ -523,8 +575,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         it_behaves_like 'not a package tracking event'
 
         it 'returns an error' do
-          expect { upload_package_with_token }
-            .not_to change { ::Packages::Npm::Package.for_projects(project).count }
+          expect { request }.not_to change { ::Packages::Npm::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(response.body).to include('Could not obtain package lease. Please try again.')
@@ -533,14 +584,12 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       end
 
       context 'with a too large metadata structure' do
-        let(:package_name) { "@#{group.path}/my_package_name" }
-
         ::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
           context "when a large value for #{field} is set" do
-            let(:params) do
-              upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
-                h['versions']['1.2.3'][field] = 'test' * 10000
-              end
+            let(:fixture_file_content) do
+              Gitlab::Json.parse(fixture_file("packages/#{fixture_file_path}").gsub('@root/npm-test', package_name)).tap do |h|
+                h['versions'][package_version][field] = 'test' * 10000
+              end.to_json
             end
 
             it_behaves_like 'a successful package creation'
@@ -548,10 +597,10 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         end
 
         context 'when the large field is not one of the ignored fields' do
-          let(:params) do
-            upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
-              h['versions']['1.2.3']['test'] = 'test' * 10000
-            end
+          let(:fixture_file_content) do
+            Gitlab::Json.parse(fixture_file("packages/#{fixture_file_path}").gsub('@root/npm-test', package_name)).tap do |h|
+              h['versions'][package_version]['test'] = 'test' * 10000
+            end.to_json
           end
 
           it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package json structure is too large. Maximum size is 20000 characters'
@@ -560,25 +609,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       end
 
       context 'when the Npm-Command in headers is deprecate' do
-        let(:package_name) { "@#{group.path}/my_package_name" }
-        let(:headers) { build_token_auth_header(token.plaintext_token).merge('Npm-Command' => 'deprecate') }
-        let(:params) do
-          {
-            'id' => project.id.to_s,
-            'package_name' => package_name,
-            'versions' => {
-              '1.0.1' => {
-                'name' => package_name,
-                'deprecated' => 'This version is deprecated'
-              },
-              '1.0.2' => {
-                'name' => package_name
-              }
-            }
-          }
-        end
-
-        subject(:request) { put api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}"), params: params, headers: headers }
+        let(:headers) { super().merge('Npm-Command' => 'deprecate') }
+        let(:fixture_file_path) { 'npm/deprecate_payload.json' }
 
         context 'when the user is not authorized to deprecate the package' do
           before do
@@ -595,8 +627,11 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         end
 
         context 'when the user is authorized to deprecate the package' do
-          let(:filtered_params) do
-            params.deep_dup.tap { |p| p['versions'].slice!('1.0.1') }
+          let(:json_with_deprecated_versions) do
+            Gitlab::Json.parse(fixture_file_content)
+              .slice('package_name', 'versions')
+              .tap { |json| json['versions'].slice!('1.0.1') }
+              .merge('id' => project.id.to_s)
           end
 
           before do
@@ -604,7 +639,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           end
 
           it 'enqueues the deprecate npm packages worker with the correct arguments' do
-            expect(::Packages::Npm::DeprecatePackageWorker).to receive(:perform_async).with(project.id, filtered_params)
+            expect(::Packages::Npm::DeprecatePackageWorker).to receive(:perform_async).with(project.id, json_with_deprecated_versions)
 
             request
 
@@ -612,8 +647,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           end
 
           context 'when no package versions contain `deprecate` attribute' do
-            let(:params) do
-              super().tap { |p| p['versions'].slice!('1.0.2') }
+            let(:fixture_file_content) do
+              Gitlab::Json.parse(super()).tap { |json| json['versions'].slice!('1.0.2') }.to_json
             end
 
             it 'does not enqueue the deprecate npm packages worker' do
@@ -632,24 +667,15 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
       end
     end
 
-    def upload_package(package_name, params = {})
-      token = params.delete(:access_token) || params.delete(:job_token)
-      headers = build_token_auth_header(token)
-      put api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}"), params: params, headers: headers
-    end
+    def temp_file(filename, content:)
+      upload_path = ::Packages::Npm::PackageFileUploader.workhorse_local_upload_path
+      file_path = "#{upload_path}/#{filename}"
 
-    def upload_with_token(package_name, params = {})
-      upload_package(package_name, params.merge(access_token: token.plaintext_token))
-    end
+      FileUtils.mkdir_p(upload_path)
+      content ||= ''
+      File.write(file_path, content)
 
-    def upload_with_job_token(package_name, params = {})
-      upload_package(package_name, params.merge(job_token: job.token))
-    end
-
-    def upload_params(package_name:, package_version: '1.0.1', file: 'npm/payload.json')
-      Gitlab::Json.parse(fixture_file("packages/#{file}")
-          .gsub('@root/npm-test', package_name)
-          .gsub('1.0.1', package_version))
+      UploadedFile.new(file_path, filename: File.basename(file_path))
     end
   end
 end

@@ -61,8 +61,8 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :shared do
       middleware = described_class.new(app, custom_options)
 
       route_config_map = middleware.instance_variable_get(:@route_config_map)
-      # Should include default route configs (6) plus custom route limits (2)
-      expect(route_config_map.size).to eq(8)
+      # Should include default route configs (7) plus custom route limits (2)
+      expect(route_config_map.size).to eq(9)
       expect(route_config_map.first).to be_a(Hash)
       expect(route_config_map.first).to have_key(:regex)
       expect(route_config_map.first).to have_key(:methods)
@@ -456,6 +456,27 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :shared do
 
             result = middleware.call(env)
             expect(result).to eq([200, {}, ['OK']])
+          end
+        end
+      end
+
+      context 'for collect_events endpoint' do
+        let(:path_info) { '/-/collect_events' }
+
+        it 'validates payloads' do
+          expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
+          expect(app).to receive(:call).with(env)
+
+          result = middleware.call(env)
+          expect(result).to eq([200, {}, ['OK']])
+        end
+
+        context 'for a very large body exceeding 10 megabytes' do
+          let(:body) { "{\"json\" : \"#{'a' * 11_000_000}\"}" }
+
+          it 'rejects the large payload' do
+            result = middleware.call(env)
+            expect(result).to eq([400, { "Content-Type" => "application/json" }, ['{"error":"JSON body too large"}']])
           end
         end
       end

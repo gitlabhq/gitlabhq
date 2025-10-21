@@ -43,6 +43,10 @@ module Gitlab
       end
     end
 
+    def self.with_context(...)
+      GitalyContext.with_context(...)
+    end
+
     def self.interceptors
       return [] unless Labkit::Tracing.enabled?
 
@@ -331,6 +335,8 @@ module Gitlab
       }
 
       relative_path = fetch_relative_path
+
+      gitaly_context = GitalyContext.current_context.merge(gitaly_context)
 
       ::Gitlab::Auth::Identity.currently_linked do |identity|
         gitaly_context['scoped-user-id'] = identity.scoped_user.id.to_s

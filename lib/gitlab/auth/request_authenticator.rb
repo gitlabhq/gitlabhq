@@ -67,6 +67,10 @@ module Gitlab
         false
       end
 
+      def current_token_scopes
+        access_token&.scopes.to_a
+      end
+
       private
 
       # Use a minimal subset of find_user_from_any_authentication_method
