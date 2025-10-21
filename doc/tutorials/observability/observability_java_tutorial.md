@@ -96,7 +96,7 @@ Use auto-instrumentation to instrument the application:
 
 The OpenTelemetry autoconfigure libraries read their configuration from environment variables.
 
-1. From the top-right menu, select **Edit Configurations**:
+1. From the upper-right menu, select **Edit Configurations**:
 
    ![Edit configuration](img/java_edit_configuration_v17_3.png)
 

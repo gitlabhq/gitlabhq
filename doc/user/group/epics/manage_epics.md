@@ -426,7 +426,7 @@ To configure epic display preferences:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
-1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
 1. Under **Fields**, turn on or turn off the metadata you want to display:
    - **Assignee**: Who the epic is assigned to.
    - **Labels**: Epic labels.
@@ -474,7 +474,7 @@ To open an epic in the full page view:
 - Open the epic in a new tab. From the list of epics, either:
   - Right-click the epic and open it in a new browser tab.
   - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the epic.
-- Select an epic, and from the drawer, in the top-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
+- Select an epic, and from the drawer, in the upper-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
 #### Set preference whether to open epics in a drawer
 
@@ -482,7 +482,7 @@ To configure how epics open on the Epics page:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epics**.
-1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. In the upper-right corner, select **Display options** ({{< icon name="preferences" >}}).
 1. Toggle **Open items in side panel**:
    - **On** (default): Epics open in a drawer overlay.
    - **Off**: Epics open in a full page view.

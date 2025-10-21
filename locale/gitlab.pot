@@ -29937,6 +29937,9 @@ msgstr ""
 msgid "Geo|There was an error executing the %{actionName} mutation"
 msgstr ""
 
+msgid "Geo|There was an error fetching %{model}. Please refresh the page and try again."
+msgstr ""
+
 msgid "Geo|There was an error fetching the %{replicableType}. The GraphQL API call to the secondary may have failed."
 msgstr ""
 
@@ -64101,9 +64104,6 @@ msgid "Status not supported"
 msgstr ""
 
 msgid "Status page"
-msgstr ""
-
-msgid "Status was retried."
 msgstr ""
 
 msgid "Status:"

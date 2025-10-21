@@ -151,7 +151,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       cluster_agent_url_configurations
       custom_fields
       design_management_versions
-      duo_workflows_workflows
       incident_management_timeline_events
       lfs_file_locks
       merge_trains

@@ -146,7 +146,7 @@ To view the open merge requests for a file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the file you want to view.
-1. At the top right of the screen, next to the filename, look for the green badge with the number
+1. In the upper right of the screen, next to the filename, look for the green badge with the number
    of {{< icon name="merge-request-open" >}} **Open** merge requests.
 1. Select the badge to see a list of open merge requests created in the past 30 days.
 1. Select any merge request in the list to go to that merge request.

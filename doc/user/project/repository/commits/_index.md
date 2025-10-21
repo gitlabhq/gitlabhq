@@ -71,7 +71,7 @@ branch name, or tag:
       1. At the top, select to open the **Select Git revision** dropdown list.
       1. Select or search for a Git revision.
    - Select a specific commit from the commits list.
-1. At the top right, select **Browse files**.
+1. In the upper right, select **Browse files**.
 
 You are directed to the [repository](../_index.md) page at that specific revision.
 

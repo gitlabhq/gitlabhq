@@ -775,7 +775,7 @@ For more information, see [Explaining a vulnerability](../application_security/v
 
 In GitLab 17.10 and later, you can have multiple simultaneous conversations with Chat.
 
-- In the top-left corner of the Chat drawer, select **New Chat**.
+- In the upper-left corner of the Chat drawer, select **New Chat**.
 - In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
 
 ## Delete or start a new conversation

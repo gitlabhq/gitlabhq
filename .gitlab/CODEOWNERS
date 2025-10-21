@@ -1227,7 +1227,6 @@ lib/gitlab/checks/
 /config/initializers/declarative_policy.rb
 /ee/app/**/authz/
 /ee/app/graphql/**/member_roles/
-/ee/app/models/auth/member_role_ability_loader.rb
 /ee/app/models/members/member_role.rb
 /ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
 /ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb
@@ -1238,7 +1237,6 @@ lib/gitlab/checks/
 /ee/lib/**/authz/
 /ee/spec/**/authz/
 /ee/spec/graphql/**/member_roles/
-/ee/spec/models/auth/member_role_ability_loader_spec.rb
 /ee/spec/models/members/member_role_spec.rb
 /ee/spec/models/preloaders/user_member_roles_in_groups_preloader_spec.rb
 /ee/spec/models/preloaders/user_member_roles_in_projects_preloader_spec.rb

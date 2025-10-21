@@ -202,6 +202,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it { expect(query).to contain_exactly(build) }
       end
     end
+
+    describe 'with_runner_assigned' do
+      let_it_be(:build_with_runner) { create(:ci_build, runner: create(:ci_runner)) }
+      let_it_be(:build_without_runner) { create(:ci_build) }
+
+      subject { described_class.with_runner_assigned }
+
+      it { is_expected.to contain_exactly(build_with_runner) }
+    end
+
+    describe 'with_no_runner_assigned' do
+      let(:builds_without_runner) { [build, old_build, new_build] }
+
+      subject { described_class.with_no_runner_assigned }
+
+      it { is_expected.to match_array(builds_without_runner) }
+    end
   end
 
   describe 'callbacks' do

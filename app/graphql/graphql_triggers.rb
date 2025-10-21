@@ -29,6 +29,16 @@ module GraphqlTriggers
     )
   end
 
+  def self.ci_pipeline_creation_requests_updated(merge_request)
+    return unless Feature.enabled?(:ci_pipeline_creation_requests_realtime, merge_request.project)
+
+    GitlabSchema.subscriptions.trigger(
+      :ci_pipeline_creation_requests_updated,
+      { merge_request_id: merge_request.to_gid },
+      merge_request
+    )
+  end
+
   def self.issuable_assignees_updated(issuable)
     GitlabSchema.subscriptions.trigger(:issuable_assignees_updated, { issuable_id: issuable.to_gid }, issuable)
   end

@@ -6,6 +6,7 @@ module Ci
       include DropHelpers
 
       BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
+      BUILD_PENDING_OUTDATED_WAITING_FOR_ACK_TIMEOUT = 1.hour
       BUILD_PENDING_STUCK_TIMEOUT = 1.hour
 
       def execute
@@ -14,6 +15,14 @@ module Ci
         drop(
           pending_builds(BUILD_PENDING_OUTDATED_TIMEOUT.ago),
           failure_reason: :stuck_or_timeout_failure
+        )
+
+        # `with_runner_assigned` scope is used to not delete stuck builds that are waiting for runner.
+        # Drops only builds that are assigned to runner but did not acknowledge and
+        # missed to retry in `Ci::RetryStuckWaitingJobWorker`
+        drop_waiting_for_ack(
+          runner_assigned_pending_builds(BUILD_PENDING_OUTDATED_WAITING_FOR_ACK_TIMEOUT.ago),
+          failure_reason: :runner_provisioning_timeout
         )
 
         drop_stuck(
@@ -34,6 +43,20 @@ module Ci
           .created_at_before(timeout)
           .updated_at_before(timeout)
           .order(created_at: :asc, project_id: :asc)
+      end
+
+      # As the number of pending builds with runner would be less,
+      # querying the runner assigned pending builds first and filtering by timeout
+      # `Keyset::Iterator` is used (not `EachBatch.each_batch`) to
+      # avoid batching with `offset` and use only LIMIT and `id` as cursor
+      def runner_assigned_pending_builds(timeout)
+        builds = Ci::Build
+                  .pending
+                  .with_runner_assigned
+                  .updated_at_before(timeout)
+                  .includes(:tags, :runner, project: [:namespace, :route])
+
+        Gitlab::Pagination::Keyset::Iterator.new(scope: builds)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

@@ -2627,7 +2627,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/approvals/wrapped_rule_set.rb'
     - 'ee/app/models/approver.rb'
     - 'ee/app/models/approver_group.rb'
-    - 'ee/app/models/auth/member_role_ability_loader.rb'
     - 'ee/app/models/board_assignee.rb'
     - 'ee/app/models/board_label.rb'
     - 'ee/app/models/board_user_preference.rb'

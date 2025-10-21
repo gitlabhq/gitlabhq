@@ -13,8 +13,6 @@ module CommitSignatures
 
     validates :gpg_key_primary_keyid, presence: true
 
-    ignore_column :author_email, remove_with: '18.5', remove_after: '2025-09-13'
-
     def signed_by_user
       gpg_key&.user
     end

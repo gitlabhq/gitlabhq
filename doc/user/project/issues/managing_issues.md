@@ -840,7 +840,7 @@ To open the issue in full view:
 - Open the issue in a new tab. From the list of issues, either:
   - Right-click the issue and open it in a new browser tab.
   - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and click the issue.
-- From the drawer, in the top-left corner, select **Open in full view**.
+- From the drawer, in the upper-left corner, select **Open in full view**.
 
 ![Issue opened in a drawer.](img/issue_drawer_v17_4.png)
 

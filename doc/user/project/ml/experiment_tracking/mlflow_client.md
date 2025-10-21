@@ -47,7 +47,7 @@ To use MLflow client compatibility from a local environment:
 
 1. If the training code contains the call to `mlflow.set_tracking_uri()`, remove it.
 
-In the model registry, you can copy the tracking URI from the overflow menu in the top right
+In the model registry, you can copy the tracking URI from the overflow menu in the upper right
 by selecting the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 
 ## Model experiments

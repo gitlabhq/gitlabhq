@@ -105,26 +105,22 @@ module Ci
     # Removes the partition_id filter from the query until we get more data in the
     # second partition.
     def builds_relation
-      if Feature.enabled?(:disable_ci_partition_pruning, pipeline.project)
-        # CTE is used to force the query to use btree index starting with (commit_id, type)
-        # e.g. p_ci_builds_commit_id_type_ref_idx
-        # rubocop: disable CodeReuse/ActiveRecord -- custom CTE query
-        cte = Gitlab::SQL::CTE.new(
-          :cte_builds,
-          # Do not include partition_id in the select expression of this CTE query!
-          # Because when new partition of p_ci_builds starts to receive writes,
-          # the query plan will flip and choose an unexpected index e.g. primary key index
-          Ci::Build.in_pipelines(pipeline).select(:id)
-        )
+      # CTE is used to force the query to use btree index starting with (commit_id, type)
+      # e.g. p_ci_builds_commit_id_type_ref_idx
+      # rubocop: disable CodeReuse/ActiveRecord -- custom CTE query
+      cte = Gitlab::SQL::CTE.new(
+        :cte_builds,
+        # Do not include partition_id in the select expression of this CTE query!
+        # Because when new partition of p_ci_builds starts to receive writes,
+        # the query plan will flip and choose an unexpected index e.g. primary key index
+        Ci::Build.in_pipelines(pipeline).select(:id)
+      )
 
-        Ci::Build
-          .with(cte.to_arel)
-          .from('"cte_builds" AS "p_ci_builds"')
-          .unscope(where: :type)
-        # rubocop: enable CodeReuse/ActiveRecord
-      else
-        pipeline.builds
-      end
+      Ci::Build
+        .with(cte.to_arel)
+        .from('"cte_builds" AS "p_ci_builds"')
+        .unscope(where: :type)
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     # All the partitionable entities connected to a pipeline

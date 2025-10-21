@@ -130,7 +130,7 @@ Next, provision the users:
 1. Select the **Edit attribute list for customappsso** link.
 1. Ensure the `id` is the primary and required field, and `externalId` is also required.
 1. Select **Save**, which returns you to the Attribute Mapping configuration page.
-1. Close the **Attribute Mapping** configuration page by clicking the `X` in the top right corner.
+1. Close the **Attribute Mapping** configuration page by clicking the `X` in the upper-right corner.
 
 #### Configure settings
 

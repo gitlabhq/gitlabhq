@@ -1195,7 +1195,7 @@ module Ci
       end
 
       it 'returns 409 conflict' do
-        expect(Ci::Build.pending.unstarted.count).to eq 3
+        expect(Ci::Build.pending.with_no_runner_assigned.count).to eq 3
 
         result = described_class.new(project_runner, nil).execute
 

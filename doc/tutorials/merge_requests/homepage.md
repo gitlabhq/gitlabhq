@@ -58,7 +58,7 @@ still giving you access to other recent work:
 
 GitLab shows the total number of **Active** merge requests on the left sidebar on all pages. For example, this user has:
 
-![The top left area of the ](img/homepage_totals_v18_3.png)
+![The upper-left area of the sidebar showing the number of active merge requests.](img/homepage_totals_v18_3.png)
 
 - 9 open issues ({{< icon name="issue-type-issue" >}})
 - 1 active merge request ({{< icon name="merge-request-open" >}})
@@ -84,7 +84,7 @@ Each table row groups related information about a merge request together into co
 
 ## Set your display preferences
 
-On the top right, select **Display preferences** ({{< icon name="preferences">}}) to sort your merge requests by:
+On the upper right, select **Display preferences** ({{< icon name="preferences">}}) to sort your merge requests by:
 
 - **Workflow**. This view groups merge requests by their status. Merge requests needing your attention are shown first, regardless of whether
   you are the author or the reviewer.

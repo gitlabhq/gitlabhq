@@ -1431,6 +1431,209 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
   end
 
+  describe 'GET /runners/:id/projects' do
+    let(:runner_id) { runner.id }
+    let(:path) { "/runners/#{runner_id}/projects?#{query_path}" }
+
+    subject(:perform_request) { get api(path, current_user) }
+
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:runner) { project_runner }
+    end
+
+    context 'admin user' do
+      let(:current_user) { admin }
+
+      context 'when runner is a project runner' do
+        let(:runner) { project_runner }
+
+        context 'with admin mode enabled', :enable_admin_mode do
+          it "returns runner's projects" do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(json_response.length).to eq(1)
+            expect(json_response.first['id']).to eq(project.id)
+          end
+
+          it 'supports pagination' do
+            get api("/runners/#{runner.id}/projects?#{query_path}", current_user), params: { page: 1, per_page: 1 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.length).to eq(1)
+            expect(response.headers['X-Total']).to eq('1')
+            expect(response.headers['X-Page']).to eq('1')
+            expect(response.headers['X-Per-Page']).to eq('1')
+          end
+
+          context 'N+1 query performance' do
+            it 'does not trigger N+1 query for projects', :use_sql_query_cache do
+              control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+                get api(path, current_user)
+              end
+
+              additional_projects = create_list(:project, 5)
+              runner.projects << additional_projects
+
+              expect do
+                get api(path, current_user)
+              end.not_to exceed_query_limit(control)
+            end
+          end
+        end
+      end
+
+      context 'when runner is a shared runner' do
+        let(:runner) { shared_runner }
+
+        context 'with admin mode enabled', :enable_admin_mode do
+          it 'returns empty array as shared runners have no specific projects' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq([])
+          end
+        end
+      end
+
+      context 'when runner does not exist' do
+        let(:runner_id) { non_existing_record_id }
+        let(:runner) { project_runner }
+
+        it 'returns 404', :enable_admin_mode do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when runner is associated with multiple projects and user has partial access' do
+      let(:runner) { two_projects_runner }
+      let(:current_user) { users.second }
+
+      before_all do
+        project.add_maintainer(users.second)
+        project2.add_maintainer(users.first)
+      end
+
+      it 'returns only projects the user has access to' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+
+        project_ids = json_response.pluck('id')
+
+        expect(project_ids).to contain_exactly(project.id)
+        expect(project_ids).not_to include(project2.id)
+      end
+    end
+
+    shared_examples 'an endpoint returning expected project results' do
+      context 'when the runner is a group runner' do
+        let(:runner) { group_runner_a }
+
+        it 'returns empty array as group runners have no specific projects' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq([])
+        end
+      end
+
+      context "runner project's administrative user" do
+        let(:current_user) { users.first }
+
+        context 'when runner is a project runner' do
+          let(:runner) { project_runner }
+
+          it 'supports pagination' do
+            get api("/runners/#{runner.id}/projects?#{query_path}", current_user), params: { page: 1, per_page: 1 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.length).to eq(1)
+            expect(response.headers['X-Total']).to eq('1')
+          end
+        end
+
+        context 'when runner has multiple projects' do
+          let(:runner) { two_projects_runner }
+
+          it 'returns all associated projects' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.length).to eq(2)
+
+            project_ids = json_response.pluck('id')
+            expect(project_ids).to contain_exactly(project.id, project2.id)
+          end
+
+          it 'supports pagination with multiple projects' do
+            get api("/runners/#{runner.id}/projects?#{query_path}", current_user), params: { page: 1, per_page: 1 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.length).to eq(1)
+            expect(response.headers['X-Total']).to eq('2')
+            expect(response.headers['X-Page']).to eq('1')
+            expect(response.headers['X-Per-Page']).to eq('1')
+          end
+        end
+      end
+    end
+
+    context 'authorized user' do
+      let(:current_user) { users.first }
+
+      it_behaves_like 'an endpoint returning expected project results'
+
+      context 'with request authorized with access token' do
+        include_context 'access token setup'
+
+        it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner] do
+          let(:runner) { project_runner }
+        end
+      end
+
+      context 'when user has no access to runner projects' do
+        let(:current_user) { create(:user) }
+        let(:other_project) { create(:project, :private) }
+        let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
+
+        it 'returns 403 forbidden' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response).to have_key('message')
+        end
+      end
+    end
+
+    context 'other authorized user' do
+      let(:current_user) { users.second }
+      let(:runner) { project_runner }
+
+      it "does not return project runner's projects" do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'unauthorized user' do
+      let(:current_user) { nil }
+      let(:runner) { project_runner }
+
+      it "does not return project runner's projects" do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'POST /runners/:id/reset_authentication_token' do
     let(:runner_id) { runner.id }
     let(:path) { "/runners/#{runner_id}/reset_authentication_token?#{query_path}" }

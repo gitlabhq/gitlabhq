@@ -9,7 +9,7 @@ When working with GitLab Duo Chat, you might encounter the following issues.
 
 ## The **GitLab Duo Chat** button is not displayed
 
-If the button is not visible in the upper-right of the UI,
+If the button is not visible in the upper right of the UI,
 ensure GitLab Duo Chat [is enabled](turn_on_off.md).
 
 The **GitLab Duo Chat** button is not displayed on

@@ -189,6 +189,31 @@ module API
           present runner.runner_managers, with: Entities::Ci::RunnerManager
         end
 
+        desc 'Get projects associated with a runner' do
+          summary "List runner's projects"
+          detail 'Get a paginated list of all projects associated with the specified runner. ' \
+                 'Access is restricted based on user permissions.'
+          success Entities::BasicProjectDetails
+          failure [[401, 'Unauthorized'], [403, 'No access granted'], [404, 'Runner not found']]
+          tags %w[runners projects]
+        end
+        params do
+          requires :id, type: Integer, desc: 'The ID of a runner'
+          use :pagination
+        end
+        get ':id/projects' do
+          runner = get_runner(params[:id])
+          authenticate_show_runner!(runner)
+
+          projects = ProjectsFinder.new(
+            current_user: current_user,
+            project_ids_relation: runner.projects.select(:id)
+          ).execute
+
+          projects = Entities::BasicProjectDetails.preload_relation(projects)
+          present paginate(projects), with: Entities::BasicProjectDetails
+        end
+
         desc "Update runner's details" do
           summary "Update details of a runner"
           success Entities::Ci::RunnerDetails

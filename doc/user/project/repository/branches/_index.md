@@ -323,7 +323,7 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Branches**.
-1. In the upper right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
+1. In the upper-right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 

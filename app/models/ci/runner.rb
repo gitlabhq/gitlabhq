@@ -355,6 +355,10 @@ module Ci
       ::Ci::RunnerTagging
     end
 
+    def self.created_runner_prefix
+      ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(CREATED_RUNNER_TOKEN_PREFIX)
+    end
+
     def runner_matcher
       Gitlab::Ci::Matching::RunnerMatcher.new({
         runner_ids: [id],
@@ -444,10 +448,16 @@ module Ci
       return unless token
 
       # We want to show the first characters of the hash, so we need to bypass any fixed components of the token, such
-      # as CREATED_RUNNER_TOKEN_PREFIX, REGISTRATION_RUNNER_TOKEN_PREFIX or legacy_partition_id_prefix_in_16_bit_encode
+      # as instance_prefix, CREATED_RUNNER_TOKEN_PREFIX, REGISTRATION_RUNNER_TOKEN_PREFIX or legacy_partition_id_prefix_in_16_bit_encode
+
       legacy_partition_prefix = legacy_partition_id_prefix_in_16_bit_encode
       start_index = if authenticated_user_registration_type?
-                      CREATED_RUNNER_TOKEN_PREFIX.length
+                      instance_prefix = ::Authn::TokenField::PrefixHelper.instance_prefix
+                      if instance_prefix.present? && token.starts_with?(instance_prefix)
+                        CREATED_RUNNER_TOKEN_PREFIX.length + "#{instance_prefix}-".length
+                      else
+                        CREATED_RUNNER_TOKEN_PREFIX.length
+                      end
                     elsif token.start_with?(REGISTRATION_RUNNER_TOKEN_PREFIX)
                       REGISTRATION_RUNNER_TOKEN_PREFIX.length
                     else
@@ -666,7 +676,7 @@ module Ci
     def prefix_for_new_and_legacy_runner
       return REGISTRATION_RUNNER_TOKEN_PREFIX if registration_token_registration_type?
 
-      CREATED_RUNNER_TOKEN_PREFIX
+      self.class.created_runner_prefix
     end
 
     def memoize_owner

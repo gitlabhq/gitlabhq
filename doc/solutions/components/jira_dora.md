@@ -78,7 +78,7 @@ First we'll need to create an HTTP endpoint that can be triggered to create/reso
 To automatically trigger the GitLab alert endpoint when a Jira incident is created, we'll use [Jira automation](https://community.atlassian.com/t5/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828).
 
 1. Navigate to your Jira project where your incidents are managed. From the sidebar, head to **Project settings** > **Automation** (you may have to scroll down a bit to find it).
-1. From here we can manage our Jira automation workflows. At the top-right, click **Create rule**.
+1. From here we can manage our Jira automation workflows. In the upper right, click **Create rule**.
 1. For your trigger, search for and select **Issue created**. Click **Save**.
 1. Next, select **IF: Add a condition**. Here you can specify what conditions to check for, in order to determine if the issue created relates to an incident. For this guide, we'll select **Issue fields condition**. Under **Field**, we'll select **Summary**, the **Condition** will be set to **contains**, and the value will be `incident`. Click **Save**.
 1. With our trigger and condition set, select **THEN: Add an action**. Search for and select **Send web request**.
@@ -96,7 +96,7 @@ To automatically trigger the GitLab alert endpoint when a Jira incident is creat
 
    - You may want to set the `Authorization` header to "Hidden".
 1. Make sure the **HTTP method** is set to **POST**, and set **Web request body** to **Issue data (Jira format)**.
-1. Finally, click **Save**, give your automation a name (e.g. `Jira incident creation`), and click **Turn it on**. At the top-right, click **Return to list**.
+1. Finally, click **Save**, give your automation a name (e.g. `Jira incident creation`), and click **Turn it on**. In the upper right, click **Return to list**.
 1. The last thing you'll need to do is map the Jira payload values to the GitLab alert parameters. If you're planning to also set up incident resolution for the **Time to restore service** metric, skip this step for now. Otherwise, jump to [Map Jira payload values to GitLab alert parameters](#map-jira-payload-values-to-gitlab-alert-parameters) and follow the steps there.
 
 Once you've mapped the payload values, incidents you create in Jira will also be created in GitLab. This will allow you to see the **Change failure rate** DORA metric.

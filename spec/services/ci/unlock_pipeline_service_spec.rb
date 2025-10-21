@@ -39,28 +39,6 @@ RSpec.describe Ci::UnlockPipelineService, :unlock_pipelines, :clean_gitlab_redis
         )
       end
 
-      context 'when disable_ci_partition_pruning is disabled' do
-        before do
-          stub_feature_flags(disable_ci_partition_pruning: false)
-        end
-
-        it 'unlocks the pipeline and all its artifacts' do
-          expect { execute }
-            .to change { pipeline.reload.locked }.from('artifacts_locked').to('unlocked')
-            .and change { pipeline.reload.job_artifacts.all?(&:artifact_unlocked?) }.to(true)
-            .and change { pipeline.reload.pipeline_artifacts.all?(&:artifact_unlocked?) }.to(true)
-
-          expect(execute).to eq(
-            status: :success,
-            skipped_already_leased: false,
-            skipped_already_unlocked: false,
-            exec_timeout: false,
-            unlocked_job_artifacts: pipeline.job_artifacts.count,
-            unlocked_pipeline_artifacts: pipeline.pipeline_artifacts.count
-          )
-        end
-      end
-
       context 'and pipeline is already unlocked' do
         before do
           described_class.new(pipeline).execute

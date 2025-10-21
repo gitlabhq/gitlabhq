@@ -24457,6 +24457,7 @@ Represents the approval policy.
 | <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="approvalpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
+| <a id="approvalpolicyenforcementtype"></a>`enforcementType` | [`PolicyEnforcementType`](#policyenforcementtype) | Enforcement type of the policy. Can be "enforce" or "warn". |
 | <a id="approvalpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="approvalpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="approvalpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
@@ -24477,6 +24478,7 @@ Represents policy fields related to the approval policy.
 | <a id="approvalpolicyattributestypeallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
 | <a id="approvalpolicyattributestypecustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="approvalpolicyattributestypedeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
+| <a id="approvalpolicyattributestypeenforcementtype"></a>`enforcementType` | [`PolicyEnforcementType`](#policyenforcementtype) | Enforcement type of the policy. Can be "enforce" or "warn". |
 | <a id="approvalpolicyattributestyperoleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="approvalpolicyattributestypesource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="approvalpolicyattributestypeuserapprovers"></a>`userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
@@ -34870,6 +34872,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the merge request. |
 | <a id="mergerequestname"></a>`name` | [`String`](#string) | Name or title of the object. |
 | <a id="mergerequestparticipants"></a>`participants` | [`MergeRequestParticipantConnection`](#mergerequestparticipantconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
+| <a id="mergerequestpipelinecreationrequests"></a>`pipelineCreationRequests` | [`[CiPipelineCreationRequest!]!`](#cipipelinecreationrequest) | Pipeline creation requests for the merge request. |
 | <a id="mergerequestpoliciesoverridingapprovalsettings"></a>`policiesOverridingApprovalSettings` | [`[PolicyApprovalSettingsOverride!]`](#policyapprovalsettingsoverride) | Approval settings that are overridden by the policies for the merge request. |
 | <a id="mergerequestpolicybypassstatuses"></a>`policyBypassStatuses` {{< icon name="warning-solid" >}} | [`[PolicyBypassStatus!]`](#policybypassstatus) | **Introduced** in GitLab 18.5. **Status**: Experiment. List of bypass settings for security policies. |
 | <a id="mergerequestpolicyviolations"></a>`policyViolations` | [`PolicyViolationDetails`](#policyviolationdetails) | Policy violations reported on the merge request. |
@@ -43522,6 +43525,7 @@ Represents the scan result policy.
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanresultpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
+| <a id="scanresultpolicyenforcementtype"></a>`enforcementType` | [`PolicyEnforcementType`](#policyenforcementtype) | Enforcement type of the policy. Can be "enforce" or "warn". |
 | <a id="scanresultpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="scanresultpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="scanresultpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |

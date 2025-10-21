@@ -245,6 +245,50 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
     end
   end
 
+  describe '.ci_pipeline_creation_requests_updated' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    it 'triggers the ci_pipeline_creation_requests_updated subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_creation_requests_updated,
+        { merge_request_id: merge_request.to_gid },
+        merge_request
+      ).and_call_original
+
+      described_class.ci_pipeline_creation_requests_updated(merge_request)
+    end
+
+    describe 'when FF ci_pipeline_creation_requests_realtime is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_creation_requests_realtime: false)
+      end
+
+      it 'does not trigger the subscription' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
+          :ci_pipeline_creation_requests_updated,
+          { merge_request_id: merge_request.to_gid },
+          merge_request
+        )
+
+        described_class.ci_pipeline_creation_requests_updated(merge_request)
+      end
+    end
+
+    it 'passes correct merge request GID to subscription' do
+      expected_gid = merge_request.to_gid
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger) do |subscription_name, args|
+        expect(subscription_name).to eq(:ci_pipeline_creation_requests_updated)
+        expect(args[:merge_request_id]).to eq(expected_gid)
+        expect(args[:merge_request_id]).to be_a(GlobalID)
+        expect(args[:merge_request_id].model_class).to eq(MergeRequest)
+      end
+
+      described_class.ci_pipeline_creation_requests_updated(merge_request)
+    end
+  end
+
   describe '.ci_job_processed' do
     let_it_be(:job) { create(:ci_build) }
 

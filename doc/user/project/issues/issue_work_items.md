@@ -52,7 +52,7 @@ The new issues experience includes these improvements:
   1. Select **View in full page** at the top of the drawer.
   1. Open the link in a new tab.
 
-  To always open issues in the full page view on the Epics page, in the top right corner, select **Display options** ({{< icon name="preferences" >}}) and turn off the **Open items in side panel** toggle.
+  To always open issues in the full page view on the Epics page, in the upper-right corner, select **Display options** ({{< icon name="preferences" >}}) and turn off the **Open items in side panel** toggle.
 - **Issue controls**: All issue controls, including confidentiality settings, are now in the top actions menu.
   This menu stays visible as you scroll through the page.
 - **Redesigned sidebar**: The sidebar is now embedded in the page, similar to merge requests and epics.

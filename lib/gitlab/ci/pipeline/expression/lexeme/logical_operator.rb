@@ -12,6 +12,8 @@ module Gitlab
             # implement an Operator that takes a greater or lesser number of arguments, a
             # structural change or additional Operator superclass will likely be needed.
 
+            attr_reader :left, :right
+
             def initialize(left, right)
               raise OperatorError, 'Invalid left operand' unless left.respond_to? :evaluate
               raise OperatorError, 'Invalid right operand' unless right.respond_to? :evaluate

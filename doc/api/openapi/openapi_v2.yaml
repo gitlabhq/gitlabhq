@@ -40609,6 +40609,51 @@ paths:
       tags:
       - runners
       operationId: getApiV4RunnersIdManagers
+  "/api/v4/runners/{id}/projects":
+    get:
+      summary: List runner's projects
+      description: Get a paginated list of all projects associated with the specified
+        runner. Access is restricted based on user permissions.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a runner
+        type: integer
+        format: int32
+        required: true
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: Get projects associated with a runner
+          schema:
+            "$ref": "#/definitions/API_Entities_BasicProjectDetails"
+        '401':
+          description: Unauthorized
+        '403':
+          description: No access granted
+        '404':
+          description: Runner not found
+      tags:
+      - runners
+      - projects
+      operationId: getApiV4RunnersIdProjects
   "/api/v4/runners/{id}/jobs":
     get:
       summary: List runner's jobs

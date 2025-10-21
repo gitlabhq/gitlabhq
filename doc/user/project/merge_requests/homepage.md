@@ -68,7 +68,7 @@ For more information, see the history.
 
 GitLab shows your total **Active** merge requests on the left sidebar on all pages:
 
-![The top left area of the GitLab interface showing totals](img/homepage_totals_v18_3.png)
+![The upper-left area of the GitLab interface showing totals.](img/homepage_totals_v18_3.png)
 
 This user has:
 
@@ -111,7 +111,7 @@ into three tabs:
 
 ### Set your display preferences
 
-On the top right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
+On the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
 
 - Toggle **Show labels** to show or hide labels for each merge request.
 - Sorting preferences: **Workflow** or **Role**.

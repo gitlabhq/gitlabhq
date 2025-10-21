@@ -505,7 +505,6 @@
       }
     }
 
-
     // Project sidebar
     @include media-breakpoint-up(lg) {
       .project-page-indicator:not(.hidden) + .project-page-layout .project-page-sidebar {
@@ -537,7 +536,6 @@
 
     // Commits diff file tree header
     .diff-file .file-title-flex-parent {
-
       @include media-breakpoint-up(md) {
         &.is-commit,
         &.is-compare,
@@ -631,6 +629,36 @@
 
   .paneled-view:has(.fullscreen) {
     @apply gl-grow;
+  }
+
+}
+
+/*
+ * Duo chat
+ */
+
+ :where(.application-chrome) {
+
+  // Your messages
+  .duo-chat-message-container:has(.duo-chat-message .gl-avatar) {
+    @apply gl-justify-end;
+
+    .duo-chat-message {
+      background-color: rgb(from var(--theme-accent-color) r g b / 15%);
+      @apply gl-rounded-bl-[1rem] gl-rounded-br-none;
+    }
+  }
+
+  &.gl-dark .duo-chat-message-container:has(.duo-chat-message.gl-text-feedback-info) {
+    .duo-chat-message:not(:has(.error-icon)) {
+      background-color: rgb(from var(--theme-accent-color) r g b / 30%);
+    }
+  }
+
+  .duo-chat-message-container {
+    .duo-chat-message:has(.error-icon) {
+      @apply gl-bg-subtle;
+    }
   }
 
 }

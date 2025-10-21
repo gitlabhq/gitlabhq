@@ -2287,6 +2287,32 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(merge_request.pipelines_for_merge_request.last).to be_config_error
       end
     end
+
+    context 'when pipeline creation fails' do
+      it 'returns error response when pipeline is nil' do
+        allow_next_instance_of(::MergeRequests::CreatePipelineService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: nil))
+        end
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", user)
+
+        expect(response).to have_gitlab_http_status(:method_not_allowed)
+      end
+
+      it 'returns validation error when pipeline is not persisted' do
+        invalid_pipeline = build(:ci_pipeline, project: project)
+        invalid_pipeline.errors.add(:base, 'Pipeline could not be created')
+
+        allow_next_instance_of(::MergeRequests::CreatePipelineService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: invalid_pipeline))
+        end
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['base']).to include('Pipeline could not be created')
+      end
+    end
   end
 
   describe 'POST /projects/:id/merge_requests' do

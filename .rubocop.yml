@@ -183,8 +183,8 @@ RSpec/SpecFilePathFormat:
 RSpec/SpecFilePathSuffix:
   Exclude:
     - 'qa/**/*'
-    - 'spec/frontend/fixtures/*'
-    - 'ee/spec/frontend/fixtures/*'
+    - 'spec/frontend/fixtures/**/*'
+    - 'ee/spec/frontend/fixtures/**/*'
     - 'spec/requests/api/v3/*'
     - 'spec/fixtures/**/*'
 

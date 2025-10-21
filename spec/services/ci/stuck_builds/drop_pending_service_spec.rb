@@ -5,9 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::StuckBuilds::DropPendingService, feature_category: :continuous_integration do
   let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:pipeline) { create(:ci_empty_pipeline) }
-  let_it_be_with_reload(:job) do
-    create(:ci_build, pipeline: pipeline, runner: runner)
-  end
+  let_it_be_with_reload(:job) { create(:ci_build, pipeline: pipeline) }
 
   let(:created_at) {}
   let(:updated_at) {}
@@ -78,6 +76,76 @@ RSpec.describe Ci::StuckBuilds::DropPendingService, feature_category: :continuou
 
         context 'when created_at is before updated_at' do
           let(:created_at) { 3.days.ago }
+
+          it_behaves_like 'job is unchanged'
+        end
+      end
+
+      context 'when the job is pending but was already assigned to runner' do
+        let_it_be_with_reload(:job) { create(:ci_build, pipeline: pipeline, runner: runner) }
+
+        let(:created_at) { 1.5.days.ago }
+
+        context "when job hasn't been updated in a long time" do
+          let(:updated_at) { described_class::BUILD_PENDING_OUTDATED_WAITING_FOR_ACK_TIMEOUT.ago }
+
+          it_behaves_like 'job is dropped with failure reason', 'runner_provisioning_timeout'
+          it_behaves_like 'when invalid dooms the job bypassing validations'
+        end
+
+        context 'when job has been updated recently' do
+          let(:updated_at) { 30.minutes.ago }
+
+          it_behaves_like 'job is unchanged'
+        end
+
+        context 'when processing multiple jobs in batches' do
+          let_it_be_with_reload(:jobs) do
+            create_list(:ci_build, 5,
+              pipeline: pipeline,
+              runner: runner,
+              created_at: 1.5.days.ago,
+              updated_at: described_class::BUILD_PENDING_OUTDATED_WAITING_FOR_ACK_TIMEOUT.ago
+            )
+          end
+
+          let_it_be_with_reload(:recently_updated_jobs) do
+            create_list(:ci_build, 2,
+              pipeline: pipeline,
+              runner: runner,
+              updated_at: 30.minutes.ago
+            )
+          end
+
+          before do
+            stub_const('Ci::StuckBuilds::DropHelpers::BATCH_SIZE', 2)
+          end
+
+          it 'drops jobs with runner_provisioning_timeout reason' do
+            service.execute
+
+            expect(jobs.map(&:reload)).to all(be_failed)
+            expect(jobs.map(&:failure_reason)).to all(eql 'runner_provisioning_timeout')
+          end
+
+          it 'does not change the status of jobs that have been updated recently' do
+            expect { service.execute }.not_to change { recently_updated_jobs.map(&:status) }
+          end
+        end
+      end
+
+      context 'when the job is waiting for ack from runner' do
+        let_it_be_with_reload(:job) { create(:ci_build, :waiting_for_runner_ack, pipeline: pipeline, runner: runner) }
+        let(:created_at) { 1.5.days.ago }
+
+        context "when job hasn't been updated in a long time" do
+          let(:updated_at) { described_class::BUILD_PENDING_OUTDATED_WAITING_FOR_ACK_TIMEOUT.ago }
+
+          it_behaves_like 'job is unchanged'
+        end
+
+        context 'when job has been updated recently' do
+          let(:updated_at) { 30.minutes.ago }
 
           it_behaves_like 'job is unchanged'
         end

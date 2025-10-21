@@ -157,7 +157,7 @@ To impersonate a user:
   1. On the left sidebar, at the bottom, select **Admin**.
   1. On the left sidebar, select **Overview** > **Users**.
   1. From the list of users, select a user.
-  1. On the top right, select **Impersonate**.
+  1. On the upper right, select **Impersonate**.
   1. To stop impersonating, on the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito">}}).
 - With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
@@ -215,7 +215,7 @@ To export user permissions for all active users in your GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview** > **Users**.
-1. On the top right, select **Export permissions as CSV** ({{< icon name="export" >}}).
+1. On the upper right, select **Export permissions as CSV** ({{< icon name="export" >}}).
 
 ### Users statistics
 

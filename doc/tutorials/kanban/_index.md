@@ -58,7 +58,7 @@ Congrats, you now have a Kanban board. You can now create new issues in each lis
 Optionally, you can enable [work in progress (WIP) limits](../../user/project/issue_board.md#work-in-progress-limits) for each label list on your board.
 To do so:
 
-1. Select the **Edit list settings** gear icon in the top right of a label list.
+1. Select the **Edit list settings** gear icon in the upper right of a label list.
 1. Select **Work in progress limit** > **Edit**.
 1. Enter the maximum number of issues allowed in the corresponding list, the press the **Enter** key.
 
@@ -77,7 +77,7 @@ To visualize flow:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
 1. In the side navigation, select **Analyze** > **Value stream analytics**.
-1. Select the **Value stream** drop down in the top-left of the page, then select **New Value Stream**.
+1. Select the **Value stream** drop down in the upper left of the page, then select **New Value Stream**.
 1. Enter the desired name for the VSA report, then select the **Create from a template** option.
 1. Enter **To do** for the stage name.
 1. For the start event, select **Issue label added**, then select the **status::to do** label.

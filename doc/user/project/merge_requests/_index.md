@@ -116,7 +116,7 @@ To view the open merge requests for a file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the file you want to view.
-1. At the top right of the screen, next to the filename, look for the green badge with the number
+1. In the upper right of the screen, next to the filename, look for the green badge with the number
    of {{< icon name="merge-request-open" >}} **Open** merge requests.
 1. Select the badge to see a list of open merge requests created in the past 30 days.
 1. Select any merge request in the list to go to that merge request.
@@ -383,7 +383,7 @@ continue the discussion.
 
 ### Expand all threads
 
-GitLab shows the number of open threads in the top right corner of a
+GitLab shows the number of open threads in the upper-right corner of a
 merge request. This merge request has three open threads:
 
 ![A merge request with three open threads, and the thread management options.](img/open_threads_v18_5.png)
@@ -392,7 +392,7 @@ To see all comments in the collapsed threads, expand the threads:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find your merge request.
-1. In the merge request, in the top right, find the **Open threads**
+1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Show all comments**.
 
@@ -426,7 +426,7 @@ create an issue to resolve them separately:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and find your merge request.
-1. In the merge request, in the top right, find the **Open threads**
+1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Resolve all with new issue**.
 1. Fill out the fields in the new issue, and select **Create issue**.
@@ -486,7 +486,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Enabling this feature flag moves the notifications and to-do item buttons to the upper right corner of the page.
+Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
 
 - On merge requests, these buttons are shown to the far right of the tabs.
 - On issues, incidents, and epics, these buttons are shown at the top of the right sidebar.

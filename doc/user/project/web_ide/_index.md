@@ -146,7 +146,7 @@ these steps to create a branch from a different base:
 
 1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
-1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
+1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the upper-right side of the
    Source Control panel.
 1. From the dropdown list, select **Branch** -> **Create branch from...**.
 1. From the dropdown list, select the branch that you want to use as base.
@@ -157,7 +157,7 @@ If you do not have write access to the repository, **Create new branch** is not 
 
 1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
-1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
+1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the upper-right side of the
    Source Control panel.
 1. From the dropdown list, select **Branch** -> **Delete branch**.
 1. From the dropdown list, select the branch that you want to delete.

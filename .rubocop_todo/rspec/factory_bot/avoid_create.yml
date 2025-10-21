@@ -548,7 +548,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/projects/hooks/edit.html.haml_spec.rb'
     - 'spec/views/projects/hooks/index.html.haml_spec.rb'
     - 'spec/views/projects/imports/new.html.haml_spec.rb'
-    - 'spec/views/projects/jobs/_generic_commit_status.html.haml_spec.rb'
     - 'spec/views/projects/jobs/show.html.haml_spec.rb'
     - 'spec/views/projects/merge_requests/_commits.html.haml_spec.rb'
     - 'spec/views/projects/merge_requests/creations/_new_submit.html.haml_spec.rb'

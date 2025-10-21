@@ -92,7 +92,7 @@ How you use Chat in your IDE differs depending on which IDE you use.
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. On the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
 1. In the message box, enter your question. Press **Enter**, or select **Send**.
-1. In the chat pane, on the top right corner, select **Show Status** to show information
+1. In the chat pane, on the upper-right corner, select **Show Status** to show information
    in the Command Palette.
 
 You can also interact with Duo Chat while you're working with a subset of code.

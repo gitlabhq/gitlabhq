@@ -172,7 +172,8 @@ module Ci
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
 
-    scope :unstarted, -> { where(runner_id: nil) }
+    scope :with_no_runner_assigned, -> { where(runner_id: nil) }
+    scope :with_runner_assigned, -> { where.not(runner_id: nil) }
     scope :with_any_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build) }
     scope :with_downloadable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.downloadable) }
     scope :with_erasable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.erasable) }

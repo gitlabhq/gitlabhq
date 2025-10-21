@@ -42,7 +42,7 @@ Once your access request is approved, you can gain access to AWS credentials by 
 After logging into `gitlabsandbox.cloud`, perform the following steps:
 
 1. Select the `cstm-mdls-dev-bedrock` AWS account.
-1. On the top right corner of the page, select **View IAM Credentials**.
+1. On the upper-right corner of the page, select **View IAM Credentials**.
 1. In the model that opens up, you should be able to see `AWS Console URL`, `Username` and `Password`. Visit this AWS Console URL and input the obtained username and password to sign in.
 
 On AWS Bedrock, you must gain access to the models you want to use. To do this:

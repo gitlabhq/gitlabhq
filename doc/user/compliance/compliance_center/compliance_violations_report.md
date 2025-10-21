@@ -133,7 +133,7 @@ To export a compliance violations report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
-1. In the top-right corner, select **Export**.
+1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.
 
 A report is compiled and delivered to your email inbox as an attachment.
@@ -247,7 +247,7 @@ To export a report of merge request compliance violations for projects in a grou
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
-1. In the top-right corner, select **Export**.
+1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.
 
 A report is compiled and delivered to your email inbox as an attachment.

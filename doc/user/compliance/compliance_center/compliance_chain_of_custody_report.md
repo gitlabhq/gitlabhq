@@ -55,7 +55,7 @@ To generate the chain of custody report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
-1. In the top-right corner, select **Export**.
+1. In the upper-right corner, select **Export**.
 1. Select **Export chain of custody report**.
 
 Depending on your version of GitLab, the chain of custody report is either sent through email or available for download.
@@ -76,7 +76,7 @@ To generate a commit-specific Chain of Custody report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
-1. In the top-right corner, select **Export**.
+1. In the upper-right corner, select **Export**.
 1. Select **Export custody report of a specific commit**.
 1. Enter the commit SHA, and then select **Export custody report**.
 

@@ -68,7 +68,7 @@ To create an agent:
 1. Under **Basic information**:
    1. In **Display name**, enter a name for the agent.
    1. In **Description**, enter a description for the agent.
-1. Under **Access rights**:
+1. Under **Visibility & access**:
    1. For **Visibility**, select **Private** or **Public**.
    1. From the **Source project** dropdown list, select a project for the agent.
 1. Under **Prompts**, in **System prompt**, enter a prompt to define

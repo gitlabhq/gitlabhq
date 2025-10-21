@@ -278,3 +278,8 @@ ul.related-merge-requests > li gl-emoji {
 .gl-modal .md-header {
   top: -$gl-padding-8;
 }
+
+// Issue markdown header if no sticky header is present
+.work-item-detail:not(:has(.issue-sticky-header)) .md-header {
+  top: 0;
+}

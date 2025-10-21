@@ -183,7 +183,6 @@ RSpec/BeEq:
     - 'ee/spec/models/audit_events/amazon_s3_configuration_spec.rb'
     - 'ee/spec/models/audit_events/external_audit_event_destination_spec.rb'
     - 'ee/spec/models/audit_events/instance/amazon_s3_configuration_spec.rb'
-    - 'ee/spec/models/auth/member_role_ability_loader_spec.rb'
     - 'ee/spec/models/ci/bridge_spec.rb'
     - 'ee/spec/models/ci/finished_build_ch_sync_event_spec.rb'
     - 'ee/spec/models/ci/minutes/quota_spec.rb'

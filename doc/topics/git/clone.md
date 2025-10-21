@@ -165,7 +165,7 @@ If you don't want to be prompted again, select the checkbox to remember your cho
 If the prompt dialog does not open, you need to manually configure Firefox:
 
 1. Open Firefox.
-1. On the top right, select the **Open application menu** ({{< icon name="hamburger" >}}).
+1. On the upper right, select the **Open application menu** ({{< icon name="hamburger" >}}).
 1. Search for or go to the **Applications** section.
 1. Find and select your desired application in the list. For example, `vscode` or `jetbrains`.
 1. Select Visual Studio Code or IntelliJ IDEA from the dropdown list, or select **Use other...** to locate the executable.

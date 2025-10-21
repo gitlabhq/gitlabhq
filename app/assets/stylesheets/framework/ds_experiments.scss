@@ -162,7 +162,7 @@
         }
       }
 
-      .diff-td:last-child:not(.left-side.parallel),
+      .diff-grid-right .diff-td:last-child,
       td:last-child:not(.left-side.parallel) {
         border-bottom-right-radius: $gl-border-radius-lg-inner !important;
       }

@@ -294,7 +294,7 @@ Users with the Owner role for a project can delete a pipeline:
 1. Select **Build** > **Pipelines**.
 1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
    (for example **Passed**) of the pipeline to delete.
-1. In the top right of the pipeline details page, select **Delete**.
+1. In the upper right of the pipeline details page, select **Delete**.
 
 Deleting a pipeline does not automatically delete its [child pipelines](downstream_pipelines.md#parent-child-pipelines).
 See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more details.
@@ -443,7 +443,7 @@ You can filter the **Pipelines** page by:
 - Tag
 - Source
 
-Select **Pipeline ID** in the dropdown list in the top right to display the pipeline IDs
+Select **Pipeline ID** in the dropdown list in the upper right to display the pipeline IDs
 (unique ID across the instance).
 Select **pipeline IID** to display the pipeline IIDs (internal ID, unique across the project only).
 

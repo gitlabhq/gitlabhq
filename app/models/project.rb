@@ -1306,6 +1306,14 @@ class Project < ApplicationRecord
     def project_namespace_for(id:)
       find_by(id: id)&.project_namespace
     end
+
+    def group_by_namespace_traversal_ids(project_batch)
+      by_ids(project_batch)
+        .with_namespace
+        .pluck(:id, 'namespaces.traversal_ids')
+        .group_by(&:last)
+        .transform_values { |projects| projects.map(&:first) }
+    end
   end
 
   def initialize(attributes = nil)

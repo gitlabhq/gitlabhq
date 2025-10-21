@@ -1576,6 +1576,25 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
     end
 
+    context 'with custom instance prefix' do
+      let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let_it_be(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+        runner.reset_token!
+      end
+
+      specify { expect(runner.token).to start_with(instance_prefix) }
+
+      it 'starts with the token itself instead of the instance prefix' do
+        token_without_prefixes = runner.token.delete_prefix("#{instance_prefix}-")
+                                             .delete_prefix(described_class::CREATED_RUNNER_TOKEN_PREFIX)
+
+        expect(subject).to start_with(token_without_prefixes[0...described_class::RUNNER_SHORT_SHA_LENGTH])
+      end
+    end
+
     context 'when legacy token' do
       context 'with legacy partition prefix' do
         let_it_be(:runner) { create(:ci_runner, token: 't1_deadbeaf') }
@@ -2115,6 +2134,38 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     subject { described_class.available_statuses }
 
     it { is_expected.to eq(%w[active paused online offline never_contacted stale]) }
+  end
+
+  describe '.created_runner_prefix' do
+    subject { described_class.created_runner_prefix }
+
+    context 'without custom instance wide prefix' do
+      it 'returns the default prefix' do
+        expect(subject).to eq(described_class::CREATED_RUNNER_TOKEN_PREFIX)
+      end
+    end
+
+    context 'with custom instance wide prefix' do
+      let_it_be(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'returns the custom instance prefix and the default prefix' do
+        expect(subject).to eq("#{instance_prefix}-#{described_class::CREATED_RUNNER_TOKEN_PREFIX}")
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'returns the default prefix' do
+          expect(subject).to eq(described_class::CREATED_RUNNER_TOKEN_PREFIX)
+        end
+      end
+    end
   end
 
   describe '.online_contact_time_deadline', :freeze_time do

@@ -25,8 +25,6 @@ code_suggestions_self_hosted?:
   file: ee/app/models/ai/feature_setting.rb
 compatible_self_hosted_models:
   file: ee/app/models/ai/feature_setting.rb
-has_ability?:
-  file: ee/app/models/auth/member_role_ability_loader.rb
 gcp_secret_manager?:
   file: ee/app/models/ci/secrets/integration.rb
 azure_key_vault?:

@@ -670,19 +670,18 @@ module API
 
         if params[:async]
           service.execute_async(merge_request)
+
+          status :accepted
         else
           pipeline = service.execute(merge_request).payload
-        end
-
-        if params[:async]
-          status :accepted
-        elsif pipeline.nil?
-          not_allowed!
-        elsif pipeline.persisted?
-          status :ok
-          present pipeline, with: ::API::Entities::Ci::Pipeline
-        else
-          render_validation_error!(pipeline)
+          if pipeline.nil?
+            not_allowed!
+          elsif pipeline.persisted?
+            status :ok
+            present pipeline, with: ::API::Entities::Ci::Pipeline
+          else
+            render_validation_error!(pipeline)
+          end
         end
       end
 
