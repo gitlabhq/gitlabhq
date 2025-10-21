@@ -31,7 +31,7 @@ After your merge request has been approved according to our [approval guidelines
 - [ ] Once the MR is ready to be merged, create MRs targeting the latest 3 stable branches.
   - The 3 stable branches correspond to the versions in the title of the [Security Tracking Issue].
   - At this point, it might be easy to squash the commits from the MR into one
-  - You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
+  - You can use the script `scripts/backport_fix_to_stable_branch` instead of the following steps, to help you cherry-picking. See the [backport fix to stable branch documentation]
 - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the [Security merge request template].
   - Every merge request will have its own set of to-dos, so make sure to complete those.
 - [ ]  On the `Development` section, ensure that **ONLY** `4` merge requests matching these conditions:
@@ -85,7 +85,7 @@ After your merge request has been approved according to our [approval guidelines
 | Thanks                              |            |                                                           |
 
 [security process for engineers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md
-[secpick documentation]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/secpick_script.md
+[backport fix to stable branch documentation]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/backport_fix_to_stable_branch.md
 [security merge request template]: https://gitlab.com/gitlab-org/security/gitlab/blob/master/.gitlab/merge_request_templates/Security%20Fix.md
 [approval guidelines]: https://docs.gitlab.com/development/code_review/#approval-guidelines
 [issue as linked]: https://docs.gitlab.com/user/project/issues/related_issues/#add-a-linked-issue

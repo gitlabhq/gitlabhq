@@ -46,7 +46,7 @@ export default {
     },
   },
   beforeDestroy() {
-    if (this.$refs['gfm-content'] && gon.features.imageLightboxes) {
+    if (this.$refs['gfm-content']) {
       destroyImageLightbox(this.$refs['gfm-content']);
     }
   },

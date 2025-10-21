@@ -18,4 +18,13 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Reports, feature_category: :dependency
       expect(reports_list.reports.last).to eq(rep2)
     end
   end
+
+  describe '#valid_reports' do
+    let(:invalid_report) { instance_double(Gitlab::Ci::Reports::Sbom::Report, valid?: false) }
+    let(:valid_report) { instance_double(Gitlab::Ci::Reports::Sbom::Report, valid?: true) }
+
+    subject(:value_reports) { described_class.new([invalid_report, valid_report]).valid_reports }
+
+    it { is_expected.to eq([valid_report]) }
+  end
 end

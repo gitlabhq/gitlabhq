@@ -60,8 +60,5 @@ export function renderGFM(element) {
   initPopovers(popoverEls);
   addAriaLabels(taskListCheckboxEls);
   renderGlql(glqlEls.map((e) => e.parentNode));
-
-  if (gon.features?.imageLightboxes) {
-    renderImageLightbox(imageEls, element);
-  }
+  renderImageLightbox(imageEls, element);
 }

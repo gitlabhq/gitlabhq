@@ -23734,6 +23734,9 @@ msgstr ""
 msgid "DesignManagement|There was an error moving your designs. Please upload your designs below."
 msgstr ""
 
+msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
 msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}"
 msgstr ""
 

@@ -1,4 +1,11 @@
-import { GlAlert, GlEmptyState, GlIntersectionObserver, GlButton } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlEmptyState,
+  GlIntersectionObserver,
+  GlLink,
+  GlButton,
+  GlSprintf,
+} from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -132,6 +139,8 @@ describe('WorkItemDetail component', () => {
   const findWorkItemAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findTodosToggle = () => wrapper.findComponent(TodosToggle);
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
+  const findDesignManagementDisabledMessage = () =>
+    wrapper.findByTestId('design-management-disabled-message');
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const findEditButton = () => wrapper.findByTestId('work-item-edit-form-button');
@@ -152,23 +161,16 @@ describe('WorkItemDetail component', () => {
   };
 
   const createComponent = ({
-    isModal = false,
-    isDrawer = false,
-    updateInProgress = false,
-    workItemId = '',
-    workItemIid = '1',
+    props = {},
+    provide = {},
     handler = successHandler,
     workItemByIdHandler = workItemByIdQueryHandler,
     mutationHandler,
-    error = undefined,
     workItemsAlphaEnabled = false,
-    hasSubepicsFeature = true,
     router = true,
-    isGroup = false,
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
     allowedChildrenTypesHandler = allowedChildrenTypesSuccessHandler,
-    hasLinkedItemsEpicsFeature = true,
     showSidebar = true,
     lastRealtimeUpdatedAt = new Date('2023-01-01T12:00:00.000Z'),
   } = {}) => {
@@ -185,16 +187,15 @@ describe('WorkItemDetail component', () => {
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
+        isDrawer: false,
+        isModal: false,
         workItemFullPath: 'group/project',
-        workItemId,
-        isModal,
-        workItemIid,
-        isDrawer,
+        workItemId: '',
+        workItemIid: '1',
+        ...props,
       },
       data() {
         return {
-          updateInProgress,
-          error,
           showSidebar,
           lastRealtimeUpdatedAt,
         };
@@ -203,12 +204,15 @@ describe('WorkItemDetail component', () => {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
         },
-        hasSubepicsFeature,
         groupPath: 'group',
-        isGroup,
-        hasLinkedItemsEpicsFeature,
+        hasDesignManagementFeature: true,
+        hasLinkedItemsEpicsFeature: true,
+        hasSubepicsFeature: true,
+        isGroup: false,
+        ...provide,
       },
       stubs: {
+        GlSprintf,
         WorkItemAncestors: true,
         WorkItemWeight: true,
         WorkItemIteration: true,
@@ -234,7 +238,7 @@ describe('WorkItemDetail component', () => {
     ${true}  | ${true}
     ${false} | ${false}
   `('passes isDrawer prop to child component props', async ({ isDrawer, expected }) => {
-    createComponent({ isDrawer });
+    createComponent({ props: { isDrawer } });
     await waitForPromises();
 
     expect(findWorkItemDescription().props('hideFullscreenMarkdownButton')).toBe(expected);
@@ -244,7 +248,7 @@ describe('WorkItemDetail component', () => {
 
   describe('when there is no `workItemIid` prop', () => {
     beforeEach(async () => {
-      createComponent({ workItemIid: null });
+      createComponent({ props: { workItemIid: null } });
       await waitForPromises();
     });
 
@@ -315,7 +319,7 @@ describe('WorkItemDetail component', () => {
         .mockRejectedValue(new Error('Apollo error'));
 
       createComponent({
-        workItemId: 'gid://gitlab/WorkItem/123',
+        props: { workItemId: 'gid://gitlab/WorkItem/123' },
         allowedChildrenTypesHandler: allowedChildrenTypesErrorHandler,
       });
 
@@ -343,7 +347,7 @@ describe('WorkItemDetail component', () => {
   describe('close button', () => {
     describe('when isModal prop is false', () => {
       it('does not render', async () => {
-        createComponent({ isModal: false });
+        createComponent({ props: { isModal: false } });
         await waitForPromises();
 
         expect(findCloseButton().exists()).toBe(false);
@@ -352,7 +356,7 @@ describe('WorkItemDetail component', () => {
 
     describe('when isModal prop is true', () => {
       it('renders', async () => {
-        createComponent({ isModal: true });
+        createComponent({ props: { isModal: true } });
         await waitForPromises();
 
         expect(findCloseButton().props('icon')).toBe('close');
@@ -360,7 +364,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('emits `close` event when clicked', async () => {
-        createComponent({ isModal: true });
+        createComponent({ props: { isModal: true } });
         await waitForPromises();
 
         findCloseButton().vm.$emit('click');
@@ -498,7 +502,7 @@ describe('WorkItemDetail component', () => {
         });
         const epicHandler = jest.fn().mockResolvedValue(epicWorkItem);
 
-        createComponent({ hasSubepicsFeature: false, handler: epicHandler });
+        createComponent({ provide: { hasSubepicsFeature: false }, handler: epicHandler });
 
         await waitForPromises();
 
@@ -514,7 +518,7 @@ describe('WorkItemDetail component', () => {
         });
         const epicHandler = jest.fn().mockResolvedValue(epicWorkItem);
 
-        createComponent({ hasLinkedItemsEpicsFeature: false, handler: epicHandler });
+        createComponent({ provide: { hasLinkedItemsEpicsFeature: false }, handler: epicHandler });
 
         await waitForPromises();
 
@@ -586,7 +590,7 @@ describe('WorkItemDetail component', () => {
     describe('modal view', () => {
       it('shows the modal close button', async () => {
         createComponent({
-          isModal: true,
+          props: { isModal: true },
           handler: jest.fn().mockRejectedValue('Oops, problemo'),
           workItemsAlphaEnabled: true,
         });
@@ -627,7 +631,7 @@ describe('WorkItemDetail component', () => {
 
   it('calls the work item query by workItemId', async () => {
     const workItemId = workItemQueryResponse.data.workItem.id;
-    createComponent({ workItemId });
+    createComponent({ props: { workItemId } });
     await waitForPromises();
 
     expect(workItemByIdQueryHandler).toHaveBeenCalledWith({ id: workItemId });
@@ -635,14 +639,14 @@ describe('WorkItemDetail component', () => {
   });
 
   it('skips calling the work item query when there is no workItemIid and no workItemId', async () => {
-    createComponent({ workItemIid: null, workItemId: null });
+    createComponent({ props: { workItemIid: null, workItemId: null } });
     await waitForPromises();
 
     expect(successHandler).not.toHaveBeenCalled();
   });
 
   it('calls the work item query when isModal=true', async () => {
-    createComponent({ isModal: true });
+    createComponent({ props: { isModal: true } });
     await waitForPromises();
 
     expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
@@ -774,7 +778,7 @@ describe('WorkItemDetail component', () => {
       describe('work item is rendered in a modal and has children', () => {
         beforeEach(async () => {
           createComponent({
-            isModal: true,
+            props: { isModal: true },
             handler: objectiveHandler,
             workItemsAlphaEnabled: true,
           });
@@ -863,7 +867,7 @@ describe('WorkItemDetail component', () => {
       describe('linked work item is rendered in a modal and has linked items', () => {
         beforeEach(async () => {
           createComponent({
-            isModal: true,
+            props: { isModal: true },
             handler,
             workItemsAlphaEnabled: true,
           });
@@ -1072,7 +1076,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('renders if within a drawer', async () => {
-      createComponent({ isDrawer: true });
+      createComponent({ props: { isDrawer: true } });
       await waitForPromises();
 
       expect(findWorkItemDesigns().exists()).toBe(true);
@@ -1087,7 +1091,7 @@ describe('WorkItemDetail component', () => {
 
     it('does not call permisisons query for a group work item', async () => {
       createComponent({
-        isGroup: true,
+        provide: { isGroup: true },
         workspacePermissionsHandler: workspacePermissionsAllowedHandler,
       });
       await waitForPromises();
@@ -1136,6 +1140,56 @@ describe('WorkItemDetail component', () => {
       findWorkItemDesigns().vm.$emit('dismissError');
       await nextTick();
       expect(findWorkItemDesigns().props('uploadError')).toBe(null);
+    });
+  });
+
+  describe('canPasteDesign', () => {
+    it('sets `canPasteDesign` to true on work item notes focus event', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
+
+      findNotesWidget().vm.$emit('focus');
+      await nextTick();
+
+      expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
+    });
+
+    it('sets `canPasteDesign` to false on work item notes blur event', async () => {
+      createComponent();
+      await waitForPromises();
+
+      findNotesWidget().vm.$emit('focus');
+      await nextTick();
+
+      expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
+
+      findNotesWidget().vm.$emit('blur');
+      await nextTick();
+
+      expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
+    });
+  });
+
+  describe('hasDesignManagementFeature', () => {
+    it('renders disabled message when hasDesignManagementFeature=false', async () => {
+      createComponent({ provide: { hasDesignManagementFeature: false } });
+      await waitForPromises();
+
+      expect(findDesignManagementDisabledMessage().text()).toContain(
+        "To upload designs, you'll need to enable LFS and have an admin enable hashed storage",
+      );
+      expect(findDesignManagementDisabledMessage().findComponent(GlLink).attributes('href')).toBe(
+        '/help/user/project/issues/design_management#prerequisites',
+      );
+    });
+
+    it('does not render disabled message when hasDesignManagementFeature=true', async () => {
+      createComponent({ provide: { hasDesignManagementFeature: true } });
+      await waitForPromises();
+
+      expect(findDesignManagementDisabledMessage().exists()).toBe(false);
     });
   });
 
@@ -1236,7 +1290,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('sticky header is visible in drawer view', async () => {
-      createComponent({ isDrawer: true });
+      createComponent({ props: { isDrawer: true } });
       await waitForPromises();
 
       expect(findStickyHeader().exists()).toBe(true);
@@ -1291,7 +1345,7 @@ describe('WorkItemDetail component', () => {
 
   describe('calculates correct isGroup prop for attributes wrapper', () => {
     it('equal to isGroup injection when provided', async () => {
-      createComponent({ isGroup: true });
+      createComponent({ provide: { isGroup: true } });
       await waitForPromises();
 
       expect(findWorkItemAttributesWrapper().props('isGroup')).toBe(true);
@@ -1440,33 +1494,6 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('sets `canPasteDesign` to true on work item notes focus event', async () => {
-    createComponent();
-    await waitForPromises();
-
-    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
-
-    findNotesWidget().vm.$emit('focus');
-    await nextTick();
-
-    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
-  });
-
-  it('sets `canPasteDesign` to false on work item notes blur event', async () => {
-    createComponent();
-    await waitForPromises();
-
-    findNotesWidget().vm.$emit('focus');
-    await nextTick();
-
-    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
-
-    findNotesWidget().vm.$emit('blur');
-    await nextTick();
-
-    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
-  });
-
   describe('when websocket is reconnecting', () => {
     useRealDate();
 
@@ -1536,7 +1563,7 @@ describe('WorkItemDetail component', () => {
   });
 
   it('applied correct classes to refetch error banner in the drawer', async () => {
-    createComponent({ isDrawer: true });
+    createComponent({ props: { isDrawer: true } });
     await waitForPromises();
 
     successHandler.mockRejectedValueOnce(new Error('Refetch failed'));

@@ -13,23 +13,10 @@ description: Understand the permissions and capabilities available to each user 
 
 {{< /details >}}
 
-When you add a user to a project or group, you assign them a role.
-The role determines which actions they can take in GitLab.
+Roles define a user's permissions in a group or project.
 
-If you add a user to both a project's group and the
-project itself, the higher role is used.
-
-GitLab [administrators](../administration/_index.md) have all permissions.
-
-<!-- Keep these tables sorted according the following rules in order:
-1. By minimum role.
-2. By the object being accessed (for example, issue, security dashboard, or pipeline)
-3. By the action: view, create, change, edit, manage, run, delete, all others
-4. Alphabetically.
-
-List only one action (for example, view, create, or delete) per line.
-It's okay to list multiple related objects per line (for example, "View pipelines and pipeline details").
--->
+Users with [administrator access](../administration/_index.md) have all permissions and can
+perform any action.
 
 ## Roles
 
@@ -39,24 +26,49 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 
 {{< /history >}}
 
-You can assign users a default role or a [custom role](custom_roles/_index.md).
+When you add a user to a group or project, you assign them a role.
+The role determines their permissions. Assign either a [default role](#default-roles)
+or a [custom role](custom_roles/_index.md).
 
-The available default roles are:
+A user can have different roles for each group and project. Users always retain the
+permissions for their highest role. For example, if a user has:
 
-- Guest (This role applies to [private and internal projects](public_access.md) only.)
-- Planner
-- Reporter
-- Developer
-- Maintainer
-- Owner
-- Minimal Access (available for the top-level group only)
+- The Maintainer role for a parent group
+- The Developer role for a project in that group
 
-A user assigned the Guest role has the least permissions,
-and the Owner has the most.
+The user inherits the permissions for their Maintainer role in the project.
 
-By default, all users can create top-level groups and change their
-usernames. A GitLab administrator can [change this behavior](../administration/user_settings.md)
-for the GitLab instance.
+To view assigned roles, go to the **Members** page for a
+[group](group/_index.md#view-group-members) or
+[project](project/members/_index.md#view-project-members).
+
+### Default roles
+
+The following default roles are available:
+
+| Role           | Description |
+| -------------- | ----------- |
+| Minimal Access | View limited group information without access to projects. For more information, see [Users with Minimal Access](#users-with-minimal-access). |
+| Guest          | View and comment on issues and epics. Cannot push code or access repository. This role applies to [private and internal projects](public_access.md) only. |
+| Planner        | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking without code access. |
+| Reporter       | View code, create issues, and generate reports. Cannot push code or manage protected branches. |
+| Developer      | Push code to non-protected branches, create merge requests, and run CI/CD pipelines. Cannot manage project settings. |
+| Maintainer     | Manage branches, merge requests, CI/CD settings, and project members. Cannot delete the project. |
+| Owner          | Full control over the project or group, including deletion and visibility settings. |
+
+By default, all users can create top-level groups and change their usernames.
+Users with [administrator access](../administration/user_settings.md) can change this behavior.
+
+<!--
+Sort these permissions according the following rules in order:
+1. By minimum role.
+2. By the object being accessed (for example, issue, security dashboard, or pipeline)
+3. By the action: view, create, change, edit, manage, run, delete, all others
+4. Alphabetically.
+
+List only one action (for example, view, create, or delete) per line.
+It's okay to list multiple related objects per line (for example, "View pipelines and pipeline details").
+-->
 
 ## Group members permissions
 

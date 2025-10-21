@@ -69,29 +69,11 @@ describe('renderGFM', () => {
       `;
     });
 
-    describe('when imageLightboxes feature flag is enabled', () => {
-      beforeEach(() => {
-        gon.features = { imageLightboxes: true };
-      });
+    it('calls renderImageLightbox with image elements and container', () => {
+      renderGFM(element);
 
-      it('calls renderImageLightbox with image elements and container', () => {
-        renderGFM(element);
-
-        const images = Array.from(element.querySelectorAll('a>img'));
-        expect(renderImageLightbox).toHaveBeenCalledWith(images, element);
-      });
-    });
-
-    describe('when imageLightboxes feature flag is disabled', () => {
-      beforeEach(() => {
-        gon.features = { imageLightboxes: false };
-      });
-
-      it('does not call renderImageLightbox', () => {
-        renderGFM(element);
-
-        expect(renderImageLightbox).not.toHaveBeenCalled();
-      });
+      const images = Array.from(element.querySelectorAll('a>img'));
+      expect(renderImageLightbox).toHaveBeenCalledWith(images, element);
     });
   });
 });

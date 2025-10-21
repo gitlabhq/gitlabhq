@@ -171,6 +171,26 @@ role for the group. For example, the maximum role you can set is:
 
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
 
+## View project members
+
+To view members of a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage** > **Members**.
+
+A table displays the member's:
+
+- **Account** name and username.
+- **Source** of their [membership](#membership-types).
+  For transparency, GitLab displays all membership sources of project members.
+  Members who have multiple membership sources are displayed and counted as separate members.
+  For example, if a member has been added to the project both directly and through inheritance,
+  the member is displayed twice in the **Members** table, with different sources,
+  and is counted as two individual members of the project.
+- [**Role**](#which-roles-you-can-assign) in the project.
+- **Expiration** date of their project membership.
+- **Activity** related to their account.
+
 ### View users pending promotion
 
 If [administrator approval for role promotions](../../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.

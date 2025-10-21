@@ -8,6 +8,7 @@ export default {
     // We provide the metadata values as computed properties
     // so that they can be reactive and update when the Apollo query updates.
     return {
+      hasDesignManagementFeature: computed(() => this.metadata.hasDesignManagementFeature),
       hasIssueWeightsFeature: computed(() => this.metadata.hasIssueWeightsFeature),
       hasIterationsFeature: computed(() => this.metadata.hasIterationsFeature),
       hasOkrsFeature: computed(() => this.metadata.hasOkrsFeature),
@@ -64,7 +65,7 @@ export default {
       update(data) {
         const namespace = data?.namespace || {};
         return {
-          ...(namespace.licensedFeatures || {}),
+          ...(namespace.availableFeatures || {}),
           ...(namespace.linkPaths || {}),
           ...(namespace.userPermissions || {}),
           id: namespace.id,

@@ -72,6 +72,7 @@ describe('Work items router', () => {
         groupPath: '',
         isGroup: false,
         issuesListPath: 'full-path/-/issues',
+        hasDesignManagementFeature: false,
         hasIssueWeightsFeature: false,
         hasIterationsFeature: false,
         hasOkrsFeature: false,

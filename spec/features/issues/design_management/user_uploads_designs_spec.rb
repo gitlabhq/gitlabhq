@@ -10,15 +10,16 @@ RSpec.describe 'User uploads new design', :js, feature_category: :design_managem
   let(:issue) { create(:issue, project: project) }
 
   before do
-    sign_in(user)
+    stub_feature_flags(work_item_view_for_issues: true)
     enable_design_management(feature_enabled)
+    sign_in(user)
     visit project_issue_path(project, issue)
   end
 
   context "when the feature is available" do
     let(:feature_enabled) { true }
 
-    it 'uploads designs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/358845' do
+    it 'uploads designs' do
       upload_design(logo_fixture, count: 1)
 
       expect(page).to have_selector('.js-design-list-item', count: 1)
@@ -59,7 +60,7 @@ RSpec.describe 'User uploads new design', :js, feature_category: :design_managem
   end
 
   def upload_design(fixtures, count:)
-    attach_file(:upload_file, fixtures, multiple: true, match: :first, make_visible: true)
+    attach_file(:design_file, fixtures, multiple: true, match: :first, make_visible: true)
 
     wait_for('designs uploaded') do
       issue.reload.designs.count == count

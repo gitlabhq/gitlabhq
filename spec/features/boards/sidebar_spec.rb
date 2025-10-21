@@ -15,13 +15,26 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
   let_it_be(:issue, reload: true) { create(:issue, project: project, relative_position: 1) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
   end
 
-  context 'when issues drawer is disabled' do
+  context 'when project studio is enabled' do
     before do
-      stub_feature_flags(issues_list_drawer: false)
-      stub_feature_flags(notifications_todos_buttons: false)
+      enable_project_studio!(user)
+      sign_in(user)
+
+      visit project_board_path(project, board)
+      click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
+
+      wait_for_requests
+    end
+
+    it_behaves_like 'work item drawer on the boards'
+  end
+
+  context 'when project studio is disabled' do
+    before do
       sign_in(user)
 
       visit project_board_path(project, board)
@@ -29,35 +42,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
       wait_for_requests
     end
 
-    it_behaves_like 'issue boards sidebar'
-  end
-
-  context 'when issues drawer is enabled' do
-    context 'when project studio is enabled' do
-      before do
-        enable_project_studio!(user)
-        sign_in(user)
-
-        visit project_board_path(project, board)
-        click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
-
-        wait_for_requests
-      end
-
-      it_behaves_like 'work item drawer on the boards'
-    end
-
-    context 'when project studio is disabled' do
-      before do
-        sign_in(user)
-
-        visit project_board_path(project, board)
-
-        wait_for_requests
-      end
-
-      it_behaves_like 'work item drawer on the boards'
-    end
+    it_behaves_like 'work item drawer on the boards'
   end
 
   def first_card

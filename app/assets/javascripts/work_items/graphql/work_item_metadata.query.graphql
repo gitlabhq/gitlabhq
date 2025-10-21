@@ -1,7 +1,8 @@
 query workItemMetadata($fullPath: ID!) {
   namespace(fullPath: $fullPath) {
     id
-    licensedFeatures {
+    availableFeatures {
+      hasDesignManagementFeature @gl_introduced(version: "18.6.0")
       hasIssueWeightsFeature
       hasIterationsFeature
       hasOkrsFeature

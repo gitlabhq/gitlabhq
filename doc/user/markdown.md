@@ -1200,6 +1200,12 @@ in the rendered output.
 
 ### Images
 
+{{< history >}}
+
+- Opening images in an overlay [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377398) in GitLab 18.6.
+
+{{< /history >}}
+
 Embed images using inline or reference [links](#links) prepended with a `!`. For example:
 
 <!--
@@ -1224,6 +1230,8 @@ In image links:
   To see title text, hover over the image.
 
 To learn about creating accessible alt text, see [Accessible images and videos](#accessible-images-and-videos).
+
+When an image is selected, it opens in an overlay.
 
 ### Videos
 
@@ -1273,6 +1281,8 @@ dimensions are always appended. The dimensions are automatically adjusted to
 accommodate for retina (and other higher-resolution) displays. For instance,
 a 144ppi image is resized to 50% of its dimensions, whereas a 96ppi image is
 resized to 75% of its dimensions.
+
+When selected, images open in an overlay scaled to either 100% or the largest size that fits in the window.
 
 ### Audio
 

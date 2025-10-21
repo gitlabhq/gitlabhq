@@ -249,11 +249,8 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
 1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
-1. Optional. Update **Expiration date** to modify the default expiration date.
-   - Administrators can view expiration dates and use them for
-     guidance when [deleting keys](../administration/credentials_inventory.md#delete-ssh-keys).
-   - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now.
-   - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date.
+1. Optional. Update **Expiration date** to modify the default expiration date. For more information, see
+[SSH key expiration](#ssh-key-expiration).
 1. Select **Add key**.
 
 ## Verify that you can connect
@@ -465,6 +462,23 @@ To delete an SSH key:
 1. On the left sidebar, select **SSH Keys**.
 1. Next to the key you want to delete, select **Remove** ({{< icon name="remove" >}}).
 1. Select **Delete**.
+
+## SSH key expiration
+
+You can set an expiration date when you add an SSH key to your account. This optional setting
+helps limit the risk of a security breach.
+
+After your SSH key expires, you can no longer use it to authenticate or sign commits. You must
+[generate a new SSH key](#generate-an-ssh-key-pair) and
+[add it to your account](#add-an-ssh-key-to-your-gitlab-account).
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can view expiration dates and use them
+for guidance when [deleting keys](../administration/credentials_inventory.md#delete-ssh-keys).
+
+GitLab checks daily for expiring SSH keys and sends notifications:
+
+- At 01:00 AM UTC, seven days before expiration.
+- At 02:00 AM UTC on the expiration date.
 
 ## Use different accounts on a single GitLab instance
 

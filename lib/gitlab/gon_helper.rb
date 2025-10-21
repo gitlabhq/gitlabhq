@@ -105,7 +105,6 @@ module Gitlab
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
       push_frontend_feature_flag(:whats_new_featured_carousel)
       push_frontend_feature_flag(:paneled_view, current_user)
-      push_frontend_feature_flag(:image_lightboxes, current_user)
       push_frontend_feature_flag(:archive_group)
 
       # Expose the Project Studio user preference as if it were a feature flag

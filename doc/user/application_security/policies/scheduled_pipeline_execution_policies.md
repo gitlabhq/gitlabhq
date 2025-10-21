@@ -276,8 +276,9 @@ Note these limitations:
 If your scheduled pipelines are not running as expected, follow these troubleshooting steps:
 
 1. **Verify experimental flag**: Ensure that the `pipeline_execution_schedule_policy: enabled: true` flag is set in the `experiments` section of your `policy.yml` file.
-1. **Check policy access**: Verify that your security policy project has access to the CI/CD configuration:
-   - Go to the security policy project's **Settings** > **General** > **Visibility, project features, permissions** and ensure the "Pipeline execution policies" setting is enabled.
+1. **Check policy access**: Verify that:
+   - The CI/CD configuration file is stored in your security policy project, not linked from another project.
+   - The **Pipeline execution policies** setting is enabled in the security policy project (**Settings** > **General** > **Visibility, project features, permissions**).
 1. **Validate CI configuration**:
    - Check that the CI/CD configuration file exists at the specified path.
    - Verify the configuration is valid by running a manual pipeline.

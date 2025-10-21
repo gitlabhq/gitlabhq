@@ -9369,7 +9369,8 @@ export const workItemMetadataProviderResponse = {
   data: {
     namespace: {
       id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
-      licensedFeatures: {
+      availableFeatures: {
+        hasDesignManagementFeature: true,
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         hasOkrsFeature: true,

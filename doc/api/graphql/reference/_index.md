@@ -11858,10 +11858,9 @@ Input type: `SecurityAttributeCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsecurityattributecreateattributes"></a>`attributes` | [`[SecurityAttributeInput!]!`](#securityattributeinput) | Attributes to create. |
-| <a id="mutationsecurityattributecreatecategoryid"></a>`categoryId` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="mutationsecurityattributecreatecategoryid"></a>`categoryId` | [`SecurityCategoryID!`](#securitycategoryid) | Global ID of the security category. |
 | <a id="mutationsecurityattributecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsecurityattributecreatenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace. Will be used if no Category ID is given. |
-| <a id="mutationsecurityattributecreatetemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. Will be used if no Category ID is given. |
+| <a id="mutationsecurityattributecreatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace. |
 
 #### Fields
 
@@ -11987,10 +11986,9 @@ Input type: `SecurityCategoryUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritycategoryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritycategoryupdatedescription"></a>`description` | [`String`](#string) | Description of the security category. |
-| <a id="mutationsecuritycategoryupdateid"></a>`id` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="mutationsecuritycategoryupdateid"></a>`id` | [`SecurityCategoryID!`](#securitycategoryid) | Global ID of the security category. |
 | <a id="mutationsecuritycategoryupdatename"></a>`name` | [`String`](#string) | Name of the security category. |
 | <a id="mutationsecuritycategoryupdatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the category namespace. |
-| <a id="mutationsecuritycategoryupdatetemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. Will be used if no Category ID is given. |
 
 #### Fields
 
