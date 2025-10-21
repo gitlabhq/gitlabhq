@@ -36,6 +36,8 @@ module EncryptedUserPassword
     @password = new_password # rubocop:disable Gitlab/ModuleWithInstanceVariables
     return unless new_password.present?
 
+    return unless new_password.to_s.length >= ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH
+
     # Use SafeRequestStore to cache the password hash during registration
     # This prevents redundant bcrypt operations when the same password is set on multiple
     # User objects during registration. Our analysis showed that two separate User objects

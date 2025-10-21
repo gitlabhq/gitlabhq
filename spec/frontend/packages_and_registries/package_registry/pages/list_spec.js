@@ -10,7 +10,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import * as urlUtility from '~/lib/utils/url_utility';
-import { smoothScrollTop } from '~/behaviors/smooth_scroll';
+import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 import ListPage from '~/packages_and_registries/package_registry/pages/list.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
@@ -35,7 +35,7 @@ import {
 } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/behaviors/smooth_scroll');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('PackagesListApp', () => {
   useLocalStorageSpy();

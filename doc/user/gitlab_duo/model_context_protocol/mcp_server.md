@@ -345,6 +345,7 @@ Search issues for "flaky test" across GitLab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
+- Support for project path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/575234) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -361,7 +362,7 @@ Searches for relevant code snippets in a project.
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
 | `semantic_query` | string  | Yes      | Search query for the code. |
-| `project_id`     | integer | Yes      | ID of the project. |
+| `project_id`     | string  | Yes      | ID or path of the project. |
 | `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
 | `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
 | `limit`          | integer | No       | Maximum number of results to return. Default is `20`. |

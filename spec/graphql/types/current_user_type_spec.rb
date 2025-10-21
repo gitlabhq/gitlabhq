@@ -35,6 +35,7 @@ RSpec.describe GitlabSchema.types['CurrentUser'], feature_category: :user_profil
         dueBefore
         first
         iids
+        ids
         in
         labelName
         last

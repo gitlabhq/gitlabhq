@@ -3,7 +3,7 @@ import { setActivePinia, createPinia } from 'pinia';
 import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens';
 import { update15DaysFromNow } from '~/vue_shared/access_tokens/utils';
 import { createAlert } from '~/alert';
-import { smoothScrollTop } from '~/behaviors/smooth_scroll';
+import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 import axios from '~/lib/utils/axios_utils';
 import {
   HTTP_STATUS_NO_CONTENT,
@@ -24,7 +24,7 @@ jest.mock('~/vue_shared/access_tokens/utils', () => ({
   update15DaysFromNow: jest.fn(),
 }));
 
-jest.mock('~/behaviors/smooth_scroll');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('useAccessTokens store', () => {
   let store;

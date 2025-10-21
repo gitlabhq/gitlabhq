@@ -14739,6 +14739,7 @@ Input type: `WorkItemExportInput`
 | <a id="mutationworkitemexportduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="mutationworkitemexporthealthstatusfilter"></a>`healthStatusFilter` {{< icon name="warning-solid" >}} | [`HealthStatusFilter`](#healthstatusfilter) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemexporthierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
+| <a id="mutationworkitemexportids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="mutationworkitemexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="mutationworkitemexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="mutationworkitemexportincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
@@ -14960,6 +14961,7 @@ Input type: `WorkItemsCsvExportInput`
 | <a id="mutationworkitemscsvexportduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="mutationworkitemscsvexporthealthstatusfilter"></a>`healthStatusFilter` {{< icon name="warning-solid" >}} | [`HealthStatusFilter`](#healthstatusfilter) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitemscsvexporthierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
+| <a id="mutationworkitemscsvexportids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="mutationworkitemscsvexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="mutationworkitemscsvexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="mutationworkitemscsvexportincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
@@ -28341,6 +28343,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="currentuserworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="currentuserworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
+| <a id="currentuserworkitemsids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="currentuserworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="currentuserworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="currentuserworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
@@ -31042,7 +31045,24 @@ Describes the usage of consumables by users under the subscription.
 | <a id="gitlabsubscriptionusageusersusagetotalusersusingcredits"></a>`totalUsersUsingCredits` | [`Int`](#int) | Total number of users consuming GitLab Credits. |
 | <a id="gitlabsubscriptionusageusersusagetotalusersusingoverage"></a>`totalUsersUsingOverage` | [`Int`](#int) | Total number of users consuming overage. |
 | <a id="gitlabsubscriptionusageusersusagetotalusersusingpool"></a>`totalUsersUsingPool` | [`Int`](#int) | Total number of users consuming pool GitLab Credits. |
-| <a id="gitlabsubscriptionusageusersusageusers"></a>`users` | [`GitlabSubscriptionUsageUsersConnection`](#gitlabsubscriptionusageusersconnection) | List of users with their usage data. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `GitlabSubscriptionUsageUsersUsage.users`
+
+List of users with their usage data.
+
+Returns [`GitlabSubscriptionUsageUsersConnection`](#gitlabsubscriptionusageusersconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersusageusersusername"></a>`username` | [`String`](#string) | Username of the User. |
 
 ### `GoogleCloudArtifactRegistryDockerImage`
 
@@ -33048,6 +33068,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
+| <a id="groupworkitemstatecountsids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="groupworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -33134,6 +33155,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
+| <a id="groupworkitemsids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="groupworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="groupworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -37551,6 +37573,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="namespaceworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="namespaceworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="namespaceworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
+| <a id="namespaceworkitemstatecountsids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="namespaceworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="namespaceworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="namespaceworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -37642,6 +37665,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="namespaceworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="namespaceworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
+| <a id="namespaceworkitemsids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="namespaceworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="namespaceworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="namespaceworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -41861,6 +41885,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="projectworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="projectworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
+| <a id="projectworkitemstatecountsids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="projectworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="projectworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -41941,6 +41966,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="projectworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="projectworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
+| <a id="projectworkitemsids"></a>`ids` | [`[WorkItemID!]`](#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |

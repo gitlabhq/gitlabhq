@@ -6,6 +6,8 @@ import {
   scrollTo,
   findParentPanelScrollingEl,
   scrollToElement,
+  smoothScrollTo,
+  smoothScrollTop,
 } from '~/lib/utils/scroll_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -321,6 +323,61 @@ describe('scroll utils', () => {
         expect(dynamicPanelScroller.scrollTo).toHaveBeenCalledWith({
           behavior: 'smooth',
           top: elemTop,
+        });
+      });
+    });
+  });
+
+  describe('smooth_scroll', () => {
+    let scrollToSpy;
+
+    beforeEach(() => {
+      scrollToSpy = jest.spyOn(window, 'scrollTo');
+    });
+
+    afterEach(() => {
+      scrollToSpy.mockRestore();
+    });
+
+    describe('smoothScrollTo', () => {
+      describe('when user prefers reduced motion', () => {
+        beforeEach(() => {
+          jest.spyOn(window, 'matchMedia').mockReturnValue({ matches: true });
+        });
+
+        it('calls scrollTo with the provided options', () => {
+          smoothScrollTo({ top: 100 });
+
+          expect(scrollToSpy).toHaveBeenCalledWith({
+            top: 100,
+            behavior: expect.stringMatching('auto'),
+          });
+        });
+      });
+
+      describe('when user does not prefer reduced motion', () => {
+        beforeEach(() => {
+          jest.spyOn(window, 'matchMedia').mockReturnValue({ matches: false });
+        });
+
+        it('calls scrollTo with the provided options', () => {
+          smoothScrollTo({ top: 100 });
+
+          expect(scrollToSpy).toHaveBeenCalledWith({
+            top: 100,
+            behavior: expect.stringMatching('smooth'),
+          });
+        });
+      });
+    });
+
+    describe('smoothScrollTop', () => {
+      it('calls scrollTo with top 0', () => {
+        smoothScrollTop();
+
+        expect(scrollToSpy).toHaveBeenCalledWith({
+          top: 0,
+          behavior: expect.stringMatching('auto|smooth'),
         });
       });
     });

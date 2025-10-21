@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { createAlert } from '~/alert';
-import { smoothScrollTop } from '~/behaviors/smooth_scroll';
+import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 import axios from '~/lib/utils/axios_utils';
 import {
   convertObjectPropsToCamelCase,

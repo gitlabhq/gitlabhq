@@ -9,6 +9,7 @@
 #   current_user - currently logged in user, if any
 #   params:
 #     work_item_parent_ids: integer[] (list of work item ids)
+#     ids: integer[] (list of work item ids)
 #
 module WorkItems
   class WorkItemsFinder < IssuesFinder
@@ -28,6 +29,7 @@ module WorkItems
     def filter_items(items)
       items = super(items)
 
+      items = by_ids(items)
       items = by_widgets(items)
       items = by_timeframe(items, with_namespace_cte: with_namespace_cte)
       items = by_work_item_parent_ids(items)
@@ -65,6 +67,12 @@ module WorkItems
       end
 
       items
+    end
+
+    def by_ids(items)
+      return items unless params[:ids].present?
+
+      items.id_in(params[:ids])
     end
 
     def widget_filter_for(widget_class)

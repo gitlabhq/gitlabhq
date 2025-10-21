@@ -32,6 +32,7 @@ module Gitlab
             { name: stage, index: stages.index(stage), builds: seeds }
           end
         end
+        strong_memoize_attr :stages_attributes
 
         def builds
           jobs.map do |name, _|

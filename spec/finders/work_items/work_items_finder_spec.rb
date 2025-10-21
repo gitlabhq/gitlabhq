@@ -256,4 +256,31 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
       end
     end
   end
+
+  context 'when filtering by ids' do
+    include_context '{Issues|WorkItems}Finder#execute context', :work_item
+
+    let(:params) { { ids: [item1.id, item3.id] } }
+    let(:scope) { 'all' }
+
+    it 'returns only issues with the specified ids' do
+      expect(items).to contain_exactly(item1, item3)
+    end
+
+    context 'when ids list is empty' do
+      let(:params) { { ids: [] } }
+
+      it 'does not apply the ID filter' do
+        expect(items).to contain_exactly(item1, item2, item3, item4, item5)
+      end
+    end
+
+    context 'when ids contain a non-existing id' do
+      let(:params) { { ids: [non_existing_record_id] } }
+
+      it 'returns no issues' do
+        expect(items).to be_empty
+      end
+    end
+  end
 end

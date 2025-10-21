@@ -43,11 +43,23 @@ class MilestonesFinder
   private
 
   def by_ids_or_title(items)
-    return items if params[:ids].blank? && params[:title].blank?
-    return items.id_in(params[:ids]) if params[:ids].present? && params[:title].blank?
-    return items.with_title(params[:title]) if params[:ids].blank? && params[:title].present?
+    return items if ids_and_title_blank?
+    return items.id_in(params[:ids]) if only_ids_present?
+    return items.with_title(params[:title]) if only_title_present?
 
     items.with_ids_or_title(ids: params[:ids], title: params[:title])
+  end
+
+  def ids_and_title_blank?
+    params[:ids].blank? && params[:title].blank?
+  end
+
+  def only_ids_present?
+    params[:ids].present? && params[:title].blank?
+  end
+
+  def only_title_present?
+    params[:ids].blank? && params[:title].present?
   end
 
   def by_groups_and_projects(items)

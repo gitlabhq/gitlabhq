@@ -352,6 +352,14 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
           end
         end
       end
+
+      describe 'filtering by ids' do
+        let(:context) { { arg_style: :internal_prepared } }
+
+        it 'returns only the work items matching the ids filter' do
+          expect(resolve_items({ ids: [item1.to_gid.to_s] }, context)).to contain_exactly(item1)
+        end
+      end
     end
   end
 

@@ -593,6 +593,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
             expect(user).to be_invalid
             expect(user.errors.full_messages.join).to include('is too short (minimum is 10 characters)')
           end
+
+          context "length validator with fips", :fips_mode do
+            it "runs validations" do
+              expect(user).to be_invalid
+              expect(user.errors.full_messages.join).to include('is too short (minimum is 10 characters)')
+            end
+          end
         end
 
         context 'for a long password' do

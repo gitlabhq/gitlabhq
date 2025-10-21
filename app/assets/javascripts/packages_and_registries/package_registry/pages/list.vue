@@ -30,7 +30,7 @@ import {
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { getStorageValue, saveStorageValue } from '~/lib/utils/local_storage';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import { smoothScrollTop } from '~/behaviors/smooth_scroll';
+import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 
 const PAGE_SIZE_KEY = 'packages_page_size';
 

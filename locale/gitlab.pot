@@ -7811,9 +7811,6 @@ msgstr ""
 msgid "An error occurred while fetching codequality mr diff reports."
 msgstr ""
 
-msgid "An error occurred while fetching comments, please try again."
-msgstr ""
-
 msgid "An error occurred while fetching commit data."
 msgstr ""
 
@@ -15851,9 +15848,6 @@ msgid "Comment added to the timeline."
 msgstr ""
 
 msgid "Comment anyway"
-msgstr ""
-
-msgid "Comment could not be submitted. Please check your network connection and try again."
 msgstr ""
 
 msgid "Comment could not be submitted: %{reason}."

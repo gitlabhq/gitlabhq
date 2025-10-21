@@ -7,21 +7,28 @@ RSpec.describe Members::AcceptInviteService, feature_category: :user_management 
   let_it_be(:error) { 'The invitation could not be accepted.' }
 
   let(:member) { create(:project_member, :invited, invite_email: user.email) }
-  let(:service) { described_class.new(user, member: member) }
 
-  subject(:result) { service.execute }
+  subject(:service) { described_class.new(user, member: member) }
 
   describe '#execute' do
     context 'with different user and member emails' do
       let(:member) { create(:project_member, :invited, invite_email: 'user2@example.com') }
 
       it 'returns an error response' do
+        result = service.execute
+
         expect(result).to be_error
         expect(result.message).to eq error
       end
 
       it 'does not connect the member and the user' do
-        expect { result }.not_to change { member.user }
+        expect { service.execute }.not_to change { member.user }
+      end
+
+      it 'does not publish an event' do
+        expect(Gitlab::EventStore).not_to receive(:publish)
+
+        service.execute
       end
     end
 
@@ -31,23 +38,41 @@ RSpec.describe Members::AcceptInviteService, feature_category: :user_management 
       end
 
       it 'returns an error response' do
+        result = service.execute
+
         expect(result).to be_error
         expect(result.message).to eq error
       end
 
       it 'does not connect the member and the user' do
-        expect { result }.not_to change { member.user }
+        expect { service.execute }.not_to change { member.user }
+      end
+
+      it 'does not publish an event' do
+        expect(Gitlab::EventStore).not_to receive(:publish)
+
+        service.execute
       end
     end
 
     context 'with successful acceptation' do
-      it 'returns a success response' do
-        expect(result).to be_success
+      let(:event) { Members::AcceptedInviteEvent.new(data: data) }
+      let(:data) do
+        {
+          member_id: member.id,
+          source_id: member.source_id,
+          source_type: member.source_type,
+          user_id: user.id
+        }
       end
 
+      it { expect(service.execute).to be_success }
+
       it 'connects the member and the user' do
-        expect { result }.to change { member.user }.from(nil).to(user)
+        expect { service.execute }.to change { member.user }.from(nil).to(user)
       end
+
+      it { expect { service.execute }.to publish_event(Members::AcceptedInviteEvent).with(data) }
     end
   end
 end
