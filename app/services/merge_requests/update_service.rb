@@ -325,7 +325,10 @@ module MergeRequests
 
     override :quick_action_options
     def quick_action_options
-      { merge_request_diff_head_sha: params.delete(:merge_request_diff_head_sha) }
+      {
+        merge_request_diff_head_sha: params.delete(:merge_request_diff_head_sha),
+        scope_validator: params[:scope_validator]
+      }
     end
 
     def update_merge_request_with_specialized_service(merge_request)

@@ -87,7 +87,7 @@ module Mutations
         update_result = ::WorkItems::UpdateService.new(
           container: work_item.resource_parent,
           current_user: current_user,
-          params: attributes,
+          params: attributes.merge(scope_validator: context[:scope_validator]),
           widget_params: widget_params,
           perform_spam_check: true
         ).execute(work_item)

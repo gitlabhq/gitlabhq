@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.4.3 (2025-10-21)
+
+### Fixed (5 changes)
+
+- [Fix connection pool errors when health check is running](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53f5d29c93ea36cd6f1f6f8c4ccb4a144a53a239)
+- [Downgrade redis-rb gem to v5.4.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3fb24f782beb8708fc8e156e3cd8d5ec38f2613b)
+- [Fix zoekt search for API when elasticsearch is disable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5945f19d1b94d2882faf8c889917f64490db28e5) ([merge request](https://gitilab.com/gitlab-org/gitlab/-/merge_requests/208124))
+- [Fix the undefined method id for nil:NilClass in WorkItem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/400938e318bc34ce3bc90f1ff9c3bd21c8ddb868) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208091))
+- [Revert discarded database pool check in load balancer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2c146b05834027cd1fb1dd97f010d108149d33a9)
+
+### Security (7 changes)
+
+- [Non-group members can be added to projects even though the "Users cannot be...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/446dfa32a5d7e8eb4d110caa50db12aefe58dfc0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5418))
+- [Ensure NPM upload cannot exceed plan limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cfff507e924eaab1b0210dd9e3627a0d8dcba8d6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5428))
+- [Limit JSON request payload for /-/collect_events](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4622a9f0386af48b95613eb2740a15293c5df16a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5404))
+- [Track pull mirror updates using gitaly_context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9eb4714f71edb96a9d7d30a05634d5e6bceeca96) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5411))
+- [Reject quick actions for ai_workflows scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7ef35ff4d114144ccd635413e89a5b694d6aa17e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5372))
+- [Use CE policy for runner ability check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/602a6154b75570c966fe752df0d92eca78954121) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5414))
+- [Limit depth, size and total elements when parsing JSON string](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f9d6ed837944160e227aae9a227e7ad3373b8006) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5407))
+
 ## 18.4.2 (2025-10-08)
 
 ### Added (1 change)

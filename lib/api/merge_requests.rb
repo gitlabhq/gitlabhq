@@ -356,9 +356,16 @@ module API
         mr_params = declared_params(include_missing: false)
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)
         mr_params = convert_parameters_from_legacy_format(mr_params)
+        validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
+        mr_params[:scope_validator] ||= validator
 
-        merge_request = ::MergeRequests::CreateService.new(project: user_project, current_user: current_user, params: mr_params).execute
-
+        begin
+          merge_request = ::MergeRequests::CreateService
+                            .new(project: user_project, current_user: current_user, params: mr_params)
+                            .execute
+        rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+          forbidden!(error.message)
+        end
         handle_merge_request_errors!(merge_request)
 
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
@@ -714,10 +721,16 @@ module API
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params.has_key?(:remove_source_branch)
         mr_params = convert_parameters_from_legacy_format(mr_params)
         mr_params[:use_specialized_service] = true
+        validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
+        mr_params[:scope_validator] ||= validator
 
-        merge_request = ::MergeRequests::UpdateService
-          .new(project: user_project, current_user: current_user, params: mr_params)
-          .execute(merge_request)
+        begin
+          merge_request = ::MergeRequests::UpdateService
+            .new(project: user_project, current_user: current_user, params: mr_params)
+            .execute(merge_request)
+        rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+          forbidden!(error.message)
+        end
 
         handle_merge_request_errors!(merge_request)
 

@@ -504,4 +504,29 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       expect(scopes).to include(:api, :read_api)
     end
   end
+
+  describe '#current_token_scopes' do
+    context 'when access token is present' do
+      let(:user) { create(:user) }
+      let(:token) { create(:personal_access_token, user: user, scopes: %w[api read_user]) }
+
+      before do
+        allow(subject).to receive(:access_token).and_return(token)
+      end
+
+      it 'returns the scopes from the access token as an array' do
+        expect(subject.current_token_scopes).to contain_exactly('api', 'read_user')
+      end
+    end
+
+    context 'when access token is not present' do
+      before do
+        allow(subject).to receive(:access_token).and_return(nil)
+      end
+
+      it 'returns an empty array' do
+        expect(subject.current_token_scopes).to eq([])
+      end
+    end
+  end
 end
