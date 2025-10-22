@@ -66,7 +66,6 @@ To download all the secure files in a project:
 test:
   image: registry.gitlab.com/gitlab-org/cli:latest
   script:
-    - export GITLAB_HOST=$CI_SERVER_URL
     - glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL
     - glab -R $CI_PROJECT_PATH securefile download --all --output-dir="where/to/save"
 ```
@@ -80,7 +79,6 @@ that are automatically available.
 test:
   image: registry.gitlab.com/gitlab-org/cli:latest
   script:
-    - export GITLAB_HOST=$CI_SERVER_URL
     - glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL
     - glab -R $CI_PROJECT_PATH securefile download $SECURE_FILE_ID --path="where/to/save/file.txt"
 ```

@@ -30,7 +30,7 @@ module Mutations
           note = ::Notes::CreateService.new(
             noteable.project,
             current_user,
-            create_note_params(noteable, args)
+            create_note_params(noteable, args).merge(scope_validator: context[:scope_validator])
           ).execute
 
           data = {

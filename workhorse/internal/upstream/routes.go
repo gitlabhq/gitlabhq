@@ -416,6 +416,13 @@ func configureRoutes(u *upstream) {
 		u.route("PUT",
 			newRoute(apiProjectPattern+`/packages/maven/`, "projects_api_packages_maven", railsBackend), requestBodyUploader),
 
+		// NPM
+		u.route("PUT",
+			newRoute(apiProjectPattern+`/packages/npm/-/package/[^/]+/dist-tags/[^/]+`, "projects_api_packages_npm_dist_tags", railsBackend), proxy),
+
+		u.route("PUT",
+			newRoute(apiProjectPattern+`/packages/npm/.*`, "projects_api_packages_npm", railsBackend), requestBodyUploader),
+
 		// Conan Artifact Repository
 		u.route("PUT",
 			newRoute(apiPattern+`v4/packages/conan/`, "api_packages_conan", railsBackend), requestBodyUploader),

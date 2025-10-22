@@ -52,7 +52,7 @@ module Notes
 
     def build_note(executing_user)
       Notes::BuildService
-        .new(project, current_user, params.except(:merge_request_diff_head_sha))
+        .new(project, current_user, params.except(:merge_request_diff_head_sha, :scope_validator))
         .execute(executing_user: executing_user)
     end
 
@@ -151,7 +151,8 @@ module Notes
     def quick_action_options
       {
         merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
-        review_id: params[:review_id]
+        review_id: params[:review_id],
+        scope_validator: params[:scope_validator]
       }
     end
 

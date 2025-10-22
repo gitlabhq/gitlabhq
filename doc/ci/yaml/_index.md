@@ -84,6 +84,7 @@ A GitLab CI/CD pipeline configuration includes:
   | [`secrets`](#secrets)                         | The CI/CD secrets the job needs. |
   | [`services`](#services)                       | Use Docker services images. |
   | [`stage`](#stage)                             | Defines a job stage. |
+  | [`start_in`](#start_in)                       | Delay job execution for a specified duration. Requires `when: delayed`. |
   | [`tags`](#tags)                               | List of tags that are used to select a runner. |
   | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting. |
   | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger. |
@@ -6568,6 +6569,51 @@ stop_production:
   when: manual
   manual_confirmation: "Are you sure you want to stop the production environment?"
 ```
+
+---
+
+### `start_in`
+
+Use `start_in` to delay the execution of a job for a specified duration after the job is created.
+You must configure `when: delayed` for the job.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A period of time in seconds, minutes, or hours. Must be less than or equal to one week.
+Examples of valid values:
+
+- `'5'` (5 seconds)
+- `'10 seconds'`
+- `'30 minutes'`
+- `'1 hour'`
+- `'1 day'`
+
+**Example of `start_in`**:
+
+```yaml
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploying to production"
+  when: delayed
+  start_in: 30 minutes
+```
+
+In this example, the `deploy_production` job starts 30 minutes after the previous stage completes.
+
+**Additional details**:
+
+- The timer starts when the job's stage begins, not when the previous job finishes.
+- To manually start a delayed job immediately, select **Play** ({{< icon name="play" >}}) in the pipeline view.
+- The minimum delay period is one second and the maximum delay is one week.
+- `start_in` only works when [`when`](#when) is set to `delayed`. If you use any other value for `when`, the configuration is invalid.
+  If a job uses `rules`, `start_in` and `when` must be defined in the `rules`, not at the job level.
+  Otherwise, you receive a validation error: `config key may not be used with 'rules': start_in`.
+- `start_in` is not supported with `workflow:rules`, but does not cause any syntax violation.
+
+**Related topics**:
+
+- [Run a job after a delay](../jobs/job_control.md#run-a-job-after-a-delay)
 
 ---
 

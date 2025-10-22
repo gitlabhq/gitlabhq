@@ -2,6 +2,7 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Install and manage PostgreSQL extensions in GitLab Self-Managed, with guidance on handling failures and recovering from failed migrations.
 title: Managing PostgreSQL extensions
 ---
 

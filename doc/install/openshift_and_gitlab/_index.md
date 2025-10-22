@@ -2,10 +2,11 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Run GitLab Self-Managed and GitLab Runner fleets on OpenShift and integrate with the GitLab agent for Kubernetes.
 title: OpenShift support
 ---
 
-OpenShift - GitLab compatibility can be addressed in three different aspects. This page helps navigating between these aspects and provides introductory information for getting started with OpenShift and GitLab.
+OpenShift - GitLab compatibility can be addressed in three different aspects. This page helps navigate between these aspects and provides introductory information for getting started with OpenShift and GitLab.
 
 ## What is OpenShift
 

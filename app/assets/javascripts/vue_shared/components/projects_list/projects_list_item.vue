@@ -16,6 +16,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
 import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
+import CiCatalogBadge from '~/vue_shared/components/projects_list/ci_catalog_badge.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 
 export default {
@@ -28,7 +29,6 @@ export default {
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
     project: __('Project'),
-    ciCatalogBadge: s__('CiCatalog|CI/CD Catalog project'),
   },
   components: {
     GlIcon,
@@ -41,6 +41,7 @@ export default {
     ListItemInactiveBadge,
     CiIcon,
     TopicBadges,
+    CiCatalogBadge,
   },
   props: {
     project: {
@@ -252,14 +253,11 @@ export default {
           visibilityTooltip
         }}</gl-tooltip>
       </template>
-      <gl-badge
+      <ci-catalog-badge
         v-if="project.isCatalogResource"
-        icon="catalog-checkmark"
-        variant="info"
-        data-testid="ci-catalog-badge"
-        :href="project.exploreCatalogPath"
-        >{{ $options.i18n.ciCatalogBadge }}</gl-badge
-      >
+        :is-published="project.isPublished"
+        :explore-catalog-path="project.exploreCatalogPath"
+      />
       <gl-badge v-if="shouldShowAccessLevel" class="gl-block" data-testid="user-access-role">{{
         accessLevelLabel
       }}</gl-badge>

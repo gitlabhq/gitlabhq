@@ -2884,10 +2884,10 @@ msgstr ""
 msgid "AICatalog|Visibility & access"
 msgstr ""
 
-msgid "AICatalog|Visible to all users. Anyone can enable this agent on their projects and view its configuration."
+msgid "AICatalog|Visible to all users. Anyone can enable this agent in their projects."
 msgstr ""
 
-msgid "AICatalog|Visible to all users. Anyone can enable this flow on their projects and view its configuration."
+msgid "AICatalog|Visible to all users. Anyone can enable this flow in their projects."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
@@ -40611,6 +40611,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Membership"
+msgstr ""
+
+msgid "Membership is locked for this group"
 msgstr ""
 
 msgid "Members|%{time} by %{user}"

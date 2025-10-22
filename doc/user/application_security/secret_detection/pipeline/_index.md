@@ -216,10 +216,11 @@ This project is available only to GitLab team members.
 Duplicate vulnerability tracking doesn't support workflows where:
 
 - The existing finding lacks a tracking signature and doesn't share the same location as the new finding.
-- Secrets are detected by searching for their prefixes instead of the entire secret value. For these secret types, all the detections of the same type and in the same file are reported as a single finding.
+- Certain secrets are detected by searching for their prefixes instead of the entire secret value. For these secret types, all the detections of the same type and in the same file are reported as a single finding.
 
   For example, an SSH private key is detected by its prefix `-----BEGIN OPENSSH PRIVATE KEY-----`. If there are multiple SSH private keys in the same file,
   pipeline secret detection creates only one finding.
+- When running a historic scan or enabling pipeline secret detection on existing commits, if a secret is introduced in one commit and then modified in a later commit during the same scan, only the most recent secret value appears in the vulnerability report.
 
 ### Detected secrets
 

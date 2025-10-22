@@ -2082,12 +2082,7 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
-    label_scope = Label.templates
-    if Feature.enabled?(:template_labels_scoped_by_org, :instance)
-      label_scope = label_scope.for_organization(organization)
-    end
-
-    label_scope.each do |label|
+    Label.templates.for_organization(organization).each do |label|
       # slice on column_names to ensure an added DB column will not break a mixed deployment
       params = label.attributes
                     .slice(*Label.column_names)

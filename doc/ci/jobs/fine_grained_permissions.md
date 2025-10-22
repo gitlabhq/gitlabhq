@@ -172,6 +172,7 @@ The following endpoints are available for CI/CD job tokens.
 | The PyPi Simple Project Package Endpoint | `GET /projects/:id/packages/pypi/simple/*package_name` | `READ_PACKAGES` | Read |
 | The PyPi package download endpoint | `GET /projects/:id/packages/pypi/files/:sha256/*file_identifier` | `READ_PACKAGES` | Read |
 | Version metadata | `GET /projects/:id/packages/go/*module_name/@v/:module_version.info` | `READ_PACKAGES` | Read |
+| Authorize NPM package upload | `PUT /projects/:id/packages/npm/:package_name/authorize` | `ADMIN_PACKAGES` | Read and write |
 | Authorize the PyPi package upload from workhorse | `POST /projects/:id/packages/pypi/authorize` | `ADMIN_PACKAGES` | Read and write |
 | Composer packages endpoint for registering packages | `POST /projects/:id/packages/composer` | `ADMIN_PACKAGES` | Read and write |
 | Create or Update the given tag for the given NPM package and version | `PUT /groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | Read and write |

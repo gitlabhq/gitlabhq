@@ -352,6 +352,21 @@ The `permission denied` error on `gradlew` typically indicates that `gradlew` wa
 
 Make the file executable by running `chmod +ux gradlew` locally and pushing it to your Git repository.
 
+## Dependency scanning nebula lock creation fails due to unsupported Gradle version
+
+When attempting to create [dependency.lock files](dependency_scanning_sbom/_index.md#dependency-lock-plugin) with an unsupported Gradle version (9.0 or above) the following error occurs:
+
+```plaintext
+FAILURE: Build failed with an exception.
+* Where:
+Initialization script '/builds/gitlab-org/app/app/nebula.gradle' line: 11
+* What went wrong:
+Failed to notify build listener.
+> org/gradle/util/NameMatcher
+```
+
+Try downgrading your gradle build to Gradle 8.10.2.
+
 ## Dependency scanning scanner is no longer `Gemnasium`
 
 Historically, the scanner used by dependency scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/_index.md).

@@ -74,6 +74,7 @@ const formatSubgroupsAndProjects = (item) => {
     topics: [],
     isCatalogResource: false,
     exploreCatalogPath: '',
+    isPublished: false,
     pipeline: null,
     forksCount: 0,
     openMergeRequestsCount: 0,

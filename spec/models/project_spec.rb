@@ -1356,25 +1356,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         'project_org_2'
       )
     end
-
-    context 'when template_labels_scoped_by_org feature flag is disabled' do
-      before do
-        stub_feature_flags(template_labels_scoped_by_org: false)
-      end
-
-      it 'creates all label templates from all organizations' do
-        expect do
-          project.create_labels
-        end.to change { Label.count }.by(4)
-
-        expect(project.reload.labels.pluck(:title)).to contain_exactly(
-          'project_org_1',
-          'project_org_2',
-          'org1_1',
-          'org1_2'
-        )
-      end
-    end
   end
 
   describe '#notification_group' do

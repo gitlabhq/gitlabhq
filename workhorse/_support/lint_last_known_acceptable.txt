@@ -16,7 +16,7 @@ internal/imageresizer/image_resizer.go:369:13: Error return value of `file.Close
 cmd/gitlab-workhorse/main.go:118:6: Function 'buildConfig' has too many statements (41 > 40) (funlen)
 internal/healthcheck/puma_checker.go:105:32: Function 'Check' is too long (62 > 60) (funlen)
 internal/imageresizer/image_resizer.go:152:19: Function 'Inject' is too long (61 > 60) (funlen)
-internal/upstream/routes.go:302:6: Function 'configureRoutes' is too long (299 > 60) (funlen)
+internal/upstream/routes.go:302:6: Function 'configureRoutes' is too long (305 > 60) (funlen)
 cmd/gitlab-workhorse/main.go:210:1: cognitive complexity 26 of func `run` is high (> 20) (gocognit)
 internal/git/archive.go:67:1: cognitive complexity 23 of func `(*archive).Inject` is high (> 20) (gocognit)
 internal/transport/transport.go:147:1: cognitive complexity 59 of func `validateIPAddress` is high (> 20) (gocognit)

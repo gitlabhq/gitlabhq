@@ -4,6 +4,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
+import CiCatalogBadge from '~/vue_shared/components/projects_list/ci_catalog_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import { ACTION_DELETE, ACTION_EDIT } from '~/vue_shared/components/list_actions/constants';
 import {
@@ -51,7 +52,7 @@ describe('ProjectsListItem', () => {
   const findListActions = () => wrapper.findComponent(ProjectListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findStorageSizeBadge = () => wrapper.findByTestId('storage-size');
-  const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
+  const findCiCatalogBadge = () => wrapper.findComponent(CiCatalogBadge);
   const findProjectDescription = () => wrapper.findByTestId('description-html');
   const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
@@ -552,23 +553,46 @@ describe('ProjectsListItem', () => {
       });
     });
 
-    describe('when project is in the CI Catalog', () => {
+    describe('when project is not published in the CI Catalog', () => {
       beforeEach(() => {
         createComponent({
           propsData: {
             project: {
               ...project,
               isCatalogResource: true,
-              exploreCatalogPath: `/catalog/${project.pathWithNamespace}`,
+              isPublished: false,
             },
           },
         });
       });
 
-      it('renders badge with correct link', () => {
-        expect(findCiCatalogBadge().exists()).toBe(true);
-        expect(findCiCatalogBadge().text()).toBe('CI/CD Catalog project');
-        expect(findCiCatalogBadge().props('href')).toBe(`/catalog/${project.pathWithNamespace}`);
+      it('renders badge without a link', () => {
+        expect(findCiCatalogBadge().props()).toEqual({
+          isPublished: false,
+          exploreCatalogPath: null,
+        });
+      });
+    });
+  });
+
+  describe('when project is published in the CI Catalog', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          project: {
+            ...project,
+            isCatalogResource: true,
+            isPublished: true,
+            exploreCatalogPath: `/catalog/${project.pathWithNamespace}`,
+          },
+        },
+      });
+    });
+
+    it('renders badge with correct link', () => {
+      expect(findCiCatalogBadge().props()).toEqual({
+        isPublished: true,
+        exploreCatalogPath: `/catalog/${project.pathWithNamespace}`,
       });
     });
   });

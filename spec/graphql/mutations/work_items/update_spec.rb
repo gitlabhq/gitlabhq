@@ -20,4 +20,25 @@ RSpec.describe Mutations::WorkItems::Update, feature_category: :portfolio_manage
 
     it { is_expected.to be_ready(**valid_arguments) }
   end
+
+  context 'with scope_validator context' do
+    let(:scope_validator) do
+      instance_double(Gitlab::Auth::ScopeValidator, valid_for?: true)
+    end
+
+    let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+    let(:query_context) do
+      GraphQL::Query::Context.new(query: query, values: { current_user: developer, scope_validator: scope_validator })
+    end
+
+    let(:params) { { id: current_work_item.to_gid, title: 'Updated title' } }
+
+    it 'passes scope_validator from context to the UpdateService' do
+      expect(::WorkItems::UpdateService).to receive(:new).with(
+        hash_including(params: hash_including(scope_validator: scope_validator))
+      ).and_call_original
+
+      mutation.resolve(**params)
+    end
+  end
 end
