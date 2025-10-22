@@ -24,6 +24,16 @@ RSpec.describe RuboCop::Cop::API::DescriptionDetail, :config, feature_category: 
         RUBY
       end
     end
+
+    context "when desc block only contains detail" do
+      it "does not add an offense" do
+        expect_no_offenses(<<~'RUBY')
+          desc "Get a list of #{interpolated} things" do
+            detail 'This endpoint was introduced in 18.2'
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when desc block does not have a detail' do

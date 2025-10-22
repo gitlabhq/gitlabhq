@@ -42,7 +42,8 @@
 
   .nav-controls
     - if @tag.has_signature?
-      = render partial: 'projects/commit/signature', object: @tag.signature
+      - signature_object = tag_view_signature(@tag)
+      = render partial: 'projects/commit/signature', object: signature_object
     - if can?(current_user, :admin_tag, @project)
       = render 'edit_release_button', tag: @tag, project: @project, release: @release
     = link_button_to nil, project_tree_path(@project, @tag.name, ref_type: :tags), class: 'has-tooltip', title: s_('TagsPage|Browse files'), icon: 'folder-open'

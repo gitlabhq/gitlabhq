@@ -113,18 +113,23 @@ module Gitlab
 
         case signature_type
         when :PGP
-          return unless Feature.enabled?(:render_gpg_signed_tags_verification_status, @repository.container)
+          return unless render_gpg?
 
           Gpg::Tag.new(@repository, self)
         when :X509
           X509::Tag.new(@repository, self)
         when :SSH
-          return unless Feature.enabled?(:render_ssh_signed_tags_verification_status, @repository.container)
+          return unless render_ssh?
 
           Ssh::Tag.new(@repository, self)
         end
       end
       strong_memoize_attr :signed_tag
+
+      def can_use_lazy_cached_signature?
+        (signature_type == :SSH && render_ssh?) ||
+          (signature_type == :PGP && render_gpg?)
+      end
 
       def cache_key
         "tag:" + Digest::SHA1.hexdigest([name, message, target, target_commit&.sha].join)
@@ -134,6 +139,14 @@ module Gitlab
 
       def tagger
         @raw_tag.tagger
+      end
+
+      def render_gpg?
+        Feature.enabled?(:render_gpg_signed_tags_verification_status, @repository.container)
+      end
+
+      def render_ssh?
+        Feature.enabled?(:render_ssh_signed_tags_verification_status, @repository.container)
       end
 
       def message_from_gitaly_tag

@@ -19,7 +19,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
   it 'has the expected fields' do
     expected_fields = %w[
       id name path full_name full_path description description_html visibility archived
-      lfs_enabled request_access_enabled projects root_storage_statistics
+      is_self_archived lfs_enabled request_access_enabled projects root_storage_statistics
       web_url web_path edit_path avatar_url share_with_group_lock project_creation_level
       descendant_groups_count group_members_count projects_count
       subgroup_creation_level require_two_factor_authentication

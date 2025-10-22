@@ -22,7 +22,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       user_permissions id full_path path name_with_namespace
       name description description_html tag_list topics ssh_url_to_repo
       http_url_to_repo web_url web_path edit_path star_count forks_count
-      created_at updated_at last_activity_at archived visibility
+      created_at updated_at last_activity_at archived is_self_archived visibility
       container_registry_enabled shared_runners_enabled
       lfs_enabled merge_requests_ff_only_enabled avatar_url
       issues_enabled merge_requests_enabled wiki_enabled

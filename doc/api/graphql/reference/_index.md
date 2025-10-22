@@ -31198,7 +31198,7 @@ GPG signature for a signed commit.
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupanalyzerstatuses"></a>`analyzerStatuses` | [`[AnalyzerGroupStatusType!]`](#analyzergroupstatustype) | Status for all analyzers in the group. |
-| <a id="grouparchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates the archived status of the group. |
+| <a id="grouparchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if the group or any ancestor is archived. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within the group. |
 | <a id="groupavailablefeatures"></a>`availableFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.3. **Status**: Experiment. Features available on the namespace. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
@@ -31243,6 +31243,7 @@ GPG signature for a signed commit.
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of the group. |
 | <a id="groupid"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="groupislinkedtosubscription"></a>`isLinkedToSubscription` | [`Boolean`](#boolean) | Indicates if group is linked to a subscription. |
+| <a id="groupisselfarchived"></a>`isSelfArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Indicates if the group is archived. |
 | <a id="groupisselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is in progress. |
 | <a id="groupisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is scheduled. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
@@ -39405,7 +39406,7 @@ Project-level settings for product analytics provider.
 | <a id="projectallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean!`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
 | <a id="projectanalyzerstatuses"></a>`analyzerStatuses` | [`[AnalyzerProjectStatusType!]`](#analyzerprojectstatustype) | Status for all analyzers in the project. |
 | <a id="projectapifuzzingciconfiguration"></a>`apiFuzzingCiConfiguration` | [`ApiFuzzingCiConfiguration`](#apifuzzingciconfiguration) | API fuzzing configuration for the project. |
-| <a id="projectarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
+| <a id="projectarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates if the project or any ancestor is archived. |
 | <a id="projectautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |
 | <a id="projectavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
 | <a id="projectciaccessauthorizedagents"></a>`ciAccessAuthorizedAgents` | [`ClusterAgentAuthorizationCiAccessConnection`](#clusteragentauthorizationciaccessconnection) | Authorized cluster agents for the project through ci_access keyword. (see [Connections](#connections)) |
@@ -39458,6 +39459,7 @@ Project-level settings for product analytics provider.
 | <a id="projectiscatalogresource"></a>`isCatalogResource` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 15.11. **Status**: Experiment. Indicates if a project is a catalog resource. |
 | <a id="projectisforked"></a>`isForked` | [`Boolean!`](#boolean) | Project is forked. |
 | <a id="projectispublished"></a>`isPublished` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Indicates if a project's catalog resource is published. |
+| <a id="projectisselfarchived"></a>`isSelfArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Indicates if the project is archived. |
 | <a id="projectisselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is in progress. |
 | <a id="projectisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if project deletion is scheduled. |
 | <a id="projectissuesaccesslevel"></a>`issuesAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for issues access. |

@@ -19,13 +19,13 @@ module API
       get do
       end
 
-      # rubocop:disable API/DescriptionTags,API/DescriptionDetail -- Needed to test this edge case
+      # rubocop:disable API/DescriptionTags -- Needed to test this edge case
       desc 'Define endpoint with no tags' do
         detail 'This is an endpoint with no tags!'
       end
       get do
       end
-      # rubocop:enable API/DescriptionTags,API/DescriptionDetail
+      # rubocop:enable API/DescriptionTags
     end
   end
 end

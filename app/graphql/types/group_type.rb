@@ -376,9 +376,14 @@ module Types
       resolver: ::Resolvers::Clusters::AgentsResolver
 
     field :archived, GraphQL::Types::Boolean,
-      description: 'Indicates the archived status of the group.',
+      description: 'Indicates if the group or any ancestor is archived.',
       experiment: { milestone: '18.3' },
       method: :self_or_ancestors_archived?
+
+    field :is_self_archived, GraphQL::Types::Boolean,
+      description: 'Indicates if the group is archived.',
+      experiment: { milestone: '18.6' },
+      method: :self_archived?
 
     field :marked_for_deletion, GraphQL::Types::Boolean,
       null: false,

@@ -14,6 +14,7 @@ module Projects
       urgency :low
       worker_resource_boundary :memory
       tags :import_shared_storage
+      max_concurrency_limit_percentage 0.75
 
       sidekiq_retries_exhausted do |job, exception|
         new.mark_relation_export_failed!(job['args'].first, job['error_message'], exception: exception)

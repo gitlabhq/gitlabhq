@@ -33,17 +33,12 @@ module RuboCop
 
         MSG = 'API desc blocks must define a valid detail string. https://docs.gitlab.com/development/api_styleguide#defining-endpoint-details.'
 
-        # @!method desc_block_with_valid_detail?(node)
-        def_node_matcher :desc_block_with_valid_detail?, <<~PATTERN
-          (block
-            (send nil? :desc ...)
-            (args)
-            (begin <(send nil? :detail {(str _) (dstr ...)}) ...>))
-        PATTERN
+        # @!method has_valid_detail?(node)
+        def_node_matcher :has_valid_detail?, '`(send nil? :detail {(str _) (dstr ...)})'
 
         def on_block(node)
           return unless node.method?(:desc)
-          return if desc_block_with_valid_detail?(node)
+          return if has_valid_detail?(node)
 
           add_offense(node)
         end

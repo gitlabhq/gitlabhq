@@ -9929,6 +9929,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#self_archived?' do
+    it 'is an alias of #archived' do
+      expect(subject.method(:self_archived?).original_name).to eq(:archived)
+    end
+  end
+
   describe '#resolve_outdated_diff_discussions' do
     it { expect(subject.resolve_outdated_diff_discussions).to be_falsey }
 

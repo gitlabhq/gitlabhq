@@ -429,6 +429,8 @@ class Namespace < ApplicationRecord
     !!namespace_settings&.archived?
   end
 
+  alias_method :self_archived?, :archived?
+
   def archived_ancestor
     ancestors(hierarchy_order: :asc, skope: Namespace).archived.first
   end

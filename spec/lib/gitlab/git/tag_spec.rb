@@ -283,4 +283,45 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
       expect(subject.cache_key).to eq("tag:#{digest}")
     end
   end
+
+  describe '#can_use_lazy_cached_signature?' do
+    let(:tag) { repository.tags.first }
+    let(:stubbed_signature_type) { :NONE }
+
+    subject { tag.can_use_lazy_cached_signature? }
+
+    before do
+      allow(tag).to receive(:signature_type).and_return(stubbed_signature_type)
+    end
+
+    it { is_expected.to be_falsey }
+
+    context 'when signed with gpg' do
+      let(:stubbed_signature_type) { :PGP }
+
+      it { is_expected.to be_truthy }
+
+      context 'when render_gpg_signed_tags_verification_status is not enabled' do
+        before do
+          stub_feature_flags(render_gpg_signed_tags_verification_status: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when signed with ssh' do
+      let(:stubbed_signature_type) { :SSH }
+
+      it { is_expected.to be_truthy }
+
+      context 'when render_ssh_signed_tags_verification_status is not enabled' do
+        before do
+          stub_feature_flags(render_ssh_signed_tags_verification_status: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
 end

@@ -23,4 +23,10 @@ module TagsHelper
 
     text.html_safe
   end
+
+  def tag_view_signature(tag)
+    return tag.lazy_cached_signature if tag.can_use_lazy_cached_signature?
+
+    tag.signature
+  end
 end

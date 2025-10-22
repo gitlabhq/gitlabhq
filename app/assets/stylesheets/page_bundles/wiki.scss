@@ -90,6 +90,8 @@
   }
 
   .sidebar-container {
+    @apply gl-px-3;
+    @apply gl-my-5;
     @apply gl-transition-all;
     @apply motion-reduce:gl-transition-none;
     top: $calc-application-header-height;

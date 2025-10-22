@@ -1040,6 +1040,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#self_archived?' do
+    let_it_be(:namespace) { create(:group) }
+
+    it 'is an alias of #archived?' do
+      expect(namespace.method(:self_archived?).original_name).to eq(:archived?)
+    end
+  end
+
   describe '#archived_ancestor' do
     let_it_be_with_reload(:root_namespace) { create(:group) }
     let_it_be_with_reload(:parent_namespace) { create(:group, parent: root_namespace) }

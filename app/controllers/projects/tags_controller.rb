@@ -22,12 +22,9 @@ class Projects::TagsController < Projects::ApplicationController
       @sort = tags_params[:sort]
       @search = tags_params[:search]
 
-      @tags = TagsFinder.new(@repository, tags_params).execute
+      @tags = TagsFinder.new(@repository, tags_params).execute(batch_load_signatures: true)
 
       @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
-
-      # Call signature_data so it can be batch loaded
-      @tags.each { |t| t.signed_tag&.signature_data }
 
       tag_names = @tags.map(&:name)
       @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)

@@ -45,7 +45,7 @@ for a group, including its subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner or Maintainer role for the group.
 
 To turn GitLab Duo on or off for a group or subgroup:
 
@@ -76,7 +76,7 @@ In GitLab 17.7:
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner or Maintainer role for the group.
 
 To turn GitLab Duo on or off for a top-level group:
 
@@ -105,7 +105,7 @@ In GitLab 17.4 to 17.6:
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner or Maintainer role for the group.
 
 To turn GitLab Duo on or off for a top-level group:
 
@@ -124,7 +124,7 @@ and its subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner or Maintainer role for the group.
 
 To turn GitLab Duo on or off for a group or subgroup:
 
@@ -151,7 +151,7 @@ In GitLab 17.4 and later, follow these instructions to turn GitLab Duo on or off
 
 Prerequisites:
 
-- You must have the Owner role for the project.
+- You must have the Owner or Maintainer role for the project.
 
 To turn GitLab Duo on or off for a project:
 

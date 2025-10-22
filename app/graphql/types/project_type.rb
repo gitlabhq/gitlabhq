@@ -154,8 +154,14 @@ module Types
 
     field :archived, GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates the archived status of the project.',
+      description: 'Indicates if the project or any ancestor is archived.',
       method: :self_or_ancestors_archived?
+
+    field :is_self_archived, GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates if the project is archived.',
+      method: :self_archived?,
+      experiment: { milestone: '18.6' }
 
     field :is_self_deletion_in_progress, GraphQL::Types::Boolean,
       null: false,

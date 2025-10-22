@@ -2587,19 +2587,19 @@ msgstr ""
 msgid "AICatalog|Copy of"
 msgstr ""
 
-msgid "AICatalog|Could not create agent in the project. Check that the project meets the %{link_start}prerequisites%{link_end} and try again."
+msgid "AICatalog|Could not create agent in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
-msgid "AICatalog|Could not create flow. Try again."
+msgid "AICatalog|Could not create flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
-msgid "AICatalog|Could not enable agent in the project. Check that the project meets the %{link_start}prerequisites%{link_end} and try again."
+msgid "AICatalog|Could not enable agent in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
 msgid "AICatalog|Could not enable agent: %{agentName}"
 msgstr ""
 
-msgid "AICatalog|Could not enable flow in the project. Try again. %{error}"
+msgid "AICatalog|Could not enable flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
 msgid "AICatalog|Could not enable flow: %{flowName}"
@@ -6577,9 +6577,6 @@ msgstr ""
 msgid "AiPowered|Explore GitLab Duo Core"
 msgstr ""
 
-msgid "AiPowered|Explore usage metrics and performance insights for GitLab Duo AI assistant features across your organization."
-msgstr ""
-
 msgid "AiPowered|Failed to disable GitLab Duo Agent Platform."
 msgstr ""
 
@@ -6599,6 +6596,9 @@ msgid "AiPowered|Features are not available. However, any group, subgroup, or pr
 msgstr ""
 
 msgid "AiPowered|Get started with GitLab Duo"
+msgstr ""
+
+msgid "AiPowered|GitLab Credit usage analytics"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Agent Platform"
@@ -6685,12 +6685,6 @@ msgstr ""
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr ""
 
-msgid "AiPowered|See GitLab usage analytics"
-msgstr ""
-
-msgid "AiPowered|See dashboard"
-msgstr ""
-
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr ""
 
@@ -6713,6 +6707,9 @@ msgid "AiPowered|This setting applies to the whole top-level group. By turning t
 msgstr ""
 
 msgid "AiPowered|This setting requires GitLab Duo availability to be on or off by default."
+msgstr ""
+
+msgid "AiPowered|Track credit consumption across your users and monitor usage trends. View breakdowns by user to understand how your team utilizes GitLab Duo."
 msgstr ""
 
 msgid "AiPowered|Turn off GitLab Duo Agent Platform"
@@ -6743,6 +6740,9 @@ msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|View configuration"
+msgstr ""
+
+msgid "AiPowered|View usage dashboard"
 msgstr ""
 
 msgid "AiPowered|What is the Duo Agent Platform service account?"
@@ -70304,8 +70304,8 @@ msgstr ""
 msgid "UsageBilling|%{percentage}%{percentSymbol} utilized"
 msgstr ""
 
-msgid "UsageBilling|%{poolCreditsRemaining} pool credit remaining"
-msgid_plural "UsageBilling|%{poolCreditsRemaining} pool credits remaining"
+msgid "UsageBilling|%{poolCreditsRemaining} credit remaining"
+msgid_plural "UsageBilling|%{poolCreditsRemaining} credits remaining"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -70338,9 +70338,6 @@ msgstr ""
 msgid "UsageBilling|Current month on demand usage"
 msgstr ""
 
-msgid "UsageBilling|Current month usage"
-msgstr ""
-
 msgid "UsageBilling|Current overage"
 msgstr ""
 
@@ -70350,19 +70347,25 @@ msgstr ""
 msgid "UsageBilling|Daily usage"
 msgstr ""
 
-msgid "UsageBilling|Date and time"
+msgid "UsageBilling|Date/Time"
 msgstr ""
 
-msgid "UsageBilling|Export usage data"
+msgid "UsageBilling|GitLab Credits - Monthly committed pool"
 msgstr ""
 
-msgid "UsageBilling|Increase monthly commitment"
+msgid "UsageBilling|Increase monthly credit commitment"
+msgstr ""
+
+msgid "UsageBilling|Increase your commitment to unlock deeper discounts. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs. %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|Last updated:"
 msgstr ""
 
 msgid "UsageBilling|Location"
+msgstr ""
+
+msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Share GitLab Credits across your namespace for flexibility and predictable monthly costs. Learn more about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|No user data available"
@@ -70374,10 +70377,10 @@ msgstr ""
 msgid "UsageBilling|Pool used"
 msgstr ""
 
-msgid "UsageBilling|Purchase a monthly commitment"
+msgid "UsageBilling|Purchase monthly commitment"
 msgstr ""
 
-msgid "UsageBilling|Purchase monthly commitment"
+msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
 msgid "UsageBilling|Total credits used"
@@ -70402,12 +70405,6 @@ msgid "UsageBilling|Users blocked"
 msgstr ""
 
 msgid "UsageBilling|Users using allocation"
-msgstr ""
-
-msgid "UsageBilling|You can increase your commitment amount to extend your monthly allocation of credits."
-msgstr ""
-
-msgid "UsageBilling|You can purchase a monthly allocation of GitLab Credits to be shared across users."
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"

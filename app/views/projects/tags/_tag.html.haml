@@ -28,7 +28,7 @@
 
   .gl-grow-0.gl-shrink-0.gl-flex.gl-flex-row.gl-items-center.gl-gap-3.gl-mt-2
     - if tag.has_signature?
-      = render partial: 'projects/commit/signature', object: tag.signature
+      = render partial: 'projects/commit/signature', object: tag_view_signature(tag)
 
     - if commit_status
       = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-inline-flex gl-align-middle'

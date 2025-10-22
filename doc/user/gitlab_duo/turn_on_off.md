@@ -54,7 +54,7 @@ On GitLab.com, you can change availability for GitLab Duo Core for your top-leve
 
 Prerequisites:
 
-- You must have the Owner role for the top-level group.
+- You must have the Owner or Maintainer role for the top-level group.
 
 To change GitLab Duo Core availability:
 
@@ -238,7 +238,7 @@ In GitLab 17.7 and later, the settings are available for all groups.
 
 Prerequisites:
 
-- You must have the Owner role for the top-level group.
+- You must have the Owner or Maintainer role for the top-level group.
 
 To turn on GitLab Duo experiment and beta features for a top-level group:
 

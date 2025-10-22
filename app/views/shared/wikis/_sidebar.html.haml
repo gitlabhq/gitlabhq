@@ -4,13 +4,7 @@
 
 %aside.wiki-sidebar.js-wiki-sidebar.sidebar-collapsed{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
   .sidebar-container
-    - if @sidebar_error.present?
-      = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
-
-    - if !editing
-      .js-wiki-toc
-
-    .blocks-container{ class: '!gl-px-3 !gl-my-5' }
+    .blocks-container
       .gl-flex.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
         .toggle-close.block.gl-block.gl-flex-none.gl-mr-3{ class: '!gl-pt-0' }
           = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'chevron-double-lg-left', button_options: { class: 'gutter-toggle js-sidebar-wiki-toggle-close' })
@@ -32,6 +26,10 @@
             - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
             = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'settings', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
 
+      - if @sidebar_error.present?
+        .gl-py-2
+          = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
+
       #js-wiki-sidebar-entries{
         data: {
           has_custom_sidebar: @sidebar_page ? 'true' : 'false',
@@ -42,3 +40,5 @@
       - if @sidebar_page
         .gl-px-4.gl-pt-4.gl-pb-2.wiki-sidebar-custom-content
           = render_wiki_content(@sidebar_page)
+    - if !editing
+      .js-wiki-toc

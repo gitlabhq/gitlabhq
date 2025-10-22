@@ -3016,8 +3016,10 @@ class Project < ApplicationRecord
     super && !self_deletion_scheduled?
   end
 
+  alias_method :self_archived?, :archived
+
   def self_or_ancestors_archived?
-    archived? || namespace.self_or_ancestors_archived?
+    self_archived? || namespace.self_or_ancestors_archived?
   end
 
   def ancestors_archived?
