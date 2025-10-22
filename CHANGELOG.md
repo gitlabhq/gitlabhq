@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.5.1 (2025-10-21)
+
+### Fixed (2 changes)
+
+- [Fix connection pool errors when health check is running](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7852a9fa8c852ff2a949ea8f4ea46026418fc1dd)
+- [Downgrade redis-rb gem to v5.4.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c5c44135b4ac722173fc343718828d0cce06fa53)
+
+### Security (7 changes)
+
+- [Non-group members can be added to projects even though the "Users cannot be...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bcfba9217f7f7f49791fd6d0810757b6faab8236) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5433))
+- [Ensure NPM upload cannot exceed plan limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a863e7d2cd55e6e0ec7c583cfb83ee5b2292c1eb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5427))
+- [Limit JSON request payload for /-/collect_events](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2c0995e8c27b0c71aff275bc53d15ecc375dcb5c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5403))
+- [Track pull mirror updates using gitaly_context](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d702910abf4e2c45f0bf34ec0cd2ca4845ed4a0d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5410))
+- [Reject quick actions for ai_workflows scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b1a7d090f334e2f584097746e85b4d0b3b32512e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5409))
+- [Use CE policy for runner ability check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8ccd23988915716dfd7682b3b2e2339f049c136a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5413))
+- [Limit depth, size and total elements when parsing JSON string](https://gitlab.com/gitlab-org/security/gitlab/-/commit/137c1b88a25e5b00025fc43ad3609ab021d83222) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5406))
+
 ## 18.5.0 (2025-10-15)
 
 ### Added (178 changes)

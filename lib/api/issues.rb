@@ -294,9 +294,8 @@ module API
         authorize! :create_issue, user_project
 
         issue_params = declared_params(include_missing: false)
-
-        issue_params = convert_parameters_from_legacy_format(issue_params)
-
+        validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
+        issue_params = convert_parameters_from_legacy_format(issue_params).merge(scope_validator: validator)
         begin
           result = ::Issues::CreateService.new(container: user_project,
             current_user: current_user,
@@ -317,6 +316,8 @@ module API
           render_api_error!('Duplicated issue', 409)
         rescue ::Issues::BaseService::EpicAssignmentError => error
           render_api_error!(error.message, 422)
+        rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+          forbidden!(error.message)
         end
       end
 
@@ -343,12 +344,17 @@ module API
 
         update_params = declared_params(include_missing: false)
 
-        update_params = convert_parameters_from_legacy_format(update_params)
+        validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
+        update_params = convert_parameters_from_legacy_format(update_params).merge(scope_validator: validator)
 
-        issue = ::Issues::UpdateService.new(container: user_project,
-          current_user: current_user,
-          params: update_params,
-          perform_spam_check: true).execute(issue)
+        begin
+          issue = ::Issues::UpdateService.new(container: user_project,
+            current_user: current_user,
+            params: update_params,
+            perform_spam_check: true).execute(issue)
+        rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+          forbidden!(error.message)
+        end
 
         if issue.valid?
           present issue, with: Entities::Issue, current_user: current_user, project: user_project

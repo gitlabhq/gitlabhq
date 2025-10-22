@@ -40648,6 +40648,9 @@ msgstr[1] ""
 msgid "Membership"
 msgstr ""
 
+msgid "Membership is locked for this group"
+msgstr ""
+
 msgid "Members|%{time} by %{user}"
 msgstr ""
 

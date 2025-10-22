@@ -197,7 +197,7 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def quick_action_options
-    {}
+    { scope_validator: params[:scope_validator] }
   end
 
   def create(issuable, skip_system_notes: false)
@@ -632,11 +632,11 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def allowed_create_params(params)
-    params.except(:observability_links)
+    params.except(:observability_links, :scope_validator)
   end
 
   def allowed_update_params(params)
-    params
+    params.except(:scope_validator)
   end
 
   def update_issuable_sla(issuable)

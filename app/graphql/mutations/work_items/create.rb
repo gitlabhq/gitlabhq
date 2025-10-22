@@ -96,7 +96,8 @@ module Mutations
       def resolve(project_path: nil, namespace_path: nil, **attributes)
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
-        params = params_with_work_item_type(attributes).merge(author_id: current_user.id)
+        params = params_with_work_item_type(attributes).merge(author_id: current_user.id,
+          scope_validator: context[:scope_validator])
         params = params_with_resolve_discussion_params(params)
         type = params[:work_item_type]
         raise_resource_not_available_error! unless type
