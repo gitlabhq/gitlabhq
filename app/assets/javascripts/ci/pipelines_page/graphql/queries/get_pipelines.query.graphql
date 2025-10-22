@@ -3,6 +3,7 @@
 
 query getPipelines(
   $fullPath: ID!
+  $scope: PipelineScopeEnum
   $first: Int
   $last: Int
   $after: String = ""
@@ -10,7 +11,7 @@ query getPipelines(
 ) {
   project(fullPath: $fullPath) {
     id
-    pipelines(first: $first, last: $last, after: $after, before: $before) {
+    pipelines(scope: $scope, first: $first, last: $last, after: $after, before: $before) {
       nodes {
         id
         iid

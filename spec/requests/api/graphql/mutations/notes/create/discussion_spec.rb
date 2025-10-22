@@ -34,7 +34,9 @@ RSpec.describe 'Adding an DiscussionNote', feature_category: :code_review_workfl
 
     it_behaves_like 'a Note mutation when there are active record validation errors', model: DiscussionNote
 
-    it_behaves_like 'a Note mutation when there are rate limit validation errors'
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/506512' do
+      it_behaves_like 'a Note mutation when there are rate limit validation errors'
+    end
 
     it 'returns the discussion' do
       post_graphql_mutation(mutation, current_user: current_user)

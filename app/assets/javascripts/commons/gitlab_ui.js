@@ -71,4 +71,5 @@ applyGitLabUIConfig({
     'GlCollapsibleListbox.srOnlyResultsLabel': (count) => n__('%d result', '%d results', count),
     'GlProgressBar.ariaLabel': __('Progress bar'),
   },
+  accessibleLoadingButton: Boolean(gon?.features?.accessibleLoadingButton),
 });

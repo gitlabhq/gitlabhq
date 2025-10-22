@@ -101,10 +101,6 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
   end
 
   describe '#to_lazy_hash' do
-    before do
-      stub_feature_flags(log_labkit_user_id: false)
-    end
-
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:namespace) { create(:group) }
@@ -127,18 +123,6 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
 
       expect(result(context)).to include(
         user: user.username,
-        user_id: user.id,
-        project: project.full_path,
-        root_namespace: namespace.full_path
-      )
-    end
-
-    it 'uses the new gl_user_id field when the ff is switched on' do
-      stub_feature_flags(log_labkit_user_id: true)
-      context = described_class.new(user: -> { user }, project: -> { project }, namespace: -> { subgroup })
-
-      expect(result(context)).to include(
-        user: user.username,
         Labkit::Fields::GL_USER_ID => user.id,
         project: project.full_path,
         root_namespace: namespace.full_path
@@ -150,7 +134,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
 
       expect(result(context)).to include(
         user: user.username,
-        user_id: user.id,
+        Labkit::Fields::GL_USER_ID => user.id,
         project: project.full_path,
         root_namespace: namespace.full_path
       )

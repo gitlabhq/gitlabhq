@@ -35,7 +35,7 @@ export default {
     },
     provideProjectStudioFeedbackItem() {
       return {
-        href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/564999',
+        href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/577554',
         text: s__('Navigation|Provide feedback'),
         extraAttrs: {
           'data-testid': 'project-studio-feedback-link',

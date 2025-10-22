@@ -3,7 +3,7 @@
 module Gitlab
   module GrapeOpenapi
     module Models
-      # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#schema-object
+      # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#schema-object
       class Schema
         attr_accessor :properties, :type
 

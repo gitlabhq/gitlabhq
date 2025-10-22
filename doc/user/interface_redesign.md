@@ -9,7 +9,7 @@ description: Learn about an upcoming redesign of GitLab user interface.
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 
 {{< /details >}}
@@ -18,6 +18,7 @@ description: Learn about an upcoming redesign of GitLab user interface.
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18710) in GitLab 18.5 [with flags](../administration/feature_flags/_index.md) named `paneled_view`.
   Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/577994) in GitLab 18.6 for members of groups that use [GitLab Duo experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 {{< /history >}}
 

@@ -21,7 +21,8 @@ module Gitlab
           info: Gitlab::GrapeOpenapi.configuration.info.to_h,
           tags: tag_registry.tags,
           servers: Gitlab::GrapeOpenapi.configuration.servers.map(&:to_h),
-          paths: {}, # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/572540
+
+          paths: paths,
           components: {
             securitySchemes: security_schemes
           },
@@ -39,6 +40,11 @@ module Gitlab
         @api_classes.each do |api_class|
           Converters::TagConverter.new(api_class, tag_registry).convert
         end
+      end
+
+      def paths
+        all_routes = @api_classes.flat_map(&:routes)
+        Converters::PathConverter.convert(all_routes)
       end
     end
   end

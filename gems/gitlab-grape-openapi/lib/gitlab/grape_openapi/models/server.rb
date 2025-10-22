@@ -3,7 +3,7 @@
 module Gitlab
   module GrapeOpenapi
     module Models
-      # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#server-object
+      # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#server-object
       class Server
         attr_reader :url, :description
 

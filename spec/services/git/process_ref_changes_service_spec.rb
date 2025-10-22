@@ -287,7 +287,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           Gitlab::Git::SHA1_BLANK_SHA,
           '789012',
           "#{ref_prefix}/create1",
-          { 'push_options' => nil }).ordered
+          { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
           project.id,
@@ -295,7 +295,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           Gitlab::Git::SHA1_BLANK_SHA,
           '789013',
           "#{ref_prefix}/create2",
-          { 'push_options' => nil }).ordered
+          { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
           project.id,
@@ -303,7 +303,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           '789015',
           '789016',
           "#{ref_prefix}/changed1",
-          { 'push_options' => nil }).ordered
+          { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
           project.id,
@@ -311,7 +311,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           '789020',
           Gitlab::Git::SHA1_BLANK_SHA,
           "#{ref_prefix}/removed2",
-          { 'push_options' => nil }).ordered
+          { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         subject.execute
       end

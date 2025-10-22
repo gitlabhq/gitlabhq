@@ -485,10 +485,6 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
     end
 
     context 'logging information in metadata' do
-      before do
-        stub_feature_flags(log_labkit_user_id: false)
-      end
-
       let(:user) { create(:user) }
 
       context 'user is added to application context' do
@@ -499,7 +495,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
           end
 
           expect(metadata['username']).to eql(user.username)
-          expect(metadata['user_id']).to eql(user.id.to_s)
+          expect(metadata[Labkit::Fields::GL_USER_ID]).to eql(user.id.to_s)
         end
       end
 
@@ -508,7 +504,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
           metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
 
           expect(metadata).not_to have_key('username')
-          expect(metadata).not_to have_key('user_id')
+          expect(metadata).not_to have_key(Labkit::Fields::GL_USER_ID)
         end
       end
 

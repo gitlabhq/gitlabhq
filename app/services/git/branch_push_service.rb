@@ -45,7 +45,7 @@ module Git
         oldrev,
         newrev,
         ref,
-        params.slice(:push_options).deep_stringify_keys
+        params.slice(:push_options, :gitaly_context).deep_stringify_keys
       )
     end
 

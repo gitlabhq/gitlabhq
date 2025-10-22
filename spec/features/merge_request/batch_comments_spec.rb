@@ -46,7 +46,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     expect(page).to have_selector('.note:not(.draft-note)', text: 'Line is wrong')
   end
 
-  it 'deletes draft note' do
+  it 'deletes draft note', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/563436' do
     write_diff_comment
 
     find('.js-note-delete').click
@@ -156,7 +156,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
         expect(page).to have_text('2 pending comments')
       end
 
-      it 'can add comment right away' do
+      it 'can add comment right away', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449087' do
         write_comment(selector: '.js-main-target-form', field: 'note-body', text: 'Its a regular comment', button_text: 'Add comment now')
 
         expect(page).to have_selector('.note:not(.draft-note)', text: 'Its a regular comment')
@@ -176,7 +176,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       find_by_testid('listbox-item-parallel').click
     end
 
-    it 'adds draft comments to both sides' do
+    it 'adds draft comments to both sides', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/563452' do
       write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9')
       write_parallel_comment('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9', button_text: 'Add to review', text: 'Another wrong line')
 

@@ -119,6 +119,10 @@
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"
   ],
+  "GitlabSubscriptionUsageEventLocation": [
+    "Group",
+    "Project"
+  ],
   "GoogleCloudArtifactRegistryArtifact": [
     "GoogleCloudArtifactRegistryDockerImage"
   ],

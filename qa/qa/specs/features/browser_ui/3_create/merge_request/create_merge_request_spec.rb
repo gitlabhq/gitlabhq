@@ -37,9 +37,11 @@ module QA
       it(
         'creates a merge request with a milestone and label', :smoke, :health_check, :skip_cells,
         quarantine: {
-          only: { job: 'update-ee-to-ce' },
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/494054',
-          type: :investigating
+          issue: [
+            'https://gitlab.com/gitlab-org/gitlab/-/issues/494054',
+            'https://gitlab.com/gitlab-org/gitlab/-/issues/574239'
+          ],
+          type: :flaky
         },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347762'
       ) do

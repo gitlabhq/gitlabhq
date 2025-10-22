@@ -77,7 +77,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
 
-    it 'allows me to merge', :sidekiq_inline do
+    it 'allows me to merge', :sidekiq_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/566540' do
       wait_for_requests
       click_button 'Merge'
 

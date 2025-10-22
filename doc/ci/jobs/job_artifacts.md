@@ -356,7 +356,7 @@ You can delete multiple artifacts at the same time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build** > **Artifacts**.
-1. Select the checkboxes next to the artifacts you want to delete. You can select up to 50 artifacts.
+1. Select the checkboxes next to the artifacts you want to delete. You can select up to 100 artifacts.
 1. Select **Delete selected**.
 
 ## Link to job artifacts in the merge request UI

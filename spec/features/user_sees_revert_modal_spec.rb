@@ -39,7 +39,8 @@ RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not
     it_behaves_like 'showing the revert modal'
   end
 
-  context 'with page reload validates js correctly loaded' do
+  context 'with page reload validates js correctly loaded',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444906' do
     before do
       visit(merge_request_path(merge_request))
     end

@@ -70335,12 +70335,6 @@ msgstr ""
 msgid "UsageBilling|Credits used this month"
 msgstr ""
 
-msgid "UsageBilling|Current month on demand usage"
-msgstr ""
-
-msgid "UsageBilling|Current overage"
-msgstr ""
-
 msgid "UsageBilling|Daily average use"
 msgstr ""
 
@@ -70362,6 +70356,9 @@ msgstr ""
 msgid "UsageBilling|Last updated:"
 msgstr ""
 
+msgid "UsageBilling|Learn more about %{helpLinkStart}GitLab Credit pricing%{helpLinkEnd}."
+msgstr ""
+
 msgid "UsageBilling|Location"
 msgstr ""
 
@@ -70369,6 +70366,9 @@ msgid "UsageBilling|Monthly commitments offer significant discounts off list pri
 msgstr ""
 
 msgid "UsageBilling|No user data available"
+msgstr ""
+
+msgid "UsageBilling|On-demand credits used this billable month"
 msgstr ""
 
 msgid "UsageBilling|Peak daily use"
@@ -70383,28 +70383,27 @@ msgstr ""
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
-msgid "UsageBilling|Total credits used"
+msgid "UsageBilling|These are credits consumed beyond your users included credits, charged at standard on-demand rates."
 msgstr ""
 
-msgid "UsageBilling|Total users (active users)"
+msgid "UsageBilling|Total credits used"
 msgstr ""
 
 msgid "UsageBilling|Usage Billing"
 msgstr ""
 
-msgid "UsageBilling|Usage by user"
-msgstr ""
-
 msgid "UsageBilling|Usage trend"
 msgstr ""
 
-msgid "UsageBilling|Usage trends"
+msgid "UsageBilling|total users (active users)"
 msgstr ""
 
-msgid "UsageBilling|Users blocked"
-msgstr ""
+msgid "UsageBilling|user is blocked"
+msgid_plural "UsageBilling|users are blocked"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "UsageBilling|Users using allocation"
+msgid "UsageBilling|users using included GitLab Credits"
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"

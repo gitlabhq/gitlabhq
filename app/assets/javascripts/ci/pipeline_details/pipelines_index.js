@@ -107,13 +107,25 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
     return null;
   }
 
-  const { fullPath } = el.dataset;
+  const {
+    fullPath,
+    newPipelinePath,
+    resetCachePath,
+    pipelinesAnalyticsPath,
+    identityVerificationRequired,
+    identityVerificationPath,
+  } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider,
     provide: {
       fullPath,
+      newPipelinePath,
+      resetCachePath,
+      pipelinesAnalyticsPath,
+      identityVerificationRequired: parseBoolean(identityVerificationRequired),
+      identityVerificationPath,
     },
     render(createElement) {
       return createElement(PipelinesGraphql, {});

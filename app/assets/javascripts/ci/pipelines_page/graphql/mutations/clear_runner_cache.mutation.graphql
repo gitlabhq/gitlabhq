@@ -1,0 +1,5 @@
+mutation clearRunnerCache($input: RunnerCacheClearInput!) {
+  runnerCacheClear(input: $input) {
+    errors
+  }
+}

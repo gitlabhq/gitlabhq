@@ -1,14 +1,23 @@
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import Pipelines from '~/ci/pipelines_page/pipelines_graphql.vue';
+import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue';
+import NoCiEmptyState from '~/ci/pipelines_page/components/empty_state/no_ci_empty_state.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
-import { mockPipelinesData } from './mock_data';
+import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
+import {
+  mockPipelinesData,
+  mockPipelinesDataEmpty,
+  mockRunnerCacheClearPayload,
+  mockRunnerCacheClearPayloadWithError,
+} from './mock_data';
 
 jest.mock('~/alert');
 
@@ -19,6 +28,11 @@ describe('Pipelines app', () => {
 
   const successHandler = jest.fn().mockResolvedValue(mockPipelinesData);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+  const emptyHandler = jest.fn().mockResolvedValue(mockPipelinesDataEmpty);
+  const clearCacheMutationSuccessHandler = jest.fn().mockResolvedValue(mockRunnerCacheClearPayload);
+  const clearCacheMutationFailedHandler = jest
+    .fn()
+    .mockResolvedValue(mockRunnerCacheClearPayloadWithError);
 
   const createMockApolloProvider = (requestHandlers = [[getPipelinesQuery, successHandler]]) => {
     return createMockApollo(requestHandlers);
@@ -28,6 +42,11 @@ describe('Pipelines app', () => {
     wrapper = shallowMountExtended(Pipelines, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
+        newPipelinePath: '/gitlab-org/gitlab/-/pipelines/new',
+        resetCachePath: '/gitlab-org/gitlab/-/settings/ci_cd/reset_cache',
+        pipelinesAnalyticsPath: '/-/pipelines/charts',
+        identityVerificationRequired: false,
+        identityVerificationPath: '#',
       },
       apolloProvider: createMockApolloProvider(requestHandlers),
     });
@@ -35,6 +54,10 @@ describe('Pipelines app', () => {
 
   const findTable = () => wrapper.findComponent(PipelinesTable);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findNoCiEmptyState = () => wrapper.findComponent(NoCiEmptyState);
+  const findTabs = () => wrapper.findComponent(NavigationTabs);
+  const findNavControls = () => wrapper.findComponent(NavigationControls);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   const triggerNextPage = async () => {
@@ -63,6 +86,53 @@ describe('Pipelines app', () => {
     });
   });
 
+  describe('empty state', () => {
+    it('shows error empty state when there is an error', async () => {
+      createComponent([[getPipelinesQuery, failedHandler]]);
+
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props('title')).toBe('There was an error fetching the pipelines.');
+    });
+
+    it('shows tab empty state when not on the All tab', async () => {
+      const dynamicHandler = jest.fn().mockImplementation((variables) => {
+        if (variables.scope === 'TAGS' || variables.scope === 'FINISHED') {
+          return Promise.resolve(mockPipelinesDataEmpty);
+        }
+        return Promise.resolve(mockPipelinesData);
+      });
+
+      createComponent([[getPipelinesQuery, dynamicHandler]]);
+
+      await waitForPromises();
+
+      findTabs().vm.$emit('onChangeTab', 'tags');
+
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props('title')).toBe('There are currently no pipelines.');
+
+      findTabs().vm.$emit('onChangeTab', 'finished');
+
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props('title')).toBe('There are currently no finished pipelines.');
+    });
+
+    it('shows no ci empty state when there are no pipelines', async () => {
+      createComponent([[getPipelinesQuery, emptyHandler]]);
+
+      await waitForPromises();
+
+      expect(findNoCiEmptyState().exists()).toBe(true);
+      expect(findTable().exists()).toBe(false);
+    });
+  });
+
   describe('fetching pipelines', () => {
     it('fetches query correctly and passes pipelines to table', async () => {
       createComponent();
@@ -73,6 +143,7 @@ describe('Pipelines app', () => {
         last: null,
         before: null,
         after: null,
+        scope: null,
       });
 
       await waitForPromises();
@@ -89,6 +160,86 @@ describe('Pipelines app', () => {
 
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while loading pipelines',
+      });
+    });
+  });
+
+  describe('tabs', () => {
+    it('renders navigation tabs correctly', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findTabs().exists()).toBe(true);
+    });
+
+    it.each`
+      scope         | params
+      ${'all'}      | ${{ scope: null }}
+      ${'finished'} | ${{ scope: 'FINISHED' }}
+      ${'branches'} | ${{ scope: 'BRANCHES' }}
+      ${'tags'}     | ${{ scope: 'TAGS' }}
+    `(
+      'when the scope is $scope, then the query should be called with $params',
+      async ({ scope, params }) => {
+        createComponent();
+
+        findTabs().vm.$emit('onChangeTab', scope);
+
+        await waitForPromises();
+
+        expect(successHandler).toHaveBeenCalledWith(expect.objectContaining(params));
+      },
+    );
+  });
+
+  describe('nav links', () => {
+    it('renders navigation controls', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findNavControls().exists()).toBe(true);
+    });
+
+    it('clears runner cache', async () => {
+      createComponent([
+        [getPipelinesQuery, successHandler],
+        [clearRunnerCacheMutation, clearCacheMutationSuccessHandler],
+      ]);
+
+      await waitForPromises();
+
+      findNavControls().vm.$emit('resetRunnersCache');
+
+      expect(clearCacheMutationSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          projectId: 'gid://gitlab/Project/19',
+        },
+      });
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Project cache successfully reset.',
+        variant: 'info',
+      });
+    });
+
+    it('shows an error alert when clearing runner cache fails', async () => {
+      createComponent([
+        [getPipelinesQuery, successHandler],
+        [clearRunnerCacheMutation, clearCacheMutationFailedHandler],
+      ]);
+
+      await waitForPromises();
+
+      findNavControls().vm.$emit('resetRunnersCache');
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while cleaning runners cache.',
       });
     });
   });
@@ -128,6 +279,7 @@ describe('Pipelines app', () => {
         last: null,
         before: null,
         after: 'eyJpZCI6IjY3NSJ9',
+        scope: null,
       });
       expect(findPagination().props()).toMatchObject({});
     });

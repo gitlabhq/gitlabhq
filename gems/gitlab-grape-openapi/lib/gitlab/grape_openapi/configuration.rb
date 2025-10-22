@@ -3,11 +3,13 @@
 module Gitlab
   module GrapeOpenapi
     class Configuration
-      attr_accessor :api_version, :servers, :security_schemes, :info
+      attr_accessor :api_version, :api_prefix, :servers, :security_schemes, :info
 
       def initialize
-        @api_version = "v4"
+        @api_prefix = "api"
+        @api_version = "v1"
         @info = nil
+
         @servers = []
         @security_schemes = []
       end

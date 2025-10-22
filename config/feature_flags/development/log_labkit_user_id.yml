@@ -1,8 +1,0 @@
----
-name: log_labkit_user_id
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207458
-rollout_issue_url: https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3922
-milestone: "18.5"
-type: development
-group: group::developer experience
-default_enabled: false

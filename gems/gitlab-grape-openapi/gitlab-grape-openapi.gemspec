@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["group::api"]
   spec.email = ["engineering@gitlab.com"]
 
-  spec.summary       = "Generate OpenAPI 3.1 specifications from Grape APIs"
-  spec.description   = "A Ruby gem that introspects Grape API definitions and generates OpenAPI 3.1 specification files"
+  spec.summary       = "Generate OpenAPI 3.0 specifications from Grape APIs"
+  spec.description   = "A Ruby gem that introspects Grape API definitions and generates OpenAPI 3.0 specification files"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 

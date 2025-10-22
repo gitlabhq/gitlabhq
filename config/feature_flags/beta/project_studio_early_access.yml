@@ -1,0 +1,10 @@
+---
+name: project_studio_early_access
+description:
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209523
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577848
+milestone: '18.6'
+group: group::engagement
+type: beta
+default_enabled: false

@@ -66,7 +66,14 @@ export default {
     WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['hasSubepicsFeature', 'newTrialPath'],
+  inject: {
+    hasSubepicsFeature: {
+      default: false,
+    },
+    newTrialPath: {
+      default: '',
+    },
+  },
   props: {
     fullPath: {
       type: String,

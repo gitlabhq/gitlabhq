@@ -27605,6 +27605,7 @@ CREATE TABLE user_preferences (
     merge_request_dashboard_show_drafts boolean DEFAULT true NOT NULL,
     duo_default_namespace_id bigint,
     policy_advanced_editor boolean DEFAULT false NOT NULL,
+    early_access_studio_participant boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -43711,6 +43712,8 @@ CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules U
 CREATE INDEX tmp_idx_redirect_routes_on_source_type_id_where_namespace_null ON redirect_routes USING btree (source_type, id) WHERE (namespace_id IS NULL);
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
+
+CREATE INDEX tmp_index_namespace_settings_on_experiment_features_enabled ON namespace_settings USING btree (namespace_id) WHERE (experiment_features_enabled IS TRUE);
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 

@@ -11,6 +11,10 @@ Gitlab::GrapeOpenapi.configure do |config|
     terms_of_service: 'https://about.gitlab.com/terms/'
   )
 
+  config.api_prefix = "api"
+
+  config.api_version = "v4"
+
   config.servers = [
     Gitlab::GrapeOpenapi::Models::Server.new(
       url: Gitlab::Utils.append_path(Gitlab.config.gitlab.url, "api/v4"),

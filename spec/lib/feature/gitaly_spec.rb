@@ -241,10 +241,6 @@ RSpec.describe Feature::Gitaly do
   describe ".user_actor" do
     let(:user) { create(:user) }
 
-    before do
-      stub_feature_flags(log_labkit_user_id: false)
-    end
-
     context 'when user is passed in' do
       it 'returns a actor wrapper from user' do
         expect(described_class.user_actor(user).flipper_id).to eql(user.flipper_id)

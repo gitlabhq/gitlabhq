@@ -238,3 +238,41 @@ export const mockPipelinesData = {
     },
   },
 };
+
+export const mockPipelinesDataEmpty = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/19',
+      pipelines: {
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: null,
+          endCursor: null,
+          __typename: 'PageInfo',
+        },
+        __typename: 'PipelineConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockRunnerCacheClearPayload = {
+  data: {
+    runnerCacheClear: {
+      errors: [],
+      __typename: 'RunnerCacheClearPayload',
+    },
+  },
+};
+
+export const mockRunnerCacheClearPayloadWithError = {
+  data: {
+    runnerCacheClear: {
+      errors: ['Something went wrong'],
+      __typename: 'RunnerCacheClearPayload',
+    },
+  },
+};

@@ -2722,7 +2722,74 @@ class MergeRequest < ApplicationRecord
     all_commits.exists?(sha: sha)
   end
 
+  # Override state machine methods to sync to merge_data
+  %w[preparing unchecked checking mergeable unmergeable].each do |state|
+    define_method(:"mark_as_#{state}") do
+      if should_sync_merge_data?
+        ensure_merge_data
+
+        result = super()
+
+        if result
+          begin
+            # rubocop:disable GitlabSecurity/PublicSend -- temporary manual delegation
+            merge_data_result = merge_data.send(:"mark_as_#{state}")
+            # rubocop:enable GitlabSecurity/PublicSend
+
+            unless merge_data_result
+              Gitlab::AppLogger.warn(
+                message: "Failed to set merge_status to #{state} on MergeData",
+                merge_request_id: id,
+                value_on_merge_request: merge_status,
+                value_on_merge_data: merge_data.merge_status_name.to_s
+              )
+            end
+          rescue StandardError => e
+            Gitlab::ErrorTracking.track_exception(e,
+              message: "Failed to set merge_status to #{state} on MergeData",
+              merge_request_id: id,
+              value_on_merge_request: merge_status,
+              value_on_merge_data: merge_data.merge_status_name.to_s
+            )
+          end
+        end
+
+        result
+      else
+        super()
+      end
+    end
+  end
+
+  def ensure_merge_data
+    # Eventually we probably need to set up a callback for this, but we need to
+    #   conditionally initialize this for now.
+    merge_data || build_merge_data(merge_data_attributes)
+  end
+
   private
+
+  def merge_data_attributes
+    {
+      project: project,
+      merge_status: MergeRequests::MergeData::MERGE_STATUSES[merge_status.to_sym],
+      merge_params: read_attribute(:merge_params),
+      merge_error: read_attribute(:merge_error),
+      merge_user_id: read_attribute(:merge_user_id),
+      merge_jid: read_attribute(:merge_jid),
+      merge_commit_sha: read_attribute(:merge_commit_sha),
+      merged_commit_sha: read_attribute(:merged_commit_sha),
+      merge_ref_sha: read_attribute(:merge_ref_sha),
+      squash_commit_sha: read_attribute(:squash_commit_sha),
+      in_progress_merge_commit_sha: read_attribute(:in_progress_merge_commit_sha),
+      auto_merge_enabled: read_attribute(:merge_when_pipeline_succeeds),
+      squash: read_attribute(:squash)
+    }
+  end
+
+  def should_sync_merge_data?
+    Feature.enabled?(:merge_requests_merge_data_dual_write, project)
+  end
 
   def viewable_diffs(order_by: :id_asc)
     strong_memoize_with(:viewable_diffs, order_by) do

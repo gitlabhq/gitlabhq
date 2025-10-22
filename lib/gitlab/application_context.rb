@@ -156,15 +156,7 @@ module Gitlab
         assign_hash_if_value(hash, :bulk_import_entity_id)
 
         hash[:user] = -> { username } if include_user?
-
-        if include_user?
-          if Feature.enabled?(:log_labkit_user_id, Feature.current_request)
-            hash[Labkit::Fields::GL_USER_ID] = -> { user_id }
-          else
-            hash[:user_id] = -> { user_id }
-          end
-        end
-
+        hash[Labkit::Fields::GL_USER_ID] = -> { user_id } if include_user?
         hash[:scoped_user] = -> { scoped_user&.username } if include_scoped_user?
         hash[:scoped_user_id] = -> { scoped_user&.id } if include_scoped_user?
         hash[:project] = -> { project_path } if include_project?

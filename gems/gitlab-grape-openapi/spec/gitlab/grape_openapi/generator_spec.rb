@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe Gitlab::GrapeOpenapi::Generator do
-  subject(:generator) { described_class.new(api_classes, options) }
+require 'spec_helper'
 
-  let(:api_classes) { [API::TestAuditEvents] }
-  let(:options) { {} }
+RSpec.describe Gitlab::GrapeOpenapi::Generator do
+  let(:api_prefix) { '/api' }
+  let(:api_version) { 'v1' }
+  let(:base_path) { "#{api_prefix}/#{api_version}" }
+  let(:api_classes) { [TestApis::UsersApi] }
+  let(:generator) { described_class.new(api_classes) }
 
   before do
     Gitlab::GrapeOpenapi.configure do |config|
@@ -26,6 +29,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
   end
 
   describe '#generate' do
+    subject(:spec) { generator.generate }
+
     it 'returns the correct keys' do
       expect(generator.generate).to include(:openapi, :info, :servers, :components, :security, :paths)
     end
@@ -38,10 +43,20 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
       expect(generator.generate[:security]).to eq([{ 'http' => [] }])
     end
 
-    it 'executes generate_tags' do
-      generator.generate
+    it 'includes paths from API classes' do
+      expect(spec[:paths]).to have_key("#{base_path}/users")
+    end
+  end
 
-      expect(generator.tag_registry.tags.size).to eq(5)
+  describe '#paths' do
+    subject(:paths) { generator.paths }
+
+    it 'returns paths hash' do
+      expect(paths).to be_a(Hash)
+    end
+
+    it 'includes operations from API classes' do
+      expect(paths["#{base_path}/users"].keys).to contain_exactly('get', 'options', 'post')
     end
   end
 end

@@ -1,14 +1,12 @@
-- url = admin_mode ? admin_session_path : session_path(:user)
-- form_class = admin_mode ? '' : 'js-arkose-labs-form'
-- button_class = admin_mode ? '' : 'js-sign-in-button'
-- submit_message = admin_mode ? _('Enter admin mode') : _('Sign in')
-
-= gitlab_ui_form_for(:user, url: url, html: { class: ['gl-show-field-errors', form_class], aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
-  - if admin_mode
+- if admin_mode
+  = gitlab_ui_form_for(:user, url: admin_session_path, html: { class: 'gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
     .form-group
       = f.label :password, _('Password')
       = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: 'user_password', name: 'user[password]', testid: 'password-field' }
-  - else
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'sign-in-button' } }) do
+      = _('Enter admin mode')
+- else
+  = gitlab_ui_form_for(:user, url: session_path(:user), html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
     .form-group
       = f.label :login, _('Username or primary email')
       = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input js-username-field', autocomplete: 'username', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('Username or primary email is required.'), data: { testid: 'username-field' }
@@ -29,5 +27,5 @@
       .gl-mb-3
         = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off' }
 
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: [button_class], data: { testid: 'sign-in-button' } }) do
-    = submit_message
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: 'js-sign-in-button', data: { testid: 'sign-in-button' } }) do
+      = _('Sign in')

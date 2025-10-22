@@ -3,7 +3,7 @@
 module Gitlab
   module GrapeOpenapi
     module Models
-      # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#security-scheme-object
+      # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#security-scheme-object
       class SecurityScheme
         VALID_TYPES = %w[apiKey http oauth2 openIdConnect].freeze
         VALID_IN_VALUES = %w[query header cookie].freeze
