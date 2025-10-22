@@ -305,10 +305,10 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
         let(:shas) { [commit_sha_1, commit_sha_2, commit_sha_4] }
 
         it 'returns the oldest merge request ID for each commit' do
-          expect(result).to contain_exactly(
-            have_attributes(sha: commit_sha_1, merge_request_id: 100), # oldest of 100, 200
-            have_attributes(sha: commit_sha_2, merge_request_id: 150),
-            have_attributes(sha: commit_sha_4, merge_request_id: 300)
+          expect(result.pluck(:sha, :merge_request_id)).to contain_exactly(
+            [commit_sha_1, 100], # oldest of 100, 200
+            [commit_sha_2, 150],
+            [commit_sha_4, 300]
           )
         end
       end

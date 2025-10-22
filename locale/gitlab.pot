@@ -8525,7 +8525,7 @@ msgstr ""
 msgid "ApplicationSettings|Open access"
 msgstr ""
 
-msgid "ApplicationSettings|Prevent the billable user count from exceeding the number of seats in the license."
+msgid "ApplicationSettings|Prevent the billable user count from exceeding the number of seats in the license, for example, when non-billable users create their own groups and projects."
 msgstr ""
 
 msgid "ApplicationSettings|Proceed"
@@ -48613,6 +48613,9 @@ msgstr ""
 msgid "Pipelines|More Information"
 msgstr ""
 
+msgid "Pipelines|New pipeline"
+msgstr ""
+
 msgid "Pipelines|No merge trains"
 msgstr ""
 
@@ -72469,6 +72472,9 @@ msgstr ""
 msgid "VirtualRegistry|Edit registry"
 msgstr ""
 
+msgid "VirtualRegistry|Edit registry %{name}"
+msgstr ""
+
 msgid "VirtualRegistry|Edit upstream"
 msgstr ""
 
@@ -72521,6 +72527,9 @@ msgid "VirtualRegistry|Failed to update position of the upstream. Try again."
 msgstr ""
 
 msgid "VirtualRegistry|Get started with virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|Last updated"
 msgstr ""
 
 msgid "VirtualRegistry|Link existing upstream"
@@ -72609,6 +72618,9 @@ msgstr ""
 msgid "VirtualRegistry|Registries"
 msgstr ""
 
+msgid "VirtualRegistry|Registry"
+msgstr ""
+
 msgid "VirtualRegistry|Registry cache cleared successfully."
 msgstr ""
 
@@ -72655,9 +72667,6 @@ msgid "VirtualRegistry|To view summary, select an upstream."
 msgstr ""
 
 msgid "VirtualRegistry|URL"
-msgstr ""
-
-msgid "VirtualRegistry|Updated %{date}"
 msgstr ""
 
 msgid "VirtualRegistry|Upstream"

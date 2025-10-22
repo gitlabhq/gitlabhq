@@ -59,7 +59,8 @@ module Integrations
         items_to_insert = integration_ids.zip(batch).map do |integration_id, record|
           hash.merge(
             'integration_id' => integration_id,
-            'alias' => record.full_path
+            'alias' => record.full_path,
+            "#{association}_id" => record.id
           )
         end
 

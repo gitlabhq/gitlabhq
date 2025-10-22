@@ -88,6 +88,12 @@ module Integrations
       new_integration.slack_integration = slack_integration.dup.tap do |entity|
         entity.alias = new_integration.parent&.full_path || SlackIntegration::INSTANCE_ALIAS
         entity.authorized_scope_names = slack_integration.authorized_scope_names
+
+        # The sharding key of the slack_integrations table is derived from the
+        # sharding key set on the related Integration record
+        entity.organization_id = new_integration.organization_id
+        entity.project_id = new_integration.project_id
+        entity.group_id = new_integration.group_id
       end
     end
 

@@ -11,6 +11,7 @@ describe('Pipeline editor empty state', () => {
   const defaultProvide = {
     emptyStateIllustrationPath,
     usesExternalConfig: false,
+    newPipelinePath: '',
   };
 
   const createComponent = ({ provide } = {}) => {
@@ -26,14 +27,19 @@ describe('Pipeline editor empty state', () => {
   const findConfirmButton = () => findEmptyState().findComponent(GlButton);
 
   describe('when project uses an external CI config', () => {
+    const newPipelinePath = '/path-to-new-pipeline';
     beforeEach(() => {
       createComponent({
-        provide: { usesExternalConfig: true },
+        provide: { usesExternalConfig: true, newPipelinePath },
       });
     });
 
     it('renders the external config empty state', () => {
       expect(findExternalConfigEmptyState().exists()).toBe(true);
+    });
+
+    it('provides newPipelinePath to the external config empty state', () => {
+      expect(findExternalConfigEmptyState().props('newPipelinePath')).toBe(newPipelinePath);
     });
 
     it('renders the file nav', () => {

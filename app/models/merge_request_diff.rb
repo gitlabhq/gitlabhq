@@ -43,12 +43,11 @@ class MergeRequestDiff < ApplicationRecord
     inverse_of: :merge_request_diff
 
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff do
-    def with_users
-      ActiveRecord::Associations::Preloader.new(
-        records: self,
-        associations: [:commit_author, :committer]
-      ).call
+    def with_users(include_metadata: false)
+      associations_to_preload = [:commit_author, :committer]
+      associations_to_preload << { merge_request_commits_metadata: [:commit_author, :committer] } if include_metadata
 
+      ActiveRecord::Associations::Preloader.new(records: self, associations: associations_to_preload).call
       self
     end
   end
@@ -424,13 +423,13 @@ class MergeRequestDiff < ApplicationRecord
       sorted_diff_commits = merge_request_diff_commits.sort_by { |diff_commit| [diff_commit.id, diff_commit.relative_order] }
       sorted_diff_commits = sorted_diff_commits.take(limit) if limit
 
-      if preload_metadata && Feature.enabled?(:merge_request_diff_commits_dedup, project)
+      if preload_metadata && diff_commits_dedup_enabled?
         # ActiveRecord::Associations::Preloader works with both arrays and relations
         preload_metadata_for_commits(sorted_diff_commits)
       end
 
       sorted_diff_commits.map(&:sha)
-    elsif preload_metadata && Feature.enabled?(:merge_request_diff_commits_dedup, project)
+    elsif preload_metadata && diff_commits_dedup_enabled?
       commits = merge_request_diff_commits.limit(limit)
       preload_metadata_for_commits(commits)
       commits.pluck(:sha)
@@ -902,12 +901,13 @@ class MergeRequestDiff < ApplicationRecord
     diff_commits = merge_request_diff_commits
     diff_commits = diff_commits.page(page).per(limit) if page.present?
     diff_commits = diff_commits.limit(limit) if limit.present?
+    preload_metadata_for_commits(diff_commits) if diff_commits_dedup_enabled?
 
     if load_from_gitaly
       commits = Gitlab::Git::Commit.batch_by_oid(repository, diff_commits.map(&:sha))
       commits = Commit.decorate(commits, project)
     else
-      commits = diff_commits.with_users
+      commits = diff_commits.with_users(include_metadata: diff_commits_dedup_enabled?)
         .map { |commit| Commit.from_hash(commit.to_hash, project) }
     end
 
@@ -1042,6 +1042,11 @@ class MergeRequestDiff < ApplicationRecord
       EXTERNAL_DIFFS_CACHE_TMPDIR % { project_id: project.id, mr_id: merge_request_id, id: id }
     )
   end
+
+  def diff_commits_dedup_enabled?
+    Feature.enabled?(:merge_request_diff_commits_dedup, project)
+  end
+  strong_memoize_attr :diff_commits_dedup_enabled?
 end
 
 MergeRequestDiff.prepend_mod_with('MergeRequestDiff')

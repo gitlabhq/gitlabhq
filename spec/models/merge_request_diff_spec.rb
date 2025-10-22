@@ -1403,10 +1403,19 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
       it_behaves_like 'limited number of shas'
 
-      it 'does not trigger any query' do
-        count = ActiveRecord::QueryRecorder.new { diff_with_commits.commit_shas(limit: 2) }.count
+      it 'triggers extra queries for fetching metadata' do
+        count = ActiveRecord::QueryRecorder.new { diff_with_commits.commit_shas(limit: 10) }.count
+        expect(count).to eq(10)
+      end
 
-        expect(count).to eq(0)
+      context 'when `preload_metadata` is true' do
+        it 'triggers a single query to preload metadata' do
+          count = ActiveRecord::QueryRecorder.new do
+            diff_with_commits.commit_shas(limit: 10, preload_metadata: true)
+          end.count
+
+          expect(count).to eq(1)
+        end
       end
     end
 
@@ -1432,12 +1441,23 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           expect(mr_diff.commit_shas(limit: 3).size).to eq(3)
         end
 
-        it 'works with preloaded associations' do
-          # preload association
-          mr_diff.merge_request_diff_commits.to_a
+        context 'with preloaded `merge_request_diff_commits` association' do
+          before do
+            # preload association
+            mr_diff.merge_request_diff_commits.to_a
+          end
 
-          count = ActiveRecord::QueryRecorder.new { mr_diff.commit_shas(limit: 5) }.count
-          expect(count).to eq(0)
+          it 'triggers a single query to preload commits metadata when `preload_metadata` is true' do
+            count = ActiveRecord::QueryRecorder.new { mr_diff.commit_shas(limit: 5, preload_metadata: true) }.count
+
+            expect(count).to eq(1)
+          end
+
+          it 'triggers a query per commit when `preload_metadata` is false' do
+            count = ActiveRecord::QueryRecorder.new { mr_diff.commit_shas(limit: 5, preload_metadata: false) }.count
+
+            expect(count).to eq(5)
+          end
         end
       end
 

@@ -26097,6 +26097,9 @@ CREATE TABLE slack_integrations (
     encrypted_bot_access_token bytea,
     encrypted_bot_access_token_iv bytea,
     integration_id bigint,
+    organization_id bigint,
+    group_id bigint,
+    project_id bigint,
     CONSTRAINT check_bc553aea8a CHECK ((char_length(bot_user_id) <= 255)),
     CONSTRAINT check_c9ca9ae80d CHECK ((integration_id IS NOT NULL))
 );
@@ -42368,7 +42371,13 @@ CREATE UNIQUE INDEX index_slack_api_scopes_on_name ON slack_api_scopes USING btr
 
 CREATE UNIQUE INDEX index_slack_api_scopes_on_name_and_integration ON slack_integrations_scopes USING btree (slack_integration_id, slack_api_scope_id);
 
+CREATE INDEX index_slack_integrations_on_group_id ON slack_integrations USING btree (group_id);
+
 CREATE INDEX index_slack_integrations_on_integration_id ON slack_integrations USING btree (integration_id);
+
+CREATE INDEX index_slack_integrations_on_organization_id ON slack_integrations USING btree (organization_id);
+
+CREATE INDEX index_slack_integrations_on_project_id ON slack_integrations USING btree (project_id);
 
 CREATE UNIQUE INDEX index_slack_integrations_on_team_id_and_alias ON slack_integrations USING btree (team_id, alias);
 
@@ -48187,6 +48196,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_47fe2a0596 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY slack_integrations
+    ADD CONSTRAINT fk_48c143b2c2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY operations_scopes
     ADD CONSTRAINT fk_4913f5d6a2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -48687,6 +48699,9 @@ ALTER TABLE ONLY issue_customer_relations_contacts
 
 ALTER TABLE ONLY personal_access_tokens
     ADD CONSTRAINT fk_7cea2c7262 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY slack_integrations
+    ADD CONSTRAINT fk_7d173ade7f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_7d2f93996c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -49887,6 +49902,9 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_f8b2e8680c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY slack_integrations
+    ADD CONSTRAINT fk_f90e9a6f87 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_requirement_compliance_statuses
     ADD CONSTRAINT fk_f9109a4712 FOREIGN KEY (compliance_framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE CASCADE;

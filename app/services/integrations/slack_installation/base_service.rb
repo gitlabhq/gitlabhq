@@ -59,7 +59,10 @@ module Integrations
           team_name: slack_data.dig('team', 'name'),
           alias: installation_alias,
           user_id: slack_data.dig('authed_user', 'id'),
-          authorized_scope_names: slack_data['scope']
+          authorized_scope_names: slack_data['scope'],
+          organization_id: integration.organization_id,
+          group_id: integration.group_id,
+          project_id: integration.project_id
         )
 
         update_other_installations!(installation)

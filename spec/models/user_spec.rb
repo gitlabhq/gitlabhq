@@ -10029,4 +10029,44 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
     end
   end
+
+  describe '#allow_user_to_create_group_and_project?', :sidekiq_inline do
+    subject(:user) { create(:user) }
+
+    let(:group) { create(:group) }
+
+    before do
+      group.add_guest(user)
+      stub_application_setting(allow_project_creation_for_guest_and_below: false)
+    end
+
+    it { is_expected.not_to be_allow_user_to_create_group_and_project }
+
+    context 'with admin', :enable_admin_mode do
+      subject(:user) { create(:admin) }
+
+      it { is_expected.to be_allow_user_to_create_group_and_project }
+    end
+
+    context 'with enabled configuration' do
+      before do
+        stub_application_setting(allow_project_creation_for_guest_and_below: true)
+      end
+
+      it { is_expected.to be_allow_user_to_create_group_and_project }
+    end
+
+    context 'with role higher than guest' do
+      subject(:user) { create(:user) }
+
+      before do
+        # Allow update of highest role immediately
+        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return('random-lease-key')
+
+        create(:group_member, user: user, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it { is_expected.to be_allow_user_to_create_group_and_project }
+    end
+  end
 end

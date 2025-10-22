@@ -31,6 +31,7 @@ module Ci
         "lint-help-page-path" => help_page_path('ci/yaml/lint.md', anchor: 'check-cicd-syntax'),
         "needs-help-page-path" => help_page_path('ci/yaml/_index.md', anchor: 'needs'),
         "new-merge-request-path" => namespace_project_new_merge_request_path,
+        "new-pipeline-path" => can?(current_user, :create_pipeline, project) ? new_project_pipeline_path(project) : '',
         "pipeline_etag" => latest_commit ? graphql_etag_pipeline_sha_path(latest_commit.sha) : '',
         "pipeline-page-path" => project_pipelines_path(project),
         "project-path" => project.path,

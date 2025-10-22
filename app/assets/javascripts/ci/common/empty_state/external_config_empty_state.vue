@@ -1,11 +1,12 @@
 <script>
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
   name: 'ExternalConfigEmptyState',
   components: {
     GlEmptyState,
+    GlButton,
   },
   i18n: {
     title: s__(
@@ -16,6 +17,13 @@ export default {
     ),
   },
   inject: ['emptyStateIllustrationPath'],
+  props: {
+    newPipelinePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
 };
 </script>
 <template>
@@ -23,5 +31,11 @@ export default {
     :title="$options.i18n.title"
     :description="$options.i18n.description"
     :svg-path="emptyStateIllustrationPath"
-  />
+  >
+    <template v-if="newPipelinePath" #actions>
+      <gl-button :href="newPipelinePath" variant="confirm">{{
+        s__('Pipelines|New pipeline')
+      }}</gl-button>
+    </template>
+  </gl-empty-state>
 </template>

@@ -323,4 +323,127 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       expect(merge_request_diff_commit.project_id).to eq(merge_request_diff.project_id)
     end
   end
+
+  describe 'methods delegated to merge_request_commits_metadata' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+
+    let_it_be(:commits_metadata) do
+      create(
+        :merge_request_commits_metadata,
+        project: project,
+        message: 'This is a commit metadata message'
+      )
+    end
+
+    let_it_be(:diff_commit_with_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata_id: commits_metadata.id,
+        commit_author: create(:merge_request_diff_commit_user),
+        committer: create(:merge_request_diff_commit_user),
+        authored_date: 2.days.ago,
+        committed_date: 2.days.ago,
+        message: 'This is a diff commit message',
+        relative_order: 0
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        commit_author: create(:merge_request_diff_commit_user),
+        committer: create(:merge_request_diff_commit_user),
+        authored_date: 2.days.ago,
+        committed_date: 2.days.ago,
+        message: 'This is a diff commit message',
+        relative_order: 1
+      )
+    end
+
+    shared_examples_for 'delegated method to merge_request_commits_metadata' do |delegated_method|
+      context 'when diff commit has merge_request_commits_metadata_id' do
+        it 'returns data from merge_request_commits_metadata' do
+          method_value = diff_commit_with_metadata.public_send(delegated_method)
+          method_value = method_value.to_i if method_value.is_a?(Time)
+          expected_method_value = commits_metadata.public_send(delegated_method)
+          expected_method_value = expected_method_value.to_i if expected_method_value.is_a?(Time)
+
+          expect(method_value).to eq(expected_method_value)
+        end
+
+        context 'when merge_request_diff_commits_dedup is disabled' do
+          before do
+            stub_feature_flags(merge_request_diff_commits_dedup: false)
+          end
+
+          it 'returns data from diff commit' do
+            expect(diff_commit_with_metadata.public_send(delegated_method))
+              .not_to eq(commits_metadata.public_send(delegated_method))
+          end
+        end
+      end
+
+      context 'when diff commit has no merge_request_commits_metadata_id' do
+        it 'returns data from diff commit' do
+          expect(diff_commit_without_metadata.public_send(delegated_method))
+            .to be_present
+        end
+      end
+
+      context 'when merge_request_commits_metadata_id attribute is missing' do
+        before do
+          allow(diff_commit_without_metadata).to receive(:merge_request_commits_metadata_id)
+                                             .and_raise(ActiveModel::MissingAttributeError)
+        end
+
+        it 'returns data from diff commit and tracks an exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(ActiveModel::MissingAttributeError),
+            diff_commit_without_metadata.attributes
+          )
+
+          expect(diff_commit_without_metadata.public_send(delegated_method)).to be_present
+        end
+      end
+    end
+
+    describe '#authored_date' do
+      it_behaves_like 'delegated method to merge_request_commits_metadata', :authored_date
+    end
+
+    describe '#committed_date' do
+      it_behaves_like 'delegated method to merge_request_commits_metadata', :committed_date
+    end
+
+    describe '#sha' do
+      it_behaves_like 'delegated method to merge_request_commits_metadata', :sha
+    end
+
+    describe '#commit_author' do
+      it_behaves_like 'delegated method to merge_request_commits_metadata', :commit_author
+    end
+
+    describe '#committer' do
+      it_behaves_like 'delegated method to merge_request_commits_metadata', :committer
+    end
+
+    describe '#message' do
+      it 'returns blank string' do
+        expect(diff_commit_with_metadata.message).to eq('')
+        expect(diff_commit_without_metadata.message).to eq('')
+      end
+
+      context 'when disable_message_attribute_on_mr_diff_commits is disabled' do
+        before do
+          stub_feature_flags(disable_message_attribute_on_mr_diff_commits: false)
+        end
+
+        it_behaves_like 'delegated method to merge_request_commits_metadata', :message
+      end
+    end
+  end
 end

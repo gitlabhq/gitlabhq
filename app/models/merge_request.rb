@@ -965,7 +965,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def commit_shas(limit: nil)
-    return merge_request_diff.commit_shas(limit: limit) if merge_request_diff.persisted?
+    return merge_request_diff.commit_shas(limit: limit, preload_metadata: true) if merge_request_diff.persisted?
 
     shas =
       if compare_commits

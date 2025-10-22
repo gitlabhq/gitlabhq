@@ -120,7 +120,10 @@ RSpec.shared_examples_for Integrations::SlackInstallation::BaseService do
           user_id: user_id,
           bot_user_id: bot_user_id,
           bot_access_token: bot_access_token,
-          authorized_scope_names: contain_exactly('chat:a', 'chat:b', 'chat:c')
+          authorized_scope_names: contain_exactly('chat:a', 'chat:b', 'chat:c'),
+          project_id: integration.project_id,
+          group_id: integration.group_id,
+          organization_id: integration.organization_id
         )
       end
     end
@@ -142,7 +145,10 @@ RSpec.shared_examples_for Integrations::SlackInstallation::BaseService do
             alias: 'old value',
             user_id: 'old value',
             bot_user_id: 'old value',
-            bot_access_token: 'old value'
+            bot_access_token: 'old value',
+            project_id: integration.project_id,
+            group_id: integration.group_id,
+            organization_id: integration.organization_id
           )
         end
 

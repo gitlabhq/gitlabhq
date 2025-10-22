@@ -176,20 +176,49 @@ class MergeRequestDiffCommit < ApplicationRecord
     project.id
   end
 
+  def authored_date
+    has_commit_metadata? ? merge_request_commits_metadata.authored_date : super
+  end
+
+  def committed_date
+    has_commit_metadata? ? merge_request_commits_metadata.committed_date : super
+  end
+
+  def sha
+    has_commit_metadata? ? merge_request_commits_metadata.sha : super
+  end
+
+  def commit_author
+    has_commit_metadata? ? merge_request_commits_metadata.commit_author : super
+  end
+
+  def committer
+    has_commit_metadata? ? merge_request_commits_metadata.committer : super
+  end
+
   private
 
   def fetch_message
     if ::Feature.enabled?(:disable_message_attribute_on_mr_diff_commits, project)
       ""
     else
-      read_attribute("message")
+      has_commit_metadata? ? merge_request_commits_metadata.message : read_attribute("message")
     end
   end
 
   # As of %17.10, we still don't have `project_id` on merge_request_diff_commit
   #   records. Until we do, we have to fetch it from merge_request_diff.
-  #
+  # Also, it's possible that `merge_request_diff` is `nil` when accessing this method from an object
+  # that has not been persisted.
   def project
-    @_project ||= merge_request_diff.project
+    @_project ||= merge_request_diff&.project
+  end
+
+  def has_commit_metadata?
+    merge_request_commits_metadata_id.present? && Feature.enabled?(:merge_request_diff_commits_dedup, project)
+  rescue ActiveModel::MissingAttributeError => e
+    Gitlab::ErrorTracking.track_exception(e, self.attributes)
+
+    false
   end
 end

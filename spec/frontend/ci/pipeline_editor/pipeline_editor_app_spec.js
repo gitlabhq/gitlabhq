@@ -59,6 +59,7 @@ const defaultProvide = {
   newMergeRequestPath: mockNewMergeRequestPath,
   projectFullPath: mockProjectFullPath,
   usesExternalConfig: false,
+  newPipelinePath: '',
 };
 
 Vue.use(GlToast);

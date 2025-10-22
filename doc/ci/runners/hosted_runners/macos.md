@@ -169,3 +169,6 @@ but it does increase the overall size of your project's repository.
   performance cores. You can't control core allocation or scheduling, which might lead to inconsistencies.
 - The availability of AWS bare metal macOS machines used for hosted runners on macOS is limited. Jobs might experience extended queuing times when no machines are available.
 - Hosted runner instances on macOS sometimes do not respond to requests, which results in jobs hanging until the maximum job duration is reached.
+- macOS uses a case-insensitive file system by default.
+  This behavior can result in unexpected errors if you have duplicate file paths that are equal except case.
+  These duplicate paths could be in the Git working tree or Git refs where branches and tags are stored.

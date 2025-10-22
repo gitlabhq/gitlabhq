@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
+import TooltipOnTruncateDirective from '~/vue_shared/directives/tooltip_on_truncate';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ICONS, PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import PipelineLabels from './pipeline_labels.vue';
@@ -18,6 +19,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    TooltipOnTruncate: TooltipOnTruncateDirective,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -114,10 +116,8 @@ export default {
           return __('Branch');
       }
     },
-    commitTitle() {
-      return this.pipeline?.commit?.title;
-    },
-    pipelineIdentifier() {
+
+    pipelineLink() {
       const { name, path, pipeline_schedule: pipelineSchedule } = this.pipeline || {};
 
       // pipeline name should take priority over
@@ -125,18 +125,26 @@ export default {
       if (name) {
         return {
           text: name,
-          link: path,
+          href: path,
         };
       }
 
       if (pipelineSchedule) {
         return {
           text: pipelineSchedule.description,
-          link: pipelineSchedule.path,
+          href: pipelineSchedule.path,
         };
       }
 
-      return false;
+      if (this.pipeline?.commit) {
+        return {
+          text: this.pipeline?.commit?.title,
+          href: this.commitUrl,
+          trackingAction: 'click_commit_title',
+        };
+      }
+
+      return null;
     },
     pipelineId() {
       return getIdFromGraphQLId(this.pipeline[this.pipelineIdType]);
@@ -151,39 +159,23 @@ export default {
 </script>
 <template>
   <div class="pipeline-tags" data-testid="pipeline-url-table-cell">
-    <div v-if="pipelineIdentifier" class="gl-mb-2" data-testid="pipeline-identifier-container">
-      <span class="gl-flex">
-        <tooltip-on-truncate
-          :title="pipelineIdentifier.text"
-          class="gl-grow gl-truncate gl-text-default"
-        >
-          <gl-link :href="pipelineIdentifier.link" data-testid="pipeline-identifier-link">{{
-            pipelineIdentifier.text
-          }}</gl-link>
-        </tooltip-on-truncate>
-      </span>
-    </div>
-
-    <div
-      v-if="!pipelineIdentifier"
-      class="commit-title gl-mb-2"
-      data-testid="commit-title-container"
+    <gl-link
+      v-if="pipelineLink"
+      v-tooltip-on-truncate
+      class="gl-mb-2 gl-block gl-truncate"
+      :href="pipelineLink.href"
+      data-testid="pipeline-identifier-link"
+      @click="pipelineLink.trackingAction && trackClick(pipelineLink.trackingAction)"
     >
-      <span v-if="commitTitle" class="gl-flex">
-        <tooltip-on-truncate
-          :title="commitTitle"
-          class="-gl-mb-3 -gl-ml-3 -gl-mr-3 -gl-mt-3 gl-grow gl-truncate gl-p-3"
-        >
-          <gl-link
-            :href="commitUrl"
-            class="commit-row-message"
-            data-testid="commit-title"
-            @click="trackClick('click_commit_title')"
-            >{{ commitTitle }}</gl-link
-          >
-        </tooltip-on-truncate>
-      </span>
-      <span v-else class="gl-text-subtle">{{ __("Can't find HEAD commit for this branch") }}</span>
+      {{ pipelineLink.text }}
+    </gl-link>
+    <div
+      v-else
+      v-tooltip-on-truncate
+      class="gl-mb-2 gl-truncate gl-text-subtle"
+      data-testid="pipeline-identifier-missing-message"
+    >
+      {{ __("Can't find HEAD commit for this branch") }}
     </div>
 
     <div class="gl-mb-2">
