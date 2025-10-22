@@ -48,7 +48,7 @@ To generate a SAML Response:
    - Select **Authorize** or attempt to sign
 1. For GitLab Self-Managed instance:
    - Go to the instance home page
-   - Click on the `SAML Login` button to sign in
+   - Select the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](_index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
@@ -61,7 +61,7 @@ For an overview, see this [video on manually generating a SAML response without 
 
 Regardless of what browser you use, the process is similar to the following:
 
-1. Right-click on a new browser and click on **Inspect** to open the **DevTools** window.
+1. Right-click on a new browser and select **Inspect** to open the **DevTools** window.
 1. Select the **Network** tab. Make sure that **Preserve log** is selected.
 1. Switch to the browser page and sign in to GitLab using SAML SSO.
 1. Switch back to the **DevTools** window and filter for the `callback` event.

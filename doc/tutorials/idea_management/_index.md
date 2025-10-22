@@ -165,7 +165,7 @@ To invite your stakeholders:
 Your stakeholders can now access your project to create new ideas:
 
 1. On the left sidebar, select **Plan** > **Issues**
-1. On the upper right, select **New issue**
+1. In the upper right, select **New issue**
 1. Enter a title and description.
 1. Select **Create issue**
 

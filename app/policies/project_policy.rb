@@ -307,8 +307,6 @@ class ProjectPolicy < BasePolicy
     !Gitlab.config.terraform_state.enabled
   end
 
-  condition(:namespace_catalog_available) { namespace_catalog_available? }
-
   desc "User has either planner or reporter access"
   condition(:planner_or_reporter_access) do
     can?(:reporter_access) || can?(:planner_access)
@@ -1219,10 +1217,6 @@ class ProjectPolicy < BasePolicy
     enable :read_project_metadata
   end
 
-  rule { can?(:developer_access) & namespace_catalog_available }.policy do
-    enable :read_namespace_catalog
-  end
-
   rule { public_project & model_registry_enabled }.policy do
     enable :read_model_registry
   end
@@ -1372,10 +1366,6 @@ class ProjectPolicy < BasePolicy
 
   def project
     @subject
-  end
-
-  def namespace_catalog_available?
-    false
   end
 end
 

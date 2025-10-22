@@ -37,6 +37,7 @@ title: Code Suggestions
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
 - To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for Code Generation to Claude Sonnet 4 in GitLab 18.2.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 
 {{< /history >}}
 
@@ -142,6 +143,7 @@ To get the best results from code generation:
 - In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
   feature flags are enabled, open related files in other tabs to expand the
   [context that Code Suggestions is aware of](../../../gitlab_duo/context.md#code-suggestions).
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:

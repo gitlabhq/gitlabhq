@@ -183,7 +183,7 @@ export default {
       data-testid="jobs-environment-info"
     >
       <ci-icon :status="iconStatus" />
-      <p class="gl-mb-0 gl-inline-block gl-self-center">
+      <p class="gl-mb-0 gl-inline-block gl-self-center" data-testid="job-environment-text">
         <gl-sprintf :message="environment">
           <template #environmentLink>
             <gl-link

@@ -63,7 +63,7 @@ export default {
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
+  inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath', 'canManageAttributes'],
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -126,7 +126,9 @@ export default {
     },
     shouldShowSecurityAttributes() {
       return (
-        window.gon?.licensed_features?.securityAttributes && this.glFeatures?.securityContextLabels
+        window.gon?.licensed_features?.securityAttributes &&
+        this.glFeatures?.securityContextLabels &&
+        this.canManageAttributes
       );
     },
   },

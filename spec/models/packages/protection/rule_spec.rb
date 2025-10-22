@@ -554,4 +554,19 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       it { is_expected.to match_array expected_result }
     end
   end
+
+  describe 'callbacks' do
+    describe '#ensure_pattern_type_and_target_field' do
+      let(:rule) { build(:package_protection_rule, pattern_type: nil, target_field: nil) }
+
+      it 'sets default value when pattern_type is nil' do
+        rule.save!
+
+        expect(rule).to have_attributes(
+          pattern_type: 'wildcard',
+          target_field: 'package_name'
+        )
+      end
+    end
+  end
 end

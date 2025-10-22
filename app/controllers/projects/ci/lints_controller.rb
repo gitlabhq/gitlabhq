@@ -6,7 +6,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
   feature_category :pipeline_composition
 
   respond_to :json, only: [:create]
-  urgency :low, [:create]
+  urgency :low, [:show, :create]
 
   def show; end
 

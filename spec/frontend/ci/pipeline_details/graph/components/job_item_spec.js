@@ -83,7 +83,7 @@ describe('pipeline graph job item', () => {
         true,
       );
 
-      expect(wrapper.text()).toBe(mockJob.name);
+      expect(wrapper.text()).toContain(mockJob.name);
     });
 
     it('should use deployment details path as the details path for manual bridge jobs', () => {
@@ -111,7 +111,7 @@ describe('pipeline graph job item', () => {
       );
 
       expect(findJobItemContent().element.tagName).toBe('DIV');
-      expect(wrapper.text()).toBe(mockJobWithoutDetails.name);
+      expect(wrapper.text()).toContain(mockJobWithoutDetails.name);
     });
 
     it('should apply hover class and provided class name', () => {
@@ -134,7 +134,7 @@ describe('pipeline graph job item', () => {
         true,
       );
 
-      expect(wrapper.text()).toBe(mockJob.name);
+      expect(wrapper.text()).toContain(mockJob.name);
     });
   });
 

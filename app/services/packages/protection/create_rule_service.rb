@@ -16,7 +16,8 @@ module Packages
           return service_response_error(message: error_message)
         end
 
-        package_protection_rule = project.package_protection_rules.create(params.slice(*ALLOWED_ATTRIBUTES))
+        creation_params = creation_params_with_defaults(params.slice(*ALLOWED_ATTRIBUTES))
+        package_protection_rule = project.package_protection_rules.create(creation_params)
 
         unless package_protection_rule.persisted?
           return service_response_error(message: package_protection_rule.errors.full_messages)
@@ -33,6 +34,15 @@ module Packages
         ServiceResponse.error(
           message: message,
           payload: { package_protection_rule: nil }
+        )
+      end
+
+      def creation_params_with_defaults(params)
+        params.merge(
+          pattern: params[:package_name_pattern],
+          # These 2 fields are currently fixed values for all package protection rules
+          pattern_type: Packages::Protection::Rule.pattern_types[:wildcard],
+          target_field: Packages::Protection::Rule.target_fields[:package_name]
         )
       end
     end

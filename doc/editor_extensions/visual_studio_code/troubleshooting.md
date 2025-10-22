@@ -21,7 +21,7 @@ see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
 
 1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
-1. On the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
+1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. Add this line, or edit it if it already exists:
 
    ```json
@@ -67,6 +67,18 @@ Prerequisites:
 | `gitlab.certKey`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If GitLab Self-Managed requires a custom certificate or key pair, set this option to point to your certificate key file. See `gitlab.cert`. |
 | `gitlab.ignoreCertificateErrors` | false   | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If you use GitLab Self-Managed with no SSL certificate, or have certificate issues that prevent you from using the extension, set this option to `true` to ignore certificate errors. |
 
+## Expired SSL certificate
+
+In some cases, certificates can be falsely classified as expired. This can result in the
+error `API request failed - Error: certificate has expired`. If you encounter this issue, you can disable
+VS Code support for system certificates.
+
+To disable system certificates:
+
+1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
+1. Under the **User** settings tab, select **Application** > **Proxy**.
+1. Disable the settings for **Proxy Strict SSL** and **System Certificates**.
+
 ## HTTPS project cloning works but SSH cloning fails
 
 This problem happens in VS Code when your SSH URL host or path is different from your HTTPS path. The GitLab Workflow extension uses:
@@ -105,7 +117,7 @@ SSH connections), you might encounter initialization failures like:
 To resolve these issues:
 
 1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
-1. On the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
+1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
    - Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**, and select it.
 1. Add or modify this setting:
 

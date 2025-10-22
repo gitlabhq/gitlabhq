@@ -25,7 +25,7 @@ To open the **Appearance** settings:
 
 Customize the appearance of your homepage button.
 
-The homepage button is located on the upper-left corner of the left sidebar.
+The homepage button is located in the upper-left corner of the left sidebar.
 Replace the default GitLab logo {{< icon name="tanuki" >}} with any image.
 
 - The file should be less than 1 MB.

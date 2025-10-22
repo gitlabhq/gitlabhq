@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { sprintf, s__, __ } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 
 /**
  * Renders CI icon based on API response shared between all places where it is used.
@@ -50,26 +50,43 @@ export default {
     },
   },
   computed: {
-    componentType() {
-      return this.href ? 'a' : 'span';
-    },
-    title() {
-      if (this.showTooltip && !this.showStatusText) {
-        // When text is not shown, show full pipeline status in tooltip
-        return sprintf(__('Pipeline status: %{status}'), { status: this.status?.text });
-      }
-
-      return null;
-    },
-    ariaLabel() {
-      return sprintf(s__('Pipeline|Status: %{status}'), { status: this.status?.text });
-    },
     href() {
       // href can come from GraphQL (camelCase) or REST API (snake_case)
       if (this.useLink) {
         return this.status.detailsPath || this.status.details_path;
       }
       return null;
+    },
+    fullText() {
+      return sprintf(s__('CICD|Status: %{status}'), {
+        status: this.status?.text,
+      });
+    },
+    attributes() {
+      const attributes = {
+        text: this.showStatusText ? this.status.text : null,
+        tooltip: !this.showStatusText && this.showTooltip ? this.fullText : null,
+      };
+
+      // text for screen readers when text is not shown
+      const accessibleText = !this.showStatusText ? this.fullText : null;
+
+      if (this.href) {
+        // render a link with aria-label
+        return {
+          is: 'a',
+          href: this.href,
+          ariaLabel: accessibleText,
+          ...attributes,
+        };
+      }
+
+      // render a span with screen reader only text
+      return {
+        is: 'span',
+        srOnlyText: accessibleText,
+        ...attributes,
+      };
     },
     icon() {
       if (this.status.icon) {
@@ -99,23 +116,25 @@ export default {
 </script>
 <template>
   <component
-    :is="componentType"
+    :is="attributes.is"
     v-gl-tooltip.viewport.left
     class="ci-icon gl-inline-flex gl-items-center gl-text-sm"
     :class="`ci-icon-variant-${variant}`"
     :variant="variant"
-    :title="title"
-    :aria-label="ariaLabel"
-    :href="href"
+    :title="attributes.tooltip"
+    :aria-label="attributes.ariaLabel"
+    :href="attributes.href"
     data-testid="ci-icon"
     @click="$emit('ciStatusBadgeClick')"
   >
     <span class="ci-icon-gl-icon-wrapper"><gl-icon :name="icon" /></span
     ><span
-      v-if="showStatusText"
+      v-if="attributes.text"
       class="gl-ml-2 gl-mr-3 gl-self-center gl-whitespace-nowrap gl-leading-1"
       data-testid="ci-icon-text"
-      >{{ status.text }}</span
-    >
+      >{{ attributes.text }}</span
+    ><span v-if="attributes.srOnlyText" class="gl-sr-only" data-testid="ci-icon-sr-text">{{
+      attributes.srOnlyText
+    }}</span>
   </component>
 </template>

@@ -20,6 +20,8 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
         get :show, params: { namespace_id: project.namespace, project_id: project }
       end
 
+      it { is_expected.to have_request_urgency(:low) }
+
       it { expect(response).to have_gitlab_http_status(:ok) }
 
       it 'renders show page' do
@@ -76,6 +78,8 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
       before do
         subject
       end
+
+      it { is_expected.to have_request_urgency(:low) }
 
       it 'returns successfully' do
         expect(response).to have_gitlab_http_status :ok

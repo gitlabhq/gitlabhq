@@ -12672,6 +12672,9 @@ msgstr ""
 msgid "CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "CICD|Status: %{status}"
+msgstr ""
+
 msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is removed. Use the %{boldStart}Authorized groups and projects%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
 msgstr ""
 
@@ -47879,9 +47882,6 @@ msgstr ""
 msgid "Pipeline status emails"
 msgstr ""
 
-msgid "Pipeline status: %{status}"
-msgstr ""
-
 msgid "Pipeline subscriptions"
 msgstr ""
 
@@ -49055,9 +49055,6 @@ msgid "Pipeline|Stages"
 msgstr ""
 
 msgid "Pipeline|Status"
-msgstr ""
-
-msgid "Pipeline|Status: %{status}"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"
@@ -58527,6 +58524,9 @@ msgid "SecurityAttributes|An error has occurred while saving the security attrib
 msgstr ""
 
 msgid "SecurityAttributes|An error has occurred while saving the security category."
+msgstr ""
+
+msgid "SecurityAttributes|At least one attribute is required"
 msgstr ""
 
 msgid "SecurityAttributes|Attribute"

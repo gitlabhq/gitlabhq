@@ -20,11 +20,21 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
     end
 
     it do
-      expect { subject }.to change { Packages::Protection::Rule.count }.by(1)
+      expect { service_execute }.to change { Packages::Protection::Rule.count }.by(1)
 
       expect(Packages::Protection::Rule.where(project: project).count).to eq package_protection_rule_count_expected
       expect(Packages::Protection::Rule.where(project: project,
         package_name_pattern: params[:package_name_pattern])).to exist
+    end
+
+    it 'creates Packages::Protection::Rule with default pattern_type and target_field' do
+      payload = service_execute.payload
+
+      expect(payload[:package_protection_rule]).to have_attributes(
+        pattern_type: 'wildcard',
+        target_field: 'package_name',
+        pattern: params[:package_name_pattern]
+      )
     end
   end
 
@@ -36,7 +46,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
     end
 
     it do
-      expect { subject }.to not_change { Packages::Protection::Rule.count }
+      expect { service_execute }.to not_change { Packages::Protection::Rule.count }
 
       expect(Packages::Protection::Rule.where(project: project).count).to eq package_protection_rule_count_expected
       expect(Packages::Protection::Rule.where(project: project,

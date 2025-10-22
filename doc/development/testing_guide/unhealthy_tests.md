@@ -201,7 +201,7 @@ element on a page that is not yet rendered, or in unit tests by failing to wait 
 
 When we have a flaky test in `master`:
 
-1. Create [a ~"failure::flaky-test" issue](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) with the relevant group label.
+1. Create [a ~"failure::flaky-test" issue](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) in the [Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/new) project with the relevant group label.
 1. Quarantine the test after the first failure.
    If the test cannot be fixed in a timely fashion, there is an impact on the
    productivity of all the developers, so it should be quarantined.

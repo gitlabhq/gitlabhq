@@ -8,7 +8,6 @@ spec/frontend/ci/runner/components/registration/runner_instructions/runner_instr
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
 spec/frontend/helpers/init_simple_app_helper_spec.js
-spec/frontend/issues/list/components/issues_list_app_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/performance_bar/index_spec.js

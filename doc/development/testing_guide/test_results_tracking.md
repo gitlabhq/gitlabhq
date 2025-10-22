@@ -13,7 +13,9 @@ The initial motivation and development was tracked by [this epic](https://gitlab
 
 ## Rails test results tracking
 
-We [plan to use](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122008) the `relate-failure-issue` command from the gem (see the gem's README for details about the command).
+The `relate-failure-issue` command from the gem creates or updates issues in the
+[Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues) project.
+For more information about the command, see the gem's README.
 
 ## End-to-end test results tracking
 

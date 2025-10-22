@@ -253,7 +253,7 @@ You can export a wiki page as a PDF file:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to export.
-1. On the upper right, select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then select **Print as PDF**.
+1. In the upper right, select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then select **Print as PDF**.
 
 A PDF of the wiki page is created.
 

@@ -20,7 +20,7 @@ describe('job name component', () => {
   });
 
   it('should render the provided name', () => {
-    expect(wrapper.text()).toBe(propsData.name);
+    expect(wrapper.text()).toContain(propsData.name);
   });
 
   it('should render an icon with the provided status', () => {

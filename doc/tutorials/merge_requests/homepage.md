@@ -84,7 +84,7 @@ Each table row groups related information about a merge request together into co
 
 ## Set your display preferences
 
-On the upper right, select **Display preferences** ({{< icon name="preferences">}}) to sort your merge requests by:
+In the upper right, select **Display preferences** ({{< icon name="preferences">}}) to sort your merge requests by:
 
 - **Workflow**. This view groups merge requests by their status. Merge requests needing your attention are shown first, regardless of whether
   you are the author or the reviewer.

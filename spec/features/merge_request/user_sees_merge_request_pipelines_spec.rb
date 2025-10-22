@@ -280,7 +280,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       it 'sees pipeline list in forked project' do
         visit project_pipelines_path(forked_project)
 
-        expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Pending', count: 2)
+        expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 2)
       end
 
       context 'when a user updated a merge request from a forked project to the parent project' do
@@ -349,7 +349,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         it 'sees pipeline list in forked project' do
           visit project_pipelines_path(forked_project)
 
-          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Pending', count: 4)
+          expect(page).to have_selector('[data-label="Status"] [data-testid="ci-icon"]', text: 'Pending', count: 4)
         end
       end
 

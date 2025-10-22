@@ -466,20 +466,22 @@ describe('CE IssuesListApp component', () => {
 
   describe('initial url params', () => {
     describe('page', () => {
-      it('page_after is set from the url params', () => {
+      it('page_after is set from the url params', async () => {
         setWindowLocation('?page_after=randomCursorString&first_page_size=20');
         wrapper = mountComponent();
 
+        await waitForPromises();
         expect(wrapper.vm.$route.query).toMatchObject({
           page_after: 'randomCursorString',
           first_page_size: '20',
         });
       });
 
-      it('page_before is set from the url params', () => {
+      it('page_before is set from the url params', async () => {
         setWindowLocation('?page_before=anotherRandomCursorString&last_page_size=20');
         wrapper = mountComponent();
 
+        await waitForPromises();
         expect(wrapper.vm.$route.query).toMatchObject({
           page_before: 'anotherRandomCursorString',
           last_page_size: '20',
@@ -488,10 +490,11 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('search', () => {
-      it('is set from the url params', () => {
+      it('is set from the url params', async () => {
         setWindowLocation(locationSearch);
         wrapper = mountComponent();
 
+        await waitForPromises();
         expect(wrapper.vm.$route.query).toMatchObject({ search: 'find issues' });
       });
     });
@@ -1308,7 +1311,7 @@ describe('CE IssuesListApp component', () => {
           await waitForPromises();
           // required for cache updates
           jest.runOnlyPendingTimers();
-          await nextTick();
+          await waitForPromises();
 
           expect(findIssuableList().props('issuables')[0].type).toBe('OBJECTIVE');
         });
@@ -1420,10 +1423,12 @@ describe('CE IssuesListApp component', () => {
     });
     describe('and the query does not contain a `show` parameter', () => {
       it('sets the `activeIssuable` to null, closing the drawer', async () => {
-        findIssuableList().vm.$emit(
-          'select-issuable',
-          getIssuesQueryResponse.data.project.issues.nodes[0],
-        );
+        findIssuableList().vm.$emit('select-issuable', {
+          ...getIssuesQueryResponse.data.project.issues.nodes[0],
+          iid: '1',
+        });
+        await nextTick();
+
         expect(findWorkItemDrawer().props('open')).toBe(true);
         await router.push({ query: { otherThing: true } });
         expect(findWorkItemDrawer().props('open')).toBe(false);
@@ -1431,15 +1436,16 @@ describe('CE IssuesListApp component', () => {
     });
     describe('on window `popstate` event', () => {
       it('sets the `activeIssuable` to null, closing the drawer if show parameter is not present', async () => {
-        findIssuableList().vm.$emit(
-          'select-issuable',
-          getIssuesQueryResponse.data.project.issues.nodes[0],
-        );
+        findIssuableList().vm.$emit('select-issuable', {
+          ...getIssuesQueryResponse.data.project.issues.nodes[0],
+          iid: '1',
+        });
+        await waitForPromises();
         expect(findWorkItemDrawer().props('open')).toBe(true);
 
         setWindowLocation('?otherThing=true');
         window.dispatchEvent(new Event('popstate'));
-        await nextTick();
+        await waitForPromises();
         expect(findWorkItemDrawer().props('open')).toBe(false);
       });
     });

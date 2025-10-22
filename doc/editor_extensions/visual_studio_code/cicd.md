@@ -104,7 +104,7 @@ The extension shows an alert if it detects a problem with your configuration.
 Use this command to see a preview of your merged CI/CD configuration file, with all includes and references resolved.
 
 1. In VS Code, open your `.gitlab-ci.yml` file, and ensure the file's tab is in focus.
-1. On the upper right, select **Show Merged GitLab CI/CD Configuration**:
+1. In the upper right, select **Show Merged GitLab CI/CD Configuration**:
 
    ![The VS Code application, showing the icon for viewing merged results.](img/show_merged_configuration_v17_6.png)
 

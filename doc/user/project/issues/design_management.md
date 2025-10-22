@@ -243,7 +243,7 @@ You can start [discussions](../../discussions/_index.md) on uploaded designs. To
 1. Select the design.
 <!-- vale gitlab_base.SubstitutionWarning = NO -->
 <!-- Disable Vale so it doesn't catch "click" -->
-1. Click or tap the image. A pin is created in that spot, identifying the discussion's location.
+1. Select the image. A pin is created in that spot, identifying the discussion's location.
 <!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. Enter your message.
 1. Select **Comment**.

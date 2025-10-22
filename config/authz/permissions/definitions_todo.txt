@@ -602,7 +602,6 @@ read_milestone
 read_model_experiments
 read_model_registry
 read_namespace
-read_namespace_catalog
 read_namespace_cluster_agent_mapping
 read_namespace_via_membership
 read_nested_project_resources

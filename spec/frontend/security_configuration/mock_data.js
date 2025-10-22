@@ -183,4 +183,5 @@ export const provideMock = {
   groupFullPath: 'namespace',
   vulnerabilityTrainingDocsPath: 'user/application_security/vulnerabilities/_index',
   licenseConfigurationSource: 'SBOM',
+  canManageAttributes: false,
 };

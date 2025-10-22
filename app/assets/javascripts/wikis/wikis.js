@@ -1,4 +1,4 @@
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import Tracking from '~/tracking';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
@@ -59,9 +59,7 @@ export default class Wikis {
   }
 
   static sidebarCanCollapse() {
-    return ['xs', 'sm', 'md', 'lg'].includes(
-      GlBreakpointInstance.getBreakpointSize(this.sidebarEl),
-    );
+    return ['xs', 'sm', 'md', 'lg'].includes(PanelBreakpointInstance.getBreakpointSize());
   }
 
   renderSidebar() {

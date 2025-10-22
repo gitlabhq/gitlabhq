@@ -123,7 +123,7 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 - **Success rate**: Percentage of pipeline runs that completed successfully.
 - **Failure rate**: Percentage of pipeline runs that completed with failures.
 
-## Code suggestions acceptance rate by language
+## Code Suggestions acceptance rate by language
 
 {{< history >}}
 
@@ -131,7 +131,7 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 
 {{< /history >}}
 
-The **Code suggestions acceptance rate by language** chart displays the acceptance rate of Code Suggestions broken down by programming language for the last 30 days.
+The **Code Suggestions acceptance rate by language** chart displays the acceptance rate of Code Suggestions broken down by programming language for the last 30 days.
 
 The acceptance rate for each language is calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
 

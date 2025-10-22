@@ -111,7 +111,7 @@ into three tabs:
 
 ### Set your display preferences
 
-On the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
+In the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
 
 - Toggle **Show labels** to show or hide labels for each merge request.
 - Sorting preferences: **Workflow** or **Role**.

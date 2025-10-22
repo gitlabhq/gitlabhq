@@ -1,6 +1,6 @@
 - title: "GitLab Self-Managed certificate-based integration with Kubernetes"
   announcement_milestone: "14.5"
-  removal_milestone: "19.0"
+  removal_milestone: "Pending"
   breaking_change: true
   impact: high
   scope: instance, group, project
@@ -11,15 +11,14 @@
 
     For GitLab Self-Managed, we are introducing the [feature flag](https://docs.gitlab.com/administration/feature_flags/#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
 
-    In GitLab 19.0 we will remove both the feature and its related code. Until the final removal in 19.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
+    For a more robust, secure, forthcoming, and reliable integration with Kubernetes, use the
+    [agent for Kubernetes](https://docs.gitlab.com/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
+    For information about this migration, see [migrate to agent for Kubernetes](https://docs.gitlab.com/user/infrastructure/clusters/migrate_to_gitlab_agent/).
 
-    For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
-    [agent for Kubernetes](https://docs.gitlab.com/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/user/infrastructure/clusters/migrate_to_gitlab_agent/)
+    GitLab will not remove this feature until the new solution has feature parity.
+    For more information about the blockers to removal, see [issue 199](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
 
-    Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
-    For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
-
-    For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+    For updates and details about this deprecation, see [epic 8](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
   stage: Configure
   tiers: [Core, Premium, Ultimate]
   issue_url: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'

@@ -29,7 +29,10 @@ module Packages
           return service_response_error(message: error_message)
         end
 
-        package_protection_rule.update(params.slice(*ALLOWED_ATTRIBUTES))
+        update_params = params.slice(*ALLOWED_ATTRIBUTES)
+        update_params[:pattern] = update_params[:package_name_pattern] if update_params.key?(:package_name_pattern)
+
+        package_protection_rule.update(update_params)
 
         if package_protection_rule.errors.present?
           return service_response_error(message: package_protection_rule.errors.full_messages)

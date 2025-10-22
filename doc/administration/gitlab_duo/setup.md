@@ -88,7 +88,7 @@ To run a health check:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
-1. On the upper-right corner, select **Run health check**.
+1. In the upper-right corner, select **Run health check**.
 1. Optional. In GitLab 17.5 and later, after the health check is complete, you can select **Download report** to save a detailed report of the health check results.
 
 These tests are performed:

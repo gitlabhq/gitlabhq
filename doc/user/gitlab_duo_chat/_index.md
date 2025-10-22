@@ -246,7 +246,7 @@ To use GitLab Duo Chat in the GitLab extension for Visual Studio:
 
 1. In Visual Studio, open a file. The file does not need to be a file in a Git repository.
 1. Open Chat by using one of the following methods:
-   - In the top menu bar, click on **Extensions** and then select **Open Duo Chat**.
+   - In the top menu bar, select **Extensions**, and then select **Open Duo Chat**.
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
      1. Select **Explain selected code** or **Generate Tests**.

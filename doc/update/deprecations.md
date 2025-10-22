@@ -633,34 +633,6 @@ You can set this variable in your project, group, or policy now to prevent Advan
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### GitLab Self-Managed certificate-based integration with Kubernetes
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">14.5</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-
-</div>
-
-The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
-
-For GitLab Self-Managed, we are introducing the [feature flag](https://docs.gitlab.com/administration/feature_flags/#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
-
-In GitLab 19.0 we will remove both the feature and its related code. Until the final removal in 19.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
-
-For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
-[agent for Kubernetes](https://docs.gitlab.com/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/user/infrastructure/clusters/migrate_to_gitlab_agent/)
-
-Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
-For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
-
-For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### GraphQL `target` field for to-do items replaced with `targetEntity`
 
 <div class="deprecation-notes">
@@ -7840,6 +7812,37 @@ This will result in the rename of the sub-chart: `gitlab/task-runner` to `gitlab
 ## Pending changes
 
 The following changes have been removed from their original milestone and are being reassessed.
+
+<div class="deprecation breaking-change">
+
+### GitLab Self-Managed certificate-based integration with Kubernetes
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">14.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+</div>
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
+
+For GitLab Self-Managed, we are introducing the [feature flag](https://docs.gitlab.com/administration/feature_flags/#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
+
+For a more robust, secure, forthcoming, and reliable integration with Kubernetes, use the
+[agent for Kubernetes](https://docs.gitlab.com/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
+For information about this migration, see [migrate to agent for Kubernetes](https://docs.gitlab.com/user/infrastructure/clusters/migrate_to_gitlab_agent/).
+
+GitLab will not remove this feature until the new solution has feature parity.
+For more information about the blockers to removal, see [issue 199](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
+
+For updates and details about this deprecation, see [epic 8](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+</div>
 
 <div class="deprecation breaking-change">
 
