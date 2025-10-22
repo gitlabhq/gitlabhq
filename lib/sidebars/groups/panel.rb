@@ -9,7 +9,7 @@ module Sidebars
 
         add_menu(Sidebars::Groups::Menus::GroupInformationMenu.new(context))
 
-        if ::Feature.enabled?(:work_item_planning_view, context.group)
+        if context.group&.work_items_consolidated_list_enabled?
           add_menu(Sidebars::Groups::Menus::WorkItemsMenu.new(context))
         else
           add_menu(Sidebars::Groups::Menus::IssuesMenu.new(context))

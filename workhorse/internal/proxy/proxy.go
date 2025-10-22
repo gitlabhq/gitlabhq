@@ -117,16 +117,17 @@ func newBufferPool() *bufferPool {
 	return &bufferPool{
 		pool: sync.Pool{
 			New: func() any {
-				return make([]byte, bufferPoolSize)
+				buf := make([]byte, bufferPoolSize)
+				return &buf
 			},
 		},
 	}
 }
 
 func (bp *bufferPool) Get() []byte {
-	return bp.pool.Get().([]byte)
+	return *bp.pool.Get().(*[]byte)
 }
 
 func (bp *bufferPool) Put(v []byte) {
-	bp.pool.Put(v) //lint:ignore SA6002 we either allocate manually to satisfy the linter or let the compiler allocate for us and silence the linter
+	bp.pool.Put(&v)
 }

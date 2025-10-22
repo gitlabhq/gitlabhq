@@ -13,7 +13,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
-    push_frontend_feature_flag(:work_item_planning_view, project&.group)
+    push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?)
   end
 
   before_action :check_search_rate_limit!, if: ->(c) do
@@ -41,7 +41,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
   end
 
   def index
-    not_found unless ::Feature.enabled?(:work_item_planning_view, project&.group, type: :wip)
+    not_found unless project&.work_items_consolidated_list_enabled?
   end
 
   def show

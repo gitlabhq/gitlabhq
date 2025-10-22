@@ -58,10 +58,10 @@ func (s *archiveCleaner) RegisterPath(path string) {
 		path = absPath
 	}
 
-	switch {
-	case s.path == "":
+	switch s.path {
+	case "":
 		log.WithFields(log.Fields{"storage_path": path}).Info("archive cleaner path registered")
-	case s.path == path:
+	case path:
 		return
 	default:
 		log.WithFields(log.Fields{"old_path": s.path, "new_path": path}).Error("archive cleaner path already set")

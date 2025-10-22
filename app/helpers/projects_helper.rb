@@ -758,9 +758,7 @@ module ProjectsHelper
   end
 
   def show_archived_badge?(project)
-    return true if project.archived?
-
-    Feature.enabled?(:archive_group, project.root_ancestor) && project.ancestors_archived?
+    project.self_or_ancestors_archived?
   end
 
   private

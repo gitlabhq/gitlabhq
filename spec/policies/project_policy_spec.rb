@@ -381,7 +381,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  context 'with archive_group feature flag' do
+  context 'with self or ancestor archived' do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:group_project) { create(:project, :repository, group: group) }
@@ -416,68 +416,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    context 'when archive_group feature flag is enabled' do
-      context 'when parent group is archived' do
-        before do
-          group.archive
-        end
-
-        context 'project in parent group' do
-          let(:project) { group_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it_behaves_like 'archived project behavior'
-        end
-
-        context 'project in subgroup of parent group' do
-          let(:project) { subgroup_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it_behaves_like 'archived project behavior'
-        end
-
-        context 'project with no group' do
-          let(:project) { user_namespace_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it 'allows read and write operations' do
-            expect_allowed(:create_issue, :push_code, :create_merge_request_in)
-          end
-        end
+    context 'when parent group is archived' do
+      before do
+        group.archive
       end
 
-      context 'when ancestor group is archived' do
-        before do
-          subgroup.archive
-        end
-
-        context 'project in subgroup (with ancestor archived)' do
-          let(:project) { subgroup_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it_behaves_like 'archived project behavior'
-        end
-
-        context 'project in parent group (not archived)' do
-          let(:project) { group_project }
-
-          subject(:policy) { described_class.new(current_user, project) }
-
-          it 'allows read and write operations' do
-            expect_allowed(:create_issue, :push_code, :create_merge_request_in)
-          end
-        end
-      end
-
-      context 'when project itself is archived' do
-        before do
-          group_project.update!(archived: true)
-        end
-
+      context 'project in parent group' do
         let(:project) { group_project }
 
         subject(:policy) { described_class.new(current_user, project) }
@@ -485,59 +429,81 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         it_behaves_like 'archived project behavior'
       end
 
-      context 'when both project and group are archived' do
-        before do
-          group.archive
-          group_project.update!(archived: true)
-        end
-
-        let(:project) { group_project }
+      context 'project in subgroup of parent group' do
+        let(:project) { subgroup_project }
 
         subject(:policy) { described_class.new(current_user, project) }
 
         it_behaves_like 'archived project behavior'
       end
 
-      context 'when neither project nor group is archived' do
+      context 'project with no group' do
+        let(:project) { user_namespace_project }
+
+        subject(:policy) { described_class.new(current_user, project) }
+
+        it 'allows read and write operations' do
+          expect_allowed(:create_issue, :push_code, :create_merge_request_in)
+        end
+      end
+    end
+
+    context 'when ancestor group is archived' do
+      before do
+        subgroup.archive
+      end
+
+      context 'project in subgroup (with ancestor archived)' do
+        let(:project) { subgroup_project }
+
+        subject(:policy) { described_class.new(current_user, project) }
+
+        it_behaves_like 'archived project behavior'
+      end
+
+      context 'project in parent group (not archived)' do
         let(:project) { group_project }
 
         subject(:policy) { described_class.new(current_user, project) }
 
         it 'allows read and write operations' do
-          expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
+          expect_allowed(:create_issue, :push_code, :create_merge_request_in)
         end
       end
     end
 
-    context 'when archive_group feature flag is disabled' do
+    context 'when project itself is archived' do
       before do
-        stub_feature_flags(archive_group: false)
+        group_project.update!(archived: true)
       end
 
-      context 'when group is archived but project is not' do
-        before do
-          group.archive
-        end
+      let(:project) { group_project }
 
-        let(:project) { group_project }
+      subject(:policy) { described_class.new(current_user, project) }
 
-        subject(:policy) { described_class.new(current_user, project) }
+      it_behaves_like 'archived project behavior'
+    end
 
-        it 'ignores group archived status' do
-          expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
-        end
+    context 'when both project and group are archived' do
+      before do
+        group.archive
+        group_project.update!(archived: true)
       end
 
-      context 'when project is archived' do
-        before do
-          group_project.update!(archived: true)
-        end
+      let(:project) { group_project }
 
-        let(:project) { group_project }
+      subject(:policy) { described_class.new(current_user, project) }
 
-        subject(:policy) { described_class.new(current_user, project) }
+      it_behaves_like 'archived project behavior'
+    end
 
-        it_behaves_like 'archived project behavior'
+    context 'when neither project nor group is archived' do
+      let(:project) { group_project }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it 'allows read and write operations' do
+        expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
       end
     end
   end

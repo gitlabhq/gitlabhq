@@ -157,6 +157,108 @@ def method
 end
 ```
 
+### Method ordering within classes
+
+For ordering methods at the class level (public, protected, private sections), refer to
+[RuboCop's `Layout/ClassStructure`](https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Layout/ClassStructure).
+
+Within each visibility section, consider the following principles to improve readability:
+
+#### Rule: Order methods by level of abstraction (high-level before low-level)
+
+Methods should generally be ordered from highest to lowest level of abstraction. This means:
+
+- Methods that orchestrate or coordinate work should come first
+- Helper methods that support those orchestrator methods should come after
+
+This follows the ["newspaper style"](https://medium.com/codex/clean-code-formatting-summary-9a475ba10ac8)
+or ["stepdown rule"](https://dzone.com/articles/the-stepdown-rule) principle,
+where code reads like a story from top to bottom,
+with the most important operations first and implementation details revealed progressively.
+
+```ruby
+# good - orchestrator method before helpers
+class CommitMessageProcessor
+  def execute
+    other_method_calls
+    process_commit_message
+  end
+
+  private
+
+  def process_commit_message
+    title = extract_title(commit.message)
+    body = extract_body(commit.message)
+
+    # ... process title and body
+  end
+
+  def extract_title(message)
+    message.split("\n").first
+  end
+
+  def extract_body(message)
+    message.split("\n")[1..]
+  end
+end
+```
+
+```ruby
+# bad - helper methods before the method that uses them
+class CommitMessageProcessor
+  def execute
+    other_method_calls
+    process_commit_message
+  end
+
+  private
+
+  def extract_title(message)
+    message.split("\n").first
+  end
+
+  def extract_body(message)
+    message.split("\n")[1..]
+  end
+
+  def process_commit_message
+    title = extract_title(commit.message)
+    body = extract_body(commit.message)
+
+    # ... process title and body
+  end
+end
+```
+
+This ordering helps readers understand:
+
+- **What** the code does (by reading the high-level method first)
+- **How** it does it (by reading the helper methods after)
+
+Following this ordering pattern helps reviewers and future maintainers understand code flow more quickly,
+especially in service objects, processors, and other classes with clear orchestration patterns.
+
+Exceptions to this ordering may be appropriate when:
+
+- Methods are grouped by a domain concept that's more important than abstraction level
+- Alphabetical ordering provides significant value for a large number of similar methods
+
+{{< alert type="note" >}}
+
+When a class has multiple high-level methods that serve different, unrelated purposes,
+group each high-level method with its supporting helper methods. Alternatively, consider extracting
+the implementation into separate service classes where each class has a single clear responsibility.
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+Beyond two levels of method calls (a method calling a method calling a method),
+this pattern can become unwieldy and hard to follow. If you find yourself with deep nesting,
+consider refactoring into separate classes or simplifying the logic.
+
+{{< /alert >}}
+
 ## Rails / ActiveRecord
 
 This section contains GitLab-specific guidelines for Rails and ActiveRecord usage.

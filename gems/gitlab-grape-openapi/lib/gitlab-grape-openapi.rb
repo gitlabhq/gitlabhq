@@ -16,6 +16,7 @@ require_relative "gitlab/grape_openapi/models/schema"
 require_relative "gitlab/grape_openapi/models/tag"
 require_relative "gitlab/grape_openapi/models/server"
 require_relative "gitlab/grape_openapi/models/security_scheme"
+require_relative "gitlab/grape_openapi/models/info"
 
 module Gitlab
   module GrapeOpenapi

@@ -217,13 +217,9 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 func (u *upstream) pollGeoProxyAPI() {
 	defer close(u.geoPollerDone)
 
-	for {
-		// Check enableGeoProxyFeature every time because `callGeoProxyApi()` can change its value.
-		// This is can also be disabled through the GEO_SECONDARY_PROXY env var.
-		if !u.enableGeoProxyFeature {
-			break
-		}
-
+	// Check enableGeoProxyFeature every time because `callGeoProxyApi()` can change its value.
+	// This is can also be disabled through the GEO_SECONDARY_PROXY env var.
+	for u.enableGeoProxyFeature {
 		u.callGeoProxyAPI()
 		u.geoProxyPollSleep(geoProxyAPIPollingInterval)
 	}
@@ -245,16 +241,8 @@ func (u *upstream) callGeoProxyAPI() {
 		return
 	}
 
-	hasProxyDataChanged := false
-	if u.geoProxyBackend.String() != geoProxyData.GeoProxyURL.String() {
-		// URL changed
-		hasProxyDataChanged = true
-	}
-
-	if u.geoProxyExtraData != geoProxyData.GeoProxyExtraData {
-		// Signed data changed
-		hasProxyDataChanged = true
-	}
+	hasProxyDataChanged := u.geoProxyBackend.String() != geoProxyData.GeoProxyURL.String() || // URL changed
+		u.geoProxyExtraData != geoProxyData.GeoProxyExtraData // Signed data changed
 
 	if hasProxyDataChanged {
 		u.updateGeoProxyFieldsFromData(geoProxyData)

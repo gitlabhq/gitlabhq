@@ -29,8 +29,7 @@ export default {
     IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
     WorkItemTypeIcon,
     IssueMilestone,
-    IssueHealthStatus: () =>
-      import('ee_component/related_items_tree/components/issue_health_status.vue'),
+    IssueHealthStatus: () => import('ee_component/issues/components/issue_health_status.vue'),
     EpicCountables: () =>
       import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
     WorkItemStatusBadge: () =>

@@ -128,14 +128,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
 
-  condition(:archive_group_enabled, scope: :subject) do
-    Feature.enabled?(:archive_group, @subject.root_ancestor)
-  end
-
   condition(:archived, scope: :subject) { @subject.self_or_ancestors_archived? }
   condition(:group_scheduled_for_deletion, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
 
-  rule { archived & archive_group_enabled }.policy do
+  rule { archived }.policy do
     prevent :activate_group_member
     prevent :add_cluster
     prevent :admin_achievement
@@ -246,7 +242,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_compliance_pipeline_configuration
   end
 
-  rule { archived & archive_group_enabled & ~group_scheduled_for_deletion }.policy do
+  rule { archived & ~group_scheduled_for_deletion }.policy do
     prevent :delete_custom_emoji
     prevent :delete_o11y_settings
     prevent :destroy_issue

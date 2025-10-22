@@ -65,7 +65,8 @@ generate-apollo-graphql-schema:
   extends:
     - .static-analysis-base
   needs:
-    - generate-apollo-graphql-schema
+    - job: generate-apollo-graphql-schema
+      optional: true
     - job: compile-fe-island
       optional: true
   variables:

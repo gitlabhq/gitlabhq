@@ -2,7 +2,7 @@ import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 
 import { nextTick } from 'vue';
-import ToggleSidebar from '~/sidebar/components/toggle/toggle_sidebar.vue';
+import ToggleSidebar from '~/vue_shared/alert_details/components/sidebar/toggle_sidebar.vue';
 
 describe('ToggleSidebar', () => {
   let wrapper;

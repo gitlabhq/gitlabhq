@@ -1,5 +1,5 @@
 <script>
-import ToggleSidebar from '~/sidebar/components/toggle/toggle_sidebar.vue';
+import ToggleSidebar from './toggle_sidebar.vue';
 import SidebarTodo from './sidebar_todo.vue';
 
 export default {

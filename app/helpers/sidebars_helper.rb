@@ -146,7 +146,7 @@ module SidebarsHelper
         can_admin_label: can?(current_user, :admin_label, project).to_s,
         has_issue_weights_feature: project.licensed_feature_available?(:issue_weights).to_s,
         has_iterations_feature: project.licensed_feature_available?(:iterations).to_s,
-        work_item_planning_view_enabled: ::Feature.enabled?(:work_item_planning_view, project.group).to_s
+        work_item_planning_view_enabled: project.work_items_consolidated_list_enabled?.to_s
       }
     end
 
@@ -159,7 +159,7 @@ module SidebarsHelper
       labels_manage_path: group_labels_path(group),
       can_admin_label: can?(current_user, :admin_label, group).to_s,
       has_issue_weights_feature: group.licensed_feature_available?(:issue_weights).to_s,
-      work_item_planning_view_enabled: ::Feature.enabled?(:work_item_planning_view, group).to_s
+      work_item_planning_view_enabled: group.work_items_consolidated_list_enabled?.to_s
     }
   end
 

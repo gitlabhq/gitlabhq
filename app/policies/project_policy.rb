@@ -69,7 +69,7 @@ class ProjectPolicy < BasePolicy
   condition(:external_user) { user.external? }
 
   desc "Project is archived"
-  condition(:archived, scope: :subject, score: 0) { project_archived_or_ancestors_archived? }
+  condition(:archived, scope: :subject, score: 0) { project.self_or_ancestors_archived? }
 
   desc "Project user pipeline variables minimum override role"
   condition(:project_pipeline_override_role_owner) { project.ci_pipeline_variables_minimum_override_role == 'owner' }
@@ -1266,10 +1266,6 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_project) }.enable :read_attestation
 
   private
-
-  def project_archived_or_ancestors_archived?
-    project.archived? || (Feature.enabled?(:archive_group, project.root_ancestor) && project.self_or_ancestors_archived?)
-  end
 
   def team_member?
     return false if @user.nil?

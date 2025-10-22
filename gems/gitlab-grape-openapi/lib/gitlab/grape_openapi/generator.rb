@@ -17,12 +17,15 @@ module Gitlab
 
         # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/572530
         {
+          openapi: '3.0.0',
+          info: Gitlab::GrapeOpenapi.configuration.info.to_h,
           tags: tag_registry.tags,
           servers: Gitlab::GrapeOpenapi.configuration.servers.map(&:to_h),
+          paths: {}, # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/572540
           components: {
             securitySchemes: security_schemes
           },
-          security: security_schemes.keys
+          security: security_schemes.keys.map { |s| { s => [] } }
         }
       end
 

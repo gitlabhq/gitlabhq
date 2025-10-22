@@ -52,7 +52,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issues_list_create_modal, project)
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:work_item_planning_view, project&.group)
+    push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
@@ -481,7 +481,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def redirect_index_to_work_items
-    return unless index_html_request? && ::Feature.enabled?(:work_item_planning_view, project.group)
+    return unless index_html_request? && project&.work_items_consolidated_list_enabled?
 
     params = request.query_parameters.except("type").merge('type[]' => 'issue')
     redirect_to project_work_items_path(project, params: params)

@@ -193,7 +193,8 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     expect(page).to have_content(issue.title)
   end
 
-  it 'routes the user to the issue details page when the `issue_type` is set to issue' do
+  it 'routes the user to the issue details page when the `issue_type` is set to issue',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/573019' do
     visit incident_project_issues_path(project, incident)
     wait_for_requests
 

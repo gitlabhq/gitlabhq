@@ -15,7 +15,7 @@ The [release rollout schedule](../administration/dedicated/releases.md#release-r
 
 ## Feature flags
 
-[Feature flags support the development and rollout of new or experimental features](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) on GitLab.com. Feature flags are not tools for managing configuration.
+[Feature flags support the development and rollout of new or experimental features](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) on GitLab.com. Feature flags are not tools for managing configuration.
 
 Due to the high risk of enabling experimental features on GitLab Dedicated, and the additional workload needed to manage these on a per-instance basis, feature flags are not supported on GitLab Dedicated.
 

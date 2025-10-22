@@ -193,7 +193,7 @@ by a reviewer before passing it to a maintainer as described in the
     - **Request backend review** when changes include Ruby logic, method calls,
       variable assignments, conditionals, loops, data preparation, security checks,
       or any server-side processing in the template.
-    - **Request frontend review** when changes affect DOM structure, CSS classes, 
+    - **Request frontend review** when changes affect DOM structure, CSS classes,
       HTML attributes, accessibility features, user interactions, and responsive design,
       or visual presentation.
     - **Request both reviews** for complex changes that involve both Ruby logic and significant UI modifications, or when
@@ -297,7 +297,7 @@ For further quality guidelines, see [testing](https://handbook.gitlab.com/handbo
 
 1. You have considered using a feature flag for this change because the change may be high risk.
 1. If you are using a feature flag, you plan to test the change in staging before you test it in production, and you have considered rolling it out to a subset of production customers before rolling it out to all customers.
-   - [When to use a feature flag](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)
+   - [When to use a feature flag](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)
 1. You have informed the Infrastructure department of a default setting or new setting change per [definition of done](contributing/merge_request_workflow.md#definition-of-done), or decided that this is unnecessary.
 
 ##### Compliance

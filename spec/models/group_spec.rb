@@ -4348,6 +4348,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#work_items_consolidated_list_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_item_planning_view }
+      let(:feature_flag_method) { :work_items_consolidated_list_enabled? }
+    end
+  end
+
   describe '#supports_group_work_items?' do
     let(:group) { build(:group) }
 
