@@ -109,7 +109,7 @@ To run an agent:
 1. Select your agent, then select **Test**.
 1. On the dialog, enter your instructions, then select **Run**.
 
-The session starts on the associated project's **Agent sessions** page.
+To monitor progress, select **Automate** > **Sessions**.
 
 ## Duplicate an agent
 

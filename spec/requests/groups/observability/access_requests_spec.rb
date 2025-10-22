@@ -43,40 +43,17 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
     end
   end
 
-  shared_examples 'returns 404 when group has observability settings' do
+  shared_examples 'redirects when group has observability settings' do
     context 'when group has observability settings' do
       before do
         create(:observability_group_o11y_setting, group: group)
       end
 
-      it 'returns 404' do
+      it 'redirects to setup path with alert message' do
         subject
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to redirect_to(group_observability_setup_path(group))
+        expect(flash[:alert]).to eq('Observability is already enabled for this group')
       end
-    end
-  end
-
-  describe "GET /new" do
-    subject(:get_new_access_request) { get new_group_observability_access_requests_path(group) }
-
-    include_examples 'requires feature flag'
-    include_examples 'returns 404 when group has observability settings'
-
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(observability_sass_features: group)
-      end
-
-      it "returns http success and renders new template" do
-        get_new_access_request
-
-        aggregate_failures do
-          expect(response).to have_gitlab_http_status(:success)
-          expect(response).to render_template(:new)
-        end
-      end
-
-      include_examples 'requires permissions'
     end
   end
 
@@ -88,7 +65,7 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
     end
 
     include_examples 'requires feature flag'
-    include_examples 'returns 404 when group has observability settings'
+    include_examples 'redirects when group has observability settings'
 
     context 'when feature flag is enabled' do
       before do
@@ -101,11 +78,12 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
             .and_return(ServiceResponse.success(payload: { issue: create(:issue) }))
         end
 
-        it 'returns http success and calls service correctly' do
+        it 'redirects to setup path and calls service correctly' do
           create_access_request
 
           aggregate_failures do
-            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to redirect_to(group_observability_setup_path(group))
+            expect(flash[:success]).to eq('Welcome to GitLab Observability!')
             expect(::Observability::AccessRequestService).to have_received(:new).with(group, user)
             expect(service_instance).to have_received(:execute)
           end
@@ -119,18 +97,33 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
           allow(service_instance).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
         end
 
-        it 'returns unprocessable entity and sets flash message' do
+        it 'redirects to setup path and sets flash message' do
           create_access_request
 
           aggregate_failures do
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
-            expect(flash.now[:alert]).to eq(error_message)
-            expect(response).to render_template(:new)
+            expect(response).to redirect_to(group_observability_setup_path(group))
+            expect(flash[:alert]).to eq(error_message)
           end
         end
       end
 
       include_examples 'requires permissions'
+
+      context 'when observability is already enabled' do
+        before do
+          create(:observability_group_o11y_setting, group: group)
+        end
+
+        it 'redirects to setup path with alert message without calling service' do
+          create_access_request
+
+          aggregate_failures do
+            expect(response).to redirect_to(group_observability_setup_path(group))
+            expect(flash[:alert]).to eq('Observability is already enabled for this group')
+            expect(::Observability::AccessRequestService).not_to have_received(:new)
+          end
+        end
+      end
     end
 
     context 'when feature flag is disabled' do

@@ -24779,9 +24779,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Agent sessions"
-msgstr ""
-
 msgid "DuoAgentsPlatform|An error occurred while fetching flows configured for this project."
 msgstr ""
 
@@ -24990,6 +24987,9 @@ msgid "DuoAgentsPlatform|Select user"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Service account user"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Sessions"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Software Development"
@@ -44865,34 +44865,19 @@ msgstr ""
 msgid "ObservabilityMetrics|is not like"
 msgstr ""
 
-msgid "Observability| and best practices."
-msgstr ""
-
 msgid "Observability|%{events} events"
 msgstr ""
 
 msgid "Observability|32+ character encryption key for secure communication."
 msgstr ""
 
-msgid "Observability|APM & Performance"
+msgid "Observability|APM & performance"
 msgstr ""
 
-msgid "Observability|APM Dashboards"
+msgid "Observability|Advanced analytics"
 msgstr ""
 
-msgid "Observability|Access Request Submitted"
-msgstr ""
-
-msgid "Observability|Advanced Analytics"
-msgstr ""
-
-msgid "Observability|Anomaly-based alerting and notifications"
-msgstr ""
-
-msgid "Observability|Application Performance Monitoring with p99 latency tracking and real-time metrics visualization"
-msgstr ""
-
-msgid "Observability|Application performance monitoring with real-time metrics"
+msgid "Observability|Application performance monitoring with p99 latency tracking and real-time metrics visualization"
 msgstr ""
 
 msgid "Observability|Are you sure you want to delete the observability service settings? This action cannot be undone."
@@ -44901,13 +44886,22 @@ msgstr ""
 msgid "Observability|Are you sure you want to delete this O11y service setting?"
 msgstr ""
 
+msgid "Observability|As this is an experimental feature, your insights are important to us. Please don't hesitate to reach out with:"
+msgstr ""
+
 msgid "Observability|Authentication failed"
 msgstr ""
 
 msgid "Observability|Authentication failed. Please refresh the page."
 msgstr ""
 
-msgid "Observability|Beta Release"
+msgid "Observability|Beta release"
+msgstr ""
+
+msgid "Observability|Both endpoints support the full range of OpenTelemetry signal types: traces, metrics, and logs"
+msgstr ""
+
+msgid "Observability|Bug reports"
 msgstr ""
 
 msgid "Observability|Built on ClickHouse for superior performance, GitLab Observability makes enterprise-grade observability accessible within GitLab."
@@ -44916,13 +44910,19 @@ msgstr ""
 msgid "Observability|Built on industry-standard OpenTelemetry for seamless integration"
 msgstr ""
 
-msgid "Observability|Centralized Logs"
-msgstr ""
-
 msgid "Observability|Centralized log management with powerful querying capabilities and advanced search"
 msgstr ""
 
-msgid "Observability|ClickHouse Performance"
+msgid "Observability|Centralized logs"
+msgstr ""
+
+msgid "Observability|ClickHouse performance"
+msgstr ""
+
+msgid "Observability|Configuration notes"
+msgstr ""
+
+msgid "Observability|Configure your OpenTelemetry SDK or collector with the appropriate endpoint based on your chosen transport protocol. For detailed integration instructions specific to your language or framework, please refer to the OpenTelemetry documentation for your SDK."
 msgstr ""
 
 msgid "Observability|Configure your o11y service connection settings."
@@ -44949,13 +44949,16 @@ msgstr ""
 msgid "Observability|Danger Zone"
 msgstr ""
 
+msgid "Observability|Dashboard templates and use cases"
+msgstr ""
+
 msgid "Observability|Delete"
 msgstr ""
 
 msgid "Observability|Delete settings"
 msgstr ""
 
-msgid "Observability|Distributed Tracing"
+msgid "Observability|Distributed tracing"
 msgstr ""
 
 msgid "Observability|Dive deep into your data with comprehensive analytics, custom visualizations, and intelligent insights for better decision-making."
@@ -44967,9 +44970,6 @@ msgstr ""
 msgid "Observability|Edit O11y service settings"
 msgstr ""
 
-msgid "Observability|Email Notification"
-msgstr ""
-
 msgid "Observability|Email address for authentication with the o11y service."
 msgstr ""
 
@@ -44979,22 +44979,25 @@ msgstr ""
 msgid "Observability|Enable Observability alerts"
 msgstr ""
 
-msgid "Observability|Enable observability features for this group"
-msgstr ""
-
 msgid "Observability|Enable tracing, metrics, or logs on your project."
 msgstr ""
 
 msgid "Observability|Encryption key"
 msgstr ""
 
-msgid "Observability|Enterprise Ready"
+msgid "Observability|Endpoint details"
 msgstr ""
 
-msgid "Observability|Enterprise-Grade Observability for GitLab"
+msgid "Observability|Ensure your application's network configuration allows outbound connections to these endpoints"
 msgstr ""
 
-msgid "Observability|Exception Tracking"
+msgid "Observability|Enterprise ready"
+msgstr ""
+
+msgid "Observability|Enterprise-grade observability for GitLab"
+msgstr ""
+
+msgid "Observability|Exception tracking"
 msgstr ""
 
 msgid "Observability|Exception tracking and error monitoring with detailed stack traces and context"
@@ -45024,16 +45027,31 @@ msgstr ""
 msgid "Observability|Failed to update O11y service settings"
 msgstr ""
 
+msgid "Observability|Feature overview and capabilities"
+msgstr ""
+
+msgid "Observability|Feature requests"
+msgstr ""
+
 msgid "Observability|Filter data by month:"
 msgstr ""
 
 msgid "Observability|Free during beta period"
 msgstr ""
 
-msgid "Observability|GitLab Observability Dashboard - Advanced Analytics"
+msgid "Observability|General"
 msgstr ""
 
-msgid "Observability|GitLab Observability Dashboard - Performance Metrics"
+msgid "Observability|General Observability information"
+msgstr ""
+
+msgid "Observability|General feedback and suggestions"
+msgstr ""
+
+msgid "Observability|GitLab Observability dashboard - advanced analytics"
+msgstr ""
+
+msgid "Observability|GitLab Observability dashboard - performance metrics"
 msgstr ""
 
 msgid "Observability|GitLab Observability is an open source, OpenTelemetry-native observability platform that unifies logs, metrics, and traces in a single application. Monitor application performance with APM dashboards, visualize distributed traces across microservices, manage centralized logs with powerful querying, and set up intelligent alerts."
@@ -45051,10 +45069,16 @@ msgstr ""
 msgid "Observability|Group not found"
 msgstr ""
 
+msgid "Observability|HTTP Endpoint"
+msgstr ""
+
+msgid "Observability|If you encounter any connectivity issues or require additional configuration assistance, please contact your system administrator with the endpoint details provided above."
+msgstr ""
+
 msgid "Observability|Iframe not ready for communication"
 msgstr ""
 
-msgid "Observability|Important Information"
+msgid "Observability|Important information"
 msgstr ""
 
 msgid "Observability|Includes Logs, Traces and Metrics. %{learnMoreLink}"
@@ -45063,7 +45087,7 @@ msgstr ""
 msgid "Observability|Invalid iframe provided"
 msgstr ""
 
-msgid "Observability|Kubernetes Monitoring"
+msgid "Observability|Kubernetes monitoring"
 msgstr ""
 
 msgid "Observability|Last 1 hour"
@@ -45117,7 +45141,10 @@ msgstr ""
 msgid "Observability|New O11y service setting"
 msgstr ""
 
-msgid "Observability|No Cost"
+msgid "Observability|Next steps"
+msgstr ""
+
+msgid "Observability|No cost"
 msgstr ""
 
 msgid "Observability|O11y Service Settings"
@@ -45135,13 +45162,13 @@ msgstr ""
 msgid "Observability|O11y service settings already exist"
 msgstr ""
 
-msgid "Observability|Observability Access Requested"
+msgid "Observability|Observability"
 msgstr ""
 
 msgid "Observability|Observability Service Configuration"
 msgstr ""
 
-msgid "Observability|Observability documentation"
+msgid "Observability|Observability is already enabled for this group"
 msgstr ""
 
 msgid "Observability|Observability service settings deleted successfully."
@@ -45159,43 +45186,31 @@ msgstr ""
 msgid "Observability|Observability settings for group %{group_name} updated successfully."
 msgstr ""
 
-msgid "Observability|OpenTelemetry Native"
+msgid "Observability|OpenTelemetry native"
 msgstr ""
 
 msgid "Observability|Password for authentication with the o11y service."
 msgstr ""
 
-msgid "Observability|Performance Overview"
+msgid "Observability|Performance overview"
 msgstr ""
 
 msgid "Observability|Permanently delete the observability service configuration."
 msgstr ""
 
-msgid "Observability|Powerful log management and querying"
-msgstr ""
-
-msgid "Observability|Prepare for observability by reviewing our "
-msgstr ""
-
 msgid "Observability|Project not found"
 msgstr ""
 
-msgid "Observability|Provisioning Time"
-msgstr ""
-
-msgid "Observability|Ready to Use"
+msgid "Observability|Provisioning time"
 msgstr ""
 
 msgid "Observability|Related issues"
 msgstr ""
 
-msgid "Observability|Request Observability Access"
-msgstr ""
-
 msgid "Observability|Scalable architecture designed for enterprise workloads"
 msgstr ""
 
-msgid "Observability|See It In Action"
+msgid "Observability|See it in action"
 msgstr ""
 
 msgid "Observability|Service name"
@@ -45204,7 +45219,7 @@ msgstr ""
 msgid "Observability|Single pane of glass for logs, metrics, and traces within GitLab"
 msgstr ""
 
-msgid "Observability|Smart Alerts"
+msgid "Observability|Smart alerts"
 msgstr ""
 
 msgid "Observability|Sorry, there is no usage data for the selected period"
@@ -45213,16 +45228,16 @@ msgstr ""
 msgid "Observability|Sorry, your filter produced no results"
 msgstr ""
 
-msgid "Observability|Start monitoring your applications"
-msgstr ""
-
 msgid "Observability|Superior query performance and data compression with ClickHouse backend"
 msgstr ""
 
-msgid "Observability|Thank You for Your Request!"
+msgid "Observability|The HTTP endpoint (port 4318) accepts OTLP/HTTP protocol and is suitable for applications using HTTP-based transport"
 msgstr ""
 
 msgid "Observability|The ID of the group for this o11y service configuration."
+msgstr ""
+
+msgid "Observability|The gRPC endpoint (port 4317) accepts OTLP/gRPC protocol and is recommended for applications requiring persistent connections or streaming capabilities"
 msgstr ""
 
 msgid "Observability|The name of the group for this o11y service configuration."
@@ -45237,16 +45252,19 @@ msgstr ""
 msgid "Observability|Tracing, Metrics & Logs"
 msgstr ""
 
+msgid "Observability|Troubleshooting tips"
+msgstr ""
+
 msgid "Observability|Try selecting a different period."
 msgstr ""
 
-msgid "Observability|Unified Platform"
+msgid "Observability|Unified platform"
 msgstr ""
 
 msgid "Observability|Unknown group"
 msgstr ""
 
-msgid "Observability|Up to one business day"
+msgid "Observability|Up to 5 minutes"
 msgstr ""
 
 msgid "Observability|Update your o11y service connection settings."
@@ -45264,40 +45282,34 @@ msgstr ""
 msgid "Observability|View our %{documentation} for further instructions on how to use these features."
 msgstr ""
 
-msgid "Observability|View the"
+msgid "Observability|View the %{help_page_link_start}Observability documentation%{help_page_link_end} for:"
 msgstr ""
 
 msgid "Observability|Visualize distributed traces with flamegraphs across microservices and understand request flows"
 msgstr ""
 
-msgid "Observability|Visualize request flows across microservices"
+msgid "Observability|We value your feedback"
 msgstr ""
 
-msgid "Observability|What Happens Next"
+msgid "Observability|Welcome to GitLab Observability!"
 msgstr ""
 
-msgid "Observability|What You Get"
+msgid "Observability|What you get"
 msgstr ""
 
-msgid "Observability|What You'll Get Access To"
-msgstr ""
-
-msgid "Observability|While You Wait"
+msgid "Observability|What's coming next"
 msgstr ""
 
 msgid "Observability|You are not authorized to request observability access"
 msgstr ""
 
-msgid "Observability|You will receive an email notification once your observability environment is ready."
+msgid "Observability|You can contact us through our %{issue_link_start}feedback issue in GitLab%{issue_link_end}. You can also join our %{discord_link_start}Discord channel%{discord_link_end} for community discussions and support."
 msgstr ""
 
-msgid "Observability|You'll receive confirmation when ready"
+msgid "Observability|Your OpenTelemetry (OTel) telemetry data collection endpoints have been provisioned and are ready to receive data. Please configure your instrumentation with the following endpoints:"
 msgstr ""
 
-msgid "Observability|Your observability access request has been submitted successfully"
-msgstr ""
-
-msgid "Observability|Your request to enable GitLab Observability for this group has been successfully submitted. Our team will review and provision your observability environment."
+msgid "Observability|Your OpenTelemetry endpoint configuration"
 msgstr ""
 
 msgid "Observability|allowedMessageType must be a non-empty string"
@@ -45309,13 +45321,7 @@ msgstr ""
 msgid "Observability|authTokens must be an object"
 msgstr ""
 
-msgid "Observability|documentation"
-msgstr ""
-
-msgid "Observability|for %{group_name}"
-msgstr ""
-
-msgid "Observability|for detailed setup instructions and best practices"
+msgid "Observability|gRPC Endpoint"
 msgstr ""
 
 msgid "Observability|targetPath must be a non-empty string"
@@ -62556,6 +62562,9 @@ msgid "Settings|Unable to load the merge request options settings. Try reloading
 msgstr ""
 
 msgid "Settings|What is experiment?"
+msgstr ""
+
+msgid "Setup"
 msgstr ""
 
 msgid "Severity"

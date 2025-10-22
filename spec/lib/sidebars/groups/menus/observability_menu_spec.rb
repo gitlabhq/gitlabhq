@@ -38,7 +38,8 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
             :alerts,
             :exceptions,
             :service_map,
-            :settings
+            :settings,
+            :setup
           ]
 
           expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
@@ -54,7 +55,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
         end
 
         it 'does not add observability menu items' do
-          expected_menu_items = [:request_access]
+          expected_menu_items = [:setup]
 
           expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
         end
@@ -67,7 +68,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       end
 
       it 'adds the o11y settings menu item' do
-        expected_menu_items = [:o11y_settings, :request_access]
+        expected_menu_items = [:o11y_settings, :setup]
 
         expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
       end
@@ -94,7 +95,8 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
           :exceptions,
           :service_map,
           :settings,
-          :o11y_settings
+          :o11y_settings,
+          :setup
         ]
 
         expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)

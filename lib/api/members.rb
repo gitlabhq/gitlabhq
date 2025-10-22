@@ -14,6 +14,8 @@ module API
       "group" => :groups_and_projects,
       "project" => :groups_and_projects
     }.each do |source_type, feature_category|
+      boundary = source_type.to_sym
+
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
@@ -32,6 +34,7 @@ module API
           use :pagination
         end
 
+        route_setting :authorization, permissions: :read_member, boundary_type: boundary
         get ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
@@ -55,6 +58,7 @@ module API
           use :pagination
         end
 
+        route_setting :authorization, permissions: :read_member, boundary_type: boundary
         get ":id/members/all", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
@@ -73,6 +77,7 @@ module API
           requires :user_id, type: Integer, desc: 'The user ID of the member'
         end
         # rubocop: disable CodeReuse/ActiveRecord
+        route_setting :authorization, permissions: :read_member, boundary_type: boundary
         get ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
@@ -93,6 +98,7 @@ module API
           requires :user_id, type: Integer, desc: 'The user ID of the member'
         end
         # rubocop: disable CodeReuse/ActiveRecord
+        route_setting :authorization, permissions: :read_member, boundary_type: boundary
         get ":id/members/all/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
@@ -119,6 +125,7 @@ module API
           at_least_one_of :user_id, :username
         end
 
+        route_setting :authorization, permissions: :create_member, boundary_type: boundary
         post ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
@@ -142,6 +149,7 @@ module API
           use :optional_put_params_ee
         end
         # rubocop: disable CodeReuse/ActiveRecord
+        route_setting :authorization, permissions: :update_member, boundary_type: boundary
         put ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params.delete(:id))
           member = source_members(source).find_by!(user_id: params[:user_id])
@@ -167,6 +175,7 @@ module API
             desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
         end
         # rubocop: disable CodeReuse/ActiveRecord
+        route_setting :authorization, permissions: :delete_member, boundary_type: boundary
         delete ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
           member = source_members(source).find_by!(user_id: params[:user_id])

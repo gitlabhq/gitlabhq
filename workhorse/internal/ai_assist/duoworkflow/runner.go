@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
 	"sync"
 	"time"
 
@@ -20,6 +21,8 @@ import (
 )
 
 const wsCloseTimeout = 5 * time.Second
+
+var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
 var marshaler = protojson.MarshalOptions{
 	UseProtoNames:   true,
@@ -78,35 +81,71 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 func (r *runner) Execute(ctx context.Context) error {
 	errCh := make(chan error, 2)
 
-	go func() {
-		for {
-			if err := r.handleWebSocketMessage(); err != nil {
-				errCh <- err
-				return
-			}
-		}
-	}()
-
-	go func() {
-		for {
-			action, err := r.wf.Recv()
-			if err != nil {
-				if err == io.EOF {
-					errCh <- nil // Expected error when a workflow ends
-				} else {
-					errCh <- fmt.Errorf("duoworkflow: failed to read a gRPC message: %v", err)
-				}
-				return
-			}
-
-			if err := r.handleAgentAction(ctx, action); err != nil {
-				errCh <- err
-				return
-			}
-		}
-	}()
+	go r.handleWebSocketMessages(ctx, errCh)
+	go r.handleAgentMessages(ctx, errCh)
 
 	return <-errCh
+}
+
+func (r *runner) handleWebSocketMessages(ctx context.Context, errCh chan<- error) {
+	for {
+		_, message, err := r.conn.ReadMessage()
+		if err != nil {
+			if e, ok := err.(*websocket.CloseError); ok && slices.Contains(normalClosureErrCodes, e.Code) {
+				log.WithRequest(r.originalReq).WithFields(log.Fields{
+					"close_error": err.Error(),
+				}).Info("handleWebSocketMessages: Sending stop workflow request...")
+
+				stopRequest := &pb.ClientEvent{
+					Response: &pb.ClientEvent_StopWorkflow{
+						StopWorkflow: &pb.StopWorkflowRequest{
+							Reason: fmt.Sprintf("WORKHORSE_WEBSOCKET_CLOSE_%d", e.Code),
+						},
+					},
+				}
+
+				if err = r.threadSafeSend(stopRequest); err != nil {
+					errCh <- fmt.Errorf("handleWebSocketMessages: failed to gracefully stop a workflow: %v", err)
+				}
+
+				select {
+				case <-ctx.Done():
+					errCh <- nil
+					return
+				case <-time.After(wsCloseTimeout):
+					errCh <- fmt.Errorf("handleWebSocketMessages: workflow didn't stop on time")
+					return
+				}
+			}
+
+			errCh <- fmt.Errorf("handleWebSocketMessages: failed to read a WS message: %v", err)
+			return
+		}
+
+		if err := r.handleWebSocketMessage(message); err != nil {
+			errCh <- err
+			return
+		}
+	}
+}
+
+func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
+	for {
+		action, err := r.wf.Recv()
+		if err != nil {
+			if err == io.EOF {
+				errCh <- nil // Expected error when a workflow ends
+			} else {
+				errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %v", err)
+			}
+			return
+		}
+
+		if err := r.handleAgentAction(ctx, action); err != nil {
+			errCh <- err
+			return
+		}
+	}
 }
 
 func (r *runner) Close() error {
@@ -142,14 +181,9 @@ func (r *runner) closeWebSocketConnection() error {
 	return nil
 }
 
-func (r *runner) handleWebSocketMessage() error {
-	_, message, err := r.conn.ReadMessage()
-	if err != nil {
-		return fmt.Errorf("handleWebSocketMessage: failed to read a WS message: %v", err)
-	}
-
+func (r *runner) handleWebSocketMessage(message []byte) error {
 	response := &pb.ClientEvent{}
-	if err = unmarshaler.Unmarshal(message, response); err != nil {
+	if err := unmarshaler.Unmarshal(message, response); err != nil {
 		return fmt.Errorf("handleWebSocketMessage: failed to unmarshal a WS message: %v", err)
 	}
 
@@ -159,7 +193,7 @@ func (r *runner) handleWebSocketMessage() error {
 		"request_id":   response.GetActionResponse().GetRequestID(),
 	}).Info("Sending action response")
 
-	if err = r.threadSafeSend(response); err != nil {
+	if err := r.threadSafeSend(response); err != nil {
 		if err == io.EOF {
 			// ignore EOF to let Recv() fail and return a meaningful message
 			return nil
@@ -204,13 +238,21 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 		}).Info("Successfully sent HTTP response event")
 
 	default:
-		message, err := marshaler.Marshal(action)
-		if err != nil {
-			return fmt.Errorf("handleAgentAction: failed to unmarshal action: %v", err)
-		}
+		return r.sendActionToWs(action)
+	}
 
-		if err = r.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
-			return fmt.Errorf("handleAgentAction: failed to send WS message: %v", err)
+	return nil
+}
+
+func (r *runner) sendActionToWs(action *pb.Action) error {
+	message, err := marshaler.Marshal(action)
+	if err != nil {
+		return fmt.Errorf("sendActionToWs: failed to unmarshal action: %v", err)
+	}
+
+	if err = r.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
+		if err != websocket.ErrCloseSent {
+			return fmt.Errorf("sendActionToWs: failed to send WS message: %v", err)
 		}
 	}
 

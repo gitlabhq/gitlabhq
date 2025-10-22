@@ -22,9 +22,9 @@ module Sidebars
             add_item(exceptions_menu_item)
             add_item(service_map_menu_item)
             add_item(settings_menu_item)
-          else
-            add_item(request_access_menu_item)
           end
+
+          add_item(setup_menu_item)
 
           add_item(o11y_settings_menu_item) if o11y_settings_access_enabled?
 
@@ -233,13 +233,13 @@ module Sidebars
           )
         end
 
-        def request_access_menu_item
-          link = new_group_observability_access_requests_path(context.group)
+        def setup_menu_item
+          link = group_observability_setup_path(context.group)
           ::Sidebars::MenuItem.new(
-            title: _('Request Access'),
+            title: _('Setup'),
             link: link,
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
-            item_id: :request_access,
+            item_id: :setup,
             container_html_options: { class: 'shortcuts-request-access' },
             active_routes: { page: link }
           )

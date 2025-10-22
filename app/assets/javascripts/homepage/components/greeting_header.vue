@@ -154,7 +154,7 @@ export default {
         </div>
         <button
           v-gl-tooltip="tooltipMessage"
-          class="gl-absolute -gl-bottom-2 -gl-right-1 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-border-2 gl-border-solid gl-border-gray-400 gl-bg-white gl-p-0 hover:gl-bg-strong dark:gl-bg-gray-900"
+          class="gl-absolute gl-bottom-0 gl-right-0 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-border-2 gl-border-solid gl-border-gray-400 gl-bg-white gl-p-0 hover:gl-bg-strong dark:gl-bg-gray-900"
           data-testid="status-emoji-badge"
           :style="borderStyle"
           :aria-label="tooltipMessage"

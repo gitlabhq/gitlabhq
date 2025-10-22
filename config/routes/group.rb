@@ -193,7 +193,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     namespace :observability do
       resource :o11y_service_settings, only: [:update, :edit, :destroy]
-      resource :access_requests, only: [:new, :create]
+      resource :setup, only: [:show], controller: 'setup'
+      resource :access_requests, only: [:create]
     end
     resources :observability, only: [:show]
 

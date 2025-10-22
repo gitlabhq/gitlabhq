@@ -1,0 +1,4 @@
+---
+name: create_member
+description: Grants the ability to create members
+feature_category: groups_and_projects

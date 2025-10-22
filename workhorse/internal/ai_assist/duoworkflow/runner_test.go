@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"sync"
 	"testing"
 	"time"
 
@@ -69,6 +70,7 @@ func (m *mockWebSocketConn) SetReadDeadline(_ time.Time) error {
 
 type mockWorkflowStream struct {
 	sendEvents  []*pb.ClientEvent
+	sendMu      sync.Mutex
 	recvActions []*pb.Action
 	recvIndex   int
 	sendError   error
@@ -76,7 +78,17 @@ type mockWorkflowStream struct {
 	blockCh     chan bool
 }
 
+func (m *mockWorkflowStream) getSendEvents() []*pb.ClientEvent {
+	m.sendMu.Lock()
+	defer m.sendMu.Unlock()
+
+	return m.sendEvents
+}
+
 func (m *mockWorkflowStream) Send(event *pb.ClientEvent) error {
+	m.sendMu.Lock()
+	defer m.sendMu.Unlock()
+
 	if m.sendError != nil {
 		return m.sendError
 	}
@@ -159,7 +171,7 @@ func TestRunner_Execute(t *testing.T) {
 			wsMessages:      [][]byte{[]byte(`{"type": "test"}`), []byte(`{"type": "test2"}`)},
 			wfBlockCh:       make(chan bool),
 			sendEventsCount: 2,
-			expectedErrMsg:  "handleWebSocketMessage: failed to read a WS message: EOF",
+			expectedErrMsg:  "handleWebSocketMessages: failed to read a WS message: EOF",
 		},
 		{
 			name: "wf actions",
@@ -214,7 +226,7 @@ func TestRunner_Execute(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			require.Len(t, mockWf.sendEvents, tt.sendEventsCount)
+			require.Len(t, mockWf.getSendEvents(), tt.sendEventsCount)
 			require.Len(t, mockConn.writeMessages, tt.writeMsgCount)
 		})
 	}
@@ -233,13 +245,13 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 			name:           "websocket read error",
 			wsReadError:    errors.New("read error"),
 			wfBlockCh:      make(chan bool),
-			expectedErrMsg: "handleWebSocketMessage: failed to read a WS message: read error",
+			expectedErrMsg: "handleWebSocketMessages: failed to read a WS message: read error",
 		},
 		{
 			name:           "workflow recv error",
 			wfRecvError:    errors.New("recv error"),
 			wsBlockCh:      make(chan bool),
-			expectedErrMsg: "duoworkflow: failed to read a gRPC message: recv error",
+			expectedErrMsg: "handleAgentMessages: failed to read a gRPC message: recv error",
 		},
 		{
 			name:           "workflow EOF error",
@@ -260,20 +272,8 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 				blockCh:   tt.wfBlockCh,
 			}
 
-			testURL, _ := url.Parse("http://example.com")
-			r := &runner{
-				rails: &api.API{
-					Client: &http.Client{},
-					URL:    testURL,
-				},
-				token:       "test-token",
-				originalReq: &http.Request{},
-				conn:        mockConn,
-				wf:          mockWf,
-			}
-
-			ctx := context.Background()
-			err := r.Execute(ctx)
+			r := &runner{conn: mockConn, wf: mockWf}
+			err := r.Execute(context.Background())
 
 			if tt.expectedErrMsg != "" {
 				require.EqualError(t, err, tt.expectedErrMsg)
@@ -284,19 +284,61 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 	}
 }
 
+func TestRunner_Execute_with_close_errors(t *testing.T) {
+	tests := []struct {
+		name           string
+		wsReadError    error
+		expectedReason string
+	}{
+		{
+			name:           "websocket normal closure",
+			wsReadError:    &websocket.CloseError{Code: websocket.CloseNormalClosure},
+			expectedReason: "WORKHORSE_WEBSOCKET_CLOSE_1000",
+		},
+		{
+			name:           "websocket going away",
+			wsReadError:    &websocket.CloseError{Code: websocket.CloseGoingAway},
+			expectedReason: "WORKHORSE_WEBSOCKET_CLOSE_1001",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			blockCh := make(chan bool)
+			mockConn := &mockWebSocketConn{
+				readError: tt.wsReadError,
+			}
+			mockWf := &mockWorkflowStream{
+				recvError: io.EOF,
+				blockCh:   blockCh,
+			}
+
+			r := &runner{conn: mockConn, wf: mockWf}
+
+			errCh := make(chan error, 1)
+			go func() { errCh <- r.Execute(context.Background()) }()
+
+			require.Eventually(t, func() bool {
+				return len(mockWf.getSendEvents()) == 1
+			}, 2*time.Second, 50*time.Millisecond)
+
+			blockCh <- true // Unblock WF stream
+			require.NoError(t, <-errCh)
+
+			stopEvent := mockWf.getSendEvents()[0].GetStopWorkflow()
+			require.NotNil(t, stopEvent)
+			require.Equal(t, tt.expectedReason, stopEvent.Reason)
+		})
+	}
+}
+
 func TestRunner_handleWebSocketMessage(t *testing.T) {
 	tests := []struct {
 		name           string
 		message        []byte
-		readError      error
 		sendError      error
 		expectedErrMsg string
 	}{
-		{
-			name:           "read error",
-			readError:      errors.New("read error"),
-			expectedErrMsg: "handleWebSocketMessage: failed to read a WS message: read error",
-		},
 		{
 			name:           "invalid json",
 			message:        []byte("invalid json"),
@@ -323,10 +365,6 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockConn := &mockWebSocketConn{
-				readMessages: [][]byte{tt.message},
-				readError:    tt.readError,
-			}
 			mockWf := &mockWorkflowStream{
 				sendError: tt.sendError,
 			}
@@ -339,11 +377,11 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 				},
 				token:       "test-token",
 				originalReq: &http.Request{},
-				conn:        mockConn,
+				conn:        &mockWebSocketConn{},
 				wf:          mockWf,
 			}
 
-			err := r.handleWebSocketMessage()
+			err := r.handleWebSocketMessage(tt.message)
 
 			if tt.expectedErrMsg != "" {
 				require.Error(t, err)
@@ -415,7 +453,19 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				},
 			},
 			wsWriteError:   errors.New("websocket write failed"),
-			expectedErrMsg: "handleAgentAction: failed to send WS message: websocket write failed",
+			expectedErrMsg: "sendActionToWs: failed to send WS message: websocket write failed",
+		},
+		{
+			name: "non-HTTP action with websocket write close sent error",
+			action: &pb.Action{
+				RequestID: "req-error",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			wsWriteError: websocket.ErrCloseSent,
 		},
 		{
 			name: "action with nil action type",
@@ -474,14 +524,15 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				require.Empty(t, mockConn.writeMessages)
 			}
 
+			sendEvents := mockWf.getSendEvents()
 			if tt.shouldCallWF {
-				require.Len(t, mockWf.sendEvents, 1, "Expected one workflow event to be sent")
+				require.Len(t, sendEvents, 1, "Expected one workflow event to be sent")
 
-				response := mockWf.sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse
+				response := sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse
 				responseBody := response.ResponseType.(*pb.ActionResponse_HttpResponse).HttpResponse.Body
 				require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, responseBody)
 			} else {
-				require.Empty(t, mockWf.sendEvents)
+				require.Empty(t, sendEvents)
 			}
 		})
 	}

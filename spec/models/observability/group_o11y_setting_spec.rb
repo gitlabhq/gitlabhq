@@ -154,6 +154,107 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 
+  describe '#within_provisioning_window?' do
+    let(:setting) { build(:observability_group_o11y_setting, group: group) }
+
+    context 'when record is not persisted' do
+      it 'returns false' do
+        expect(setting.within_provisioning_window?).to be false
+      end
+    end
+
+    context 'when record is persisted' do
+      before do
+        setting.save!
+      end
+
+      shared_examples 'returns true within window' do |time_offset|
+        it "returns true at #{time_offset}" do
+          travel_to(setting.created_at + time_offset) do
+            expect(setting.within_provisioning_window?).to be true
+          end
+        end
+      end
+
+      shared_examples 'returns false outside window' do |time_offset|
+        it "returns false at #{time_offset}" do
+          travel_to(setting.created_at + time_offset) do
+            expect(setting.within_provisioning_window?).to be false
+          end
+        end
+      end
+
+      include_examples 'returns true within window', 0.seconds
+      include_examples 'returns true within window', 2.minutes + 30.seconds
+      include_examples 'returns true within window', 5.minutes
+
+      include_examples 'returns false outside window', 5.minutes + 1.second
+      include_examples 'returns false outside window', 1.hour
+
+      it 'returns true when current time is before creation' do
+        travel_to(setting.created_at - 1.second) do
+          expect(setting.within_provisioning_window?).to be true
+        end
+      end
+    end
+  end
+
+  describe 'otel endpoints' do
+    let(:setting) { build(:observability_group_o11y_setting, group: group) }
+
+    shared_examples 'otel endpoint' do |method, port|
+      context "when o11y_service_name is set" do
+        before do
+          setting.o11y_service_name = 'my-service'
+        end
+
+        it "returns the correct #{method} endpoint" do
+          expect(setting.send(method)).to eq("http://my-service.otel.gitlab-o11y.com:#{port}")
+        end
+      end
+
+      context "when o11y_service_name is nil" do
+        before do
+          setting.o11y_service_name = nil
+          allow(setting).to receive(:name_from_url).and_return('service-from-url')
+        end
+
+        it "uses name_from_url as fallback" do
+          expect(setting.send(method)).to eq("http://service-from-url.otel.gitlab-o11y.com:#{port}")
+        end
+      end
+
+      context "when both o11y_service_name and name_from_url are nil" do
+        before do
+          setting.o11y_service_name = nil
+          allow(setting).to receive_messages(name_from_url: nil, name_from_group: 'group-path')
+        end
+
+        it "uses name_from_group as fallback" do
+          expect(setting.send(method)).to eq("http://group-path.otel.gitlab-o11y.com:#{port}")
+        end
+      end
+
+      context "with special characters in service name" do
+        before do
+          setting.o11y_service_name = 'my-service-with-dashes'
+        end
+
+        it "handles service names with special characters" do
+          expect(setting.send(method)).to eq("http://my-service-with-dashes.otel.gitlab-o11y.com:#{port}")
+        end
+      end
+    end
+
+    describe '#otel_http_endpoint' do
+      include_examples 'otel endpoint', :otel_http_endpoint, 4318
+    end
+
+    describe '#otel_grpc_endpoint' do
+      include_examples 'otel endpoint', :otel_grpc_endpoint, 4317
+    end
+  end
+
   describe 'factory' do
     it 'creates a valid record' do
       setting = build(:observability_group_o11y_setting)

@@ -1,0 +1,4 @@
+---
+name: read_member
+description: Grants the ability to read members
+feature_category: groups_and_projects

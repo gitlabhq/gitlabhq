@@ -75,29 +75,29 @@ Looking at the current router structure in `ee/app/assets/javascripts/ai/duo_age
 ```javascript
 routes: [
   {
-    component: NestedRouteApp,  // Simple <router-view /> wrapper
+    component: NestedRouteApp, // Simple <router-view /> wrapper
     path: '/agent-sessions',
     meta: {
-      text: s__('DuoAgentsPlatform|Agent sessions'),  // This becomes a breadcrumb
+      text: s__('DuoAgentsPlatform|Sessions'), // This becomes a breadcrumb
     },
     children: [
       {
         name: AGENTS_PLATFORM_INDEX_ROUTE,
-        path: '',  // Matches /agent-sessions exactly
+        path: '', // Matches /agent-sessions exactly
         component: AgentsPlatformIndex,
       },
       {
         name: AGENTS_PLATFORM_NEW_ROUTE,
-        path: 'new',  // Matches /agent-sessions/new
+        path: 'new', // Matches /agent-sessions/new
         component: AgentsPlatformNew,
         meta: {
-          text: s__('DuoAgentsPlatform|New'),  // This becomes a breadcrumb
+          text: s__('DuoAgentsPlatform|New'), // This becomes a breadcrumb
         },
       },
       // ...
     ],
   },
-]
+];
 ```
 
 #### Breadcrumb Generation
@@ -114,11 +114,11 @@ The breadcrumb component (`duo_agents_platform_breadcrumbs.vue`) works by:
 const matchedRoutes = (this.$route?.matched || [])
   .map((route) => {
     return {
-      text: route.meta?.text,  // Uses meta.text for breadcrumb label
+      text: route.meta?.text, // Uses meta.text for breadcrumb label
       to: { path: route.path },
     };
   })
-  .filter((r) => r.text);  // Only routes with meta.text become breadcrumbs
+  .filter((r) => r.text); // Only routes with meta.text become breadcrumbs
 ```
 
 ### Adding a New Navigation Item
@@ -155,7 +155,7 @@ export const createRouter = (base, namespace) => {
         component: NestedRouteApp,
         path: '/agent-sessions',
         meta: {
-          text: s__('DuoAgentsPlatform|Agent sessions'),
+          text: s__('DuoAgentsPlatform|Sessions'),
         },
         children: [
           {
@@ -170,27 +170,27 @@ export const createRouter = (base, namespace) => {
       // NEW: Your feature routes
       {
         component: NestedRouteApp,
-        path: '/your-feature',  // This becomes the URL path
+        path: '/your-feature', // This becomes the URL path
         meta: {
-          text: s__('DuoAgentsPlatform|Your Feature'),  // This becomes the breadcrumb
+          text: s__('DuoAgentsPlatform|Your Feature'), // This becomes the breadcrumb
         },
         children: [
           {
             name: AGENTS_PLATFORM_YOUR_FEATURE_INDEX,
-            path: '',  // Matches /your-feature exactly
+            path: '', // Matches /your-feature exactly
             component: YourFeatureIndex,
           },
           {
             name: AGENTS_PLATFORM_YOUR_FEATURE_NEW,
-            path: 'new',  // Matches /your-feature/new
+            path: 'new', // Matches /your-feature/new
             component: YourFeatureNew,
             meta: {
-              text: s__('DuoAgentsPlatform|New'),  // Breadcrumb: "Your Feature > New"
+              text: s__('DuoAgentsPlatform|New'), // Breadcrumb: "Your Feature > New"
             },
           },
           {
             name: AGENTS_PLATFORM_YOUR_FEATURE_SHOW,
-            path: ':id(\\d+)',  // Matches /your-feature/123
+            path: ':id(\\d+)', // Matches /your-feature/123
             component: YourFeatureShow,
             // No meta.text - will use route param as breadcrumb
           },
@@ -395,7 +395,7 @@ The breadcrumb system automatically generates navigation from the router structu
 
 Each top-level navigation item gets its own URL namespace:
 
-- Agent Sessions: `/automate/agent-sessions`, `/automate/agent-sessions/new`, `/automate/agent-sessions/123`
+- Sessions: `/automate/agent-sessions`, `/automate/agent-sessions/new`, `/automate/agent-sessions/123`
 - Your Feature: `/automate/your-feature`, `/automate/your-feature/new`, `/automate/your-feature/456`
 
 #### Nested Route Pattern
@@ -415,7 +415,7 @@ The existing agent sessions feature demonstrates this pattern:
   component: NestedRouteApp,           // Renders child routes
   path: '/agent-sessions',             // URL: /automate/agent-sessions
   meta: {
-    text: s__('DuoAgentsPlatform|Agent sessions'),  // Breadcrumb: "Agent sessions"
+    text: s__('DuoAgentsPlatform|Sessions'),  // Breadcrumb: "Sessions"
   },
   children: [
     {
@@ -428,13 +428,13 @@ The existing agent sessions feature demonstrates this pattern:
       path: 'new',                     // URL: /automate/agent-sessions/new
       component: AgentsPlatformNew,
       meta: {
-        text: s__('DuoAgentsPlatform|New'),  // Breadcrumb: "Agent sessions > New"
+        text: s__('DuoAgentsPlatform|New'),  // Breadcrumb: "Sessions > New"
       },
     },
     {
       name: AGENTS_PLATFORM_SHOW_ROUTE,
       path: ':id(\\d+)',               // URL: /automate/agent-sessions/123
-      component: AgentsPlatformShow,   // Breadcrumb: "Agent sessions > 123"
+      component: AgentsPlatformShow,   // Breadcrumb: "Sessions > 123"
       // No meta.text - uses :id parameter as breadcrumb
     },
   ],
@@ -443,9 +443,9 @@ The existing agent sessions feature demonstrates this pattern:
 
 This creates the breadcrumb hierarchy:
 
-- `/automate/agent-sessions` → "Automate > Agent sessions"
-- `/automate/agent-sessions/new` → "Automate > Agent sessions > New"
-- `/automate/agent-sessions/123` → "Automate > Agent sessions > 123"
+- `/automate/agent-sessions` → "Automate > Sessions"
+- `/automate/agent-sessions/new` → "Automate > Sessions > New"
+- `/automate/agent-sessions/123` → "Automate > Sessions > 123"
 
 ## Key Files Reference
 

@@ -5,6 +5,7 @@ module Observability
     HUMANIZED_ATTRIBUTES = {
       o11y_service_url: 'O11y service name'
     }.freeze
+    SETUP_WINDOW = 5.minutes
 
     belongs_to :group, inverse_of: :observability_group_o11y_setting
 
@@ -59,6 +60,20 @@ module Observability
       return if ValidateEmail.valid?(o11y_service_user_email)
 
       errors.add(:o11y_service_user_email, I18n.t(:invalid, scope: 'valid_email.validations.email'))
+    end
+
+    def within_provisioning_window?
+      return false unless persisted?
+
+      Time.current.before?(created_at + SETUP_WINDOW)
+    end
+
+    def otel_http_endpoint
+      "http://#{o11y_service_name}.otel.gitlab-o11y.com:4318"
+    end
+
+    def otel_grpc_endpoint
+      "http://#{o11y_service_name}.otel.gitlab-o11y.com:4317"
     end
   end
 end

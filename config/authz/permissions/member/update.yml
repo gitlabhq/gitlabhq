@@ -1,0 +1,4 @@
+---
+name: update_member
+description: Grants the ability to update members
+feature_category: groups_and_projects

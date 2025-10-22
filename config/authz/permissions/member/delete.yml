@@ -1,0 +1,4 @@
+---
+name: delete_member
+description: Grants the ability to delete members
+feature_category: groups_and_projects
