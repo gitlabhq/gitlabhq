@@ -29,6 +29,18 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
   describe 'POST #forward' do
     let(:request) { post event_forwarding_path, params: payload, as: :json }
 
+    context 'when the payload is more than 10 megabytes' do
+      let(:event_2) { { 'se_ac' => 'a' * 11_000_000, 'aid' => 'app_id_2' } }
+
+      it 'responds with 400 bad request' do
+        expect(tracker).not_to receive(:emit_event_payload)
+
+        request
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'when instance type is dedicated' do
       before do
         stub_application_setting(gitlab_dedicated_instance?: true)

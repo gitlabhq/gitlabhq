@@ -2,6 +2,8 @@
 
 module Members
   class RequestAccessService < Members::BaseService
+    include Members::MembershipLockValidation
+
     def execute(source)
       raise Gitlab::Access::AccessDeniedError unless can_request_access?(source)
 
