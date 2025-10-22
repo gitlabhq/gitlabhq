@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Helpers::RunnerJobExecutionStatusHelper, feature_category: :runner do
+RSpec.describe API::Ci::Helpers::RunnerJobExecutionStatusHelper, feature_category: :runner_core do
   include described_class
 
   describe '#lazy_job_execution_status' do

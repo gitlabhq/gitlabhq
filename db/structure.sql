@@ -43708,8 +43708,6 @@ CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_req
 
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
-CREATE INDEX tmp_idx_p_sent_notifications_on_id_for_designs ON ONLY p_sent_notifications USING btree (id) WHERE (noteable_type = 'DesignManagement::Design'::text);
-
 CREATE INDEX tmp_idx_redirect_routes_on_source_type_id_where_namespace_null ON redirect_routes USING btree (source_type, id) WHERE (namespace_id IS NULL);
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));

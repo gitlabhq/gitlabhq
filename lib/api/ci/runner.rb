@@ -44,7 +44,7 @@ module API
           mutually_exclusive :maintainer_note, :maintenance_note
           mutually_exclusive :active, :paused
         end
-        post '/', urgency: :low, feature_category: :runner do
+        post '/', urgency: :low, feature_category: :runner_core do
           attributes = attributes_for_keys(%i[description maintainer_note maintenance_note active paused locked run_untagged tag_list access_level maximum_timeout])
             .merge(attributes_for_keys(%w[name], params['info']))
 
@@ -79,7 +79,7 @@ module API
         params do
           requires :token, type: String, desc: "The runner's authentication token"
         end
-        delete '/', urgency: :low, feature_category: :runner do
+        delete '/', urgency: :low, feature_category: :runner_core do
           authenticate_runner!(ensure_runner_manager: false)
 
           destroy_conditionally!(current_runner) do
@@ -119,7 +119,7 @@ module API
           requires :token, type: String, desc: "The runner's authentication token"
           optional :system_id, type: String, desc: "The runner's system identifier"
         end
-        post '/verify', urgency: :low, feature_category: :runner do
+        post '/verify', urgency: :low, feature_category: :runner_core do
           authenticate_runner!
           status 200
 
@@ -133,7 +133,7 @@ module API
         params do
           requires :token, type: String, desc: 'The current authentication token of the runner'
         end
-        post '/reset_authentication_token', urgency: :low, feature_category: :runner do
+        post '/reset_authentication_token', urgency: :low, feature_category: :runner_core do
           authenticate_runner!
 
           ::Ci::Runners::ResetAuthenticationTokenService.new(runner: current_runner, source: :runner_api).execute!

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature_category: :runner do
+RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature_category: :runner_core do
   let(:logger) { instance_double(Logger) }
   let(:dry_run) { false }
   let(:service) { described_class.new(logger: logger, dry_run: dry_run) }

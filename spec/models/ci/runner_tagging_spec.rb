@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerTagging, feature_category: :runner do
+RSpec.describe Ci::RunnerTagging, feature_category: :runner_core do
   let_it_be(:group) { create(:group) }
 
   it { is_expected.to belong_to(:runner).optional(false) }

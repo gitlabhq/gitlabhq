@@ -34,8 +34,9 @@ module API
         get ':id/attestations/:subject_digest',
           urgency: :low, format: false, requirements: { subject_digest: /[A-Fa-f0-9]{64}/ } do
             subject_digest = params[:subject_digest]
+            project = find_project!(params[:id])
 
-            attestations = ::SupplyChain::Attestation.for_project(params[:id]).with_digest(subject_digest)
+            attestations = ::SupplyChain::Attestation.for_project(project.id).with_digest(subject_digest)
 
             present paginate(attestations), with: ::API::Entities::SupplyChain::Attestation
           end

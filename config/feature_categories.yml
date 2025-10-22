@@ -11,7 +11,6 @@
 - activation
 - add-on_provisioning
 - advisory_database
-- agent_foundations
 - ai_abstraction_layer
 - ai_agents
 - ai_evaluation
@@ -56,6 +55,7 @@
 - devops_reports
 - disaster_recovery
 - dora_metrics
+- duo_agent_platform
 - duo_chat
 - duo_setting
 - durability_metrics
@@ -116,7 +116,7 @@
 - release_orchestration
 - requirements_management
 - review_apps
-- runner
+- runner_core
 - runway
 - scalability
 - seat_cost_management

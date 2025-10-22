@@ -55917,10 +55917,12 @@ definitions:
                     type: string
                     description: Start line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start new_line line number
               end:
                 type: object
@@ -55933,10 +55935,12 @@ definitions:
                     type: string
                     description: End line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End new_line line number
         required:
         - base_sha
@@ -56017,10 +56021,12 @@ definitions:
                     type: string
                     description: Start line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: Start new_line line number
               end:
                 type: object
@@ -56033,10 +56039,12 @@ definitions:
                     type: string
                     description: End line type for multi-line note
                   old_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End old_line line number
                   new_line:
-                    type: string
+                    type: integer
+                    format: int32
                     description: End new_line line number
         required:
         - base_sha

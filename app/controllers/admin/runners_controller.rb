@@ -10,7 +10,7 @@ class Admin::RunnersController < Admin::ApplicationController
     push_frontend_feature_flag(:runner_create_wizard_admin, current_user)
   end
 
-  feature_category :runner
+  feature_category :runner_core
   urgency :low
 
   def index; end

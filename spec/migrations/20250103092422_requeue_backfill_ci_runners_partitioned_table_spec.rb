@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RequeueBackfillCiRunnersPartitionedTable, migration: :gitlab_ci, feature_category: :runner do
+RSpec.describe RequeueBackfillCiRunnersPartitionedTable, migration: :gitlab_ci, feature_category: :runner_core do
   let!(:batched_migration) { 'BackfillCiRunnersPartitionedTable' }
 
   it 'schedules a new batched migration' do

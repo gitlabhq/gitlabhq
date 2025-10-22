@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', feature_category: :runner,
+  RSpec.describe 'Verify', feature_category: :runner_core,
     feature_flag: { name: 'vue_project_runners_settings', scope: :project } do
     describe 'Runner registration' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }

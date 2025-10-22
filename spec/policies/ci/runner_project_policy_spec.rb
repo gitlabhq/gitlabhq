@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerProjectPolicy, feature_category: :runner do
+RSpec.describe Ci::RunnerProjectPolicy, feature_category: :runner_core do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }

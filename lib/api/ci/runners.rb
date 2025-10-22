@@ -8,7 +8,7 @@ module API
 
       before { authenticate! }
 
-      feature_category :runner
+      feature_category :runner_core
       urgency :low
 
       helpers do

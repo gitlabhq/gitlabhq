@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, feature_category: :runner do
+RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, feature_category: :runner_core do
   let(:organizations_table) { table(:organizations, database: :main, primary_key: :id) }
   let(:namespaces_table) { table(:namespaces, database: :main, primary_key: :id) }
   let(:ci_runners_table) { table(:ci_runners, database: :ci, primary_key: :id) }

@@ -3,7 +3,7 @@ table_name: duo_workflows_workflows
 classes:
 - Ai::DuoWorkflows::Workflow
 feature_categories:
-- agent_foundations
+- duo_agent_platform
 description:
 introduced_by_url:
 milestone: '17.2'

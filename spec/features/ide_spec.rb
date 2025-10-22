@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_ide do
+RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_ide,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/539416' do
   include Features::WebIdeSpecHelpers
 
   let_it_be(:normal_project) { create(:project, :repository) }

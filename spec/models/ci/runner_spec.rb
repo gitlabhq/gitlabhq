@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_category: :runner do
+RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_category: :runner_core do
   include StubGitlabCalls
   include ::TokenAuthenticatableMatchers
 

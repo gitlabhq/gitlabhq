@@ -20,6 +20,12 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
       achievements {
         count
         nodes {
+          uniqueUsers {
+            count
+            nodes {
+              username
+            }
+          }
           userAchievements {
             count
             nodes {

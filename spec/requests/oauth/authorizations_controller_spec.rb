@@ -228,6 +228,18 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
           expect(response.body).to include('value="mcp"')
           expect(response.body).not_to include('value="read_user"')
         end
+
+        context 'when scope param is not present' do
+          it 'defaults scope to mcp', :aggregate_failures do
+            get oauth_authorization_path, params: params.merge(
+              resource: 'https://gitlab.example.com/api/v4/mcp'
+            ).except(:scope)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template('doorkeeper/authorizations/new')
+            expect(response.body).to include('value="mcp"')
+          end
+        end
       end
 
       context 'when resource param does not end with /api/v4/mcp' do
@@ -264,6 +276,35 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
           expect(response).to render_template('doorkeeper/authorizations/new')
           expect(response.body).to include('value="read_user"')
           expect(response.body).not_to include('value="mcp"')
+        end
+      end
+    end
+
+    describe 'MCP scope defaulting for dynamic applications' do
+      context 'when dynamic application has only mcp scope and no scope provided' do
+        let(:application) { create(:oauth_application, :dynamic, scopes: 'mcp', redirect_uri: 'http://example.com') }
+
+        it 'defaults scope to mcp', :aggregate_failures do
+          get oauth_authorization_path, params: params.except(:scope).merge(
+            code_challenge: 'valid_code_challenge',
+            code_challenge_method: 'S256'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="mcp"')
+        end
+      end
+
+      context 'when non-dynamic application has multiple scopes and no scope provided' do
+        let(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
+
+        it 'does not default to mcp scope', :aggregate_failures do
+          get oauth_authorization_path, params: params.except(:scope)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="api read_user"')
         end
       end
     end

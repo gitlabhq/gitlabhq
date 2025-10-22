@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DisableAllowRunnerRegistrationForSelfManaged, '#up', feature_category: :runner do
+RSpec.describe DisableAllowRunnerRegistrationForSelfManaged, '#up', feature_category: :runner_core do
   let!(:application_settings_table) { table(:application_settings) }
 
   shared_examples 'a migration disabling allow_runner_registration_token' do

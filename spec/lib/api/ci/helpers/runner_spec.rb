@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
+RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
   let(:helper) do
     Class.new do
       include API::Ci::Helpers::Runner
@@ -51,7 +51,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
     end
   end
 
-  describe '#current_runner', feature_category: :runner do
+  describe '#current_runner', feature_category: :runner_core do
     let(:runner) { create(:ci_runner, token: 'foo') }
 
     it 'handles sticking of a runner if a token is specified' do
@@ -140,7 +140,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
     end
   end
 
-  describe '#track_runner_authentication', :prometheus, feature_category: :runner do
+  describe '#track_runner_authentication', :prometheus, feature_category: :runner_core do
     subject { helper.track_runner_authentication }
 
     let(:runner) { create(:ci_runner, token: 'foo') }

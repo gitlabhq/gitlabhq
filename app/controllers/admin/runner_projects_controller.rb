@@ -3,7 +3,7 @@
 class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 
-  feature_category :runner
+  feature_category :runner_core
   urgency :low
 
   def create

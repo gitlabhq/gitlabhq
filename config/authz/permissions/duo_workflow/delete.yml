@@ -1,4 +1,4 @@
 ---
 name: delete_duo_workflow
 description: Grants the ability to delete Duo AI Workflows
-feature_category: agent_foundations
+feature_category: duo_agent_platform

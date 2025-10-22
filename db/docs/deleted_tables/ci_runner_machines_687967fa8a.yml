@@ -3,7 +3,7 @@ table_name: ci_runner_machines_687967fa8a
 classes:
 - Ci::RunnerManager
 feature_categories:
-- runner
+- runner_core
 - fleet_visibility
 - hosted_runners
 description: Routing table for CI runner managers

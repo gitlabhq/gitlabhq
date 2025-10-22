@@ -3,7 +3,7 @@ table_name: duo_workflows_checkpoints
 classes:
 - Ai::DuoWorkflows::Checkpoint
 feature_categories:
-- agent_foundations
+- duo_agent_platform
 description:
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156872
 milestone: '17.2'

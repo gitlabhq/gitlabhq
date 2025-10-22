@@ -4,7 +4,7 @@ classes:
 - Ci::Tag
 feature_categories:
 - continuous_integration
-- runner
+- runner_core
 description: Tags applied to CI builds and CI runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b946da44695c9c8fe8867bb87bcdf801c52177d3
 milestone: "<6.0"

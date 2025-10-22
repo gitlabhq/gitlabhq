@@ -3,7 +3,7 @@ table_name: ci_runner_namespaces
 classes:
 - Ci::RunnerNamespace
 feature_categories:
-- runner
+- runner_core
 description: Relationships between runners and namespaces for group runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1549239849adf31a078be7503ab2288795e337cf
 milestone: '10.8'

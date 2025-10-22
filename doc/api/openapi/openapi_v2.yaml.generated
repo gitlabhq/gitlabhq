@@ -11497,7 +11497,7 @@ paths:
         - ondemand_dast_validation
         - security_orchestration_policy
         - container_registry_push
-        - agent_foundations
+        - duo_agent_platform
         - pipeline_execution_policy_schedule
         required: false
         example: push

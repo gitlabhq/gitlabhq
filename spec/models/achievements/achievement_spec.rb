@@ -41,4 +41,25 @@ RSpec.describe Achievements::Achievement, type: :model, feature_category: :user_
       expect(achievement.uploads_sharding_key).to eq(namespace_id: namespace.id)
     end
   end
+
+  describe '#unique_users' do
+    let_it_be(:achievement) { create(:achievement) }
+
+    subject(:unique_users) { achievement.unique_users }
+
+    it 'returns unique users even when a user has multiple awards' do
+      user1 = create(:user)
+      user2 = create(:user)
+
+      create(:user_achievement, achievement: achievement, user: user1)
+      create(:user_achievement, achievement: achievement, user: user1)
+      create(:user_achievement, achievement: achievement, user: user2)
+
+      expect(unique_users).to contain_exactly(user1, user2)
+    end
+
+    it 'returns empty when no users have been awarded' do
+      expect(unique_users).to be_empty
+    end
+  end
 end

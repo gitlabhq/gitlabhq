@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'RunnerCacheClear', feature_category: :runner do
+RSpec.describe 'RunnerCacheClear', feature_category: :runner_core do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

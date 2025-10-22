@@ -18,7 +18,7 @@ class Projects::RunnersController < Projects::ApplicationController
     authorize_runner!(:delete_runner)
   end
 
-  feature_category :runner
+  feature_category :runner_core
   urgency :low
 
   def index

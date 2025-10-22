@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerProject, feature_category: :runner do
+RSpec.describe Ci::RunnerProject, feature_category: :runner_core do
   let_it_be(:project) { create(:project) }
   let_it_be(:owner_project) { create(:project) }
 

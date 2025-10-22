@@ -6,7 +6,7 @@ module Gitlab
       operation_name :backfill_sharding_key_on_ci_runners
       scope_to ->(relation) { relation.where(runner_type: [2, 3]) }
 
-      feature_category :runner
+      feature_category :runner_core
 
       UPDATE_GROUP_RUNNERS_SQL = <<~SQL
         UPDATE ci_runners

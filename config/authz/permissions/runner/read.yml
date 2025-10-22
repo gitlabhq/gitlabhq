@@ -1,4 +1,4 @@
 ---
 name: read_runner
 description: Grants the ability to read runners
-feature_category: runner
+feature_category: runner_core

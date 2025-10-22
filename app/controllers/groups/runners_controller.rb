@@ -11,7 +11,7 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :authorize_update_runner!, only: [:edit, :update]
   before_action :runner, only: [:edit, :update, :show, :register]
 
-  feature_category :runner
+  feature_category :runner_core
   urgency :low
 
   def index

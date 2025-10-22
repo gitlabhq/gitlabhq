@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'RunnerBulkPause', feature_category: :runner do
+RSpec.describe 'RunnerBulkPause', feature_category: :runner_core do
   include GraphqlHelpers
 
   let_it_be(:admin) { create(:admin) }

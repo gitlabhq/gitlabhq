@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::TagsFinder, feature_category: :runner do
+RSpec.describe Ci::TagsFinder, feature_category: :runner_core do
   describe '#execute' do
     let_it_be(:tag1) { create(:ci_tag, name: 'tag1') }
     let_it_be(:tag2) { create(:ci_tag, name: 'tag2') }

@@ -23136,6 +23136,7 @@ Representation of a GitLab user.
 | <a id="achievementid"></a>`id` | [`AchievementsAchievementID!`](#achievementsachievementid) | ID of the achievement. |
 | <a id="achievementname"></a>`name` | [`String!`](#string) | Name of the achievement. |
 | <a id="achievementnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace of the achievement. |
+| <a id="achievementuniqueusers"></a>`uniqueUsers` {{< icon name="warning-solid" >}} | [`UserCoreConnection!`](#usercoreconnection) | **Introduced** in GitLab 18.6. **Status**: Experiment. Unique users who have received the achievement. |
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
 | <a id="achievementuserachievements"></a>`userAchievements` {{< icon name="warning-solid" >}} | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Recipients for the achievement. |
 

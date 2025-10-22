@@ -50,12 +50,6 @@ An audit event type's scope limits the availability of the audit event type to e
 
 Audit event types belong to the following product categories.
 
-### Agent foundations
-
-| Type name | Event triggered when | Saved to database | Introduced in | Scope |
-|:----------|:---------------------|:------------------|:--------------|:------|
-| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< icon name="check-circle" >}} Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
-
 ### Ai framework
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -303,6 +297,12 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_feature_metrics_dashboard_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's metrics dashboard access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
+
+### Duo agent platform
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< icon name="check-circle" >}} Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
 

@@ -3,7 +3,7 @@ table_name: project_type_ci_runners
 classes:
 - Ci::Runner
 feature_categories:
-- runner
+- runner_core
 - fleet_visibility
 description: Registered CI project runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166308

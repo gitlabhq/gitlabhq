@@ -73,7 +73,22 @@ To configure the GitLab MCP server in Cursor:
    - Replace `<gitlab.example.com>` with:
      - On GitLab Self-Managed, your GitLab instance URL.
      - On GitLab.com, `GitLab.com`.
-   - The `--static-oauth-client-metadata` parameter is mandatory for the `mcp-remote` module to set the OAuth scope to `mcp` as expected by the GitLab server.
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "command": "npx",
+         "args": [
+           "mcp-remote",
+           "https://<gitlab.example.com>/api/v4/mcp"
+         ]
+       }
+     }
+   }
+   ```
+
+   - The `--static-oauth-client-metadata` parameter is optional for the `mcp-remote` module to explicitly set the OAuth scope to `mcp`. If omitted, GitLab defaults to the `mcp` scope for dynamic applications.
 
    ```json
    {
@@ -123,7 +138,23 @@ To configure the GitLab MCP server in Claude Desktop:
    - Replace `<gitlab.example.com>` with:
      - On GitLab Self-Managed, your GitLab instance URL.
      - On GitLab.com, `GitLab.com`.
-   - The `--static-oauth-client-metadata` parameter is mandatory for the `mcp-remote` module to set the OAuth scope to `mcp` as expected by the GitLab server.
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "mcp-remote",
+           "https://<gitlab.example.com>/api/v4/mcp"
+         ]
+       }
+     }
+   }
+   ```
+
+   - The `--static-oauth-client-metadata` parameter is optional for the `mcp-remote` module to explicitly set the OAuth scope to `mcp`. If omitted, GitLab defaults to the `mcp` scope for dynamic applications.
 
    ```json
    {

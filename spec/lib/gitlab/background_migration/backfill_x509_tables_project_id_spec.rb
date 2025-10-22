@@ -127,7 +127,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillX509TablesProjectId, feature
         )
       end
 
-      it 'updates both x509_certificates and x509_issuers but not the certitificate without signature' do
+      it 'updates both x509_certificates and x509_issuers but not the certificate without signature' do
         expect { perform_migration }
           .to change { certificate1.reload.project_id }.from(nil).to(project1.id)
           .and change { certificate2.reload.project_id }.from(nil).to(project2.id)

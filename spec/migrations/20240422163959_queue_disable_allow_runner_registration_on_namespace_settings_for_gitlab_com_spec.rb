@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueDisableAllowRunnerRegistrationOnNamespaceSettingsForGitlabCom, feature_category: :runner do
+RSpec.describe QueueDisableAllowRunnerRegistrationOnNamespaceSettingsForGitlabCom, feature_category: :runner_core do
   let!(:batched_migration) { described_class::MIGRATION }
 
   context 'when on self managed' do

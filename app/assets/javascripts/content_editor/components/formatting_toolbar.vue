@@ -29,6 +29,7 @@ export default {
     tiptapEditor: { default: null },
     contentEditor: { default: null },
     canSummarizeChanges: { default: false },
+    summarizeDisabledReason: { default: null },
   },
   props: {
     supportsQuickActions: {
@@ -255,7 +256,7 @@ export default {
     <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
     <div v-if="canSummarizeChanges" class="gl-flex">
       <header-divider />
-      <summarize-code-changes />
+      <summarize-code-changes :disabled-reason="summarizeDisabledReason" />
     </div>
     <slot name="header-buttons"></slot>
   </div>

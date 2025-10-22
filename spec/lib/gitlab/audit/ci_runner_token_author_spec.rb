@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor, feature_category: :runner do
+RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor, feature_category: :runner_core do
   let(:token_args) { details.slice(:runner_authentication_token, :runner_registration_token) }
 
   describe '.initialize' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category: :runner do
+RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category: :runner_core do
   let_it_be(:organization1) { create(:organization) }
   let_it_be(:owner_group) { create(:group, organization: organization1) }
   let_it_be(:owner_project) { create(:project, group: owner_group, organization: organization1) }

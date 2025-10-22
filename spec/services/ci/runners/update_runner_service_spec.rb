@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :runner do
+RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :runner_core do
   subject(:execute) { described_class.new(current_user, runner).execute(params) }
 
   let(:runner) { create(:ci_runner, tag_list: %w[macos shared]) }

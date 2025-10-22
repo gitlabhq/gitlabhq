@@ -219,8 +219,8 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       context "when using line_range position parameters" do
         let!(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
 
-        context "when showing the current broken situation for line types" do
-          it "returns a 400 Bad Request when old_line/new_line is a number" do
+        context "when old_line/new_line is an integer" do
+          it "has a successful response" do
             position = draft_note.position.to_h.merge(
               line_range: {
                 start: {
@@ -241,10 +241,14 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
             post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
               params: { note: 'Test note', position: position }
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response).to have_gitlab_http_status(:created)
           end
+        end
 
-          it "returns a 400 Bad Request when old_line/new_line is a string" do
+        context "when old_line/new_line is a string" do
+          it "has a successful response" do
+            # the "grape" gem will convert a string into an integer in this case for us
+            # see: https://www.rubydoc.info/gems/grape/1.8.0/Grape/Validations/Types#multiple%3F-class_method
             position = draft_note.position.to_h.merge(
               line_range: {
                 start: {
@@ -265,7 +269,7 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
             post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
               params: { note: 'Test note', position: position }
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response).to have_gitlab_http_status(:created)
           end
         end
       end

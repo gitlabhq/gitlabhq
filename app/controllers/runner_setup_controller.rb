@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RunnerSetupController < ApplicationController
-  feature_category :runner
+  feature_category :runner_core
   urgency :low
 
   def platforms

@@ -1,4 +1,4 @@
 ---
 name: reset_runner_registration_token
 description: Grants the ability to reset runner registration tokens
-feature_category: runner
+feature_category: runner_core

@@ -3,7 +3,7 @@ key_path: counts.ci_runner_manager_custom_executors
 description: Counts the number of custom CI runner manager executors
 product_group: runner
 product_categories:
-  - runner
+  - runner_core
 value_type: number
 status: active
 milestone: "17.10"

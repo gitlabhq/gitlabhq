@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class BackfillRunnerTypeAndShardingKeyIdOnCiRunnerManagers < BatchedMigrationJob
       operation_name :backfill_runner_type_and_sharding_key_on_ci_runner_machines
-      feature_category :runner
+      feature_category :runner_core
 
       UPDATE_RUNNER_MANAGERS_SQL = <<~SQL
         UPDATE ci_runner_machines

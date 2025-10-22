@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueResetDuoRemoteFlowsEnabledFalseValues, migration: :gitlab_main, feature_category: :agent_foundations do
+RSpec.describe QueueResetDuoRemoteFlowsEnabledFalseValues, migration: :gitlab_main, feature_category: :duo_agent_platform do
   let(:migration) { described_class.new }
 
   describe '#up' do

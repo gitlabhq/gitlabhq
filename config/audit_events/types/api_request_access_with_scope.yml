@@ -3,7 +3,7 @@ name: api_request_access_with_scope
 description: A subset of API requests authenticated by a token with an audited scope
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/499461
 introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548
-feature_category: agent_foundations
+feature_category: duo_agent_platform
 milestone: '17.7'
 saved_to_database: true
 scope: [User]

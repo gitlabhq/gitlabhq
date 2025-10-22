@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RecalculateShardingKeyIdForOrphanedProjectRunners, feature_category: :runner, migration: :gitlab_ci do
+RSpec.describe Gitlab::BackgroundMigration::RecalculateShardingKeyIdForOrphanedProjectRunners, feature_category: :runner_core, migration: :gitlab_ci do
   let(:connection) { Ci::ApplicationRecord.connection }
   let(:runners) { table(:ci_runners, database: :ci, primary_key: :id) }
   let(:runner_projects) { table(:ci_runner_projects, database: :ci, primary_key: :id) }

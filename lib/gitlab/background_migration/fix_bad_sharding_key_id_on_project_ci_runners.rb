@@ -8,7 +8,7 @@ module Gitlab
       operation_name :fill_bad_sharding_key_id_on_project_ci_runners
       scope_to ->(relation) { relation.where(runner_type: 3) }
 
-      feature_category :runner
+      feature_category :runner_core
 
       class CiRunner < ::Ci::ApplicationRecord
         self.table_name = 'ci_runners'

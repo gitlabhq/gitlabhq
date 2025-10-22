@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe EnsureRunnerTaggingsExist, feature_category: :runner, migration: :gitlab_ci do
+RSpec.describe EnsureRunnerTaggingsExist, feature_category: :runner_core, migration: :gitlab_ci do
   let(:runners_table) { table(:ci_runners, database: :ci, primary_key: :id) }
   let(:runner_taggings_table) { table(:ci_runner_taggings, database: :ci, primary_key: :id) }
   let(:taggings_table) { table(:taggings, database: :ci) }

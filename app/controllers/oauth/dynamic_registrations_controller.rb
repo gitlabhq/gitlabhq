@@ -77,7 +77,7 @@ module Oauth
     end
 
     def check_rate_limit
-      return if Rails.env.test?
+      return if Rails.env.test? || Rails.env.development?
 
       check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
     end

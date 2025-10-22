@@ -156,7 +156,7 @@ RSpec.describe ::API::Entities::Project do
     end
   end
 
-  describe 'runner token settings', feature_category: :runner do
+  describe 'runner token settings', feature_category: :runner_core do
     context 'when the user is not an admin' do
       before_all do
         project.add_reporter(current_user)

@@ -3,7 +3,7 @@ key_path: redis_hll_counters.count_distinct_namespace_id_from_create_ci_runner
 description: Count of unique namespaces where a runner was created
 product_group: runner
 product_categories:
-- runner
+- runner_core
 performance_indicator_type: []
 value_type: number
 status: active

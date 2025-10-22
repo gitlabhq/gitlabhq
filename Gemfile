@@ -178,7 +178,7 @@ gem 'gitlab-topology-service-client', '~> 0.1',
 # Duo Workflow
 gem 'gitlab-duo-workflow-service-client', '~> 0.6',
   path: 'vendor/gems/gitlab-duo-workflow-service-client',
-  feature_category: :agent_foundations
+  feature_category: :duo_agent_platform
 
 # Generate Fake data
 gem 'ffaker', '~> 2.24', feature_category: :shared

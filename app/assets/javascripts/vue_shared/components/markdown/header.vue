@@ -60,6 +60,7 @@ export default {
     },
     mrGeneratedContent: { default: null },
     canSummarizeChanges: { default: false },
+    summarizeDisabledReason: { default: null },
     canUseComposer: { default: false },
     legacyEditorAiActions: { default: () => [] },
   },
@@ -800,7 +801,7 @@ export default {
           </div>
           <template v-if="!previewMarkdown && canSummarizeChanges && !canUseComposer">
             <header-divider />
-            <summarize-code-changes />
+            <summarize-code-changes :disabled-reason="summarizeDisabledReason" />
           </template>
           <slot v-if="!previewMarkdown" name="header-buttons"></slot>
         </div>

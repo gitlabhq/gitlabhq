@@ -5979,7 +5979,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#ci_available_runners', feature_category: :runner do
+  describe '#ci_available_runners', feature_category: :runner_core do
     let_it_be_with_refind(:user) { create(:user) }
 
     subject(:ci_available_runners) { user.ci_available_runners }
@@ -6214,7 +6214,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#ci_available_project_runners', feature_category: :runner do
+  describe '#ci_available_project_runners', feature_category: :runner_core do
     let_it_be_with_refind(:user) { create(:user) }
 
     let_it_be(:project1) { create(:project) }

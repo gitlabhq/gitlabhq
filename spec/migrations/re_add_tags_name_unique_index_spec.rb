@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ReAddTagsNameUniqueIndex, :migration, feature_category: :runner do
+RSpec.describe ReAddTagsNameUniqueIndex, :migration, feature_category: :runner_core do
   let(:migration) { described_class.new }
   let(:connection) { migration.connection }
 

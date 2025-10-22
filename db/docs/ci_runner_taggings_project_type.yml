@@ -3,7 +3,7 @@ table_name: ci_runner_taggings_project_type
 classes:
 - Ci::RunnerTagging
 feature_categories:
-- runner
+- runner_core
 - fleet_visibility
 description: Table holding information for group runner taggings, partition of `ci_runner_taggings`
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170778

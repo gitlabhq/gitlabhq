@@ -47,14 +47,12 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
       get api(url, api_user)
     end
 
-    let(:target_url) { "/projects/#{project.id}/attestations/#{subject_digest}" }
-
     subject(:get_attestations) do
       url = target_url
       get api(url, api_user)
     end
 
-    context 'when an attestation exists' do
+    shared_examples 'when an attestation exists' do
       it 'returns the right attestations in the response' do
         get_attestations
 
@@ -157,6 +155,18 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
           end
         end
       end
+    end
+
+    context 'when accessing via the project id' do
+      let(:target_url) { "/projects/#{project.id}/attestations/#{subject_digest}" }
+
+      include_examples 'when an attestation exists'
+    end
+
+    context 'when accessing via the project full_path' do
+      let(:target_url) { "/projects/#{CGI.escape(project.full_path)}/attestations/#{subject_digest}" }
+
+      include_examples 'when an attestation exists'
     end
 
     context 'when an attestation does not exist' do

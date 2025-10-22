@@ -459,7 +459,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `external_https`                        | N/A                                                   | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
 | `custom_domain_mode`                    | N/A                                                   | Configure Pages to enable custom domain: `http` or `https`. When running a separate Pages server, configure this setting on the GitLab server as well. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285089) in GitLab 18.1. |
 | `server_shutdown_timeout`               | `30s`                                                 | GitLab Pages server shutdown timeout in seconds. |
-| `gitlab_client_http_timeout`            | `10s`                                                 | GitLab API HTTP client connection timeout in seconds. |
+| `gitlab_client_http_timeout`            | `60s`                                                 | GitLab API HTTP client connection timeout in seconds. |
 | `gitlab_client_jwt_expiry`              | `30s`                                                 | JWT Token expiry time in seconds. |
 | `gitlab_cache_expiry`                   | `600s`                                                | The maximum time a domain's configuration is stored in the [cache](#gitlab-api-cache-configuration) |
 | `gitlab_cache_refresh`                  | `60s`                                                 | The interval at which a domain's configuration is set to be due to refresh. |
