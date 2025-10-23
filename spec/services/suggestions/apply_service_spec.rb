@@ -76,6 +76,13 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
       expect(commit.committer_name).to eq(user.name)
     end
 
+    it 'transitions MR state to preparing' do
+      expect do
+        apply(suggestions)
+        merge_request.reload
+      end.to change { merge_request.merge_status }.from('can_be_merged').to('preparing')
+    end
+
     it 'tracks apply suggestion event' do
       expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
         .to receive(:track_apply_suggestion_action)
@@ -636,6 +643,9 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
           message: "You are not allowed to push into this branch",
           status: :error
         )
+
+        expect(merge_request)
+          .not_to receive(:mark_as_preparing)
       end
     end
   end

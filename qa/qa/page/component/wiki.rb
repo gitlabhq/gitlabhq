@@ -20,6 +20,10 @@ module QA
           base.view 'app/views/shared/empty_states/_wikis.html.haml' do
             element 'wiki-empty-state'
           end
+
+          base.view 'app/assets/javascripts/wikis/components/wiki_header.vue' do
+            element 'wiki-sidebar-toggle'
+          end
         end
 
         def click_create_your_first_page
@@ -66,6 +70,10 @@ module QA
           within_element('wiki-page-content') do
             has_css?("img[src$='#{image_file_name}']")
           end
+        end
+
+        def expand_sidebar_if_collapsed
+          click_element('wiki-sidebar-toggle') if has_css?('.wiki-sidebar.sidebar-collapsed', wait: 1)
         end
       end
     end

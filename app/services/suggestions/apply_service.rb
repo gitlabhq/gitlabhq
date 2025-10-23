@@ -23,6 +23,7 @@ module Suggestions
     def result
       multi_service.execute.tap do |result|
         update_suggestions(result)
+        update_associated_merge_request(result)
       end
     end
 
@@ -34,6 +35,12 @@ module Suggestions
 
       Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
         .track_apply_suggestion_action(user: current_user, suggestions: suggestion_set.suggestions)
+    end
+
+    def update_associated_merge_request(result)
+      return unless result[:status] == :success
+
+      suggestion_set.merge_request.mark_as_preparing
     end
 
     def author

@@ -120,7 +120,7 @@ For Gradle projects use either of the following methods to create a dependency g
 - Nebula Gradle Dependency Lock Plugin
 - Gradle's HtmlDependencyReportTask
 
-###### Dependency Lock Plugin
+###### Dependency lock plugin
 
 This method gives information about dependencies which are direct.
 
@@ -175,7 +175,6 @@ generate nebula lockfile:
   # Collect all generated artifacts and pass them onto jobs in sequential stages.
   artifacts:
     paths:
-      - '**/dependencies*.lock'
       - '**/dependencies*.lock'
 ```
 

@@ -21,6 +21,10 @@ module Gitlab
         first_suggestion.branch
       end
 
+      def merge_request
+        first_suggestion.noteable
+      end
+
       def valid?
         error_message.nil?
       end

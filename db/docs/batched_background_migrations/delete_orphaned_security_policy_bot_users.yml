@@ -1,7 +1,9 @@
 ---
 migration_job_name: DeleteOrphanedSecurityPolicyBotUsers
-description: Deletes orphaned security policy bot users that have no project memberships and no ghost user migrations
+description: Deletes orphaned security policy bot users that have no project memberships
+  and no ghost user migrations
 feature_category: security_policy_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199125
 milestone: '18.3'
 queued_migration_version: 20250722205800
+finalized_by: '20251021232037'

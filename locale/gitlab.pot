@@ -2509,7 +2509,7 @@ msgstr ""
 msgid "AICatalog|Agent not found."
 msgstr ""
 
-msgid "AICatalog|Agent removed successfully from this project."
+msgid "AICatalog|Agent removed from this project."
 msgstr ""
 
 msgid "AICatalog|Agent updated."
@@ -2519,6 +2519,12 @@ msgid "AICatalog|Agents"
 msgstr ""
 
 msgid "AICatalog|Always use latest version"
+msgstr ""
+
+msgid "AICatalog|Anyone can view and use the agent."
+msgstr ""
+
+msgid "AICatalog|Anyone can view and use the flow."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
@@ -2536,31 +2542,19 @@ msgstr ""
 msgid "AICatalog|Ask a question or describe something you want the agent to do."
 msgstr ""
 
-msgid "AICatalog|Automate tasks and processes using agents."
-msgstr ""
-
-msgid "AICatalog|Automate tasks and processes using flows."
-msgstr ""
-
 msgid "AICatalog|Available tools"
 msgstr ""
 
 msgid "AICatalog|Basic information"
 msgstr ""
 
-msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
+msgid "AICatalog|Build agents and flows to automate tasks and solve complex problems."
 msgstr ""
 
-msgid "AICatalog|Briefly describe what this flow is designed to do and its key capabilities."
+msgid "AICatalog|Choose who can view and interact with this agent."
 msgstr ""
 
-msgid "AICatalog|Build AI agents and flows to automate repetitive tasks and processes."
-msgstr ""
-
-msgid "AICatalog|Choose a memorable name for your AI agent."
-msgstr ""
-
-msgid "AICatalog|Choose a memorable name for your AI flow."
+msgid "AICatalog|Choose who can view and interact with this flow."
 msgstr ""
 
 msgid "AICatalog|Configuration"
@@ -2569,13 +2563,7 @@ msgstr ""
 msgid "AICatalog|Configuration is required."
 msgstr ""
 
-msgid "AICatalog|Connect AI agents to automate complicated tasks."
-msgstr ""
-
-msgid "AICatalog|Control who can discover and use this agent."
-msgstr ""
-
-msgid "AICatalog|Control who can discover and use this flow."
+msgid "AICatalog|Connect an agent to automate complex tasks"
 msgstr ""
 
 msgid "AICatalog|Copy YAML configuration"
@@ -2725,6 +2713,9 @@ msgstr ""
 msgid "AICatalog|Flows"
 msgstr ""
 
+msgid "AICatalog|Flows use multiple agents to complete tasks automatically."
+msgstr ""
+
 msgid "AICatalog|Get started with the AI Catalog"
 msgstr ""
 
@@ -2741,6 +2732,12 @@ msgid "AICatalog|Modify the flow settings and configuration."
 msgstr ""
 
 msgid "AICatalog|Name is required."
+msgstr ""
+
+msgid "AICatalog|Name your agent."
+msgstr ""
+
+msgid "AICatalog|Name your flow."
 msgstr ""
 
 msgid "AICatalog|New"
@@ -2777,6 +2774,9 @@ msgid "AICatalog|Project members will be able to run this %{itemType}."
 msgstr ""
 
 msgid "AICatalog|Prompts"
+msgstr ""
+
+msgid "AICatalog|Provide a brief description."
 msgstr ""
 
 msgid "AICatalog|Remove agent from this project"
@@ -2866,6 +2866,9 @@ msgstr ""
 msgid "AICatalog|Use agents in your project."
 msgstr ""
 
+msgid "AICatalog|Use agents to automate tasks and answer questions."
+msgstr ""
+
 msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer complex questions."
 msgstr ""
 
@@ -2882,12 +2885,6 @@ msgid "AICatalog|Visibility"
 msgstr ""
 
 msgid "AICatalog|Visibility & access"
-msgstr ""
-
-msgid "AICatalog|Visible to all users. Anyone can enable this agent in their projects."
-msgstr ""
-
-msgid "AICatalog|Visible to all users. Anyone can enable this flow in their projects."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."

@@ -5862,14 +5862,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
-      context 'when the status is checking' do
-        let(:merge_status) { :checking }
-
-        include_examples 'for an invalid state transition'
-      end
-
       context 'when the status is can_be_merged' do
         let(:merge_status) { :can_be_merged }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is checking' do
+        let(:merge_status) { :checking }
 
         include_examples 'for an invalid state transition'
       end

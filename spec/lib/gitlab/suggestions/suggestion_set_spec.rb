@@ -74,6 +74,12 @@ RSpec.describe Gitlab::Suggestions::SuggestionSet do
       end
     end
 
+    describe '#merge_request' do
+      it 'returns the merge_request associated with the suggestions' do
+        expect(suggestion_set.merge_request).to eq(merge_request)
+      end
+    end
+
     describe '#valid?' do
       it 'returns true if no errors are found' do
         expect(suggestion_set.valid?).to be(true)

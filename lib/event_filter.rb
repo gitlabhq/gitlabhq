@@ -120,14 +120,6 @@ class EventFilter
     end
   end
 
-  def filters
-    [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM, WIKI, DESIGNS]
-  end
-
-  def ==(other)
-    other.is_a?(self.class) && filter == other.filter
-  end
-
   private
 
   def in_operator_params(array_data:, scope: nil, in_column: nil, in_values: nil, order_hint_column: nil)
@@ -221,6 +213,10 @@ class EventFilter
 
   def design_events(events)
     events.for_design
+  end
+
+  def filters
+    [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM, WIKI, DESIGNS]
   end
 end
 # rubocop: enable CodeReuse/ActiveRecord

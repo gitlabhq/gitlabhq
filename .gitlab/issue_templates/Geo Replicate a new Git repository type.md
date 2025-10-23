@@ -428,10 +428,15 @@ That's all of the required database changes.
       include ::Geo::ReplicableRegistry
       include ::Geo::VerifiableRegistry
 
-      MODEL_CLASS = ::CoolWidget
-      MODEL_FOREIGN_KEY = :cool_widget_id
-
       belongs_to :cool_widget, class_name: 'CoolWidget'
+
+      def self.model_class
+        ::CoolWidget
+      end
+
+      def self.model_foreign_key
+        :cool_widget_id
+      end
     end
   end
   ```
