@@ -148,11 +148,7 @@ export default {
     },
     onPlatformsButtonResize() {
       // Note, this component is a modal, so it should not be migrated to PanelBreakpointInstance
-      if (GlBreakpointInstance.getBreakpointSize() === 'xs') {
-        this.platformsButtonGroupVertical = true;
-      } else {
-        this.platformsButtonGroupVertical = false;
-      }
+      this.platformsButtonGroupVertical = GlBreakpointInstance.getBreakpointSize() === 'xs';
     },
   },
   i18n: {

@@ -2,7 +2,27 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Protected Branches', :js, feature_category: :source_code_management do
+RSpec.describe 'Protected Branches', :js, feature_category: :source_code_management,
+  quarantine: {
+    issue: [
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/569151',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/568869',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/568866',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/564954',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/564962',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/564961',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/564959',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/564957',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/560514',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/554919',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/500045',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/500044',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/500043',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/500042',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/500041',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/499969'
+    ]
+  } do
   include ProtectedBranchHelpers
 
   let_it_be_with_reload(:user) { create(:user) }

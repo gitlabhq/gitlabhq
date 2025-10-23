@@ -46,7 +46,8 @@ RSpec.describe "User views branches", :js, feature_category: :source_code_manage
         expect(page).not_to have_selector('[data-testid="branch-more-actions"]')
       end
 
-      it "passes axe automated accessibility testing" do
+      it "passes axe automated accessibility testing",
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562826' do
         expect(page).to be_axe_clean.within('#content-body')
       end
     end

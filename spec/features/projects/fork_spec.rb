@@ -219,7 +219,8 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
       end
     end
 
-    context 'when user is a maintainer in multiple groups' do
+    context 'when user is a maintainer in multiple groups',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444482' do
       before do
         create(:group_member, :maintainer, user: user, group: group2)
       end

@@ -17,15 +17,15 @@ GitLab vulnerability analyzers attempt to return vulnerability severity level va
 possible. The following is a list of available GitLab vulnerability severity levels, ranked from
 most to least severe:
 
-- `Critical`
-- `High`
-- `Medium`
-- `Low`
-- `Info`
-- `Unknown`
+- Critical
+- High
+- Medium
+- Low
+- Info
+- Unknown
 
-GitLab analyzers make an effort to fit the severity descriptions below, but they may not always be
-correct. Analyzers and scanners provided by third-party vendors may not follow the same
+GitLab analyzers make an effort to fit the severity descriptions below, but they might not always be
+correct. Analyzers and scanners provided by third-party vendors might not follow the same
 classification.
 
 ## Critical severity

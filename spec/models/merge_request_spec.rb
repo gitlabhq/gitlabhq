@@ -126,19 +126,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'reduces database queries when accessing preloaded associations' do
         merge_requests = described_class.preload_latest_diff_commit(project).where(id: merge_request.id)
 
-        expect do
-          merge_requests.each do |mr|
-            mr.latest_merge_request_diff.merge_request_diff_commits.each do |commit|
-              if with_metadata
-                commit.merge_request_commits_metadata&.commit_author
-                commit.merge_request_commits_metadata&.committer
-              else
+        if with_metadata
+          expect do
+            merge_requests.each do |mr|
+              mr.latest_merge_request_diff.merge_request_diff_commits.each do |commit|
+                commit.merge_request_commits_metadata.commit_author
+                commit.merge_request_commits_metadata.committer
+              end
+            end
+          end.not_to exceed_query_limit(7)
+        else
+          expect do
+            merge_requests.each do |mr|
+              mr.latest_merge_request_diff.merge_request_diff_commits.each do |commit|
                 commit.commit_author
                 commit.committer
               end
             end
-          end
-        end.not_to exceed_query_limit(7)
+          end.not_to exceed_query_limit(4)
+        end
       end
 
       if with_metadata
@@ -181,16 +187,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         mr_without_diff = create(:merge_request, :unique_branches, source_project: project, target_project: project)
         mr_without_diff.update_column(:latest_merge_request_diff_id, nil)
 
-        expect { described_class.preload_latest_diff_commit(project).where(id: mr_without_diff.id).to_a }.not_to raise_error
+        expect(described_class.preload_latest_diff_commit(project).where(id: mr_without_diff.id)).to eq([mr_without_diff])
       end
 
       it 'handles empty commits collection' do
         empty_mr = create(:merge_request, :unique_branches, source_project: project, target_project: project)
         empty_mr.merge_request_diff.merge_request_diff_commits.delete_all
 
-        merge_requests = described_class.preload_latest_diff_commit(project).where(id: empty_mr.id)
-
-        expect { merge_requests.first.latest_merge_request_diff.merge_request_diff_commits.to_a }.not_to raise_error
+        expect(described_class.preload_latest_diff_commit(project).where(id: empty_mr.id)).to eq([empty_mr])
       end
     end
 
