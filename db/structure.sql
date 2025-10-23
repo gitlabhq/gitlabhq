@@ -10833,6 +10833,7 @@ CREATE TABLE appearance_uploads (
     mount_point text,
     secret text,
     CONSTRAINT check_2849dedce7 CHECK ((char_length(path) <= 511)),
+    CONSTRAINT check_84e287699b CHECK ((num_nonnulls(namespace_id, organization_id, project_id) = 0)),
     CONSTRAINT check_b888b1df14 CHECK ((char_length(checksum) <= 64))
 );
 
@@ -18940,7 +18941,8 @@ CREATE TABLE label_links (
     target_type character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_3853a1e8ed CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE TABLE label_links_archived (
@@ -38355,7 +38357,7 @@ CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_i
 
 CREATE INDEX idx_wi_type_custom_lifecycles_on_lifecycle_id ON work_item_type_custom_lifecycles USING btree (lifecycle_id);
 
-CREATE UNIQUE INDEX idx_wi_type_custom_lifecycles_on_namespace_type_lifecycle ON work_item_type_custom_lifecycles USING btree (namespace_id, work_item_type_id, lifecycle_id);
+CREATE UNIQUE INDEX idx_wi_type_custom_lifecycles_on_namespace_and_work_item_type ON work_item_type_custom_lifecycles USING btree (namespace_id, work_item_type_id);
 
 CREATE INDEX idx_wi_type_custom_lifecycles_on_work_item_type_id ON work_item_type_custom_lifecycles USING btree (work_item_type_id);
 
@@ -48995,7 +48997,7 @@ ALTER TABLE ONLY user_group_callouts
     ADD CONSTRAINT fk_9dc8b9d4b2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY label_links
-    ADD CONSTRAINT fk_9de5c65cb0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_9de5c65cb0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_unit_test_failures
     ADD CONSTRAINT fk_9e0fc58930_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

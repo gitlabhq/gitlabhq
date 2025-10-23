@@ -1305,6 +1305,16 @@ If you use it in a context of describing the
 [different installation methods](_index.md#how-to-document-different-installation-methods)
 use `Helm chart (Kubernetes)`.
 
+## GitLab Operator
+
+You use **GitLab Operator** to install GitLab.
+
+Do not use **the Operator** or **Operator**.
+
+If you use it in a context of describing the
+[different installation methods](_index.md#how-to-document-different-installation-methods)
+use **GitLab Operator (Kubernetes)**.
+
 ## GitLab Pages
 
 For consistency and branding, use **GitLab Pages** rather than **Pages**.

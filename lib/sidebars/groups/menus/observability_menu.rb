@@ -21,7 +21,7 @@ module Sidebars
             add_item(alerts_menu_item)
             add_item(exceptions_menu_item)
             add_item(service_map_menu_item)
-            add_item(settings_menu_item)
+            add_item(notification_channels_menu_item)
           end
 
           add_item(setup_menu_item)
@@ -80,7 +80,7 @@ module Sidebars
         def services_menu_item
           link = group_observability_path(context.group, 'services')
           ::Sidebars::MenuItem.new(
-            title: _('Services'),
+            title: s_('Observability|Services'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -92,7 +92,7 @@ module Sidebars
         def traces_explorer_menu_item
           link = group_observability_path(context.group, 'traces-explorer')
           ::Sidebars::MenuItem.new(
-            title: _('Traces Explorer'),
+            title: s_('Observability|Traces explorer'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -104,7 +104,7 @@ module Sidebars
         def logs_explorer_menu_item
           link = group_observability_path(context.group, 'logs/logs-explorer')
           ::Sidebars::MenuItem.new(
-            title: _('Logs Explorer'),
+            title: s_('Observability|Logs explorer'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -116,7 +116,7 @@ module Sidebars
         def metrics_explorer_menu_item
           link = group_observability_path(context.group, 'metrics-explorer/summary')
           ::Sidebars::MenuItem.new(
-            title: _('Metrics Explorer'),
+            title: s_('Observability|Metrics explorer'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -128,7 +128,7 @@ module Sidebars
         def infrastructure_monitoring_menu_item
           link = group_observability_path(context.group, 'infrastructure-monitoring/hosts')
           ::Sidebars::MenuItem.new(
-            title: _('Infrastructure Monitoring'),
+            title: s_('Observability|Infrastructure monitoring'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -140,7 +140,7 @@ module Sidebars
         def dashboard_menu_item
           link = group_observability_path(context.group, 'dashboard')
           ::Sidebars::MenuItem.new(
-            title: _('Dashboard'),
+            title: s_('Observability|Dashboard'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -152,7 +152,7 @@ module Sidebars
         def messaging_queues_menu_item
           link = group_observability_path(context.group, 'messaging-queues')
           ::Sidebars::MenuItem.new(
-            title: _('Messaging Queues'),
+            title: s_('Observability|Messaging queues'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -164,7 +164,7 @@ module Sidebars
         def api_monitoring_menu_item
           link = group_observability_path(context.group, 'api-monitoring/explorer')
           ::Sidebars::MenuItem.new(
-            title: _('API Monitoring'),
+            title: s_('Observability|API monitoring'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -176,7 +176,7 @@ module Sidebars
         def alerts_menu_item
           link = group_observability_path(context.group, 'alerts')
           ::Sidebars::MenuItem.new(
-            title: _('Alerts'),
+            title: s_('Observability|Alerts'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -188,7 +188,7 @@ module Sidebars
         def exceptions_menu_item
           link = group_observability_path(context.group, 'exceptions')
           ::Sidebars::MenuItem.new(
-            title: _('Exceptions'),
+            title: s_('Observability|Exceptions'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -200,7 +200,7 @@ module Sidebars
         def service_map_menu_item
           link = group_observability_path(context.group, 'service-map')
           ::Sidebars::MenuItem.new(
-            title: _('Service Map'),
+            title: s_('Observability|Service map'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -209,22 +209,22 @@ module Sidebars
           )
         end
 
-        def settings_menu_item
-          link = group_observability_path(context.group, 'settings')
+        def notification_channels_menu_item
+          link = group_observability_path(context.group, 'settings/channels')
           ::Sidebars::MenuItem.new(
-            title: _('Settings'),
+            title: s_('Observability|Notification channels'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
-            item_id: :settings,
-            container_html_options: { class: 'shortcuts-settings' }
+            item_id: :notification_channels,
+            container_html_options: { class: 'shortcuts-notification-channels' }
           )
         end
 
         def o11y_settings_menu_item
           link = edit_group_observability_o11y_service_settings_path(context.group)
           ::Sidebars::MenuItem.new(
-            title: s_('Observability|O11y Service Settings'),
+            title: s_('Observability|O11y service settings'),
             link: link,
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
@@ -236,7 +236,7 @@ module Sidebars
         def setup_menu_item
           link = group_observability_setup_path(context.group)
           ::Sidebars::MenuItem.new(
-            title: _('Setup'),
+            title: s_('Observability|Setup'),
             link: link,
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :setup,

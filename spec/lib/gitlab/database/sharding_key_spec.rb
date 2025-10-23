@@ -40,7 +40,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'project_type_ci_runners.organization_id', # NOT NULL constraint NOT VALID
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       *['labels.group_id', 'labels.project_id', 'labels.organization_id'], # NOT NULL constraint NOT VALID
-      'keys.organization_id'
+      'keys.organization_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
     ]
   end
 

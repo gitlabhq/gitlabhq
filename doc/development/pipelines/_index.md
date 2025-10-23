@@ -644,6 +644,11 @@ fail.
 
 #### Troubleshooting `rspec:undercoverage` failures
 
+First, review the coverage data from the `gitlab.lcov` artifact from the
+`rspec:coverage` job.
+The `rspec:coverage` job might have failed to gather coverage data for various
+[reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/578019).
+
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
 that can cause false positive failures. Such false positive failures may also happen if you are updating database migration that is too old.
 You can test coverage locally to determine if it's safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the

@@ -212,7 +212,8 @@ module Ci
     end
 
     def ordered_latest_statuses
-      preload_metadata(statuses.in_order_of(:status, Ci::HasStatus::ORDERED_STATUSES).latest_ordered)
+      statuses_list = statuses.in_order_of(:status, Ci::HasStatus::ORDERED_STATUSES).latest_ordered.to_a
+      preload_metadata(statuses_list.sort_by { |s| [Ci::HasStatus::ORDERED_STATUSES.index(s.status), s.sortable_name] })
     end
 
     def ordered_retried_statuses

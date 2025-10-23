@@ -3085,9 +3085,6 @@ msgstr ""
 msgid "API Help"
 msgstr ""
 
-msgid "API Monitoring"
-msgstr ""
-
 msgid "API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**."
 msgstr ""
 
@@ -35037,9 +35034,6 @@ msgstr ""
 msgid "Infrastructure"
 msgstr ""
 
-msgid "Infrastructure Monitoring"
-msgstr ""
-
 msgid "Infrastructure as Code (IaC) Scanning"
 msgstr ""
 
@@ -39305,9 +39299,6 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-msgid "Logs Explorer"
-msgstr ""
-
 msgid "LogsViewer|Enter full screen"
 msgstr ""
 
@@ -41320,9 +41311,6 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-msgid "Messaging Queues"
-msgstr ""
-
 msgid "Method"
 msgstr ""
 
@@ -41363,9 +41351,6 @@ msgid "Metrics - Prometheus"
 msgstr ""
 
 msgid "Metrics Dashboard"
-msgstr ""
-
-msgid "Metrics Explorer"
 msgstr ""
 
 msgid "Metrics and profiling"
@@ -44877,10 +44862,16 @@ msgstr ""
 msgid "Observability|32+ character encryption key for secure communication."
 msgstr ""
 
+msgid "Observability|API monitoring"
+msgstr ""
+
 msgid "Observability|APM & performance"
 msgstr ""
 
 msgid "Observability|Advanced analytics"
+msgstr ""
+
+msgid "Observability|Alerts"
 msgstr ""
 
 msgid "Observability|Application performance monitoring with p99 latency tracking and real-time metrics visualization"
@@ -44955,6 +44946,9 @@ msgstr ""
 msgid "Observability|Danger Zone"
 msgstr ""
 
+msgid "Observability|Dashboard"
+msgstr ""
+
 msgid "Observability|Dashboard templates and use cases"
 msgstr ""
 
@@ -45007,6 +45001,9 @@ msgid "Observability|Exception tracking"
 msgstr ""
 
 msgid "Observability|Exception tracking and error monitoring with detailed stack traces and context"
+msgstr ""
+
+msgid "Observability|Exceptions"
 msgstr ""
 
 msgid "Observability|Experience the power of GitLab Observability with real-time dashboards and comprehensive monitoring capabilities."
@@ -45090,6 +45087,9 @@ msgstr ""
 msgid "Observability|Includes Logs, Traces and Metrics. %{learnMoreLink}"
 msgstr ""
 
+msgid "Observability|Infrastructure monitoring"
+msgstr ""
+
 msgid "Observability|Invalid iframe provided"
 msgstr ""
 
@@ -45132,10 +45132,19 @@ msgstr ""
 msgid "Observability|Loading metrics..."
 msgstr ""
 
+msgid "Observability|Logs explorer"
+msgstr ""
+
 msgid "Observability|Manage your o11y service connection settings."
 msgstr ""
 
 msgid "Observability|Message validation failed"
+msgstr ""
+
+msgid "Observability|Messaging queues"
+msgstr ""
+
+msgid "Observability|Metrics explorer"
 msgstr ""
 
 msgid "Observability|Monitor application performance with detailed metrics, response times, and system health indicators in real-time dashboards."
@@ -45151,6 +45160,9 @@ msgid "Observability|Next steps"
 msgstr ""
 
 msgid "Observability|No cost"
+msgstr ""
+
+msgid "Observability|Notification channels"
 msgstr ""
 
 msgid "Observability|O11y Service Settings"
@@ -45219,7 +45231,16 @@ msgstr ""
 msgid "Observability|See it in action"
 msgstr ""
 
+msgid "Observability|Service map"
+msgstr ""
+
 msgid "Observability|Service name"
+msgstr ""
+
+msgid "Observability|Services"
+msgstr ""
+
+msgid "Observability|Setup"
 msgstr ""
 
 msgid "Observability|Single pane of glass for logs, metrics, and traces within GitLab"
@@ -45253,6 +45274,9 @@ msgid "Observability|The name of your o11y service instance."
 msgstr ""
 
 msgid "Observability|To widen your search, change or remove filters above"
+msgstr ""
+
+msgid "Observability|Traces explorer"
 msgstr ""
 
 msgid "Observability|Tracing, Metrics & Logs"
@@ -61868,9 +61892,6 @@ msgstr ""
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
-msgid "Service Map"
-msgstr ""
-
 msgid "Service account"
 msgstr ""
 
@@ -62255,9 +62276,6 @@ msgstr ""
 msgid "ServicePing|Turn on service ping to review instance-level analytics."
 msgstr ""
 
-msgid "Services"
-msgstr ""
-
 msgid "Session ID"
 msgstr ""
 
@@ -62568,9 +62586,6 @@ msgid "Settings|Unable to load the merge request options settings. Try reloading
 msgstr ""
 
 msgid "Settings|What is experiment?"
-msgstr ""
-
-msgid "Setup"
 msgstr ""
 
 msgid "Severity"
@@ -69022,9 +69037,6 @@ msgid "TotalRefCountIndicator|1000+"
 msgstr ""
 
 msgid "Trace Details"
-msgstr ""
-
-msgid "Traces Explorer"
 msgstr ""
 
 msgid "Tracing"

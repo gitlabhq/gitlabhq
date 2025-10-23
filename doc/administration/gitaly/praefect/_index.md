@@ -170,6 +170,93 @@ variable replication factor is tracked in [this issue](https://gitlab.com/groups
 
 As with standard Gitaly storages, virtual storages can be sharded.
 
+### Multiple virtual storages
+
+You can configure multiple virtual storages in a Gitaly Cluster (Praefect) deployment. This allows you to:
+
+- Organize repositories into separate clusters with different performance characteristics.
+- Apply different replication factors to different groups of repositories.
+- Scale different parts of your infrastructure independently.
+
+Virtual storages are configured in `gitlab_rails['repositories_storages']` on the GitLab server. Each entry in
+this hash represents a distinct virtual storage. The Praefect configuration defines which Gitaly nodes serve each
+virtual storage. Repositories in different virtual storages are completely independent and are not replicated
+between virtual storages.
+
+For example, you might configure:
+
+- `storage-1`: A virtual storage for critical production repositories with a replication factor of 3.
+- `storage-2`: A virtual storage for less critical repositories with a replication factor of 2.
+
+Each virtual storage requires its own set of Gitaly nodes.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Multiple virtual storages
+    accDescr: Example of multiple virtual storages, one with a replication factor of three and one with a replication factor of two.
+
+    GitLab[[GitLab server]]
+    Storage1[(storage-1<br/>Praefect cluster)]
+    Storage2[(storage-2<br/>Praefect cluster)]
+
+    GitLab --> Storage1
+    GitLab --> Storage2
+
+    Storage1 --> G1[Gitaly node 1]
+    Storage1 --> G2[Gitaly node 2]
+    Storage1 --> G3[Gitaly node 3]
+
+    Storage2 --> G4[Gitaly node 4]
+    Storage2 --> G5[Gitaly node 5]
+```
+
+For configuration instructions, see [Configure multiple virtual storages](configure.md#configure-multiple-virtual-storages).
+
+### Mixed configuration
+
+You can configure GitLab to use a combination of:
+
+- Standalone Gitaly instances (direct Gitaly storage).
+- Gitaly Cluster (Praefect) virtual storages.
+
+You can use mixed configuration when:
+
+- Migrating from standalone Gitaly to Gitaly Cluster (Praefect) incrementally.
+- Some repositories require high availability while others do not.
+- You want to optimize costs by using Gitaly Cluster (Praefect) only for critical repositories.
+
+In a mixed configuration, each storage is configured independently in GitLab:
+
+- Standalone Gitaly storages connect directly to Gitaly nodes.
+- Gitaly Cluster (Praefect) storages connect to the Praefect load balancer.
+
+GitLab treats all configured storages equally, regardless of whether they are standalone or clustered. When creating
+a new repository, GitLab selects a storage based on the configured storage weights and available capacity.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Mixed configuration
+    accDescr: Example result of mixed configuration, with a Gitaly Cluster (Praefect) and standalone Gitaly configured together.
+
+    GitLab[[GitLab server]]
+    Praefect[(Praefect cluster)]
+    Standalone1[(Standalone gitaly)]
+
+    GitLab -->|cluster storage| Praefect
+    GitLab -->|default storage| Standalone1
+
+    Praefect --> G1[Gitaly node 1]
+    Praefect --> G2[Gitaly node 2]
+    Praefect --> G3[Gitaly node 3]
+```
+
+For more information, see:
+
+- [Mixed Configuration](../configure_gitaly.md#mixed-configuration) for configuration examples.
+- [Use TCP for existing GitLab instances](configure.md#use-tcp-for-existing-gitlab-instances) for migration guidance.
+
 ## Storage layout
 
 {{< alert type="warning" >}}

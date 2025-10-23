@@ -1517,6 +1517,174 @@ gitlab_rails['repositories_storages'] = {
 See [Mixed Configuration](../configure_gitaly.md#mixed-configuration) for further information on
 running multiple Gitaly storages.
 
+#### Configure multiple virtual storages
+
+You can configure multiple virtual storages to organize repositories into separate Gitaly Cluster (Praefect) clusters.
+Each virtual storage operates independently with its own set of Gitaly nodes and replication settings.
+
+To configure multiple virtual storages:
+
+1. On each Praefect node, edit `/etc/gitlab/gitlab.rb` to add multiple entries in the `virtual_storage` array:
+
+   ```ruby
+   praefect['configuration'] = {
+      # ...
+      virtual_storage: [
+         {
+            name: 'storage-1',
+            default_replication_factor: 3,
+            node: [
+               {
+                  storage: 'gitaly-1',
+                  address: 'tcp://GITALY_HOST_1:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               },
+               {
+                  storage: 'gitaly-2',
+                  address: 'tcp://GITALY_HOST_2:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               },
+               {
+                  storage: 'gitaly-3',
+                  address: 'tcp://GITALY_HOST_3:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               }
+            ]
+         },
+         {
+            name: 'storage-2',
+            default_replication_factor: 2,
+            node: [
+               {
+                  storage: 'gitaly-4',
+                  address: 'tcp://GITALY_HOST_4:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               },
+               {
+                  storage: 'gitaly-5',
+                  address: 'tcp://GITALY_HOST_5:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               },
+               {
+                  storage: 'gitaly-6',
+                  address: 'tcp://GITALY_HOST_6:8075',
+                  token: 'PRAEFECT_INTERNAL_TOKEN'
+               }
+            ]
+         }
+      ]
+   }
+   ```
+
+1. Save the changes and [reconfigure Praefect](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. On the GitLab server, edit `/etc/gitlab/gitlab.rb` to configure both virtual storages:
+
+   ```ruby
+   gitlab_rails['repositories_storages'] = {
+     "storage-1" => {
+       "gitaly_address" => "tcp://PRAEFECT_1_LOADBALANCER_HOST:2305",
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     },
+     "storage-2" => {
+       "gitaly_address" => "tcp://PRAEFECT_2_LOADBALANCER_HOST:2305",
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
+   }
+   ```
+
+1. Save the changes and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. Verify the configuration:
+
+   ```shell
+   gitlab-rake gitlab:gitaly:check
+   ```
+
+After configuration, you can:
+
+- Assign storage weights to control which storage is used for new repositories. See
+  [Repository storage weights](../../repository_storage_paths.md#configure-where-new-repositories-are-stored).
+- Move existing repositories between storages. See [Move repositories](../../operations/moving_repositories.md).
+
+#### Configure mixed standalone and cluster storages
+
+You can configure GitLab to use both standalone Gitaly instances and Gitaly Cluster (Praefect) virtual storages
+simultaneously. You might do this during migration or when only some repositories require high availability.
+
+To configure a mixed setup:
+
+1. Ensure your standalone Gitaly instance is configured to listen on TCP. On the standalone Gitaly node,
+   edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitaly['configuration'] = {
+      # ...
+      listen_addr: '0.0.0.0:8075'
+   }
+   ```
+
+1. Configure authentication for the standalone Gitaly instance:
+
+   ```ruby
+   gitaly['configuration'] = {
+      # ...
+      auth: {
+         token: 'GITALY_AUTH_TOKEN',
+      },
+   }
+   ```
+
+1. Save and [reconfigure](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. On the GitLab server, edit `/etc/gitlab/gitlab.rb` to configure both standalone and cluster storages:
+
+   ```ruby
+   gitlab_rails['repositories_storages'] = {
+     'default' => {
+       'gitaly_address' => 'tcp://STANDALONE_GITALY_HOST:8075',
+       'gitaly_token' => 'GITALY_AUTH_TOKEN'
+     },
+     'cluster' => {
+       'gitaly_address' => 'tcp://PRAEFECT_LOADBALANCER_HOST:2305',
+       'gitaly_token' => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
+   }
+   ```
+
+1. Save and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. Verify both storages are accessible:
+
+   ```shell
+   gitlab-rake gitlab:gitaly:check
+   ```
+
+In this configuration:
+
+- The `default` storage connects directly to a standalone Gitaly node.
+- The `cluster` storage connects to Gitaly Cluster (Praefect) through the load balancer.
+- GitLab treats both storages equally and can store repositories on either storage.
+- You can [configure storage weights](../../repository_storage_paths.md#configure-where-new-repositories-are-stored) to prefer one storage over another for new repositories.
+
+For more information, see [Mixed Configuration](../configure_gitaly.md#mixed-configuration).
+
 ### Grafana
 
 Grafana is included with GitLab, and can be used to monitor your Praefect

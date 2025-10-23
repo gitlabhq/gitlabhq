@@ -145,6 +145,19 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
           expect(job_names).to eq(expected_order)
         end
       end
+
+      context 'with parallel jobs' do
+        let_it_be(:job_10) { create(:ci_build, :success, ci_stage: stage, name: 'test 10/10') }
+        let_it_be(:job_2) { create(:ci_build, :success, ci_stage: stage, name: 'test 2/10') }
+        let_it_be(:job_1) { create(:ci_build, :success, ci_stage: stage, name: 'test 1/10') }
+        let_it_be(:job_20) { create(:ci_build, :success, ci_stage: stage, name: 'test 20/20') }
+
+        it 'sorts parallel jobs numerically, not alphabetically' do
+          job_names = stage.ordered_latest_statuses
+
+          expect(job_names).to eq([job_1, job_2, job_10, job_20])
+        end
+      end
     end
 
     describe '#ordered_retried_statuses' do
