@@ -7,7 +7,7 @@
         = link_to root_path, title: _('Homepage'), id: 'logo', class: 'header-logged-out-logo has-tooltip', aria: { label: _('Homepage') }, **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation_top') do
           = brand_header_logo
         - if Gitlab.com_and_canary?
-          = gl_badge_tag({ variant: :success }, { href: Gitlab::Saas.canary_toggle_com_url, data: { testid: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
+          = gl_badge_tag({ variant: :success }, { href: Gitlab.canary_toggle_com_url, data: { testid: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
             = s_('GitLab Next|Next')
 
       %ul.gl-list-none.gl-p-0.gl-m-0.gl-flex.gl-gap-3.gl-items-center.gl-grow

@@ -1,4 +1,5 @@
 <script>
+import { toRaw } from 'vue';
 import { GlAlert } from '@gitlab/ui';
 import { isNode, isDocument, parseDocument, Document } from 'yaml';
 import { merge } from '~/lib/utils/yaml';
@@ -90,7 +91,8 @@ export default {
       // this is done on purpose, see
       // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81412#note_862972703
       // for more information
-      merge(this.compiled, this.forceClone(this.template));
+      merge(toRaw(this.compiled), this.forceClone(this.template));
+
       this.wasCompiled = true;
     },
     onUpdate(c) {

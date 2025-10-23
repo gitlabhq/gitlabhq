@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
 
       context 'staging' do
         before do
-          stub_config_setting(url: Gitlab::Saas.staging_com_url)
+          stub_config_setting(url: Gitlab.staging_com_url)
         end
 
         include_examples 'contains environment', 'staging'
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
 
       context 'production' do
         before do
-          stub_config_setting(url: Gitlab::Saas.com_url)
+          stub_config_setting(url: Gitlab.com_url)
         end
 
         include_examples 'contains environment', 'production'
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
 
       context 'org' do
         before do
-          stub_config_setting(url: Gitlab::Saas.dev_url)
+          stub_config_setting(url: Gitlab.dev_url)
         end
 
         include_examples 'contains environment', 'org'

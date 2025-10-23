@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Kas::ServerInfoPresenter, feature_category: :deployment_m
 
       it 'returns a commit url' do
         is_expected.to eq(
-          "#{Gitlab::Saas.com_url}/gitlab-org/cluster-integration/gitlab-agent/-/commits/#{git_ref}"
+          "#{Gitlab.com_url}/gitlab-org/cluster-integration/gitlab-agent/-/commits/#{git_ref}"
         )
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Kas::ServerInfoPresenter, feature_category: :deployment_m
 
       it 'returns a tag url' do
         is_expected.to eq(
-          "#{Gitlab::Saas.com_url}/gitlab-org/cluster-integration/gitlab-agent/-/tags/#{git_ref}"
+          "#{Gitlab.com_url}/gitlab-org/cluster-integration/gitlab-agent/-/tags/#{git_ref}"
         )
       end
     end

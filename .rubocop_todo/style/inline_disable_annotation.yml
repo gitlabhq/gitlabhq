@@ -1463,7 +1463,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/lib/ee/gitlab/background_migration/delete_invalid_epic_issues_spec.rb'
     - 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/repo_restorer_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/saas_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/value_stream_dashboard/namespace_cursor_spec.rb'
     - 'ee/spec/lib/gitlab/auth/o_auth/user_spec.rb'
     - 'ee/spec/lib/gitlab/auth/oidc/user_spec.rb'

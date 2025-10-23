@@ -59,6 +59,7 @@ describe('CI Variable Drawer', () => {
     hideEnvironmentScope: false,
     selectedVariable: {},
     mode: ADD_VARIABLE_ACTION,
+    raw: true,
   };
 
   const defaultProvide = {
@@ -480,24 +481,24 @@ describe('CI Variable Drawer', () => {
         createComponent();
       });
 
-      it('is true by default when adding a variable', () => {
-        expect(findExpandedCheckbox().attributes('checked')).toBeDefined();
+      it('is false by default when adding a variable', () => {
+        expect(findExpandedCheckbox().attributes('checked')).toBeUndefined();
       });
 
       it('inherits value of selected variable when editing', () => {
         createComponent({
           props: {
-            selectedVariable: mockProjectVariableFileType,
+            selectedVariable: mockProjectVariable,
             mode: EDIT_VARIABLE_ACTION,
           },
         });
 
-        expect(findExpandedCheckbox().attributes('checked')).toBeUndefined();
+        expect(findExpandedCheckbox().attributes('checked')).toBe('true');
       });
 
       it("sets the variable's raw value", async () => {
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-        findExpandedCheckbox().vm.$emit('change');
+        findExpandedCheckbox().vm.$emit('change', true);
         findConfirmBtn().vm.$emit('click');
 
         await nextTick();
@@ -507,20 +508,23 @@ describe('CI Variable Drawer', () => {
       });
 
       it('shows help text when variable is not expanded (will be evaluated as raw)', async () => {
+        expect(findExpandedCheckbox().attributes('checked')).toBeUndefined();
+        expect(findDrawer().text()).toContain('Variable value will be evaluated as raw string.');
+
+        findExpandedCheckbox().vm.$emit('change', true);
+
+        await nextTick();
+
         expect(findExpandedCheckbox().attributes('checked')).toBeDefined();
         expect(findDrawer().text()).not.toContain(
           'Variable value will be evaluated as raw string.',
         );
-
-        findExpandedCheckbox().vm.$emit('change');
-
-        await nextTick();
-
-        expect(findExpandedCheckbox().attributes('checked')).toBeUndefined();
-        expect(findDrawer().text()).toContain('Variable value will be evaluated as raw string.');
       });
 
       it('shows help text when variable is expanded and contains the $ character', async () => {
+        findExpandedCheckbox().vm.$emit('change', true);
+        await nextTick();
+
         expect(findDrawer().text()).not.toContain(
           'Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
         );
@@ -609,22 +613,29 @@ describe('CI Variable Drawer', () => {
       };
 
       describe.each`
-        value                                                | canSubmit | trackingErrorProperty | validationIssueKey
-        ${'secretValue'}                                     | ${true}   | ${null}               | ${''}
-        ${'~v@lid:symbols.'}                                 | ${true}   | ${null}               | ${''}
-        ${invalidValues.short}                               | ${false}  | ${null}               | ${'short'}
-        ${invalidValues.multiLine}                           | ${false}  | ${'\n'}               | ${'multiLine'}
-        ${'dollar$ign'}                                      | ${false}  | ${'$'}                | ${'unsupportedDollarChar'}
-        ${invalidValues.unsupportedChar}                     | ${false}  | ${'|'}                | ${'unsupportedChar'}
-        ${invalidValues.twoUnsupportedChars}                 | ${false}  | ${'|!'}               | ${'twoUnsupportedChars'}
-        ${invalidValues.threeUnsupportedChars}               | ${false}  | ${'%|!'}              | ${'threeUnsupportedChars'}
-        ${invalidValues.shortAndMultiLine}                   | ${false}  | ${'\n'}               | ${'shortAndMultiLine'}
-        ${invalidValues.shortAndUnsupportedChar}             | ${false}  | ${'!'}                | ${'shortAndUnsupportedChar'}
-        ${invalidValues.shortAndMultiLineAndUnsupportedChar} | ${false}  | ${'\n!'}              | ${'shortAndMultiLineAndUnsupportedChar'}
-        ${invalidValues.multiLineAndUnsupportedChar}         | ${false}  | ${'\n!'}              | ${'multiLineAndUnsupportedChar'}
+        value                                                | canSubmit | expanded | trackingErrorProperty | validationIssueKey
+        ${'secretValue'}                                     | ${true}   | ${false} | ${null}               | ${''}
+        ${'~v@lid:symbols.'}                                 | ${true}   | ${false} | ${null}               | ${''}
+        ${'dollar$ign'}                                      | ${true}   | ${false} | ${null}               | ${''}
+        ${'dollar$ign'}                                      | ${false}  | ${true}  | ${'$'}                | ${'unsupportedDollarChar'}
+        ${invalidValues.short}                               | ${false}  | ${false} | ${null}               | ${'short'}
+        ${invalidValues.multiLine}                           | ${false}  | ${false} | ${'\n'}               | ${'multiLine'}
+        ${invalidValues.unsupportedChar}                     | ${true}   | ${false} | ${null}               | ${''}
+        ${invalidValues.unsupportedChar}                     | ${false}  | ${true}  | ${'|'}                | ${'unsupportedChar'}
+        ${invalidValues.twoUnsupportedChars}                 | ${true}   | ${false} | ${null}               | ${''}
+        ${invalidValues.twoUnsupportedChars}                 | ${false}  | ${true}  | ${'|!'}               | ${'twoUnsupportedChars'}
+        ${invalidValues.threeUnsupportedChars}               | ${true}   | ${false} | ${null}               | ${''}
+        ${invalidValues.threeUnsupportedChars}               | ${false}  | ${true}  | ${'%|!'}              | ${'threeUnsupportedChars'}
+        ${invalidValues.shortAndMultiLine}                   | ${false}  | ${false} | ${'\n'}               | ${'shortAndMultiLine'}
+        ${invalidValues.shortAndUnsupportedChar}             | ${false}  | ${false} | ${null}               | ${'short'}
+        ${invalidValues.shortAndUnsupportedChar}             | ${false}  | ${true}  | ${'!'}                | ${'shortAndUnsupportedChar'}
+        ${invalidValues.shortAndMultiLineAndUnsupportedChar} | ${false}  | ${false} | ${'\n'}               | ${'shortAndMultiLine'}
+        ${invalidValues.shortAndMultiLineAndUnsupportedChar} | ${false}  | ${true}  | ${'\n'}               | ${'shortAndMultiLineAndUnsupportedChar'}
+        ${invalidValues.multiLineAndUnsupportedChar}         | ${false}  | ${false} | ${'\n'}               | ${'multiLine'}
+        ${invalidValues.multiLineAndUnsupportedChar}         | ${false}  | ${true}  | ${'\n'}               | ${'multiLineAndUnsupportedChar'}
       `(
         'masking requirements',
-        ({ value, canSubmit, trackingErrorProperty, validationIssueKey }) => {
+        ({ value, canSubmit, expanded, trackingErrorProperty, validationIssueKey }) => {
           beforeEach(() => {
             createComponent({ mountFn: mountExtended });
 
@@ -632,9 +643,11 @@ describe('CI Variable Drawer', () => {
             findKeyField().vm.$emit('input', 'NEW_VARIABLE');
             findValueField().vm.$emit('input', value);
             findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
+
+            findExpandedCheckbox().setChecked(expanded);
           });
 
-          itif(canSubmit)(`can submit when value is ${value}`, () => {
+          itif(canSubmit)(`can submit when value is ${value} and expanded=${expanded}`, () => {
             /* eslint-disable jest/no-standalone-expect */
             expect(findInvalidMaskedValueErrorList().text()).toBe('');
             expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
@@ -642,7 +655,7 @@ describe('CI Variable Drawer', () => {
           });
 
           itif(!canSubmit)(
-            `shows validation errors and disables submit button when value is ${value}`,
+            `shows validation errors and disables submit button when value is ${value} and expanded=${expanded}`,
             () => {
               const validationIssueText = maskedValidationIssuesText[validationIssueKey] || '';
               const errorText = findInvalidMaskedValueErrorsWrapper().text();
@@ -655,7 +668,7 @@ describe('CI Variable Drawer', () => {
           );
 
           itif(trackingErrorProperty)(
-            `sends the correct variable validation tracking event when value is ${value}`,
+            `sends the correct variable validation tracking event when value is ${value} and expanded=${expanded}`,
             () => {
               /* eslint-disable jest/no-standalone-expect */
               expect(trackingSpy).toHaveBeenCalledTimes(1);
@@ -668,7 +681,7 @@ describe('CI Variable Drawer', () => {
           );
 
           itif(!trackingErrorProperty)(
-            `does not send the the correct variable validation tracking event when value is ${value}`,
+            `does not send the the correct variable validation tracking event when value is ${value} and expanded=${expanded}`,
             () => {
               // eslint-disable-next-line jest/no-standalone-expect
               expect(trackingSpy).toHaveBeenCalledTimes(0);
@@ -681,6 +694,7 @@ describe('CI Variable Drawer', () => {
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
+        findExpandedCheckbox().vm.$emit('change', true);
 
         await nextTick();
 
@@ -705,6 +719,7 @@ describe('CI Variable Drawer', () => {
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         findValueField().vm.$emit('input', '~v@lid:symbols.');
         findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_HIDDEN);
+        findExpandedCheckbox().setChecked(true);
 
         await nextTick();
 
@@ -773,7 +788,7 @@ describe('CI Variable Drawer', () => {
         findDescriptionField().vm.$emit('input', 'NEW_DESCRIPTION');
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         findProtectedCheckbox().vm.$emit('input', false);
-        findExpandedCheckbox().vm.$emit('input', true);
+        findExpandedCheckbox().vm.$emit('change', true);
         findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
         findValueField().vm.$emit('input', 'NEW_VALUE');
         findConfirmBtn().vm.$emit('click');

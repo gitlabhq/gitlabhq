@@ -800,11 +800,9 @@ class Namespace < ApplicationRecord
   end
 
   def pages_access_control_trie(namespaces = self_and_descendants)
-    strong_memoize_with(:pages_access_control_trie, namespaces) do
-      traversal_ids = namespaces.joins(:namespace_settings).where(namespace_settings: { force_pages_access_control: true }).map(&:traversal_ids)
+    traversal_ids = namespaces.joins(:namespace_settings).where(namespace_settings: { force_pages_access_control: true }).map(&:traversal_ids)
 
-      Namespaces::Traversal::TrieNode.build(traversal_ids)
-    end
+    Namespaces::Traversal::TrieNode.build(traversal_ids)
   end
 
   def pages_access_control_forced_by_self_or_ancestor?

@@ -242,6 +242,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         security_approval_policies_limit: 5,
         session_expire_delay: Settings.gitlab['session_expire_delay'],
         session_expire_from_init: false,
+        require_minimum_email_based_otp_for_users_with_passwords: false,
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         shared_runners_text: nil,
         show_migrate_from_jenkins_banner: true,
@@ -252,7 +253,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         sign_in_restrictions: {
           'disable_password_authentication_for_users_with_sso_identities' => false,
           'root_moved_permanently_redirection' => false,
-          'session_expire_from_init' => false
+          'session_expire_from_init' => false,
+          'require_minimum_email_based_otp_for_users_with_passwords' => false
         },
         signup_enabled: Settings.gitlab['signup_enabled'],
         silent_admin_exports_enabled: false,

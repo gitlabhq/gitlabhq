@@ -9327,8 +9327,6 @@ export const namespacePathsQueryResponse = {
             '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
           wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
           epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
-          epicsAlternative:
-            '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
           iterations:
             '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
           vulnerabilities:

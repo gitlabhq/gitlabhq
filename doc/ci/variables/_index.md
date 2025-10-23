@@ -132,13 +132,17 @@ To add or update variables in the project settings:
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
-   - **Value**: No limitations.
+   - **Value**: The value is limited to 10,000 characters, but also bounded by any limits in the
+     runner's operating system. The value has extra limitations if **Visibility** is set to **Masked**
+     or **Masked and hidden**.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Environment scope**: Optional. **All (default)** (`*`), a specific [environment](../environments/_index.md),
      or a wildcard environment scope.
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
      that run on protected branches or tags.
    - **Visibility**: Select **Visible** (default), **Masked**, or **Masked and hidden**.
+   - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
+     It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 
 Alternatively, project variables can be added [by using the API](../../api/project_level_variables.md).
 
@@ -157,11 +161,15 @@ To add a group variable:
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
-   - **Value**: No limitations.
+   - **Value**: The value is limited to 10,000 characters, but also bounded by any limits in the
+     runner's operating system. The value has extra limitations if **Visibility** is set to **Masked**
+     or **Masked and hidden**.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
      that run on protected branches or tags.
    - **Visibility**: Select **Visible** (default), **Masked**, **Masked and hidden**.
+   - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
+     It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 
 The group variables that are available in a project are listed in the project's
 **Settings > CI/CD > Variables** section. Variables from subgroups are recursively inherited.
@@ -208,11 +216,13 @@ To add an instance variable:
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: The value is limited to 10,000 characters, but also bounded by any limits in the
-     runner's operating system.
+     runner's operating system. No other limitations if **Visibility** set to **Visible**.
    - **Type**: `Variable` (default) or `File`.
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
      that run on protected branches or tags.
    - **Visibility**: Select **Visible** (default), **Masked**, or **Masked and hidden**.
+   - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
+     It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
 
 Alternatively, instance variables can be added [by using the API](../../api/instance_level_ci_variables.md).
 
@@ -282,6 +292,10 @@ To mask a variable:
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Under **Visibility**, select **Mask variable**.
+1. Recommended. Clear the [**Expand variable reference**](#allow-cicd-variable-expansion) checkbox.
+   If variable expansion is enabled, the only non-alphanumeric characters you can use in
+   the variable value are: `_`, `:`, `@`, `-`, `+`, `.`, `~`, `=`, `/`, and `~`.
+   When the setting is disabled, all characters can be used.
 1. Select **Update variable**.
 
 The value of the variable must:
@@ -402,26 +416,40 @@ job:
     - mytool --url-file="site-url.txt"
 ```
 
-## Prevent CI/CD variable expansion
+## Allow CI/CD variable expansion
 
-Expanded variables treat values with the `$` character as a reference to another variable.
-CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,
-disable variable expansion for the variable.
+{{< history >}}
+
+- **Expand variable** option [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/410414) to **Expand variable reference** in GitLab 16.3.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209144) to disabled by default in GitLab 18.6.
+
+{{< /history >}}
+
+You can set a variable to treat values with the `$` character as a reference to another variable.
+When the pipeline runs, the reference expands to use the value of the referenced variable.
+
+CI/CD variables defined in the UI are not expanded by default. For CI/CD variables defined in
+the `.gitlab-ci.yml` file, control variable expansion with the [`variables:expand` keyword](../yaml/_index.md#variablesexpand).
 
 Prerequisites:
 
 - You must have the same role or access level as required to [add a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
-To disable variable expansion for the variable:
+To enable variable expansion for the variable:
 
 1. For the project or group, go to **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to do not want expanded, select **Edit**.
-1. Clear the **Expand variable** checkbox.
+1. Select the **Expand variable reference** checkbox.
 1. Select **Update variable**.
 
-If the variable is also masked, the value cannot contain the `$` character,
-so variable expansion is not possible with masked variables.
+{{< alert type="note" >}}
+
+Do not [mask](#mask-a-cicd-variable) a variable value if you want to use variable expansion.
+If both masking and variable expansion are combined, character limitations prevent
+the use of the `$` to reference other variables.
+
+{{< /alert >}}
 
 ## CI/CD variable precedence
 

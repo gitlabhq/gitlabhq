@@ -30922,6 +30922,18 @@ Describes the subscription history of a given namespace.
 | <a id="gitlabsubscriptionhistoryseatsinuse"></a>`seatsInUse` | [`Int`](#int) | Seats being used in subscription. |
 | <a id="gitlabsubscriptionhistorystartdate"></a>`startDate` | [`Time`](#time) | Subscription start date. |
 
+### `GitlabSubscriptionOneTimeCredits`
+
+Describes the usage of one time credits for the subscription.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptiononetimecreditscreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used from the one time credits allocation. |
+| <a id="gitlabsubscriptiononetimecreditstotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated as one time credits. |
+| <a id="gitlabsubscriptiononetimecreditstotalcreditsremaining"></a>`totalCreditsRemaining` | [`Float`](#float) | Total of GitLab Credits remaining from the one time credits allocation. |
+
 ### `GitlabSubscriptionOverage`
 
 Describes the overage usage of consumables for the subscription.
@@ -30955,7 +30967,8 @@ Describes the usage of consumables under the subscription.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageenddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
-| <a id="gitlabsubscriptionusagelastupdated"></a>`lastUpdated` | [`ISO8601DateTime`](#iso8601datetime) | Date and time when the usage data was last updated. |
+| <a id="gitlabsubscriptionusagelasteventtransactionat"></a>`lastEventTransactionAt` | [`ISO8601DateTime`](#iso8601datetime) | Date and time when the last usage event resulted in a wallet transaction. |
+| <a id="gitlabsubscriptionusageonetimecredits"></a>`oneTimeCredits` | [`GitlabSubscriptionOneTimeCredits`](#gitlabsubscriptiononetimecredits) | One time credits usage for the subscription. |
 | <a id="gitlabsubscriptionusageoverage"></a>`overage` | [`GitlabSubscriptionOverage`](#gitlabsubscriptionoverage) | Overage statistics. |
 | <a id="gitlabsubscriptionusagepoolusage"></a>`poolUsage` | [`GitlabSubscriptionPoolUsage`](#gitlabsubscriptionpoolusage) | Consumption usage for the subscription shared pool. |
 | <a id="gitlabsubscriptionusagepurchasecreditspath"></a>`purchaseCreditsPath` | [`String`](#string) | URL to purchase GitLab Credits. |
@@ -31024,6 +31037,7 @@ Describes the usage of consumables by users under the subscription.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used by consumers of the subscription. |
 | <a id="gitlabsubscriptionusageusersusagedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of GitLab Credits. |
 | <a id="gitlabsubscriptionusageusersusagetotalusersusingcredits"></a>`totalUsersUsingCredits` | [`Int`](#int) | Total number of users consuming GitLab Credits. |
 | <a id="gitlabsubscriptionusageusersusagetotalusersusingoverage"></a>`totalUsersUsingOverage` | [`Int`](#int) | Total number of users consuming overage. |
@@ -53620,6 +53634,7 @@ One of:
 - [`PackageFileRegistry`](#packagefileregistry)
 - [`PagesDeploymentRegistry`](#pagesdeploymentregistry)
 - [`PipelineArtifactRegistry`](#pipelineartifactregistry)
+- [`ProjectRepositoryRegistry`](#projectrepositoryregistry)
 - [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry)
 - [`SnippetRepositoryRegistry`](#snippetrepositoryregistry)
 - [`TerraformStateVersionRegistry`](#terraformstateversionregistry)

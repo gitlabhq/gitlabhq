@@ -28,14 +28,18 @@ describe('renderGFM', () => {
 
     beforeEach(() => {
       element = document.createElement('div');
-      element.innerHTML =
-        '<div class="gl-relative markdown-code-block"><pre data-canonical-lang="glql"><code>labels = any</code></pre></div>';
     });
 
-    it('calls renderGlql', () => {
+    it.each`
+      description                             | innerHTML                                                                                                               | selector
+      ${'with data-canonical-lang data attr'} | ${'<div class="gl-relative markdown-code-block"><pre data-canonical-lang="glql"><code>labels = any</code></pre></div>'} | ${'[data-canonical-lang="glql"]'}
+      ${'with language class on code tag'}    | ${'<div><pre><code class="language-glql">labels = any</code></pre></div>'}                                              | ${'.language-glql'}
+    `('calls renderGlql $description', ({ innerHTML, selector }) => {
+      element.innerHTML = innerHTML;
+
       renderGFM(element);
 
-      expect(renderGlql).toHaveBeenCalledWith([element.firstElementChild]);
+      expect(renderGlql).toHaveBeenCalledWith([element.querySelector(selector)]);
     });
   });
 

@@ -185,10 +185,6 @@ export const autocompleteDataSources = (autocompleteSourcesPaths = {}) => {
     sources.mergeRequests = autocompleteSourcesPaths.merge_requests;
   }
 
-  sources.epicsAlternative = autocompleteSourcesPaths.epics;
-  sources.issuesAlternative = autocompleteSourcesPaths.issues;
-  sources.workItems = autocompleteSourcesPaths.issues;
-
   return sources;
 };
 

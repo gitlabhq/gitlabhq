@@ -251,6 +251,7 @@
     "PackageFileRegistry",
     "PagesDeploymentRegistry",
     "PipelineArtifactRegistry",
+    "ProjectRepositoryRegistry",
     "ProjectWikiRepositoryRegistry",
     "SnippetRepositoryRegistry",
     "TerraformStateVersionRegistry",

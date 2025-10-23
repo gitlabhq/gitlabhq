@@ -24,7 +24,7 @@ module Gitlab
       private
 
       def build_git_ref_url
-        Gitlab::Utils.append_path(Gitlab::Saas.com_url, git_ref_path)
+        Gitlab::Utils.append_path(Gitlab.com_url, git_ref_path)
       end
 
       def commit

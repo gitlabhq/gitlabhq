@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 direct :promo do |options = {}|
-  uri = URI.parse("https://#{::Gitlab::Saas.promo_host}")
+  uri = URI.parse("https://#{::Gitlab.promo_host}")
 
   uri.query = URI.encode_www_form(options[:query]) if options[:query]
 

@@ -90,7 +90,7 @@ Consider this visibility when entering sensitive information as manual job varia
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
 the [variable is overridden](../variables/_index.md#use-pipeline-variables) with the new value.
-Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
+Any variables overridden by using this process are [expanded](../variables/_index.md#allow-cicd-variable-expansion)
 and not [masked](../variables/_index.md#mask-a-cicd-variable).
 
 #### Retry a manual job with updated variables

@@ -50,10 +50,10 @@ RSpec.shared_examples 'variable list drawer' do
     end
   end
 
-  it 'defaults to masked, expanded' do
+  it 'defaults to masked, not expanded' do
     open_drawer
 
-    fill_variable('NEW_KEY')
+    fill_variable('NEW_KEY', 'NEW_VALUE')
     click_add_variable
 
     wait_for_requests
@@ -62,7 +62,7 @@ RSpec.shared_examples 'variable list drawer' do
       key_column = first(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")
 
       expect(key_column).to have_content(s_('CiVariables|Masked'))
-      expect(key_column).to have_content(s_('CiVariables|Expanded'))
+      expect(key_column).not_to have_content(s_('CiVariables|Expanded'))
     end
   end
 
@@ -196,6 +196,7 @@ RSpec.shared_examples 'variable list drawer' do
     open_drawer
 
     set_masked
+    toggle_expanded
     fill_variable('EMPTY_MASK_KEY', '???')
 
     expect(page).to have_content('The value cannot contain the following characters: ?.')

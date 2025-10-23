@@ -98,7 +98,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/ee/gitlab/import_export/wiki_repo_saver_spec.rb'
     - 'ee/spec/lib/ee/gitlab/personal_access_tokens/expiry_date_calculator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/repository_size_checker_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/saas_spec.rb'
     - 'ee/spec/lib/ee/gitlab/session_spec.rb'
     - 'ee/spec/lib/ee/gitlab/web_hooks/rate_limiter_spec.rb'
     - 'ee/spec/lib/ee/import/placeholder_user_limit_spec.rb'

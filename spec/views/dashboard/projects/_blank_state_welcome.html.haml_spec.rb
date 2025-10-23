@@ -14,7 +14,7 @@ RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
       it 'has a doc_url' do
         render
 
-        expect(rendered).to have_link(href: Gitlab::Saas.doc_url)
+        expect(rendered).to have_link(href: Gitlab.doc_url)
       end
 
       it "shows create project panel" do

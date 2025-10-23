@@ -170,7 +170,7 @@ that have a `description` defined in the `.gitlab-ci.yml` file. The description 
 below the variable.
 
 You can change the prefilled value, which [overrides the value](../variables/_index.md#use-pipeline-variables) for that single pipeline run.
-Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
+Any variables overridden by using this process are [expanded](../variables/_index.md#allow-cicd-variable-expansion)
 and not [masked](../variables/_index.md#mask-a-cicd-variable).
 If you do not define a `value` for the variable in the configuration file, the variable name is still listed,
 but the value field is blank.

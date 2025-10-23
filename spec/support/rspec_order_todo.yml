@@ -5280,7 +5280,6 @@
 - './spec/lib/gitlab/route_map_spec.rb'
 - './spec/lib/gitlab/routing_spec.rb'
 - './spec/lib/gitlab/runtime_spec.rb'
-- './spec/lib/gitlab/saas_spec.rb'
 - './spec/lib/gitlab/safe_request_loader_spec.rb'
 - './spec/lib/gitlab/safe_request_purger_spec.rb'
 - './spec/lib/gitlab/sample_data_template_spec.rb'

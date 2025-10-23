@@ -42,7 +42,7 @@ export function renderGFM(element) {
     '.js-render-mermaid',
     '[data-canonical-lang="json"][data-lang-params~="table"]',
     'table[data-table-fields]',
-    '[data-canonical-lang="glql"]',
+    '[data-canonical-lang="glql"], .language-glql',
     '.gfm-project_member',
     '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic, .gfm-milestone',
     '.task-list-item-checkbox',
@@ -59,6 +59,6 @@ export function renderGFM(element) {
   highlightCurrentUser(userEls);
   initPopovers(popoverEls);
   addAriaLabels(taskListCheckboxEls);
-  renderGlql(glqlEls.map((e) => e.parentNode));
+  renderGlql(glqlEls);
   renderImageLightbox(imageEls, element);
 }

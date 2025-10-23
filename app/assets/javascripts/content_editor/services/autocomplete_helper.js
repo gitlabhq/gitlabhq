@@ -151,8 +151,8 @@ export default class AutocompleteHelper {
     const sources = {
       user: this.dataSourceUrls.members,
       issue: this.dataSourceUrls.issues,
-      [REFERENCE_TYPES.ISSUE_ALTERNATIVE]: this.dataSourceUrls.issuesAlternative,
-      [REFERENCE_TYPES.WORK_ITEM]: this.dataSourceUrls.workItems,
+      [REFERENCE_TYPES.ISSUE_ALTERNATIVE]: this.dataSourceUrls.issues,
+      [REFERENCE_TYPES.WORK_ITEM]: this.dataSourceUrls.issues,
       snippet: this.dataSourceUrls.snippets,
       label: this.dataSourceUrls.labels,
       epic: this.dataSourceUrls.epics,

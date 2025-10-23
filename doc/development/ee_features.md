@@ -115,7 +115,7 @@ context rich definitions around the reason the feature is SaaS-only.
 
 1. See the [namespacing concepts guide](software_design.md#use-namespaces-to-define-bounded-contexts)
    for help in naming a new SaaS-only feature.
-1. Add the new feature to `FEATURE` in `ee/lib/ee/gitlab/saas.rb`.
+1. Add the new feature to `FEATURE` in `ee/lib/gitlab/saas.rb`.
 
    ```ruby
    FEATURES = %i[purchases_additional_minutes some_domain_new_feature_name].freeze
@@ -168,7 +168,7 @@ group: group::acquisition
 
 ### Opting out of a SaaS-only feature on another SaaS instance (JiHu)
 
-Prepend the `ee/lib/ee/gitlab/saas.rb` module and override the `Gitlab::Saas.feature_available?` method.
+Prepend the `ee/lib/gitlab/saas.rb` class and override the `Gitlab::Saas.feature_available?` method.
 
 ```ruby
 JH_DISABLED_FEATURES = %i[some_domain_new_feature_name].freeze

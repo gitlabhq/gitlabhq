@@ -143,7 +143,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         groups_path: dashboard_groups_path,
         gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
         gitlab_com_and_canary: Gitlab.com_and_canary?,
-        canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
+        canary_toggle_com_url: Gitlab.canary_toggle_com_url,
         pinned_items: %w[foo bar],
         update_pins_url: pins_path,
         shortcut_links: global_shortcut_links,

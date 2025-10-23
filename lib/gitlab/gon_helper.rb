@@ -36,8 +36,8 @@ module Gitlab
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.promo_url              = Gitlab::Routing.url_helpers.promo_url
-      gon.forum_url              = Gitlab::Saas.community_forum_url
-      gon.docs_url               = Gitlab::Saas.doc_url
+      gon.forum_url              = Gitlab.community_forum_url
+      gon.docs_url               = Gitlab.doc_url
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')

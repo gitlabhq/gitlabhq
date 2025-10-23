@@ -36,6 +36,7 @@ class User < ApplicationRecord
   include Gitlab::InternalEventsTracking
   include Ci::PipelineScheduleOwnershipValidator
   include Users::DependentAssociations
+  include Users::EmailOtpEnrollment
 
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 

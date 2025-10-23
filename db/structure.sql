@@ -16173,7 +16173,8 @@ CREATE TABLE diff_note_positions (
     start_sha bytea NOT NULL,
     head_sha bytea NOT NULL,
     old_path text NOT NULL,
-    new_path text NOT NULL
+    new_path text NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE diff_note_positions_id_seq
@@ -33220,6 +33221,9 @@ ALTER TABLE push_event_payloads
 ALTER TABLE todos
     ADD CONSTRAINT check_3c13ed1c7a CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
 
+ALTER TABLE diff_note_positions
+    ADD CONSTRAINT check_4c86140f48 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
 
@@ -39719,6 +39723,8 @@ CREATE INDEX index_design_user_mentions_on_namespace_id ON design_user_mentions 
 CREATE UNIQUE INDEX index_design_user_mentions_on_note_id ON design_user_mentions USING btree (note_id);
 
 CREATE INDEX index_designated_beneficiaries_on_user_id ON designated_beneficiaries USING btree (user_id);
+
+CREATE INDEX index_diff_note_positions_on_namespace_id ON diff_note_positions USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_diff_note_positions_on_note_id_and_diff_type ON diff_note_positions USING btree (note_id, diff_type);
 
@@ -46934,6 +46940,8 @@ CREATE TRIGGER set_namespace_for_system_note_metadata_on_insert BEFORE INSERT ON
 
 CREATE TRIGGER set_sharding_key_for_commit_user_mentions_on_insert_and_update BEFORE INSERT OR UPDATE ON commit_user_mentions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
+CREATE TRIGGER set_sharding_key_for_diff_note_positions_on_insert_and_update BEFORE INSERT OR UPDATE ON diff_note_positions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
+
 CREATE TRIGGER set_sharding_key_for_note_metadata_on_insert_and_update BEFORE INSERT OR UPDATE ON note_metadata FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
 CREATE TRIGGER set_sharding_key_for_suggestions_on_insert_and_update BEFORE INSERT OR UPDATE ON suggestions FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
@@ -48989,6 +48997,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY clusters_managed_resources
     ADD CONSTRAINT fk_9c7b561962 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY diff_note_positions
+    ADD CONSTRAINT fk_9ccec9c22a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY packages_conan_recipe_revisions
     ADD CONSTRAINT fk_9cdec8a86b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
