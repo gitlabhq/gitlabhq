@@ -33,7 +33,7 @@ describe('BlobEditHeader', () => {
     getFileContent: jest.fn().mockReturnValue(content),
     getOriginalFilePath: jest.fn().mockReturnValue('test.js'),
     filepathFormMediator: {
-      $filenameInput: { val: jest.fn().mockReturnValue('.gitignore') },
+      $filenameInput: { val: jest.fn().mockReturnValue('test.js') },
       toggleValidationError: jest.fn(),
     },
   };
@@ -138,6 +138,10 @@ describe('BlobEditHeader', () => {
 
   describe('for edit blob', () => {
     describe('when blobEditRefactor is enabled', () => {
+      beforeEach(() => {
+        clickCommitChangesButton();
+      });
+
       it('shows confirmation message on cancel button', () => {
         expect(findCancelButton().attributes('data-confirm')).toBe(
           'Leave edit mode? All unsaved changes will be lost.',
@@ -146,7 +150,6 @@ describe('BlobEditHeader', () => {
 
       it('on submit, saves success message to localStorage and redirects to the updated file', async () => {
         // First click the commit button to open the modal and set up the file content
-        clickCommitChangesButton();
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
           branch: 'feature',
           file_path: 'test.js',
@@ -205,6 +208,9 @@ describe('BlobEditHeader', () => {
           glFeatures: { blobEditRefactor: true },
           provided: { canPushToBranch: false },
         });
+
+        // First click the commit button to open the modal and set up the file content
+        clickCommitChangesButton();
 
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
           branch: 'feature',
@@ -283,6 +289,83 @@ describe('BlobEditHeader', () => {
           );
         });
       });
+
+      describe('when renaming a file', () => {
+        beforeEach(() => {
+          // Mock the editor to return a different file path to trigger rename logic
+          mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('renamed_test.js');
+          mockEditor.getOriginalFilePath.mockReturnValue('test.js');
+          clickCommitChangesButton();
+        });
+
+        it('uses commits API when file path changes', async () => {
+          mock.onPost().replyOnce(HTTP_STATUS_OK, {});
+
+          await submitForm();
+
+          expect(mock.history.post).toHaveLength(1);
+          expect(mock.history.post[0].url).toBe('/api/v4/projects/123/repository/commits');
+
+          const postData = JSON.parse(mock.history.post[0].data);
+          expect(postData.branch).toBe('feature');
+          expect(postData.commit_message).toBe('Test commit');
+          expect(postData.actions).toHaveLength(1);
+          expect(postData.actions[0]).toEqual({
+            action: 'move',
+            file_path: 'renamed_test.js',
+            previous_path: 'test.js',
+            content,
+            last_commit_id: '782426692977b2cedb4452ee6501a404410f9b00',
+          });
+        });
+
+        it('uses original_branch when branch_name is not provided', async () => {
+          mock.onPost().replyOnce(HTTP_STATUS_OK, {});
+
+          const formData = new FormData();
+          formData.append('commit_message', 'Test commit');
+          formData.append('original_branch', 'main');
+          findCommitChangesModal().vm.$emit('submit-form', formData);
+          await axios.waitForAll();
+
+          const postData = JSON.parse(mock.history.post[0].data);
+          expect(postData.branch).toBe('main');
+        });
+
+        it('redirects to renamed file on successful submission', async () => {
+          mock.onPost().replyOnce(HTTP_STATUS_OK, {});
+
+          await submitForm();
+
+          expect(visitUrlSpy).toHaveBeenCalledWith(
+            'http://test.host/gitlab-org/gitlab/-/blob/feature/renamed_test.js',
+          );
+        });
+
+        it('handles error responses from commits API', async () => {
+          const errorMessage = 'File rename failed';
+          mock.onPost().replyOnce(HTTP_STATUS_UNPROCESSABLE_ENTITY, {
+            message: errorMessage,
+          });
+
+          await submitForm();
+
+          expect(findCommitChangesModal().props('error')).toBe(errorMessage);
+          expect(visitUrlSpy).not.toHaveBeenCalled();
+        });
+
+        it('handles error in response data from commits API', async () => {
+          const errorMessage = 'Validation failed';
+          mock.onPost().replyOnce(HTTP_STATUS_OK, {
+            error: errorMessage,
+          });
+
+          await submitForm();
+
+          expect(findCommitChangesModal().props('error')).toBe(errorMessage);
+          expect(visitUrlSpy).not.toHaveBeenCalled();
+        });
+      });
     });
 
     describe('when blobEditRefactor is disabled', () => {
@@ -312,6 +395,7 @@ describe('BlobEditHeader', () => {
           expect(findCommitChangesModal().props('error')).toBe(errorMessage);
           expect(visitUrlSpy).not.toHaveBeenCalled();
         });
+
         it('shows error message in modal when request fails', async () => {
           mock
             .onPut('/update')

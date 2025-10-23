@@ -49,3 +49,29 @@ export const prepareCreateFormData = (formData, { filePath, fileContent }) => {
 
   return Object.fromEntries(formData);
 };
+
+/**
+ * Prepares common data fields for API edit operations including branch information
+ * and commit message. Conditionally adds start_branch when creating a new branch.
+ * This is used when the target branch differs from the original branch,
+ * indicating that a new branch should be created from the original branch.
+ *
+ * @param {Object} formData - The form data containing branch and commit information
+ * @param {string} formData.branch_name - The target branch name
+ * @param {string} formData.original_branch - The original branch name
+ * @param {string} formData.commit_message - The commit message
+ * @returns {Object} Object with branch, commit_message, and conditionally start_branch
+ */
+export const prepareDataForApiEdit = (formData) => {
+  const data = {
+    branch: formData.branch_name || formData.original_branch,
+    commit_message: formData.commit_message,
+  };
+
+  // Only include start_branch when creating a new branch
+  if (formData.branch_name && formData.branch_name !== formData.original_branch) {
+    data.start_branch = formData.original_branch;
+  }
+
+  return data;
+};

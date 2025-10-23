@@ -158,7 +158,7 @@ export default {
 };
 </script>
 <template>
-  <div class="pipeline-tags" data-testid="pipeline-url-table-cell">
+  <div data-testid="pipeline-url-table-cell">
     <gl-link
       v-if="pipelineLink"
       v-tooltip-on-truncate

@@ -214,7 +214,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
           expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 2)
 
           page.within(first('[data-testid="pipeline-table-row"]')) do
-            page.within('.pipeline-tags') do
+            within_testid('pipeline-url-table-cell') do
               expect(find_by_testid('pipeline-url-link')[:href]).to include(expected_project.full_path)
               expect(page).to have_content('merge request')
             end

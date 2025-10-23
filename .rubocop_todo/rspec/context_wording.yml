@@ -249,7 +249,7 @@ RSpec/ContextWording:
     - 'ee/spec/initializers/1_settings_spec.rb'
     - 'ee/spec/initializers/session_store_spec.rb'
     - 'ee/spec/lib/audit/details_spec.rb'
-    - 'ee/spec/lib/banzai/filter/references/epic_reference_filter_spec.rb'
+    - 'ee/spec/lib/ee/banzai/filter/references/epic_reference_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/iteration_reference_filter_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/vulnerability_reference_filters_spec.rb'
     - 'ee/spec/lib/banzai/reference_parser/iteration_parser_spec.rb'

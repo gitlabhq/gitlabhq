@@ -16,7 +16,6 @@ import {
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_NAME_TASK,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
-  WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
 
 import {
@@ -63,7 +62,6 @@ describe('WorkItemLinkChild', () => {
     workItemType = WORK_ITEM_TYPE_NAME_OBJECTIVE,
     workItemTreeQueryHandler = getWorkItemTreeQueryHandler,
     isExpanded = false,
-    showTaskWeight = false,
     showClosed = true,
     props = {},
   } = {}) => {
@@ -91,7 +89,6 @@ describe('WorkItemLinkChild', () => {
         childItem,
         workItemType,
         workItemFullPath,
-        showTaskWeight,
         showClosed,
         ...props,
       },
@@ -228,30 +225,9 @@ describe('WorkItemLinkChild', () => {
           isGroup: false,
           showLabels: true,
           workItemFullPath,
-          showWeight: true,
           contextualViewEnabled: false,
         });
       });
-
-      it.each`
-        workItemType                     | childItem                     | showTaskWeight | showWeight
-        ${WORK_ITEM_TYPE_NAME_TASK}      | ${workItemTask}               | ${false}       | ${false}
-        ${WORK_ITEM_TYPE_NAME_TASK}      | ${workItemTask}               | ${true}        | ${true}
-        ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${workItemObjectiveWithChild} | ${false}       | ${true}
-        ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${workItemObjectiveWithChild} | ${true}        | ${true}
-        ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${workItemObjectiveWithChild} | ${false}       | ${true}
-        ${WORK_ITEM_TYPE_NAME_EPIC}      | ${workItemEpic}               | ${true}        | ${true}
-      `(
-        'passes `showWeight` as $showWeight when the type is $workItemType and `showTaskWeight` is $showWeight',
-        ({ childItem, showWeight }) => {
-          createComponent({
-            childItem,
-            showTaskWeight: showWeight,
-          });
-
-          expect(findWorkItemLinkChildContents().props('showWeight')).toEqual(showWeight);
-        },
-      );
     });
 
     it('filters closed children', async () => {

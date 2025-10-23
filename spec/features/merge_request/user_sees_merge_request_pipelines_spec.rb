@@ -131,16 +131,16 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees detached tag for detached merge request pipelines' do
           page.within('.ci-table') do
-            expect(all('.pipeline-tags')[0])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[0])
               .to have_content(expected_detached_mr_tag)
 
-            expect(all('.pipeline-tags')[1])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[1])
               .to have_content(expected_detached_mr_tag)
 
-            expect(all('.pipeline-tags')[2])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[2])
               .not_to have_content(expected_detached_mr_tag)
 
-            expect(all('.pipeline-tags')[3])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[3])
               .not_to have_content(expected_detached_mr_tag)
           end
         end
@@ -324,16 +324,16 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees detached tag for detached merge request pipelines' do
           page.within('.ci-table') do
-            expect(all('.pipeline-tags')[0])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[0])
               .to have_content(expected_detached_mr_tag)
 
-            expect(all('.pipeline-tags')[1])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[1])
               .to have_content(expected_detached_mr_tag)
 
-            expect(all('.pipeline-tags')[2])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[2])
               .not_to have_content(expected_detached_mr_tag)
 
-            expect(all('.pipeline-tags')[3])
+            expect(all('[data-testid="pipeline-url-table-cell"]')[3])
               .not_to have_content(expected_detached_mr_tag)
           end
         end

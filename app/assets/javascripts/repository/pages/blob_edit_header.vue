@@ -11,12 +11,17 @@ import { VARIANT_INFO } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 import getRefMixin from '../mixins/get_ref';
-import { prepareEditFormData, prepareCreateFormData } from '../utils/edit_form_data_utils';
+import {
+  prepareEditFormData,
+  prepareCreateFormData,
+  prepareDataForApiEdit,
+} from '../utils/edit_form_data_utils';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 
 export default {
   UPDATE_FILE_PATH: '/api/:version/projects/:id/repository/files/:file_path',
+  COMMIT_FILE_PATH: '/api/:version/projects/:id/repository/commits',
   components: {
     PageHeading,
     CommitChangesModal,
@@ -109,11 +114,64 @@ export default {
       this.originalFilePath = this.editor.getOriginalFilePath();
       this.$refs[this.updateModalId].show();
     },
-    handleError(message, errorCode = null) {
-      if (!message) return;
-      // Returns generic '403 Forbidden' error message
-      // Custom message will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/569115
-      this.error = errorCode === 403 ? this.errorMessage : message;
+    getUpdatePath(branch, filePath) {
+      const url = new URL(window.location.href);
+      url.pathname = joinPaths(this.projectPath, '-/blob', branch, filePath);
+      return url.toString();
+    },
+    getResultingBranch(responseData, formData) {
+      return responseData.branch || formData.branch_name || formData.original_branch;
+    },
+    editBlob(originalFormData) {
+      const filePathChanged = originalFormData.file_path !== this.originalFilePath;
+
+      if (filePathChanged) {
+        // Use Commits API for file rename/move operations
+        return this.editBlobWithCommitsApi(originalFormData);
+      }
+
+      // Use Repository Files API for content-only updates
+      return this.editBlobWithUpdateFileApi(originalFormData);
+    },
+    editBlobWithUpdateFileApi(originalFormData) {
+      const url = buildApiUrl(this.$options.UPDATE_FILE_PATH)
+        .replace(':id', this.projectId)
+        .replace(':file_path', encodeURIComponent(this.originalFilePath));
+
+      const data = {
+        ...prepareDataForApiEdit(originalFormData),
+        content: originalFormData.file,
+        file_path: originalFormData.file_path,
+        id: this.projectId,
+        last_commit_id: originalFormData.last_commit_sha,
+      };
+
+      return axios.put(url, data);
+    },
+    editBlobWithCommitsApi(originalFormData) {
+      const url = buildApiUrl(this.$options.COMMIT_FILE_PATH).replace(':id', this.projectId);
+
+      const action = {
+        action: 'move',
+        file_path: originalFormData.file_path,
+        previous_path: this.originalFilePath,
+        content: originalFormData.file,
+        last_commit_id: originalFormData.last_commit_sha,
+      };
+
+      const data = {
+        ...prepareDataForApiEdit(originalFormData),
+        actions: [action],
+      };
+
+      return axios.post(url, data);
+    },
+    editBlobWithController(originalFormData) {
+      return axios({
+        method: 'put',
+        url: this.updatePath,
+        data: originalFormData,
+      });
     },
     async handleFormSubmit(formData) {
       this.error = null;
@@ -126,19 +184,12 @@ export default {
       }
     },
     async handleEditFormSubmit(formData) {
-      const originalFormData = this.glFeatures.blobEditRefactor
-        ? prepareEditFormData(formData, {
-            fileContent: this.fileContent,
-            filePath: this.filePath,
-            lastCommitSha: this.lastCommitSha,
-            fromMergeRequestIid: this.fromMergeRequestIid,
-          })
-        : prepareEditFormData(formData, {
-            fileContent: this.fileContent,
-            filePath: this.filePath,
-            lastCommitSha: this.lastCommitSha,
-            fromMergeRequestIid: this.fromMergeRequestIid,
-          });
+      const originalFormData = prepareEditFormData(formData, {
+        fileContent: this.fileContent,
+        filePath: this.filePath,
+        lastCommitSha: this.lastCommitSha,
+        fromMergeRequestIid: this.fromMergeRequestIid,
+      });
 
       try {
         const response = this.glFeatures.blobEditRefactor
@@ -193,47 +244,21 @@ export default {
         this.isLoading = false;
       }
     },
-    editBlob(originalFormData) {
-      const url = buildApiUrl(this.$options.UPDATE_FILE_PATH)
-        .replace(':id', this.projectId)
-        .replace(':file_path', encodeURIComponent(this.originalFilePath));
-
-      const data = {
-        branch: originalFormData.branch_name || originalFormData.original_branch,
-        commit_message: originalFormData.commit_message,
-        content: originalFormData.file,
-        file_path: originalFormData.file_path,
-        id: this.projectId,
-        last_commit_id: originalFormData.last_commit_sha,
-      };
-
-      // Only include start_branch when creating a new branch
-      if (
-        originalFormData.branch_name &&
-        originalFormData.branch_name !== originalFormData.original_branch
-      ) {
-        data.start_branch = originalFormData.original_branch;
-      }
-
-      return axios.put(url, data);
-    },
-    editBlobWithController(originalFormData) {
-      return axios({
-        method: 'put',
-        url: this.updatePath,
-        data: originalFormData,
-      });
-    },
     handleEditBlobSuccess(responseData, formData) {
-      if (formData.create_merge_request && this.originalBranch !== responseData.branch) {
+      const resultingBranch = this.getResultingBranch(responseData, formData);
+      const isNewBranch = this.originalBranch !== resultingBranch;
+
+      if (formData.create_merge_request && isNewBranch) {
         const mrUrl = mergeUrlParams(
-          { [MR_SOURCE_BRANCH]: responseData.branch },
+          { [MR_SOURCE_BRANCH]: resultingBranch },
           this.newMergeRequestPath,
         );
         visitUrl(mrUrl);
       } else {
-        const successPath = this.getUpdatePath(responseData.branch, responseData.file_path);
-        const isNewBranch = this.originalBranch !== responseData.branch;
+        const successPath = this.getUpdatePath(
+          resultingBranch,
+          responseData.file_path || formData.file_path,
+        );
         const createMergeRequestNotChosen = !formData.create_merge_request;
 
         const message = this.successMessageForAlert(isNewBranch, createMergeRequestNotChosen);
@@ -254,10 +279,11 @@ export default {
         this.handleError(this.errorMessage);
       }
     },
-    getUpdatePath(branch, filePath) {
-      const url = new URL(window.location.href);
-      url.pathname = joinPaths(this.projectPath, '-/blob', branch, filePath);
-      return url.toString();
+    handleError(message, errorCode = null) {
+      if (!message) return;
+      // Returns generic '403 Forbidden' error message
+      // Custom message will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/569115
+      this.error = errorCode === 403 ? this.errorMessage : message;
     },
   },
   i18n: {

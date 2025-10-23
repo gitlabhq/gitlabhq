@@ -230,7 +230,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         shared_examples_for 'detached merge request pipeline' do
           it 'shows pipeline information without pipeline ref', :sidekiq_might_not_need_inline do
-            within '.pipeline-tags' do
+            within_testid('pipeline-url-table-cell') do
               expect(page).to have_content(expected_detached_mr_tag)
 
               expect(page).to have_link(merge_request.iid.to_s, href: project_merge_request_path(project, merge_request))
@@ -270,7 +270,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         shared_examples_for 'Correct merge request pipeline information' do
           it 'does not show detached tag for the pipeline, and shows the link of the merge request, and does not show the ref of the pipeline', :sidekiq_might_not_need_inline do
-            within '.pipeline-tags' do
+            within_testid('pipeline-url-table-cell') do
               expect(page).not_to have_content(expected_detached_mr_tag)
 
               expect(page).to have_link(merge_request.iid.to_s, href: project_merge_request_path(project, merge_request))

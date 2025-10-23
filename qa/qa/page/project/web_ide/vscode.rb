@@ -252,9 +252,7 @@ module QA
 
           def create_merge_request
             within_vscode_editor do
-              within_element('.notification-toast-container:last-of-type') do
-                click_monaco_button('Create MR')
-              end
+              click_monaco_button('Create MR')
             end
           end
 
@@ -266,6 +264,19 @@ module QA
                 <<~JAVASCRIPT
                 window.__gl_old_remove = HTMLInputElement.prototype.remove;
                 HTMLInputElement.prototype.remove = function(){};
+
+                // When upload is clicked, it opens the native os file picker, which blocks new tabs from opening when clicking on the button to create a new MR
+                window._originalClick = HTMLInputElement.prototype.click;
+
+                // Override click for file inputs only
+                HTMLInputElement.prototype.click = function() {
+                  if (this.type === 'file') {
+                    // Don't call the original click - this prevents the OS native file picker from opening
+                    return;
+                  }
+                  // For non-file inputs, use original click
+                  return window._originalClick.call(this);
+                };
                 JAVASCRIPT
               )
 
@@ -281,6 +292,10 @@ module QA
                 page.execute_script(
                   <<~JAVASCRIPT
                   HTMLInputElement.prototype.remove = window.__gl_old_remove;
+                  if (window._originalClick) {
+                    HTMLInputElement.prototype.click = window._originalClick;
+                    delete window._originalClick;
+                  }
                   JAVASCRIPT
                 )
               end

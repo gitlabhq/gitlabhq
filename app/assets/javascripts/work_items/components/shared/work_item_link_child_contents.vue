@@ -86,11 +86,6 @@ export default {
       required: false,
       default: true,
     },
-    showWeight: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     contextualViewEnabled: {
       type: Boolean,
       required: false,
@@ -309,8 +304,6 @@ export default {
         :reference="displayReference"
         :is-child-item-open="isChildItemOpen"
         :metadata-widgets="metadataWidgets"
-        :show-weight="showWeight"
-        :work-item-type="childItemType"
         class="@xl/panel:!gl-ml-0"
       />
       <div v-if="displayLabels" class="gl-flex gl-flex-wrap">

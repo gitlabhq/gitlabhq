@@ -23,8 +23,9 @@ these steps, you may have to do additional configuration for the Pages site to g
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. From the **Add** ({{< icon name="plus" >}}) dropdown list, select **New file**.
-1. From the **Select a template type** dropdown list, select `.gitlab-ci.yml`.
+1. In the **Filename** text box, enter `.gitlab-ci.yml`. A dropdown list appears to the right of the text box.
 1. From the **Apply a template** dropdown list, in the **Pages** section, select the name of your SSG.
+   For plain HTML, select **HTML**.
 1. In the **Commit message** box, type the commit message.
 1. Select **Commit changes**.
 

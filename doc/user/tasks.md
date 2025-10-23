@@ -499,16 +499,9 @@ To set issue weight of a task:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `use_cached_rolled_up_weights`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.6. Feature flag `use_cached_rolled_up_weights` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 The number of descendant tasks and their total weight is displayed in the issue
 description, in the **Child items** section header.
@@ -526,16 +519,9 @@ not have permission to view.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `use_cached_rolled_up_weights`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.6. Feature flag `use_cached_rolled_up_weights` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 The issue progress percentage is displayed in the issue description, in the **Child items** section header.
 

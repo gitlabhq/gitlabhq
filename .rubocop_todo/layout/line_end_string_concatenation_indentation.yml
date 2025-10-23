@@ -187,7 +187,7 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/helpers/ee/profiles_helper_spec.rb'
     - 'ee/spec/helpers/routing/pseudonymization_helper_spec.rb'
     - 'ee/spec/helpers/users/identity_verification_helper_spec.rb'
-    - 'ee/spec/lib/banzai/filter/issuable_reference_expansion_filter_spec.rb'
+    - 'ee/spec/lib/ee/banzai/filter/issuable_reference_expansion_filter_spec.rb'
     - 'ee/spec/lib/ee/gitlab/namespace_storage_size_error_message_spec.rb'
     - 'ee/spec/lib/environments/protected_environment_authorization_rule_changes_auditor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/yaml_processor_spec.rb'

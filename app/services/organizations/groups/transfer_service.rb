@@ -4,6 +4,7 @@ module Organizations
   module Groups
     class TransferService
       include Gitlab::Utils::StrongMemoize
+      include Concerns::TransferUsers
 
       TransferError = Class.new(StandardError)
       BATCH_SIZE = 50
@@ -18,7 +19,7 @@ module Organizations
         return ServiceResponse.error(message: error) unless transfer_allowed?
 
         Group.transaction do
-          update_namespaces_and_projects
+          transfer_namespaces_and_projects
           transfer_users
         end
 
@@ -33,7 +34,11 @@ module Organizations
 
       attr_reader :group, :new_organization, :current_user
 
-      def update_namespaces_and_projects
+      def users
+        group.users_with_descendants
+      end
+
+      def transfer_namespaces_and_projects
         # `skope: Namespace` ensures we get both Group and ProjectNamespace types
         descendant_ids = group.self_and_descendant_ids(skope: Namespace)
 
@@ -49,31 +54,18 @@ module Organizations
         end
       end
 
-      def transfer_users
-        user_transfer_service.execute
-      end
-
       def transfer_allowed?
-        transfer_validator.can_transfer? && user_transfer_service.can_transfer?
+        transfer_validator.can_transfer?
       end
 
       def error
-        error_message = transfer_validator.error_message || user_transfer_service.can_transfer_error
+        error_message = transfer_validator.error_message
 
         format(
           s_("TransferOrganization|Group organization transfer failed: %{error_message}"),
           error_message: error_message
         )
       end
-
-      def user_transfer_service
-        Organizations::Users::TransferService.new(
-          group: group,
-          new_organization: new_organization,
-          current_user: current_user
-        )
-      end
-      strong_memoize_attr :user_transfer_service
 
       def transfer_validator
         Organizations::Groups::TransferValidator.new(

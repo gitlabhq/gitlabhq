@@ -3,7 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Guide to define Reference Architecture size and component-specific adjustments.
-title: Reference architectures sizing
+title: Assess reference architecture size
 ---
 
 {{< details >}}
@@ -23,6 +23,12 @@ information helps you analyze:
 - Workload characteristics.
 - Resource saturation.
 
+## Before you begin
+
+You can use this information if you have a complex environment to select an appropriate reference architecture.
+You might not require this level of detail, and you can assess the size of your environment by using the
+[information for less complex environments](_index.md).
+
 {{< alert type="note" >}}
 
 Need expert guidance? Sizing your architecture correctly is critical for optimal performance. Our
@@ -31,10 +37,8 @@ and provide tailored recommendations for performance, stability, and availabilit
 
 {{< /alert >}}
 
-## Before You Begin
-
-This documentation assumes Prometheus monitoring is deployed with the GitLab instance. Prometheus provides the accurate
-metrics required for proper sizing assessment.
+To follow this documentation, you must have Prometheus monitoring deployed with the GitLab instance. Prometheus
+provides the accurate metrics required for proper sizing assessment.
 
 If you haven't yet configured Prometheus:
 

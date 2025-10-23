@@ -198,6 +198,157 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
         expect(user.reload.organization_id).to eq(new_organization.id)
       end
+
+      context 'with user transfers' do
+        let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:user3) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:user_namespace1) { create(:namespace, owner: user1, organization: old_organization) }
+        let_it_be_with_refind(:user_namespace2) { create(:namespace, owner: user2, organization: old_organization) }
+        let_it_be_with_refind(:user_project1) do
+          create(:project, namespace: user_namespace1, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:user_project2) do
+          create(:project, namespace: user_namespace2, organization: old_organization)
+        end
+
+        before_all do
+          group.add_maintainer(user1)
+          group.add_developer(user2)
+          group.add_guest(user3)
+        end
+
+        it 'updates organization_id for users in the group' do
+          service.execute
+
+          expect(user1.reload.organization_id).to eq(new_organization.id)
+          expect(user2.reload.organization_id).to eq(new_organization.id)
+          expect(user3.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for user namespaces' do
+          service.execute
+
+          expect(user_namespace1.reload.organization_id).to eq(new_organization.id)
+          expect(user_namespace2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for projects and project namespaces under user namespaces' do
+          service.execute
+
+          expect(user_project1.reload.organization_id).to eq(new_organization.id)
+          expect(user_project2.reload.organization_id).to eq(new_organization.id)
+          expect(user_project1.project_namespace.reload.organization_id).to eq(new_organization.id)
+          expect(user_project2.project_namespace.reload.organization_id).to eq(new_organization.id)
+        end
+
+        context 'when new organization has lower visibility than some user namespaces/projects' do
+          let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+          let_it_be_with_refind(:public_user_namespace) do
+            create(:namespace,
+              visibility_level: Gitlab::VisibilityLevel::PUBLIC, owner: user1, organization: old_organization)
+          end
+
+          let_it_be_with_refind(:internal_user_namespace) do
+            create(:namespace,
+              visibility_level: Gitlab::VisibilityLevel::INTERNAL, owner: user2, organization: old_organization)
+          end
+
+          let_it_be_with_refind(:private_user_namespace) do
+            create(:namespace,
+              visibility_level: Gitlab::VisibilityLevel::PRIVATE, owner: user3, organization: old_organization)
+          end
+
+          let_it_be_with_refind(:public_user_project) do
+            create(:project, :public, namespace: public_user_namespace, organization: old_organization)
+          end
+
+          let_it_be_with_refind(:internal_user_project) do
+            create(:project, :internal, namespace: internal_user_namespace, organization: old_organization)
+          end
+
+          let_it_be_with_refind(:private_user_project) do
+            create(:project, :private, namespace: private_user_namespace, organization: old_organization)
+          end
+
+          before_all do
+            new_organization.add_owner(user)
+          end
+
+          it 'updates visibility for user namespaces with higher visibility than organization' do
+            service.execute
+
+            expect(public_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(internal_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+
+          it 'does not update visibility for user namespaces with lower or equal visibility' do
+            service.execute
+
+            expect(private_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+
+          it 'updates visibility for projects under user namespaces with higher visibility than organization' do
+            service.execute
+
+            expect(public_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(internal_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+
+          it 'updates visibility for project namespaces under user namespaces with higher visibility' do
+            service.execute
+
+            expect(public_user_project.project_namespace.reload.visibility_level)
+              .to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(internal_user_project.project_namespace.reload.visibility_level)
+              .to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+
+          it 'does not update visibility for projects under user namespaces with lower or equal visibility' do
+            service.execute
+
+            expect(private_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+        end
+
+        context 'when new organization has higher visibility than some user namespaces/projects' do
+          let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+          let_it_be_with_refind(:private_user_namespace) do
+            create(:namespace,
+              visibility_level: Gitlab::VisibilityLevel::PRIVATE, owner: user1, organization: old_organization)
+          end
+
+          let_it_be_with_refind(:internal_user_namespace) do
+            create(:namespace,
+              visibility_level: Gitlab::VisibilityLevel::INTERNAL, owner: user2, organization: old_organization)
+          end
+
+          let_it_be_with_refind(:private_user_project) do
+            create(:project,
+              visibility_level: Gitlab::VisibilityLevel::PRIVATE,
+              namespace: private_user_namespace,
+              organization: old_organization)
+          end
+
+          before_all do
+            new_organization.add_owner(user)
+          end
+
+          it 'does not update visibility for user namespaces with lower visibility' do
+            service.execute
+
+            expect(private_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(internal_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          it 'does not update visibility for projects under user namespaces with lower visibility' do
+            service.execute
+
+            expect(private_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          end
+        end
+      end
     end
 
     context 'when transfer validation fails' do
@@ -243,8 +394,8 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
       let(:error) { "User transfer not allowed" }
 
       before do
-        allow_next_instance_of(Organizations::Users::TransferService) do |user_service|
-          allow(user_service).to receive_messages(can_transfer?: false, can_transfer_error: error)
+        allow_next_instance_of(Organizations::Groups::TransferValidator) do |validator|
+          allow(validator).to receive_messages(can_transfer_users?: false, cannot_transfer_users_error: error)
         end
       end
 
@@ -276,9 +427,8 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
       let(:error_message) { 'User transfer failed' }
 
       before do
-        allow_next_instance_of(Organizations::Users::TransferService) do |user_service|
-          allow(user_service).to receive(:can_transfer?).and_return(true)
-          allow(user_service).to receive(:execute).and_raise(ActiveRecord::RecordNotUnique, error_message)
+        allow_next_instance_of(described_class) do |group_service|
+          allow(group_service).to receive(:transfer_users).and_raise(ActiveRecord::RecordNotUnique, error_message)
         end
       end
 

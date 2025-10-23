@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     ariaLabel() {
-      return `${this.label} ${this.count}`;
+      return `${this.count} ${this.label}`;
     },
     component() {
       return this.href ? 'a' : 'button';
@@ -38,6 +38,9 @@ export default {
         return highCountTrim(this.count);
       }
       return this.count;
+    },
+    countExists() {
+      return this.count.toString();
     },
   },
 };
@@ -51,7 +54,7 @@ export default {
     class="dashboard-shortcuts-button gl-relative gl-flex gl-items-center gl-justify-center"
   >
     <gl-icon aria-hidden="true" :name="icon" class="gl-shrink-0" />
-    <span v-if="count" aria-hidden="true" class="gl-text-sm gl-font-semibold">{{
+    <span v-if="countExists" aria-hidden="true" class="gl-text-sm gl-font-semibold">{{
       formattedCount
     }}</span>
   </component>

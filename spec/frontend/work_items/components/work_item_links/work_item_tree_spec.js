@@ -21,7 +21,6 @@ import {
   FORM_TYPES,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_NAME_TASK,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
@@ -136,23 +135,6 @@ describe('WorkItemTree', () => {
     expect(findWorkItemLinkChildrenWrapper().exists()).toBe(true);
     expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(1);
   });
-
-  it.each`
-    workItemType                     | useCachedRolledUpWeights | showTaskWeight
-    ${WORK_ITEM_TYPE_NAME_EPIC}      | ${false}                 | ${false}
-    ${WORK_ITEM_TYPE_NAME_TASK}      | ${false}                 | ${true}
-    ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${false}                 | ${true}
-    ${WORK_ITEM_TYPE_NAME_EPIC}      | ${true}                  | ${true}
-    ${WORK_ITEM_TYPE_NAME_TASK}      | ${true}                  | ${true}
-    ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${true}                  | ${true}
-  `(
-    'passes `showTaskWeight` as $showTaskWeight when the type is $workItemType and useCachedRolledUpWeights is $useCachedRolledUpWeights',
-    async ({ workItemType, useCachedRolledUpWeights, showTaskWeight }) => {
-      await createComponent({ workItemType, useCachedRolledUpWeights });
-
-      expect(findWorkItemLinkChildrenWrapper().props().showTaskWeight).toBe(showTaskWeight);
-    },
-  );
 
   it('does not display form by default', () => {
     createComponent();
@@ -406,7 +388,6 @@ describe('WorkItemTree', () => {
 
     expect(findRolledUpData().props()).toEqual({
       workItemIid: '2',
-      workItemType: 'Objective',
       fullPath: 'test/project',
     });
 
