@@ -487,9 +487,10 @@
     }
 
     // Issue boards height
-    .boards-app {
-      height: var(--panel-content-inner-height);
-      @apply gl-overflow-y-hidden;
+    .boards-app,
+    .issue-boards-content,
+    .issue-boards-content > .content {
+      @apply gl-h-full;
     }
 
     .boards-list {
@@ -568,19 +569,6 @@
       &.is-merge-request {
         max-width: $fixed-layout-width - ($gl-padding-12 * 2) !important;
       }
-    }
-  }
-
-  // Position fixed sidebar fix
-  .right-sidebar:not(.right-sidebar-merge-requests):not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) {
-    @apply gl-hidden #{!important};
-
-    &.right-sidebar-expanded {
-      @apply gl-block #{!important};
-    }
-
-    @container content-panels (width >= #{map.get($breakpoints, 'sm')}) {
-      @apply gl-block #{!important};
     }
   }
 

@@ -461,15 +461,21 @@ export default {
     },
 
     importSelectedGroups(extraArgs = {}) {
-      const importRequests = this.groupsTableData
-        .filter((group) => this.selectedGroupsIds.includes(group.id))
-        .map((group) => ({
-          sourceGroupId: group.id,
-          targetNamespace: group.importTarget.targetNamespace.fullPath,
-          newName: group.importTarget.newName,
-          migrateMemberships: this.shouldMigrateMemberships,
-          ...extraArgs,
-        }));
+      const selectedGroups = this.groupsTableData.filter((group) =>
+        this.selectedGroupsIds.includes(group.id),
+      );
+
+      if (!this.hasSelectedAllTargetNamespaces(selectedGroups)) {
+        return;
+      }
+
+      const importRequests = selectedGroups.map((group) => ({
+        sourceGroupId: group.id,
+        targetNamespace: group.importTarget.targetNamespace.fullPath,
+        newName: group.importTarget.newName,
+        migrateMemberships: this.shouldMigrateMemberships,
+        ...extraArgs,
+      }));
 
       this.requestGroupsImport(importRequests);
     },
@@ -508,6 +514,12 @@ export default {
         return false;
       }
       return true;
+    },
+
+    hasSelectedAllTargetNamespaces(selectedGroups) {
+      return selectedGroups
+        .map((group) => this.validateImportTargetNamespace(group.importTarget))
+        .every(Boolean);
     },
 
     validateImportTarget: debounce(async function validate(importTarget) {

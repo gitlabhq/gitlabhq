@@ -1,4 +1,9 @@
-import { getDateInFuture, nDaysAfter, toISODateFormat } from '~/lib/utils/datetime_utility';
+import {
+  getDateInFuture,
+  nDaysAfter,
+  setUTCTime,
+  toISODateFormat,
+} from '~/lib/utils/datetime_utility';
 import { STATISTICS_CONFIG } from '~/access_tokens/constants';
 
 /**
@@ -63,21 +68,19 @@ export function update15DaysFromNow(stats = STATISTICS_CONFIG) {
 }
 
 /**
- * Transform any datetime to T00:00:00.000Z (UTC): 2025-10-13T19:56:59.460Z -> 2025-10-13T00:00:00.000Z
- * @param {string|undefined} isoDateTimeString - The ISO date string: '2025-10-13T19:56:59.460Z'
+ * Transform any datetime to T00:00:00.000Z UTC time: '2025-10-13T19:56:59.460Z' -> '2025-10-13T00:00:00.000Z'
+ *
+ * @param {string} isoDateTimeString - The ISO date string: '2025-10-13T19:56:59.460Z'
  */
 export function resetCreatedTime(isoDateTimeString) {
-  const date = new Date(isoDateTimeString);
-  date.setUTCHours(0, 0, 0, 0); // Mutation in-place; sets the UTC time to zero
-  return date.toISOString();
+  return setUTCTime(isoDateTimeString).toISOString();
 }
 
 /**
  * Interpret the date as UTC time: 2025-10-13 -> 2025-10-13T00:00:00.000Z
- * @param {string|null} isoDateString - The ISO date string: '2025-10-13'
+ *
+ * @param {string} isoDateString - The ISO date string: '2025-10-13'
  */
 export function utcExpiredDate(isoDateString) {
-  // Because the time portion is not present from the date string, the parser interprets it as UTC.
-  // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#:~:text=When%20the%20time,Reality%20Issue
-  return isoDateString ? new Date(isoDateString) : isoDateString;
+  return setUTCTime(isoDateString);
 }

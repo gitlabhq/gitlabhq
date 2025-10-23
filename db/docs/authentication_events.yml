@@ -9,4 +9,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39652
 milestone: '13.4'
 gitlab_schema: gitlab_main_org
 table_size: medium
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553447
+sharding_key:
+  organization_id: organizations

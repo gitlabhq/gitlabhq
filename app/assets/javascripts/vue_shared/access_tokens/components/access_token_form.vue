@@ -13,7 +13,7 @@ import {
 import { formValidators } from '@gitlab/ui/src/utils';
 import { mapActions, mapState } from 'pinia';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { toISODateFormat } from '~/lib/utils/datetime_utility';
+import { toISODateFormat, setUTCTime } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import ErrorsAlert from '~/vue_shared/components/errors_alert.vue';
 
@@ -54,8 +54,7 @@ export default {
     },
   },
   data() {
-    const maxDate = this.accessTokenMaxDate ? new Date(this.accessTokenMaxDate) : null;
-    maxDate?.setUTCHours(0, 0, 0, 0); // Mutation in-place; sets the UTC time to zero
+    const maxDate = this.accessTokenMaxDate && setUTCTime(this.accessTokenMaxDate);
     if (maxDate) {
       this.$options.fields.expiresAt.validators.push(
         formValidators.required(s__('AccessTokens|Expiration date is required.')),
@@ -63,8 +62,7 @@ export default {
     } else {
       this.$options.fields.expiresAt.validators.length = 0;
     }
-    const minDate = new Date(this.accessTokenMinDate);
-    minDate.setUTCHours(0, 0, 0, 0); // Mutation in-place; sets the UTC time to zero
+    const minDate = setUTCTime(this.accessTokenMinDate);
     const expiresAt = defaultDate(maxDate);
     return {
       formErrors: [],

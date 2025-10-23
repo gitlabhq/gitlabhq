@@ -20,8 +20,6 @@ module Ci
 
     self.primary_key = :id
 
-    ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-21'
-
     add_authentication_token_field :token,
       encrypted: :required,
       expires_at: :compute_token_expiration,

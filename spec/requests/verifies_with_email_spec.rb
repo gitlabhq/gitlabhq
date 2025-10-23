@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_redis_rate_limiting,
-  feature_category: :instance_resiliency do
+  :with_current_organization, feature_category: :instance_resiliency do
   include SessionHelpers
   include EmailHelpers
 

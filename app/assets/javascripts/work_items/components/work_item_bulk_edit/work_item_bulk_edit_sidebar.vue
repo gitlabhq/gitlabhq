@@ -272,7 +272,11 @@ export default {
 </script>
 
 <template>
-  <gl-form id="work-item-list-bulk-edit" class="gl-p-5" @submit.prevent="handleFormSubmitted">
+  <gl-form
+    id="work-item-list-bulk-edit"
+    class="gl-px-4 gl-py-5"
+    @submit.prevent="handleFormSubmitted"
+  >
     <work-item-bulk-edit-dropdown
       v-if="!isEpicsList"
       v-model="state"

@@ -56,7 +56,7 @@ RSpec.describe Authn::DataRetention::AuthenticationEventArchiveWorker, feature_c
 
       archived_attributes = authentication_event_archived_record_model.find(before_cutoff_record.id).serializable_hash
 
-      expect(archived_attributes.except("archived_at")).to match(original_attributes)
+      expect(archived_attributes.except("archived_at")).to match(original_attributes.except("organization_id"))
       expect(archived_attributes["archived_at"]).to be_present
     end
 

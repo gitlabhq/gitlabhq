@@ -51423,6 +51423,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumemail_otp_enrollment_callout"></a>`EMAIL_OTP_ENROLLMENT_CALLOUT` | Callout feature name for email_otp_enrollment_callout. |
 | <a id="usercalloutfeaturenameenumexplore_duo_core_banner"></a>`EXPLORE_DUO_CORE_BANNER` | Callout feature name for explore_duo_core_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
+| <a id="usercalloutfeaturenameenumfocused_vulnerability_reporting"></a>`FOCUSED_VULNERABILITY_REPORTING` | Callout feature name for focused_vulnerability_reporting. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
 | <a id="usercalloutfeaturenameenumgeo_enable_hashed_storage"></a>`GEO_ENABLE_HASHED_STORAGE` | Callout feature name for geo_enable_hashed_storage. |
 | <a id="usercalloutfeaturenameenumgeo_migrate_hashed_storage"></a>`GEO_MIGRATE_HASHED_STORAGE` | Callout feature name for geo_migrate_hashed_storage. |

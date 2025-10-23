@@ -349,6 +349,24 @@ export const toISODateFormat = (date) => {
 };
 
 /**
+ * Transform any datetime to T00:00:00.000Z (UTC).
+ * For an input like 2025-10-13T19:56:59.460Z, the output is 2025-10-13T00:00:00.000Z.
+ *
+ * @param {Date|string} [dateOrString] - The ISO date string or date
+ */
+export const setUTCTime = (dateOrString) => {
+  let date;
+  if (typeof dateOrString === 'string') {
+    date = new Date(dateOrString);
+  } else {
+    // Create a new date because `setUTCHours` mutates the date in-place.
+    date = new Date(dateOrString.toISOString());
+  }
+  date.setUTCHours(0, 0, 0, 0); // Mutation in-place.
+  return date;
+};
+
+/**
  * Formats a date into an ISO string without milliseconds.
  *
  * @example

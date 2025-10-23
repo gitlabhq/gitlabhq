@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import { pinia } from '~/pinia/instance';
 
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { setUTCTime } from '~/lib/utils/datetime_utility';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import { __, sprintf } from '~/locale';
 import Translate from '~/vue_shared/translate';
@@ -91,18 +92,7 @@ export const initExpiresAtField = () => {
   }
 
   const { expiresAt: inputAttrs } = parseRailsFormFields(el);
-  let { minDate, maxDate } = el.dataset;
-  const { defaultDateOffset, description } = el.dataset;
-
-  if (minDate) {
-    minDate = new Date(minDate);
-    minDate.setUTCHours(0, 0, 0, 0);
-  }
-
-  if (maxDate) {
-    maxDate = new Date(maxDate);
-    maxDate.setUTCHours(0, 0, 0, 0);
-  }
+  const { minDate, maxDate, defaultDateOffset, description } = el.dataset;
 
   return new Vue({
     el,
@@ -110,8 +100,8 @@ export const initExpiresAtField = () => {
       return h(ExpiresAtField, {
         props: {
           inputAttrs,
-          minDate,
-          maxDate,
+          minDate: setUTCTime(minDate),
+          maxDate: maxDate && setUTCTime(maxDate),
           defaultDateOffset: defaultDateOffset ? Number(defaultDateOffset) : undefined,
           description,
         },

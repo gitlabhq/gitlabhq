@@ -10,6 +10,7 @@ class AuthenticationEvent < ApplicationRecord
   STATIC_PROVIDERS = [TWO_FACTOR, TWO_FACTOR_WEBAUTHN, STANDARD].freeze
 
   belongs_to :user, optional: true
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   validates :provider, :user_name, :result, presence: true
   validates :ip_address, ip_address: true

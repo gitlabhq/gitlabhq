@@ -106,7 +106,7 @@ module SidebarsHelper
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
       current_context: super_sidebar_current_context(project: project, group: group),
-      pinned_items: user.pinned_nav_items[panel_type] || super_sidebar_default_pins(panel_type, user),
+      pinned_items: pinned_items(user, panel_type, group: group),
       update_pins_url: pins_path,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
@@ -433,6 +433,14 @@ module SidebarsHelper
     shortcut_links
   end
 
+  # overridden on EE
+  # rubocop:disable Lint/UnusedMethodArgument -- group is used on EE
+  def pinned_items(user, panel_type, group: nil)
+    user.pinned_nav_items[panel_type]&.map(&:to_s) ||
+      super_sidebar_default_pins(panel_type, user)
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
+
   def super_sidebar_default_pins(panel_type, user)
     case panel_type
     when 'project'
@@ -445,11 +453,11 @@ module SidebarsHelper
   end
 
   def project_default_pins(_user)
-    [:project_issue_list, :project_merge_request_list]
+    %w[project_issue_list project_merge_request_list]
   end
 
   def group_default_pins(_user)
-    [:group_issue_list, :group_merge_request_list]
+    %w[group_issue_list group_merge_request_list]
   end
 
   def terms_link

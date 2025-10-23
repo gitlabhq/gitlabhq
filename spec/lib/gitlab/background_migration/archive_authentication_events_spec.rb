@@ -79,10 +79,9 @@ RSpec.describe Gitlab::BackgroundMigration::ArchiveAuthenticationEvents, feature
         archived_attrs = authentication_event_archived_records_table
                            .find_by(id: before_cutoff_record.id)
                            .serializable_hash
-
         # Assert on archived_at separately because its value is the result of a postgres default. Postgres operations
         # execute outside the scope of Rails frozen time, so we can't match on exact time.
-        expect(archived_attrs.except("archived_at")).to match(original_attrs)
+        expect(archived_attrs.except("archived_at")).to match(original_attrs.except('organization_id'))
         expect(archived_attrs["archived_at"]).to be_present
       end
     end

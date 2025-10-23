@@ -487,8 +487,3 @@ ul.content-list {
 .work-item-drawer [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
   top: calc(var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
 }
-
-.work-item-bulk-edit-sidebar-wrapper {
-  /* 57px – bulk actions header height */
-  height: calc(var(--panel-content-inner-height, 100%) - 57px);
-}

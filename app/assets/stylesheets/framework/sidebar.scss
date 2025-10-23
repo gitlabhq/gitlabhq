@@ -117,7 +117,8 @@
 }
 
 @mixin maintain-sidebar-dimensions {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: $right-sidebar-width;
 }
 

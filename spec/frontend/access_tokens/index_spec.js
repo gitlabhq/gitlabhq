@@ -95,7 +95,7 @@ describe('access tokens', () => {
 
       beforeEach(() => {
         setHTMLFixture(
-          `<div class="js-access-tokens-expires-at">
+          `<div class="js-access-tokens-expires-at" data-min-date="2023-09-09">
             <input
               name="access_tokens[expires_at]"
               data-js-name="expiresAt"

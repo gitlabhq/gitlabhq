@@ -12431,6 +12431,7 @@ CREATE TABLE authentication_events (
     ip_address inet,
     provider text NOT NULL,
     user_name text NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_45a6cc4e80 CHECK ((char_length(user_name) <= 255)),
     CONSTRAINT check_c64f424630 CHECK ((char_length(provider) <= 64))
 );
@@ -38783,6 +38784,8 @@ CREATE INDEX index_audit_events_streaming_event_type_filters_on_group_id ON audi
 
 CREATE INDEX index_audit_events_streaming_headers_on_group_id ON audit_events_streaming_headers USING btree (group_id);
 
+CREATE INDEX index_authentication_events_on_organization_id ON authentication_events USING btree (organization_id);
+
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
 
 CREATE INDEX index_authentication_events_on_user_and_ip_address_and_result ON authentication_events USING btree (user_id, ip_address, result);
@@ -48584,6 +48587,9 @@ ALTER TABLE ONLY snippet_statistics
 
 ALTER TABLE ONLY granular_scopes
     ADD CONSTRAINT fk_73a513f489 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY authentication_events
+    ADD CONSTRAINT fk_73fdb1f630 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY admin_roles
     ADD CONSTRAINT fk_74591b3a95 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

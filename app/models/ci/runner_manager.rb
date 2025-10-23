@@ -12,8 +12,6 @@ module Ci
     self.table_name = 'ci_runner_machines'
     self.primary_key = :id
 
-    ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-22'
-
     AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
     AVAILABLE_STATUSES_INCL_DEPRECATED = AVAILABLE_STATUSES
 

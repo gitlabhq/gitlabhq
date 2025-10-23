@@ -1,7 +1,8 @@
 ---
 migration_job_name: ClearResolvedAtForNonResolvedVulnerabilities
-description: Clear the `resolved_at` column for vulnerabilities that are not in resolved state but have a non-null `resolved_at` value.
+description: Clear the `resolved_at` column for vulnerabilities that are not in resolved
+  state but have a non-null `resolved_at` value.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205386
 milestone: '18.5'
 queued_migration_version: 20250917131046
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20251015233514'

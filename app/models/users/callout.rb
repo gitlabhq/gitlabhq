@@ -116,7 +116,8 @@ module Users
       personal_homepage_preferences_banner: 112,
       duo_agent_platform_requested: 113, # EE-only
       email_otp_enrollment_callout: 114,
-      merge_request_dashboard_show_drafts: 115
+      merge_request_dashboard_show_drafts: 115,
+      focused_vulnerability_reporting: 116
     }
 
     validates :feature_name,

@@ -105,7 +105,7 @@ class PersonalAccessTokensFinder
   def by_revoked_state(tokens)
     return tokens unless params.has_key?(:revoked)
 
-    params[:revoked] ? tokens.revoked : tokens.not_revoked
+    Gitlab::Utils.to_boolean(params[:revoked]) ? tokens.revoked : tokens.not_revoked
   end
 
   def by_created_before(tokens)

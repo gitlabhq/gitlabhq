@@ -177,7 +177,8 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
             user_name: user.name,
             ip_address: user.current_sign_in_ip,
             result: AuthenticationEvent.results[:success],
-            provider: 'standard'
+            provider: 'standard',
+            organization: user.organization
           }
         ).and_call_original
 
