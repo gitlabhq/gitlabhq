@@ -48,7 +48,10 @@ RSpec.shared_examples 'creating scan execution policy with invalid properties' d
 
   it "fails to create a policy without branch information for schedules" do
     fill_in _('Name'), with: 'Missing branch information'
-    select_from_listbox 'Schedules:', from: 'Triggers:'
+    page.find('span', text: 'Custom').click
+    within_testid('rule-0') do
+      select_from_listbox 'Schedules:', from: 'Triggers:'
+    end
     click_button _('Configure with a merge request')
     expect(page).to have_content('Policy cannot be enabled without branch information')
     expect(page).to have_current_path(path_to_scan_execution_policy_editor)
@@ -56,7 +59,11 @@ RSpec.shared_examples 'creating scan execution policy with invalid properties' d
 
   it "fails to create a policy without branch information" do
     fill_in _('Name'), with: 'Scan execution policy'
-    fill_in _('Select branches'), with: ''
+    page.find('span', text: 'Custom').click
+    within_testid('rule-0') do
+      select_from_listbox 'specific protected branches', from: 'default branch'
+      fill_in _('Select branches'), with: ''
+    end
     click_button _('Configure with a merge request')
     expect(page).to have_content('Policy cannot be enabled without branch information')
     expect(page).to have_current_path(path_to_scan_execution_policy_editor)

@@ -389,10 +389,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer, feature_category: :pipeline_compo
       end
 
       subject(:normalized_jobs) do
-        # Remove with_actor wrapper when ci_matrix_expressions FF is removed
-        Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-          described_class.new(config).normalize_jobs
-        end
+        described_class.new(config).normalize_jobs
       end
 
       it 'interpolates matrix expressions in needs configuration' do
@@ -446,46 +443,13 @@ RSpec.describe Gitlab::Ci::Config::Normalizer, feature_category: :pipeline_compo
 
         it 'collects errors for missing matrix variables and leaves config unchanged' do
           normalizer = described_class.new(config)
-
-          # Remove with_actor wrapper when ci_matrix_expressions FF is removed
-          normalized_jobs = Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-            normalizer.normalize_jobs
-          end
-
+          normalized_jobs = normalizer.normalize_jobs
           test_job = normalized_jobs[:'test: [linux, amd64]']
 
           expect(test_job[:needs][:job][0][:name]).to eq('build: [$[[ matrix.OS ]], $[[ matrix.NONEXISTENT ]]]')
           expect(normalizer.errors).to contain_exactly(
             "test job: 'NONEXISTENT' does not exist in matrix configuration"
           )
-        end
-      end
-
-      context 'when ci_matrix_expressions feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_matrix_expressions: false)
-        end
-
-        it 'does not interpolate matrix expressions' do
-          expect(normalized_jobs.keys.map(&:to_s)).to contain_exactly(
-            'build: [linux, amd64]', 'build: [linux, arm64]',
-            'test: [linux, amd64]', 'test: [linux, arm64]'
-          )
-
-          test_amd64 = normalized_jobs[:'test: [linux, amd64]']
-          test_arm64 = normalized_jobs[:'test: [linux, arm64]']
-
-          expect(test_amd64[:needs]).to eq({
-            job: [
-              { name: 'build: [$[[ matrix.OS ]], $[[ matrix.ARCH ]]]' }
-            ]
-          })
-
-          expect(test_arm64[:needs]).to eq({
-            job: [
-              { name: 'build: [$[[ matrix.OS ]], $[[ matrix.ARCH ]]]' }
-            ]
-          })
         end
       end
     end

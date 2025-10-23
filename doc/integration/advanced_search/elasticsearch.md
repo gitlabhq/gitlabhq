@@ -497,7 +497,6 @@ To index specific data, use the following Rake tasks:
 
 ```shell
 # For installations that use the Linux package
-sudo gitlab-rake gitlab:elastic:index_epics
 sudo gitlab-rake gitlab:elastic:index_work_items
 sudo gitlab-rake gitlab:elastic:index_group_wikis
 sudo gitlab-rake gitlab:elastic:index_namespaces
@@ -506,7 +505,6 @@ sudo gitlab-rake gitlab:elastic:index_snippets
 sudo gitlab-rake gitlab:elastic:index_users
 
 # For self-compiled installations
-bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_work_items RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_namespaces RAILS_ENV=production
@@ -1003,16 +1001,18 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Resumes indexing for advanced search. |
 | [`sudo gitlab-rake gitlab:elastic:index_and_search_validation`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Validates cluster connectivity, index, and search operations for all indices. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200664) in GitLab 18.3. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created. |
-| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Invokes `gitlab:elastic:index_epics` and `gitlab:elastic:index_group_wikis`. |
-| [`sudo gitlab-rake gitlab:elastic:index_epics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                       | Indexes all epics from the groups where Elasticsearch is enabled. |
+| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Invokes `gitlab:elastic:index_work_items` and `gitlab:elastic:index_group_wikis`. |
+| [`sudo gitlab-rake gitlab:elastic:index_work_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Indexes all work items from the groups where Elasticsearch is enabled. |
+| [`sudo gitlab-rake gitlab:elastic:index_namespaces`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Indexes all root namespaces. |
 | [`sudo gitlab-rake gitlab:elastic:index_group_wikis`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                 | Indexes all wikis from the groups where Elasticsearch is enabled. |
+| [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Performs an Elasticsearch import that indexes the snippets data. |
+| [`sudo gitlab-rake gitlab:elastic:index_users`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                       | Imports all users into Elasticsearch. |
+| [`sudo gitlab-rake gitlab:elastic:index_vulnerabilities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Indexes all vulnerabilities. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Determines the overall indexing status of all project repository data (code, commits, and wikis). The status is calculated by dividing the number of indexed projects by the total number of projects and multiplying by 100. This task does not include non-repository data such as issues, merge requests, or milestones. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | Deletes all instances of IndexStatus for all projects. This command results in a complete wipe of the index, and it should be used with caution. |
 | [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | Generates empty indices (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist. |
 | [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                      | Removes the GitLab indices and aliases (if they exist) on the Elasticsearch instance. |
 | [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Wrapper task for `gitlab:elastic:delete_index` and `gitlab:elastic:create_empty_index`. Does not queue any indexing jobs. |
-| [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Performs an Elasticsearch import that indexes the snippets data. |
-| [`sudo gitlab-rake gitlab:elastic:index_users`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                       | Imports all users into Elasticsearch. |
 | [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Displays which projects do not have repository data indexed. This task does not include non-repository data such as issues, merge requests, or milestones. |
 | [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Schedules a zero-downtime cluster reindexing task. |
 | [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Mark the most recent reindex job as failed. |
@@ -1246,17 +1246,17 @@ due to large volumes of data being indexed:
    indexer to "forget" all progress, so it retries the indexing process from the
    start.
 
-1. Epics, group wikis, personal snippets, and users are not associated with a project and must be indexed separately:
+1. Work items, group wikis, personal snippets, and users are not associated with a project and must be indexed separately:
 
    ```shell
    # For installations that use the Linux package
-   sudo gitlab-rake gitlab:elastic:index_epics
+   sudo gitlab-rake gitlab:elastic:index_work_items
    sudo gitlab-rake gitlab:elastic:index_group_wikis
    sudo gitlab-rake gitlab:elastic:index_snippets
    sudo gitlab-rake gitlab:elastic:index_users
 
    # For self-compiled installations
-   bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
+   bundle exec rake gitlab:elastic:index_work_items RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_users RAILS_ENV=production

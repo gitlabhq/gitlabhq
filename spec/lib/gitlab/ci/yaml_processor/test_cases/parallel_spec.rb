@@ -90,20 +90,6 @@ module Gitlab
               )
             end
           end
-
-          context 'when ci_matrix_expressions feature flag is disabled' do
-            before do
-              stub_feature_flags(ci_matrix_expressions: false)
-            end
-
-            it 'returns an error for invalid job reference' do
-              result = processor.execute
-
-              expect(result.errors).to contain_exactly(
-                a_string_including('undefined need: build: [$[[ matrix.OS ]], $[[ matrix.ARCH ]]]')
-              )
-            end
-          end
         end
       end
     end

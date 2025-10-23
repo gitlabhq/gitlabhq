@@ -133,10 +133,7 @@ module Gitlab
       end
 
       def normalized_jobs
-        # Remove with_actor wrapper when ci_matrix_expressions FF is removed
-        @normalized_jobs ||= Gitlab::Ci::Config::FeatureFlags.with_actor(@project) do
-          normalizer.normalize_jobs
-        end
+        @normalized_jobs ||= normalizer.normalize_jobs
       end
 
       def normalizer_errors

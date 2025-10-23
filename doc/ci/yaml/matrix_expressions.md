@@ -7,17 +7,9 @@ title: Matrix expressions in GitLab CI/CD
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_matrix_expressions`. Disabled by default. This feature is in [beta](../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.6. This feature is in [beta](../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `ci_matrix_expressions`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
 
 Matrix expressions enable dynamic job dependencies based on [`parallel:matrix`](_index.md#parallelmatrix)
 identifiers, to create 1:1 mappings between `parallel:matrix` jobs.

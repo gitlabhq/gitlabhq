@@ -1,8 +1,7 @@
 <script>
 import { GlBadge, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- Pending to migrate to PanelBreakpointInstance
+import { mapActions } from 'vuex'; // eslint-disable-line no-restricted-imports
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
 import {

@@ -1,5 +1,5 @@
 <script>
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 

@@ -6,7 +6,6 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import userMergeRequestUpdatedSubscription from '../queries/user_merge_request_updated.subscription.graphql';
 import TabTitle from './tab_title.vue';
@@ -57,7 +56,6 @@ export default {
     MergeRequest,
     DraftsCount,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['mergeRequestsSearchDashboardPath'],
   props: {
     tabs: {
@@ -258,7 +256,7 @@ export default {
                 </div>
                 <template #drafts>
                   <drafts-count
-                    v-if="glFeatures.mrDashboardDraftsToggle && draftsCount !== null && !loading"
+                    v-if="draftsCount !== null && !loading"
                     :count="draftsCount"
                     class="gl-border-t gl-px-5 gl-py-3"
                   />

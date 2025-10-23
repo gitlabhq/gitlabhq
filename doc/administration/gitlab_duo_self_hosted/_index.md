@@ -112,7 +112,7 @@ For more examples of a question you can ask, see
 | Feature                                                                                                        | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
 | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
 | [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
-| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                       | {{< icon name="check-circle-filled" >}} Yes  | GitLab 18.4 and later | Experiment |
+| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                       | {{< icon name="check-circle-filled" >}} Yes  | GitLab 18.4 and later | Beta |
 | [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1.2 and later | Beta |
 | [GitLab Duo and SDLC trends Dashboard](../../user/analytics/duo_and_sdlc_trends.md)                                             | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Beta |
 

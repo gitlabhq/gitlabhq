@@ -561,6 +561,19 @@ Audit event types belong to the following product categories.
 | [`merge_request_merged_with_dismissed_security_policy`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205857) | When a merge request violated a security policy in warn-mode that was dismissed and the MR was merged | {{< icon name="check-circle" >}} Yes | GitLab [18.5](https://gitlab.com/gitlab-org/gitlab/-/issues/569628) | Project |
 | [`security_policy_merge_request_bypass`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205601) | A security policy is bypassed for a merge request | {{< icon name="check-circle" >}} Yes | GitLab [18.5](https://gitlab.com/gitlab-org/gitlab/-/issues/549797) | Project |
 
+### Security risk management
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`security_attribute_attached_to_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security attribute is attached to a project | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Project |
+| [`security_attribute_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security attribute is created | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
+| [`security_attribute_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security attribute is deleted | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
+| [`security_attribute_detached_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security attribute is detached from a project | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Project |
+| [`security_attribute_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security attribute is updated | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
+| [`security_category_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is created | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
+| [`security_category_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is deleted | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
+| [`security_category_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is updated | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
+
 ### Security testing configuration
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

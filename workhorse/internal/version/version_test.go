@@ -17,3 +17,11 @@ func TestVersion(t *testing.T) {
 
 	require.Equal(t, "gitlab-workhorse ()-(123.123)", GetApplicationVersion())
 }
+
+func TestVersionShort(t *testing.T) {
+	require.Equal(t, "gitlab-workhorse/", GetUserAgentShort())
+
+	SetVersion("15.3", "123.123")
+
+	require.Equal(t, "gitlab-workhorse/15.3", GetUserAgentShort())
+}

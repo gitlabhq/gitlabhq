@@ -80,8 +80,7 @@ module Gitlab
               parallelized_jobs[job_name].each do |job|
                 merged_config = config.deep_merge(job.attributes)
 
-                if job.attributes[:job_variables] && merged_config[:needs] &&
-                    FeatureFlags.enabled?(:ci_matrix_expressions)
+                if job.attributes[:job_variables] && merged_config[:needs]
                   interpolator = Interpolation::MatrixInterpolator.new(job.attributes[:job_variables])
                   interpolated_needs = interpolator.interpolate(merged_config[:needs])
 

@@ -2242,8 +2242,6 @@ class User < ApplicationRecord
   end
 
   def merge_request_dashboard_show_drafts?
-    return true if Feature.disabled?(:mr_dashboard_drafts_toggle, self)
-
     merge_request_dashboard_show_drafts
   end
 

@@ -1115,9 +1115,6 @@ msgstr ""
 msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
 msgstr ""
 
-msgid "%{labelStart}Tool:%{labelEnd} %{reportType}"
-msgstr ""
-
 msgid "%{labelStart}URL:%{labelEnd} %{url}"
 msgstr ""
 
@@ -13290,9 +13287,6 @@ msgstr ""
 msgid "Characters over limit"
 msgstr ""
 
-msgid "Chat is not available."
-msgstr ""
-
 msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}"
 msgstr ""
 
@@ -20448,6 +20442,9 @@ msgid "Current"
 msgstr ""
 
 msgid "Current Chat"
+msgstr ""
+
+msgid "Current GitLab Duo Chat"
 msgstr ""
 
 msgid "Current Project"
@@ -57042,9 +57039,6 @@ msgid "ScanExecutionPolicy|%{labelStart}File path:%{labelEnd} %{filePath}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{rules} actions for %{scopes} %{branches} %{agents} %{branchExceptions} %{namespaces} %{period}"
-msgstr ""
-
-msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{branchExceptions} %{agents} %{namespaces}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs that %{scopes} %{branches} using %{sources} %{branchExceptions} %{agents} %{namespaces}"

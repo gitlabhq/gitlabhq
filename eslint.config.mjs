@@ -295,6 +295,10 @@ export default [
           message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.',
         },
         {
+          selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
+          message: 'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
+        },
+        {
           selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
           message:
             'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',

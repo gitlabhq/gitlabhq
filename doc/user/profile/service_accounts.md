@@ -35,6 +35,7 @@ Service accounts:
 
 - Do not use a seat.
 - Cannot sign in to GitLab through the UI.
+- Cannot be managed through services such as LDAP.
 - Are identified in the group and project membership as service accounts.
 - Do not receive notification emails without [adding a custom email address](../../api/service_accounts.md#create-an-instance-service-account).
 - Are not [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) or [internal users](../../administration/internal_users.md).
@@ -138,11 +139,19 @@ There is no limit to the number of service accounts you can add to a group or pr
 can have different roles in each group, subgroup, or project they are a member of.
 On GitLab.com, service accounts for groups can only belong to a single top-level group.
 
-You can manage service account access to groups and projects the same way you manage access for
-human users. For more information, see
+Service account access to groups and projects is managed the same way as
+human users in the UI. For more information, see
 [groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
 
-You can also manage group and project assignments with the [members API](../../api/members.md). You must use this API if the [global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) or the [global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock) are enabled.
+You can assign service accounts to groups and projects using the UI or the [members API](../../api/members.md).
+For more information about using the UI, see [add users to a group](../group/_index.md#add-users-to-a-group)
+and [add users to a project](../project/members/_index.md#add-users-to-a-project).
+
+You must use the API when the
+[global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
+or the
+[global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock)
+is enabled.
 
 ### Delete a service account
 

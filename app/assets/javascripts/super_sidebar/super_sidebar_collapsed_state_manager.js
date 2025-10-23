@@ -1,5 +1,5 @@
-import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 import { sidebarState } from './constants';

@@ -261,7 +261,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/ee/sidebars/projects/menus/security_compliance_menu_spec.rb'
     - 'ee/spec/lib/ee/sidebars/projects/menus/settings_menu_spec.rb'
     - 'ee/spec/lib/elastic/latest/application_instance_proxy_spec.rb'
-    - 'ee/spec/lib/elastic/latest/epic_instance_proxy_spec.rb'
     - 'ee/spec/lib/elastic/latest/git_instance_proxy_spec.rb'
     - 'ee/spec/lib/elastic/latest/routing_spec.rb'
     - 'ee/spec/lib/elastic/latest/snippet_instance_proxy_spec.rb'

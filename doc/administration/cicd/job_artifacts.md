@@ -272,7 +272,7 @@ processing is done in a background worker and requires **no downtime**.
       SQL query. The number of `objectstg` should be the same as `total`:
 
       ```shell
-      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM ci_job_artifacts;
+      gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM p_ci_job_artifacts;
 
       total | filesystem | objectstg
       ------+------------+-----------

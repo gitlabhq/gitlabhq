@@ -13,7 +13,7 @@ import {
   GlSkeletonLoader,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- This content is shown in a modal, we can refer to viewport breakpoints
 import { __, s__ } from '~/locale';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
 import {

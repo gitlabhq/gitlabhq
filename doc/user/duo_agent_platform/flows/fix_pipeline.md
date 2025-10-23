@@ -17,7 +17,8 @@ title: Fix CI/CD Pipeline Flow
 {{< history >}}
 
 - Introduced as [an experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with flags](../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci` and `ai_duo_agent_fix_pipeline_button`. `duo_workflow_in_ci` is enabled by default. `ai_duo_agent_fix_pipeline_button` is disabled by default. These flags can be enabled or disabled for the instance or project.
-- Enabled on GitLab.com and GitLab Self-Managed in 18.5.
+- Enabled on GitLab.com and GitLab Self-Managed in GitLab 18.5.
+- Feature flag `ai_duo_agent_fix_pipeline_button` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205086) in GitLab 18.5.
 
 {{< /history >}}
 

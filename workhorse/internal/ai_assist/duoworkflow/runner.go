@@ -58,7 +58,9 @@ type runner struct {
 }
 
 func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
-	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure)
+	userAgent := r.Header.Get("User-Agent")
+
+	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure, userAgent)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize client: %v", err)
 	}

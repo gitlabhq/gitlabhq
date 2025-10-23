@@ -9985,16 +9985,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     subject { user.merge_request_dashboard_show_drafts? }
 
-    where(:flag_enabled, :show_drafts, :result) do
-      false | false | true
-      false | true  | true
-      true  | true  | true
-      true  | false | false
+    where(:show_drafts, :result) do
+      true  | true
+      false | false
     end
 
     with_them do
       before do
-        stub_feature_flags(mr_dashboard_drafts_toggle: flag_enabled)
         user.user_preference.update!(merge_request_dashboard_show_drafts: show_drafts)
       end
 

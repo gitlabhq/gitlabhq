@@ -23,10 +23,17 @@ export const sidebarState = Vue.observable({
   wasHoverPeek: false,
 });
 
+export const CHAT_MODES = {
+  CLASSIC: 'classic',
+  AGENTIC: 'agentic',
+};
+
 export const duoChatGlobalState = Vue.observable({
   commands: [],
   isShown: false,
   isAgenticChatShown: false,
+  chatMode: CHAT_MODES.CLASSIC, // CHAT_MODES.CLASSIC or CHAT_MODES.AGENTIC - single source of truth for chat mode
+  activeTab: null, // For embedded mode: which tab is active in the AI panel ('chat', 'history', etc.)
 });
 
 export const SUPER_SIDEBAR_PEEK_OPEN_DELAY = 200;

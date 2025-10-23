@@ -11,7 +11,6 @@ import { InternalEvents } from '~/tracking';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import setIsShowingLabelsMutation from '~/graphql_shared/client/set_is_showing_labels.mutation.graphql';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
@@ -40,7 +39,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
+  mixins: [InternalEvents.mixin()],
   data() {
     return {
       isShowingLabels: null,
@@ -194,7 +193,6 @@ export default {
           class="gl-flex gl-flex-col gl-gap-4 gl-border-t-1 gl-border-t-dropdown-divider gl-px-4 gl-py-3 gl-border-t-solid"
         >
           <gl-toggle
-            v-if="glFeatures.mrDashboardDraftsToggle"
             :label="__('Show your drafts')"
             label-position="left"
             :value="preferences.showDrafts"
@@ -226,9 +224,7 @@ export default {
             #default="{ shouldShowCallout: shouldShowDraftCallout, dismiss: dismissDraftCallout }"
           >
             <gl-popover
-              v-if="
-                shouldShowCallout || (glFeatures.mrDashboardDraftsToggle && shouldShowDraftCallout)
-              "
+              v-if="shouldShowCallout || shouldShowDraftCallout"
               triggers="manual"
               target="display-prefences-dropdown"
               show

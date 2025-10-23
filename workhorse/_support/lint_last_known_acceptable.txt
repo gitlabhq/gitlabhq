@@ -26,7 +26,7 @@ internal/git/error.go:38:4: singleCaseSwitch: should rewrite switch statement to
 cmd/gitlab-workhorse/main.go:315:10: G112: Potential Slowloris Attack because ReadHeaderTimeout is not configured in the http.Server (gosec)
 internal/ai_assist/duoworkflow/actions.go:92:42: G115: integer overflow conversion int -> int32 (gosec)
 internal/ai_assist/duoworkflow/actions.go:102:24: G115: integer overflow conversion int -> int32 (gosec)
-internal/ai_assist/duoworkflow/client.go:56:73: G402: TLS MinVersion too low. (gosec)
+internal/ai_assist/duoworkflow/client.go:59:73: G402: TLS MinVersion too low. (gosec)
 internal/api/channel_settings.go:57:28: G402: TLS MinVersion too low. (gosec)
 internal/config/config.go:293:18: G204: Subprocess launched with variable (gosec)
 internal/config/config.go:418:8: G101: Potential hardcoded credentials (gosec)

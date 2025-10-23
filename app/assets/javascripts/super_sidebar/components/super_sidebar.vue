@@ -1,7 +1,7 @@
 <script>
 import { computed } from 'vue';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
