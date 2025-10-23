@@ -59,10 +59,10 @@ module QA
         assert_no_selector(element_selector_css(name))
       end
 
-      def refresh(skip_finished_loading_check: false)
+      def refresh
         page.refresh
 
-        wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
+        wait_for_requests
       end
 
       def wait_until(
@@ -70,7 +70,6 @@ module QA
         sleep_interval: 0.1,
         reload: true,
         raise_on_failure: true,
-        skip_finished_loading_check_on_refresh: false,
         message: nil
       )
         Support::Waiter.wait_until(
@@ -79,7 +78,7 @@ module QA
           raise_on_failure: raise_on_failure,
           message: message
         ) do
-          yield || (reload && refresh(skip_finished_loading_check: skip_finished_loading_check_on_refresh) && false)
+          yield || (reload && refresh && false)
         end
       end
 
@@ -139,8 +138,7 @@ module QA
       end
 
       def find_element(name, **kwargs)
-        skip_finished_loading_check = kwargs.delete(:skip_finished_loading_check)
-        wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
+        wait_for_requests
 
         element_selector = element_selector_css(name, reject_capybara_query_keywords(kwargs))
         find(element_selector, **only_capybara_query_keywords(kwargs))
@@ -165,7 +163,7 @@ module QA
           raise ArgumentError, "Please use :minimum, :maximum, :count, or :between so that all is more reliable"
         end
 
-        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
+        wait_for_requests
 
         all(element_selector_css(name), **kwargs)
       end
@@ -239,8 +237,7 @@ module QA
 
       # replace with (..., page = self.class)
       def click_element(name, page = nil, **kwargs)
-        skip_finished_loading_check = kwargs.delete(:skip_finished_loading_check)
-        wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
+        wait_for_requests
 
         wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
         text = kwargs.delete(:text)
@@ -331,7 +328,7 @@ module QA
         # don't want any overhead
         return true if wait > 1 && try_find_element.call(1)
 
-        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
+        wait_for_requests
         try_find_element.call(wait)
       end
 
@@ -416,7 +413,7 @@ module QA
       end
 
       def within_element(name, **kwargs, &block)
-        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
+        wait_for_requests
         text = kwargs.delete(:text)
 
         page.within(element_selector_css(name, kwargs), text: text, &block)

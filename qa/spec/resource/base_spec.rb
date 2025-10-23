@@ -362,7 +362,7 @@ RSpec.describe QA::Resource::Base do
 
     it 'calls #visit with the underlying #web_url' do
       allow(resource).to receive(:current_url).and_return(subject.current_url)
-      expect(wait_for_requests_class).to receive(:wait_for_requests).with({ skip_finished_loading_check: false }).twice
+      expect(wait_for_requests_class).to receive(:wait_for_requests).with({ skip_spinner_check: true }).twice
 
       resource.web_url = subject.current_url
       resource.visit!
@@ -370,12 +370,12 @@ RSpec.describe QA::Resource::Base do
       expect(resource).to have_received(:visit).with(subject.current_url)
     end
 
-    it 'calls #visit with the underlying #web_url with skip_finished_loading_check specified as true' do
+    it 'calls #visit with the underlying #web_url with skip_finished_loading_check specified as false' do
       allow(resource).to receive(:current_url).and_return(subject.current_url)
-      expect(wait_for_requests_class).to receive(:wait_for_requests).with({ skip_finished_loading_check: true }).twice
+      expect(wait_for_requests_class).to receive(:wait_for_requests).with({ skip_spinner_check: false }).twice
 
       resource.web_url = subject.current_url
-      resource.visit!(skip_finished_loading_check: true)
+      resource.visit!(skip_spinner_check: false)
 
       expect(resource).to have_received(:visit).with(subject.current_url)
     end

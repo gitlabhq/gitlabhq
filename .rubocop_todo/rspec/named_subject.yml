@@ -324,7 +324,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/ci/reports/metrics/reports_comparer_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/security/finding_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/security/locations/container_scanning_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/reports/security/vulnerability_reports_comparer_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/file_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/loader_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners_spec.rb'

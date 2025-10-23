@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable API/DescriptionSuccessResponse -- Needed to test edge cases
+
 require 'grape'
 
 module API
@@ -29,3 +31,4 @@ module API
     end
   end
 end
+# rubocop:enable API/DescriptionSuccessResponse

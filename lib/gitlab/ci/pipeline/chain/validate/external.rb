@@ -18,7 +18,7 @@ module Gitlab
               pipeline_authorized = validate_external
 
               log_message = pipeline_authorized ? 'authorized' : 'not authorized'
-              Gitlab::AppLogger.info(message: "Pipeline #{log_message}", project_id: project.id, user_id: current_user.id)
+              Gitlab::AppLogger.info(message: "Pipeline #{log_message}", project_id: project.id)
 
               return if pipeline_authorized
 

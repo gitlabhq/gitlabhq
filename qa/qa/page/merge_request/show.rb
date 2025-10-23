@@ -221,7 +221,7 @@ module QA
         end
 
         def click_diffs_tab
-          click_element('diffs-tab', skip_finished_loading_check: true)
+          click_element('diffs-tab')
         end
 
         def has_reports_tab?
@@ -236,7 +236,7 @@ module QA
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element('edit-title-button', skip_finished_loading_check: true))
+          click_by_javascript(find_element('edit-title-button'))
         end
 
         def has_file?(file_name)
@@ -265,7 +265,7 @@ module QA
         end
 
         def has_merge_button?
-          has_element?('merge-button', skip_finished_loading_check: true, wait: 30)
+          has_element?('merge-button', wait: 30)
         end
 
         def has_no_merge_button?
@@ -407,10 +407,10 @@ module QA
         def merge_immediately!
           retry_until(reload: true, sleep_interval: 1, max_attempts: 12) do
             if has_element?('merge-immediately-dropdown')
-              click_element('merge-immediately-dropdown', skip_finished_loading_check: true)
-              click_element('merge-immediately-button', skip_finished_loading_check: true)
+              click_element('merge-immediately-dropdown')
+              click_element('merge-immediately-button')
             else
-              click_element('merge-button', skip_finished_loading_check: true)
+              click_element('merge-button')
             end
 
             merged?
@@ -518,7 +518,7 @@ module QA
         end
 
         def has_fork_icon?
-          has_element?('fork-icon', skip_finished_loading_check: true)
+          has_element?('fork-icon')
         end
 
         def click_artifacts_dropdown_button

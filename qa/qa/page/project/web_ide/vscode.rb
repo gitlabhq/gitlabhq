@@ -432,14 +432,14 @@ module QA
           end
 
           def wait_until_code_suggestions_enabled
-            wait_until(reload: false, max_duration: 30, skip_finished_loading_check_on_refresh: true,
+            wait_until(reload: false, max_duration: 30,
               message: 'Wait for Code Suggestions extension to be enabled') do
               has_code_suggestions_status_without_error?('enabled')
             end
           end
 
           def wait_until_code_suggestion_loaded
-            wait_until(reload: false, max_duration: 30, skip_finished_loading_check_on_refresh: true,
+            wait_until(reload: false, max_duration: 30,
               message: 'Wait for Code Suggestion to finish loading') do
               raise code_suggestions_error if has_code_suggestions_error?
 

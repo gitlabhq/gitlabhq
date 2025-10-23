@@ -75,8 +75,7 @@ module QA
         end
 
         def go_to_workspaces
-          # skip_finished_loading_check in case there are workspaces currently being terminated
-          click_element('nav-item-link', submenu_item: 'Workspaces', skip_finished_loading_check: true)
+          click_element('nav-item-link', submenu_item: 'Workspaces')
         end
 
         def go_to_menu_dropdown_option(option_name)

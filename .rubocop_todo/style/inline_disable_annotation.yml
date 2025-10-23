@@ -1417,7 +1417,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/gitlab/auth/group_saml/membership_updater.rb'
     - 'ee/lib/gitlab/auth/saml/membership_updater.rb'
     - 'ee/lib/gitlab/ci/minutes/pipeline_consumption.rb'
-    - 'ee/lib/gitlab/ci/reports/security/vulnerability_reports_comparer.rb'
     - 'ee/lib/gitlab/com.rb'
     - 'ee/lib/gitlab/compliance_management/violations/approved_by_committer.rb'
     - 'ee/lib/gitlab/contribution_analytics/data_formatter.rb'

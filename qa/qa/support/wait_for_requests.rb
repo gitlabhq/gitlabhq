@@ -7,8 +7,8 @@ module QA
 
       DEFAULT_MAX_WAIT_TIME = 60
 
-      def wait_for_requests(skip_finished_loading_check: false, spinner_wait: 1)
-        if skip_finished_loading_check
+      def wait_for_requests(skip_spinner_check: true, spinner_wait: 1)
+        if skip_spinner_check
           only_wait_for_ajax_requests
         else
           wait_for_ajax_requests_and_spinner(spinner_wait)

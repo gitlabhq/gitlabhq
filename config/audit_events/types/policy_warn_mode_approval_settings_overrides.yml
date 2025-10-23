@@ -1,0 +1,10 @@
+---
+name: policy_warn_mode_approval_settings_overrides
+description: A warn-mode merge request approval policy sets more restrictive `approval_settings`.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/563867
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208969
+milestone: '18.6'
+feature_category: security_policy_management
+saved_to_database: false
+streamed: true
+scope: [Project]

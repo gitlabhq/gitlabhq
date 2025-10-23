@@ -12,7 +12,7 @@ module QA
           super
         end
 
-        def refresh(skip_finished_loading_check: false)
+        def refresh
           log("refreshing #{current_url}", :info)
 
           super
@@ -140,7 +140,7 @@ module QA
           log_slow_code { super }
         end
 
-        def wait_for_requests(skip_finished_loading_check: false)
+        def wait_for_requests
           log_slow_code { super }
         end
 

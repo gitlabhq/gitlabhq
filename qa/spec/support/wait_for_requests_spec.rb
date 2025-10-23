@@ -9,11 +9,18 @@ RSpec.describe QA::Support::WaitForRequests do
       allow(QA::Support::Waiter).to receive(:wait_until).and_yield
     end
 
-    context 'when skip_finished_loading_check is defaulted to false' do
-      it 'calls spinner_cleared?' do
+    context 'when skip_spinner_check is defaulted to true' do
+      it 'does not call spinner_cleared?' do
         subject.wait_for_requests
+        expect(subject).not_to have_received(:spinner_cleared?)
+      end
+    end
 
-        expect(subject).to have_received(:spinner_cleared?).with(wait: 1)
+    context 'when skip_spinner_check is set to false' do
+      it 'calls spinner_cleared?' do
+        subject.wait_for_requests(skip_spinner_check: false)
+
+        expect(subject).to have_received(:spinner_cleared?).with(hash_including(wait: 1))
       end
     end
 
@@ -25,7 +32,7 @@ RSpec.describe QA::Support::WaitForRequests do
       end
 
       it 'raises and logs the error that requests failed to complete' do
-        expect { subject.wait_for_requests }.to raise_error(
+        expect { subject.wait_for_requests(skip_spinner_check: false) }.to raise_error(
           QA::Support::Repeater::WaitExceededError,
           'Page did not fully load: AJAX requests pending (spinner check passed)'
         )
@@ -40,17 +47,10 @@ RSpec.describe QA::Support::WaitForRequests do
       end
 
       it 'raises and logs the error that .gl-spinner is still visible' do
-        expect { subject.wait_for_requests }.to raise_error(
+        expect { subject.wait_for_requests(skip_spinner_check: false) }.to raise_error(
           QA::Support::Repeater::WaitExceededError,
           'Page did not fully load: Spinner still visible (AJAX requests completed)'
         )
-      end
-    end
-
-    context 'when skip_finished_loading_check is set to true' do
-      it 'skips spinner check' do
-        subject.wait_for_requests(skip_finished_loading_check: true)
-        expect(subject).not_to have_received(:spinner_cleared?)
       end
     end
 
@@ -63,7 +63,7 @@ RSpec.describe QA::Support::WaitForRequests do
       end
 
       it 'raises and logs the error that both checks failed' do
-        expect { subject.wait_for_requests }.to raise_error(
+        expect { subject.wait_for_requests(skip_spinner_check: false) }.to raise_error(
           QA::Support::Repeater::WaitExceededError,
           'Page did not fully load: AJAX requests pending and spinner is still visible'
         )
@@ -77,7 +77,7 @@ RSpec.describe QA::Support::WaitForRequests do
       end
 
       it 'throws no error' do
-        expect { subject.wait_for_requests(skip_finished_loading_check: false) }.not_to raise_error
+        expect { subject.wait_for_requests(skip_spinner_check: false) }.not_to raise_error
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.describe QA::Support::WaitForRequests do
       end
 
       it 'raises and logs that AJAX requests are still pending' do
-        expect { subject.wait_for_requests(skip_finished_loading_check: true) }.to raise_error(
+        expect { subject.wait_for_requests(skip_spinner_check: true) }.to raise_error(
           QA::Support::Repeater::WaitExceededError,
           'Page did not fully load after 60 seconds due to pending AJAX requests'
         )

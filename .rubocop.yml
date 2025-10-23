@@ -840,15 +840,21 @@ API/ClassLevelAllowAccessWithScope:
 API/DescriptionDetail:
   Enabled: true
   Include:
-  - 'lib/**/api/**/*.rb'
-  - 'ee/lib/**/api/**/*.rb'
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/DescriptionSuccessResponse:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
 
 API/DescriptionTags:
   Enabled: true
   SafeAutoCorrect: false
   Include:
-  - 'lib/**/api/**/*.rb'
-  - 'ee/lib/**/api/**/*.rb'
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
 
 API/ParameterDescription:
   Enabled: true

@@ -81,12 +81,11 @@ module QA
             wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME,
             allow_partial_import: false
           )
-            within_element('project-import-row', source_project: gh_project_name, skip_finished_loading_check: true) do
+            within_element('project-import-row', source_project: gh_project_name) do
               wait_until(
                 max_duration: wait,
                 sleep_interval: 5,
-                reload: false,
-                skip_finished_loading_check_on_refresh: true
+                reload: false
               ) do
                 status_selector = 'import-status-indicator'
 
