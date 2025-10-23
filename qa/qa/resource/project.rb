@@ -90,6 +90,7 @@ module QA
         return if @import
 
         if personal_namespace
+          Page::Main::Menu.perform(&:go_to_projects)
           Page::Dashboard::Projects.perform(&:click_new_project_button)
         else
           group.visit!
