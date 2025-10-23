@@ -111,17 +111,22 @@ export default {
         };
       },
       update({ project: { branchRules, group } }) {
-        const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
-        this.branchRule = branchRule;
-        this.branchProtection = branchRule?.branchProtection;
-        this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
-        this.matchingBranchesCount = branchRule?.matchingBranchesCount;
+        const projectBranchRule = branchRules.nodes.find(
+          (rule) => rule.name === this.branch && !rule.branchProtection?.isGroupLevel,
+        );
+
+        this.branchRule = projectBranchRule;
+        this.branchProtection = projectBranchRule?.branchProtection;
+        this.statusChecks = projectBranchRule?.externalStatusChecks?.nodes || [];
+        this.matchingBranchesCount = projectBranchRule?.matchingBranchesCount;
         this.groupId = getIdFromGraphQLId(group?.id) || null;
+
         if (!this.showApprovers) return;
         // The approval rules app uses a separate endpoint to fetch the list of approval rules.
         // In future, we will update the GraphQL request to include the approval rules data.
         // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/452330
-        const approvalRules = branchRule?.approvalRules?.nodes.map((rule) => rule.name) || [];
+        const approvalRules =
+          projectBranchRule?.approvalRules?.nodes.map((rule) => rule.name) || [];
         this.setRulesFilter(approvalRules);
         this.fetchRules();
       },
@@ -471,7 +476,9 @@ export default {
     </page-heading>
 
     <gl-loading-icon v-if="$apollo.loading" size="lg" />
-    <div v-else-if="!branchRule && !isPredefinedRule">{{ $options.i18n.noData }}</div>
+    <div v-else-if="!branchRule && !isPredefinedRule">
+      {{ $options.i18n.noData }}
+    </div>
     <div v-else>
       <access-levels-drawer
         :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
