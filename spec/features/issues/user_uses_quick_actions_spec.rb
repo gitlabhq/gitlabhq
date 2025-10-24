@@ -41,7 +41,21 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
     end
 
     it_behaves_like 'create_merge_request quick action'
-    it_behaves_like 'move quick action'
+
+    context 'with quarantine', quarantine: {
+      issue: [
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/454317',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/452140',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/451758',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/451477',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/450856',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/450804',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/450229'
+      ]
+    } do
+      it_behaves_like 'move quick action'
+    end
+
     it_behaves_like 'zoom quick actions'
     it_behaves_like 'clone quick action'
     it_behaves_like 'promote_to_incident quick action'

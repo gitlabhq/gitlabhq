@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import appComponent from '~/groups/components/app.vue';
 import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
@@ -34,6 +35,7 @@ const $toast = {
   show: jest.fn(),
 };
 jest.mock('~/alert');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('AppComponent', () => {
   let wrapper;
@@ -110,10 +112,9 @@ describe('AppComponent', () => {
       it('should show an alert when request fails', () => {
         mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_BAD_REQUEST);
 
-        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         return vm.fetchGroups({}).then(() => {
           expect(vm.isLoading).toBe(false);
-          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
+          expect(scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 }, wrapper.element);
           expect(createAlert).toHaveBeenCalledWith({
             message: 'An error occurred. Please try again.',
           });
@@ -166,7 +167,6 @@ describe('AppComponent', () => {
       it('without filter should fetch groups for provided page details, update window state, and call setGroups', () => {
         jest.spyOn(urlUtilities, 'mergeUrlParams');
         jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
-        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         jest.spyOn(vm.store, 'setGroups').mockImplementation(() => {});
 
         const fetchPagePromise = vm.fetchPage({
@@ -185,7 +185,7 @@ describe('AppComponent', () => {
 
         return fetchPagePromise.then(() => {
           expect(vm.isLoading).toBe(false);
-          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
+          expect(scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 }, wrapper.element);
           expect(urlUtilities.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, expect.any(String));
           expect(window.history.replaceState).toHaveBeenCalledWith(
             {
@@ -202,7 +202,6 @@ describe('AppComponent', () => {
       it('with filter should fetch groups for provided page details, update window state, and call setGroups', () => {
         jest.spyOn(urlUtilities, 'mergeUrlParams');
         jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
-        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         jest.spyOn(vm.store, 'setGroups').mockImplementation(() => {});
 
         const fetchPagePromise = vm.fetchPage({
@@ -221,7 +220,7 @@ describe('AppComponent', () => {
 
         return fetchPagePromise.then(() => {
           expect(vm.isLoading).toBe(false);
-          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
+          expect(scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 }, wrapper.element);
           expect(urlUtilities.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, expect.any(String));
           expect(window.history.replaceState).toHaveBeenCalledWith(
             {
@@ -336,14 +335,13 @@ describe('AppComponent', () => {
         const notice = `You left the "${childGroupItem.fullName}" group.`;
         jest.spyOn(vm.service, 'leaveGroup').mockResolvedValue({ data: { notice } });
         jest.spyOn(vm.store, 'removeGroup');
-        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
         vm.leaveGroup();
 
         expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(vm.targetGroup.leavePath);
         return waitForPromises().then(() => {
-          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
+          expect(scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 }, wrapper.element);
           expect(vm.store.removeGroup).toHaveBeenCalledWith(vm.targetGroup, vm.targetParentGroup);
           expect($toast.show).toHaveBeenCalledWith(notice);
         });

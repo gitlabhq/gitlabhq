@@ -13,10 +13,19 @@ module Gitlab
 
       # This is Rack::Attack::DEFAULT_THROTTLED_RESPONSE, modified to allow a custom response
       rack_attack.throttled_responder = ->(request) do
-        throttled_headers = Gitlab::RackAttack.throttled_response_headers(
-          request.env['rack.attack.matched'], request.env['rack.attack.match_data']
-        )
-        [429, { 'Content-Type' => 'text/plain' }.merge(throttled_headers), [Gitlab::Throttle.rate_limiting_response_text]]
+        if Feature.enabled?(:rate_limiting_headers_for_unthrottled_requests, Feature.current_request)
+          throttled_headers = Gitlab::RackAttack::RequestThrottleData.from_rack_attack(
+            request.env['rack.attack.matched'], request.env['rack.attack.match_data']
+          )&.throttled_response_headers
+          [429, { 'Content-Type' => 'text/plain' }.merge(throttled_headers || {}), [Gitlab::Throttle.rate_limiting_response_text]]
+        else
+          # We retain the old code path with the intention to remove it along with the deprecated
+          # method when we cleanup the feature flag.
+          throttled_headers = Gitlab::RackAttack.throttled_response_headers(
+            request.env['rack.attack.matched'], request.env['rack.attack.match_data']
+          )
+          [429, { 'Content-Type' => 'text/plain' }.merge(throttled_headers), [Gitlab::Throttle.rate_limiting_response_text]]
+        end
       end
 
       rack_attack.cache.store = Gitlab::RackAttack::Store.new
@@ -48,6 +57,7 @@ module Gitlab
     #
     #   - RateLimit-ResetTime: the point of time that the request quota is reset, in HTTP date format
     #
+    # @deprecated Use Gitlab::RackAttack::RequestThrottleData#throttled_response_headers instead
     def self.throttled_response_headers(matched, match_data)
       # Match data example:
       # {:discriminator=>"127.0.0.1", :count=>12, :period=>60 seconds, :limit=>1, :epoch_time=>1609833930}

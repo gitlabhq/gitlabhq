@@ -164,6 +164,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
         }
         nodes {
           sha
+          parentSha
           authorName
           title
           committedDate

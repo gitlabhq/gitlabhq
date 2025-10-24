@@ -45,7 +45,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
   end
 
   context 'assignee' do
-    it 'updates to current user' do
+    it 'updates to current user', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553809' do
       visit project_issues_path(project)
 
       click_button 'Bulk edit'
@@ -79,7 +79,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
   context 'milestone' do
     let!(:milestone) { create(:milestone, project: project) }
 
-    it 'updates milestone' do
+    it 'updates milestone', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553811' do
       visit project_issues_path(project)
 
       click_button 'Bulk edit'

@@ -371,7 +371,7 @@ export default {
         >
           <gl-emoji
             :data-name="data.status.emoji"
-            class="super-sidebar-status-emoji gl-pointer-events-none !gl-text-[1em]"
+            class="super-topbar-status-emoji gl-pointer-events-none gl-text-[9px]"
           />
         </div>
       </template>

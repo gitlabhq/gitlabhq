@@ -26,6 +26,21 @@ gl-emoji {
   }
 }
 
+.dashboard-status-emoji {
+  @apply gl-text-[1.5rem];
+  @apply gl-mt-1;
+}
+
+.gl-platform-windows .dashboard-status-emoji {
+  @apply -gl-mt-[0.2rem];
+  @apply -gl-ml-2;
+}
+
+.gl-platform-linux .dashboard-status-emoji {
+  @apply gl-text-[1.125rem];
+  @apply -gl-mt-1;
+}
+
 .emoji-picker-category-header {
   position: sticky;
   background: linear-gradient(to bottom, $white 50%, transparent 100%);

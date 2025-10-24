@@ -192,11 +192,8 @@ To resolve or reopen a thread when replying to a comment:
 1. Select or clear **Resolve thread** or **Reopen thread**.
 1. Select **Add comment now** or **Add to review**.
 
-Pending comments display information about delayed actions. GitLab does not perform these actions
-until you publish the comment:
-
-- {{< icon name="check-circle-filled" >}} Resolves thread.
-- {{< icon name="check-circle" >}} Thread stays open.
+Pending comments display information about delayed actions.
+These actions will execute when you submit a review.
 
 ## Submit a review
 

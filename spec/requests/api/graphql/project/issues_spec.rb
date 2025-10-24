@@ -2,7 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting an issue list for a project', feature_category: :team_planning do
+RSpec.describe 'getting an issue list for a project', feature_category: :team_planning,
+  quarantine: {
+    issue: [
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/558224',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/448377',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/448489',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/448791',
+      'https://gitlab.com/gitlab-org/gitlab/-/issues/524213'
+    ]
+  } do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }

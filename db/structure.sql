@@ -41046,6 +41046,8 @@ CREATE UNIQUE INDEX index_non_sql_service_pings_on_recorded_at ON non_sql_servic
 
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON note_diff_files USING btree (diff_note_id);
 
+CREATE INDEX index_note_diff_files_on_namespace_id ON note_diff_files USING btree (namespace_id);
+
 CREATE INDEX index_note_metadata_on_namespace_id ON note_metadata USING btree (namespace_id);
 
 CREATE INDEX index_note_metadata_on_note_id ON note_metadata USING btree (note_id);
@@ -49066,6 +49068,9 @@ ALTER TABLE ONLY approval_policy_merge_request_bypass_events
 
 ALTER TABLE ONLY tag_ssh_signatures
     ADD CONSTRAINT fk_a3a00301c7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY note_diff_files
+    ADD CONSTRAINT fk_a3c1c679d6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_a3cc825836 FOREIGN KEY (protected_environment_project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -1434,7 +1434,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
             )
           end
 
-          it 'prevents N+1 queries' do
+          it 'prevents N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/565915' do
             post_graphql(query, current_user: current_user) # warm up
 
             control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -1530,7 +1530,8 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
             )
           end
 
-          it 'avoids N + 1 queries', :use_sql_query_cache do
+          it 'avoids N + 1 queries', :use_sql_query_cache,
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463450' do
             # warm-up already done in the before block
             control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
               post_graphql(query, current_user: current_user)

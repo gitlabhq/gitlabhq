@@ -164,7 +164,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
     end
   end
 
-  context 'when creating new issuable' do
+  context 'when creating new issuable', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553234' do
     before do
       visit new_project_issue_path(project_1)
     end

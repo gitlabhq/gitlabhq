@@ -258,7 +258,7 @@ export default {
 
 <template>
   <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
-    <div ref="root-element">
+    <div ref="rootElement">
       <div>
         <gl-table
           data-testid="active-tokens"

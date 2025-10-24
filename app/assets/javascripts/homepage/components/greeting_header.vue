@@ -165,7 +165,7 @@ export default {
             :data-name="statusEmoji"
             :title="null"
             :aria-label="statusEmoji"
-            class="gl-pointer-events-none gl-mt-1 gl-h-full gl-w-full gl-content-center gl-text-center gl-text-[18px]"
+            class="dashboard-status-emoji gl-pointer-events-none gl-h-full gl-w-full gl-content-center gl-text-center"
           />
         </button>
       </div>

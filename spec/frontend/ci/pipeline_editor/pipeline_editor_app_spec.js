@@ -7,6 +7,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
@@ -51,6 +52,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
 }));
+
+jest.mock('~/lib/utils/scroll_utils');
 
 const defaultProvide = {
   ciConfigPath: mockCiConfigPath,
@@ -341,7 +344,7 @@ describe('Pipeline editor app component', () => {
 
       it('does not report an error or scroll to the top', () => {
         expect(findAlert().exists()).toBe(false);
-        expect(window.scrollTo).not.toHaveBeenCalled();
+        expect(scrollTo).not.toHaveBeenCalled();
       });
     });
 
@@ -351,7 +354,6 @@ describe('Pipeline editor app component', () => {
 
       describe('and the commit mutation succeeds', () => {
         beforeEach(async () => {
-          window.scrollTo = jest.fn();
           await createComponentWithApollo({
             stubs: { PipelineEditorMessages },
             data: { currentBranch: mockDefaultBranch },
@@ -365,7 +367,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('scrolls to the top of the page to bring attention to the confirmation message', () => {
-          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+          expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
         });
 
         it('polls for commit sha while pipeline data is not yet available for current branch', async () => {
@@ -439,7 +441,6 @@ describe('Pipeline editor app component', () => {
         const commitFailedReasons = ['Commit failed'];
 
         beforeEach(async () => {
-          window.scrollTo = jest.fn();
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
           findEditorHome().vm.$emit('showError', {
@@ -455,7 +456,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('scrolls to the top of the page to bring attention to the error message', () => {
-          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+          expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
         });
       });
 
@@ -463,7 +464,6 @@ describe('Pipeline editor app component', () => {
         const unknownReasons = ['Commit failed'];
 
         beforeEach(async () => {
-          window.scrollTo = jest.fn();
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
           findEditorHome().vm.$emit('showError', {
@@ -479,7 +479,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('scrolls to the top of the page to bring attention to the error message', () => {
-          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+          expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
         });
       });
     });

@@ -268,6 +268,27 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
 
           it_behaves_like 'valid config with warnings'
         end
+
+        context 'when authenticated user has no API token' do
+          before do
+            allow(::Current).to receive(:token_info).and_return(nil)
+          end
+
+          it 'returns unauthorized error' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response['message']).to include('This endpoint requires an API authentication')
+          end
+
+          context 'when the FF ci_require_api_token_for_ci_lint is disabled' do
+            before do
+              stub_feature_flags(ci_require_api_token_for_ci_lint: false)
+            end
+
+            it_behaves_like 'valid config without warnings'
+          end
+        end
       end
 
       context 'when including a component' do
@@ -574,6 +595,69 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             expect(json_response['valid']).to eq(true)
             expect(json_response['warnings']).to eq([])
             expect(json_response['errors']).to eq([])
+          end
+        end
+      end
+    end
+
+    context 'when the project is public' do
+      let_it_be(:project) { create(:project, :repository, :public) }
+
+      context 'with valid .gitlab-ci.yml content' do
+        let_it_be(:yaml_content) do
+          { test: { stage: 'test', script: 'echo 1' } }.to_yaml
+        end
+
+        before_all do
+          project.repository.create_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            yaml_content,
+            message: 'Automatically created .gitlab-ci.yml',
+            branch_name: 'master'
+          )
+        end
+
+        shared_examples 'passing validation' do
+          it 'passes validation' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['valid']).to eq(true)
+            expect(json_response['warnings']).to eq([])
+            expect(json_response['errors']).to eq([])
+          end
+        end
+
+        context 'when unauthenticated' do
+          let_it_be(:api_user) { nil }
+
+          it_behaves_like 'passing validation'
+
+          context 'when the FF ci_require_api_token_for_ci_lint is disabled' do
+            before do
+              stub_feature_flags(ci_require_api_token_for_ci_lint: false)
+            end
+
+            it_behaves_like 'passing validation'
+          end
+        end
+
+        context 'when authenticated as project developer' do
+          let_it_be(:api_user) { create(:user) }
+
+          before do
+            project.add_developer(api_user)
+          end
+
+          it_behaves_like 'passing validation'
+
+          context 'when the FF ci_require_api_token_for_ci_lint is disabled' do
+            before do
+              stub_feature_flags(ci_require_api_token_for_ci_lint: false)
+            end
+
+            it_behaves_like 'passing validation'
           end
         end
       end

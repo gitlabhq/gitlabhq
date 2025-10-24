@@ -2,6 +2,7 @@ import './clipboard';
 import './clipboard_event';
 import './create_object_url';
 import './data_transfer';
+import './document_scrolling_element';
 import './domrect';
 import './drag_event';
 import './element_scroll_by';

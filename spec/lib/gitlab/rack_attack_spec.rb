@@ -52,6 +52,95 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures, feature_category: :rate_
       expect(fake_rack_attack).to have_received(:throttled_responder=).with(an_instance_of(Proc))
     end
 
+    describe 'throttled_responder' do
+      let(:request) { instance_double(Rack::Request, env: env) }
+      let(:env) do
+        {
+          'rack.attack.matched' => 'throttle_unauthenticated',
+          'rack.attack.match_data' => { some: 'data' }
+        }
+      end
+
+      let(:responder) do
+        captured_proc = nil
+        allow(fake_rack_attack).to receive(:throttled_responder=) do |proc|
+          captured_proc = proc
+        end
+        described_class.configure(fake_rack_attack)
+        captured_proc
+      end
+
+      context 'when RequestThrottleData.from_rack_attack returns valid data' do
+        let(:throttle_data) { instance_double(described_class::RequestThrottleData) }
+        let(:headers) do
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '60',
+            'Retry-After' => '1830'
+          }
+        end
+
+        before do
+          allow(described_class::RequestThrottleData).to receive(:from_rack_attack)
+            .with('throttle_unauthenticated', { some: 'data' })
+            .and_return(throttle_data)
+          allow(throttle_data).to receive(:throttled_response_headers).and_return(headers)
+        end
+
+        it 'returns 429 status with rate limit headers' do
+          status, response_headers, body = responder.call(request)
+
+          expect(status).to eq(429)
+          expect(response_headers).to include(headers)
+          expect(response_headers['Content-Type']).to eq('text/plain')
+          expect(body).to eq([Gitlab::Throttle.rate_limiting_response_text])
+        end
+      end
+
+      context 'when RequestThrottleData.from_rack_attack returns nil' do
+        before do
+          allow(described_class::RequestThrottleData).to receive(:from_rack_attack)
+            .with('throttle_unauthenticated', { some: 'data' })
+            .and_return(nil)
+        end
+
+        it 'returns 429 status without rate limit headers' do
+          status, response_headers, body = responder.call(request)
+
+          expect(status).to eq(429)
+          expect(response_headers).to eq({ 'Content-Type' => 'text/plain' })
+          expect(response_headers).not_to have_key('RateLimit-Name')
+          expect(response_headers).not_to have_key('Retry-After')
+          expect(body).to eq([Gitlab::Throttle.rate_limiting_response_text])
+        end
+      end
+
+      context 'when feature rate_limiting_headers_for_unthrottled_requests is disabled' do
+        let(:headers) do
+          {
+            'RateLimit-Name' => 'throttle_unauthenticated',
+            'RateLimit-Limit' => '60',
+            'Retry-After' => '1830'
+          }
+        end
+
+        before do
+          stub_feature_flags(rate_limiting_headers_for_unthrottled_requests: false)
+
+          allow(described_class).to receive(:throttled_response_headers).and_return(headers)
+        end
+
+        it 'returns 429 status with rate limit headers' do
+          status, response_headers, body = responder.call(request)
+
+          expect(status).to eq(429)
+          expect(response_headers).to include(headers)
+          expect(response_headers['Content-Type']).to eq('text/plain')
+          expect(body).to eq([Gitlab::Throttle.rate_limiting_response_text])
+        end
+      end
+    end
+
     it 'configures the safelist' do
       described_class.configure(fake_rack_attack)
 
@@ -119,8 +208,8 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures, feature_category: :rate_
     end
   end
 
-  describe '.throttled_response_headers' do
-    where(:matched, :match_data, :headers) do
+  describe '.throttled_response_headers (deprecated)' do
+    where(:matched, :match_data, :expected_headers) do
       [
         [
           'throttle_unauthenticated',
@@ -316,8 +405,9 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures, feature_category: :rate_
     end
 
     with_them do
-      it 'generates accurate throttled headers' do
-        expect(described_class.throttled_response_headers(matched, match_data)).to eql(headers)
+      it 'generates accurate common rate limit headers' do
+        headers = Gitlab::RackAttack.throttled_response_headers(matched, match_data)
+        expect(headers).to include(expected_headers)
       end
     end
   end

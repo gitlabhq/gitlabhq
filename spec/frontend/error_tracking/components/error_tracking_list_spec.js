@@ -14,6 +14,7 @@ import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import TimelineChart from '~/error_tracking/components/timeline_chart.vue';
@@ -21,6 +22,8 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import errorsList from './list_mock.json';
 
 Vue.use(Vuex);
+
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('ErrorTrackingList', () => {
   let store;
@@ -537,9 +540,8 @@ describe('ErrorTrackingList', () => {
         });
 
         it('fetches the next page of results', () => {
-          window.scrollTo = jest.fn();
           findPagination().vm.$emit('input', 2);
-          expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0 });
+          expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0 }, wrapper.element);
           expect(actions.fetchPaginatedResults).toHaveBeenCalled();
           expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),

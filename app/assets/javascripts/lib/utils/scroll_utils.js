@@ -1,12 +1,47 @@
 import $ from 'jquery';
-import { defer } from 'lodash';
+import { defer, memoize } from 'lodash';
 import { contentTop } from './common_utils';
 
-const SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
+const DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
+const DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-dynamic-panel-inner';
 
-const getScrollContainer = () => {
-  return document.querySelector(SCROLL_CONTAINER_SELECTOR);
+const getPanelScrollingElement = (contextElement) => {
+  const staticPanel = contextElement?.closest(DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR);
+  if (staticPanel) {
+    return staticPanel;
+  }
+
+  const dynamicPanel = contextElement?.closest(DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR);
+  if (dynamicPanel) {
+    return dynamicPanel;
+  }
+
+  // Return the default panel
+  return (
+    document.querySelector(DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR) || document.scrollingElement
+  );
 };
+
+const getApplicationScrollingElement = (contextElement) => {
+  if (window.gon?.features?.projectStudioEnabled) {
+    // We still return `document.scrollingElement` for pages that don't have panels, like login or error pages
+    return getPanelScrollingElement(contextElement) || document.scrollingElement;
+  }
+  return document.scrollingElement;
+};
+
+/**
+ * Finds a known scrolling element according to the element provided.
+ * If the element is not provided, it defaults to the default panel.
+ *
+ * If no panel is found, it returns document.scrollingElement.
+ * If `projectStudioEnabled` is disabled, it returns the document.scrollingElement.
+ *
+ * It is memoized for results with the same element.
+ *
+ * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
+ */
+export const getScrollingElement = memoize(getApplicationScrollingElement);
 
 const getScrollBehavior = (behavior = 'smooth') => {
   if (behavior === 'smooth' && window.matchMedia(`(prefers-reduced-motion: reduce)`).matches) {
@@ -19,13 +54,14 @@ const getScrollBehavior = (behavior = 'smooth') => {
 
 /**
  * Checks if container (or document if container is not found) is scrolled
- * down all the way to the bottom
+ * down all the way to the bottom.
  *
+ * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
  * @returns {Boolean}
  */
-export const isScrolledToBottom = (scrollContainer = getScrollContainer()) => {
+export const isScrolledToBottom = (contextElement) => {
   // Use clientHeight to account for any horizontal scrollbar.
-  const { scrollHeight, scrollTop, clientHeight } = scrollContainer || document.documentElement;
+  const { scrollHeight, scrollTop, clientHeight } = getScrollingElement(contextElement);
 
   // scrollTop can be a float, so round up to next integer.
   return Math.ceil(scrollTop + clientHeight) >= scrollHeight;
@@ -34,56 +70,53 @@ export const isScrolledToBottom = (scrollContainer = getScrollContainer()) => {
 /**
  * Checks if container (or document if container is not found) is scrolled to the top
  *
+ * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is used.
  * @returns {Boolean}
  */
-export const isScrolledToTop = (scrollContainer = getScrollContainer()) => {
-  const { scrollTop } = scrollContainer || document.documentElement;
+export const isScrolledToTop = (contextElement) => {
+  const { scrollTop } = getScrollingElement(contextElement);
 
   return scrollTop === 0;
 };
 
-export const scrollDown = (scrollContainer = getScrollContainer()) => {
-  if (scrollContainer) {
-    scrollContainer.scrollTo({ top: scrollContainer.scrollHeight });
-  } else {
-    // eslint-disable-next-line no-restricted-properties
-    window.scrollTo({ top: document.body.scrollHeight });
-  }
-};
-
-export const scrollUp = (scrollContainer = getScrollContainer()) => {
-  if (scrollContainer) {
-    scrollContainer.scrollTo({ top: 0 });
-  } else {
-    // eslint-disable-next-line no-restricted-properties
-    window.scrollTo({ top: 0 });
-  }
-};
-
 /**
- * @param {Element} element The element to find the parent panel scrolling element for.
- * @returns {Element | null}
+ * Scroll to the bottom of the scrolling element.
+ *
+ * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
  */
-export const findParentPanelScrollingEl = (element) => {
-  if (!element) return null;
-  const staticPanel = element.closest('.js-static-panel');
-  if (staticPanel) {
-    return staticPanel.querySelector('.js-static-panel-inner');
-  }
-  const dynamicPanel = element.closest('.js-dynamic-panel');
-  if (dynamicPanel) {
-    return dynamicPanel.querySelector('.js-dynamic-panel-inner');
-  }
-  return null;
+export const scrollDown = (contextElement) => {
+  const scrollingElement = getScrollingElement(contextElement);
+  const { scrollHeight } = scrollingElement;
+
+  scrollingElement.scrollTo({ top: scrollHeight });
 };
 
 /**
+ * Scroll to the bottom of the scrolling element.
+ *
+ * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
+ */
+export const scrollUp = (contextElement) => {
+  getScrollingElement(contextElement).scrollTo({ top: 0 });
+};
+
+/**
+ * Scrolls to the top  of the scrolling element with smooth behavior, respecting user's motion preferences.
+ *
+ * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
+ */
+export const smoothScrollTop = (contextElement) => {
+  getScrollingElement(contextElement).scrollTo({ top: 0, behavior: getScrollBehavior() });
+};
+
+/**
+ * Scrolls to the provided location.
+ *
  * @param {ScrollToOptions} options The options to pass to Element.scrollTo
- * @param {Element} element The element to use when searching for the correct scrolling element
+ * @param {Element} [contextElement] The element to find the scrolling element. If not provided, the default panel or document.scrollingElement is scrolled.
  */
-export const scrollTo = (options, element) => {
-  const scroller = findParentPanelScrollingEl(element) || window;
-  scroller.scrollTo(options);
+export const scrollTo = (options, contextElement) => {
+  getScrollingElement(contextElement).scrollTo(options);
 };
 
 /**
@@ -96,16 +129,12 @@ export const scrollTo = (options, element) => {
  * @param {HTMLElement | String} [options.parent] The parent HTML element or query selector to scroll.
  */
 export const scrollToElement = (element, options = {}) => {
-  let scrollingEl = window;
   let el = element;
   if (element instanceof $) {
     // eslint-disable-next-line prefer-destructuring
     el = element[0];
   } else if (typeof el === 'string') {
     el = document.querySelector(element);
-  }
-  if (window.gon?.features?.projectStudioEnabled) {
-    scrollingEl = findParentPanelScrollingEl(el) || window;
   }
 
   if (el && el.getBoundingClientRect) {
@@ -114,32 +143,16 @@ export const scrollToElement = (element, options = {}) => {
     defer(() => {
       const { offset = 0, parent } = options;
       const behavior = getScrollBehavior(options?.behavior);
-      const scrollTop = scrollingEl.scrollTop ?? scrollingEl.pageYOffset;
-      const y = el.getBoundingClientRect().top + scrollTop + offset - contentTop();
 
+      let scrollContainer = getScrollingElement(el);
       if (parent && typeof parent === 'string') {
-        scrollingEl = document.querySelector(parent);
+        scrollContainer = document.querySelector(parent);
       } else if (parent) {
-        scrollingEl = parent;
+        scrollContainer = parent;
       }
+      const y = el.getBoundingClientRect().top + scrollContainer.scrollTop + offset - contentTop();
 
-      scrollingEl.scrollTo({ top: y, behavior });
+      scrollContainer.scrollTo({ top: y, behavior });
     });
   }
 };
-
-/**
- * Scrolls with smooth behavior, respecting user's motion preferences.
- * @param {ScrollToOptions} [options] - Additional scroll options
- */
-export function smoothScrollTo(options) {
-  // eslint-disable-next-line no-restricted-properties -- we should remove this method and move to `scrollTo`.
-  window.scrollTo({ ...options, behavior: getScrollBehavior() });
-}
-
-/**
- * Scrolls to the top of the page with smooth behavior, respecting user's motion preferences.
- */
-export function smoothScrollTop() {
-  smoothScrollTo({ top: 0 });
-}

@@ -62,19 +62,46 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items title'
     it_behaves_like 'work items description'
     it_behaves_like 'work items award emoji'
-    it_behaves_like 'work items linked items'
-    it_behaves_like 'work items comments', :issue
+
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554457' do
+      it_behaves_like 'work items linked items'
+    end
+
+    context 'with quarantine', quarantine: {
+      issue: [
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/562627',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/562624'
+      ]
+    } do
+      it_behaves_like 'work items comments', :issue
+    end
+
     it_behaves_like 'work items toggle status button'
 
-    it_behaves_like 'work items todos'
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556213' do
+      it_behaves_like 'work items todos'
+    end
+
     it_behaves_like 'work items lock discussion', 'issue'
     it_behaves_like 'work items confidentiality'
     it_behaves_like 'work items notifications'
 
     it_behaves_like 'work items assignees'
     it_behaves_like 'work items labels', 'project'
-    it_behaves_like 'work items milestone'
-    it_behaves_like 'work items time tracking'
+
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562633' do
+      it_behaves_like 'work items milestone'
+    end
+
+    context 'with quarantine', quarantine: {
+      issue: [
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/556967',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/554934'
+      ]
+    } do
+      it_behaves_like 'work items time tracking'
+    end
+
     it_behaves_like 'work items due dates'
     it_behaves_like 'work items crm contacts'
   end

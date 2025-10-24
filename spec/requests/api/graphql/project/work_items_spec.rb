@@ -570,7 +570,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
-  context 'with development widget' do
+  context 'with development widget', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508211' do
     context 'for closing merge requests field' do
       let(:work_items) { [item1, item2] }
       let(:fields) do

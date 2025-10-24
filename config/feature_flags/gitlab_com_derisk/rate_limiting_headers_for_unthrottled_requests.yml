@@ -1,0 +1,10 @@
+---
+name: rate_limiting_headers_for_unthrottled_requests
+description: Return rate limiting headers for unthrottled requests
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209485
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578191
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/25770
+milestone: '18.6'
+type: gitlab_com_derisk
+group: group::networking_and_incident_management
+default_enabled: false

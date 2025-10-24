@@ -4,61 +4,75 @@ import {
   scrollDown,
   scrollUp,
   scrollTo,
-  findParentPanelScrollingEl,
+  getScrollingElement,
   scrollToElement,
-  smoothScrollTo,
   smoothScrollTop,
 } from '~/lib/utils/scroll_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
-const makePanelHtmlStub = (
-  outerClass = 'js-static-panel',
-  innerClass = 'js-static-panel-inner',
-) => {
-  return `<div class="${outerClass}">
-    <div class="${innerClass}" id="scroller">
-      <div id="test" />
-    </div>
-  </div>`;
-};
-
 describe('scroll utils', () => {
-  let windowScrollTo;
-  let elementScrollTo;
+  const findElem = () => document.querySelector('#element');
+  const findElemInDynamicPanel = () => document.querySelector('#element-in-dynamic-panel');
+  const findStaticPanelInner = () => document.querySelector('.js-static-panel-inner');
+  const findDynamicPanelInner = () => document.querySelector('.js-dynamic-panel-inner');
+  const findDocumentScrollingElement = () => document.scrollingElement;
 
-  const setUpScrollEnvironment = ({ ...getters }) => {
-    Object.defineProperty(global.window, 'scrollTo', { value: windowScrollTo });
-    Object.defineProperty(Element.prototype, 'scrollTo', { value: elementScrollTo });
+  const setupEnvironment = ({
+    projectStudioEnabled = false,
+    getBoundingClientRect,
+    ...getters
+  } = {}) => {
+    if (projectStudioEnabled) {
+      window.gon = { features: { projectStudioEnabled: true } };
 
-    Object.entries(getters).forEach(([name, value]) => {
-      jest.spyOn(Element.prototype, name, 'get').mockReturnValue(value);
-    });
+      setHTMLFixture(`
+        <div>
+          <div class="js-static-panel-inner">
+            <div id="element"></div>
+          </div>
+          <div class="js-dynamic-panel-inner">
+            <div id="element-in-dynamic-panel"></div>
+          </div>
+        </div>
+      `);
+
+      Object.entries(getters).forEach(([name, value]) => {
+        jest.spyOn(findStaticPanelInner(), name, 'get').mockReturnValue(value);
+        jest.spyOn(findDynamicPanelInner(), name, 'get').mockReturnValue(value);
+      });
+    } else {
+      window.gon = { features: {} };
+
+      setHTMLFixture('<div id="scroller"><div id="element" /></div>');
+
+      Object.entries(getters).forEach(([name, value]) => {
+        jest.spyOn(findDocumentScrollingElement(), name, 'get').mockReturnValue(value);
+      });
+    }
+
+    if (getBoundingClientRect) {
+      if (findElem()) {
+        jest.spyOn(findElem(), 'getBoundingClientRect').mockReturnValue(getBoundingClientRect);
+      }
+      if (findElemInDynamicPanel()) {
+        jest
+          .spyOn(findElemInDynamicPanel(), 'getBoundingClientRect')
+          .mockReturnValue(getBoundingClientRect);
+      }
+    }
   };
-
-  const setUpContainer = () => {
-    setHTMLFixture('<div class="js-static-panel-inner">');
-  };
-
-  beforeEach(() => {
-    windowScrollTo = jest.fn();
-    elementScrollTo = jest.fn();
-  });
 
   afterEach(() => {
+    window.gon = { features: null };
+    getScrollingElement.cache.clear(); // clear lodash's memoize cache
     resetHTMLFixture();
   });
 
   describe.each`
-    case                                    | useContainer
+    case                                    | projectStudioEnabled
     ${'with window as scrolling container'} | ${true}
     ${'with panel as scrolling container'}  | ${false}
-  `('$case', ({ useContainer }) => {
-    beforeEach(() => {
-      if (useContainer) {
-        setUpContainer();
-      }
-    });
-
+  `('$case', ({ projectStudioEnabled }) => {
     describe('isScrolledToBottom', () => {
       it.each`
         context                                                           | scrollTop | scrollHeight | result
@@ -67,7 +81,7 @@ describe('scroll utils', () => {
         ${'returns true when scrolled to bottom with subpixel precision'} | ${999.25} | ${2000}      | ${true}
         ${'returns true when cannot scroll'}                              | ${0}      | ${500}       | ${true}
       `('$context', ({ scrollTop, scrollHeight, result }) => {
-        setUpScrollEnvironment({ scrollTop, clientHeight: 1000, scrollHeight });
+        setupEnvironment({ projectStudioEnabled, scrollTop, clientHeight: 1000, scrollHeight });
 
         expect(isScrolledToBottom()).toBe(result);
       });
@@ -79,7 +93,7 @@ describe('scroll utils', () => {
         ${'returns true when scrolled to top'}     | ${0}      | ${2000}      | ${true}
         ${'returns true when not scrolled to top'} | ${1000}   | ${2000}      | ${false}
       `('$context', ({ scrollTop, scrollHeight, result }) => {
-        setUpScrollEnvironment({ scrollTop, clientHeight: 1000, scrollHeight });
+        setupEnvironment({ projectStudioEnabled, scrollTop, clientHeight: 1000, scrollHeight });
 
         expect(isScrolledToTop()).toBe(result);
       });
@@ -88,285 +102,230 @@ describe('scroll utils', () => {
 
   describe('scrollDown', () => {
     it('scrolls container to top', () => {
-      setUpContainer();
-      setUpScrollEnvironment({ scrollHeight: 2000 });
+      setupEnvironment({ projectStudioEnabled: true, scrollHeight: 2000 });
 
       scrollDown();
 
-      expect(elementScrollTo).toHaveBeenCalledWith({ top: 2000 });
+      expect(findStaticPanelInner().scrollTo).toHaveBeenCalledWith({ top: 2000 });
     });
 
     it('scrolls window to top', () => {
-      setUpScrollEnvironment({ scrollHeight: 2000 });
+      setupEnvironment({ scrollHeight: 2000 });
 
       scrollDown();
 
-      expect(windowScrollTo).toHaveBeenCalledWith({ top: 2000 });
+      expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({ top: 2000 });
     });
   });
 
   describe('scrollUp', () => {
     it('scrolls container to top', () => {
-      setUpContainer();
-      setUpScrollEnvironment({ scrollHeight: 2000 });
+      setupEnvironment({ projectStudioEnabled: true, scrollHeight: 2000 });
 
       scrollUp();
 
-      expect(elementScrollTo).toHaveBeenCalledWith({ top: 0 });
+      expect(findStaticPanelInner().scrollTo).toHaveBeenCalledWith({ top: 0 });
     });
 
     it('scrolls window to top', () => {
-      setUpScrollEnvironment({ scrollHeight: 2000 });
+      setupEnvironment({ scrollHeight: 2000 });
 
       scrollUp();
 
-      expect(windowScrollTo).toHaveBeenCalledWith({ top: 0 });
+      expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({ top: 0 });
     });
   });
 
   describe('scrollTo', () => {
     describe('when inside a panel', () => {
       it('calls `scrollTo` on the panel', () => {
-        document.body.innerHTML = makePanelHtmlStub();
-        const target = document.getElementById('test');
-        const scroller = document.getElementById('scroller');
-        const scrollerSpy = jest.spyOn(scroller, 'scrollTo');
+        setupEnvironment({ projectStudioEnabled: true });
 
-        scrollTo({ top: 0 }, target);
+        scrollTo({ top: 0 }, findElem());
 
-        expect(scrollerSpy).toHaveBeenCalledWith({ top: 0 });
+        expect(findStaticPanelInner().scrollTo).toHaveBeenCalledWith({ top: 0 });
       });
     });
     describe('when not inside a panel', () => {
       it('calls `scrollTo` on the window', () => {
-        const spy = jest.spyOn(window, 'scrollTo');
         scrollTo({ top: 0 }, document.body);
-        expect(spy).toHaveBeenCalledWith({ top: 0 });
+
+        expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({ top: 0 });
       });
     });
   });
 
-  describe('findParentPanelScrollingEl', () => {
-    afterEach(() => {
-      document.body.innerHTML = '';
-    });
-
+  describe('getScrollingElement', () => {
     it('handles null/undefined elements', () => {
-      expect(findParentPanelScrollingEl(null)).toBeNull();
-      expect(findParentPanelScrollingEl(undefined)).toBeNull();
+      setupEnvironment({ projectStudioEnabled: false });
+
+      expect(getScrollingElement(null)).toBe(document.scrollingElement);
+      expect(getScrollingElement(undefined)).toBe(document.scrollingElement);
     });
 
     describe('when element is inside a panel', () => {
       it.each`
-        panelType    | panelClass            | innerClass
-        ${'static'}  | ${'js-static-panel'}  | ${'js-static-panel-inner'}
-        ${'dynamic'} | ${'js-dynamic-panel'} | ${'js-dynamic-panel-inner'}
-      `('returns $panelType panel inner element', ({ panelClass, innerClass }) => {
-        document.body.innerHTML = makePanelHtmlStub(panelClass, innerClass);
+        panelType    | elementFinder             | innerClass
+        ${'static'}  | ${findElem}               | ${'js-static-panel-inner'}
+        ${'dynamic'} | ${findElemInDynamicPanel} | ${'js-dynamic-panel-inner'}
+      `('returns $panelType panel inner element', ({ elementFinder, innerClass }) => {
+        setupEnvironment({ projectStudioEnabled: true });
 
-        const element = document.getElementById('test');
-        const inner = document.querySelector(`.${innerClass}`);
+        const element = elementFinder();
+        const container = document.querySelector(`.${innerClass}`);
 
-        expect(findParentPanelScrollingEl(element)).toBe(inner);
+        expect(getScrollingElement(element)).toBe(container);
       });
     });
 
     describe('when element is not inside a proper panel', () => {
       it.each`
-        scenario      | html
-        ${'no panel'} | ${'<div id="test" />'}
-        ${'no inner'} | ${'<div class="js-static-panel"><div id="test" /></div>'}
-      `('returns null for $scenario', ({ html }) => {
-        document.body.innerHTML = html;
-        const element = document.getElementById('test');
+        scenario                 | html
+        ${'no panel'}            | ${'<div id="element" />'}
+        ${'no inner'}            | ${'<div class="js-static-panel"><div id="element"></div></div>'}
+        ${'no inner in dynamic'} | ${'<div class="js-dynamic-panel"><div id="element"></div></div>'}
+      `('returns window as fallback for $scenario', ({ html }) => {
+        window.gon = { features: { projectStudioEnabled: true } };
+        setHTMLFixture(html);
 
-        expect(findParentPanelScrollingEl(element)).toBeNull();
+        const element = document.getElementById('element');
+
+        expect(getScrollingElement(element)).toBe(document.scrollingElement);
       });
     });
   });
 
   describe('scrollToElement', () => {
-    let parentElem;
-    let elem;
-    const windowHeight = 550;
     const elemTop = 100;
-    const parentId = 'parent_scroll_test';
-    const id = 'scroll_test';
 
-    beforeEach(() => {
-      parentElem = document.createElement('div');
-      parentElem.id = parentId;
-      elem = document.createElement('div');
-      elem.id = id;
-      parentElem.appendChild(elem);
-      document.body.appendChild(parentElem);
-
-      window.innerHeight = windowHeight;
-      window.mrTabs = { currentAction: 'show' };
-
-      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
-      jest.spyOn(parentElem, 'scrollTo').mockImplementation(() => {});
-      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
-    });
-
-    afterEach(() => {
-      window.scrollTo.mockRestore();
-      parentElem.scrollTo.mockRestore();
-      Element.prototype.getBoundingClientRect.mockRestore();
-      elem.remove();
-      parentElem.remove();
-    });
-
-    describe('scrollToElement with HTMLElement', () => {
-      it('scrolls to element', () => {
-        scrollToElement(elem);
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elemTop,
-        });
+    describe('when project studio is disabled', () => {
+      beforeEach(() => {
+        setupEnvironment({ projectStudioEnabled: false, getBoundingClientRect: { top: elemTop } });
       });
 
-      it('scrolls to element with behavior: auto', () => {
-        scrollToElement(elem, { behavior: 'auto' });
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'auto',
-          top: elemTop,
-        });
-      });
+      describe('scrollToElement with HTMLElement', () => {
+        it('scrolls to element', () => {
+          scrollToElement(findElem());
 
-      it('scrolls to element with behavior: instant', () => {
-        scrollToElement(elem, { behavior: 'instant' });
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'instant',
-          top: elemTop,
-        });
-      });
-
-      it('scrolls to element with offset', () => {
-        const offset = 50;
-        scrollToElement(elem, { offset });
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elemTop + offset,
-        });
-      });
-
-      it('scrolls to element within a parent', () => {
-        scrollToElement(elem, { parent: parentElem });
-        expect(parentElem.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elemTop,
-        });
-      });
-
-      describe('when prefers-reduced-motion: reduce', () => {
-        beforeEach(() => {
-          jest.spyOn(window, 'matchMedia').mockReturnValueOnce({ matches: true });
-        });
-
-        it('overrides smooth behavior', () => {
-          scrollToElement(elem, { behavior: 'smooth' });
-          expect(window.scrollTo).toHaveBeenCalledWith({
+          expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+            behavior: 'smooth',
             top: elemTop,
-            behavior: 'auto',
           });
         });
 
-        it('does not override auto behavior', () => {
-          scrollToElement(elem, { behavior: 'auto' });
-          expect(window.scrollTo).toHaveBeenCalledWith({
-            top: elemTop,
+        it('scrolls to element with behavior: auto', () => {
+          scrollToElement(findElem(), { behavior: 'auto' });
+          expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
             behavior: 'auto',
+            top: elemTop,
           });
         });
 
-        it('does not override instant behavior', () => {
-          scrollToElement(elem, { behavior: 'instant' });
-          expect(window.scrollTo).toHaveBeenCalledWith({
-            top: elemTop,
+        it('scrolls to element with behavior: instant', () => {
+          scrollToElement(findElem(), { behavior: 'instant' });
+          expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
             behavior: 'instant',
+            top: elemTop,
+          });
+        });
+
+        it('scrolls to element with offset', () => {
+          const offset = 50;
+          scrollToElement(findElem(), { offset });
+          expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+            behavior: 'smooth',
+            top: elemTop + offset,
+          });
+        });
+
+        it('scrolls to element within a parent', () => {
+          const parent = document.querySelector('#scroller');
+
+          scrollToElement(findElem(), { parent });
+          expect(parent.scrollTo).toHaveBeenCalledWith({
+            behavior: 'smooth',
+            top: elemTop,
+          });
+        });
+
+        describe('when prefers-reduced-motion: reduce', () => {
+          beforeEach(() => {
+            jest.spyOn(window, 'matchMedia').mockReturnValueOnce({ matches: true });
+          });
+
+          it('overrides smooth behavior', () => {
+            scrollToElement(findElem(), { behavior: 'smooth' });
+            expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+              top: elemTop,
+              behavior: 'auto',
+            });
+          });
+
+          it('does not override auto behavior', () => {
+            scrollToElement(findElem(), { behavior: 'auto' });
+            expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+              top: elemTop,
+              behavior: 'auto',
+            });
+          });
+
+          it('does not override instant behavior', () => {
+            scrollToElement(findElem(), { behavior: 'instant' });
+            expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+              top: elemTop,
+              behavior: 'instant',
+            });
           });
         });
       });
-    });
 
-    describe('scrollToElement with Selector', () => {
-      it('scrolls to element', () => {
-        scrollToElement(`#${id}`);
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elemTop,
+      describe('scrollToElement with Selector', () => {
+        it('scrolls to element', () => {
+          scrollToElement('#element');
+          expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+            behavior: 'smooth',
+            top: elemTop,
+          });
         });
-      });
 
-      it('scrolls to element with offset', () => {
-        const offset = 50;
-        scrollToElement(`#${id}`, { offset });
-        expect(window.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elemTop + offset,
+        it('scrolls to element with offset', () => {
+          const offset = 50;
+          scrollToElement('#element', { offset });
+          expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+            behavior: 'smooth',
+            top: elemTop + offset,
+          });
         });
-      });
 
-      it('scrolls to element within a parent', () => {
-        scrollToElement(`#${id}`, { parent: `#${parentId}` });
-        expect(parentElem.scrollTo).toHaveBeenCalledWith({
-          behavior: 'smooth',
-          top: elemTop,
+        it('scrolls to element within a parent', () => {
+          const parent = document.querySelector('#scroller');
+
+          scrollToElement('#element', { parent });
+          expect(parent.scrollTo).toHaveBeenCalledWith({
+            behavior: 'smooth',
+            top: elemTop,
+          });
         });
       });
     });
 
     describe('when project studio is enabled', () => {
       beforeEach(() => {
-        window.gon = {
-          features: {
-            projectStudioEnabled: true,
-          },
-        };
+        setupEnvironment({ projectStudioEnabled: true, getBoundingClientRect: { top: elemTop } });
       });
 
       it('scrolls the static panel', () => {
-        const staticPanelContainer = document.createElement('div');
-        staticPanelContainer.classList.add('js-static-panel');
-
-        const staticPanelScroller = document.createElement('div');
-        staticPanelScroller.classList.add('js-static-panel-inner');
-
-        staticPanelContainer.appendChild(staticPanelScroller);
-
-        staticPanelScroller.appendChild(elem);
-
-        document.body.appendChild(staticPanelContainer);
-
-        jest.spyOn(staticPanelScroller, 'scrollTo').mockImplementation(() => {});
-        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
-
-        scrollToElement(elem);
-        expect(staticPanelScroller.scrollTo).toHaveBeenCalledWith({
+        scrollToElement(findElem());
+        expect(findStaticPanelInner().scrollTo).toHaveBeenCalledWith({
           behavior: 'smooth',
           top: elemTop,
         });
       });
 
       it('scrolls the dynamic panel', () => {
-        const dynamicPanelContainer = document.createElement('div');
-        dynamicPanelContainer.classList.add('js-dynamic-panel');
+        scrollToElement(findElemInDynamicPanel());
 
-        const dynamicPanelScroller = document.createElement('div');
-        dynamicPanelScroller.classList.add('js-dynamic-panel-inner');
-
-        dynamicPanelContainer.appendChild(dynamicPanelScroller);
-
-        dynamicPanelScroller.appendChild(elem);
-
-        document.body.appendChild(dynamicPanelContainer);
-
-        jest.spyOn(dynamicPanelScroller, 'scrollTo').mockImplementation(() => {});
-        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
-
-        scrollToElement(elem);
-        expect(dynamicPanelScroller.scrollTo).toHaveBeenCalledWith({
+        expect(findDynamicPanelInner().scrollTo).toHaveBeenCalledWith({
           behavior: 'smooth',
           top: elemTop,
         });
@@ -375,55 +334,13 @@ describe('scroll utils', () => {
   });
 
   describe('smooth_scroll', () => {
-    let scrollToSpy;
-
-    beforeEach(() => {
-      scrollToSpy = jest.spyOn(window, 'scrollTo');
-    });
-
-    afterEach(() => {
-      scrollToSpy.mockRestore();
-    });
-
-    describe('smoothScrollTo', () => {
-      describe('when user prefers reduced motion', () => {
-        beforeEach(() => {
-          jest.spyOn(window, 'matchMedia').mockReturnValueOnce({ matches: true });
-        });
-
-        it('calls scrollTo with the provided options', () => {
-          smoothScrollTo({ top: 100 });
-
-          expect(scrollToSpy).toHaveBeenCalledWith({
-            top: 100,
-            behavior: 'auto',
-          });
-        });
-      });
-
-      describe('when user does not prefer reduced motion', () => {
-        beforeEach(() => {
-          jest.spyOn(window, 'matchMedia').mockReturnValue({ matches: false });
-        });
-
-        it('calls scrollTo with the provided options', () => {
-          smoothScrollTo({ top: 100 });
-
-          expect(scrollToSpy).toHaveBeenCalledWith({
-            top: 100,
-            behavior: 'smooth',
-          });
-        });
-      });
-    });
-
     describe('smoothScrollTop', () => {
       it('calls scrollTo with top 0', () => {
         smoothScrollTop();
 
-        expect(scrollToSpy).toHaveBeenCalledWith({
+        expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
           top: 0,
-          behavior: expect.stringMatching('auto|smooth'),
+          behavior: 'smooth',
         });
       });
     });

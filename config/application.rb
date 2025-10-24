@@ -83,6 +83,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/json_validation')
     require_dependency Rails.root.join('lib/gitlab/middleware/path_traversal_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
+    require_dependency Rails.root.join('lib/gitlab/middleware/rack_attack_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
@@ -428,6 +429,9 @@ module Gitlab
     config.middleware.insert_after Rails::Rack::Logger, ::Gitlab::Middleware::BasicHealthCheck
 
     config.middleware.insert_after Warden::Manager, Rack::Attack
+
+    # Add rate limit headers to all responses from Rack::Attack
+    config.middleware.insert_after Rack::Attack, ::Gitlab::Middleware::RackAttackHeaders
 
     config.middleware.insert_before ActionDispatch::Cookies, ::Gitlab::Middleware::SameSiteCookies
 

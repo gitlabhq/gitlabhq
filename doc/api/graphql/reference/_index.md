@@ -26901,6 +26901,7 @@ Represents a summary of the compared codequality report.
 | <a id="commitid"></a>`id` | [`ID!`](#id) | ID (global ID) of the commit. |
 | <a id="commitmessage"></a>`message` | [`String`](#string) | Raw commit message. |
 | <a id="commitname"></a>`name` | [`String`](#string) | Name or title of the object. |
+| <a id="commitparentsha"></a>`parentSha` | [`String`](#string) | SHA ID of the first parent. |
 | <a id="commitsha"></a>`sha` | [`String!`](#string) | SHA1 ID of the commit. |
 | <a id="commitshortid"></a>`shortId` | [`String!`](#string) | Short SHA1 ID of the commit. |
 | <a id="commitsignature"></a>`signature` | [`CommitSignature`](#commitsignature) | Signature of the commit. |
@@ -33742,6 +33743,7 @@ Represents the Geo sync and verification state of a group wiki repository.
 | <a id="groupscommitdata"></a>`commitData` | [`CommitData`](#commitdata) | HTML data derived from commit needed to present blame. |
 | <a id="groupslineno"></a>`lineno` | [`Int!`](#int) | Starting line number for the commit group. |
 | <a id="groupslines"></a>`lines` | [`[String!]!`](#string) | Array of lines added for the commit group. |
+| <a id="groupspreviouspath"></a>`previousPath` | [`String`](#string) | Path to the file in the commit's first parent. |
 | <a id="groupsspan"></a>`span` | [`Int!`](#int) | Number of contiguous lines which the blame spans for the commit group. |
 
 ### `HelmFileMetadata`
