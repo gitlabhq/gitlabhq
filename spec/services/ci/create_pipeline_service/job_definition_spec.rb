@@ -75,18 +75,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         expect(job.metadata).to be_nil
       end
     end
-
-    context 'when the FF stop_writing_builds_metadata is disabled' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      it 'also saves metadata for jobs' do
-        pipeline.processables.each do |job|
-          expect(job.metadata).not_to be_nil
-        end
-      end
-    end
   end
 
   context 'when there are jobs with run steps' do

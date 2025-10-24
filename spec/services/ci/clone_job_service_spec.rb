@@ -169,7 +169,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
 
       context 'when the job definitions do not exit' do
         before do
-          job.ensure_metadata
+          create(:ci_build_metadata, build: job)
           Ci::JobDefinitionInstance.delete_all
           Ci::JobDefinition.delete_all
         end
@@ -181,15 +181,24 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
       end
 
       context 'when a job definition for the metadata attributes already exits' do
+        let(:metadata) do
+          create(:ci_build_metadata, build: job,
+            config_options: job.options,
+            config_variables: job.yaml_variables,
+            id_tokens: job.id_tokens,
+            interruptible: job.interruptible
+          )
+        end
+
         let(:config) do
           {
-            options: job.metadata.config_options,
-            yaml_variables: job.metadata.config_variables,
-            id_tokens: job.metadata.id_tokens,
-            secrets: job.metadata.secrets,
+            options: metadata.config_options,
+            yaml_variables: metadata.config_variables,
+            id_tokens: metadata.id_tokens,
+            secrets: metadata.secrets,
             tag_list: job.tag_list.to_a,
             run_steps: job.try(:execution_config)&.run_steps || [],
-            interruptible: job.metadata.interruptible
+            interruptible: metadata.interruptible
           }
         end
 
@@ -202,13 +211,6 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
 
         before do
-          job.ensure_metadata.update!(
-            config_options: job.options,
-            config_variables: job.yaml_variables,
-            id_tokens: job.id_tokens,
-            interruptible: job.interruptible
-          )
-
           Ci::JobDefinitionInstance.delete_all
           Ci::JobDefinition.fabricate(**attributes).save!
           job.reload # clear the associated records
@@ -284,45 +286,6 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         it 'does not write to ci_builds_metadata' do
           expect { new_job }.to not_change { Ci::BuildMetadata.count }
         end
-
-        context 'when FF `stop_writing_builds_metadata` is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'persists the expanded environment name in metadata' do
-            expect { new_job }.to change { Ci::BuildMetadata.count }.by(1)
-            expect(new_job.metadata.expanded_environment_name).to eq('production')
-          end
-        end
-      end
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        # The responsibility of linking the new job to the existing persisted environment
-        # has been moved to Ci::RetryJobService using Ci::Deployable#link_to_environment.
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        context 'when it has a dynamic environment' do
-          let_it_be(:other_developer) { create(:user, developer_of: project) }
-
-          let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
-
-          let!(:job) do
-            create(:ci_build, :with_deployment,
-              environment: environment_name,
-              options: { environment: { name: environment_name } },
-              pipeline: pipeline, stage_id: stage.id, project: project,
-              user: other_developer)
-          end
-
-          it 're-uses the previous persisted environment' do
-            expect(job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
-
-            expect(new_job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
-          end
-        end
       end
 
       context 'when the job has job variables' do
@@ -330,21 +293,6 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
           expect(new_job.job_variables.size).to eq(1)
           expect(new_job.job_variables.first.key).to eq(internal_job_variable.key)
           expect(new_job.job_variables.first.value).to eq(internal_job_variable.value)
-        end
-      end
-
-      # Remove with stop_writing_builds_metadata
-      context 'when writing to builds metadata' do
-        before do
-          job.clear_memoization(:can_write_metadata?)
-          job.ensure_metadata.update!(interruptible: true)
-
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'clones the interruptible job attribute' do
-          expect(new_job.interruptible).not_to be_nil
-          expect(new_job.interruptible).to eq job.interruptible
         end
       end
 

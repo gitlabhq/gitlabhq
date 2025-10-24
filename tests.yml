@@ -266,6 +266,29 @@ mapping:
       - 'spec/lib/gitlab/ci/templates/templates_spec.rb'
       - 'ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb'
 
+  - source: 'lib/gitlab/ci/templates/Jobs/SAST\..*gitlab-ci\.yml'
+    test:
+      - 'ee/spec/lib/gitlab/ci/templates/sast_gitlab_ci_yaml_spec.rb'
+      - 'ee/spec/lib/gitlab/ci/templates/sast_latest_gitlab_ci_yaml_spec.rb'
+      - 'ee/spec/lib/gitlab/ci/templates/sast_iac_gitlab_ci_yaml_spec.rb'
+      - 'ee/spec/lib/gitlab/ci/templates/sast_iac_latest_gitlab_ci_yaml_spec.rb'
+
+  - source: 'lib/gitlab/ci/templates/Jobs/Dependency-Scanning\..*gitlab-ci\.yml'
+    test:
+      - 'ee/spec/lib/gitlab/ci/templates/dependency_scanning_gitlab_ci_yaml_spec.rb'
+      - 'ee/spec/lib/gitlab/ci/templates/dependency_scanning_latest_gitlab_ci_yaml_spec.rb'
+      - 'ee/spec/lib/gitlab/ci/templates/dependency_scanning_v2_gitlab_ci_yaml_spec.rb'
+
+  - source: 'lib/gitlab/ci/templates/Jobs/Container-Scanning\..*gitlab-ci\.yml'
+    test:
+      - 'ee/spec/lib/gitlab/ci/templates/container_scanning_gitlab_ci_yaml_spec.rb'
+      - 'ee/spec/lib/gitlab/ci/templates/container_scanning_latest_gitlab_ci_yaml_spec.rb'
+
+  - source: 'lib/gitlab/ci/templates/Jobs/Secret-Detection\..*.gitlab-ci\.yml'
+    test:
+      - 'ee/spec/lib/gitlab/ci/templates/secret_detection_gitlab_ci_yaml_spec.rb'
+      - 'ee/spec/lib/gitlab/ci/templates/secret_detection_latest_gitlab_ci_yaml_spec.rb'
+
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/8021
   - source: 'public/robots\.txt'
     test:

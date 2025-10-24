@@ -1,15 +1,15 @@
 <script>
 import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { newWorkItemPath, canRouterNav, getDraftWorkItemType } from '~/work_items/utils';
 import {
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  sprintfWorkItem,
-  ROUTES,
-  RELATED_ITEM_ID_URL_QUERY_PARAM,
   NAME_TO_ENUM_MAP,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  NAME_TO_TEXT_MAP,
+  RELATED_ITEM_ID_URL_QUERY_PARAM,
+  ROUTES,
   WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
@@ -148,25 +148,20 @@ export default {
         query: this.newWorkItemPathQuery,
       });
     },
-    selectedWorkItemTypeLowercase() {
-      return NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName];
-    },
     newWorkItemButtonText() {
       return this.alwaysShowWorkItemTypeSelect && this.selectedWorkItemTypeName
-        ? sprintfWorkItem(s__('WorkItem|New %{workItemType}'), '')
+        ? s__('WorkItem|New item')
         : this.newWorkItemText;
     },
     newWorkItemText() {
-      return sprintfWorkItem(
-        s__('WorkItem|New %{workItemType}'),
-        this.selectedWorkItemTypeLowercase,
-      );
+      return sprintf(s__('WorkItem|New %{workItemType}'), {
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+      });
     },
     workItemCreatedText() {
-      return sprintfWorkItem(
-        s__('WorkItem|%{workItemType} created'),
-        this.selectedWorkItemTypeLowercase,
-      );
+      return sprintf(s__('WorkItem|%{workItemType} created'), {
+        workItemType: NAME_TO_TEXT_MAP[this.selectedWorkItemTypeName],
+      });
     },
   },
   watch: {

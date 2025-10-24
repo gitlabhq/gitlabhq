@@ -32,22 +32,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
       it { is_expected.to include(when: 'delayed') }
 
-      # Remove when the FF `stop_writing_builds_metadata` is removed.
-      it { is_expected.not_to have_key(:options) }
-
       it 'assigns config attributes to job definition' do
         expect(seed_attributes[:temp_job_definition]).to have_attributes(
           interruptible: false,
           config: { options: { start_in: '3 hours' }, yaml_variables: [] }
         )
-      end
-
-      context 'when the FF stop_writing_builds_metadata is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it { is_expected.to include(when: 'delayed', options: { start_in: '3 hours' }) }
       end
     end
 
@@ -111,21 +100,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
         it { is_expected.to include(when: 'delayed') }
 
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:options) }
-
         it 'assigns options to job definition' do
           expect(seed_attributes[:temp_job_definition]).to have_attributes(
             config: a_hash_including(options: { start_in: '3 hours' })
           )
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it { is_expected.to include(when: 'delayed', options: { start_in: '3 hours' }) }
         end
       end
 
@@ -189,27 +167,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         }
       end
 
-      # Remove when the FF `stop_writing_builds_metadata` is removed.
-      it { is_expected.not_to have_key(:yaml_variables) }
-
       it 'assigns options to job definition' do
         expect(seed_attributes[:temp_job_definition].config[:yaml_variables]).to match_array(
           [{ key: 'VAR1', value: 'new var 1' },
             { key: 'VAR3', value: 'var 3' },
             { key: 'VAR2', value: 'var 2' }]
         )
-      end
-
-      context 'when the FF stop_writing_builds_metadata is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it do
-          is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'new var 1' },
-            { key: 'VAR3', value: 'var 3' },
-            { key: 'VAR2', value: 'var 2' }])
-        end
       end
     end
 
@@ -347,23 +310,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       context 'when rule evaluates to true' do
         let(:rules) { [{ if: '$VAR == null', interruptible: true }] }
 
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:interruptible) }
-
         it 'overrides the job interruptible value' do
           expect(seed_attributes[:temp_job_definition]).to have_attributes(
             config: a_hash_including(interruptible: true)
           )
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'overrides the job interruptible value' do
-            is_expected.to include(interruptible: true)
-          end
         end
 
         context 'when job does not have an interruptible value' do
@@ -380,19 +330,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               config: a_hash_including(interruptible: true)
             )
           end
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          it { is_expected.not_to have_key(:interruptible) }
-
-          context 'when the FF stop_writing_builds_metadata is disabled' do
-            before do
-              stub_feature_flags(stop_writing_builds_metadata: false)
-            end
-
-            it 'adds interruptible value to the job' do
-              is_expected.to include(interruptible: true)
-            end
-          end
         end
 
         context 'when rules:interruptible is not specified' do
@@ -402,19 +339,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
             expect(seed_attributes[:temp_job_definition]).to have_attributes(
               config: a_hash_including(interruptible: false)
             )
-          end
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          it { is_expected.not_to have_key(:interruptible) }
-
-          context 'when the FF stop_writing_builds_metadata is disabled' do
-            before do
-              stub_feature_flags(stop_writing_builds_metadata: false)
-            end
-
-            it 'does not change the job interruptible value' do
-              is_expected.to include(interruptible: false)
-            end
           end
         end
       end
@@ -426,19 +350,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           expect(seed_attributes[:temp_job_definition]).to have_attributes(
             config: a_hash_including(interruptible: false)
           )
-        end
-
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:interruptible) }
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'does not change the job interruptible value' do
-            is_expected.to include(interruptible: false)
-          end
         end
       end
     end
@@ -455,14 +366,52 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
       it { is_expected.to include(tag_list: ['static-tag', 'value', '$NO_VARIABLE']) }
 
-      # Remove when the FF `stop_writing_builds_metadata` is removed.
-      it { is_expected.not_to have_key(:yaml_variables) }
-
       it { expect(subject[:temp_job_definition].config).to include({ tag_list: ['static-tag', 'value', '$NO_VARIABLE'] }) }
 
       it 'assigns yaml_variables to job definition' do
         expect(seed_attributes[:temp_job_definition].config[:yaml_variables]).to match_array(
           [{ key: 'VARIABLE', value: 'value' }]
+        )
+      end
+    end
+
+    context 'with job:inputs' do
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          inputs: {
+            string_input: {
+              type: 'string',
+              default: 'default value'
+            },
+            number_input: {
+              type: 'number',
+              default: 666
+            }
+          }
+        }
+      end
+
+      # Remove when the FF `stop_writing_builds_metadata` is removed.
+      it { is_expected.not_to have_key(:options) }
+
+      it 'assigns inputs to job definition options' do
+        expect(seed_attributes[:temp_job_definition]).to have_attributes(
+          config: a_hash_including(
+            options: a_hash_including(
+              inputs: {
+                string_input: {
+                  type: 'string',
+                  default: 'default value'
+                },
+                number_input: {
+                  type: 'number',
+                  default: 666
+                }
+              }
+            )
+          )
         )
       end
 
@@ -471,7 +420,22 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           stub_feature_flags(stop_writing_builds_metadata: false)
         end
 
-        it { is_expected.to include(yaml_variables: [{ key: 'VARIABLE', value: 'value' }]) }
+        it 'includes inputs in the options hash' do
+          is_expected.to include(
+            options: a_hash_including(
+              inputs: {
+                string_input: {
+                  type: 'string',
+                  default: 'default value'
+                },
+                number_input: {
+                  type: 'number',
+                  default: 666
+                }
+              }
+            )
+          )
+        end
       end
     end
 
@@ -486,21 +450,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         }
       end
 
-      # Remove when the FF `stop_writing_builds_metadata` is removed.
-      it { is_expected.not_to have_key(:options) }
-
       it 'assigns options to job definition' do
         expect(seed_attributes[:temp_job_definition]).to have_attributes(
           config: a_hash_including(options: { cache: [a_hash_including(key: 'a-value')] })
         )
-      end
-
-      context 'when the FF stop_writing_builds_metadata is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it { is_expected.to include(options: { cache: [a_hash_including(key: 'a-value')] }) }
       end
 
       context 'with cache:key:files' do
@@ -523,25 +476,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
             })
           )
         end
-
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:options) }
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'includes cache options' do
-            cache_options = {
-              options: {
-                cache: [a_hash_including(key: '0_VERSION-30be75a2f82c8279268f1a442c1c60913cd11739')]
-              }
-            }
-
-            is_expected.to include(cache_options)
-          end
-        end
       end
 
       context 'with cache:key:prefix' do
@@ -557,21 +491,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           }
         end
 
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:options) }
-
         it 'assigns cache options to job definition' do
           expect(seed_attributes[:temp_job_definition]).to have_attributes(
             config: a_hash_including(options: { cache: [a_hash_including(key: 'something-default')] })
           )
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it { is_expected.to include(options: { cache: [a_hash_including(key: 'something-default')] }) }
         end
       end
 
@@ -595,25 +518,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               cache: [a_hash_including(key: 'something-30be75a2f82c8279268f1a442c1c60913cd11739')]
             })
           )
-        end
-
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:options) }
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'includes cache options' do
-            cache_options = {
-              options: {
-                cache: [a_hash_including(key: 'something-30be75a2f82c8279268f1a442c1c60913cd11739')]
-              }
-            }
-
-            is_expected.to include(cache_options)
-          end
         end
       end
     end
@@ -649,21 +553,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
 
       context 'when rules does not override allow_failure' do
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:options) }
-
         it 'assigns options to job definition' do
           expect(seed_attributes[:temp_job_definition]).to have_attributes(
             config: a_hash_including(options: options)
           )
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it { is_expected.to match a_hash_including(options: options) }
         end
       end
 
@@ -672,21 +565,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           [{ if: '$VAR == null', when: 'always', allow_failure: true }]
         end
 
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:options) }
-
         it 'assigns options to job definition' do
           expect(seed_attributes[:temp_job_definition]).to have_attributes(
             config: a_hash_including(options: { allow_failure_criteria: nil })
           )
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it { is_expected.to match a_hash_including(options: { allow_failure_criteria: nil }) }
         end
       end
 
@@ -695,21 +577,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           [{ if: '$VAR == null', when: 'always', allow_failure: false }]
         end
 
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:options) }
-
         it 'assigns options to job definition' do
           expect(seed_attributes[:temp_job_definition]).to have_attributes(
             config: a_hash_including(options: { allow_failure_criteria: nil })
           )
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it { is_expected.to match a_hash_including(options: { allow_failure_criteria: nil }) }
         end
       end
     end
@@ -744,24 +615,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
                 { key: 'VAR4', value: 'new var pipeline 4' }]
             )
           end
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          it { is_expected.not_to have_key(:yaml_variables) }
-
-          context 'when the FF stop_writing_builds_metadata is disabled' do
-            before do
-              stub_feature_flags(stop_writing_builds_metadata: false)
-            end
-
-            it 'returns calculated yaml variables' do
-              expect(subject[:yaml_variables]).to match_array(
-                [{ key: 'VAR1', value: 'var overridden pipeline 1' },
-                  { key: 'VAR2', value: 'var 2' },
-                  { key: 'VAR3', value: 'var 3' },
-                  { key: 'VAR4', value: 'new var pipeline 4' }]
-              )
-            end
-          end
         end
 
         context 'when root_variables_inheritance is false' do
@@ -772,22 +625,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               [{ key: 'VAR2', value: 'var 2' },
                 { key: 'VAR3', value: 'var 3' }]
             )
-          end
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          it { is_expected.not_to have_key(:yaml_variables) }
-
-          context 'when the FF stop_writing_builds_metadata is disabled' do
-            before do
-              stub_feature_flags(stop_writing_builds_metadata: false)
-            end
-
-            it 'returns job variables' do
-              expect(subject[:yaml_variables]).to match_array(
-                [{ key: 'VAR2', value: 'var 2' },
-                  { key: 'VAR3', value: 'var 3' }]
-              )
-            end
           end
         end
 
@@ -801,23 +638,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
                 { key: 'VAR3', value: 'var 3' }]
             )
           end
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          it { is_expected.not_to have_key(:yaml_variables) }
-
-          context 'when the FF stop_writing_builds_metadata is disabled' do
-            before do
-              stub_feature_flags(stop_writing_builds_metadata: false)
-            end
-
-            it 'returns calculated yaml variables' do
-              expect(subject[:yaml_variables]).to match_array(
-                [{ key: 'VAR1', value: 'var overridden pipeline 1' },
-                  { key: 'VAR2', value: 'var 2' },
-                  { key: 'VAR3', value: 'var 3' }]
-              )
-            end
-          end
         end
       end
 
@@ -828,21 +648,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           expect(seed_attributes[:temp_job_definition].config[:yaml_variables]).to match_array(
             [{ key: 'VAR2', value: 'var 2' },
               { key: 'VAR3', value: 'var 3' }])
-        end
-
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:yaml_variables) }
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'returns seed yaml variables' do
-            expect(subject[:yaml_variables]).to match_array(
-              [{ key: 'VAR2', value: 'var 2' },
-                { key: 'VAR3', value: 'var 3' }])
-          end
         end
       end
     end
@@ -870,22 +675,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               { key: 'VAR2', value: 'new var 2' }]
           )
         end
-
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:yaml_variables) }
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'recalculates the variables' do
-            expect(subject[:yaml_variables]).to contain_exactly(
-              { key: 'VAR1', value: 'overridden var 1' },
-              { key: 'VAR2', value: 'new var 2' }
-            )
-          end
-        end
       end
 
       context 'when the rules use root variables' do
@@ -904,22 +693,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           )
         end
 
-        # Remove when the FF `stop_writing_builds_metadata` is removed.
-        it { is_expected.not_to have_key(:yaml_variables) }
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'recalculates the variables' do
-            expect(subject[:yaml_variables]).to contain_exactly(
-              { key: 'VAR1', value: 'overridden var 1' },
-              { key: 'VAR2', value: 'overridden var 2' }
-            )
-          end
-        end
-
         context 'when the root_variables_inheritance is false' do
           let(:root_variables_inheritance) { false }
 
@@ -927,19 +700,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
             expect(seed_attributes[:temp_job_definition].config[:yaml_variables]).to match_array(
               [{ key: 'VAR1', value: 'var 1' }]
             )
-          end
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          it { is_expected.not_to have_key(:yaml_variables) }
-
-          context 'when the FF stop_writing_builds_metadata is disabled' do
-            before do
-              stub_feature_flags(stop_writing_builds_metadata: false)
-            end
-
-            it 'does not recalculate the variables' do
-              expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'var 1' })
-            end
           end
         end
       end
@@ -973,18 +733,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         expect(subject[:temp_job_definition].config[:interruptible]).to eq(attributes[:interruptible])
       end
 
-      context 'when the FF stop_writing_builds_metadata is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'preserves original job attributes' do
-          expect(subject[:options]).to eq(attributes[:options])
-          expect(subject[:yaml_variables]).to eq(attributes[:yaml_variables])
-          expect(subject[:interruptible]).to eq(attributes[:interruptible])
-        end
-      end
-
       context 'with id_tokens' do
         let(:attributes) do
           {
@@ -998,19 +746,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
         it 'includes id_tokens in temp_job_definition' do
           expect(subject[:temp_job_definition].config[:id_tokens]).to eq(attributes[:id_tokens])
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          expect(subject).not_to have_key(:id_tokens)
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'includes id_tokens in build attributes' do
-            expect(subject[:id_tokens]).to eq(attributes[:id_tokens])
-          end
         end
       end
 
@@ -1029,19 +764,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
         it 'includes secrets in temp_job_definition' do
           expect(subject[:temp_job_definition].config[:secrets]).to eq(attributes[:secrets])
-
-          # Remove when the FF `stop_writing_builds_metadata` is removed.
-          expect(subject).not_to have_key(:secrets)
-        end
-
-        context 'when the FF stop_writing_builds_metadata is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it 'includes secrets in build attributes' do
-            expect(subject[:secrets]).to eq(attributes[:secrets])
-          end
         end
       end
 
@@ -1130,18 +852,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
           expect(checksum1).not_to eq(checksum2)
         end
       end
-
-      context 'when stop_writing_builds_metadata feature flag is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'includes original job attributes' do
-          expect(subject[:options]).to eq(attributes[:options])
-          expect(subject[:yaml_variables]).to eq(attributes[:yaml_variables])
-          expect(subject[:interruptible]).to eq(attributes[:interruptible])
-        end
-      end
     end
 
     describe 'propagating composite identity', :request_store do
@@ -1158,17 +868,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       it 'does not propagate composite identity by default' do
         expect(seed_attributes[:temp_job_definition].config[:options].key?(:scoped_user_id)).to be(false)
         expect(seed_attributes.key?(:scoped_user_id)).to be(false)
-      end
-
-      context 'when the FF stop_writing_builds_metadata is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'does not propagate composite identity by default' do
-          expect(seed_attributes[:options].key?(:scoped_user_id)).to be(false)
-          expect(seed_attributes.key?(:scoped_user_id)).to be(false)
-        end
       end
     end
   end
@@ -1633,16 +1332,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
               expect(seed_build.attributes[:temp_job_definition]).to have_attributes(
                 config: a_hash_including(options: { start_in: '1 day' })
               )
-            end
-
-            context 'when the FF stop_writing_builds_metadata is disabled' do
-              before do
-                stub_feature_flags(stop_writing_builds_metadata: false)
-              end
-
-              it 'correctly populates when:' do
-                expect(seed_build.attributes).to include(when: 'delayed', options: { start_in: '1 day' })
-              end
             end
           end
         end

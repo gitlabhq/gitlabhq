@@ -40,7 +40,7 @@ RSpec.shared_examples 'a degenerable job' do
 
   describe '#degenerate!' do
     before do
-      job.ensure_metadata
+      create(:ci_build_metadata, build: job)
       job.needs.create!(name: 'another-job')
     end
 

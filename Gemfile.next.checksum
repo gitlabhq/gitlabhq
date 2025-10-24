@@ -256,7 +256,7 @@
 {"name":"google-apis-container_v1beta1","version":"0.91.0","platform":"ruby","checksum":"9639664bf4876059627b44e3feca67cf34bb48c3520d60fbdfc42f4f37f5c299"},
 {"name":"google-apis-core","version":"0.18.0","platform":"ruby","checksum":"96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee"},
 {"name":"google-apis-dns_v1","version":"0.36.0","platform":"ruby","checksum":"5dd273d78ab37d03d1bc07837186f79ad0399e9f2b8b1ec2629ed682ea347d47"},
-{"name":"google-apis-iam_v1","version":"0.73.0","platform":"ruby","checksum":"6f181165f161dd4d53e98c412d345d262114b2e26ef790d57a754f1fcf436a49"},
+{"name":"google-apis-iam_v1","version":"0.79.0","platform":"ruby","checksum":"dc014a4cc18c964795f9423f13e032f30ae037ec3b4325d852dee5df67577ae8"},
 {"name":"google-apis-iamcredentials_v1","version":"0.24.0","platform":"ruby","checksum":"5774dac78fb7b527895735252e2f76bf183b5a4462517256330327a1749c6384"},
 {"name":"google-apis-monitoring_v3","version":"0.54.0","platform":"ruby","checksum":"677fe1dce5b4cc937813303b020962fffb86f50a1f61f6422516937b5ad46128"},
 {"name":"google-apis-pubsub_v1","version":"0.45.0","platform":"ruby","checksum":"1dfe4614c781250a0d4491be43e134936d5c08adc75a843e27d4bb66ba3cb205"},

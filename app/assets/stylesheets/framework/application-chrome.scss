@@ -262,14 +262,16 @@
     @apply gl-top-0;
   }
 
-  // Super sidebar height
-  #super-sidebar {
-    @apply gl-h-full lg:-gl-mr-3;
-
-    @include media-breakpoint-down(lg) {
+  @include media-breakpoint-down(lg) {
+    .page-with-super-sidebar:not(.super-sidebar-has-css-transitions-blocked) #super-sidebar {
       @apply gl-fixed #{!important};
       @apply gl-rounded-r-[1rem];
     }
+  }
+
+  // Super sidebar height
+  #super-sidebar {
+    @apply gl-h-full lg:-gl-mr-3;
 
     .contextual-nav {
       @apply gl-pt-2;
@@ -877,7 +879,7 @@
   }
 
   @supports (width: calc-size(auto, size)) {
-    .super-sidebar,
+    .super-sidebar.super-sidebar-toggled-manually,
     .panels-container {
       width: calc-size(auto, size);
       /* stylelint-disable-next-line property-no-unknown */

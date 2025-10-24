@@ -150,9 +150,13 @@ module Ci
     end
 
     def self.fabricate(attrs)
+      attrs = attrs.dup
+      definition_attrs = attrs.extract!(*Ci::JobDefinition::CONFIG_ATTRIBUTES)
+      attrs[:tag_list] = definition_attrs[:tag_list] if definition_attrs.key?(:tag_list)
+
       new(attrs).tap do |build|
         job_definition = ::Ci::JobDefinition.fabricate(
-          config: attrs,
+          config: definition_attrs,
           project_id: build.project_id,
           partition_id: build.partition_id
         )

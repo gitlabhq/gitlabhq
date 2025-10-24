@@ -180,6 +180,28 @@ RSpec.describe '1_settings', feature_category: :shared do
     end
   end
 
+  describe 'openbao_authentication_token_secret_file_path' do
+    after do
+      Settings.openbao['authentication_token_secret_file_path'] = nil
+      load_settings
+    end
+
+    it 'is set the correct default path' do
+      Settings.openbao['authentication_token_secret_file_path'] = nil
+      load_settings
+
+      expect(Settings.openbao.authentication_token_secret_file_path)
+      .to eq(Rails.root.join('.gitlab_openbao_authentication_token_secret'))
+    end
+
+    it 'uses the configured value' do
+      Settings.openbao['authentication_token_secret_file_path'] = '/custom/path'
+      load_settings
+
+      expect(Settings.openbao.authentication_token_secret_file_path).to eq('/custom/path')
+    end
+  end
+
   describe 'cron jobs', unless: Gitlab.ee? do
     let(:expected_jobs) do
       %w[

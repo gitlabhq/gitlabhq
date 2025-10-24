@@ -83,9 +83,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   describe '.clone_accessors' do
     it 'returns the correct list of attributes to clone' do
       expected_accessors = %i[
-        pipeline project ref tag options name
-        allow_failure stage_idx
-        yaml_variables when environment description needs_attributes
+        pipeline project ref tag name allow_failure stage_idx
+        when environment description needs_attributes
         scheduling_type ci_stage partition_id resource_group
       ]
 
@@ -1091,26 +1090,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
-  describe 'metadata support' do
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    it 'reads YAML variables correctly' do
-      expect(bridge.yaml_variables).not_to be_empty
-      expect(bridge.metadata).to be_a Ci::BuildMetadata
-      expect(bridge.read_attribute(:yaml_variables)).to be_nil
-      expect(bridge.metadata.config_variables).to eq bridge.yaml_variables
-    end
-
-    it 'reads options correctly' do
-      expect(bridge.options).not_to be_empty
-      expect(bridge.metadata).to be_a Ci::BuildMetadata
-      expect(bridge.read_attribute(:options)).to be_nil
-      expect(bridge.metadata.config_options).to eq bridge.options
-    end
-  end
-
   describe '#triggers_child_pipeline?' do
     subject { bridge.triggers_child_pipeline? }
 
@@ -1366,35 +1345,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
         it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
       end
-    end
-  end
-
-  describe 'metadata partitioning' do
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    let(:pipeline) do
-      create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id)
-    end
-
-    let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
-
-    let(:bridge) do
-      build(:ci_bridge, pipeline: pipeline, ci_stage: ci_stage)
-    end
-
-    it 'creates the metadata record and assigns its partition' do
-      # The record is initialized by the factory calling metadatable setters
-      bridge.metadata = nil
-
-      expect(bridge.metadata).to be_nil
-
-      expect(bridge.save!).to be_truthy
-
-      expect(bridge.metadata).to be_present
-      expect(bridge.metadata).to be_valid
-      expect(bridge.metadata.partition_id).to eq(ci_testing_partition_id)
     end
   end
 

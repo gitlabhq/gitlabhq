@@ -38,6 +38,7 @@ instructions:
         - Unexpected sort operations
         - Verify the query returns expected records (not zero rows)
         - Check that maximum query execution time is under 100ms
+      9. Flag comments that only describe what code does (e.g., "# Loop through users") rather than why. Suggest removing these comments and using better naming or method extraction instead
 
   - name: Database Migrations
     fileFilters:

@@ -536,6 +536,10 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`user_authenticated_using_job_token`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164546) | A user is authenticated using job token | {{< icon name="dotted-circle" >}} No | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
+| [`secrets_manager_create_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a project level secret is created by a user | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
+| [`secrets_manager_delete_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a project level secret is deleted by a user | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
+| [`secrets_manager_read_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a CI pipeline job reads the value of a project level secret from Openbao | {{< icon name="dotted-circle" >}} No | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
+| [`secrets_manager_update_project_secret`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205780) | This event is triggered when a project level secret is updated by a user | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/554056) | Project |
 
 ### Security policy management
 

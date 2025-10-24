@@ -2479,6 +2479,12 @@ msgstr ""
 msgid "AICatalog| Draft node"
 msgstr ""
 
+msgid "AICatalog|A private %{itemType}:"
+msgstr ""
+
+msgid "AICatalog|A public %{itemType}:"
+msgstr ""
+
 msgid "AICatalog|A public agent can be made private only if it is not used."
 msgstr ""
 
@@ -2518,6 +2524,9 @@ msgstr ""
 msgid "AICatalog|Always use latest version"
 msgstr ""
 
+msgid "AICatalog|Anyone can see your prompts and settings. Don't include sensitive data or reference internal systems."
+msgstr ""
+
 msgid "AICatalog|Anyone can view and use the agent."
 msgstr ""
 
@@ -2548,10 +2557,25 @@ msgstr ""
 msgid "AICatalog|Build agents and flows to automate tasks and solve complex problems."
 msgstr ""
 
+msgid "AICatalog|Can be enabled in other projects, and used in public flows."
+msgstr ""
+
+msgid "AICatalog|Can't be enabled in other projects, or used in public flows."
+msgstr ""
+
+msgid "AICatalog|Can't be made public if enabled in a project."
+msgstr ""
+
+msgid "AICatalog|Can't be shared, even within your organization."
+msgstr ""
+
 msgid "AICatalog|Choose who can view and interact with this agent."
 msgstr ""
 
 msgid "AICatalog|Choose who can view and interact with this flow."
+msgstr ""
+
+msgid "AICatalog|Community contributions."
 msgstr ""
 
 msgid "AICatalog|Configuration"
@@ -2603,6 +2627,9 @@ msgid "AICatalog|Create agent"
 msgstr ""
 
 msgid "AICatalog|Create flow"
+msgstr ""
+
+msgid "AICatalog|Creating proprietary business logic."
 msgstr ""
 
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
@@ -2722,6 +2749,12 @@ msgstr ""
 msgid "AICatalog|Instructions"
 msgstr ""
 
+msgid "AICatalog|Is visible only to users with at least the Developer role in this project."
+msgstr ""
+
+msgid "AICatalog|Is visible to all users."
+msgstr ""
+
 msgid "AICatalog|Modify the agent settings and configuration."
 msgstr ""
 
@@ -2758,7 +2791,13 @@ msgstr ""
 msgid "AICatalog|Only public agents can be used in public flows."
 msgstr ""
 
+msgid "AICatalog|Open source projects."
+msgstr ""
+
 msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
+msgstr ""
+
+msgid "AICatalog|Private %{itemTypePlural} are best for:"
 msgstr ""
 
 msgid "AICatalog|Project"
@@ -2770,10 +2809,16 @@ msgstr ""
 msgid "AICatalog|Project members will be able to run this %{itemType}."
 msgstr ""
 
+msgid "AICatalog|Project-specific automation."
+msgstr ""
+
 msgid "AICatalog|Prompts"
 msgstr ""
 
 msgid "AICatalog|Provide a brief description."
+msgstr ""
+
+msgid "AICatalog|Public %{itemTypePlural} are best for:"
 msgstr ""
 
 msgid "AICatalog|Remove agent from this project"
@@ -2804,6 +2849,9 @@ msgid "AICatalog|Select tools that this agent will have access to."
 msgstr ""
 
 msgid "AICatalog|Selected %{itemType}"
+msgstr ""
+
+msgid "AICatalog|Shared resources."
 msgstr ""
 
 msgid "AICatalog|Source project"
@@ -2884,10 +2932,16 @@ msgstr ""
 msgid "AICatalog|Visibility & access"
 msgstr ""
 
+msgid "AICatalog|Working with sensitive data."
+msgstr ""
+
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
 msgid "AICatalog|agent"
+msgstr ""
+
+msgid "AICatalog|agents"
 msgstr ""
 
 msgid "AICatalog|cannot be changed as it has been released"
@@ -2903,6 +2957,9 @@ msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
 msgstr ""
 
 msgid "AICatalog|flow"
+msgstr ""
+
+msgid "AICatalog|flows"
 msgstr ""
 
 msgid "AICatalog|is private to another project"
@@ -3212,6 +3269,9 @@ msgid "AWS secret access key (Optional)"
 msgstr ""
 
 msgid "Abort"
+msgstr ""
+
+msgid "About"
 msgstr ""
 
 msgid "About GitLab"
@@ -14237,6 +14297,9 @@ msgid "Close %{noteable}"
 msgstr ""
 
 msgid "Close design"
+msgstr ""
+
+msgid "Close file tree browser"
 msgstr ""
 
 msgid "Close milestone"
@@ -74615,15 +74678,39 @@ msgstr ""
 msgid "WorkItems|Your preferences"
 msgstr ""
 
-msgid "WorkItem| %{workItemType}s closed"
-msgstr ""
-
 msgid "WorkItem|%d item"
 msgid_plural "WorkItem|%d items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "WorkItem|%{count} epics closed"
+msgstr ""
+
+msgid "WorkItem|%{count} incidents closed"
+msgstr ""
+
+msgid "WorkItem|%{count} issues closed"
+msgstr ""
+
+msgid "WorkItem|%{count} key results closed"
+msgstr ""
+
 msgid "WorkItem|%{count} more assignees"
+msgstr ""
+
+msgid "WorkItem|%{count} objectives closed"
+msgstr ""
+
+msgid "WorkItem|%{count} requirements closed"
+msgstr ""
+
+msgid "WorkItem|%{count} tasks closed"
+msgstr ""
+
+msgid "WorkItem|%{count} test cases closed"
+msgstr ""
+
+msgid "WorkItem|%{count} tickets closed"
 msgstr ""
 
 msgid "WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again."
@@ -75269,6 +75356,9 @@ msgid "WorkItem|New %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|New custom field"
+msgstr ""
+
+msgid "WorkItem|New item"
 msgstr ""
 
 msgid "WorkItem|New related %{workItemType}"

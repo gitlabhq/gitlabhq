@@ -326,7 +326,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
 
       context 'when metadata exists' do
         before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
+          create(:ci_build_metadata, build: build)
         end
 
         it 'returns default values' do

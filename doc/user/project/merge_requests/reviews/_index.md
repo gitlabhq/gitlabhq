@@ -200,7 +200,13 @@ until you publish the comment:
 
 ## Submit a review
 
-When you submit a review, GitLab does the following:
+{{< history >}}
+
+- Using **Approve** to submit pending review comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562579) in GitLab 18.6.
+
+{{< /history >}}
+
+When you submit a review, GitLab:
 
 - Publishes the comments in your review.
 - Sends a single email to every notifiable user of the merge request, with your
@@ -208,7 +214,14 @@ When you submit a review, GitLab does the following:
 - Performs any quick actions you added to your review comments.
 - Shows the outcome of your review.
 
-1. In the upper right, select **Your review** to show details about your review:
+To submit your review of a merge request quickly:
+
+- Go to the merge request widget and select **Approve**. The merge request is also approved by you.
+- Use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
+
+To read through and edit your review comments when you submit your review:
+
+1. On the top right, select **Your review** to show details about your review:
 
    ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_3.png)
 
@@ -223,8 +236,6 @@ When you submit a review, GitLab does the following:
 1. Optional. Write a summary of your review. GitLab Premium and Ultimate users can select
    **Add summary** ({{< icon name="tanuki-ai">}}) to create a summary for you. Include any
    quick actions you want performed.
-
-You can also use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
 
 ### Discard your pending review
 

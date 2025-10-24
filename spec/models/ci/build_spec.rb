@@ -187,7 +187,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     describe 'with_secure_reports_from_metadata_config_options' do
       let_it_be(:pipeline) { create(:ci_empty_pipeline) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
-      let_it_be_with_refind(:build_metadata) { build.ensure_metadata.tap(&:save!) }
+      let_it_be_with_refind(:build_metadata) { create(:ci_build_metadata, build: build) }
       let(:job_types) { %w[sast secret_detection] }
 
       subject(:query) { described_class.with_secure_reports_from_metadata_config_options(job_types) }
@@ -258,14 +258,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like "when build receives #{action} event"
-
-        context 'when FF `stop_writing_builds_metadata` is disabled' do
-          before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
-          it_behaves_like "when build receives #{action} event"
-        end
       end
     end
 
@@ -306,14 +298,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             end
 
             it_behaves_like "when build receives #{action} event"
-
-            context 'when FF `stop_writing_builds_metadata` is disabled' do
-              before do
-                stub_feature_flags(stop_writing_builds_metadata: false)
-              end
-
-              it_behaves_like "when build receives #{action} event"
-            end
           end
         end
 
@@ -2330,18 +2314,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(build.options['image']).to be_nil
     end
 
-    context 'when allowed to write metadata' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      let(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: []) }
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
-      end
-    end
-
     it 'does not persist data in build' do
       expect(build.read_attribute(:options)).to be_nil
     end
@@ -4053,16 +4025,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it_behaves_like 'having consistent representation'
 
-    context 'when allowed to write to metadata' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
-      end
-    end
-
     it 'does not persist data in build' do
       expect(build.read_attribute(:yaml_variables)).to be_nil
     end
@@ -4275,14 +4237,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it_behaves_like 'saves data on transition'
-      end
     end
 
     context "when runner timeout doesn't override project timeout" do
@@ -4294,14 +4248,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it_behaves_like 'saves data on transition'
-      end
     end
   end
 
@@ -5101,14 +5047,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
-  end
-
-  it_behaves_like 'a degenerable job' do
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    subject(:job) { create(:ci_build, pipeline: pipeline) }
   end
 
   describe '#invalid_dependencies' do
@@ -5913,30 +5851,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe 'metadata partitioning' do
-    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
-
-    let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
-    let(:build) { FactoryBot.build(:ci_build, pipeline: pipeline, ci_stage: ci_stage) }
-
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    it 'creates the metadata record and assigns its partition' do
-      # The record is initialized by the factory calling metadatable setters
-      build.metadata = nil
-
-      expect(build.metadata).to be_nil
-
-      expect(build.save!).to be_truthy
-
-      expect(build.metadata).to be_present
-      expect(build.metadata).to be_valid
-      expect(build.metadata.partition_id).to eq(ci_testing_partition_id)
-    end
-  end
-
   describe 'secrets management id_tokens usage data' do
     context 'when ID tokens are defined' do
       context 'on create' do
@@ -6117,6 +6031,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     with_them do
       it { is_expected.to eq(expected_token) }
+    end
+  end
+
+  describe '.fabricate' do
+    let(:tag_list) { %w[ruby docker postgres] }
+    let(:build_attributes) do
+      {
+        options: { script: ['echo'] },
+        tag_list: tag_list,
+        project_id: 1,
+        partition_id: 99
+      }
+    end
+
+    subject(:fabricate) { described_class.fabricate(build_attributes) }
+
+    it 'initializes with temp_job_definition' do
+      expect(fabricate).to have_attributes(
+        temp_job_definition: instance_of(Ci::JobDefinition),
+        job_definition: nil,
+        tag_list: tag_list
+      )
+      definition = fabricate.temp_job_definition
+
+      expect(definition.config).to eq({ options: build_attributes[:options], tag_list: tag_list })
+      expect(definition.project_id).to eq(build_attributes[:project_id])
+      expect(definition.partition_id).to eq(build_attributes[:partition_id])
     end
   end
 end

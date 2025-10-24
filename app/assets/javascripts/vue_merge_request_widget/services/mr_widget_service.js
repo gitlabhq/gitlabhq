@@ -64,8 +64,8 @@ export default class MRWidgetService {
     return axios.get(this.apiApprovalsPath).then((res) => res.data);
   }
 
-  approveMergeRequest() {
-    return axios.post(this.apiApprovePath).then((res) => res.data);
+  approveMergeRequest(data) {
+    return axios.post(this.apiApprovePath, data).then((res) => res.data);
   }
 
   unapproveMergeRequest() {

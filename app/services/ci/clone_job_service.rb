@@ -10,7 +10,6 @@ module Ci
     def execute(new_job_variables: [])
       new_attributes = build_base_attributes
 
-      add_environment_attributes!(new_attributes) if persisted_environment.present?
       add_job_variables_attributes!(new_attributes, new_job_variables)
       add_job_definition_attributes!(new_attributes)
 
@@ -34,13 +33,6 @@ module Ci
 
     def build_base_attributes
       clone_accessors.index_with { |attribute| job.method(attribute).call }
-    end
-
-    def add_environment_attributes!(attributes)
-      return if Feature.enabled?(:stop_writing_builds_metadata, job.project)
-
-      attributes[:metadata_attributes] ||= {}
-      attributes[:metadata_attributes][:expanded_environment_name] = expanded_environment_name
     end
 
     def add_job_variables_attributes!(attributes, new_job_variables)

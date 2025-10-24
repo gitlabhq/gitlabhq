@@ -499,7 +499,7 @@ RSpec.shared_examples 'a deployable job' do
 
     context 'when options does not include deployment_tier' do
       let(:options) { { environment: { name: 'production' } } }
-      let(:job) { described_class.new(options: options, environment: 'production', project: project) }
+      let(:job) { FactoryBot.build(factory_type, options: options, environment: 'production', project: project) }
 
       it 'uses tier from environment' do
         is_expected.to eq('development')
@@ -614,7 +614,8 @@ RSpec.shared_examples 'a deployable job' do
 
         context 'when job metadata has already persisted the expanded environment name' do
           before do
-            job.ensure_metadata.expanded_environment_name = 'review/foo'
+            create(:ci_build_metadata, build: job, expanded_environment_name: 'review/foo')
+            job.reload_metadata
           end
 
           it 'returns a persisted expanded environment name without a list of variables' do
@@ -672,7 +673,7 @@ RSpec.shared_examples 'a deployable job' do
 
         context 'when the job metadata has the namespace persisted' do
           before do
-            job.ensure_metadata.expanded_environment_name = 'name-from-metadata'
+            create(:ci_build_metadata, build: job, expanded_environment_name: 'name-from-metadata')
           end
 
           it { is_expected.to eq('name-from-job-env') }

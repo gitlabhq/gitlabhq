@@ -19,6 +19,7 @@ module Gitlab
             @job_variables = @seed_attributes.delete(:job_variables)
             @execution_config_attribute = @seed_attributes.delete(:execution_config)
             @root_variables_inheritance = @seed_attributes.delete(:root_variables_inheritance) { true }
+            @inputs = @seed_attributes.delete(:inputs)
 
             @using_rules  = attributes.key?(:rules)
             @using_only   = attributes.key?(:only)
@@ -67,10 +68,10 @@ module Gitlab
           def attributes
             @seed_attributes
               .deep_merge(pipeline_attributes)
-              .deep_merge(metadata_attributes)
               .deep_merge(rules_attributes)
               .deep_merge(allow_failure_criteria_attributes)
               .deep_merge(@cache.cache_attributes)
+              .deep_merge(inputs_attributes)
               .deep_merge(runner_tags)
               .deep_merge(build_execution_config_attribute)
               .deep_merge(scoped_user_id_attribute)
@@ -168,12 +169,6 @@ module Gitlab
             }
           end
 
-          def metadata_attributes
-            return {} unless can_write_metadata?
-
-            { metadata_attributes: { partition_id: @pipeline.partition_id } }
-          end
-
           # Scoped user is present when the user creating the pipeline supports composite identity.
           # For example: a service account like GitLab Duo. The scoped user is used to further restrict
           # the permissions of the CI job token associated to the `job.user`.
@@ -182,13 +177,7 @@ module Gitlab
 
             return {} unless user_identity&.composite? && user_identity.linked?
 
-            attrs = { scoped_user_id: user_identity.scoped_user.id }
-
-            if Feature.enabled?(:stop_writing_builds_metadata, @pipeline.project)
-              attrs
-            else
-              attrs.merge(options: attrs)
-            end
+            { scoped_user_id: user_identity.scoped_user.id }
           end
 
           def rules_attributes
@@ -238,6 +227,14 @@ module Gitlab
             { options: { allow_failure_criteria: nil } }
           end
 
+          def inputs_attributes
+            return {} unless @inputs
+
+            {
+              options: { inputs: @inputs }
+            }
+          end
+
           def calculate_yaml_variables!
             @seed_attributes[:yaml_variables] = Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
               from: @context.root_variables, to: @job_variables, inheritance: @root_variables_inheritance
@@ -267,15 +264,8 @@ module Gitlab
           end
 
           def remove_ci_builds_metadata_attributes(attrs)
-            return attrs if can_write_metadata?
-
             attrs.except(*::Ci::JobDefinition::CONFIG_ATTRIBUTES_FROM_METADATA)
           end
-
-          def can_write_metadata?
-            Feature.disabled?(:stop_writing_builds_metadata, @pipeline.project)
-          end
-          strong_memoize_attr :can_write_metadata?
         end
       end
     end

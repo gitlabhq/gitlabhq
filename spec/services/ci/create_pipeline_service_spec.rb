@@ -264,7 +264,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
         context 'interruptible builds' do
           before do
-            stub_feature_flags(stop_writing_builds_metadata: false)
             stub_ci_pipeline_yaml_file(YAML.dump(config))
           end
 
@@ -301,21 +300,19 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             }
           end
 
-          # Remove metadata interruptible with stop_writing_builds_metadata
           it 'properly configures interruptible status' do
             interruptible_status =
               pipeline_on_previous_commit
                 .builds
-                .joins(:metadata)
                 .joins(:job_definition)
-                .pluck(:name, "#{Ci::BuildMetadata.quoted_table_name}.interruptible", "#{Ci::JobDefinition.quoted_table_name}.interruptible")
+                .pluck(:name, "#{Ci::JobDefinition.quoted_table_name}.interruptible")
 
             expect(interruptible_status).to contain_exactly(
-              ['build_1_1', true, true],
-              ['build_1_2', true, true],
-              ['build_2_1', true, true],
-              ['build_3_1', false, false],
-              ['build_4_1', nil, false]
+              ['build_1_1', true],
+              ['build_1_2', true],
+              ['build_2_1', true],
+              ['build_3_1', false],
+              ['build_4_1', false]
             )
           end
 
@@ -881,15 +878,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
     end
 
     it_behaves_like 'when resource group is defined for review app deployment'
-
-    context 'when FF `stop_writing_builds_metadata` is disabled' do
-      before do
-        stub_feature_flags(stop_writing_builds_metadata: false)
-      end
-
-      it_behaves_like 'with resource group'
-      it_behaves_like 'when resource group is defined for review app deployment'
-    end
 
     context 'with timeout' do
       context 'when builds with custom timeouts are configured' do
@@ -1818,16 +1806,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       it 'does not write to ci_builds_metadata' do
         expect { execute_service }.to not_change { Ci::BuildMetadata.count }
-      end
-
-      context 'when FF `stop_writing_builds_metadata` is disabled' do
-        before do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'writes to ci_builds_metadata' do
-          expect { execute_service }.to change { Ci::BuildMetadata.count }.by(1)
-        end
       end
     end
   end

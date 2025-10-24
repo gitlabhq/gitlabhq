@@ -448,7 +448,7 @@ $command-palette-spacing: px-to-rem(14px);
     @apply gl-transition-padding;
   }
 
-  &:not(.page-with-super-sidebar-collapsed) {
+  &:not(.page-with-super-sidebar-collapsed,.super-sidebar-has-css-transitions-blocked) {
     .super-sidebar-overlay {
       display: block;
       position: fixed;

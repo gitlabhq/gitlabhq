@@ -121,7 +121,7 @@ RSpec.describe 'ChronicDurationAttribute - reader' do
   let(:source_field) { :timeout }
   let(:virtual_field) { :timeout_human_readable }
 
-  subject { create(:ci_build).ensure_metadata }
+  subject { create(:ci_build_metadata) }
 
   it "doesn't contain dynamically created writer method" do
     expect(subject.class).not_to be_public_method_defined("#{virtual_field}=")

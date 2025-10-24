@@ -1196,6 +1196,12 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
+# Gitlab Secrets Manager Openbao Integration
+#
+Settings['openbao'] ||= {}
+Settings.openbao['authentication_token_secret_file_path'] ||= Rails.root.join('.gitlab_openbao_authentication_token_secret')
+
+#
 # Workspaces
 #
 Gitlab.ee do

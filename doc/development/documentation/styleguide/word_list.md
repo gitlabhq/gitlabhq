@@ -293,7 +293,7 @@ However, if the UI has different capitalization, make the documentation match th
 
 For example:
 
-- You can view merge request analytics for a project. They are displayed on the Merge Request Analytics dashboard.
+- You can view merge request analytics for a project. They are displayed in the Merge Request Analytics dashboard.
 
 ## ancestor
 
@@ -476,7 +476,7 @@ Use:
 
 Instead of:
 
-- On the **Seat utilization** card, select **Assign seats**.
+- In the **Seat utilization** card, select **Assign seats**.
 
 ## Chat, GitLab Duo Chat (Classic)
 
@@ -706,7 +706,7 @@ For example:
 
 Use **confirmation dialog** to describe the dialog that asks you to confirm an action. For example:
 
-- On the confirmation dialog, select **OK**.
+- In the confirmation dialog, select **OK**.
 
 Do not use **confirmation box** or **confirmation dialog box**. See also [**dialog**](#dialog).
 
@@ -839,11 +839,11 @@ See also [**confirmation dialog**](#confirmation-dialog). For more information, 
 Before you use this term, confirm whether **dialog** or [**drawer**](#drawer) is
 the correct term for your use case.
 
-When the dialog is the location of an action, use **on** as a preposition. For example:
+When the dialog is the location of an action, use **in** as a preposition. For example:
 
-- On the **Grant permission** dialog, select **Group**.
+- In the **Grant permission** dialog, select **Group**.
 
-See also [**on**](#on).
+See also [**in, on**](#in-on).
 
 ## disable
 
@@ -1090,7 +1090,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you want to refer to all
 of the fields at once. For example:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -1456,6 +1456,21 @@ Do not use first-person singular. Use **you** or rewrite the phrase instead.
 ## i.e.
 
 Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
+
+## in, on
+
+Use **in** as a preposition when describing UI element locations. For example:
+
+- In the left sidebar, select **Settings** > **CI/CD**.
+- In the **Grant permission** dialog, select **Group**.
+- In the upper-right corner, select your avatar.
+
+Use **on** only for:
+
+- Physical objects: Use the arrow keys on your keyboard.
+- Pages as surfaces: On the **Settings** page, you can configure multiple options.
+
+Do not use **from**.
 
 ## in order to
 
@@ -1958,15 +1973,6 @@ Instead of:
 For more information, see the
 [different installation methods](_index.md#how-to-document-different-installation-methods).
 
-## on
-
-When documenting high-level UI elements, use **on** as a preposition. For example:
-
-- On the left sidebar, select **Settings** > **CI/CD**.
-- On the **Grant permission** dialog, select **Group**.
-
-Do not use **from** or **in**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/f/from-vs-on).
-
 ## once
 
 The word **once** means **one time**. Don't use it to mean **after** or **when**.
@@ -2070,6 +2076,11 @@ or included in the breadcrumb.
 The docs should match the case in the UI, and the page name should be bold. For example:
 
 - On the **Test cases** page, ...
+
+## panel
+
+For guidance about the paneled UI while it is in development, see
+[Names for external communication](https://design.gitlab.com/product-foundations/layout/#names-for-external-communication) in Pajamas.
 
 ## parent
 
@@ -2431,7 +2442,7 @@ to the GitLab [reference architectures](../../../administration/reference_archit
 
 ## search
 
-When you search, you type a string in the search box on the left sidebar.
+When you search, you type a string in the search box in the left sidebar.
 The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).
@@ -2518,6 +2529,11 @@ Do not confuse **set up** with [**configure**](#configure).
 
 1. Set up your installation.
 1. Configure your installation.
+
+## sidebar
+
+For guidance about the paneled UI while it is in development, see
+[Names for external communication](https://design.gitlab.com/product-foundations/layout/#names-for-external-communication) in Pajamas.
 
 ## sign in, sign-in
 

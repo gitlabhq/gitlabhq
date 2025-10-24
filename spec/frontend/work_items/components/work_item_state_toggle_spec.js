@@ -7,11 +7,15 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import {
-  STATE_OPEN,
-  STATE_CLOSED,
   STATE_EVENT_CLOSE,
   STATE_EVENT_REOPEN,
+  STATE_CLOSED,
+  STATE_OPEN,
   TRACKING_CATEGORY_SHOW,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 import { updateCountsForParent } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -62,7 +66,7 @@ describe('Work Item State toggle button component', () => {
     workItemOpenChildCountHandler = openChildCountSuccessHandler,
     canUpdate = true,
     workItemState = STATE_OPEN,
-    workItemType = 'Task',
+    workItemType = WORK_ITEM_TYPE_NAME_TASK,
     hasComment = false,
     disabled = false,
     parentId = null,
@@ -98,13 +102,13 @@ describe('Work Item State toggle button component', () => {
 
   describe('work item State button text', () => {
     it.each`
-      workItemState   | workItemType    | buttonText
-      ${STATE_OPEN}   | ${'Task'}       | ${'Close task'}
-      ${STATE_CLOSED} | ${'Task'}       | ${'Reopen task'}
-      ${STATE_OPEN}   | ${'Objective'}  | ${'Close objective'}
-      ${STATE_CLOSED} | ${'Objective'}  | ${'Reopen objective'}
-      ${STATE_OPEN}   | ${'Key result'} | ${'Close key result'}
-      ${STATE_CLOSED} | ${'Key result'} | ${'Reopen key result'}
+      workItemState   | workItemType                      | buttonText
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Close task'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Reopen task'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Close objective'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Reopen objective'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Close key result'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Reopen key result'}
     `(
       'is "$buttonText" when "$workItemType" state is "$workItemState"',
       ({ workItemState, workItemType, buttonText }) => {
@@ -115,13 +119,13 @@ describe('Work Item State toggle button component', () => {
     );
 
     it.each`
-      workItemState   | workItemType    | buttonText
-      ${STATE_OPEN}   | ${'Task'}       | ${'Comment & close task'}
-      ${STATE_CLOSED} | ${'Task'}       | ${'Comment & reopen task'}
-      ${STATE_OPEN}   | ${'Objective'}  | ${'Comment & close objective'}
-      ${STATE_CLOSED} | ${'Objective'}  | ${'Comment & reopen objective'}
-      ${STATE_OPEN}   | ${'Key result'} | ${'Comment & close key result'}
-      ${STATE_CLOSED} | ${'Key result'} | ${'Comment & reopen key result'}
+      workItemState   | workItemType                      | buttonText
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Comment & close task'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Comment & reopen task'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Comment & close objective'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Comment & reopen objective'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Comment & close key result'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Comment & reopen key result'}
     `(
       'is "$buttonText" when "$workItemType" state is "$workItemState" and hasComment is true',
       ({ workItemState, workItemType, buttonText }) => {
@@ -208,7 +212,7 @@ describe('Work Item State toggle button component', () => {
           cache: expect.anything(Object),
           parentId: 'example-id',
           isClosing: true,
-          workItemType: 'Task',
+          workItemType: WORK_ITEM_TYPE_NAME_TASK,
         });
       });
     });
@@ -261,7 +265,7 @@ describe('Work Item State toggle button component', () => {
         workItemLinkedItemsHandler: jest
           .fn()
           .mockResolvedValue(workItemsClosedAndOpenLinkedItemsResponse),
-        workItemType: 'Epic',
+        workItemType: WORK_ITEM_TYPE_NAME_EPIC,
       });
       await waitForPromises();
 
@@ -275,7 +279,7 @@ describe('Work Item State toggle button component', () => {
     beforeEach(async () => {
       createComponent({
         workItemOpenChildCountHandler: jest.fn().mockResolvedValue(mockOpenChildrenCount),
-        workItemType: 'Epic',
+        workItemType: WORK_ITEM_TYPE_NAME_EPIC,
       });
       await waitForPromises();
     });

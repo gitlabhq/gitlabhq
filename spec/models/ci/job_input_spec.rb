@@ -14,6 +14,14 @@ RSpec.describe Ci::JobInput, feature_category: :pipeline_composition do
     let!(:parent) { model.project }
   end
 
+  it_behaves_like 'a BulkInsertSafe model', described_class do
+    let(:valid_items_for_bulk_insertion) do
+      build_list(:ci_job_input, 10, job: job, project: project)
+    end
+
+    let(:invalid_items_for_bulk_insertion) { [] } # name and partition_id are NOT NULL at database level
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:job) }
     it { is_expected.to belong_to(:project) }

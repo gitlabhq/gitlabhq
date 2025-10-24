@@ -1,8 +1,14 @@
 <script>
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
+import { GlButton } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import {
+  EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+  EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+} from '~/repository/constants';
 import TreeList from './components/tree_list.vue';
 
 export const TREE_WIDTH = 320;
@@ -15,7 +21,9 @@ export default {
     TreeList,
     FileBrowserHeight,
     PanelResizer,
+    GlButton,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     projectPath: {
       type: String,
@@ -52,6 +60,7 @@ export default {
     this.restoreTreeWidthUserPreference();
   },
   methods: {
+    ...mapActions(useFileTreeBrowserVisibility, ['handleFileTreeBrowserToggleClick']),
     restoreTreeWidthUserPreference() {
       const userPreference = localStorage.getItem(FILE_TREE_BROWSER_STORAGE_KEY);
       if (!userPreference) return;
@@ -63,6 +72,18 @@ export default {
     saveTreeWidthPreference(size) {
       localStorage.setItem(FILE_TREE_BROWSER_STORAGE_KEY, size);
       this.treeWidth = size;
+    },
+    handleClose() {
+      this.handleFileTreeBrowserToggleClick();
+
+      this.trackEvent(
+        this.fileTreeBrowserIsExpanded || this.fileTreeBrowserIsPeekOn
+          ? EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
+          : EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+        {
+          label: 'close_button',
+        },
+      );
     },
   },
   fileTreeBrowserStorageKey: FILE_TREE_BROWSER_STORAGE_KEY,
@@ -83,6 +104,15 @@ export default {
       class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
       :class="visibilityClasses"
     >
+      <gl-button
+        icon="close"
+        category="tertiary"
+        size="small"
+        class="gl-z-index-1 gl-absolute gl-right-2 gl-top-2"
+        data-testid="close-file-tree-browser"
+        :aria-label="__('Close file tree browser')"
+        @click="handleClose"
+      />
       <panel-resizer
         class="max-@lg/panel:gl-hidden"
         :start-size="treeWidth"

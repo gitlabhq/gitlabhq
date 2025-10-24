@@ -275,13 +275,11 @@ module Ci
       end
 
       def clone_accessors
-        %i[pipeline project ref tag options name
-          allow_failure stage_idx
-          yaml_variables when environment coverage_regex
-          description tag_list protected needs_attributes
-          job_variables_attributes resource_group scheduling_type
-          timeout timeout_source debug_trace_enabled
-          ci_stage partition_id id_tokens interruptible execution_config_id inputs_attributes].freeze
+        %i[pipeline project ref tag name allow_failure stage_idx when
+          environment coverage_regex description tag_list protected
+          needs_attributes job_variables_attributes resource_group
+          scheduling_type timeout timeout_source debug_trace_enabled
+          ci_stage partition_id execution_config_id inputs_attributes].freeze
       end
 
       def supported_keyset_orderings

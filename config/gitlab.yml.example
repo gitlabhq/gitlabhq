@@ -230,6 +230,7 @@ production: &base
   # openbao:
     # url: https://vault.company.com:8200  # External URL for runners and external clients
     # internal_url: https://vault.company-internal.com:8200 # Internal URL for Rails application
+    # authentication_token_secret_file_path: /home/git/gitlab/.gitlab_openbao_authentication_token_secret
 
   ## Custom claim values for JWT ID Tokens
   # ci_id_tokens:

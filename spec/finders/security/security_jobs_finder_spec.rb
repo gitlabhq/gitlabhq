@@ -26,27 +26,6 @@ RSpec.describe Security::SecurityJobsFinder, feature_category: :vulnerability_ma
 
         is_expected.not_to include(dast_build)
       end
-
-      context 'with empty definition' do
-        before_all do
-          stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        let_it_be(:sast_build) { create(:ci_build, :without_job_definition, :sast, pipeline: pipeline) }
-        let_it_be(:container_scanning_build) { create(:ci_build, :without_job_definition, :container_scanning, pipeline: pipeline) }
-        let_it_be(:dast_build) { create(:ci_build, :without_job_definition, :dast, pipeline: pipeline) }
-        let_it_be(:secret_detection_build) { create(:ci_build, :without_job_definition, :secret_detection, pipeline: pipeline) }
-
-        let(:finder) { described_class.new(pipeline: pipeline, job_types: [:sast, :container_scanning, :secret_detection]) }
-
-        it 'returns only those requested' do
-          is_expected.to include(sast_build)
-          is_expected.to include(container_scanning_build)
-          is_expected.to include(secret_detection_build)
-
-          is_expected.not_to include(dast_build)
-        end
-      end
     end
 
     context 'with combination of security jobs and license scanning jobs' do

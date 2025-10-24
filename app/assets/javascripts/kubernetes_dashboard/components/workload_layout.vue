@@ -55,6 +55,7 @@ export default {
     },
     filterItems(status) {
       this.filterOption = status;
+      this.$refs.workloadTable?.resetPagination();
     },
   },
 };
@@ -67,6 +68,7 @@ export default {
   <div v-else>
     <workload-stats :stats="stats" @select="filterItems" />
     <workload-table
+      ref="workloadTable"
       :items="filteredItems"
       :fields="fields"
       class="gl-mt-8"

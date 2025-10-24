@@ -18,7 +18,9 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import MoveWorkItemModal from '~/work_items/components/move_work_item_modal.vue';
 import {
   CREATION_CONTEXT_RELATED_ITEM,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   STATE_OPEN,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
@@ -144,7 +146,7 @@ describe('WorkItemActions component', () => {
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     notificationsMutationHandler,
     lockDiscussionMutationHandler = lockDiscussionMutationResolver,
-    workItemType = 'Task',
+    workItemType = WORK_ITEM_TYPE_NAME_TASK,
     workItemReference = mockWorkItemReference,
     workItemCreateNoteEmail = mockWorkItemCreateNoteEmail,
     hideSubscribe = undefined,
@@ -237,7 +239,7 @@ describe('WorkItemActions component', () => {
   });
 
   it('renders dropdown actions', async () => {
-    createComponent({ workItemType: 'Issue' });
+    createComponent({ workItemType: WORK_ITEM_TYPE_NAME_ISSUE });
 
     await waitForPromises();
 
@@ -312,7 +314,7 @@ describe('WorkItemActions component', () => {
   });
 
   it('renders "New related epic" instead of the default "New related item" when type is Epic', () => {
-    createComponent({ workItemType: 'Epic' });
+    createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
 
     expect(findDropdownItemsActual()).toEqual(
       expect.arrayContaining([
@@ -517,9 +519,9 @@ describe('WorkItemActions component', () => {
 
   describe('promote action', () => {
     it.each`
-      workItemType   | show
-      ${'Task'}      | ${false}
-      ${'Objective'} | ${false}
+      workItemType                     | show
+      ${WORK_ITEM_TYPE_NAME_TASK}      | ${false}
+      ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${false}
     `('does not show promote button for $workItemType', ({ workItemType, show }) => {
       createComponent({ workItemType });
 
@@ -527,7 +529,7 @@ describe('WorkItemActions component', () => {
     });
 
     it('promote key result to objective', async () => {
-      createComponent({ workItemType: 'Key Result' });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT });
       await waitForPromises();
 
       expect(findPromoteButton().exists()).toBe(true);
@@ -542,7 +544,7 @@ describe('WorkItemActions component', () => {
 
     it('emits error when promote mutation fails', async () => {
       createComponent({
-        workItemType: 'Key Result',
+        workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
         convertWorkItemMutationHandler: convertWorkItemMutationErrorHandler,
       });
       await waitForPromises();
@@ -572,13 +574,13 @@ describe('WorkItemActions component', () => {
   });
 
   describe('copy email address action', () => {
-    it.each(['key result', 'objective'])(
+    it.each([WORK_ITEM_TYPE_NAME_KEY_RESULT, WORK_ITEM_TYPE_NAME_OBJECTIVE])(
       'renders correct button name when work item is %s',
       (workItemType) => {
         createComponent({ workItemType });
 
         expect(findCopyCreateNoteEmailButton().text()).toEqual(
-          `Copy ${workItemType} email address`,
+          `Copy ${NAME_TO_TEXT_LOWERCASE_MAP[workItemType]} email address`,
         );
       },
     );
@@ -695,14 +697,14 @@ describe('WorkItemActions component', () => {
         relatedItem: {
           id: 'gid://gitlab/WorkItem/1',
           reference: 'gitlab-org/gitlab-test#1',
-          type: 'Task',
+          type: WORK_ITEM_TYPE_NAME_TASK,
           webUrl: 'gitlab-org/gitlab-test/-/work_items/1',
         },
       });
     });
 
     it('opens the create work item modal', async () => {
-      createComponent({ workItemType: 'Task' });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TASK });
 
       findNewRelatedItemButton().vm.$emit('action');
       await nextTick();
@@ -712,9 +714,9 @@ describe('WorkItemActions component', () => {
 
     it.each`
       isProjectSelectorVisible | workItemType
-      ${false}                 | ${'Epic'}
-      ${true}                  | ${'Issue'}
-      ${true}                  | ${'Task'}
+      ${false}                 | ${WORK_ITEM_TYPE_NAME_EPIC}
+      ${true}                  | ${WORK_ITEM_TYPE_NAME_ISSUE}
+      ${true}                  | ${WORK_ITEM_TYPE_NAME_TASK}
     `(
       'when workItemType is $workItemType, sets `CreateWorkItemModal` `showProjectSelector` prop to $isProjectSelectorVisible',
       ({ isProjectSelectorVisible, workItemType }) => {
@@ -737,7 +739,7 @@ describe('WorkItemActions component', () => {
 
   describe('change type action', () => {
     it('opens the change type modal', () => {
-      createComponent({ workItemType: 'Task' });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TASK });
 
       findChangeTypeButton().vm.$emit('action');
 
@@ -745,7 +747,7 @@ describe('WorkItemActions component', () => {
     });
 
     it('hides the action in case of Epic type', () => {
-      createComponent({ workItemType: 'Epic' });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });
@@ -866,7 +868,7 @@ describe('WorkItemActions component', () => {
   });
   describe('view options', () => {
     it('toggles truncation enabled', () => {
-      createComponent({ workItemType: 'Task' });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TASK });
 
       expect(findTruncationToggle().exists()).toBe(true);
 
@@ -876,7 +878,7 @@ describe('WorkItemActions component', () => {
     });
 
     it('toggles sidebar visibility', () => {
-      createComponent({ workItemType: 'Task' });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TASK });
 
       expect(findSidebarToggle().exists()).toBe(true);
 

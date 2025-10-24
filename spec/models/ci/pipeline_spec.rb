@@ -4292,7 +4292,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           before do
             job.job_environment.destroy!
-            job.ensure_metadata.update!(expanded_environment_name: job.expanded_environment_name)
+            create(:ci_build_metadata, build: job, expanded_environment_name: job.expanded_environment_name)
           end
 
           it 'includes environments from both sources' do

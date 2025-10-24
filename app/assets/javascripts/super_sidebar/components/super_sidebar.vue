@@ -71,6 +71,7 @@ export default {
       showPeekHint: false,
       isMouseover: false,
       isAnimatable: false,
+      wasToggledManually: false,
     };
   },
   computed: {
@@ -88,6 +89,7 @@ export default {
         'super-sidebar-is-icon-only': this.isIconOnly,
         'super-sidebar-is-mobile': this.sidebarState.isMobile,
         'super-sidebar-animatable': this.isAnimatable,
+        'super-sidebar-toggled-manually': this.wasToggledManually,
       };
     },
     isAdmin() {
@@ -139,6 +141,7 @@ export default {
   methods: {
     toggleSidebar() {
       if (this.canIconOnly) {
+        this.wasToggledManually = true;
         toggleSuperSidebarIconOnly();
         return;
       }
@@ -229,6 +232,9 @@ export default {
         event.preventDefault();
       }
     },
+    handleTransitionEnd() {
+      this.wasToggledManually = false;
+    },
   },
 };
 </script>
@@ -255,6 +261,7 @@ export default {
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
       @keydown.esc="handleEscKey"
+      @transitionend="handleTransitionEnd"
     >
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}

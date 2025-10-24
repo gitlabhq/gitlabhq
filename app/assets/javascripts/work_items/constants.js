@@ -1,5 +1,4 @@
-import { __, s__, sprintf } from '~/locale';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { __, s__ } from '~/locale';
 
 export const BULK_EDIT_NO_VALUE = 'no-value';
 
@@ -97,16 +96,6 @@ export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
 );
 
 export const MAX_WORK_ITEMS = 10;
-
-export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
-  const workItemType = workItemTypeArg || s__('WorkItem|item');
-  return capitalizeFirstCharacter(
-    sprintf(msg, {
-      workItemType: workItemType.toLocaleLowerCase(),
-      parentWorkItemType: parentWorkItemType.toLocaleLowerCase(),
-    }),
-  );
-};
 
 export const FORM_TYPES = {
   create: 'create',

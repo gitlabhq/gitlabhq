@@ -374,19 +374,19 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     let(:inputs_spec) do
       {
         string_input: {
-          input_type: 'string',
+          type: 'string',
           default: 'default value one'
         },
         array_input: {
-          input_type: 'array',
+          type: 'array',
           default: ['default array']
         },
         boolean_input: {
-          input_type: 'boolean',
+          type: 'boolean',
           default: false
         },
         number_input: {
-          input_type: 'number',
+          type: 'number',
           default: 666
         }
       }

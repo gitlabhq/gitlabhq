@@ -47,7 +47,8 @@ $file-tree-browser-z-index: 500;
   &.file-tree-browser-peek {
     @apply gl-shadow;
     @apply gl-rounded-base;
-    top: calc( var(--system-header-height) + var(--performance-bar-height));
+    top: var(--application-header-height);;
+    bottom: 0;
   }
 }
 

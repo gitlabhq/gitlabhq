@@ -1,8 +1,18 @@
 # frozen_string_literal: true
 
 module Ci
+  # Stores input values for CI jobs.
+  #
+  # Records are only persisted when a job is retried with user-submitted input values.
+  # On first run, jobs use default values from the input spec stored in options[:inputs],
+  # and no Ci::JobInput records are created. This avoids storing unnecessary data since
+  # most jobs use default values.
+  #
+  # The fallback logic to default values is implemented in:
+  # - BuildRunnerPresenter#runner_inputs (for job execution)
   class JobInput < Ci::ApplicationRecord
     include Ci::Partitionable
+    include BulkInsertSafe
 
     MAX_VALUE_SIZE = ::Gitlab::Ci::Config::Interpolation::Access::MAX_ACCESS_BYTESIZE
 

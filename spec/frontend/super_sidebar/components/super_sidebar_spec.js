@@ -409,6 +409,34 @@ describe('SuperSidebar component', () => {
       });
     });
 
+    describe('when toggling between modes', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: { projectStudioEnabled: true },
+        });
+      });
+
+      it('does not have the `.super-sidebar-toggled-manually` class by default', () => {
+        expect(findSidebar().classes()).not.toContain('super-sidebar-toggled-manually');
+      });
+
+      it('adds the `.super-sidebar-toggled-manually` class when the sidebar mode is toggled', async () => {
+        findIconOnlyToggle().vm.$emit('toggle');
+        await nextTick();
+
+        expect(findSidebar().classes()).toContain('super-sidebar-toggled-manually');
+      });
+
+      it('removes the `.super-sidebar-toggled-manually` class once the sidebar mode has transitioned', async () => {
+        findIconOnlyToggle().vm.$emit('toggle');
+        await nextTick();
+        findSidebar().trigger('transitionend');
+        await nextTick();
+
+        expect(findSidebar().classes()).not.toContain('super-sidebar-toggled-manually');
+      });
+    });
+
     it('does not render when items are empty', () => {
       createWrapper({
         provide: { projectStudioEnabled: true },

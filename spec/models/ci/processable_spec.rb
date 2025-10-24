@@ -140,14 +140,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     end
   end
 
-  it_behaves_like 'a degenerable job' do
-    before do
-      stub_feature_flags(stop_writing_builds_metadata: false)
-    end
-
-    subject(:job) { create(:ci_bridge, pipeline: pipeline) }
-  end
-
   describe '#archived?' do
     shared_examples 'an archivable job' do
       it { is_expected.not_to be_archived }

@@ -1160,7 +1160,9 @@ elements:
 
 All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
 
-Guidance for individual UI elements is in [the word list](word_list.md).
+Guidance for individual UI elements is in [the word list](word_list.md). 
+For guidance about the paneled UI while it is in development, see
+[Names for external communication](https://design.gitlab.com/product-foundations/layout/#names-for-external-communication) in Pajamas.
 
 ### How to write navigation task steps
 

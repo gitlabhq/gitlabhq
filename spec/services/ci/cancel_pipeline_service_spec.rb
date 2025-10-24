@@ -21,7 +21,6 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
   let(:auto_canceled_by_pipeline) { nil }
   let(:execute_async) { true }
   let(:safe_cancellation) { false }
-  let(:stop_writing_builds_metadata_flag_value) { true }
 
   shared_examples 'force_execute' do
     context 'when pipeline is not cancelable' do
@@ -33,8 +32,6 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
     context 'when pipeline is cancelable' do
       before do
-        stub_feature_flags(stop_writing_builds_metadata: stop_writing_builds_metadata_flag_value)
-
         create(:ci_build, :running, pipeline: pipeline, name: 'build1')
         create(:ci_build, :created, pipeline: pipeline, name: 'build2')
         create(:ci_build, :success, pipeline: pipeline, name: 'build3')
