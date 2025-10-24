@@ -18,7 +18,8 @@ title: Phorge
 
 {{< /history >}}
 
-You can use [Phorge](https://we.phorge.it/) as an external issue tracker in GitLab.
+You can use [Phorge](https://we.phorge.it/) as an
+[external issue tracker](../../../integration/external-issue-tracker.md) in GitLab.
 
 ## Configure the integration
 

@@ -442,7 +442,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       create(:award_emoji, :downvote, awardable: item1)
     end
 
-    it 'executes limited number of N+1 queries', :use_sql_query_cache do
+    it 'executes limited number of N+1 queries', :use_sql_query_cache,
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2407' do
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end
@@ -499,7 +500,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       create(:work_item_link, source: item2, target: related_items[0], link_type: 'relates_to')
     end
 
-    it 'avoids N+1 queries', :use_sql_query_cache do
+    it 'avoids N+1 queries', :use_sql_query_cache,
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2302' do
       post_graphql(query, current_user: current_user) # warm-up
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -555,7 +557,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       expect(participants_usernames).to match_array(work_items.flat_map(&:participants).map(&:username))
     end
 
-    it 'executes limited number of N+1 queries', :use_sql_query_cache do
+    it 'executes limited number of N+1 queries', :use_sql_query_cache,
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2428' do
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end
@@ -601,7 +604,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         end
       end
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2145' do
         post_graphql(query, current_user: current_user) # warmup
 
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do

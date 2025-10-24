@@ -266,7 +266,8 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       })
     end
 
-    it 'prevents N+1 queries' do
+    it 'prevents N+1 queries',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3852' do
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end

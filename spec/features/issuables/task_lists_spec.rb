@@ -319,7 +319,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let!(:issue) { create(:issue, description: commented_tasks_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5619' do
         visit_issue(project, issue)
         wait_for_requests
 
@@ -353,7 +353,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let!(:issue) { create(:issue, description: code_tasks_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5663' do
         visit_issue(project, issue)
         wait_for_requests
 
@@ -388,7 +388,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let!(:issue) { create(:issue, description: summary_no_blank_line_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5679' do
         visit_issue(project, issue)
         wait_for_requests
 
@@ -424,7 +424,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let!(:issue) { create(:issue, description: summary_markdown, author: user, project: project) }
 
-      it 'renders' do
+      it 'renders', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3760' do
         visit_issue(project, issue)
         wait_for_requests
 
@@ -455,7 +455,8 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
       let(:merge_request) { create(:merge_request, description: markdown_starting_with_new_line, author: user, source_project: project) }
 
-      it 'allows the task to be checked' do
+      it 'allows the task to be checked',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4115' do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 

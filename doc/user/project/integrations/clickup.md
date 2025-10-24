@@ -18,7 +18,8 @@ title: ClickUp
 
 {{< /history >}}
 
-You can use [ClickUp](https://clickup.com/) as an external issue tracker.
+You can use [ClickUp](https://clickup.com/) as an
+[external issue tracker](../../../integration/external-issue-tracker.md).
 To enable the ClickUp integration in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.

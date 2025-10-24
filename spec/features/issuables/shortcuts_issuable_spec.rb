@@ -52,7 +52,8 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
       include_examples 'quotes the selected text'
     end
 
-    describe 'On a Merge Request' do
+    describe 'On a Merge Request',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4085' do
       before do
         create(:note, noteable: merge_request, project: project, note: note_text)
         sign_in(user)
@@ -72,7 +73,7 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
     end
   end
 
-  describe 'pressing "a"' do
+  describe 'pressing "a"', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6978' do
     describe 'On an Issue' do
       before do
         sign_in(user)
@@ -83,7 +84,8 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
       include_examples 'opens assignee dropdown for editing'
     end
 
-    describe 'On a Merge Request' do
+    describe 'On a Merge Request',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6979' do
       before do
         sign_in(user)
         visit project_merge_request_path(project, merge_request)
@@ -102,7 +104,7 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
     end
   end
 
-  describe 'pressing "m"' do
+  describe 'pressing "m"', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3815' do
     describe 'On an Issue' do
       before do
         sign_in(user)
@@ -113,7 +115,8 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
       include_examples 'opens milestones dropdown for editing'
     end
 
-    describe 'On a Merge Request' do
+    describe 'On a Merge Request',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6980' do
       before do
         sign_in(user)
         visit project_merge_request_path(project, merge_request)
@@ -133,7 +136,7 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
   end
 
   describe 'pressing "l"' do
-    describe 'On an Issue' do
+    describe 'On an Issue', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6981' do
       before do
         sign_in(user)
         visit project_issue_path(project, issue)

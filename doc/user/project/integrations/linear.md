@@ -18,7 +18,8 @@ title: Linear
 
 {{< /history >}}
 
-You can use [Linear](https://linear.app/) as an external issue tracker.
+You can use [Linear](https://linear.app/) as an
+[external issue tracker](../../../integration/external-issue-tracker.md).
 To enable the Linear integration in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.

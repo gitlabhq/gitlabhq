@@ -2828,6 +2828,7 @@ Input type: `AiCatalogThirdPartyFlowCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationaicatalogthirdpartyflowcreateaddtoprojectwhencreated"></a>`addToProjectWhenCreated` | [`Boolean`](#boolean) | Whether to add to the project upon creation. |
 | <a id="mutationaicatalogthirdpartyflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogthirdpartyflowcreatedefinition"></a>`definition` | [`String!`](#string) | YAML definition for the Flow. |
 | <a id="mutationaicatalogthirdpartyflowcreatedescription"></a>`description` | [`String!`](#string) | Description for the Flow. |

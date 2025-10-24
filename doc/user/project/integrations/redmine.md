@@ -18,7 +18,8 @@ Prerequisites:
   GitLab issues, see [Change project visibility](../../public_access.md#change-project-visibility), and also
   [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
-You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
+You can use [Redmine](https://www.redmine.org/) as an
+[external issue tracker](../../../integration/external-issue-tracker.md).
 To enable the Redmine integration in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.

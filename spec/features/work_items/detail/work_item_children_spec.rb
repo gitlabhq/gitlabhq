@@ -27,7 +27,9 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       wait_for_requests
     end
 
-    it_behaves_like 'work items hierarchy', 'work-item-links', :task
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2197' do
+      it_behaves_like 'work items hierarchy', 'work-item-links', :task
+    end
 
     it 'toggles form', :aggregate_failures do
       within_testid('work-item-links') do

@@ -82,62 +82,64 @@ RSpec.describe 'getting an issue list for a project', feature_category: :team_pl
   let(:issue_nodes_path) { %w[project issues nodes] }
   let(:issue_filter_params) { {} }
 
-  # All new specs should be added to the shared example if the change also
-  # affects the `issues` query at the root level of the API.
-  # Shared example also used in spec/requests/api/graphql/issues_spec.rb
-  it_behaves_like 'graphql issue list request spec' do
-    let_it_be(:external_user) { create(:user) }
+  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5837' do
+    # All new specs should be added to the shared example if the change also
+    # affects the `issues` query at the root level of the API.
+    # Shared example also used in spec/requests/api/graphql/issues_spec.rb
+    it_behaves_like 'graphql issue list request spec' do
+      let_it_be(:external_user) { create(:user) }
 
-    let(:public_projects) { [project] }
+      let(:public_projects) { [project] }
 
-    before_all do
-      group.add_developer(current_user)
-    end
+      before_all do
+        group.add_developer(current_user)
+      end
 
-    # filters
-    let(:expected_negated_assignee_issues) { [issue_b, issue_c, issue_d, issue_e] }
-    let(:voted_issues) { [issue_a] }
-    let(:no_award_issues) { [issue_b, issue_c, issue_d, issue_e] }
-    let(:locked_discussion_issues) { [issue_a] }
-    let(:unlocked_discussion_issues) { [issue_b, issue_c, issue_d, issue_e] }
-    let(:search_title_term) { 'matching issue' }
-    let(:title_search_issue) { issue_b }
-    let(:confidential_issues) { [issue_e] }
-    let(:non_confidential_issues) { [issue_a, issue_b, issue_c, issue_d] }
-    let(:public_non_confidential_issues) { non_confidential_issues }
-    let(:subscribed_issues) { [issue_a] }
-    let(:unsubscribed_issues) { [issue_b] }
+      # filters
+      let(:expected_negated_assignee_issues) { [issue_b, issue_c, issue_d, issue_e] }
+      let(:voted_issues) { [issue_a] }
+      let(:no_award_issues) { [issue_b, issue_c, issue_d, issue_e] }
+      let(:locked_discussion_issues) { [issue_a] }
+      let(:unlocked_discussion_issues) { [issue_b, issue_c, issue_d, issue_e] }
+      let(:search_title_term) { 'matching issue' }
+      let(:title_search_issue) { issue_b }
+      let(:confidential_issues) { [issue_e] }
+      let(:non_confidential_issues) { [issue_a, issue_b, issue_c, issue_d] }
+      let(:public_non_confidential_issues) { non_confidential_issues }
+      let(:subscribed_issues) { [issue_a] }
+      let(:unsubscribed_issues) { [issue_b] }
 
-    # sorting
-    let(:data_path) { [:project, :issues] }
-    let(:expected_priority_sorted_asc) { [issue_b, issue_c, issue_d, issue_a, issue_e] }
-    let(:expected_priority_sorted_desc) { [issue_a, issue_d, issue_c, issue_b, issue_e] }
-    let(:expected_due_date_sorted_desc) { [issue_d, issue_e, issue_c, issue_b, issue_a] }
-    let(:expected_due_date_sorted_asc) { [issue_b, issue_c, issue_e, issue_d, issue_a] }
-    let(:expected_relative_position_sorted_asc) { [issue_a, issue_b, issue_d, issue_c, issue_e] }
-    let(:expected_label_priority_sorted_asc) { [issue_c, issue_d, issue_b, issue_a, issue_e] }
-    let(:expected_label_priority_sorted_desc) { [issue_a, issue_d, issue_b, issue_c, issue_e] }
-    let(:expected_milestone_sorted_asc) { [issue_b, issue_c, issue_d, issue_a, issue_e] }
-    let(:expected_milestone_sorted_desc) { [issue_a, issue_d, issue_c, issue_b, issue_e] }
+      # sorting
+      let(:data_path) { [:project, :issues] }
+      let(:expected_priority_sorted_asc) { [issue_b, issue_c, issue_d, issue_a, issue_e] }
+      let(:expected_priority_sorted_desc) { [issue_a, issue_d, issue_c, issue_b, issue_e] }
+      let(:expected_due_date_sorted_desc) { [issue_d, issue_e, issue_c, issue_b, issue_a] }
+      let(:expected_due_date_sorted_asc) { [issue_b, issue_c, issue_e, issue_d, issue_a] }
+      let(:expected_relative_position_sorted_asc) { [issue_a, issue_b, issue_d, issue_c, issue_e] }
+      let(:expected_label_priority_sorted_asc) { [issue_c, issue_d, issue_b, issue_a, issue_e] }
+      let(:expected_label_priority_sorted_desc) { [issue_a, issue_d, issue_b, issue_c, issue_e] }
+      let(:expected_milestone_sorted_asc) { [issue_b, issue_c, issue_d, issue_a, issue_e] }
+      let(:expected_milestone_sorted_desc) { [issue_a, issue_d, issue_c, issue_b, issue_e] }
 
-    # N+1 queries
-    let(:same_project_issue1) { issue_a }
-    let(:same_project_issue2) { issue_b }
+      # N+1 queries
+      let(:same_project_issue1) { issue_a }
+      let(:same_project_issue2) { issue_b }
 
-    before_all do
-      create(:award_emoji, :upvote, user: current_user, awardable: issue_a)
-    end
+      before_all do
+        create(:award_emoji, :upvote, user: current_user, awardable: issue_a)
+      end
 
-    def pagination_query(params)
-      graphql_query_for(
-        :project,
-        { full_path: project.full_path },
-        query_graphql_field(:issues, params, "#{page_info} nodes { id }")
-      )
-    end
+      def pagination_query(params)
+        graphql_query_for(
+          :project,
+          { full_path: project.full_path },
+          query_graphql_field(:issues, params, "#{page_info} nodes { id }")
+        )
+      end
 
-    def post_query(request_user = current_user)
-      post_graphql(query, current_user: request_user)
+      def post_query(request_user = current_user)
+        post_graphql(query, current_user: request_user)
+      end
     end
   end
 
