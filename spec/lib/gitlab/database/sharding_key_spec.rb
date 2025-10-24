@@ -9,6 +9,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
+      'abuse_report_uploads', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'web_hook_logs_daily', # temporary copy of web_hook_logs
       'ci_gitlab_hosted_runner_monthly_usages', # https://gitlab.com/gitlab-org/gitlab/-/issues/553104
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199

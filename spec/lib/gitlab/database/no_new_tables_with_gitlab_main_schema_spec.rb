@@ -13,8 +13,7 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
   # Specific tables can be exempted from this requirement, and such tables must be added to the `exempted_tables` list.
   let!(:exempted_tables) do
     [
-      'abuse_report_notes',                                     # gitlab_main_clusterwide now deprecated
-      'abuse_report_uploads',                                   # gitlab_main_clusterwide now deprecated
+      'abuse_report_notes', # gitlab_main_clusterwide now deprecated
       # temporary table to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/562154
       'instance_integrations',                                  # gitlab_main_clusterwide now deprecated
       'ldap_admin_role_links',                                  # gitlab_main_clusterwide now deprecated

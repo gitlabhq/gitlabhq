@@ -264,7 +264,8 @@ Database settings are automatically replicated to the secondary site. However, y
 OAuth or LDAP integration are enabled on the primary site but not the secondary site, they are lost during failover.
 
 Review the `/etc/gitlab/gitlab.rb` file for both sites. Ensure the secondary site
-supports everything the primary site does before scheduling a planned failover.
+supports everything the primary site does before scheduling a planned failover. 
+Make sure that [GitLab Geo Roles](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) are configured correctly.
 
 ### Run system checks
 
