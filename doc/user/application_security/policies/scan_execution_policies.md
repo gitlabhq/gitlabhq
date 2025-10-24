@@ -36,8 +36,13 @@ If any of the following cases are true, use [pipeline execution policies](pipeli
 - You want to enforce custom CI/CD jobs or scripts.
 - You want to enable third-party security scans through an enforced CI/CD job.
 
+## Create a scan execution policy
+
+To create a scan execution policy, you can use any of the following resources:
+
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Learn more about [enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
+- For instructions on how to create scan execution policies, see [tutorial: set up a scan execution policy](../../../tutorials/scan_execution_policy/_index.md)
 
 ## Restrictions
 
