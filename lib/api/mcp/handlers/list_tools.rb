@@ -10,7 +10,7 @@ module API
         end
 
         def invoke(current_user)
-          tools_hash = manager.tools
+          tools_hash = manager.list_tools
 
           tools = tools_hash.filter_map do |name, tool|
             next nil if exclude_tool?(name, current_user)

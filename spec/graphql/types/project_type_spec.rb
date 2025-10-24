@@ -1785,4 +1785,108 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
     end
   end
+
+  describe 'ci_config_variables field' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user, developer_of: project) }
+    let(:ref) { project.default_branch }
+    let(:fail_on_cache_miss) { nil }
+
+    let(:query) do
+      fail_on_cache_miss_arg = fail_on_cache_miss.nil? ? '' : ", failOnCacheMiss: #{fail_on_cache_miss}"
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            ciConfigVariables(ref: "#{ref}"#{fail_on_cache_miss_arg}) {
+              key
+              value
+              description
+            }
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    def mock_config_variables_service(return_value)
+      allow_next_instance_of(::Ci::ListConfigVariablesService) do |service|
+        allow(service).to receive(:execute).and_return(return_value)
+      end
+    end
+
+    context 'when service returns nil and fail_on_cache_miss is enabled' do
+      let(:fail_on_cache_miss) { true }
+
+      before do
+        mock_config_variables_service(nil)
+      end
+
+      it 'returns GraphQL error with expected message' do
+        expect(subject['errors']).to be_present
+        expect(subject['errors'].first['message']).to eq('Failed to retrieve CI/CD variables from cache.')
+        expect(subject['data']['project']['ciConfigVariables']).to be_nil
+      end
+
+      it 'includes error path information' do
+        expect(subject['errors'].first['path']).to eq(%w[project ciConfigVariables])
+      end
+    end
+
+    context 'when variables are successfully fetched' do
+      let_it_be(:ci_config_variables) do
+        {
+          KEY1: { value: 'val 1', description: 'description 1' },
+          KEY2: { value: 'val 2', description: '' },
+          KEY3: { value: 'val 3' }
+        }
+      end
+
+      before do
+        mock_config_variables_service(ci_config_variables)
+      end
+
+      it 'returns variables list' do
+        variables = subject.dig('data', 'project', 'ciConfigVariables')
+
+        expect(variables).to contain_exactly(
+          { 'key' => 'KEY1', 'value' => 'val 1', 'description' => 'description 1' },
+          { 'key' => 'KEY2', 'value' => 'val 2', 'description' => '' },
+          { 'key' => 'KEY3', 'value' => 'val 3', 'description' => nil }
+        )
+      end
+
+      it 'does not return any errors' do
+        expect(subject['errors']).to be_nil
+      end
+    end
+
+    context 'with fail_on_cache_miss argument' do
+      context 'when service is called with fail_on_cache_miss parameter' do
+        before do
+          mock_config_variables_service({})
+        end
+
+        shared_examples 'calls service with expected fail_on_cache_miss value' do |expected_value|
+          it "calls service with fail_on_cache_miss: #{expected_value}" do
+            expect_next_instance_of(::Ci::ListConfigVariablesService) do |service|
+              expect(service).to receive(:execute).with(ref)
+            end
+
+            subject
+          end
+        end
+
+        context 'with default value (not specified)' do
+          it_behaves_like 'calls service with expected fail_on_cache_miss value', false
+        end
+
+        context 'with fail_on_cache_miss: true' do
+          let(:fail_on_cache_miss) { true }
+
+          it_behaves_like 'calls service with expected fail_on_cache_miss value', true
+        end
+      end
+    end
+  end
 end

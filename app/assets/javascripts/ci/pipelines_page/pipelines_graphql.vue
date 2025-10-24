@@ -8,12 +8,13 @@ import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-j
 import { GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { s__, __ } from '~/locale';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
 import NavigationControls from './components/nav_controls.vue';
 import getPipelinesQuery from './graphql/queries/get_pipelines.query.graphql';
+import getAllPipelinesCountQuery from './graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from './graphql/mutations/clear_runner_cache.mutation.graphql';
 
 import { PIPELINES_PER_PAGE } from './constants';
@@ -95,6 +96,22 @@ export default {
         });
       },
     },
+    pipelinesCount: {
+      query: getAllPipelinesCountQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data?.project?.pipelines?.count || 0;
+      },
+      error() {
+        createAlert({
+          message: s__('Pipelines|An error occurred while loading pipelines count'),
+        });
+      },
+    },
   },
   data() {
     return {
@@ -102,6 +119,7 @@ export default {
         list: [],
         pageInfo: {},
       },
+      pipelinesCount: 0,
       pipelinesError: false,
       clearCacheLoading: false,
       scope: getParameterByName('scope') || 'all',
@@ -137,10 +155,12 @@ export default {
       return s__('Pipelines|There are currently no pipelines.');
     },
     shouldRenderTabs() {
-      return !this.showEmptyState;
+      return !this.showEmptyState && !this.isLoading;
     },
     shouldRenderButtons() {
-      return (this.newPipelinePath || this.resetCachePath) && this.shouldRenderTabs;
+      return (
+        (this.newPipelinePath || this.resetCachePath) && this.shouldRenderTabs && !this.isLoading
+      );
     },
     tabs() {
       const { scopes } = this.$options;
@@ -149,7 +169,7 @@ export default {
         {
           name: __('All'),
           scope: scopes.all,
-          count: 0,
+          count: this.pipelinesCount,
           isActive: this.scope === scopes.all,
         },
         {
@@ -188,6 +208,10 @@ export default {
       // Reset pagination when changing tabs
       // Apollo will automatically refetch with new variables
       this.pagination = { ...DEFAULT_PAGINATION };
+
+      updateHistory({
+        url: setUrlParams({ scope: this.scope }, window.location.href, true),
+      });
     },
     nextPage() {
       this.pagination = {

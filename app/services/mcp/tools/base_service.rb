@@ -80,6 +80,10 @@ module Mcp
       def input_schema
         raise NoMethodError
       end
+
+      def version
+        raise NoMethodError
+      end
     end
   end
 end

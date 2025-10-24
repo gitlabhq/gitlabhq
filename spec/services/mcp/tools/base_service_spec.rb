@@ -23,6 +23,10 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
         }
       end
 
+      def version
+        '1.0.0'
+      end
+
       protected
 
       def perform(arguments, _query = {})
@@ -45,6 +49,12 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
   describe '#input_schema' do
     it 'raises NoMethodError' do
       expect { service.input_schema }.to raise_error(NoMethodError)
+    end
+  end
+
+  describe '#version' do
+    it 'raises NoMethodError' do
+      expect { service.version }.to raise_error(NoMethodError)
     end
   end
 

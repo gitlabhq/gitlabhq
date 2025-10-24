@@ -3,7 +3,7 @@
 module Mcp
   module Tools
     class ApiTool
-      attr_reader :route, :settings
+      attr_reader :name, :route, :settings, :version
 
       # Grape types are represented as a string by calling `.to_s` on a type
       # The values are built based on the existing routes:
@@ -18,9 +18,11 @@ module Mcp
         '[String]' => 'string'
       }.freeze
 
-      def initialize(route)
+      def initialize(name:, route:)
+        @name = name
         @route = route
         @settings = route.app.route_setting(:mcp)
+        @version = @settings[:version] || "0.1.0"
       end
 
       def description

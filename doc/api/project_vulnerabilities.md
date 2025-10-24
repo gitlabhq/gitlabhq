@@ -33,11 +33,11 @@ instead.
 
 {{< /alert >}}
 
-Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
+Use this API to manage [project vulnerabilities](../user/application_security/vulnerabilities/_index.md).
+Every call to this API requires authentication.
 
-Vulnerability permissions inherit permissions from their project. If a project is
-private, and a user isn't a member of the project to which the vulnerability
-belongs, requests to that project returns a `404 Not Found` status code.
+If a user isn't a member of a private project, requests to the private project return a `404 Not Found`
+status code.
 
 ## Vulnerabilities pagination
 

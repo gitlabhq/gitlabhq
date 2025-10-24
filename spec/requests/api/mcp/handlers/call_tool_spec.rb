@@ -107,7 +107,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       it 'returns invalid params error' do
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']['code']).to eq(-32602)
-        expect(json_response['error']['data']['params']).to eq('name is unsupported')
+        expect(json_response['error']['data']['params']).to include("Tool 'unknown_tool' not found")
       end
     end
   end

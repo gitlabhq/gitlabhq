@@ -26,12 +26,22 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
     allow(app).to receive(:route_setting).with(:mcp).and_return(mcp_settings)
   end
 
-  subject(:api_tool) { described_class.new(route) }
+  subject(:api_tool) { described_class.new(name: 'test_tool', route: route) }
 
   describe '#initialize' do
-    it 'sets the route and settings' do
+    it 'sets the name, route and settings' do
+      expect(api_tool.name).to eq('test_tool')
       expect(api_tool.route).to eq(route)
       expect(api_tool.settings).to eq(mcp_settings)
+      expect(api_tool.version).to eq('0.1.0')
+    end
+
+    context 'when version is specified in settings' do
+      let(:mcp_settings) { { params: [:param1, :param2], version: '2.0.0' } }
+
+      it 'uses the specified version' do
+        expect(api_tool.version).to eq('2.0.0')
+      end
     end
   end
 

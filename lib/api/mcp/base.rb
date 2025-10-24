@@ -5,6 +5,7 @@ module API
     class Base < ::API::Base
       include ::API::Helpers::HeadersHelpers
       include APIGuard
+      include ::Mcp::Tools::VersionHelper
 
       # JSON-RPC Specification
       # See: https://www.jsonrpc.org/specification
@@ -24,6 +25,10 @@ module API
         invalid_params: {
           code: -32602,
           message: 'Invalid params'
+        },
+        version_mismatch: {
+          code: -32001,
+          message: 'Version not supported'
         }
         # NOTE: Parse error	code -32700	is unsupported due to 400 Bad Request returned by Workhorse
       }.freeze

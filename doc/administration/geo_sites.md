@@ -40,9 +40,6 @@ from secondary sites. The primary site uses this setting to validate:
 - Git HTTP requests from secondary sites.
 - Geo API requests from secondary sites.
 
-When viewing this setting, the primary node is shown first as **Primary site**, and the site you are
-browsing is shown with the **Current** label.
-
 The **Allowed Geo IP** setting:
 
 - Has no effect on secondary sites. The setting is replicated to secondary sites in the database, but is not used there.

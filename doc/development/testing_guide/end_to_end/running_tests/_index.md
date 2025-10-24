@@ -26,6 +26,8 @@ bundle exec rspec <path/to/spec.rb>
 
 {{< /alert >}}
 
+By default, URL of GitLab instance is set based on `config/gitlab.yml` configuration file. To override it and use different URL, see [overriding GitLab address](#overriding-gitlab-address) section.
+
 ### Remote development
 
 For [VSCode](https://code.visualstudio.com/) user, [.devcontainer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/.devcontainer/devcontainer.json) defines configuration to develop E2E tests inside a Docker container which by default is attached to the same network as environments started by [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) gem. For more information on how to use `dev containers`, see [tutorial](https://code.visualstudio.com/docs/devcontainers/tutorial).

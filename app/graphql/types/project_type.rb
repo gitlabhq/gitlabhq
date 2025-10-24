@@ -5,6 +5,7 @@ module Types
     graphql_name 'Project'
 
     include ::Namespaces::DeletableHelper
+    include Gitlab::Graphql::Authorize::AuthorizeResource
 
     connection_type_class Types::CountableConnectionType
 
@@ -34,6 +35,10 @@ module Types
       authorize: :create_pipeline,
       experiment: { milestone: '15.3' },
       description: 'CI/CD config variable.' do
+      argument :fail_on_cache_miss, GraphQL::Types::Boolean,
+        required: false,
+        default_value: false,
+        description: 'Whether to throw an error if cache is not ready.'
       argument :ref, GraphQL::Types::String,
         required: true,
         description: 'Ref.'
@@ -1033,8 +1038,12 @@ module Types
       response.payload[:inputs].all_inputs
     end
 
-    def ci_config_variables(ref:)
+    def ci_config_variables(ref:, fail_on_cache_miss: false)
       result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(ref)
+
+      if result.nil? && fail_on_cache_miss
+        raise_resource_not_available_error! "Failed to retrieve CI/CD variables from cache."
+      end
 
       return if result.nil?
 

@@ -18017,6 +18017,9 @@ msgstr ""
 msgid "ComplianceViolations|Your Compliance Violations CSV export for the group %{group_link} has been attached to this email."
 msgstr ""
 
+msgid "ComplianceViolation|Add a comment"
+msgstr ""
+
 msgid "ComplianceViolation|Add existing issue"
 msgstr ""
 
@@ -18060,6 +18063,9 @@ msgid "ComplianceViolation|Requirement"
 msgstr ""
 
 msgid "ComplianceViolation|Resolved"
+msgstr ""
+
+msgid "ComplianceViolation|Something went wrong when creating the comment. Please try again."
 msgstr ""
 
 msgid "ComplianceViolation|Something went wrong when deleting the comment. Please try again."
@@ -48542,6 +48548,9 @@ msgid "Pipelines|Active"
 msgstr ""
 
 msgid "Pipelines|An error occurred while loading pipelines"
+msgstr ""
+
+msgid "Pipelines|An error occurred while loading pipelines count"
 msgstr ""
 
 msgid "Pipelines|An error occurred while trying to fetch the active merge train."

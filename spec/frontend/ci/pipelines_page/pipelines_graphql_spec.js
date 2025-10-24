@@ -2,6 +2,7 @@ import { GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { createAlert } from '~/alert';
+import { TEST_HOST } from 'spec/test_constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,9 +12,12 @@ import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue'
 import NoCiEmptyState from '~/ci/pipelines_page/components/empty_state/no_ci_empty_state.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
+import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
+import * as urlUtils from '~/lib/utils/url_utility';
 import {
   mockPipelinesData,
+  mockPipelinesCount,
   mockPipelinesDataEmpty,
   mockRunnerCacheClearPayload,
   mockRunnerCacheClearPayloadWithError,
@@ -26,6 +30,7 @@ Vue.use(VueApollo);
 describe('Pipelines app', () => {
   let wrapper;
 
+  const countHandler = jest.fn().mockResolvedValue(mockPipelinesCount);
   const successHandler = jest.fn().mockResolvedValue(mockPipelinesData);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockPipelinesDataEmpty);
@@ -34,7 +39,12 @@ describe('Pipelines app', () => {
     .fn()
     .mockResolvedValue(mockRunnerCacheClearPayloadWithError);
 
-  const createMockApolloProvider = (requestHandlers = [[getPipelinesQuery, successHandler]]) => {
+  const createMockApolloProvider = (
+    requestHandlers = [
+      [getPipelinesQuery, successHandler],
+      [getAllPipelinesCountQuery, countHandler],
+    ],
+  ) => {
     return createMockApollo(requestHandlers);
   };
 
@@ -173,6 +183,19 @@ describe('Pipelines app', () => {
       expect(findTabs().exists()).toBe(true);
     });
 
+    it('displays All tab pipeline count', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findTabs().props('tabs')[0]).toStrictEqual({
+        count: 2,
+        isActive: true,
+        name: 'All',
+        scope: 'all',
+      });
+    });
+
     it.each`
       scope         | params
       ${'all'}      | ${{ scope: null }}
@@ -184,11 +207,22 @@ describe('Pipelines app', () => {
       async ({ scope, params }) => {
         createComponent();
 
+        jest.spyOn(urlUtils, 'updateHistory');
+
+        await waitForPromises();
+
         findTabs().vm.$emit('onChangeTab', scope);
 
         await waitForPromises();
 
         expect(successHandler).toHaveBeenCalledWith(expect.objectContaining(params));
+
+        // inital load does not start with a scope
+        if (params.scope) {
+          expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+            url: `${TEST_HOST}/?scope=${scope}`,
+          });
+        }
       },
     );
   });

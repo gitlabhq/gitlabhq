@@ -276,3 +276,16 @@ export const mockRunnerCacheClearPayloadWithError = {
     },
   },
 };
+
+export const mockPipelinesCount = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/19',
+      pipelines: {
+        count: 2,
+        __typename: 'PipelineConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};
