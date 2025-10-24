@@ -57,9 +57,6 @@ export default {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
-    whatsNewFeaturedCarouselEnabled() {
-      return this.glFeatures.whatsNewFeaturedCarousel;
-    },
   },
   watch: {
     readArticles(newVal) {
@@ -140,7 +137,7 @@ export default {
       </template>
 
       <div>
-        <featured-carousel v-if="whatsNewFeaturedCarouselEnabled" class="featured-carousel" />
+        <featured-carousel class="featured-carousel" />
 
         <other-updates
           :features="features"

@@ -104,23 +104,13 @@ describe('App', () => {
     }
   });
 
-  describe('with feature flag `whatsNewFeaturedCarousel`', () => {
-    it('when enabled it renders FeaturedCarousel component', () => {
+  describe("the what's new feature carousel", () => {
+    it('renders properly', () => {
       createWrapper({
-        glFeatures: { whatsNewFeaturedCarousel: true },
         shallow: true,
       });
 
       expect(findFeaturedCarousel().exists()).toBe(true);
-    });
-
-    it('when disabled it does not render FeaturedCarousel component', () => {
-      createWrapper({
-        glFeatures: { whatsNewFeaturedCarousel: false },
-        shallow: true,
-      });
-
-      expect(findFeaturedCarousel().exists()).toBe(false);
     });
   });
 

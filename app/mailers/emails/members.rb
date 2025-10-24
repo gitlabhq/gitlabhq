@@ -39,27 +39,6 @@ module Emails
         subject: subject(subject))
     end
 
-    def member_about_to_expire_email(member_source_type, member_id)
-      @member_source_type = member_source_type
-      @member_id = member_id
-
-      return unless member_exists?
-      return unless member.expires_at
-
-      @days_to_expire = (member.expires_at - Date.today).to_i
-
-      return if @days_to_expire <= 0
-
-      email_with_layout(
-        to: member.user.notification_email_for(notification_group),
-        subject: subject(
-          s_("Your membership will expire in %{days_to_expire} days") % {
-            days_to_expire: @days_to_expire
-          }
-        )
-      )
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def member
       @member ||= Member.find_by(id: @member_id)

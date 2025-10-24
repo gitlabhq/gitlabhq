@@ -38,7 +38,7 @@ module Gitlab
 
       def validate_properties!
         validate_property!(kwargs, :user, User)
-        validate_property!(kwargs, :namespace, Namespaces::UserNamespace, Group)
+        validate_property!(kwargs, :namespace, Namespaces::UserNamespace, Group, Namespaces::ProjectNamespace)
         validate_property!(kwargs, :project, Project)
       end
 

@@ -22,6 +22,7 @@ module Gitlab
           topology_service_address,
           service_credentials,
           interceptors: [
+            Labkit::Correlation::GRPC::ClientInterceptor.instance,
             Gitlab::Cells::TopologyService::MetadataClient.new(
               Gitlab.config.cell.topology_service_client.metadata)
           ],

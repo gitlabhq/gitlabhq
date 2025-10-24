@@ -1752,68 +1752,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
-    describe 'membership about to expire' do
-      context "with group membership" do
-        let_it_be(:group_member) { create(:group_member, source: group, expires_at: 7.days.from_now) }
-
-        subject { described_class.member_about_to_expire_email("Namespace", group_member.id) }
-
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like 'a user cannot unsubscribe through footer link'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-
-        it 'contains all the useful information' do
-          is_expected.to deliver_to group_member.user.email
-          is_expected.to have_subject "Your membership will expire in 7 days"
-          is_expected.to have_body_text "group will expire in 7 days."
-          is_expected.to have_body_text group_url(group)
-          is_expected.to have_body_text group_group_members_url(group)
-        end
-      end
-
-      context "with project membership" do
-        let_it_be(:project_member) { create(:project_member, source: project, expires_at: 7.days.from_now) }
-
-        subject { described_class.member_about_to_expire_email('Project', project_member.id) }
-
-        it_behaves_like 'an email sent from GitLab'
-        it_behaves_like 'it should not have Gmail Actions links'
-        it_behaves_like 'a user cannot unsubscribe through footer link'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-
-        it 'contains all the useful information' do
-          is_expected.to deliver_to project_member.user.email
-          is_expected.to have_subject "Your membership will expire in 7 days"
-          is_expected.to have_body_text "project will expire in 7 days."
-          is_expected.to have_body_text project_url(project)
-          is_expected.to have_body_text project_project_members_url(project)
-        end
-      end
-
-      context "with expired membership" do
-        let_it_be(:project_member) { create(:project_member, source: project, expires_at: Date.today) }
-
-        subject { described_class.member_about_to_expire_email('Project', project_member.id) }
-
-        it 'not deliver expiry email' do
-          should_not_email_anyone
-        end
-      end
-
-      context "with expiry notified membership" do
-        let_it_be(:project_member) { create(:project_member, source: project, expires_at: 7.days.from_now, expiry_notified_at: Date.today) }
-
-        subject { described_class.member_about_to_expire_email('Project', project_member.id) }
-
-        it 'not deliver expiry email' do
-          should_not_email_anyone
-        end
-      end
-    end
-
     describe 'admin notification' do
       let(:example_site_path) { root_path }
       let(:user) { create(:user) }

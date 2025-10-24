@@ -208,7 +208,10 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
     it 'includes timeout in client initialization' do
       expect(mock_service_class).to receive(:new).with('test:50051', :this_channel_is_insecure,
         hash_including(
-          interceptors: array_including(instance_of(Gitlab::Cells::TopologyService::MetadataClient)),
+          interceptors: array_including(
+            instance_of(Labkit::Correlation::GRPC::ClientInterceptor),
+            instance_of(Gitlab::Cells::TopologyService::MetadataClient)
+          ),
           timeout: timeout
         )
       ).and_return(mock_service)

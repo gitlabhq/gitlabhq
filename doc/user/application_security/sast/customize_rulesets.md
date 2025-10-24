@@ -20,16 +20,15 @@ title: Customize rulesets
 {{< /history >}}
 
 You can customize the behavior of our SAST analyzers by [defining a ruleset configuration file](#create-the-configuration-file) in the
-repository being scanned. There are two kinds of customization:
+repository being scanned.
 
-- Modifying the behavior of **predefined rules**. This includes:
-  - [Disabling predefined rules](#disable-predefined-rules). Available for all analyzers.
-  - [Overriding metadata of predefined rules](#override-metadata-of-predefined-rules). Available for all analyzers.
-- Replacing predefined rules by [building a custom configuration](#build-a-custom-configuration)
-  using **passthroughs**. Available only for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+### Customization options by analyzer
 
-GitLab Advanced SAST supports modifying the behavior of predefined non-taint, structural rules and the application of file and raw passthroughs.
-Other passthrough types are ignored.
+| Customization                                                                                           | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep             | [Other Analyzers](analyzers.md#official-analyzers) |
+|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|----------------------------------------------------|
+| [Disable predefined rules](#disable-predefined-rules)                                                   | {{< icon name="check-circle-filled" >}} Yes                                                                                                                                                              | {{< icon name="check-circle-filled" >}} Yes                        | {{< icon name="check-circle-filled" >}} Yes                                                |
+| [Override metadata of predefined rules](#override-metadata-of-predefined-rules)                         | {{< icon name="check-circle-filled" >}} Yes                                                                                                                                                              | {{< icon name="check-circle-filled" >}} Yes                        | {{< icon name="check-circle-filled" >}} Yes                                                |
+| [Replace predefined rules with custom configurations using passthroughs](#build-a-custom-configuration) | Supports modifying the behavior of predefined non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs | {{< icon name="dash-circle" >}} No                                                 |
 
 ## Disable predefined rules
 
@@ -60,7 +59,7 @@ to configure this behavior.
 
 ## Build a custom configuration
 
-You can replace the [GitLab-maintained ruleset](rules.md) for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with your own rules.
+You can replace the [GitLab-maintained ruleset](rules.md) for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) and [GitLab Advanced SAST](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast) analyzer with your own rules.
 
 You provide your customizations via passthroughs, which are composed into a
 passthrough chain at runtime and evaluated to produce a complete configuration. The
@@ -345,6 +344,34 @@ analyzer fails to parse your custom ruleset unless the indentation is represente
 {{< /alert >}}
 
 ## Examples
+
+### Build a custom configuration using a file passthrough for GitLab Advanced SAST
+
+With the following custom ruleset configuration, the predefined ruleset
+of the GitLab Advanced SAST analyzer is replaced with a custom ruleset contained in
+a file called `my-gitlab-advanced-sast-rules.yaml` in the repository being scanned.
+
+```yaml
+# my-gitlab-advanced-sast-rules.yaml
+---
+rules:
+- id: my-custom-rule
+  pattern: print("Hello World")
+  message: |
+    Unauthorized use of Hello World.
+  severity: ERROR
+  languages:
+  - python
+```
+
+```toml
+[gitlab-advanced-sast]
+  description = "My custom ruleset for Semgrep"
+
+  [[gitlab-advanced-sast.passthrough]]
+    type  = "file"
+    value = "my-gitlab-advanced-sast-rules.yaml"
+```
 
 ### Disable predefined GitLab Advanced SAST rules
 

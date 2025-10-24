@@ -103,7 +103,6 @@ module Gitlab
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
-      push_frontend_feature_flag(:whats_new_featured_carousel)
       push_frontend_feature_flag(:paneled_view, current_user)
       push_frontend_feature_flag(:archive_group)
       push_frontend_feature_flag(:accessible_loading_button, current_user)

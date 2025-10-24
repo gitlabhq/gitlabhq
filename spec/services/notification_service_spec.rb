@@ -3962,27 +3962,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
       end
     end
-
-    describe '#member_about_to_expire' do
-      let_it_be(:group_member) { create(:group_member, expires_at: 7.days.from_now.to_date) }
-      let_it_be(:project_member) { create(:project_member, expires_at: 7.days.from_now.to_date) }
-
-      context "with group member" do
-        it 'emails the user that their group membership will be expired' do
-          notification.member_about_to_expire(group_member)
-
-          should_email(group_member.user)
-        end
-      end
-
-      context "with project member" do
-        it 'emails the user that their project membership will be expired' do
-          notification.member_about_to_expire(project_member)
-
-          should_email(project_member.user)
-        end
-      end
-    end
   end
 
   describe '#new_member', :deliver_mails_inline do

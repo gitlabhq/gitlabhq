@@ -1,0 +1,11 @@
+query getUserGroupCallouts {
+  currentUser {
+    id
+    groupCallouts {
+      nodes {
+        groupId
+        featureName
+      }
+    }
+  }
+}

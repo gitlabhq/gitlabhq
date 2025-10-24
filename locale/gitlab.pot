@@ -3223,6 +3223,9 @@ msgstr ""
 msgid "About this feature"
 msgstr ""
 
+msgid "AboutToExpireEmail|Your membership will expire in %{days_to_expire} days"
+msgstr ""
+
 msgid "Abuse reports"
 msgstr ""
 
@@ -77417,9 +77420,6 @@ msgid "Your membership in %{link_to} %{project_or_group_name} will expire in %{d
 msgstr ""
 
 msgid "Your membership in %{project_or_group} %{project_or_group_name} will expire in %{days_formatted}."
-msgstr ""
-
-msgid "Your membership will expire in %{days_to_expire} days"
 msgstr ""
 
 msgid "Your merge requests"

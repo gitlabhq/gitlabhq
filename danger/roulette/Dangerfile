@@ -43,8 +43,8 @@ OPTIONAL_REVIEW_TEMPLATE = '%{role} review is optional for %{category}'
 NOT_AVAILABLE_TEMPLATES = {
   default: 'No %{role} available',
   analytics_instrumentation: group_not_available_template('#g_analyze_analytics_instrumentation', '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),
-  import_integrate_be: group_not_available_template('#g_import_and_integrate', '@gitlab-org/foundations/import-and-integrate'),
-  import_integrate_fe: group_not_available_template('#g_import_and_integrate', '@gitlab-org/foundations/import-and-integrate'),
+  import_integrate_be: group_not_available_template('#g_import', '@gitlab-org/foundations/import-and-integrate'),
+  import_integrate_fe: group_not_available_template('#g_import', '@gitlab-org/foundations/import-and-integrate'),
   remote_development_be: group_not_available_template('#f_remote_development', '@gitlab-org/maintainers/remote-development/backend')
 }.freeze
 

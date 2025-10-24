@@ -228,14 +228,20 @@ When migrating from manual `Pajamas::AlertComponent` usage:
     = _('Alert content')
 ```
 
-### Vuejs
+### Vue
 
 This section describes using callouts when they are rendered on the client in `.vue` components.
 
 #### Dismissing the callouts on the client side
 
-For Vue components, we have a `<user-callout-dismisser>` wrapper, that integrates with GraphQL API to simplify
-dismissing and checking the dismissed state of a callout. Here's an example usage:
+For Vue components, we have dismisser wrapper components that integrate with GraphQL API to simplify
+dismissing and checking the dismissed state of callouts.
+
+##### User (global) callouts
+
+For global user callouts that should be dismissed across the entire GitLab instance, use `<user-callout-dismisser>`. Use
+this component when the callout should be dismissed globally for the user across all groups and projects (e.g., feature
+announcements, account security reminders).
 
 ```vue
 <user-callout-dismisser feature-name="my_user_callout">
@@ -249,3 +255,35 @@ dismissing and checking the dismissed state of a callout. Here's an example usag
 ```
 
 See `app/assets/javascripts/vue_shared/components/user_callout_dismisser.vue` for more details.
+
+##### Group callouts
+
+For group-specific callouts that should only be dismissed within a particular group context, use
+`<user-group-callout-dismisser>`. Use this component when the callout is specific to a group context and should only be
+dismissed within that group (e.g., group billing notifications, group-specific feature promotions).
+
+```vue
+<user-group-callout-dismisser
+  feature-name="my_group_callout"
+  :group-id="groupId"
+>
+  <template #default="{ dismiss, shouldShowCallout }">
+    <my-group-callout-component
+      v-if="shouldShowCallout"
+      @close="dismiss"
+    />
+  </template>
+</user-group-callout-dismisser>
+```
+
+The `group-id` prop accepts both numeric IDs (e.g., `123`) and GraphQL IDs (e.g., `'gid://gitlab/Group/123'`). The
+component handles the conversion to GraphQL format internally, so you can pass either format.
+
+See `app/assets/javascripts/vue_shared/components/user_group_callout_dismisser.vue` for more details.
+
+##### Available slot props
+
+Both components provide the same slot props:
+
+- `dismiss`: Function to dismiss the callout
+- `shouldShowCallout`: Boolean indicating if the callout should be displayed
