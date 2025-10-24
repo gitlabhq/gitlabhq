@@ -57,18 +57,12 @@ RSpec.configure do |config|
     config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
     config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
 
-    # TODO: after Formatters::TestMetricsFormatter removal, use GLCI_EXPORT_TEST_METRICS in Env.export_metrics? method
-    if QA::Runtime::Env.running_in_ci? && ENV["GLCI_EXPORT_TEST_METRICS"] == "true"
+    if QA::Runtime::Env.running_in_ci? && QA::Runtime::Env.export_metrics?
       GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |config|
         config.run_type = QA::Runtime::Env.run_type
         config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
         config.logger = QA::Runtime::Logger.logger
 
-        config.extra_metadata_columns = [
-          "default_branch_pipeline Bool",
-          "default_branch_scheduled_pipeline Bool",
-          "merge_request_pipeline Bool"
-        ]
         config.custom_metrics_proc = ->(_example) {
           default_branch = ENV["CI_COMMIT_REF_NAME"] == ENV["CI_DEFAULT_BRANCH"]
           {

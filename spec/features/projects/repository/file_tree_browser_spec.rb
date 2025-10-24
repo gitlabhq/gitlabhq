@@ -20,12 +20,20 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
   describe 'basic functionality' do
     it 'shows and hides the file tree browser' do
-      expect(page).to have_css('.file-tree-browser-expanded')
+      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        expect(page).to have_css('.file-tree-browser-peek')
+      else
+        expect(page).to have_css('.file-tree-browser-expanded')
+      end
 
       click_button 'Hide file tree browser'
       wait_for_requests
 
-      expect(page).not_to have_css('.file-tree-browser-expanded')
+      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        expect(page).not_to have_css('.file-tree-browser-peek')
+      else
+        expect(page).not_to have_css('.file-tree-browser-expanded')
+      end
     end
 
     it 'displays files and directories' do

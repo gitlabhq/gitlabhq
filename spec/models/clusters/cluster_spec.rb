@@ -22,7 +22,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:provider_aws) }
   it { is_expected.to have_one(:platform_kubernetes) }
-  it { is_expected.to have_one(:integration_prometheus) }
   it { is_expected.to have_one(:agent_migration).class_name('Clusters::AgentMigration').inverse_of(:cluster) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:cluster_project) }
@@ -159,24 +158,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'cluster does not have a management project' do
       let!(:cluster) { create(:cluster) }
-
-      it { is_expected.not_to include(cluster) }
-    end
-  end
-
-  describe '.with_integration_prometheus' do
-    subject { described_class.with_integration_prometheus }
-
-    let!(:cluster) { create(:cluster) }
-
-    context 'cluster has prometheus application' do
-      let!(:application) { create(:clusters_integrations_prometheus, cluster: cluster) }
-
-      it { is_expected.to include(cluster) }
-    end
-
-    context 'cluster does not have prometheus application' do
-      let(:cluster) { create(:cluster) }
 
       it { is_expected.not_to include(cluster) }
     end
@@ -1207,42 +1188,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
           subject
         end
-      end
-    end
-  end
-
-  describe '#integration_prometheus_available?' do
-    let_it_be_with_reload(:cluster) { create(:cluster, :project) }
-
-    subject { cluster.integration_prometheus_available? }
-
-    it { is_expected.to be_falsey }
-
-    context 'when integration is enabled' do
-      let!(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when integration is disabled' do
-      let!(:integration) { create(:clusters_integrations_prometheus, enabled: false, cluster: cluster) }
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
-  describe '#prometheus_adapter' do
-    let_it_be_with_reload(:cluster) { create(:cluster, :project) }
-
-    it 'returns nothing' do
-      expect(cluster.prometheus_adapter).to be_nil
-    end
-
-    context 'has integration_prometheus' do
-      let_it_be(:integration) { create(:clusters_integrations_prometheus, cluster: cluster) }
-
-      it 'returns the integration' do
-        expect(cluster.prometheus_adapter).to eq(integration)
       end
     end
   end

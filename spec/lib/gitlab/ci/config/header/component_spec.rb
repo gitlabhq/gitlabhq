@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Component, feature_category: :pipelin
 
   describe 'validations' do
     context 'when config is an array of valid strings' do
-      let(:config) { %w[name sha version] }
+      let(:config) { %w[name sha version reference] }
 
       it 'passes validations' do
         expect(component).to be_valid
@@ -65,9 +65,9 @@ RSpec.describe Gitlab::Ci::Config::Header::Component, feature_category: :pipelin
     subject(:value) { component.value }
 
     context 'when config is valid' do
-      let(:config) { %w[name sha version] }
+      let(:config) { %w[name sha version reference] }
 
-      it { is_expected.to match_array([:name, :sha, :version]) }
+      it { is_expected.to match_array([:name, :sha, :version, :reference]) }
     end
 
     context 'when config has duplicate values' do

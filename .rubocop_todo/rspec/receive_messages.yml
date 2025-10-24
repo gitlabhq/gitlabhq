@@ -268,7 +268,6 @@ RSpec/ReceiveMessages:
     - 'spec/lib/gitlab/ci/build/rules/rule/clause/changes_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/context_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/rules_spec.rb'
-    - 'spec/lib/gitlab/ci/parsers/sbom/cyclonedx_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/security/common_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/validate/external_spec.rb'
     - 'spec/lib/gitlab/ci/runner_releases_spec.rb'

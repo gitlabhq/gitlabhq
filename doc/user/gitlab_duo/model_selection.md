@@ -36,7 +36,7 @@ If you select a specific LLM for a feature, the feature uses that LLM until you 
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17570) for top-level groups in GitLab 18.1 with a [flag](../../administration/feature_flags/_index.md) named `ai_model_switching`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) to beta in GitLab 18.4.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.4.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.4.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/568112) model selection for GitLab Duo Agent Platform in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) called `duo_agent_platform_model_selection`. Disabled by default.
 
 {{< /history >}}
@@ -86,7 +86,7 @@ To select a different LLM for a feature:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `ai_user_default_duo_namespace`. Disabled by default.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
 
 {{< /history >}}
 

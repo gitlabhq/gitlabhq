@@ -356,8 +356,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/lib/grafana/client_spec.rb'
     - 'spec/lib/json_web_token/rsa_token_spec.rb'
     - 'spec/lib/release_highlights/validator/entry_spec.rb'
-    - 'spec/lib/sbom/package_url/decoder_spec.rb'
-    - 'spec/lib/sbom/package_url_spec.rb'
     - 'spec/lib/system_check/app/redis_version_check_spec.rb'
     - 'spec/mailers/emails/profile_spec.rb'
     - 'spec/mailers/previews_spec.rb'

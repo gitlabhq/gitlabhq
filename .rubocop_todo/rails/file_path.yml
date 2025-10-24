@@ -31,7 +31,6 @@ Rails/FilePath:
     - 'lib/api/api.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/audit/type/definition.rb'
-    - 'lib/gitlab/ci/parsers/sbom/validators/cyclonedx_schema_validator.rb'
     - 'lib/gitlab/ci/reports/codequality_reports.rb'
     - 'lib/gitlab/database/migrations/runner.rb'
     - 'lib/gitlab/favicon.rb'

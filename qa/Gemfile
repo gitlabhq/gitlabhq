@@ -32,7 +32,7 @@ gem "warning", "~> 1.5"
 # dependencies for jenkins client
 gem 'nokogiri', '~> 1.18', '>= 1.18.9'
 
-gem 'deprecation_toolkit', '~> 2.2.4', require: false
+gem 'deprecation_toolkit', '~> 2.3.0', require: false
 
 gem 'factory_bot', '~> 6.5.1'
 

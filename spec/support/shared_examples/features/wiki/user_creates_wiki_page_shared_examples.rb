@@ -90,6 +90,7 @@ RSpec.shared_examples 'User creates wiki page' do
         expect(page).to have_content("New page")
       end
 
+      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
       click_link("Home")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
@@ -106,6 +107,7 @@ RSpec.shared_examples 'User creates wiki page' do
         expect(page).to have_content("New page")
       end
 
+      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
       click_link("Home")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)

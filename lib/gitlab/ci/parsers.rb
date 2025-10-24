@@ -14,8 +14,7 @@ module Gitlab
           jacoco: ::Gitlab::Ci::Parsers::Coverage::Jacoco,
           codequality: ::Gitlab::Ci::Parsers::Codequality::CodeClimate,
           sast: ::Gitlab::Ci::Parsers::Security::Sast,
-          secret_detection: ::Gitlab::Ci::Parsers::Security::SecretDetection,
-          cyclonedx: ::Gitlab::Ci::Parsers::Sbom::Cyclonedx
+          secret_detection: ::Gitlab::Ci::Parsers::Security::SecretDetection
         }
       end
 

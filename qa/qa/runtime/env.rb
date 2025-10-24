@@ -501,7 +501,7 @@ module QA
       end
 
       def export_metrics?
-        enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: false)
+        enabled?(ENV['GLCI_EXPORT_TEST_METRICS'], default: false)
       end
 
       def ee_license

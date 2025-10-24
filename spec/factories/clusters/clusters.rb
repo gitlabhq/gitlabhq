@@ -82,10 +82,6 @@ FactoryBot.define do
       sequence(:environment_scope) { |n| "production#{n}/*" }
     end
 
-    trait :with_installed_prometheus do
-      integration_prometheus factory: %i[clusters_integrations_prometheus]
-    end
-
     trait :with_domain do
       domain { 'example.com' }
     end

@@ -108,6 +108,11 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
         let(:version) { project.default_branch }
 
         it_behaves_like 'component address'
+
+        it 'returns the reference' do
+          expect(result).to be_success
+          expect(result.payload[:reference]).to eq(version)
+        end
       end
 
       context 'when version is a tag name' do
@@ -119,12 +124,22 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
           expect(result).to be_success
           expect(result.payload[:version]).to eq(version)
         end
+
+        it 'returns the reference' do
+          expect(result).to be_success
+          expect(result.payload[:reference]).to eq(version)
+        end
       end
 
       context 'when version is a commit sha' do
         let(:version) { project.repository.tags.first.id }
 
         it_behaves_like 'component address'
+
+        it 'returns the reference' do
+          expect(result).to be_success
+          expect(result.payload[:reference]).to eq(version)
+        end
       end
 
       context 'when version is not provided' do
@@ -138,7 +153,7 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
 
       context 'when version is ~latest' do
         let(:version) { '~latest' }
-        let_it_be(:project) { create(:project) }
+        let_it_be(:project) { create(:project, :empty_repo) }
 
         context 'and the project is not a catalog resource' do
           it 'returns an error' do
@@ -164,7 +179,7 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
 
       context 'when version is a partial semantic version' do
         let(:version) { '1.0' }
-        let_it_be(:project) { create(:project) }
+        let_it_be(:project) { create(:project, :empty_repo) }
 
         context 'and the project is not a catalog resource' do
           it 'returns an error' do

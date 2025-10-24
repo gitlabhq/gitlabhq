@@ -92,11 +92,6 @@ RSpec.configure do |config|
         ENV["RSPEC_RETRY_PROCESS"] == "true" || example.metadata[:retry_attempts].to_i > 0
       }
 
-      config.extra_metadata_columns = [
-        "default_branch_pipeline Bool",
-        "default_branch_scheduled_pipeline Bool",
-        "merge_request_pipeline Bool"
-      ]
       config.custom_metrics_proc = ->(_example) {
         default_branch = ENV["CI_COMMIT_REF_NAME"] == ENV["CI_DEFAULT_BRANCH"]
         {

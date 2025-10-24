@@ -4909,6 +4909,11 @@ In this example:
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
+- For performance reasons, GitLab performs a maximum of 50,000 checks against
+  `changes` patterns or file paths. After the 50,000th check, rules with patterned
+  globs always match. In other words, the `changes` rule always assumes a match when
+  more than 50,000 files changed, or if there are fewer than 50,000 changed files but
+  the `changes` rules are checked more than 50,000 times.
 - A maximum of 50 patterns or file paths can be defined per `rules:changes` section.
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 - For additional examples, see [Specify when jobs run with `rules`](../jobs/job_rules.md).

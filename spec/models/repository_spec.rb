@@ -3851,34 +3851,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe "#blobs_metadata" do
-    let_it_be(:project) { create(:project, :repository) }
-
-    def expect_metadata_blob(thing)
-      expect(thing).to be_a(Blob)
-      expect(thing.data).to be_empty
-    end
-
-    it "returns blob metadata in batch for HEAD" do
-      result = repository.blobs_metadata(["bar/branch-test.txt", "README.md", "does/not/exist"])
-
-      expect_metadata_blob(result.first)
-      expect_metadata_blob(result.second)
-      expect(result.size).to eq(2)
-    end
-
-    it "returns blob metadata for a specified ref" do
-      result = repository.blobs_metadata(["files/ruby/feature.rb"], "feature")
-
-      expect_metadata_blob(result.first)
-    end
-
-    it "performs a single gitaly call", :request_store do
-      expect { repository.blobs_metadata(["bar/branch-test.txt", "readme.txt", "does/not/exist"]) }
-        .to change { Gitlab::GitalyClient.get_request_count }.by(1)
-    end
-  end
-
   describe '#project' do
     it 'returns the project for a project snippet' do
       snippet = create(:project_snippet)

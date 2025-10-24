@@ -109,6 +109,8 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     allow_any_instance_of(RSpec::Core::Example::ExecutionResult).to receive(:run_time).and_return(0) # rubocop:disable RSpec/AnyInstanceOf -- simplifies mocking runtime
 
     stub_env('QA_RUN_TYPE', run_type)
+    stub_env('QA_METRICS_GCS_CREDS', metrics_gcs_creds)
+    stub_env('GLCI_EXPORT_TEST_METRICS', "false")
   end
 
   context 'without GCS variables configured' do
@@ -142,7 +144,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     let(:run_type) { ci_job_name.gsub(%r{ \d{1,2}/\d{1,2}}, '') }
 
     before do
-      stub_env('QA_METRICS_GCS_CREDS', nil)
       stub_env('CI_PIPELINE_CREATED_AT', ci_timestamp)
       stub_env('CI_JOB_URL', ci_job_url)
       stub_env('CI_JOB_NAME', ci_job_name)
@@ -153,8 +154,8 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('CI_MERGE_REQUEST_IID', nil)
       stub_env('CI_COMMIT_REF_NAME', branch)
       stub_env('TOP_UPSTREAM_MERGE_REQUEST_IID', nil)
-      stub_env('QA_EXPORT_TEST_METRICS', "true")
       stub_env('QA_RSPEC_RETRIED', "false")
+      stub_env('GLCI_EXPORT_TEST_METRICS', "true")
     end
 
     context "with metrics upload to gcs" do

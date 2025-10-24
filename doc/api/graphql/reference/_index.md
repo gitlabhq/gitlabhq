@@ -51163,7 +51163,6 @@ State of a Sentry error.
 | <a id="servicetypephorge_service"></a>`PHORGE_SERVICE` | Phorge integration. |
 | <a id="servicetypepipelines_email_service"></a>`PIPELINES_EMAIL_SERVICE` | Pipeline status emails integration. |
 | <a id="servicetypepivotaltracker_service"></a>`PIVOTALTRACKER_SERVICE` | Pivotal Tracker integration. |
-| <a id="servicetypeprometheus_service"></a>`PROMETHEUS_SERVICE` | Prometheus integration. |
 | <a id="servicetypepumble_service"></a>`PUMBLE_SERVICE` | Pumble integration. |
 | <a id="servicetypepushover_service"></a>`PUSHOVER_SERVICE` | Pushover integration. |
 | <a id="servicetyperedmine_service"></a>`REDMINE_SERVICE` | Redmine integration. |

@@ -52,7 +52,7 @@ module QA
         #
         # @return [void]
         def export_test_metrics
-          return log(:info, "Exporting test metrics to not enabled, skipping ") unless export_metrics?
+          return log(:info, "Exporting test metrics is not enabled, skipping ") unless export_metrics?
 
           push_test_metrics
           push_fabrication_metrics

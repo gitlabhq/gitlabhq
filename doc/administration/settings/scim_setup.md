@@ -274,15 +274,9 @@ the user's SCIM identity is reactivated and their GitLab instance access is rest
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0 [with a flag](../../administration/feature_flags/_index.md) named `self_managed_scim_group_sync`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/553662) by default in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554271) in GitLab 18.6. Feature flag `self_managed_scim_group_sync` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 In addition to user provisioning, you can use SCIM to synchronize group memberships between your identity provider and GitLab.
 With this method you can automatically add and remove users from GitLab groups based on their group memberships in your identity provider.

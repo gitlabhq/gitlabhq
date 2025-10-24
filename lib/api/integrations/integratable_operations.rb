@@ -83,7 +83,7 @@ module API
 
             render_api_error!('400 Integration not available', 400) if integration.nil?
 
-            manual_or_special = integration.manual_activation? || integration.is_a?(::Integrations::Prometheus)
+            manual_or_special = integration.manual_activation?
 
             unless manual_or_special
               if integration.new_record?

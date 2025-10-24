@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe 'User edit profile', feature_category: :user_profile do
   include Features::NotesHelpers
+  include ListboxHelpers
 
   let_it_be_with_reload(:user) { create(:user) }
 
   before do
     stub_feature_flags(edit_user_profile_vue: false)
+    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
     visit(user_settings_profile_path)
   end
@@ -298,24 +300,12 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         end
 
         it 'shows author as busy in the assignee dropdown' do
-          page.within('.assignee') do
+          within_testid('work-item-assignees') do
             click_button('Edit')
-            wait_for_requests
+            select_listbox_item("#{user.name} Busy")
+
+            expect(page).to have_link(user.name)
           end
-
-          page.within '.dropdown-menu-user' do
-            expect(page).to have_content("#{user.name} Busy")
-          end
-        end
-
-        it 'displays the assignee busy status' do
-          click_button 'assign yourself'
-          wait_for_requests
-
-          visit project_issue_path(project, issue)
-          wait_for_requests
-
-          expect(page.find('.issuable-assignees')).to have_content("#{user.name} Busy")
         end
       end
     end

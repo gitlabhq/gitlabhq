@@ -190,7 +190,8 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
         end
       end
 
-      it 'appends the edited at time to the note' do
+      it 'appends the edited at time to the note',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6950' do
         page.within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
           find_by_testid('reply-comment-button').click

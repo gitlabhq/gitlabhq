@@ -382,7 +382,6 @@ Layout/ClassStructure:
     - 'lib/peek/views/external_http.rb'
     - 'lib/peek/views/zoekt.rb'
     - 'lib/release_highlights/validator.rb'
-    - 'lib/sbom/package_url.rb'
     - 'lib/system_check/base_check.rb'
     - 'lib/uploaded_file.rb'
     - 'qa/qa/ee/scenario/test/geo.rb'

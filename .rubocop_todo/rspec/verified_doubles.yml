@@ -563,7 +563,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/popen/runner_spec.rb'
     - 'spec/lib/gitlab/process_management_spec.rb'
     - 'spec/lib/gitlab/profiler_spec.rb'
-    - 'spec/lib/gitlab/prometheus/adapter_spec.rb'
     - 'spec/lib/gitlab/query_limiting/middleware_spec.rb'
     - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
     - 'spec/lib/gitlab/repository_cache_spec.rb'

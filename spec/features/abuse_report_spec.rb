@@ -16,6 +16,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(hide_incident_management_features: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     sign_in(reporter1)
   end
@@ -35,7 +36,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       before do
         visit project_issue_path(project, issue)
 
-        click_button 'Issue actions'
+        click_button 'More actions', match: :first
       end
 
       it_behaves_like 'reports the user with an abuse category'
@@ -129,7 +130,10 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
       before do
         visit project_issue_path(project, issue)
-        find('.more-actions-toggle button').click
+
+        within('.note') do
+          click_button 'More actions'
+        end
       end
 
       it_behaves_like 'reports the user with an abuse category'

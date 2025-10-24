@@ -2,6 +2,11 @@
 
 module Users
   class ProjectStudio
+    # Convenience class method for checking if Project Studio is enabled for a user.
+    def self.enabled_for_user?(user)
+      new(user).enabled?
+    end
+
     def initialize(user)
       @user = user
     end

@@ -176,17 +176,18 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     let(:yaml_context) do
       ::Gitlab::Ci::Config::Yaml::Context.new(
         variables: [],
-        component: { name: 'my-component', sha: 'abc123', version: '1.0.0' }
+        component: { name: 'my-component', sha: 'abc123', version: '1.0.0', reference: '1.0' }
       )
     end
 
     context 'when component values are specified in spec' do
       let(:header) do
-        { spec: { component: %w[name sha version] } }
+        { spec: { component: %w[name sha version reference] } }
       end
 
       let(:content) do
-        { test: 'Component $[[ component.name ]] at $[[ component.sha ]] version $[[ component.version ]]' }
+        { test: 'Component $[[ component.name ]] at $[[ component.sha ]] version $[[ component.version ]] ' \
+                  'reference $[[ component.reference ]]' }
       end
 
       let(:arguments) { {} }
@@ -196,7 +197,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
         expect(subject).to be_interpolated
         expect(subject).to be_valid
-        expect(subject.to_hash).to eq({ test: 'Component my-component at abc123 version 1.0.0' })
+        expect(subject.to_hash).to eq({ test: 'Component my-component at abc123 version 1.0.0 reference 1.0' })
       end
     end
 

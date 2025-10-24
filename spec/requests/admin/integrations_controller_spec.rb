@@ -60,18 +60,5 @@ RSpec.describe Admin::IntegrationsController, :with_current_organization, :enabl
         end
       end
     end
-
-    context 'for prometheus integration' do
-      # feature flag remove_monitor_metrics is enabled by default in specs
-      let_it_be(:integration) { create(:prometheus_integration, :instance) }
-
-      let(:format) { :html }
-
-      it 'renders a 404' do
-        get overrides_path
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 end

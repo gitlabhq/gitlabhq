@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     end
 
     context 'with component_data' do
-      let(:component_data) { { name: 'my-component', sha: 'abc123', version: '1.0.0' } }
+      let(:component_data) { { name: 'my-component', sha: 'abc123', version: '1.0.0', reference: '1.0.0' } }
       let(:attributes) do
         {
           project: project,

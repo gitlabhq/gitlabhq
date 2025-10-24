@@ -13,7 +13,7 @@ module Integrations
         datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
         gitlab_slack_application hangouts_chat harbor irker jira linear matrix
         mattermost mattermost_slash_commands microsoft_teams packagist phorge pipelines_email
-        pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
+        pivotaltracker pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
         unify_circuit webex_teams youtrack zentao
       ].freeze
 

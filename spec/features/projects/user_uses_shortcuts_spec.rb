@@ -7,6 +7,7 @@ RSpec.describe 'User uses shortcuts', :js, feature_category: :groups_and_project
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
 
     visit(project_path(project))
@@ -100,7 +101,7 @@ RSpec.describe 'User uses shortcuts', :js, feature_category: :groups_and_project
       find('body').native.send_key('i')
 
       expect(page).to have_content(project.title)
-      expect(page).to have_content('New Issue')
+      expect(page).to have_css('h1', text: 'New issue')
     end
   end
 

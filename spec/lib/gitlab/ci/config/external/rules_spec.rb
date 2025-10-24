@@ -109,34 +109,12 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
           it { is_expected.to eq(true) }
 
           it_behaves_like 'with when: specified'
-
-          context 'when ci_changes_changed_paths is disabled' do
-            let(:modified_paths) { ['file.txt'] }
-
-            before do
-              stub_feature_flags(ci_changes_changed_paths: false)
-              allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
-            end
-
-            it_behaves_like 'with when: specified'
-          end
         end
 
         context 'when the file has not changed' do
           let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'README.md')] }
 
           it { is_expected.to eq(false) }
-
-          context 'when ci_changes_changed_paths is disabled' do
-            let(:modified_paths) { ['README.md'] }
-
-            before do
-              stub_feature_flags(ci_changes_changed_paths: false)
-              allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
-            end
-
-            it { is_expected.to eq(false) }
-          end
         end
       end
 

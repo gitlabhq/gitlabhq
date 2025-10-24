@@ -92,9 +92,6 @@ FactoryBot.define do
 
   factory :prometheus_integration, class: 'Integrations::Prometheus' do
     project
-    active { true }
-    api_url { 'https://prometheus.example.com/' }
-    manual_configuration { true }
   end
 
   factory :bamboo_integration, class: 'Integrations::Bamboo' do

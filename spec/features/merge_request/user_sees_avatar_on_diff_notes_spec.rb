@@ -91,7 +91,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         find_by_testid('file-tree-button').click
       end
 
-      it 'shows note avatar' do
+      it 'shows note avatar', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5873' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
 
@@ -136,7 +136,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         end
       end
 
-      it 'adds avatar when commenting' do
+      it 'adds avatar when commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5899' do
         find_by_scrolling('[data-discussion-id]', match: :first)
         find_field('Reply…', match: :first).click
 

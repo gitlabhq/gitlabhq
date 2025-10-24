@@ -109,7 +109,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:cluster, :management_project)
         create(:integrations_slack, project: project)
         create(:slack_slash_commands_integration, project: project)
-        create(:prometheus_integration, project: project)
       end
 
       expect(described_class.usage_activity_by_stage_configure({})).to include(

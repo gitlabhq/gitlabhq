@@ -246,16 +246,6 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
-
-    context 'when prometheus integration' do
-      let_it_be(:integration) { create(:prometheus_integration, project: project) }
-
-      it 'returns 404' do
-        put :test, params: project_params(service: { active: 'true' })
-        # because remove_monitor_metrics feature flag is enabled
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'PUT #update' do
@@ -421,15 +411,6 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
           it 'does not update the channel' do
             expect(integration.reload.note_channel).to eq('https://discord.com/api/webhook/note')
           end
-        end
-      end
-
-      context 'when prometheus integration' do
-        let_it_be(:integration) { create(:prometheus_integration, project: project) }
-
-        it 'returns 404' do
-          # because remove_monitor_metrics feature flag is enabled
-          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

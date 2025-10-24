@@ -170,7 +170,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     end
 
     context 'with a new line' do
-      it 'allows dismissing a comment' do
+      it 'allows dismissing a comment', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6734' do
         should_allow_dismissing_a_comment(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
     end
@@ -198,7 +198,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     end
 
     context 'with a new line' do
-      it 'allows commenting' do
+      it 'allows commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4320' do
         should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
     end

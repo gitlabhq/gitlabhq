@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
   context 'when spec contains component configuration' do
     let(:spec_hash) do
       {
-        component: %w[name sha version]
+        component: %w[name sha version reference]
       }
     end
 
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
     end
 
     it 'returns the component value' do
-      expect(config.component_value).to match_array([:name, :sha, :version])
+      expect(config.component_value).to match_array([:name, :sha, :version, :reference])
     end
   end
 

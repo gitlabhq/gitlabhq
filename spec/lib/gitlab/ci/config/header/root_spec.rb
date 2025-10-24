@@ -136,13 +136,13 @@ RSpec.describe Gitlab::Ci::Config::Header::Root, feature_category: :pipeline_com
       let(:header_hash) do
         {
           spec: {
-            component: %w[name sha version]
+            component: %w[name sha version reference]
           }
         }
       end
 
       it 'returns the component value as symbols' do
-        expect(config.spec_component_value).to match_array([:name, :sha, :version])
+        expect(config.spec_component_value).to match_array([:name, :sha, :version, :reference])
       end
     end
 

@@ -1265,12 +1265,6 @@ class Repository
     end
   end
 
-  def blobs_metadata(paths, ref = 'HEAD')
-    references = Array.wrap(paths).map { |path| [ref, path] }
-
-    Gitlab::Git::Blob.batch_metadata(raw, references).map { |raw_blob| Blob.decorate(raw_blob) }
-  end
-
   def project
     if container.is_a?(Project)
       container

@@ -29,7 +29,7 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Context, feature_category: :pipeline_
 
     context 'with component data provided' do
       let(:component_data) do
-        { name: 'my-component', sha: 'abc123', version: '1.0.0' }
+        { name: 'my-component', sha: 'abc123', version: '1.0.0', reference: '1.0' }
       end
 
       subject(:context) { described_class.new(component: component_data) }
@@ -56,7 +56,7 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Context, feature_category: :pipeline_
 
   describe '#component' do
     let(:component_data) do
-      { name: 'test-component', sha: 'def456', version: '2.0.0' }
+      { name: 'test-component', sha: 'def456', version: '2.0.0', reference: '2.0' }
     end
 
     subject(:context) { described_class.new(component: component_data) }

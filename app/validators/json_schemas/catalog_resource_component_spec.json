@@ -36,7 +36,8 @@
         "enum": [
           "name",
           "sha",
-          "version"
+          "version",
+          "reference"
         ]
       },
       "uniqueItems": true

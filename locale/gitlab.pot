@@ -48341,6 +48341,9 @@ msgstr ""
 msgid "PipelineSource|API"
 msgstr ""
 
+msgid "PipelineSource|Agent Session"
+msgstr ""
+
 msgid "PipelineSource|Any source"
 msgstr ""
 
@@ -49223,6 +49226,9 @@ msgid "Pipeline|What is a merged results pipeline?"
 msgstr ""
 
 msgid "Pipeline|You're about to stop pipeline #%{pipelineId}."
+msgstr ""
+
+msgid "Pipeline|agent session"
 msgstr ""
 
 msgid "Pipeline|api"
@@ -52656,21 +52662,6 @@ msgid "Projects|You haven't starred any projects yet."
 msgstr ""
 
 msgid "Project|already in use"
-msgstr ""
-
-msgid "PrometheusService|Active"
-msgstr ""
-
-msgid "PrometheusService|Monitor application health with Prometheus metrics and dashboards"
-msgstr ""
-
-msgid "PrometheusService|Select this checkbox to override the auto configuration settings with your own settings."
-msgstr ""
-
-msgid "PrometheusService|The Prometheus API base URL."
-msgstr ""
-
-msgid "PrometheusService|https://prometheus.example.com/"
 msgstr ""
 
 msgid "Promote"
@@ -67636,6 +67627,9 @@ msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by Auto DevOps."
+msgstr ""
+
+msgid "This pipeline ran for an agent session"
 msgstr ""
 
 msgid "This pipeline was created by a schedule"

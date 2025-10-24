@@ -42,6 +42,20 @@ To have:
 
 [Read more about using object storage with GitLab](../../object_storage.md).
 
+## Object storage verification
+
+Geo verifies files stored in object storage to ensure data integrity between primary and secondary sites.
+
+{{< alert type="warning" >}}
+Disabling object storage verification is not recommended.
+When you disable the `geo_object_storage_verification` feature flag, GitLab asynchronously deletes all existing verification state records.
+{{< /alert >}}
+
+When the `geo_object_storage_verification` feature flag is disabled:
+
+- Geo verification workers (`Geo::VerificationBatchWorker`) can still appear in Sidekiq logs, but verification does not take place.
+- During cleanup of verification records, workers may be enqueued to process remaining records.
+
 ## Enabling GitLab-managed object storage replication
 
 {{< history >}}

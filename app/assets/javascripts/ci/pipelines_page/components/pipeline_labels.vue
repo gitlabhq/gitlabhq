@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlPopover, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { SCHEDULE_ORIGIN, API_ORIGIN, TRIGGER_ORIGIN } from '../constants';
+import { SCHEDULE_ORIGIN, API_ORIGIN, TRIGGER_ORIGIN, AGENT_SESSION_ORIGIN } from '../constants';
 
 export default {
   components: {
@@ -87,6 +87,9 @@ export default {
     },
     stuck() {
       return this.pipeline?.flags?.stuck || this.pipeline?.stuck;
+    },
+    isAgentSession() {
+      return this.pipeline?.source === AGENT_SESSION_ORIGIN;
     },
   },
   buttonClass: '!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0',
@@ -260,6 +263,15 @@ export default {
       data-testid="pipeline-api-badge"
     >
       <gl-badge variant="info">{{ s__('Pipeline|api') }}</gl-badge>
+    </button>
+    <button
+      v-if="isAgentSession"
+      v-gl-tooltip
+      :title="__('This pipeline ran for an agent session')"
+      :class="$options.buttonClass"
+      data-testid="pipeline-agent-session-badge"
+    >
+      <gl-badge variant="info">{{ s__('Pipeline|agent session') }}</gl-badge>
     </button>
   </div>
 </template>

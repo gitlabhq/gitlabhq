@@ -47,6 +47,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(hide_incident_management_features: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     sign_in(developer)
   end
@@ -171,26 +172,15 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     end
   end
 
-  it 'routes the user to the incident details page when the `issue_type` is set to incident' do
+  it 'routes the user to the incident details page when the issue is converted to an incident' do
     visit project_issue_path(project, issue)
-    wait_for_requests
 
-    project_path = "/#{project.full_path}"
-    click_button 'Edit title and description'
-    wait_for_requests
-
-    within_testid('issuable-form') do
-      click_button 'Issue'
-      find_by_testid('issue-type-list-item', text: 'Incident').click
-
-      click_button 'Save changes'
-    end
-
-    wait_for_requests
+    fill_in 'Add a reply', with: '/promote_to_incident'
+    click_button 'Comment'
 
     expect(issue.reload.issue_type).to eq('incident')
-    expect(page).to have_current_path("#{project_path}/-/issues/incident/#{issue.iid}")
-    expect(page).to have_content(issue.title)
+    expect(page).to have_css('h1', text: issue.title)
+    expect(page).to have_testid('work-item-type-icon', text: 'Incident')
   end
 
   it 'routes the user to the issue details page when the `issue_type` is set to issue',

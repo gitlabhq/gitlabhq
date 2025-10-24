@@ -17,7 +17,6 @@ FactoryBot.define do
       create(:jira_import_state, :finished, project: projects[1], label: jira_label, imported_issues_count: 3, total_issue_count: 3)
       create(:jira_import_state, :finished, project: projects[1], label: jira_label, imported_issues_count: 3)
       create(:jira_import_state, :scheduled, project: projects[1], label: jira_label)
-      create(:prometheus_integration, project: projects[1])
       create(:jenkins_integration, project: projects[1])
 
       # slack
@@ -62,7 +61,7 @@ FactoryBot.define do
       create(:cluster_agent_token, agent: create(:cluster_agent, project: projects[1]))
 
       # Enabled clusters
-      gcp_cluster = create(:cluster_provider_gcp, :created).cluster
+      create(:cluster_provider_gcp, :created).cluster
       create(:cluster_provider_aws, :created)
       create(:cluster_platform_kubernetes)
       create(:cluster, :management_project, management_project: projects[0])
@@ -73,9 +72,6 @@ FactoryBot.define do
       create(:cluster, :disabled)
       create(:cluster, :group, :disabled)
       create(:cluster, :instance, :disabled)
-
-      # Cluster Integrations
-      create(:clusters_integrations_prometheus, cluster: gcp_cluster)
 
       create(:generic_package, project: projects[0], created_at: 3.days.ago)
       create(:generic_package, project: projects[0], created_at: 3.days.ago)

@@ -20,7 +20,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     let_it_be(:component_yaml) do
       <<~YAML
       spec:
-        component: [name, sha, version]
+        component: [name, sha, version, reference]
         inputs:
           compiler:
             default: gcc
@@ -33,7 +33,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       test:
         script:
           - echo "Building with $[[ inputs.compiler ]] and optimization level $[[ inputs.optimization_level ]]"
-          - echo "Component $[[ component.name ]] / $[[ component.sha ]] / $[[ component.version ]]"
+          - echo "Component $[[ component.name ]] / $[[ component.sha ]] / $[[ component.version ]] / $[[ component.reference ]]"
       YAML
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           test_job = pipeline.builds.find { |build| build.name == 'test' }
           expect(test_job.options[:script]).to eq([
             'echo "Building with gcc and optimization level 2"',
-            "echo \"Component #{component_name} / #{component_sha} / #{component_version}\""
+            "echo \"Component #{component_name} / #{component_sha} / #{component_version} / #{component_version}\""
           ])
         end
       end
@@ -102,7 +102,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           test_job = pipeline.builds.find { |build| build.name == 'test' }
           expect(test_job.options[:script]).to eq([
             'echo "Building with gcc and optimization level 2"',
-            "echo \"Component #{component_name} / #{component_sha} / #{component_version}\""
+            "echo \"Component #{component_name} / #{component_sha} / #{component_version} / 0.1\""
           ])
         end
       end
@@ -124,7 +124,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           test_job = pipeline.builds.find { |build| build.name == 'test' }
           expect(test_job.options[:script]).to eq([
             'echo "Building with gcc and optimization level 2"',
-            "echo \"Component #{component_name} / #{component_sha} / #{component_version}\""
+            "echo \"Component #{component_name} / #{component_sha} / #{component_version} / ~latest\""
           ])
         end
       end
@@ -146,7 +146,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           test_job = pipeline.builds.find { |build| build.name == 'test' }
           expect(test_job.options[:script]).to eq([
             'echo "Building with gcc and optimization level 2"',
-            "echo \"Component #{component_name} / #{component_sha} / \""
+            "echo \"Component #{component_name} / #{component_sha} /  / #{component_sha}\""
           ])
         end
 

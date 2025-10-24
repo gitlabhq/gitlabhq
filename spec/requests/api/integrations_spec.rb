@@ -46,7 +46,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
           aggregate_failures 'expect successful response with all active integrations' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to be_an Array
-            expect(json_response.count).to eq(2)
+            expect(json_response.count).to eq(1)
             expect(json_response.first['slug']).to eq('confluence')
             expect(response).to match_response_schema('public_api/v4/integrations')
           end
@@ -59,7 +59,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         unavailable_integration_names = [
           Integrations::GitlabSlackApplication.to_param,
           Integrations::JiraCloudApp.to_param,
-          Integrations::Prometheus.to_param,
           Integrations::Zentao.to_param
         ]
 
@@ -485,7 +484,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
           aggregate_failures 'expect successful response with all active integrations' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to be_an Array
-            expect(json_response.count).to eq(2)
+            expect(json_response.count).to eq(1)
             expect(json_response.first['slug']).to eq('confluence')
             expect(response).to match_response_schema('public_api/v4/integrations')
           end
@@ -505,7 +504,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         # You cannot create a GitLab for Slack app. You must install the app from the GitLab UI.
         unavailable_integration_names = [
           Integrations::GitlabSlackApplication.to_param,
-          Integrations::Prometheus.to_param,
           Integrations::Zentao.to_param
         ]
 
