@@ -86,6 +86,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
             expect(response.header).to have_key 'X-GitLab-Trace-Update-Interval'
           end
 
+          it 'succeeds when instance wide token prefix changes while a job is running' do
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
+
+            stub_application_setting(instance_token_prefix: 'newinstanceprefix')
+
+            patch_the_trace
+
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
+          end
+
           context 'when job has been updated recently' do
             it { expect { patch_the_trace }.not_to change { job.updated_at } }
 

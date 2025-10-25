@@ -332,7 +332,7 @@ module Gitlab
         # The runner sends the job token for PUT /api/jobs/:id in the PRIVATE-TOKEN header
         # and the token JSON parameter. Ignore this personal access token so
         # that the job token can be authenticated.
-        return if api_request? && current_token.start_with?(::Ci::Build::TOKEN_PREFIX)
+        return if api_request? && ::Authn::Tokens::CiJobToken.prefix?(current_token)
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         PersonalAccessToken.find_by_token(current_token.to_s) || raise(UnauthorizedError)

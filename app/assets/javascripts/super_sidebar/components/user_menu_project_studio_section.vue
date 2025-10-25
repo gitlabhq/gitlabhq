@@ -58,6 +58,10 @@ export default {
             projectStudioEnabled: val,
           },
           update: () => {
+            // If user is enabling the New UI (val=true and currently disabled), flag for onboarding
+            if (val === true && this.projectStudioEnabled === false) {
+              localStorage.setItem('showDapWelcomeModal', 'true');
+            }
             window.location.reload();
           },
         })

@@ -4,7 +4,8 @@ module Authn
   module Tokens
     class CiJobToken
       def self.prefix?(plaintext)
-        plaintext.start_with?(::Ci::Build::TOKEN_PREFIX)
+        prefixes = [::Ci::JobToken::Jwt.token_prefix, ::Ci::Build::TOKEN_PREFIX].uniq
+        plaintext.start_with?(*prefixes)
       end
 
       attr_reader :revocable, :source

@@ -40,11 +40,13 @@ module Ci
         def decode(token)
           return unless key
 
+          actual_token_prefix = token.starts_with?(::Ci::Build::TOKEN_PREFIX) ? ::Ci::Build::TOKEN_PREFIX : token_prefix
+
           jwt = ::Authn::Tokens::Jwt.rsa_decode(
             token: token,
             signing_public_key: key.public_key,
             subject_type: subject_type,
-            token_prefix: token_prefix)
+            token_prefix: actual_token_prefix)
           new(jwt) if jwt
         end
 
@@ -65,7 +67,7 @@ module Ci
         end
 
         def token_prefix
-          ::Ci::Build::TOKEN_PREFIX
+          ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(::Ci::Build::TOKEN_PREFIX)
         end
 
         def subject_type

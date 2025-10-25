@@ -410,6 +410,7 @@ to detect these tokens.
 
 Custom token prefixes apply only to the following tokens:
 
+- [CI/CD Job Tokens](../../security/tokens/_index.md#cicd-job-tokens)
 - [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)
 - [Deploy tokens](../../user/project/deploy_tokens/_index.md)
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)

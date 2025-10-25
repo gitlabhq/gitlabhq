@@ -61,7 +61,8 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
       end
     end
 
-    context 'to a forked project' do
+    context 'to a forked project',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6562' do
       let(:forked_project) { fork_project(project, user, namespace: user.namespace, repository: true) }
 
       it 'creates a merge request', :sidekiq_might_not_need_inline do

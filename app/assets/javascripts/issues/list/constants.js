@@ -45,6 +45,8 @@ import {
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_STATUS,
   TOKEN_TYPE_PARENT,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGED_AFTER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const ISSUE_REFERENCE = /^#\d+$/;
@@ -596,6 +598,26 @@ export const filtersMap = {
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'deployed_after',
+      },
+    },
+  },
+  [TOKEN_TYPE_MERGED_BEFORE]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'mergedBefore',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'merged_before',
+      },
+    },
+  },
+  [TOKEN_TYPE_MERGED_AFTER]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'mergedAfter',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'merged_after',
       },
     },
   },

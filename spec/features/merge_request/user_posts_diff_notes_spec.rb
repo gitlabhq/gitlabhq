@@ -164,7 +164,8 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     end
   end
 
-  context 'when cancelling the comment addition' do
+  context 'when cancelling the comment addition',
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6734' do
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
@@ -176,7 +177,8 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     end
   end
 
-  describe 'with multiple note forms' do
+  describe 'with multiple note forms',
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2195' do
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
       click_diff_line(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
@@ -203,13 +205,15 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
       end
     end
 
-    context 'with an old line' do
+    context 'with an old line',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6048' do
       it 'allows commenting' do
         should_allow_commenting(find_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
       end
     end
 
-    context 'with an unchanged line' do
+    context 'with an unchanged line',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4317' do
       it 'allows commenting' do
         should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
       end

@@ -54,6 +54,10 @@ import {
   TOKEN_TITLE_SUBSCRIBED,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TITLE_SEARCH_WITHIN,
+  TOKEN_TITLE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TITLE_MERGED_AFTER,
+  TOKEN_TYPE_MERGED_AFTER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -436,6 +440,20 @@ export default {
           multiselect: false,
           unique: true,
           environmentsEndpoint: this.environmentNamesPath,
+        },
+        this.state === STATUS_MERGED && {
+          type: TOKEN_TYPE_MERGED_BEFORE,
+          title: TOKEN_TITLE_MERGED_BEFORE,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
+        },
+        this.state === STATUS_MERGED && {
+          type: TOKEN_TYPE_MERGED_AFTER,
+          title: TOKEN_TITLE_MERGED_AFTER,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
         },
         {
           type: TOKEN_TYPE_DEPLOYED_BEFORE,

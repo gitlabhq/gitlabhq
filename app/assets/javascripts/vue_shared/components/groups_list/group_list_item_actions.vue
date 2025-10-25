@@ -97,6 +97,7 @@ export default {
           action: this.onActionDelete,
         },
         [ACTION_LEAVE]: {
+          text: __('Leave group'),
           action: this.onActionLeave,
         },
       };

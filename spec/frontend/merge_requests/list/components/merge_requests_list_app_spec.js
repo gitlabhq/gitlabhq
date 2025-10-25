@@ -35,6 +35,8 @@ import {
   TOKEN_TYPE_DEPLOYED_BEFORE,
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_MERGED_BEFORE,
+  TOKEN_TYPE_MERGED_AFTER,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -430,6 +432,45 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
+    });
+  });
+
+  describe('when on merged tab', () => {
+    beforeEach(async () => {
+      setWindowLocation(`?state=merged`);
+
+      createComponent();
+
+      await waitForPromises();
+    });
+
+    afterEach(() => {
+      setWindowLocation('?');
+    });
+
+    it('renders merged before & after when on merged tab', () => {
+      expect(findIssuableList().props('searchTokens')).toMatchObject([
+        { type: TOKEN_TYPE_AUTHOR },
+        { type: TOKEN_TYPE_ASSIGNEE },
+        { type: TOKEN_TYPE_REVIEWER },
+        { type: TOKEN_TYPE_MERGE_USER },
+        { type: TOKEN_TYPE_APPROVER },
+        { type: TOKEN_TYPE_APPROVED_BY },
+        { type: TOKEN_TYPE_MILESTONE },
+        { type: TOKEN_TYPE_LABEL },
+        { type: TOKEN_TYPE_RELEASE },
+        { type: TOKEN_TYPE_MY_REACTION },
+        { type: TOKEN_TYPE_DRAFT },
+        { type: TOKEN_TYPE_TARGET_BRANCH },
+        { type: TOKEN_TYPE_SOURCE_BRANCH },
+        { type: TOKEN_TYPE_ENVIRONMENT },
+        { type: TOKEN_TYPE_MERGED_BEFORE },
+        { type: TOKEN_TYPE_MERGED_AFTER },
+        { type: TOKEN_TYPE_DEPLOYED_BEFORE },
+        { type: TOKEN_TYPE_DEPLOYED_AFTER },
+        { type: TOKEN_TYPE_SUBSCRIBED },
+        { type: TOKEN_TYPE_SEARCH_WITHIN },
+      ]);
     });
   });
 

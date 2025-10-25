@@ -122,7 +122,8 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       it_behaves_like 'reports the user with an abuse category'
     end
 
-    context 'when reporting a comment' do
+    context 'when reporting a comment',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5981' do
       let_it_be(:issue) { create(:issue, project: project, author: abusive_user) }
       let_it_be(:comment) do
         create(:discussion_note_on_issue, author: abusive_user, project: project, noteable: issue, note: 'some note')

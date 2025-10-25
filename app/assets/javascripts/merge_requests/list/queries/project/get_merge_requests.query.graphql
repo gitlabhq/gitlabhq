@@ -27,6 +27,8 @@ query getProjectMergeRequests(
   $deployedAfter: Time
   $environmentName: String
   $subscribed: SubscriptionStatus
+  $mergedBefore: Time
+  $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
   $beforeCursor: String
   $afterCursor: String
@@ -58,6 +60,8 @@ query getProjectMergeRequests(
       deployedAfter: $deployedAfter
       environmentName: $environmentName
       subscribed: $subscribed
+      mergedBefore: $mergedBefore
+      mergedAfter: $mergedAfter
       not: $not
       before: $beforeCursor
       after: $afterCursor

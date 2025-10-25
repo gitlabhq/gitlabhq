@@ -58,7 +58,8 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
 
   array = [':', '@', '#', '%', '!', '~', '$', '[contact:']
   array.each do |x|
-    it 'handles esc key correctly when atwho is active' do
+    it 'handles esc key correctly when atwho is active',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5867' do
       page.within('.js-main-target-form') do
         fill_in('note[note]', with: 'comment 1')
         click_button('Comment')

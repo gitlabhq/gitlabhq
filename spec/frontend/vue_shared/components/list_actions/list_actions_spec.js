@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -28,12 +28,15 @@ describe('ListActions', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const getDropdownItemsProp = () => findDropdown().props('items');
+  const getDropdownItems = () =>
+    findDropdown()
+      .findAllComponents(GlDisclosureDropdownItem)
+      .wrappers.map((dropdownItem) => dropdownItem.props('item'));
 
   it('allows extending of base actions', () => {
     createComponent();
 
-    expect(getDropdownItemsProp()).toEqual([
+    expect(getDropdownItems()).toEqual([
       {
         text: 'Edit',
         href: '/-/edit',
@@ -62,7 +65,7 @@ describe('ListActions', () => {
       },
     });
 
-    expect(getDropdownItemsProp()).toEqual([
+    expect(getDropdownItems()).toEqual([
       {
         text: 'Edit',
         href: '/-/edit',
@@ -86,27 +89,7 @@ describe('ListActions', () => {
       },
     });
 
-    expect(getDropdownItemsProp()).toEqual([
-      {
-        text: 'Edit',
-        href: '/-/edit',
-      },
-    ]);
-  });
-
-  it('displays actions in the order set in `availableActions` prop', () => {
-    createComponent({
-      propsData: {
-        availableActions: [ACTION_DELETE, ACTION_EDIT],
-      },
-    });
-
-    expect(getDropdownItemsProp()).toEqual([
-      {
-        text: 'Delete',
-        variant: 'danger',
-        action: expect.any(Function),
-      },
+    expect(getDropdownItems()).toEqual([
       {
         text: 'Edit',
         href: '/-/edit',

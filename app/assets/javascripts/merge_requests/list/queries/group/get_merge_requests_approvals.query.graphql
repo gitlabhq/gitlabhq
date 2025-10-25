@@ -23,6 +23,8 @@ query getGroupMergeRequestsApprovals(
   $deployedBefore: Time
   $deployedAfter: Time
   $environmentName: String
+  $mergedBefore: Time
+  $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
   $beforeCursor: String
   $afterCursor: String
@@ -53,6 +55,8 @@ query getGroupMergeRequestsApprovals(
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
       environmentName: $environmentName
+      mergedBefore: $mergedBefore
+      mergedAfter: $mergedAfter
       not: $not
       includeSubgroups: true
       before: $beforeCursor

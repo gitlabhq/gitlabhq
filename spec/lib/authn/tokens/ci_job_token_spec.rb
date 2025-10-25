@@ -23,6 +23,20 @@ RSpec.describe Authn::Tokens::CiJobToken, feature_category: :system_access do
       end
     end
 
+    context 'with custom instance prefix' do
+      let_it_be(:instance_prefix) { 'instanceprefix' }
+      let_it_be(:default_prefix) { Ci::Build::TOKEN_PREFIX }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+        allow(ci_build).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings,
+          :jwt_ci_cd_job_token_enabled?).and_return(true)
+      end
+
+      it_behaves_like 'finding the valid revocable'
+      it_behaves_like 'contains instance prefix when enabled'
+    end
+
     describe '#revoke!' do
       it 'does not support revocation yet' do
         expect do

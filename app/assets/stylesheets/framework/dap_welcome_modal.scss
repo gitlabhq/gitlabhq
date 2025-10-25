@@ -1,0 +1,756 @@
+// these custom properties were created this way to make them animatable
+@property --_flashlight-start {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --_flashlight-step-1 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --_flashlight-step-2 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --_flashlight-step-3 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --_flashlight-step-4 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --_flashlight-end {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --_mask-start {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --_svg-color {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: var(--_svg-color-old);
+}
+
+// theme and mode adjustments
+#dap_welcome_modal {
+  --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-950);
+  --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-950);
+  --_svg-color-old: color-mix(in srgb, var(--gl-color-neutral-950), var(--theme-color) 20%);
+  --_svg-color-new: color-mix(in srgb, var(--gl-color-neutral-950), var(--theme-color) 100%);
+
+  background-color: rgba(from var(--gl-background-color-overlay) r g b / 90%);
+
+  .modal-content {
+    background: rgba(from var(--gl-color-neutral-0) r g b / 90%);
+  }
+}
+
+.gl-dark #dap_welcome_modal {
+  --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-10);
+  --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-10);
+  --_svg-color-old: color-mix(in srgb, var(--gl-color-neutral-10), var(--theme-color) 20%);
+  --_svg-color-new: color-mix(in srgb, var(--gl-color-neutral-10), var(--theme-color) 60%);
+
+  background-color: rgba(from var(--gl-background-color-overlay) r g b / 70%);
+
+  .modal-content {
+    background: rgba(from var(--gl-color-neutral-950) r g b / 80%);
+  }
+}
+
+
+// modal styles
+#dap_welcome_modal {
+  --_flashlight-main-color: hsla(from var(--theme-color) h calc(s + 20) calc(l + 35) / 30%);
+  --_flashlight-complimentary-color: hsla(
+    from var(--theme-color) calc(h + 30) calc(s + 20) calc(l + 35) / 15%
+  );
+  --_svg-color: var(--_svg-color-old);
+  backdrop-filter: blur(0.25rem);
+
+  .modal-body {
+    text-align: center;
+  }
+
+  .modal-footer > div:has(.gl-button:only-child) {
+    justify-content: center !important;
+  }
+
+
+  // spotlight effect
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    mask: radial-gradient(circle at 50% 100%, black var(--_mask-start), transparent);
+    background-image: conic-gradient(
+      from -90deg at 50% 120%,
+      transparent var(--_flashlight-start),
+      var(--_flashlight-complimentary-color) var(--_flashlight-step-1),
+      var(--_flashlight-main-color) var(--_flashlight-step-2),
+      var(--_flashlight-main-color) var(--_flashlight-step-3),
+      var(--_flashlight-complimentary-color) var(--_flashlight-step-4),
+      transparent var(--_flashlight-end)
+    );
+    animation:
+      dap-welcome-modal-spotlight 1s
+        linear(
+          0 0%,
+          0 1.8%,
+          0.01 3.6%,
+          0.03 6.35%,
+          0.07 9.1%,
+          0.13 11.4%,
+          0.19 13.4%,
+          0.27 15%,
+          0.34 16.1%,
+          0.54 18.35%,
+          0.66 20.6%,
+          0.72 22.4%,
+          0.77 24.6%,
+          0.81 27.3%,
+          0.85 30.4%,
+          0.88 35.1%,
+          0.92 40.6%,
+          0.94 47.2%,
+          0.96 55%,
+          0.98 64%,
+          0.99 74.4%,
+          1 86.4%,
+          1 100%
+        )
+        both,
+      dap-welcome-modal-spotlight-breath 10s 1s ease-in-out infinite;
+  }
+}
+
+@keyframes dap-welcome-modal-spotlight {
+  from {
+    --_flashlight-start: 90deg;
+    --_flashlight-step-1: 90deg;
+    --_flashlight-step-2: 90deg;
+    --_flashlight-step-3: 90deg;
+    --_flashlight-step-4: 90deg;
+    --_flashlight-end: 90deg;
+    --_mask-start: 0%;
+  }
+
+  to {
+    --_flashlight-start: 40deg;
+    --_flashlight-step-1: 60deg;
+    --_flashlight-step-2: 70deg;
+    --_flashlight-step-3: 110deg;
+    --_flashlight-step-4: 120deg;
+    --_flashlight-end: 140deg;
+    --_mask-start: 50%;
+  }
+}
+
+@keyframes dap-welcome-modal-spotlight-breath {
+  0%,
+  100% {
+    --_flashlight-start: 40deg;
+    --_flashlight-step-1: 60deg;
+    --_flashlight-step-2: 70deg;
+    --_flashlight-step-3: 110deg;
+    --_flashlight-step-4: 120deg;
+    --_flashlight-end: 140deg;
+  }
+
+  50% {
+    --_flashlight-start: 20deg;
+    --_flashlight-step-1: 45deg;
+    --_flashlight-step-2: 65deg;
+    --_flashlight-step-3: 115deg;
+    --_flashlight-step-4: 135deg;
+    --_flashlight-end: 160deg;
+  }
+}
+
+#dap_welcome_modal .slides {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+
+  .slide:not(.active) {
+    opacity: 0;
+  }
+
+  .slide {
+    width: 100%;
+    flex-shrink: 0;
+    transition: all 0.2s $gl-easing-out-cubic;
+  }
+
+  .slide:nth-child(1) {
+    margin-left: calc(var(--_currentStep) * -100%);
+  }
+}
+
+#dap_welcome_modal .particles {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  padding: 0 10vw;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  display: flex;
+  justify-content: space-around;
+  mask: radial-gradient(circle at 50% 100%, black 50%, transparent 75%);
+  overflow: hidden;
+
+  .particle {
+    align-self: flex-end;
+    aspect-ratio: 1;
+    background: hsla(from var(--theme-color) calc(h + 30) calc(s + 20) calc(l + 20) / 25%);
+    border-radius: 50%;
+    translate: 0 100%;
+    animation-name: dap-welcome-modal-particle-move, dap-welcome-modal-particle-shine;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    width: calc(0.5rem * var(--size));
+    animation-delay: calc(10s * var(--delay) - 5s);
+    animation-duration: calc(20s * var(--duration) + 5s), 5s;
+    filter: blur(calc(0.1rem * var(--blur)));
+  }
+}
+
+@keyframes dap-welcome-modal-particle-move {
+  from {
+    translate: 0 100%;
+  }
+
+  to {
+    translate: 0 calc(-100vh - 100%);
+  }
+}
+
+@keyframes dap-welcome-modal-particle-shine {
+  from {
+    scale: 1;
+  }
+
+  to {
+    scale: 0.8;
+  }
+}
+
+#dap_welcome_modal .bullets {
+  display: flex;
+  gap: var(--gl-spacing-scale-3);
+
+  .item {
+    border: 0;
+    background-color: var(--gl-text-color-subtle);
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border-radius: 50%;
+    transition: background-color 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    &.active {
+      background-color: var(--gl-text-color-default);
+    }
+  }
+}
+
+
+// ai panel explainer illustration
+#dap_welcome_modal .active .explainer-ai {
+  --_animation: 3s cubic-bezier(0.22, 0.61, 0.36, 1) both infinite;
+}
+
+#dap_welcome_modal .explainer-ai {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  --_svg-color: var(--_svg-color-new);
+
+  .main-panel {
+    animation: dap-welcome-modal-explainer-ai-main var(--_animation);
+  }
+
+  .side-panel {
+    animation: dap-welcome-modal-explainer-ai-side var(--_animation);
+  }
+
+  .ui {
+    opacity: 0.4;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ai-main {
+  0%,
+  50%,
+  100% {
+    width: 259px;
+  }
+
+  55%,
+  95% {
+    width: 127px;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ai-side {
+  0%,
+  50%,
+  100% {
+    opacity: 0;
+    translate: 127px 0;
+    width: 0;
+  }
+
+  55%,
+  95% {
+    opacity: 1;
+    translate: 0 0;
+    width: 127px;
+  }
+}
+
+
+// panels explainer illustration
+#dap_welcome_modal .active .explainer-panels {
+  --_animation: 5s cubic-bezier(0.22, 0.61, 0.36, 1) both infinite;
+
+  .main-panel-list rect:nth-child(1) {
+    animation-name: dap-welcome-modal-explainer-panels-list, dap-welcome-modal-explainer-panels-list-items;
+    animation-delay: 0s, 0s;
+  }
+
+  .main-panel-list rect:nth-child(2) {
+    animation-name: dap-welcome-modal-explainer-panels-list, dap-welcome-modal-explainer-panels-list-items;
+    animation-delay: 0s, 1s;
+  }
+
+  .main-panel-list rect:nth-child(3) {
+    animation-name: dap-welcome-modal-explainer-panels-list, dap-welcome-modal-explainer-panels-list-active;
+  }
+}
+
+#dap_welcome_modal .explainer-panels {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  --_svg-color: var(--_svg-color-new);
+
+  .main-panel {
+    animation: dap-welcome-modal-explainer-panels-main var(--_animation);
+  }
+
+  .main-panel-list rect {
+    width: 112px;
+    width: 244px;
+    opacity: 0.1;
+    animation: dap-welcome-modal-explainer-panels-list var(--_animation);
+  }
+
+  .side-panel {
+    animation: dap-welcome-modal-explainer-panels-side var(--_animation);
+  }
+
+  .ui {
+    opacity: 0.4;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-panels-main {
+  0%,
+  50%,
+  100% {
+    width: 259px;
+  }
+
+  55%,
+  95% {
+    width: 127px;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-panels-side {
+  0%,
+  50%,
+  100% {
+    opacity: 0;
+    translate: 127px 0;
+    width: 0;
+  }
+
+  55%,
+  95% {
+    opacity: 1;
+    translate: 0 0;
+    width: 127px;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-panels-list {
+  0%,
+  50%,
+  100% {
+    width: 244px;
+  }
+
+  55%,
+  95% {
+    width: 112px;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-panels-list-items {
+  0%,
+  25%,
+  100% {
+    opacity: 0.1;
+  }
+
+  5%,
+  20% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-panels-list-active {
+  0%,
+  45%,
+  100% {
+    opacity: 0.1;
+  }
+
+  50%,
+  95% {
+    opacity: 0.5;
+  }
+
+  0%,
+  46%,
+  50% {
+    width: 244px;
+    translate: 0 0;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+
+  48% {
+    width: 240px;
+    translate: 2px 0;
+  }
+
+  55%,
+  95% {
+    width: 112px;
+  }
+}
+
+
+// navbar explainer illustration
+#dap_welcome_modal .active .explainer-sidebar {
+  --_animation: 3s cubic-bezier(0.22, 0.61, 0.36, 1) both infinite;
+}
+
+#dap_welcome_modal .explainer-sidebar {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  --_svg-color: var(--_svg-color-new);
+
+  .sidebar {
+    animation: dap-welcome-modal-explainer-sidebar-sidebar var(--_animation);
+  }
+
+  .panel {
+    animation: dap-welcome-modal-explainer-sidebar-panel var(--_animation);
+  }
+
+  .ui {
+    opacity: 0.4;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-sidebar-sidebar {
+  0%,
+  45%,
+  100% {
+    width: 68px;
+  }
+
+  50%,
+  95% {
+    width: 12px;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-sidebar-panel {
+  0%,
+  45%,
+  100% {
+    width: 204px;
+    translate: 0 0;
+  }
+
+  50%,
+  95% {
+    width: 260px;
+    translate: -56px 0;
+  }
+}
+
+
+// search explainer illustration
+#dap_welcome_modal .explainer-search {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  --_svg-color: var(--_svg-color-new);
+
+  .ui {
+    opacity: 0.4;
+  }
+}
+
+
+// ui explainer illustration
+#dap_welcome_modal .active .explainer-ui {
+  --_animation: 6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+#dap_welcome_modal .explainer-ui {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  animation: dap-welcome-modal-explainer-ui-color var(--_animation);
+
+  .window {
+    animation: dap-welcome-modal-explainer-ui-window var(--_animation);
+  }
+
+  .search {
+    animation: dap-welcome-modal-explainer-ui-search var(--_animation);
+  }
+
+  .searchbar {
+    animation: dap-welcome-modal-explainer-ui-searchbar var(--_animation);
+  }
+
+  .user {
+    animation: dap-welcome-modal-explainer-ui-user var(--_animation);
+  }
+
+  .user-actions {
+    animation: dap-welcome-modal-explainer-ui-user-actions var(--_animation);
+  }
+
+  .main-panel {
+    animation: dap-welcome-modal-explainer-ui-main-panel var(--_animation);
+  }
+
+  .sparkles {
+    animation: dap-welcome-modal-explainer-ui-sparkles var(--_animation);
+  }
+
+  .ai-panel {
+    animation: dap-welcome-modal-explainer-ui-ai-panel var(--_animation);
+  }
+
+  .sidebar {
+    animation: dap-welcome-modal-explainer-ui-sidebar var(--_animation);
+  }
+
+  .line {
+    animation: dap-welcome-modal-explainer-ui-line var(--_animation);
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-color {
+  0%,
+  25%,
+  100% {
+    --_svg-color: var(--_svg-color-old);
+  }
+
+  30%,
+  95% {
+    --_svg-color: var(--_svg-color-new);
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-window {
+  0%,
+  25%,
+  100% {
+    rx: 3.5;
+  }
+
+  30%,
+  95% {
+    rx: 11.5;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-search {
+  0%,
+  25%,
+  100% {
+    translate: -88px 30px;
+    rx: 2;
+  }
+
+  30%,
+  95% {
+    translate: 0 0;
+    rx: 4.5;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-searchbar {
+  0%,
+  25%,
+  100% {
+    width: 63px;
+  }
+
+  30%,
+  95% {
+    width: 111px;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-user {
+  0%,
+  25%,
+  100% {
+    translate: -226px 0;
+  }
+
+  30%,
+  95% {
+    translate: 0 0;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-user-actions {
+  0%,
+  25%,
+  100% {
+    translate: -212px 16px;
+  }
+
+  30%,
+  95% {
+    translate: 0 0;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-main-panel {
+  0%,
+  25%,
+  100% {
+    rx: 2;
+    width: 224px;
+    height: 168px;
+    translate: 0 -24px;
+    stroke: transparent;
+  }
+
+  30%,
+  95% {
+    rx: 7.5;
+    width: 204px;
+    height: 140px;
+    translate: 0 0;
+    stroke: var(--_svg-color);
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-sparkles {
+  0%,
+  25%,
+  100% {
+    opacity: 0;
+  }
+
+  30%,
+  95% {
+    opacity: 1;
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-ai-panel {
+  0%,
+  25%,
+  100% {
+    translate: 20px 0;
+    stroke: transparent;
+  }
+
+  30%,
+  95% {
+    translate: 0 0;
+    stroke: var(--_svg-color);
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-sidebar {
+  0%,
+  25%,
+  100% {
+    rx: 2;
+    width: 75px;
+    height: 168px;
+    translate: -4px -24px;
+    stroke: transparent;
+  }
+
+  30%,
+  95% {
+    rx: 7.5;
+    width: 68px;
+    height: 140px;
+    translate: 0 0;
+    stroke: var(--_svg-color);
+  }
+}
+
+@keyframes dap-welcome-modal-explainer-ui-line {
+  0%,
+  25%,
+  100% {
+    opacity: 1;
+  }
+
+  30%,
+  95% {
+    opacity: 0;
+  }
+}
+
+
+// feedback explainer illustration
+#dap_welcome_modal .explainer-feedback {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  --_svg-color: var(--_svg-color-new);
+}

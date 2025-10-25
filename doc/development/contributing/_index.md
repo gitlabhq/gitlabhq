@@ -50,23 +50,16 @@ go to the footer of any page and select **View page source** to open the page in
 
 ## Choose or create an issue
 
-If you know what you're going to work on, see if an issue exists.
+If you're not sure what to work on, you can use the [issue finder](https://contributors.gitlab.com/issues)
+on the [contributor platform](https://contributors.gitlab.com) to find and assign yourself.
+It is recommended to start with an issue with the label `quick win::first-time contributor`.
+
+If you know what you're going to work on, see if an issue already exists.
 If it doesn't, open a [new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new).
 Select the appropriate template and add all the necessary information about the work you plan to do.
-That way you can get more guidance and support.
-
-If you're not sure what to work on, you can
-[view issues with the `~quick win` label](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&first_page_size=100),
-and filter specifically for [documentation `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=documentation&first_page_size=100),
-[backend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=backend&first_page_size=100),
-or [frontend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=frontend&first_page_size=100).
-
-When you find an issue you want to work on, leave a comment on it.
-This helps the GitLab team and members of the wider GitLab community know that you are working on that issue.
-
-This is a good opportunity to [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
-Confirm that the issue is still valid, clarify your intended approach, and ask if a feature or change is likely to be accepted.
-You do not need to be assigned to the issue to get started.
+Tag a [merge request coach](merge_request_coaches.md)
+with `@gitlab-bot help` on the issue or through the contributors platform to help [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
+You do not need to be assigned to the issue to get started.    
 If the issue already has an assignee, ask if they are still working on the issue or if they would like to collaborate.
 
 For details, see [the issues workflow](issue_workflow.md).

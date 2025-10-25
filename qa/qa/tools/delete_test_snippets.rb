@@ -27,11 +27,6 @@ module QA
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   DELETE_BEFORE=2023-01-01 bundle exec rake "delete_test_snippets[true]"
-      USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
-        GITLAB_QA_ACCESS_TOKEN
-        GITLAB_QA_USER1_ACCESS_TOKEN
-        GITLAB_QA_USER2_ACCESS_TOKEN].freeze
-
       def initialize(dry_run: false)
         super
 

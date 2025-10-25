@@ -15,6 +15,7 @@ import Tracking from '~/tracking';
 import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
 import * as utils from '~/vue_shared/components/source_viewer/utils';
@@ -29,6 +30,8 @@ import {
   BLAME_DATA_QUERY_RESPONSE_MOCK,
   SOURCE_CODE_CONTENT_MOCK,
 } from './mock_data';
+
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -49,11 +52,17 @@ describe('Source Viewer component', () => {
   const hash = '#L142';
 
   const blameDataQueryHandlerSuccess = jest.fn().mockResolvedValue(BLAME_DATA_QUERY_RESPONSE_MOCK);
+  const blameDataQueryHandlerError = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const blameInfo =
     BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
-  const createComponent = ({ showBlame = true, shouldPreloadBlame = false, blob = {} } = {}) => {
-    fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
+  const createComponent = ({
+    showBlame = true,
+    shouldPreloadBlame = false,
+    blob = {},
+    blameQueryHandler = blameDataQueryHandlerSuccess,
+  } = {}) => {
+    fakeApollo = createMockApollo([[blameDataQuery, blameQueryHandler]]);
 
     wrapper = shallowMountExtended(SourceViewer, {
       apolloProvider: fakeApollo,
@@ -223,6 +232,36 @@ describe('Source Viewer component', () => {
         await triggerChunkAppear();
 
         expect(findBlameComponents()).toHaveLength(0);
+      });
+
+      it('shows error alert when blame query fails', async () => {
+        createAlert.mockClear();
+        createComponent({ blameQueryHandler: blameDataQueryHandlerError });
+        await triggerChunkAppear();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Unable to load blame information. Please try again.',
+          captureError: true,
+          error: expect.any(Error),
+        });
+      });
+
+      it('shows backend error message when GraphQL error has message', async () => {
+        const backendErrorMessage = 'Error message from backend.';
+        const graphQLError = {
+          graphQLErrors: [{ message: backendErrorMessage }],
+        };
+        const blameDataQueryHandlerWithGraphQLError = jest.fn().mockRejectedValue(graphQLError);
+
+        createAlert.mockClear();
+        createComponent({ blameQueryHandler: blameDataQueryHandlerWithGraphQLError });
+        await triggerChunkAppear();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: backendErrorMessage,
+          captureError: true,
+          error: graphQLError,
+        });
       });
     });
 

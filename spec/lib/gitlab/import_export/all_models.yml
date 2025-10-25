@@ -413,6 +413,7 @@ ci_pipelines: &pipeline_definition
 - build_execution_configs
 - project_mirror
 - workload
+- sbom_occurrence_refs
 pipeline_metadata:
 - project
 - pipeline
@@ -935,6 +936,7 @@ project:
 - disable_download_button
 - dependency_list_exports
 - sbom_occurrences
+- sbom_occurrence_refs
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
 - targeting_dashboards_pointers

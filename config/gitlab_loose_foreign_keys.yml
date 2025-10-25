@@ -768,6 +768,13 @@ sbom_graph_paths:
   - table: projects
     column: project_id
     on_delete: async_delete
+sbom_occurrence_refs:
+  - table: p_ci_pipelines
+    column: pipeline_id
+    on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 sbom_occurrences:
   - table: p_ci_pipelines
     column: pipeline_id

@@ -30159,6 +30159,9 @@ msgstr ""
 msgid "Geo|secondary"
 msgstr ""
 
+msgid "Get Started"
+msgstr ""
+
 msgid "Get a support subscription"
 msgstr ""
 
@@ -31322,6 +31325,9 @@ msgid "Go Back"
 msgstr ""
 
 msgid "Go Micro is a framework for micro service development"
+msgstr ""
+
+msgid "Go Next"
 msgstr ""
 
 msgid "Go back"
@@ -34153,6 +34159,9 @@ msgid "If you do not renew by %{strong}%{downgrades_on}%{strong_close}, you can'
 msgstr ""
 
 msgid "If you don't renew by %{strong}%{downgrades_on}%{strong_close} your instance will become read-only, and you won't be able to create issues or merge requests. You will also lose access to your paid features and support entitlement. %{learn_more_link}"
+msgstr ""
+
+msgid "If you enabled Duo, you can open the GitLab Duo panel on the right side as an on-demand assistant. There, you can ask agents contextual questions and instructions from anywhere in the GitLab experience."
 msgstr ""
 
 msgid "If you get a lot of false alarms from repository checks, you can clear all repository check information from the database."
@@ -41341,6 +41350,12 @@ msgstr ""
 msgid "Merged %{timeAgo} by"
 msgstr ""
 
+msgid "Merged after"
+msgstr ""
+
+msgid "Merged before"
+msgstr ""
+
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
 msgstr ""
 
@@ -46015,6 +46030,9 @@ msgstr ""
 msgid "Open evidence JSON in new tab"
 msgstr ""
 
+msgid "Open feedback issue"
+msgstr ""
+
 msgid "Open in Ona"
 msgstr ""
 
@@ -46424,6 +46442,9 @@ msgid "Other labels"
 msgstr ""
 
 msgid "Other merge requests block this MR"
+msgstr ""
+
+msgid "Other subtle usability-driven improvements include moving the global search box to the top center for improved accessibility. Global navigation elements, including your assigned issues, merge requests, to-do items, and the user icon, move to the top right."
 msgstr ""
 
 msgid "Other updates"
@@ -47508,6 +47529,9 @@ msgid "Pagination|Previous"
 msgstr ""
 
 msgid "Pagination|« First"
+msgstr ""
+
+msgid "Panels present information side by side, allowing you to work more contextually. When you select an issue from the Issues page, it opens in the details panel."
 msgstr ""
 
 msgid "Parameter"
@@ -49490,6 +49514,9 @@ msgid "Please select…"
 msgstr ""
 
 msgid "Please set the admin account password."
+msgstr ""
+
+msgid "Please share your feedback — our engineers are listening. This toggle is temporary, and the panel UI will soon become the default view."
 msgstr ""
 
 msgid "Please solve the captcha"
@@ -66373,6 +66400,9 @@ msgstr ""
 msgid "The latest pipeline for this merge request has failed."
 msgstr ""
 
+msgid "The left navigation menu now collapses and expands to provide flexible sidebar management."
+msgstr ""
+
 msgid "The license key is invalid."
 msgstr ""
 
@@ -69777,6 +69807,9 @@ msgstr ""
 msgid "Unable to generate new instance ID"
 msgstr ""
 
+msgid "Unable to load blame information. Please try again."
+msgstr ""
+
 msgid "Unable to load commits. Try again later."
 msgstr ""
 
@@ -70398,6 +70431,9 @@ msgstr ""
 msgid "UsageBilling|Credits"
 msgstr ""
 
+msgid "UsageBilling|Credits used after any included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
+msgstr ""
+
 msgid "UsageBilling|Credits used from pool this month"
 msgstr ""
 
@@ -70414,6 +70450,9 @@ msgid "UsageBilling|Date/Time"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits - Monthly committed pool"
+msgstr ""
+
+msgid "UsageBilling|GitLab Credits - One-Time Waiver"
 msgstr ""
 
 msgid "UsageBilling|Increase monthly credit commitment"
@@ -70440,6 +70479,9 @@ msgstr ""
 msgid "UsageBilling|On-demand credits used this billable month"
 msgstr ""
 
+msgid "UsageBilling|One-Time Waiver credits remaining"
+msgstr ""
+
 msgid "UsageBilling|Peak daily use"
 msgstr ""
 
@@ -70462,6 +70504,9 @@ msgid "UsageBilling|Usage Billing"
 msgstr ""
 
 msgid "UsageBilling|Usage trend"
+msgstr ""
+
+msgid "UsageBilling|Used this billing period"
 msgstr ""
 
 msgid "UsageBilling|total users (active users)"
@@ -73702,6 +73747,9 @@ msgstr ""
 msgid "We've detected unusual activity"
 msgstr ""
 
+msgid "We've improved the GitLab user experience with a more modern, intuitive interface built on a new panel-based layout."
+msgstr ""
+
 msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
@@ -74105,6 +74153,9 @@ msgid "Welcome to GitLab,%{br_tag}%{name}!"
 msgstr ""
 
 msgid "Welcome to the new merge request homepage! This page gives you a centralized view of all the merge requests you're working on. Know at a glance what merge requests need your attention first so you can spend less time checking in, and more time reviewing and responding to feedback."
+msgstr ""
+
+msgid "Welcome to the redesigned GitLab UI"
 msgstr ""
 
 msgid "Welcome, %{name}!"

@@ -20,6 +20,8 @@ query getGroupMergeRequestsCount(
   $deployedAfter: Time
   $environmentName: String
   $subscribed: SubscriptionStatus
+  $mergedBefore: Time
+  $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
 ) {
   namespace: group(fullPath: $fullPath) {
@@ -46,6 +48,8 @@ query getGroupMergeRequestsCount(
       deployedAfter: $deployedAfter
       environmentName: $environmentName
       subscribed: $subscribed
+      mergedBefore: $mergedBefore
+      mergedAfter: $mergedAfter
       not: $not
       includeSubgroups: true
     ) {
@@ -73,6 +77,8 @@ query getGroupMergeRequestsCount(
       deployedAfter: $deployedAfter
       environmentName: $environmentName
       subscribed: $subscribed
+      mergedBefore: $mergedBefore
+      mergedAfter: $mergedAfter
       not: $not
       includeSubgroups: true
     ) {
@@ -100,6 +106,8 @@ query getGroupMergeRequestsCount(
       deployedAfter: $deployedAfter
       environmentName: $environmentName
       subscribed: $subscribed
+      mergedBefore: $mergedBefore
+      mergedAfter: $mergedAfter
       not: $not
       includeSubgroups: true
     ) {
@@ -127,6 +135,8 @@ query getGroupMergeRequestsCount(
       deployedAfter: $deployedAfter
       environmentName: $environmentName
       subscribed: $subscribed
+      mergedBefore: $mergedBefore
+      mergedAfter: $mergedAfter
       not: $not
       includeSubgroups: true
     ) {
