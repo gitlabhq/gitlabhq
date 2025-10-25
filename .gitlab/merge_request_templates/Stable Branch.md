@@ -27,7 +27,7 @@ This checklist encourages us to confirm any changes have been analyzed to reduce
   - [ ] If this MR fixes a bug that affects customers, the ~"customer" label has been applied.
 - [ ] Set the milestone of the merge request to match the target backport branch version.
 - [ ] This MR has been approved by a maintainer (only one approval is required).
-- [ ] Ensure the `e2e:test-on-omnibus-ee` job has either succeeded or been approved by a Software Engineer in Test.
+- [ ] Ensure the `e2e:test-on-omnibus-ee` job has succeeded, or if it has failed, [investigate the failures](https://handbook.gitlab.com/handbook/engineering/testing/guide-to-e2e-test-failure-issues/). If you determine the failures are unrelated, you may proceed. If you need assistance investigating, reach out to a Software Engineer in Test in #s_developer_experience.
 
 ### Note to the merge request author and maintainer
 
