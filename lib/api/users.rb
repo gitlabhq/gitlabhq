@@ -547,7 +547,7 @@ module API
         user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user
 
-        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
+        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user, organization: Current.organization)).execute
 
         if key.persisted?
           present key, with: Entities::SSHKey

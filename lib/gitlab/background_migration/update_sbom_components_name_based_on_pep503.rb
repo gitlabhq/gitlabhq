@@ -28,7 +28,7 @@ module Gitlab
       private
 
       def normalized_name(name)
-        name.gsub(Sbom::PackageUrl::Normalizer::PYPI_REGEX, '-')
+        name.gsub(::Sbom::PackageUrl::Normalizer::PYPI_REGEX, '-')
       end
     end
   end

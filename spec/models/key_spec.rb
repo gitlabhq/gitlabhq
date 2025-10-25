@@ -7,6 +7,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
@@ -16,6 +17,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_length_of(:key).is_at_most(5000) }
+
     it { is_expected.to allow_value(attributes_for(:rsa_key_2048)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:rsa_key_4096)[:key]).for(:key) }
     it { is_expected.to allow_value(attributes_for(:rsa_key_5120)[:key]).for(:key) }

@@ -16,7 +16,8 @@ module UserSettings
     end
 
     def create
-      @key = Keys::CreateService.new(current_user, key_params.merge(ip_address: request.remote_ip)).execute
+      @key = Keys::CreateService.new(current_user,
+        key_params.merge(ip_address: request.remote_ip, organization: Current.organization)).execute
 
       if @key.persisted?
         redirect_to user_settings_ssh_key_path(@key)
