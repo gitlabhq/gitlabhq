@@ -107,10 +107,8 @@ describe('Achievements app', () => {
         expect(avatarList.exists()).toBe(true);
         expect(avatarList.props('items')).toEqual(
           expect.arrayContaining([
-            getGroupAchievementsResponse.data.group.achievements.nodes[0].userAchievements.nodes[0]
-              .user,
-            getGroupAchievementsResponse.data.group.achievements.nodes[0].userAchievements.nodes[1]
-              .user,
+            getGroupAchievementsResponse.data.group.achievements.nodes[0].uniqueUsers.nodes[0],
+            getGroupAchievementsResponse.data.group.achievements.nodes[0].uniqueUsers.nodes[1],
           ]),
         );
       });

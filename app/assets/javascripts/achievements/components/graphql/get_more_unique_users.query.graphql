@@ -1,0 +1,19 @@
+#import "./unique_users_fields.fragment.graphql"
+
+query getMoreUniqueUsers(
+  $groupFullPath: ID!
+  $achievementId: AchievementsAchievementID!
+  $after: String
+) {
+  group(fullPath: $groupFullPath) {
+    id
+    achievements(ids: [$achievementId]) {
+      nodes {
+        id
+        uniqueUsers(first: 100, after: $after) {
+          ...UniqueUsersFragment
+        }
+      }
+    }
+  }
+}

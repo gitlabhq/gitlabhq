@@ -6,13 +6,13 @@ import {
   GlKeysetPagination,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { uniqBy } from 'lodash';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import { NEW_ROUTE_NAME } from '../constants';
 import getGroupAchievements from './graphql/get_group_achievements.query.graphql';
+import getMoreUniqueUsers from './graphql/get_more_unique_users.query.graphql';
 import AwardButton from './award_button.vue';
 
 const ENTRIES_PER_PAGE = 20;
@@ -57,6 +57,7 @@ export default {
         before: null,
       },
       pageInfo: {},
+      loadingUsers: {},
     };
   },
   apollo: {
@@ -110,8 +111,57 @@ export default {
         before: item,
       };
     },
-    uniqueRecipients(userAchievements) {
-      return uniqBy(userAchievements, 'user.id').map(({ user }) => user);
+    awardedUsers(userCount) {
+      return sprintf(
+        this.$options.i18n.users,
+        {
+          userCount,
+        },
+        false,
+      );
+    },
+    async loadMoreUsers(achievementId, after) {
+      this.setLoadingState(achievementId, true);
+      try {
+        const fetchedData = await this.fetchMoreUniqueUsers(achievementId, after);
+        if (fetchedData) {
+          this.mergeUniqueUsers(achievementId, fetchedData);
+        }
+      } finally {
+        this.setLoadingState(achievementId, false);
+      }
+    },
+    async fetchMoreUniqueUsers(achievementId, after) {
+      const { data } = await this.$apollo.query({
+        query: getMoreUniqueUsers,
+        variables: {
+          groupFullPath: this.groupFullPath,
+          achievementId,
+          after,
+        },
+      });
+      return data?.group?.achievements?.nodes?.[0]?.uniqueUsers;
+    },
+    mergeUniqueUsers(achievementId, fetchedData) {
+      this.achievements = this.achievements.map((achievement) => {
+        if (achievement.id === achievementId) {
+          return {
+            ...achievement,
+            uniqueUsers: {
+              nodes: [...achievement.uniqueUsers.nodes, ...fetchedData.nodes],
+              pageInfo: fetchedData.pageInfo,
+              count: fetchedData.count,
+            },
+          };
+        }
+        return achievement;
+      });
+    },
+    setLoadingState(achievementId, isLoading) {
+      this.loadingUsers = {
+        ...this.loadingUsers,
+        [achievementId]: isLoading,
+      };
     },
   },
   i18n: {
@@ -119,6 +169,7 @@ export default {
     emptyStateTitle: s__('Achievements|There are currently no achievements.'),
     newAchievement: s__('Achievements|New achievement'),
     notYetAwarded: s__('Achievements|Not yet awarded.'),
+    users: s__('Achievements|%{userCount} awarded users'),
   },
   NEW_ROUTE_NAME,
 };
@@ -167,10 +218,16 @@ export default {
         <template v-if="canAwardAchievement" #actions>
           <award-button :achievement-id="achievement.id" :achievement-name="achievement.name" />
         </template>
+        <div class="mb-2 gl-text-sm gl-text-secondary">
+          {{ awardedUsers(achievement.uniqueUsers.count) }}
+        </div>
         <user-avatar-list
-          v-if="achievement.userAchievements.nodes.length"
-          :items="uniqueRecipients(achievement.userAchievements.nodes)"
+          v-if="achievement.uniqueUsers.count > 0"
+          :items="achievement.uniqueUsers.nodes"
           :img-size="24"
+          :has-more="achievement.uniqueUsers.pageInfo.hasNextPage"
+          :is-loading="loadingUsers[achievement.id]"
+          @load-more="loadMoreUsers(achievement.id, achievement.uniqueUsers.pageInfo.endCursor)"
         />
         <span v-else class="gl-text-subtle">{{ $options.i18n.notYetAwarded }}</span>
       </crud-component>

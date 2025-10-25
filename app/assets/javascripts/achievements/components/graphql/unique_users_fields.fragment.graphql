@@ -1,0 +1,12 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+fragment UniqueUsersFragment on UserCoreConnection {
+  nodes {
+    ...User
+  }
+  pageInfo {
+    ...PageInfo
+  }
+  count
+}

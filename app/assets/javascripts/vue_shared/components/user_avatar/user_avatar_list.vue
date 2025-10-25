@@ -27,6 +27,16 @@ export default {
       required: false,
       default: __('None'),
     },
+    hasMore: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -48,19 +58,26 @@ export default {
       return this.breakpoint > 0 && this.items.length > this.breakpoint;
     },
     expandText() {
-      if (!this.hasHiddenItems) {
+      if (!this.hasHiddenItems && !this.hasMore) {
         return '';
       }
 
-      const count = this.items.length - this.breakpoint;
+      if (this.hasMore) {
+        return __('Load more');
+      }
 
+      const count = this.items.length - this.breakpoint;
       return sprintf(__('%{count} more'), { count });
     },
   },
   methods: {
     expand() {
-      this.isExpanded = true;
-      this.$emit('expanded');
+      if (this.hasMore && !this.hasHiddenItems) {
+        this.$emit('load-more');
+      } else {
+        this.isExpanded = true;
+        this.$emit('expanded');
+      }
     },
     collapse() {
       this.isExpanded = false;
@@ -85,8 +102,13 @@ export default {
       :popover-username="item.username"
       img-css-classes="gl-mr-3"
     />
-    <template v-if="hasBreakpoint">
-      <gl-button v-if="hasHiddenItems" variant="link" @click="expand">
+    <template v-if="hasBreakpoint || hasMore">
+      <gl-button
+        v-if="hasHiddenItems || hasMore"
+        variant="link"
+        :loading="isLoading"
+        @click="expand"
+      >
         {{ expandText }}
       </gl-button>
       <gl-button v-else variant="link" @click="collapse">

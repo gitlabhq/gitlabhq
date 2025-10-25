@@ -1,18 +1,11 @@
+#import "./unique_users_fields.fragment.graphql"
+
 fragment AchievementFragment on Achievement {
   id
   name
   description
   avatarUrl
-  userAchievements {
-    nodes {
-      id
-      user {
-        id
-        username
-        name
-        avatarUrl
-        webUrl
-      }
-    }
+  uniqueUsers(first: 100) {
+    ...UniqueUsersFragment
   }
 }
