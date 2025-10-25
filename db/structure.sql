@@ -33318,6 +33318,9 @@ ALTER TABLE project_type_ci_runner_machines
 ALTER TABLE project_type_ci_runners
     ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE vulnerability_statistics
+    ADD CONSTRAINT check_vulnerability_statistics_traversal_ids_not_empty CHECK ((cardinality(traversal_ids) > 0)) NOT VALID;
+
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
 
