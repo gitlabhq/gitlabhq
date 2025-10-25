@@ -1,0 +1,10 @@
+---
+name: fine_grained_personal_access_tokens
+description: Support for fine-grained personal access tokens
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/570705
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209386
+rollout_issue_url:
+milestone: '18.6'
+group: group::authorization
+type: wip
+default_enabled: false

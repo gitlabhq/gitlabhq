@@ -162,4 +162,30 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       expect(response.body).to include("SUMMARY:#{format(_("Token '%{name}' expires today"), name: token.name)}")
     end
   end
+
+  describe '#new' do
+    context 'when fine_grained_personal_access_tokens feature flag is disabled' do
+      before do
+        stub_feature_flags(fine_grained_personal_access_tokens: false)
+      end
+
+      it 'returns 404' do
+        get :new
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(fine_grained_personal_access_tokens: true)
+      end
+
+      it 'renders the new template' do
+        get :new
+
+        expect(response).to render_template(:new)
+      end
+    end
+  end
 end

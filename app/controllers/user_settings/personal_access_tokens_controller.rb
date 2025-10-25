@@ -43,6 +43,10 @@ module UserSettings
       end
     end
 
+    def new
+      render_404 unless Feature.enabled?(:fine_grained_personal_access_tokens, :instance)
+    end
+
     def create
       result = ::PersonalAccessTokens::CreateService.new(
         current_user: current_user,

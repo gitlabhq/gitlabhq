@@ -3745,6 +3745,9 @@ msgstr ""
 msgid "AccessTokens|Filter list"
 msgstr ""
 
+msgid "AccessTokens|Fine-grained personal access tokens give you granular control over the specific resources and actions available to the token."
+msgstr ""
+
 msgid "AccessTokens|For example, the application using the token or the purpose of the token."
 msgstr ""
 
@@ -3755,6 +3758,9 @@ msgid "AccessTokens|Forces new personal access tokens for service accounts to re
 msgstr ""
 
 msgid "AccessTokens|Forces new personal, group, project and impersonation tokens to require an expiration date. Does not affect existing token expiration dates or personal access tokens for service accounts. This setting overrides the group-level %{link_start}service account token expiration%{link_end} setting."
+msgstr ""
+
+msgid "AccessTokens|Generate fine-grained token"
 msgstr ""
 
 msgid "AccessTokens|How do I use DPoP?"
