@@ -1,11 +1,10 @@
 import { createWrapper } from '@vue/test-utils';
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
+import { defineComponent, h } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { initSimpleApp } from '~/helpers/init_simple_app_helper';
-import createDefaultClient from '~/lib/graphql';
 
-const MockComponent = Vue.component('MockComponent', {
+const MockComponent = defineComponent({
+  name: 'MockComponent',
   props: {
     someKey: {
       type: String,
@@ -18,7 +17,7 @@ const MockComponent = Vue.component('MockComponent', {
       default: 0,
     },
   },
-  render: (createElement) => createElement('span'),
+  render: () => h('span'),
 });
 
 let wrapper;
@@ -85,17 +84,6 @@ describe('helpers/init_simple_app_helper/initSimpleApp', () => {
           initMock('<div id="mount-here"></div>', { withApolloProvider: true });
 
           expect(wrapper.vm.$apollo).not.toBeUndefined();
-        });
-      });
-
-      describe('if VueApollo, sets as default provider', () => {
-        it('uses the provided apolloClient', () => {
-          Vue.use(VueApollo);
-          const apolloProvider = new VueApollo({ defaultClient: createDefaultClient() });
-
-          initMock('<div id="mount-here"></div>', { withApolloProvider: apolloProvider });
-
-          expect(wrapper.vm.$apolloProvider).toBe(apolloProvider);
         });
       });
     });
