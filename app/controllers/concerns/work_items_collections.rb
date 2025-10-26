@@ -52,6 +52,15 @@ module WorkItemsCollections
       work_items_collection_params[:search] = nil
     end
 
+    custom_field_source = params.permit('custom-field': {})['custom-field'] ||
+      work_items_collection_params[:custom_field]
+
+    if custom_field_source
+      work_items_collection_params[:custom_field] = custom_field_source.to_h.map do |id, option_ids|
+        { custom_field_id: id, selected_option_ids: Array(option_ids) }
+      end
+    end
+
     if @project
       options[:project_id] = @project.id
       options[:attempt_project_search_optimizations] = true
