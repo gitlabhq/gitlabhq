@@ -284,7 +284,7 @@ mapping:
       - 'ee/spec/lib/gitlab/ci/templates/container_scanning_gitlab_ci_yaml_spec.rb'
       - 'ee/spec/lib/gitlab/ci/templates/container_scanning_latest_gitlab_ci_yaml_spec.rb'
 
-  - source: 'lib/gitlab/ci/templates/Jobs/Secret-Detection\..*.gitlab-ci\.yml'
+  - source: 'lib/gitlab/ci/templates/Jobs/Secret-Detection\..*gitlab-ci\.yml'
     test:
       - 'ee/spec/lib/gitlab/ci/templates/secret_detection_gitlab_ci_yaml_spec.rb'
       - 'ee/spec/lib/gitlab/ci/templates/secret_detection_latest_gitlab_ci_yaml_spec.rb'
