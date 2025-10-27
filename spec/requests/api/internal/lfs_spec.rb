@@ -27,20 +27,9 @@ RSpec.describe API::Internal::Lfs, feature_category: :source_code_management do
 
     context 'with valid auth' do
       context 'LFS in local storage' do
-        it 'sends the file' do
-          get api("/internal/lfs"), params: valid_params, headers: gitlab_shell_internal_api_request_header
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.headers['Content-Type']).to eq('application/octet-stream')
-          expect(response.headers['Content-Length'].to_i).to eq(File.stat(filename).size)
-          expect(response.body).to eq(File.open(filename, 'rb', &:read))
-        end
-
-        # https://www.rubydoc.info/github/rack/rack/master/Rack/Sendfile
         it 'delegates sending to Web server' do
           get api("/internal/lfs"),
             params: valid_params,
-            env: { 'HTTP_X_SENDFILE_TYPE' => 'X-Sendfile' },
             headers: gitlab_shell_internal_api_request_header
 
           expect(response).to have_gitlab_http_status(:ok)

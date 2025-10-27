@@ -508,8 +508,7 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         get_file
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).not_to eq(package_file_pending_destruction.file.file.read)
-        expect(response.body).to eq(package_file.file.file.read)
+        expect(File.open(response.headers['X-Sendfile'], 'rb').read).to eq(package_file.file.file.read)
       end
     end
 

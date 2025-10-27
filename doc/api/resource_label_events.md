@@ -12,7 +12,8 @@ title: Resource label events API
 
 {{< /details >}}
 
-Resource label events keep track about who, when, and which label was added to (or removed from)
+Use this API to retrieve resource label events that track who, when, and which
+[label](../user/project/labels.md) was added to (or removed from)
 an issue, merge request, or epic.
 
 ## Issues

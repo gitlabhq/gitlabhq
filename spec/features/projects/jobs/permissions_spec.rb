@@ -189,7 +189,7 @@ RSpec.describe 'Project Jobs Permissions', feature_category: :continuous_integra
         visit raw_project_job_path(project, job)
 
         expect(status_code).to eq(expected_status_code)
-        expect(page).to have_content(expected_msg)
+        expect(page).to have_content(expected_msg) if expected_status_code != 200 # rubocop:disable RSpec/AvoidConditionalStatements -- have_content does not work with empty non-HTML response body
       end
     end
   end
