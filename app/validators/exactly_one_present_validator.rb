@@ -34,7 +34,8 @@ class ExactlyOnePresentValidator < ActiveModel::Validator # rubocop:disable Gitl
     error_message = if options[:message].respond_to?(:call)
                       options[:message].call(fields)
                     else
-                      options[:message] || "Exactly one of #{fields.join(', ')} must be present"
+                      options[:message] ||
+                        format(_("Exactly one of %{fields} must be present"), fields: fields.join(', '))
                     end
 
     record.errors.add(error_key.to_sym, error_message)

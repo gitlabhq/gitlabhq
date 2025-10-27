@@ -12,7 +12,7 @@ title: Go Proxy API
 
 {{< /details >}}
 
-This is the API documentation for [Go Packages](../../user/packages/go_proxy/_index.md).
+Use this API to interact with the [Go package manager client](../../user/packages/go_proxy/_index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to
 the GitLab Rails console can [enable](../../administration/feature_flags/_index.md)
 this API for your GitLab instance.
@@ -23,8 +23,6 @@ This API is used by the [Go client](https://maven.apache.org/)
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to work with the Go Proxy, see the [Go Proxy package documentation](../../user/packages/go_proxy/_index.md).
 
 {{< alert type="note" >}}
 

@@ -281,6 +281,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
+    it { is_expected.to have_many(:protected_tag_create_access_levels).class_name('ProtectedTag::CreateAccessLevel').dependent(:delete_all) }
 
     describe '#triggers' do
       let_it_be_with_refind(:user) { create(:user) }

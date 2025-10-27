@@ -1400,12 +1400,8 @@ module Ci
       )
     end
 
-    def partition_id_prefix_in_16_bit_encode
-      "#{partition_id.to_s(16)}_"
-    end
-
     def prefix_and_partition_for_token
-      TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
+      ::Ci::Builds::TokenPrefix.encode(self)
     end
 
     def runner_ack_queue

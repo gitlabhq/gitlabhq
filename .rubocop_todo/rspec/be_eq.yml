@@ -442,7 +442,7 @@ RSpec/BeEq:
     - 'ee/spec/services/vulnerabilities/security_finding/create_merge_request_service_spec.rb'
     - 'ee/spec/services/vulnerability_feedback/create_service_spec.rb'
     - 'ee/spec/services/work_items/callbacks/weight_spec.rb'
-    - 'ee/spec/services/work_items/update_service_spec.rb'
+    - 'ee/spec/services/ee/work_items/update_service_spec.rb'
     - 'ee/spec/support/analytics/cycle_analytics/flow_metrics_examples.rb'
     - 'ee/spec/support/shared_examples/lib/code_suggestions/task_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/concerns/elastic/limited_indexing_shared_examples.rb'

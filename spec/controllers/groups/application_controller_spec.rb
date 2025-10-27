@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::ApplicationController do
+RSpec.describe Groups::ApplicationController, feature_category: :groups_and_projects do
   let_it_be(:user)  { create(:user) }
   let_it_be(:group) { create(:group) }
 

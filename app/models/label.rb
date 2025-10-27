@@ -28,8 +28,7 @@ class Label < ApplicationRecord
   after_save :unprioritize_all!, if: -> { saved_change_to_attribute?(:archived) && archived }
 
   validate :ensure_lock_on_merge_allowed
-  validates_with ExactlyOnePresentValidator, fields: [:group, :project, :organization], error_key: :parent,
-    message: ->(fields) { format(_("exactly one of %{parent_types} is required"), parent_types: fields.join(', ')) }
+  validates_with ExactlyOnePresentValidator, fields: [:group, :project, :organization], error_key: :parent
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
 
   # we validate the description against DESCRIPTION_LENGTH_MAX only for labels being created and on updates if

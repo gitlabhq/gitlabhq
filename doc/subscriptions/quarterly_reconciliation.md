@@ -87,7 +87,7 @@ Alternatively, you can reconcile any overages by [purchasing additional seats](m
 At the end of each subscription quarter, GitLab notifies you about overages.
 The date you're notified about the overage is not the same as the date you are billed.
 
-1. An email that communicates the [overage seat quantity](manage_users_and_seats.md#seats-owed)
+1. An email that communicates the [overage seat quantity](manage_users_and_seats.md#users-over-subscription-limit)
    and expected invoice amount is sent:
 
    - On GitLab.com: On the reconciliation date, to group owners and billing account managers.

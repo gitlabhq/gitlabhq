@@ -13374,6 +13374,9 @@ msgstr ""
 msgid "Characters over limit"
 msgstr ""
 
+msgid "Chat is not available."
+msgstr ""
+
 msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}"
 msgstr ""
 
@@ -25133,6 +25136,12 @@ msgstr ""
 msgid "DuoChat|Ask a question about GitLab"
 msgstr ""
 
+msgid "DuoChat|Duo Agentic Chat is not available at the moment in this page. To work with Duo Agentic Chat in pages outside the scope of a project please select a %{strong_start}Default GitLab Duo namespace%{strong_end} in your %{preferences_link_start}User Profile Preferences%{preferences_link_end}."
+msgstr ""
+
+msgid "DuoChat|Duo Agentic Chat is not available in this page, please visit a project page to have access to chat."
+msgstr ""
+
 msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
@@ -25167,6 +25176,9 @@ msgid "DuoChat|There was an error communicating with GitLab Duo Chat. Please try
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
+msgstr ""
+
+msgid "DuoChat|You don't currently have access to Duo Chat, please contact your GitLab administrator."
 msgstr ""
 
 msgid "DuoChat|group"
@@ -27472,6 +27484,9 @@ msgid "Exact code search"
 msgstr ""
 
 msgid "Exactly one of %{attributes} is required"
+msgstr ""
+
+msgid "Exactly one of %{fields} must be present"
 msgstr ""
 
 msgid "Example"
@@ -78772,9 +78787,6 @@ msgid "estimateCommand|%{slash_command} overwrites the total estimated time."
 msgstr ""
 
 msgid "event"
-msgstr ""
-
-msgid "exactly one of %{parent_types} is required"
 msgstr ""
 
 msgid "example-branch-name"

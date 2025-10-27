@@ -18,7 +18,7 @@ title: Debian API
 
 {{< /history >}}
 
-This is the API documentation for [Debian](../../user/packages/debian_repository/_index.md).
+Use this API to interact with the [Debian package manager client](../../user/packages/debian_repository/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -28,9 +28,6 @@ and is generally not meant for manual consumption. This API is under development
 for production use due to limited functionality.
 
 {{< /alert >}}
-
-For instructions on how to upload and install Debian packages from the GitLab
-package registry, see the [Debian registry documentation](../../user/packages/debian_repository/_index.md).
 
 {{< alert type="note" >}}
 

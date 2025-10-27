@@ -13,6 +13,8 @@ description: Documentation for the REST API for the GitLab dependency proxy.
 
 {{< /details >}}
 
+Use this API to manage the [dependency proxy](../user/packages/dependency_proxy/_index.md).
+
 ## Purge the dependency proxy for a group
 
 Schedules for deletion the cached manifests and blobs for a group. This endpoint requires the

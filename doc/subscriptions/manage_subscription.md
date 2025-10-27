@@ -101,7 +101,7 @@ The following information is displayed:
 | **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group. |
 | **Seats currently in use**  | Number of seats in use. Select **See usage** to see a list of the users using these seats. |
 | **Maximum seats used**      | Highest number of seats you've used. |
-| **Seats owed**              | **Max seats used** minus **Seats in subscription**. |
+| **Seats owed**              | **Max seats used** - **Seats in subscription**. |
 | **Subscription start date** | Date your subscription started. |
 | **Subscription end date**   | Date your current subscription ends. |
 
@@ -282,7 +282,7 @@ To manually renew your subscription:
    [overage](quarterly_reconciliation.md) is due when you renew.
 
    In the **Users over license** text box, enter the number of
-   [users over subscription](manage_users_and_seats.md#users-over-subscription) for the user overage incurred.
+   [users over subscription](manage_users_and_seats.md#users-over-subscription-limit) for the user overage incurred.
 1. Optional. If renewing add-on products, review and update the desired quantity. You can also remove products.
 1. Optional. If upgrading the subscription tier, select the desired option.
 1. Review your renewal details and select **Renew subscription** to complete the

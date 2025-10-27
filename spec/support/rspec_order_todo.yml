@@ -2164,7 +2164,7 @@
 - './ee/spec/services/wiki_pages/destroy_service_spec.rb'
 - './ee/spec/services/wiki_pages/update_service_spec.rb'
 - './ee/spec/services/wikis/create_attachment_service_spec.rb'
-- './ee/spec/services/work_items/update_service_spec.rb'
+- './ee/spec/services/ee/work_items/update_service_spec.rb'
 - './ee/spec/tasks/geo_rake_spec.rb'
 - './ee/spec/tasks/gitlab/check_rake_spec.rb'
 - './ee/spec/tasks/gitlab/geo_rake_spec.rb'

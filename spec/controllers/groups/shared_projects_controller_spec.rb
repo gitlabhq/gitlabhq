@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::SharedProjectsController do
+RSpec.describe Groups::SharedProjectsController, feature_category: :groups_and_projects do
   def get_shared_projects(params = {})
     get :index, params: params.reverse_merge(format: :json, group_id: group.full_path)
   end

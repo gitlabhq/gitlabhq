@@ -149,7 +149,7 @@ RSpec.describe Label, feature_category: :team_planning do
           label = described_class.new
           label.valid?
 
-          expect(label.errors[:parent]).to include('exactly one of group, project, organization is required')
+          expect(label.errors[:parent]).to include('Exactly one of group, project, organization must be present')
         end
       end
 

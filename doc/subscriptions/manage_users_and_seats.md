@@ -64,6 +64,41 @@ A user is not counted as a billable user if:
     - [Bot users for groups](../user/group/settings/group_access_tokens.md#bot-users-for-groups).
     - Other [internal users](../administration/internal_users.md).
 
+## Users over subscription limit
+
+When the number of billable users in your instance or top-level group exceeds the number of seats you've purchased,
+you have users over subscription (or seats owed).
+
+This can happen, for example, when new users are added to your instance or group,
+or existing users are promoted to billable roles.
+
+The number of users over subscription is calculated as:
+maximum users during billing period - purchased seats in your subscription.
+
+For example, you purchase a subscription for 10 seats, and during the billing period the number of users varies as follows:
+
+| Event                                             | Billable users | Maximum users |
+|:--------------------------------------------------|:----------------|:--------------|
+| Ten users occupy all 10 seats.                    | 10              | 10            |
+| Two new users join.                               | 12              | 12            |
+| Three users leave and their accounts are blocked. | 9               | 12            |
+| Four new users join.                              | 13              | 13            |
+
+In this case, you have 3 users over subscription (13 maximum users - 10 purchased seats).
+
+When you exceed your subscription limit, you must pay for the additional users
+[before or at the time of renewal](quarterly_reconciliation.md).
+The cost is based on the maximum number of users during the billing period, not the current number of users.
+
+On GitLab Self-Managed, for trial licenses the users over subscription value is always zero.
+If you do not pay for seats owed before or at the time of renewal, your license key doesn't work.
+
+To avoid unexpected overage charges, you can:
+
+- [Turn on restricted access](../user/group/manage.md#turn-on-restricted-access) to prevent adding users when no seats remain.
+- [Require administrator approval for new sign-ups](../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
+- Buy more seats proactively when approaching your limit.
+
 ## Free Guest users
 
 {{< details >}}
@@ -156,33 +191,6 @@ This number remains the same throughout your subscription period unless you purc
 The number of maximum users reflects the highest number of billable users on your system for the current license period.
 
 You can view and export your [license usage](../administration/license_usage.md).
-
-### Users over subscription
-
-A GitLab subscription is valid for a specific number of seats.
-The number of users over subscription shows how many users are in excess of the
-number allowed by the subscription, in the current subscription period.
-
-Calculated as `Maximum users` - `Users in subscription` for the current license
-term. For example, you purchase a subscription for 10 users.
-
-| Event                                              | Billable users   | Maximum users |
-|:---------------------------------------------------|:-----------------|:--------------|
-| Ten users occupy all 10 seats.                     | 10               | 10            |
-| Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are blocked.  | 9                | 12            |
-| Four new users join.                               | 13               | 13            |
-
-Users over subscription = 13 - 10 (Maximum users - users in license)
-
-The users over subscription value is always zero for trial license.
-
-If users over subscription value is above zero, then you have more users in your
-GitLab instance than you are licensed for. You must pay for the additional users
-[before or at the time of renewal](quarterly_reconciliation.md). This is
-called the "true up" process. If you do not do this, your license key does not work.
-
-To view the number of users over subscription, go to the **Admin** area.
 
 ### View users
 
@@ -289,25 +297,6 @@ You can add and remove users during the subscription period without incurring ad
 as long as the total number of users at any given time doesn't exceed the number of seats in the subscription.
 If you add more users and exceed the number of purchased seats, you incur an overage,
 which will be included in your next [invoice](quarterly_reconciliation.md).
-
-### Seats owed
-
-If the number of billable users exceeds the number of **seats in subscription**, known
-as the number of **seats owed**, you must pay for the excess number of users.
-
-For example, if you purchase a subscription for 10 users:
-
-| Event                                              | Billable members | Maximum users |
-|:---------------------------------------------------|:-----------------|:--------------|
-| Ten users occupy all 10 seats.                     | 10               | 10            |
-| Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are removed.  | 9                | 12            |
-
-Seats owed = 12 - 10 (Maximum users - users in subscription)
-
-To prevent charges from seats owed, you can
-[turn on restricted access](../user/group/manage.md#turn-on-restricted-access).
-This setting restricts groups from adding new billable users when there are no seats left in the subscription.
 
 ### Seat usage alerts
 

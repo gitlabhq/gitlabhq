@@ -12,7 +12,7 @@ title: Composer API
 
 {{< /details >}}
 
-This is the API documentation for [Composer Packages](../../user/packages/composer_repository/_index.md).
+Use this API to interact with the [Composer package manager client](../../user/packages/composer_repository/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -20,9 +20,6 @@ This API is used by the [Composer package manager client](https://getcomposer.or
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to upload and install Composer packages from the GitLab
-package registry, see the [Composer package registry documentation](../../user/packages/composer_repository/_index.md).
 
 {{< alert type="note" >}}
 

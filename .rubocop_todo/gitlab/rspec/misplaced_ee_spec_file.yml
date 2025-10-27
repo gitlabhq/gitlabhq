@@ -253,7 +253,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/services/work_items/export_csv_service_spec.rb'
     - 'ee/spec/services/work_items/parent_links/create_service_spec.rb'
     - 'ee/spec/services/work_items/parent_links/destroy_service_spec.rb'
-    - 'ee/spec/services/work_items/update_service_spec.rb'
     - 'ee/spec/validators/json_schema_validator_spec.rb'
     - 'ee/spec/workers/project_cache_worker_spec.rb'
     - 'ee/spec/workers/repositories/post_receive_worker_spec.rb'

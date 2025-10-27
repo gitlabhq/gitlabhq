@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::ImportsController do
+RSpec.describe Groups::ImportsController, feature_category: :importers do
   describe 'GET #show' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group, :private) }

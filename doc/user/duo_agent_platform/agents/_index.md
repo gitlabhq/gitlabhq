@@ -79,11 +79,12 @@ To create an agent:
    For example, for the agent to create issues automatically, select **Create issue**.
 1. Select **Create agent**.
 
-The agent appears in the AI Catalog.
+The agent is enabled in the source project, and appears in the AI Catalog.
 
 ## Enable an agent
 
 Enable an agent in a project to use it with Chat.
+By default, an agent is enabled in its source project.
 
 Prerequisites:
 

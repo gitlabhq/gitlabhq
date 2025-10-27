@@ -12,7 +12,7 @@ title: Maven API
 
 {{< /details >}}
 
-This is the API documentation for [Maven Packages](../../user/packages/maven_repository/_index.md).
+Use this API to interact with the [Maven package manager client](../../user/packages/maven_repository/_index.md).
 
 {{< alert type="warning" >}}
 
@@ -20,9 +20,6 @@ This API is used by the [Maven package manager client](https://maven.apache.org/
 and is generally not meant for manual consumption.
 
 {{< /alert >}}
-
-For instructions on how to upload and install Maven packages from the GitLab
-package registry, see the [Maven package registry documentation](../../user/packages/maven_repository/_index.md).
 
 {{< alert type="note" >}}
 

@@ -1,0 +1,10 @@
+---
+name: ci_use_partition_pruning_to_find_jobs_by_token
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578388
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210307
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578513
+milestone: '18.6'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

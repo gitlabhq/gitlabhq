@@ -942,7 +942,7 @@ RSpec/NamedSubject:
     - 'ee/spec/services/vulnerabilities/update_service_spec.rb'
     - 'ee/spec/services/vulnerability_external_issue_links/create_service_spec.rb'
     - 'ee/spec/services/vulnerability_feedback/create_service_spec.rb'
-    - 'ee/spec/services/work_items/update_service_spec.rb'
+    - 'ee/spec/services/ee/work_items/update_service_spec.rb'
     - 'ee/spec/support/shared_contexts/audit_event_not_licensed_shared_context.rb'
     - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/shared_stage_shared_examples.rb'
     - 'ee/spec/tasks/gitlab/license_rake_spec.rb'

@@ -21,6 +21,8 @@ title: Container repository protection rules API
 
 {{< /history >}}
 
+Use this API to manage [container repository protection rules](../user/packages/container_registry/protected_container_tags.md).
+
 ## List container repository protection rules
 
 Gets a list of container repository protection rules from a project's container registry.

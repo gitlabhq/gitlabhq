@@ -156,7 +156,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       merge_trains
       ml_candidates
       ml_models
-      protected_tag_create_access_levels
       resource_iteration_events
       resource_link_events
       resource_milestone_events

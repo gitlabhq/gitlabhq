@@ -18,7 +18,7 @@ title: Debian group distributions API
 
 {{< /history >}}
 
-This is the reference documentation for the Debian group distributions API. This API is behind a
+Use this API to manage [Debian group distributions](../../user/packages/debian_repository/_index.md). This API is behind a
 feature flag that is disabled by default. To use this API, you must [enable it](#enable-the-debian-group-api).
 
 {{< alert type="warning" >}}
@@ -26,9 +26,6 @@ feature flag that is disabled by default. To use this API, you must [enable it](
 This API is under development and is not meant for production use.
 
 {{< /alert >}}
-
-For more information about working with Debian packages, see the
-[Debian package registry documentation](../../user/packages/debian_repository/_index.md).
 
 ## Enable the Debian group API
 

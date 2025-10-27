@@ -84,6 +84,9 @@ module Users
       has_many :work_item_type_user_preferences,
         class_name: 'WorkItems::UserPreference',
         dependent: :destroy
+
+      has_many :protected_tag_create_access_levels, class_name: 'ProtectedTag::CreateAccessLevel',
+        dependent: :delete_all
       # rubocop:enable Cop/ActiveRecordDependent
     end
   end
