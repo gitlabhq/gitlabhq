@@ -47,9 +47,25 @@ module MergeRequestDiffHelpers
     evaluate_script("(window.innerHeight + window.scrollY) >= document.body.offsetHeight")
   end
 
+  def has_reached_panel_end
+    evaluate_script("(function() {
+      const panel = document.querySelector('.js-static-panel-inner');
+      return (panel.scrollTop + panel.clientHeight) >= panel.scrollHeight;
+    })()")
+  end
+
   def scroll_to_elements_bottom(element)
     evaluate_script("(function(el) {
       window.scrollBy(0, el.getBoundingClientRect().bottom - window.innerHeight);
+    })(arguments[0]);", element.native)
+  end
+
+  def scroll_to_panel_elements_bottom(element)
+    evaluate_script("(function(el) {
+      const panel = document.querySelector('.js-static-panel-inner');
+      const rect = el.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+      panel.scrollBy(0, rect.bottom - panelRect.bottom);
     })(arguments[0]);", element.native)
   end
 
@@ -66,6 +82,20 @@ module MergeRequestDiffHelpers
     })(arguments[0]);", element.native)
   end
 
+  def within_panel_viewport?(element)
+    evaluate_script("(function(el) {
+      const panel = document.querySelector('.js-static-panel-inner');
+      const rect = el.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+      return (
+        rect.bottom >= panelRect.top &&
+        rect.right >= panelRect.left &&
+        rect.top <= panelRect.bottom &&
+        rect.left <= panelRect.right
+      );
+    })(arguments[0]);", element.native)
+  end
+
   def find_within_viewport(selector, **options)
     begin
       element = find(selector, **options, wait: 2)
@@ -73,6 +103,17 @@ module MergeRequestDiffHelpers
       return
     end
     return element if within_viewport?(element)
+
+    nil
+  end
+
+  def find_within_panel_viewport(selector, **options)
+    begin
+      element = find(selector, **options, wait: 2)
+    rescue Capybara::ElementNotFound
+      return
+    end
+    return element if within_panel_viewport?(element)
 
     nil
   end
@@ -90,6 +131,25 @@ module MergeRequestDiffHelpers
 
       page.execute_script "window.scrollBy(0,window.innerHeight/1.5)"
       element = find_within_viewport(selector, **options)
+    end
+    element
+  end
+
+  def find_in_panel_by_scrolling(selector, **options)
+    element = find_within_panel_viewport(selector, **options)
+    return element if element
+
+    page.execute_script "document.querySelector('.js-static-panel-inner').scrollTo(0,0)"
+
+    until element
+
+      if has_reached_panel_end
+        raise PageEndReached, "Failed to find any elements matching a selector '#{selector}' by scrolling. Page end reached."
+      end
+
+      page.execute_script "document.querySelector('.js-static-panel-inner').scrollBy(0, document.querySelector('.js-static-panel-inner').clientHeight/1.5)"
+
+      element = find_within_panel_viewport(selector, **options)
     end
     element
   end

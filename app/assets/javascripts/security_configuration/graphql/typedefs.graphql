@@ -1,0 +1,21 @@
+extend type Project {
+  securityTrackedRefs: [LocalTrackedRef!]
+}
+
+type LocalTrackedCommit {
+  sha: String
+  shortId: String
+  title: String
+  authoredDate: String
+  webPath: String
+}
+
+type LocalTrackedRef {
+  id: ID!
+  name: String!
+  refType: String!
+  isDefault: Boolean!
+  isProtected: Boolean!
+  commit: LocalTrackedCommit
+  vulnerabilitiesCount: Int!
+}

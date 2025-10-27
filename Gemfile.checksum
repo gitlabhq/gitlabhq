@@ -566,7 +566,7 @@
 {"name":"racc","version":"1.8.1","platform":"ruby","checksum":"4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f"},
 {"name":"rack","version":"2.2.20","platform":"ruby","checksum":"85da3447a4845230a00803d47413ed4d1dd9823f948a8d93c0b2d1e149c07170"},
 {"name":"rack-accept","version":"0.4.5","platform":"ruby","checksum":"66247b5449db64ebb93ae2ec4af4764b87d1ae8a7463c7c68893ac13fa8d4da2"},
-{"name":"rack-attack","version":"6.7.0","platform":"ruby","checksum":"3ca47e8f66cd33b2c96af53ea4754525cd928ed3fa8da10ee6dad0277791d77c"},
+{"name":"rack-attack","version":"6.8.0","platform":"ruby","checksum":"f2499fdebf85bcc05573a22dff57d24305ac14ec2e4156cd3c28d47cafeeecf2"},
 {"name":"rack-cors","version":"2.0.2","platform":"ruby","checksum":"415d4e1599891760c5dc9ef0349c7fecdf94f7c6a03e75b2e7c2b54b82adda1b"},
 {"name":"rack-oauth2","version":"2.2.1","platform":"ruby","checksum":"c73aa87c508043e2258f02b4fb110cacba9b37d2ccf884e22487d014a120d1a5"},
 {"name":"rack-protection","version":"2.2.2","platform":"ruby","checksum":"fd41414dbabbec274af0bdb1f72a48504449de4d979782c9af38cbb5dfff3299"},

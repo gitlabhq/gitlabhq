@@ -21,6 +21,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it 'is successful' do
           get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
 
+          expect(assigns(:commits)).to be_present
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
@@ -31,6 +32,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it "requires authentication" do
           get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
 
+          expect(assigns(:commits)).to be_nil
           expect(response).to redirect_to(new_user_session_path)
         end
 
@@ -42,6 +44,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
           it 'is successful' do
             get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
 
+            expect(assigns(:commits)).to be_present
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
@@ -55,6 +58,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it 'is successful' do
           get :signatures, params: { namespace_id: project.namespace, project_id: project, id: id, format: :json }
 
+          expect(assigns(:commits)).to be_present
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
@@ -65,6 +69,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         it "requires authentication" do
           get :signatures, params: { namespace_id: project.namespace, project_id: project, id: id, format: :json }
 
+          expect(assigns(:commits)).to be_nil
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
@@ -76,6 +81,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
           it 'is successful' do
             get :signatures, params: { namespace_id: project.namespace, project_id: project, id: id, format: :json }
 
+            expect(assigns(:commits)).to be_present
             expect(response).to have_gitlab_http_status(:ok)
           end
         end

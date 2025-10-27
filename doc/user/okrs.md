@@ -120,7 +120,7 @@ To edit an OKR:
 1. Optional. To edit the description, select the edit icon ({{< icon name="pencil" >}}), make your changes, and
    select **Save**.
 
-## Prevent truncating descriptions with "Read more"
+## Prevent truncating descriptions with **Read more**
 
 {{< history >}}
 

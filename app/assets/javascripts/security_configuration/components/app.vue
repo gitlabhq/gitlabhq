@@ -10,6 +10,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
 import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
@@ -24,6 +25,7 @@ import FeatureCard from './feature_card.vue';
 import PipelineSecretDetectionFeatureCard from './pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from './secret_push_protection_feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
+import RefTrackingList from './ref_tracking_list.vue';
 
 export default {
   i18n,
@@ -49,6 +51,7 @@ export default {
       import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
     TrainingProviderList,
+    RefTrackingList,
     ContainerScanningForRegistryFeatureCard: () =>
       import(
         'ee_component/security_configuration/components/container_scanning_for_registry_feature_card.vue'
@@ -124,12 +127,20 @@ export default {
     shouldShowVulnerabilityArchives() {
       return this.glFeatures?.vulnerabilityArchival;
     },
+    shouldShowRefsTracking() {
+      return this.glFeatures?.vulnerabilitiesAcrossContexts;
+    },
     shouldShowSecurityAttributes() {
       return (
         window.gon?.licensed_features?.securityAttributes &&
         this.glFeatures?.securityContextLabels &&
         this.canManageAttributes
       );
+    },
+    trackedRefsHelpPagePath() {
+      // Once the help page content is available, we can use the anchor to link to the specific section
+      // See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/578081
+      return helpPagePath('user/application_security/vulnerability_report/_index.md');
     },
   },
   methods: {
@@ -264,7 +275,40 @@ export default {
         :title="$options.i18n.vulnerabilityManagement"
         query-param-value="vulnerability-management"
       >
-        <section-layout :heading="$options.i18n.securityTraining">
+        <section-layout
+          v-if="shouldShowRefsTracking"
+          :heading="__('Refs')"
+          data-testid="refs-tracking-section"
+        >
+          <template #description>
+            <p>
+              {{
+                __(
+                  'Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
+                )
+              }}
+            </p>
+            <p>
+              {{
+                __(
+                  'When you remove tracking of a ref, GitLab deletes any vulnerabilities associated with that ref. You have the option to archive them before their deletion.',
+                )
+              }}
+            </p>
+            <p>
+              <gl-link :href="trackedRefsHelpPagePath">{{
+                __('Learn more about vulnerability management on non-default branches and tags.')
+              }}</gl-link>
+            </p>
+          </template>
+          <template #features>
+            <ref-tracking-list />
+          </template>
+        </section-layout>
+        <section-layout
+          :heading="$options.i18n.securityTraining"
+          data-testid="security-training-section"
+        >
           <template #description>
             <p>
               {{ $options.i18n.securityTrainingDescription }}

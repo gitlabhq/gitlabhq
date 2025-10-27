@@ -175,7 +175,7 @@ sequenceDiagram
    deactivate PagesService
 ```
 
-## `unsupported protocol scheme \"\""`
+## Error: `unsupported protocol scheme \"\""`
 
 If you see the following error:
 
@@ -414,7 +414,7 @@ In that case, it's highly recommended you to configure
 Alternatively, you can mount the GitLab Pages shared directory to the same path on
 both servers.
 
-## GitLab Pages deploy job fails with error "is not a recognized provider"
+## GitLab Pages deploy job fails with error `is not a recognized provider`
 
 If the **pages** job succeeds but the **deploy** job gives the error "is not a recognized provider":
 

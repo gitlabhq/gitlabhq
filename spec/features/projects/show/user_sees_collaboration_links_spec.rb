@@ -17,6 +17,12 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
     find_by_testid('base-dropdown-toggle', visible: :all, text: 'Create new…')
   end
 
+  def within_navigation_panel(&block)
+    # We search for .super-topbar to account for the Project Studio UI
+    selector = page.has_css?('.super-topbar') ? '.super-topbar' : '[data-testid="super-sidebar"]' # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+    within(selector, &block)
+  end
+
   context 'with developer user' do
     context 'when directory_code_dropdown_updates is true' do
       before_all do
@@ -31,7 +37,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
         visit project_path(project1)
 
         # The navigation bar
-        within_testid('super-sidebar') do
+        within_navigation_panel do
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links in the navigation bar' do
@@ -68,7 +74,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
 
         visit project_path(project1)
 
-        within_testid('super-sidebar') do
+        within_navigation_panel do
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links' do
@@ -103,7 +109,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
         visit project_path(project2)
 
         # The navigation bar
-        within_testid('super-sidebar') do
+        within_navigation_panel do
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links in the navigation bar' do
@@ -138,7 +144,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
 
         visit project_path(project2)
 
-        within_testid('super-sidebar') do
+        within_navigation_panel do
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links' do

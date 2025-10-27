@@ -1,0 +1,20 @@
+query getSecurityTrackedRefs($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    securityTrackedRefs @client {
+      id
+      name
+      refType
+      isDefault
+      isProtected
+      commit {
+        sha
+        shortId
+        title
+        authoredDate
+        webPath
+      }
+      vulnerabilitiesCount
+    }
+  }
+}

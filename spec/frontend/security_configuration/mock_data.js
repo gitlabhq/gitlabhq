@@ -185,3 +185,21 @@ export const provideMock = {
   licenseConfigurationSource: 'SBOM',
   canManageAttributes: false,
 };
+
+export const createTrackedRef = (overrides = {}) => ({
+  id: 'gid://gitlab/TrackedRef/1',
+  name: 'main',
+  refType: 'HEAD',
+  isDefault: false,
+  isProtected: false,
+  vulnerabilitiesCount: 0,
+  commit: {
+    sha: 'df210850abc123',
+    shortId: 'df21085',
+    title: 'Commit message',
+    authoredDate: '2024-10-17T09:59:00Z',
+    webPath: '/project/-/commit/df21085',
+    ...overrides.commit,
+  },
+  ...overrides,
+});

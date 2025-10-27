@@ -45,7 +45,7 @@ should and, if needed, update the script for the latest version of GitLab.
 
 ## Mirrors
 
-### Find mirrors with "bad decrypt" errors
+### Find mirrors with `bad decrypt` errors
 
 This content has been converted to a Rake task, see [verify database values can be decrypted using the current secrets](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 

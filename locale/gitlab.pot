@@ -19487,6 +19487,9 @@ msgstr ""
 msgid "Copied reference."
 msgstr ""
 
+msgid "Copied to clipboard."
+msgstr ""
+
 msgid "Copy"
 msgstr ""
 
@@ -20574,6 +20577,9 @@ msgid "CurrentUser|Start an Ultimate trial"
 msgstr ""
 
 msgid "CurrentUser|Switch to GitLab Next"
+msgstr ""
+
+msgid "Currently tracked refs"
 msgstr ""
 
 msgid "Currently unable to fetch data for this pipeline."
@@ -38631,6 +38637,9 @@ msgstr ""
 msgid "Learn more about shards and replicas in the %{configuration_link_start}advanced search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
 msgstr ""
 
+msgid "Learn more about vulnerability management on non-default branches and tags."
+msgstr ""
+
 msgid "Learn more."
 msgstr ""
 
@@ -53997,6 +54006,9 @@ msgstr[1] ""
 msgid "Refreshing…"
 msgstr ""
 
+msgid "Refs"
+msgstr ""
+
 msgid "Regenerate export"
 msgstr ""
 
@@ -61569,6 +61581,23 @@ msgid "SecurityReports|scanned resources"
 msgstr ""
 
 msgid "SecurityReports|security scanning prerequisites"
+msgstr ""
+
+msgid "SecurityTrackedRefs|Remove ref tracking"
+msgstr ""
+
+msgid "SecurityTrackedRefs|branch"
+msgstr ""
+
+msgid "SecurityTrackedRefs|default"
+msgstr ""
+
+msgid "SecurityTrackedRefs|open vulnerability"
+msgid_plural "SecurityTrackedRefs|open vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecurityTrackedRefs|tag"
 msgstr ""
 
 msgid "SecurityTraining|Enable security training to learn how to fix vulnerabilities. View security training from selected educational providers relevant to the detected vulnerability."
@@ -69312,7 +69341,13 @@ msgstr ""
 msgid "Track important events in your project."
 msgstr ""
 
+msgid "Track new ref"
+msgstr ""
+
 msgid "Track time with quick actions"
+msgstr ""
+
+msgid "Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed."
 msgstr ""
 
 msgid "Tracking"
@@ -74272,6 +74307,9 @@ msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{
 msgstr ""
 
 msgid "When using the %{code_open}ssh://%{code_close} protocol, please use the following format: %{code_open}ssh://username@example.com/group/project.git%{code_close}."
+msgstr ""
+
+msgid "When you remove tracking of a ref, GitLab deletes any vulnerabilities associated with that ref. You have the option to archive them before their deletion."
 msgstr ""
 
 msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, compute minutes, and users, and start a trial or upgrade to a paid tier."

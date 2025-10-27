@@ -1862,6 +1862,27 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(issue.gfm_reference).to eq("#{expected_name} #{issue.to_reference}")
       end
     end
+
+    context 'when referencing a group level issue' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:sub_group) { create(:group, parent: group) }
+      let_it_be(:sub_group_project) { create(:project, namespace: sub_group) }
+      let_it_be(:sub_group_issue) { create(:issue, :group_level, namespace: sub_group) }
+      let_it_be(:sub_project_issue) { create(:issue, project: sub_group_project) }
+
+      let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
+      let_it_be(:group_issue2) { create(:issue, :group_level, namespace: group) }
+      let_it_be(:issue) { create(:issue) }
+
+      it 'uses uses an absolute and full path when referencing a root group' do
+        expect(group_issue.gfm_reference(issue.project)).to eq("issue /#{group.full_path}##{group_issue.iid}")
+        expect(group_issue.gfm_reference(issue.namespace)).to eq("issue /#{group.full_path}##{group_issue.iid}")
+      end
+
+      it 'does not use an absolute namespace when referencing a sub-group' do
+        expect(sub_group_issue.gfm_reference(sub_project_issue.project)).to eq("issue #{sub_group.full_path}##{sub_project_issue.iid}")
+      end
+    end
   end
 
   describe '#has_widget?' do

@@ -56,12 +56,10 @@ module MergeRequests
       merge_request_diff_commit_rows =
         oldest_merge_request_id_per_commit_rows(remaining)
 
-      if Feature.enabled?(:include_generated_ref_commits_in_changelog, @project)
-        generated_ref_commit_rows = GeneratedRefCommit.oldest_merge_request_id_per_commit(@project.id, remaining)
-      end
+      generated_ref_commit_rows = GeneratedRefCommit.oldest_merge_request_id_per_commit(@project.id, remaining)
 
       id_rows = merge_request_diff_commit_rows
-      id_rows += generated_ref_commit_rows if Feature.enabled?(:include_generated_ref_commits_in_changelog, @project)
+      id_rows += generated_ref_commit_rows
 
       mrs = MergeRequest
         .preload_target_project
@@ -73,8 +71,6 @@ module MergeRequests
           mapping[row[:sha]] = mr
         end
       end
-
-      return unless Feature.enabled?(:include_generated_ref_commits_in_changelog, @project)
 
       generated_ref_commit_rows.each do |row|
         if (mr = mrs[row[:merge_request_id]])

@@ -159,7 +159,7 @@ When bulk editing epics in a group, you can edit the following attributes:
 - [Confidentiality](#make-an-epic-confidential)
 - [Parent](#add-a-parent-epic-to-an-epic)
 
-## Prevent truncating descriptions with "Read more"
+## Prevent truncating descriptions with **Read more**
 
 {{< history >}}
 

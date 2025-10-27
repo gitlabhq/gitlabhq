@@ -390,7 +390,7 @@ gem 'base32', '~> 0.3.0', feature_category: :shared
 gem 'gitlab-license', '~> 2.6', feature_category: :shared
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 6.7.0', feature_category: :shared
+gem 'rack-attack', '~> 6.8.0', feature_category: :shared
 
 # Sentry integration
 gem 'sentry-ruby', '~> 5.23.0', feature_category: :observability

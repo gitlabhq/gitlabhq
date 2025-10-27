@@ -60,6 +60,9 @@ RSpec.shared_examples 'User views a wiki page' do
 
     it 'shows an old version of a page', :js do
       expect(page).to have_current_path(%r{one/two/three-test})
+
+      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
+
       expect(find('.wiki-pages')).to have_content('three')
 
       first(:link, text: 'three').click
@@ -92,6 +95,7 @@ RSpec.shared_examples 'User views a wiki page' do
   context 'when a page does not have history' do
     before do
       visit(wiki_page_path(wiki, wiki_page))
+      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
     end
 
     it 'shows all the pages' do
@@ -222,6 +226,8 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'preserves the special characters' do
       visit(wiki_page_path(wiki, wiki_page))
 
+      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
+
       expect(page).to have_css('[data-testid="page-heading"]', text: title)
       expect(page).to have_css('.wiki-pages li', text: title)
     end
@@ -261,6 +267,8 @@ RSpec.shared_examples 'User views a wiki page' do
 
     it 'displays the table of contents for the page' do
       visit(wiki_page_path(wiki, wiki_page))
+
+      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
 
       within '.js-wiki-toc' do
         expect(page).to have_content('On this page')

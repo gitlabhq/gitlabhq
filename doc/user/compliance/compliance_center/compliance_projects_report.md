@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: View compliance frameworks applied to projects and groups, with options to manage, filter, and export framework assignments.
 title: Compliance projects report
 ---
 

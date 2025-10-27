@@ -1254,7 +1254,7 @@ package:
     - 'mvn package'
 ```
 
-### "401 Unauthorized" error when trying to publish a package
+### `401 Unauthorized` error when trying to publish a package
 
 This usually indicates an authentication issue. Check that:
 
@@ -1263,7 +1263,7 @@ This usually indicates an authentication issue. Check that:
 - The token has the necessary permissions (`api`, `read_api`, or `read_repository`).
 - For Maven projects, you're using the `-s` option with your mvn commands (for example, `mvn deploy -s settings.xml`). Without this option, Maven won't apply the authentication settings from your `settings.xml` file, leading to unauthorized errors.
 
-### "400 Bad Request" error with message "Validation failed: Version is invalid"
+### `400 Bad Request` error with message "Validation failed: Version is invalid"
 
 GitLab has specific requirements for version strings. Ensure your version follows the format:
 
@@ -1281,7 +1281,7 @@ The `403 Forbidden` error with the message `Authorization failed` usually indica
 - The token has the necessary permissions. Only users with at least the Developer role can publish packages. For more information, see [GitLab permissions](../../permissions.md#packages-and-registry).
 - The package you're publishing is not protected by push protection rules. For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
 
-### "Artifact already exists" errors when publishing
+### `Artifact already exists` errors when publishing
 
 This error occurs when you try to publish a package version that already exists. To resolve:
 
@@ -1304,7 +1304,7 @@ Dependency conflicts can be resolved by:
 - Using Maven's dependency management section to control versions.
 - Using the `<exclusions>` tag to exclude conflicting transitive dependencies.
 
-### "Unable to find valid certification path to requested target" error
+### `Unable to find valid certification path to requested target` error
 
 This is typically a SSL certificate issue. To resolve:
 
@@ -1312,7 +1312,7 @@ This is typically a SSL certificate issue. To resolve:
 - If using a self-signed certificate, add it to the truststore of your JDK.
 - As a last resort, you can disable SSL verification in Maven settings. Not recommended for production.
 
-### "No plugin found for prefix" pipeline errors
+### `No plugin found for prefix` pipeline errors
 
 This usually means Maven can't find the plugin. To fix:
 

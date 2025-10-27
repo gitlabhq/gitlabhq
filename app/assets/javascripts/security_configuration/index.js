@@ -7,6 +7,7 @@ import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
 import { augmentFeatures } from './utils';
+import typeDefs from './graphql/typedefs.graphql';
 
 export const initSecurityConfiguration = (el) => {
   if (!el) {
@@ -17,7 +18,7 @@ export const initSecurityConfiguration = (el) => {
   Vue.use(GlToast);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers),
+    defaultClient: createDefaultClient(resolvers, { typeDefs }),
   });
 
   const {

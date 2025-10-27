@@ -341,7 +341,7 @@ The following example uses the [statically defined credentials](../../../ci/dock
    Waiting for services to be up and running (timeout 30 seconds)...
    ```
 
-## `sudo: The "no new privileges" flag is set, which prevents sudo from running as root.`
+## Error: `sudo: The "no new privileges" flag is set, which prevents sudo from running as root.`
 
 Starting with v5 of the analyzer, a non-root user is used by default. This requires the use of `sudo` when performing privileged operations.
 

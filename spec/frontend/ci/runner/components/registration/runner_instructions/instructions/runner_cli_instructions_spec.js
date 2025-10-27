@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import getRunnerSetupInstructionsQuery from '~/ci/runner/components/registration/runner_instructions/graphql/get_runner_setup.query.graphql';
 import RunnerCliInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_cli_instructions.vue';
 
@@ -33,6 +34,7 @@ describe('RunnerCliInstructions component', () => {
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findArchitectureDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findSimpleCopyButtons = () => wrapper.findAllComponents(SimpleCopyButton);
   const findBinaryDownloadButton = () => wrapper.findByTestId('binary-download-button');
   const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
   const findRegisterCommand = () => wrapper.findByTestId('register-command');
@@ -89,14 +91,23 @@ describe('RunnerCliInstructions component', () => {
         const instructions = findBinaryInstructions().text();
 
         expect(instructions).toBe(installInstructions.trim());
+
+        expect(findSimpleCopyButtons().at(0).props()).toMatchObject({
+          title: 'Copy instructions',
+          text: installInstructions,
+        });
       });
 
       it('register command is shown with a replaced token', () => {
-        const command = findRegisterCommand().text();
+        const command =
+          'sudo gitlab-runner register --url http://localhost/ --registration-token MY_TOKEN';
 
-        expect(command).toBe(
-          'sudo gitlab-runner register --url http://localhost/ --registration-token MY_TOKEN',
-        );
+        expect(findRegisterCommand().text()).toBe(command);
+
+        expect(findSimpleCopyButtons().at(1).props()).toMatchObject({
+          title: 'Copy command',
+          text: command,
+        });
       });
 
       it('architecture download link is shown', () => {

@@ -307,7 +307,7 @@ It is possible that consecutive scans may return differing vulnerability finding
 
 Timing attack vulnerabilities that are detected by the length of time between request and response such as OS Command or SQL Injections may be detected if the server is under load and unable to service responses to the tests within their given thresholds. The same scan executions when the server is not under load may not return positive findings for these vulnerabilities, leading to differing results. Profiling the target server, [Performance tuning and testing speed](performance.md), and establishing baselines for optimal server performance during testing may be helpful in identifying where false positives may appear due to the aforementioned factors.
 
-## `sudo: The "no new privileges" flag is set, which prevents sudo from running as root.`
+## Error: `sudo: The "no new privileges" flag is set, which prevents sudo from running as root.`
 
 Starting with v5 of the analyzer, a non-root user is used by default. This requires the use of `sudo` when performing privileged operations.
 

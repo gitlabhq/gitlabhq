@@ -576,7 +576,7 @@ You can estimate and track the time you spend on a task.
 
 For more information, see [Time tracking](project/time_tracking.md).
 
-## Prevent truncating descriptions with "Read more"
+## Prevent truncating descriptions with **Read more**
 
 {{< history >}}
 

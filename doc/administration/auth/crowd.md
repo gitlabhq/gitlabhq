@@ -81,7 +81,7 @@ On the sign in page there should now be a Crowd tab in the sign in form.
 
 ## Troubleshooting
 
-### Error: "could not authorize you from Crowd because invalid credentials"
+### Error: `could not authorize you from Crowd because invalid credentials`
 
 This error sometimes occurs when a user attempts to authenticate with Crowd. The
 Crowd administrator should consult the Crowd log file to know the exact cause of

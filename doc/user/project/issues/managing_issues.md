@@ -519,7 +519,7 @@ Prerequisites:
 Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md)
 of your installation.
 
-## Prevent truncating descriptions with "Read more"
+## Prevent truncating descriptions with **Read more**
 
 {{< history >}}
 

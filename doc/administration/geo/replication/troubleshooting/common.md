@@ -607,9 +607,9 @@ sudo gitlab-rake gitlab:uploads:check
 
 For detailed information about individual errors, use the `VERBOSE=1` variable.
 
-### Secondary site shows "Unhealthy" in UI
+### Secondary site shows **Unhealthy** in UI
 
-If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as `Unhealthy`. You may also find the following error in `geo.log`:
+If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as **Unhealthy**. You may also find the following error in `geo.log`:
 
 ```plaintext
 "class": "Geo::NodeStatusRequestService",

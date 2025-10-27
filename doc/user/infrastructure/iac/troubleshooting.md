@@ -52,7 +52,7 @@ As a workaround, use [http backend configuration variables](https://www.terrafor
 which is what happens behind the scenes when following the
 [Get started using GitLab CI](terraform_state.md#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd) instructions.
 
-### Error: "address": required field is not set
+### Error: `"address": required field is not set`
 
 By default, we set `TF_ADDRESS` to `${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}`.
 If you don't set `TF_STATE_NAME` or `TF_ADDRESS` in your job, the job fails with the error message

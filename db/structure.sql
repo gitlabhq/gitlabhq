@@ -14171,6 +14171,7 @@ CREATE TABLE ci_runner_taggings_group_type (
     runner_type smallint NOT NULL,
     organization_id bigint,
     tag_name text,
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
@@ -14190,6 +14191,7 @@ CREATE TABLE ci_runner_taggings_instance_type (
     runner_type smallint NOT NULL,
     organization_id bigint,
     tag_name text,
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)),
     CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
@@ -14200,6 +14202,7 @@ CREATE TABLE ci_runner_taggings_project_type (
     runner_type smallint NOT NULL,
     organization_id bigint,
     tag_name text,
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
@@ -17588,7 +17591,8 @@ CREATE TABLE group_type_ci_runner_machines (
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
     CONSTRAINT check_b1e456641b CHECK ((char_length(ip_address) <= 1024)),
     CONSTRAINT check_c788f4b18a CHECK ((char_length(platform) <= 255)),
-    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255))
+    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255)),
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE TABLE group_type_ci_runners (
@@ -17618,7 +17622,8 @@ CREATE TABLE group_type_ci_runners (
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024))
+    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE TABLE group_wiki_repositories (
@@ -18279,7 +18284,8 @@ CREATE TABLE instance_type_ci_runner_machines (
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
     CONSTRAINT check_b1e456641b CHECK ((char_length(ip_address) <= 1024)),
     CONSTRAINT check_c788f4b18a CHECK ((char_length(platform) <= 255)),
-    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255))
+    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255)),
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL))
 );
 
 CREATE TABLE instance_type_ci_runners (
@@ -18309,7 +18315,8 @@ CREATE TABLE instance_type_ci_runners (
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024))
+    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL))
 );
 
 CREATE TABLE integrations (
@@ -24363,7 +24370,8 @@ CREATE TABLE project_type_ci_runner_machines (
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
     CONSTRAINT check_b1e456641b CHECK ((char_length(ip_address) <= 1024)),
     CONSTRAINT check_c788f4b18a CHECK ((char_length(platform) <= 255)),
-    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255))
+    CONSTRAINT check_f3d25ab844 CHECK ((char_length(architecture) <= 255)),
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE TABLE project_type_ci_runners (
@@ -24393,7 +24401,8 @@ CREATE TABLE project_type_ci_runners (
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024))
+    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE TABLE project_uploads (
@@ -33292,33 +33301,6 @@ ALTER TABLE redirect_routes
 
 ALTER TABLE note_diff_files
     ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE ci_runner_taggings_group_type
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE ci_runner_taggings_instance_type
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)) NOT VALID;
-
-ALTER TABLE ci_runner_taggings_project_type
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE group_type_ci_runner_machines
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE group_type_ci_runners
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE instance_type_ci_runner_machines
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)) NOT VALID;
-
-ALTER TABLE instance_type_ci_runners
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)) NOT VALID;
-
-ALTER TABLE project_type_ci_runner_machines
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE project_type_ci_runners
-    ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE vulnerability_statistics
     ADD CONSTRAINT check_vulnerability_statistics_traversal_ids_not_empty CHECK ((cardinality(traversal_ids) > 0)) NOT VALID;

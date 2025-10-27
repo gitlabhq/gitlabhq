@@ -94,7 +94,7 @@ FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_m
 
 You may want to rerun the [replication process](../../setup/database.md) on the **secondary** site .
 
-## Message: "Command exceeded allowed execution time" when setting up replication?
+## Message: `Command exceeded allowed execution time` when setting up replication?
 
 This may happen while [initiating the replication process](../../setup/database.md#step-3-initiate-the-replication-process) on the **secondary** site,
 and indicates your initial dataset is too large to be replicated in the default timeout (30 minutes).
@@ -113,14 +113,14 @@ sudo gitlab-ctl \
 This gives the initial replication up to six hours to complete, rather than
 the default 30 minutes. Adjust as required for your installation.
 
-## Message: "PANIC: could not write to file `pg_xlog/xlogtemp.123`: No space left on device"
+## Message: `PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device`
 
 Determine if you have any unused replication slots in the **primary** database. This can cause large amounts of
 log data to build up in `pg_xlog`.
 
 [Removing the inactive slots](#removing-an-inactive-replication-slot) can reduce the amount of space used in the `pg_xlog`.
 
-## Message: "ERROR: canceling statement due to conflict with recovery"
+## Message: `ERROR: canceling statement due to conflict with recovery`
 
 This error message occurs infrequently under typical usage, and the system is resilient
 enough to recover.

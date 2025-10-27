@@ -963,7 +963,7 @@ Lock file tampering, for example, is outside of the scope of security policy man
 
 ![Evaluating scan result findings](img/scan_results_evaluation_white-bg_v16_8.png)
 
-### Filter out policy violations with the attributes "Fix Available" or "False Positive"
+### Filter out policy violations with the attributes **Fix Available** or **False Positive**
 
 To avoid unnecessary approval requirements, these additional filters help ensure you only block MRs on the most actionable findings.
 

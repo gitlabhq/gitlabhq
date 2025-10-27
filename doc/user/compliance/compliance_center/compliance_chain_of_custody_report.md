@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Generate and export the chain of custody report in GitLab to track project changes and merge details for compliance.
 title: Chain of custody report
 ---
 

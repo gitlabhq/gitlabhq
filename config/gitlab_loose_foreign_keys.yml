@@ -237,6 +237,10 @@ ci_resource_groups:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_runner_machines:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 ci_runner_namespaces:
   - table: namespaces
     column: namespace_id

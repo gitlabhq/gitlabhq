@@ -9,6 +9,7 @@ module Gitlab
 
       INDEX_NAME = 'index_sbom_components_on_component_type_name_and_purl_type'
       OTHER_INDEX_NAME = 'idx_sbom_components_on_name_purl_type_component_type_and_org_id'
+      PYPI_REGEX = /[-_\.]+/ # From ::Sbom::PackageUrl::Normalizer::PYPI_REGEX
 
       def perform
         each_sub_batch do |sub_batch|
@@ -28,7 +29,7 @@ module Gitlab
       private
 
       def normalized_name(name)
-        name.gsub(::Sbom::PackageUrl::Normalizer::PYPI_REGEX, '-')
+        name.gsub(PYPI_REGEX, '-')
       end
     end
   end

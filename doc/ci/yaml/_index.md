@@ -111,15 +111,17 @@ or import additional pipeline configuration.
 {{< /history >}}
 
 You can set global defaults for some keywords. Each default keyword is copied to every job
-that doesn't already have it defined. If the job already has a keyword defined, that default
-is not used.
+that doesn't already have it defined.
+
+Default configuration does not merge with job configuration. If the job already has a keyword defined,
+the job keyword takes precedence and the default configuration for that keyword is not used.
 
 **Keyword type**: Global keyword.
 
 **Supported values**: These keywords can have custom defaults:
 
 - [`after_script`](#after_script)
-- [`artifacts`](#artifacts), though due to [issue 404563](https://gitlab.com/gitlab-org/gitlab/-/issues/404563), the nested keyword `artifacts:expire_in` has no effect.
+- [`artifacts`](#artifacts)
 - [`before_script`](#before_script)
 - [`cache`](#cache)
 - [`hooks`](#hooks)
@@ -1225,6 +1227,10 @@ Use `after_script` to define an array of commands to run last, after a job's `be
 - The job is canceled while the `before_script` or `script` sections are still running.
 - The job fails with failure type of `script_failure`, but not [other failure types](#retrywhen).
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:after_script`](#default) defined, and the job also has `after_script`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1446,6 +1452,10 @@ artifacts from the jobs defined in the `needs` configuration.
 
 Job artifacts are only collected for successful jobs by default, and
 artifacts are restored after [caches](#cache).
+
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:artifacts`](#default) defined, and the job also has `artifacts`,
+the job configuration takes precedence and the default configuration is not used.
 
 [Read more about artifacts](../jobs/job_artifacts.md).
 
@@ -1876,6 +1886,9 @@ job:
 
 - [Use `before_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
   to define a default array of commands that should run before the `script` commands in all jobs.
+  - Job configuration and default configuration does not merge together.
+    If the pipeline has [`default:before_script`](#default) defined, and the job also has `before_script`,
+    the job configuration takes precedence and the default configuration is not used.
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `before_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
@@ -1909,6 +1922,10 @@ for example to override:
 
 - A default cache defined with [`default`](#default).
 - The configuration for a job added with [`include`](#include).
+
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:cache`](#default) defined, and the job also has `cache`,
+the job configuration takes precedence and the default configuration is not used.
 
 For more information about caches, see [Caching in GitLab CI/CD](../caching/_index.md).
 
@@ -2915,6 +2932,10 @@ rubocop:
 Use `hooks` to specify lists of commands to execute on the runner
 at certain stages of job execution, like before retrieving the Git repository.
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:hooks`](#default) defined, and the job also has `hooks`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -3018,6 +3039,10 @@ job_with_workload_identity:
 Use `id_tokens` to create [ID tokens](../secrets/id_token_authentication.md) to authenticate with third party services. All
 JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:id_tokens`](#default) defined, and the job also has `id_tokens`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Supported values**:
 
 - Token names with their `aud` claims. `aud` supports:
@@ -3055,6 +3080,10 @@ job_with_id_tokens:
 ### `image`
 
 Use `image` to specify a Docker image that the job runs in.
+
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:image`](#default) defined, and the job also has `image`,
+the job configuration takes precedence and the default configuration is not used.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -5711,6 +5740,10 @@ job:
 Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/_index.md) is linked
 to the image specified in the [`image`](#image) keyword.
 
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:services`](#default) defined, and the job also has `services`,
+the job configuration takes precedence and the default configuration is not used.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -6044,6 +6077,10 @@ available for the project.
 When you register a runner, you can specify the runner's tags, for
 example `ruby`, `postgres`, or `development`. To pick up and run a job, a runner must
 be assigned every tag listed in the job.
+
+Job configuration and default configuration does not merge together.
+If the pipeline has [`default:tags`](#default) defined, and the job also has `tags`,
+the job configuration takes precedence and the default configuration is not used.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

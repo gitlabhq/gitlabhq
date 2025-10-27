@@ -26,54 +26,54 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'with an old line on the left and no line on the right' do
       it 'allows commenting on the left side' do
-        should_allow_commenting(find_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'left')
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'left')
       end
 
       it 'does not allow commenting on the right side' do
-        should_not_allow_commenting(find_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'right')
+        should_not_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'right')
       end
     end
 
     context 'with no line on the left and a new line on the right' do
       it 'does not allow commenting on the left side' do
-        should_not_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'left')
+        should_not_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'right')
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'right')
       end
     end
 
     context 'with an old line on the left and a new line on the right' do
       it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/199050' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'right')
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'right')
       end
     end
 
     context 'with an unchanged line on the left and an unchanged line on the right' do
       it 'allows commenting on the left side', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/196826' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'right')
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'right')
       end
     end
 
     context 'with a match line' do
       it 'does not allow commenting' do
-        line_holder = find_by_scrolling('.match', match: :first)
+        line_holder = find_in_page_or_panel_by_scrolling('.match', match: :first)
         match_should_not_allow_commenting(line_holder)
       end
     end
 
     context 'with an unfolded line' do
       before do
-        page.within find_by_scrolling('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
+        page.within find_in_page_or_panel_by_scrolling('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
           find('.js-unfold', match: :first).click
         end
 
@@ -81,12 +81,12 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
       end
 
       it 'allows commenting on the left side' do
-        should_allow_commenting(find_by_scrolling('#a5cc2925ca8258af241be7e5b0381edf30266302').first('.line_holder [data-testid="left-side"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('#a5cc2925ca8258af241be7e5b0381edf30266302').first('.line_holder [data-testid="left-side"]'))
       end
 
       it 'allows commenting on the right side' do
         # Automatically shifts comment box to left side.
-        should_allow_commenting(find_by_scrolling('#a5cc2925ca8258af241be7e5b0381edf30266302').first('.line_holder [data-testid="right-side"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('#a5cc2925ca8258af241be7e5b0381edf30266302').first('.line_holder [data-testid="right-side"]'))
       end
     end
   end
@@ -98,44 +98,44 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'after deleteing a note' do
       it 'allows commenting' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
 
         accept_gl_confirm(button_text: 'Delete comment') do
           first('.more-actions-toggle button').click
           first('.js-note-delete').click
         end
 
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
     end
 
     context 'with a new line' do
       it 'allows commenting' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
     end
 
     context 'with an old line' do
       it 'allows commenting' do
-        should_allow_commenting(find_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
       end
     end
 
     context 'with an unchanged line' do
       it 'allows commenting' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
       end
     end
 
     context 'with a match line' do
       it 'does not allow commenting' do
-        match_should_not_allow_commenting(find_by_scrolling('.match', match: :first))
+        match_should_not_allow_commenting(find_in_page_or_panel_by_scrolling('.match', match: :first))
       end
     end
 
     context 'with an unfolded line' do
       before do
-        page.within find_by_scrolling('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
+        page.within find_in_page_or_panel_by_scrolling('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
           find('.js-unfold', match: :first).click
         end
 
@@ -144,7 +144,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
       # The first `.js-unfold` unfolds upwards, therefore the first
       # `.line_holder` will be an unfolded line.
-      let(:line_holder) { find_by_scrolling('[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
+      let(:line_holder) { find_in_page_or_panel_by_scrolling('[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
 
       it 'allows commenting' do
         should_allow_commenting line_holder
@@ -153,9 +153,8 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'when hovering over a diff discussion' do
       before do
-        visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
-        visit project_merge_request_path(project, merge_request)
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+        click_on 'Overview'
       end
 
       it 'does not allow commenting' do
@@ -172,7 +171,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'with a new line' do
       it 'allows dismissing a comment', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6734' do
-        should_allow_dismissing_a_comment(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_dismissing_a_comment(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
     end
   end
@@ -181,12 +180,12 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2195' do
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
-      click_diff_line(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+      click_diff_line(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
     end
 
     describe 'posting a note' do
       it 'adds as discussion' do
-        should_allow_commenting(find_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
         expect(page).to have_css('.notes_holder .note.note-discussion', count: 1)
         expect(page).to have_field('Reply…')
       end
@@ -201,27 +200,27 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
     context 'with a new line' do
       it 'allows commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4320' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
     end
 
     context 'with an old line',
       quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6048' do
       it 'allows commenting' do
-        should_allow_commenting(find_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
       end
     end
 
     context 'with an unchanged line',
       quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4317' do
       it 'allows commenting' do
-        should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+        should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
       end
     end
 
     context 'with a match line' do
       it 'does not allow commenting', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375024' do
-        match_should_not_allow_commenting(find_by_scrolling('.match', match: :first))
+        match_should_not_allow_commenting(find_in_page_or_panel_by_scrolling('.match', match: :first))
       end
     end
   end
@@ -284,5 +283,13 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
 
   def assert_form_is_reset
     expect(page).to have_no_css('.note-edit-form')
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, **options)
+    if Users::ProjectStudio.enabled_for_user?(user)
+      find_in_panel_by_scrolling(selector, **options)
+    else
+      find_by_scrolling(selector, **options)
+    end
   end
 end

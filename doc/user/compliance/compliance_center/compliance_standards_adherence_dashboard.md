@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: View the compliance standards adherence dashboard and export the report for projects.
 title: Compliance standards adherence dashboard (deprecated)
 ---
 

@@ -373,13 +373,6 @@ To customize the time format:
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
-and is planned for removal in 18.6.
-
-{{< /alert >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
@@ -390,8 +383,8 @@ and is planned for removal in 18.6.
 
 {{< alert type="warning" >}}
 
-This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
-For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
+and is planned for removal in 18.6.
 
 {{< /alert >}}
 

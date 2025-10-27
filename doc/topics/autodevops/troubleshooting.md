@@ -155,7 +155,7 @@ To resolve this issue:
 - Enable the Auto DevOps setting in the project.
 - Fix errors that are breaking the pipeline so the pipeline reruns.
 
-## `Error: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"`
+## Error: `unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"`
 
 After upgrading your Kubernetes cluster to [v1.16+](stages.md#kubernetes-116),
 you may encounter this message when deploying with Auto DevOps:

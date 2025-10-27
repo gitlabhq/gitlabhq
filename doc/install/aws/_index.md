@@ -990,7 +990,7 @@ If your instances are failing the load balancer's health checks, verify that the
 
 You may have to set a password on the `root` user to prevent automatic redirects on the sign-in endpoint before health checks pass.
 
-### "The change you requested was rejected (422)"
+### Message: `The change you requested was rejected (422)`
 
 If you see this page when trying to set a password via the web interface, make sure `external_url` in `gitlab.rb` matches the domain you are making a request from, and run `sudo gitlab-ctl reconfigure` after making any changes to it.
 
