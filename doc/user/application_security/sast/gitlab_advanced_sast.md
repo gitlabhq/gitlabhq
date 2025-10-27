@@ -117,9 +117,15 @@ SAST diff-based scanning option.
 
 ### Supported languages
 
+{{< history >}}
+
+- C# version support [increased from 10.0 to 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/570499) in GitLab 18.6.
+
+{{< /history >}}
+
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
 
-- C# (up to and including 10.0)
+- C# (up to and including 13.0)
 - C/C++<sup>1</sup>
 - Go
 - Java, including Java Server Pages (JSP)

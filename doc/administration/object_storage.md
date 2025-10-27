@@ -832,6 +832,25 @@ gitlab_rails['object_store']['connection'] = {
 gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_name>/<bucket_name>'
 ```
 
+### Ceph RGW
+
+[Ceph RGW](https://docs.ceph.com/en/reef/cephadm/services/rgw/) is an S3-compatible API for Ceph.
+Use the following configuration example:
+
+```ruby
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'endpoint' => 'https://rgw-ceph.example.com',
+  'region' => 'us-west-1',
+  'aws_access_key_id' => 'ACCESS_KEY',
+  'aws_secret_access_key' => 'SECRET_KEY',
+  'path_style': true
+}
+```
+
+To enable [server-side encryption](#server-side-encryption-headers) with Ceph RGW, you must
+connect using HTTPS. Ceph rejects encryption requests over non-secure connections.
+
 ## Full example using the consolidated form and Amazon S3
 
 The following example uses AWS S3 to enable object storage for all supported services:
