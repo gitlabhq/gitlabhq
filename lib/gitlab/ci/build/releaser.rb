@@ -15,7 +15,7 @@ module Gitlab
 
         TROUBLESHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/_index.md', anchor: 'gitlab-cli-version-requirement')
         GLAB_REQUIRED_VERSION = '1.58.0'
-        GLAB_WARNING_MESSAGE = "Warning: release-cli will not be supported after 19.0. Please use glab version >= #{GLAB_REQUIRED_VERSION}. Troubleshooting: #{TROUBLESHOOTING_URL}".freeze
+        GLAB_WARNING_MESSAGE = "Warning: release-cli will not be supported after 20.0. Please use glab version >= #{GLAB_REQUIRED_VERSION}. Troubleshooting: #{TROUBLESHOOTING_URL}".freeze
 
         GLAB_ENV_SET_UNIX = 'export GITLAB_HOST=$CI_SERVER_URL'
         GLAB_ENV_SET_WINDOWS = '$$env:GITLAB_HOST = $$env:CI_SERVER_URL'

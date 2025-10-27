@@ -504,7 +504,7 @@ You must use GitLab CLI tool `v1.58.0` or higher, or you could receive one of th
 
 - `Error: glab command not found. Please install glab v1.58.0 or higher.`
 - `Error: Please use glab v1.58.0 or higher.`
-- `Warning: release-cli will not be supported after 19.0. Please use glab version >= 1.58.0.`
+- `Warning: release-cli will not be supported after 20.0. Please use glab version >= 1.58.0.`
 
 There are two ways to have the GitLab CLI tool:
 

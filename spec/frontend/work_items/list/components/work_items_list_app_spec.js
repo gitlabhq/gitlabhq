@@ -197,6 +197,7 @@ describeSkipVue3(skipReason, () => {
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
         canBulkEditEpics: true,
+        canCreateProjects: true,
         hasBlockedIssuesFeature: false,
         hasEpicsFeature: false,
         hasGroupBulkEditFeature: true,

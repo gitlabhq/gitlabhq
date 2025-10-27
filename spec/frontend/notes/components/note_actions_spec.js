@@ -353,7 +353,7 @@ describe('noteActions', () => {
       const resolveButton = wrapper.findComponent({ ref: 'resolveButton' });
 
       expect(resolveButton.exists()).toBe(true);
-      expect(resolveButton.attributes('title')).toBe('Thread stays open');
+      expect(resolveButton.attributes('title')).toBe('Resolve thread');
     });
   });
 

@@ -185,7 +185,7 @@ Next, submit your review.
 
 ### Resolve or reopen thread with a comment
 
-Review comments can also resolve or reopen comment threads.
+Comments can also resolve or reopen comment threads.
 To resolve or reopen a thread when replying to a comment:
 
 1. In the comment text area, write your comment.

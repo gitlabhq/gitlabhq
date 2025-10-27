@@ -125,6 +125,7 @@ describe('WorkItemDrawer', () => {
             <a ref="referenceLink" class="reference-link" href="test">gitlab#1</a>
           </div>`,
         }),
+        WorkItemMetadataProvider: true,
       },
     });
     await nextTick();
@@ -399,6 +400,7 @@ describe('WorkItemDrawer', () => {
               <a ref="referenceLink" class="reference-link" href="test">gitlab#1</a>
             </div>`,
           }),
+          WorkItemMetadataProvider: true,
         },
       });
 

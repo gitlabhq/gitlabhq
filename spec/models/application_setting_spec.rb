@@ -34,6 +34,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         allow_project_creation_for_guest_and_below: true,
         allow_runner_registration_token: true,
         anonymous_searches_allowed: true,
+        default_search_scope: 'system default',
         asset_proxy_enabled: false,
         asciidoc_max_includes: 32,
         authorized_keys_enabled: true,
@@ -776,6 +777,37 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
                 'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
             ])
         end
+      end
+    end
+
+    describe 'default_search_scope validations' do
+      it 'allows blank value' do
+        setting.default_search_scope = ''
+
+        expect(setting).to be_valid
+      end
+
+      it 'allows system default' do
+        setting.default_search_scope = 'system default'
+
+        expect(setting).to be_valid
+      end
+
+      it 'allows valid scopes' do
+        %w[projects issues merge_requests blobs users milestones snippet_titles wiki_blobs commits
+          notes].each do |scope|
+          setting.default_search_scope = scope
+
+          expect(setting).to be_valid, "expected #{scope} to be valid"
+        end
+      end
+
+      it 'rejects invalid scopes' do
+        setting.default_search_scope = 'invalid_scope'
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:default_search_scope]).to be_present
+        expect(setting.errors[:default_search_scope].first).to include('invalid scope selected')
       end
     end
 

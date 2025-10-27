@@ -750,9 +750,16 @@ class ApplicationSetting < ApplicationRecord
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
     global_search_users_enabled: [:boolean, { default: true }],
     global_search_block_anonymous_searches_enabled: [:boolean, { default: false }],
-    anonymous_searches_allowed: [:boolean, { default: true }]
+    anonymous_searches_allowed: [:boolean, { default: true }],
+    default_search_scope: [:string, { default: 'system default' }]
 
   validates :search, json_schema: { filename: 'application_setting_search' }
+  validates :default_search_scope,
+    inclusion: {
+      in: Gitlab::Search::AbuseDetection::ALLOWED_SCOPES + ['system default'],
+      message: 'invalid scope selected'
+    },
+    allow_blank: true
 
   jsonb_accessor :transactional_emails,
     resource_access_token_notify_inherited: [:boolean, { default: false }],

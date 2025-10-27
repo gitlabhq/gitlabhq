@@ -210,6 +210,7 @@ export default {
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
     'canBulkEditEpics',
+    'canCreateProjects',
     'canCreateWorkItem',
     'hasBlockedIssuesFeature',
     'hasEpicsFeature',

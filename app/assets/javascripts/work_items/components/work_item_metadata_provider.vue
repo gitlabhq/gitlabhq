@@ -39,6 +39,8 @@ export default {
       markdownHelpPath: computed(() => this.metadata.markdownHelpPath),
       quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
       canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
+      canCreateProjects: computed(() => Boolean(this.metadata?.createProjects)),
+      canBulkEditEpics: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
     };

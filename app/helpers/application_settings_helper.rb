@@ -640,6 +640,7 @@ module ApplicationSettingsHelper
       :reindexing_minimum_index_size,
       :reindexing_minimum_relative_bloat_size,
       :anonymous_searches_allowed,
+      :default_search_scope,
       :git_push_pipeline_limit,
       :delay_user_account_self_deletion,
       :resource_usage_limits,

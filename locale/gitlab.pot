@@ -41203,7 +41203,13 @@ msgstr ""
 msgid "MergeRequests|Reference copied"
 msgstr ""
 
+msgid "MergeRequests|Reopen thread"
+msgstr ""
+
 msgid "MergeRequests|Requires that merge checks pass."
+msgstr ""
+
+msgid "MergeRequests|Resolve thread"
 msgstr ""
 
 msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
@@ -41212,13 +41218,7 @@ msgstr ""
 msgid "MergeRequests|Squashing not allowed: This project doesn't allow you to squash commits when merging."
 msgstr ""
 
-msgid "MergeRequests|Thread stays open"
-msgstr ""
-
 msgid "MergeRequests|Thread stays resolved"
-msgstr ""
-
-msgid "MergeRequests|Thread will be open"
 msgstr ""
 
 msgid "MergeRequests|Thread will be resolved"

@@ -6,6 +6,10 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
+  before do
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
+  end
+
   describe 'POST /mcp' do
     context 'when unauthenticated' do
       it 'returns authentication error' do

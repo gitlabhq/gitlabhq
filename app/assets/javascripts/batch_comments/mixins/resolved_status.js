@@ -39,9 +39,9 @@ export default {
           ? s__('MergeRequests|Thread stays resolved')
           : s__('MergeRequests|Thread will be resolved');
       } else if (discussionResolved) {
-        message = s__('MergeRequests|Thread will be open');
+        message = s__('MergeRequests|Reopen thread');
       } else if (this.$options.showStaysResolved) {
-        message = s__('MergeRequests|Thread stays open');
+        message = s__('MergeRequests|Resolve thread');
       }
 
       return message;

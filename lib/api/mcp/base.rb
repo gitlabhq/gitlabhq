@@ -47,10 +47,16 @@ module API
       before do
         authenticate!
         not_found! unless Feature.enabled?(:mcp_server, current_user)
+        not_found! unless feature_available?
         forbidden! unless AccessTokenValidationService.new(access_token).include_any_scope?([Gitlab::Auth::MCP_SCOPE])
       end
 
       helpers do
+        def feature_available?
+          # This method will be redefined in EE.
+          true
+        end
+
         def invoke_basic_handler
           method_name = params[:method]
           handler_class = JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
@@ -149,3 +155,5 @@ module API
     end
   end
 end
+
+API::Mcp::Base.prepend_mod

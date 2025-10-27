@@ -33,6 +33,7 @@ query workItemMetadata($fullPath: ID!) {
     userPermissions {
       createWorkItem
       adminLabel
+      createProjects
     }
   }
 }

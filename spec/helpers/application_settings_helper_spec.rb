@@ -104,6 +104,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         global_search_merge_requests_enabled
         global_search_block_anonymous_searches_enabled
         anonymous_searches_allowed
+        default_search_scope
       ]
       expect(helper.visible_attributes).to include(*expected_fields)
     end

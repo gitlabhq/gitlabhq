@@ -19017,9 +19017,11 @@ CREATE TABLE ldap_admin_role_links (
     sync_ended_at timestamp with time zone,
     last_successful_sync_at timestamp with time zone,
     sync_error text,
+    organization_id bigint,
     CONSTRAINT check_044d783383 CHECK ((char_length(sync_error) <= 255)),
     CONSTRAINT check_7f4c5b8292 CHECK ((char_length(filter) <= 255)),
     CONSTRAINT check_db3fe65cb5 CHECK ((char_length(cn) <= 255)),
+    CONSTRAINT check_ee9eb87da0 CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT check_f2efc15b43 CHECK ((char_length(provider) <= 255))
 );
 
@@ -40561,6 +40563,8 @@ CREATE INDEX index_last_usages_on_last_used_date ON catalog_resource_component_l
 
 CREATE INDEX index_ldap_admin_role_links_on_member_role_id ON ldap_admin_role_links USING btree (member_role_id);
 
+CREATE INDEX index_ldap_admin_role_links_on_organization_id ON ldap_admin_role_links USING btree (organization_id);
+
 CREATE INDEX index_ldap_admin_role_links_on_provider_and_sync_status ON ldap_admin_role_links USING btree (provider, sync_status);
 
 CREATE INDEX index_ldap_group_links_on_member_role_id ON ldap_group_links USING btree (member_role_id);
@@ -48397,6 +48401,9 @@ ALTER TABLE ONLY project_export_jobs
 
 ALTER TABLE ONLY security_policy_requirements
     ADD CONSTRAINT fk_5b4fae9635 FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ldap_admin_role_links
+    ADD CONSTRAINT fk_5b7b686d35 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT fk_5bb7e23d6d FOREIGN KEY (package_revision_id) REFERENCES packages_conan_package_revisions(id) ON DELETE CASCADE;

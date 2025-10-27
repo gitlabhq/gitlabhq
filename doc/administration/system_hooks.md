@@ -14,61 +14,54 @@ description: "Use system hooks to trigger HTTP POST requests from GitLab events.
 
 {{< /details >}}
 
-System hooks perform HTTP POST requests and are triggered on the following events:
+System hooks send HTTP POST requests to external URLs or
+run local scripts on the server when specific events occur.
 
-- `group_create`
-- `group_destroy`
-- `group_rename`
-- `key_create`
-- `key_destroy`
-- `project_create`
-- `project_destroy`
-- `project_rename`
-- `project_transfer`
-- `project_update`
-- `repository_update`
-- `user_access_request_revoked_for_group`
-- `user_access_request_revoked_for_project`
-- `user_access_request_to_group`
-- `user_access_request_to_project`
-- `user_add_to_group`
-- `user_add_to_team`
-- `user_create`
-- `user_destroy`
-- `user_failed_login`
-- `user_remove_from_group`
-- `user_remove_from_team`
-- `user_rename`
-- `user_update_for_group`
-- `user_update_for_team`
+Unlike project webhooks, system hooks monitor events across
+the entire GitLab instance, not just individual projects.
+These hooks capture events such as user creation, project and
+group changes, and repository pushes from any project.
 
-{{< alert type="note" >}}
+## Triggered events
 
-Some events follow a newer schema-based format. Instead of `event_name`, these events use `object_kind`, `action`,
-and `object_attributes`:
-
-- `gitlab_subscription_member_approval` (`action`: `enqueue`)
-- `gitlab_subscription_member_approvals` (`action`: `approve`, `deny`)
-
-{{< /alert >}}
-
-The triggers for most of these are self-explanatory, but `project_update` and `project_rename` require clarification:
-
-- `project_update` triggers when an attribute of a project is changed (including name, description, and tags)
-  except when the `path` attribute is also changed.
-- `project_rename` triggers when an attribute of a project (including `path`) is changed. If you only care about the
-  repository URL, just listen for `project_rename`.
-
-`user_failed_login` is sent whenever a **blocked** user attempts to sign in and is denied access.
-
-As an example, use system hooks for logging or changing information in an LDAP server.
-
-You can also enable triggers for other events, such as push events, and disable the `repository_update` event
-when you create a system hook.
+| Event type                                | Trigger |
+|-------------------------------------------|---------|
+| `group_create`                            | A group is created. |
+| `group_destroy`                           | A group is deleted. |
+| `group_rename`                            | A group path or name changes. |
+| `key_create`                              | An SSH key is created. |
+| `key_destroy`                             | An SSH key is deleted. |
+| `project_create`                          | A project is created. |
+| `project_destroy`                         | A project is deleted. |
+| `project_rename`                          | A project path or name changes. |
+| `project_transfer`                        | A project is transferred to a new namespace. |
+| `project_update`                          | Project attributes change (except the project path). |
+| `repository_update`                       | A push includes tags or multiple branches. |
+| `user_access_request_revoked_for_group`   | A user's access request to a group is canceled. |
+| `user_access_request_revoked_for_project` | A user's access request to a project is canceled. |
+| `user_access_request_to_group`            | A user requests access to a group. |
+| `user_access_request_to_project`          | A user requests access to a project. |
+| `user_add_to_group`                       | A user is added as a group member. |
+| `user_add_to_team`                        | A user is added as a project member. |
+| `user_create`                             | A user account is created. |
+| `user_destroy`                            | A user account is deleted. |
+| `user_failed_login`                       | A blocked user attempts to sign in. |
+| `user_remove_from_group`                  | A user is deleted from a group. |
+| `user_remove_from_team`                   | A user is deleted from a project. |
+| `user_rename`                             | A user's username changes. |
+| `user_update_for_group`                   | A group member's role changes. |
+| `user_update_for_team`                    | A project member's role changes. |
+| `gitlab_subscription_member_approval`     | Role promotion is requested (`"action": "enqueue"`). |
+| `gitlab_subscription_member_approvals`    | Role promotion is approved (`"action": "approve"`) or denied (`"action": "deny"`). |
+| `push`                                    | A push is made to the repository (except tags). |
+| `tag_push`                                | A tag is added or deleted. |
+| `merge_request`                           | A merge request is created, updated, merged, or closed. |
 
 {{< alert type="note" >}}
 
-For push and tag events, the same structure and deprecations are followed as [project and group webhooks](../user/project/integrations/webhooks.md). However, commits are never displayed.
+For push and tag events, the same structure and deprecations are followed as
+[project and group webhooks](../user/project/integrations/webhooks.md).
+However, commits are never displayed.
 
 {{< /alert >}}
 

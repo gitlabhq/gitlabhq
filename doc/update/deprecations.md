@@ -863,29 +863,6 @@ These changes affect you if your pipelines use the [`auto-build-image`](https://
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Updated tooling to release CI/CD components to the Catalog
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.7</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/12788).
-
-</div>
-
-Starting in GitLab 18.0, the internal process that releases CI/CD components to the Catalog will be changed.
-If you use the [recommended CI/CD component release process](https://docs.gitlab.com/ci/components/#publish-a-new-release), which makes use of the `release` keyword and the `registry.gitlab.com/gitlab-org/release-cli:latest` container image, you do not need to make any changes.
-The `latest` version of this container image (`v0.24.0`) contains [GLab](https://gitlab.com/gitlab-org/cli/) `v1.58.0`, which will be used for all releases to the CI/CD Catalog in GitLab 18.0 and later.
-In other cases:
-
-- If you need to pin the container image to a specific version, use `v0.24.0` or later (`registry.gitlab.com/gitlab-org/release-cli:v0.24.0`),
-  to ensure GLab is available for the release process.
-- If you've manually installed the Release CLI tool on your runners, you must install GLab `v1.58.0` or later on those runners.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Updating CI/CD job tokens to JWT standard
 
 <div class="deprecation-notes">
