@@ -136,7 +136,7 @@ registry, and copies the image to Google Artifact Registry.
      GITLAB_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
 
    build-sample-image:
-     image: docker:24.0.5
+     image: docker:24.0.5-cli
      stage: build
      services:
        - docker:24.0.5-dind

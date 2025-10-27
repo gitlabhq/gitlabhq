@@ -355,7 +355,7 @@ To use private runners:
 
    ```shell
    $ gitlab-runner register --executor "docker" \
-     --docker-image="docker:latest" \
+     --docker-image="docker:cli" \
      --url "https://gitlab.com/" \
      --description "cq-sans-dind" \
      --docker-volumes "/cache"\
@@ -387,7 +387,7 @@ To use private runners:
      builds_dir = "/tmp/builds"
      [runners.docker]
        tls_verify = false
-       image = "docker:latest"
+       image = "docker:cli"
        privileged = false
        disable_entrypoint_overwrite = false
        oom_kill_disable = false
@@ -425,7 +425,7 @@ To use a rootless private runner:
 
    ```shell
    $ gitlab-runner register --executor "docker" \
-     --docker-image="docker:latest" \
+     --docker-image="docker:cli" \
      --url "https://gitlab.com/" \
      --description "cq-rootless" \
      --tag-list "cq-rootless" \
@@ -453,7 +453,7 @@ To use a rootless private runner:
      environment = ["DOCKER_HOST=unix:///run/user/<gitlab-runner-user>/docker.sock"]
      [runners.docker]
        tls_verify = false
-       image = "docker:latest"
+       image = "docker:cli"
        privileged = false
        disable_entrypoint_overwrite = false
        oom_kill_disable = false

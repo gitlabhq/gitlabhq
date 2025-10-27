@@ -40,6 +40,7 @@ module QA
         Page::Project::Wiki::Edit.perform(&:delete_page)
 
         Page::Project::Wiki::Show.perform do |wiki|
+          wiki.expand_sidebar_if_collapsed
           expect(wiki).to have_page_listed("Home")
           expect(wiki).not_to have_page_listed(new_wiki_page_with_spaces_in_the_path)
         end

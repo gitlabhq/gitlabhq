@@ -83,7 +83,6 @@ class PersonalAccessToken < ApplicationRecord
   scope :order_last_used_at_asc_id_asc, -> { reorder(last_used_at: :asc, id: :asc) }
   scope :order_last_used_at_desc_id_desc, -> { reorder(last_used_at: :desc, id: :desc) }
   scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }
-  scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
   scope :last_used_before, ->(date) { where("last_used_at <= ?", date) }
   scope :last_used_after, ->(date) { where("last_used_at >= ?", date) }
   scope :expiring_and_not_notified_without_impersonation, -> {

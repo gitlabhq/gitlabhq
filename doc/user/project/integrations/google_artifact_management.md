@@ -148,7 +148,7 @@ The following example shows how to set up authentication for Docker with the [st
 
 ```yaml
 pull-image:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   identity: google_cloud
   services:
     - docker:24.0.5-dind

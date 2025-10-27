@@ -196,7 +196,7 @@ services:
   - docker:20.10.16-dind
 
 build:
-  image: docker:20.10.16
+  image: docker:20.10.16-cli
   before_script:
     - echo "$CI_DEPENDENCY_PROXY_PASSWORD" | docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER --password-stdin
   script:

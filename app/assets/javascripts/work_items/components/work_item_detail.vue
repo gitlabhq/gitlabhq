@@ -1265,7 +1265,7 @@ export default {
               />
 
               <span
-                v-if="!hasDesignManagementFeature"
+                v-if="hasDesignWidget && !hasDesignManagementFeature"
                 class="gl-mt-5 gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-p-3 gl-text-center"
                 data-testid="design-management-disabled-message"
               >

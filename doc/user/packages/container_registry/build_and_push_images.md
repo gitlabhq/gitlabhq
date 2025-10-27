@@ -82,7 +82,7 @@ Your `.gitlab-ci.yml` should look similar to this:
 
 ```yaml
 build:
-  image: $CI_REGISTRY/group/project/docker:24.0.5
+  image: $CI_REGISTRY/group/project/docker:24.0.5-cli
   services:
     - name: $CI_REGISTRY/group/project/docker:24.0.5-dind
       alias: docker
@@ -107,7 +107,7 @@ Your `.gitlab-ci.yml` should look similar to this:
 
 ```yaml
 build:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:24.0.5
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:24.0.5-cli
   services:
     - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:24.0.5-dind
       alias: docker
@@ -134,7 +134,7 @@ If you're using DinD on your runners, your `.gitlab-ci.yml` file should look sim
 
 ```yaml
 build:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   stage: build
   services:
     - docker:24.0.5-dind
@@ -148,7 +148,7 @@ You can use [CI/CD variables](../../../ci/variables/_index.md) in your `.gitlab-
 
 ```yaml
 build:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   stage: build
   services:
     - docker:24.0.5-dind
@@ -172,7 +172,7 @@ The `build` is stored in the container registry and used by subsequent stages th
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   services:
     - docker:24.0.5-dind
   before_script:

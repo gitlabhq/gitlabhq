@@ -742,7 +742,7 @@ With branch-based exceptions, you can configure merge request approval policies 
 
 {{< /history >}}
 
-With access token and service account exceptions, you can designate specific service accounts and access tokens that can bypass merge request approval policies when necessary. This approach enables automations that you trust to operate without manual approval while maintaining restrictions for human users. For example, trusted automations might include CI/CD pipelines, repository mirroring, and automated updates. Bypass events are fully audited to allow you to support your compliance and emergency access needs.
+With access token and service account exceptions, you can designate specific service accounts and access tokens that can bypass branch protections enforced by merge request approval policies when necessary. This approach enables automations that you trust to operate without manual approval while maintaining restrictions for human users. For example, trusted automations might include CI/CD pipelines, repository mirroring, and automated updates. Bypass events are fully audited to allow you to support your compliance and emergency access needs.
 
 | Field | Type    | Required | Description                                    |
 |-------|---------|----------|------------------------------------------------|

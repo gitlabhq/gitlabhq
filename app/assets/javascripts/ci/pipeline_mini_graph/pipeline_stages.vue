@@ -23,7 +23,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-inline gl-align-middle">
+  <div class="gl-contents gl-align-middle">
     <div
       v-for="stage in stages"
       :key="stage.id"

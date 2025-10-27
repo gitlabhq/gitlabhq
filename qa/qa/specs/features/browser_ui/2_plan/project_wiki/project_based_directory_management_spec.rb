@@ -24,6 +24,7 @@ module QA
         Page::Project::Wiki::Edit.perform(&:click_submit)
 
         Page::Project::Wiki::Show.perform do |wiki|
+          wiki.expand_sidebar_if_collapsed
           expect(wiki).to have_directory('a')
           expect(wiki).to have_directory('new')
           expect(wiki).to have_directory('path with spaces')

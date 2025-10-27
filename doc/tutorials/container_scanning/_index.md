@@ -75,7 +75,7 @@ To create the pipeline configuration:
        CS_IMAGE: $CI_REGISTRY_IMAGE/tutorial-image
 
    build-image:
-     image: docker:24.0.2
+     image: docker:24.0.2-cli
      stage: build
      services:
        - docker:24.0.2-dind

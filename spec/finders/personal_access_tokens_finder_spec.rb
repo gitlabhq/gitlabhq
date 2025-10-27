@@ -212,16 +212,6 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
         it 'returns tokens by owner type' do
           is_expected.to match_array(tokens.values_at(*expected_tokens))
         end
-
-        context 'when optimize_credentials_inventory FF is disabled' do
-          before do
-            stub_feature_flags(optimize_credentials_inventory: false)
-          end
-
-          it 'returns tokens by owner type' do
-            is_expected.to match_array(tokens.values_at(*expected_tokens))
-          end
-        end
       end
     end
 

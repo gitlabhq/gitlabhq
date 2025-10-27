@@ -87,7 +87,6 @@ PATH
       httparty (~> 0.21)
       ipaddress (~> 0.8.3)
       net-http (= 0.6.0)
-      railties (~> 7)
 
 PATH
   remote: gems/gitlab-rspec_flaky

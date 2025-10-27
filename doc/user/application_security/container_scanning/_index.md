@@ -644,7 +644,7 @@ variables:
   SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:8
   TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
-image: docker:latest
+image: docker:cli
 
 update-scanner-image:
   services:

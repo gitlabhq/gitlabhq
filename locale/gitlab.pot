@@ -2521,6 +2521,9 @@ msgstr ""
 msgid "AICatalog|Agents"
 msgstr ""
 
+msgid "AICatalog|Allows %{itemType} to be enabled in projects."
+msgstr ""
+
 msgid "AICatalog|Always use latest version"
 msgstr ""
 
@@ -2608,6 +2611,9 @@ msgstr ""
 msgid "AICatalog|Could not enable agent: %{agentName}"
 msgstr ""
 
+msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
+msgstr ""
+
 msgid "AICatalog|Could not enable flow in the project. Check that the project meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
@@ -2677,10 +2683,16 @@ msgstr ""
 msgid "AICatalog|Edit flow"
 msgstr ""
 
-msgid "AICatalog|Enable %{itemType} in a project"
+msgid "AICatalog|Enable %{itemType} in a %{targetType}"
+msgstr ""
+
+msgid "AICatalog|Enable in"
 msgstr ""
 
 msgid "AICatalog|Enable in project"
+msgstr ""
+
+msgid "AICatalog|Enable in project or group"
 msgstr ""
 
 msgid "AICatalog|Explore AI Catalog agents"
@@ -2741,6 +2753,9 @@ msgid "AICatalog|Flows use multiple agents to complete tasks automatically."
 msgstr ""
 
 msgid "AICatalog|Get started with the AI Catalog"
+msgstr ""
+
+msgid "AICatalog|Group is required."
 msgstr ""
 
 msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
@@ -28109,6 +28124,9 @@ msgid "Failed to load groups and users."
 msgstr ""
 
 msgid "Failed to load groups, users and deploy keys."
+msgstr ""
+
+msgid "Failed to load groups."
 msgstr ""
 
 msgid "Failed to load iterations. Please try again."
@@ -70554,17 +70572,6 @@ msgid "UsageBilling|Usage trend"
 msgstr ""
 
 msgid "UsageBilling|Used this billing period"
-msgstr ""
-
-msgid "UsageBilling|total users (active users)"
-msgstr ""
-
-msgid "UsageBilling|user is blocked"
-msgid_plural "UsageBilling|users are blocked"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "UsageBilling|users using included GitLab Credits"
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"

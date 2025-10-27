@@ -12,7 +12,8 @@ title: GitLab CI/CD `workflow` keyword
 
 {{< /details >}}
 
-Use the [`workflow`](_index.md#workflow) keyword to control when pipelines are created.
+Use the [`workflow`](_index.md#workflow) keyword in your `.gitlab-ci.yml` file to control
+when pipelines are created.
 
 The `workflow` keyword is evaluated before jobs. For example, if a job is configured to run
 for tags, but the workflow prevents tag pipelines, the job never runs.

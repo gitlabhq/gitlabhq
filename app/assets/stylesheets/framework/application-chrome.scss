@@ -319,13 +319,6 @@
     }
   }
 
-  // Panels
-  .paneled-view.static-panel,
-  .paneled-view.contextual-panel,
-  .paneled-view.ai-panels .ai-panel {
-    @apply gl-shadow-sm;
-  }
-
   // Static panel
   .paneled-view.static-panel {
     // Specifics here

@@ -17,7 +17,6 @@ class PersonalAccessTokensFinder
     tokens = by_users(tokens)
     tokens = by_impersonation(tokens)
     tokens = by_state(tokens)
-    tokens = by_owner_type(tokens)
     tokens = by_revoked_state(tokens)
     tokens = by_created_before(tokens)
     tokens = by_created_after(tokens)
@@ -47,17 +46,6 @@ class PersonalAccessTokensFinder
     end
 
     tokens
-  end
-
-  def by_owner_type(tokens)
-    return tokens if Feature.enabled?(:optimize_credentials_inventory, params[:group] || :instance)
-
-    case @params[:owner_type]
-    when 'human'
-      tokens.owner_is_human
-    else
-      tokens
-    end
   end
 
   def by_user(tokens)
@@ -158,14 +146,11 @@ class PersonalAccessTokensFinder
 
   def by_group(tokens)
     return tokens unless params[:group]
-    return tokens unless Feature.enabled?(:optimize_credentials_inventory, params[:group])
 
     tokens.for_group(params[:group])
   end
 
   def by_user_types_with_in_operator_optimization(tokens)
-    return tokens if Feature.disabled?(:optimize_credentials_inventory, params[:group] || :instance)
-
     user_types = Array(params[:user_types]).map(&:to_sym)
     owner_type = @params[:owner_type]&.to_sym
     user_types = Array(owner_type) if owner_type
@@ -196,5 +181,3 @@ class PersonalAccessTokensFinder
     ).execute
   end
 end
-
-PersonalAccessTokensFinder.prepend_mod_with('PersonalAccessTokensFinder')

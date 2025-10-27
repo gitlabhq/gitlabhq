@@ -19,6 +19,8 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347814' do
           small_wiki.visit!
 
+          Page::Project::Wiki::Show.perform(&:expand_sidebar_if_collapsed)
+
           small_number_of_pages.times do |index|
             Page::Project::Wiki::Show.perform do |list|
               expect(list).to have_page_listed "bulk_#{index}"
@@ -40,7 +42,10 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347813' do
           large_wiki.visit!
 
-          Page::Project::Wiki::Show.perform(&:click_view_all_pages)
+          Page::Project::Wiki::Show.perform do |wiki|
+            wiki.expand_sidebar_if_collapsed
+            wiki.click_view_all_pages
+          end
 
           large_number_of_pages.times do |index|
             Page::Project::Wiki::List.perform do |list|

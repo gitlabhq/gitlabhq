@@ -33,12 +33,12 @@ You must have:
 
 ## Set image and service image
 
-In the `.gitlab-ci.yml` file, use the `docker:latest` image and enable Docker-in-Docker service to allow Docker commands to run in the CI/CD job.
+In the `.gitlab-ci.yml` file, use the `docker:cli` image and enable Docker-in-Docker service to allow Docker commands to run in the CI/CD job.
 
 ```yaml
 build_and_sign:
   stage: build
-  image: docker:latest
+  image: docker:cli
   services:
     - docker:dind  # Enable Docker-in-Docker service to allow Docker commands inside the container
 ```
@@ -145,7 +145,7 @@ stages:
 
 build_and_sign:
   stage: build
-  image: docker:latest
+  image: docker:cli
   services:
     - docker:dind  # Enable Docker-in-Docker service to allow Docker commands inside the container
   variables:

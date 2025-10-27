@@ -71,7 +71,7 @@ export default {
 
       <span class="gl-w-full gl-truncate">{{ jobName }}</span>
 
-      <gl-icon v-if="job.retried" name="retry" class="gl-mr-4" />
+      <gl-icon v-if="job.retried" name="retry" class="gl-mx-2" />
     </gl-link>
   </div>
 </template>

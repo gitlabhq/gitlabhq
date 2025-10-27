@@ -1,0 +1,29 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getAllGroups(
+  $topLevelOnly: Boolean
+  $ownedOnly: Boolean
+  $search: String
+  $after: String
+  $first: Int!
+  $sort: String
+) {
+  groups(
+    topLevelOnly: $topLevelOnly
+    ownedOnly: $ownedOnly
+    search: $search
+    after: $after
+    first: $first
+    sort: $sort
+  ) {
+    nodes {
+      id
+      name
+      fullName
+      fullPath
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

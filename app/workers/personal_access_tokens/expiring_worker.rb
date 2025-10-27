@@ -54,7 +54,7 @@ module PersonalAccessTokens
       loop do
         tokens = PersonalAccessToken
                    .scope_for_notification_interval(interval, min_expires_at: min_expires_at)
-                   .owner_is_human
+                   .for_user_types(:human)
                    .select(:user_id, :expires_at)
                    .order(expires_at: :asc)
                    .limit(self.class.batch_size)

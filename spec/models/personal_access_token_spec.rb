@@ -145,17 +145,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it { is_expected.to contain_exactly(project_access_token) }
     end
 
-    describe '.owner_is_human' do
-      let_it_be(:user) { create(:user, :project_bot) }
-      let_it_be(:project_member) { create(:project_member, user: user) }
-      let_it_be(:personal_access_token) { create(:personal_access_token) }
-      let_it_be(:project_access_token) { create(:personal_access_token, user: user) }
-
-      subject { described_class.owner_is_human }
-
-      it { is_expected.to contain_exactly(personal_access_token) }
-    end
-
     describe '.for_user' do
       it 'returns personal access tokens of specified user only' do
         user_1 = create(:user)

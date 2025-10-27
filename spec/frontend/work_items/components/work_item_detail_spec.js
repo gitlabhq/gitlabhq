@@ -1172,8 +1172,8 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  describe('hasDesignManagementFeature', () => {
-    it('renders disabled message when hasDesignManagementFeature=false', async () => {
+  describe('design management disabled message', () => {
+    it('renders message when hasDesignManagementFeature=false', async () => {
       createComponent({ provide: { hasDesignManagementFeature: false } });
       await waitForPromises();
 
@@ -1185,7 +1185,19 @@ describe('WorkItemDetail component', () => {
       );
     });
 
-    it('does not render disabled message when hasDesignManagementFeature=true', async () => {
+    it('does not render message when design widget is not available', async () => {
+      createComponent({
+        provide: { hasDesignManagementFeature: false },
+        handler: jest
+          .fn()
+          .mockResolvedValue(workItemByIidResponseFactory({ designWidgetPresent: false })),
+      });
+      await waitForPromises();
+
+      expect(findDesignManagementDisabledMessage().exists()).toBe(false);
+    });
+
+    it('does not render message when hasDesignManagementFeature=true', async () => {
       createComponent({ provide: { hasDesignManagementFeature: true } });
       await waitForPromises();
 

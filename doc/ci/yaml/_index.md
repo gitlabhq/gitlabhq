@@ -26,6 +26,9 @@ This file is where you define the CI/CD jobs that make up your pipeline.
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](lint.md) tool.
 
+GitLab CI/CD configuration uses YAML formatting, so the order of keywords is not important
+unless otherwise specified.
+
 Use [CI/CD expressions](expressions.md) for more dynamic pipeline configuration options.
 
 <!--

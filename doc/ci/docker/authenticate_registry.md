@@ -22,7 +22,7 @@ In [`before_script`](../yaml/_index.md#before_script), run `docker login`:
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   services:
     - docker:24.0.5-dind
 
@@ -128,7 +128,7 @@ The same commands apply for any solution you implement.
 
 ```yaml
 default:
-  image: docker:24.0.5
+  image: docker:24.0.5-cli
   services:
     - docker:24.0.5-dind
 

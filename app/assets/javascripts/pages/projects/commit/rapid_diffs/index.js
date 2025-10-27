@@ -7,3 +7,4 @@ initCommitActions();
 
 const app = createCommitRapidDiffsApp();
 app.init();
+app.fetchDiscussions();
