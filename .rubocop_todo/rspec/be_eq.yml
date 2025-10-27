@@ -955,7 +955,6 @@ RSpec/BeEq:
     - 'spec/migrations/re_add_tags_name_unique_index_spec.rb'
     - 'spec/models/analytics/cycle_analytics/aggregation_spec.rb'
     - 'spec/models/anti_abuse/reports/note_spec.rb'
-    - 'spec/models/anti_abuse/user_trust_score_spec.rb'
     - 'spec/models/appearance_spec.rb'
     - 'spec/models/authentication_event_spec.rb'
     - 'spec/models/batched_git_ref_updates/deletion_spec.rb'

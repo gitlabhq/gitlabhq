@@ -2855,14 +2855,7 @@ class User < ApplicationRecord
   end
 
   def block_or_ban
-    return block if Feature.enabled?(:remove_trust_scores, self)
-
-    user_scores = AntiAbuse::UserTrustScore.new(self)
-    if user_scores.spammer? && account_age_in_days < 7
-      ban_and_report
-    else
-      block
-    end
+    block
   end
 
   def ban_and_report

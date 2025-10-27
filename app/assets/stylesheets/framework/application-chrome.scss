@@ -202,12 +202,8 @@
   }
 
   .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
-    @apply gl-mx-2 gl-px-0;
-    @apply gl-rounded-[0.75rem];
-  }
-
-  .panel-content:has(.issue-boards-content, .group-epics-roadmap) {
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-2});
+    @apply gl-px-0;
+    overflow: auto;
   }
 
   // work item drawer correct background colors
@@ -240,12 +236,9 @@
 
   // Layout
   &.page-with-panels .layout-page {
-    @apply gl-pt-0 #{!important};
-    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3 gl-h-full;
-
-    @include media-breakpoint-up(lg) {
-      height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height));
-    }
+    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
+    min-height: 0;
+    flex: 1;
 
     // Temporarily solution to hide empty AI Chat divs
     // empty:gl-hidden and :empty doesn't work because these empty divs have comment blocks
@@ -281,6 +274,7 @@
   // Panels container
   .panels-container {
     @apply gl-relative gl-grow gl-flex gl-pr-0 gl-pb-0;
+    min-height: 0;
 
     // Inside the panels container, everything that calculates an offset from
     // the top needs to ignore application header height, system header height,
@@ -293,14 +287,8 @@
     --header-height: 0px; // stylelint-disable-line length-zero-no-unit
     --top-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
 
-    .panel-content-inner {
-      @apply gl-h-full;
-    }
-
     .panel-content-inner,
     .vue-portal-target .work-item-drawer-content {
-      @apply gl-overflow-y-auto gl-overflow-x-hidden;
-
       // This prevents the scrollbar transparency rule above from breaking scrollbars in dropdown menus
       .dropdown-menu {
         background: var(--gl-background-color-overlap);
@@ -346,7 +334,9 @@
   // Contextual panel
   .paneled-view.contextual-panel {
     @apply gl-overflow-y-auto gl-flex-1 gl-rounded-lg gl-bg-default empty:gl-hidden gl-h-full;
-    @apply gl-z-[252] gl-w-full md:gl-w-8/10 gl-right-0;
+    @apply gl-z-[252] gl-w-8/10 gl-right-0;
+    display: flex;
+    flex-direction: column;
   }
 
   // AI panel
@@ -416,39 +406,67 @@
     border-bottom: 1px solid var(--super-sidebar-bg);
   }
 
-  // Scrollbar offset
-  .panel-content-inner,
-  .vue-portal-target .work-item-drawer {
-    @apply gl-px-3 gl-mx-0;
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
   }
 
   // Panel content
-  .panel-content {
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
-    @apply gl-overflow-clip;
-    contain: strict;
+  .panel-content,
+  .work-item-drawer {
+    // a slight padding is added to the panel itself so that scrollbar does not get covered by the rounded edge of the panel
+    // we're using padding instead of margin so that fixed elements connect with the bottom edge of the panel
+    @apply gl-pb-3;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    contain: layout;
+    // a margin is required for the panel element so that it works exactly like the native viewport,
+    // which compensates for the scrollbar size when using fixed position
+    margin-right: var(--scrollbar-width, 0);
+
+    &:has(.boards-list) {
+      @apply gl-pb-0;
+    }
+  }
+
+  .panel-content-inner,
+  .work-item-drawer-content {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  .panel-content-inner,
+  .work-item-drawer-content,
+  .work-item-drawer-header {
+    margin-right: calc(var(--scrollbar-width, 0) * -1);
+  }
+
+  .panel-content-inner {
+    @apply gl-px-2;
+    flex: 1;
+  }
+
+  .work-item-drawer-content {
+    @apply gl-px-5;
+    flex: 1;
+  }
+
+  // duplicate class to override Tailwind
+  .work-item-drawer-header.work-item-drawer-header {
+    @apply gl-py-4;
+    width: auto;
+  }
+
+  .contextual-panel > .vue-portal-target {
+    flex: 1;
+    min-height: 0;
   }
 
   // Fix design management fullscreen display in panels
   .panel-content:has(.design-detail) {
     @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none gl-z-1 gl-h-screen #{!important};
-  }
-
-  // Vue portal height
-  .paneled-view > .vue-portal-target {
-    @apply gl-h-full;
-  }
-
-  // Work item drawer adjustments
-  .work-item-drawer-header {
-    @apply -gl-mx-3 gl-py-4;
-    width: calc(100% + 1rem) !important;
-  }
-
-  // Work item spacing adjustment
-  .vue-portal-target .work-item-drawer-content {
-    @apply gl-px-5 #{!important};
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
   }
 
   // Content adjustments within panels
@@ -474,7 +492,7 @@
       top: $header-height !important;
 
       .work-item-sticky-header-text {
-        @apply gl-px-6;
+        @apply gl-px-5;
       }
     }
 
@@ -488,10 +506,6 @@
     .issue-boards-content,
     .issue-boards-content > .content {
       @apply gl-h-full;
-    }
-
-    .boards-list {
-      @apply gl-overflow-y-hidden gl-min-h-0 gl-pb-0 gl-border-l-0;
     }
 
     // MR sidebar
@@ -522,11 +536,6 @@
       top: auto !important;
     }
 
-    // Fix drawer height
-    .gl-drawer {
-      height: calc(100% - #{$header-height});
-    }
-
     // Compare revision: File tree sidebar alignment
     .rd-app .rd-app-sidebar {
       top: calc(1rem + -1px) !important;
@@ -542,6 +551,44 @@
         }
       }
     }
+  }
+
+  // Override Tailwind
+  .boards-app.boards-app {
+    height: var(--panel-content-inner-height);
+    overflow-y: hidden;
+
+    .issues-details-filters {
+      @apply gl-px-3;
+    }
+  }
+
+  .board-content {
+    @apply gl-pt-5;
+    @apply gl-px-3;
+    min-height: 0;
+    overflow-y: hidden;
+  }
+
+  // Override Tailwind
+  .boards-list.boards-list {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    overflow-y: hidden;
+    min-height: 0;
+    @apply gl-mb-3;
+    @apply gl-rounded-b-lg;
+  }
+
+  .boards-list,
+  .board-column {
+    @apply gl-gap-3;
+  }
+
+  .board.board {
+    padding: 0;
   }
 
   // Sidebar adjustments
@@ -896,6 +943,28 @@
 
   .work-item-drawer .work-item-overview-right-sidebar {
     @apply gl-pb-10;
+  }
+}
+
+@include gl-container-width-up(xl) {
+  &:where(.application-chrome) {
+    .boards-app.boards-app .issues-details-filters {
+      @apply gl-px-5;
+    }
+  }
+}
+
+@include gl-container-width-down(xl) {
+  &:where(.application-chrome) {
+    .board-content {
+      @apply gl-pt-3;
+      @apply gl-px-3;
+    }
+
+    // Override Tailwind
+    .boards-list.boards-list {
+      @apply gl-mb-3;
+    }
   }
 }
 

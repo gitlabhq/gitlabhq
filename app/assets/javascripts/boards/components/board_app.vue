@@ -227,6 +227,7 @@ export default {
       @updateBoard="refetchLists"
     />
     <board-content
+      class="board-content"
       :class="{
         '@lg/panel:gl-w-[calc(100%-480px)] @xl/panel:gl-w-[calc(100%-768px)] min-[1440px]:gl-w-[calc(100%-912px)]':
           isBoardWidthDynamic,

@@ -1,5 +1,4 @@
 <script>
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
@@ -26,17 +25,7 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.updateWidths);
-
-    // We're manually calling this on mount for Desktop
-    // screens to  ensure that element gets `padding-right`
-    // set on it for form elements to align properly
-    // when inside paneled container.
-    if (GlBreakpointInstance.isDesktop()) {
-      this.$nextTick(() => {
-        this.updateWidths();
-      });
-    }
-
+    this.updateWidths();
     this.$options.sidebar.classList.remove('gl-hidden');
   },
   beforeDestroy() {
@@ -98,7 +87,7 @@ export default {
   },
   sidebar: document.querySelector('.js-wiki-sidebar'),
   contentWrapper: document.querySelector('.content-wrapper'),
-  contentPanelWrapper: document.querySelector('.js-static-panel-inner'),
+  contentPanelWrapper: document.querySelector('#content-body'),
 };
 </script>
 <template>

@@ -278,7 +278,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
-    it { is_expected.to have_many(:abuse_trust_scores).class_name('AntiAbuse::TrustScore').dependent(:destroy) }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
@@ -7559,79 +7558,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         end
 
         it_behaves_like 'schedules user for deletion without delay'
-      end
-
-      context 'when the user is a spammer' do
-        before do
-          stub_feature_flags(remove_trust_scores: false)
-
-          user_scores = AntiAbuse::UserTrustScore.new(user)
-          allow(AntiAbuse::UserTrustScore).to receive(:new).and_return(user_scores)
-          allow(user_scores).to receive(:spammer?).and_return(true)
-        end
-
-        context 'when the user account is less than 7 days old' do
-          it_behaves_like 'schedules the record for deletion with the correct delay'
-
-          it 'creates an abuse report with the correct data' do
-            expect { delete_async }.to change { AbuseReport.count }.from(0).to(1)
-            expect(AbuseReport.last.attributes).to include({
-              reporter_id: Users::Internal.for_organization(user.organization).security_bot.id,
-              organization_id: Users::Internal.security_bot.organization_id,
-              user_id: user.id,
-              category: "spam",
-              message: 'Potential spammer account deletion'
-            }.stringify_keys)
-          end
-
-          it 'adds custom attribute to the user with the correct values' do
-            delete_async
-
-            custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
-            expect(custom_attribute.value).to eq(AbuseReport.last.id.to_s)
-          end
-
-          it 'bans the user' do
-            delete_async
-
-            expect(user).to be_banned
-          end
-
-          context 'when there is an existing abuse report' do
-            let!(:abuse_report) do
-              create(:abuse_report, user: user, reporter: Users::Internal.for_organization(user.organization).security_bot, message: 'Existing')
-            end
-
-            it 'updates the abuse report' do
-              delete_async
-              abuse_report.reload
-
-              expect(abuse_report.message).to eq("Existing\n\nPotential spammer account deletion")
-            end
-
-            it 'adds custom attribute to the user with the correct values' do
-              delete_async
-
-              custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
-              expect(custom_attribute.value).to eq(abuse_report.id.to_s)
-            end
-          end
-        end
-
-        context 'when the user acount is greater than 7 days old' do
-          before do
-            allow(user).to receive(:account_age_in_days).and_return(8)
-          end
-
-          it_behaves_like 'schedules the record for deletion with the correct delay'
-
-          it 'blocks the user' do
-            delete_async
-
-            expect(user).to be_blocked
-            expect(user).not_to be_banned
-          end
-        end
       end
 
       it 'updates note to indicate the action (account was deleted by the user) and timestamp' do

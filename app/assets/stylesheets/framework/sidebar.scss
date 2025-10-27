@@ -106,14 +106,6 @@
       border-left: 0;
     }
   }
-
-  &:not(.right-sidebar-merge-requests) {
-    .sidebar-container,
-    .issuable-sidebar {
-      // Add 100px so that potentially visible vertical scroll bar is hidden
-      width: calc(100% + 100px);
-    }
-  }
 }
 
 @mixin maintain-sidebar-dimensions {

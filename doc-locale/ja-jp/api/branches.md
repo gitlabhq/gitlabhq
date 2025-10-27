@@ -2,24 +2,24 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Documentation for the REST API for Git branches in GitLab.
+description: GitLabのGitブランチ用REST APIのドキュメント。
 title: ブランチAPI
 ---
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供形態:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-このAPIは、[リポジトリブランチ](../user/project/repository/branches/_index.md)に対して動作します。
+ブランチAPIを使用すると、プロジェクトのGitブランチをプログラムで管理できます。
 
-[保護ブランチAPI](protected_branches.md)も参照してください。
+プロジェクト用に設定されたブランチ保護を変更するには、[保護ブランチAPI](protected_branches.md)を使用します。
 
-## リポジトリブランチをリストする
+## リポジトリブランチをリストする {#list-repository-branches}
 
-プロジェクトから、名前でアルファベット順にソートされたリポジトリブランチのリストを取得します。
+プロジェクトから、名前でアルファベット順にソートされたリポジトリブランチのリストを取得します。名前で検索するか、正規表現を使用して特定のブランチパターンを検索します。保護ステータス、マージステータス、コミットの詳細など、ブランチに関する詳細な情報を返します。
 
 {{< alert type="note" >}}
 
@@ -31,22 +31,51 @@ title: ブランチAPI
 GET /projects/:id/repository/branches
 ```
 
-パラメーター:
+サポートされている属性は以下のとおりです:
 
-| 属性 | 型           | 必須 | 説明 |
-|:----------|:---------------|:---------|:------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。|
-| `search`  | 文字列         | いいえ       | 検索文字列を含むブランチのリストを返します。`term`で始まるブランチを検索するには`^term`を使用し、`term`で終わるブランチを検索するには`term$`を使用します。 |
-| `regex`   | 文字列         | いいえ       | [re2](https://github.com/google/re2/wiki/Syntax)正規表現に一致する名前のブランチのリストを返します。 |
+| 属性 | 型              | 必須 | 説明 |
+|-----------|-------------------|----------|-------------|
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `regex`   | 文字列            | いいえ       | [re2](https://github.com/google/re2/wiki/Syntax)正規表現に一致する名前のブランチのリストを返します。`search`と一緒に使用することはできません。 |
+| `search`  | 文字列            | いいえ       | 検索文字列を含むブランチのリストを返します。`term`で始まるブランチを検索するには`^term`を使用し、`term`で終わるブランチを検索するには`term$`を使用します。 |
 
-リクエストの例:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+
+| 属性                  | 型                | 説明 |
+|----------------------------|---------------------|-------------|
+| `can_push`                 | ブール値             | `true`の場合、認証済みユーザーは、このブランチにプッシュできます。 |
+| `commit`                   | オブジェクト              | ブランチ上の最新のコミットに関する詳細。 |
+| `commit.author_email`      | 文字列              | 変更を作成者したユーザーのメールアドレス。 |
+| `commit.author_name`       | 文字列              | 変更を作成者したユーザーの名前。 |
+| `commit.authored_date`     | 日時（ISO 8601） | コミットが作成された日時。 |
+| `commit.committed_date`    | 日時（ISO 8601） | コミットがコミットされた日時。 |
+| `commit.committer_email`   | 文字列              | 変更をコミットしたユーザーのメールアドレス。 |
+| `commit.committer_name`    | 文字列              | 変更をコミットしたユーザーの名前。 |
+| `commit.created_at`        | 日時（ISO 8601） | コミットが作成された日時。 |
+| `commit.extended_trailers` | オブジェクト              | コミットメッセージから解析された拡張Gitトレーラー。 |
+| `commit.id`                | 文字列              | コミットの完全なSHA。 |
+| `commit.message`           | 文字列              | 完全なコミットメッセージ。 |
+| `commit.parent_ids`        | 配列               | 親コミットSHAの配列。 |
+| `commit.short_id`          | 文字列              | コミットの省略されたSHA。 |
+| `commit.title`             | 文字列              | コミットメッセージのタイトル。 |
+| `commit.trailers`          | オブジェクト              | コミットメッセージから解析されたGitトレーラー。 |
+| `commit.web_url`           | 文字列              | GitLab UIでコミットを表示するためのURL。 |
+| `default`                  | ブール値             | `true`の場合、ブランチはプロジェクトのデフォルトブランチです。 |
+| `developers_can_merge`     | ブール値             | `true`の場合、少なくともデベロッパーロールを持つユーザーは、このブランチにマージできます。 |
+| `developers_can_push`      | ブール値             | `true`の場合、少なくともデベロッパーロールを持つユーザーは、このブランチにプッシュできます。 |
+| `merged`                   | ブール値             | `true`の場合、ブランチはデフォルトブランチにマージされています。 |
+| `name`                     | 文字列              | ブランチの名前。 |
+| `protected`                | ブール値             | `true`の場合、ブランチは強制プッシュと削除から保護されています。 |
+| `web_url`                  | 文字列              | GitLab UIでブランチを表示するためのURL。 |
+
+リクエスト例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 [
@@ -83,7 +112,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 1つのリポジトリブランチを取得する
+## 1つのリポジトリブランチを取得する {#get-single-repository-branch}
 
 1つのプロジェクトリポジトリブランチを取得します。
 
@@ -97,21 +126,50 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /projects/:id/repository/branches/:branch
 ```
 
-パラメーター:
+サポートされている属性は以下のとおりです:
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `branch`  | 文字列            | はい      | ブランチの[URLエンコードされた名前](rest/_index.md#namespaced-paths)。 |
 
-リクエストの例:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+
+| 属性                | 型    | 説明 |
+|--------------------------|---------|-------------|
+| `can_push`               | ブール値 | 認証済みユーザーがこのブランチにプッシュできるかどうか。 |
+| `commit`                 | オブジェクト  | ブランチ上の最新コミットの詳細。 |
+| `commit.author_email`    | 文字列  | コミットの作成者のメールアドレス。 |
+| `commit.author_name`     | 文字列  | コミットの作成者名。 |
+| `commit.authored_date`   | 文字列  | コミットがISO 8601形式で作成された日時。 |
+| `commit.committer_email` | 文字列  | 変更をコミットしたユーザーのメールアドレス。 |
+| `commit.committer_name`  | 文字列  | 変更をコミットしたユーザーの名前。 |
+| `commit.committed_date`  | 文字列  | コミットがISO 8601形式でコミットされた日時。 |
+| `commit.created_at`      | 文字列  | コミットがISO 8601形式で作成された日時。 |
+| `commit.extended_trailers` | オブジェクト  | コミットメッセージから解析された拡張Gitトレーラー。 |
+| `commit.id`              | 文字列  | コミットの完全なSHA。 |
+| `commit.message`         | 文字列  | 完全なコミットメッセージ。 |
+| `commit.parent_ids`      | 配列   | 親コミットSHAの配列。 |
+| `commit.short_id`        | 文字列  | コミットの省略されたSHA。 |
+| `commit.title`           | 文字列  | コミットメッセージのタイトル。 |
+| `commit.trailers`        | オブジェクト  | コミットメッセージから解析されたGitトレーラー。 |
+| `commit.web_url`         | 文字列  | GitLab UIでコミットを表示するためのURL。 |
+| `default`                | ブール値 | これがプロジェクトのデフォルトブランチであるかどうか。 |
+| `developers_can_merge`   | ブール値 | デベロッパーロールを持つユーザーがこのブランチにマージできるかどうか。 |
+| `developers_can_push`    | ブール値 | デベロッパーロールを持つユーザーがこのブランチにプッシュできるかどうか。 |
+| `merged`                 | ブール値 | ブランチがデフォルトブランチにマージされたかどうか。 |
+| `name`                   | 文字列  | ブランチの名前。 |
+| `protected`              | ブール値 | ブランチが強制プッシュと削除から保護されているかどうか。 |
+| `web_url`                | 文字列  | GitLab UIでブランチを表示するためのURL。 |
+
+リクエスト例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/main"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -139,20 +197,21 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "committer_email": "john@example.com",
     "committed_date": "2012-06-28T03:44:20-07:00",
     "trailers": {},
+    "extended_trailers": {},
     "web_url": "https://gitlab.example.com/my-group/my-project/-/commit/7b5c3cc8be40ee161ae89a06bba6229da1032a0c"
   }
 }
 ```
 
-## リポジトリブランチを保護する
+## リポジトリブランチを保護する {#protect-repository-branch}
 
 リポジトリブランチの保護については、[`POST /projects/:id/protected_branches`](protected_branches.md#protect-repository-branches)を参照してください。
 
-## リポジトリブランチの保護を解除する
+## リポジトリブランチの保護を解除する {#unprotect-repository-branch}
 
-リポジトリブランチの保護解除については、[`DELETE /projects/:id/protected_branches/:name`](protected_branches.md#unprotect-repository-branches)を参照してください。
+リポジトリブランチの保護の解除については、[`DELETE /projects/:id/protected_branches/:name`](protected_branches.md#unprotect-repository-branches)を参照してください。
 
-## リポジトリブランチを作成する
+## リポジトリブランチを作成する {#create-repository-branch}
 
 リポジトリに新しいブランチを作成します。
 
@@ -160,15 +219,44 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /projects/:id/repository/branches
 ```
 
-パラメーター:
+サポートされている属性は以下のとおりです:
 
-| 属性 | 型    | 必須 | 説明 |
-|-----------|---------|----------|-------------|
-| `id`      | 整数 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `branch`  | 文字列  | はい      | ブランチの名前。 |
-| `ref`     | 文字列  | はい      | ブランチの作成元となるブランチ名またはコミットSHA。 |
+| 属性 | 型              | 必須 | 説明 |
+|-----------|-------------------|----------|-------------|
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `branch`  | 文字列            | はい      | ブランチの名前。スペースまたは特殊文字（ハイフンとアンダースコアを除く）を含めることはできません。 |
+| `ref`     | 文字列            | はい      | ブランチの作成元となるブランチ名またはコミット 。 |
 
-リクエストの例:
+成功した場合、[`201 Created`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+
+| 属性                  | 型    | 説明 |
+|----------------------------|---------|-------------|
+| `can_push`                 | ブール値 | `true`の場合、認証済みユーザーは、このブランチにプッシュできます。 |
+| `commit`                   | オブジェクト  | ブランチ上の最新コミットの詳細。 |
+| `commit.author_email`      | 文字列  | コミットの作成者のメールアドレス。 |
+| `commit.author_name`       | 文字列  | コミットの作成者名。 |
+| `commit.authored_date`     | 文字列  | コミットが8601形式で作成された日時。 |
+| `commit.committed_date`    | 文字列  | コミットが8601形式でコミットされた日時。 |
+| `commit.committer_email`   | 文字列  | 変更をコミットしたユーザーのメールアドレス。 |
+| `commit.committer_name`    | 文字列  | 変更をコミットしたユーザーの名前。 |
+| `commit.created_at`        | 文字列  | コミットが8601形式で作成された日時。 |
+| `commit.extended_trailers` | オブジェクト  | コミットメッセージから解析された拡張Gitトレーラー。 |
+| `commit.id`                | 文字列  | コミットの完全なSHA。 |
+| `commit.message`           | 文字列  | 完全なコミットメッセージ。 |
+| `commit.parent_ids`        | 配列   | 親コミットSHAの配列。 |
+| `commit.short_id`          | 文字列  | コミットの省略されたSHA。 |
+| `commit.title`             | 文字列  | コミットメッセージのタイトル。 |
+| `commit.trailers`          | オブジェクト  | コミットメッセージから解析されたGitトレーラー。 |
+| `commit.web_url`           | 文字列  | GitLab UIでコミットを表示するためのURL。 |
+| `default`                  | ブール値 | `true`の場合、このブランチをプロジェクトのデフォルトブランチとして設定します。 |
+| `developers_can_merge`     | ブール値 | `true`の場合、デベロッパーロールを持つユーザーは、このブランチにマージできます。 |
+| `developers_can_push`      | ブール値 | `true`の場合、デベロッパーロールを持つユーザーは、このブランチにプッシュできます。 |
+| `merged`                   | ブール値 | `true`の場合、ブランチはデフォルトブランチにマージされました。 |
+| `name`                     | 文字列  | ブランチの名前。 |
+| `protected`                | ブール値 | `true`の場合、ブランチは強制プッシュと削除から保護されています。 |
+| `web_url`                  | 文字列  | GitLab UIでブランチを表示するためのURL。 |
+
+リクエスト例:
 
 ```shell
 curl --request POST \
@@ -176,7 +264,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches?branch=newbranch&ref=main"
 ```
 
-応答の例:
+レスポンス例:
 
 ```json
 {
@@ -196,6 +284,7 @@ curl --request POST \
     "committer_email": "john@example.com",
     "committed_date": "2012-06-28T03:44:20-07:00",
     "trailers": {},
+    "extended_trailers": {},
     "web_url": "https://gitlab.example.com/my-group/my-project/-/commit/7b5c3cc8be40ee161ae89a06bba6229da1032a0c"
   },
   "name": "newbranch",
@@ -209,7 +298,7 @@ curl --request POST \
 }
 ```
 
-## リポジトリブランチを削除する
+## リポジトリブランチを削除する {#delete-repository-branch}
 
 リポジトリからブランチを削除します。
 
@@ -223,14 +312,16 @@ curl --request POST \
 DELETE /projects/:id/repository/branches/:branch
 ```
 
-パラメーター:
+サポートされている属性は以下のとおりです:
 
-| 属性 | 型           | 必須 | 説明 |
-|-----------|----------------|----------|-------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `branch`  | 文字列         | はい      | ブランチの名前。 |
+| 属性 | 型              | 必須 | 説明 |
+|-----------|-------------------|----------|-------------|
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `branch`  | 文字列            | はい      | ブランチの[URLエンコードされた名前](rest/_index.md#namespaced-paths)。デフォルトブランチまたは保護ブランチを削除することはできません。 |
 
-リクエストの例:
+成功すると、[`204 No Content`](rest/troubleshooting.md#status-codes)を返します。
+
+リクエスト例:
 
 ```shell
 curl --request DELETE \
@@ -244,7 +335,7 @@ curl --request DELETE \
 
 {{< /alert >}}
 
-## マージ済みブランチを削除する
+## マージ済みブランチを削除する {#delete-merged-branches}
 
 プロジェクトのデフォルトブランチにマージされたブランチをすべてを削除します。
 
@@ -258,13 +349,15 @@ curl --request DELETE \
 DELETE /projects/:id/repository/merged_branches
 ```
 
-パラメーター:
+サポートされている属性は以下のとおりです:
 
-| 属性 | 型           | 必須 | 説明                                                                                                  |
-|:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| 属性 | 型              | 必須 | 説明 |
+|-----------|-------------------|----------|-------------|
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-リクエストの例:
+成功すると、[`202 Accepted`](rest/troubleshooting.md#status-codes)を返します。
+
+リクエスト例:
 
 ```shell
 curl --request DELETE \
@@ -272,7 +365,7 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/merged_branches"
 ```
 
-## 関連トピック
+## 関連トピック {#related-topics}
 
 - [ブランチ](../user/project/repository/branches/_index.md)
 - [保護ブランチ](../user/project/repository/branches/protected.md)

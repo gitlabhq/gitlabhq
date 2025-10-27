@@ -68,14 +68,7 @@ module Spam
 
       begin
         result = spamcheck_client.spam?(spammable: target, user: user, context: context, extra_features: extra_features)
-
-        if result.evaluated? && Feature.disabled?(:remove_trust_scores, user)
-          correlation_id = Labkit::Correlation::CorrelationId.current_id || ''
-          AntiAbuse::TrustScoreWorker.perform_async(user.id, :spamcheck, result.score, correlation_id)
-        end
-
         result.verdict
-
       rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, error: ERROR_TYPE)
         nil

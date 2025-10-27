@@ -270,10 +270,18 @@ For more information about our plans for language support in SAST, see the [cate
 
 ### Languages with full support
 
+{{< history >}}
+
+- Support for C/C++ [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
+
+{{< /history >}}
+
 These languages are supported by both GitLab Advanced SAST (Ultimate) and standard analyzers (all tiers):
 
 | Language               | GitLab Advanced SAST<sup>1</sup>            | Standard analyzer<sup>2</sup> |
 |------------------------|---------------------------------------------|-------------------------------|
+| C                      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| C++                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | C#                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Go                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Java<sup>3</sup>       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
@@ -310,8 +318,6 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
 | Language           | Standard analyzer<sup>1</sup>                                                                                                           | Proposed support<sup>2</sup> |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
 | Apex (Salesforce)  | {{< icon name="check-circle-filled" >}} Yes: [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)             | None                         |
-| C                  | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) |
-| C++                | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) |
 | Elixir (Phoenix)   | {{< icon name="check-circle-filled" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)               | None                         |
 | Groovy             | {{< icon name="check-circle-filled" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup> | None                         |
 | Kotlin<sup>4</sup> | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
@@ -358,8 +364,8 @@ Support for advanced vulnerability tracking is dependent on the language and ana
 
 | Language   | GitLab Advanced SAST analyzer               | Semgrep-based analyzers |
 |------------|---------------------------------------------|-------------------------|
-| C          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
-| C++        | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| C          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| C++        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | C#         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Go         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Java       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |

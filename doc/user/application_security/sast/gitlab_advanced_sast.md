@@ -136,7 +136,7 @@ GitLab Advanced SAST supports the following languages with cross-function and cr
 
 **Footnotes**:
 
-1. GitLab Advanced SAST CPP is currently in Beta and requires additional configuration (such as a compilation database) to be used with GitLab Advanced SAST.
+1. Support for C/C++ is currently in Beta and requires additional configuration (such as a compilation database) to be used with GitLab Advanced SAST.
 For details, see [C/C++ configuration](cpp_advanced_sast.md).
 GitLab Advanced SAST CPP does not exclude Semgrep for C/C++ projects; both analyzers run in parallel with different rule sets.
 
