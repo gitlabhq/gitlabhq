@@ -11,7 +11,7 @@ export default {
     GlSkeletonLoader,
     GlSearchBoxByType,
   },
-  inject: ['sidebarPagesApi', 'hasCustomSidebar', 'viewAllPagesPath'],
+  inject: ['sidebarPagesApi', 'hasCustomSidebar', 'viewAllPagesPath', 'editing'],
   props: {},
 
   data() {
@@ -81,6 +81,7 @@ export default {
       <div v-else class="gl-ml-3 gl-mt-3 gl-text-subtle">
         {{ s__('Wiki|There are no pages in this wiki yet.') }}
       </div>
+      <div v-if="!editing" class="js-wiki-toc"></div>
     </template>
   </div>
 </template>

@@ -476,6 +476,10 @@ class Member < ApplicationRecord
         .where(group_group_links: { shared_group_id: group.self_and_ancestors })
     end
 
+    def null_member_role_id_sql
+      Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('NULL'), Arel::Nodes::SqlLiteral.new('member_role_id'))
+    end
+
     private
 
     def member_columns_with_group_sharing_access(group)
@@ -508,7 +512,7 @@ class Member < ApplicationRecord
 
     # overriden in EE
     def member_role_id(_group)
-      Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('NULL'), Arel::Nodes::SqlLiteral.new('member_role_id'))
+      null_member_role_id_sql
     end
   end
 

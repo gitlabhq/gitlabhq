@@ -176,14 +176,14 @@ RSpec.describe Tasks::Ci::JobTokensTask, :silence_stdout, feature_category: :per
   describe '#allowed_endpoints' do
     let(:categorized_table) do
       <<~TABLE.chomp
-        ## Deployments endpoints
+        ### Deployments endpoints
 
         | Permission | API endpoint | Permission name | Scope |
         | ---------- | ------------ | --------------- | ----- |
         | mixed permission route | `PUT /projects/:id/deployments/:id` | `ADMIN_DEPLOYMENTS`, `READ_PACKAGES` | Read and write, Read |
         | multi permission route | `POST /projects/:id/deployments` | `ADMIN_DEPLOYMENTS`, `ADMIN_ENVIRONMENTS` | Read and write |
 
-        ## Packages endpoints
+        ### Packages endpoints
 
         | Permission | API endpoint | Permission name | Scope |
         | ---------- | ------------ | --------------- | ----- |

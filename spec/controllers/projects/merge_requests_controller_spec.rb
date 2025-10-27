@@ -234,6 +234,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           go(format: :html)
 
           expect(response).to be_successful
+          expect(response).not_to render_template('projects/merge_requests/invalid')
         end
       end
 

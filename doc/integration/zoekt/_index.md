@@ -175,7 +175,7 @@ Feature Flags (Default Values)
 - zoekt_load_balancer:                    disabled
 - zoekt_rollout_worker:                   enabled
 - zoekt_search_meta_project_ids:          disabled
-- zoekt_traversal_id_queries:             disabled
+- zoekt_traversal_id_queries:             enabled
 
 Node Details
 Node 1 - test-zoekt-hostname-1:

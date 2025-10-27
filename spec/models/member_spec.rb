@@ -1218,6 +1218,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.null_member_role_id_sql' do
+    subject(:null_member_role_id_sql) { described_class.null_member_role_id_sql }
+
+    it 'returns an Arel As node' do
+      expect(null_member_role_id_sql).to be_a(Arel::Nodes::As)
+      expect(null_member_role_id_sql.left.to_s).to eq('NULL')
+      expect(null_member_role_id_sql.right.to_s).to eq('member_role_id')
+    end
+  end
+
   describe '#accept_request', :freeze_time do
     let(:member) { create(:project_member, requested_at: Time.current.utc) }
     let(:current_time) { Time.current.utc }

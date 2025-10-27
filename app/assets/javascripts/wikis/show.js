@@ -136,7 +136,7 @@ export const mountWikiSidebarEntries = () => {
   const el = document.querySelector('#js-wiki-sidebar-entries');
   if (!el) return false;
 
-  const { hasCustomSidebar, canCreate, viewAllPagesPath } = el.dataset;
+  const { hasCustomSidebar, canCreate, viewAllPagesPath, editing } = el.dataset;
 
   return new Vue({
     el,
@@ -145,6 +145,7 @@ export const mountWikiSidebarEntries = () => {
       canCreate: parseBoolean(canCreate),
       sidebarPagesApi: gl.GfmAutoComplete.dataSources.wikis,
       viewAllPagesPath,
+      editing,
     },
     render(createElement) {
       return createElement(WikiSidebarEntries);

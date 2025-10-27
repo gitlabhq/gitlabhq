@@ -211,7 +211,7 @@ RSpec/ContextWording:
     - 'ee/spec/graphql/mutations/security_policy/create_security_policy_project_spec.rb'
     - 'ee/spec/graphql/resolvers/admin/cloud_licenses/subscription_future_entries_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/boards/board_list_epics_resolver_spec.rb'
-    - 'ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb'
+    - 'ee/spec/graphql/ee/resolvers/clusters/agents_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/epics_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/incident_management/oncall_schedule_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/instance_security_dashboard/projects_resolver_spec.rb'

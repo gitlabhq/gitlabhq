@@ -7,7 +7,7 @@ module API
 
     helpers ::API::Helpers::EventsHelpers
 
-    feature_category :user_profile
+    feature_category :groups_and_projects
 
     # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357839
     urgency :low

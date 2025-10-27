@@ -105,7 +105,7 @@ function run_rspec_non_fast {
   done < <(git ls-files -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
   files_for_non_fast+=(
-      "ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb"
+      "ee/spec/graphql/ee/resolvers/clusters/agents_resolver_spec.rb"
       "ee/spec/graphql/types/query_type_spec.rb"
       "ee/spec/graphql/types/subscription_type_spec.rb"
       "ee/spec/models/ee/clusters/agent_spec.rb"

@@ -57,7 +57,6 @@
 
 @mixin wiki-sidebar-container-lg-mod {
   @apply gl-pr-4;
-  @apply gl-pt-2;
   position: sticky;
 
   .toggle-close {
@@ -91,20 +90,33 @@
 
   .sidebar-container {
     @apply gl-px-3;
-    @apply gl-my-5;
+    @apply gl-pt-5;
     @apply gl-transition-all;
     @apply motion-reduce:gl-transition-none;
     top: $calc-application-header-height;
     bottom: $calc-application-footer-height;
     z-index: 200;
-    overflow-y: auto;
-    overflow-x: hidden;
+    @apply gl-overflow-hidden;
     -webkit-overflow-scrolling: touch;
     width: $wiki-sidebar-inner-width;
     position: relative;
+    @apply gl-flex;
+    @apply gl-flex-col;
 
     @include gl-container-width-up(lg) {
       @include wiki-sidebar-container-lg-mod;
+    }
+
+    .blocks-container {
+      @apply gl-flex;
+      @apply gl-flex-col;
+      @apply gl-overflow-hidden;
+      @apply gl-grow;
+    }
+
+    .wiki-pages-list-container  {
+      @apply gl-grow;
+      @apply gl-overflow-y-auto;
     }
   }
 
@@ -305,11 +317,12 @@ ul.wiki-pages-list.content-list {
     }
   }
 
- .wiki-sidebar {
+  .wiki-sidebar {
     .sidebar-container {
       top: 0;
+      height: var(--panel-content-inner-height); /* This variable is subject to change */
     }
- }
+  }
 }
 
 /*
@@ -321,6 +334,12 @@ html:not(.page-with-panels) {
   @include media-breakpoint-up(sm) {
     .has-wiki-sidebar:has(.wiki-sidebar.sidebar-expanded) .content-wrapper {
         padding-left: $wiki-sidebar-inner-width;
+    }
+  }
+
+  .wiki-sidebar {
+    .sidebar-container {
+      height: $calc-application-viewport-height;
     }
   }
 

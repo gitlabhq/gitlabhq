@@ -35,10 +35,9 @@
           has_custom_sidebar: @sidebar_page ? 'true' : 'false',
           can_create: can?(current_user, :create_wiki, @wiki).to_s,
           view_all_pages_path: wiki_path(@wiki, action: :pages),
+          editing: editing,
         }
       }
       - if @sidebar_page
         .gl-px-4.gl-pt-4.gl-pb-2.wiki-sidebar-custom-content
           = render_wiki_content(@sidebar_page)
-    - if !editing
-      .js-wiki-toc

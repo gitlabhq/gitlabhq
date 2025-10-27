@@ -146,7 +146,8 @@ RSpec.describe Gitlab::Database::Transaction::Context, feature_category: :databa
     it_behaves_like 'logs transaction data'
   end
 
-  context 'when there are too many too long external HTTP requests' do
+  context 'when there are too many too long external HTTP requests',
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6068' do
     before do
       allow(::Gitlab::Metrics::Subscribers::ExternalHttp)
         .to receive(:duration)

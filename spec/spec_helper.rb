@@ -606,6 +606,8 @@ RSpec.configure do |config|
     Labkit::CoveredExperience::Current.reset
     Labkit::CoveredExperience.reset_configuration
   end
+
+  config.backtrace_exclusion_patterns << %r{lib/gitlab/database}
 end
 
 # Disabled because it's causing N+1 queries.

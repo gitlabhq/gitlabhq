@@ -2764,6 +2764,9 @@ msgstr ""
 msgid "AICatalog|Instructions"
 msgstr ""
 
+msgid "AICatalog|Instructions required."
+msgstr ""
+
 msgid "AICatalog|Is visible only to users with at least the Developer role in this project."
 msgstr ""
 
@@ -2933,9 +2936,6 @@ msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer co
 msgstr ""
 
 msgid "AICatalog|Use flows in your project."
-msgstr ""
-
-msgid "AICatalog|User prompt is required."
 msgstr ""
 
 msgid "AICatalog|Version"
@@ -4078,9 +4078,6 @@ msgid "Actions for"
 msgstr ""
 
 msgid "Activate Service Desk"
-msgstr ""
-
-msgid "Activate large-scale search optimizations after this many projects (experimental)"
 msgstr ""
 
 msgid "Activated"
@@ -60978,6 +60975,11 @@ msgstr ""
 msgid "SecurityReports|%{count} Selected"
 msgstr ""
 
+msgid "SecurityReports|%{count} project not shown"
+msgid_plural "SecurityReports|%{count} projects not shown"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityReports|%{count}+"
 msgstr ""
 
@@ -61317,9 +61319,6 @@ msgstr ""
 msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
-msgid "SecurityReports|Max project limit reached"
-msgstr ""
-
 msgid "SecurityReports|Maximum selected projects limit reached"
 msgstr ""
 
@@ -61377,7 +61376,7 @@ msgstr ""
 msgid "SecurityReports|OWASP Top 10 2021"
 msgstr ""
 
-msgid "SecurityReports|Only %{count} projects with the highest risk scores are shown. Use the filter at the top of the dashboard to narrow down your results."
+msgid "SecurityReports|Only the top %{count} projects with the highest risk scores are shown. Use the filter at the top of the dashboard to narrow down your results."
 msgstr ""
 
 msgid "SecurityReports|Oops, something doesn't seem right."

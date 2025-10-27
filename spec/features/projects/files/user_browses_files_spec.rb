@@ -168,7 +168,8 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
           .and have_link("d/README.md#id", href: project_blob_path(project, "markdown/db/README.md", anchor: "id"))
       end
 
-      it "shows correct content of file" do
+      it "shows correct content of file",
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2483' do
         click_link("GitLab API doc")
 
         expect(page).to have_current_path(project_blob_path(project, "markdown/doc/api/README.md"), ignore_query: true)

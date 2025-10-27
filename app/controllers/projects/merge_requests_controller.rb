@@ -419,9 +419,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html do
-        # use next to appease Rubocop
-        next render('invalid') if target_branch_missing?
-
         render_html_page
       end
 

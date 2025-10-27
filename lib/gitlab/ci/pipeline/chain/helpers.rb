@@ -9,7 +9,7 @@ module Gitlab
             sanitized_message = sanitize_message(message)
             pipeline.add_error_message(sanitized_message)
 
-            drop_pipeline!(failure_reason)
+            handle_pipeline_failure(failure_reason)
 
             # TODO: consider not to rely on AR errors directly as they can be
             # polluted with other unrelated errors (e.g. state machine)
@@ -29,22 +29,38 @@ module Gitlab
             ActionController::Base.helpers.sanitize(message, tags: [])
           end
 
-          def drop_pipeline!(failure_reason)
-            if pipeline.readonly?
-              # Only set the status and reason without tracking failures
-              pipeline.set_failed(failure_reason)
-            elsif Enums::Ci::Pipeline.persistable_failure_reason?(failure_reason) && command.save_incompleted
-              # Project iid must be called outside a transaction, so we ensure it is set here
-              # otherwise it may be set within the state transition transaction of the drop! call
-              # which it will lock the InternalId row for the whole transaction
-              pipeline.ensure_project_iid!
-
-              pipeline.drop!(failure_reason)
+          def handle_pipeline_failure(failure_reason)
+            if should_persist_pipeline_failure?(failure_reason)
+              drop_pipeline_with_persistence!(failure_reason)
             else
-              command.increment_pipeline_failure_reason_counter(failure_reason)
-
-              pipeline.set_failed(failure_reason)
+              mark_pipeline_as_failed(failure_reason)
             end
+          end
+
+          def should_persist_pipeline_failure?(failure_reason)
+            !pipeline.readonly? &&
+              Enums::Ci::Pipeline.persistable_failure_reason?(failure_reason) &&
+              command.save_incompleted
+          end
+
+          def drop_pipeline_with_persistence!(failure_reason)
+            # Project iid must be called outside a transaction, so we ensure it is set here
+            # otherwise it may be set within the state transition transaction of the drop! call
+            # which it will lock the InternalId row for the whole transaction
+            pipeline.ensure_project_iid!
+
+            pipeline.drop!(failure_reason)
+          end
+
+          # This method results in no pipeline being created, but errors are recorded
+          # in Ci::PipelineCreation::Requests for tracking purposes
+          def mark_pipeline_as_failed(failure_reason)
+            # For readonly pipelines, we only set status without tracking failures
+            # For non-persistable failures or when save_incompleted is false,
+            # we increment counters and set failed status
+            command.increment_pipeline_failure_reason_counter(failure_reason) unless pipeline.readonly?
+
+            pipeline.set_failed(failure_reason)
           end
         end
       end

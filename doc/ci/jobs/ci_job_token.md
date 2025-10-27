@@ -385,7 +385,7 @@ the [projects API](../../api/projects.md#edit-a-project).
 
 ## Fine-grained permissions for job tokens
 
-You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints. For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+You can use fine-grained permissions to explicitly allow access to a limited set of REST API endpoints. For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
 
 ## Use a job token
 
@@ -414,6 +414,12 @@ Additionally, there are multiple valid methods for passing the job token in the 
 - Header: `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
 - Data: `--data "job_token=$CI_JOB_TOKEN"`
 - Query string in the URL: `?job_token=$CI_JOB_TOKEN`
+
+{{< alert type="note" >}}
+
+You cannot use a job token to authenticate requests to GraphQL endpoints.
+
+{{< /alert >}}
 
 ## Job token authentication log
 
