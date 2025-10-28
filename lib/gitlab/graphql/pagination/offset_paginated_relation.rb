@@ -7,19 +7,11 @@ module Gitlab
     module Pagination
       class OffsetPaginatedRelation < SimpleDelegator
         def preload(...)
-          if Feature.enabled?(:fix_graphql_offset_pagination_preloads, Feature.current_request)
-            self.class.new(super)
-          else
-            super
-          end
+          self.class.new(super)
         end
 
         def includes(...)
-          if Feature.enabled?(:fix_graphql_offset_pagination_preloads, Feature.current_request)
-            self.class.new(super)
-          else
-            super
-          end
+          self.class.new(super)
         end
       end
     end

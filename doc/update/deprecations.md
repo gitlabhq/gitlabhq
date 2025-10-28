@@ -259,67 +259,6 @@ Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
 
 <div class="deprecation breaking-change" data-milestone="20.0">
 
-### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379743).
-
-</div>
-
-The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
-This endpoint [registers](https://docs.gitlab.com/api/runners/#create-a-runner) a runner
-with a GitLab instance at the instance, group, or project level through the API.
-In a future GitLab major release, registration tokens, and support for certain configuration arguments,
-will start returning the HTTP `410 Gone` status code. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ci/runners/new_creation_workflow/#prevent-your-runner-registration-workflow-from-breaking).
-
-The configuration arguments disabled for runner authentication tokens are:
-
-- `--locked`
-- `--access-level`
-- `--run-untagged`
-- `--maximum-timeout`
-- `--paused`
-- `--tag-list`
-- `--maintenance-note`
-
-This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ci/runners/runners_scope/) to add configurations, and use the runner authentication token in the `gitlab-runner register` command instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### Registration tokens and server-side runner arguments in `gitlab-runner register` command
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/380872).
-
-</div>
-
-Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
-Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be removed in a future GitLab release. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
-The configuration arguments disabled for authentication tokens are:
-
-- `--locked`
-- `--access-level`
-- `--run-untagged`
-- `--maximum-timeout`
-- `--paused`
-- `--tag-list`
-- `--maintenance-note`
-
-This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ci/runners/runners_scope/) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
 ### Removal of `migrationState` field in `ContainerRepository` GraphQL API
 
 <div class="deprecation-notes">
@@ -360,59 +299,6 @@ A replacement feature is planned as part of the [Auto Remediation vision](https:
 
 <div class="deprecation breaking-change" data-milestone="20.0">
 
-### RunnersRegistrationTokenReset GraphQL mutation is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.7</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/505703).
-
-</div>
-
-The support for runner registration tokens is deprecated. Consequently, the support for resetting a registration token has also been deprecated
-and will be removed in a future GitLab release.
-
-A new method to bind runners to a GitLab instance has been implemented
-as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
-For details, see [epic 7633](https://gitlab.com/groups/gitlab-org/-/epics/7633).
-This new architecture introduces a new method for registering runners and eliminates the legacy
-[runner registration token](https://docs.gitlab.com/security/tokens/#runner-registration-tokens-deprecated).
-In a future GitLab release, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### Support for REST API endpoints that reset runner registration tokens
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.7</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383341).
-
-</div>
-
-The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
-return the HTTP `410 Gone` status code in a future GitLab release.
-The deprecated endpoints are:
-
-- `POST /runners/reset_registration_token`
-- `POST /projects/:id/runners/reset_registration_token`
-- `POST /groups/:id/runners/reset_registration_token`
-
-We plan to implement a new method to bind runners to a GitLab instance
-as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
-The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
-This new architecture introduces a new method for registering runners and will eliminate the legacy
-[runner registration token](https://docs.gitlab.com/security/tokens/#runner-registration-tokens-deprecated).
-In a future GitLab release, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
 ### `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated
 
 <div class="deprecation-notes">
@@ -424,28 +310,6 @@ In a future GitLab release, the runner registration methods implemented by the n
 </div>
 
 The [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN`](https://docs.gitlab.com/administration/environment_variables/#supported-environment-variables) environment variable is deprecated. GitLab introduced a new [GitLab Runner token architecture](https://docs.gitlab.com/architecture/blueprints/runner_tokens/) in GitLab 15.8, which introduces a new method for registering runners and eliminates the legacy runner registration token. Please refer to the [documentation](https://docs.gitlab.com/ci/runners/new_creation_workflow/) for guidance on migrating to the new workflow.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381111).
-
-</div>
-
-The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes/) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
-
-We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
-as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
-The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
-
-In a future GitLab release, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
 </div>

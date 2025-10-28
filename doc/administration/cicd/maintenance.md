@@ -90,8 +90,8 @@ ps = Ci::CreatePipelineService.new(schedule.project, user, ref: schedule.ref).ex
 
 {{< alert type="warning" >}}
 
-The option to pass runner registration tokens and support for certain configuration arguments are
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+and is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 to generate an authentication token to register runners. This process provides full
 traceability of runner ownership and enhances your runner fleet's security.
@@ -112,8 +112,8 @@ Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 
 {{< alert type="warning" >}}
 
-The option to pass runner registration tokens and support for certain configuration arguments are
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+and is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 to generate an authentication token to register runners. This process provides full
 traceability of runner ownership and enhances your runner fleet's security.

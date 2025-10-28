@@ -5,4 +5,4 @@ feature_category: team_planning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200500
 milestone: '18.4'
 queued_migration_version: 20250804140846
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20251026232158'

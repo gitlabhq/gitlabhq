@@ -108,6 +108,8 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
   }
 
   const {
+    artifactsEndpoint,
+    artifactsEndpointPlaceholder,
     fullPath,
     newPipelinePath,
     resetCachePath,
@@ -120,6 +122,8 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
     el,
     apolloProvider,
     provide: {
+      artifactsEndpoint,
+      artifactsEndpointPlaceholder,
       fullPath,
       newPipelinePath,
       resetCachePath,

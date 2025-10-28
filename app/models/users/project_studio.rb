@@ -12,6 +12,8 @@ module Users
     end
 
     def enabled?
+      return true if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "true"
+
       return false if user.nil?
 
       # Project Studio is only enabled for the user if it's available,
@@ -20,6 +22,8 @@ module Users
     end
 
     def available?
+      return true if ENV["GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED"] == "true"
+
       return false if user.nil?
 
       # Project Studio is available for the Early Access Program's members if the

@@ -1433,7 +1433,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.1.tgz#dd335ed25cb33927abc1d80dfbfa31fc93e9bd15"
   integrity sha512-/7Q5Sy9Q3pmutV/1EgURm3iDZtV0HcE4nTwFpHLCrGDdxQ3pNv6SdujzeJExnfiI5Y+1FGfOvKwOlmiVuyDtzA==
 
-"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+"@gitlab/noop@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1460,10 +1460,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.149.0.tgz#d0a35ae5f94ee2563d4343dda0aa1e0f191426ec"
   integrity sha512-Jc4kKo1pE2Yf6c6Wod6gX9pb++AmMjiZ4r1Wn31f46pbpbtiaxv6kdKWWNgovrPwxyhRM2i653XJA1r2lWQM6w==
 
-"@gitlab/ui@123.10.0":
-  version "123.10.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-123.10.0.tgz#c59fa5c3b7a6fee941d2e5895a787134131c94ec"
-  integrity sha512-7VtZImmgFfRL4fQBhr1ad2skXM69hl7R5P8Px0nuUNKOqp9GER8kcqDe6X01SPVi3ru3UPtay8KGoHYrypQisw==
+"@gitlab/ui@123.11.3":
+  version "123.11.3"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-123.11.3.tgz#bcfad6588ef0d7aee04472977c6eaa435bc95010"
+  integrity sha512-BLC69bRXT+qiVmUKvYbp9BycffrwdFxgyfclfH9/nP5sBZokfDDl1oBfPtrwf5vx7aW+fzb+YK/awILr9rGh3Q==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"
@@ -9542,6 +9542,11 @@ istanbul-reports@^3.1.3:
   dependencies:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
+
+jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
+  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jed@^1.1.1:
   version "1.1.1"

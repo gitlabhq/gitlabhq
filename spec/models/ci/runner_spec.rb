@@ -493,7 +493,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '.recent', :freeze_time do
-    subject { described_class.recent }
+    subject { described_class.recent.ids }
 
     let!(:runner1) { create(:ci_runner, :unregistered, :created_within_stale_deadline) }
     let!(:runner2) { create(:ci_runner, :unregistered, :stale) }
@@ -501,7 +501,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     let!(:runner4) { create(:ci_runner, :stale, :contacted_within_stale_deadline) }
     let!(:runner5) { create(:ci_runner, :stale) }
 
-    it { is_expected.to contain_exactly(runner1, runner3, runner4) }
+    it { is_expected.to contain_exactly(runner1.id, runner3.id, runner4.id) }
   end
 
   describe '#stale?', :clean_gitlab_redis_cache, :freeze_time do

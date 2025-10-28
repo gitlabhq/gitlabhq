@@ -69,7 +69,7 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/_index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-deprecated).
+- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/_index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-legacy).
 - [Reset user passwords](reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.

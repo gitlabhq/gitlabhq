@@ -9,6 +9,7 @@ import { GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { s__, __ } from '~/locale';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
@@ -16,7 +17,8 @@ import NavigationControls from './components/nav_controls.vue';
 import getPipelinesQuery from './graphql/queries/get_pipelines.query.graphql';
 import getAllPipelinesCountQuery from './graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from './graphql/mutations/clear_runner_cache.mutation.graphql';
-
+import retryPipelineMutation from './graphql/mutations/retry_pipeline.mutation.graphql';
+import cancelPipelineMutation from './graphql/mutations/cancel_pipeline.mutation.graphql';
 import { PIPELINES_PER_PAGE } from './constants';
 
 const DEFAULT_PAGINATION = {
@@ -258,6 +260,46 @@ export default {
         this.clearCacheLoading = false;
       }
     },
+    async action({ pipeline, mutation, mutationType, defaultErrorMessage }) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation,
+          variables: {
+            id: pipeline.id,
+          },
+        });
+
+        const [errorMessage] = data[mutationType]?.errors ?? [];
+
+        if (errorMessage) {
+          createAlert({
+            message: defaultErrorMessage,
+          });
+          this.captureError(errorMessage);
+        }
+      } catch (error) {
+        this.captureError(error);
+      }
+    },
+    retryPipeline(pipeline) {
+      this.action({
+        pipeline,
+        mutation: retryPipelineMutation,
+        mutationType: 'pipelineRetry',
+        defaultErrorMessage: s__('Pipelines|The pipeline could not be retried.'),
+      });
+    },
+    cancelPipeline(pipeline) {
+      this.action({
+        pipeline,
+        mutation: cancelPipelineMutation,
+        mutationType: 'pipelineCancel',
+        defaultErrorMessage: s__('Pipelines|The pipeline could not be canceled.'),
+      });
+    },
+    captureError(exception) {
+      Sentry.captureException(exception);
+    },
   },
 };
 </script>
@@ -317,7 +359,12 @@ export default {
       />
 
       <!-- Pipelines table -->
-      <pipelines-table v-else-if="showTable" :pipelines="pipelines.list" />
+      <pipelines-table
+        v-else-if="showTable"
+        :pipelines="pipelines.list"
+        @retry-pipeline="retryPipeline"
+        @cancel-pipeline="cancelPipeline"
+      />
     </div>
 
     <!-- Pagination -->

@@ -15,7 +15,7 @@ title: Migrating to the new runner registration workflow
 {{< alert type="disclaimer" />}}
 
 In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register
-runners. The legacy workflow that uses registration tokens is deprecated and is planned for removal in GitLab 20.0.
+runners. The legacy workflow that uses registration tokens is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token) instead.
 
 For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
@@ -44,29 +44,20 @@ The new runner registration workflow has the following benefits:
 ## Estimated time frame for planned changes
 
 - In GitLab 15.10 and later, you can use the new runner registration workflow.
-- In GitLab 20.0, we plan to disable runner registration tokens.
 
 ## Prevent your runner registration workflow from breaking
 
 In GitLab 16.11 and earlier, you can use the legacy runner registration workflow.
 
-In GitLab 17.0, the legacy runner registration workflow is disabled by default. You can temporarily re-enable the legacy runner registration workflow. For more information, see [Using registration tokens after GitLab 17.0](#using-registration-tokens-after-gitlab-170).
+In GitLab 17.0 and later, the legacy runner registration workflow can be disabled by instance administrators or group owners. For more information, see [Using registration tokens after GitLab 17.0](#using-registration-tokens-after-gitlab-170).
 
-If you don't migrate to the new workflow when you upgrade to GitLab 17.0, the runner registration breaks and the `gitlab-runner register` command returns a `410 Gone - runner registration disallowed` error.
+If you register a runner without migrating to the new workflow, the runner registration breaks and the `gitlab-runner register` command returns a `410 Gone - runner registration disallowed` error.
 
 To avoid a broken workflow, you must:
 
 1. [Create a runner](runners_scope.md) and obtain the authentication token.
 1. Replace the registration token in your runner registration workflow with the
    authentication token.
-
-{{< alert type="warning" >}}
-
-In GitLab 17.0 and later, runner registration tokens are disabled.
-To use stored runner registration tokens to register new runners,
-you must [enable the tokens](../../administration/settings/continuous_integration.md#control-runner-registration).
-
-{{< /alert >}}
 
 ## Using registration tokens after GitLab 17.0
 
@@ -83,7 +74,6 @@ Existing runners will continue to work as usual after upgrading to GitLab 17.0. 
 
 The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.
-In GitLab 20.0 and later, you must migrate to the [new runner registration workflow](#the-new-runner-registration-workflow).
 
 ## Changes to the `gitlab-runner register` command syntax
 
@@ -93,7 +83,6 @@ The runner authentication tokens are recognizable by their `glrt-` prefix.
 
 When you create a runner in the GitLab UI, you specify configuration values that were previously command-line options
 prompted by the `gitlab-runner register` command.
-These command-line options will be deprecated in the future.
 
 If you specify a runner authentication token with:
 
@@ -103,7 +92,7 @@ If you specify a runner authentication token with:
 | Token                                  | Registration command |
 |----------------------------------------|----------------------|
 | Runner authentication token            | `gitlab-runner register --token $RUNNER_AUTHENTICATION_TOKEN` |
-| Runner registration token (deprecated) | `gitlab-runner register --registration-token $RUNNER_REGISTRATION_TOKEN <runner configuration arguments>` |
+| Runner registration token (legacy)     | `gitlab-runner register --registration-token $RUNNER_REGISTRATION_TOKEN <runner configuration arguments>` |
 
 Authentication tokens have the prefix, `glrt-`.
 
@@ -160,15 +149,14 @@ For instructions about how to automate runner creation and registration, see the
 
 ## Installing GitLab Runner with Helm chart
 
-Several runner configuration options cannot be set during runner registration. These options can only be configured:
+Several runner configuration options cannot be set during runner registration if runner registration tokens are disabled. These options can only be configured:
 
 - When you create a runner in the UI.
 - With the `user/runners` REST API endpoint.
 
-The following configuration options are no longer supported in [`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml):
+The following configuration options are not supported in [`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml) in that scenario:
 
 ```yaml
-## All these fields are DEPRECATED and the runner WILL FAIL TO START with GitLab Runner 20.0 and later if you specify them.
 ## If a runner authentication token is specified in runnerRegistrationToken, the registration will succeed, however the
 ## other values will be ignored.
 runnerRegistrationToken: ""
@@ -180,7 +168,7 @@ protected: true
 ```
 
 For GitLab Runner on Kubernetes, Helm deploy passes the runner authentication token to the runner worker pod and creates the runner configuration.
-In GitLab 17.0 and later, if you use the `runnerRegistrationToken` token field on Kubernetes hosted runners attached to GitLab.com, the runner worker pod tries to use the unsupported Registration API method during creation.
+In GitLab 17.0 and later, if you use the `runnerRegistrationToken` token field on Kubernetes hosted runners attached to GitLab.com, the runner worker pod tries to use the legacy Registration API method during creation.
 
 Replace the invalid `runnerRegistrationToken` field with the `runnerToken` field. You must also modify the runner authentication token stored in `secrets`.
 

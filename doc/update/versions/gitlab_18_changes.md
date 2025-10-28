@@ -75,6 +75,19 @@ required upgrade stops occur at versions:
   it could take up to 10 minutes.
   Please be patient and don't interrupt the migration process.
 
+- NGINX routing changes introduced in GitLab 18.5.0 can cause services to become inaccessible when using non-matching hostnames such as `localhost` or alternative domain names.
+  This issue causes:
+ 
+  - Health check endpoints such as `/-/health` to return `404` errors instead of proper responses.
+  - GitLab web interface showing `404` error pages when accessed with hostnames other than the configured FQDN.
+  - GitLab Pages potentially receiving traffic intended for other services.
+  - Problems with any requests using alternative hostnames that previously worked.
+
+  This issue is resolved in the Linux package by [merge request 8805](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8805), and the fix will be 
+  available in GitLab 18.5.2 and 18.6.0.
+
+  Git operations such clone, push, and pull are unaffected by this issue.
+
 ## 18.4.2
 
 The Geo [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) that causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)` is fixed.

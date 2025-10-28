@@ -388,7 +388,7 @@
 {"name":"lookbook","version":"2.3.4","platform":"ruby","checksum":"16484c9eb514ac0c23c4b59cfd5a52697141d35056e3a9c2a22b314c1b887605"},
 {"name":"lru_redux","version":"1.1.0","platform":"ruby","checksum":"ee71d0ccab164c51de146c27b480a68b3631d5b4297b8ffe8eda1c72de87affb"},
 {"name":"lumberjack","version":"1.2.7","platform":"ruby","checksum":"a5c6aae6b4234f1420dbcd80b23e3bca0817bd239440dde097ebe3fa63c63b1f"},
-{"name":"mail","version":"2.8.1","platform":"ruby","checksum":"ec3b9fadcf2b3755c78785cb17bc9a0ca9ee9857108a64b6f5cfc9c0b5bfc9ad"},
+{"name":"mail","version":"2.9.0","platform":"ruby","checksum":"6fa6673ecd71c60c2d996260f9ee3dd387d4673b8169b502134659ece6d34941"},
 {"name":"marcel","version":"1.0.4","platform":"ruby","checksum":"0d5649feb64b8f19f3d3468b96c680bae9746335d02194270287868a661516a4"},
 {"name":"marginalia","version":"1.11.1","platform":"ruby","checksum":"cb63212ab63e42746e27595e912cb20408a1a28bcd0edde55d15b7c45fa289cf"},
 {"name":"matrix","version":"0.4.2","platform":"ruby","checksum":"71083ccbd67a14a43bfa78d3e4dc0f4b503b9cc18e5b4b1d686dc0f9ef7c4cc0"},

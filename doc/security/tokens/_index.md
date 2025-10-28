@@ -197,17 +197,16 @@ could use the runner authentication token to
 
 You can use the runners API to [rotate or revoke a runner authentication token](../../api/runners.md#reset-runners-authentication-token-by-using-the-current-token).
 
-## Runner registration tokens (deprecated)
+## Runner registration tokens (legacy)
 
 {{< alert type="warning" >}}
 
-The option to pass runner registration tokens and support for certain configuration arguments are
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+and is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 to generate an authentication token to register runners. This process provides full
 traceability of runner ownership and enhances your runner fleet's security.
-This change is a breaking change. GitLab has implemented a new
-[GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
+GitLab has implemented a new [GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
 a new method for registering runners and eliminates the
 runner registration token.
 

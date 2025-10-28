@@ -15,20 +15,6 @@ RSpec.describe Gitlab::Graphql::Pagination::OffsetPaginatedRelation, feature_cat
       expect(result.__getobj__.preload_values).to include(:projects)
       expect(result.__getobj__).to be_a(ActiveRecord::Relation)
     end
-
-    context 'when fix_graphql_offset_pagination_preloads feature flag is disabled' do
-      before do
-        stub_feature_flags(fix_graphql_offset_pagination_preloads: false)
-      end
-
-      it 'returns the original relation without wrapping' do
-        result = offset_paginated_relation.preload(:projects)
-
-        expect(result).not_to be_a(described_class)
-        expect(result).to be_a(ActiveRecord::Relation)
-        expect(result.preload_values).to include(:projects)
-      end
-    end
   end
 
   describe '#includes' do
@@ -39,20 +25,6 @@ RSpec.describe Gitlab::Graphql::Pagination::OffsetPaginatedRelation, feature_cat
       expect(result).not_to eq(offset_paginated_relation)
       expect(result.__getobj__.includes_values).to include(:projects)
       expect(result.__getobj__).to be_a(ActiveRecord::Relation)
-    end
-
-    context 'when fix_graphql_offset_pagination_preloads feature flag is disabled' do
-      before do
-        stub_feature_flags(fix_graphql_offset_pagination_preloads: false)
-      end
-
-      it 'returns the original relation without wrapping' do
-        result = offset_paginated_relation.includes(:projects)
-
-        expect(result).not_to be_a(described_class)
-        expect(result).to be_a(ActiveRecord::Relation)
-        expect(result.includes_values).to include(:projects)
-      end
     end
   end
 end

@@ -289,3 +289,36 @@ export const mockPipelinesCount = {
     },
   },
 };
+
+export const mockRetryPipelineMutationResponse = {
+  data: {
+    pipelineRetry: {
+      __typename: 'PipelineRetryPayload',
+      pipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/701',
+      },
+      errors: [],
+    },
+  },
+};
+
+export const mockRetryFailedPipelineMutationResponse = {
+  data: {
+    pipelineRetry: {
+      __typename: 'PipelineRetryPayload',
+      pipeline: {
+        id: '',
+      },
+      errors: ['Something went wrong'],
+    },
+  },
+};
+
+export const mockCancelPipelineMutationResponse = {
+  data: {
+    pipelineCancel: {
+      __typename: 'PipelineCancelPayload',
+      errors: [],
+    },
+  },
+};

@@ -7,10 +7,4 @@ module StubProjectStudio
 
     user.project_studio_enabled = true
   end
-
-  def disable_project_studio!(user)
-    stub_feature_flags(paneled_view: false)
-
-    user.project_studio_enabled = false
-  end
 end

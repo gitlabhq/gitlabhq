@@ -48886,6 +48886,12 @@ msgstr ""
 msgid "Pipelines|The branch or tag does not exist"
 msgstr ""
 
+msgid "Pipelines|The pipeline could not be canceled."
+msgstr ""
+
+msgid "Pipelines|The pipeline could not be retried."
+msgstr ""
+
 msgid "Pipelines|The pipeline will run with these inputs:"
 msgstr ""
 
@@ -66632,9 +66638,6 @@ msgid "The project was successfully imported."
 msgstr ""
 
 msgid "The project-group link could not be removed."
-msgstr ""
-
-msgid "The provided params did not update the note."
 msgstr ""
 
 msgid "The related CI build failed."

@@ -1189,7 +1189,8 @@ GEM
       zeitwerk (~> 2.5)
     lru_redux (1.1.0)
     lumberjack (1.2.7)
-    mail (2.8.1)
+    mail (2.9.0)
+      logger
       mini_mime (>= 0.1.1)
       net-imap
       net-pop
@@ -2275,7 +2276,7 @@ DEPENDENCIES
   loofah (~> 2.24.0)
   lookbook (~> 2.3)
   lru_redux
-  mail (= 2.8.1)
+  mail (= 2.9.0)
   mail-smtp_pool (~> 0.1.0)!
   marcel (~> 1.0.4)
   marginalia (~> 1.11.1)

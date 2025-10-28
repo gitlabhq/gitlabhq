@@ -12995,33 +12995,6 @@ Input type: `UnlinkProjectComplianceViolationIssueInput`
 | <a id="mutationunlinkprojectcomplianceviolationissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationunlinkprojectcomplianceviolationissueviolation"></a>`violation` | [`ProjectComplianceViolation`](#projectcomplianceviolation) | Updated project compliance violation. |
 
-### `Mutation.updateAbuseReportNote`
-
-{{< details >}}
-**Introduced** in GitLab 17.5.
-**Status**: Experiment.
-{{< /details >}}
-
-Updates an abuse report Note.
-
-Input type: `UpdateAbuseReportNoteInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationupdateabusereportnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
-| <a id="mutationupdateabusereportnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateabusereportnoteid"></a>`id` | [`AntiAbuseReportsNoteID!`](#antiabusereportsnoteid) | Global ID of the note to update. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationupdateabusereportnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateabusereportnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationupdateabusereportnotenote"></a>`note` | [`AbuseReportNote!`](#abusereportnote) | Abuse report note after mutation. |
-
 ### `Mutation.updateAlertStatus`
 
 Input type: `UpdateAlertStatusInput`

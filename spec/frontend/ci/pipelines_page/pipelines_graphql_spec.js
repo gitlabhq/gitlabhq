@@ -15,15 +15,21 @@ import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines
 import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
 import * as urlUtils from '~/lib/utils/url_utility';
+import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';
+import cancelPipelineMutation from '~/ci/pipelines_page/graphql/mutations/cancel_pipeline.mutation.graphql';
 import {
   mockPipelinesData,
   mockPipelinesCount,
+  mockRetryPipelineMutationResponse,
+  mockCancelPipelineMutationResponse,
+  mockRetryFailedPipelineMutationResponse,
   mockPipelinesDataEmpty,
   mockRunnerCacheClearPayload,
   mockRunnerCacheClearPayloadWithError,
 } from './mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
 
@@ -38,6 +44,15 @@ describe('Pipelines app', () => {
   const clearCacheMutationFailedHandler = jest
     .fn()
     .mockResolvedValue(mockRunnerCacheClearPayloadWithError);
+  const pipelineRetryMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockRetryPipelineMutationResponse);
+  const pipelineCancelMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockCancelPipelineMutationResponse);
+  const pipelineRetryFailedMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockRetryFailedPipelineMutationResponse);
 
   const createMockApolloProvider = (
     requestHandlers = [
@@ -57,6 +72,9 @@ describe('Pipelines app', () => {
         pipelinesAnalyticsPath: '/-/pipelines/charts',
         identityVerificationRequired: false,
         identityVerificationPath: '#',
+      },
+      stubs: {
+        PipelinesTable,
       },
       apolloProvider: createMockApolloProvider(requestHandlers),
     });
@@ -316,6 +334,61 @@ describe('Pipelines app', () => {
         scope: null,
       });
       expect(findPagination().props()).toMatchObject({});
+    });
+  });
+
+  describe('events', () => {
+    describe('successful events', () => {
+      beforeEach(async () => {
+        createComponent([
+          [getPipelinesQuery, successHandler],
+          [retryPipelineMutation, pipelineRetryMutationHandler],
+          [cancelPipelineMutation, pipelineCancelMutationHandler],
+        ]);
+
+        await waitForPromises();
+      });
+
+      it('retries the pipeline', async () => {
+        const retriedPipeline = mockPipelinesData.data.project.pipelines.nodes[0];
+        findTable().vm.$emit('retry-pipeline', retriedPipeline);
+
+        await waitForPromises();
+
+        expect(pipelineRetryMutationHandler).toHaveBeenCalledWith({ id: retriedPipeline.id });
+      });
+
+      it('cancels the pipeline', async () => {
+        const canceledPipeline = mockPipelinesData.data.project.pipelines.nodes[0];
+        findTable().vm.$emit('cancel-pipeline', canceledPipeline);
+
+        await waitForPromises();
+
+        expect(pipelineCancelMutationHandler).toHaveBeenCalledWith({ id: canceledPipeline.id });
+      });
+    });
+
+    describe('errors during the mutations', () => {
+      beforeEach(async () => {
+        createComponent([
+          [getPipelinesQuery, successHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [retryPipelineMutation, pipelineRetryFailedMutationHandler],
+        ]);
+
+        await waitForPromises();
+      });
+
+      it('displays an alert message when the mutation fails', async () => {
+        const retriedPipeline = mockPipelinesData.data.project.pipelines.nodes[0];
+        findTable().vm.$emit('retry-pipeline', retriedPipeline);
+
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'The pipeline could not be retried.',
+        });
+      });
     });
   });
 });
