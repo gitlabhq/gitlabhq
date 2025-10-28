@@ -2,6 +2,8 @@
 
 module Pages
   class VirtualDomain
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(projects:, trim_prefix: nil, domain: nil, namespace: nil)
       @projects = projects
       @trim_prefix = trim_prefix
@@ -34,8 +36,13 @@ module Pages
       return true if ::Gitlab::Pages.access_control_is_forced?
       return true if project.project_feature&.private_pages?
 
-      @namespace&.pages_access_control_trie&.covered?(project.namespace.traversal_ids)
+      pages_access_control_trie&.covered?(project.namespace.traversal_ids)
     end
+
+    def pages_access_control_trie
+      @namespace&.pages_access_control_trie
+    end
+    strong_memoize_attr :pages_access_control_trie
 
     def lookup_paths_for(project, root_namespace_id)
       deployments_for(project).map do |deployment|
