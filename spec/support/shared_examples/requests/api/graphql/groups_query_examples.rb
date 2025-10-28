@@ -12,7 +12,7 @@ RSpec.shared_examples 'groups query' do
   let_it_be(:field_name) { :groups }
   let(:filters) { {} }
 
-  let(:group_fields) { all_graphql_fields_for('Group', excluded: %w[runners ciQueueingHistory]) }
+  let(:group_fields) { all_graphql_fields_for('Group', excluded: %w[runners ciQueueingHistory securityCategories]) }
   let(:fields) do
     <<~FIELDS
       nodes {

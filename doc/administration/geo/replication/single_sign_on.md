@@ -135,14 +135,22 @@ in most cases, it should work without an issue:
 
 ## LDAP
 
-If you use LDAP on your **primary** site, the same LDAP configuration also applies to the **secondary** site because the **secondary** proxies requests related to authentication to the **primary**.
+If you use LDAP on your **primary** site, the same LDAP configuration also applies to the **secondary** site because
+the **secondary** proxies requests related to authentication to the **primary**.
 
-To prepare for disaster recovery scenarios, you should set up secondary LDAP servers on each **secondary** site. In this case, when you promote the **secondary**, users will be able to authenticate using the replica LDAP service. Otherwise, if the LDAP service connected to the **primary** site is not available to the promoted **secondary** site, users won't be able to perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication. However, users can still use Git with SSH and personal access tokens.
+To prepare for disaster recovery scenarios, you should set up secondary LDAP servers on each **secondary** site.
+In this case, when you promote the **secondary**, users will be able to authenticate using the replica LDAP service.
+Otherwise, if the LDAP service connected to the **primary** site is not available to the promoted **secondary** site,
+users won't be able to perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication.
+However, users can still use Git with SSH and personal access tokens, unless their account is locked
+from multiple failed login attempts when the LDAP service is unavailable.
 
 {{< alert type="note" >}}
 
-It is possible for all **secondary** sites to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server is available in a [disaster recovery](../disaster_recovery/_index.md) scenario if a **secondary** site is promoted to be a **primary** site.
+It is possible for all **secondary** sites to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server
+is available in a [disaster recovery](../disaster_recovery/_index.md) scenario if a **secondary** site is promoted to be a **primary** site.
 
 {{< /alert >}}
 
-Check your LDAP service documentation for instructions on how to set up replication in your LDAP service. The process differs depending on the software or service used. For example, OpenLDAP provides this [replication documentation](https://www.openldap.org/doc/admin24/replication.html).
+Check your LDAP service documentation for instructions on how to set up replication in your LDAP service. The process differs depending on the software or service used.
+For example, OpenLDAP provides this [replication documentation](https://www.openldap.org/doc/admin24/replication.html).

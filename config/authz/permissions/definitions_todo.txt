@@ -670,7 +670,6 @@ read_scan
 read_secret_push_protection_info
 read_secure_files
 read_security_attribute
-read_security_category
 read_security_configuration
 read_security_inventory
 read_security_orchestration_policies

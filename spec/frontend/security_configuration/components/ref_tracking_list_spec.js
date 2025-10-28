@@ -1,4 +1,4 @@
-import { GlBadge, GlButton, GlCard, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlButton, GlCard, GlSkeletonLoader } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -80,6 +80,7 @@ describe('RefTrackingList component', () => {
   const findRefList = () => wrapper.find('ul[data-testid="tracked-refs-list"]');
   const findRefListItems = () => wrapper.findAllComponents(RefTrackingListItem);
   const findSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
+  const findErrorAlert = () => wrapper.findComponent(GlAlert);
 
   describe('rendering', () => {
     beforeEach(async () => {
@@ -148,6 +149,33 @@ describe('RefTrackingList component', () => {
       expect(findSkeletonLoaders()).toHaveLength(0);
       expect(findRefList().exists()).toBe(true);
       expect(findRefListItems()).toHaveLength(mockTrackedRefs.length);
+    });
+  });
+
+  describe('error state', () => {
+    beforeEach(async () => {
+      createComponent({
+        queryHandler: jest.fn().mockRejectedValue(new Error('Failed to load tracked refs.')),
+      });
+      await waitForPromises();
+    });
+
+    it('shows an error alert with the correct message', () => {
+      expect(findErrorAlert().text()).toBe(
+        'Could not fetch tracked refs. Please refresh the page, or try again later.',
+      );
+    });
+
+    it('shows the tracked refs count as "-"', () => {
+      expect(findCountBadge().text()).toBe(`-/${MAX_TRACKED_REFS}`);
+    });
+
+    it('does not show the skeleton loaders', () => {
+      expect(findSkeletonLoaders()).toHaveLength(0);
+    });
+
+    it('does not show the ref list', () => {
+      expect(findRefList().exists()).toBe(false);
     });
   });
 });

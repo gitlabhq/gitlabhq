@@ -52278,8 +52278,6 @@ definitions:
         type: boolean
       remove_project:
         type: boolean
-      admin_security_attributes:
-        type: boolean
       manage_security_policy_link:
         type: boolean
       admin_compliance_framework:
@@ -52308,6 +52306,8 @@ definitions:
         type: boolean
       admin_runners:
         type: boolean
+      admin_security_attributes:
+        type: boolean
       admin_security_testing:
         type: boolean
       admin_terraform_state:
@@ -52331,6 +52331,8 @@ definitions:
       read_code:
         type: boolean
       read_runners:
+        type: boolean
+      read_security_attribute:
         type: boolean
       read_admin_subscription:
         type: boolean

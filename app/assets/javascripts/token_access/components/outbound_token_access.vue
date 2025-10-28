@@ -185,7 +185,6 @@ export default {
         class="gl-mb-3 gl-mt-5"
         variant="warning"
         :dismissible="false"
-        :show-icon="false"
         data-testid="deprecation-alert"
       >
         <gl-sprintf :message="$options.i18n.outboundTokenAlertDeprecationMessage">

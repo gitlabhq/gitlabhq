@@ -40565,6 +40565,9 @@ msgstr ""
 msgid "MemberRole|Secrets management"
 msgstr ""
 
+msgid "MemberRole|Security asset inventories"
+msgstr ""
+
 msgid "MemberRole|Security policy dependency"
 msgstr ""
 
@@ -58931,6 +58934,9 @@ msgid "SecurityConfiguration|Copy code and open .gitlab-ci.yml file"
 msgstr ""
 
 msgid "SecurityConfiguration|Copy code only"
+msgstr ""
+
+msgid "SecurityConfiguration|Could not fetch tracked refs. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."

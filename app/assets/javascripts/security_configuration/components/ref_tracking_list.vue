@@ -1,5 +1,6 @@
 <script>
-import { GlCard, GlButton, GlBadge, GlSkeletonLoader } from '@gitlab/ui';
+import { GlCard, GlButton, GlBadge, GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql';
 import RefTrackingListItem from './ref_tracking_list_item.vue';
 
@@ -7,6 +8,7 @@ export const MAX_TRACKED_REFS = 16;
 
 export default {
   components: {
+    GlAlert,
     GlCard,
     GlButton,
     GlBadge,
@@ -26,14 +28,16 @@ export default {
         return data.project?.securityTrackedRefs || [];
       },
       error() {
-        // Error handling will be added in a separate issue
-        // See https://gitlab.com/gitlab-org/gitlab/-/issues/578179
+        this.errorMessage = s__(
+          'SecurityConfiguration|Could not fetch tracked refs. Please refresh the page, or try again later.',
+        );
       },
     },
   },
   data() {
     return {
       trackedRefs: [],
+      errorMessage: '',
     };
   },
   computed: {
@@ -42,6 +46,9 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.trackedRefs.loading;
+    },
+    hasFetchError() {
+      return Boolean(this.errorMessage);
     },
   },
   methods: {
@@ -63,7 +70,9 @@ export default {
             {{ __('Currently tracked refs') }}
           </h3>
           <gl-badge variant="neutral"
-            >{{ isLoading ? '-' : currentCount }}/{{ $options.MAX_TRACKED_REFS }}</gl-badge
+            >{{ isLoading || hasFetchError ? '-' : currentCount }}/{{
+              $options.MAX_TRACKED_REFS
+            }}</gl-badge
           >
         </div>
         <!-- The functionality to track new refs is handled in a separate issue -->
@@ -72,6 +81,10 @@ export default {
       </div>
     </template>
 
+    <gl-alert v-if="hasFetchError" variant="danger" :dismissible="false">
+      {{ errorMessage }}
+    </gl-alert>
+
     <div v-if="isLoading" class="gl-px-4 gl-py-6">
       <gl-skeleton-loader v-for="i in 4" :key="i" :width="600" :height="35">
         <rect width="100" height="8" x="0" y="0" rx="4" />
@@ -79,7 +92,12 @@ export default {
         <rect width="450" height="8" x="0" y="20" rx="4" />
       </gl-skeleton-loader>
     </div>
-    <ul v-else class="gl-m-0 gl-list-none gl-p-0" data-testid="tracked-refs-list">
+
+    <ul
+      v-if="!isLoading && !hasFetchError"
+      class="gl-m-0 gl-list-none gl-p-0"
+      data-testid="tracked-refs-list"
+    >
       <ref-tracking-list-item
         v-for="ref in trackedRefs"
         :key="ref.id"
