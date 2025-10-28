@@ -19,9 +19,11 @@ description: "Set up and manage integrations for a group with the REST API."
 
 {{< /history >}}
 
-Use this API to work with external services that integrate with GitLab.
+Use this API to manage [integrations](../user/project/integrations/_index.md) for a group and its subgroups.
 
-This API requires an access token with at least the Maintainer role.
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
 
 ## List all active integrations
 

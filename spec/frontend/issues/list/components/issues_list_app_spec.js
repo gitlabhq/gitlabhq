@@ -236,7 +236,10 @@ describe('CE IssuesListApp component', () => {
       data() {
         return data;
       },
-      stubs,
+      stubs: {
+        WorkItemDrawer: true,
+        ...stubs,
+      },
     });
   };
 
@@ -1147,18 +1150,8 @@ describe('CE IssuesListApp component', () => {
 
   describe('when issue drawer is enabled', () => {
     beforeEach(async () => {
-      wrapper = mountComponent({
-        provide: {
-          glFeatures: {
-            issuesListDrawer: true,
-          },
-        },
-      });
+      wrapper = mountComponent();
       await waitForPromises();
-    });
-
-    it('renders issuable drawer component', () => {
-      expect(findWorkItemDrawer().exists()).toBe(true);
     });
 
     it('renders issuable drawer closed by default', () => {
@@ -1335,13 +1328,7 @@ describe('CE IssuesListApp component', () => {
   });
 
   it('shows an error when deleting from the drawer fails', async () => {
-    wrapper = mountComponent({
-      provide: {
-        glFeatures: {
-          issuesListDrawer: true,
-        },
-      },
-    });
+    wrapper = mountComponent();
 
     findIssuableList().vm.$emit(
       'select-issuable',
@@ -1363,13 +1350,7 @@ describe('CE IssuesListApp component', () => {
       const show = btoa(JSON.stringify(showParams));
       setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
       getParameterByName.mockReturnValue(show);
-      wrapper = mountComponent({
-        provide: {
-          glFeatures: {
-            issuesListDrawer: true,
-          },
-        },
-      });
+      wrapper = mountComponent();
       await waitForPromises();
     };
     it('calls `getParameterByName` to get the `show` param', async () => {
@@ -1406,13 +1387,7 @@ describe('CE IssuesListApp component', () => {
     const show = btoa(JSON.stringify({ id: getIdFromGraphQLId(id), iid, full_path: fullPath }));
     beforeEach(async () => {
       getParameterByName.mockReturnValue(show);
-      wrapper = mountComponent({
-        provide: {
-          glFeatures: {
-            issuesListDrawer: true,
-          },
-        },
-      });
+      wrapper = mountComponent();
       await waitForPromises();
     });
     describe('and the query contains a `show` parameter', () => {

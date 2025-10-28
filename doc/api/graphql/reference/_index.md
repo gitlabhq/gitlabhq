@@ -42387,6 +42387,7 @@ Representation of a project secret.
 | <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |
 | <a id="projectsecretrotationinfo"></a>`rotationInfo` | [`SecretRotationInfo`](#secretrotationinfo) | Rotation configuration for the secret. |
+| <a id="projectsecretstatus"></a>`status` | [`ProjectSecretStatus!`](#projectsecretstatus) | Computed lifecycle status of the secret, based on timestamps. |
 
 ### `ProjectSecretsManager`
 
@@ -50758,6 +50759,18 @@ Project member relation.
 | <a id="projectmemberrelationinherited"></a>`INHERITED` | Inherited members. |
 | <a id="projectmemberrelationinvited_groups"></a>`INVITED_GROUPS` | Invited Groups members. |
 | <a id="projectmemberrelationshared_into_ancestors"></a>`SHARED_INTO_ANCESTORS` | Shared Into Ancestors members. |
+
+### `ProjectSecretStatus`
+
+Status of project secret.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="projectsecretstatuscompleted"></a>`COMPLETED` | Secret is complete. |
+| <a id="projectsecretstatuscreate_in_progress"></a>`CREATE_IN_PROGRESS` | Secret creation is in progress. |
+| <a id="projectsecretstatuscreate_stale"></a>`CREATE_STALE` | Secret creation appears stale (started long ago or missing completion timestamp). |
+| <a id="projectsecretstatusupdate_in_progress"></a>`UPDATE_IN_PROGRESS` | Secret update is in progress. |
+| <a id="projectsecretstatusupdate_stale"></a>`UPDATE_STALE` | Secret update appears stale (started long ago or missing completion timestamp). |
 
 ### `ProjectSecretsManagerStatus`
 

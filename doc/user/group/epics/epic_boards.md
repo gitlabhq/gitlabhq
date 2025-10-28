@@ -153,10 +153,7 @@ To create an epic from a list in epic board:
 
 ### Edit an epic
 
-<!-- When epics_list_drawer feature flag is removed, change the info below into a proper task topic -->
-
-If your administrator enabled the [epic drawer](manage_epics.md#open-epics-in-a-drawer),
-when you select an epic card from the epic board, the epic opens in a drawer.
+When you select an epic card from the epic board, the [epic opens in a drawer](manage_epics.md#open-epics-in-a-drawer).
 There, you can edit all the fields, including the description, comments, or related items.
 
 ### Filter epics

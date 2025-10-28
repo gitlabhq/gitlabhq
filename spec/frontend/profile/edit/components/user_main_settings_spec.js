@@ -2,6 +2,7 @@ import { GlFormCheckbox, GlFormInput, GlFormTextarea, GlFormGroup, GlLink } from
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import UserMainSettings from '~/profile/edit/components/user_main_settings.vue';
+import UserEmailSetting from '~/profile/edit/components/user_email_setting.vue';
 
 jest.mock('~/helpers/help_page_helper');
 
@@ -168,6 +169,14 @@ describe('MainSetting', () => {
     it('prevents user from editing user ID', () => {
       const userIdInput = wrapper.findByTestId('user-id-group').findComponent(GlFormInput);
       expect(userIdInput.props('readonly')).toBe(true);
+    });
+  });
+
+  describe('email settings integration', () => {
+    it('includes email component', () => {
+      createComponent();
+
+      expect(wrapper.findComponent(UserEmailSetting).exists()).toBe(true);
     });
   });
 });

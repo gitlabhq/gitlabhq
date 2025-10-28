@@ -50637,6 +50637,9 @@ msgstr ""
 msgid "Profiles|Edit Profile"
 msgstr ""
 
+msgid "Profiles|Email"
+msgstr ""
+
 msgid "Profiles|Email address"
 msgstr ""
 
@@ -50862,6 +50865,9 @@ msgstr ""
 msgid "Profiles|This email is used for web-based operations, such as edits and merges. %{commit_email_link_start}What is a private commit email?%{commit_email_link_end}"
 msgstr ""
 
+msgid "Profiles|This email is used for web-based operations, such as edits and merges. %{linkStart}What is a private commit email?%{linkEnd}"
+msgstr ""
+
 msgid "Profiles|This email will be displayed on your public profile."
 msgstr ""
 
@@ -50907,6 +50913,9 @@ msgstr ""
 msgid "Profiles|User ID"
 msgstr ""
 
+msgid "Profiles|User's avatar"
+msgstr ""
+
 msgid "Profiles|Username change failed - %{message}"
 msgstr ""
 
@@ -50920,6 +50929,9 @@ msgid "Profiles|View, edit, or transfer ownership of your active scheduled pipel
 msgstr ""
 
 msgid "Profiles|Warning! Insecure key. %{message}"
+msgstr ""
+
+msgid "Profiles|We also use email for avatar detection if no avatar is uploaded."
 msgstr ""
 
 msgid "Profiles|Website URL"
@@ -50962,6 +50974,12 @@ msgid "Profiles|Your LinkedIn profile name from linkedin.com/in/profilename"
 msgstr ""
 
 msgid "Profiles|Your account is currently the sole owner in the following:"
+msgstr ""
+
+msgid "Profiles|Your account uses dedicated credentials for the \"%{groupName}\" group and can only be updated through SSO."
+msgstr ""
+
+msgid "Profiles|Your email address was automatically set based on your %{providerLabel} account"
 msgstr ""
 
 msgid "Profiles|Your email address was automatically set based on your %{provider_label} account"
@@ -70485,6 +70503,12 @@ msgstr ""
 msgid "Usage trends"
 msgstr ""
 
+msgid "UsageBillingUserDetails|included credits used this month"
+msgstr ""
+
+msgid "UsageBillingUserDetails|total credits used"
+msgstr ""
+
 msgid "UsageBilling|%{percentage}%{percentSymbol} utilized"
 msgstr ""
 
@@ -70514,12 +70538,6 @@ msgid "UsageBilling|Credits"
 msgstr ""
 
 msgid "UsageBilling|Credits used after any included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
-msgstr ""
-
-msgid "UsageBilling|Credits used from pool this month"
-msgstr ""
-
-msgid "UsageBilling|Credits used this month"
 msgstr ""
 
 msgid "UsageBilling|Daily average use"
@@ -70568,9 +70586,6 @@ msgid "UsageBilling|One-Time Waiver credits remaining"
 msgstr ""
 
 msgid "UsageBilling|Peak daily use"
-msgstr ""
-
-msgid "UsageBilling|Pool used"
 msgstr ""
 
 msgid "UsageBilling|Purchase monthly commitment"

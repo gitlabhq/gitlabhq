@@ -18,15 +18,12 @@ module ActiveContext
             number_of_partitions: number_of_partitions
           )
 
-          # Early return if everything exists
           return if collection_exists?(strategy)
 
-          # Create missing partitions
           strategy.each_partition do |partition_name|
             create_partition(partition_name, fields, options) unless index_exists?(partition_name)
           end
 
-          # Create alias if needed
           create_alias(strategy) unless alias_exists?(strategy.collection_name)
         end
 

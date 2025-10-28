@@ -19,14 +19,12 @@ export default (containerId = 'js-jobs-table') => {
     return false;
   }
 
-  const { fullPath, jobStatuses, pipelineEditorPath, emptyStateSvgPath, admin, projectId } =
-    containerEl.dataset;
+  const { fullPath, jobStatuses, pipelineEditorPath, admin, projectId } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
     apolloProvider,
     provide: {
-      emptyStateSvgPath,
       fullPath,
       pipelineEditorPath,
       jobStatuses: JSON.parse(jobStatuses),

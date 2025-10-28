@@ -21,7 +21,12 @@ module UserSettings
           message = s_("Profiles|Profile was successfully updated")
 
           format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
-          format.json { render json: { message: message } }
+          format.json do
+            render json: {
+              message: message,
+              email_help_text: view_context.sanitized_email_help_text(@user)
+            }
+          end
         else
           format.html do
             redirect_back_or_default(default: { action: 'show' }, options: { alert: result[:message] })

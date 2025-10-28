@@ -14,7 +14,6 @@ module Groups
       push_force_frontend_feature_flag(:create_group_level_work_items,
         !!group&.create_group_level_work_items_feature_flag_enabled?)
       push_force_frontend_feature_flag(:glql_load_on_click, !!group&.glql_load_on_click_feature_flag_enabled?)
-      push_frontend_feature_flag(:issues_list_drawer, group)
       push_force_frontend_feature_flag(:work_item_planning_view, !!group&.work_items_consolidated_list_enabled?)
     end
 

@@ -15,10 +15,6 @@ $focus-mode-z-index: 9000;
   @include gl-container-width-up(sm, panel) {
     @apply gl-transition-width;
     width: 100%;
-
-    &.is-compact {
-      width: calc(100% - #{$right-sidebar-width});
-    }
   }
 }
 

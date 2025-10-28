@@ -323,6 +323,7 @@ class User < ApplicationRecord
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
+  has_many :lfs_file_locks, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   #
   # Validations
   #

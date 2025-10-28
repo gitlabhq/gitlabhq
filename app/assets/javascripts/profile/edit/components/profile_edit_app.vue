@@ -10,7 +10,7 @@ import SettingsSection from '~/vue_shared/components/settings/settings_section.v
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import { isUserBusy, computedClearStatusAfterValue } from '~/set_status_modal/utils';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
-
+import PasswordPromptModal from '~/profile/password_prompt/password_prompt_modal.vue';
 import { i18n, statusI18n, timezoneI18n, mainI18n } from '../constants';
 import UserAvatar from './user_avatar.vue';
 import UserMainSettings from './user_main_settings.vue';
@@ -25,6 +25,7 @@ export default {
     SettingsSection,
     SetStatusForm,
     TimezoneDropdown,
+    PasswordPromptModal,
   },
   inject: [
     'currentEmoji',
@@ -34,7 +35,9 @@ export default {
     'currentClearStatusAfter',
     'timezones',
     'userTimezone',
-    'userMainSettings',
+    'userSettings',
+    'needsPasswordConfirmation',
+    'emailHelpText',
   ],
   provide() {
     return {
@@ -53,7 +56,7 @@ export default {
   },
   data() {
     return {
-      uploadingProfile: false,
+      updatingProfile: false,
       avatarBlob: null,
       status: {
         emoji: this.currentEmoji,
@@ -62,7 +65,11 @@ export default {
         clearStatusAfter: null,
       },
       timezone: this.userTimezone || '',
-      userMainSetting: this.userMainSettings,
+      userMainSetting: {
+        ...this.userSettings,
+      },
+      initialEmail: this.userSettings.email,
+      currentEmailHelpText: this.emailHelpText,
     };
   },
   computed: {
@@ -74,9 +81,18 @@ export default {
     },
   },
   methods: {
-    async onSubmit() {
+    onSubmit() {
+      if (this.hasEmailChanged() && this.needsPasswordConfirmation) {
+        this.updatingProfile = true;
+        this.$refs.passwordPromptModal.show();
+        return;
+      }
+
+      this.handleSubmit();
+    },
+    async handleSubmit(password = null) {
       // TODO: Do validation before organizing data.
-      this.uploadingProfile = true;
+      this.updatingProfile = true;
       const formData = new FormData();
 
       // Setting up status data
@@ -104,6 +120,10 @@ export default {
         formData.append(`user[${key}]`, value);
       });
 
+      if (password) {
+        formData.append('user[validation_password]', password);
+      }
+
       formData.append('user[timezone]', this.timezone);
 
       try {
@@ -117,17 +137,33 @@ export default {
           variant: data.status === 'error' ? VARIANT_DANGER : VARIANT_INFO,
         });
 
-        nextTick(() => {
-          scrollTo({ top: 0, left: 0 }, this.$el);
-          this.uploadingProfile = false;
-        });
+        if (data.status !== 'error') {
+          this.initialEmail = this.userMainSetting.email;
+
+          if (data.email_help_text !== undefined) {
+            this.currentEmailHelpText = data.email_help_text;
+          }
+        }
       } catch (e) {
         createAlert({
           message: e.message,
           variant: VARIANT_DANGER,
         });
-        this.updateProfileSettings = false;
+      } finally {
+        nextTick(() => {
+          scrollTo({ top: 0, left: 0 }, this.$el);
+          this.updatingProfile = false;
+        });
       }
+    },
+    hasEmailChanged() {
+      return this.userMainSetting.email !== this.initialEmail;
+    },
+    handleConfirmPassword(password) {
+      this.handleSubmit(password);
+    },
+    onPasswordPromptClose() {
+      this.updatingProfile = false;
     },
     syncHeaderAvatars() {
       document.dispatchEvent(
@@ -207,14 +243,18 @@ export default {
       :description="$options.i18n.mainDescription"
       class="js-search-settings-section"
     >
-      <user-main-settings :user-settings="userMainSetting" @change="onMainSettingChange" />
+      <user-main-settings
+        :user-settings="userMainSetting"
+        :email-help-text="currentEmailHelpText"
+        @change="onMainSettingChange"
+      />
     </settings-section>
     <div class="js-hide-when-nothing-matches-search settings-sticky-footer gl-flex gl-gap-3">
       <gl-button
         variant="confirm"
         type="submit"
         class="js-password-prompt-btn"
-        :disabled="uploadingProfile"
+        :disabled="updatingProfile"
       >
         {{ $options.i18n.updateProfileSettings }}
       </gl-button>
@@ -222,5 +262,10 @@ export default {
         {{ $options.i18n.cancel }}
       </gl-button>
     </div>
+    <password-prompt-modal
+      ref="passwordPromptModal"
+      @submit="handleConfirmPassword"
+      @hide="onPasswordPromptClose"
+    />
   </gl-form>
 </template>

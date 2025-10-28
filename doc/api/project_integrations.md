@@ -13,9 +13,11 @@ description: "Set up and manage integrations for a project with the REST API."
 
 {{< /details >}}
 
-Use this API to work with external services that integrate with GitLab.
+Use this API to manage [integrations](../user/project/integrations/_index.md) for a project.
 
-This API requires an access token with at least the Maintainer role.
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
 
 ## List all active integrations
 

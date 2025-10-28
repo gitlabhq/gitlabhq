@@ -7,7 +7,6 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :check_issues_available!
   before_action do
     push_frontend_feature_flag(:board_multi_select, project)
-    push_frontend_feature_flag(:issues_list_drawer, project)
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_item_tasks_on_boards,
       !!project&.work_item_tasks_on_boards_feature_flag_enabled?)

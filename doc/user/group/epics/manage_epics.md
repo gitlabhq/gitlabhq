@@ -447,15 +447,9 @@ To configure epic display preferences:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464698) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_view_for_issues`. Enabled by default.
 - Toggling between drawer and full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536620) in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500367) in GitLab 18.6. Feature flag `epics_list_drawer` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 When you select an epic from the Epics page or an epic board, it opens in a drawer.
 You can then view and edit its details without losing context of the epic list or board.

@@ -52,6 +52,27 @@ gitGraph
  commit id:"H"
 ```
 
+## View system notes for cherry-picked commits
+
+When you cherry-pick a [merge commit](methods/_index.md#merge-commit) in the GitLab UI or API, GitLab adds a
+[system note](../system_notes.md) to the related merge request thread.
+
+System notes are only created when cherry-picking merge commits. System notes are not created when
+using fast-forward merge. This applies to both cherry-picking individual commits and cherry-picking
+all changes from a merge request.
+
+Commits cherry-picked outside the GitLab UI or API also do not create system notes.
+
+When a system note is created, the format is {{< icon name="cherry-pick-commit" >}}
+`[USER]` **picked the changes into the branch** `[BRANCHNAME]` with commit
+`[SHA]` `[DATE]`:
+
+![Cherry-pick tracking in merge request timeline](img/cherry_pick_mr_timeline_v15_4.png)
+
+The system note crosslinks the new commit and the existing merge request.
+Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
+includes cherry-picked merge commits.
+
 ## Cherry-pick all changes from a merge request
 
 After a merge request is merged, you can cherry-pick all changes introduced
@@ -62,13 +83,20 @@ Prerequisites:
 
 - You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
-- Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
+- Your project must use the [merge commit](methods/_index.md#merge-commit) method.
   which is set in the project's **Settings** > **Merge requests**.
 
   [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/142152), fast-forwarded
   commits can be cherry-picked from the GitLab UI only when they are squashed or when the
   merge request contains a single commit.
   You can always [cherry-pick individual commits](#cherry-pick-a-single-commit).
+
+  {{< alert type="note" >}}
+
+  [System notes](#view-system-notes-for-cherry-picked-commits) are not created when using the fast-forward
+  merge method.
+
+  {{< /alert >}}
 
 To do this:
 
@@ -85,6 +113,10 @@ To do this:
 ## Cherry-pick a single commit
 
 You can cherry-pick a single commit from multiple locations in your GitLab project.
+
+If you cherry-pick a merge commit, GitLab creates a
+[system note](#view-system-notes-for-cherry-picked-commits) in the related merge request to track
+the operation.
 
 ### From a project's commit list
 
@@ -112,20 +144,6 @@ when you view that file in your project's Git repository:
 1. On the cherry-pick dialog, select the project and branch to cherry-pick into.
 1. Optional. Select **Start a new merge request with these changes**.
 1. Select **Cherry-pick**.
-
-## View system notes for cherry-picked commits
-
-When you cherry-pick a merge commit in the GitLab UI or API, GitLab adds a [system note](../system_notes.md)
-to the related merge request thread. The format is {{< icon name="cherry-pick-commit" >}}
-`[USER]` **picked the changes into the branch** `[BRANCHNAME]` with commit `[SHA]` `[DATE]`:
-
-![Cherry-pick tracking in merge request timeline](img/cherry_pick_mr_timeline_v15_4.png)
-
-The system note crosslinks the new commit and the existing merge request.
-Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
-includes cherry-picked merge commits.
-
-Commits cherry-picked outside the GitLab UI or API do not add a system note.
 
 ## Select a different parent commit
 

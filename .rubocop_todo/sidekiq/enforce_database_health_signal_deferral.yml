@@ -116,8 +116,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'ee/app/workers/ai/active_context/migration_worker.rb'
     - 'ee/app/workers/ai/duo_workflows/fail_stuck_workflows_worker.rb'
     - 'ee/app/workers/ai/repository_xray/scan_dependencies_worker.rb'
-    - 'ee/app/workers/analytics/code_suggestions_events_backfill_worker.rb'
-    - 'ee/app/workers/analytics/duo_chat_events_backfill_worker.rb'
     - 'ee/app/workers/anti_abuse/new_abuse_report_worker.rb'
     - 'ee/app/workers/app_config/cascade_duo_features_enabled_worker.rb'
     - 'ee/app/workers/ci/minutes/update_gitlab_hosted_runner_monthly_usage_worker.rb'

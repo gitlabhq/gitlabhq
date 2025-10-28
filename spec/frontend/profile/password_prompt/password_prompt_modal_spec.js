@@ -20,7 +20,6 @@ describe('Password prompt modal', () => {
 
   const mockPassword = 'not+fake+shady+password';
   const mockEvent = { preventDefault: jest.fn() };
-  const handleConfirmPasswordSpy = jest.fn();
 
   const findField = () => wrapper.findByTestId('password-prompt-field');
   const findModal = () => wrapper.findComponent(GlModal);
@@ -34,9 +33,7 @@ describe('Password prompt modal', () => {
 
   beforeEach(() => {
     wrapper = createComponent({
-      props: {
-        handleConfirmPassword: handleConfirmPasswordSpy,
-      },
+      props: {},
     });
   });
 
@@ -54,14 +51,13 @@ describe('Password prompt modal', () => {
 
   describe('confirm button', () => {
     describe('with a valid password', () => {
-      it('calls the `handleConfirmPassword` method when clicked', async () => {
+      it('emits submit event with password when clicked', async () => {
         setPassword(mockPassword);
         submitModal();
 
         await nextTick();
 
-        expect(handleConfirmPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(handleConfirmPasswordSpy).toHaveBeenCalledWith(mockPassword);
+        expect(wrapper.emitted('submit')).toMatchObject([[mockPassword]]);
       });
 
       it('enables the confirm button', async () => {

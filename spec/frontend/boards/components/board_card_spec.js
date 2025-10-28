@@ -127,9 +127,9 @@ describe('Board card', () => {
     });
   });
 
-  describe('when issuable title is clicked in BoardCardInner and issuesListDrawer feature is enabled', () => {
+  describe('when issuable title is clicked in BoardCardInner to show drawer', () => {
     it('calls mockSetSelectedBoardItemsResolver', async () => {
-      mountComponent({ provide: { glFeatures: { issuesListDrawer: true } } });
+      mountComponent();
 
       await findBoardCardButton().trigger('click');
 

@@ -547,11 +547,7 @@ You can edit the following issue attributes in the right sidebar:
 - [Weight](issues/issue_weight.md)
 - Time tracking
 
-<!-- When issues_list_drawer feature flag is removed, use the following info
-and the ones outlined in issues/managing_issues.md#open-issues-in-a-drawer to update the main previous topic. -->
-
-If your administrator enabled the [issue drawer](issues/managing_issues.md#open-issues-in-a-drawer),
-when you select an issue card from the issue board, the issue opens in a drawer.
+When you select an issue card from the issue board, the [issue opens in a drawer](issues/managing_issues.md#open-issues-in-a-drawer).
 There, you can edit all the fields, including the description, comments, or related items.
 
 ### Create a new list

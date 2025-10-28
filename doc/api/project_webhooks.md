@@ -13,8 +13,9 @@ description: "Set up and manage webhooks for a project with the REST API."
 
 {{< /details >}}
 
-Manage [project webhooks](../user/project/integrations/webhooks.md) by using the REST API. Project webhooks are different
-to [system hooks](system_hooks.md), which are system-wide, and [group webhooks](group_webhooks.md).
+Use this API to manage [project webhooks](../user/project/integrations/webhooks.md). Project webhooks
+are different from [system hooks](system_hooks.md) that impact the entire instance, and
+[group webhooks](group_webhooks.md) that impact all projects and subgroups in a group.
 
 Prerequisites:
 

@@ -441,7 +441,6 @@ describe('Board list component', () => {
     const { id, iid, referencePath } = mockIssues[0];
     const mountForShowParamTests = async ({
       showParams = { id, iid, full_path: referencePath },
-      drawerEnabled = false,
     } = {}) => {
       const show = btoa(JSON.stringify(showParams));
       setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
@@ -455,26 +454,18 @@ describe('Board list component', () => {
             setActiveBoardItem: mutationHandler,
           },
         },
-        provide: {
-          glFeatures: { issuesListDrawer: drawerEnabled },
-        },
       });
       await waitForPromises();
     };
 
-    it('does not call `getParameterByName` if the drawer is disabled', async () => {
-      await mountForShowParamTests();
-      expect(getParameterByName).not.toHaveBeenCalled();
-    });
-
     it('calls `getParameterByName` to get the `show` parameter', async () => {
-      await mountForShowParamTests({ drawerEnabled: true });
+      await mountForShowParamTests();
       expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
     });
 
     describe('when the item is found in the list', () => {
       it('calls the `setActiveWorkItem` mutation', async () => {
-        await mountForShowParamTests({ drawerEnabled: true });
+        await mountForShowParamTests();
         expect(mutationHandler).toHaveBeenCalled();
       });
     });
@@ -487,7 +478,6 @@ describe('Board list component', () => {
             iid: '9999',
             full_path: 'does-not-match/at-all',
           },
-          drawerEnabled: true,
         });
         expect(wrapper.emitted('cannot-find-active-item')).toHaveLength(1);
       });
@@ -501,7 +491,6 @@ describe('Board list component', () => {
             iid: '9999',
             full_path: 'does-not-match/at-all',
           },
-          drawerEnabled: true,
         });
         await wrapper.setProps({ filterParams: { first: 50 } });
         expect(listResolver).toHaveBeenCalledTimes(2);
@@ -511,7 +500,7 @@ describe('Board list component', () => {
 
     describe('on window `popstate` event', () => {
       it('calls `getParameterByName` to get the `show` parameter', async () => {
-        await mountForShowParamTests({ drawerEnabled: true });
+        await mountForShowParamTests();
         window.dispatchEvent(new Event('popstate'));
         expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
       });

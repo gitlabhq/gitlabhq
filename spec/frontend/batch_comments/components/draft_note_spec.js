@@ -4,7 +4,6 @@ import { createTestingPinia } from '@pinia/testing';
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
-import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import { clearDraft } from '~/lib/utils/autosave';
 import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
@@ -27,7 +26,7 @@ const NoteableNoteStub = stubComponent(NoteableNote, {
 });
 
 describe('Batch comments draft note component', () => {
-  let store;
+  let pinia;
   let wrapper;
   let draft;
   const LINE_RANGE = {};
@@ -39,24 +38,20 @@ describe('Batch comments draft note component', () => {
 
   const createComponent = (propsData = { draft }) => {
     wrapper = shallowMount(DraftNote, {
-      store,
+      pinia,
       propsData,
       stubs: {
         NoteableNote: NoteableNoteStub,
       },
     });
-
-    jest.spyOn(store, 'dispatch').mockImplementation();
-    jest.spyOn(store, 'commit').mockImplementation();
   };
 
   const findNoteableNote = () => wrapper.findComponent(NoteableNote);
 
   beforeEach(() => {
-    createTestingPinia({ plugins: [globalAccessorPlugin] });
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
     useNotes();
-    store = createStore();
     draft = createDraft();
   });
 
@@ -128,14 +123,14 @@ describe('Batch comments draft note component', () => {
       createComponent({ draft: { ...draft, ...draftWithLineRange } });
       findNoteableNote().trigger('mouseenter');
 
-      expect(store.dispatch).toHaveBeenCalledWith('setSelectedCommentPositionHover', LINE_RANGE);
+      expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith(LINE_RANGE);
     });
 
     it(`calls store with draft.position and mouseleave`, () => {
       createComponent({ draft: { ...draft, ...draftWithLineRange } });
       findNoteableNote().trigger('mouseleave');
 
-      expect(store.dispatch).toHaveBeenCalledWith('setSelectedCommentPositionHover');
+      expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith();
     });
 
     it(`does not call store without draft position`, () => {
@@ -144,7 +139,7 @@ describe('Batch comments draft note component', () => {
       findNoteableNote().trigger('mouseenter');
       findNoteableNote().trigger('mouseleave');
 
-      expect(store.dispatch).not.toHaveBeenCalled();
+      expect(useNotes().setSelectedCommentPositionHover).not.toHaveBeenCalled();
     });
   });
 

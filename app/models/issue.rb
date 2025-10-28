@@ -406,7 +406,11 @@ class Issue < ApplicationRecord
   end
 
   def relative_positioning_parent_projects
-    project.group&.root_ancestor&.all_projects&.select(:id) || Project.id_in(project).select(:id)
+    if namespace.parent&.user_namespace?
+      Project.id_in(namespace.project).select(:id)
+    else
+      namespace.root_ancestor&.all_projects&.select(:id)
+    end
   end
 
   def self.relative_positioning_query_base(issue)
@@ -571,7 +575,7 @@ class Issue < ApplicationRecord
   end
 
   def blocked_for_repositioning?
-    resource_parent.root_namespace&.issue_repositioning_disabled?
+    namespace.root_ancestor&.issue_repositioning_disabled?
   end
 
   # `from` argument can be a Namespace or Project.

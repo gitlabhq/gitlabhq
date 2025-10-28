@@ -22,7 +22,7 @@ For more information on plans for ClickHouse support for GitLab Self-Managed, se
 
 {{< alert type="note" >}}
 
-For more information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse).
+For more information about ClickHouse support for GitLab Dedicated, see [ClickHouse for GitLab Dedicated](../subscriptions/gitlab_dedicated/_index.md#clickhouse-cloud).
 
 {{< /alert >}}
 

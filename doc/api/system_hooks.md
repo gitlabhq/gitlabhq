@@ -13,14 +13,20 @@ description: "Set up and manage system hooks with the REST API."
 
 {{< /details >}}
 
-All methods require administrator authorization.
+Use this API to manage [system hooks](../administration/system_hooks.md). System hooks
+are different from [group webhooks](group_webhooks.md) that impact all projects and subgroups
+in a group, and [project webhooks](project_webhooks.md) that are limited to a single project.
 
-You can configure the URL endpoint of the system hooks from the GitLab user interface:
+Prerequisites:
+
+- You must be an administrator.
+
+## Configure a URL endpoint for system hooks
+
+To configure a URL endpoint for system hooks:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **System hooks** (`/admin/hooks`).
-
-Read more about [system hooks](../administration/system_hooks.md).
 
 ## List system hooks
 

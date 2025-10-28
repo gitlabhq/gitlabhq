@@ -1,6 +1,5 @@
 <script>
 import { omit } from 'lodash';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { historyPushState, parseBoolean } from '~/lib/utils/common_utils';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
@@ -25,7 +24,6 @@ export default {
     BoardSettingsSidebar,
     BoardTopBar,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'fullPath',
     'initialBoardId',
@@ -87,14 +85,6 @@ export default {
     },
   },
   computed: {
-    issuesDrawerEnabled() {
-      if (this.glFeatures.workItemViewForIssues) {
-        return true;
-      }
-      return Boolean(
-        this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
-      );
-    },
     listQueryVariables() {
       return {
         ...(this.isIssueBoard && {
@@ -128,7 +118,7 @@ export default {
       return `board.${this.fullPath}.${this.boardId}.isShowingEpicSwimlanes`;
     },
     isBoardWidthDynamic() {
-      return this.isAnySidebarOpen && this.issuesDrawerEnabled && this.isWorkItemDrawerOpened;
+      return this.isAnySidebarOpen && this.isWorkItemDrawerOpened;
     },
   },
   created() {
@@ -204,17 +194,16 @@ export default {
       historyPushState(removeParams(['group_by']), window.location.href, true);
     },
     handleWorkItemDrawerClose() {
-      if (!this.isAnySidebarOpen || !this.issuesDrawerEnabled) this.isWorkItemDrawerOpened = false;
+      if (!this.isAnySidebarOpen) {
+        this.isWorkItemDrawerOpened = false;
+      }
     },
   },
 };
 </script>
 
 <template>
-  <div
-    class="boards-app gl-relative"
-    :class="{ 'is-compact': isAnySidebarOpen && !issuesDrawerEnabled }"
-  >
+  <div class="boards-app gl-relative">
     <router-view />
     <board-top-bar
       :board-id="boardId"
@@ -239,7 +228,6 @@ export default {
       :board-lists="boardLists"
       :error="error"
       :list-query-variables="listQueryVariables"
-      :use-work-item-drawer="issuesDrawerEnabled"
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
       @setFilters="setFilters"

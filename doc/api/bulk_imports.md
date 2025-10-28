@@ -13,8 +13,7 @@ description: "Start and view group and project migrations with the REST API."
 
 {{< /details >}}
 
-With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
-[group migration by direct transfer](../user/group/import/_index.md).
+Use this API to migrate groups and projects by using [direct transfer](../user/group/import/direct_transfer_migrations.md).
 
 ## Prerequisites
 

@@ -68,7 +68,7 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 | [GitLab Pages](../../subscriptions/gitlab_dedicated/_index.md#gitlab-pages) | GitLab hosts your static websites on a dedicated domain. You can publish sites from your repositories. | Available by <br>default |
 | [Advanced search](../../integration/advanced_search/elasticsearch.md) | GitLab maintains the search infrastructure. You can search across your code, issues, and merge requests. | Available by <br>default |
 | [Hosted runners (beta)](hosted_runners.md) | You purchase a subscription and configure your hosted runners. GitLab manages the auto-scaling CI/CD infrastructure. | Switchboard |
-| [ClickHouse](../../integration/clickhouse.md) | GitLab maintains the ClickHouse infrastructure and integration. You can access all advanced analytical features such as [GitLab Duo and SDLC trends](../../user/analytics/duo_and_sdlc_trends.md) and [CI analytics](../../ci/runners/runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse). | Available by <br>default for [eligible customers](../../subscriptions/gitlab_dedicated/_index.md#clickhouse) |
+| [ClickHouse](../../integration/clickhouse.md) | GitLab maintains the ClickHouse infrastructure and integration. You can access all advanced analytical features such as [GitLab Duo and SDLC trends](../../user/analytics/duo_and_sdlc_trends.md) and [CI analytics](../../ci/runners/runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse). | Available by <br>default for [eligible customers](../../subscriptions/gitlab_dedicated/_index.md#clickhouse-cloud) |
 
 ## Manage daily operations
 

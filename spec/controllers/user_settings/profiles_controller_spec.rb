@@ -28,6 +28,18 @@ RSpec.describe UserSettings::ProfilesController, :request_store, feature_categor
       expect(user.unconfirmed_email).to eq('john@gmail.com')
     end
 
+    it 'includes confirmation help text with new email address in response' do
+      sign_in(user)
+
+      put :update, params: { user: { email: 'john@gmail.com', validation_password: password } }, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include(
+        'message' => s_('Profiles|Profile was successfully updated'),
+        'email_help_text' => include('john@gmail.com')
+      )
+    end
+
     it "allows an email update without confirmation if existing verified email" do
       user = create(:user)
       create(:email, :confirmed, user: user, email: 'john@gmail.com')

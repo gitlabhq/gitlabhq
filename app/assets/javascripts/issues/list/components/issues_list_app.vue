@@ -632,9 +632,6 @@ export default {
     isIssuableSelected() {
       return !isEmpty(this.activeIssuable);
     },
-    issuesDrawerEnabled() {
-      return this.glFeatures?.issuesListDrawer || this.glFeatures?.workItemViewForIssues;
-    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -895,11 +892,7 @@ export default {
       this.state = state || STATUS_OPEN;
     },
     handleSelectIssuable(issuable) {
-      if (
-        this.issuesDrawerEnabled &&
-        this.activeIssuable &&
-        this.activeIssuable.iid === issuable.iid
-      ) {
+      if (this.activeIssuable && this.activeIssuable.iid === issuable.iid) {
         this.activeIssuable = null;
 
         const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
@@ -1009,7 +1002,6 @@ export default {
 <template>
   <div>
     <work-item-drawer
-      v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
       :active-item="activeIssuable"
       :issuable-type="$options.issuableType"
@@ -1053,7 +1045,7 @@ export default {
       :has-previous-page="pageInfo.hasPreviousPage"
       :active-issuable="activeIssuable"
       show-work-item-type-icon
-      :prevent-redirect="issuesDrawerEnabled"
+      prevent-redirect
       @click-tab="handleClickTab"
       @dismiss-alert="handleDismissAlert"
       @filter="handleFilter"

@@ -445,19 +445,7 @@ export default {
       });
     },
     workItemDrawerEnabled() {
-      const shouldOpenItemsInSidePanel =
-        this.displaySettings.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
-      if (!shouldOpenItemsInSidePanel) return false;
-
-      if (this.glFeatures.workItemViewForIssues) {
-        return shouldOpenItemsInSidePanel;
-      }
-
-      if (this.isEpicsList) {
-        return this.glFeatures?.epicsListDrawer && shouldOpenItemsInSidePanel;
-      }
-
-      return this.glFeatures?.issuesListDrawer && shouldOpenItemsInSidePanel;
+      return this.displaySettings.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;

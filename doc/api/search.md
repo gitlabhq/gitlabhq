@@ -12,7 +12,8 @@ title: Search API
 
 {{< /details >}}
 
-Every API call to search must be authenticated.
+Use this API to [search across GitLab](../user/search/_index.md).
+Every call to this API requires authentication.
 
 Some scopes are available for [basic search](../user/search/_index.md#available-scopes).
 When [advanced search](../user/search/advanced_search.md#available-scopes) or

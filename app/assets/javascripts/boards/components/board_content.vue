@@ -33,9 +33,6 @@ export default {
     BoardAddNewColumnTrigger,
     BoardColumn,
     BoardDrawerWrapper,
-    BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
-    EpicBoardContentSidebar: () =>
-      import('ee_component/boards/components/epic_board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
     WorkItemDrawer,
@@ -78,10 +75,6 @@ export default {
       required: true,
     },
     addColumnFormVisible: {
-      type: Boolean,
-      required: true,
-    },
-    useWorkItemDrawer: {
       type: Boolean,
       required: true,
     },
@@ -361,11 +354,7 @@ export default {
         />
       </div>
     </epics-swimlanes>
-    <board-drawer-wrapper
-      v-if="useWorkItemDrawer"
-      :backlog-list-id="backlogListId"
-      :closed-list-id="closedListId"
-    >
+    <board-drawer-wrapper :backlog-list-id="backlogListId" :closed-list-id="closedListId">
       <template
         #default="{
           activeIssuable,
@@ -395,20 +384,5 @@ export default {
         />
       </template>
     </board-drawer-wrapper>
-
-    <template v-else>
-      <board-content-sidebar
-        v-if="isIssueBoard"
-        :backlog-list-id="backlogListId"
-        :closed-list-id="closedListId"
-        data-testid="issue-boards-sidebar"
-      />
-      <epic-board-content-sidebar
-        v-else-if="isEpicBoard"
-        :backlog-list-id="backlogListId"
-        :closed-list-id="closedListId"
-        data-testid="epic-boards-sidebar"
-      />
-    </template>
   </div>
 </template>

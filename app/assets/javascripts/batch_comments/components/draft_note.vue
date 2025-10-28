@@ -1,13 +1,12 @@
 <script>
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions as mapVuexActions } from 'vuex';
 import { mapActions } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
 import { clearDraft } from '~/lib/utils/autosave';
 import { useBatchComments } from '~/batch_comments/store';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   components: {
@@ -68,7 +67,7 @@ export default {
     ...mapActions(useBatchComments, {
       setDraftEditing: types.SET_DRAFT_EDITING,
     }),
-    ...mapVuexActions(['setSelectedCommentPositionHover']),
+    ...mapActions(useNotes, ['setSelectedCommentPositionHover']),
     update(data) {
       this.updateDraft(data);
     },

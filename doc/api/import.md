@@ -26,7 +26,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Use the Import API to import repositories from GitHub or Bitbucket Server.
+Use this API to [import repositories from external sources](../user/project/import/_index.md).
 
 {{< alert type="note" >}}
 

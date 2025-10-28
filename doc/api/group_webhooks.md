@@ -13,8 +13,9 @@ description: "Set up and manage webhooks for a group with the REST API."
 
 {{< /details >}}
 
-Interact with group [webhooks](../user/project/integrations/webhooks.md) by using the REST API. Also called group hooks.
-These are different from [system hooks](system_hooks.md) that are system wide and [project webhooks](project_webhooks.md) that are limited to one project.
+Use this API to manage [group webhooks](../user/project/integrations/webhooks.md#group-webhooks). Group
+webhooks are different from [system hooks](system_hooks.md) that impact the entire instance, and
+[project webhooks](project_webhooks.md) that are limited to a single project.
 
 Prerequisites:
 

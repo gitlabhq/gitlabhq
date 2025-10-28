@@ -35,37 +35,59 @@ and disaster recovery to meet compliance, performance, and availability requirem
 
 You can deploy your instance in the following AWS regions:
 
-| Region                    | Code |
-| ------------------------- | ---- |
-| Africa (Cape Town)        | `af-south-1` |
-| Asia Pacific (Hyderabad)  | `ap-south-2` |
-| Asia Pacific (Jakarta)    | `ap-southeast-3` |
-| Asia Pacific (Mumbai)     | `ap-south-1` |
-| Asia Pacific (Osaka)      | `ap-northeast-3` |
-| Asia Pacific (Seoul)      | `ap-northeast-2` |
-| Asia Pacific (Singapore)  | `ap-southeast-1` |
-| Asia Pacific (Sydney)     | `ap-southeast-2` |
-| Asia Pacific (Tokyo)      | `ap-northeast-1` |
-| Canada (Central)          | `ca-central-1` |
-| Europe (Frankfurt)        | `eu-central-1` |
-| Europe (Ireland)          | `eu-west-1` |
-| Europe (London)           | `eu-west-2` |
-| Europe (Milan)            | `eu-south-1` |
-| Europe (Paris)            | `eu-west-3` |
-| Europe (Stockholm)        | `eu-north-1` |
-| Europe (Zurich)           | `eu-central-2` |
-| Israel (Tel Aviv)         | `il-central-1` |
-| Middle East (Bahrain)     | `me-south-1` |
-| South America (São Paulo) | `sa-east-1` |
-| US East (Ohio)            | `us-east-2` |
-| US East (N. Virginia)     | `us-east-1` |
-| US West (N. California)   | `us-west-1` |
-| US West (Oregon)          | `us-west-2` |
+| Region                    | Code | ClickHouse Cloud |
+| ------------------------- | ---- | ---------------- |
+| Africa (Cape Town)        | `af-south-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Hyderabad)  | `ap-south-2` | {{< icon name="dash-circle" >}} No |
+| Asia Pacific (Jakarta)    | `ap-southeast-3` | {{< icon name="dash-circle" >}} No |
+| Asia Pacific (Mumbai)     | `ap-south-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Osaka)      | `ap-northeast-3` | {{< icon name="dash-circle" >}} No |
+| Asia Pacific (Seoul)      | `ap-northeast-2` | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Singapore)  | `ap-southeast-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Sydney)     | `ap-southeast-2` | {{< icon name="check-circle-filled" >}} Yes |
+| Asia Pacific (Tokyo)      | `ap-northeast-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Canada (Central)          | `ca-central-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Frankfurt)        | `eu-central-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Ireland)          | `eu-west-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (London)           | `eu-west-2` | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Milan)            | `eu-south-1` | {{< icon name="dash-circle" >}} No |
+| Europe (Paris)            | `eu-west-3` | {{< icon name="dash-circle" >}} No |
+| Europe (Stockholm)        | `eu-north-1` | {{< icon name="check-circle-filled" >}} Yes |
+| Europe (Zurich)           | `eu-central-2` | {{< icon name="dash-circle" >}} No |
+| Israel (Tel Aviv)         | `il-central-1` | {{< icon name="dash-circle" >}} No |
+| Middle East (Bahrain)     | `me-south-1` | {{< icon name="dash-circle" >}} No |
+| South America (São Paulo) | `sa-east-1` | {{< icon name="check-circle-filled" >}} Yes |
+| US East (Ohio)            | `us-east-2` | {{< icon name="check-circle-filled" >}} Yes |
+| US East (N. Virginia)     | `us-east-1` | {{< icon name="check-circle-filled" >}} Yes |
+| US West (N. California)   | `us-west-1` | {{< icon name="dash-circle" >}} No |
+| US West (Oregon)          | `us-west-2` | {{< icon name="check-circle-filled" >}} Yes |
 
 For low emission region guidance,
 see [choose a region based on both business requirements and sustainability goals](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_region_a2.html).
 
 If you need a region that isn't listed, contact your account representative or [GitLab Support](https://about.gitlab.com/support/).
+
+#### ClickHouse Cloud
+
+ClickHouse Cloud provides [advanced analytical features](../../../integration/clickhouse.md)
+and is only available in specific AWS regions.
+
+If you select a primary region that doesn't support ClickHouse Cloud,
+advanced analytical features are not available for your instance.
+
+GitLab Dedicated instances in supported regions include a ClickHouse Cloud database deployed in your tenant's
+primary region. The database connects through AWS PrivateLink and is not publicly accessible.
+Your data is encrypted in transit and at rest using cloud provider-managed AES 256 keys and 
+transparent data encryption.
+
+When you configure your GitLab Dedicated instance to
+[filter outbound requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains),
+the ClickHouse endpoint address is automatically added to the allowlist.
+
+ClickHouse on GitLab Dedicated has the following limitations:
+
+- [Bring your own key (BYOK)](../encryption.md#bring-your-own-key-byok) is not supported.
+- No SLAs apply. Recovery time objective (RTO) and recovery point objective (RPO) are best efforts.
 
 ### Secondary regions with limited support
 

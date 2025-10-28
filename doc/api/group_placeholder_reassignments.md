@@ -27,12 +27,11 @@ For more information, see the history.
 
 {{< /alert >}}
 
+Use this API to [reassign placeholder users in bulk](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file).
+
 Prerequisites:
 
 - You must have the Owner role for the group.
-
-Use the following endpoints to [reassign placeholder users in bulk](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file) without using the UI.
-
 {{< alert type="note" >}}
 
 User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).

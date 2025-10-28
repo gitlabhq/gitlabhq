@@ -152,7 +152,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       custom_fields
       design_management_versions
       incident_management_timeline_events
-      lfs_file_locks
       merge_trains
       ml_candidates
       ml_models

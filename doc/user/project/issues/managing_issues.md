@@ -822,17 +822,11 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `issues_list_drawer`. Disabled by default.
 - In GitLab 17.11 and later, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/463829) in GitLab 18.6. Feature flag `issues_list_drawer` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-When this feature is enabled, when you select an issue from the list or issue board, it opens in a drawer.
+When you select an issue from the list or issue board, it opens in a drawer.
 You can then edit the issue or create comments.
 
 To open the issue in full view:

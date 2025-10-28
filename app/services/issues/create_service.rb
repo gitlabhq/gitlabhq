@@ -29,7 +29,7 @@ module Issues
       # it can be set also from quick actions
       [:issue_type, :work_item_type, :work_item_type_id].each { |attribute| params.delete(attribute) }
 
-      handle_move_between_ids(@issue)
+      handle_move_between_ids(@issue) if @issue.valid?
 
       @add_related_issue ||= params.delete(:add_related_issue)
       filter_resolve_discussion_params
