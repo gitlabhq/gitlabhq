@@ -25,6 +25,10 @@ module Gitlab
         DiffViewer::Image
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
+      # Diff file with more than 200 diff line rows could slow down the page interactions
+      # we enable content visibility on every row if it reaches this threshold to reduce diff impact on page reflows
+      ROWS_CONTENT_VISIBILITY_THRESHOLD = 200
+
       def initialize(
         diff,
         repository:,

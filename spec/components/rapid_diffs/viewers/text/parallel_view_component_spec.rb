@@ -37,7 +37,25 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelViewComponent, type: :componen
   it "returns virtual row count" do
     instance = described_class.new(diff_file: diff_file)
     render_inline(instance)
-    expect(instance.virtual_rendering_params).to eq(total_rows: page.find_all('tbody tr').count)
+    expect(instance.virtual_rendering_params[:total_rows]).to eq(page.find_all('tbody tr').count)
+  end
+
+  describe 'row visibility' do
+    it "returns 'nil' by default" do
+      instance = described_class.new(diff_file: diff_file)
+      render_inline(instance)
+      expect(instance.virtual_rendering_params[:rows_visibility]).to be_nil
+    end
+
+    it "returns 'auto' for large diffs" do
+      hunk = Gitlab::Diff::ViewerHunk.new(
+        lines: Array.new(Gitlab::Diff::File::ROWS_CONTENT_VISIBILITY_THRESHOLD, diff_file.highlighted_diff_lines.first)
+      )
+      allow(diff_file).to receive(:viewer_hunks).and_return([hunk])
+      instance = described_class.new(diff_file: diff_file)
+      render_inline(instance)
+      expect(instance.virtual_rendering_params[:rows_visibility]).to eq('auto')
+    end
   end
 
   def render_component

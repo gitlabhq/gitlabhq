@@ -10,28 +10,6 @@ You can select a foundational agent when you start a chat.
 
 ## Create a foundational agent
 
-1. Create a prompt definition file in `/ai_gateway/prompts/definitions/` (located either on your GDK under `PATH-TO-YOUR-GDK/gdk/gitlab-ai-gateway` or on the [ai-assist repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts/definitions)):
-
-   File: `/ai_gateway/prompts/definitions/foundational_pirate_agent/base/1.0.0.yml`
-
-   ```yaml
-   ---
-   name: Foundational Pirate Agent
-   model:
-     params:
-       max_tokens: 2_000
-   prompt_template:
-     system: |
-       You are a seasoned pirate from the Golden Age of Piracy. You speak exclusively in pirate dialect, using nautical
-       terms, pirate slang, and colorful seafaring expressions. Transform any input into authentic pirate speak while
-       maintaining the original meaning. Use terms like 'ahoy', 'matey', 'ye', 'aye', 'landlubber', 'scallywag',
-       'doubloons', 'plunder', etc. Add pirate exclamations like 'Arrr!', 'Shiver me timbers!', and 'Yo ho ho!' where
-       appropriate. Refer to yourself in the first person as a pirate would.
-     user: |
-       {{goal}}
-     placeholder: history
-   ```
-
 1. Create a flow configuration file in `/duo_workflow_service/agent_platform/v1/flows/configs/` (located either on your GDK under `PATH-TO-YOUR-GDK/gdk/gitlab-ai-gateway` or on the [ai-assist repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/duo_workflow_service/agent_platform/v1/flows/configs/)):
 
    File: `/duo_workflow_service/agent_platform/v1/flows/configs/foundational_pirate_agent.yml`
@@ -42,8 +20,7 @@ You can select a foundational agent when you start a chat.
    components:
      - name: "foundational_pirate_agent"
        type: AgentComponent
-       prompt_id: "foundational_pirate_agent"
-       prompt_version: "^1.0.0"
+       prompt_id: "foundational_pirate_agent_prompt"
        inputs:
          - from: "context:goal"
            as: "goal"
@@ -51,6 +28,23 @@ You can select a foundational agent when you start a chat.
            as: "project_id"
        toolset: []
        ui_log_events: []
+   prompts:
+     - name: Foundational Pirate Agent
+       prompt_id: "foundational_pirate_agent_prompt"
+       model:
+         params:
+           model_class_provider: anthropic
+           max_tokens: 2_000
+       prompt_template:
+         system: |
+           You are a seasoned pirate from the Golden Age of Piracy. You speak exclusively in pirate dialect, using nautical
+           terms, pirate slang, and colorful seafaring expressions. Transform any input into authentic pirate speak while
+           maintaining the original meaning. Use terms like 'ahoy', 'matey', 'ye', 'aye', 'landlubber', 'scallywag',
+           'doubloons', 'plunder', etc. Add pirate exclamations like 'Arrr!', 'Shiver me timbers!', and 'Yo ho ho!' where
+           appropriate. Refer to yourself in the first person as a pirate would.
+         user: |
+           {{goal}}
+         placeholder: history
    routers: []
    flow:
      entry_point: "foundational_pirate_agent"
@@ -99,17 +93,20 @@ Control the release of new foundational agents with feature flags:
 ```ruby
 # ee/app/graphql/resolvers/ai/foundational_chat_agents_resolver.rb
 
-  def resolve
-    filtered_agents = []
-    filtered_agents << 'foundational_pirate_agent' if Feature.disabled?(:my_feature_flag, current_user)
+  def resolve(*, project_id: nil, namespace_id: nil)
+    project = GitlabSchema.find_by_gid(project_id)
 
+    filtered_agents = []
+    filtered_agents << 'foundational_pirate_agent' if Feature.disabled?(:my_feature_flag, project)
+    # filtered_agents << 'foundational_pirate_agent' if Feature.disabled?(:my_feature_flag, current_user)
+    
     ::Ai::FoundationalChatAgent
  .select {|agent| filtered_agents.exclude?(agent.reference) }
       .sort_by(&:id)
   end
 ```
 
-Project and namespace feature flags are not supported. For more information, see [issue 577487](https://gitlab.com/gitlab-org/gitlab/-/issues/577487).
+This also allows making a foundational agent available to a specific tier.
 
 ## Scoping
 

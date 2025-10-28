@@ -1,9 +1,15 @@
 @use "sass:color";
 @use 'constants';
 
+.rd-diff-file {
+  --rd-body-font-size: #{constants.$code-font-size};
+  --rd-body-font-line-height: #{constants.$code-line-height};
+}
+
 .rd-diff-file[data-virtual="text_parallel"],
 .rd-diff-file[data-virtual="text_inline"] {
-  --rd-body-intrinsic-height: calc(#{constants.$code-row-height-target} * var(--virtual-total-rows));
+  --rd-row-intrinsic-height: calc(var(--rd-body-font-line-height) * var(--rd-body-font-size));
+  --rd-body-intrinsic-height: calc(var(--rd-row-intrinsic-height) * var(--virtual-total-rows));
 }
 
 .rd-text-view-root {
@@ -14,8 +20,8 @@
   --rd-line-theme-border-color: oklch(from var(--code-background) calc(l + var(--rd-code-border-adjust)) c h);
   background-color: var(--code-background, $gl-color-neutral-0);
   font-family: $monospace-font;
-  line-height: constants.$code-line-height;
-  font-size: constants.$code-font-size;
+  line-height: var(--rd-body-font-line-height);
+  font-size: var(--rd-body-font-size);
   border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
 }
 
@@ -41,6 +47,8 @@
 .rd-hunk-header,
 .rd-hunk-lines {
   display: grid;
+  content-visibility: var(--virtual-rows-visibility);
+  contain-intrinsic-size: 0 var(--rd-row-intrinsic-height);
 }
 
 .rd-text-view-content > tr:last-child {

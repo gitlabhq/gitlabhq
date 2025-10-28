@@ -69523,6 +69523,9 @@ msgstr ""
 msgid "TrialWidget|Upgrade"
 msgstr ""
 
+msgid "TrialWidget|Upgrade to keep your Premium features"
+msgstr ""
+
 msgid "TrialWidget|Your trial of GitLab Duo Enterprise has ended"
 msgstr ""
 
