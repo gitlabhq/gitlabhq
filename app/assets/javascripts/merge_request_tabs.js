@@ -10,7 +10,7 @@ import {
   NO_SCROLL_TO_HASH_CLASS,
   parseBoolean,
 } from '~/lib/utils/common_utils';
-import { scrollToElement } from '~/lib/utils/scroll_utils';
+import { getScrollingElement, scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
 import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -81,10 +81,10 @@ let { location } = window;
 
 function scrollToContainer(container) {
   if (location.hash) {
-    const $el = $(`${container} ${location.hash}:not(.match)`);
+    const el = document.querySelector(`${container} ${location.hash}:not(.match)`);
 
-    if ($el.length) {
-      scrollToElement($el[0]);
+    if (el) {
+      scrollToElement(el);
     }
   }
 }
@@ -279,7 +279,7 @@ export default class MergeRequestTabs {
 
   storeScroll() {
     if (this.currentTab) {
-      this.scrollPositions[this.currentTab] = document.documentElement.scrollTop;
+      this.scrollPositions[this.currentTab] = getScrollingElement().scrollTop;
     }
   }
   recallScroll(action) {
@@ -287,8 +287,7 @@ export default class MergeRequestTabs {
     if (storedPosition == null) return;
 
     setTimeout(() => {
-      // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
-      window.scrollTo({
+      scrollTo({
         top: storedPosition > 0 ? storedPosition : 0,
         left: 0,
         behavior: 'auto',
@@ -429,16 +428,15 @@ export default class MergeRequestTabs {
         // 51px is the height of the navbar buttons, e.g. `Discussion | Commits | Changes`
         const scrollDestination = tabContentTop - mainContentTop - 51;
 
-        // scrollBehavior is only available in browsers that support scrollToOptions
-        if ('scrollBehavior' in document.documentElement.style && shouldScroll) {
-          // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
-          window.scrollTo({
+        if (shouldScroll) {
+          scrollTo({
             top: scrollDestination,
             behavior: 'smooth',
           });
         } else {
-          // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
-          window.scrollTo(0, scrollDestination);
+          scrollTo({
+            top: scrollDestination,
+          });
         }
       }
     }
@@ -567,7 +565,7 @@ export default class MergeRequestTabs {
   // load the legacy diff tab content from the backend
   loadDiff({ endpoint, strip = true }) {
     if (this.diffsLoaded) {
-      document.dispatchEvent(new CustomEvent('scroll'));
+      getScrollingElement().dispatchEvent(new CustomEvent('scroll'));
       return;
     }
 

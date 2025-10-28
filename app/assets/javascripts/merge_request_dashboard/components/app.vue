@@ -193,6 +193,7 @@ export default {
                   '!gl-mt-0': listIndex === 0,
                   '!gl-mt-3': listIndex > 0,
                 }"
+                data-testid="merge-request-dashboard-list"
                 @clear-new="resetNewMergeRequestIds"
               >
                 <div

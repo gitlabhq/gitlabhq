@@ -35,17 +35,24 @@ module Gitlab
       # name     - The name of the method to be cached.
       # fallback - A value to fall back to if the repository does not exist, or
       #            in case of a Git error. Defaults to nil.
-      #
+      # avoid_cache - A callable block that determines if the cache needs to be avoided (i.e. feature flags)
       # It is not safe to use this method prior to the release of 12.3, since
       # 12.2 does not correctly invalidate the redis set cache value. A mixed
       # code environment containing both 12.2 and 12.3 nodes breaks, while a
       # mixed code environment containing both 12.3 and 12.4 nodes will work.
-      def cache_method_as_redis_set(name, fallback: nil)
+      def cache_method_as_redis_set(name, fallback: nil, avoid_cache: nil)
         uncached_name = alias_uncached_method(name)
 
         define_method(name) do
-          cache_method_output_as_redis_set(name, fallback: fallback) do
-            __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend
+          # Skip caching if the avoid_cache condition evaluates to true
+          if avoid_cache.respond_to?(:call) && instance_exec(&avoid_cache)
+            no_repository_fallback(name, fallback: fallback) do
+              __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend -- internal metaprogramming
+            end
+          else
+            cache_method_output_as_redis_set(name, fallback: fallback) do
+              __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend -- internal metaprogramming
+            end
           end
         end
 
@@ -58,22 +65,27 @@ module Gitlab
         # wrong answer. We handle that by querying the full list - which fills
         # the cache - and using it directly to answer the question.
         define_method("#{name}_include?") do |value|
-          ivar = "@#{name}_include"
-          memoized = instance_variable_get(ivar) || {}
-          lookup = proc { __send__(name).include?(value) } # rubocop:disable GitlabSecurity/PublicSend
+          # Skip caching if the avoid_cache condition evaluates to true
+          if avoid_cache.respond_to?(:call) && instance_exec(&avoid_cache)
+            __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend -- internal metaprogramming
+          else
+            ivar = "@#{name}_include"
+            memoized = instance_variable_get(ivar) || {}
+            lookup = proc { __send__(name).include?(value) } # rubocop:disable GitlabSecurity/PublicSend -- internal metaprogramming
 
-          next memoized[value] if memoized.key?(value)
+            next memoized[value] if memoized.key?(value)
 
-          memoized[value] =
-            if strong_memoized?(name)
-              lookup.call
-            else
-              result, exists = redis_set_cache.try_include?(name, value)
+            memoized[value] =
+              if strong_memoized?(name)
+                lookup.call
+              else
+                result, exists = redis_set_cache.try_include?(name, value)
 
-              exists ? result : lookup.call
-            end
+                exists ? result : lookup.call
+              end
 
-          instance_variable_set(ivar, memoized)[value]
+            instance_variable_set(ivar, memoized)[value]
+          end
         end
       end
 

@@ -374,7 +374,7 @@ export default {
         </crud-component>
         <glql-footnote v-if="!isCollapsed" />
       </template>
-      <div v-else-if="hasError" class="markdown-code-block gl-relative">
+      <div v-else class="markdown-code-block gl-relative">
         <pre :class="preClasses"><code>{{ queryYaml }}</code></pre>
       </div>
     </gl-intersection-observer>

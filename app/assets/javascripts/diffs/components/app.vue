@@ -15,6 +15,7 @@ import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { getScrollingElement } from '~/lib/utils/scroll_utils';
 import { parseBoolean, handleLocationHash, getCookie } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -159,6 +160,7 @@ export default {
       keydownTime: undefined,
       listenersAttached: false,
       toggledFile: false,
+      scrollingElement: null,
     };
   },
   apollo: {
@@ -397,7 +399,8 @@ export default {
 
     this.subscribeToVirtualScrollingEvents();
     window.addEventListener('hashchange', this.handleHashChange);
-    window.addEventListener('scroll', this.hideTooltips);
+    this.scrollingElement = getScrollingElement(this.$el);
+    this.scrollingElement.addEventListener('scroll', this.hideTooltips);
 
     if (document.querySelector('.js-static-panel-inner')) {
       PanelBreakpointInstance.addResizeListener(() => {
@@ -435,7 +438,7 @@ export default {
     this.removeEventListeners();
 
     window.removeEventListener('hashchange', this.handleHashChange);
-    window.removeEventListener('scroll', this.hideTooltips);
+    this.scrollingElement.removeEventListener('scroll', this.hideTooltips);
 
     diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
     diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);

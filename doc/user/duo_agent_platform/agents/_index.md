@@ -93,6 +93,8 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog** and find the agent you want to enable.
 1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Enable in project**.
+1. From the **Project** dropdown list, select your project.
+1. Select **Enable**.
 
 The agent appears on the project's **Agents** page.
 

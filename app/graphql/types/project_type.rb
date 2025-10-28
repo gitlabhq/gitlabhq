@@ -558,10 +558,6 @@ module Types
 
     field :services, Types::Projects::ServiceType.connection_type,
       null: true,
-      deprecated: {
-        reason: 'A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904)',
-        milestone: '15.9'
-      },
       description: 'Project services.',
       resolver: Resolvers::Projects::ServicesResolver
 

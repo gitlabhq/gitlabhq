@@ -2083,19 +2083,102 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#branch_names', :clean_gitlab_redis_cache do
     let_it_be(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:branch_names) { %w[main develop] }
 
-    let(:fake_branch_names) { ['foobar'] }
+    it 'bypasses cache and calls the uncached method directly' do
+      expect(repository).not_to receive(:cache_method_output_as_redis_set)
+      allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
 
-    it 'gets cached across Repository instances' do
-      allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
+      result = repository.branch_names
+      expect(result).to match_array(branch_names)
+    end
 
-      expect(repository.branch_names).to match_array(fake_branch_names)
+    it 'does not use caching mechanism' do
+      allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
 
-      fresh_repository = Project.find(project.id).repository
-      expect(fresh_repository.object_id).not_to eq(repository.object_id)
+      # Call multiple times to verify no caching
+      first_call = repository.branch_names
+      second_call = repository.branch_names
 
-      expect(fresh_repository.raw_repository).not_to receive(:branch_names)
-      expect(fresh_repository.branch_names).to match_array(fake_branch_names)
+      # Should call raw repository each time (no caching)
+      expect(repository.raw_repository).to have_received(:branch_names).twice
+      expect(first_call).to match_array(branch_names)
+      expect(second_call).to match_array(branch_names)
+    end
+
+    context 'when avoid_branch_names_cache feature flag is disabled' do
+      before do
+        stub_feature_flags(avoid_branch_names_cache: false)
+        repository.expire_branches_cache
+      end
+
+      it 'uses caching mechanism' do
+        expect(repository).to receive(:cache_method_output_as_redis_set).and_call_original
+        allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
+
+        repository.branch_names
+      end
+
+      it 'returns cached result on subsequent calls' do
+        allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
+
+        first_result = repository.branch_names
+        second_result = repository.branch_names
+
+        expect(first_result).to eq(second_result)
+        # Should only call the raw repository once due to caching
+        expect(repository.raw_repository).to have_received(:branch_names).once
+      end
+    end
+
+    context 'fallback behavior' do
+      it 'returns empty array when no branches exist' do
+        allow(repository.raw_repository).to receive(:branch_names).and_return([])
+
+        result = repository.branch_names
+        expect(result).to eq([])
+      end
+    end
+  end
+
+  context 'branch_names_include? method' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:branch_names) { %w[main develop] }
+
+    it 'bypasses cache for include check' do
+      allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
+
+      expect(repository.branch_names_include?('main')).to be(true)
+      expect(repository.branch_names_include?('feature')).to be(false)
+
+      # Should call branch_names for each include check when cache is bypassed
+      expect(repository.raw_repository).to have_received(:branch_names).at_least(:twice)
+    end
+
+    context 'when avoid_branch_names_cache feature flag is disabled' do
+      before do
+        stub_feature_flags(avoid_branch_names_cache: false)
+        # Stub ref_existence_check_gitaly to ensure consistent test behavior
+        # This prevents the ref existence check from interfering with our cache testing
+        # by forcing include? method to use the branch_names cache path
+        stub_feature_flags(ref_existence_check_gitaly: false)
+      end
+
+      it 'uses caching for include check' do
+        allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
+
+        # First call should populate cache
+        repository.branch_names
+
+        # Include check should use cached data
+        expect(repository.branch_names_include?('main')).to be(true)
+        expect(repository.branch_names_include?('feature')).to be(false)
+
+        # Should only call raw repository once due to caching
+        expect(repository.raw_repository).to have_received(:branch_names).once
+      end
     end
   end
 

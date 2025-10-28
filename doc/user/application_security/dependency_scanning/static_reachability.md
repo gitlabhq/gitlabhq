@@ -91,16 +91,24 @@ A dependency can have one of the following reachability values:
 Yes
 : The package linked to this vulnerability is confirmed reachable in code.
 
+  When a direct dependency is marked as reachable its transitive dependencies are also
+  marked as reachable.
+
 Not Found
-: SRA ran successfully but did not detect usage of the vulnerable package. If a vulnerable
-dependency's reachability value is shown as **Not Found**, exercise caution rather than completely
-dismissing it, as SRA cannot always definitively determine package usage.
+: SRA ran successfully but did not detect usage of the vulnerable package.
 
 Not Available
 : SRA was not executed, so no reachability data exists.
 
-When a direct dependency is marked as in use, all its transitive dependencies are also marked as
-in use.
+### Not Found reachability value
+
+If a vulnerable dependency's reachability value is shown as **Not Found**, exercise caution rather than completely
+dismissing it, as SRA cannot always definitively determine package usage.
+
+Dependencies in excluded directories might appear in the SBOM but be marked as **Not Found**. This occurs when lock files
+are in scope of dependency scanning but the source code that uses those dependencies is excluded. For example, you configure the
+CI/CD variable `DS_EXCLUDED_PATHS` to exclude the directory `tests/` from dependency scanning. All dependencies identified from
+the lock file are listed in the SBOM, but SRA does not scan source code in excluded paths.
 
 ## Supported languages and package managers
 

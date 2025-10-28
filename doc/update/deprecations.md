@@ -667,22 +667,6 @@ We will be transitioning to a new IID as a result of moving requirements to a [w
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### The `Project.services` GraphQL field is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388424).
-
-</div>
-
-The `Project.services` GraphQL field is deprecated. A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
-
-</div>
-
 <div class="deprecation " data-milestone="19.0">
 
 ### The `ci_job_token_scope_enabled` projects API attribute is deprecated

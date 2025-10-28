@@ -82,6 +82,10 @@ module QA
           click_element(option_name)
         end
 
+        def go_to_merge_request_dashboard
+          click_element('merge-requests-shortcut-button')
+        end
+
         def go_to_todos
           click_element('todos-shortcut-button')
         end

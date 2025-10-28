@@ -5,6 +5,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { scrollTo } from '~/lib/utils/scroll_utils';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs, { getActionFromHref } from '~/merge_request_tabs';
 import Diff from '~/diff';
@@ -18,6 +19,12 @@ jest.mock('~/lib/utils/webpack', () => ({
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
+}));
+
+jest.mock('~/lib/utils/scroll_utils', () => ({
+  ...jest.requireActual('~/lib/utils/scroll_utils'),
+  scrollTo: jest.fn(),
+  scrollToElement: jest.fn(),
 }));
 
 describe('MergeRequestTabs', () => {
@@ -372,27 +379,18 @@ describe('MergeRequestTabs', () => {
       $.fn.renderGFM = jest.fn();
       jest.spyOn(mainContent, 'getBoundingClientRect').mockReturnValue({ top: 10 });
       jest.spyOn(tabContent, 'getBoundingClientRect').mockReturnValue({ top: 100 });
-      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
       jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
         return selector === '.content-wrapper' ? mainContent : tabContent;
       });
       testContext.class.currentAction = 'commits';
     });
 
-    it('calls window scrollTo with options if document has scrollBehavior', () => {
-      document.documentElement.style.scrollBehavior = '';
-
-      testContext.class.tabShown('commits', 'foobar');
-
-      expect(window.scrollTo.mock.calls[0][0]).toEqual({ top: 39, behavior: 'smooth' });
-    });
-
-    it('calls window scrollTo with two args if document does not have scrollBehavior', () => {
+    it('calls scrollTo', () => {
       jest.spyOn(document.documentElement, 'style', 'get').mockReturnValue({});
 
       testContext.class.tabShown('commits', 'foobar');
 
-      expect(window.scrollTo.mock.calls[0]).toEqual([0, 39]);
+      expect(scrollTo.mock.calls[0]).toEqual([{ top: 39, behavior: 'smooth' }]);
     });
 
     it.each`
@@ -423,7 +421,6 @@ describe('MergeRequestTabs', () => {
       const SCROLL_TOP = 100;
 
       beforeEach(() => {
-        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         testContext.class.mergeRequestTabs = document.createElement('div');
         testContext.class.mergeRequestTabPanes = document.createElement('div');
         testContext.class.currentTab = 'tab';
@@ -435,7 +432,7 @@ describe('MergeRequestTabs', () => {
 
         jest.advanceTimersByTime(250);
 
-        expect(window.scrollTo.mock.calls[0][0]).toEqual({
+        expect(scrollTo.mock.calls[0][0]).toEqual({
           top: SCROLL_TOP,
           left: 0,
           behavior: 'auto',
@@ -447,7 +444,7 @@ describe('MergeRequestTabs', () => {
 
         jest.advanceTimersByTime(250);
 
-        expect(window.scrollTo).not.toHaveBeenCalled();
+        expect(scrollTo).not.toHaveBeenCalled();
       });
     });
 
@@ -612,6 +609,6 @@ describe('MergeRequestTabs', () => {
 
     // popstate event handlers are not triggered in the same task
     jest.runAllTimers();
-    expect(window.scrollTo).not.toHaveBeenCalled();
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 });

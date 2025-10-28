@@ -41569,11 +41569,6 @@ Returns [`SentryDetailedError`](#sentrydetailederror).
 
 ##### `Project.services`
 
-{{< details >}}
-**Deprecated** in GitLab 15.9.
-A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
-{{< /details >}}
-
 Project services.
 
 Returns [`ServiceConnection`](#serviceconnection).
