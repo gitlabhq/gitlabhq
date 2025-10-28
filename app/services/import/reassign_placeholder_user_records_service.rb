@@ -6,6 +6,7 @@ module Import
 
     MEMBER_SELECT_BATCH_SIZE = 100
     MEMBER_DELETE_BATCH_SIZE = 1_000
+    REFERENCE_DELETE_BATCH_SIZE = 1_000
     GROUP_FINDER_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
     PROJECT_FINDER_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
     RELATION_BATCH_SLEEP = 5
@@ -33,7 +34,11 @@ module Import
       log_warn('Reassigned by user was not found, this may affect membership checks') unless reassigned_by_user
 
       begin
+        DirectReassignService.new(import_source_user).execute
+
         reassign_placeholder_references
+
+        delete_remaining_references
 
         if placeholder_memberships.any?
           create_memberships
@@ -41,9 +46,9 @@ module Import
         end
 
       rescue DatabaseHealthError => error
-        log_warn("#{error.message}. Rescheduling reassignment")
-
-        return reschedule_reassignment_response
+        return handle_reschedule_error(error, :db_health_check_failed)
+      rescue Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError => error
+        return handle_reschedule_error(error, :execution_timeout)
       end
 
       UserProjectAccessChangedService.new(import_source_user.reassign_to_user_id).execute if project_membership_created?
@@ -137,13 +142,21 @@ module Import
         )
       end
 
-      raise DatabaseHealthError if unavailable_tables.any?
+      raise DatabaseHealthError, 'Database unhealthy' if unavailable_tables.any?
     end
 
     def reassign_placeholder_records_batch(model_relation, placeholder_references)
       aliased_user_reference_column = placeholder_references.first.aliased_user_reference_column
       model_relation.klass.transaction do
-        model_relation.update_all({ aliased_user_reference_column => import_source_user.reassign_to_user_id })
+        update_count = model_relation.update_all(
+          { aliased_user_reference_column => import_source_user.reassign_to_user_id }
+        )
+
+        # Temporary log to track for each models/attributes placeholder references are still used
+        if log_placeholder_reference_used?(update_count)
+          log_info('Placeholder references used', model: model_relation.klass.name,
+            user_reference_column: aliased_user_reference_column)
+        end
       end
       placeholder_references.delete_all
     rescue ActiveRecord::RecordNotUnique
@@ -157,6 +170,20 @@ module Import
       placeholder_reference.destroy!
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
       log_warn('Unable to reassign record, reassigned user is invalid or not unique')
+    end
+
+    def delete_remaining_references
+      source_user_references = ::Import::SourceUserPlaceholderReference.for_source_user(import_source_user)
+
+      source_user_references.each_batch(of: REFERENCE_DELETE_BATCH_SIZE) do |batch|
+        batch.delete_all
+      end
+    end
+
+    def log_placeholder_reference_used?(update_count)
+      Feature.enabled?(:user_mapping_direct_reassignment, reassigned_by_user) &&
+        update_count > 0 &&
+        import_source_user.placeholder_user.placeholder?
     end
 
     def create_memberships
@@ -284,12 +311,16 @@ module Import
       raise DatabaseHealthError, "Database unhealthy" if stop_signal
     end
 
-    def reschedule_reassignment_response
-      ServiceResponse.new(
-        status: :ok,
-        message: s_('Import|Rescheduling placeholder user records reassignment: database health'),
+    def handle_reschedule_error(error, reason)
+      log_warn("#{error.message}. Rescheduling reassignment")
+      reschedule_reassignment_response(error.message, reason)
+    end
+
+    def reschedule_reassignment_response(message, reason)
+      ServiceResponse.error(
+        message: message,
         payload: import_source_user,
-        reason: :db_health_check_failed
+        reason: reason
       )
     end
 

@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_management do
+  range = (101..105)
+  indices = (0..).take(range.size)
+
   let_it_be(:user) { create(:user) }
   let_it_be(:one_sibling, reload: true) { create(:project, creator: user, namespace: user.namespace) }
   let_it_be(:one_free_space, reload: true) { create(:project, creator: user, namespace: user.namespace) }
@@ -10,16 +13,7 @@ RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_manageme
   let_it_be(:no_issues, reload: true) { create(:project, creator: user, namespace: user.namespace) }
   let_it_be(:three_sibs, reload: true) { create(:project, creator: user, namespace: user.namespace) }
 
-  def create_issue(pos, parent = project)
-    create(:issue, author: user, project: parent, relative_position: pos)
-  end
-
-  range = (101..105)
-  indices = (0..).take(range.size)
-
   let(:start) { ((range.first + range.last) / 2.0).floor }
-
-  subject { described_class.new(start, range) }
 
   let_it_be(:full_set) do
     range.each_with_index.map do |pos, i|
@@ -37,6 +31,10 @@ RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_manageme
     [1, 2, 3].map { |iid| create(:issue, iid: iid, project: three_sibs) }
   end
 
+  def create_issue(pos, parent = project)
+    create(:issue, author: user, project: parent, relative_position: pos)
+  end
+
   def set_positions(positions)
     mapping = issues.zip(positions).to_h do |issue, pos|
       [issue, { relative_position: pos }]
@@ -52,6 +50,8 @@ RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_manageme
   def relative_positions
     project.issues.pluck(:relative_position)
   end
+
+  subject { described_class.new(start, range) }
 
   describe '#move_to_end' do
     def max_position

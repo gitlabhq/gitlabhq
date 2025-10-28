@@ -25,7 +25,7 @@ module Import
 
       response = Import::ReassignPlaceholderUserRecordsService.new(import_source_user).execute
 
-      if response&.reason == :db_health_check_failed
+      if response.error? && [:execution_timeout, :db_health_check_failed].include?(response.reason)
         return self.class.perform_in(BACKOFF_PERIOD, import_source_user.id, params)
       end
 

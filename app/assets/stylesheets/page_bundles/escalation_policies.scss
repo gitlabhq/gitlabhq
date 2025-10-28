@@ -12,14 +12,14 @@ $stroke-size: 1px;
 
 .right-arrow {
   height: $stroke-size;
+}
 
-  &-head {
-    top: -2 * $stroke-size;
-    left: calc(100% - #{5 * $stroke-size});
-    border-width: 0 $stroke-size $stroke-size 0;
-    border-color: var(--gray-900, $gray-900);
-    transform: rotate(-45deg);
-  }
+.right-arrow-head {
+  top: -2 * $stroke-size;
+  left: calc(100% - #{5 * $stroke-size});
+  border-width: 0 $stroke-size $stroke-size 0;
+  border-color: var(--gray-900, $gray-900);
+  transform: rotate(-45deg);
 }
 
 .escalation-rule-row {

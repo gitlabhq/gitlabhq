@@ -30898,6 +30898,18 @@ Describes the subscription history of a given namespace.
 | <a id="gitlabsubscriptionhistoryseatsinuse"></a>`seatsInUse` | [`Int`](#int) | Seats being used in subscription. |
 | <a id="gitlabsubscriptionhistorystartdate"></a>`startDate` | [`Time`](#time) | Subscription start date. |
 
+### `GitlabSubscriptionMonthlyCommitment`
+
+Describes the usage of GitLab Credits for the subscription's monthly commitment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionmonthlycommitmentcreditsused"></a>`creditsUsed` | [`Float`](#float) | Total of GitLab Credits consumed from the subscription's monthly commitment. |
+| <a id="gitlabsubscriptionmonthlycommitmentdailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of the subscription's monthly commitment. |
+| <a id="gitlabsubscriptionmonthlycommitmenttotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated as a subscription's monthly commitment. |
+
 ### `GitlabSubscriptionOneTimeCredits`
 
 Describes the usage of one time credits for the subscription.
@@ -30922,18 +30934,6 @@ Describes the overage usage of consumables for the subscription.
 | <a id="gitlabsubscriptionoveragedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]!`](#gitlabsubscriptiondailyusage) | Array of daily overage usage. |
 | <a id="gitlabsubscriptionoverageisallowed"></a>`isAllowed` | [`Boolean!`](#boolean) | Whether GitLab Credits overage is allowed for the subscription. |
 
-### `GitlabSubscriptionPoolUsage`
-
-Describes the usage of consumables for the subscription shared pool.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="gitlabsubscriptionpoolusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | Total of GitLab Credits consumed by the subscription. |
-| <a id="gitlabsubscriptionpoolusagedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of pool GitLab Credits. |
-| <a id="gitlabsubscriptionpoolusagetotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated to the subscription. |
-
 ### `GitlabSubscriptionUsage`
 
 Describes the usage of consumables under the subscription.
@@ -30944,9 +30944,9 @@ Describes the usage of consumables under the subscription.
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageenddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusagelasteventtransactionat"></a>`lastEventTransactionAt` | [`ISO8601DateTime`](#iso8601datetime) | Date and time when the last usage event resulted in a wallet transaction. |
+| <a id="gitlabsubscriptionusagemonthlycommitment"></a>`monthlyCommitment` | [`GitlabSubscriptionMonthlyCommitment`](#gitlabsubscriptionmonthlycommitment) | Consumption usage for the subscription monthly commitment. |
 | <a id="gitlabsubscriptionusageonetimecredits"></a>`oneTimeCredits` | [`GitlabSubscriptionOneTimeCredits`](#gitlabsubscriptiononetimecredits) | One time credits usage for the subscription. |
 | <a id="gitlabsubscriptionusageoverage"></a>`overage` | [`GitlabSubscriptionOverage`](#gitlabsubscriptionoverage) | Overage statistics. |
-| <a id="gitlabsubscriptionusagepoolusage"></a>`poolUsage` | [`GitlabSubscriptionPoolUsage`](#gitlabsubscriptionpoolusage) | Consumption usage for the subscription shared pool. |
 | <a id="gitlabsubscriptionusagepurchasecreditspath"></a>`purchaseCreditsPath` | [`String`](#string) | URL to purchase GitLab Credits. |
 | <a id="gitlabsubscriptionusagestartdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusageusersusage"></a>`usersUsage` | [`GitlabSubscriptionUsageUsersUsage`](#gitlabsubscriptionusageusersusage) | Consumption usage for users under the subscription. |
@@ -31001,8 +31001,8 @@ Describes the usage of consumables for a user under the subscription.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageuserusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used by the user. |
+| <a id="gitlabsubscriptionusageuserusagemonthlycommitmentcreditsused"></a>`monthlyCommitmentCreditsUsed` | [`Float`](#float) | GitLab Credits from the subscription monthly commitment used by the user. |
 | <a id="gitlabsubscriptionusageuserusageoveragecreditsused"></a>`overageCreditsUsed` | [`Float`](#float) | Overage GitLab Credits used by the user. |
-| <a id="gitlabsubscriptionusageuserusagepoolcreditsused"></a>`poolCreditsUsed` | [`Float`](#float) | GitLab Credits from the subscription pool used by the user. |
 | <a id="gitlabsubscriptionusageuserusagetotalcredits"></a>`totalCredits` | [`Float`](#float) | Total GitLab Credits available for the user. |
 
 ### `GitlabSubscriptionUsageUsersUsage`
@@ -31016,8 +31016,8 @@ Describes the usage of consumables by users under the subscription.
 | <a id="gitlabsubscriptionusageusersusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used by consumers of the subscription. |
 | <a id="gitlabsubscriptionusageusersusagedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of GitLab Credits. |
 | <a id="gitlabsubscriptionusageusersusagetotalusersusingcredits"></a>`totalUsersUsingCredits` | [`Int`](#int) | Total number of users consuming GitLab Credits. |
+| <a id="gitlabsubscriptionusageusersusagetotalusersusingmonthlycommitment"></a>`totalUsersUsingMonthlyCommitment` | [`Int`](#int) | Total number of users consuming GitLab Credits from the subscription monthly commitment. |
 | <a id="gitlabsubscriptionusageusersusagetotalusersusingoverage"></a>`totalUsersUsingOverage` | [`Int`](#int) | Total number of users consuming overage. |
-| <a id="gitlabsubscriptionusageusersusagetotalusersusingpool"></a>`totalUsersUsingPool` | [`Int`](#int) | Total number of users consuming pool GitLab Credits. |
 
 #### Fields with arguments
 

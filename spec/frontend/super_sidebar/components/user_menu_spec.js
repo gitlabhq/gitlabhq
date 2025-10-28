@@ -42,6 +42,7 @@ describe('UserMenu component', () => {
       stubs: {
         GlEmoji,
         GlAvatar: true,
+        GlIcon: true,
         SetStatusModal: stubComponent(SetStatusModal),
         ...stubs,
       },
@@ -279,46 +280,6 @@ describe('UserMenu component', () => {
             currentMessage: '',
           });
         });
-      });
-    });
-  });
-
-  describe('Start Ultimate trial item', () => {
-    let item;
-
-    const setItem = ({ has_start_trial } = {}) => {
-      createWrapper({ trial: { has_start_trial, url: '' } });
-      item = wrapper.findByTestId('start-trial-item');
-    };
-
-    describe('When Ultimate trial is not suggested for the user', () => {
-      it('does not render the start trial menu item', () => {
-        setItem();
-        expect(item.exists()).toBe(false);
-      });
-    });
-
-    describe('When Ultimate trial can be suggested for the user', () => {
-      it('does render the start trial menu item', () => {
-        setItem({ has_start_trial: true });
-        expect(item.exists()).toBe(true);
-      });
-    });
-
-    it('has Snowplow tracking attributes', () => {
-      setItem({ has_start_trial: true });
-      expect(item.find('a').attributes()).toMatchObject({
-        'data-track-property': 'nav_user_menu',
-        'data-track-action': 'click_link',
-        'data-track-label': 'start_trial',
-      });
-    });
-
-    describe('When trial info is not provided', () => {
-      it('does not render the start trial menu item', () => {
-        createWrapper();
-
-        expect(wrapper.findByTestId('start-trial-item').exists()).toBe(false);
       });
     });
   });

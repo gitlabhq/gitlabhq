@@ -22,10 +22,6 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
     create(:import_source_user, :awaiting_approval, :with_reassigned_by_user, namespace: group, reassign_to_user: user)
   end
 
-  Gitlab.ee do
-    let_it_be(:epic) { create(:epic, group: group) }
-  end
-
   let(:expected_kind) { [Mail::Message, ActionMailer::MessageDelivery] }
 
   let(:pending_failures) do
@@ -33,6 +29,10 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
       'NotifyPreview#note_merge_request_email_for_diff_discussion' =>
         'https://gitlab.com/gitlab-org/gitlab/-/issues/372885'
     }
+  end
+
+  Gitlab.ee do
+    let_it_be(:epic) { create(:epic, group: group) }
   end
 
   before_all do

@@ -6,7 +6,7 @@ import {
 } from '../../../../../scripts/frontend/lib/container_queries_migration.mjs';
 
 jest.mock('node:fs', () => ({
-  readFileSync: () => 'app/assets/javascripts/super_sidebar/\nfoo(bar|baz)',
+  readFileSync: () => 'app/assets/javascripts/super_sidebar/\nfoo(bar|baz)\niam.regex',
 }));
 
 describe('isFileExcluded', () => {
@@ -16,6 +16,12 @@ describe('isFileExcluded', () => {
       expect(isFileExcluded(file)).toBe(true);
     },
   );
+
+  it('converts lines to regexes', () => {
+    expect(isFileExcluded('iamaregex')).toBe(true);
+    expect(isFileExcluded('iam.regex')).toBe(true);
+    expect(isFileExcluded('iam_regex')).toBe(true);
+  });
 
   it('returns false if the file does not match any exclusion pattern', () => {
     expect(isFileExcluded('migrate_me')).toBe(false);

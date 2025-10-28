@@ -215,6 +215,7 @@ export const sidebarData = {
   sign_in_path: '/sign_in',
   allow_signup: true,
   new_user_registration_path: '/sign_up',
+  has_multiple_organizations: false,
 };
 
 export const loggedOutSidebarData = {

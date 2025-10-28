@@ -106,8 +106,6 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
   end
 
   describe '#fetch_logs' do
-    let(:limit) { 4 }
-
     custom_files = {
       'a.txt' => '',
       'b.txt' => '',
@@ -116,6 +114,7 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
       ':file' => ''
     }
 
+    let(:limit) { 4 }
     let!(:project) { create(:project, :custom_repo, files: custom_files) }
     let(:commit) { repo.head_commit }
 

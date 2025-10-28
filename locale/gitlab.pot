@@ -2494,6 +2494,9 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
+msgid "AICatalog|Add flow triggers"
+msgstr ""
+
 msgid "AICatalog|Agent configuration"
 msgstr ""
 
@@ -2570,6 +2573,9 @@ msgid "AICatalog|Can't be made public if enabled in a project."
 msgstr ""
 
 msgid "AICatalog|Can't be shared, even within your organization."
+msgstr ""
+
+msgid "AICatalog|Choose what events in this project trigger the flow. You can change this later."
 msgstr ""
 
 msgid "AICatalog|Choose who can view and interact with this agent."
@@ -2686,6 +2692,9 @@ msgstr ""
 msgid "AICatalog|Enable %{itemType} in a %{targetType}"
 msgstr ""
 
+msgid "AICatalog|Enable flow in project"
+msgstr ""
+
 msgid "AICatalog|Enable in"
 msgstr ""
 
@@ -2798,6 +2807,9 @@ msgid "AICatalog|New flow"
 msgstr ""
 
 msgid "AICatalog|Nodes run sequentially."
+msgstr ""
+
+msgid "AICatalog|Only flows enabled in your group will be shown here."
 msgstr ""
 
 msgid "AICatalog|Only members of this project can view this agent. This agent can't be shared with other projects."
@@ -2921,6 +2933,15 @@ msgid "AICatalog|This flow specializes in... It can help you with... Best suited
 msgstr ""
 
 msgid "AICatalog|Tools"
+msgstr ""
+
+msgid "AICatalog|Trigger this flow when the service account user is assigned as a reviewer to a merge request."
+msgstr ""
+
+msgid "AICatalog|Trigger this flow when the service account user is assigned to issue or merge request."
+msgstr ""
+
+msgid "AICatalog|Trigger this flow when the service account user is mentioned in an issue or merge request."
 msgstr ""
 
 msgid "AICatalog|Use agents in flows and with GitLab Duo Chat."
@@ -20588,10 +20609,10 @@ msgstr ""
 msgid "CurrentUser|Preferences"
 msgstr ""
 
-msgid "CurrentUser|Start an Ultimate trial"
+msgid "CurrentUser|Switch to GitLab Next"
 msgstr ""
 
-msgid "CurrentUser|Switch to GitLab Next"
+msgid "CurrentUser|Upgrade subscription"
 msgstr ""
 
 msgid "Currently tracked refs"
@@ -34611,9 +34632,6 @@ msgstr ""
 msgid "Import|Reassign contributions"
 msgstr ""
 
-msgid "Import|Rescheduling placeholder user records reassignment: database health"
-msgstr ""
-
 msgid "Import|Show errors"
 msgstr ""
 
@@ -40908,6 +40926,9 @@ msgid "Member|Revoke invite"
 msgstr ""
 
 msgid "Memory usage"
+msgstr ""
+
+msgid "Mention"
 msgstr ""
 
 msgid "Mentions"
@@ -57659,6 +57680,9 @@ msgstr ""
 msgid "ScanResultPolicy|Only 1 age criteria is allowed"
 msgstr ""
 
+msgid "ScanResultPolicy|Only show/block vulnerabilities that %{boldStart}are%{boldEnd} being exploited."
+msgstr ""
+
 msgid "ScanResultPolicy|Override project approval settings"
 msgstr ""
 
@@ -57807,12 +57831,6 @@ msgid "ScanResultPolicy|Use time window for target pipeline comparison"
 msgstr ""
 
 msgid "ScanResultPolicy|Users"
-msgstr ""
-
-msgid "ScanResultPolicy|Vulnerabilities that %{boldStart}are not%{boldEnd} being exploited."
-msgstr ""
-
-msgid "ScanResultPolicy|Vulnerabilities that %{boldStart}are%{boldEnd} being exploited."
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"

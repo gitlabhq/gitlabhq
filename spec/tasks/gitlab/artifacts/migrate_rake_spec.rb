@@ -58,11 +58,10 @@ RSpec.describe 'gitlab:artifacts namespace rake task', :silence_stdout do
 
   describe 'gitlab:artifacts:migrate_to_local' do
     let(:object_storage_enabled) { true }
-
-    subject { run_rake_task('gitlab:artifacts:migrate_to_local') }
-
     let!(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
     let!(:job_log) { create(:ci_job_artifact, :trace, file_store: store) }
+
+    subject { run_rake_task('gitlab:artifacts:migrate_to_local') }
 
     context 'when remote storage is used' do
       let(:store) { ObjectStorage::Store::REMOTE }

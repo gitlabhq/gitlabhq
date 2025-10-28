@@ -50,6 +50,19 @@ RSpec.describe SearchController, feature_category: :global_search do
         }
         get action, params: params
       end
+
+      context 'if scope requested is not allowed' do
+        it 'uses the actual scope the backend is using' do
+          expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+            method.call(payload)
+
+            expect(payload[:metadata]['meta.search.scope']).to eq('projects')
+          end
+
+          # projects is default scope for global search, notes is not available for basic global search
+          get action, params: { scope: 'notes', search: 'hello world', search_type: 'basic' }
+        end
+      end
     end
 
     shared_examples_for 'rate limit scope handling' do |action, base_params|

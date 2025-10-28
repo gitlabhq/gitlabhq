@@ -103,14 +103,14 @@ hr {
 
 .str-truncated {
   @include str-truncated;
+}
 
-  &-30 {
-    @include str-truncated(30%);
-  }
+.str-truncated-30 {
+  @include str-truncated(30%);
+}
 
-  &-100 {
-    @include str-truncated(100%);
-  }
+.str-truncated-100 {
+  @include str-truncated(100%);
 }
 
 .item-title { font-weight: $gl-font-weight-bold; }

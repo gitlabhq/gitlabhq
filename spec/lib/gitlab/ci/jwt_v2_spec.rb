@@ -324,32 +324,6 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
           end
         end
       end
-
-      context "when FF is disabled and bridge source" do
-        before do
-          stub_feature_flags(sigstore_child_pipelines_fix: false)
-        end
-
-        let(:project_config) do
-          instance_double(
-            Gitlab::Ci::ProjectConfig,
-            url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
-            source: :bridge_source
-          )
-        end
-
-        it 'preserves original behaviour' do
-          expect(Gitlab::Ci::ProjectConfig).to receive(:new).with(
-            project: target_project,
-            sha: pipeline.sha,
-            pipeline_source: pipeline.source.to_sym,
-            pipeline_source_bridge: pipeline.source_bridge
-          ).and_return(project_config)
-
-          expect(payload[:ci_config_ref_uri]).to be_nil
-          expect(payload[:ci_config_sha]).to be_nil
-        end
-      end
     end
   end
 end

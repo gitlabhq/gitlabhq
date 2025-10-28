@@ -84,7 +84,7 @@ module API
         ].freeze
       end
 
-      def self.integrations
+      def self.integrations # rubocop: disable Metrics/AbcSize -- just being a struct, doesn't have behavior
         {
           'apple-app-store' => ::Integrations::AppleAppStore.api_arguments,
           'asana' => ::Integrations::Asana.api_arguments,
@@ -113,7 +113,15 @@ module API
           'harbor' => ::Integrations::Harbor.api_arguments,
           'irker' => ::Integrations::Irker.api_arguments,
           'jenkins' => ::Integrations::Jenkins.api_arguments,
-          'jira' => ::Integrations::Jira.api_arguments,
+          'jira' => [
+            ::Integrations::Jira.api_arguments,
+            {
+              required: false,
+              name: :comment_on_event_enabled,
+              type: ::Grape::API::Boolean,
+              desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'
+            }
+          ].flatten,
           'jira-cloud-app' => ::Integrations::JiraCloudApp.api_arguments,
           'linear' => ::Integrations::Linear.api_arguments,
           'matrix' => ::Integrations::Matrix.api_arguments,

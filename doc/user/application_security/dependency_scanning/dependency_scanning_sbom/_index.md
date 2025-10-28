@@ -867,7 +867,7 @@ Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.
 Alternatively you can enable the feature using the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 
 Please make sure you follow the [language-specific instructions](#language-specific-instructions). 
-If you wish to customise the analyzer behavior use the [available CI/CD variables](#available-cicd-variables)
+If you wish to customize the analyzer behavior use the [available CI/CD variables](#available-cicd-variables)
 
 #### Trigger files for the `latest` template
 

@@ -102,7 +102,7 @@ If you belong to multiple GitLab Duo namespaces, you must choose one as your def
 You must do this because GitLab Duo might not be able to automatically detect the namespace you are working from, and therefore the LLMs you want to use. For example, when:
 
 - Using GitLab Duo in the CLI.
-- A new project has not been initialised with Git, so the IDE cannot identify an associated namespace.
+- A new project has not been initialized with Git, so the IDE cannot identify an associated namespace.
 
 If this happens, GitLab Duo uses the LLMs you have selected in your default namespace.
 

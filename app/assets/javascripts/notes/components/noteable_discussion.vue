@@ -15,6 +15,7 @@ import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -318,6 +319,13 @@ export default {
         this.showReplyForm();
       }
     },
+    async onQuoteReply() {
+      const text = await CopyAsGFM.selectionToGfm();
+      // prevent hotkey input from going into the form
+      requestAnimationFrame(() => {
+        this.showReplyForm(text);
+      });
+    },
   },
 };
 </script>
@@ -331,6 +339,7 @@ export default {
         :data-discussion-resolved="discussion.resolved"
         class="discussion js-discussion-container"
         data-testid="discussion-content"
+        @quoteReply="onQuoteReply"
       >
         <diff-discussion-header v-if="shouldRenderDiffs" :discussion="discussion" />
         <div v-if="!shouldHideDiscussionBody" class="discussion-body">

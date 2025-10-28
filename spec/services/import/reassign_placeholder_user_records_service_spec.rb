@@ -8,20 +8,89 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
   let_it_be(:real_user) { source_user.reassign_to_user }
   let_it_be(:real_user_id) { real_user.id }
 
+  before do
+    allow(Kernel).to receive(:sleep)
+  end
+
   describe '#execute', :aggregate_failures do
     before do
       allow(service).to receive_messages(db_health_check!: nil, db_table_unavailable?: false)
     end
 
     context 'when a user can be reassigned without error' do
-      it_behaves_like 'a successful reassignment'
+      context 'when contributions is assigned to the import user type' do
+        before do
+          import_user.update!(user_type: :import_user)
+        end
 
-      it_behaves_like 'reassigns placeholder user records' do
-        let(:reassign_user_id) { real_user_id }
+        it_behaves_like 'a successful reassignment'
+
+        it_behaves_like 'reassigns placeholder user records' do
+          let(:reassign_user_id) { real_user_id }
+        end
+
+        it_behaves_like 'handles membership creation for reassigned users' do
+          let(:reassign_user) { real_user }
+        end
+
+        it 'does not log when placeholder references are used' do
+          expect(Import::Framework::Logger).not_to receive(:info).with(
+            hash_including(message: 'Placeholder references used')
+          )
+
+          service.execute
+        end
       end
 
-      it_behaves_like 'handles membership creation for reassigned users' do
-        let(:reassign_user) { real_user }
+      context 'when contributions is assigned to the placeholder user type' do
+        before do
+          import_user.update!(user_type: :placeholder)
+        end
+
+        it_behaves_like 'a successful reassignment'
+
+        it_behaves_like 'reassigns placeholder user records' do
+          let(:reassign_user_id) { real_user_id }
+        end
+
+        it_behaves_like 'handles membership creation for reassigned users' do
+          let(:reassign_user) { real_user }
+        end
+
+        it 'logs when placeholder references are used' do
+          allow(Import::Framework::Logger).to receive(:info)
+          expect(Import::Framework::Logger).to receive(:info).with(
+            hash_including(
+              message: 'Placeholder references used',
+              model: "Note",
+              user_reference_column: 'updated_by_id'
+            )
+          )
+
+          expect(Import::Framework::Logger).not_to receive(:info).with(
+            hash_including(
+              message: 'Placeholder references used',
+              model: "Note",
+              user_reference_column: 'author_id'
+            )
+          )
+
+          service.execute
+        end
+
+        context 'when user_mapping_direct_reassignment feature flag is disabled' do
+          before do
+            stub_feature_flags(user_mapping_direct_reassignment: false)
+          end
+
+          it 'does not log when placeholder references are used' do
+            expect(Import::Framework::Logger).not_to receive(:info).with(
+              hash_including(message: 'Placeholder references used')
+            )
+
+            service.execute
+          end
+        end
       end
 
       it 'sleeps between processing each model relation batch' do
@@ -470,10 +539,6 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         service.execute
       end
 
-      it 'does not delete the invalid placeholder reference' do
-        expect { service.execute }.not_to change { invalid_placeholder_reference.reload.present? }.from(true)
-      end
-
       it 'completes the reassignment' do
         service.execute
 
@@ -511,14 +576,10 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         service.execute
       end
 
-      it 'does not delete placeholder references for unassigned records' do
+      it 'deletes placeholder references for unassigned records' do
         expect { service.execute }.to change {
           Import::SourceUserPlaceholderReference.where(source_user: source_user).count
-        }.to(1)
-
-        expect(
-          Import::SourceUserPlaceholderReference.where(source_user: source_user).pluck(:numeric_key)
-        ).to eq([merge_request_approval.id])
+        }.to(0)
       end
 
       it_behaves_like 'a successful reassignment'
@@ -573,9 +634,9 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
       result = service.execute
 
-      expect(result.status).to eq(:ok)
+      expect(result.status).to eq(:error)
       expect(result.reason).to eq(:db_health_check_failed)
-      expect(result.message).to eq('Rescheduling placeholder user records reassignment: database health')
+      expect(result.message).to eq('Database unhealthy')
     end
 
     it 'logs a warning' do
@@ -596,9 +657,9 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
       result = service.execute
 
-      expect(result.status).to eq(:ok)
+      expect(result.status).to eq(:error)
       expect(result.reason).to eq(:db_health_check_failed)
-      expect(result.message).to eq('Rescheduling placeholder user records reassignment: database health')
+      expect(result.message).to eq('Database unhealthy')
     end
 
     it 'logs a warning when checking a single table' do
@@ -709,6 +770,33 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
       it 'returns nil' do
         expect(service.send(:db_health_check!)).to be_nil
       end
+    end
+  end
+
+  context 'when execution time exceeds the limit' do
+    before do
+      allow_next_instance_of(Import::DirectReassignService) do |service|
+        allow(service).to receive(:execute)
+          .and_raise(Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError, 'Execution timeout')
+      end
+    end
+
+    it 'logs a warn' do
+      expect(::Import::Framework::Logger).to receive(:warn).with(
+        hash_including(
+          message: "Execution timeout. Rescheduling reassignment",
+          source_user_id: source_user.id
+        )
+      )
+
+      service.execute
+    end
+
+    it 'returns a execution timeout error' do
+      result = service.execute
+
+      expect(result).to be_error
+      expect(result.reason).to eq(:execution_timeout)
     end
   end
 end

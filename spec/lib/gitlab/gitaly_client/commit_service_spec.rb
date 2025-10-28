@@ -1272,109 +1272,50 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     end
     let(:large_signed_text) { "8cf8e80a5a0546e391823c250f2b26b9cf15ce88" } # has signature and commit message > 4MB
 
-    context 'when committer_email feature flag is enabled' do
-      before do
-        stub_feature_flags(committer_email: true)
+    it 'returns commit signatures with committer email for specified commit ids', :aggregate_failures do
+      signatures = client.get_commit_signatures(
+        [without_signature, large_signed_text, *signed_by_user]
+      )
+
+      expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
+
+      [large_signed_text, *signed_by_user].each do |commit_id|
+        expect(signatures[commit_id][:signature]).to be_present
+        expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
+        expect(signatures[commit_id][:author_email]).to be_present
+        expect(signatures[commit_id][:committer_email]).to be_present
       end
 
-      it 'returns commit signatures with committer email for specified commit ids', :aggregate_failures do
-        signatures = client.get_commit_signatures(
-          [without_signature, large_signed_text, *signed_by_user]
-        )
-
-        expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
-
-        [large_signed_text, *signed_by_user].each do |commit_id|
-          expect(signatures[commit_id][:signature]).to be_present
-          expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
-          expect(signatures[commit_id][:author_email]).to be_present
-          expect(signatures[commit_id][:committer_email]).to be_present
-        end
-
-        signed_by_user.each do |commit_id|
-          commit = project.commit(commit_id)
-          expect(signatures[commit_id][:signed_text]).to include(commit.message)
-          expect(signatures[commit_id][:signed_text]).to include(commit.description)
-          expect(signatures[commit_id][:author_email]).to eq(commit.author_email)
-          expect(signatures[commit_id][:committer_email]).to eq(commit.committer_email)
-        end
-
-        expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
+      signed_by_user.each do |commit_id|
+        commit = project.commit(commit_id)
+        expect(signatures[commit_id][:signed_text]).to include(commit.message)
+        expect(signatures[commit_id][:signed_text]).to include(commit.description)
+        expect(signatures[commit_id][:author_email]).to eq(commit.author_email)
+        expect(signatures[commit_id][:committer_email]).to eq(commit.committer_email)
       end
 
-      context 'when committer email is present in Gitaly response' do
-        it 'includes committer email in the signature' do
-          # Mock Gitaly response with committer email
-          allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
-            [
-              Gitaly::GetCommitSignaturesResponse.new(
-                commit_id: signed_by_user.first,
-                signature: 'test-signature',
-                signed_text: 'test-signed-text',
-                signer: :SIGNER_USER,
-                author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
-                committer: Gitaly::CommitAuthor.new(email: 'committer@example.com')
-              )
-            ]
-          end
-
-          signatures = client.get_commit_signatures([signed_by_user.first])
-
-          expect(signatures[signed_by_user.first][:committer_email]).to eq('committer@example.com')
-        end
-      end
+      expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
     end
 
-    context 'when committer_email feature flag is disabled' do
-      before do
-        stub_feature_flags(committer_email: false)
-      end
-
-      it 'returns commit signatures without committer email for specified commit ids', :aggregate_failures do
-        signatures = client.get_commit_signatures(
-          [without_signature, large_signed_text, *signed_by_user]
-        )
-
-        expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
-
-        [large_signed_text, *signed_by_user].each do |commit_id|
-          expect(signatures[commit_id][:signature]).to be_present
-          expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
-          expect(signatures[commit_id][:author_email]).to be_present
-          expect(signatures[commit_id][:committer_email]).to eq(''.b) # Empty binary string when feature flag is disabled
+    context 'when committer email is present in Gitaly response' do
+      it 'includes committer email in the signature' do
+        # Mock Gitaly response with committer email
+        allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
+          [
+            Gitaly::GetCommitSignaturesResponse.new(
+              commit_id: signed_by_user.first,
+              signature: 'test-signature',
+              signed_text: 'test-signed-text',
+              signer: :SIGNER_USER,
+              author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
+              committer: Gitaly::CommitAuthor.new(email: 'committer@example.com')
+            )
+          ]
         end
 
-        signed_by_user.each do |commit_id|
-          commit = project.commit(commit_id)
-          expect(signatures[commit_id][:signed_text]).to include(commit.message)
-          expect(signatures[commit_id][:signed_text]).to include(commit.description)
-          expect(signatures[commit_id][:author_email]).to eq(commit.author_email)
-          expect(signatures[commit_id][:committer_email]).to eq(''.b) # Empty binary string when feature flag is disabled
-        end
+        signatures = client.get_commit_signatures([signed_by_user.first])
 
-        expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
-      end
-
-      context 'when committer email is present in Gitaly response' do
-        it 'does not include committer email in the signature when feature flag is disabled' do
-          # Mock Gitaly response with committer email
-          allow_any_instance_of(Gitaly::CommitService::Stub).to receive(:get_commit_signatures) do
-            [
-              Gitaly::GetCommitSignaturesResponse.new(
-                commit_id: signed_by_user.first,
-                signature: 'test-signature',
-                signed_text: 'test-signed-text',
-                signer: :SIGNER_USER,
-                author: Gitaly::CommitAuthor.new(email: 'author@example.com'),
-                committer: Gitaly::CommitAuthor.new(email: 'committer@example.com')
-              )
-            ]
-          end
-
-          signatures = client.get_commit_signatures([signed_by_user.first])
-
-          expect(signatures[signed_by_user.first][:committer_email]).to eq(''.b)
-        end
+        expect(signatures[signed_by_user.first][:committer_email]).to eq('committer@example.com')
       end
     end
 

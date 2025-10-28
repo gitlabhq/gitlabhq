@@ -535,6 +535,29 @@ Do not use any selector prefixed with `js-` for styling purposes. These
 selectors are intended for use only with JavaScript to allow for removal or
 renaming without breaking styling.
 
+## Concatenating classes
+
+Do not concatenate strings to create classes. Instead, write out the full class name for better readability and maintenance.
+
+```scss
+// Bad
+.foo {
+  /* ... */
+  &-bar {
+    /* ... */
+  }
+}
+
+// Good
+.foo {
+  /* ... */
+}
+
+.foo-bar {
+  /* ... */
+}
+```
+
 ## Selectors with Util CSS Classes
 
 Do not use utility CSS classes as selectors in your stylesheets. These classes

@@ -5597,6 +5597,27 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it_behaves_like 'resolves user solo-owned organizations'
   end
 
+  describe '#has_multiple_organizations?' do
+    let_it_be(:organization) { create(:organization) }
+
+    context 'when user has multiple organizations' do
+      let_it_be(:organization_2) { create(:organization) }
+      let_it_be(:user) { create(:user, organizations: [organization, organization_2]) }
+
+      it 'returns true' do
+        expect(user.has_multiple_organizations?).to eq(true)
+      end
+    end
+
+    context 'when user has one organization' do
+      let_it_be(:user) { create(:user, organizations: [organization]) }
+
+      it 'returns false' do
+        expect(user.has_multiple_organizations?).to eq(false)
+      end
+    end
+  end
+
   describe '#can_remove_self?' do
     let(:user) { create(:user) }
 

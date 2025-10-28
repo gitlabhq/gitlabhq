@@ -25,4 +25,49 @@ RSpec.describe Integrations::HasWebHook, feature_category: :webhooks do
 
     it { expect(integration.hook_ssl_verification).to eq true }
   end
+
+  context 'when assigning a webhook sharding key' do
+    before do
+      allow(integration).to receive(:update_web_hook!).and_call_original
+    end
+
+    context 'when the integration is project level' do
+      let(:project) { create(:project) }
+      let(:integration) { create(:packagist_integration, project: project) }
+
+      it 'assigns the project id' do
+        integration.update_web_hook!
+
+        expect(ServiceHook.last.project_id).to eq(project.id)
+        expect(ServiceHook.last.group_id).to be_nil
+        expect(ServiceHook.last.organization_id).to be_nil
+      end
+    end
+
+    context 'when the integration is group level' do
+      let(:group) { create(:group) }
+      let(:integration) { create(:buildkite_integration, :group, group: group) }
+
+      it 'assigns the group id' do
+        integration.update_web_hook!
+
+        expect(ServiceHook.last.group_id).to eq(group.id)
+        expect(ServiceHook.last.project_id).to be_nil
+        expect(ServiceHook.last.organization_id).to be_nil
+      end
+    end
+
+    context 'when the integration is instance level' do
+      let(:organization) { create(:organization) }
+      let(:integration) { create(:datadog_integration, :instance, organization: organization) }
+
+      it 'assigns the organization id' do
+        integration.update_web_hook!
+
+        expect(ServiceHook.last.organization_id).to eq(organization.id)
+        expect(ServiceHook.last.project_id).to be_nil
+        expect(ServiceHook.last.group_id).to be_nil
+      end
+    end
+  end
 end

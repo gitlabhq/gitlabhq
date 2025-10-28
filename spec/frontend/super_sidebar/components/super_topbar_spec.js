@@ -11,7 +11,7 @@ import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import PromoMenu from '~/super_sidebar/components/promo_menu.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
-import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
+import { defaultOrganization as mockCurrentOrganization } from 'jest/organizations/mock_data';
 import { sidebarData as mockSidebarData } from '../mock_data';
 
 describe('SuperTopbar', () => {
@@ -83,21 +83,53 @@ describe('SuperTopbar', () => {
     });
 
     describe('Organization switcher', () => {
-      it('does not render the organization switcher', () => {
-        expect(findOrganizationSwitcher().exists()).toBe(false);
-      });
+      describe.each`
+        isFeatureFlagEnabled | isLoggedIn | currentOrganization        | hasMultipleOrganizations | expected
+        ${false}             | ${false}   | ${undefined}               | ${false}                 | ${false}
+        ${false}             | ${false}   | ${undefined}               | ${true}                  | ${false}
+        ${false}             | ${false}   | ${mockCurrentOrganization} | ${false}                 | ${false}
+        ${false}             | ${false}   | ${mockCurrentOrganization} | ${true}                  | ${false}
+        ${false}             | ${true}    | ${undefined}               | ${false}                 | ${false}
+        ${false}             | ${true}    | ${undefined}               | ${true}                  | ${false}
+        ${false}             | ${true}    | ${mockCurrentOrganization} | ${false}                 | ${false}
+        ${false}             | ${true}    | ${mockCurrentOrganization} | ${true}                  | ${false}
+        ${true}              | ${false}   | ${undefined}               | ${false}                 | ${false}
+        ${true}              | ${false}   | ${undefined}               | ${true}                  | ${false}
+        ${true}              | ${false}   | ${mockCurrentOrganization} | ${false}                 | ${false}
+        ${true}              | ${false}   | ${mockCurrentOrganization} | ${true}                  | ${false}
+        ${true}              | ${true}    | ${undefined}               | ${false}                 | ${false}
+        ${true}              | ${true}    | ${undefined}               | ${true}                  | ${false}
+        ${true}              | ${true}    | ${mockCurrentOrganization} | ${false}                 | ${false}
+        ${true}              | ${true}    | ${mockCurrentOrganization} | ${true}                  | ${true}
+      `(
+        'when `ui_for_organizations` feature flag is $isFeatureFlagEnabled, logged in state is $isLoggedIn, current organization $currentOrganization, and has_multiple_organizations is $hasMultipleOrganizations',
+        ({
+          isFeatureFlagEnabled,
+          isLoggedIn,
+          currentOrganization,
+          hasMultipleOrganizations,
+          expected,
+        }) => {
+          beforeEach(async () => {
+            window.gon.current_organization = currentOrganization;
+            createComponent(
+              {
+                sidebarData: {
+                  ...mockSidebarData,
+                  is_logged_in: isLoggedIn,
+                  has_multiple_organizations: hasMultipleOrganizations,
+                },
+              },
+              { glFeatures: { uiForOrganizations: isFeatureFlagEnabled } },
+            );
+            await waitForPromises();
+          });
 
-      describe('when `ui_for_organizations` feature flag is enabled, user is logged in and current organization is set', () => {
-        beforeEach(async () => {
-          window.gon.current_organization = currentOrganization;
-          createComponent({ is_logged_in: true }, { glFeatures: { uiForOrganizations: true } });
-          await waitForPromises();
-        });
-
-        it('renders the organization switcher', () => {
-          expect(findOrganizationSwitcher().exists()).toBe(true);
-        });
-      });
+          it(`expects organization switcher existence to be ${expected}`, () => {
+            expect(findOrganizationSwitcher().exists()).toBe(expected);
+          });
+        },
+      );
     });
 
     describe('Search', () => {

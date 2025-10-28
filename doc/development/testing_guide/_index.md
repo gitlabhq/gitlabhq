@@ -53,7 +53,7 @@ tips and tricks to get the most out of white-box testing.
 
 ## Flaky tests
 
-What are [flaky tests](flaky_tests.md), the different kind of flaky tests we encountered, and what
+What are [flaky tests](unhealthy_tests.md#flaky-tests), the different kind of flaky tests we encountered, and what
 we do about them.
 
 ## GitLab pipelines

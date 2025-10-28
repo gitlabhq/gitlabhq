@@ -133,7 +133,7 @@ test:7.0:
 
 ### Custom PHP configuration in Docker builds
 
-There are times where you need to customise your PHP environment by
+There are times where you need to customize your PHP environment by
 putting your `.ini` file into `/usr/local/etc/php/conf.d/`. For that purpose
 add a `before_script` action:
 

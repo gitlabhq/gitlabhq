@@ -58,7 +58,10 @@ export default {
     },
     shouldShowOrganizationSwitcher() {
       return (
-        this.glFeatures.uiForOrganizations && this.isLoggedIn && window.gon.current_organization
+        this.glFeatures.uiForOrganizations &&
+        this.isLoggedIn &&
+        window.gon.current_organization &&
+        this.sidebarData.has_multiple_organizations
       );
     },
     showAdminButton() {

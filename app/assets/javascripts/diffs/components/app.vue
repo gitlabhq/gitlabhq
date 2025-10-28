@@ -10,6 +10,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
+  ISSUABLE_COMMENT_OR_REPLY,
 } from '~/behaviors/shortcuts/keybindings';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { createAlert } from '~/alert';
@@ -29,6 +30,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import { useBatchComments } from '~/batch_comments/store';
+import { querySelectionClosest } from '~/lib/utils/selection';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -666,6 +668,7 @@ export default {
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
         this.keydownTime = new Date().getTime();
       });
+      Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
 
       window.addEventListener('blur', this.handleBrowserFindActivation);
 
@@ -677,6 +680,7 @@ export default {
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
       Mousetrap.unbind(keysFor(MR_TOGGLE_REVIEW));
+      Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY));
       Mousetrap.unbind(['ctrl+f', 'command+f', 'mod+f', 'mod+g']);
       window.removeEventListener('blur', this.handleBrowserFindActivation);
       this.listenersAttached = false;
@@ -782,6 +786,14 @@ export default {
     setFileActive(hash) {
       this.setCurrentFileHash(hash);
       this.toggledFile = true;
+    },
+    quoteReply() {
+      if (!this.shouldShow) return;
+
+      const el = querySelectionClosest('.js-discussion-container');
+      if (!el) return;
+
+      el.dispatchEvent(new CustomEvent('quoteReply'));
     },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {

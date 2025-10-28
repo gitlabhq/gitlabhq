@@ -1493,12 +1493,11 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           let_it_be(:first_note) { create(:discussion_note, noteable: issue, project: issue.project) }
           let_it_be(:second_note) { create(:discussion_note, noteable: issue, project: issue.project, in_reply_to: first_note) }
           let_it_be(:third_note) { create(:discussion_note, noteable: issue, project: issue.project, in_reply_to: second_note) }
+          let(:note_subject) { third_note }
 
           before_all do
             first_note.noteable.reload.update_attribute(:confidential, "true")
           end
-
-          let(:note_subject) { third_note }
 
           it_behaves_like 'an email sent to a user'
           it_behaves_like 'appearance header and footer enabled'
@@ -1577,14 +1576,13 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             context 'with private references accessible to the recipient' do
               let_it_be(:private_project) { create(:project, :private) }
               let_it_be(:private_issue) { create(:issue, :closed, project: private_project) }
+              let(:html_part) { subject.body.parts.last.to_s }
 
               before_all do
                 private_project.add_guest(recipient)
 
                 note.update!(note: private_issue.to_reference(full: true).to_s)
               end
-
-              let(:html_part) { subject.body.parts.last.to_s }
 
               it 'does not redact the reference' do
                 expect(html_part).to include("data-reference-type=\"issue\"")

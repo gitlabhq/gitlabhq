@@ -3,26 +3,26 @@
 #
 # Lines beginning with a hash are ignored, like this one.
 #
-# This exclusion list accepts regex patterns
+# This exclusion list accepts regex patterns. Make sure to escape special characters.
 
 # Email templates do not use containers
-_email.html.haml
-_email.text.erb
+_email\.html\.haml
+_email\.text\.erb
 
 # Login (devise) pages do not use containers
 app/views/devise/
-app/views/layouts/devise.html.haml
-app/views/layouts/devise_empty.html.haml
+app/views/layouts/devise\.html\.haml
+app/views/layouts/devise_empty\.html\.haml
 
-app/assets/stylesheets/framework/common.scss
-app/assets/stylesheets/framework/modal.scss
-app/assets/stylesheets/framework/super_sidebar.scss
-app/assets/stylesheets/framework/application-chrome.scss
+app/assets/stylesheets/framework/common\.scss
+app/assets/stylesheets/framework/modal\.scss
+app/assets/stylesheets/framework/super_sidebar\.scss
+app/assets/stylesheets/framework/application-chrome\.scss
 
 app/assets/javascripts/super_sidebar/
-app/assets/javascripts/work_items/components/design_management/design_preview/design_details.vue
-app/assets/javascripts/work_items/components/design_management/design_preview/design_presentation.vue
-app/assets/javascripts/work_items/components/design_management/design_preview/design_toolbar.vue
-ee/app/assets/javascripts/ai/components/navigation_rail.vue
-ee/app/assets/javascripts/ai/components/content_container.vue
-app/assets/stylesheets/components/whats_new.scss
+app/assets/javascripts/work_items/components/design_management/design_preview/design_details\.vue
+app/assets/javascripts/work_items/components/design_management/design_preview/design_presentation\.vue
+app/assets/javascripts/work_items/components/design_management/design_preview/design_toolbar\.vue
+ee/app/assets/javascripts/ai/components/navigation_rail\.vue
+ee/app/assets/javascripts/ai/components/content_container\.vue
+app/assets/stylesheets/components/whats_new\.scss

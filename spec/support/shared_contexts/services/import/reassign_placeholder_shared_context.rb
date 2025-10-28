@@ -2,11 +2,14 @@
 
 RSpec.shared_context 'with reassign placeholder user records' do
   let_it_be(:namespace) { create(:group) }
+  let_it_be_with_reload(:import_user) { create(:user, :import_user) }
+
   let_it_be(:reassigned_by_user) { create(:user, email: "user1@gitlab.com") }
   let_it_be(:reassign_to_user) { create(:user, email: "user2@gitlab.com") }
   let_it_be_with_reload(:source_user) do
     create(:import_source_user,
       :reassignment_in_progress,
+      placeholder_user: import_user,
       reassigned_by_user: reassigned_by_user,
       reassign_to_user: reassign_to_user,
       namespace: namespace

@@ -30,6 +30,8 @@ Prerequisites:
       A[Self-signed CA] -- signed --> B[Your GitLab instance certificate]
    ```
 
+   The GitLab instance certificate's CA must be explicitly specified as a trusted CA. If intermediate certificates are in use, these must be available on the system. If the entire chain does not validate successfully, network connections within the extension fail to authenticate.
+
    For more information, see [Self-signed certificate error when installing Python support in WSL](https://github.com/microsoft/vscode/issues/131836#issuecomment-909983815) in the Visual Studio Code issue tracker.
 
 1. In your VS Code `settings.json`, set `"http.systemCertificates": true`. The default value is `true`, so you might not need to change this value.
@@ -77,4 +79,4 @@ Make sure you see the self-signed CA in your keychain:
 
 1. Go to **Finder** > **Applications** > **Utilities** > **Keychain Access**.
 1. In the left-hand column, select **System**.
-1. Your self-signed CA certificate should be on the list.
+1. Your self-signed CA certificate should be on the list, and should be `Valid` or `Trusted`.

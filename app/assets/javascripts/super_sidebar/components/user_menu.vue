@@ -9,6 +9,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import UserMenuUpgradeSubscription from 'ee_component/super_sidebar/components/user_menu_upgrade_subscription.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DapWelcomeModal from '~/dap_welcome_modal/dap_welcome_modal.vue';
@@ -37,7 +38,7 @@ export default {
     buyPipelineMinutes: s__('CurrentUser|Buy compute minutes'),
     oneOfGroupsRunningOutOfPipelineMinutes: s__('CurrentUser|One of your groups is running out'),
     gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
-    startTrial: s__('CurrentUser|Start an Ultimate trial'),
+
     adminArea: s__('Navigation|Admin'),
     enterAdminMode: s__('CurrentUser|Enter Admin Mode'),
     leaveAdminMode: s__('CurrentUser|Leave Admin Mode'),
@@ -54,6 +55,7 @@ export default {
     UserCounts,
     UserMenuProfileItem,
     UserMenuProjectStudioSection,
+    UserMenuUpgradeSubscription,
     DapWelcomeModal,
     SetStatusModal: () =>
       import(
@@ -109,19 +111,7 @@ export default {
         },
       };
     },
-    trialItem() {
-      return {
-        text: this.$options.i18n.startTrial,
-        href: this.data.trial.url,
-        extraAttrs: {
-          ...USER_MENU_TRACKING_DEFAULTS,
-          'data-track-label': 'start_trial',
-        },
-      };
-    },
-    showTrialItem() {
-      return this.data.trial?.has_start_trial;
-    },
+
     editProfileItem() {
       return {
         text: this.$options.i18n.editProfile,
@@ -461,20 +451,9 @@ export default {
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
 
-      <gl-disclosure-dropdown-group v-if="showTrialItem || addBuyPipelineMinutesMenuItem" bordered>
-        <gl-disclosure-dropdown-item
-          v-if="showTrialItem"
-          :item="trialItem"
-          data-testid="start-trial-item"
-        >
-          <template #list-item>
-            <span class="hotspot-pulse gl-flex gl-items-center gl-gap-2">
-              <gl-icon name="license" variant="subtle" class="gl-mr-2" />
-              {{ trialItem.text }}
-            </span>
-          </template>
-        </gl-disclosure-dropdown-item>
+      <user-menu-upgrade-subscription v-if="data.upgrade_url" :upgrade-url="data.upgrade_url" />
 
+      <gl-disclosure-dropdown-group v-if="addBuyPipelineMinutesMenuItem" bordered>
         <gl-disclosure-dropdown-item
           v-if="addBuyPipelineMinutesMenuItem"
           ref="buyPipelineMinutesNotificationCallout"

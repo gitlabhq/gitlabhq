@@ -33,11 +33,6 @@
     }
   }
 
-  .action-card-title:hover &-arrow {
-    opacity: 1;
-    translate: 0;
-  }
-
   .action-card-arrow {
     opacity: 0;
     translate: -$gl-spacing-scale-2;
@@ -54,6 +49,11 @@
   .action-card-controls:not(:empty) {
     margin-top: $gl-spacing-scale-4;
   }
+}
+
+.action-card-title:hover .action-card-arrow {
+  opacity: 1;
+  translate: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

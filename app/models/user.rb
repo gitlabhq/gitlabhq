@@ -1832,6 +1832,10 @@ class User < ApplicationRecord
       .where_exists(counts)
   end
 
+  def has_multiple_organizations?
+    organization_users.many?
+  end
+
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.member(self)

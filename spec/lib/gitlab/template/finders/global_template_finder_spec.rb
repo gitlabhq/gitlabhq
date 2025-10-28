@@ -4,6 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
   let(:base_dir) { Dir.mktmpdir }
+  let(:excluded_patterns) { [] }
+  let(:include_categories_for_file) do
+    {
+      "SAST" => { "Security" => "Security" }
+    }
+  end
 
   def create_template!(name_with_category)
     full_path = File.join(base_dir, name_with_category)
@@ -22,13 +28,6 @@ RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
       include_categories_for_file,
       excluded_patterns: excluded_patterns
     )
-  end
-
-  let(:excluded_patterns) { [] }
-  let(:include_categories_for_file) do
-    {
-      "SAST" => { "Security" => "Security" }
-    }
   end
 
   describe '.find' do

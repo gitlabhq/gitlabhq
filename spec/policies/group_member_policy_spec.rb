@@ -9,16 +9,16 @@ RSpec.describe GroupMemberPolicy do
   let(:owner) { create(:user) }
   let(:group) { create(:group, :private) }
 
-  before do
-    group.add_guest(guest)
-    group.add_owner(owner)
-  end
-
   let(:member_related_permissions) do
     [:update_group_member, :destroy_group_member]
   end
 
   let(:membership) { current_user.members.first }
+
+  before do
+    group.add_guest(guest)
+    group.add_owner(owner)
+  end
 
   subject { described_class.new(current_user, membership) }
 

@@ -23,8 +23,6 @@ module Gitlab
 
         override :url
         def url
-          return super unless Feature.enabled?(:sigstore_child_pipelines_fix, project)
-
           File.join(Settings.build_server_fqdn, project.full_path, '//', ci_config_path)
         end
       end

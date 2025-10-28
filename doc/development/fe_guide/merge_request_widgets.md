@@ -166,7 +166,7 @@ properties:
 ### Errors
 
 If `:fetch-collapsed-data` or `:fetch-expanded-data` methods throw an error.
-To customise the error text, you can use the `:error-text` property:
+To customize the error text, you can use the `:error-text` property:
 
 ```vue
 <template>

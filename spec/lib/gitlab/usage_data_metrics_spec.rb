@@ -64,6 +64,13 @@ RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :servi
             .sort
         end
 
+        let(:service_ping_key_paths) do
+          parse_service_ping_keys(subject)
+            .flatten
+            .select { |k| k.starts_with?('redis_hll_counters') }
+            .sort
+        end
+
         # Recursively traverse nested Hash of a generated Service Ping to return an Array of key paths
         # in the dotted format used in metric definition YAML files, e.g.: 'count.category.metric_name'
         def parse_service_ping_keys(object, key_path = [])
@@ -74,13 +81,6 @@ RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :servi
           else
             key_path.join('.')
           end
-        end
-
-        let(:service_ping_key_paths) do
-          parse_service_ping_keys(subject)
-            .flatten
-            .select { |k| k.starts_with?('redis_hll_counters') }
-            .sort
         end
 
         it 'is included in the Service Ping hash structure' do

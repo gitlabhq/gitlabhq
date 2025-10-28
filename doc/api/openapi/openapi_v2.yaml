@@ -50746,6 +50746,10 @@ definitions:
       jira_allowed_statuses_as_string:
         type: string
         description: Comma-separated list of allowed Jira issue statuses.
+      comment_on_event_enabled:
+        type: boolean
+        description: Enable comments inside Jira issues on each GitLab event (commit
+          / merge request)
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -57524,6 +57528,10 @@ definitions:
       jira_allowed_statuses_as_string:
         type: string
         description: Comma-separated list of allowed Jira issue statuses.
+      comment_on_event_enabled:
+        type: boolean
+        description: Enable comments inside Jira issues on each GitLab event (commit
+          / merge request)
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -59384,6 +59392,10 @@ definitions:
       jira_allowed_statuses_as_string:
         type: string
         description: Comma-separated list of allowed Jira issue statuses.
+      comment_on_event_enabled:
+        type: boolean
+        description: Enable comments inside Jira issues on each GitLab event (commit
+          / merge request)
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.

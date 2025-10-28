@@ -6,12 +6,11 @@ RSpec.describe Gitlab::Utils::Measuring do
   describe '#with_measuring' do
     let(:base_log_data) { {} }
     let(:result) { "result" }
+    let(:measurement) { described_class.new(base_log_data) }
 
     before do
       allow(ActiveSupport::Logger).to receive(:logger_outputs_to?).with(described_class.logger, $stdout).and_return(false)
     end
-
-    let(:measurement) { described_class.new(base_log_data) }
 
     subject do
       measurement.with_measuring { result }

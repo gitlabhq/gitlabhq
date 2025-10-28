@@ -231,9 +231,11 @@ rspec system pg16 project-studio-enabled:
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
     GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: true
+  allow_failure: true
   rules:
-    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /Project Studio/'
-      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
+      when: never
+    - !reference [.rails:rules:ee-and-foss-system, rules]
 
 rspec system pg16 vue3:
   extends:
@@ -1007,9 +1009,11 @@ rspec-ee system pg16 project-studio-enabled:
     - .rails:rules:ee-only-system
   variables:
     GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: true
+  allow_failure: true
   rules:
-    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /Project Studio/'
-      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
+      when: never
+    - !reference [.rails:rules:ee-only-system, rules]
 
 rspec-ee system pg16 single-db:
   extends:

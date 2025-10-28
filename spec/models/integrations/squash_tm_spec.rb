@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::SquashTm, feature_category: :integrations do
-  it_behaves_like Integrations::HasWebHook do
-    let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
+  it_behaves_like Integrations::HasWebHook do
     let(:integration) { build(:squash_tm_integration, project: project) }
     let(:hook_url) { "#{integration.url}?token={token}" }
   end
@@ -44,7 +44,7 @@ RSpec.describe Integrations::SquashTm, feature_category: :integrations do
   end
 
   describe '#execute' do
-    let(:integration) { build(:squash_tm_integration, project: build(:project)) }
+    let(:integration) { build(:squash_tm_integration, project: project) }
 
     let(:squash_tm_hook_url) do
       "#{integration.url}?token=#{integration.token}"
@@ -66,7 +66,7 @@ RSpec.describe Integrations::SquashTm, feature_category: :integrations do
   end
 
   describe '#test' do
-    let(:integration) { build(:squash_tm_integration) }
+    let(:integration) { build(:squash_tm_integration, project: project) }
 
     let(:squash_tm_hook_url) do
       "#{integration.url}?token=#{integration.token}"

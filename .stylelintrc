@@ -2,11 +2,13 @@
   "extends": ["@gitlab/stylelint-config"],
   "plugins": [
     "./tooling/stylelint/gitlab_no_gl_class.plugin.js",
-    "./tooling/stylelint/gitlab_split_apply.plugin.js"
+    "./tooling/stylelint/gitlab_split_apply.plugin.js",
+    "./tooling/stylelint/gitlab_no_concat_classes.plugin.js"
   ],
   "rules": {
     "gitlab/no-gl-class": true,
-    "gitlab/split-apply": true
+    "gitlab/split-apply": true,
+    "gitlab/no-sass-class-concat": true
   },
   "ignoreFiles": [
     "app/assets/stylesheets/pages/emojis.scss",

@@ -33,10 +33,13 @@ import noteQuery from '~/notes/graphql/note.query.graphql';
 import { useBatchComments } from '~/batch_comments/store';
 import * as types from '~/notes/stores/mutation_types';
 import { SET_BATCH_COMMENTS_DRAFTS } from '~/batch_comments/stores/modules/batch_comments/mutation_types';
+import { querySelectionClosest } from '~/lib/utils/selection';
 import * as mockData from '../mock_data';
 import { createDiscussionMock } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/behaviors/markdown/copy_as_gfm');
+jest.mock('~/lib/utils/selection');
 jest.mock('~/lib/utils/resize_observer', () => ({
   scrollToTargetOnResize: jest.fn(),
 }));
@@ -574,35 +577,34 @@ describe('note_app', () => {
   describe('reply hotkey', () => {
     useFakeRequestAnimationFrame();
 
-    const stubSelection = (startContainer) => {
-      window.getSelection = () => ({
-        rangeCount: 1,
-        getRangeAt: () => ({ startContainer }),
-      });
-    };
-
     it('sends quote to main reply editor', async () => {
-      jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
+      querySelectionClosest.mockReturnValue(null);
+      CopyAsGFM.selectionToGfm.mockResolvedValue('foo');
       mountComponent();
       const replySpy = jest.spyOn(wrapper.findComponent(CommentForm).vm, 'append');
-      const target = wrapper.element.querySelector('p');
-      stubSelection(target);
       Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
-      await nextTick();
+      await waitForPromises();
       expect(replySpy).toHaveBeenCalledWith('foo');
     });
 
-    it('sends quote to discussion reply editor', async () => {
-      jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
-      axiosMock.onAny().reply(mockData.getDiscussionNoteResponse);
+    it('sends quote to discussion reply editor', () => {
+      const quoteReplyHandler = jest.fn();
+      const mockDiscussionElement = document.createElement('div');
+      mockDiscussionElement.addEventListener('quoteReply', quoteReplyHandler);
+      querySelectionClosest.mockReturnValue(mockDiscussionElement);
       mountComponent();
-      await waitForPromises();
-      const replySpy = jest.spyOn(wrapper.findComponent(NoteableDiscussion).vm, 'showReplyForm');
-      const target = wrapper.element.querySelector('.js-noteable-discussion p');
-      stubSelection(target);
       Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
-      await nextTick();
-      expect(replySpy).toHaveBeenCalledWith('foo');
+      expect(quoteReplyHandler).toHaveBeenCalled();
+    });
+
+    it('does not do anything when invisible', () => {
+      const quoteReplyHandler = jest.fn();
+      const mockDiscussionElement = document.createElement('div');
+      mockDiscussionElement.addEventListener('quoteReply', quoteReplyHandler);
+      querySelectionClosest.mockReturnValue(mockDiscussionElement);
+      mountComponent({ props: { shouldShow: false } });
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+      expect(quoteReplyHandler).not.toHaveBeenCalled();
     });
   });
 

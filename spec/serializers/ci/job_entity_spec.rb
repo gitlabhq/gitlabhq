@@ -8,15 +8,15 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   let(:project) { job.project }
   let(:request) { double('request') }
 
+  let(:entity) do
+    described_class.new(job, request: request)
+  end
+
   before do
     stub_not_protect_default_branch
     allow(request).to receive(:current_user).and_return(user)
 
     project.add_developer(user)
-  end
-
-  let(:entity) do
-    described_class.new(job, request: request)
   end
 
   subject { entity.as_json }

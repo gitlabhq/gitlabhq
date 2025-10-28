@@ -30,15 +30,5 @@ RSpec.describe Gitlab::Ci::JwtV2::ClaimMapper::Bridge, feature_category: :contin
         })
       end
     end
-
-    context "when FF is disabled" do
-      before do
-        stub_feature_flags(sigstore_child_pipelines_fix: false)
-      end
-
-      it 'returns expected claims' do
-        expect(mapper.to_h).to eq({})
-      end
-    end
   end
 end

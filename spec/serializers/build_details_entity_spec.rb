@@ -61,13 +61,13 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
 
         let(:pipeline) { create(:ci_pipeline, project: forked_project) }
 
+        let(:merge_request) do
+          create(:merge_request, source_project: forked_project, target_project: project, source_branch: build.ref)
+        end
+
         before do
           allow(build).to receive(:merge_request).and_return(merge_request)
           forked_project.add_developer(user)
-        end
-
-        let(:merge_request) do
-          create(:merge_request, source_project: forked_project, target_project: project, source_branch: build.ref)
         end
 
         it 'contains the needed key value pairs' do

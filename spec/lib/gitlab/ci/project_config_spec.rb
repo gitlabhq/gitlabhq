@@ -43,16 +43,6 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
       expect(config.url).to eq("localhost/#{project.full_path}//path/to/config.yml")
     end
 
-    context "when FF is disabled" do
-      before do
-        stub_feature_flags(sigstore_child_pipelines_fix: false)
-      end
-
-      it 'preserves the original behaviour' do
-        expect(config.url).to be_nil
-      end
-    end
-
     context "with nil ci_config_path" do
       let(:ci_config_path) { nil }
 

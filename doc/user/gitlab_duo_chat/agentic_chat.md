@@ -349,7 +349,7 @@ GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with th
 - **Multi-source analysis**: Can combine information from multiple sources to
   provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect GitLab Duo Chat (Agentic) to
   external data sources and tools.
-- **Custom rules**: Conversations can follow any customised rules that you specify.
+- **Custom rules**: Conversations can follow any customized rules that you specify.
 - GitLab Duo Chat (Agentic) in the GitLab UI only - **Commit creation**: Can create and push commits.
 
 ### Chat feature comparison

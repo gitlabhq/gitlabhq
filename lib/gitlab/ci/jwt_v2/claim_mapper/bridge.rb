@@ -11,8 +11,6 @@ module Gitlab
           end
 
           def to_h
-            return {} unless Feature.enabled?(:sigstore_child_pipelines_fix, pipeline.project)
-
             {
               ci_config_ref_uri: ci_config_ref_uri,
               ci_config_sha: pipeline.sha

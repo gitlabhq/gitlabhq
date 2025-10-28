@@ -246,7 +246,7 @@ and the cache key would be based on the class name, method name,
 optionally customized instance level values, optionally customized
 method level values, and optional method arguments.
 
-A simple example that only uses the instance level customised values is:
+A simple example that only uses the instance level customized values is:
 
 ```ruby
 class UserAccess
