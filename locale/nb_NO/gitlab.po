@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: nb\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-10-13 06:11\n"
+"PO-Revision-Date: 2025-10-15 11:05\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} til %{end}"
@@ -2529,6 +2529,9 @@ msgstr ""
 msgid "AICatalog|Anyone in your organization can view and use agents unless you make it private. Private agents can only be viewed and run in their source project."
 msgstr ""
 
+msgid "AICatalog|Anyone in your organization can view and use flows unless you make it private. Private flows can only be viewed in their source project."
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr ""
 
@@ -2571,10 +2574,10 @@ msgstr ""
 msgid "AICatalog|Choose a memorable name for your AI flow."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI Catalog."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI Catalog."
 msgstr ""
 
 msgid "AICatalog|Configuration"
@@ -2878,9 +2881,6 @@ msgid "AICatalog|Version"
 msgstr "Versjon"
 
 msgid "AICatalog|Visibility"
-msgstr ""
-
-msgid "AICatalog|Visibility level is required."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
@@ -7339,9 +7339,6 @@ msgstr ""
 msgid "Almost there…"
 msgstr "Nesten fremme …"
 
-msgid "Alpha"
-msgstr "Alfa"
-
 msgid "Already blocked"
 msgstr "Allerede blokkert"
 
@@ -9238,6 +9235,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty."
+msgstr ""
+
+msgid "Artifacts|Total artifacts count"
 msgstr ""
 
 msgid "Artifacts|Total artifacts size"
@@ -12370,6 +12370,9 @@ msgid "CI/CD configuration"
 msgstr "CI/CD-konfigurasjon"
 
 msgid "CI/CD configuration file"
+msgstr ""
+
+msgid "CI/CD is disabled for this project"
 msgstr ""
 
 msgid "CI/CD job token"
@@ -29669,6 +29672,9 @@ msgstr "Minimumsintervall i dager"
 msgid "Geo|Missing on Primary!"
 msgstr ""
 
+msgid "Geo|Model ID"
+msgstr ""
+
 msgid "Geo|Model record: %{modelRecordId}"
 msgstr ""
 
@@ -29853,6 +29859,9 @@ msgid "Geo|Reverify all failed %{type}"
 msgstr ""
 
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
+msgstr ""
+
+msgid "Geo|Review stored data and data health within your instance."
 msgstr ""
 
 msgid "Geo|Scheduled %{name} for %{actionName}."
@@ -30665,9 +30674,6 @@ msgstr ""
 msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running…"
 msgstr ""
 
-msgid "GitPod"
-msgstr ""
-
 msgid "GitSetup|Global"
 msgstr ""
 
@@ -30857,23 +30863,20 @@ msgstr ""
 msgid "Gitlab Duo Core"
 msgstr ""
 
-msgid "Gitpod"
-msgstr "Gitpod"
-
-msgid "Gitpod|Enable Gitpod integration"
-msgstr "Skru på Gitpod-integrasjon"
-
-msgid "Gitpod|Gitpod URL"
-msgstr "Gitpod-URL"
-
-msgid "Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com."
+msgid "Gitpod|Enable Ona integration"
 msgstr ""
 
-msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
+msgid "Gitpod|Ona URL"
 msgstr ""
 
-msgid "Gitpod|https://gitpod.example.com"
-msgstr "https://gitpod.example.com"
+msgid "Gitpod|The URL to your Ona instance configured to read your GitLab projects, such as https://ona.example.com."
+msgstr ""
+
+msgid "Gitpod|To use the integration, each user must also enable Ona on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
+msgstr ""
+
+msgid "Gitpod|https://ona.example.com"
+msgstr ""
 
 msgid "Give feedback"
 msgstr ""
@@ -38304,10 +38307,19 @@ msgstr "Stempler uten saker i denne iterasjonen:"
 msgid "Labels|%{spanStart}Promote label%{spanEnd} %{labelTitle} %{spanStart}to Group Label?%{spanEnd}"
 msgstr ""
 
+msgid "Labels|An error occurred while archiving the label."
+msgstr ""
+
 msgid "Labels|Label actions"
 msgstr ""
 
 msgid "Labels|Label actions dropdown"
+msgstr ""
+
+msgid "Labels|Label archived."
+msgstr ""
+
+msgid "Labels|Label unarchived."
 msgstr ""
 
 msgid "Labels|Promote Label"
@@ -45763,6 +45775,9 @@ msgstr ""
 msgid "OnDemandScans|at"
 msgstr ""
 
+msgid "Ona"
+msgstr ""
+
 msgid "Onboarding|If you can't find your organization, request an invite from your company's GitLab administrator."
 msgstr ""
 
@@ -45930,8 +45945,8 @@ msgstr "Åpne feil"
 msgid "Open evidence JSON in new tab"
 msgstr ""
 
-msgid "Open in Gitpod"
-msgstr "Åpne i Gitpod"
+msgid "Open in Ona"
+msgstr ""
 
 msgid "Open in Web IDE"
 msgstr "Åpne i nett-IDE"
@@ -49673,8 +49688,8 @@ msgstr ""
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
 msgstr ""
 
-msgid "Preferences|Enable Gitpod integration"
-msgstr "Skru på Gitpod-integrasjon"
+msgid "Preferences|Enable Ona integration"
+msgstr ""
 
 msgid "Preferences|Enable default text editor"
 msgstr ""
@@ -49705,9 +49720,6 @@ msgstr "Mislyktes i å lagre innstillingene."
 
 msgid "Preferences|For example: 30 minutes ago."
 msgstr "For eksempel: 30 minutter siden."
-
-msgid "Preferences|Gitpod"
-msgstr "Gitpod"
 
 msgid "Preferences|Homepage"
 msgstr "Hjemmeside"
@@ -49741,6 +49753,9 @@ msgstr "Må være et nummer mellom %{min} og %{max}"
 
 msgid "Preferences|Navigation"
 msgstr "Navigasjon"
+
+msgid "Preferences|Ona"
+msgstr ""
 
 msgid "Preferences|Preview"
 msgstr "Forhåndvisning"
@@ -57760,6 +57775,9 @@ msgstr ""
 msgid "Scheduled to merge this merge request (%{strategy})."
 msgstr ""
 
+msgid "ScheduledJob|delayed manual action (%{remainingTime})"
+msgstr ""
+
 msgid "Schedules"
 msgstr "Tidsplaner"
 
@@ -58192,10 +58210,22 @@ msgstr ""
 msgid "SecretRotation|Rotation reminder: This secret needs to be updated soon."
 msgstr ""
 
+msgid "SecretRotation|Secret overdue for rotation"
+msgstr ""
+
 msgid "SecretRotation|Secret rotation reminder"
 msgstr ""
 
 msgid "SecretRotation|Some secrets require your attention"
+msgstr ""
+
+msgid "SecretRotation|This field must be a number greater than or equal to 7."
+msgstr ""
+
+msgid "SecretRotation|This secret has not been rotated after the configured rotation reminder interval."
+msgstr ""
+
+msgid "SecretRotation|Update this secret by %{date} to maintain security."
 msgstr ""
 
 msgid "SecretRotation|You can %{secret_link_start}update the secret%{secret_link_end} in your project settings."
@@ -61387,7 +61417,7 @@ msgstr ""
 msgid "SecurityReports|Tool"
 msgstr "Verktøy"
 
-msgid "SecurityReports|Total count of %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
+msgid "SecurityReports|Total count of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
@@ -69230,6 +69260,9 @@ msgstr "Overføringen mislyktes: %{error_message}"
 msgid "TransferGroup|You don't have enough permissions."
 msgstr "Du har ikke nok tillatelser."
 
+msgid "TransferOrganization|Cannot transfer users to a different organization if all users do not belong to the same organization as the top-level group."
+msgstr ""
+
 msgid "TransferOrganization|Group is already in the target organization."
 msgstr ""
 
@@ -71715,8 +71748,8 @@ msgstr "Brukere"
 msgid "Users API rate limits"
 msgstr ""
 
-msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
-msgstr "Brukere kan starte opp et utviklingsmiljø fra en GitLab-nettleserfane hvis %{linkStart}Gitpod%{linkEnd}-integrasjonen er skrudd på."
+msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Ona%{linkEnd} integration is enabled."
+msgstr ""
 
 msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}."
 msgstr ""
@@ -72442,6 +72475,9 @@ msgstr "Beskrivelse"
 msgid "VirtualRegistry|Description (optional)"
 msgstr "Beskrivelse (valgfritt)"
 
+msgid "VirtualRegistry|Disabling removes access. Existing registries are preserved and available again when re-enabled."
+msgstr ""
+
 msgid "VirtualRegistry|Edit registry"
 msgstr ""
 
@@ -72449,6 +72485,9 @@ msgid "VirtualRegistry|Edit upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Edit upstream %{name}"
+msgstr ""
+
+msgid "VirtualRegistry|Enable Virtual Registry"
 msgstr ""
 
 msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
@@ -72497,6 +72536,9 @@ msgid "VirtualRegistry|Get started with virtual registries"
 msgstr ""
 
 msgid "VirtualRegistry|Link existing upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows using virtual registries."
 msgstr ""
 
 msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
@@ -72660,7 +72702,13 @@ msgstr "Brukernavn (valgfritt)"
 msgid "VirtualRegistry|View registries"
 msgstr ""
 
+msgid "VirtualRegistry|Virtual Registry"
+msgstr ""
+
 msgid "VirtualRegistry|Virtual registry"
+msgstr ""
+
+msgid "VirtualRegistry|When you enable this feature, you accept the %{linkStart}GitLab Testing Agreement.%{linkEnd}"
 msgstr ""
 
 msgid "VirtualRegistry|You are about to delete this upstream used by %{count} registry:"

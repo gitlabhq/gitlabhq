@@ -95,6 +95,10 @@ RSpec.describe Gitlab::IssuablesCountForState do
     end
 
     shared_examples 'calculating counts for issuables' do
+      before do
+        cache_key << 'group_issues_list' if finder.params[:exclude_group_work_items] == true
+      end
+
       it 'returns -1 for the requested state' do
         allow(finder).to receive(:count_by_state).and_raise(ActiveRecord::QueryCanceled)
         expect(Rails.cache).not_to receive(:write)
@@ -119,15 +123,23 @@ RSpec.describe Gitlab::IssuablesCountForState do
       end
 
       context 'when counts are stored in cache' do
+        let(:cached_counts) do
+          if cache_key.include?('group_issues_list')
+            { opened: 8, closed: 4, all: 12 }
+          else
+            { opened: 1000, closed: 1000, all: 2000 }
+          end
+        end
+
         before do
           allow(Rails.cache).to receive(:read).with(cache_key, cache_options)
-            .and_return({ opened: 1000, closed: 1000, all: 2000 })
+            .and_return(cached_counts)
         end
 
         it 'does not call finder count_by_state' do
           expect(finder).not_to receive(:count_by_state)
 
-          expect(subject[:all]).to eq(2000)
+          expect(subject[:all]).to eq(cached_counts[:all])
         end
       end
 
@@ -159,18 +171,80 @@ RSpec.describe Gitlab::IssuablesCountForState do
       end
     end
 
+    shared_examples 'calculating counts with filters' do
+      context 'when params include issue_types' do
+        let(:parent) { group }
+
+        context 'with default issue_types on group issues page' do
+          before do
+            finder.params[:issue_types] = Issue::TYPES_FOR_LIST
+            finder.params[:exclude_group_work_items] = true
+          end
+
+          it_behaves_like 'calculating counts for issuables'
+        end
+
+        context 'with issue_types filter on group issues page' do
+          before do
+            finder.params[:issue_types] = ['issue']
+            finder.params[:exclude_group_work_items] = true
+          end
+
+          it_behaves_like 'calculating counts without caching'
+        end
+
+        context 'with issue_types filter on group epics page' do
+          before do
+            finder.params[:issue_types] = ['epic']
+            finder.params[:exclude_group_work_items] = false
+          end
+
+          it_behaves_like 'calculating counts for issuables'
+        end
+      end
+    end
+
     context 'with Issues' do
       let(:finder) { IssuesFinder.new(user, params) }
-      let(:cache_key) { ['group', group.id, 'issues'] }
+      let(:cache_key) { ['group', group&.id, 'issues'] }
 
       it_behaves_like 'calculating counts for issuables'
+      it_behaves_like 'calculating counts with filters'
+
+      context 'when cached_state_counts_for_group_issues feature flag is disabled' do
+        before do
+          stub_feature_flags(cached_state_counts_for_group_issues: false)
+          finder.params[:exclude_group_work_items] = true
+        end
+
+        it_behaves_like 'calculating counts without caching'
+      end
+
+      context 'when cached_state_counts_for_group_issues feature flag is enabled' do
+        before do
+          stub_feature_flags(cached_state_counts_for_group_issues: true)
+          finder.params[:exclude_group_work_items] = true
+        end
+
+        it_behaves_like 'calculating counts for issuables'
+      end
+
+      context 'when on group epics page (exclude_group_work_items is false)' do
+        before do
+          stub_feature_flags(cached_state_counts_for_group_issues: false)
+          finder.params[:exclude_group_work_items] = false
+        end
+
+        it_behaves_like 'calculating counts for issuables'
+      end
     end
 
     context 'with Work Items' do
       let(:finder) { ::WorkItems::WorkItemsFinder.new(user, params) }
-      let(:cache_key) { ['group', group.id, 'work_items'] }
+      let(:cache_key) { ['group', group&.id, 'work_items'] }
 
       it_behaves_like 'calculating counts for issuables'
+      it_behaves_like 'calculating counts with filters'
     end
 
     context 'with Merge Requests' do

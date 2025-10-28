@@ -123,6 +123,8 @@ module Gitlab
     end
 
     def cache_issues_count?
+      return false if group_issues_list? && !group_issues_count_cacheable?
+
       @store_in_redis_cache &&
         finder.class <= IssuesFinder &&
         parent_group.present? &&
@@ -133,8 +135,30 @@ module Gitlab
       finder.params.group
     end
 
+    def group_issues_list?
+      # [group_work_items => epics] which are excluded on the group issues page
+      finder.params[:exclude_group_work_items] == true
+    end
+
+    def group_issues_count_cacheable?
+      Feature.enabled?(:cached_state_counts_for_group_issues, parent_group)
+    end
+
+    def filter_by_issue_type?
+      # Filtering by issue_type is not available on group epics page
+      return false unless group_issues_list?
+
+      issue_types = finder.params[:issue_types]
+      return false if issue_types.blank?
+
+      # Check if issue_types differs from the default list
+      issue_types.sort != Issue::TYPES_FOR_LIST.sort
+    end
+
     def redis_cache_key
-      ['group', parent_group&.id, finder.klass.model_name.plural]
+      cache_key = ['group', parent_group&.id, finder.klass.model_name.plural]
+      cache_key << 'group_issues_list' if group_issues_list?
+      cache_key
     end
 
     def cache_options
@@ -144,8 +168,11 @@ module Gitlab
     def params_include_filters?
       non_filtering_params = %i[
         scope state sort group_id include_subgroups include_descendants namespace_id
-        attempt_group_search_optimizations non_archived issue_types lookahead exclude_projects
+        attempt_group_search_optimizations non_archived lookahead exclude_projects
+        include_ancestors exclude_group_work_items
       ]
+
+      non_filtering_params += [:issue_types] unless filter_by_issue_type?
 
       finder.params.except(*non_filtering_params).values.any?
     end

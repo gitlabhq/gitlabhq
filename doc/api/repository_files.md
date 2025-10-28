@@ -379,7 +379,7 @@ Example response:
 }
 ```
 
-If the commit fails for any reason we return a `400 Bad Request` error with a non-specific
+If the commit fails for any reason, the API returns a `400 Bad Request` error with a non-specific
 error message. Possible causes for a failed commit include:
 
 - The `file_path` contained `/../` (attempted directory traversal).

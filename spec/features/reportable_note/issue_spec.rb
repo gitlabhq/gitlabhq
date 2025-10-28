@@ -9,6 +9,7 @@ RSpec.describe 'Reportable note on issue', :js, feature_category: :team_planning
   let!(:note) { create(:note_on_issue, noteable: issue, project: project) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
     sign_in(user)
     visit project_issue_path(project, issue)

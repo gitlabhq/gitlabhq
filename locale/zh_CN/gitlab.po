@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-10-13 06:10\n"
+"PO-Revision-Date: 2025-10-15 11:02\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -2348,6 +2348,9 @@ msgstr ""
 msgid "AICatalog|Anyone in your organization can view and use agents unless you make it private. Private agents can only be viewed and run in their source project."
 msgstr ""
 
+msgid "AICatalog|Anyone in your organization can view and use flows unless you make it private. Private flows can only be viewed in their source project."
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr ""
 
@@ -2390,10 +2393,10 @@ msgstr ""
 msgid "AICatalog|Choose a memorable name for your AI flow."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI Catalog."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI Catalog."
 msgstr ""
 
 msgid "AICatalog|Configuration"
@@ -2697,9 +2700,6 @@ msgid "AICatalog|Version"
 msgstr ""
 
 msgid "AICatalog|Visibility"
-msgstr ""
-
-msgid "AICatalog|Visibility level is required."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
@@ -7153,9 +7153,6 @@ msgstr "允许项目使用 Opstrace 集成跟踪错误。"
 msgid "Almost there…"
 msgstr "快到了..."
 
-msgid "Alpha"
-msgstr ""
-
 msgid "Already blocked"
 msgstr "已被禁用"
 
@@ -9037,6 +9034,9 @@ msgstr[0] "已选的产物将被永久删除。任何由这些产物生成的报
 
 msgid "Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty."
 msgstr "此产物将被永久删除。任何从由此产物所生成的报告都将被清空。"
+
+msgid "Artifacts|Total artifacts count"
+msgstr ""
 
 msgid "Artifacts|Total artifacts size"
 msgstr "产物总大小"
@@ -12157,6 +12157,9 @@ msgstr "CI/CD 配置"
 
 msgid "CI/CD configuration file"
 msgstr "CI/CD 配置文件"
+
+msgid "CI/CD is disabled for this project"
+msgstr ""
 
 msgid "CI/CD job token"
 msgstr "CI/CD 作业令牌"
@@ -29400,6 +29403,9 @@ msgstr "最小间隔（天）"
 msgid "Geo|Missing on Primary!"
 msgstr "在主服务器上缺失！"
 
+msgid "Geo|Model ID"
+msgstr ""
+
 msgid "Geo|Model record: %{modelRecordId}"
 msgstr "模型记录： %{modelRecordId}"
 
@@ -29585,6 +29591,9 @@ msgstr ""
 
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
 msgstr "查看复制状态并与主要站点重新同步和重新验证项目。"
+
+msgid "Geo|Review stored data and data health within your instance."
+msgstr ""
 
 msgid "Geo|Scheduled %{name} for %{actionName}."
 msgstr ""
@@ -30396,9 +30405,6 @@ msgstr "您的Pages站点尚未配置。请参阅 %{docs_link_start}GitLab Pages
 msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running…"
 msgstr "您的项目已配置为极狐GitLab Pages，流水线正在运行…"
 
-msgid "GitPod"
-msgstr "GitPod"
-
 msgid "GitSetup|Global"
 msgstr "全局"
 
@@ -30588,23 +30594,20 @@ msgstr "这需要将您的 GitHub 仓库镜像到此项目。 %{docs_link}"
 msgid "Gitlab Duo Core"
 msgstr "Gitlab Duo 核心"
 
-msgid "Gitpod"
-msgstr "Gitpod"
+msgid "Gitpod|Enable Ona integration"
+msgstr ""
 
-msgid "Gitpod|Enable Gitpod integration"
-msgstr "启用Gitpod集成"
+msgid "Gitpod|Ona URL"
+msgstr ""
 
-msgid "Gitpod|Gitpod URL"
-msgstr "Gitpod网址"
+msgid "Gitpod|The URL to your Ona instance configured to read your GitLab projects, such as https://ona.example.com."
+msgstr ""
 
-msgid "Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com."
-msgstr "配置为读取 GitLab 项目的 Gitpod 实例的 URL，例如 https://gitpod.example.com。"
+msgid "Gitpod|To use the integration, each user must also enable Ona on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
+msgstr ""
 
-msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
-msgstr "要使用集成，每个用户还必须在其极狐GitLab 账户上启用 Gitpod。%{help_link_start}如何启用它？%{help_link_end}"
-
-msgid "Gitpod|https://gitpod.example.com"
-msgstr "https://gitpod.example.com"
+msgid "Gitpod|https://ona.example.com"
+msgstr ""
 
 msgid "Give feedback"
 msgstr "提供反馈"
@@ -38015,11 +38018,20 @@ msgstr "此迭代中没有议题的标记："
 msgid "Labels|%{spanStart}Promote label%{spanEnd} %{labelTitle} %{spanStart}to Group Label?%{spanEnd}"
 msgstr "%{spanStart}将标记%{spanEnd}%{labelTitle}%{spanStart}升级为群组标记？%{spanEnd}"
 
+msgid "Labels|An error occurred while archiving the label."
+msgstr ""
+
 msgid "Labels|Label actions"
 msgstr "标记操作"
 
 msgid "Labels|Label actions dropdown"
 msgstr "标记操作下拉菜单"
+
+msgid "Labels|Label archived."
+msgstr ""
+
+msgid "Labels|Label unarchived."
+msgstr ""
 
 msgid "Labels|Promote Label"
 msgstr "升级标记"
@@ -45448,6 +45460,9 @@ msgstr "您必须在项目中创建仓库才能运行按需扫描。"
 msgid "OnDemandScans|at"
 msgstr "在"
 
+msgid "Ona"
+msgstr ""
+
 msgid "Onboarding|If you can't find your organization, request an invite from your company's GitLab administrator."
 msgstr "如果找不到您的组织，请从公司的极狐GitLab 管理员那里请求邀请。"
 
@@ -45614,8 +45629,8 @@ msgstr "打开错误"
 msgid "Open evidence JSON in new tab"
 msgstr "在新页签中打开 evidence JSON"
 
-msgid "Open in Gitpod"
-msgstr "在 Gitpod 中打开"
+msgid "Open in Ona"
+msgstr ""
 
 msgid "Open in Web IDE"
 msgstr "在Web IDE中打开"
@@ -49350,8 +49365,8 @@ msgstr ""
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
 msgstr "为以下群组启用%{link_start}代码建议%{link_end}。%{br_tag}此处仅列出已购买代码建议插件且有可用席位的群组。%{br_tag}如果您希望某个群组启用此功能，但列表中缺少该群组，请联系群组所有者。"
 
-msgid "Preferences|Enable Gitpod integration"
-msgstr "启用Gitpod集成"
+msgid "Preferences|Enable Ona integration"
+msgstr ""
 
 msgid "Preferences|Enable default text editor"
 msgstr "启用默认文本编辑器"
@@ -49382,9 +49397,6 @@ msgstr "无法保存偏好设置"
 
 msgid "Preferences|For example: 30 minutes ago."
 msgstr "例如：30分钟前"
-
-msgid "Preferences|Gitpod"
-msgstr "Gitpod"
 
 msgid "Preferences|Homepage"
 msgstr "主页"
@@ -49417,6 +49429,9 @@ msgid "Preferences|Must be a number between %{min} and %{max}"
 msgstr "必须为%{min}到%{max}之间的数字"
 
 msgid "Preferences|Navigation"
+msgstr ""
+
+msgid "Preferences|Ona"
 msgstr ""
 
 msgid "Preferences|Preview"
@@ -57406,6 +57421,9 @@ msgstr "计划的管道每次运行时间不能超过一次 %{limit} 分钟。 �
 msgid "Scheduled to merge this merge request (%{strategy})."
 msgstr "已计划合并此合并请求 (%{strategy})。"
 
+msgid "ScheduledJob|delayed manual action (%{remainingTime})"
+msgstr ""
+
 msgid "Schedules"
 msgstr "计划"
 
@@ -57823,10 +57841,22 @@ msgstr ""
 msgid "SecretRotation|Rotation reminder: This secret needs to be updated soon."
 msgstr ""
 
+msgid "SecretRotation|Secret overdue for rotation"
+msgstr ""
+
 msgid "SecretRotation|Secret rotation reminder"
 msgstr ""
 
 msgid "SecretRotation|Some secrets require your attention"
+msgstr ""
+
+msgid "SecretRotation|This field must be a number greater than or equal to 7."
+msgstr ""
+
+msgid "SecretRotation|This secret has not been rotated after the configured rotation reminder interval."
+msgstr ""
+
+msgid "SecretRotation|Update this secret by %{date} to maintain security."
 msgstr ""
 
 msgid "SecretRotation|You can %{secret_link_start}update the secret%{secret_link_end} in your project settings."
@@ -61012,7 +61042,7 @@ msgstr "要扩大搜索范围，请更改或删除上面的筛选器。"
 msgid "SecurityReports|Tool"
 msgstr "工具"
 
-msgid "SecurityReports|Total count of %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
+msgid "SecurityReports|Total count of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
@@ -68811,6 +68841,9 @@ msgstr "转移失败: %{error_message}"
 msgid "TransferGroup|You don't have enough permissions."
 msgstr "您没有足够的权限。"
 
+msgid "TransferOrganization|Cannot transfer users to a different organization if all users do not belong to the same organization as the top-level group."
+msgstr ""
+
 msgid "TransferOrganization|Group is already in the target organization."
 msgstr ""
 
@@ -71291,8 +71324,8 @@ msgstr "用户"
 msgid "Users API rate limits"
 msgstr "用户 API 速率限制"
 
-msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
-msgstr "%{linkStart}Gitpod%{linkEnd} 集成后，用户可以从 GitLab 浏览器选项卡启动开发环境。"
+msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Ona%{linkEnd} integration is enabled."
+msgstr ""
 
 msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}."
 msgstr "用户可以通过登录来重新激活他们的帐户。%{link_start}了解更多%{link_end}。"
@@ -72004,6 +72037,9 @@ msgstr ""
 msgid "VirtualRegistry|Description (optional)"
 msgstr "描述（可选）"
 
+msgid "VirtualRegistry|Disabling removes access. Existing registries are preserved and available again when re-enabled."
+msgstr ""
+
 msgid "VirtualRegistry|Edit registry"
 msgstr "编辑仓库"
 
@@ -72011,6 +72047,9 @@ msgid "VirtualRegistry|Edit upstream"
 msgstr "编辑上游"
 
 msgid "VirtualRegistry|Edit upstream %{name}"
+msgstr ""
+
+msgid "VirtualRegistry|Enable Virtual Registry"
 msgstr ""
 
 msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
@@ -72059,6 +72098,9 @@ msgid "VirtualRegistry|Get started with virtual registries"
 msgstr "开始使用虚拟仓库"
 
 msgid "VirtualRegistry|Link existing upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows using virtual registries."
 msgstr ""
 
 msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
@@ -72221,8 +72263,14 @@ msgstr "用户名（可选）"
 msgid "VirtualRegistry|View registries"
 msgstr ""
 
+msgid "VirtualRegistry|Virtual Registry"
+msgstr ""
+
 msgid "VirtualRegistry|Virtual registry"
 msgstr "虚拟仓库"
+
+msgid "VirtualRegistry|When you enable this feature, you accept the %{linkStart}GitLab Testing Agreement.%{linkEnd}"
+msgstr ""
 
 msgid "VirtualRegistry|You are about to delete this upstream used by %{count} registry:"
 msgid_plural "VirtualRegistry|You are about to delete this upstream used by %{count} registries:"

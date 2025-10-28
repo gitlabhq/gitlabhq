@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-10-13 06:10\n"
+"PO-Revision-Date: 2025-10-15 11:03\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} bis %{end}"
@@ -2529,6 +2529,9 @@ msgstr "Jeder kann den Flow ohne Autorisierung ansehen und verwenden. Nur Betreu
 msgid "AICatalog|Anyone in your organization can view and use agents unless you make it private. Private agents can only be viewed and run in their source project."
 msgstr ""
 
+msgid "AICatalog|Anyone in your organization can view and use flows unless you make it private. Private flows can only be viewed in their source project."
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr "Möchtest du den Agenten %{name} wirklich entfernen?"
 
@@ -2571,11 +2574,11 @@ msgstr "Wähle einen einprägsamen Namen für deinen KI-Agenten."
 msgid "AICatalog|Choose a memorable name for your AI flow."
 msgstr "Wähle einen einprägsamen Namen für deinen KI-Flow."
 
-msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
-msgstr "Wähle aus, wer diesen Agenten ansehen und mit ihm interagieren kann, nachdem er im öffentlichen KI-Katalog veröffentlicht wurde."
+msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI Catalog."
+msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI catalog."
-msgstr "Wähle aus, wer diesen Flow ansehen und mit ihm interagieren kann, nachdem er im öffentlichen KI-Katalog veröffentlicht wurde."
+msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI Catalog."
+msgstr ""
 
 msgid "AICatalog|Configuration"
 msgstr ""
@@ -2879,9 +2882,6 @@ msgstr "Version"
 
 msgid "AICatalog|Visibility"
 msgstr ""
-
-msgid "AICatalog|Visibility level is required."
-msgstr "Sichtbarkeitsstufe ist erforderlich."
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr "Du bist ein Experte in [Domäne]. Dein Kommunikationsstil ist [Stil]. Wenn du Benutzer(inne)n hilfst, solltest du immer … Deine Hauptstärken sind … Du gehst Probleme an, indem du …"
@@ -7339,9 +7339,6 @@ msgstr "Ermöglicht Projekten, Fehler mithilfe einer Opstrace-Integration zu ver
 msgid "Almost there…"
 msgstr "Fast geschafft …"
 
-msgid "Alpha"
-msgstr ""
-
 msgid "Already blocked"
 msgstr "Bereits blockiert"
 
@@ -9239,6 +9236,9 @@ msgstr[1] "Die ausgewählten Artefakte werden dauerhaft gelöscht. Alle Berichte
 
 msgid "Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty."
 msgstr "Dieses Artefakt wird dauerhaft gelöscht. Alle Berichte, die aus diesem Artefakt erzeugt werden, sind leer."
+
+msgid "Artifacts|Total artifacts count"
+msgstr ""
 
 msgid "Artifacts|Total artifacts size"
 msgstr "Gesamtgröße Artefakte"
@@ -12371,6 +12371,9 @@ msgstr "CI/CD-Konfiguration"
 
 msgid "CI/CD configuration file"
 msgstr "CI/CD-Konfigurationsdatei"
+
+msgid "CI/CD is disabled for this project"
+msgstr ""
 
 msgid "CI/CD job token"
 msgstr "CI/CD-Job-Token"
@@ -29669,6 +29672,9 @@ msgstr "Minimales Intervall (in Tagen)"
 msgid "Geo|Missing on Primary!"
 msgstr "Fehlendes Element an primärem Standort!"
 
+msgid "Geo|Model ID"
+msgstr ""
+
 msgid "Geo|Model record: %{modelRecordId}"
 msgstr "Modelldatensatz: %{modelRecordId}"
 
@@ -29854,6 +29860,9 @@ msgstr "Alle fehlgeschlagenen %{type} neu verifizieren"
 
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
 msgstr "Replikationsstatus überprüfen und Elemente mit der Hauptseite synchronisieren und reverifizieren."
+
+msgid "Geo|Review stored data and data health within your instance."
+msgstr ""
 
 msgid "Geo|Scheduled %{name} for %{actionName}."
 msgstr "%{name} für %{actionName} geplant."
@@ -30665,9 +30674,6 @@ msgstr "Deine Pages-Website ist noch nicht konfiguriert. In der %{docs_link_star
 msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running…"
 msgstr "Dein Projekt ist für GitLab Pages konfiguriert und die Pipeline wird ausgeführt …"
 
-msgid "GitPod"
-msgstr ""
-
 msgid "GitSetup|Global"
 msgstr "Global"
 
@@ -30857,23 +30863,20 @@ msgstr "Dazu musst du dein GitHub-Repository in dieses Projekt spiegeln. %{docs_
 msgid "Gitlab Duo Core"
 msgstr "GitLab Duo Core"
 
-msgid "Gitpod"
-msgstr "Gitpod"
+msgid "Gitpod|Enable Ona integration"
+msgstr ""
 
-msgid "Gitpod|Enable Gitpod integration"
-msgstr "Gitpod-Integration aktivieren"
+msgid "Gitpod|Ona URL"
+msgstr ""
 
-msgid "Gitpod|Gitpod URL"
-msgstr "Gitpod-URL"
+msgid "Gitpod|The URL to your Ona instance configured to read your GitLab projects, such as https://ona.example.com."
+msgstr ""
 
-msgid "Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com."
-msgstr "Die URL zu deiner Gitpod-Instanz, die zum Lesen deiner GitLab-Projekte konfiguriert ist, z. B. https://gitpod.example.com."
+msgid "Gitpod|To use the integration, each user must also enable Ona on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
+msgstr ""
 
-msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
-msgstr "Um die Integration zu verwenden, müssen alle Benutzer(innen) Gitpod in ihren GitLab-Konten aktivieren. %{help_link_start}Wie funktioniert die Aktivierung?%{help_link_end}"
-
-msgid "Gitpod|https://gitpod.example.com"
-msgstr "https://gitpod.example.com"
+msgid "Gitpod|https://ona.example.com"
+msgstr ""
 
 msgid "Give feedback"
 msgstr "Feedback geben"
@@ -38304,11 +38307,20 @@ msgstr "Labels ohne Tickets in dieser Iteration:"
 msgid "Labels|%{spanStart}Promote label%{spanEnd} %{labelTitle} %{spanStart}to Group Label?%{spanEnd}"
 msgstr "%{spanStart}Label%{spanEnd} %{labelTitle} %{spanStart}zu Gruppenlabel hochstufen?%{spanEnd}"
 
+msgid "Labels|An error occurred while archiving the label."
+msgstr ""
+
 msgid "Labels|Label actions"
 msgstr "Label-Aktionen"
 
 msgid "Labels|Label actions dropdown"
 msgstr "Auswahl-Liste für Label-Aktionen"
+
+msgid "Labels|Label archived."
+msgstr ""
+
+msgid "Labels|Label unarchived."
+msgstr ""
 
 msgid "Labels|Promote Label"
 msgstr "Label hochstufen"
@@ -45763,6 +45775,9 @@ msgstr "Du musst ein Repository in deinem Projekt erstellen, um einen Anforderun
 msgid "OnDemandScans|at"
 msgstr "um"
 
+msgid "Ona"
+msgstr ""
+
 msgid "Onboarding|If you can't find your organization, request an invite from your company's GitLab administrator."
 msgstr "Wenn du deine Organisation nicht finden kannst, fordere eine Einladung von der oder dem GitLab-Administrator(in) deines Unternehmens an."
 
@@ -45930,8 +45945,8 @@ msgstr "Fehler öffnen"
 msgid "Open evidence JSON in new tab"
 msgstr "Beweis im JSON-Format in neuem Tab öffnen"
 
-msgid "Open in Gitpod"
-msgstr "In Gitpod öffnen"
+msgid "Open in Ona"
+msgstr ""
 
 msgid "Open in Web IDE"
 msgstr "In Web IDE öffnen"
@@ -49673,8 +49688,8 @@ msgstr "Diffs"
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
 msgstr "Aktiviere %{link_start}Codevorschläge%{link_end} für die folgenden Gruppen.%{br_tag}Hier werden nur Gruppen aufgelistet, die das Add-on „Codevorschläge“ gekauft haben und über verfügbare Plätze verfügen.%{br_tag} Wenn du eine Gruppe erwartet hast und sie in der Liste fehlt, wende dich bitte an den/die Gruppeneigentümer(in)."
 
-msgid "Preferences|Enable Gitpod integration"
-msgstr "Gitpod-Integration aktivieren"
+msgid "Preferences|Enable Ona integration"
+msgstr ""
 
 msgid "Preferences|Enable default text editor"
 msgstr "Standard-Texteditor aktivieren"
@@ -49705,9 +49720,6 @@ msgstr "Einstellungen konnten nicht gespeichert werden."
 
 msgid "Preferences|For example: 30 minutes ago."
 msgstr "Beispiel: Vor 30 Minuten."
-
-msgid "Preferences|Gitpod"
-msgstr "Gitpod"
 
 msgid "Preferences|Homepage"
 msgstr "Übersichtsseite"
@@ -49741,6 +49753,9 @@ msgstr "Muss eine Zahl zwischen %{min} und %{max} sein"
 
 msgid "Preferences|Navigation"
 msgstr "Navigation"
+
+msgid "Preferences|Ona"
+msgstr ""
 
 msgid "Preferences|Preview"
 msgstr "Vorschau"
@@ -57760,6 +57775,9 @@ msgstr "Geplante Pipelines können nicht häufiger als einmal pro %{limit} Minut
 msgid "Scheduled to merge this merge request (%{strategy})."
 msgstr "Diese Merge Request wird planmäßig zusammengeführt (%{strategy})."
 
+msgid "ScheduledJob|delayed manual action (%{remainingTime})"
+msgstr ""
+
 msgid "Schedules"
 msgstr "Zeitpläne"
 
@@ -58192,10 +58210,22 @@ msgstr ""
 msgid "SecretRotation|Rotation reminder: This secret needs to be updated soon."
 msgstr ""
 
+msgid "SecretRotation|Secret overdue for rotation"
+msgstr ""
+
 msgid "SecretRotation|Secret rotation reminder"
 msgstr "Erinnerung an Geheimnisrotation"
 
 msgid "SecretRotation|Some secrets require your attention"
+msgstr ""
+
+msgid "SecretRotation|This field must be a number greater than or equal to 7."
+msgstr ""
+
+msgid "SecretRotation|This secret has not been rotated after the configured rotation reminder interval."
+msgstr ""
+
+msgid "SecretRotation|Update this secret by %{date} to maintain security."
 msgstr ""
 
 msgid "SecretRotation|You can %{secret_link_start}update the secret%{secret_link_end} in your project settings."
@@ -61387,8 +61417,8 @@ msgstr "Um deine Suche zu erweitern, änder oder entferne die obigen Filter."
 msgid "SecurityReports|Tool"
 msgstr "Tool"
 
-msgid "SecurityReports|Total count of %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
-msgstr "Gesamtzahl der Sicherheitslücken mit Schweregrad %{severity}. Klicke auf „Ansicht“, um diese Sicherheitslücken im Sicherheitslückenbericht anzuzeigen."
+msgid "SecurityReports|Total count of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
+msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
 msgstr "Konnte nicht hinzugefügt werden %{invalidProjectsMessage}: %{errorMessage}"
@@ -69230,6 +69260,9 @@ msgstr "Übertragung fehlgeschlagen: %{error_message}"
 msgid "TransferGroup|You don't have enough permissions."
 msgstr "Du hast nicht genügend Berechtigungen."
 
+msgid "TransferOrganization|Cannot transfer users to a different organization if all users do not belong to the same organization as the top-level group."
+msgstr ""
+
 msgid "TransferOrganization|Group is already in the target organization."
 msgstr "Gruppe befindet sich bereits in der Zielorganisation."
 
@@ -71715,8 +71748,8 @@ msgstr "Benutzer(innen)"
 msgid "Users API rate limits"
 msgstr "Ratenbegrenzung für die Benutzer-API"
 
-msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
-msgstr "Benutzer(innen) können eine Entwicklungsumgebung über einen GitLab-Browser-Tab starten, wenn die %{linkStart}Gitpod%{linkEnd}-Integration aktiviert ist."
+msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Ona%{linkEnd} integration is enabled."
+msgstr ""
 
 msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}."
 msgstr "Benutzer(innen) können ihr Konto reaktivieren, indem sie sich anmelden. %{link_start}Mehr erfahren%{link_end}."
@@ -72442,6 +72475,9 @@ msgstr "Beschreibung"
 msgid "VirtualRegistry|Description (optional)"
 msgstr ""
 
+msgid "VirtualRegistry|Disabling removes access. Existing registries are preserved and available again when re-enabled."
+msgstr ""
+
 msgid "VirtualRegistry|Edit registry"
 msgstr "Registry bearbeiten"
 
@@ -72449,6 +72485,9 @@ msgid "VirtualRegistry|Edit upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Edit upstream %{name}"
+msgstr ""
+
+msgid "VirtualRegistry|Enable Virtual Registry"
 msgstr ""
 
 msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
@@ -72498,6 +72537,9 @@ msgstr ""
 
 msgid "VirtualRegistry|Link existing upstream"
 msgstr "Vorhandenen Upstream verknüpfen"
+
+msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows using virtual registries."
+msgstr ""
 
 msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
 msgstr ""
@@ -72660,7 +72702,13 @@ msgstr ""
 msgid "VirtualRegistry|View registries"
 msgstr ""
 
+msgid "VirtualRegistry|Virtual Registry"
+msgstr ""
+
 msgid "VirtualRegistry|Virtual registry"
+msgstr ""
+
+msgid "VirtualRegistry|When you enable this feature, you accept the %{linkStart}GitLab Testing Agreement.%{linkEnd}"
 msgstr ""
 
 msgid "VirtualRegistry|You are about to delete this upstream used by %{count} registry:"

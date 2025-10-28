@@ -1,11 +1,9 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: ZenTao (deprecated)
+title: ZenTao
 ---
-
-<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
 
 {{< details >}}
 
@@ -13,13 +11,6 @@ title: ZenTao (deprecated)
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7
-and is planned for removal in 19.0.
-This change is a breaking change.
-
-{{< /alert >}}
 
 [ZenTao](https://www.zentao.net/) is a web-based project management platform.
 
@@ -41,5 +32,3 @@ Complete these steps in ZenTao:
 1. Under **Name** and **Code**, enter a name and a code for the new secret key.
 1. Under **Account**, select an existing account name.
 1. Select **Save**.
-
-<!--- end_remove -->

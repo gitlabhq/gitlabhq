@@ -10,7 +10,7 @@ You should regularly review the following deprecations and make the recommended 
 or endpoints for features.
 
 Though some deprecations mention a v5 REST API, no v5 REST API development is active.
-GitLab will not make these changes within REST API v4, as [we commit to follow semantic versioning for our REST API](_index.md#versioning-and-deprecations).
+GitLab will not make these changes within REST API v4, and [follows semantic versioning for the REST API](_index.md#versioning-and-deprecations).
 
 ## `geo_nodes` API endpoints
 

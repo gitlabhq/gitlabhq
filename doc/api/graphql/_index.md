@@ -373,8 +373,8 @@ GraphQL mutations can be detected as spam. If a mutation is detected as spam and
 
 {{< alert type="note" >}}
 
-The GitLab GraphiQL implementation doesn't permit passing of headers, so we must write
-this as a cURL query. `--data-binary` is used to properly handle escaped double quotes
+The GitLab GraphiQL implementation doesn't permit passing of headers, so the request must be
+a cURL query. `--data-binary` is used to properly handle escaped double quotes
 in the JSON-embedded query.
 
 {{< /alert >}}

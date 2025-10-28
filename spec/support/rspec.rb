@@ -88,8 +88,8 @@ RSpec.configure do |config|
     GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |config|
       config.run_type = "backend-rspec-tests"
 
-      config.test_retried_proc = ->(example) {
-        ENV["RSPEC_RETRY_PROCESS"] == "true" || example.metadata[:retry_attempts].to_i > 0
+      config.test_retried_proc = ->(_example) {
+        ENV["RSPEC_RETRY_PROCESS"] == "true"
       }
 
       config.custom_metrics_proc = ->(_example) {

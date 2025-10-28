@@ -30,7 +30,7 @@ If epics feature is not available a `403` status code is returned.
 
 ## Legacy Epic IDs and WorkItem IDs
 
-The legacy Epic ID is not the same as the WorkItem ID. Only the `iid` matches. However, to retrieve the corresponding WorkItem ID for an epic, we expose `work_item_id` as part of the response.
+The legacy Epic ID is not the same as the WorkItem ID. Only the `iid` matches. However, to retrieve the corresponding WorkItem ID for an epic, the response includes a `work_item_id`.
 
 This ID can be used for the WorkItem GraphQL API, e.g. the `work_item_id` would be the Global ID `gid://gitlab/WorkItem/123` on the WorkItem GraphQL API.
 

@@ -326,6 +326,7 @@ export default {
           :count="itemsCount"
           is-collapsible
           :collapsed="isCollapsed"
+          :show-zero-count="!loading"
           persist-collapsed-state
           class="!gl-mt-5"
           :body-class="{

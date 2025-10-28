@@ -17,47 +17,59 @@ module MergeRequests
 
     def refresh_merge_requests!
       # n + 1: https://gitlab.com/gitlab-org/gitlab-foss/issues/60289
-      Gitlab::GitalyClient.allow_n_plus_1_calls { find_new_commits }
+      measure_duration(:find_new_commits) do
+        Gitlab::GitalyClient.allow_n_plus_1_calls { find_new_commits }
+      end
 
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
-      close_upon_missing_source_branch_ref
-
-      post_merge_manually_merged
-
-      link_forks_lfs_objects
-
-      reload_merge_requests
-
-      merge_requests_for_source_branch.each do |mr|
-        outdate_suggestions(mr)
-        abort_auto_merges(mr)
-        mark_pending_todos_done(mr)
+      measure_duration(:close_upon_missing_source_branch_ref) do
+        close_upon_missing_source_branch_ref
       end
 
-      abort_ff_merge_requests_with_auto_merges
-      cache_merge_requests_closing_issues
+      measure_duration(:post_merge_manually_merged) do
+        post_merge_manually_merged
+      end
 
-      merge_requests_for_source_branch.each do |mr|
-        # Leave a system note if a branch was deleted/added
-        if branch_added_or_removed?
-          comment_mr_branch_presence_changed(mr)
+      measure_duration(:link_forks_lfs_objects) do
+        link_forks_lfs_objects
+      end
+
+      measure_duration(:reload_merge_requests) do
+        reload_merge_requests
+      end
+
+      measure_duration(:other_method_calls) do
+        merge_requests_for_source_branch.each do |mr|
+          outdate_suggestions(mr)
+          abort_auto_merges(mr)
+          mark_pending_todos_done(mr)
         end
 
-        notify_about_push(mr)
-        mark_mr_as_draft_from_commits(mr)
+        abort_ff_merge_requests_with_auto_merges
+        cache_merge_requests_closing_issues
 
-        # Call merge request webhook with update branches
-        if Feature.disabled?(:split_refresh_worker_web_hooks, @current_user)
-          execute_mr_web_hooks(mr)
+        merge_requests_for_source_branch.each do |mr|
+          # Leave a system note if a branch was deleted/added
+          if branch_added_or_removed?
+            comment_mr_branch_presence_changed(mr)
+          end
+
+          notify_about_push(mr)
+          mark_mr_as_draft_from_commits(mr)
+
+          # Call merge request webhook with update branches
+          if Feature.disabled?(:split_refresh_worker_web_hooks, @current_user)
+            execute_mr_web_hooks(mr)
+          end
+
+          if Feature.disabled?(:split_refresh_worker_pipeline, @current_user) && !@push.branch_removed?
+            # Run at the end of the loop to avoid any potential contention on the MR object
+            refresh_pipelines_on_merge_requests(mr)
+          end
+
+          merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
         end
-
-        if Feature.disabled?(:split_refresh_worker_pipeline, @current_user) && !@push.branch_removed?
-          # Run at the end of the loop to avoid any potential contention on the MR object
-          refresh_pipelines_on_merge_requests(mr)
-        end
-
-        merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
       end
 
       execute_async_workers
@@ -372,6 +384,45 @@ module MergeRequests
           params.slice(:push_options, :gitaly_context)
         )
       end
+    end
+
+    def measure_duration(operation_name)
+      return yield unless log_refresh_service_duration_enabled?
+
+      start_time = current_monotonic_time
+      result = yield
+      duration = (current_monotonic_time - start_time).round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
+      duration_statistics[:"#{operation_name}_duration_s"] = duration
+      result
+    end
+
+    def duration_statistics
+      @duration_statisic ||= {}
+    end
+
+    def log_refresh_service_duration_enabled?
+      strong_memoize(:log_refresh_service_duration_enabled) do
+        Feature.enabled?(:log_refresh_service_duration, @current_user)
+      end
+    end
+
+    def log_hash_metadata_on_done(hash)
+      total_duration = hash.values.sum
+      hash_with_total = hash.merge(refresh_service_total_duration_s: total_duration)
+
+      # Delegate to worker if available, otherwise log directly
+      if defined?(super)
+        super(hash_with_total)
+      else
+        Gitlab::AppJsonLogger.info(
+          event: 'merge_requests_refresh_service',
+          **hash_with_total
+        )
+      end
+    end
+
+    def current_monotonic_time
+      Gitlab::Metrics::System.monotonic_time
     end
   end
 end

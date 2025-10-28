@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Math rendering', :js, feature_category: :markdown do
   let_it_be(:project) { create(:project, :public) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   it 'renders inline and display math correctly' do
     description = <<~MATH
       This math is inline $`a^2+b^2=c^2`$.
@@ -40,7 +44,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
     create_and_visit_issue_with_description(description)
 
-    page.within '.description > .md' do
+    page.within '.description.md' do
       # unfortunately there is no class selector for KaTeX's "unsupported command"
       # formatting so we must match the style attribute
       expect(page).to have_selector('.katex-html .mord[style*="color:"][style*="#cc0000"]', text: '\href')
@@ -69,7 +73,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
       it 'renders lazy load button' do
         create_and_visit_issue_with_description(lazy_load_description)
 
-        page.within '.description > .md' do
+        page.within '.description.md' do
           expect(page).to have_selector('[role="alert"]', text: /math block exceeds 1000 characters/)
         end
       end
@@ -83,7 +87,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
         create_and_visit_issue_with_description(description)
 
-        page.within '.description > .md' do
+        page.within '.description.md' do
           expect(page).not_to have_selector('.katex-error')
         end
       end
@@ -91,7 +95,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
       it 'shows error message when too many expansions', :js do
         create_and_visit_issue_with_description(excessive_expansion_description)
 
-        page.within '.description > .md' do
+        page.within '.description.md' do
           click_button 'Display anyway'
 
           expect(page).to have_selector('.katex-error', text: /Too many expansions/)
@@ -126,7 +130,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
       it 'does not render lazy load button' do
         create_and_visit_issue_with_description(lazy_load_description)
 
-        page.within '.description > .md' do
+        page.within '.description.md' do
           expect(page).not_to have_selector('button', text: 'Display anyway')
           expect(page).not_to have_selector('[role="alert"]', text: /math block exceeds 1000 characters/)
         end
@@ -135,7 +139,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
       it 'does not show error message when too many expansions', :js do
         create_and_visit_issue_with_description(excessive_expansion_description)
 
-        page.within '.description > .md' do
+        page.within '.description.md' do
           expect(page).not_to have_selector('button', text: 'Display anyway')
           expect(page).not_to have_selector('.katex-error', text: /Too many expansions/)
         end
@@ -152,7 +156,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
     create_and_visit_issue_with_description(description)
 
-    page.within '.description > .md' do
+    page.within '.description.md' do
       expect(page).to have_selector('.katex-error',
         text: /There was an error rendering this math block. KaTeX parse error/)
     end
@@ -167,7 +171,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
     create_and_visit_issue_with_description(description)
 
-    page.within '.description > .md' do
+    page.within '.description.md' do
       expect(page).to have_selector('.katex-error', text: /&amp;lt;script&amp;gt;/)
     end
   end
@@ -181,7 +185,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
     create_and_visit_issue_with_description(description)
 
-    page.within '.description > .md' do
+    page.within '.description.md' do
       expect(page).to have_selector('.math-content-display')
     end
   end
@@ -191,7 +195,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
     create_and_visit_issue_with_description(description)
 
-    page.within '.description > .md' do
+    page.within '.description.md' do
       expect(page).to have_selector('.math-content-inline')
     end
   end
@@ -208,7 +212,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
       issue = create_and_visit_issue_with_description(description)
 
-      page.within '.description > .md' do
+      page.within '.description.md' do
         click_link 'test link'
 
         expect(page).to have_current_path(project_issue_path(project, issue))
@@ -222,7 +226,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
       issue = create_and_visit_issue_with_description(description)
 
-      page.within '.description > .md' do
+      page.within '.description.md' do
         click_link 'test link'
 
         expect(page).to have_current_path(project_issue_path(project, issue))

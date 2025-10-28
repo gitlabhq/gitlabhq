@@ -314,7 +314,7 @@ pass the following parameters:
 | `page`     | Page number (default: `1`).                                   |
 | `per_page` | Number of items to list per page (default: `20`, max: `100`). |
 
-In the following example, we list 50 [namespaces](../namespaces.md) per page:
+The following example lists 50 [namespaces](../namespaces.md) per page:
 
 ```shell
 curl --request GET \
@@ -336,8 +336,8 @@ the relevant URL. Be sure to use these links instead of generating your own URLs
 
 For GitLab.com users, [some pagination headers may not be returned](../../user/gitlab_com/_index.md#pagination-response-headers).
 
-In the following cURL example, we limit the output to three items per page
-(`per_page=3`) and we request the second page (`page=2`) of [comments](../notes.md)
+The following cURL example limits the output to three items per page
+(`per_page=3`), and requests the second page (`page=2`) of [comments](../notes.md)
 of the issue with ID `8` which belongs to the project with ID `9`:
 
 ```shell
@@ -398,7 +398,7 @@ This method is controlled by the following parameters. `order_by` and `sort` are
 | `order_by`   | yes      | Column by which to order by. |
 | `sort`       | yes      | Sort order (`asc` or `desc`) |
 
-In the following example, we list 50 [projects](../projects.md) per page, ordered
+The following example lists 50 [projects](../projects.md) per page, ordered
 by `id` ascending.
 
 ```shell
@@ -443,7 +443,7 @@ The link to the next page contains an additional filter `cursor=eyJuYW1lIjoiRmxp
 excludes already-retrieved records.
 
 The type of filter depends on the
-`order_by` option used, and we can have more than one additional filter.
+`order_by` option used, and you can have more than one additional filter.
 
 {{< alert type="warning" >}}
 
@@ -458,8 +458,8 @@ records to retrieve, the `Link` header is absent and the resulting array is
 empty.
 
 You should use only the given link to retrieve the next page instead of
-building your own URL. Apart from the headers shown, we don't expose additional
-pagination headers.
+building your own URL. Apart from the headers shown, no additional pagination headers
+are exposed.
 
 #### Supported resources
 

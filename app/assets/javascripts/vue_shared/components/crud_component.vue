@@ -103,6 +103,11 @@ export default {
       required: false,
       default: false,
     },
+    showZeroCount: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -130,7 +135,15 @@ export default {
         return null;
       }
 
-      return this.icon && !this.count ? '0' : this.count;
+      if (this.count) {
+        return this.count;
+      }
+
+      if (this.icon || this.showZeroCount) {
+        return '0';
+      }
+
+      return null;
     },
     isFormUsedAndVisible() {
       return this.$scopedSlots.form && this.isFormVisible && !this.isCollapsed;

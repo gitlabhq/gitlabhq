@@ -434,7 +434,7 @@ default:
     - virtualenv venv
     - source venv/bin/activate
 
-variables:  # Change pip's cache directory to be inside the project directory because we can only cache local items.
+variables:  # Change pip's cache directory to be inside the project directory because GitLab can only cache local items.
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 test:
@@ -581,7 +581,7 @@ be overwritten because caches are restored before artifacts.
 
 A suffix is added to the cache key, with the exception of the [global fallback cache key](#global-fallback-key).
 
-As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that we have two branches `main`
+As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that you have two branches `main`
 and `feature`, then the following table represents the resulting cache keys:
 
 | Branch name | Cache key               |

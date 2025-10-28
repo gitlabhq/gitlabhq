@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
+  include ListboxHelpers
   include ProjectForksHelper
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
-  let(:issue_form_location) { '#content-body .issuable-details .detail-page-description' }
+  let(:issue_form_location) { '[data-testid="work-item-description-wrapper"]' }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_maintainer(user)
     sign_in user
   end
@@ -34,35 +36,37 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      page.find('.js-issuable-edit').click
-      fill_in :'issuable-title', with: 'test issue title'
+
+      click_button 'Edit', match: :first
+      fill_in 'Title', with: 'test issue title'
     end
 
     it 'user selects "bug" template' do
-      select_template 'bug'
+      click_button 'Choose a template'
+      select_listbox_item 'bug'
       wait_for_requests
       assert_template(page_part: issue_form_location)
-      expect(page).to have_current_path(/issuable_template=bug/)
       save_changes
     end
 
     it 'user selects "bug" template and then "no template"' do
-      select_template 'bug'
+      click_button 'Choose a template'
+      select_listbox_item 'bug'
       wait_for_requests
-      expect(page).to have_current_path(/issuable_template=bug/)
-      select_option 'No template'
-      wait_for_requests
+      click_button 'bug'
+      click_button 'No template'
       assert_template(expected_content: '', page_part: issue_form_location)
-      expect(page).not_to have_current_path(/issuable_template=bug/)
       save_changes('')
     end
 
     it 'user selects "bug" template, edits description and then selects "reset template"' do
-      select_template 'bug'
+      click_button 'Choose a template'
+      select_listbox_item 'bug'
       wait_for_requests
-      find_field('issue-description').send_keys(description_addition)
+      find_field('Description').send_keys(description_addition)
       assert_template(expected_content: template_content + description_addition, page_part: issue_form_location)
-      select_option 'Reset template'
+      click_button 'bug'
+      click_button 'Reset template'
       assert_template(page_part: issue_form_location)
       save_changes
     end
@@ -81,12 +85,9 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
     end
 
     it 'applies correctly in the rich text editor' do
-      visit new_project_issue_path project
-      click_button "Switch to rich text editing"
-
       visit new_project_issue_path(project, { issuable_template: 'bug' })
 
-      expect(page).to have_content(template_content)
+      assert_template(page_part: issue_form_location)
     end
   end
 
@@ -103,14 +104,21 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
         message: 'added issue template',
         branch_name: 'master')
       visit project_issue_path project, issue
-      page.find('.js-issuable-edit').click
-      fill_in :'issuable-title', with: 'test issue title'
-      fill_in :'issue-description', with: prior_description
+
+      click_button 'Edit', match: :first
+      fill_in 'Title', with: 'test issue title'
+      fill_in 'Description', with: prior_description
     end
 
     it 'user selects "bug" template' do
-      select_template 'bug'
+      click_button 'Choose a template'
+      select_listbox_item 'bug'
       wait_for_requests
+
+      expect(page).to have_css('.gl-alert-warning', text: 'Applying a template will replace the existing description. Any changes you have made will be lost.')
+
+      click_button 'Apply template'
+
       assert_template(page_part: issue_form_location)
       save_changes
     end
@@ -131,16 +139,14 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
 
     it 'does not overwrite autosaved description' do
       visit new_project_issue_path project
-      wait_for_requests
 
-      assert_template # default template is loaded the first time
+      assert_template(page_part: issue_form_location) # default template is loaded the first time
 
-      fill_in 'issue_description', with: 'my own description'
+      fill_in 'Description', with: 'my own description'
 
       visit new_project_issue_path project
-      wait_for_requests
 
-      assert_template(expected_content: 'my own description')
+      assert_template(expected_content: 'my own description', page_part: issue_form_location)
     end
   end
 

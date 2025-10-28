@@ -612,7 +612,7 @@ Example response:
 
 {{< alert type="note" >}}
 
-`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 {{< /alert >}}
 
@@ -1002,7 +1002,7 @@ Example response:
 
 {{< alert type="note" >}}
 
-`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 {{< /alert >}}
 

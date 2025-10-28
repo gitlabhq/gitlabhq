@@ -11,6 +11,10 @@ RSpec.describe "Jira", :js, feature_category: :team_planning do
   let!(:issue_other_project) { create(:issue, project: other_project) }
   let(:issues) { [issue_actual_project, issue_other_project] }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   shared_examples "correct references" do
     before do
       remotelink = double(:remotelink, all: [], build: double(save!: true))
@@ -56,7 +60,7 @@ RSpec.describe "Jira", :js, feature_category: :team_planning do
       if referenced_issues.include?(issue_actual_project)
         visit(issue_path(issue_actual_project))
 
-        page.within("#notes") do
+        page.within('.work-item-notes') do
           expect(page).to have_content("#{user.name} mentioned in merge request #{merge_request.to_reference}")
         end
       end
@@ -64,7 +68,7 @@ RSpec.describe "Jira", :js, feature_category: :team_planning do
       if referenced_issues.include?(issue_other_project)
         visit(issue_path(issue_other_project))
 
-        page.within("#notes") do
+        page.within('.work-item-notes') do
           expect(page).to have_content("#{user.name} mentioned in merge request #{merge_request.to_reference(other_project)}")
         end
       end

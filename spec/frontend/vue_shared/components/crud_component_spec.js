@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlButton, GlIcon, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlBadge, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -19,7 +19,7 @@ describe('CRUD Component', () => {
       scopedSlots: {
         ...slots,
       },
-      stubs: { GlButton, GlIcon },
+      stubs: { GlButton, GlIcon, GlBadge },
     });
   };
 
@@ -313,6 +313,32 @@ describe('CRUD Component', () => {
       expect(actionsSlot).toHaveBeenCalledWith(
         expect.objectContaining({ showForm: wrapper.vm.showForm }),
       );
+    });
+  });
+
+  describe('showZeroCount prop', () => {
+    it('displays "0" when count is falsy and showZeroCount is true', () => {
+      createComponent({ showZeroCount: true, count: null });
+
+      expect(findCount().text()).toBe('0');
+    });
+
+    it('does not display count when count is falsy and showZeroCount is false', () => {
+      createComponent({ showZeroCount: false, count: null });
+
+      expect(findCount().exists()).toBe(false);
+    });
+
+    it('displays "0" as string when count is 0 and showZeroCount is true', () => {
+      createComponent({ showZeroCount: true, count: 0 });
+
+      expect(findCount().text()).toBe('0');
+    });
+
+    it('displays regular count when count exists regardless of showZeroCount', () => {
+      createComponent({ showZeroCount: true, count: 5 });
+
+      expect(findCount().text()).toBe('5');
     });
   });
 });

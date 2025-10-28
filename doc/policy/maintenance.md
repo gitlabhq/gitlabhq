@@ -57,11 +57,11 @@ The following GitLab release versions are currently maintained:
 
 {{< alert type="note" >}}
 
-For **GitLab team members** looking for maintained versions for the upcoming patch release, refer to the [**"Release Versions"**](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
-under the "Patch Release Information" section in the internal Grafana dashboard ["delivery: Release Information"](https://dashboards.gitlab.net/goto/6zeLfPENR?orgId=1).
-They will be different from the above list of maintained versions when the active monthly release date is prior to the active patch release date.
+For GitLab team members looking for maintained versions for the upcoming patch release, refer to the [`Release Versions` panel](https://dashboards.gitlab.net/goto/h228fPEHR?orgId=1)
+under the `Patch Release Information` section in the internal `delivery: Release Information` Grafana dashboard.
+When the active monthly release date is prior to the active patch release date, the versions are different from the maintained versions list above.
 
-**Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions**.
+Bug fix backports are maintained for the current (first) version, and security fix backports are maintained for all versions.
 
 {{< /alert >}}
 

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-10-13 06:11\n"
+"PO-Revision-Date: 2025-10-15 11:06\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -2891,6 +2891,9 @@ msgstr ""
 msgid "AICatalog|Anyone in your organization can view and use agents unless you make it private. Private agents can only be viewed and run in their source project."
 msgstr ""
 
+msgid "AICatalog|Anyone in your organization can view and use flows unless you make it private. Private flows can only be viewed in their source project."
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr ""
 
@@ -2913,10 +2916,10 @@ msgid "AICatalog|Automate tasks and processes using flows."
 msgstr ""
 
 msgid "AICatalog|Available tools"
-msgstr ""
+msgstr "Доступные инструменты"
 
 msgid "AICatalog|Basic information"
-msgstr ""
+msgstr "Основная информация"
 
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
 msgstr ""
@@ -2933,10 +2936,10 @@ msgstr ""
 msgid "AICatalog|Choose a memorable name for your AI flow."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI Catalog."
 msgstr ""
 
-msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI catalog."
+msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI Catalog."
 msgstr ""
 
 msgid "AICatalog|Configuration"
@@ -3242,14 +3245,11 @@ msgstr ""
 msgid "AICatalog|Visibility"
 msgstr ""
 
-msgid "AICatalog|Visibility level is required."
-msgstr ""
-
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
 msgid "AICatalog|agent"
-msgstr ""
+msgstr "агент"
 
 msgid "AICatalog|cannot be changed as it has been released"
 msgstr ""
@@ -3855,7 +3855,7 @@ msgid "Access denied for your LDAP account."
 msgstr "Доступ запрещен для вашей учетной записи LDAP."
 
 msgid "Access expiration date"
-msgstr ""
+msgstr "Дата окончания доступа"
 
 msgid "Access expires"
 msgstr "Доступ истекает"
@@ -4375,7 +4375,7 @@ msgid "Active project access tokens"
 msgstr "Активные токены доступа проекта"
 
 msgid "Active sessions"
-msgstr ""
+msgstr "Активные сессии"
 
 msgid "ActiveSessions|with Step-up Authentication"
 msgstr ""
@@ -4387,7 +4387,7 @@ msgid "Activity|An error occurred while retrieving activity. Reload the page to 
 msgstr "Произошла ошибка при получении активности. Обновите страницу, чтобы повторить попытку."
 
 msgid "Actual version"
-msgstr ""
+msgstr "Актуальная версия"
 
 msgid "Add"
 msgstr "Добавить"
@@ -7711,9 +7711,6 @@ msgstr ""
 msgid "Almost there…"
 msgstr "Почти готово…"
 
-msgid "Alpha"
-msgstr ""
-
 msgid "Already blocked"
 msgstr "Уже заблокировано"
 
@@ -9644,6 +9641,9 @@ msgstr[3] "Выбранные артефакты будут удалены бе�
 msgid "Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty."
 msgstr "Этот артефакт будет удалён безвозвратно. Все отчёты, созданные из этого артефакта, будут пустыми."
 
+msgid "Artifacts|Total artifacts count"
+msgstr ""
+
 msgid "Artifacts|Total artifacts size"
 msgstr "Общий размер артефактов"
 
@@ -11043,7 +11043,7 @@ msgid "Billings|Free tier and trial groups can invite a maximum of 20 members pe
 msgstr "Группы на бесплатном тарифе и в пробной версии могут приглашать не более 20 участников в день."
 
 msgid "Billings|Group"
-msgstr ""
+msgstr "Группа"
 
 msgid "Billings|Groups in the Free tier are limited to %d seat"
 msgid_plural "Billings|Groups in the Free tier are limited to %d seats"
@@ -11952,7 +11952,7 @@ msgid "BranchRules|Merge requests"
 msgstr "Запросы на слияние"
 
 msgid "BranchRules|No branch rules found"
-msgstr ""
+msgstr "Не найдено правил для ветки"
 
 msgid "BranchRules|No data to display"
 msgstr "Нет данных для отображения"
@@ -12800,6 +12800,9 @@ msgstr "Конфигурация CI/CD"
 msgid "CI/CD configuration file"
 msgstr "Файл конфигурации CI/CD"
 
+msgid "CI/CD is disabled for this project"
+msgstr ""
+
 msgid "CI/CD job token"
 msgstr "Токен задания CI/CD"
 
@@ -13387,7 +13390,7 @@ msgid "Cannot delete the default organization"
 msgstr "Невозможно удалить организацию по умолчанию"
 
 msgid "Cannot find target namespace."
-msgstr ""
+msgstr "Не удалось найти целевое пространство имён"
 
 msgid "Cannot have more than %{maximum_path_exclusions} path exclusions for secret push protection per project"
 msgstr "Нельзя задать более %{maximum_path_exclusions} исключений пути для защиты от отправки секретов в одном проекте."
@@ -16666,7 +16669,7 @@ msgid "Compliance Center|Report and manage compliance status, violations, and co
 msgstr "Отслеживайте и управляйте состоянием соблюдения норм, нарушениями и структурами соблюдения норм для группы. %{linkStart}Подробнее%{linkEnd}."
 
 msgid "Compliance Center|Status"
-msgstr ""
+msgstr "Статус"
 
 msgid "Compliance Center|Violations"
 msgstr "Нарушения"
@@ -16693,10 +16696,10 @@ msgid "Compliance report|Framework name"
 msgstr ""
 
 msgid "Compliance report|Policies"
-msgstr ""
+msgstr "Политики"
 
 msgid "Compliance report|Projects"
-msgstr ""
+msgstr "Проекты"
 
 msgid "Compliance report|Requirements"
 msgstr ""
@@ -17191,7 +17194,7 @@ msgid "ComplianceReport|Action"
 msgstr ""
 
 msgid "ComplianceReport|Activity"
-msgstr ""
+msgstr "Активность"
 
 msgid "ComplianceReport|All frameworks"
 msgstr ""
@@ -17221,7 +17224,7 @@ msgid "ComplianceReport|Choose one bulk action"
 msgstr "Выберите одно массовое действие"
 
 msgid "ComplianceReport|Click to check all projects"
-msgstr ""
+msgstr "Нажмите для выбора всех проектов"
 
 msgid "ComplianceReport|Compliance framework"
 msgstr "Регламент соблюдения норм"
@@ -17245,7 +17248,7 @@ msgid "ComplianceReport|Date detected"
 msgstr ""
 
 msgid "ComplianceReport|Details"
-msgstr ""
+msgstr "Подробности"
 
 msgid "ComplianceReport|Dismiss"
 msgstr "Скрыть"
@@ -17335,7 +17338,7 @@ msgid "ComplianceReport|Please remove the compliance pipeline configuration from
 msgstr "Удалите конфигурацию конвейера соблюдения норм из регламента, чтобы новая политика выполнения конвейера стала приоритетной."
 
 msgid "ComplianceReport|Project"
-msgstr ""
+msgstr "Проект"
 
 msgid "ComplianceReport|Projects covered by frameworks"
 msgstr ""
@@ -17365,7 +17368,7 @@ msgid "ComplianceReport|Start by adding a compliance framework to your group."
 msgstr ""
 
 msgid "ComplianceReport|Status"
-msgstr ""
+msgstr "Статус"
 
 msgid "ComplianceReport|There are no compliance frameworks."
 msgstr ""
@@ -17392,7 +17395,7 @@ msgid "ComplianceReport|Unable to load the compliance violations report. Refresh
 msgstr ""
 
 msgid "ComplianceReport|Unknown author"
-msgstr ""
+msgstr "Неизвестный автор"
 
 msgid "ComplianceReport|Update filtered results?"
 msgstr ""
@@ -17651,7 +17654,7 @@ msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr "Дата последнего изменения статуса"
 
 msgid "ComplianceStandardsAdherence|Default branch protected"
-msgstr ""
+msgstr "Ветка по умолчанию защищена"
 
 msgid "ComplianceStandardsAdherence|Default branch protected from direct push"
 msgstr ""
@@ -17903,7 +17906,7 @@ msgid "ComplianceStandardsAdherence|Ensures webhooks are securely configured."
 msgstr "Проверяет, что вебхуки настроены безопасно."
 
 msgid "ComplianceStandardsAdherence|Error tracking enabled"
-msgstr ""
+msgstr "Отслеживание ошибок включено"
 
 msgid "ComplianceStandardsAdherence|Establish a process to periodically review and archive inactive repositories."
 msgstr "Организуйте процесс периодического обзора и архивации неактивных репозиториев."
@@ -18898,7 +18901,7 @@ msgid "ContainerRegistry|CLI commands"
 msgstr "Команды CLI"
 
 msgid "ContainerRegistry|Changes saved."
-msgstr ""
+msgstr "Изменения сохранены."
 
 msgid "ContainerRegistry|Cleanup disabled"
 msgstr "Очистка отключена"
@@ -20060,7 +20063,7 @@ msgid "Correlation ID"
 msgstr ""
 
 msgid "Corrupted indexes"
-msgstr ""
+msgstr "Повреждённые индексы"
 
 msgid "Cost Factor Settings"
 msgstr ""
@@ -20759,7 +20762,7 @@ msgid "CredentialsInventory|Revoked"
 msgstr "Отозван"
 
 msgid "CredentialsInventory|SSH Keys"
-msgstr ""
+msgstr "Ключи SSH"
 
 msgid "CredentialsInventory|SSH keys"
 msgstr "Ключи SSH"
@@ -22441,16 +22444,16 @@ msgid "Database '%{database_name}' is using PostgreSQL %{pg_version_current}, bu
 msgstr "База данных '%{database_name}' использует PostgreSQL %{pg_version_current}, но данная версия GitLab требует PostgreSQL %{pg_version_minimum}. Пожалуйста, обновите вашу среду до поддерживаемой версии PostgreSQL. Подробности см. в разделе %{pg_requirements_url}."
 
 msgid "Database Diagnostics"
-msgstr ""
+msgstr "Диагностика базы данных"
 
 msgid "Database diagnostics"
-msgstr ""
+msgstr "Диагностика базы данных"
 
 msgid "Database update failed"
 msgstr "Ошибка обновления базы данных"
 
 msgid "DatabaseDiagnostics|An error occurred while starting diagnostics"
-msgstr ""
+msgstr "При запуске диагностики произошла ошибка"
 
 msgid "DatabaseDiagnostics|Collation health check"
 msgstr ""
@@ -22468,7 +22471,7 @@ msgid "DatabaseDiagnostics|Database: %{name}"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Details"
-msgstr ""
+msgstr "Подробности"
 
 msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that might occur after OS upgrade"
 msgstr ""
@@ -22528,10 +22531,10 @@ msgid "DatabaseDiagnostics|Sequence Name"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Sequences"
-msgstr ""
+msgstr "Последовательности"
 
 msgid "DatabaseDiagnostics|Tables"
-msgstr ""
+msgstr "Таблицы"
 
 msgid "DatabaseDiagnostics|The database diagnostic job is taking longer than expected. You can check back later or try running it again."
 msgstr ""
@@ -22907,7 +22910,7 @@ msgid "Delete identity"
 msgstr "Удалить идентификацию"
 
 msgid "Delete immediately"
-msgstr ""
+msgstr "Удалить немедленно"
 
 msgid "Delete internal note"
 msgstr ""
@@ -23022,7 +23025,7 @@ msgid "Deleted"
 msgstr "Удалено"
 
 msgid "Deleted account nickname: %{chat_name}!"
-msgstr ""
+msgstr "Удалена учётная запись: %{chat_name}!"
 
 msgid "Deleted commits:"
 msgstr ""
@@ -23132,7 +23135,7 @@ msgid "Dependencies|Component name"
 msgstr ""
 
 msgid "Dependencies|Dependency List"
-msgstr ""
+msgstr "Список зависимостей"
 
 msgid "Dependencies|Dependency List export"
 msgstr ""
@@ -24307,7 +24310,7 @@ msgid "Device name"
 msgstr "Название устройства"
 
 msgid "Device name: %{device_name}"
-msgstr ""
+msgstr "Название устройства: %{device_name}"
 
 msgid "DeviceAuth|Authorize"
 msgstr "Авторизовать"
@@ -24334,7 +24337,7 @@ msgid "DevopsAdoption|%{adoptedCount}/%{featuresCount} %{title} features adopted
 msgstr ""
 
 msgid "DevopsAdoption|Actions"
-msgstr ""
+msgstr "Действия"
 
 msgid "DevopsAdoption|Add a group to get started"
 msgstr "Добавьте группу, чтобы начать"
@@ -25175,10 +25178,10 @@ msgid "DuoAgentPlatform|Access the latest GitLab Duo features"
 msgstr ""
 
 msgid "DuoAgentPlatform|Action"
-msgstr ""
+msgstr "Действие"
 
 msgid "DuoAgentPlatform|Activity"
-msgstr ""
+msgstr "Активность"
 
 msgid "DuoAgentPlatform|Agent reasoning"
 msgstr ""
@@ -25325,7 +25328,7 @@ msgid "DuoAgentsPlatform|Create merge request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Default"
-msgstr ""
+msgstr "По умолчанию"
 
 msgid "DuoAgentsPlatform|Delete flow trigger"
 msgstr ""
@@ -30207,6 +30210,9 @@ msgstr "Минимальный интервал в днях"
 msgid "Geo|Missing on Primary!"
 msgstr "Отсутствует на основном!"
 
+msgid "Geo|Model ID"
+msgstr ""
+
 msgid "Geo|Model record: %{modelRecordId}"
 msgstr "Запись модели: %{modelRecordId}"
 
@@ -30391,6 +30397,9 @@ msgid "Geo|Reverify all failed %{type}"
 msgstr ""
 
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
+msgstr ""
+
+msgid "Geo|Review stored data and data health within your instance."
 msgstr ""
 
 msgid "Geo|Scheduled %{name} for %{actionName}."
@@ -31203,9 +31212,6 @@ msgstr ""
 msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running…"
 msgstr "Ваш проект настроен для GitLab Pages, конвейер выполняется…"
 
-msgid "GitPod"
-msgstr "GitPod"
-
 msgid "GitSetup|Global"
 msgstr "Глобально"
 
@@ -31395,23 +31401,20 @@ msgstr "Это требует зеркалирования вашего репо
 msgid "Gitlab Duo Core"
 msgstr "Gitlab Duo Core"
 
-msgid "Gitpod"
-msgstr "Gitpod"
+msgid "Gitpod|Enable Ona integration"
+msgstr ""
 
-msgid "Gitpod|Enable Gitpod integration"
-msgstr "Включить интеграцию с Gitpod"
+msgid "Gitpod|Ona URL"
+msgstr ""
 
-msgid "Gitpod|Gitpod URL"
-msgstr "URL Gitpod"
+msgid "Gitpod|The URL to your Ona instance configured to read your GitLab projects, such as https://ona.example.com."
+msgstr ""
 
-msgid "Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com."
-msgstr "URL вашего экземпляра Gitpod, настроенного для чтения ваших проектов GitLab, например https://gitpod.example.com."
+msgid "Gitpod|To use the integration, each user must also enable Ona on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
+msgstr ""
 
-msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
-msgstr "Чтобы использовать интеграцию, каждый пользователь должен также включить Gitpod в своей учётной записи GitLab. %{help_link_start}Как включить?%{help_link_end}"
-
-msgid "Gitpod|https://gitpod.example.com"
-msgstr "https: //gitpod.example.com"
+msgid "Gitpod|https://ona.example.com"
+msgstr ""
 
 msgid "Give feedback"
 msgstr "Оставить отзыв"
@@ -38882,11 +38885,20 @@ msgstr "Метки, не содержащие обсуждений в этой �
 msgid "Labels|%{spanStart}Promote label%{spanEnd} %{labelTitle} %{spanStart}to Group Label?%{spanEnd}"
 msgstr "%{spanStart}Повысить метку%{spanEnd} %{labelTitle} %{spanStart}до метки группы?%{spanEnd}"
 
+msgid "Labels|An error occurred while archiving the label."
+msgstr ""
+
 msgid "Labels|Label actions"
 msgstr "Действия с метками"
 
 msgid "Labels|Label actions dropdown"
 msgstr "Меню действий с метками"
+
+msgid "Labels|Label archived."
+msgstr ""
+
+msgid "Labels|Label unarchived."
+msgstr ""
 
 msgid "Labels|Promote Label"
 msgstr "Перенести Метку"
@@ -46393,6 +46405,9 @@ msgstr ""
 msgid "OnDemandScans|at"
 msgstr ""
 
+msgid "Ona"
+msgstr ""
+
 msgid "Onboarding|If you can't find your organization, request an invite from your company's GitLab administrator."
 msgstr "Если вы не можете найти свою организацию, запросите приглашение у администратора GitLab вашей компании."
 
@@ -46562,8 +46577,8 @@ msgstr ""
 msgid "Open evidence JSON in new tab"
 msgstr ""
 
-msgid "Open in Gitpod"
-msgstr "Открыть в Gitpod"
+msgid "Open in Ona"
+msgstr ""
 
 msgid "Open in Web IDE"
 msgstr "Открыть в Web IDE"
@@ -50319,8 +50334,8 @@ msgstr "Различия"
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
 msgstr "Включите %{link_start}Предложения кода%{link_end} для следующих групп.%{br_tag}Здесь отображаются только группы, которые приобрели дополнение для предложений кода и имеют доступные лицензии.%{br_tag} Если вы ожидали увидеть группу, но она отсутствует в списке свяжитесь с владельцем группы."
 
-msgid "Preferences|Enable Gitpod integration"
-msgstr "Включить интеграцию с Gitpod"
+msgid "Preferences|Enable Ona integration"
+msgstr ""
 
 msgid "Preferences|Enable default text editor"
 msgstr "Включить текстовый редактор по умолчанию"
@@ -50351,9 +50366,6 @@ msgstr "Не удалось сохранить настройки."
 
 msgid "Preferences|For example: 30 minutes ago."
 msgstr "Например: 30 минут назад."
-
-msgid "Preferences|Gitpod"
-msgstr "Gitpod"
 
 msgid "Preferences|Homepage"
 msgstr "Стартовая страница"
@@ -50387,6 +50399,9 @@ msgstr "Должно быть числом между %{min} и %{max}"
 
 msgid "Preferences|Navigation"
 msgstr "Навигация"
+
+msgid "Preferences|Ona"
+msgstr ""
 
 msgid "Preferences|Preview"
 msgstr "Предпросмотр"
@@ -58468,6 +58483,9 @@ msgstr "Конвейеры, запланированные для запуска
 msgid "Scheduled to merge this merge request (%{strategy})."
 msgstr "Запланировано слияние этого запроса на слияние (%{strategy})."
 
+msgid "ScheduledJob|delayed manual action (%{remainingTime})"
+msgstr ""
+
 msgid "Schedules"
 msgstr "Расписания"
 
@@ -58930,10 +58948,22 @@ msgstr ""
 msgid "SecretRotation|Rotation reminder: This secret needs to be updated soon."
 msgstr ""
 
+msgid "SecretRotation|Secret overdue for rotation"
+msgstr ""
+
 msgid "SecretRotation|Secret rotation reminder"
 msgstr ""
 
 msgid "SecretRotation|Some secrets require your attention"
+msgstr ""
+
+msgid "SecretRotation|This field must be a number greater than or equal to 7."
+msgstr ""
+
+msgid "SecretRotation|This secret has not been rotated after the configured rotation reminder interval."
+msgstr ""
+
+msgid "SecretRotation|Update this secret by %{date} to maintain security."
 msgstr ""
 
 msgid "SecretRotation|You can %{secret_link_start}update the secret%{secret_link_end} in your project settings."
@@ -62137,7 +62167,7 @@ msgstr "Чтобы расширить область поиска, измени�
 msgid "SecurityReports|Tool"
 msgstr "Инструмент"
 
-msgid "SecurityReports|Total count of %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
+msgid "SecurityReports|Total count of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
@@ -70068,6 +70098,9 @@ msgstr "Ошибка переноса: %{error_message}"
 msgid "TransferGroup|You don't have enough permissions."
 msgstr "У вас недостаточно прав."
 
+msgid "TransferOrganization|Cannot transfer users to a different organization if all users do not belong to the same organization as the top-level group."
+msgstr ""
+
 msgid "TransferOrganization|Group is already in the target organization."
 msgstr ""
 
@@ -72563,8 +72596,8 @@ msgstr "Пользователи"
 msgid "Users API rate limits"
 msgstr "Ограничения на частоту запросов API пользователей"
 
-msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
-msgstr "Пользователи могут запустить среду разработки из вкладки GitLab в браузере, когда интеграция с %{linkStart}Gitpod%{linkEnd} включена."
+msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Ona%{linkEnd} integration is enabled."
+msgstr ""
 
 msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}."
 msgstr ""
@@ -73318,6 +73351,9 @@ msgstr ""
 msgid "VirtualRegistry|Description (optional)"
 msgstr "Описание (необязательно)"
 
+msgid "VirtualRegistry|Disabling removes access. Existing registries are preserved and available again when re-enabled."
+msgstr ""
+
 msgid "VirtualRegistry|Edit registry"
 msgstr "Изменение реестра"
 
@@ -73325,6 +73361,9 @@ msgid "VirtualRegistry|Edit upstream"
 msgstr "Изменить исходный реестр"
 
 msgid "VirtualRegistry|Edit upstream %{name}"
+msgstr ""
+
+msgid "VirtualRegistry|Enable Virtual Registry"
 msgstr ""
 
 msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
@@ -73373,6 +73412,9 @@ msgid "VirtualRegistry|Get started with virtual registries"
 msgstr "Начните работу с виртуальными реестрами"
 
 msgid "VirtualRegistry|Link existing upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows using virtual registries."
 msgstr ""
 
 msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
@@ -73538,8 +73580,14 @@ msgstr "Имя пользователя (необязательно)"
 msgid "VirtualRegistry|View registries"
 msgstr ""
 
+msgid "VirtualRegistry|Virtual Registry"
+msgstr ""
+
 msgid "VirtualRegistry|Virtual registry"
 msgstr "Виртуальный реестр"
+
+msgid "VirtualRegistry|When you enable this feature, you accept the %{linkStart}GitLab Testing Agreement.%{linkEnd}"
+msgstr ""
 
 msgid "VirtualRegistry|You are about to delete this upstream used by %{count} registry:"
 msgid_plural "VirtualRegistry|You are about to delete this upstream used by %{count} registries:"
