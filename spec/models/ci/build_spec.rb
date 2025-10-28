@@ -2698,6 +2698,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true, masked: false },
           { key: 'CI_COMMIT_BRANCH', value: build.ref, public: true, masked: false },
           { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true, masked: false },
+          { key: "CI_COMMIT_MESSAGE_IS_TRUNCATED", masked: false, public: true, value: "false" },
           { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true, masked: false },
           { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true, masked: false },
           { key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s, public: true, masked: false },

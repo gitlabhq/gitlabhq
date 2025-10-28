@@ -3,8 +3,6 @@ import {
   GlLoadingIcon,
   GlBadge,
   GlButton,
-  GlPopover,
-  GlLink,
   GlTooltipDirective,
   GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
@@ -13,10 +11,8 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import VisibilityIconButton from '~/vue_shared/components/visibility_icon_button.vue';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
-import { VISIBILITY_LEVELS_STRING_TO_INTEGER } from '~/visibility_level/constants';
-import { ITEM_TYPE, ACTIVE_TAB_SHARED } from '../constants';
+import { ITEM_TYPE } from '../constants';
 
 import eventHub from '../event_hub';
 
@@ -33,8 +29,6 @@ export default {
     GlBadge,
     GlButton,
     GlLoadingIcon,
-    GlPopover,
-    GlLink,
     GlAnimatedChevronRightDownIcon,
     UserAccessRoleBadge,
     ItemTypeIcon,
@@ -91,13 +85,6 @@ export default {
     showActionsMenu() {
       return this.isGroup && (this.group.canEdit || this.group.canRemove || this.group.canLeave);
     },
-    shouldShowVisibilityWarning() {
-      return (
-        this.action === ACTIVE_TAB_SHARED &&
-        VISIBILITY_LEVELS_STRING_TO_INTEGER[this.group.visibility] >
-          VISIBILITY_LEVELS_STRING_TO_INTEGER[this.currentGroupVisibility]
-      );
-    },
     toggleAriaLabel() {
       return this.group.isOpen ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
@@ -120,11 +107,7 @@ export default {
   i18n: {
     expand: __('Expand'),
     collapse: __('Collapse'),
-    popoverTitle: __('Less restrictive visibility'),
-    popoverBody: __('Project visibility level is less restrictive than the group settings.'),
-    learnMore: __('Learn more'),
   },
-  shareProjectsWithGroupsHelpPagePath: helpPagePath('user/project/members/sharing_projects_groups'),
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
@@ -201,30 +184,6 @@ export default {
               data-testid="group-visibility-icon"
               tooltip-placement="bottom"
             />
-            <template v-if="shouldShowVisibilityWarning">
-              <gl-button
-                ref="visibilityWarningButton"
-                class="!gl-bg-transparent !gl-p-1"
-                category="tertiary"
-                icon="warning"
-                :aria-label="$options.i18n.popoverTitle"
-                @click.stop
-              />
-              <gl-popover
-                :target="() => $refs.visibilityWarningButton.$el"
-                :title="$options.i18n.popoverTitle"
-                triggers="hover focus"
-              >
-                {{ $options.i18n.popoverBody }}
-                <div class="gl-mt-3">
-                  <gl-link
-                    class="gl-text-sm"
-                    :href="$options.shareProjectsWithGroupsHelpPagePath"
-                    >{{ $options.i18n.learnMore }}</gl-link
-                  >
-                </div>
-              </gl-popover>
-            </template>
             <user-access-role-badge v-if="group.permission" class="gl-mr-2">
               {{ group.permission }}
             </user-access-role-badge>

@@ -7,6 +7,10 @@ module Gitlab
         class Pipeline
           include Gitlab::Utils::StrongMemoize
 
+          MAX_COMMIT_MESSAGE_SIZE_IN_BYTES = ENV.fetch('GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES', 100_000)
+                                                .to_i
+                                                .clamp(0, 1_000_000)
+
           def initialize(pipeline)
             @pipeline = pipeline
           end
@@ -51,7 +55,7 @@ module Gitlab
             end
           end
 
-          def predefined_commit_variables
+          def predefined_commit_variables # rubocop:disable Metrics/AbcSize -- this should be fixed once the feature flag is removed
             Gitlab::Ci::Variables::Collection.new.tap do |variables|
               next variables unless pipeline.sha.present?
 
@@ -61,9 +65,18 @@ module Gitlab
               variables.append(key: 'CI_COMMIT_REF_NAME', value: pipeline.source_ref)
               variables.append(key: 'CI_COMMIT_REF_SLUG', value: pipeline.source_ref_slug)
               variables.append(key: 'CI_COMMIT_BRANCH', value: pipeline.ref) if pipeline.branch?
-              variables.append(key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message.to_s)
-              variables.append(key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_full_title.to_s)
-              variables.append(key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description.to_s)
+
+              if ::Feature.enabled?(:truncate_ci_commit_message, pipeline.project)
+                variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message_truncated)
+                variables.append(key: 'CI_COMMIT_MESSAGE_IS_TRUNCATED', value: git_commit_message_truncated?.to_s)
+                variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_title_truncated)
+                variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description_truncated)
+              else
+                variables.append(key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message.to_s)
+                variables.append(key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_full_title.to_s)
+                variables.append(key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description.to_s)
+              end
+
               variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s)
               variables.append(key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp.to_s)
               variables.append(key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text.to_s)
@@ -105,6 +118,33 @@ module Gitlab
             pipeline.merge_request_diff
           end
           strong_memoize_attr :merge_request_diff
+
+          def git_commit_message_truncated
+            return pipeline.git_commit_message.to_s unless git_commit_message_truncated?
+
+            truncate_in_bytes(pipeline.git_commit_message.to_s, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
+          end
+
+          def git_commit_title_truncated
+            return pipeline.git_commit_full_title.to_s unless git_commit_message_truncated?
+
+            truncate_in_bytes(pipeline.git_commit_full_title.to_s, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
+          end
+
+          def git_commit_description_truncated
+            return pipeline.git_commit_description.to_s unless git_commit_message_truncated?
+
+            truncate_in_bytes(pipeline.git_commit_description.to_s, MAX_COMMIT_MESSAGE_SIZE_IN_BYTES)
+          end
+
+          def git_commit_message_truncated?
+            pipeline.git_commit_message.to_s.bytesize > MAX_COMMIT_MESSAGE_SIZE_IN_BYTES
+          end
+          strong_memoize_attr :git_commit_message_truncated?
+
+          def truncate_in_bytes(text, max_size)
+            text.byteslice(0, max_size)
+          end
         end
       end
     end

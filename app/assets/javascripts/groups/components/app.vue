@@ -6,7 +6,7 @@ import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { scrollTo } from '~/lib/utils/scroll_utils';
 import { __, s__, sprintf } from '~/locale';
 
-import { COMMON_STR, ACTIVE_TAB_INACTIVE } from '../constants';
+import { COMMON_STR } from '../constants';
 import eventHub from '../event_hub';
 import GroupsComponent from './groups.vue';
 
@@ -214,9 +214,7 @@ export default {
     updateGroups(groups, fromSearch) {
       this.fromSearch = fromSearch;
 
-      const isOpenOverride = this.action === ACTIVE_TAB_INACTIVE ? false : undefined;
-
-      this.store.setGroups(groups, isOpenOverride);
+      this.store.setGroups(groups);
     },
   },
 };

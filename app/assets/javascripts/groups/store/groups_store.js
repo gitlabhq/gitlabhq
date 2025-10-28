@@ -12,11 +12,9 @@ export default class GroupsStore {
     this.showSchemaMarkup = showSchemaMarkup;
   }
 
-  setGroups(rawGroups, isOpenOverride) {
+  setGroups(rawGroups) {
     if (rawGroups && rawGroups.length) {
-      this.state.groups = rawGroups.map((rawGroup) =>
-        this.formatGroupItem(rawGroup, isOpenOverride),
-      );
+      this.state.groups = rawGroups.map((rawGroup) => this.formatGroupItem(rawGroup));
     } else {
       this.state.groups = [];
     }
@@ -50,9 +48,9 @@ export default class GroupsStore {
     return this.state.pageInfo;
   }
 
-  formatGroupItem(rawGroupItem, isOpenOverride) {
+  formatGroupItem(rawGroupItem) {
     const groupChildren = rawGroupItem.children || [];
-    const groupIsOpen = isOpenOverride !== undefined ? isOpenOverride : groupChildren.length > 0;
+    const groupIsOpen = groupChildren.length > 0;
     const childrenCount = this.hideProjects
       ? rawGroupItem.subgroup_count
       : rawGroupItem.children_count;
@@ -75,7 +73,7 @@ export default class GroupsStore {
       canRemove: rawGroupItem.can_remove,
       type: rawGroupItem.type,
       permission: rawGroupItem.permission,
-      children: groupChildren.map((child) => this.formatGroupItem(child, isOpenOverride)),
+      children: groupChildren.map((child) => this.formatGroupItem(child)),
       isOpen: groupIsOpen,
       isChildrenLoading: false,
       isBeingRemoved: false,

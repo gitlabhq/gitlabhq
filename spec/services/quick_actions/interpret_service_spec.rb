@@ -3299,6 +3299,26 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         expect(merge_request.approved_by_users).to eq([developer])
       end
 
+      context 'when user has review comments' do
+        it 'submits the users current review' do
+          draft_note = create(:draft_note, merge_request: merge_request, author: developer)
+
+          _, _, message = service.execute(content, merge_request)
+
+          expect { draft_note.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect(merge_request.notes.reload.size).to eq(1)
+          expect(merge_request.approved_by_users).to eq([developer])
+          expect(message).to eq("Submitted the current review. Approved the current merge request.")
+        end
+
+        it 'does not submit review if there is no draft notes' do
+          _, _, message = service.execute(content, merge_request)
+
+          expect(merge_request.approved_by_users).to eq([developer])
+          expect(message).to eq("Approved the current merge request.")
+        end
+      end
+
       context "when the user can't approve" do
         before do
           project.team.truncate

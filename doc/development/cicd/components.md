@@ -78,6 +78,47 @@ in the catalog.
 - Use `inputs` if you want to allow users to configure `rules`. See an [example here](https://gitlab.com/components/opentofu/-/blob/5e86fd6c5f524785fd3dbd6cdb09f03d19a0cced/templates/fmt.yml#L82-88).
   To preserve the default behavior when `rules` is not defined you should use `default: [{when: on_success}]` for the input, until [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/440468) is resolved.
 
+### Tag and release new versions
+
+Follow these guidelines to determine the appropriate version type for your component releases:
+
+- 1. Ensure all tests pass on the `main` branch.
+- 1. Create a new tag using [Semantic Versioning](https://semver.org/).
+- 1. Expect a pipeline for the tag to run and create a release automatically. 
+- 1. Ensure the new version is published on the CI/CD Components catalog.
+- 1. Manually test the new version from the CI/CD Components catalog in the scenarios where it would typically be used.
+
+#### Major Version (X.0.0)
+
+- Breaking API changes.
+- Removal of deprecated features
+- Fundamental architecture changes
+
+Breaking changes that may not be obvious:
+
+- **Input modifications**: Adding required inputs, removing existing inputs, or making input validation more restrictive (for example, changing a regex pattern, type or options)
+- **YAML node conflicts**: Adding new YAML nodes (like `before_script`, `after_script`, `variables`) that users might already be overriding in their pipelines
+- **Runner requirements**: Changes that require specific runner configurations or newer GitLab Runner versions
+- **License dependencies**: Adding features that require specific GitLab license tiers
+
+Environment compatibility:
+
+- **Self-managed considerations**: Ensure components work with older GitLab versions, custom Certification Authorities, disabled container registries, and various project restrictions
+- **Dedicated environment support**: Account for version lag (typically 1 milestone behind) and different infrastructure constraints
+- **CI syntax compatibility**: Avoid cutting-edge CI features if supporting a wide range of GitLab versions
+
+#### Minor Version (X.Y.0)
+
+- New functionality that maintains backwards compatibility
+- Enhanced existing features
+- Performance improvements
+
+#### Patch Version (X.Y.Z)
+
+- When changes are backwards compatible bug fixes
+- Documentation updates
+- Dependency updates that don't affect the public API
+
 ## Review and contribution process for official components
 
 It's possible that components in the project have a related [CI/CD template](templates.md) in the GitLab codebase.

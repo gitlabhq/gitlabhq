@@ -444,6 +444,8 @@ class MergeRequestDiff < ApplicationRecord
     # when the number of shas is huge (1000+) we don't want
     # to pass them all as an SQL param, let's pass them in batches
     shas.each_slice(BATCH_SIZE).any? do |batched_shas|
+      break true if diff_commits_dedup_enabled? && metadata_sha_exists?(batched_shas)
+
       merge_request_diff_commits.where(sha: batched_shas).exists?
     end
   end
@@ -1041,6 +1043,19 @@ class MergeRequestDiff < ApplicationRecord
       Dir.tmpdir,
       EXTERNAL_DIFFS_CACHE_TMPDIR % { project_id: project.id, mr_id: merge_request_id, id: id }
     )
+  end
+
+  def metadata_sha_exists?(shas)
+    MergeRequest::CommitsMetadata
+      .where(project: project, sha: shas)
+      .where_exists(
+        MergeRequestDiffCommit
+          .where(merge_request_diff_id: id)
+          .where(
+            MergeRequestDiffCommit.arel_table[:merge_request_commits_metadata_id]
+                                  .eq(MergeRequest::CommitsMetadata.arel_table[:id])
+          )
+      ).exists?
   end
 
   def diff_commits_dedup_enabled?

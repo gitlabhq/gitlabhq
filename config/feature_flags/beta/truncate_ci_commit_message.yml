@@ -1,0 +1,10 @@
+---
+name: truncate_ci_commit_message
+description: Large commit messages are truncated before they are sent to the runner when this feature flag is enabled.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26624
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208666
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/576807
+milestone: '18.6'
+group: group::runner core
+type: beta
+default_enabled: false

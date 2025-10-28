@@ -357,22 +357,6 @@ RSpec.configure do |config|
       # Opting out of Organizations is the exception.
       stub_feature_flags(opt_out_organizations: false)
 
-      # The `use_user_group_member_roles` feature flag controls whether member role preloaders
-      # fetch data from the `user_group_member_roles` table instead of using the
-      # existing query to fetch a user's custom permissions in groups/projects.
-      #
-      # When enabled:
-      #   - Preloaders::UserMemberRolesIn*Preloader modules use the `user_group_member_roles` table
-      #   - This table is populated by Authz::UserGroupMemberRoles::UpdateFor*GroupService when
-      #     users are assigned member roles
-      #
-      # When disabled:
-      #   - The preloaders fall back to their original query implementation
-      #
-      # For testing consistency, we default to the original query implementation in specs
-      # until the new implementation is fully validated and the feature flag is removed.
-      stub_feature_flags(use_user_group_member_roles: false)
-
       # Enabled only when debugging
       stub_feature_flags(track_struct_event_logger: false)
 

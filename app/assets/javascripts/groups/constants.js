@@ -9,11 +9,6 @@ import {
 export const MAX_CHILDREN_COUNT = 20;
 export const SEARCH_MINIMUM_LENGTH = 3;
 
-export const ACTIVE_TAB_SUBGROUPS_AND_PROJECTS = 'subgroups_and_projects';
-export const ACTIVE_TAB_SHARED = 'shared';
-export const ACTIVE_TAB_SHARED_GROUPS = 'shared_groups';
-export const ACTIVE_TAB_INACTIVE = 'inactive';
-
 export const COMMON_STR = {
   FAILURE: __('An error occurred. Please try again.'),
   LEAVE_FORBIDDEN: s__(
@@ -62,23 +57,6 @@ export const GROUPS_LIST_SORTING_ITEMS = [
 ];
 
 export const EXPLORE_FILTERED_SEARCH_NAMESPACE = 'explore';
-export const DASHBOARD_FILTERED_SEARCH_NAMESPACE = 'dashboard';
-
-export const OVERVIEW_TABS_FILTERED_SEARCH_TERM_KEY = 'filter';
-export const OVERVIEW_TABS_FILTERED_SEARCH_NAMESPACE = 'overview';
-
-export const OVERVIEW_TABS_SORTING_ITEMS = [
-  SORTING_ITEM_NAME,
-  SORTING_ITEM_CREATED,
-  SORTING_ITEM_UPDATED,
-  SORTING_ITEM_STARS,
-];
-
-export const OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS = [
-  SORTING_ITEM_NAME,
-  SORTING_ITEM_CREATED,
-  SORTING_ITEM_UPDATED,
-];
 
 export const FORM_FIELD_NAME = 'name';
 export const FORM_FIELD_PATH = 'path';

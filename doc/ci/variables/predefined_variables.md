@@ -50,6 +50,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_COMMIT_BRANCH`                              | Pre-pipeline | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DESCRIPTION`                         | Pre-pipeline | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                             | Pre-pipeline | The full commit message. |
+| `CI_COMMIT_MESSAGE_IS_TRUNCATED`                | Pre-pipeline | `true` if `CI_COMMIT_MESSAGE` is truncated to the size specified in the `GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES` system environment variable (default 100 KB) because the commit message is too long. Otherwise `false`. Introduced in GitLab 18.6. |
 | `CI_COMMIT_REF_NAME`                            | Pre-pipeline | The branch or tag name for which project is built. |
 | `CI_COMMIT_REF_PROTECTED`                       | Pre-pipeline | `true` if the job is running for a protected reference, `false` otherwise. |
 | `CI_COMMIT_REF_SLUG`                            | Pre-pipeline | `CI_COMMIT_REF_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |

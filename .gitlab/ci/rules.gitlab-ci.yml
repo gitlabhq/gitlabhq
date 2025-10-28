@@ -1610,6 +1610,7 @@
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
+        - 'storybook/'
     - <<: *if-default-refs
       changes:
         - '{,ee/}app/**/*.vue'

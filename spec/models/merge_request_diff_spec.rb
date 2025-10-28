@@ -1609,37 +1609,100 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '#includes_any_commits?' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be_with_refind(:merge_request_diff) do
+      create(:merge_request, source_project: project, target_project: project).merge_request_diff
+    end
+
+    let_it_be(:commits_metadata) { create(:merge_request_commits_metadata, project: project, sha: 'abc123') }
+
+    let_it_be(:diff_commit_with_metadata) do
+      create(:merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata_id: commits_metadata.id,
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
+        sha: nil
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(:merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
+        sha: 'def456'
+      )
+    end
+
     let(:non_existent_shas) do
       Array.new(30) { Digest::SHA1.hexdigest(SecureRandom.hex) }
     end
 
-    subject { diff_with_commits }
+    shared_examples 'merge request diff with commit shas' do
+      let(:args_with_existing_commits) { non_existent_shas + existing_shas }
 
-    context 'processes the passed shas in batches' do
-      context 'number of existing commits is greater than batch size' do
-        it 'performs a separate request for each batch' do
-          stub_const('MergeRequestDiff::BATCH_SIZE', 5)
+      it 'performs a separate request for each batch' do
+        stub_const('MergeRequestDiff::BATCH_SIZE', 5)
 
-          commit_shas = subject.commit_shas
-
-          query_count = ActiveRecord::QueryRecorder.new do
-            subject.includes_any_commits?(non_existent_shas + commit_shas)
-          end.count
-
-          expect(query_count).to eq(7)
+        recorder = ActiveRecord::QueryRecorder.new do
+          merge_request_diff.includes_any_commits?(args_with_existing_commits)
         end
+
+        metadata_queries = recorder.log.select do |q|
+          q.include?("SELECT 1 AS one FROM \"merge_request_commits_metadata\"")
+        end
+
+        commit_queries = recorder.log.select do |q|
+          q.include?("SELECT 1 AS one FROM \"merge_request_diff_commits\"")
+        end
+
+        expect(metadata_queries.count).to eq(expected_metadata_queries)
+        expect(commit_queries.count).to eq(expected_commit_queries)
+      end
+
+      it 'returns false if passed commits do not exist' do
+        expect(merge_request_diff.includes_any_commits?([])).to eq(false)
+        expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
+      end
+
+      it 'returns true if passed commits exists' do
+        expect(merge_request_diff.includes_any_commits?(args_with_existing_commits)).to eq(true)
       end
     end
 
-    it 'returns false if passed commits do not exist' do
-      expect(subject.includes_any_commits?([])).to eq(false)
-      expect(subject.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
+    context 'when SHA is present in `merge_request_diff_commits` table' do
+      let(:expected_metadata_queries) { 7 }
+      let(:expected_commit_queries) { 7 }
+      let(:existing_shas) { ['def456'] }
+
+      it_behaves_like 'merge request diff with commit shas'
     end
 
-    it 'returns true if passed commits exists' do
-      args_with_existing_commits = non_existent_shas << subject.head_commit_sha
+    context 'when SHA is present in `merge_request_commits_metadata` table' do
+      let(:expected_metadata_queries) { 7 }
+      let(:expected_commit_queries) { 6 }
+      let(:existing_shas) { ['abc123'] }
 
-      expect(subject.includes_any_commits?(args_with_existing_commits)).to eq(true)
+      it_behaves_like 'merge request diff with commit shas'
+    end
+
+    context 'when `sha` data is present across both tables' do
+      let(:expected_metadata_queries) { 7 }
+      let(:expected_commit_queries) { 6 }
+      let(:existing_shas) { %w[abc123 def456] }
+
+      it_behaves_like 'merge request diff with commit shas'
+    end
+
+    context 'when merge_request_diff_commits_dedup feature flag is disabled' do
+      let(:existing_shas) { ['def456'] }
+      let(:expected_commit_queries) { 7 }
+      let(:expected_metadata_queries) { 0 }
+
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it_behaves_like 'merge request diff with commit shas'
     end
   end
 
