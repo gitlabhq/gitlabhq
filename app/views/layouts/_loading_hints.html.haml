@@ -5,10 +5,8 @@
     %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
     %link{ rel: 'preconnect', href: ActionController::Base.asset_host, crossorigin: '' }
   - if user_application_dark_mode?
-    = preload_link_tag(universal_path_to_stylesheet('application_utilities_dark'), as: 'style', crossorigin: css_crossorigin)
     = preload_link_tag(universal_path_to_stylesheet('application_dark'), as: 'style', crossorigin: css_crossorigin)
   - else
-    = preload_link_tag(universal_path_to_stylesheet('application_utilities'), as: 'style', crossorigin: css_crossorigin)
     = preload_link_tag(universal_path_to_stylesheet('application'), as: 'style', crossorigin: css_crossorigin)
   = preload_link_tag(universal_path_to_stylesheet("highlight/themes/#{user_color_scheme}"), as: 'style', crossorigin: css_crossorigin)
   - if Gitlab::Tracking.frontend_connect_directly_to_snowplow_collector?

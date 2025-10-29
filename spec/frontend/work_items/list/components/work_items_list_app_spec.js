@@ -148,9 +148,6 @@ describeSkipVue3(skipReason, () => {
   const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
   const findSubChildIndicator = (item) =>
     item.find('[data-testid="sub-child-work-item-indicator"]');
-  const findImportIssuesButton = () => wrapper.findByTestId('import-issues-dropdown');
-  const findImportCSVButton = () => wrapper.findByTestId('import-csv-button');
-  const findImportJiraIssueButton = () => wrapper.findByTestId('import-from-jira-link');
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 
   const mountComponent = ({
@@ -1463,13 +1460,8 @@ describeSkipVue3(skipReason, () => {
 
       it('passes correct props to empty state component for groups', () => {
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
-          exportCsvPathWithQuery: null,
-          showNewIssueDropdown: false,
+          showNewIssueDropdown: true,
         });
-      });
-
-      it('does not render the import issues dropdown', () => {
-        expect(findImportIssuesButton().exists()).toBe(false);
       });
 
       it('renders the new resource dropdown when group has projects', () => {
@@ -1521,81 +1513,15 @@ describeSkipVue3(skipReason, () => {
       it('passes correct props to empty state component for projects', async () => {
         mountComponent({
           ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, exportCsvPath: '/export/csv' },
+          provide: { ...emptyStateConfig.provide },
           stubs: {},
         });
 
         await waitForPromises();
 
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
-          exportCsvPathWithQuery: '/export/csv',
           showNewIssueDropdown: false,
         });
-      });
-
-      it('renders the import issues buttons in the dropdown', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-        });
-        await waitForPromises();
-
-        expect(findImportJiraIssueButton().props()).toEqual({
-          item: { text: 'Import from Jira', href: '/project/import/jira' },
-          variant: null,
-        });
-        expect(findImportCSVButton().props()).toEqual({
-          item: { text: 'Import CSV' },
-          variant: null,
-        });
-      });
-
-      it('does not render the import CSV option when user permission is false', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, canImportWorkItems: false },
-        });
-        await waitForPromises();
-
-        expect(findImportCSVButton().exists()).toBe(false);
-      });
-
-      it('does not render the jira import option when user permission is false', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, canEdit: false },
-        });
-        await waitForPromises();
-
-        expect(findImportJiraIssueButton().exists()).toBe(false);
-      });
-
-      it('does not render the jira import option when jira path is missing', async () => {
-        mountComponent({
-          ...emptyStateConfig,
-          provide: { ...emptyStateConfig.provide, projectImportJiraPath: null },
-        });
-        await waitForPromises();
-
-        expect(findImportJiraIssueButton().exists()).toBe(false);
-      });
-
-      it('does not render the import issues dropdown when user not signed in', async () => {
-        mountComponent({
-          ...getEmptyQueryHandler({ emptyCounts: projectEmptyCountsResponse }),
-          provide: {
-            isGroup: false,
-            isProject: true,
-            isSignedIn: false,
-          },
-          stubs: {
-            EmptyStateWithoutAnyIssues: {
-              template: `<div><slot name="import-export-buttons"></slot></div>`,
-            },
-          },
-        });
-        await waitForPromises();
-
-        expect(findImportIssuesButton().exists()).toBe(false);
       });
     });
 

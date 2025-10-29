@@ -29,10 +29,6 @@ module QA
             element 'issues-list-more-actions-dropdown'
           end
 
-          view 'app/assets/javascripts/issues/list/components/empty_state_without_any_issues.vue' do
-            element 'import-issues-dropdown'
-          end
-
           view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_tabs.vue' do
             element 'closed-issuables-tab', ':data-testid="`${tab.name}-issuables-tab`"' # rubocop:disable QA/ElementWithPattern
           end
@@ -70,12 +66,6 @@ module QA
             click_element('import-from-jira-link')
           end
 
-          def click_import_issues_dropdown
-            # When there are no issues, the image that loads causes the buttons to jump
-            has_loaded_all_images?
-            click_element('import-issues-dropdown')
-          end
-
           def click_issues_list_more_actions_dropdown
             click_element('issues-list-more-actions-dropdown')
           end
@@ -85,7 +75,6 @@ module QA
           end
 
           def go_to_jira_import_form
-            click_import_issues_dropdown
             click_import_from_jira_link
           end
 

@@ -111,7 +111,7 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
       end
 
       it 'shows projects only with issues feature enabled', :js do
-        click_button 'Toggle project select'
+        click_button 'Toggle project select', match: :first
 
         expect(page).to have_button project.full_name
         expect(page).not_to have_button project_with_issues_disabled.full_name

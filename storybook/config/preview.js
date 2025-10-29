@@ -11,7 +11,7 @@ import { initializeGitLabAPIAccess } from './addons/gitlab_api_access/preview';
 const stylesheetsRequireCtx = require.context(
   '../../app/assets/stylesheets',
   true,
-  /(application|application_utilities|highlight\/themes\/white|lazy_bundles\/gridstack)\.scss$/,
+  /(application|highlight\/themes\/white|lazy_bundles\/gridstack)\.scss$/,
 );
 
 initializeGitLabAPIAccess();
@@ -21,7 +21,6 @@ Vue.use(VueApollo);
 Vue.use(Vuex);
 
 stylesheetsRequireCtx('./application.scss');
-stylesheetsRequireCtx('./application_utilities.scss');
 import('../../app/assets/builds/tailwind.css');
 stylesheetsRequireCtx('./highlight/themes/white.scss');
 stylesheetsRequireCtx('./lazy_bundles/gridstack.scss');

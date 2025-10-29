@@ -33,18 +33,14 @@
     %meta{ name: 'color-scheme', content: 'dark light' }
     = universal_stylesheet_link_tag "application_dark"
     = yield :page_specific_styles
-    = universal_stylesheet_link_tag "application_utilities_dark"
   - elsif user_application_system_mode?
     %meta{ name: 'color-scheme', content: 'light dark' }
     = universal_stylesheet_link_tag "application", media: "(prefers-color-scheme: light)"
     = universal_stylesheet_link_tag "application_dark", media: "(prefers-color-scheme: dark)"
     = yield :page_specific_styles
-    = universal_stylesheet_link_tag "application_utilities", media: "(prefers-color-scheme: light)"
-    = universal_stylesheet_link_tag "application_utilities_dark", media: "(prefers-color-scheme: dark)"
   - else
     = universal_stylesheet_link_tag "application"
     = yield :page_specific_styles
-    = universal_stylesheet_link_tag 'application_utilities'
   - if project_studio_enabled?
     = universal_stylesheet_link_tag 'tailwind_cqs'
   - else

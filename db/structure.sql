@@ -18876,7 +18876,8 @@ CREATE TABLE jira_tracker_data (
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255)),
     CONSTRAINT check_4cc5bbc801 CHECK ((char_length(jira_issue_prefix) <= 255)),
     CONSTRAINT check_9863a0a5fd CHECK ((char_length(jira_issue_regex) <= 255)),
-    CONSTRAINT check_b5ab881f50 CHECK ((char_length(jira_allowed_statuses_string) <= 1024))
+    CONSTRAINT check_b5ab881f50 CHECK ((char_length(jira_allowed_statuses_string) <= 1024)),
+    CONSTRAINT check_eca1fbd6bd CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1))
 );
 
 CREATE SEQUENCE jira_tracker_data_id_seq
@@ -33230,6 +33231,9 @@ ALTER TABLE epic_issues
 
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE protected_branch_push_access_levels
+    ADD CONSTRAINT check_2b64375289 CHECK ((num_nonnulls(protected_branch_namespace_id, protected_branch_project_id) = 1)) NOT VALID;
 
 ALTER TABLE security_scans
     ADD CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL)) NOT VALID;

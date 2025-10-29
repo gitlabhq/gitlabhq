@@ -274,8 +274,6 @@ module Gitlab
     config.assets.paths << TanukiEmoji.images_path
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
-    config.assets.precompile << "application_utilities.css"
-    config.assets.precompile << "application_utilities_dark.css"
     config.assets.precompile << "application_dark.css"
     config.assets.precompile << "tailwind.css"
     config.assets.precompile << "tailwind_cqs.css"

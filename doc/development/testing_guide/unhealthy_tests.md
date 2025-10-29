@@ -210,12 +210,41 @@ When we have a flaky test in `master`:
 
 ##### Fast quarantine
 
-Unless you really need to have a test disabled very fast (`< 10min`), consider [using the `~pipeline::expedited` label instead](../pipelines/_index.md#the-pipelineexpedited-label).
+Fast quarantine is used when a test needs immediate quarantine and you expect to either fix it quickly or actively investigate the root cause with an update expected within 3 days.
 
-To quickly quarantine a test without having to open a merge request and wait for pipelines,
-you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test).
+**When to use fast quarantine:**
 
-**Always proceed** to [open a long-term quarantine merge request](#long-term-quarantine) after fast-quarantining a test! This is to ensure the fast-quarantined test was correctly fixed by running tests from the CI/CD pipelines (which are not run in the context of the fast-quarantine project).
+- The test failure is blocking critical development work and needs to be immediately quarantined (`< 10min`)
+- The test can be quickly fixed (root cause is known or easily identifiable)
+- Active investigation is underway with clear progress expected within 3 days
+- You or your team have bandwidth to dedicate to resolving this specific test issue
+
+**When to use long-term quarantine:**
+
+- The root cause is unknown and requires extensive investigation
+- No immediate bandwidth available to dedicate to this specific test issue
+- You expect the investigation and fix to take longer than 3 days
+
+**Fast quarantine process:**
+
+1. **Immediate action**:
+   - Follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test)
+   - Update related test failure issue in the [Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/) project with correct stage and group labels
+
+1. **Within 3 days** (fast quarantine expectation):
+   - **Option A**: Implement a fix for the flaky test
+   - **Option B**: Remove the test entirely (if it's duplicating other tests or the flakiness cannot be fixed)
+   - **Option C**: If investigation reveals the issue is more complex, convert to long-term quarantine with updated timeline.
+
+1. **After long-term quarantine MR reaches production**:
+   - Revert the fast-quarantine MR you created earlier
+   - Update the test failure issue with long term quarantine MR
+
+**Important notes:**
+
+- Fast quarantine commits you to providing an update within 3 days
+- If you cannot meet the 3-day timeline, always convert to long-term quarantine
+- Fast-quarantined tests still run locally by default
 
 ##### Long-term quarantine
 

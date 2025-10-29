@@ -618,7 +618,7 @@
 - './ee/spec/graphql/types/vulnerable_package_type_spec.rb'
 - './ee/spec/graphql/types/vulnerable_projects_by_grade_type_spec.rb'
 - './ee/spec/graphql/types/work_items/type_spec.rb'
-- './ee/spec/graphql/types/work_items/widget_interface_spec.rb'
+- './ee/spec/graphql/ee/types/work_items/widget_interface_spec.rb'
 - './ee/spec/helpers/admin/emails_helper_spec.rb'
 - './ee/spec/helpers/analytics/code_review_helper_spec.rb'
 - './ee/spec/helpers/ee/application_helper_spec.rb'

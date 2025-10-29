@@ -57,6 +57,12 @@ your GitLab MCP server for the first time, it:
 For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.navattic.com/gitlab-mcp-server).
 <!-- Demo published on 2025-09-11 -->
 
+## Prerequisites
+
+To use the MCP server:
+
+- [Beta and experimental features must be turned on](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+
 ## Connect Cursor to a GitLab MCP server
 
 You can configure the GitLab MCP sever in Cursor by using:

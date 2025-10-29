@@ -107,7 +107,7 @@ function run_rspec_non_fast {
   files_for_non_fast+=(
       "ee/spec/graphql/ee/resolvers/clusters/agents_resolver_spec.rb"
       "ee/spec/graphql/types/query_type_spec.rb"
-      "ee/spec/graphql/types/subscription_type_spec.rb"
+      "ee/spec/graphql/ee/types/subscription_type_spec.rb"
       "ee/spec/models/ee/clusters/agent_spec.rb"
       "ee/spec/requests/api/internal/kubernetes_spec.rb"
       "spec/graphql/types/subscription_type_spec.rb"

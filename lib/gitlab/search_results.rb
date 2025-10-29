@@ -185,7 +185,7 @@ module Gitlab
 
     def projects
       scope = limit_projects
-      scope = scope.non_archived unless filters[:include_archived]
+      scope = scope.self_and_ancestors_non_archived unless filters[:include_archived]
 
       scope.search(query, include_namespace: true, use_minimum_char_limit: false)
     end
@@ -196,7 +196,7 @@ module Gitlab
 
       unless default_project_filter
         project_ids = project_ids_relation
-        project_ids = project_ids.non_archived unless filters[:include_archived]
+        project_ids = project_ids.self_and_ancestors_non_archived unless filters[:include_archived]
 
         issues = issues.in_projects(project_ids)
                        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/420046')
@@ -216,7 +216,7 @@ module Gitlab
       unless default_project_filter
         project_ids = project_ids_relation
 
-        project_ids = project_ids.non_archived unless filters[:include_archived]
+        project_ids = project_ids.self_and_ancestors_non_archived unless filters[:include_archived]
 
         merge_requests = merge_requests.of_projects(project_ids)
       end
@@ -234,7 +234,7 @@ module Gitlab
     def filter_milestones_by_project(milestones)
       candidate_project_ids = project_ids_relation
 
-      candidate_project_ids = candidate_project_ids.non_archived unless filters[:include_archived]
+      candidate_project_ids = candidate_project_ids.self_and_ancestors_non_archived unless filters[:include_archived]
 
       project_ids = milestones.of_projects(candidate_project_ids).select(:project_id).distinct.pluck(:project_id) # rubocop: disable CodeReuse/ActiveRecord
 

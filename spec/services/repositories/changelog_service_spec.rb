@@ -79,7 +79,7 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       recorder = ActiveRecord::QueryRecorder.new { service.execute(commit_to_changelog: commit_to_changelog) }
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
-      expect(recorder.count).to eq(16)
+      expect(recorder.count).to eq(15)
       expect(changelog).to include('Title 1', 'Title 2')
     end
 

@@ -8,5 +8,8 @@ description: Data related to the Jira integration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1f332ae8da994509232c7601074b25514ad23c52
 milestone: '12.0'
 gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/558259
 table_size: small
+sharding_key:
+  project_id: projects
+  group_id: namespaces
+  organization_id: organizations

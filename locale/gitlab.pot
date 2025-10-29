@@ -9118,6 +9118,9 @@ msgstr ""
 msgid "Are you sure you want to cancel editing this comment?"
 msgstr ""
 
+msgid "Are you sure you want to cancel?"
+msgstr ""
+
 msgid "Are you sure you want to close this blocked issue?"
 msgstr ""
 
@@ -18129,6 +18132,9 @@ msgid "ComplianceViolation|Something went wrong while trying to unlink the issue
 msgstr ""
 
 msgid "ComplianceViolation|Violation created based on associated framework"
+msgstr ""
+
+msgid "ComplianceViolation|Write a comment or drag your files here…"
 msgstr ""
 
 msgid "ComplianceViolation|invalid issue link or ID"
@@ -73539,6 +73545,9 @@ msgstr ""
 msgid "Vulnerability|Detected"
 msgstr ""
 
+msgid "Vulnerability|Detected by a security policy"
+msgstr ""
+
 msgid "Vulnerability|Detection method"
 msgstr ""
 
@@ -73693,6 +73702,9 @@ msgid "Vulnerability|The scanner determined this vulnerability to be a false pos
 msgstr ""
 
 msgid "Vulnerability|The unmodified response is the original response that had no mutations done to the request"
+msgstr ""
+
+msgid "Vulnerability|This vulnerability was bypassed by a user in a merge request. The user accepted the risk in a security policy configured to use warn mode."
 msgstr ""
 
 msgid "Vulnerability|Tool:"

@@ -12,17 +12,17 @@ query getProjectCounts(
     contributed: contributedProjects @skip(if: $skipContributed) {
       count
     }
-    starred: starredProjects @skip(if: $skipStarred) {
+    starred: starredProjects(active: true) @skip(if: $skipStarred) {
       count
     }
   }
-  personal: projects(personal: true, archived: EXCLUDE) @skip(if: $skipPersonal) {
+  personal: projects(personal: true, active: true) @skip(if: $skipPersonal) {
     count
   }
-  member: projects(membership: true, archived: EXCLUDE) @skip(if: $skipMember) {
+  member: projects(membership: true, active: true) @skip(if: $skipMember) {
     count
   }
-  inactive: projects(archived: ONLY, membership: true) @skip(if: $skipInactive) {
+  inactive: projects(active: false, membership: true) @skip(if: $skipInactive) {
     count
   }
 }

@@ -412,7 +412,7 @@ At this point you should be able to use the [GraphQL query and mutation](#graphq
 
 Now you can update tests for existing files and write tests for the new files:
 
-1. `spec/graphql/types/work_items/widget_interface_spec.rb` or `ee/spec/graphql/types/work_items/widget_interface_spec.rb`.
+1. `spec/graphql/types/work_items/widget_interface_spec.rb` or `ee/spec/graphql/ee/types/work_items/widget_interface_spec.rb`.
 1. `spec/models/work_items/widget_definition_spec.rb` or `ee/spec/models/ee/work_items/widget_definition_spec.rb`.
 1. `spec/models/work_items/widgets/<widget_name>_spec.rb` or `ee/spec/models/work_items/widgets/<widget_name>_spec.rb`.
 1. Request:

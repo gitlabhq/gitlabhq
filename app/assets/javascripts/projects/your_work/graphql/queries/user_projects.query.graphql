@@ -35,6 +35,7 @@ query getYourWorkUserProjects(
       count
     }
     starredProjects(
+      active: true
       first: $first
       last: $last
       before: $before

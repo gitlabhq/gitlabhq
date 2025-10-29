@@ -441,6 +441,8 @@ class Namespace < ApplicationRecord
       return namespace_settings_with_ancestors_inherited_settings.archived
     end
 
+    return namespace_settings&.archived.present? if parent_id.nil? # It's a top level, no need to check ancestors. Fixes N+1
+
     self_and_ancestors(skope: Namespace).archived.exists?
   end
 

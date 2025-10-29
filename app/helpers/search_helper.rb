@@ -413,7 +413,7 @@ module SearchHelper
       term,
       include_namespace: true,
       use_minimum_char_limit: false
-    ).sorted_by_stars_desc.non_archived.limit(limit)
+    ).sorted_by_stars_desc.self_and_ancestors_non_archived.limit(limit)
 
     projects.map do |p|
       {
