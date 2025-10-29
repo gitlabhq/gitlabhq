@@ -23,6 +23,7 @@ class Repositories::DestroyService < ::Repositories::BaseService
     else
       container.run_after_commit do
         Gitlab::Git::Repository.new(current_storage, current_path, nil, nil).remove
+        project_repository&.destroy if is_a?(Project)
       end
     end
 

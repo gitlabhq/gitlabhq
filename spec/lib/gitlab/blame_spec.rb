@@ -31,21 +31,21 @@ RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
     subject(:groups) { blame.groups(highlight: highlighted) }
 
     it 'groups lines properly' do
-      expect(subject.count).to eq(18)
-      expect(subject[0][:commit].sha).to eq('913c66a37b4a45b9769037c55c2d238bd0942d2e')
-      expect(subject[0][:lines]).to eq(["require 'fileutils'", "require 'open3'", ""])
-      expect(subject[0][:span]).to eq(3)
-      expect(subject[0][:lineno]).to eq(1)
+      expect(groups.count).to eq(18)
+      expect(groups[0][:commit].sha).to eq('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+      expect(groups[0][:lines]).to eq(["require 'fileutils'", "require 'open3'", ""])
+      expect(groups[0][:span]).to eq(3)
+      expect(groups[0][:lineno]).to eq(1)
 
-      expect(subject[1][:commit].sha).to eq('874797c3a73b60d2187ed6e2fcabd289ff75171e')
-      expect(subject[1][:lines]).to eq(["module Popen", "  extend self"])
-      expect(subject[1][:span]).to eq(2)
-      expect(subject[1][:lineno]).to eq(4)
+      expect(groups[1][:commit].sha).to eq('874797c3a73b60d2187ed6e2fcabd289ff75171e')
+      expect(groups[1][:lines]).to eq(["module Popen", "  extend self"])
+      expect(groups[1][:span]).to eq(2)
+      expect(groups[1][:lineno]).to eq(4)
 
-      expect(subject[-1][:commit].sha).to eq('913c66a37b4a45b9769037c55c2d238bd0942d2e')
-      expect(subject[-1][:lines]).to eq(["  end", "end"])
-      expect(subject[-1][:span]).to eq(2)
-      expect(subject[-1][:lineno]).to eq(36)
+      expect(groups[-1][:commit].sha).to eq('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+      expect(groups[-1][:lines]).to eq(["  end", "end"])
+      expect(groups[-1][:span]).to eq(2)
+      expect(groups[-1][:lineno]).to eq(36)
     end
 
     context 'with a range 1..5' do
@@ -108,17 +108,17 @@ RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
       let(:commit) { project.commit('blame-on-renamed') }
 
       it 'adds previous path' do
-        expect(subject[0][:previous_path]).to be_nil
-        expect(subject[0][:lines]).to match_array(['Initial commit', 'Initial commit'])
+        expect(groups[0][:previous_path]).to be_nil
+        expect(groups[0][:lines]).to match_array(['Initial commit', 'Initial commit'])
 
-        expect(subject[1][:previous_path]).to eq('files/plain_text/initial-commit')
-        expect(subject[1][:lines]).to match_array(['Renamed as "filename"'])
+        expect(groups[1][:previous_path]).to eq('files/plain_text/initial-commit')
+        expect(groups[1][:lines]).to match_array(['Renamed as "filename"'])
       end
     end
 
     context 'with ignore_revs' do
       let(:ignore_revs) { true }
-      let(:git_blame_double) { instance_double(Gitlab::Git::Blame, each: nil) }
+      let(:git_blame_double) { instance_double(Gitlab::Git::Blame, each: [].enum_for(:each)) }
 
       it 'requests for a blame with the default ignore revs file' do
         expect(Gitlab::Git::Blame).to receive(:new).with(
@@ -129,7 +129,14 @@ RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
           ignore_revisions_blob: 'refs/heads/master:.git-blame-ignore-revs'
         ).and_return(git_blame_double)
 
-        subject
+        groups
+      end
+    end
+
+    describe 'wrapped_commit caching' do
+      it 'clears the cache after building the groups' do
+        expect(blame).to receive(:clear_memoization).with(:wrapped_commit)
+        groups
       end
     end
   end

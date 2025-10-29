@@ -26,6 +26,13 @@ function getErrorMessage(res) {
   return res.message;
 }
 
+async function transformImageMarkdown(md, file) {
+  const dimensions = await getRetinaDimensions(file);
+  if (!dimensions) return md;
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return `${md}{width=${dimensions.width} height=${dimensions.height}}`;
+}
+
 export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   const divHover = '<div class="div-dropzone-hover"></div>';
   const iconPaperclip = spriteIcon('paperclip', 'div-dropzone-icon s24');
@@ -85,12 +92,13 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       form.find('.div-dropzone-hover').css('opacity', 0);
       formTextarea.focus();
     },
-    success(header, response) {
+    async success(header, response) {
       const processingFileCount = this.getQueuedFiles().length + this.getUploadingFiles().length;
       const shouldPad = processingFileCount >= 1;
 
       addFileToForm(response.link.url, header.size);
-      pasteText(response.link.markdown, shouldPad);
+      const md = await transformImageMarkdown(response.link.markdown, header);
+      pasteText(md, shouldPad);
     },
     error: (file, errorMessage = __('Attaching the file failed.'), xhr) => {
       // If 'error' event is fired by dropzone, the second parameter is error message.
@@ -251,13 +259,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     axios
       .post(uploadsPath, formData)
       .then(async ({ data }) => {
-        let md = data.link.markdown;
-
-        const { width, height } = (await getRetinaDimensions(item)) || {};
-        if (width && height) {
-          // eslint-disable-next-line @gitlab/require-i18n-strings
-          md += `{width=${width} height=${height}}`;
-        }
+        const md = await transformImageMarkdown(data.link.markdown, item);
         insertToTextArea(filename, md);
         closeSpinner();
       })

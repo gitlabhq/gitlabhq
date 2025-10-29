@@ -18,7 +18,7 @@ title: Geo sites API
 
 {{< /history >}}
 
-Use the Geo sites API to manage Geo site endpoints.
+Use this API to manage [Geo sites](../administration/geo/_index.md).
 
 Prerequisites:
 

@@ -441,6 +441,7 @@ module Ci
 
     scope :with_unlockable_status, -> { with_status(*UNLOCKABLE_STATUSES) }
     scope :internal, -> { where(source: internal_sources) }
+    scope :tag, -> { where(tag: true) }
     scope :no_tag, -> { where(tag: false) }
     scope :no_child, -> { where.not(source: :parent_pipeline) }
     scope :ci_sources, -> { where(source: Enums::Ci::Pipeline.ci_sources.values) }
@@ -456,6 +457,17 @@ module Ci
     scope :for_source_sha, ->(source_sha) { where(source_sha: source_sha) }
     scope :for_sha_or_source_sha, ->(sha) { for_sha(sha).or(for_source_sha(sha)) }
     scope :for_ref, ->(ref) { where(ref: ref) }
+    # Expects a list of ref and sha pairs e.g. [[ref1, sha1], [ref2, sha2]]
+    scope :for_ref_sha_pairs, ->(pairs) do
+      return none if pairs.blank?
+
+      joins(<<~SQL)
+        INNER JOIN (#{Arel::Nodes::ValuesList.new(pairs).to_sql})
+        AS pipelines(ref, sha)
+        ON p_ci_pipelines.ref = pipelines.ref
+        AND p_ci_pipelines.sha = pipelines.sha
+      SQL
+    end
     scope :for_branch, ->(branch) { for_ref(branch).where(tag: false) }
     scope :for_iid, ->(iid) { where(iid: iid) }
     scope :for_project, ->(project_id) { where(project_id: project_id) }
@@ -602,6 +614,28 @@ module Ci
       sql = sql.where(ref: ref) if ref
 
       sql.index_by(&:sha)
+    end
+
+    # Returns a hash containing latest pipeline for each ref which aligns with
+    # the sha value. This allows us to look up all of the latest pipelines for
+    # a list of refs, ensuring that we are referencing the correct sha. If a
+    # pipeline is started for a commit in the history of one of the refs, we
+    # will ignore this in favor of the older pipeline for the correct commit.
+    #
+    # Supplied refs must be uniq, we only return a single pipeline per ref.
+    #
+    # ref_sha_pairs - An array of ref and a sha pairs
+    #           value e.g.
+    #           [
+    #             ['master', '6b9027b'],
+    #             ['dev', '2a207bd']
+    #           ]
+    def self.latest_pipeline_per_ref(ref_sha_pairs)
+      return none if ref_sha_pairs.blank?
+
+      for_ref_sha_pairs(ref_sha_pairs)
+        .order(arel_table[:ref].asc, arel_table[:id].desc)
+        .select('DISTINCT ON(p_ci_pipelines.ref) *')
     end
 
     def self.latest_successful_ids_per_project

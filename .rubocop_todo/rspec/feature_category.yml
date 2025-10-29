@@ -3,7 +3,7 @@ RSpec/FeatureCategory:
   Exclude:
     - 'ee/spec/controllers/ee/autocomplete_controller_spec.rb'
     - 'ee/spec/controllers/ee/dashboard_controller_spec.rb'
-    - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects/pipelines_controller_spec.rb'
     - 'ee/spec/controllers/users_controller_spec.rb'
     - 'ee/spec/db/production/license_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'

@@ -31,38 +31,67 @@ const getPixelsPerInch = (pngImage) => {
     .round();
 };
 
-const fileToPngImage = async (file) => {
-  if (file.type !== 'image/png') return null;
-
-  const dataUrl = await readFileAsDataURL(file);
-  return atob(dataUrl.split(',')[1]).split('IDAT')[0];
+const dataToImage = (data) => {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener('load', () => {
+      resolve(image);
+    });
+    image.addEventListener('error', (error) => {
+      reject(error);
+    });
+    image.src = data;
+  });
 };
 
-export const getRetinaDimensions = async (pngFile) => {
+const maybe2xRetina = (name) => name.substring(0, name.lastIndexOf('.')).endsWith('@2x');
+
+const getAppleRetinaPngDimensions = (dataUrl) => {
+  const data = atob(dataUrl.split(',')[1]).split('IDAT')[0];
+  const pixelsPerInch = getPixelsPerInch(data);
+  if (pixelsPerInch.lte(PNG_DEFAULT_PPI, PNG_DEFAULT_PPI)) return null;
+
+  // IHDR is the first chunk in a PNG file
+  // It contains the image dimensions
+  // See https://www.w3.org/TR/PNG-Chunks.html#C.IHDR
+  const ihdrPosition = data.substring(0, 30).indexOf('IHDR');
+  if (ihdrPosition === -1) return null;
+
+  // I H D R   x x x x   y y y y
+  // - - - -   0 1 2 3   4 5 6 7
+  //           ^ width   ^ height
+  const ihdr = data.substring(ihdrPosition + 4, ihdrPosition + 4 + 8);
+
+  return vector(ihdr.substring(0, 4), ihdr.substring(4, 8))
+    .map(stringToUInt32)
+    .mul(PNG_DEFAULT_PPI)
+    .div(Math.max(pixelsPerInch.x, pixelsPerInch.y))
+    .ceil()
+    .toSize();
+};
+
+export const getRetinaDimensions = async (file) => {
+  if (!file.type.startsWith('image/')) return null;
+
+  const data = await readFileAsDataURL(file);
+  let image;
   try {
-    const pngImage = await fileToPngImage(pngFile);
-    const pixelsPerInch = getPixelsPerInch(pngImage);
-    if (pixelsPerInch.lte(PNG_DEFAULT_PPI, PNG_DEFAULT_PPI)) return null;
-
-    // IHDR is the first chunk in a PNG file
-    // It contains the image dimensions
-    // See https://www.w3.org/TR/PNG-Chunks.html#C.IHDR
-    const ihdrPosition = pngImage.substring(0, 30).indexOf('IHDR');
-    if (ihdrPosition === -1) return null;
-
-    // I H D R   x x x x   y y y y
-    // - - - -   0 1 2 3   4 5 6 7
-    //           ^ width   ^ height
-    const ihdr = pngImage.substring(ihdrPosition + 4, ihdrPosition + 4 + 8);
-
-    return vector(ihdr.substring(0, 4), ihdr.substring(4, 8))
-      .map(stringToUInt32)
-      .mul(PNG_DEFAULT_PPI)
-      .div(Math.max(pixelsPerInch.x, pixelsPerInch.y))
-      .ceil()
-      .toSize();
-  } catch (e) {
+    image = await dataToImage(data);
+  } catch (error) {
     return null;
+  }
+
+  if (maybe2xRetina(file.name))
+    return { width: Math.ceil(image.width / 2), height: Math.ceil(image.height / 2) };
+
+  const fallbackDimensions = { width: image.width, height: image.height };
+
+  if (file.type !== 'image/png') return fallbackDimensions;
+
+  try {
+    return getAppleRetinaPngDimensions(data) || fallbackDimensions;
+  } catch (e) {
+    return fallbackDimensions;
   }
 };
 

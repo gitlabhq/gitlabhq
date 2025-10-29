@@ -54,7 +54,7 @@ RSpec.shared_examples 'wiki file attachments' do
         wait_for_requests
 
         expect(page.find('#wiki_content').value)
-          .to match(%r{!\[dk\]\(uploads/\h{32}/dk\.png\)$})
+          .to match(%r{!\[dk\]\(uploads/\h{32}/dk\.png\)})
       end
 
       it 'the links point to the wiki root url' do

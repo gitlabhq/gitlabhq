@@ -20,8 +20,11 @@ This change is a breaking change.
 
 {{< /alert >}}
 
-To interact with Geo node endpoints, you must authenticate yourself as an
-administrator.
+Use this API to manage [Geo nodes](../administration/geo/_index.md).
+
+Prerequisites:
+
+- You must be an administrator.
 
 ## Create a new Geo node
 

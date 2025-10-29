@@ -2,6 +2,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
+import { stubComponent } from 'helpers/stub_component';
+import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -35,6 +37,7 @@ import {
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/alert');
+jest.mock('~/lib/utils/touch_detection');
 Vue.use(VueApollo);
 
 const PREVIOUS_VERSION_ID = 2;
@@ -135,7 +138,7 @@ describe('DesignWidget', () => {
       },
       stubs: {
         RouterView: true,
-        VueDraggable,
+        VueDraggable: stubComponent(VueDraggable),
         ...stubs,
       },
     });
@@ -184,14 +187,22 @@ describe('DesignWidget', () => {
 
     it('renders VueDraggable component', () => {
       expect(findVueDraggable().exists()).toBe(true);
-      expect(findVueDraggable().vm.$attrs.disabled).toBe(false);
+      expect(findVueDraggable().attributes('disabled')).toBeUndefined();
     });
 
     it('renders VueDraggable component with dragging disabled when canReorderDesign prop is false', async () => {
-      await createComponent({ canReorderDesign: false });
+      createComponent({ canReorderDesign: false });
       await waitForPromises();
 
-      expect(findVueDraggable().vm.$attrs.disabled).toBe(true);
+      expect(findVueDraggable().attributes('disabled')).toBe('disabled');
+    });
+
+    it('disables drag and drop on mobile devices', async () => {
+      hasTouchCapability.mockImplementation(() => true);
+      createComponent();
+      await waitForPromises();
+
+      expect(findVueDraggable().attributes('disabled')).toBe('disabled');
     });
 
     it('calls moveDesignMutation with correct parameters and reorders designs', async () => {

@@ -2,7 +2,7 @@
 # Cop supports --autocorrect.
 RSpec/ExampleWording:
   Exclude:
-    - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects/pipelines_controller_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/group_settings_spec.rb'
     - 'ee/spec/features/merge_request/user_creates_merge_request_spec.rb'

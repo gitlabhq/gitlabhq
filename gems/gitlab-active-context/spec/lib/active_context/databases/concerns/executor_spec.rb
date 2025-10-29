@@ -92,10 +92,58 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
     end
   end
 
+  describe '#drop_collection' do
+    before do
+      allow(adapter).to receive(:full_collection_name).with(name).and_return(full_name)
+    end
+
+    context 'when collection exists' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
+      end
+
+      it 'drops a collection with the correct parameters' do
+        expect(executor).to receive(:do_drop_collection).with(collection)
+        expect(executor).to receive(:drop_collection_record).with(collection)
+
+        executor.drop_collection(name)
+      end
+    end
+
+    context 'when collection does not exist' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(nil)
+      end
+
+      it 'returns early without calling database-specific drop methods' do
+        expect(executor).not_to receive(:do_drop_collection)
+        expect(executor).not_to receive(:drop_collection_record)
+
+        executor.drop_collection(name)
+      end
+    end
+  end
+
+  describe '#drop_collection_record' do
+    it 'destroys the collection record' do
+      expect(collection).to receive(:destroy!)
+
+      executor.send(:drop_collection_record, collection)
+    end
+  end
+
   describe '#do_create_collection' do
     it 'raises NotImplementedError if not implemented in a subclass' do
       executor = incomplete_class.new(adapter)
       expect { executor.send(:do_create_collection, name: 'test', number_of_partitions: 1, fields: []) }
+        .to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#do_drop_collection' do
+    it 'raises NotImplementedError if not implemented in a subclass' do
+      executor = incomplete_class.new(adapter)
+      expect { executor.send(:do_drop_collection, collection) }
         .to raise_error(NotImplementedError)
     end
   end

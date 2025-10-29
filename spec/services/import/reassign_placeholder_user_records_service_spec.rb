@@ -269,6 +269,22 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
           expect { service.execute }.not_to change { subgroup.reload.members.count }
         end
+
+        it 'still calls UserProjectAccessChangedService when project memberships are skipped' do
+          expect_next_instance_of(UserProjectAccessChangedService, reassign_to_user.id) do |service|
+            expect(service).to receive(:execute)
+          end
+
+          service.execute
+        end
+
+        it 'does not call UserProjectAccessChangedService when only group memberships are skipped' do
+          Import::Placeholders::Membership.where(project: project).delete_all
+
+          expect(UserProjectAccessChangedService).not_to receive(:new)
+
+          expect { service.execute }.not_to change { subgroup.reload.members.count }
+        end
       end
 
       context 'when user has existing higher level INHERITED membership' do
@@ -303,6 +319,14 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
           expect { service.execute }.not_to change { subgroup.reload.members.count }
         end
+
+        it 'still calls UserProjectAccessChangedService when project memberships are skipped' do
+          expect_next_instance_of(UserProjectAccessChangedService, reassign_to_user.id) do |service|
+            expect(service).to receive(:execute)
+          end
+
+          service.execute
+        end
       end
 
       context 'when user has existing lower level DIRECT membership' do
@@ -324,6 +348,12 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
               'user_id' => real_user.id
             }
           )
+
+          expect { service.execute }.not_to change { project.reload.members.count }
+        end
+
+        it 'does not call UserProjectAccessChangedService' do
+          expect(UserProjectAccessChangedService).not_to receive(:new)
 
           expect { service.execute }.not_to change { project.reload.members.count }
         end
@@ -351,6 +381,12 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
           expect { service.execute }.not_to change { project.reload.members.count }
         end
+
+        it 'does not call UserProjectAccessChangedService' do
+          expect(UserProjectAccessChangedService).not_to receive(:new)
+
+          expect { service.execute }.not_to change { project.reload.members.count }
+        end
       end
 
       context 'when user has existing higher level DIRECT membership' do
@@ -359,6 +395,12 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         end
 
         it 'does not create a new membership' do
+          expect { service.execute }.not_to change { project.reload.members.count }
+        end
+
+        it 'does not call UserProjectAccessChangedService' do
+          expect(UserProjectAccessChangedService).not_to receive(:new)
+
           expect { service.execute }.not_to change { project.reload.members.count }
         end
       end

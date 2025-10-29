@@ -55,6 +55,10 @@ FactoryBot.define do
       end
     end
 
+    trait :tag do
+      tag { true }
+    end
+
     trait :created do
       status { :created }
     end

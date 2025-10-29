@@ -8,7 +8,7 @@ import DropdownContents from '~/sidebar/components/labels/labels_select_widget/d
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue';
 import DropdownFooter from '~/sidebar/components/labels/labels_select_widget/dropdown_footer.vue';
-
+import { stubComponent } from 'helpers/stub_component';
 import { mockLabels } from './mock_data';
 
 const showDropdown = jest.fn();
@@ -40,7 +40,7 @@ const DropdownHeaderStub = {
 describe('DropdownContent', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, data = {} } = {}) => {
+  const createComponent = ({ props = {}, data = {}, stubs = {} } = {}) => {
     wrapper = shallowMount(DropdownContents, {
       propsData: {
         labelsCreateTitle: 'test',
@@ -65,6 +65,7 @@ describe('DropdownContent', () => {
       stubs: {
         GlDropdown: GlDropdownStub,
         DropdownHeader: DropdownHeaderStub,
+        ...stubs,
       },
     });
   };
@@ -146,6 +147,17 @@ describe('DropdownContent', () => {
 
     expect(findLabelsView().props('searchKey')).toBe('');
     expect(focusInput).toHaveBeenCalled();
+  });
+
+  it('handles searchEnter', () => {
+    createComponent({
+      stubs: { DropdownContentsLabelsView: stubComponent(DropdownContentsLabelsView) },
+    });
+
+    const dropdownHeader = findDropdownHeader();
+    expect(() =>
+      dropdownHeader.vm.$emit('searchEnter', { preventDefault: jest.fn() }),
+    ).not.toThrow();
   });
 
   describe('Create view', () => {

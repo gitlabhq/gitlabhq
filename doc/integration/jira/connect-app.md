@@ -133,6 +133,13 @@ To configure the GitLab for Jira Cloud app:
    must first sign in to GitLab with their group's single sign-on URL.
 
    {{< /alert >}}
+   {{< alert type="note" >}}
+
+   GitLab requires you to sign in to link groups, but does not tie the configuration to a
+   specific user. The GitLab instance receives a token from Jira that is used to update information in Jira.
+   For more information, see [GitLab access to Jira](#gitlab-access-to-jira).
+
+   {{< /alert >}}
 
 1. Select **Authorize**. A list of groups is now visible.
 1. Select **Link groups**.

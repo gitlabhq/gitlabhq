@@ -55,6 +55,39 @@ RSpec.describe Repositories::DestroyService, feature_category: :source_code_mana
     expect(subject[:status]).to eq :success
   end
 
+  describe 'project_repository cleanup' do
+    it 'destroys the project_repository record' do
+      project_repository = project.project_repository
+      expect(project_repository).not_to be_nil
+
+      subject
+      project.touch
+
+      expect { project_repository.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context 'when project_repository does not exist' do
+      before do
+        project.project_repository&.destroy!
+      end
+
+      it 'does not raise an error' do
+        expect { subject }.not_to raise_error
+        expect(subject[:status]).to eq :success
+      end
+    end
+
+    context 'on a read-only instance' do
+      before do
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      end
+
+      it 'does not destroy the project_repository record' do
+        expect { subject }.not_to change { project.project_repository }
+      end
+    end
+  end
+
   context 'with a project wiki repository' do
     let(:project) { create(:project, :wiki_repo) }
     let(:repository) { project.wiki.repository }

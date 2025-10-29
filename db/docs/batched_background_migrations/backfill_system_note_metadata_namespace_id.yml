@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSystemNoteMetadataNamespaceId
+description: Backfills namespace_id for every system_note_metadata record
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209714
+milestone: '18.6'
+queued_migration_version: 20251021184303
+finalized_by: # version of the migration that finalized this BBM

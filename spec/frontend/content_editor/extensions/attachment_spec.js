@@ -1,4 +1,3 @@
-import fs from 'fs';
 import MockAdapter from 'axios-mock-adapter';
 import { builders } from 'prosemirror-test-builder';
 import axios from '~/lib/utils/axios_utils';
@@ -11,6 +10,7 @@ import Link from '~/content_editor/extensions/link';
 import { VARIANT_DANGER } from '~/alert';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import { getRetinaDimensions } from '~/lib/utils/image_utils';
 import { createTestEditor, expectDocumentAfterTransaction } from '../test_utils';
 import {
   PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
@@ -21,8 +21,9 @@ import {
   PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML,
 } from '../test_constants';
 
-const retinaImage = fs.readFileSync('spec/fixtures/retina_image.png');
 const retinaImageSize = { width: 663, height: 325 };
+
+jest.mock('~/lib/utils/image_utils');
 
 describe('content_editor/extensions/attachment', () => {
   let tiptapEditor;
@@ -39,7 +40,7 @@ describe('content_editor/extensions/attachment', () => {
 
   const uploadsPath = '/uploads/';
   const imageFile = new File(['foo'], 'test-file.png', { type: 'image/png' });
-  const imageFileRetina = new File([retinaImage], 'test-file.png', { type: 'image/png' });
+  const imageFileRetina = new File(['foo'], 'test-file.png', { type: 'image/png' });
   const imageFileSvg = new File(['foo'], 'test-file.svg', { type: 'image/svg+xml' });
   const audioFile = new File(['foo'], 'test-file.mp3', { type: 'audio/mpeg' });
   const videoFile = new File(['foo'], 'test-file.mp4', { type: 'video/mp4' });
@@ -67,6 +68,7 @@ describe('content_editor/extensions/attachment', () => {
   const blobUrl = 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b';
 
   beforeEach(() => {
+    getRetinaDimensions.mockResolvedValue(null);
     renderMarkdown = jest.fn();
     eventHub = eventHubFactory();
 
@@ -256,6 +258,7 @@ describe('content_editor/extensions/attachment', () => {
         });
 
         it('updates the image with width and height if available', async () => {
+          getRetinaDimensions.mockResolvedValue(retinaImageSize);
           const expectedDoc = doc(
             p(
               image({

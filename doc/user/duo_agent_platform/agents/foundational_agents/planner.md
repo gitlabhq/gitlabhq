@@ -42,6 +42,7 @@ Use GitLab Duo Planner when you need help with:
 Prerequisites:
 
 - You must be working in a project, not a group.
+- The GitLab Duo Planner agent is [enabled for your project](../../../duo_agent_platform/agents/_index.md#enable-an-agent).
 - During the beta, GitLab Duo Planner is in read-only mode.
 
 1. On the left sidebar, select **Search or go to** and find your project.

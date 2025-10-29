@@ -163,4 +163,25 @@ describe('DropdownContentsLabelsView', () => {
     expect(findLabelsList().exists()).toBe(false);
     expect(successfulQueryHandler).not.toHaveBeenCalled();
   });
+
+  describe('public APIs', () => {
+    describe('selectFirstItem method', () => {
+      it('selects first visible label', async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(workspaceLabelsQueryResponse),
+          searchKey: 'Label',
+        });
+
+        await makeObserverAppear();
+        await waitForPromises();
+        await nextTick();
+
+        wrapper.vm.selectFirstItem();
+
+        expect(wrapper.emitted('input')).toStrictEqual([
+          [expect.arrayContaining(localSelectedLabels)],
+        ]);
+      });
+    });
+  });
 });

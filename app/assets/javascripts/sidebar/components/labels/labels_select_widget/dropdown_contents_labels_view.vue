@@ -88,6 +88,13 @@ export default {
     },
   },
   methods: {
+    // Public method, don't remove!
+    // eslint-disable-next-line vue/no-unused-properties
+    selectFirstItem() {
+      if (this.shouldHighlightFirstItem) {
+        this.handleLabelClick(this.visibleLabels[0]);
+      }
+    },
     isLabelSelected(label) {
       return this.localSelectedLabelsIds.includes(getIdFromGraphQLId(label.id));
     },

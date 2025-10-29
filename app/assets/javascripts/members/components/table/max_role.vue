@@ -1,6 +1,8 @@
 <script>
 import { GlBadge, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- Pending to migrate to PanelBreakpointInstance
+// This component is deprecated and will be removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207098,
+// so it is not worth migrating to `PanelBreakpointInstance`.
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax
 import { mapActions } from 'vuex'; // eslint-disable-line no-restricted-imports
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';

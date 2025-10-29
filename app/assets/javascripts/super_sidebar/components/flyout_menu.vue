@@ -106,8 +106,12 @@ export default {
             mainAxis: -FLYOUT_PADDING,
             alignmentAxis: -FLYOUT_PADDING,
           }),
-          flip(),
-          shift(),
+          flip({
+            boundary: sidebar,
+          }),
+          shift({
+            boundary: sidebar,
+          }),
         ],
         placement: 'right-start',
         strategy: 'fixed',

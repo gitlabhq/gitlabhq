@@ -101,6 +101,29 @@ module ActiveContext
           raw_client.indices.exists_alias?(name: name)
         end
 
+        def do_drop_collection(collection)
+          strategy = PartitionStrategy.new(
+            name: collection.name,
+            number_of_partitions: collection.number_of_partitions
+          )
+
+          return unless collection_exists?(strategy)
+
+          remove_alias(strategy) if alias_exists?(strategy.collection_name)
+
+          strategy.each_partition do |partition_name|
+            remove_index(partition_name) if index_exists?(partition_name)
+          end
+        end
+
+        def remove_alias(strategy)
+          raw_client.indices.delete_alias(index: '_all', name: strategy.collection_name)
+        end
+
+        def remove_index(partition_name)
+          raw_client.indices.delete(index: partition_name)
+        end
+
         def settings(_)
           {}
         end

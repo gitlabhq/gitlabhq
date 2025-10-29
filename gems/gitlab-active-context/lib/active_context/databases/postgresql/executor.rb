@@ -214,6 +214,12 @@ module ActiveContext
         def get_partition_remainder(partition_name)
           partition_name.split('_').last.to_i
         end
+
+        def do_drop_collection(collection)
+          adapter.client.with_connection do |connection|
+            connection.drop_table(collection.name, if_exists: true)
+          end
+        end
       end
     end
   end

@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- Pending to migrate to PanelBreakpointInstance
 import VueDraggable from 'vuedraggable';
+import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -159,7 +159,7 @@ export default {
   },
   computed: {
     isMobile() {
-      return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+      return hasTouchCapability();
     },
     designs() {
       return this.designCollection?.designs || [];

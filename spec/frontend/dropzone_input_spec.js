@@ -1,4 +1,3 @@
-import fs from 'fs';
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import mock from 'xhr-mock';
@@ -10,6 +9,7 @@ import dropzoneInput from '~/dropzone_input';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import htmlNewMilestone from 'test_fixtures_static/textarea.html';
+import * as imageUtils from '~/lib/utils/image_utils';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};
@@ -21,9 +21,11 @@ const TEMPLATE = `<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}"
   <div class="uploading-error-message"></div>
 </form>`;
 
-const RETINA_IMAGE = fs.readFileSync('spec/fixtures/retina_image.png');
-
 describe('dropzone_input', () => {
+  beforeEach(() => {
+    jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue({ width: 663, height: 325 });
+  });
+
   afterEach(() => {
     resetHTMLFixture();
   });
@@ -128,6 +130,7 @@ describe('dropzone_input', () => {
     });
 
     it('display original file name in comment box', async () => {
+      jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue(null);
       await new Promise((resolve) => {
         const axiosMock = new MockAdapter(axios);
         triggerPasteEvent({
@@ -158,7 +161,7 @@ describe('dropzone_input', () => {
         const axiosMock = new MockAdapter(axios);
         triggerPasteEvent({
           types: ['Files'],
-          files: [new File([RETINA_IMAGE], 'test.png', { type: 'image/png' })],
+          files: [new File(['foo'], 'test.png', { type: 'image/png' })],
           items: [
             {
               kind: 'file',
@@ -180,6 +183,7 @@ describe('dropzone_input', () => {
     });
 
     it('preserves undo history', async () => {
+      jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue(null);
       let execCommandMock;
       const fileName = 'undo-file.png';
 
@@ -216,6 +220,53 @@ describe('dropzone_input', () => {
       expect($('textarea').val()).toEqual('');
       expect(execCommandMock.mock.calls).toHaveLength(2);
       expect(execCommandMock.mock.calls[1][2]).toEqual(`![${fileName}]`);
+    });
+  });
+
+  describe('drag and drop file upload', () => {
+    let form;
+    let dropzone;
+
+    const dropFile = (file) => {
+      const dragEvent = new DragEvent('drop');
+      dragEvent.dataTransfer = { files: [file] };
+      dropzone.drop(dragEvent);
+    };
+
+    beforeEach(() => {
+      mock.setup();
+      form = $(TEMPLATE);
+      dropzone = dropzoneInput(form);
+      document.execCommand = jest.fn();
+    });
+
+    afterEach(() => {
+      mock.teardown();
+    });
+
+    it('applies retina dimensions to dropped retina images', async () => {
+      jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue({ width: 663, height: 325 });
+      const mockFile = new File(['foo'], 'retina.png', { type: 'image/png' });
+
+      mock.post(TEST_UPLOAD_PATH, {
+        status: HTTP_STATUS_OK,
+        body: JSON.stringify({
+          link: {
+            url: '/uploads/retina.png',
+            markdown: '![retina.png]',
+          },
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      dropFile(mockFile);
+
+      // run dropzone scheduler
+      jest.runAllTimers();
+      // wait for XHR response and getRetinaDimensions to resolve
+      await waitForPromises();
+
+      expect($(form).find('textarea').val()).toContain('{width=663 height=325}');
     });
   });
 

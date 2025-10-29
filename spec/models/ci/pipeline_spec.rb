@@ -508,9 +508,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.tag' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:tag_pipeline) { create(:ci_pipeline, :tag) }
+
+    subject { described_class.tag }
+
+    it { is_expected.to contain_exactly(tag_pipeline) }
+  end
+
   describe '.no_tag' do
     let_it_be(:pipeline) { create(:ci_pipeline) }
-    let_it_be(:tag_pipeline) { create(:ci_pipeline, tag: true) }
+    let_it_be(:tag_pipeline) { create(:ci_pipeline, :tag) }
 
     subject { described_class.no_tag }
 
@@ -751,7 +760,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'with tag pipeline' do
       let(:branch) { 'v1.0' }
-      let!(:pipeline) { create(:ci_pipeline, ref: 'v1.0', tag: true) }
+      let!(:pipeline) { create(:ci_pipeline, :tag, ref: 'v1.0') }
 
       it 'returns nothing' do
         is_expected.to be_empty
@@ -1115,13 +1124,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.tag_pipeline? }
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when pipeline is not for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: false) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it { is_expected.to be_falsy }
     end
@@ -1131,13 +1140,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.type }
 
     context 'when pipeline is for a branch' do
-      let(:pipeline) { create(:ci_pipeline, tag: false) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it { is_expected.to eq('branch') }
     end
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to eq('tag') }
     end
@@ -1656,7 +1665,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.protected_ref? }
 
     context 'when pipeline is for a branch' do
-      let(:pipeline) { create(:ci_pipeline, tag: false, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
 
       it 'checks if the branch ref is protected' do
         expect(project).to receive(:protected_for?).with("refs/heads/#{pipeline.ref}").and_return(true)
@@ -1666,7 +1675,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true, project: project) }
+      let(:pipeline) { create(:ci_pipeline, :tag, project: project) }
 
       it 'checks if the tag ref is protected' do
         expect(project).to receive(:protected_for?).with("refs/tags/#{pipeline.ref}").and_return(true)
@@ -2609,7 +2618,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.send(:git_ref) }
 
     context 'when ref is branch' do
-      let(:pipeline) { create(:ci_pipeline, tag: false) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it 'returns branch ref' do
         is_expected.to eq(Gitlab::Git::BRANCH_REF_PREFIX + pipeline.ref.to_s)
@@ -2617,7 +2626,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when ref is tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it 'returns branch ref' do
         is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.ref.to_s)
@@ -3525,6 +3534,56 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         )
       end
     end
+  end
+
+  describe '.latest_pipeline_per_ref' do
+    let(:refs_with_shas) { [%w[master 234], %w[develop 123]] }
+
+    let_it_be(:develop_123) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'develop', sha: '123'
+      )
+    end
+
+    let_it_be(:develop_123_2) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'develop', sha: '123'
+      )
+    end
+
+    let_it_be(:master_123) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'master', sha: '123'
+      )
+    end
+
+    let_it_be(:develop_234) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'develop', sha: '234'
+      )
+    end
+
+    let_it_be(:master_234) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'master', sha: '234'
+      )
+    end
+
+    let_it_be(:master_234_2) do
+      create(
+        :ci_empty_pipeline, status: :success,
+        ref: 'master', sha: '234'
+      )
+    end
+
+    subject { described_class.latest_pipeline_per_ref(refs_with_shas) }
+
+    it { is_expected.to contain_exactly(master_234_2, develop_123_2) }
   end
 
   describe '.latest_successful_ids_per_project' do
@@ -5890,7 +5949,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is for a tag' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:pipeline) { create(:ci_pipeline, :tag) }
 
       it { is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.source_ref.to_s) }
     end
@@ -6486,7 +6545,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { pipeline.jobs_git_ref }
 
     context 'when tag is true' do
-      let(:pipeline) { build(:ci_pipeline, tag: true) }
+      let(:pipeline) { build(:ci_pipeline, :tag) }
 
       it 'returns a tag ref' do
         is_expected.to start_with(Gitlab::Git::TAG_REF_PREFIX)
@@ -6494,7 +6553,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when tag is false' do
-      let(:pipeline) { build(:ci_pipeline, tag: false) }
+      let(:pipeline) { build(:ci_pipeline) }
 
       it 'returns a branch ref' do
         is_expected.to start_with(Gitlab::Git::BRANCH_REF_PREFIX)

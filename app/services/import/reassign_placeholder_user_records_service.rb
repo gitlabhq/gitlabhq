@@ -23,7 +23,7 @@ module Import
       @import_source_user = import_source_user
       @reassigned_by_user = import_source_user.reassigned_by_user
       @unavailable_tables = []
-      @project_membership_created = false
+      @refresh_project_access = false
     end
 
     def execute
@@ -51,7 +51,7 @@ module Import
         return handle_reschedule_error(error, :execution_timeout)
       end
 
-      UserProjectAccessChangedService.new(import_source_user.reassign_to_user_id).execute if project_membership_created?
+      UserProjectAccessChangedService.new(import_source_user.reassign_to_user_id).execute if refresh_project_access?
 
       import_source_user.complete!
 
@@ -212,6 +212,7 @@ module Import
       # If user is a member (direct or inherited) with same or higher level, skip creating the membership.
       if existing_membership
         if existing_membership.access_level >= placeholder_membership.access_level
+          mark_project_access_changed!(placeholder_membership) if existing_membership.source != memberable
           log_create_membership_skipped('Existing membership of same or higher access level found for user, skipping',
             placeholder_membership, existing_membership)
 
@@ -239,7 +240,7 @@ module Import
 
       member.save!
 
-      @project_membership_created = true if memberable.is_a?(Project)
+      mark_project_access_changed!(placeholder_membership)
     rescue ActiveRecord::ActiveRecordError => exception
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
         exception,
@@ -280,8 +281,12 @@ module Import
       Import::Placeholders::Membership.by_source_user(import_source_user)
     end
 
-    def project_membership_created?
-      @project_membership_created == true
+    def mark_project_access_changed!(placeholder_membership)
+      @refresh_project_access = true if placeholder_membership.project_id
+    end
+
+    def refresh_project_access?
+      !!@refresh_project_access
     end
 
     def db_table_unavailable?(model)
