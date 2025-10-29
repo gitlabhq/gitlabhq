@@ -13,7 +13,7 @@ title: Repositories API
 
 {{< /details >}}
 
-Use this API to manage your [GitLab repository](../user/project/repository/_index.md).
+Use this API to manage [Git repositories](../user/project/repository/_index.md).
 
 ## List repository tree
 

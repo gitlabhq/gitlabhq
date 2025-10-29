@@ -20,7 +20,7 @@ RSpec.describe Tooling::Danger::ContainerQueries, feature_category: :tooling do
     stub_const('Diff', Struct.new(:patch))
     stub_const('Git', Struct.new(:modified_files, :file_content) do
       def diff_for_file(_file)
-        Diff.new(file_content)
+        file_content ? Diff.new(file_content) : nil
       end
     end)
 
@@ -84,6 +84,14 @@ RSpec.describe Tooling::Danger::ContainerQueries, feature_category: :tooling do
           expect(container_queries).not_to receive(:warn)
 
           check
+        end
+      end
+
+      context 'when there are renames' do
+        let(:file_content) { nil }
+
+        it 'does not crash' do
+          expect { check }.not_to raise_error
         end
       end
     end

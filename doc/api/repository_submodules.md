@@ -12,9 +12,7 @@ title: Repository submodules API
 
 {{< /details >}}
 
-Use this API to update a
-[Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) reference in a specific
-branch of your Git repository.
+Use this API to update [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
 ## Update existing submodule reference in repository
 

@@ -12,9 +12,9 @@ title: Snippet repository storage moves API
 
 {{< /details >}}
 
-Snippet repositories can be moved between storages. This API can help you when
-[migrating to Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect), for
-example.
+Use this API to manage [snippet repository storage moves](../administration/operations/moving_repositories.md).
+This API can help you, for example,
+[migrate to Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect).
 
 As snippet repository storage moves are processed, they transition through different states. Values
 of `state` are:

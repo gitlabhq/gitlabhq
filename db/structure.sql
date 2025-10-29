@@ -14160,6 +14160,7 @@ CREATE TABLE ci_runner_taggings (
     runner_type smallint NOT NULL,
     organization_id bigint,
     tag_name text,
+    CONSTRAINT check_tag_name_not_null CHECK ((tag_name IS NOT NULL)),
     CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 )
 PARTITION BY LIST (runner_type);
@@ -14172,6 +14173,7 @@ CREATE TABLE ci_runner_taggings_group_type (
     organization_id bigint,
     tag_name text,
     CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)),
+    CONSTRAINT check_tag_name_not_null CHECK ((tag_name IS NOT NULL)),
     CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
@@ -14192,6 +14194,7 @@ CREATE TABLE ci_runner_taggings_instance_type (
     organization_id bigint,
     tag_name text,
     CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)),
+    CONSTRAINT check_tag_name_not_null CHECK ((tag_name IS NOT NULL)),
     CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
@@ -14203,6 +14206,7 @@ CREATE TABLE ci_runner_taggings_project_type (
     organization_id bigint,
     tag_name text,
     CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)),
+    CONSTRAINT check_tag_name_not_null CHECK ((tag_name IS NOT NULL)),
     CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 

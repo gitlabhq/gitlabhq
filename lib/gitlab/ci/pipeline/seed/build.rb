@@ -19,6 +19,7 @@ module Gitlab
             @job_variables = @seed_attributes.delete(:job_variables)
             @execution_config_attribute = @seed_attributes.delete(:execution_config)
             @root_variables_inheritance = @seed_attributes.delete(:root_variables_inheritance) { true }
+            @inputs = @seed_attributes.delete(:inputs)
 
             @using_rules  = attributes.key?(:rules)
             @using_only   = attributes.key?(:only)
@@ -70,6 +71,7 @@ module Gitlab
               .deep_merge(rules_attributes)
               .deep_merge(allow_failure_criteria_attributes)
               .deep_merge(@cache.cache_attributes)
+              .deep_merge(inputs_attributes)
               .deep_merge(runner_tags)
               .deep_merge(build_execution_config_attribute)
               .deep_merge(scoped_user_id_attribute)
@@ -223,6 +225,14 @@ module Gitlab
             return {} unless @seed_attributes.dig(:options, :allow_failure_criteria)
 
             { options: { allow_failure_criteria: nil } }
+          end
+
+          def inputs_attributes
+            return {} unless @inputs
+
+            {
+              options: { inputs: @inputs }
+            }
           end
 
           def calculate_yaml_variables!

@@ -3,6 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Upgrade a multi-node instance with downtime
+description: Upgrade a multi-node Linux package-based or cloud-native instance with downtime.
 ---
 
 {{< details >}}
@@ -65,7 +66,7 @@ kubectl scale deploy -n <namespace> -l release=<helm release name> -l 'app in (p
 Follow instructions for [upgrading the Consul nodes](../administration/consul.md#upgrade-the-consul-nodes). In summary:
 
 1. Check the Consul nodes are all healthy.
-1. [Upgrade GitLab](package/_index.md) on all Consul servers.
+1. Upgrade all Consul servers by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 1. Restart all GitLab services **one node at a time**:
 
    ```shell
@@ -80,9 +81,9 @@ Patroni. In this case, when upgrading those servers:
 
 ## Upgrade Gitaly and Gitaly Cluster (Praefect)
 
-For Gitaly servers that are not part of Gitaly Cluster (Praefect),
-[upgrade GitLab](package/_index.md). If you have multiple Gitaly shards, you can upgrade
-the Gitaly servers in any order.
+For Gitaly servers that are not part of Gitaly Cluster (Praefect), upgrade the server
+by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
+If you have multiple Gitaly shards, you can upgrade the Gitaly servers in any order.
 
 If you're running Gitaly Cluster (Praefect), follow the
 [zero-downtime upgrade process for Gitaly Cluster (Praefect)](zero_downtime.md#upgrade-gitaly-cluster-praefect-nodes).
@@ -110,7 +111,7 @@ To upgrade Gitaly Cluster (Praefect) nodes by using an AMI redeployment process:
 
 For non-clustered PostgreSQL servers:
 
-1. [Upgrade GitLab](package/_index.md).
+1. Upgrade the server by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 1. Because the upgrade process does not restart PostgreSQL when the binaries are upgraded, restart to load the new version:
 
    ```shell
@@ -138,7 +139,7 @@ To upgrade Patroni nodes:
    sudo gitlab-ctl patroni members
    ```
 
-1. [Upgrade GitLab](package/_index.md) on one of the replica nodes.
+1. Upgrade one of the replica nodes by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 1. Restart to load the new version:
 
    ```shell
@@ -159,13 +160,12 @@ To upgrade Patroni nodes:
 ## Upgrade the PgBouncer nodes
 
 If you run PgBouncer on your GitLab application (Rails) nodes, then PgBouncer is upgraded as part of the
-application server upgrade. Otherwise, [upgrade GitLab](package/_index.md) on the
-PgBouncer nodes.
+application server upgrade. Otherwise, upgrade the PgBouncer nodes by
+[upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 
 ## Upgrade the Redis node
 
-Upgrade a standalone Redis server by [upgrading GitLab](package/_index.md) on the Redis
-node.
+To upgrade a standalone Redis server, [upgrade with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 
 ### Upgrade Redis HA (using Sentinel)
 
@@ -229,7 +229,7 @@ deploy node:
       sudo gitlab-ctl reconfigure
       ```
 
-1. [Upgrade GitLab](package/_index.md).
+1. Upgrade GitLab by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 1. If you modified `gitlab.rb` on the deploy node to bypass PgBouncer:
    1. Update `gitlab.rb` on the deploy node. Change `gitlab_rails['db_host']`
       and `gitlab_rails['db_port']` back to your PgBouncer settings.
@@ -251,7 +251,7 @@ set to anything in `gitlab.rb` on these nodes.
 
 They can be upgraded in parallel:
 
-1. [Upgrade GitLab](package/_index.md).
+1. Upgrade GitLab by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 1. Ensure all services are restarted:
 
    ```shell
@@ -283,4 +283,4 @@ kubectl scale deploy -lapp=prometheus,release=<helm release name> -n <namespace>
 You might have configured Prometheus to act as a standalone monitoring node. For example, as part of
 [configuring a 60 RPS or 3,000 users reference architecture](../administration/reference_architectures/3k_users.md#configure-prometheus).
 
-To upgrade the monitor node, [upgrade GitLab](package/_index.md) on the node.
+To upgrade the monitor node, [upgrade with the Linux package](package/_index.md#upgrade-with-the-linux-package).

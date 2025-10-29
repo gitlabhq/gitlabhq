@@ -15,7 +15,7 @@
   - has_composite_identity_forbidden = @pipeline.composite_identity_forbidden?
   - has_identity_verification_error = @pipeline.user_not_verified?
   - if has_composite_identity_forbidden
-    = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
+    = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to run pipeline'),
       variant: :warning,
       dismissible: false,
       alert_options: { class: 'gl-my-5' }) do |c|
@@ -28,7 +28,7 @@
         = render Pajamas::ButtonComponent.new(href: path, variant: :confirm) do
           = s_("Pipelines|Verify changes")
   - elsif !has_identity_verification_error
-    = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
+    = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to run pipeline'),
       variant: :danger,
       dismissible: false,
       alert_options: { class: 'gl-my-5' }) do |c|

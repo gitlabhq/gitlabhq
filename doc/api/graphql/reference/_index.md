@@ -30925,7 +30925,7 @@ Describes the usage of one time credits for the subscription.
 
 ### `GitlabSubscriptionOverage`
 
-Describes the overage usage of consumables for the subscription.
+Describes the overage of consumables for the subscription.
 
 #### Fields
 
@@ -31003,6 +31003,7 @@ Describes the usage of consumables for a user under the subscription.
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageuserusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used by the user. |
 | <a id="gitlabsubscriptionusageuserusagemonthlycommitmentcreditsused"></a>`monthlyCommitmentCreditsUsed` | [`Float`](#float) | GitLab Credits from the subscription monthly commitment used by the user. |
+| <a id="gitlabsubscriptionusageuserusageonetimecreditsused"></a>`oneTimeCreditsUsed` | [`Float`](#float) | One Time GitLab Credits used by the user. |
 | <a id="gitlabsubscriptionusageuserusageoveragecreditsused"></a>`overageCreditsUsed` | [`Float`](#float) | Overage GitLab Credits used by the user. |
 | <a id="gitlabsubscriptionusageuserusagetotalcredits"></a>`totalCredits` | [`Float`](#float) | Total GitLab Credits available for the user. |
 

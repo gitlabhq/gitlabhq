@@ -191,7 +191,7 @@ To check that the AI gateway URL is correct, run the following on the GitLab Rai
 Ai::Setting.instance.ai_gateway_url == "<your-ai-gateway-instance-url>"
 ```
 
-If the AI gateway is not set up, [configure your GitLab instance to access the AI gateway](configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
+If the AI gateway is not set up, [configure your GitLab instance to access the AI gateway](configure_duo_features.md#configure-access-to-the-local-ai-gateway).
 
 ## Validate the GitLab Duo Agent Platform service URL
 

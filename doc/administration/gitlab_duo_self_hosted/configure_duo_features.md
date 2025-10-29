@@ -38,12 +38,14 @@ To configure your GitLab instance to access the available self-hosted models in 
 1. Configure the self-hosted model.
 1. Configure the GitLab Duo features to use your self-hosted model.
 
-## Configure your GitLab instance to access the AI gateway
+## Configure access to the local AI gateway
+
+To configure access between your GitLab instance and your local AI gateway:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
+1. Under **Local AI Gateway URL**, enter your AI gateway URL.
 1. Select **Save changes**.
 
 {{< alert type="note" >}}
@@ -74,35 +76,34 @@ For more information, see the history.
 
 {{< /alert >}}
 
-You must provide a URL to access the Agent Platform service from your GitLab instance.
-
-- Prefix the URL for the Agent Platform service cannot start with `http://` or `https://`.
-
-- If the URL for the Agent Platform service is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
-
-  - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
-  - For self-compiled installations, in `/etc/default/gitlab` set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`
+To access the Agent Platform service from your GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service.
+   - The URL prefix cannot start with `http://` or `https://`.
+
+   - If the URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
+
+     - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
+     - For self-compiled installations, in `/etc/default/gitlab` set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`
 1. Select **Save changes**.
 
-## Configure the self-hosted model
+## Add a self-hosted model
+
+You must add a self-hosted model to your GitLab instance to use it with GitLab Duo features.
 
 Prerequisites:
 
 - You must be an administrator.
-- You must have a Premium or Ultimate license.
-- You must have a GitLab Duo Enterprise license add-on.
 
-To configure a self-hosted model:
+To add a self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
-   - If the **Configure GitLab Duo Self-Hosted** button is not available, synchronize your
+   - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -113,48 +114,46 @@ To configure a self-hosted model:
    - **Model family**: Select the model family the deployment belongs to. You can select either a supported or compatible model.
    - **Endpoint**: Enter the URL where the model is hosted.
    - **API key**: Optional. Add an API key if you need one to access the model.
-   - **Model identifier**: This is a required field. The value of this field is based on your deployment method, and should match the following structure:
+   - **Model identifier**: Enter the model identifier based on your deployment method. The model identifier should match the following format:
 
      | Deployment method | Format | Example |
      |-------------|---------|---------|
-     | vLLM | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
-     | Amazon Bedrock | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
-     | Azure OpenAI | `azure/<model ID of the model>` | `azure/gpt-35-turbo` |
-
-     - For Amazon Bedrock models:
-
-       1. Set your `AWS_REGION` and make sure you have access to models in that region in your AI gateway Docker configuration.
-       1. Add the appropriate region prefix to the model's inference profile ID
-          for cross-region inferencing.
-       1. Enter the region prefix and model inference profile ID in the **Model identifier**
-          field, with the `bedrock/` prefix.
-
-       For example, for the Anthropic Claude 3.5 v2 model in the Tokyo region:
-
-       - The `AWS_REGION` is `ap-northeast-1`.
-       - The cross-region inferencing prefix is `apac.`.
-       - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`.
-
-       Some regions are not supported by cross-region inferencing. For these regions, the model identifier should be specified without the region prefix. For example:
-
-       - The `AWS_REGION` is `eu-west-2`.
-       - The model identifier should be `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`.
+     | [vLLM](supported_llm_serving_platforms.md#find-the-model-name)        | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
+     | [Amazon Bedrock](#set-the-model-identifier-for-amazon-bedrock-models) | `bedrock/<model ID of the model>`                       | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
+     | Azure OpenAI                                                          | `azure/<model ID of the model>`                         | `azure/gpt-35-turbo` |
 
 1. Select **Create self-hosted model**.
 
-For more information about:
+### Set the model identifier for Amazon Bedrock models
 
-- Configuring the endpoint and model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#find-the-model-name).
-- Configuring Amazon Bedrock models with cross-region inferencing, see the
-  [Amazon supported regions and models for inference profiles documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html)
+To set a model identifier for an Amazon Bedrock model:
+
+1. Set your `AWS_REGION`. Ensure you have access to models in that region in your AI gateway Docker configuration.
+1. Add the region prefix to the model's inference profile ID for cross-region inferencing.
+1. Use the `bedrock/` prefix region as the prefix for the model identifier.
+
+   For example, for the Anthropic Claude 3.5 v2 model in the Tokyo region:
+
+   - The `AWS_REGION` is `ap-northeast-1`.
+   - The cross-region inferencing prefix is `apac.`.
+   - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`.
+
+Some regions are not supported by cross-region inferencing. For these regions, do not specify a region prefix in the model identifier. For example:
+
+- The `AWS_REGION` is `eu-west-2`.
+- The model identifier is `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`.
 
 ## Configure self-hosted beta models and features
 
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Premium or Ultimate license.
-- You must have a GitLab Duo Enterprise license add-on.
+
+{{< alert type="note" >}}
+
+Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+{{< /alert >}}
 
 To enable self-hosted beta models and features:
 
@@ -164,37 +163,27 @@ To enable self-hosted beta models and features:
 1. Under **Self-hosted beta models and features**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-
-{{< /alert >}}
-
 ## Configure GitLab Duo features to use self-hosted models
 
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Premium or Ultimate license.
-- You must have a GitLab Duo Enterprise license add-on.
 
 ### View configured features
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
+   - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
+     subscription after purchase:
+     1. On the left sidebar, select **Subscription**.
+     1. In **Subscription details**, to the right of **Last sync**, select
+        synchronize subscription ({{< icon name="retry" >}}).
 1. Select the **AI-native features** tab.
 
-If the **Configure GitLab Duo Self-Hosted** button is not available, synchronize your
-subscription after purchase:
+### Configure a feature to use a self-hosted model
 
-1. On the left sidebar, select **Subscription**.
-1. In **Subscription details**, to the right of **Last sync**, select
-   synchronize subscription ({{< icon name="retry" >}}).
-
-### Configure the feature to use a self-hosted model
-
-Configure the GitLab Duo feature and sub-feature to send queries to the configured self-hosted model:
+Configure a GitLab Duo feature and sub-feature to send queries to the self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
@@ -202,11 +191,18 @@ Configure the GitLab Duo feature and sub-feature to send queries to the configur
 1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
 
-   For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **Claude-3 on Bedrock deployment (Claude 3)**.
+   For example, for the code generation, you can select **Claude-3 on Bedrock deployment (Claude 3)**.
 
    ![GitLab Duo Self-Hosted Feature Configuration](img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
 
-### Configure the feature to use a GitLab AI vendor model
+{{< alert type="note" >}}
+
+If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
+This ensures all Chat functionality works without requiring individual model configuration for each sub-feature.
+
+{{< /alert >}}
+
+### Configure a feature to use a GitLab AI vendor model
 
 {{< details >}}
 
@@ -227,7 +223,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-In GitLab 18.3 and later, even when you are using your self-hosted AI gateway and models, you can configure a specific GitLab Duo feature to use a GitLab AI vendor model.
+You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI gateway and models.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
@@ -235,24 +231,11 @@ In GitLab 18.3 and later, even when you are using your self-hosted AI gateway an
 1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, select **GitLab AI vendor model**.
 
-   For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **GitLab AI vendor model**.
-
-   ![GitLab Duo Self-Hosted Feature Configuration using GitLab AI vendor model](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
-
-For more information on this hybrid configuration, see the documentation on [GitLab Duo Self-Hosted configuration type](_index.md#configuration-types).
-
-### GitLab Duo Chat sub-feature fall back configuration
-
-When configuring GitLab Duo Chat sub-features, if you do not select a specific model for a sub-feature, that sub-feature automatically falls back to using the model configured for **General Chat**. This ensures all Chat functionality works even if you have not explicitly configured each sub-feature with its own model.
-
-### Self-host the GitLab documentation
-
-If your setup of GitLab Duo Self-Hosted stops you from accessing the GitLab documentation at `docs.gitlab.com`, you can self-host the documentation instead. For more information, see how to [host the GitLab product documentation](../docs_self_host.md).
+![GitLab Duo Self-Hosted feature configuration using GitLab AI vendor model](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
 
 ### Disable GitLab Duo features
 
-GitLab Duo features remain turned on even if you have not chosen a model for a sub-feature. If you don't select a model for a 
-sub-feature of GitLab Duo Chat, it uses the model configured for **General Chat** instead.
+GitLab Duo features remain turned on even if you have not chosen a model for a sub-feature.
 
 To disable a GitLab Duo feature or sub-feature:
 
@@ -262,9 +245,13 @@ To disable a GitLab Duo feature or sub-feature:
 1. Select the **AI-native features** tab.
 1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
 
-   For example, to specifically disable the `Write Test` and `Refactor Code` features, select **Disabled**:
+![Disabling GitLab Duo Feature](img/gitlab_duo_self_hosted_disable_feature_v17_11.png)
 
-   ![Disabling GitLab Duo Feature](img/gitlab_duo_self_hosted_disable_feature_v17_11.png)
+### Self-host the GitLab documentation
+
+If your GitLab Duo Self-Hosted setup prevents you from accessing the GitLab documentation at
+`docs.gitlab.com`, you can self-host the documentation.
+For more information, see [Host the GitLab product documentation](../docs_self_host.md).
 
 ## Related topics
 

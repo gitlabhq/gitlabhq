@@ -7,7 +7,10 @@ import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 import initCommitListApp from '~/projects/commits/init_commit_list_app';
 
 if (document.querySelector('.js-project-commits-show')) {
-  new CommitsList(document.querySelector('.js-project-commits-show').dataset.commitsLimit); // eslint-disable-line no-new
+  // eslint-disable-next-line no-new
+  new CommitsList(
+    parseInt(document.querySelector('.js-project-commits-show').dataset.commitsLimit, 10),
+  );
 } else {
   initCommitListApp();
 }

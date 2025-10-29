@@ -3,6 +3,7 @@
 - has_wiki_pages = @wiki_pages_count && @wiki_pages_count > 0
 
 %aside.wiki-sidebar.js-wiki-sidebar.sidebar-collapsed{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
+  .js-wiki-sidebar-resizer
   .sidebar-container
     .blocks-container
       .gl-flex.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }

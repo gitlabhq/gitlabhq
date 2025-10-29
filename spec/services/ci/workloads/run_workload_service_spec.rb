@@ -155,6 +155,57 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
             expect(result).to be_success
           end
         end
+
+        context 'when branch creation fails' do
+          before do
+            allow(project.repository).to receive(:add_branch).and_return(nil)
+          end
+
+          it 'returns an error response without creating a workload' do
+            result = execute
+
+            expect(result).to be_error
+            expect(result.message).to eq('Error in git branch creation')
+            expect(Ci::Workloads::Workload.count).to eq(0)
+          end
+        end
+
+        context 'when branch name already exists' do
+          before do
+            allow(project.repository).to receive(:branch_exists?)
+                                           .with(match(%r{^workloads/\w+}))
+                                           .and_return(true)
+            allow(project.repository).to receive(:branch_exists?)
+                                           .with(project.default_branch_or_main)
+                                           .and_return(true)
+          end
+
+          it 'returns an error response without creating a workload' do
+            result = execute
+
+            expect(result).to be_error
+            expect(result.message).to eq('Branch already exists')
+            expect(Ci::Workloads::Workload.count).to eq(0)
+          end
+        end
+
+        context 'when git command raises an error' do
+          before do
+            allow(project.repository).to receive(:add_branch)
+                                           .and_raise(Gitlab::Git::CommandError.new('git error'))
+          end
+
+          it 'tracks the exception and returns an error response without creating a workload' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+                                               .with(instance_of(Gitlab::Git::CommandError))
+
+            result = execute
+
+            expect(result).to be_error
+            expect(result.message).to eq('Failed to create branch')
+            expect(Ci::Workloads::Workload.count).to eq(0)
+          end
+        end
       end
     end
 

@@ -6,7 +6,7 @@
 
 %ul.nav.gl-gap-y-2.gl-gap-x-5
   - anchors.each do |anchor|
-    %li.nav-item
+    %li.nav-item.gl-leading-1s
       - if anchor.link # render actionable link/button
         = link_to(anchor.label, anchor.link, stat_anchor_attrs(anchor))
       - elsif project_buttons # render disabled button

@@ -16,6 +16,7 @@ import { reportToSentry } from '~/ci/utils';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import { fetchPolicies } from '~/lib/graphql';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import { createAlert } from '~/alert';
 import filterVariables from '../utils/filter_variables';
 import {
   CI_VARIABLE_TYPE_FILE,
@@ -77,33 +78,9 @@ export default {
       configVariablesWithDescription: {},
       form: {},
       maxPollTimeout: null,
+      pollingStartTime: null,
+      manualPollInterval: null,
     };
-  },
-  apollo: {
-    ciConfigVariables: {
-      fetchPolicy: fetchPolicies.NO_CACHE,
-      query: ciConfigVariablesQuery,
-      variables() {
-        return {
-          fullPath: this.projectPath,
-          ref: this.refParam,
-        };
-      },
-      update({ project }) {
-        return project?.ciConfigVariables;
-      },
-      result({ data }) {
-        if (data?.project?.ciConfigVariables) {
-          this.stopPollingAndPopulateForm();
-        }
-      },
-      error(error) {
-        reportToSentry(this.$options.name, error);
-        this.ciConfigVariables = [];
-        this.stopPollingAndPopulateForm();
-      },
-      pollInterval: CI_VARIABLES_POLLING_INTERVAL,
-    },
   },
   computed: {
     descriptions() {
@@ -141,12 +118,11 @@ export default {
     refParam() {
       this.ciConfigVariables = null;
       this.clearTimeouts();
-      this.$apollo.queries.ciConfigVariables.startPolling(CI_VARIABLES_POLLING_INTERVAL);
-      this.startMaxPollTimer();
+      this.startManualPolling();
     },
   },
   mounted() {
-    this.startMaxPollTimer();
+    this.startManualPolling();
   },
   beforeDestroy() {
     this.clearTimeouts();
@@ -175,6 +151,11 @@ export default {
         clearTimeout(this.maxPollTimeout);
         this.maxPollTimeout = null;
       }
+      if (this.manualPollInterval) {
+        clearInterval(this.manualPollInterval);
+        this.manualPollInterval = null;
+      }
+      this.pollingStartTime = null;
     },
     createListItemsFromVariableOptions(key) {
       const options = this.configVariablesWithDescription?.options?.[key] || [];
@@ -260,18 +241,65 @@ export default {
     shouldShowValuesDropdown(key) {
       return this.configVariablesWithDescription.options[key]?.length > 1;
     },
-    startMaxPollTimer() {
-      this.maxPollTimeout = setTimeout(() => {
-        if (this.ciConfigVariables === null) {
-          this.ciConfigVariables = [];
-        }
-        this.stopPollingAndPopulateForm();
-      }, CI_VARIABLES_MAX_POLLING_TIME);
-    },
     stopPollingAndPopulateForm() {
       this.clearTimeouts();
-      this.$apollo.queries.ciConfigVariables.stopPolling();
       this.populateForm();
+    },
+    async executeQuery(failOnCacheMiss = false) {
+      try {
+        const result = await this.$apollo.query({
+          query: ciConfigVariablesQuery,
+          variables: {
+            fullPath: this.projectPath,
+            ref: this.refParam,
+            failOnCacheMiss,
+          },
+          fetchPolicy: fetchPolicies.NO_CACHE,
+        });
+
+        this.ciConfigVariables = result.data?.project?.ciConfigVariables;
+
+        if (this.ciConfigVariables) {
+          this.stopPollingAndPopulateForm();
+          return true;
+        }
+
+        return false;
+      } catch (error) {
+        this.handleQueryError(error);
+        return true;
+      }
+    },
+    handleQueryError(error) {
+      reportToSentry(this.$options.name, error);
+      createAlert({
+        message: error.message || s__('Pipeline|Failed to retrieve CI/CD variables.'),
+      });
+      this.ciConfigVariables = [];
+      this.stopPollingAndPopulateForm();
+    },
+    startManualPolling() {
+      const CI_VARIABLES_FINAL_ATTEMPT_THRESHOLD =
+        CI_VARIABLES_MAX_POLLING_TIME - CI_VARIABLES_POLLING_INTERVAL;
+      this.pollingStartTime = Date.now();
+
+      this.executeQuery(false);
+
+      this.manualPollInterval = setInterval(async () => {
+        const pollingDuration = Date.now() - this.pollingStartTime;
+        const isLastAttempt = pollingDuration >= CI_VARIABLES_FINAL_ATTEMPT_THRESHOLD;
+
+        const shouldStop = await this.executeQuery(isLastAttempt);
+
+        if (shouldStop) {
+          this.clearTimeouts();
+        }
+      }, CI_VARIABLES_POLLING_INTERVAL);
+
+      this.maxPollTimeout = setTimeout(() => {
+        this.ciConfigVariables = this.ciConfigVariables || [];
+        this.stopPollingAndPopulateForm();
+      }, CI_VARIABLES_MAX_POLLING_TIME);
     },
   },
 };

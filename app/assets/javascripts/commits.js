@@ -5,9 +5,10 @@ import createDefaultClient from '~/lib/graphql';
 import { sanitize } from '~/lib/dompurify';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import commitDetailsQuery from '~/projects/commits/graphql/queries/commit_details.query.graphql';
+import { getParameterByName, removeParams } from '~/lib/utils/url_utility';
+import { InfiniteScroller } from '~/infinite_scroller';
 import axios from './lib/utils/axios_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
-import Pager from './pager';
 
 const NEWLINE_CHAR = '&#x000A;';
 
@@ -39,7 +40,26 @@ export default class CommitsList {
 
     this.$contentList = $('.content_list');
 
-    Pager.init({ limit: parseInt(limit, 10), prepareData: this.processCommits.bind(this) });
+    const scroller = new InfiniteScroller({
+      root: document.querySelector('.js-infinite-scrolling-root'),
+      fetchNextPage: async (offset, signal) => {
+        return axios
+          .get(removeParams(['limit', 'offset']), {
+            params: { limit, offset },
+            signal,
+          })
+          .then(({ data }) => {
+            return this.processCommits(data);
+          })
+          .catch((error) => {
+            if (axios.isCancel(error)) return null;
+            throw error;
+          });
+      },
+      limit,
+      startingOffset: parseInt(getParameterByName('offset'), 10) || limit,
+    });
+    scroller.initialize();
 
     this.content = $('#commits-list');
     this.searchField = $('#commits-search');

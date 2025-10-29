@@ -7,7 +7,7 @@ RSpec.describe API::Entities::Ci::JobRequest::Response, feature_category: :conti
   let_it_be(:job) do
     create(
       :ci_build, runner: runner,
-      options: { inputs: { test_input: { input_type: 'string', default: 'test' } } }
+      options: { inputs: { test_input: { type: 'string', default: 'test' } } }
     )
   end
 

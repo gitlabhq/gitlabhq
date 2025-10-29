@@ -51,9 +51,10 @@ module Tooling
 
           should_include_file = exclude_files ? file_matches_exclusion : !file_matches_exclusion
 
-          should_include_file &&
-            file.end_with?('.vue', '.js', '.haml', '.rb', '.erb') &&
-            regex.match?(helper.git.diff_for_file(file).patch)
+          if should_include_file && file.end_with?('.vue', '.js', '.haml', '.rb', '.erb')
+            diff = helper.git.diff_for_file(file)
+            diff && regex.match?(diff.patch)
+          end
         end
       end
 

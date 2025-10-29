@@ -12,7 +12,7 @@ title: Snippets API
 
 {{< /details >}}
 
-Snippets API operates on [snippets](../user/snippets.md). Related APIs exist for
+Use this API to manage [snippets](../user/snippets.md). Related APIs exist for
 [project snippets](project_snippets.md) and
 [moving snippets between storages](snippet_repository_storage_moves.md).
 

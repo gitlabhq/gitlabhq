@@ -265,12 +265,12 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         stub_ci_pipeline_yaml_file(config)
       end
 
-      subject { service.new(project: project, current_user: @user).execute(@oldrev, @newrev, ref) }
+      subject { service.new(project: project, current_user: @user, params: { push_options: {}, gitaly_context: { nested: "value" } }).execute(@oldrev, @newrev, ref) }
 
       context 'when split_refresh_worker_pipeline ff is true' do
         let(:pipeline_ff) { true }
 
-        it 'calls the pipeline worker async' do
+        it 'calls the pipeline worker async, forwarding properly formatted push_options and gitaly_context' do
           expect(MergeRequests::Refresh::PipelineWorker).to receive(:perform_async)
             .with(
               @project.id,
@@ -278,7 +278,10 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
               @oldrev,
               @newrev,
               'refs/heads/master',
-              {}
+              {
+                "push_options" => {},
+                "gitaly_context" => { "nested" => "value" }
+              }
             )
 
           subject

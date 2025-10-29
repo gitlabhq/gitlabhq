@@ -10,7 +10,8 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
       old_mode: old_mode,
       new_mode: new_mode,
       old_blob_id: old_blob_id,
-      new_blob_id: new_blob_id
+      new_blob_id: new_blob_id,
+      commit_id: commit_id
     )
   end
 
@@ -20,6 +21,7 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
   let(:new_mode) { '100644' }
   let(:old_blob_id) { '0000000000000000000000000000000000000000' }
   let(:new_blob_id) { '645f6c4c82fd3f5e06f67134450a570b795e55a6' }
+  let(:commit_id) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
   describe '#new_file?' do
     subject(:new_file?) { changed_path.new_file? }

@@ -1,14 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import 'vendor/jquery.endless-scroll';
 import waitForPromises from 'helpers/wait_for_promises';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import CommitsList from '~/commits';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { sanitize } from '~/lib/dompurify';
-import Pager from '~/pager';
 
+jest.mock('~/infinite_scroller');
 jest.mock('~/lib/dompurify', () => ({
   sanitize: jest.fn().mockImplementation((html) => html),
 }));
@@ -36,7 +35,6 @@ describe('Commits List', () => {
         <div class="js-toggle-content" data-commit-id="123"></div>
       </ol>
     `);
-    jest.spyOn(Pager, 'init').mockImplementation(() => {});
     commitsList = new CommitsList(25);
   });
 

@@ -5,13 +5,16 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { fetchPolicies } from '~/lib/graphql';
 import { reportToSentry } from '~/ci/utils';
 import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
 import { VARIABLE_TYPE } from '~/ci/pipeline_new/constants';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import { createAlert } from '~/alert';
+
+jest.mock('~/alert');
+jest.useFakeTimers();
 
 Vue.use(VueApollo);
 jest.mock('~/ci/utils');
@@ -113,6 +116,8 @@ describe('PipelineVariablesForm', () => {
         },
       },
     });
+
+    jest.clearAllMocks();
   });
 
   it('displays the inputs adoption banner', async () => {
@@ -219,68 +224,152 @@ describe('PipelineVariablesForm', () => {
   });
 
   describe('query configuration', () => {
-    it('has correct apollo query configuration', async () => {
-      await createComponent();
-      const { apollo } = wrapper.vm.$options;
-
-      expect(apollo.ciConfigVariables.fetchPolicy).toBe(fetchPolicies.NO_CACHE);
-      expect(apollo.ciConfigVariables.query).toBe(ciConfigVariablesQuery);
-    });
-
     it('makes query with correct variables', async () => {
       await createComponent();
 
       expect(mockCiConfigVariables).toHaveBeenCalledWith({
         fullPath: defaultProvide.projectPath,
         ref: defaultProps.refParam,
+        failOnCacheMiss: false,
       });
     });
 
-    it('reports to sentry when query fails', async () => {
+    it('handles query errors in executeQuery method', async () => {
       const error = new Error('GraphQL error');
+      const mockQuery = jest.fn().mockRejectedValue(error);
+
       await createComponent();
-      wrapper.vm.$options.apollo.ciConfigVariables.error.call(wrapper.vm, error);
+      wrapper.vm.$apollo.query = mockQuery;
+
+      await wrapper.vm.executeQuery(false);
 
       expect(reportToSentry).toHaveBeenCalledWith('PipelineVariablesForm', error);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'GraphQL error',
+      });
+      expect(wrapper.vm.ciConfigVariables).toEqual([]);
+    });
+
+    it('handles query errors with failOnCacheMiss flag in executeQuery method', async () => {
+      const error = new Error('GraphQL error');
+      const mockQuery = jest.fn().mockRejectedValue(error);
+
+      await createComponent();
+      wrapper.vm.$apollo.query = mockQuery;
+
+      const result = await wrapper.vm.executeQuery(true);
+
+      expect(result).toBe(true);
+      expect(reportToSentry).toHaveBeenCalledWith('PipelineVariablesForm', error);
+    });
+
+    it('returns false when no ciConfigVariables received', async () => {
+      const mockQuery = jest.fn().mockResolvedValue({
+        data: { project: { ciConfigVariables: null } },
+      });
+
+      await createComponent();
+      wrapper.vm.$apollo.query = mockQuery;
+
+      const result = await wrapper.vm.executeQuery(false);
+
+      expect(result).toBe(false);
+    });
+
+    it('returns true when ciConfigVariables received', async () => {
+      const mockQuery = jest.fn().mockResolvedValue({
+        data: { project: { ciConfigVariables: configVariablesWithOptions } },
+      });
+
+      await createComponent();
+      wrapper.vm.$apollo.query = mockQuery;
+
+      const result = await wrapper.vm.executeQuery(false);
+
+      expect(result).toBe(true);
     });
   });
 
   describe('polling behavior', () => {
-    it('configures Apollo with the correct polling interval', () => {
-      expect(PipelineVariablesForm.apollo.ciConfigVariables.pollInterval).toBe(2000);
+    it('starts manual polling with correct interval', async () => {
+      jest.spyOn(global, 'setInterval');
+      jest.spyOn(global, 'setTimeout');
+
+      await createComponent();
+
+      wrapper.vm.startManualPolling();
+
+      expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 2000);
+      expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 10000);
+    });
+
+    it('executes query immediately when starting manual polling', async () => {
+      const executeQuerySpy = jest.spyOn(PipelineVariablesForm.methods, 'executeQuery');
+
+      await createComponent();
+
+      expect(executeQuerySpy).toHaveBeenCalledWith(false);
     });
 
     it('refetches and updates on ref change', async () => {
       await createComponent();
 
-      wrapper.setProps({ refParam: 'new-ref-param' });
-      await nextTick();
+      const startManualPollingSpy = jest.spyOn(wrapper.vm, 'startManualPolling');
 
-      expect(wrapper.vm.ciConfigVariables).toBe(null);
-    });
+      await wrapper.setProps({ refParam: 'refs/heads/new-feature' });
 
-    it('sets ciConfigVariables to empty array on query error', async () => {
-      await createComponent();
+      expect(startManualPollingSpy).toHaveBeenCalledTimes(1);
 
-      const error = new Error('GraphQL error');
-      wrapper.vm.$options.apollo.ciConfigVariables.error.call(wrapper.vm, error);
+      await wrapper.setProps({ refParam: 'refs/heads/new-feature-1' });
 
-      expect(wrapper.vm.ciConfigVariables).toEqual([]);
-      expect(reportToSentry).toHaveBeenCalledWith('PipelineVariablesForm', error);
+      expect(startManualPollingSpy).toHaveBeenCalledTimes(2);
     });
 
     it('stops polling when data is received', async () => {
-      await createComponent({ configVariables: configVariablesWithOptions });
+      jest.spyOn(global, 'clearInterval');
+      jest.spyOn(global, 'clearTimeout');
 
-      const stopPollingSpy = jest.spyOn(
-        wrapper.vm.$apollo.queries.ciConfigVariables,
-        'stopPolling',
-      );
+      mockCiConfigVariables = jest
+        .fn()
+        .mockResolvedValueOnce({
+          data: { project: { ciConfigVariables: null } },
+        })
+        .mockResolvedValueOnce({
+          data: { project: { ciConfigVariables: configVariablesWithOptions } },
+        });
 
-      const mockData = { data: { project: { ciConfigVariables: configVariablesWithOptions } } };
-      wrapper.vm.$options.apollo.ciConfigVariables.result.call(wrapper.vm, mockData);
+      await createComponent();
 
-      expect(stopPollingSpy).toHaveBeenCalled();
+      jest.advanceTimersByTime(2000);
+      await waitForPromises();
+
+      expect(clearInterval).toHaveBeenCalled();
+      expect(clearTimeout).toHaveBeenCalled();
+    });
+
+    it('clears all timeouts when polling stops due to successful query', async () => {
+      jest.spyOn(global, 'clearInterval');
+      jest.spyOn(global, 'clearTimeout');
+
+      await createComponent();
+      jest.spyOn(wrapper.vm, 'executeQuery').mockResolvedValue(true);
+
+      jest.advanceTimersByTime(2000);
+      await waitForPromises();
+
+      expect(clearInterval).toHaveBeenCalled();
+      expect(clearTimeout).toHaveBeenCalled();
+      expect(wrapper.vm.manualPollInterval).toBe(null);
+      expect(wrapper.vm.pollingStartTime).toBe(null);
+    });
+
+    it('sets empty array when max poll timeout reached', async () => {
+      await createComponent();
+
+      jest.advanceTimersByTime(10000);
+      await waitForPromises();
+
+      expect(wrapper.vm.ciConfigVariables).toEqual([]);
     });
   });
 

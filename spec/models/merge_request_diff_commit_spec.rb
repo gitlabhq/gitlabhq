@@ -22,6 +22,32 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
     it { is_expected.to belong_to(:merge_request_commits_metadata) }
   end
 
+  describe 'scopes' do
+    describe '.for_merge_request_diff' do
+      let_it_be(:merge_request2) { create(:merge_request) }
+      let_it_be(:diff_1) { create(:merge_request_diff, merge_request: merge_request2) }
+      let_it_be(:commit_1) { create(:merge_request_diff_commit, merge_request_diff: diff_1, relative_order: 0) }
+      let_it_be(:commit_2) { create(:merge_request_diff_commit, merge_request_diff: diff_1, relative_order: 1) }
+
+      before do
+        merge_request_diff_2 = create(:merge_request_diff, merge_request: merge_request2)
+        create(:merge_request_diff_commit, merge_request_diff: merge_request_diff_2)
+      end
+
+      it 'returns commits for the specified merge request diff' do
+        expect(described_class.for_merge_request_diff(diff_1.id)).to contain_exactly(commit_1, commit_2)
+      end
+
+      it 'returns empty collection when no commits exist for the diff' do
+        expect(described_class.for_merge_request_diff(non_existing_record_id)).to be_empty
+      end
+
+      it 'returns empty collection when diff_id is nil' do
+        expect(described_class.for_merge_request_diff(nil)).to be_empty
+      end
+    end
+  end
+
   describe '#to_hash' do
     subject { merge_request.commits.first }
 

@@ -62,7 +62,7 @@ When using [`needs:pipeline:job`](../yaml/_index.md#needspipelinejob) with dynam
 you might receive this error:
 
 ```plaintext
-Unable to create pipeline
+Unable to run pipeline
 - jobs:<job_name>:needs:need pipeline should be a string
 ```
 

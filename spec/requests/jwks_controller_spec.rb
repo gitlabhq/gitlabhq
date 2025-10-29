@@ -89,4 +89,39 @@ RSpec.describe JwksController, feature_category: :system_access do
       ])
     end
   end
+
+  describe 'MCP-specific OAuth discovery endpoint' do
+    let(:parsed_response) { Gitlab::Json.parse(response.body) }
+
+    context 'when accessing MCP-specific discovery endpoint' do
+      before do
+        get '/.well-known/oauth-authorization-server/api/v4/mcp'
+      end
+
+      it 'returns only mcp scope in scopes_supported' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(parsed_response['scopes_supported']).to eq(['mcp'])
+      end
+
+      it 'includes registration_endpoint' do
+        expect(parsed_response['registration_endpoint']).to end_with('/oauth/register')
+      end
+    end
+
+    context 'when accessing general OAuth discovery endpoint' do
+      before do
+        get '/.well-known/oauth-authorization-server'
+      end
+
+      it 'returns all available scopes in scopes_supported', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(parsed_response['scopes_supported']).to include('api', 'read_api', 'mcp')
+        expect(parsed_response['scopes_supported'].size).to be > 1
+      end
+
+      it 'includes registration_endpoint' do
+        expect(parsed_response['registration_endpoint']).to end_with('/oauth/register')
+      end
+    end
+  end
 end

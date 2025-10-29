@@ -305,7 +305,7 @@ That's all of the required database changes.
 - [ ] Add the following shared examples to `ee/spec/models/ee/cool_widget_spec.rb`:
 
   ```ruby
-    include_examples 'a verifiable model with a separate table for verification state' do
+    include_examples 'a verifiable model for verification state' do
       let(:verifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is in `Geo::ReplicableModel.verifiables` scope
       let(:unverifiable_model_record) { build(:cool_widget) } # add extra params if needed to make sure the record is NOT included in `Geo::ReplicableModel.verifiables` scope
     end

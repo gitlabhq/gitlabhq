@@ -24,7 +24,7 @@ module Ci
     belongs_to :tag, class_name: 'Ci::Tag', optional: false
 
     validates :runner_type, presence: true
-    validates :tag_name, presence: true, length: { maximum: MAX_NAME_LENGTH }, on: [:create, :update]
+    validates :tag_name, presence: true, length: { maximum: MAX_NAME_LENGTH }
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
 
     validate :no_organization_id, if: :instance_type?

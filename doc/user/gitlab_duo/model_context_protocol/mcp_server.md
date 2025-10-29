@@ -36,7 +36,7 @@ To provide feedback on this feature, leave a comment on [issue 561564](https://g
 
 With the GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
 you can securely connect AI tools and applications to your GitLab instance.
-AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools
+AI assistants like Claude Desktop, Claude Code, Cursor, and other MCP-compatible tools
 can then access your GitLab data and perform actions on your behalf.
 
 The MCP server provides a standardized way for AI tools to:
@@ -59,20 +59,55 @@ For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.n
 
 ## Connect Cursor to a GitLab MCP server
 
+You can configure the GitLab MCP sever in Cursor by using:
+
+- **HTTP transport (recommended)**: Direct connection without additional dependencies.
+- **stdio transport with `mcp-remote`**: Connection through a proxy (requires Node.js).
+
+### HTTP transport (recommended)
+
+To configure the GitLab MCP server in Cursor by using HTTP transport:
+
+1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & MCP**.
+1. Under **Installed MCP Servers**, select **New MCP Server**.
+1. Add this definition to the `mcpServers` key in the opened `mcp.json` file:
+   - Replace `<gitlab.example.com>` with:
+     - On GitLab Self-Managed, your GitLab instance URL.
+     - On GitLab.com, `gitlab.com`.
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "type": "http",
+         "url": "https://<gitlab.example.com>/api/v4/mcp"
+       }
+     }
+   }
+   ```
+
+1. Save the file and restart Cursor.
+1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & MCP**.
+1. Under **Installed MCP Servers**, find your GitLab server and select **Connect**.
+1. In your browser, review and approve the authorization request.
+
+You can now start a new chat and ask a question depending on the available tools.
+
+### stdio transport with `mcp-remote`
+
 Prerequisites:
 
 - Install Node.js version 20 or later.
 
-To configure the GitLab MCP server in Cursor:
+To configure the GitLab MCP server in Cursor by using stdio transport:
 
-1. Open Cursor.
-1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & Integrations**.
-1. Under **MCP Tools**, select `New MCP Server`.
-1. Add this definition to the `mcpServers` key in the opened `mcp.json` file, editing as needed:
+1. In Cursor, go to **Settings** > **Cursor Settings** > **Tools & MCP**.
+1. Under **Installed MCP Servers**, select **New MCP Server**.
+1. Add this definition to the `mcpServers` key in the opened `mcp.json` file:
    - For the `"command":` parameter, if `npx` is installed locally instead of globally, provide the full path to `npx`.
    - Replace `<gitlab.example.com>` with:
      - On GitLab Self-Managed, your GitLab instance URL.
-     - On GitLab.com, `GitLab.com`.
+     - On GitLab.com, `gitlab.com`.
 
    ```json
    {
@@ -110,6 +145,43 @@ To configure the GitLab MCP server in Cursor:
 
    If this does not happen, close and restart Cursor.
 1. In your browser, review and approve the authorization request.
+
+You can now start a new chat and ask a question depending on the available tools.
+
+{{< alert type="warning" >}}
+
+You're responsible for guarding against prompt injection when you use these tools.
+Exercise extreme caution or use MCP tools only on GitLab objects you trust.
+
+{{< /alert >}}
+
+## Connect Claude Code to a GitLab MCP server
+
+Claude Code uses HTTP transport for direct connection without additional dependencies.
+To configure the GitLab MCP server in Claude Code:
+
+1. In your terminal, add the MCP server with the CLI:
+   - Replace `<gitlab.example.com>` with:
+     - On GitLab Self-Managed, your GitLab instance URL.
+     - On GitLab.com, `gitlab.com`.
+
+   ```shell
+   claude mcp add --transport http GitLab https://<gitlab.example.com>/api/v4/mcp
+   ```
+
+1. Start Claude Code:
+
+   ```shell
+   claude
+   ```
+
+1. Authenticate with the MCP server:
+   - In the chat, type `/mcp`.
+   - From the list, select your GitLab server.
+   - In your browser, review and approve the authorization request.
+
+1. Optional. To verify the connection, type `/mcp` again.
+   Your GitLab server should appear as connected.
 
 You can now start a new chat and ask a question depending on the available tools.
 

@@ -13,7 +13,7 @@ title: Repository files API
 
 {{< /details >}}
 
-You can fetch, create, update, and delete files in your repository with this API.
+Use this API to manage [repository files](../user/project/repository/_index.md).
 You can also [configure rate limits](../administration/settings/files_api_rate_limits.md)
 for this API.
 

@@ -12,19 +12,11 @@ title: Discussions API
 
 {{< /details >}}
 
-Discussions are attached to:
+Use this API to manage [discussions](../user/discussions/_index.md). This includes
+[comments, threads](../user/discussions/_index.md), and system notes about changes to an object
+(for example, when a milestone changes).
 
-- Snippets
-- Issues
-- Epics
-- Merge requests
-- Commits
-
-This includes [comments, threads](../user/discussions/_index.md), and system notes.
-System notes are notes about changes to the object (for example, when a milestone changes).
-
-Label notes are not part of this API, but recorded as separate events in
-[resource label events](resource_label_events.md).
+To manage label notes, use the [resource label events API](resource_label_events.md).
 
 ## Understand note types in the API
 

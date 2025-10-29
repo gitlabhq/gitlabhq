@@ -217,7 +217,7 @@
 {"name":"gettext","version":"3.5.1","platform":"ruby","checksum":"03ec7f71ea7e2cf1fdcd5e08682e98b81601922fdbee890b7bc6f63b0e1a512a"},
 {"name":"gettext_i18n_rails","version":"1.13.0","platform":"ruby","checksum":"d4a4739d928b6ce52a2d694d33a831dcb06c7c8e197b3172fc73dfaa20ac8ee6"},
 {"name":"git","version":"1.19.1","platform":"ruby","checksum":"b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70"},
-{"name":"gitaly","version":"18.4.1","platform":"ruby","checksum":"c355521f967a5d48d61ab343bacd12af95ce6be98c9fc3253ce6ec01029be3e1"},
+{"name":"gitaly","version":"18.6.0.pre.rc1","platform":"ruby","checksum":"cc2b20edd2d7a9888e99c09b8fd862455ff4bed0e3c40fffd073fe33ef21c376"},
 {"name":"gitlab","version":"4.19.0","platform":"ruby","checksum":"3f645e3e195dbc24f0834fbf83e8ccfb2056d8e9712b01a640aad418a6949679"},
 {"name":"gitlab-chronic","version":"0.10.6","platform":"ruby","checksum":"a244d11a1396d2aac6ae9b2f326adf1605ec1ad20c29f06e8b672047d415a9ac"},
 {"name":"gitlab-cloud-connector","version":"1.35.0","platform":"ruby","checksum":"84bf1347303091cd24ec072c6d9946311fd37e81f7cdf41f6e6906788869dab0"},

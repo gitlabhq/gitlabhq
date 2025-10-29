@@ -25,7 +25,15 @@ module Ci
 
       def execute
         validate_source!
-        @ref = @create_branch ? create_repository_branch(@source_branch) : default_branch
+
+        if @create_branch
+          branch_response = create_repository_branch(@source_branch)
+          return branch_response unless branch_response.success?
+
+          @ref = branch_response.payload[:branch_name]
+        else
+          @ref = default_branch
+        end
 
         @workload_definition.add_variable(:CI_WORKLOAD_REF, @ref)
         service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: @ref)
@@ -66,14 +74,19 @@ module Ci
 
       def create_repository_branch(source_branch)
         branch_name = "workloads/#{SecureRandom.hex[0..10]}"
-        raise "Branch already exists" if @project.repository.branch_exists?(branch_name)
+        if @project.repository.branch_exists?(branch_name)
+          return ServiceResponse.error(message: 'Branch already exists')
+        end
 
         branch = @project.repository.branch_exists?(source_branch) ? source_branch : default_branch
 
         repo_branch = @project.repository.add_branch(@current_user, branch_name, branch, skip_ci: true)
-        raise "Error in git branch creation" unless repo_branch
+        return ServiceResponse.error(message: 'Error in git branch creation') unless repo_branch
 
-        branch_name
+        ServiceResponse.success(payload: { branch_name: branch_name })
+      rescue Gitlab::Git::CommandError => e
+        Gitlab::ErrorTracking.track_exception(e)
+        ServiceResponse.error(message: 'Failed to create branch')
       end
 
       def ci_job_yaml

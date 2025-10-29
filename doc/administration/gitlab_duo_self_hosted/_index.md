@@ -137,7 +137,7 @@ In a fully self-hosted configuration, you deploy your own AI gateway and use onl
 
 {{< alert type="note" >}}
 
-This configuration only includes models configured through your self-hosted AI gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features will connect to the GitLab-hosted AI gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
+This configuration only includes models configured through your self-hosted AI gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features will connect to the GitLab-hosted AI gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
 
 {{< /alert >}}
 
@@ -194,7 +194,7 @@ For licensing, you must have a GitLab Premium or Ultimate subscription, and [Git
 
 For more information, see:
 
-- [Configure GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model)
+- [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model)
 
 #### GitLab managed models
 

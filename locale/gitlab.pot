@@ -6475,6 +6475,15 @@ msgstr ""
 msgid "Agent not found for provided id."
 msgstr ""
 
+msgid "AggregationEngine|at least one metric is required"
+msgstr ""
+
+msgid "AggregationEngine|maximum two dimensions are supported"
+msgstr ""
+
+msgid "AggregationEngine|the specified identifier is not available: '%{identifier}'"
+msgstr ""
+
 msgid "AiAgents|Agent Name"
 msgstr ""
 
@@ -49021,7 +49030,7 @@ msgstr ""
 msgid "Pipelines|Try test template"
 msgstr ""
 
-msgid "Pipelines|Unable to create pipeline"
+msgid "Pipelines|Unable to run pipeline"
 msgstr ""
 
 msgid "Pipelines|Unable to validate CI/CD configuration. See the %{linkStart}GitLab CI/CD troubleshooting guide%{linkEnd} for more details."
@@ -49154,6 +49163,9 @@ msgid "Pipeline|Duration"
 msgstr ""
 
 msgid "Pipeline|Failed"
+msgstr ""
+
+msgid "Pipeline|Failed to retrieve CI/CD variables."
 msgstr ""
 
 msgid "Pipeline|File"

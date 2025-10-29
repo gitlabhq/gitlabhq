@@ -3,6 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Upgrade a multi-node instance with zero downtime
+description: Upgrade a multi-node Linux package-based with zero downtime.
 ---
 
 {{< details >}}
@@ -120,7 +121,7 @@ On each component's node to perform the upgrade:
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/_index.md).
+1. Upgrade the node by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 1. Reconfigure and restart to get the latest code in place:
 
    ```shell
@@ -154,15 +155,7 @@ On each component's node to perform the upgrade:
 
 [Gitaly](../administration/gitaly/_index.md) follows the same core process when it comes to upgrading but with a key difference
 that the Gitaly process itself is not restarted as it has a built-in process to gracefully reload
-at the earliest opportunity. Other components will still need to be restarted.
-
-{{< alert type="note" >}}
-
-The upgrade process attempts to do a graceful handover to a new Gitaly process.
-Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
-In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
-
-{{< /alert >}}
+at the earliest opportunity. Other components must still be restarted.
 
 This process applies to both Gitaly Sharded and Cluster setups. Run through the following steps sequentially on each Gitaly node to perform the upgrade:
 
@@ -172,14 +165,14 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/_index.md).
+1. Upgrade the node by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
 1. Run the `reconfigure` command to get the latest code in place and to instruct Gitaly to gracefully reload at the next opportunity:
 
    ```shell
    sudo gitlab-ctl reconfigure
    ```
 
-1. Finally, while Gitaly will gracefully reload any other components that have been deployed, we will still need a restart:
+1. Finally, while Gitaly gracefully reloads any other components that have been deployed, we still need a restart:
 
    ```shell
    # Get a list of what other components have been deployed beside Gitaly
@@ -208,9 +201,7 @@ This section focuses exclusively on the Praefect component, not its [required Po
 {{< /alert >}}
 
 Praefect must also perform database migrations to upgrade any existing data. To avoid clashes,
-migrations should run on only one Praefect node. To do this, designate a specific node as a
-deploy node that runs the migrations. This is referred to as
-the **Praefect deploy node** in the following steps:
+migrations should run on only one Praefect node. To do this, designate a **Praefect deploy node** that runs the migrations:
 
 1. On the **Praefect deploy node**:
 
@@ -221,10 +212,8 @@ the **Praefect deploy node** in the following steps:
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md).
-
+   1. Upgrade the node by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
    1. Ensure that `praefect['auto_migrate'] = true` is set in `/etc/gitlab/gitlab.rb` so that database migrations run.
-
    1. Run the `reconfigure` command to get the latest code in place, apply the Praefect database migrations and restart gracefully:
 
       ```shell
@@ -240,18 +229,16 @@ the **Praefect deploy node** in the following steps:
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md).
-
+   1. Upgrade the node by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
    1. Ensure that `praefect['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
       `reconfigure` from automatically running database migrations.
-
-   1. Run the `reconfigure` command to get the latest code in place as well as restart gracefully:
+   1. Run the `reconfigure` command to get the latest code in place and restart gracefully:
 
       ```shell
       sudo gitlab-ctl reconfigure
       ```
 
-1. Finally, while Praefect will gracefully reload, any other components that have been deployed will still need a restart.
+1. Finally, while Praefect gracefully reloads, any other components that have been deployed still need a restart.
    On all **Praefect nodes**:
 
    ```shell
@@ -297,11 +284,10 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md).
-
+   1. Upgrade GitLab by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
    1. Configure regular migrations to run by setting `gitlab_rails['auto_migrate'] = true` in the
       `/etc/gitlab/gitlab.rb` configuration file.
-      - If the deploy node is currently going through PgBouncer to reach the database then
+      - If the deploy node is going through PgBouncer to reach the database then
         you must [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
         and connect directly to the database leader before running migrations.
       - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
@@ -312,8 +298,7 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
       ```
 
-   1. Leave this node as-is for now as you'll come back to run post-deployment migrations
-      later.
+   1. Leave this node as-is for now as you come back to run post-deployment migrations later.
 
 1. On every **other Rails node** sequentially:
 
@@ -339,12 +324,10 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md).
-
+   1. Upgrade GitLab by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
    1. Ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
       `reconfigure` from automatically running database migrations.
-
-   1. Run the `reconfigure` command to get the latest code in place as well as restart:
+   1. Run the `reconfigure` command to get the latest code in place and restart:
 
       ```shell
       sudo gitlab-ctl reconfigure
@@ -354,7 +337,7 @@ In addition to the previous, Rails is where the main database migrations need to
 1. On the **Rails deploy node** run the post-deployment migrations:
 
    1. Ensure the deploy node is still pointing at the database leader directly. If the node
-      is currently going through PgBouncer to reach the database then you must
+      is going through PgBouncer to reach the database then you must
       [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
       and connect directly to the database leader before running migrations.
       - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
@@ -367,11 +350,11 @@ In addition to the previous, Rails is where the main database migrations need to
 
       This task also runs ClickHouse migrations and configures the database based on its state by loading the schema.
 
-   1. Return the config back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
+   1. Return the configuration back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
-      - If PgBouncer is being used make sure to set the database config to once again point towards it
+      - If PgBouncer is being used make sure to set the database configuration to once again point towards it
 
-   1. Run through reconfigure once again to reapply the normal config as well as restart:
+   1. Run through reconfigure once again to reapply the normal configuration and restart:
 
       ```shell
       sudo gitlab-ctl reconfigure
@@ -390,9 +373,8 @@ Run through the following steps sequentially on each component node to perform t
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/_index.md).
-
-1. Run the `reconfigure` command to get the latest code in place as well as restart:
+1. Upgrade the node by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
+1. Run the `reconfigure` command to get the latest code in place and restart:
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -468,14 +450,11 @@ The upgrade process is the same for both primary and secondary sites. However, y
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md).
-
+   1. Upgrade GitLab by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
    1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site Rails node to the secondary site Rails node if they're different. The file must be the same on all of a site's nodes.
-
    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
-
-   1. Run the `reconfigure` command to get the latest code in place as well as restart:
+   1. Run the `reconfigure` command to get the latest code in place and restart:
 
       ```shell
       sudo gitlab-ctl reconfigure
@@ -518,12 +497,10 @@ The upgrade process is the same for both primary and secondary sites. However, y
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/_index.md).
-
+   1. Upgrade GitLab by [upgrading with the Linux package](package/_index.md#upgrade-with-the-linux-package).
    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
-
-   1. Run the `reconfigure` command to get the latest code in place as well as restart:
+   1. Run the `reconfigure` command to get the latest code in place and restart:
 
       ```shell
       sudo gitlab-ctl reconfigure
@@ -543,7 +520,7 @@ Finally, head back to the primary site and finish the upgrade by running the pos
 1. On the Primary site's **Rails deploy node** run the post-deployment migrations:
 
    1. Ensure the deploy node is still pointing at the database leader directly. If the node
-      is currently going through PgBouncer to reach the database then you must
+      is going through PgBouncer to reach the database then you must
       [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
       and connect directly to the database leader before running migrations.
       - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
@@ -560,11 +537,11 @@ Finally, head back to the primary site and finish the upgrade by running the pos
       sudo gitlab-rake gitlab:geo:check
       ```
 
-   1. Return the config back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
+   1. Return the configuration back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
-      - If PgBouncer is being used make sure to set the database config to once again point towards it
+      - If PgBouncer is being used make sure to set the database configuration to once again point towards it
 
-   1. Run through reconfigure once again to reapply the normal config as well as restart:
+   1. Run through reconfigure once again to reapply the normal configuration and restart:
 
       ```shell
       sudo gitlab-ctl reconfigure

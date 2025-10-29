@@ -130,7 +130,7 @@ For more information, see the history.
 
 GitLab AI vendor models integrate with GitLab-hosted AI gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
 
-To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model).
+To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model).
 
 When enabled for a specific feature:
 

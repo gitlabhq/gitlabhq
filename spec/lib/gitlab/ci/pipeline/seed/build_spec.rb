@@ -375,6 +375,44 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
     end
 
+    context 'with job:inputs' do
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          inputs: {
+            string_input: {
+              type: 'string',
+              default: 'default value'
+            },
+            number_input: {
+              type: 'number',
+              default: 666
+            }
+          }
+        }
+      end
+
+      it 'assigns inputs to job definition options' do
+        expect(seed_attributes[:temp_job_definition]).to have_attributes(
+          config: a_hash_including(
+            options: a_hash_including(
+              inputs: {
+                string_input: {
+                  type: 'string',
+                  default: 'default value'
+                },
+                number_input: {
+                  type: 'number',
+                  default: 666
+                }
+              }
+            )
+          )
+        )
+      end
+    end
+
     context 'with cache:key' do
       let(:attributes) do
         {

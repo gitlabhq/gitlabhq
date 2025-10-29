@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, feature_category: :runner_core do
+  let(:connection) { Ci::ApplicationRecord.connection }
   let(:organizations_table) { table(:organizations, database: :main, primary_key: :id) }
   let(:namespaces_table) { table(:namespaces, database: :main, primary_key: :id) }
   let(:ci_runners_table) { table(:ci_runners, database: :ci, primary_key: :id) }
@@ -21,7 +22,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, f
   let!(:tag2) { tags_table.create!(name: 'python') }
   let!(:tag3) { tags_table.create!(name: 'docker') }
 
-  let!(:tagging_with_null_name) do
+  let(:tagging_with_null_name) do
     ci_runner_taggings_table.create!(
       runner_id: runner1.id,
       runner_type: runner1.runner_type,
@@ -51,7 +52,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, f
     )
   end
 
-  let!(:another_tagging_with_null_name) do
+  let(:another_tagging_with_null_name) do
     ci_runner_taggings_table.create!(
       runner_id: runner1.id,
       runner_type: runner1.runner_type,
@@ -71,6 +72,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, f
       pause_ms: 0,
       connection: Ci::ApplicationRecord.connection
     }
+  end
+
+  before do
+    without_check_constraint do
+      tagging_with_null_name
+      another_tagging_with_null_name
+    end
   end
 
   subject(:perform_migration) { described_class.new(**migration_args).perform }
@@ -93,14 +101,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, f
       end
 
       let!(:outside_batch_tagging) do
-        # Create a record outside the batch range
-        ci_runner_taggings_table.create!(
-          runner_id: runner2.id,
-          runner_type: 2,
-          tag_id: tag2.id,
-          organization_id: organization.id,
-          tag_name: nil
-        )
+        without_check_constraint do
+          # Create a record outside the batch range
+          ci_runner_taggings_table.create!(
+            runner_id: runner2.id,
+            runner_type: 2,
+            tag_id: tag2.id,
+            organization_id: organization.id,
+            tag_name: nil
+          )
+        end
       end
 
       it 'only updates records within the batch range' do
@@ -112,18 +122,33 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillTagNameOnCiRunnerTaggings, f
 
     context 'when tag is missing' do
       let!(:tagging_with_missing_tag) do
-        ci_runner_taggings_table.create!(
-          runner_id: runner1.id,
-          runner_type: 2,
-          tag_id: non_existing_record_id, # non-existent tag
-          organization_id: organization.id,
-          tag_name: nil
-        )
+        without_check_constraint do
+          ci_runner_taggings_table.create!(
+            runner_id: runner1.id,
+            runner_type: 2,
+            tag_id: non_existing_record_id, # non-existent tag
+            organization_id: organization.id,
+            tag_name: nil
+          )
+        end
       end
 
       it 'does not update records with missing tags' do
         expect { perform_migration }.not_to change { tagging_with_missing_tag.reload.tag_name }.from(nil)
       end
+    end
+  end
+
+  private
+
+  def without_check_constraint
+    connection.execute('ALTER TABLE ci_runner_taggings DROP CONSTRAINT IF EXISTS check_tag_name_not_null')
+
+    yield.tap do
+      connection.execute <<~SQL
+        ALTER TABLE ci_runner_taggings
+          ADD CONSTRAINT check_tag_name_not_null CHECK ((tag_name IS NOT NULL)) NOT VALID
+      SQL
     end
   end
 end

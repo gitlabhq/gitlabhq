@@ -25,7 +25,10 @@
 }
 
 .wiki-overview {
-  @apply gl-relative
+  @apply gl-flex;
+  @apply gl-justify-center;
+  @apply gl-relative;
+  @apply gl-gap-6;
 }
 
 .has-wiki-sidebar {
@@ -36,31 +39,31 @@
   }
 
   &:has(.wiki-sidebar.sidebar-expanded) {
-    @include gl-container-width-up(sm) {
-      .content-wrapper:not(.paneled-view) {
-        padding-left: $right-sidebar-width;
-      }
-    }
-
     .wiki-sidebar-header-toggle {
       @apply gl-hidden;
     }
   }
 }
 
-@mixin wiki-sidebar-lg-mod {
-  @apply gl-border-none;
-  left: auto;
-  right: 100%;
-  position: absolute;
-}
+@mixin wiki-screen-lg {
+  .wiki-sidebar {
+    left: unset;
+    right: unset;
+    position: relative;
+  }
 
-@mixin wiki-sidebar-container-lg-mod {
-  @apply gl-pr-4;
-  position: sticky;
+  .wiki-sidebar .sidebar-container {
+    @apply gl-pr-4;
+    @apply gl-pt-2;
+    position: sticky;
+  }
 
-  .toggle-close {
+  .wiki-sidebar .toggle-close {
     @apply gl-hidden;
+  }
+
+  .layout-limited-width .wiki-sidebar {
+    @apply gl-border-none;
   }
 }
 
@@ -72,17 +75,13 @@
   position: fixed;
   right: auto;
   left: 0;
-  z-index: 200;
-
-  @include gl-container-width-up(lg) {
-    @include wiki-sidebar-lg-mod;
-  }
+  z-index: 2;
 
   &.sidebar-collapsed {
     @apply gl-border-none;
 
     .sidebar-container {
-      width: 0;
+      width: 0 !important;
       overflow: hidden;
       visibility: hidden;
     }
@@ -95,17 +94,13 @@
     @apply motion-reduce:gl-transition-none;
     top: $calc-application-header-height;
     bottom: $calc-application-footer-height;
-    z-index: 200;
+    z-index: 3;
     @apply gl-overflow-hidden;
     -webkit-overflow-scrolling: touch;
     width: $wiki-sidebar-inner-width;
     position: relative;
     @apply gl-flex;
     @apply gl-flex-col;
-
-    @include gl-container-width-up(lg) {
-      @include wiki-sidebar-container-lg-mod;
-    }
 
     .blocks-container {
       @apply gl-flex;
@@ -197,7 +192,17 @@
 }
 
 .wiki-page-details {
+  @apply gl-w-full;
+  max-width: $wiki-content-default-width;
   overflow-x: auto;
+}
+
+.layout-fluid .wiki-overview {
+  @apply gl-justify-stretch;
+}
+
+.layout-fluid .wiki-page-details {
+  max-width: 100%;
 }
 
 ul.wiki-pages-list.content-list {
@@ -287,21 +292,16 @@ ul.wiki-pages-list.content-list {
   }
 }
 
+@include gl-container-width-up(lg) {
+  @include wiki-screen-lg;
+}
+
 .paneled-view {
   .wiki-overview {
     @include gl-container-width-up(lg) {
-      $overview-gap-width: 2rem;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      column-gap: $overview-gap-width;
-
       .wiki-sidebar {
         position: relative;
         right: auto;
-      }
-
-      .sidebar-container {
-        padding-right: 0;
       }
     }
   }
@@ -331,25 +331,7 @@ ul.wiki-pages-list.content-list {
 * is not available.
 */
 html:not(.page-with-panels) {
-  @include media-breakpoint-up(sm) {
-    .has-wiki-sidebar:has(.wiki-sidebar.sidebar-expanded) .content-wrapper {
-        padding-left: $wiki-sidebar-inner-width;
-    }
-  }
-
-  .wiki-sidebar {
-    .sidebar-container {
-      height: $calc-application-viewport-height;
-    }
-  }
-
   @include media-breakpoint-up(lg) {
-    .wiki-sidebar {
-      @include wiki-sidebar-lg-mod;
-    }
-
-    .sidebar-container {
-      @include wiki-sidebar-container-lg-mod;
-    }
+    @include wiki-screen-lg;
   }
 }

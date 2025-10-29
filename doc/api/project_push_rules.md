@@ -13,7 +13,7 @@ description: Manage project push rules to enforce commit standards, validate mes
 
 {{< /details >}}
 
-Use the project push rules API to manage [push rules for projects](../user/project/repository/push_rules.md).
+Use this API to manage project [push rules](../user/project/repository/push_rules.md).
 
 {{< alert type="note" >}}
 

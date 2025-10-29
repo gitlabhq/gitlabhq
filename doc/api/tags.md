@@ -13,8 +13,8 @@ title: Tags API
 
 {{< /details >}}
 
-Use the tags API to create, manage, and delete Git tags. This API also returns X.509 signature information
-from signed tags.
+Use this API to manage [Git tags](../user/project/repository/tags/_index.md). This API also returns X.509
+signature information from signed tags.
 
 ## List project repository tags
 

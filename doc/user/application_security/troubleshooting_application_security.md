@@ -106,7 +106,7 @@ like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/l
 the following error may occur, depending on your GitLab CI/CD configuration:
 
 ```plaintext
-Unable to create pipeline
+Unable to run pipeline
 
     jobs:sast config key may not be used with `rules`: only/except
 ```

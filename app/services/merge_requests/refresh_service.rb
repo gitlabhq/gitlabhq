@@ -381,7 +381,7 @@ module MergeRequests
           @push.oldrev,
           @push.newrev,
           @push.ref,
-          params.slice(:push_options, :gitaly_context)
+          params.slice(:push_options, :gitaly_context).as_json # ensure sidekiq-compatible hash argument
         )
       end
     end

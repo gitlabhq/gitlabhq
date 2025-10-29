@@ -13,7 +13,7 @@ description: Manage pull mirroring for projects. View mirror details, configure 
 
 {{< /details >}}
 
-Use the pull mirroring API to manage a project's [pull mirroring](../user/project/repository/mirror/pull.md).
+Use this API to manage project [pull mirroring](../user/project/repository/mirror/pull.md).
 
 ## Get a project's pull mirror details
 

@@ -70,7 +70,7 @@ As a temporary workaround, you can skip the errors by setting and forwarding the
 If your pipeline fails with the following message:
 
 ```plaintext
-Unable to create pipeline
+Unable to run pipeline
 
   jobs:test config key may not be used with `rules`: only
 ```

@@ -1839,7 +1839,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       [
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: "files/executables/ls", old_path: '', old_mode: "0", new_mode: "100755",
-          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: 'c84acd1ff0b844201312052f9bb3b7259eb2e177'
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: 'c84acd1ff0b844201312052f9bb3b7259eb2e177',
+          commit_id: '6b8dc4a827797aa025ff6b8f425e583858a10d4f'
         )
       ]
     end
@@ -1848,7 +1849,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       [
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: "bar/branch-test.txt", old_path: '', old_mode: "0", new_mode: "100644",
-          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '93e123ac8a3e6a0b600953d7598af629dec7b735'
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '93e123ac8a3e6a0b600953d7598af629dec7b735',
+          commit_id: 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
         )
       ]
     end
@@ -1857,11 +1859,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       [
         Gitlab::Git::ChangedPath.new(
           status: :MODIFIED, path: ".gitmodules", old_path: '', old_mode: "100644", new_mode: "100644",
-          old_blob_id: 'fdaada1754989978413d618ee1fb1c0469d6a664', new_blob_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae'
+          old_blob_id: 'fdaada1754989978413d618ee1fb1c0469d6a664', new_blob_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae',
+          commit_id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
         ),
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: "gitlab-shell", old_path: '', old_mode: "0", new_mode: "160000",
-          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '79bceae69cb5750d6567b223597999bfa91cb3b9'
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '79bceae69cb5750d6567b223597999bfa91cb3b9',
+          commit_id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
         )
       ]
     end
@@ -1870,15 +1874,18 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       [
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: ".gitignore", old_path: '', old_mode: "0", new_mode: "100644",
-          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '470ad2fcf1e33798f1afc5781d08e60c40f51e7a'
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '470ad2fcf1e33798f1afc5781d08e60c40f51e7a',
+          commit_id: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863'
         ),
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: "LICENSE", old_path: '', old_mode: "0", new_mode: "100644",
-          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '50b27c6518be44c42c4d87966ae2481ce895624c'
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '50b27c6518be44c42c4d87966ae2481ce895624c',
+          commit_id: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863'
         ),
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: "README.md", old_path: '', old_mode: "0", new_mode: "100644",
-          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: 'faaf198af3a36dbf41961466703cc1d47c61d051'
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: 'faaf198af3a36dbf41961466703cc1d47c61d051',
+          commit_id: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863'
         )
       ]
     end

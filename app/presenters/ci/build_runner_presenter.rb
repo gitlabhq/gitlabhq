@@ -51,7 +51,7 @@ module Ci
           key: name,
           value: {
             content: input_value,
-            type: spec[:input_type]
+            type: spec[:type]
           }
         }
       end

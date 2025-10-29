@@ -23,10 +23,10 @@ RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature
 
   let!(:ci_runner_tagging_ids) do
     connection.select_values(<<~SQL)
-      INSERT INTO ci_runner_taggings (runner_id, tag_id, runner_type)
-        VALUES (#{runner1_id}, #{tag_ids.first}, 1),
-               (#{runner1_id}, #{tag_ids.second}, 1),
-               (#{runner2_id}, #{tag_ids.third}, 1)
+      INSERT INTO ci_runner_taggings (runner_id, tag_id, runner_type, tag_name)
+        VALUES (#{runner1_id}, #{tag_ids.first}, 1, 'tag1'),
+               (#{runner1_id}, #{tag_ids.second}, 1, 'tag2'),
+               (#{runner2_id}, #{tag_ids.third}, 1, 'tag3')
       RETURNING id;
     SQL
   end
@@ -98,8 +98,8 @@ RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature
 
       let(:duplicate_ci_runner_tagging_id) do
         connection.select_value(<<~SQL)
-          INSERT INTO ci_runner_taggings (runner_id, tag_id, runner_type)
-            VALUES (#{runner2_id}, #{duplicate_tag_ids.first}, 1) RETURNING id
+          INSERT INTO ci_runner_taggings (runner_id, tag_id, runner_type, tag_name)
+            VALUES (#{runner2_id}, #{duplicate_tag_ids.first}, 1, 'tag1') RETURNING id
         SQL
       end
 

@@ -92,7 +92,7 @@ To add a CA certificate to a group:
    ssh-keygen -f CA
    ```
 
-1. Add the public key to the top-level group using [Group SSH certificates API](../../api/group_ssh_certificates.md#create-ssh-certificate)
+1. Add the public key to the top-level group using [Group SSH certificates API](../../api/group_ssh_certificates.md#add-a-group-ssh-certificate)
    to grant access to the projects of the group and its subgroups.
 
 ## Issue CA certificates for users

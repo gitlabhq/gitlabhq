@@ -37,6 +37,8 @@ class MergeRequestDiffCommit < ApplicationRecord
   attribute :trailers, ::Gitlab::Database::Type::IndifferentJsonb.new
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
+  scope :for_merge_request_diff, ->(diff_id) { where(merge_request_diff_id: diff_id) }
+
   # A list of keys of which their values need to be trimmed before they can be
   # inserted into the merge_request_diff_commit_users table.
   TRIM_USER_KEYS =

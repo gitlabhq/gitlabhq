@@ -48,6 +48,8 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   def validate_pkce_for_dynamic_applications
     return unless server.client&.application&.dynamic?
+    # PKCE validation only applies to authorization_code grants per RFC 7636 Section 4.5.
+    return unless params[:grant_type] == 'authorization_code' # rubocop:disable Rails/StrongParams -- Only accessing a single named param
     return unless params[:code_verifier].blank? # rubocop:disable Rails/StrongParams -- Only accessing a single named param
 
     render json: {

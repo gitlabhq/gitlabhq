@@ -82,7 +82,7 @@ To verify the edition, sign in to GitLab and select
 at the top of the page.
 
 If you are running GitLab Community Edition (CE), you can upgrade your installation to GitLab
-EE. For more information, see [upgrading between editions](../update/upgrade.md#upgrading-between-editions).
+EE. For more information, see [other upgrade paths](../update/convert_to_ee/_index.md).
 
 If you have questions or need assistance,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).

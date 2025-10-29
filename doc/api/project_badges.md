@@ -12,7 +12,7 @@ title: Project badges API
 
 {{< /details >}}
 
-Use this API to manage and review [project badges](../user/project/badges.md).
+Use this API to manage project [badges](../user/project/badges.md).
 
 Badges can include placeholders that are replaced in both the
 link and image URL. The available placeholders are:

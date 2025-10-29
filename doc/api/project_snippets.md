@@ -12,7 +12,7 @@ title: Project snippets
 
 {{< /details >}}
 
-Use the project snippet API to create, manage, and delete snippets.
+Use this API to manage [project snippets](../user/snippets.md).
 
 ## Snippet visibility level
 

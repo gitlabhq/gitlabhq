@@ -13,14 +13,14 @@ description: Steps to take before you upgrade.
 
 {{< /details >}}
 
-Before you upgrade, you should:
+Before you upgrade a GitLab instance, you must:
 
-1. Gather pre-upgrade information.
-1. Perform pre-upgrade steps.
+1. Gather pre-upgrade information to prepare yourself for the upgrade.
+1. Perform pre-upgrade steps before you upgrade GitLab itself.
 
 ## Gather pre-upgrade information
 
-When planning the upgrade, you should:
+When planning the upgrade:
 
 1. Review the [GitLab release and maintenance policy](../policy/maintenance.md).
 1. Consult the [GitLab upgrade notes](versions/_index.md) for different versions of GitLab to ensure compatibility.
@@ -33,17 +33,52 @@ When planning the upgrade, you should:
 1. Determine the appropriate [upgrade path](upgrade_paths.md) for your instance, including any required upgrade stops.
    Upgrade stops might require you to perform multiple upgrades.
 1. Create an upgrade plan that documents:
-
    - The steps to take to upgrade your instance including, if possible and required, a
      [zero-downtime upgrade](zero_downtime.md).
-   - The steps to take if the upgrade doesn't go smoothly including how to [roll back GitLab](#rollback-plan) if
-     necessary.
+   - The steps to take if the upgrade doesn't go smoothly including how to
+     [roll back GitLab if necessary](#create-a-rollback-plan-and-backup).
 
 With all pre-upgrade information gathered, you can move on to performing pre-upgrade steps.
 
+### Create a rollback plan and backup
+
+Something might go wrong during an upgrade, so it's critical that you have a rollback plan. A proper rollback plan
+creates a clear path to bring a GitLab instance back to its last working state and comprises:
+
+- The process to back up the instance.
+- The process to restore the instance.
+
+You should test the rollback plan before you need it. For an overview of the steps required for rolling back, see
+[roll back to earlier GitLab versions](package/downgrade.md).
+
+#### Create a GitLab backup
+
+To make it possible to roll back GitLab if there's a problem with the upgrade, either:
+
+- Create a [GitLab backup](../administration/backup_restore/_index.md). You must follow the instructions based on your
+  installation method and make sure to back up the
+  [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
+- Create a snapshot of your instance. If you instance is multi-node installation, you must snapshot every node.
+  **This process is out of scope for GitLab Support**.
+
+#### Roll back GitLab
+
+If you have a test environment that mimics production, test the restoration to ensure that everything works as you expect.
+
+To restore your GitLab backup:
+
+1. Refer to [restore prerequisites](../administration/backup_restore/restore_gitlab.md#restore-prerequisites). Most
+   importantly, the versions of the backed up and the new GitLab instance must be the same.
+1. [Restore GitLab](../administration/backup_restore/_index.md#restore-gitlab) by following the instructions based on
+   your installation method.
+1. Confirm that the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files)
+   are also restored.
+
+If restoring from a snapshot, you must already know how to do this. **This process is out of scope for GitLab Support**.
+
 ## Perform pre-upgrade steps
 
-Soon before you perform the upgrade, you should:
+Shortly before you perform the upgrade:
 
 1. Test your upgrade in a test environment first to reduce the risk of unplanned outages and extended downtime.
 1. Run [upgrade health checks](#run-upgrade-health-checks).
@@ -88,7 +123,7 @@ working:
 
 1. If using Elasticsearch, verify that searches are successful.
 
-If something goes wrong, [get support](upgrade.md#getting-support).
+If something goes wrong, [get support](#get-support).
 
 ### Upgrades for optional features
 
@@ -107,6 +142,38 @@ upgrading GitLab:
    [Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).
    Updating Elasticsearch is **out of scope for GitLab Support**.
 
+## Pause CI/CD pipelines and jobs
+
+During upgrades for most types of GitLab instances, you should pause CI/CD pipelines and jobs.
+
+If you upgrade your GitLab instance while GitLab Runner is processing jobs, the trace updates fail. When GitLab is
+back online, the trace updates should self-heal. If a trace update does not self-heal, depending on the error, GitLab Runner either retries or
+terminates job handling.
+
+GitLab Runner attempts to upload job artifacts three times, after which the job fails.
+
+To pause CI/CD pipelines and jobs:
+
+1. Pause the runners.
+1. Block new jobs from starting by adding the following to your `/etc/gitlab/gitlab.rb` file:
+
+   ```ruby
+   nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Wait until all jobs are finished.
+
+When you've completed your GitLab upgrade:
+
+1. Unpause your runners.
+1. Unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
+
 ## Working with Support
 
 If you are [working with Support](https://about.gitlab.com/support/scheduling-upgrade-assistance/) to review your
@@ -118,43 +185,23 @@ upgrade plan, document and share it with the answers to the following questions:
 - Is it a single-node or a multi-node setup? If multi-node, document and share any architectural details about each node.
   Which external components are used? For example, Gitaly, PostgreSQL, or Redis?
 - Are you using [Geo](../administration/geo/_index.md)? If so, document and share any architectural details about
-  each secondary node.
+  each secondary site.
 - What else might be unique or interesting in your setup that might be important?
 - Are you running into any known issues with your current version of GitLab?
 
-## Rollback plan
+## Get support
 
-It's possible that something may go wrong during an upgrade, so it's critical
-that a rollback plan be present for that scenario. A proper rollback plan
-creates a clear path to bring the instance back to its last working state. It is
-comprised of a way to back up the instance and a way to restore it. You should
-test the rollback plan before you need it. For an overview of the steps required
-for rolling back, see [roll back to earlier GitLab versions](package/downgrade.md).
+If something goes wrong during your upgrade:
 
-### Back up GitLab
+1. Copy any errors and gather any logs to analyze later. Use the following tools to help you gather data:
+   - [`gitlabsos`](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos) if you installed GitLab with the Linux
+     package or Docker.
+   - [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) if you installed GitLab using the Helm Charts.
+1. Roll back to the last working version.
 
-Create a backup of GitLab and all its data (database, repositories, uploads, builds,
-artifacts, LFS objects, registry, pages). This is vital for making it possible
-to roll back GitLab to a working state if there's a problem with the upgrade:
+For support:
 
-- Create a [GitLab backup](../administration/backup_restore/_index.md).
-  Make sure to follow the instructions based on your installation method.
-  Don't forget to back up the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
-- Alternatively, create a snapshot of your instance. If this is a multi-node
-  installation, you must snapshot every node.
-  **This process is out of scope for GitLab Support**.
-
-### Restore GitLab
-
-If you have a test environment that mimics your production one, you should test the restoration to ensure that everything works as you expect.
-
-To restore your GitLab backup:
-
-- Before restoring, make sure to read about the
-  [prerequisites](../administration/backup_restore/_index.md#restore-gitlab), most importantly,
-  the versions of the backed up and the new GitLab instance must be the same.
-- [Restore GitLab](../administration/backup_restore/_index.md#restore-gitlab).
-  Make sure to follow the instructions based on your installation method.
-  Confirm that the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files) are also restored.
-- If restoring from a snapshot, know the steps to do this.
-  **This process is out of scope for GitLab Support**.
+- [Contact GitLab Support](https://support.gitlab.com/hc/en-us) and your Customer Success Manager, if you have one.
+- If [the situation qualifies](https://about.gitlab.com/support/#definitions-of-support-impact) and
+  [your plan includes emergency support](https://about.gitlab.com/support/#priority-support),
+  create an emergency ticket.

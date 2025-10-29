@@ -2,7 +2,8 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Update self-compiled installations with patch versions
+title: Update self-compiled instances with patch versions
+description: Update a single-node self-compiled instance with a patch version.
 ---
 
 {{< details >}}
@@ -12,13 +13,31 @@ title: Update self-compiled installations with patch versions
 
 {{< /details >}}
 
-Update self-compiled installations with patch versions.
+Update a self-compiled instance with a patch version.
 
-Prerequisites:
+## Prerequisites
 
-- A [back up](../administration/backup_restore/_index.md) of your self-compiled installation.
+Before you update:
 
-## Stop GitLab server
+1. You must [read required information and perform required steps](plan_your_upgrade.md).
+1. [Back up](../administration/backup_restore/_index.md) your self-compiled instance.
+
+## Update a self-compiled instance with a patch version
+
+To update a self-compiled instance with a patch version:
+
+1. Consider [turning on maintenance mode](../administration/maintenance_mode/_index.md) during the update.
+1. Pause [running CI/CD pipelines and jobs](plan_your_upgrade.md#pause-cicd-pipelines-and-jobs).
+1. [Upgrade GitLab Runner](https://docs.gitlab.com/runner/install/) to the same version as your target GitLab version.
+1. Update GitLab by following the instructions on this page.
+
+After you update:
+
+1. Unpause [running CI/CD pipelines and jobs](plan_your_upgrade.md#pause-cicd-pipelines-and-jobs).
+1. If enabled, [turn off maintenance mode](../administration/maintenance_mode/_index.md#disable-maintenance-mode).
+1. Run [health checks](plan_your_upgrade.md#run-upgrade-health-checks).
+
+### Stop GitLab server
 
 To stop the GitLab server:
 
@@ -30,7 +49,7 @@ sudo systemctl stop gitlab.target
 sudo service gitlab stop
 ```
 
-## Get latest code for the stable branch
+### Get latest code for the stable branch
 
 In the following commands, replace `LATEST_TAG` with the GitLab tag to update to. For example, `v8.0.3`.
 
@@ -57,7 +76,7 @@ In the following commands, replace `LATEST_TAG` with the GitLab tag to update to
    sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
    ```
 
-## Install libraries and run migrations
+### Install libraries and run migrations
 
 To install libraries and run migrations, run the following commands:
 
@@ -81,7 +100,7 @@ sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
-## Update GitLab Workhorse to the new patch version
+### Update GitLab Workhorse to the new patch version
 
 To update GitLab Workhorse to the new patch version:
 
@@ -91,7 +110,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
-## Update Gitaly to the new patch version
+### Update Gitaly to the new patch version
 
 To update Gitaly to the new patch version:
 
@@ -101,7 +120,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
-## Update GitLab Shell to the new patch version
+### Update GitLab Shell to the new patch version
 
 To update GitLab Shell to the new patch version:
 
@@ -113,7 +132,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION) -b v$(</h
 sudo -u git -H make build
 ```
 
-## Update GitLab Pages to the new patch version (if required)
+### Update GitLab Pages to the new patch version (if required)
 
 If you're using GitLab Pages, update GitLab Pages to the new patch version:
 
@@ -125,7 +144,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-## Install or update `gitlab-elasticsearch-indexer`
+### Install or update `gitlab-elasticsearch-indexer`
 
 {{< details >}}
 
@@ -137,7 +156,7 @@ sudo -u git -H make
 To install or update `gitlab-elasticsearch-indexer`, follow the
 [installation instruction](../integration/advanced_search/elasticsearch.md#install-an-elasticsearch-or-aws-opensearch-cluster).
 
-## Start GitLab
+### Start GitLab
 
 To start GitLab, run the following commands:
 
@@ -151,7 +170,7 @@ sudo service gitlab start
 sudo service nginx restart
 ```
 
-## Check GitLab and its environment
+### Check GitLab and its environment
 
 To check if GitLab and its environment are configured correctly, run:
 
@@ -167,8 +186,6 @@ To make sure you didn't miss anything run a more thorough check with:
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-If all items are green, then congratulations upgrade complete!
-
-## Make sure background migrations are finished
+### Make sure background migrations are finished
 
 [Check the status of background migrations](background_migrations.md) and make sure they are finished.

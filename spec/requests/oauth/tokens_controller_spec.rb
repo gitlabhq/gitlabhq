@@ -312,6 +312,35 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
             expect(response.parsed_body['error_description']).not_to include('PKCE code_verifier is required')
           end
         end
+
+        context 'when refreshing access tokens with refresh_token' do
+          let_it_be(:dynamic_oauth_application) do
+            create(:oauth_application, :dynamic, confidential: false, scopes: 'mcp')
+          end
+
+          let_it_be(:oauth_token) do
+            create(
+              :oauth_access_token,
+              application: dynamic_oauth_application,
+              resource_owner_id: user.id,
+              use_refresh_token: true,
+              scopes: 'mcp'
+            )
+          end
+
+          it 'does not require PKCE code_verifier for refresh token flow' do
+            post('/oauth/token', params: {
+              grant_type: 'refresh_token',
+              refresh_token: oauth_token.plaintext_refresh_token,
+              client_id: dynamic_oauth_application.uid,
+              scopes: 'mcp'
+            })
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.parsed_body).to have_key('access_token')
+            expect(response.parsed_body['error']).to be_nil
+          end
+        end
       end
 
       context 'with non-dynamic OAuth application' do

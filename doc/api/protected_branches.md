@@ -12,8 +12,7 @@ title: Protected branches API
 
 {{< /details >}}
 
-Use this API to manage [branch protections](../user/project/repository/branches/protected.md)
-for your repositories.
+Use this API to manage [protected branches](../user/project/repository/branches/protected.md).
 
 GitLab Premium and GitLab Ultimate support more granular protections for pushing to branches.
 Administrators can grant permission to modify and push to protected branches only to deploy keys,

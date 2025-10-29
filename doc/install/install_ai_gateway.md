@@ -82,7 +82,7 @@ Using the nightly version is **not recommended** because it can cause incompatib
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
 1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
-1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
+1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 
 1. If you are going to use your own self-hosted model for GitLab Duo Agent Platform, and the URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
    - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
@@ -269,7 +269,7 @@ To deploy and validate the solution:
    docker ps
    ```
 
-1. Configure your [GitLab instance to access the AI gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
+1. Configure your [GitLab instance to access the AI gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway).
 
 1. Configure your GitLab instance to access the URL for the [GitLab Duo Agent Platform service](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 

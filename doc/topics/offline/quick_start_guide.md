@@ -30,7 +30,7 @@ For a video walkthrough of this process, see [Offline GitLab Installation: Downl
 
 ### Download the GitLab package
 
-You should [manually download the GitLab package](../../update/package/_index.md#upgrade-by-using-a-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
+You should [download the GitLab package](../../update/package/_index.md#upgrade-with-a-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
 
 If your offline environment has no local network access, you must manually transport the relevant package through physical media, such as a USB drive.
 
@@ -63,7 +63,7 @@ sudo cd /path/to/mount
 sudo dpkg -i <package_name>.deb
 ```
 
-[Use the relevant commands for your operating system to install the package](../../update/package/_index.md#upgrade-by-using-a-downloaded-package) but make sure to specify an `http`
+[Use the relevant commands for your operating system to install the package](../../update/package/_index.md#upgrade-with-a-downloaded-package) but make sure to specify an `http`
 URL for the `EXTERNAL_URL` installation step. Once installed, we can manually
 configure the SSL ourselves.
 

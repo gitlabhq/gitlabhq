@@ -36,6 +36,24 @@ describe('DeleteWikiModal', () => {
   const findModalTitle = () => wrapper.findByTestId('wiki-clone-modal-title');
   const findCloneButtonTrigger = () => wrapper.findComponent(GlButton);
   const findCloneListTrigger = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const findCopySshUrlButton = () => wrapper.findByTestId('wiki-copy-ssh-url-button');
+  const findCopyHttpUrlButton = () => wrapper.findByTestId('wiki-copy-http-url-button');
+
+  describe('copy buttons', () => {
+    it('copy ssh url button renders successfully', () => {
+      createComponent();
+
+      expect(findCopySshUrlButton().exists()).toBe(true);
+      expect(findCopySshUrlButton().props('text')).toBe('git clone ssh://clone.url/path');
+    });
+
+    it('copy http url button renders successfully', () => {
+      createComponent();
+
+      expect(findCopyHttpUrlButton().exists()).toBe(true);
+      expect(findCopyHttpUrlButton().props('text')).toBe('git clone http://clone.url/path');
+    });
+  });
 
   it('renders a modal', () => {
     const modalId = 'clone-wiki-modal';

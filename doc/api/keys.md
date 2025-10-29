@@ -12,7 +12,7 @@ title: Keys API
 
 {{< /details >}}
 
-Use the keys API to identify the user associated with a SSH key, or its fingerprint. Queries about
+Use this API to retrieve information about [SSH keys](../user/ssh.md). Queries about
 deploy key fingerprints also retrieve information about the projects using that key.
 
 If you use a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.

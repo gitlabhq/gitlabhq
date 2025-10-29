@@ -207,47 +207,56 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           {
             path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/foo.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            new_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            commit_id: "ade1c0b4b116209ed2a9958436b26f89085ec383"
           },
           {
             path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644', old_path: 'files/locked/foo.lfs',
             old_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007"
+            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007",
+            commit_id: "594937c22df7a093888ff13af518f2b683f5f719"
           },
           {
             path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/bar.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1"
+            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
+            commit_id: "760c58db5a6f3b64ad7e3ff6b3c4a009da7d9b33"
           },
           {
             path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644', old_path: 'files/locked/foo.lfs',
             old_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007"
+            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007",
+            commit_id: "2b298117a741cdb06eb48df2c33f1390cf89f7e8"
           },
           {
             path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/bar.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1"
+            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
+            commit_id: "2b298117a741cdb06eb48df2c33f1390cf89f7e8"
           },
           {
             path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644', old_path: 'files/locked/bar.lfs',
             old_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
-            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba"
+            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba",
+            commit_id: "c41e12c387b4e0e41bfc17208252d6a6430f2fcd"
           },
           {
             path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644', old_path: 'files/locked/bar.lfs',
             old_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
-            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba"
+            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba",
+            commit_id: "1ada92f78a19f27cb442a0a205f1c451a3a15432"
           },
           {
             path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/baz.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9",
+            commit_id: "1ada92f78a19f27cb442a0a205f1c451a3a15432"
           },
           {
             path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/baz.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9",
+            commit_id: "1ada92f78a19f27cb442a0a205f1c451a3a15432"
           }
         ].as_json
       end
@@ -263,32 +272,38 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           {
             path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/foo.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            new_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            commit_id: "ade1c0b4b116209ed2a9958436b26f89085ec383"
           },
           {
             path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644', old_path: 'files/locked/foo.lfs',
             old_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007"
+            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007",
+            commit_id: "594937c22df7a093888ff13af518f2b683f5f719"
           },
           {
             path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/bar.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1"
+            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
+            commit_id: "760c58db5a6f3b64ad7e3ff6b3c4a009da7d9b33"
           },
           {
             path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644', old_path: 'files/locked/bar.lfs',
             old_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
-            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba"
+            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba",
+            commit_id: "760c58db5a6f3b64ad7e3ff6b3c4a009da7d9b33"
           },
           {
             path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/baz.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9",
+            commit_id: "1ada92f78a19f27cb442a0a205f1c451a3a15432"
           },
           {
             path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644', old_path: 'files/locked/baz.lfs',
             old_blob_id: "0000000000000000000000000000000000000000",
-            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9",
+            commit_id: "1ada92f78a19f27cb442a0a205f1c451a3a15432"
           }
         ].as_json
       end
@@ -374,7 +389,8 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
               "old_mode" => "100644",
               "old_path" => "CHANGELOG",
               "path" => "CHANGELOG.md",
-              "status" => "RENAMED"
+              "status" => "RENAMED",
+              "commit_id" => "94bb47ca1297b7b3731ff2a36923640991e9236f"
             }
           ]
 
@@ -394,7 +410,8 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
               "old_mode" => "100644",
               "old_path" => "CHANGELOG",
               "path" => "CHANGELOG",
-              "status" => "DELETED"
+              "status" => "DELETED",
+              "commit_id" => "94bb47ca1297b7b3731ff2a36923640991e9236f"
             },
             {
               "new_blob_id" => "53855584db773c3df5b5f61f72974cb298822fbb",
@@ -403,7 +420,8 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
               "old_mode" => "0",
               "old_path" => "CHANGELOG.md",
               "path" => "CHANGELOG.md",
-              "status" => "ADDED"
+              "status" => "ADDED",
+              "commit_id" => "94bb47ca1297b7b3731ff2a36923640991e9236f"
             }
           ]
 
@@ -443,6 +461,58 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         returned_value = described_class.new(repository).find_changed_paths([empty_commit])
 
         expect(returned_value).to eq([])
+      end
+    end
+
+    context 'when a TreeRequest is used' do
+      let(:merge_commit_diff_mode) { nil }
+      let(:left_tree_id) { '1b12f15a11fc6e62177bef08f47bc7b5ce50b141' }
+      let(:right_tree_id) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+      let(:tree_object) { Gitlab::Git::DiffTree.new(left_tree_id, right_tree_id) }
+
+      let(:request) do
+        Gitaly::FindChangedPathsRequest.new(
+          repository: repository_message,
+          requests: [
+            Gitaly::FindChangedPathsRequest::Request.new(
+              tree_request: Gitaly::FindChangedPathsRequest::Request::TreeRequest.new(
+                left_tree_revision: repository.commit.parent_ids.first,
+                right_tree_revision: repository.commit.id
+              )
+            )
+          ],
+          merge_commit_diff_mode: described_class::MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode],
+          find_renames: false
+        )
+      end
+
+      let(:response) do
+        Gitaly::FindChangedPathsResponse.new(
+          paths: [
+            Gitaly::ChangedPaths.new(
+              status: :ADDED,
+              path: 'README.md',
+              old_path: 'README.md',
+              old_mode: 0,
+              new_mode: 0o100644,
+              old_blob_id: Gitlab::Git::SHA1_BLANK_SHA,
+              new_blob_id: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863'
+              # commit_id intentionally omitted
+            )
+          ]
+        )
+      end
+
+      it 'returns paths without commit_id' do
+        expect_any_instance_of(Gitaly::DiffService::Stub)
+          .to receive(:find_changed_paths)
+          .with(request, kind_of(Hash))
+          .and_return([response])
+
+        result = described_class.new(repository)
+          .find_changed_paths([tree_object])
+
+        expect(result.first.commit_id).to be_blank
       end
     end
   end

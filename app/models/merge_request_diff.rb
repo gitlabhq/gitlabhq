@@ -429,10 +429,8 @@ class MergeRequestDiff < ApplicationRecord
       end
 
       sorted_diff_commits.map(&:sha)
-    elsif preload_metadata && diff_commits_dedup_enabled?
-      commits = merge_request_diff_commits.limit(limit)
-      preload_metadata_for_commits(commits)
-      commits.pluck(:sha)
+    elsif diff_commits_dedup_enabled?
+      commit_shas_from_metadata(limit)
     else
       merge_request_diff_commits.limit(limit).pluck(:sha)
     end
@@ -1056,6 +1054,25 @@ class MergeRequestDiff < ApplicationRecord
                                   .eq(MergeRequest::CommitsMetadata.arel_table[:id])
           )
       ).exists?
+  end
+
+  def commit_shas_from_metadata(limit)
+    # Until `merge_request_commits_metadata` records are backfilled, SHAs data may be in found in either table
+    metadata_join_sql = <<~SQL.squish
+      LEFT JOIN merge_request_commits_metadata
+      ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id
+      AND merge_request_commits_metadata.project_id = ?
+    SQL
+
+    # raw SQL in pluck() bypass ActiveRecord's type casting, so encode() is needed to convert bytea to hex
+    shas_sql = Arel.sql("encode(COALESCE(merge_request_commits_metadata.sha, merge_request_diff_commits.sha), 'hex')")
+
+    MergeRequestDiffCommit
+      .for_merge_request_diff(id)
+      .joins(self.class.sanitize_sql_array([metadata_join_sql, self.project_id]))
+      .order(:relative_order)
+      .limit(limit)
+      .pluck(shas_sql)
   end
 
   def diff_commits_dedup_enabled?
