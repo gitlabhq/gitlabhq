@@ -711,7 +711,7 @@
 {"name":"signet","version":"0.19.0","platform":"ruby","checksum":"537f3939f57f141f691e6069a97ec40f34fadafc4c7e5ba94edb06cf4350dd31"},
 {"name":"simple_po_parser","version":"1.1.6","platform":"ruby","checksum":"122687d44d3de516a0e69e2f383a4180f5015e8c5ed5a7f2258f2b376f64cbf3"},
 {"name":"simplecov","version":"0.22.0","platform":"ruby","checksum":"fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5"},
-{"name":"simplecov-cobertura","version":"2.1.0","platform":"ruby","checksum":"2c6532e34df2e38a379d72cef9a05c3b16c64ce90566beebc6887801c4ad3f02"},
+{"name":"simplecov-cobertura","version":"3.1.0","platform":"ruby","checksum":"6d7f38aa32c965ca2174b2e5bd88cb17138eaf629518854976ac50e628925dc5"},
 {"name":"simplecov-html","version":"0.12.3","platform":"ruby","checksum":"4b1aad33259ffba8b29c6876c12db70e5750cb9df829486e4c6e5da4fa0aa07b"},
 {"name":"simplecov-lcov","version":"0.8.0","platform":"ruby","checksum":"0115f31cb7ef5ec4334f5d9382c67fd43de2e5270e21b65bfc693da82dd713c1"},
 {"name":"simplecov_json_formatter","version":"0.1.4","platform":"ruby","checksum":"529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428"},

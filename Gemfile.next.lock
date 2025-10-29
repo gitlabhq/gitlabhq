@@ -1828,7 +1828,7 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-cobertura (2.1.0)
+    simplecov-cobertura (3.1.0)
       rexml
       simplecov (~> 0.19)
     simplecov-html (0.12.3)
@@ -2403,7 +2403,7 @@ DEPENDENCIES
   sigdump (~> 0.2.4)
   simple_po_parser (~> 1.1.6)
   simplecov (~> 0.22)
-  simplecov-cobertura (~> 2.1.0)
+  simplecov-cobertura (~> 3.1.0)
   simplecov-lcov (~> 0.8.0)
   slack-messenger (~> 2.3.5)
   snowplow-tracker (~> 0.8.0)
