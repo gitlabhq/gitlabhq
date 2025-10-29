@@ -1,0 +1,10 @@
+---
+name: policy_violations_es_filter
+description: Enable filtering vulnerabilities dismissed by security policies
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561739
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207947
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577591
+milestone: '18.6'
+group: group::security policies
+type: gitlab_com_derisk
+default_enabled: false

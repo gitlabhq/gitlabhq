@@ -4,7 +4,6 @@ module Users
   class BaseDismissibleAlertComponent < Pajamas::AlertComponent
     def initialize(args = {})
       @dismiss_options = args.delete(:dismiss_options)
-      @wrapper_options = args.delete(:wrapper_options)
 
       verify_callout_setup!
 
@@ -13,14 +12,10 @@ module Users
 
     private
 
-    attr_reader :dismiss_options, :wrapper_options
+    attr_reader :dismiss_options
 
     def render?
       user && !user_dismissed_alert?
-    end
-
-    def wrapper_options?
-      wrapper_options.present?
     end
 
     def build_alert_options(alert_options)
@@ -38,6 +33,8 @@ module Users
 
     def add_data_attributes(alert_options)
       data_attributes = build_data_attributes
+
+      add_wrapper_data_attributes!(data_attributes) if respond_to?(:add_wrapper_data_attributes!, true)
       alert_options[:data] = (alert_options[:data] || {}).merge(data_attributes)
     end
 

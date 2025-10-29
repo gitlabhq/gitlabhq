@@ -32,8 +32,8 @@ With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, hel
 research results, and perform tasks simultaneously.
 The agents have full context across your entire software development lifecycle.
 
-The Agent Platform is made up of [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
-and [flows](flows/_index.md), which are available in the GitLab UI and IDEs.
+The Agent Platform is made up of [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md),
+[agents](agents/_index.md), and [flows](flows/_index.md), which are available in the GitLab UI and IDEs.
 
 {{< alert type="note" >}}
 

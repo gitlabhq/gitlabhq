@@ -28,16 +28,17 @@ The chain of custody report provides a one-month trailing window of all commits 
 To generate the report for all commits, GitLab:
 
 1. Fetches all projects under the group.
-1. For each project, fetches the last one month of commits. Each project is capped at 1024 commits. If there are more than
+1. For each project, fetches the last one month of commits in chronological order (newest first). Each project is capped at 1024 commits. If there are more than
    1024 commits in the one-month window, they are truncated.
+1. Sorts all commits by committed date (descending) with deterministic secondary sorting by commit SHA for consistent ordering.
 1. Writes the commits to a CSV file. The file is truncated at 15 MB because the report is emailed as an attachment.
 
 The report includes:
 
 - Commit SHA.
 - Commit author.
-- Committer.
-- Date committed.
+- Committer (normalized to GitLab user name when available, based on committer email).
+- Date committed (with millisecond precision in UTC format).
 - Group.
 - Project.
 

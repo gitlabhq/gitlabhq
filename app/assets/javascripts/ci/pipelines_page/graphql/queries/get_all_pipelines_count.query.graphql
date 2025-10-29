@@ -1,7 +1,13 @@
-query getAllPipelinesCount($fullPath: ID!) {
+query getAllPipelinesCount(
+  $fullPath: ID!
+  $source: String
+  $ref: String
+  $username: String
+  $status: PipelineStatusEnum
+) {
   project(fullPath: $fullPath) {
     id
-    pipelines {
+    pipelines(source: $source, ref: $ref, username: $username, status: $status) {
       count
     }
   }

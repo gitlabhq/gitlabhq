@@ -116,6 +116,10 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
     pipelinesAnalyticsPath,
     identityVerificationRequired,
     identityVerificationPath,
+    visibilityPipelineIdType,
+    params,
+    projectId,
+    defaultBranchName,
   } = el.dataset;
 
   return new Vue({
@@ -130,9 +134,16 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
       pipelinesAnalyticsPath,
       identityVerificationRequired: parseBoolean(identityVerificationRequired),
       identityVerificationPath,
+      projectId,
+      defaultBranchName,
     },
     render(createElement) {
-      return createElement(PipelinesGraphql, {});
+      return createElement(PipelinesGraphql, {
+        props: {
+          defaultVisibilityPipelineIdType: visibilityPipelineIdType,
+          params: JSON.parse(params),
+        },
+      });
     },
   });
 };

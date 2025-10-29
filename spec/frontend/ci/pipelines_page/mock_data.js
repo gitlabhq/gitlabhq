@@ -322,3 +322,38 @@ export const mockCancelPipelineMutationResponse = {
     },
   },
 };
+
+export const mockPipelinesFilteredSearch = [
+  {
+    type: 'username',
+    value: {
+      data: 'root',
+      operator: '=',
+    },
+    id: 'token-18',
+  },
+  {
+    type: 'status',
+    value: {
+      data: 'success',
+      operator: '=',
+    },
+    id: 'token-20',
+  },
+  {
+    type: 'source',
+    value: {
+      data: 'schedule',
+      operator: '=',
+    },
+    id: 'token-22',
+  },
+  {
+    type: 'ref',
+    value: {
+      data: 'test',
+      operator: '=',
+    },
+    id: 'token-24',
+  },
+];

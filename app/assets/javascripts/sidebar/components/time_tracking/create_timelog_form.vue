@@ -206,6 +206,7 @@ export default {
     data-testid="create-timelog-modal"
     :action-primary="primaryProps"
     :action-cancel="cancelProps"
+    header-tag="div"
     @primary="registerTimeSpent"
     @cancel="close"
     @close="close"

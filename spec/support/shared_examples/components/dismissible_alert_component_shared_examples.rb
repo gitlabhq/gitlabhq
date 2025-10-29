@@ -95,6 +95,10 @@ RSpec.shared_examples 'dismissible alert component' do
       expect(rendered_component).to have_content('Alert body content')
     end
 
+    it 'renders the alert with has_wrapper data attribute' do
+      expect(rendered_component).to have_css('.gl-alert[data-has-wrapper="true"]')
+    end
+
     context 'when wrapper_options specify different tag and attributes' do
       let(:wrapper_options) { { tag: :div, class: 'gl-card gl-p-4', id: 'custom-alert' } }
 

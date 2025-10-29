@@ -209,10 +209,18 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     visit incident_project_issues_path(project, confidential_incident)
     wait_for_requests
 
-    sticky_header = find_by_scrolling('[data-testid=issue-sticky-header]')
+    sticky_header = find_in_page_or_panel_by_scrolling('[data-testid=issue-sticky-header]')
 
     page.within(sticky_header) do
       expect(page).to have_text 'Confidential'
+    end
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, **options)
+    if Users::ProjectStudio.enabled_for_user?(developer) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+      find_in_panel_by_scrolling(selector, **options)
+    else
+      find_by_scrolling(selector, **options)
     end
   end
 end

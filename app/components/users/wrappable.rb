@@ -2,7 +2,14 @@
 
 module Users
   module Wrappable
+    def initialize(args = {})
+      @wrapper_options = args.delete(:wrapper_options)
+      super(**args)
+    end
+
     private
+
+    attr_reader :wrapper_options
 
     # Due to the way rendering in the controller/rack context happens
     # we need to make this a separate module to execute call
@@ -25,6 +32,14 @@ module Users
       tag_options = options.except(:tag)
 
       content_tag(tag_name, render_parent_to_string, tag_options)
+    end
+
+    def wrapper_options?
+      wrapper_options.present?
+    end
+
+    def add_wrapper_data_attributes!(data_attributes)
+      data_attributes[:has_wrapper] = wrapper_options?.to_s
     end
   end
 end

@@ -19,8 +19,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
     before do
       sign_in(user)
-
-      stub_feature_flags(work_items: true)
+      stub_feature_flags(work_item_view_for_issues: true)
 
       visit project_issue_path(project, issue)
 
@@ -28,21 +27,21 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2197' do
-      it_behaves_like 'work items hierarchy', 'work-item-links', :task
+      it_behaves_like 'work items hierarchy', 'work-item-tree', :task
     end
 
     it 'toggles form', :aggregate_failures do
-      within_testid('work-item-links') do
-        expect(page).not_to have_selector('[data-testid="add-links-form"]')
+      within_testid('work-item-tree') do
+        expect(page).not_to have_selector('[data-testid="add-tree-form"]')
 
         click_button 'Add'
         click_button 'New task'
 
-        expect(page).to have_selector('[data-testid="add-links-form"]')
+        expect(page).to have_selector('[data-testid="add-tree-form"]')
 
         click_button 'Cancel'
 
-        expect(page).not_to have_selector('[data-testid="add-links-form"]')
+        expect(page).not_to have_selector('[data-testid="add-tree-form"]')
       end
     end
 
@@ -52,7 +51,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         let_it_be(:task) { create(:work_item, :confidential, :task, project: project) }
 
         it 'adds an existing child task', :aggregate_failures do
-          within_testid('work-item-links') do
+          within_testid('work-item-tree') do
             click_button 'Add'
             click_button 'Existing task'
 
@@ -96,7 +95,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       end
 
       it 'displays labels, milestone and assignee for work item children', :aggregate_failures do
-        within_testid('work-item-links') do
+        within_testid('work-item-tree') do
           click_button 'Add'
           click_button 'Existing task'
 

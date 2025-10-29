@@ -1,22 +1,31 @@
-import { GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { createAlert } from '~/alert';
 import { TEST_HOST } from 'spec/test_constants';
+import { mockTracking } from 'helpers/tracking_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import Pipelines from '~/ci/pipelines_page/pipelines_graphql.vue';
 import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue';
 import NoCiEmptyState from '~/ci/pipelines_page/components/empty_state/no_ci_empty_state.vue';
+import PipelinesFilteredSearch from '~/ci/pipelines_page/components/pipelines_filtered_search.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
 import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import * as urlUtils from '~/lib/utils/url_utility';
+import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';
 import cancelPipelineMutation from '~/ci/pipelines_page/graphql/mutations/cancel_pipeline.mutation.graphql';
+import {
+  setIdTypePreferenceMutationResponse,
+  setIdTypePreferenceMutationResponseWithErrors,
+} from 'jest/issues/list/mock_data';
 import {
   mockPipelinesData,
   mockPipelinesCount,
@@ -26,15 +35,20 @@ import {
   mockPipelinesDataEmpty,
   mockRunnerCacheClearPayload,
   mockRunnerCacheClearPayloadWithError,
+  mockPipelinesFilteredSearch,
 } from './mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/ci/pipeline_details/utils', () => ({
+  validateParams: jest.fn((params) => ({ ...params })),
+}));
 
 Vue.use(VueApollo);
 
 describe('Pipelines app', () => {
   let wrapper;
+  let trackingSpy;
 
   const countHandler = jest.fn().mockResolvedValue(mockPipelinesCount);
   const successHandler = jest.fn().mockResolvedValue(mockPipelinesData);
@@ -53,6 +67,12 @@ describe('Pipelines app', () => {
   const pipelineRetryFailedMutationHandler = jest
     .fn()
     .mockResolvedValue(mockRetryFailedPipelineMutationResponse);
+  const setSortPreferenceMutationSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(setIdTypePreferenceMutationResponse);
+  const setSortPreferenceMutationFailedHandler = jest
+    .fn()
+    .mockResolvedValue(setIdTypePreferenceMutationResponseWithErrors);
 
   const createMockApolloProvider = (
     requestHandlers = [
@@ -63,7 +83,11 @@ describe('Pipelines app', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (requestHandlers) => {
+  const defaultProps = {
+    params: {},
+  };
+
+  const createComponent = (props = {}, requestHandlers) => {
     wrapper = shallowMountExtended(Pipelines, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
@@ -76,6 +100,7 @@ describe('Pipelines app', () => {
       stubs: {
         PipelinesTable,
       },
+      propsData: { ...defaultProps, ...props },
       apolloProvider: createMockApolloProvider(requestHandlers),
     });
   };
@@ -86,7 +111,9 @@ describe('Pipelines app', () => {
   const findNoCiEmptyState = () => wrapper.findComponent(NoCiEmptyState);
   const findTabs = () => wrapper.findComponent(NavigationTabs);
   const findNavControls = () => wrapper.findComponent(NavigationControls);
+  const findFilteredSearch = () => wrapper.findComponent(PipelinesFilteredSearch);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findPipelineKeyCollapsibleBox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   const triggerNextPage = async () => {
     findPagination().vm.$emit('next');
@@ -105,6 +132,12 @@ describe('Pipelines app', () => {
       expect(createAlert).not.toHaveBeenCalled();
     });
 
+    it('displays filtered search', async () => {
+      await waitForPromises();
+
+      expect(findFilteredSearch().exists()).toBe(true);
+    });
+
     it('handles loading state', async () => {
       expect(findLoadingIcon().exists()).toBe(true);
 
@@ -116,7 +149,7 @@ describe('Pipelines app', () => {
 
   describe('empty state', () => {
     it('shows error empty state when there is an error', async () => {
-      createComponent([[getPipelinesQuery, failedHandler]]);
+      createComponent(defaultProps, [[getPipelinesQuery, failedHandler]]);
 
       await waitForPromises();
 
@@ -132,7 +165,7 @@ describe('Pipelines app', () => {
         return Promise.resolve(mockPipelinesData);
       });
 
-      createComponent([[getPipelinesQuery, dynamicHandler]]);
+      createComponent(defaultProps, [[getPipelinesQuery, dynamicHandler]]);
 
       await waitForPromises();
 
@@ -152,7 +185,7 @@ describe('Pipelines app', () => {
     });
 
     it('shows no ci empty state when there are no pipelines', async () => {
-      createComponent([[getPipelinesQuery, emptyHandler]]);
+      createComponent(defaultProps, [[getPipelinesQuery, emptyHandler]]);
 
       await waitForPromises();
 
@@ -182,7 +215,7 @@ describe('Pipelines app', () => {
     });
 
     it('shows query error alert', async () => {
-      createComponent([[getPipelinesQuery, failedHandler]]);
+      createComponent(defaultProps, [[getPipelinesQuery, failedHandler]]);
 
       await waitForPromises();
 
@@ -255,7 +288,7 @@ describe('Pipelines app', () => {
     });
 
     it('clears runner cache', async () => {
-      createComponent([
+      createComponent(defaultProps, [
         [getPipelinesQuery, successHandler],
         [clearRunnerCacheMutation, clearCacheMutationSuccessHandler],
       ]);
@@ -279,7 +312,7 @@ describe('Pipelines app', () => {
     });
 
     it('shows an error alert when clearing runner cache fails', async () => {
-      createComponent([
+      createComponent(defaultProps, [
         [getPipelinesQuery, successHandler],
         [clearRunnerCacheMutation, clearCacheMutationFailedHandler],
       ]);
@@ -293,6 +326,153 @@ describe('Pipelines app', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'Something went wrong while cleaning runners cache.',
       });
+    });
+  });
+
+  describe('pipelines filtered search', () => {
+    it('passes intial params to filtered search', async () => {
+      const expectedParams = {
+        ref: 'test',
+        scope: 'all',
+        source: 'schedule',
+        status: 'success',
+        username: 'root',
+      };
+
+      createComponent({ params: expectedParams });
+
+      await waitForPromises();
+
+      expect(findFilteredSearch().props('params')).toEqual(expectedParams);
+    });
+
+    it('filters pipelines based on params', async () => {
+      jest.spyOn(urlUtils, 'updateHistory');
+
+      const expectedParams = {
+        after: null,
+        before: null,
+        first: 15,
+        fullPath: 'gitlab-org/gitlab',
+        last: null,
+        ref: 'test',
+        scope: null,
+        source: 'SCHEDULE',
+        status: 'SUCCESS',
+        username: 'root',
+      };
+
+      createComponent();
+
+      await waitForPromises();
+
+      findFilteredSearch().vm.$emit('filterPipelines', mockPipelinesFilteredSearch);
+
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledWith(expectedParams);
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/?username=root&status=success&source=schedule&ref=test&scope=all`,
+      });
+    });
+
+    it('displays a warning message if raw text search is used', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      findFilteredSearch().vm.$emit('filterPipelines', ['rawText']);
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'Raw text search is not currently supported. Please use the available search tokens.',
+        variant: 'warning',
+      });
+    });
+  });
+
+  describe('changing pipeline ID type', () => {
+    beforeEach(() => {
+      gon.current_user_id = 1;
+
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    it('should change the text to Show Pipeline IID', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findPipelineKeyCollapsibleBox().exists()).toBe(true);
+      expect(findTable().props('pipelineIdType')).toBe('id');
+
+      findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
+
+      await waitForPromises();
+
+      expect(findTable().props('pipelineIdType')).toBe('iid');
+    });
+
+    it('tracks the iid usage of the ID/IID dropdown', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
+
+      await waitForPromises();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'pipelines_display_options', {
+        label: TRACKING_CATEGORIES.listbox,
+        property: 'iid',
+      });
+    });
+
+    it('does not track the id usage of the ID/IID dropdown', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_ID_KEY);
+
+      await waitForPromises();
+
+      expect(trackingSpy).not.toHaveBeenCalled();
+    });
+
+    it('calls mutation to save idType preference', async () => {
+      createComponent(defaultProps, [
+        [getPipelinesQuery, successHandler],
+        [setSortPreferenceMutation, setSortPreferenceMutationSuccessHandler],
+      ]);
+
+      await waitForPromises();
+
+      findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
+
+      await waitForPromises();
+
+      expect(setSortPreferenceMutationSuccessHandler).toHaveBeenCalledWith({
+        input: { visibilityPipelineIdType: PIPELINE_IID_KEY.toUpperCase() },
+      });
+    });
+
+    it('captures error when mutation response has errors', async () => {
+      createComponent(defaultProps, [
+        [getPipelinesQuery, successHandler],
+        [setSortPreferenceMutation, setSortPreferenceMutationFailedHandler],
+      ]);
+
+      await waitForPromises();
+
+      findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
+
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
     });
   });
 
@@ -340,7 +520,7 @@ describe('Pipelines app', () => {
   describe('events', () => {
     describe('successful events', () => {
       beforeEach(async () => {
-        createComponent([
+        createComponent(defaultProps, [
           [getPipelinesQuery, successHandler],
           [retryPipelineMutation, pipelineRetryMutationHandler],
           [cancelPipelineMutation, pipelineCancelMutationHandler],
@@ -370,7 +550,7 @@ describe('Pipelines app', () => {
 
     describe('errors during the mutations', () => {
       beforeEach(async () => {
-        createComponent([
+        createComponent(defaultProps, [
           [getPipelinesQuery, successHandler],
           [getAllPipelinesCountQuery, countHandler],
           [retryPipelineMutation, pipelineRetryFailedMutationHandler],

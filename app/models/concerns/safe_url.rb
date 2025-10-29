@@ -10,8 +10,10 @@ module SafeUrl
 
     escaped = Addressable::URI.escape(url)
     uri = URI.parse(escaped)
-    uri.password = '*****' if uri.password
+    password_present = uri.password.present?
+
     uri.user = '*****' if uri.user && allowed_usernames.exclude?(uri.user)
+    uri.password = '*****' if password_present
     Addressable::URI.unescape(uri.to_s)
   rescue URI::Error, TypeError, Addressable::URI::InvalidURIError
   end

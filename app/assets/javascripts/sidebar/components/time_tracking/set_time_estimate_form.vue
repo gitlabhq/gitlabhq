@@ -230,6 +230,7 @@ export default {
     :action-primary="primaryProps"
     :action-secondary="secondaryProps"
     :action-cancel="cancelProps"
+    header-tag="div"
     @hidden="resetModal"
     @primary.prevent="saveTimeEstimate"
     @secondary.prevent="resetTimeEstimate"

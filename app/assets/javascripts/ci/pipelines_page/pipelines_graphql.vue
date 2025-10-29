@@ -5,13 +5,26 @@
 */
 import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
-import { GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
-import { createAlert, VARIANT_INFO } from '~/alert';
+import { GlCollapsibleListbox, GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
+import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
+import { fetchPolicies } from '~/lib/graphql';
 import { s__, __ } from '~/locale';
+import Tracking from '~/tracking';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
+import { validateParams } from '~/ci/pipeline_details/utils';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
+import {
+  FILTER_TAG_IDENTIFIER,
+  PIPELINE_ID_KEY,
+  PIPELINE_IID_KEY,
+  RAW_TEXT_WARNING,
+  TRACKING_CATEGORIES,
+} from '~/ci/constants';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
 import NavigationControls from './components/nav_controls.vue';
 import getPipelinesQuery from './graphql/queries/get_pipelines.query.graphql';
@@ -19,7 +32,7 @@ import getAllPipelinesCountQuery from './graphql/queries/get_all_pipelines_count
 import clearRunnerCacheMutation from './graphql/mutations/clear_runner_cache.mutation.graphql';
 import retryPipelineMutation from './graphql/mutations/retry_pipeline.mutation.graphql';
 import cancelPipelineMutation from './graphql/mutations/cancel_pipeline.mutation.graphql';
-import { PIPELINES_PER_PAGE } from './constants';
+import { PIPELINES_PER_PAGE, ANY_TRIGGER_AUTHOR } from './constants';
 
 const DEFAULT_PAGINATION = {
   first: PIPELINES_PER_PAGE,
@@ -37,7 +50,20 @@ export default {
     branches: 'branches',
     tags: 'tags',
   },
+  pipelineKeyOptions: [
+    {
+      text: __('Show Pipeline ID'),
+      label: __('Pipeline ID'),
+      value: PIPELINE_ID_KEY,
+    },
+    {
+      text: __('Show Pipeline IID'),
+      label: __('Pipeline IID'),
+      value: PIPELINE_IID_KEY,
+    },
+  ],
   components: {
+    GlCollapsibleListbox,
     GlEmptyState,
     GlKeysetPagination,
     GlLoadingIcon,
@@ -45,9 +71,11 @@ export default {
     NavigationTabs,
     NoCiEmptyState,
     PipelinesTable,
+    PipelinesFilteredSearch,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
+  mixins: [Tracking.mixin()],
   inject: {
     fullPath: {
       default: '',
@@ -59,9 +87,22 @@ export default {
       default: '',
     },
   },
+  props: {
+    params: {
+      type: Object,
+      required: true,
+    },
+    defaultVisibilityPipelineIdType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
   apollo: {
     pipelines: {
       query: getPipelinesQuery,
+      // Use cache-and-network to get refetches when scope is null
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {
@@ -78,6 +119,7 @@ export default {
           after: this.pagination.after,
           before: this.pagination.before,
           scope: scopeMap[this.scope],
+          ...this.transformFilterParams(this.filterParams),
         };
 
         return variables;
@@ -103,6 +145,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
+          ...this.transformFilterParams(this.filterParams),
         };
       },
       update(data) {
@@ -125,9 +168,11 @@ export default {
       pipelinesError: false,
       clearCacheLoading: false,
       scope: getParameterByName('scope') || 'all',
+      visibilityPipelineIdType: this.defaultVisibilityPipelineIdType,
       pagination: {
         ...DEFAULT_PAGINATION,
       },
+      filterParams: validateParams(this.params),
     };
   },
   computed: {
@@ -141,10 +186,17 @@ export default {
       return !this.isLoading && !this.pipelinesError && !this.hasPipelines;
     },
     showEmptyState() {
-      return this.isEmptyState && this.scope === this.$options.scopes.all;
+      return (
+        this.isEmptyState &&
+        this.scope === this.$options.scopes.all &&
+        Object.keys(this.filterParams).length === 0
+      );
     },
     showEmptyTab() {
-      return this.isEmptyState && this.scope !== this.$options.scopes.all;
+      return (
+        this.isEmptyState &&
+        (this.scope !== this.$options.scopes.all || Object.keys(this.filterParams).length > 0)
+      );
     },
     showTable() {
       return !this.isLoading && !this.pipelinesError && this.hasPipelines;
@@ -156,13 +208,8 @@ export default {
 
       return s__('Pipelines|There are currently no pipelines.');
     },
-    shouldRenderTabs() {
-      return !this.showEmptyState && !this.isLoading;
-    },
     shouldRenderButtons() {
-      return (
-        (this.newPipelinePath || this.resetCachePath) && this.shouldRenderTabs && !this.isLoading
-      );
+      return this.newPipelinePath || this.resetCachePath;
     },
     tabs() {
       const { scopes } = this.$options;
@@ -198,6 +245,13 @@ export default {
         (this.pipelines?.pageInfo?.hasNextPage || this.pipelines?.pageInfo?.hasPreviousPage)
       );
     },
+    selectedPipelineKeyOption() {
+      return (
+        this.$options.pipelineKeyOptions.find(
+          (option) => this.visibilityPipelineIdType === option.value,
+        ) || this.$options.pipelineKeyOptions[0]
+      );
+    },
   },
   methods: {
     onChangeTab(scope) {
@@ -212,8 +266,10 @@ export default {
       this.pagination = { ...DEFAULT_PAGINATION };
 
       updateHistory({
-        url: setUrlParams({ scope: this.scope }, window.location.href, true),
+        url: setUrlParams({ scope: this.scope, ...this.filterParams }, window.location.href, true),
       });
+
+      this.track('click_filter_tabs', { label: TRACKING_CATEGORIES.tabs, property: scope });
     },
     nextPage() {
       this.pagination = {
@@ -300,6 +356,81 @@ export default {
     captureError(exception) {
       Sentry.captureException(exception);
     },
+    changeVisibilityPipelineIDType(idType) {
+      this.visibilityPipelineIdType = idType;
+      if (idType === PIPELINE_IID_KEY) {
+        this.track('pipelines_display_options', {
+          label: TRACKING_CATEGORIES.listbox,
+          property: idType,
+        });
+      }
+
+      if (isLoggedIn()) {
+        this.saveVisibilityPipelineIDType(idType);
+      }
+    },
+    saveVisibilityPipelineIDType(idType) {
+      this.$apollo
+        .mutate({
+          mutation: setSortPreferenceMutation,
+          variables: { input: { visibilityPipelineIdType: idType.toUpperCase() } },
+        })
+        .then(({ data }) => {
+          if (data.userPreferencesUpdate.errors.length) {
+            throw new Error(data.userPreferencesUpdate.errors);
+          }
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
+    },
+    filterPipelines(filters) {
+      const newFilterParams = {};
+
+      filters.forEach((filter) => {
+        // do not add Any for username query param, so we
+        // can fetch all trigger authors
+        if (
+          filter.type &&
+          filter.value.data !== ANY_TRIGGER_AUTHOR &&
+          filter.type !== FILTER_TAG_IDENTIFIER
+        ) {
+          newFilterParams[filter.type] = filter.value.data;
+        }
+
+        if (filter.type === FILTER_TAG_IDENTIFIER) {
+          newFilterParams.ref = filter.value.data;
+        }
+
+        if (!filter.type) {
+          createAlert({
+            message: RAW_TEXT_WARNING,
+            variant: VARIANT_WARNING,
+          });
+        }
+      });
+
+      // Clear filters if none provided, otherwise apply filters
+      this.filterParams = filters.length === 0 ? {} : newFilterParams;
+
+      // Reset pagination when filtering
+      this.pagination = { ...DEFAULT_PAGINATION };
+
+      updateHistory({
+        url: setUrlParams({ ...this.filterParams, scope: this.scope }, window.location.href, true),
+      });
+    },
+    transformFilterParams(filterParams) {
+      // Transform filter params to be GraphQL compatible
+      const upperCaseFields = ['status', 'source'];
+
+      return Object.keys(filterParams).reduce((acc, key) => {
+        acc[key] = upperCaseFields.includes(key)
+          ? filterParams[key].toUpperCase()
+          : filterParams[key];
+        return acc;
+      }, {});
+    },
   },
 };
 </script>
@@ -309,24 +440,40 @@ export default {
     <pipeline-account-verification-alert class="gl-mt-5" />
 
     <div
-      v-if="shouldRenderTabs || shouldRenderButtons"
+      v-if="shouldRenderButtons"
       class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-none"
     >
       <!-- Navigation -->
-      <navigation-tabs
-        v-if="shouldRenderTabs"
-        :tabs="tabs"
-        scope="pipelines"
-        @onChangeTab="onChangeTab"
-      />
+      <navigation-tabs :tabs="tabs" scope="pipelines" @onChangeTab="onChangeTab" />
 
       <navigation-controls
-        v-if="shouldRenderButtons"
         :new-pipeline-path="newPipelinePath"
         :reset-cache-path="resetCachePath"
         :is-reset-cache-button-loading="clearCacheLoading"
         @resetRunnersCache="clearRunnerCache"
       />
+    </div>
+
+    <div class="gl-flex">
+      <div
+        class="row-content-block gl-flex gl-max-w-full gl-flex-grow gl-flex-wrap gl-gap-4 gl-border-b-0 @sm/panel:gl-flex-nowrap"
+      >
+        <!-- Filtered search -->
+        <pipelines-filtered-search
+          class="gl-flex gl-max-w-full gl-flex-grow"
+          :params="filterParams"
+          @filterPipelines="filterPipelines"
+        />
+
+        <gl-collapsible-listbox
+          v-model="visibilityPipelineIdType"
+          class="gl-grow @sm/panel:gl-grow-0"
+          toggle-class="gl-grow"
+          :toggle-text="selectedPipelineKeyOption.text"
+          :items="$options.pipelineKeyOptions"
+          @select="changeVisibilityPipelineIDType"
+        />
+      </div>
     </div>
 
     <div class="content-list pipelines">
@@ -362,6 +509,7 @@ export default {
       <pipelines-table
         v-else-if="showTable"
         :pipelines="pipelines.list"
+        :pipeline-id-type="selectedPipelineKeyOption.value"
         @retry-pipeline="retryPipeline"
         @cancel-pipeline="cancelPipeline"
       />

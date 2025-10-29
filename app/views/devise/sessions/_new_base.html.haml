@@ -1,9 +1,9 @@
 - if admin_mode
-  = gitlab_ui_form_for(:user, url: admin_session_path, html: { class: 'gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
+  = gitlab_ui_form_for(:user, url: admin_session_path, html: { class: 'gl-show-field-errors', aria: { live: 'assertive' }}) do |f|
     .form-group
       = f.label :password, _('Password')
-      = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: 'user_password', name: 'user[password]', testid: 'password-field' }
-    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'sign-in-button' } }) do
+      = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: 'user_password', name: 'user[password]', testid: 'admin-password-field' }
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'admin-sign-in-button' }}) do
       = _('Enter admin mode')
 - else
   = gitlab_ui_form_for(:user, url: session_path(:user), html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|

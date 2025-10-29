@@ -559,7 +559,7 @@ end
 group :development, :test, :coverage do
   gem 'simplecov', '~> 0.22', require: false, feature_category: :tooling
   gem 'simplecov-lcov', '~> 0.8.0', require: false, feature_category: :tooling
-  gem 'simplecov-cobertura', '~> 2.1.0', require: false, feature_category: :tooling
+  gem 'simplecov-cobertura', '~> 3.1.0', require: false, feature_category: :tooling
   gem 'undercover', '~> 0.7.0', require: false, feature_category: :tooling
 end
 
@@ -749,7 +749,7 @@ gem 'net-http', '= 0.6.0', feature_category: :shared
 # This is locked to 0.13.0 because the default parser changes from RFC2396 to RFC3986,
 # which can be removed after Rails 7.2 upgrade
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173142#note_2277952450
-gem 'uri', '= 0.13.2', feature_category: :shared
+gem 'uri', '= 0.13.3', feature_category: :shared
 
 gem 'duo_api', '~> 1.3', feature_category: :system_access
 
