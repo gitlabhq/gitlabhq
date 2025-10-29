@@ -8,8 +8,7 @@ RSpec.shared_examples 'multiple reviewers merge request' do |action, save_button
       click_link user2.name
     end
 
-    # Extra click needed in order to toggle the dropdown
-    find('.js-reviewer-search').click
+    find('.dropdown-menu-close-icon').click
 
     expect(all('input[name="merge_request[reviewer_ids][]"]', visible: false).map(&:value))
       .to match_array([user.id.to_s, user2.id.to_s])

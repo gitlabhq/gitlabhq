@@ -580,15 +580,25 @@ Additionally, the following cloud provider services are recommended for use as p
 
 ### Best practices for the database services
 
-If you choose to use a third-party external service, use an [external database service](../postgresql/external.md) that runs a standard, performant, and [supported PostgreSQL version](../../install/requirements.md#postgresql) and take note of the following considerations:
+Instead of the Linux package-bundled PostgreSQL, PgBouncer, and Consul service discovery components, you can use a
+[third-party external service for PostgreSQL](../postgresql/external.md).
 
-1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer, and Consul. All of these components are no longer required when using a third party external service.
-1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
-1. Database Connection Poolers are not required for this setup as the options vary per service. As a result, you might have to adjust the connection count configuration, depending on the environment size. If Pooling is desired, a third party option must be explored as the GitLab Linux Package bundled PgBouncer is only compatible with the package bundled Postgres. [Database Load Balancing](../postgresql/database_load_balancing.md) can also be used to spread the load accordingly.
-   - Ensure that if a pooler is included in a Cloud Provider service, it can handle the total load without bottlenecks. For example, Azure Database for PostgreSQL flexible server can optionally deploy a PgBouncer pooler in front of the database. However, PgBouncer is single threaded, which may cause bottlenecks under heavy load. To mitigate this issue, you can use database load balancing to distribute the pooler across multiple nodes.
-1. The number of nodes required for HA may vary depending on the service. The requirements for one deployment may vary from those for Linux package installations.
+Use a reputable provider that runs a [supported PostgreSQL version](../../install/requirements.md#postgresql). These services are known to work well:
 
-1. To use [GitLab Geo](../geo/_index.md), the service should support cross-region replication.
+- [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal).
+- [Amazon RDS](https://aws.amazon.com/rds/).
+
+Consider the following when using external database services:
+
+- For optimal performance, enable [database load balancing](../postgresql/database_load_balancing.md) with read replicas. Match the node counts to those used in standard
+  Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
+- Database connection poolers are not required because options vary per service. You might need to adjust connection count configuration depending on your environment size.
+  If pooling is desired, explore third-party options because the GitLab-bundled PgBouncer only works with the bundled PostgreSQL.
+  [Database Load Balancing](../postgresql/database_load_balancing.md) can also spread load accordingly. Ensure any cloud provider pooler can handle total load without
+  bottlenecks. For example, Azure Database for PostgreSQL flexible server can optionally deploy PgBouncer, but because PgBouncer is single-threaded, it might bottleneck under
+  heavy load. Use database load balancing across multiple nodes to mitigate this.
+- High availability node requirements might vary by service and differ from Linux package installations.
+- For [GitLab Geo](../geo/_index.md), ensure the service supports cross-region replication.
 
 #### Unsupported database services
 

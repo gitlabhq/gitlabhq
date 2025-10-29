@@ -1586,4 +1586,16 @@ describe('WorkItemDetail component', () => {
 
     expect(findRefetchAlert().classes()).toEqual(['gl-sticky', 'gl-top-0']);
   });
+
+  describe.each([true, false])('when archived is %s', (archived) => {
+    const mockResponse = workItemByIidResponseFactory({ archived });
+    const mockHandler = jest.fn().mockResolvedValue(mockResponse);
+
+    it('passes correct props', async () => {
+      createComponent({ handler: mockHandler });
+      await waitForPromises();
+
+      expect(findStickyHeader().props('archived')).toBe(archived);
+    });
+  });
 });

@@ -489,7 +489,7 @@ EC2ダッシュボードから:
    1. **VPC**: 先ほど作成したVPCである`gitlab-vpc`を選択します。
    1. **Submet(サブネット)**: 先ほど作成したサブネットのリストから`gitlab-private-10.0.1.0`を選択します。
    1. **Auto-assign Public IP(パブリックIPの自動割り当て)**: `Disable`を選択します。
-   1. **Firewall(ファイアウォール): ****Select existing security group(既存のセキュリティグループを選択)**を選択し、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
+   1. **Firewall**: **Select existing security group**を選択し、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
 1. ストレージの場合、ルートボリュームはデフォルトで8 GiBであり、そこにデータを保存しないことを考えると十分なはずです。
 1. すべての設定を確認し、問題なければ、**Launch Instance(インスタンスを起動)**を選択します。
 
@@ -750,7 +750,7 @@ EC2ダッシュボードから:
 1. ルートボリュームはデフォルトで8 GiBで、データはそこに保存しないため十分です。**Configure Security Group(セキュリティグループの設定)**を選択します。
 1. **Select existing security group(既存のセキュリティグループを選択)**にチェックマークを入れ、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
 1. **Network settings(ネットワーク設定)**セクションで:
-   1. **Firewall(ファイアウォール): ****Select existing security group(既存のセキュリティグループを選択)**を選択し、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
+   1. **Firewall(ファイアウォール):** Select existing security group(既存のセキュリティグループを選択)**を選択し、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
 1. **Advanced details(詳細設定)**セクションで:
    1. **IAM instance profile(IAMインスタンスプロファイル):** [先ほど作成](#create-an-iam-role)した`GitLabS3Access`ロールを選択します。
 1. すべての設定を確認し、問題がなければ**Create launch template(起動テンプレートを作成)**を選択します。

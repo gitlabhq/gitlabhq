@@ -1,10 +1,11 @@
 import { GlIntersectionObserver, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { STATE_OPEN } from '~/work_items/constants';
-import { workItemResponseFactory } from 'ee_else_ce_jest/work_items/mock_data';
+import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
+import { issueType, taskType, workItemResponseFactory } from 'ee_else_ce_jest/work_items/mock_data';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
+import ArchivedBadge from '~/issuable/components/archived_badge.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
@@ -28,6 +29,9 @@ describe('WorkItemStickyHeader', () => {
     slots = {},
     isDrawer = false,
     isStickyHeaderShowing = true,
+    archived = false,
+    workItemState = STATE_OPEN,
+    workItemType = taskType,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStickyHeader, {
       propsData: {
@@ -40,13 +44,15 @@ describe('WorkItemStickyHeader', () => {
           movedToWorkItemUrl,
           duplicatedToWorkItemUrl,
           promotedToEpicUrl,
+          workItemType,
         }).data.workItem,
         isStickyHeaderShowing,
         updateInProgress: false,
         showWorkItemCurrentUserTodos: true,
         currentUserTodos: [],
-        workItemState: STATE_OPEN,
+        workItemState,
         isDrawer,
+        archived,
       },
       provide: {
         glFeatures: {
@@ -62,6 +68,7 @@ describe('WorkItemStickyHeader', () => {
   const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
+  const findArchivedBadge = () => wrapper.findComponent(ArchivedBadge);
   const findTodosToggle = () => wrapper.findComponent(TodosToggle);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findWorkItemStateBadge = () => wrapper.findComponent(WorkItemStateBadge);
@@ -265,6 +272,40 @@ describe('WorkItemStickyHeader', () => {
 
       it('renders', () => {
         expect(findLockedBadge().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('archived and status badge', () => {
+    describe.each`
+      archived | workItemState   | archivedBadgeExists | stateBadgeExists | description
+      ${false} | ${undefined}    | ${false}            | ${true}          | ${'when not archived'}
+      ${true}  | ${undefined}    | ${true}             | ${false}         | ${'when archived'}
+      ${true}  | ${STATE_OPEN}   | ${true}             | ${false}         | ${'when archived and work item is open'}
+      ${true}  | ${STATE_CLOSED} | ${true}             | ${false}         | ${'when archived and work item is closed'}
+      ${false} | ${STATE_OPEN}   | ${false}            | ${true}          | ${'when not archived and work item is open'}
+      ${false} | ${STATE_CLOSED} | ${false}            | ${true}          | ${'when not archived and work item is closed'}
+    `('$description', ({ archived, workItemState, archivedBadgeExists, stateBadgeExists }) => {
+      beforeEach(() => {
+        createComponent({ archived, workItemState });
+      });
+
+      it(`${archivedBadgeExists ? 'renders' : 'does not render'} archived badge`, () => {
+        expect(findArchivedBadge().exists()).toBe(archivedBadgeExists);
+      });
+
+      it(`${stateBadgeExists ? 'renders' : 'does not render'} state badge`, () => {
+        expect(findWorkItemStateBadge().exists()).toBe(stateBadgeExists);
+      });
+    });
+
+    describe('when archived', () => {
+      beforeEach(() => {
+        createComponent({ archived: true, workItemType: issueType });
+      });
+
+      it('passes correct issuable type to archived badge', () => {
+        expect(findArchivedBadge().props('issuableType')).toBe('Issue');
       });
     });
   });

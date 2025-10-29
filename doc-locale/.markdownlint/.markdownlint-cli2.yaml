@@ -1,15 +1,19 @@
 ---
-# Base Markdownlint configuration
+# Base Markdownlint configuration for Japanese documentation
 # Extended Markdownlint configuration in doc/.markdownlint/
 # See https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md for explanations of each rule
+
+customRules:
+  - rules/no-four-asterisks.js
+  - rules/no-fullwidth-asterisks.js
+
 config:
   # First, set the default
   default: true
-
-  # Per-rule settings in alphabetical order
+  
   code-block-style:                 # MD046
     style: "fenced"
-  emphasis-style: false             # MD049
+  emphasis-style: false             # MD049 - KEEP DISABLED (original setting)
   header-style:                     # MD003
     style: "atx"
   hr-style:                         # MD035
@@ -27,4 +31,12 @@ config:
   reference-links-images: false     # MD052
   ul-style:                         # MD004
     style: "dash"
-  link-fragments: false            # MD051 - English anchor links in translated text fail
+  link-fragments: false             # MD051 - English anchor links in translated text fail
+  no-space-in-emphasis: true        # MD037
+  
+  # CUSTOM JAPANESE RULES (warnings only)
+  MD-JA001:  # Four consecutive asterisks (****)
+    severity: "warning"
+    
+  MD-JA002:  # Fullwidth asterisks (＊ should be *)
+    severity: "warning"

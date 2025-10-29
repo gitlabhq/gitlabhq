@@ -2,6 +2,7 @@
 import { GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
+import ArchivedBadge from '~/issuable/components/archived_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
@@ -16,6 +17,7 @@ export default {
     HiddenBadge,
     ImportedBadge,
     LockedBadge,
+    ArchivedBadge,
     GlIntersectionObserver,
     TodosToggle,
     ConfidentialityBadge,
@@ -45,6 +47,11 @@ export default {
       default: () => [],
     },
     isDrawer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    archived: {
       type: Boolean,
       required: false,
       default: false,
@@ -109,8 +116,9 @@ export default {
         <div
           class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 @xl/panel:gl-px-6"
         >
+          <archived-badge v-if="archived" :issuable-type="workItemType" />
           <work-item-state-badge
-            v-if="workItemState"
+            v-else-if="workItemState"
             :work-item-state="workItemState"
             :promoted-to-epic-url="workItem.promotedToEpicUrl"
             :duplicated-to-work-item-url="workItem.duplicatedToWorkItemUrl"

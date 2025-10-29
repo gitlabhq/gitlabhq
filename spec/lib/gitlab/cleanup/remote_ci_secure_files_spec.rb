@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Cleanup::RemoteCiSecureFiles, feature_category: :geo_repl
     let(:tracked_file_path) { model_with_file.file.path }
     let(:unknown_path_format_file_path) { 'foo/bar' }
     let(:untracked_valid_file_path) do
-      "#{non_existing_project_hashed_path}/secure_files/123/secret.key"
+      "#{non_existing_project_hashed_path}/secure_files/#{non_existing_record_id}/secret.key"
     end
   end
 

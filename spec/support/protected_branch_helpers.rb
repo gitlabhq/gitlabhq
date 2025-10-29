@@ -47,7 +47,7 @@ module ProtectedBranchHelpers
     within('.dropdown .dropdown-menu.show', visible: true, &block)
 
     # In CE, the dropdown is closed automatically when an element is selected.
-    # Enhanced select is used in EE, therefore an extra click is needed to close the dropdown.
-    select_input.click if select_input['aria-expanded'] == 'true'
+    # Enhanced select is used in EE, therefore we escape to close the dropdown.
+    send_keys :escape if select_input['aria-expanded'] == 'true'
   end
 end

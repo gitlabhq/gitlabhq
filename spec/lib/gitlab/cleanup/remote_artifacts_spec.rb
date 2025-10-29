@@ -12,7 +12,9 @@ RSpec.describe Gitlab::Cleanup::RemoteArtifacts, feature_category: :geo_replicat
     let(:tracked_file_path) { model_with_file.file.path }
     let(:unknown_path_format_file_path) { 'foo/bar' }
     let(:untracked_valid_file_path) do
-      "#{non_existing_project_hashed_path}/2025_04_23/1/2/ci_build_artifacts.zip"
+      prefix = "#{non_existing_project_hashed_path}/2025_04_23/"
+      job_artifact_uploader_path = "#{non_existing_record_id}/#{non_existing_record_id}/ci_build_artifacts.zip"
+      prefix + job_artifact_uploader_path
     end
   end
 

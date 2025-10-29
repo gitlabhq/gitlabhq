@@ -544,25 +544,24 @@ cluster to be used with GitLab.
 
 ### Provide your own PostgreSQL instance
 
-You can optionally use a [third party external service for PostgreSQL](../postgresql/external.md).
+Instead of the Linux package-bundled PostgreSQL, PgBouncer, and Consul service discovery components, you can use a
+[third-party external service for PostgreSQL](../postgresql/external.md).
 
-A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
-and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
-[14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
+Use a reputable provider that runs a [supported PostgreSQL version](../../install/requirements.md#postgresql). These services are known to work well:
 
-See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+- [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal).
+- [Amazon RDS](https://aws.amazon.com/rds/).
+
+For more information, including guidance on high availability and database load balancing, see:
+
+- [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
+- [Best practices for the database services](_index.md#best-practices-for-the-database-services).
 
 If you use a third party external service:
 
-1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
-1. Set up PostgreSQL according to the
-   [database requirements document](../../install/requirements.md#postgresql).
-1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
-   needs privileges to create the `gitlabhq_production` database.
-1. Configure the GitLab application servers with the appropriate details.
-   This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
-1. The number of nodes required to achieve HA can differ, depending on the service, and can differ from the Linux package.
-1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
+1. Set up PostgreSQL according to the [database requirements document](../../install/requirements.md#postgresql).
+1. Configure the required [users and databases](../postgresql/external.md).
+1. Configure the GitLab application servers with the appropriate connection details by following [configure GitLab Rails](#configure-gitlab-rails).
 
 ### Standalone PostgreSQL using the Linux package
 

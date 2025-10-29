@@ -87,6 +87,30 @@ module Users
 
       has_many :protected_tag_create_access_levels, class_name: 'ProtectedTag::CreateAccessLevel',
         dependent: :delete_all
+
+      has_many :packages,
+        class_name: 'Packages::Package',
+        foreign_key: :creator_id,
+        inverse_of: :creator,
+        dependent: :nullify
+
+      has_many :composer_packages,
+        class_name: 'Packages::Composer::Package',
+        foreign_key: :creator_id,
+        inverse_of: :creator,
+        dependent: :nullify
+
+      has_many :debian_group_distributions,
+        class_name: 'Packages::Debian::GroupDistribution',
+        foreign_key: :creator_id,
+        inverse_of: :creator,
+        dependent: :nullify
+
+      has_many :debian_project_distributions,
+        class_name: 'Packages::Debian::ProjectDistribution',
+        foreign_key: :creator_id,
+        inverse_of: :creator,
+        dependent: :nullify
       # rubocop:enable Cop/ActiveRecordDependent
     end
   end

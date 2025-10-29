@@ -1125,6 +1125,7 @@ export default {
               :is-drawer="isDrawer"
               :work-item="workItem"
               :is-sticky-header-showing="isStickyHeaderShowing"
+              :archived="workItem.archived"
               @hideStickyHeader="hideStickyHeader"
               @showStickyHeader="showStickyHeader"
               @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"

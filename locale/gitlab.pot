@@ -29694,6 +29694,9 @@ msgstr ""
 msgid "Geo|LFS Objects"
 msgstr ""
 
+msgid "Geo|Last checksum"
+msgstr ""
+
 msgid "Geo|Last event ID"
 msgstr ""
 
@@ -30025,6 +30028,9 @@ msgid "Geo|Status: %{badge}"
 msgstr ""
 
 msgid "Geo|Storage config"
+msgstr ""
+
+msgid "Geo|Storage: %{size}"
 msgstr ""
 
 msgid "Geo|Succeeded"
@@ -67238,6 +67244,9 @@ msgid "Things to be aware of before transferring:"
 msgstr ""
 
 msgid "Third Party Advisory Link"
+msgstr ""
+
+msgid "This %{issuable} belongs to an archived project and is read-only."
 msgstr ""
 
 msgid "This %{issuable} is hidden because its author has been banned."

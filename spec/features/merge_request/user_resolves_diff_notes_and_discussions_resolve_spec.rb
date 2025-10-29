@@ -326,6 +326,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       end
 
       it 'allows user to quickly scroll to next open thread' do
+        skip 'Test skipped when Project Studio is enabled as job hangs - https://gitlab.com/gitlab-org/gitlab/-/work_items/578295' if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+
         page.within('.discussion-reply-holder', match: :first) do
           find('button[data-testid="resolve-discussion-button"]').click
         end

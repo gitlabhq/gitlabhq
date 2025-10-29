@@ -334,7 +334,6 @@ Returns [`AvailableModels`](#availablemodels).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryaichatavailablemodelsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="queryaichatavailablemodelsrootnamespaceid"></a>`rootNamespaceId` | [`GroupID!`](#groupid) | Global ID of the namespace the user is acting on. |
 
 ### `Query.aiChatContextPresets`
