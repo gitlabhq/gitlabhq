@@ -339,10 +339,12 @@ export default {
           category="tertiary"
           class="user-bar-dropdown-toggle btn-with-notification"
           :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': projectStudioEnabled }"
+          :href="data.link_to_profile"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
           data-track-label="user_profile_menu"
           data-track-property="nav_core_menu"
+          @click.exact.prevent
         >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar

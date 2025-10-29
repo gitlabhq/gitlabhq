@@ -43,3 +43,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Groups::SuperSidebarPanel.prepend_mod_with('Sidebars::Groups::SuperSidebarPanel')

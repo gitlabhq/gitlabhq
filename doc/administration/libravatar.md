@@ -49,7 +49,7 @@ For self-compiled installations:
        # default: https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
        plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
        # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
-       ssl_url: https://seccdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
+       ssl_url: "https://seccdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
    ```
 
 1. Save the file, and then [restart](restart_gitlab.md#self-compiled-installations)

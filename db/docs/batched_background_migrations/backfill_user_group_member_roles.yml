@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillUserGroupMemberRoles
-description: Backfills user_group_member_roles table for members in groups that have a member_role assigned
+description: Backfills user_group_member_roles table for members in groups that have
+  a member_role assigned
 feature_category: permissions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200163
 milestone: '18.4'
 queued_migration_version: 20250821083751
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20251022232242'

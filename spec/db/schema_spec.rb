@@ -331,7 +331,6 @@ RSpec.describe 'Database schema',
       packages_package_files: 16,
       packages_packages: 27,
       project_type_ci_runners: 16,
-      personal_access_tokens: 17, # We will be able to remove 3 indexes added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193375 after https://gitlab.com/gitlab-org/gitlab/-/issues/561260 is complete.
       projects: 55,
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848

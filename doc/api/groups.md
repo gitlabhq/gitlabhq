@@ -2098,3 +2098,334 @@ POST /groups/:id/ldap_sync
 | Attribute | Type                | Required | Description                            |
 | --------- | ------------------- | -------- | -------------------------------------- |
 | `id`      | integer or string   | Yes      | The ID or URL-encoded path of a group. |
+
+## Credentials inventory management
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.6 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+
+{{< /history >}}
+
+View, revoke, and rotate the credentials of enterprise users on GitLab.com.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+### List all personal access tokens for a group
+
+Lists all personal access tokens associated with enterprise users in a top-level group.
+
+```plaintext
+GET /groups/:id/manage/personal_access_tokens
+```
+
+| Attribute          | Type                | Required | Description |
+| ------------------ | ------------------- | -------- | ----------- |
+| `id`               | integer or string   | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
+| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
+| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Test Token",
+    "revoked": false,
+    "created_at": "2020-07-23T14:31:47.729Z",
+    "description": "Test Token description",
+    "scopes": [
+        "api"
+    ],
+    "user_id": 3,
+    "last_used_at": "2021-10-06T17:58:37.550Z",
+    "active": true,
+    "expires_at": "2025-11-08"
+  }
+]
+```
+
+### List all group and project access tokens for a group
+
+Lists all group and project access tokens associated with a top-level-group.
+
+```plaintext
+GET /groups/:id/manage/resource_access_tokens
+```
+
+| Attribute          | Type                | Required | Description |
+| ------------------ | ------------------- | -------- | ----------- |
+| `id`               | integer or string   | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
+| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
+| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 12767703,
+    "name": "Test Group Token",
+    "revoked": false,
+    "created_at": "2025-01-07T00:25:02.128Z",
+    "description": "",
+    "scopes": [
+        "read_registry"
+    ],
+    "user_id": 25365147,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2025-06-19",
+    "access_level": 10,
+    "resource_type": "group",
+    "resource_id": 77449520
+  }
+]
+```
+
+### List all SSH keys for a group
+
+Lists all SSH public keys associated with enterprise users in a top-level-group.
+
+```plaintext
+GET /groups/:id/manage/ssh_keys
+```
+
+| Attribute        | Type                | Required | Description |
+| ---------------- | ------------------- | -------- | ----------- |
+| `id`             | integer or string   | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
+| `created_after`  | datetime (ISO 8601) | No       | If defined, returns SSH keys created after the specified time. |
+| `created_before` | datetime (ISO 8601) | No       | If defined, returns SSH keys created before the specified time. |
+| `expires_before` | datetime (ISO 8601) | No       | If defined, returns SSH keys that expire before the specified time. |
+| `expires_after`  | datetime (ISO 8601) | No       | If defined, returns SSH keys that expire after the specified time. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id":3,
+    "title":"Sample key 3",
+    "created_at":"2024-12-23T05:40:11.891Z",
+    "expires_at":null,
+    "last_used_at":"2024-12-23T05:40:11.891Z",
+    "usage_type":"auth_and_signing",
+    "user_id":3
+  }
+]
+```
+
+### Revoke a personal access token for an enterprise user
+
+Revokes a specified personal access token for an enterprise user.
+
+```plaintext
+DELETE groups/:id/manage/personal_access_tokens/:id
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer or string | Yes | ID of a personal access token or the keyword `self`. |
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens/<personal_access_token_id>"
+```
+
+If successful, returns `204: No Content`.
+
+Other possible responses:
+
+- `400: Bad Request` if not revoked successfully.
+- `401: Unauthorized` if the access token is invalid.
+- `403: Forbidden` if the access token does not have the required permissions.
+
+### Revoke a group or project access token for an enterprise user
+
+Revokes a specified group or project access token for an enterprise user associated with the top-level group.
+
+```plaintext
+DELETE groups/:id/manage/resource_access_tokens/:id
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer or string | Yes | ID of a resource access token or the keyword `self`. |
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens/<personal_access_token_id>"
+```
+
+If successful, returns `204: No Content`.
+
+Other possible responses:
+
+- `400: Bad Request` if not revoked successfully.
+- `401: Unauthorized` if the access token is invalid.
+- `403: Forbidden` if the access token does not have the required permissions.
+
+### Delete an SSH key for an enterprise user
+
+Deletes a specified SSH public key for an enterprise user associated with the top-level group.
+
+```plaintext
+DELETE /groups/:id/manage/keys/:key_id
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
+| `key_id`  | integer | Yes      | ID of existing key.  |
+
+If successful, returns `204: No Content`.
+
+Other possible responses:
+
+- `400: Bad Request` if SSH Key is not deleted successfully.
+- `401: Unauthorized` if the SSH Key is invalid.
+- `403: Forbidden` if the user does not have the required permissions.
+
+### Rotate a personal access token for an enterprise user
+
+Rotates a specified personal access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
+that expires after one week.
+
+```plaintext
+POST groups/:id/manage/personal_access_tokens/:id/rotate
+```
+
+| Attribute | Type      | Required | Description         |
+|-----------|-----------|----------|---------------------|
+| `id` | integer or string | Yes      | ID of a personal access token or the keyword `self`. |
+| `expires_at` | date   | No       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/manage/personal_access_tokens/<personal_access_token_id>/rotate"
+```
+
+Example response:
+
+```json
+{
+    "id": 42,
+    "name": "Rotated Token",
+    "revoked": false,
+    "created_at": "2023-08-01T15:00:00.000Z",
+    "description": "Test Token description",
+    "scopes": ["api"],
+    "user_id": 1337,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2023-08-15",
+    "token": "s3cr3t"
+}
+```
+
+If successful, returns `200: OK`.
+
+Other possible responses:
+
+- `400: Bad Request` if not rotated successfully.
+- `401: Unauthorized` if any of the following conditions are true:
+  - The token does not exist.
+  - The token has expired.
+  - The token was revoked.
+  - You do not have access to the specified token.
+- `403: Forbidden` if the token is not allowed to rotate itself.
+- `404: Not Found` if the user has the Owner role, but the token does not exist.
+- `405: Method Not Allowed` if the token is not a personal access token.
+
+### Rotate a group or project access token for an enterprise user
+
+Rotates a specified group or project access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
+that expires after one week.
+
+```plaintext
+POST groups/:id/manage/resource_access_tokens/:id/rotate
+```
+
+| Attribute | Type      | Required | Description         |
+|-----------|-----------|----------|---------------------|
+| `id` | integer or string | Yes      | ID of a personal access token or the keyword `self`. |
+| `expires_at` | date   | No       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/manage/resource_access_tokens/<resource_access_token_id>/rotate"
+```
+
+Example response:
+
+```json
+{
+    "id": 42,
+    "name": "Rotated Token",
+    "revoked": false,
+    "created_at": "2023-08-01T15:00:00.000Z",
+    "description": "Test Token description",
+    "scopes": ["api"],
+    "user_id": 1337,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2023-08-15",
+    "token": "s3cr3t"
+}
+```
+
+If successful, returns `200: OK`.
+
+Other possible responses:
+
+- `400: Bad Request` if not rotated successfully.
+- `401: Unauthorized` if any of the following conditions are true:
+  - The token does not exist.
+  - The token has expired.
+  - The token was revoked.
+  - You do not have access to the specified token.
+- `403: Forbidden` if the token is not allowed to rotate itself or token is not a bot user token.
+- `404: Not Found` if the user has the Owner role, but the token does not exist.

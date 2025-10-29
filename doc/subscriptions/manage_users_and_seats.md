@@ -91,7 +91,6 @@ When you exceed your subscription limit, you must pay for the additional users
 The cost is based on the maximum number of users during the billing period, not the current number of users.
 
 On GitLab Self-Managed, for trial licenses the users over subscription value is always zero.
-If you do not pay for seats owed before or at the time of renewal, your license key doesn't work.
 
 To avoid unexpected overage charges, you can:
 

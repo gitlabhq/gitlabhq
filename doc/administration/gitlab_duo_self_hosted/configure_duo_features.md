@@ -29,6 +29,7 @@ title: Configure GitLab to access GitLab Duo Self-Hosted
 Prerequisites:
 
 - [Upgrade GitLab to version 17.9 or later](../../update/_index.md).
+- You must be an administrator.
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
@@ -94,10 +95,6 @@ To access the Agent Platform service from your GitLab instance:
 
 You must add a self-hosted model to your GitLab instance to use it with GitLab Duo features.
 
-Prerequisites:
-
-- You must be an administrator.
-
 To add a self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -145,10 +142,6 @@ Some regions are not supported by cross-region inferencing. For these regions, d
 
 ## Configure self-hosted beta models and features
 
-Prerequisites:
-
-- You must be an administrator.
-
 {{< alert type="note" >}}
 
 Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
@@ -164,10 +157,6 @@ To enable self-hosted beta models and features:
 1. Select **Save changes**.
 
 ## Configure GitLab Duo features to use self-hosted models
-
-Prerequisites:
-
-- You must be an administrator.
 
 ### View configured features
 

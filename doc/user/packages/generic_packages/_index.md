@@ -97,7 +97,7 @@ curl --location --user "<username>:<personal_access_token>" \
 With HTTP headers:
 
 ```shell
-curl --location --header  "PRIVATE-TOKEN: <project_access_token>" \
+curl --location --header "PRIVATE-TOKEN: <project_access_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
@@ -117,7 +117,7 @@ curl --location --user "<project_access_token_username>:project_access_token" \
 With HTTP headers:
 
 ```shell
-curl --location --header  "DEPLOY-TOKEN: <deploy_token>" \
+curl --location --header "DEPLOY-TOKEN: <deploy_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
@@ -202,7 +202,7 @@ DIRECTORY_PATH="./files_to_upload"
 for file in "$DIRECTORY_PATH"/*; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
-        curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+        curl --location --header "PRIVATE-TOKEN: $TOKEN" \
              --upload-file "$file" \
              "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$filename"
         echo "Uploaded: $filename"
@@ -251,7 +251,7 @@ DIRECTORY_PATH="./files_to_upload"
 
 find "$DIRECTORY_PATH" -type f | while read -r file; do
     relative_path=${file#"$DIRECTORY_PATH/"}
-    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+    curl --location --header "PRIVATE-TOKEN: $TOKEN" \
          --upload-file "$file" \
          "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$relative_path"
     echo "Uploaded: $relative_path"
@@ -422,7 +422,7 @@ mkdir -p "$OUTPUT_DIR"
 files=("file1.txt" "file2.txt" "subdirectory/file3.txt")
 
 for file in "${files[@]}"; do
-    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+    curl --location --header "PRIVATE-TOKEN: $TOKEN" \
          --output "$OUTPUT_DIR/$file" \
          --create-dirs \
          "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
@@ -443,7 +443,7 @@ download_package:
     - |
       FILES=("file1.txt" "file2.txt" "subdirectory/file3.txt")
       for file in "${FILES[@]}"; do
-        curl --location --header  "JOB-TOKEN: $CI_JOB_TOKEN" \
+        curl --location --header "JOB-TOKEN: $CI_JOB_TOKEN" \
              --output "$file" \
              --create-dirs \
              "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/$file"

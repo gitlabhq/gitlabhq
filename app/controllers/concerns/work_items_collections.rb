@@ -36,6 +36,8 @@ module WorkItemsCollections
   def finder_options
     work_items_collection_params[:state] = (params.permit([:state])[:state].presence || default_state)
 
+    rewrite_type_param!
+
     options = {
       scope: params.permit([:scope])[:scope],
       state: work_items_collection_params[:state],
@@ -95,5 +97,15 @@ module WorkItemsCollections
 
   def work_items_collection_params
     @work_items_collection_params ||= params.permit(WorkItems::WorkItemsFinder.valid_params)
+  end
+
+  def rewrite_type_param!
+    # Handle the translation of type, since the finder expects :issue_types but this is passed as :type in the params
+    types = params.permit(type: [])[:type]
+    work_items_collection_params[:issue_types] = types if types
+
+    return unless work_items_collection_params.dig(:not, :type)
+
+    work_items_collection_params[:not][:issue_types] = work_items_collection_params[:not].delete(:type)
   end
 end

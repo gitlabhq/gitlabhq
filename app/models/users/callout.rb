@@ -117,7 +117,8 @@ module Users
       duo_agent_platform_requested: 113, # EE-only
       email_otp_enrollment_callout: 114,
       merge_request_dashboard_show_drafts: 115,
-      focused_vulnerability_reporting: 116
+      focused_vulnerability_reporting: 116,
+      expired_trial_status_widget: 117 # EE-only
     }
 
     validates :feature_name,

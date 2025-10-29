@@ -143,15 +143,9 @@ export default class SmartInterval {
 
   triggerCallback() {
     this.isLoading = true;
-    this.cfg
-      .callback()
-      .then(() => {
-        this.isLoading = false;
-      })
-      .catch((err) => {
-        this.isLoading = false;
-        throw err;
-      });
+    return Promise.resolve(this.cfg.callback()).finally(() => {
+      this.isLoading = false;
+    });
   }
 
   onWindowVisibilityChange(e) {

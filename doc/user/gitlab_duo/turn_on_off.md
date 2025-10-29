@@ -221,27 +221,6 @@ These features are subject to the [Testing Agreement](https://handbook.gitlab.co
 
 ### On GitLab.com
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-
-{{< /details >}}
-
-{{< tabs >}}
-
-{{< tab title="In 17.4 and later" >}}
-
-In GitLab 17.4 and later, follow these instructions to
-turn on GitLab Duo experimental and beta features for your group on GitLab.com.
-
-{{< alert type="note" >}}
-
-In GitLab 17.4 to 17.6, you can change this setting for top-level groups only. (Subgroups do not have the required settings.)
-In GitLab 17.7 and later, the settings are available for all groups.
-
-{{< /alert >}}
-
 Prerequisites:
 
 - You must have the Owner role for the top-level group.
@@ -253,23 +232,6 @@ To turn on GitLab Duo experiment and beta features for a top-level group:
 1. Under **GitLab Duo** section, select **Change configuration**.
 1. Under **Feature preview**, select **Turn on experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
-
-{{< /tab >}}
-
-{{< tab title="In 17.3 and earlier" >}}
-
-In GitLab 17.3 and earlier, follow these instructions to
-turn on GitLab Duo experimental and beta features for your group on GitLab.com.
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
-1. Expand **Permissions and group features**.
-1. Under **GitLab Duo experiment and beta features**, select the **Use experiment and beta GitLab Duo features** checkbox.
-1. Select **Save changes**.
-
-{{< /tab >}}
-
-{{< /tabs >}}
 
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.

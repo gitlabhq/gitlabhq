@@ -531,7 +531,7 @@ We need a preconfigured, custom GitLab AMI to use in our launch configuration la
 
 From the EC2 dashboard:
 
-1. Use the following section titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI and select **Launch**.
+1. Use the following section titled [Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws) to find the correct AMI and select **Launch**.
 1. In the **Name and tags** section, set the **Name** to `GitLab`.
 1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../requirements.md) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
 1. In the **Key pair** section, select **Create new key pair**.

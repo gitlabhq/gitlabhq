@@ -13,7 +13,7 @@ import updateDockerHubCredentialsMutation from '~/packages_and_registries/settin
 import {
   dependencyProxySettings as dependencyProxySettingsMock,
   dependencyProxySettingMutationMock,
-} from 'ee_else_ce_jest/packages_and_registries/settings/group/mock_data';
+} from '../mock_data';
 
 describe('DockerHubAuthenticationSection', () => {
   let wrapper;

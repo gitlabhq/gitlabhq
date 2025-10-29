@@ -69568,6 +69568,9 @@ msgstr ""
 msgid "TrialWidget|GitLab Duo Pro Trial"
 msgstr ""
 
+msgid "TrialWidget|GitLab Ultimate trial"
+msgstr ""
+
 msgid "TrialWidget|Learn more"
 msgstr ""
 
@@ -69590,6 +69593,9 @@ msgid "TrialWidget|Your trial of GitLab Duo Enterprise has ended"
 msgstr ""
 
 msgid "TrialWidget|Your trial of GitLab Duo Pro has ended"
+msgstr ""
+
+msgid "TrialWidget|Your trial of GitLab Ultimate has ended"
 msgstr ""
 
 msgid "TrialWidget|Your trial of Ultimate with GitLab Duo Enterprise has ended"
@@ -72725,7 +72731,7 @@ msgstr ""
 msgid "VirtualRegistry|Edit upstream %{name}"
 msgstr ""
 
-msgid "VirtualRegistry|Enable Virtual Registry"
+msgid "VirtualRegistry|Enable virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
@@ -72941,9 +72947,6 @@ msgid "VirtualRegistry|Username (optional)"
 msgstr ""
 
 msgid "VirtualRegistry|View registries"
-msgstr ""
-
-msgid "VirtualRegistry|Virtual Registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registry"

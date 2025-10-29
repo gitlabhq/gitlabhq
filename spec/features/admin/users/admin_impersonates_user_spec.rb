@@ -128,7 +128,7 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
         it 'logs in as the user when impersonate is clicked', :js do
           subject
 
-          expect(page).to have_button("#{another_user.name} user’s menu")
+          expect(page).to have_link("#{another_user.name} user’s menu")
         end
 
         it 'sees impersonation log out icon', :js do
@@ -182,7 +182,7 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
         it 'logs out of impersonated user back to original user' do
           subject
 
-          expect(page).to have_button("#{current_user.name} user’s menu")
+          expect(page).to have_link("#{current_user.name} user’s menu")
         end
 
         it 'is redirected back to the impersonated users page in the admin after stopping' do

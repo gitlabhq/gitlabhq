@@ -545,7 +545,7 @@ When rendered, the example looks similar to:
 ---
 
 CommonMark ignores blank lines between ordered and unordered list items, and considers them part of a single list. The items are rendered as a
-_[loose](https://spec.commonmark.org/0.30/#loose)_ list. Each list item is enclosed in a paragraph tag and therefore has paragraph spacing and margins.
+[loose](https://spec.commonmark.org/0.30/#loose) list. Each list item is enclosed in a paragraph tag and therefore has paragraph spacing and margins.
 This makes the list look like there is extra spacing between each item.
 
 For example:

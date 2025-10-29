@@ -72,7 +72,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/lib/sidebars/groups/menus/security_compliance_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/wiki_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/work_item_epics_menu_spec.rb'
-    - 'ee/spec/lib/sidebars/groups/super_sidebar_panel_spec.rb'
     - 'ee/spec/mailers/ci_minutes_usage_mailer_spec.rb'
     - 'ee/spec/mailers/credentials_inventory_mailer_spec.rb'
     - 'ee/spec/mailers/devise_mailer_spec.rb'

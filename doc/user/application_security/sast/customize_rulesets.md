@@ -24,11 +24,11 @@ repository being scanned.
 
 ### Customization options by analyzer
 
-| Customization                                                                                           | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep             | [Other Analyzers](analyzers.md#official-analyzers) |
-|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|----------------------------------------------------|
-| [Disable predefined rules](#disable-predefined-rules)                                                   | {{< icon name="check-circle-filled" >}} Yes                                                                                                                                                              | {{< icon name="check-circle-filled" >}} Yes                        | {{< icon name="check-circle-filled" >}} Yes                                                |
-| [Override metadata of predefined rules](#override-metadata-of-predefined-rules)                         | {{< icon name="check-circle-filled" >}} Yes                                                                                                                                                              | {{< icon name="check-circle-filled" >}} Yes                        | {{< icon name="check-circle-filled" >}} Yes                                                |
-| [Replace predefined rules with custom configurations using passthroughs](#build-a-custom-configuration) | Supports modifying the behavior of predefined non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs | {{< icon name="dash-circle" >}} No                                                 |
+| Customization                                                                   | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep                              | [Other Analyzers](analyzers.md#official-analyzers) |
+|---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|----------------------------------------------------|
+| [Disable predefined rules](#disable-predefined-rules)                           | {{< icon name="check-circle-filled" >}} Yes                                                                                                                      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes        |
+| [Override metadata of predefined rules](#override-metadata-of-predefined-rules) | {{< icon name="check-circle-filled" >}} Yes                                                                                                                      | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes        |
+| [Replace or add to the predefined rules](#replace-or-add-to-the-predefined-rules)                   | Supports modifying the behavior of predefined non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs                  | {{< icon name="dash-circle" >}} No                 |
 
 ## Disable predefined rules
 
@@ -57,11 +57,13 @@ or choose a different message to display in the vulnerability report.
 See the [Schema](#schema) and [Examples](#examples) sections for information on how
 to configure this behavior.
 
-## Build a custom configuration
+## Replace or add to the predefined rules
 
-You can replace the [GitLab-maintained ruleset](rules.md) for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) and [GitLab Advanced SAST](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast) analyzer with your own rules.
+You can replace or add to the [predefined ruleset](rules.md) for the Semgrep-based SAST analyzer and GitLab
+Advanced SAST analyzer. By default, defining a custom ruleset replaces the predefined ruleset. To
+add to the predefined ruleset you must set `keepdefaultrules` to `true` in your [ruleset configuration file](#create-the-configuration-file).
 
-You provide your customizations via passthroughs, which are composed into a
+You provide your customizations by using passthroughs, which are composed into a
 passthrough chain at runtime and evaluated to produce a complete configuration. The
 underlying scanner is then executed against this new configuration.
 
@@ -345,7 +347,7 @@ analyzer fails to parse your custom ruleset unless the indentation is represente
 
 ## Examples
 
-### Build a custom configuration using a file passthrough for GitLab Advanced SAST
+### Replace the predefined rules of GitLab Advanced SAST
 
 With the following custom ruleset configuration, the predefined ruleset
 of the GitLab Advanced SAST analyzer is replaced with a custom ruleset contained in
@@ -458,7 +460,7 @@ With the following custom ruleset configuration, vulnerabilities found with
       severity = "Critical"
 ```
 
-### Build a custom configuration using a file passthrough for `semgrep`
+### Replace or add to the predefined rules of `semgrep`
 
 With the following custom ruleset configuration, the predefined ruleset
 of the `semgrep` analyzer is replaced with a custom ruleset contained in

@@ -63,7 +63,7 @@ To set up SSO with Azure as your identity provider:
 
 1. You should set the following attributes:
    - **Unique User Identifier (Name ID)** to `user.objectID`.
-      - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](#manage-user-saml-identity).
+     - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](#manage-user-saml-identity).
    - **Additional claims** to [supported attributes](#configure-assertions).
 
 1. Make sure the identity provider is set to have provider-initiated calls
@@ -453,12 +453,12 @@ user is an [enterprise user](../../enterprise_user/_index.md) of the group.
 
 #### Supported user attributes
 
-- **can_create_group** - `true` or `false` to indicate whether an enterprise user can create
+- `can_create_group` - `true` or `false` to indicate whether an enterprise user can create
   new top-level groups. Default is `true`.
-- **projects_limit** - The total number of personal projects an enterprise user can create.
+- `projects_limit` - The total number of personal projects an enterprise user can create.
   A value of `0` means the user cannot create new projects in their personal
   namespace. Default is `100000`.
-- **SessionNotOnOrAfter** - An ISO 8601 timestamp value that indicates when to end the user SAML session.
+- `SessionNotOnOrAfter` - An ISO 8601 timestamp value that indicates when to end the user SAML session.
 
 #### Example SAML response
 

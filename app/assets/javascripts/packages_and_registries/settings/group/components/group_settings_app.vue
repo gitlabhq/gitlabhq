@@ -1,13 +1,10 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import VirtualRegistriesSetting from 'ee_component/packages_and_registries/settings/group/components/virtual_registries_setting.vue';
 import { __ } from '~/locale';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
 import PackagesForwardingSettings from '~/packages_and_registries/settings/group/components/packages_forwarding_settings.vue';
 import DependencyProxySettings from '~/packages_and_registries/settings/group/components/dependency_proxy_settings.vue';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
 
 export default {
@@ -17,9 +14,8 @@ export default {
     PackagesSettings,
     PackagesForwardingSettings,
     DependencyProxySettings,
-    VirtualRegistriesSetting,
   },
-  mixins: [glAbilitiesMixin(), glFeatureFlagMixin(), glLicensedFeaturesMixin()],
+  mixins: [glAbilitiesMixin()],
   inject: ['groupPath'],
   apollo: {
     group: {
@@ -28,6 +24,9 @@ export default {
         return {
           fullPath: this.groupPath,
         };
+      },
+      context: {
+        batchKey: 'GroupPackagesSettings',
       },
     },
   },
@@ -47,19 +46,8 @@ export default {
     dependencyProxyImageTtlPolicy() {
       return this.group?.dependencyProxyImageTtlPolicy || {};
     },
-    virtualRegistriesSetting() {
-      return this.group?.virtualRegistriesSetting || {};
-    },
     isLoading() {
       return this.$apollo.queries.group.loading;
-    },
-    shouldRenderVirtualRegistriesSetting() {
-      return (
-        this.glFeatures.mavenVirtualRegistry &&
-        this.glFeatures.uiForVirtualRegistries &&
-        this.glLicensedFeatures.packagesVirtualRegistry &&
-        this.glAbilities.adminVirtualRegistry
-      );
     },
   },
   methods: {
@@ -88,14 +76,11 @@ export default {
       {{ alertMessage }}
     </gl-alert>
 
-    <virtual-registries-setting
-      v-if="shouldRenderVirtualRegistriesSetting"
-      id="virtual-registries-setting"
-      :virtual-registries-setting="virtualRegistriesSetting"
-      :is-loading="isLoading"
-      @success="handleSuccess"
-      @error="handleError"
-    />
+    <slot
+      name="virtual-registries-setting"
+      :handle-success="handleSuccess"
+      :handle-error="handleError"
+    ></slot>
 
     <packages-settings
       id="packages-settings"

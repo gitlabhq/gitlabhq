@@ -153,7 +153,7 @@ Courier, which we install later to add IMAP authentication, requires mailboxes t
 
 1. Test the new setup:
 
-   1. Follow steps 1 and 2 of _[Test the out-of-the-box setup](#test-the-out-of-the-box-setup)_.
+   1. Follow steps 1 and 2 of [Test the out-of-the-box setup](#test-the-out-of-the-box-setup).
    1. Check if the `incoming` user received the email:
 
       ```shell

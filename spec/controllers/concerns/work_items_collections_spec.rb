@@ -116,5 +116,21 @@ RSpec.describe WorkItemsCollections, feature_category: :team_planning do
         })
       end
     end
+
+    context 'with type filtering' do
+      let(:params) { { type: %w[task incident] } }
+
+      it 'mutates the search into a filter by type' do
+        is_expected.to include({ issue_types: %w[task incident] })
+      end
+    end
+
+    context 'with negated type filtering' do
+      let(:params) { { not: { type: %w[task incident] } } }
+
+      it 'mutates the search into a filter by type' do
+        is_expected.to include({ not: { issue_types: %w[task incident] } })
+      end
+    end
   end
 end

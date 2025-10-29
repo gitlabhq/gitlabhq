@@ -197,4 +197,17 @@ describe('SmartInterval', () => {
       expect(interval.cfg.immediateExecution).toBe(false);
     });
   });
+
+  it('calls non-promise callback', async () => {
+    const callbackMock = jest.fn();
+    interval = createDefaultSmartInterval({
+      callback: callbackMock,
+    });
+
+    jest.runOnlyPendingTimers();
+
+    await waitForPromises();
+
+    expect(callbackMock).toHaveBeenCalled();
+  });
 });

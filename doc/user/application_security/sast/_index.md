@@ -634,9 +634,12 @@ variables:
 
 ### Scan other languages with the Semgrep-based analyzer
 
-You can customize the Semgrep-based SAST analyzer to scan languages that are not supported by a GitLab-managed ruleset.
-However, because GitLab does not provide rulesets for these other languages, you must provide a [custom ruleset](customize_rulesets.md#build-a-custom-configuration) to cover them.
-You must also modify the `rules` of the `semgrep-sast` CI/CD job so that the job runs when the relevant files are modified.
+You can customize the Semgrep-based SAST analyzer to scan languages that are not supported by a
+GitLab-managed ruleset. However, because GitLab does not provide rulesets for these other languages,
+you must
+[replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-predefined-rules)
+to cover them. You must also modify the `rules` of the `semgrep-sast` CI/CD job so that the job runs
+when the relevant files are modified.
 
 #### Scan a Rust application
 
@@ -656,7 +659,7 @@ For example, to scan a Rust application, you must:
        target = "rust.yml"
    ```
 
-   Read more on [customizing rulesets](customize_rulesets.md#build-a-custom-configuration).
+   For more details, see [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-predefined-rules).
 
 1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files. Define the following in the `.gitlab-ci.yml` file:
 

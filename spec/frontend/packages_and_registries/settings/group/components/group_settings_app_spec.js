@@ -17,7 +17,7 @@ import {
   packageSettings,
   dependencyProxySettings,
   dependencyProxyImageTtlPolicy,
-} from 'ee_else_ce_jest/packages_and_registries/settings/group/mock_data';
+} from '../mock_data';
 
 jest.mock('~/alert');
 

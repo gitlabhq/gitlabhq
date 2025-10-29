@@ -239,6 +239,7 @@ Here is an example Git tag:
 ```plaintext
 Ready for release after security fix.
 /tag v2.1.1 Security patch release
+```
 
 This comment creates a Git tag named `v2.1.1` pointing to the commit, with the
 message "Security patch release".

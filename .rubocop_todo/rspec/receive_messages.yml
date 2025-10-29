@@ -64,7 +64,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/lib/gitlab/vulnerability_scanning/finding_builder_spec.rb'
     - 'ee/spec/lib/google_cloud/artifact_registry/client_spec.rb'
     - 'ee/spec/lib/omni_auth/strategies/group_saml_spec.rb'
-    - 'ee/spec/lib/sidebars/groups/super_sidebar_panel_spec.rb'
     - 'ee/spec/migrations/geo/resync_direct_upload_job_artifact_registry_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'
     - 'ee/spec/models/ci/build_spec.rb'
