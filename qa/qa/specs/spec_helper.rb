@@ -53,7 +53,7 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
   config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
 
-  unless QA::Runtime::Env.dry_run
+  unless QA::Runtime::Env.dry_run || config.dry_run?
     config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
     config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
 

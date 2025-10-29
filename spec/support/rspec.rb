@@ -84,15 +84,15 @@ RSpec.configure do |config|
     end
   end
 
-  if ENV["CI"] && ENV["GLCI_EXPORT_TEST_METRICS"] == "true"
-    GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |config|
-      config.run_type = "backend-rspec-tests"
+  if (ENV["CI"] && ENV["GLCI_EXPORT_TEST_METRICS"] == "true") && !config.dry_run?
+    GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |exporter_config|
+      exporter_config.run_type = "backend-rspec-tests"
 
-      config.test_retried_proc = ->(_example) {
+      exporter_config.test_retried_proc = ->(_example) {
         ENV["RSPEC_RETRY_PROCESS"] == "true"
       }
 
-      config.custom_metrics_proc = ->(_example) {
+      exporter_config.custom_metrics_proc = ->(_example) {
         default_branch = ENV["CI_COMMIT_REF_NAME"] == ENV["CI_DEFAULT_BRANCH"]
         {
           default_branch_pipeline: default_branch,
@@ -101,7 +101,7 @@ RSpec.configure do |config|
         }
       }
 
-      config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
+      exporter_config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
         database: ENV["GLCI_CLICKHOUSE_METRICS_DB"],
         table_name: ENV["GLCI_CLICKHOUSE_METRICS_TABLE"],
         url: ENV["GLCI_CLICKHOUSE_METRICS_URL"],

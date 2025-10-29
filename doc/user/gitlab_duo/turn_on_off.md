@@ -110,7 +110,8 @@ To change GitLab Duo availability for the top-level group:
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -127,7 +128,8 @@ To change GitLab Duo availability for a group or subgroup:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -144,7 +146,8 @@ To change GitLab Duo availability for a project:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
-1. Turn the **Allow flow execution** toggle on or off.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 ### On GitLab Self-Managed
@@ -164,7 +167,8 @@ To change GitLab Duo availability for the instance:
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this instance**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the entire instance.
@@ -181,7 +185,8 @@ To change GitLab Duo availability for a group or subgroup:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
-1. Select or clear the **Allow flow execution** checkbox.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -198,7 +203,8 @@ To change GitLab Duo availability for a project:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
-1. Turn the **Allow flow execution** toggle on or off.
+1. Use the **Allow flow execution** toggle to control whether agents can run in the GitLab UI.
+   When turned on, agents execute in CI/CD pipelines and consume compute minutes.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the project.

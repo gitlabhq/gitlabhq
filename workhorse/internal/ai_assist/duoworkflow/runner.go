@@ -21,6 +21,7 @@ import (
 )
 
 const wsCloseTimeout = 5 * time.Second
+const wsStopWorkflowTimeout = 10 * time.Second
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
@@ -55,6 +56,7 @@ type runner struct {
 	wf          workflowStream
 	client      *Client
 	sendMu      sync.Mutex
+	mcpManager  mcpManager
 }
 
 func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
@@ -70,6 +72,12 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 		return nil, fmt.Errorf("failed to initialize stream: %v", err)
 	}
 
+	mcpManager, err := newMcpManager(rails, r, cfg.McpServers)
+	if err != nil {
+		// Log the error while the feature is in development
+		log.WithRequest(r).WithError(err).Info("failed to initialize MCP server(s)")
+	}
+
 	return &runner{
 		rails:       rails,
 		token:       cfg.Headers["x-gitlab-oauth-token"],
@@ -77,6 +85,7 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 		conn:        conn,
 		wf:          wf,
 		client:      client,
+		mcpManager:  mcpManager,
 	}, nil
 }
 
@@ -114,7 +123,7 @@ func (r *runner) handleWebSocketMessages(ctx context.Context, errCh chan<- error
 				case <-ctx.Done():
 					errCh <- nil
 					return
-				case <-time.After(wsCloseTimeout):
+				case <-time.After(wsStopWorkflowTimeout):
 					errCh <- fmt.Errorf("handleWebSocketMessages: workflow didn't stop on time")
 					return
 				}
@@ -154,7 +163,7 @@ func (r *runner) Close() error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 
-	return errors.Join(r.wf.CloseSend(), r.client.Close(), r.closeWebSocketConnection())
+	return errors.Join(r.wf.CloseSend(), r.client.Close(), r.closeWebSocketConnection(), r.mcpManager.Close())
 }
 
 func (r *runner) closeWebSocketConnection() error {
@@ -189,6 +198,10 @@ func (r *runner) handleWebSocketMessage(message []byte) error {
 		return fmt.Errorf("handleWebSocketMessage: failed to unmarshal a WS message: %v", err)
 	}
 
+	if startReq := response.GetStartRequest(); startReq != nil {
+		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
+	}
+
 	log.WithContextFields(r.originalReq.Context(), log.Fields{
 		"payload_size": proto.Size(response),
 		"event_type":   fmt.Sprintf("%T", response.Response),
@@ -221,8 +234,8 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 		if err != nil {
 			return fmt.Errorf("handleAgentAction: failed to perform API call: %v", err)
 		}
-
 		statusCode := event.GetActionResponse().GetHttpResponse().StatusCode
+
 		log.WithContextFields(r.originalReq.Context(), log.Fields{
 			"path":                 action.GetRunHTTPRequest().Path,
 			"method":               action.GetRunHTTPRequest().Method,
@@ -232,13 +245,39 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 			"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
 			"request_id":           action.GetRequestID(),
 		}).Info("Sending HTTP response event")
+
 		if err := r.threadSafeSend(event); err != nil {
 			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
 		}
+
 		log.WithContextFields(r.originalReq.Context(), log.Fields{
 			"path": action.GetRunHTTPRequest().Path,
 		}).Info("Successfully sent HTTP response event")
+	case *pb.Action_RunMCPTool:
+		mcpTool := action.GetRunMCPTool()
 
+		// If a tool is not recongnized, propagate the message to the client
+		// It's possible when a user has local MCP servers configured in IDE
+		if !r.mcpManager.HasTool(mcpTool.Name) {
+			return r.sendActionToWs(action)
+		}
+		event, err := r.mcpManager.CallTool(ctx, action)
+		if err != nil {
+			return fmt.Errorf("handleAgentAction: failed to call MCP tool: %v", err)
+		}
+
+		log.WithContextFields(ctx, log.Fields{
+			"request_id":           action.GetRequestID(),
+			"name":                 mcpTool.Name,
+			"args_size":            len(mcpTool.Args),
+			"payload_size":         proto.Size(event),
+			"event_type":           fmt.Sprintf("%T", event.Response),
+			"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
+		}).Info("Sending MCP tool response")
+
+		if err := r.threadSafeSend(event); err != nil {
+			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
+		}
 	default:
 		return r.sendActionToWs(action)
 	}

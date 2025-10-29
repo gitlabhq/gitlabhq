@@ -131,6 +131,7 @@ linters:
             - github.com/jpillora/backoff
             - github.com/sony/gobreaker/v2
             - gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb
+            - github.com/modelcontextprotocol/go-sdk
             - github.com/go-redsync/redsync
             - github.com/go-redsync/redsync/v4/redis/goredis/v9
             # gRPC and Protocol Buffers

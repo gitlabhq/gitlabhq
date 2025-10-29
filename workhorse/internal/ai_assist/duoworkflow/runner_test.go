@@ -116,6 +116,56 @@ func (m *mockWorkflowStream) CloseSend() error {
 	return nil
 }
 
+type mockMcpManager struct {
+	tools               []*pb.McpTool
+	hasToolResult       bool
+	callToolResult      *pb.ClientEvent
+	callToolError       error
+	closeError          error
+	callToolInvocations []struct {
+		name string
+		args string
+	}
+}
+
+func (m *mockMcpManager) HasTool(_ string) bool {
+	if m == nil {
+		return false
+	}
+
+	return m.hasToolResult
+}
+
+func (m *mockMcpManager) Tools() []*pb.McpTool {
+	if m == nil {
+		return nil
+	}
+
+	return m.tools
+}
+
+func (m *mockMcpManager) CallTool(_ context.Context, action *pb.Action) (*pb.ClientEvent, error) {
+	mcpTool := action.GetRunMCPTool()
+
+	m.callToolInvocations = append(m.callToolInvocations, struct {
+		name string
+		args string
+	}{name: mcpTool.Name, args: mcpTool.Args})
+
+	if m.callToolError != nil {
+		return nil, m.callToolError
+	}
+	return m.callToolResult, nil
+}
+
+func (m *mockMcpManager) Close() error {
+	if m == nil {
+		return nil
+	}
+
+	return m.closeError
+}
+
 func Test_newRunner(t *testing.T) {
 	server := setupTestServer(t)
 	mockConn := &mockWebSocketConn{}
@@ -337,7 +387,9 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		name           string
 		message        []byte
 		sendError      error
+		mcpManager     *mockMcpManager
 		expectedErrMsg string
+		expectMcpTools bool
 	}{
 		{
 			name:           "invalid json",
@@ -361,6 +413,24 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			message:        []byte(`{"type": "test"}`),
 			expectedErrMsg: "",
 		},
+		{
+			name:    "start request with mcp tools",
+			message: []byte(`{"startRequest": {"goal": "test goal", "mcpTools": [{"name": "get_issue"}]}}`),
+			mcpManager: &mockMcpManager{
+				tools: []*pb.McpTool{
+					{Name: "test_tool", Description: "A test tool"},
+				},
+			},
+			expectMcpTools: true,
+			expectedErrMsg: "",
+		},
+		{
+			name:           "start request without mcp manager",
+			message:        []byte(`{"startRequest": {"goal": "test goal"}}`),
+			mcpManager:     nil,
+			expectMcpTools: false,
+			expectedErrMsg: "",
+		},
 	}
 
 	for _, tt := range tests {
@@ -379,6 +449,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 				originalReq: &http.Request{},
 				conn:        &mockWebSocketConn{},
 				wf:          mockWf,
+				mcpManager:  tt.mcpManager,
 			}
 
 			err := r.handleWebSocketMessage(tt.message)
@@ -388,6 +459,16 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 				require.Contains(t, err.Error(), tt.expectedErrMsg)
 			} else {
 				require.NoError(t, err)
+
+				if tt.expectMcpTools {
+					require.Len(t, mockWf.sendEvents, 1)
+					startReq := mockWf.sendEvents[0].GetStartRequest()
+					require.NotNil(t, startReq)
+					require.Len(t, startReq.McpTools, 2)
+					assert.Equal(t, "get_issue", startReq.McpTools[0].Name)
+					assert.Equal(t, "test_tool", startReq.McpTools[1].Name)
+					assert.Equal(t, "A test tool", startReq.McpTools[1].Description)
+				}
 			}
 		})
 	}
@@ -399,9 +480,11 @@ func TestRunner_handleAgentAction(t *testing.T) {
 		action         *pb.Action
 		wsWriteError   error
 		wfSendError    error
+		mcpManager     *mockMcpManager
 		expectedErrMsg string
 		shouldCallWS   bool
 		shouldCallWF   bool
+		shouldCallMcp  bool
 	}{
 		{
 			name: "successful HTTP request action",
@@ -475,6 +558,82 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			},
 			shouldCallWS: true,
 		},
+		{
+			name: "MCP tool action with mcp manager",
+			action: &pb.Action{
+				RequestID: "req-mcp-123",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "gitlab_get_issue",
+						Args: `{"issue_id": "123"}`,
+					},
+				},
+			},
+			mcpManager: &mockMcpManager{
+				hasToolResult: true,
+				callToolResult: &pb.ClientEvent{
+					Response: &pb.ClientEvent_ActionResponse{
+						ActionResponse: &pb.ActionResponse{
+							ResponseType: &pb.ActionResponse_PlainTextResponse{
+								PlainTextResponse: &pb.PlainTextResponse{
+									Response: `{"id": 123, "title": "Test Issue"}`,
+								},
+							},
+						},
+					},
+				},
+			},
+			shouldCallMcp: true,
+			shouldCallWF:  true,
+		},
+		{
+			name: "MCP tool action without mcp manager",
+			action: &pb.Action{
+				RequestID: "req-mcp-no-manager",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "gitlab_get_issue",
+						Args: `{"issue_id": "123"}`,
+					},
+				},
+			},
+			mcpManager:   nil,
+			shouldCallWS: true,
+		},
+		{
+			name: "MCP tool action with tool not recognized",
+			action: &pb.Action{
+				RequestID: "req-mcp-unknown",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "unknown_tool",
+						Args: `{"param": "value"}`,
+					},
+				},
+			},
+			mcpManager: &mockMcpManager{
+				hasToolResult: false,
+			},
+			shouldCallWS: true,
+		},
+		{
+			name: "MCP tool action with call error",
+			action: &pb.Action{
+				RequestID: "req-mcp-error",
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{
+						Name: "gitlab_get_issue",
+						Args: `{"issue_id": "123"}`,
+					},
+				},
+			},
+			mcpManager: &mockMcpManager{
+				hasToolResult: true,
+				callToolError: errors.New("mcp call failed"),
+			},
+			shouldCallMcp:  true,
+			expectedErrMsg: "handleAgentAction: failed to call MCP tool: mcp call failed",
+		},
 	}
 
 	for _, tt := range tests {
@@ -507,6 +666,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				originalReq: &http.Request{},
 				conn:        mockConn,
 				wf:          mockWf,
+				mcpManager:  tt.mcpManager,
 			}
 
 			ctx := context.Background()
@@ -528,11 +688,20 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			if tt.shouldCallWF {
 				require.Len(t, sendEvents, 1, "Expected one workflow event to be sent")
 
-				response := sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse
-				responseBody := response.ResponseType.(*pb.ActionResponse_HttpResponse).HttpResponse.Body
-				require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, responseBody)
+				if tt.action.GetRunHTTPRequest() != nil {
+					response := mockWf.sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse
+					responseBody := response.ResponseType.(*pb.ActionResponse_HttpResponse).HttpResponse.Body
+					require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, responseBody)
+				}
 			} else {
 				require.Empty(t, sendEvents)
+			}
+
+			if tt.shouldCallMcp {
+				require.Len(t, tt.mcpManager.callToolInvocations, 1, "Expected MCP tool to be called")
+				mcpAction := tt.action.GetRunMCPTool()
+				require.Equal(t, mcpAction.Name, tt.mcpManager.callToolInvocations[0].name)
+				require.Equal(t, mcpAction.Args, tt.mcpManager.callToolInvocations[0].args)
 			}
 		})
 	}
@@ -597,6 +766,67 @@ func TestRunner_closeWebSocketConnection(t *testing.T) {
 				require.EqualError(t, err, tt.expectedErrMsg)
 			} else {
 				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestRunner_sendActionToWs(t *testing.T) {
+	tests := []struct {
+		name           string
+		action         *pb.Action
+		writeError     error
+		expectedErrMsg string
+	}{
+		{
+			name: "successful send",
+			action: &pb.Action{
+				RequestID: "req-123",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			expectedErrMsg: "",
+		},
+		{
+			name: "write error",
+			action: &pb.Action{
+				RequestID: "req-456",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			writeError:     errors.New("write failed"),
+			expectedErrMsg: "sendActionToWs: failed to send WS message: write failed",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockConn := &mockWebSocketConn{
+				writeError: tt.writeError,
+			}
+
+			testURL, _ := url.Parse("http://example.com")
+			r := &runner{
+				rails: &api.API{
+					Client: &http.Client{},
+					URL:    testURL,
+				},
+				conn: mockConn,
+			}
+
+			err := r.sendActionToWs(tt.action)
+
+			if tt.expectedErrMsg != "" {
+				require.EqualError(t, err, tt.expectedErrMsg)
+			} else {
+				require.NoError(t, err)
+				require.Len(t, mockConn.writeMessages, 1)
 			}
 		})
 	}

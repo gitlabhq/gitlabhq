@@ -24,6 +24,7 @@ require (
 	github.com/johannesboyne/gofakes3 v0.0.0-20240701191259-edd0227ffc37
 	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.2.0
+	github.com/modelcontextprotocol/go-sdk v0.7.0
 	github.com/prometheus/client_golang v1.23.0
 	github.com/redis/go-redis/v9 v9.10.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
@@ -101,6 +102,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/flatbuffers v25.2.10+incompatible // indirect
+	github.com/google/jsonschema-go v0.3.0 // indirect
 	github.com/google/pprof v0.0.0-20240711041743-f6c9dda6c6da // indirect
 	github.com/google/s2a-go v0.1.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -141,6 +143,7 @@ require (
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
+	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	github.com/zeebo/errs v1.4.0 // indirect
 	gitlab.com/gitlab-org/go/reopen v1.0.0 // indirect
