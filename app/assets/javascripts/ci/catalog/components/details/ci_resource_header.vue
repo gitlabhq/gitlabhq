@@ -196,12 +196,7 @@ export default {
       v-if="isLoadingData"
       class="gl-animate-skeleton-loader gl-my-3 gl-h-4 !gl-max-w-20 gl-rounded-base"
     ></div>
-    <markdown
-      v-else-if="resource.description"
-      class="gl-mb-3"
-      :markdown="resource.description"
-      :with-images="true"
-    />
+    <markdown v-else-if="resource.description" class="gl-mb-3" :markdown="resource.description" />
     <topic-badges v-if="hasTopics" :topics="resource.topics" :show-label="false" class="gl-mb-5" />
     <abuse-category-selector
       v-if="hasLatestVersion && isReportAbuseDrawerOpen && reportAbusePath"

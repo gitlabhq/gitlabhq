@@ -24,7 +24,7 @@
       .gl-flex.gl-shrink-0.gl-gap-3.gl-items-center.gl-justify-end.gl-text-sm.gl-whitespace-nowrap{ class: "@xl/panel:gl-basis-[17rem]" }
         -# RELEASES
         - recent_releases, total_count, more_count = recent_releases_with_counts(milestone, current_user)
-        - unless total_count == 0
+        - if total_count >= 1 && recent_releases.size >= 1
           .gl-text-subtle.gl-flex.gl-gap-2.gl-items-center
             = sprite_icon("rocket-launch", size: 12)
             - if total_count > 1

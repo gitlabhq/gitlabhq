@@ -131,6 +131,12 @@ Users with this permission can merge through merge requests even without
 
 {{< /alert >}}
 
+When you select **No one** for either **Allowed to merge** or **Allowed to push and merge**, the UI
+clears other role selections.
+This behavior differs from the API, where you can set multiple access levels simultaneously.
+For more information about API behavior, see the
+[Protected branches API](../../../../api/protected_branches.md).
+
 ### Protection strategies by branch types
 
 Different branch types require different protection levels based on their purpose and

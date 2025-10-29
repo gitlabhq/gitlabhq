@@ -24,7 +24,7 @@ require (
 	github.com/johannesboyne/gofakes3 v0.0.0-20240701191259-edd0227ffc37
 	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.2.0
-	github.com/modelcontextprotocol/go-sdk v0.7.0
+	github.com/modelcontextprotocol/go-sdk v0.8.0
 	github.com/prometheus/client_golang v1.23.0
 	github.com/redis/go-redis/v9 v9.10.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a

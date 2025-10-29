@@ -290,8 +290,9 @@ Model selection in the IDE is not supported.
 
 Prerequisites:
 
-- No model has been selected for the GitLab Duo Agent Platform feature by the Owner of the top-level group.
+- The Owner of the top-level group has not selected a model for the GitLab Duo Agent Platform.
 If a model has been selected for the group, you cannot change the model for Chat.
+- You must be using Chat in the top-level group. You cannot change the model if you access Chat in the organization.
 
 To select a model:
 

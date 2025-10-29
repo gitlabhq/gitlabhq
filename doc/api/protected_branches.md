@@ -318,6 +318,14 @@ Supported attributes:
 | `push_access_level`            | integer           | No       | Access levels allowed to push. Default is `40` (Maintainer role). |
 | `unprotect_access_level`       | integer           | No       | Access levels allowed to unprotect. Default is `40` (Maintainer role). |
 
+When you configure access levels:
+
+- You can set multiple access levels simultaneously for `allowed_to_push` and `allowed_to_merge`.
+- The most permissive access level determines who can perform the action.
+
+This behavior differs from the UI, which automatically clears other role selections
+when you select **No one** (`access_level: 0`).
+
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
@@ -758,6 +766,9 @@ Supported attributes:
 | `allowed_to_push`              | array             | No       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_unprotect`         | array             | No       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. Access level `No access` is not available for this field. Premium and Ultimate only. |
 | `code_owner_approval_required` | boolean           | No       | If `true`, prevents pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Premium and Ultimate only. |
+
+For information about how access levels interact when you set multiple values,
+see [Protect repository branches](#protect-repository-branches).
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:

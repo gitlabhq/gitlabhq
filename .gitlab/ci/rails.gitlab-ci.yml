@@ -231,6 +231,7 @@ rspec system pg16 project-studio-enabled:
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
     GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: true
+    GLCI_EXPORT_TEST_METRICS: false
   allow_failure: true
   rules:
     - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
@@ -1009,6 +1010,7 @@ rspec-ee system pg16 project-studio-enabled:
     - .rails:rules:ee-only-system
   variables:
     GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: true
+    GLCI_EXPORT_TEST_METRICS: false
   allow_failure: true
   rules:
     - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'

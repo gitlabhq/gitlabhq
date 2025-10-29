@@ -76,7 +76,7 @@
     "@rails/actioncable": "7.1.502",
     "@rails/ujs": "7.1.502",
     "@rollup/plugin-graphql": "^2.0.5",
-    "@sentry/browser": "10.20.0",
+    "@sentry/browser": "10.22.0",
     "@snowplow/browser-plugin-client-hints": "^3.24.2",
     "@snowplow/browser-plugin-form-tracking": "^3.24.2",
     "@snowplow/browser-plugin-ga-cookies": "^3.24.2",

@@ -23,10 +23,11 @@ title: Static reachability analysis
 
 {{< /history >}}
 
-Static reachability analysis (SRA) helps you prioritize remediation of vulnerabilities in
-dependencies. SRA identifies which dependencies your application actually uses. While dependency
-scanning finds all vulnerable dependencies, SRA focuses on those that are reachable and pose higher
-security risks, helping you prioritize remediation based on actual threat exposure.
+Dependency scanning identifies all vulnerable dependencies in your project. However, not all
+vulnerabilities pose equal risk. Static reachability analysis (SRA) helps you prioritize remediation
+by determining which vulnerable packages are reachable, meaning they are imported by your
+application. By focusing on reachable vulnerabilities, SRA enables you to prioritize remediation
+based on actual threat exposure rather than theoretical risk.
 
 Static reachability analysis is production-ready but marked as Limited Availability because it is bundled with [Dependency Scanning](dependency_scanning_sbom/_index.md), which is in Limited Availability maturity level.
 
