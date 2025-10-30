@@ -2758,8 +2758,10 @@ Input type: `AiCatalogItemConsumerCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogitemconsumercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogitemconsumercreateitemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Item to configure. |
+| <a id="mutationaicatalogitemconsumercreateparentitemconsumerid"></a>`parentItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | Parent item consumer belonging to the top-level group. |
 | <a id="mutationaicatalogitemconsumercreatepinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch to pin the item to. |
 | <a id="mutationaicatalogitemconsumercreatetarget"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target in which the catalog item is configured. |
+| <a id="mutationaicatalogitemconsumercreatetriggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create flow triggers for (values can be mention, assign or assign_reviewer). |
 
 #### Fields
 
@@ -2809,6 +2811,8 @@ Input type: `AiCatalogItemConsumerUpdateInput`
 | <a id="mutationaicatalogitemconsumerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogitemconsumerupdateid"></a>`id` | [`AiCatalogItemConsumerID!`](#aicatalogitemconsumerid) | Global ID of the catalog item consumer to update. |
 | <a id="mutationaicatalogitemconsumerupdatepinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch to pin the item to. |
+| <a id="mutationaicatalogitemconsumerupdateserviceaccountid"></a>`serviceAccountId` | [`UserID`](#userid) | Service account to associate with the item consumer. |
+| <a id="mutationaicatalogitemconsumerupdatetriggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create flow triggers for (values can be mention, assign or assign_reviewer). |
 
 #### Fields
 
@@ -15013,7 +15017,7 @@ Input type: `workItemsHierarchyReorderInput`
 **Status**: Experiment.
 {{< /details >}}
 
-Reorders a project level work item.
+Reorders a work item.
 
 Input type: `workItemsReorderInput`
 
@@ -15023,8 +15027,8 @@ Input type: `workItemsReorderInput`
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemsreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemsreorderid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item to be reordered. |
-| <a id="mutationworkitemsreordermoveafterid"></a>`moveAfterId` | [`WorkItemID`](#workitemid) | Global ID of a project’s work item that should be placed after the work item. |
-| <a id="mutationworkitemsreordermovebeforeid"></a>`moveBeforeId` | [`WorkItemID`](#workitemid) | Global ID of a project’s work item that should be placed before the work item. |
+| <a id="mutationworkitemsreordermoveafterid"></a>`moveAfterId` | [`WorkItemID`](#workitemid) | Global ID of a work item that should be placed after the work item. |
+| <a id="mutationworkitemsreordermovebeforeid"></a>`moveBeforeId` | [`WorkItemID`](#workitemid) | Global ID of a work item that should be placed before the work item. |
 
 #### Fields
 

@@ -193,20 +193,65 @@ To add or update a variable in the project settings:
 
 For more information, see how to [add CI/CD variables to a project's settings](../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui).
 
-## Create a flow configuration file
+## Create a CLI agent
+
+Create a CLI agent and configure it to run on your environment with a flow configuration.
+
+### By using the AI Catalog
+
+{{< details >}}
+
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610) in GitLab 18.6 with a flag named `ai_catalog_third_party_flows`. Enabled on GitLab.com.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+1. On the left sidebar, select **Search or go to** > **Explore**.
+1. Select **AI Catalog**.
+1. Select the **Flows** tab, then select **New flow**.
+1. Under **Basic information**:
+   1. In **Display name**, enter a name.
+   1. In **Description**, enter a description.
+1. Under **Visibility & access**:
+   1. For **Visibility**, select **Private** or **Public**.
+   1. From the **Source project** dropdown list, select a project.
+1. Under **Configuration**, enter your flow configuration.
+   You can write your own configuration, or edit one of the templates below.
+1. Select **Create flow**.
+
+The CLI agent appears in the AI Catalog.
+
+### By using a flow configuration file
 
 Prerequisites:
 
 - You must have at least the Developer role for the project.
 
-To tell GitLab how to run the CLI agent for your environment, in your project,
-create a flow configuration file. For example, `.gitlab/duo/flows/claude.yaml`.
+In your project, create a flow configuration file.
+For example, `.gitlab/duo/flows/claude.yaml`.
 
-You must create a different AI flow configuration file for each CLI agent.
+If you create CLI agents by manually adding flow configuration files,
+you must create a different AI flow configuration file for each CLI agent.
 
-### Example flow configuration files
+### Example flow configurations
 
-Use the following examples to create your flow configuration file.
+Use the following examples to create your flow configuration.
 These examples contain the following variables:
 
 - `AI_FLOW_CONTEXT`: the JSON-serialized parent object, including:
@@ -632,11 +677,32 @@ a task. The CLI agent then tries to accomplish that task, using the flow trigger
 1. For the flow trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **OK**.
 
-## Use the CLI agent
+## Enable a CLI agent
+
+If you created a CLI agent from the AI Catalog, you must enable it in a project to use it.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To enable a CLI agent in a project:
+
+1. On the left sidebar, select **Search or go to** > **Explore**.
+1. Select **AI Catalog**.
+1. Select the **Flows** tab.
+1. Select your CLI agent, then select **Enable in project or group**.
+1. Under **Enable in**, select **Project**.
+1. From the dropdown list, select the project you want to enable the CLI agent in.
+1. Select **Enable**.
+
+The CLI agent appears in the project's **Flows** list.
+
+## Use a CLI agent
 
 Prerequisites:
 
 - You must have at least the Developer role for the project.
+- If you created a CLI agent from the AI Catalog, the CLI agent must be enabled in your project.
 
 1. In your project, open an issue, merge request, or epic.
 1. Add a comment on the task you want the CLI agent to complete, mentioning the service account user.

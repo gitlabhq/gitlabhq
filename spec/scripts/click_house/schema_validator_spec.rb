@@ -15,8 +15,8 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     context 'when migration fails' do
       before do
         allow(described_class).to receive(:system)
-                              .with('bundle exec rake gitlab:clickhouse:migrate:main')
-                              .and_return(false)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(false)
       end
 
       it 'returns false' do
@@ -40,8 +40,8 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     context 'when migration succeeds' do
       before do
         allow(described_class).to receive(:system)
-                              .with('bundle exec rake gitlab:clickhouse:migrate:main')
-                              .and_return(true)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(true)
       end
 
       context 'when execute_git_diff returns nil (git command failed)' do
@@ -253,8 +253,8 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     context 'when full success flow - no schema changes' do
       before do
         allow(described_class).to receive(:system)
-                              .with('bundle exec rake gitlab:clickhouse:migrate:main')
-                              .and_return(true)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(true)
         allow(described_class).to receive_messages(
           execute_git_diff: '',
           git_command_successful?: true
@@ -262,7 +262,9 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
       end
 
       it 'executes all steps in correct order and returns true' do
-        expect(described_class).to receive(:system).with('bundle exec rake gitlab:clickhouse:migrate:main').ordered
+        expect(described_class).to receive(:system)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .ordered
         expect(described_class).to receive(:execute_git_diff).ordered
 
         result = described_class.validate!
@@ -283,8 +285,8 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
 
       before do
         allow(described_class).to receive(:system)
-                              .with('bundle exec rake gitlab:clickhouse:migrate:main')
-                              .and_return(true)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(true)
         allow(described_class).to receive_messages(
           execute_git_diff: schema_filename,
           git_command_successful?: true
@@ -293,7 +295,9 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
       end
 
       it 'executes all steps and returns false' do
-        expect(described_class).to receive(:system).with('bundle exec rake gitlab:clickhouse:migrate:main').ordered
+        expect(described_class).to receive(:system)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .ordered
         expect(described_class).to receive(:execute_git_diff).ordered
         expect(described_class).to receive(:`).with("git diff -- #{schema_filename}").ordered
 
@@ -316,12 +320,14 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     context 'when migration failure flow' do
       before do
         allow(described_class).to receive(:system)
-                              .with('bundle exec rake gitlab:clickhouse:migrate:main')
-                              .and_return(false)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(false)
       end
 
       it 'stops at migration step and returns false' do
-        expect(described_class).to receive(:system).with('bundle exec rake gitlab:clickhouse:migrate:main').ordered
+        expect(described_class).to receive(:system)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .ordered
         expect(described_class).not_to receive(:execute_git_diff)
 
         result = described_class.validate!
@@ -339,13 +345,15 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     context 'when git diff execution failure flow' do
       before do
         allow(described_class).to receive(:system)
-                              .with('bundle exec rake gitlab:clickhouse:migrate:main')
-                              .and_return(true)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(true)
         allow(described_class).to receive(:execute_git_diff).and_return(nil)
       end
 
       it 'stops at git diff step and returns false' do
-        expect(described_class).to receive(:system).with('bundle exec rake gitlab:clickhouse:migrate:main').ordered
+        expect(described_class).to receive(:system)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .ordered
         expect(described_class).to receive(:execute_git_diff).ordered
         expect(described_class).not_to receive(:git_command_successful?)
 
@@ -361,8 +369,8 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     before do
       allow($stdout).to receive(:puts)
       allow(described_class).to receive(:system)
-                            .with('bundle exec rake gitlab:clickhouse:migrate:main')
-                            .and_return(true)
+        .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+        .and_return(true)
       allow(described_class).to receive(:git_command_successful?).and_return(true)
     end
 

@@ -14,7 +14,12 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def index
     @primary_email = current_user.email
-    @emails = current_user.emails.order_id_desc
+    @emails = current_user.emails.order_id_desc.load
+    @show_unconfirmed_emails_alert = show_unconfirmed_emails_alert
+  end
+
+  def show_unconfirmed_emails_alert
+    @emails.any? { |email| !email.confirmed? }
   end
 
   def create

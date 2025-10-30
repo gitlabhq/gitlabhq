@@ -88,10 +88,7 @@ export default {
         return !this.mr;
       },
       variables() {
-        return {
-          initialRequest: this.initialRequest,
-          ...this.mergeRequestQueryVariables,
-        };
+        return this.mergeRequestQueryVariables;
       },
       pollInterval() {
         return this.pollInterval;
@@ -102,13 +99,15 @@ export default {
 
         this.pollInterval = this.apolloStateQueryPollingInterval;
 
+        if (!this.initialRequest) {
+          this.checkStatus(undefined, undefined, false);
+        }
+
         if (response.data?.project) {
           this.mr.setGraphqlData(response.data.project);
           this.initialRequest = false;
           this.loading = false;
         }
-
-        this.checkStatus(undefined, undefined, false);
       },
       error() {
         this.pollInterval = null;
@@ -122,7 +121,7 @@ export default {
         },
         variables() {
           return {
-            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, `${this.mr?.id}`),
+            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
           };
         },
         updateQuery(
@@ -279,6 +278,11 @@ export default {
         this.handleNotification();
       },
     },
+    pollInterval(newVal) {
+      if (newVal === 0) {
+        this.stopPolling();
+      }
+    },
   },
   mounted() {
     MRWidgetService.fetchInitialData()
@@ -330,7 +334,7 @@ export default {
       }
 
       this.bindEventHubListeners();
-      eventHub.$on('mr.discussion.updated', this.checkStatus);
+      eventHub.$on('mr.discussion.updated', this.refetchState);
     },
     getServiceEndpoints(store) {
       return {
@@ -353,9 +357,12 @@ export default {
     createService(store) {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
+    refetchState() {
+      this.$apollo.queries.state.refetch();
+    },
     checkStatus(cb, isRebased, refetch = true) {
       if (refetch) {
-        this.$apollo.queries.state.refetch();
+        this.refetchState();
       }
 
       return this.service
@@ -503,7 +510,7 @@ export default {
       eventHub.$off('EnablePolling', this.resumePolling);
       eventHub.$off('DisablePolling', this.stopPolling);
       eventHub.$off('FetchDeployments', this.onFetchDeployments);
-      eventHub.$off('mr.discussion.updated', this.checkStatus);
+      eventHub.$off('mr.discussion.updated', this.refetchState);
     },
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;

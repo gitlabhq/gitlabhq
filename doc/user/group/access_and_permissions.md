@@ -210,6 +210,13 @@ your group.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
 
+{{< alert type="note" >}}
+
+Disabling the **Allow users to request access** setting prevents new access requests.
+Existing pending requests are not removed and can still be approved or denied.
+
+{{< /alert >}}
+
 ## Prevent project forking outside group
 
 {{< details >}}

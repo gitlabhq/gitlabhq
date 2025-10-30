@@ -6,7 +6,7 @@ module ClickHouse
 
     def self.validate!
       puts "Running ClickHouse migrations..."
-      migration_success = system("bundle exec rake gitlab:clickhouse:migrate:main")
+      migration_success = system("bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main")
 
       unless migration_success
         puts "ERROR: ClickHouse migration failed"

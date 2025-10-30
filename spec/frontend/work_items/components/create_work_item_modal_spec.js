@@ -125,9 +125,23 @@ describe('CreateWorkItemModal', () => {
     createComponent();
 
     await waitForPromises();
-    findForm().vm.$emit('workItemCreated', { webUrl: '/', workItemType: { name: 'Epic' } });
+    const workItem = { webUrl: '/full-path/-/issues/22' };
+    findForm().vm.$emit('workItemCreated', {
+      webUrl: '/',
+      workItem,
+      workItemType: { name: 'Epic' },
+    });
 
-    expect(showToast).toHaveBeenCalledWith('Epic created', expect.any(Object));
+    expect(showToast).toHaveBeenCalledWith(
+      'Epic created',
+      expect.objectContaining({
+        action: {
+          text: 'View details',
+          onClick: expect.any(Function),
+          href: workItem.webUrl,
+        },
+      }),
+    );
   });
 
   describe('default trigger', () => {
@@ -268,7 +282,7 @@ describe('CreateWorkItemModal', () => {
 
       findForm().vm.$emit('changeType', WORK_ITEM_TYPE_NAME_KEY_RESULT);
       await nextTick();
-      findForm().vm.$emit('workItemCreated', { webUrl: '/' });
+      findForm().vm.$emit('workItemCreated', { webUrl: '/', workItem: {} });
 
       expect(wrapper.find('h2').text()).toBe('New key result');
       expect(findTrigger().text()).toBe('New key result');

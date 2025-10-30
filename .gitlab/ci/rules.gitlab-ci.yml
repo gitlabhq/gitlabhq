@@ -1498,6 +1498,8 @@
     - <<: *if-default-refs
       changes: *workhorse-patterns
     - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        BABEL_ENV: "istanbul"
 
 .frontend:rules:eslint-changed-files:
   rules:

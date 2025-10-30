@@ -1297,6 +1297,7 @@ Search/NamespacedClass:
     - 'lib/gitlab/sidekiq_middleware/pause_control/strategies/zoekt.rb'
     - 'lib/tasks/**/*.rake'
     - 'ee/lib/tasks/**/*.rake'
+    - 'ee/app/finders/security/*.rb'
 
 SidekiqLoadBalancing/WorkerDataConsistency:
   Enabled: true

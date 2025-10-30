@@ -1034,6 +1034,100 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION sync_project_push_rules_on_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+ BEGIN
+    IF (OLD.project_id IS NOT NULL) THEN
+      DELETE FROM project_push_rules WHERE project_id = OLD.project_id;
+    END IF;
+   RETURN OLD;
+  END;
+ $$;
+
+CREATE FUNCTION sync_project_push_rules_on_insert_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+ BEGIN
+    IF (NEW.project_id IS NOT NULL) THEN
+      IF EXISTS (SELECT 1 FROM project_push_rules WHERE id = NEW.id) THEN
+        UPDATE project_push_rules SET
+          max_file_size = NEW.max_file_size,
+          member_check = NEW.member_check,
+          prevent_secrets = NEW.prevent_secrets,
+          commit_committer_name_check = NEW.commit_committer_name_check,
+          deny_delete_tag = NEW.deny_delete_tag,
+          reject_unsigned_commits = NEW.reject_unsigned_commits,
+          commit_committer_check = NEW.commit_committer_check,
+          reject_non_dco_commits = NEW.reject_non_dco_commits,
+          commit_message_regex = NEW.commit_message_regex,
+          branch_name_regex = NEW.branch_name_regex,
+          commit_message_negative_regex = NEW.commit_message_negative_regex,
+          author_email_regex = NEW.author_email_regex,
+          file_name_regex = NEW.file_name_regex,
+          updated_at = NEW.updated_at
+        WHERE id = NEW.id;
+      ELSE
+        INSERT INTO project_push_rules (
+          id,
+          project_id,
+          max_file_size,
+          member_check,
+          prevent_secrets,
+          commit_committer_name_check,
+          deny_delete_tag,
+          reject_unsigned_commits,
+          commit_committer_check,
+          reject_non_dco_commits,
+          commit_message_regex,
+          branch_name_regex,
+          commit_message_negative_regex,
+          author_email_regex,
+          file_name_regex,
+          created_at,
+          updated_at
+        ) VALUES (
+          NEW.id,
+          NEW.project_id,
+          NEW.max_file_size,
+          NEW.member_check,
+          NEW.prevent_secrets,
+          NEW.commit_committer_name_check,
+          NEW.deny_delete_tag,
+          NEW.reject_unsigned_commits,
+          NEW.commit_committer_check,
+          NEW.reject_non_dco_commits,
+          NEW.commit_message_regex,
+          NEW.branch_name_regex,
+          NEW.commit_message_negative_regex,
+          NEW.author_email_regex,
+          NEW.file_name_regex,
+          NEW.created_at,
+          NEW.updated_at
+        )
+        ON CONFLICT (project_id) DO UPDATE SET
+          id = EXCLUDED.id,
+          max_file_size = EXCLUDED.max_file_size,
+          member_check = EXCLUDED.member_check,
+          prevent_secrets = EXCLUDED.prevent_secrets,
+          commit_committer_name_check = EXCLUDED.commit_committer_name_check,
+          deny_delete_tag = EXCLUDED.deny_delete_tag,
+          reject_unsigned_commits = EXCLUDED.reject_unsigned_commits,
+          commit_committer_check = EXCLUDED.commit_committer_check,
+          reject_non_dco_commits = EXCLUDED.reject_non_dco_commits,
+          commit_message_regex = EXCLUDED.commit_message_regex,
+          branch_name_regex = EXCLUDED.branch_name_regex,
+          commit_message_negative_regex = EXCLUDED.commit_message_negative_regex,
+          author_email_regex = EXCLUDED.author_email_regex,
+          file_name_regex = EXCLUDED.file_name_regex,
+          updated_at = EXCLUDED.updated_at
+        WHERE NOT EXISTS (SELECT 1 FROM project_push_rules WHERE id = EXCLUDED.id AND project_id != EXCLUDED.project_id);
+      END IF;
+    END IF;
+   RETURN NEW;
+  END;
+ $$;
+
 CREATE FUNCTION sync_push_rules_to_group_push_rules() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -47449,6 +47543,10 @@ CREATE TRIGGER trigger_sync_packages_composer_with_composer_metadata AFTER INSER
 
 CREATE TRIGGER trigger_sync_packages_composer_with_packages AFTER INSERT OR DELETE OR UPDATE ON packages_packages FOR EACH ROW EXECUTE FUNCTION sync_packages_composer_with_packages();
 
+CREATE TRIGGER trigger_sync_project_push_rules_delete AFTER DELETE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_project_push_rules_on_delete();
+
+CREATE TRIGGER trigger_sync_project_push_rules_insert_update AFTER INSERT OR UPDATE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_project_push_rules_on_insert_update();
+
 CREATE TRIGGER trigger_sync_push_rules_to_group_push_rules AFTER UPDATE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_push_rules_to_group_push_rules();
 
 CREATE TRIGGER trigger_sync_redirect_routes_namespace_id BEFORE INSERT OR UPDATE ON redirect_routes FOR EACH ROW WHEN ((new.namespace_id IS NULL)) EXECUTE FUNCTION sync_redirect_routes_namespace_id();
@@ -51207,9 +51305,6 @@ ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
 
 ALTER TABLE ONLY dependency_list_export_parts
     ADD CONSTRAINT fk_rails_83f26c0e6f FOREIGN KEY (dependency_list_export_id) REFERENCES dependency_list_exports(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY security_trainings
-    ADD CONSTRAINT fk_rails_84c7951d72 FOREIGN KEY (provider_id) REFERENCES security_training_providers(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_rails_84efda7be0 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;

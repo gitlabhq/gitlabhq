@@ -126,6 +126,7 @@ FROM gitlab-gems AS frontend-assets
 ARG RAILS_ENV
 ARG NODE_ENV
 ARG NODE_OPTIONS
+ARG BABEL_ENV
 # Assets hash file is always packaged together with assets in the cache archive and if it is present, it indicates cached assets are present as well
 ARG GLCI_GITLAB_ASSETS_HASH_FILE
 

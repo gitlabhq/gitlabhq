@@ -8,5 +8,4 @@ description: Per month CI usage data at the runner and project level meant to st
   GitLab hosted runners data on Dedicated installations only.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171336
 milestone: '17.9'
-gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553104
+gitlab_schema: gitlab_ci_cell_local

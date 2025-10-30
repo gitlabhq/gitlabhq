@@ -234,7 +234,9 @@ export default {
         autoHideDelay: 10000,
         action: {
           text: __('View details'),
-          onClick: () => {
+          href: workItem.webUrl,
+          onClick: (e) => {
+            e?.preventDefault();
             // Take incidents to the legacy detail view with a full page load
             if (
               this.useVueRouter &&

@@ -70615,16 +70615,7 @@ msgstr ""
 msgid "UsageBilling|Credit amount"
 msgstr ""
 
-msgid "UsageBilling|Credits"
-msgstr ""
-
 msgid "UsageBilling|Credits used after any included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
-msgstr ""
-
-msgid "UsageBilling|Daily average use"
-msgstr ""
-
-msgid "UsageBilling|Daily usage"
 msgstr ""
 
 msgid "UsageBilling|Date/Time"
@@ -70669,9 +70660,6 @@ msgstr ""
 msgid "UsageBilling|One-Time Waiver credits remaining"
 msgstr ""
 
-msgid "UsageBilling|Peak daily use"
-msgstr ""
-
 msgid "UsageBilling|Purchase monthly commitment"
 msgstr ""
 
@@ -70685,9 +70673,6 @@ msgid "UsageBilling|Total credits used"
 msgstr ""
 
 msgid "UsageBilling|Usage Billing"
-msgstr ""
-
-msgid "UsageBilling|Usage trend"
 msgstr ""
 
 msgid "UsageBilling|Used this billing period"

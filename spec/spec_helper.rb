@@ -366,6 +366,10 @@ RSpec.configure do |config|
       # Using the new indexes causes many specs to fail on the group issues list when joining on project in the finder
       # Default to false, since switching the finders over is still a WIP
       stub_feature_flags(use_namespace_id_for_issue_and_work_item_finders: false)
+
+      # AutoFlow is disabled by default to prevent timing-dependent test failures.
+      # Enable explicitly in tests that need it.
+      stub_feature_flags(autoflow_enabled: false)
     else
       unstub_all_feature_flags
     end

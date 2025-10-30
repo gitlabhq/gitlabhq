@@ -83,11 +83,11 @@ RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow 
     end
 
     it 'toggles container class' do
-      expect(page).not_to have_css('.content-wrapper > .project-highlight-puc.container-fluid.container-limited')
+      expect(page).not_to have_css('.project-highlight-puc.container-fluid.container-limited')
 
       click_link 'Commits'
 
-      expect(page).to have_css('.content-wrapper > .project-highlight-puc.container-fluid.container-limited')
+      expect(page).to have_css('.project-highlight-puc.container-fluid.container-limited')
     end
 
     include_examples 'unfold diffs'

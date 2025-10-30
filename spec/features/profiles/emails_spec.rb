@@ -90,4 +90,25 @@ RSpec.describe 'Profile > Emails', feature_category: :user_profile do
     expect(page).not_to have_content('Resend confirmation email')
     expect(page).to have_content('Send confirmation email')
   end
+
+  it 'shows unverified emails alert if any emails are unverified' do
+    email = user.emails.create!(email: 'my@email.com')
+    user.emails.create!(email: 'my-unconfirmed-email@email.com')
+
+    email.confirm
+
+    visit profile_emails_path
+    expect(page).to have_content('Unverified secondary email addresses are automatically deleted after three days')
+  end
+
+  it 'does not show unverified emails alert if all emails are verified' do
+    email = user.emails.create!(email: 'my@email.com')
+    email2 = user.emails.create!(email: 'myemail2@email.com')
+
+    email.confirm
+    email2.confirm
+
+    visit profile_emails_path
+    expect(page).not_to have_content('Unverified secondary email addresses are automatically deleted after three days')
+  end
 end

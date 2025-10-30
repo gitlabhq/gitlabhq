@@ -11,7 +11,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     [
       'abuse_report_uploads', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'web_hook_logs_daily', # temporary copy of web_hook_logs
-      'ci_gitlab_hosted_runner_monthly_usages', # https://gitlab.com/gitlab-org/gitlab/-/issues/553104
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'notes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191155

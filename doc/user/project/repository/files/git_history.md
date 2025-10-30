@@ -58,7 +58,7 @@ limit the search results by date. Limiting the dates for commits helps fix
 [commit history requests timeouts](https://gitlab.com/gitlab-org/gitaly/-/issues/5426)
 in very large repositories.
 
-In the GitLab UI, edit the URL. Include these parameters in `YYYY-MM-DD` format:
+In the GitLab UI, edit the URL. Include these parameters in `YYYY-MM-DD` format (dates are interpreted in UTC):
 
 - `committed_before`
 - `committed_after`

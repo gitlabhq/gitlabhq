@@ -28,7 +28,7 @@ configuration:
 
 ## Before you begin
 
-Before you can create, register, and run a runner,  [GitLab Runner](https://docs.gitlab.com/runner/install/) must be installed on a local computer.
+Before you can create, register, and run a runner, you must [install GitLab Runner](https://docs.gitlab.com/runner/install/) on a local computer.
 
 ## Create a blank project
 
@@ -108,8 +108,8 @@ To create a project runner:
 
 ### Check the runner configuration file
 
-After you register the runner, the configuration and runner authentication token is saved to your `config.toml`. The runner uses the
-token to authenticate with GitLab when picking up jobs from the job queue.
+After you register the runner, the configuration and runner authentication token is saved to your `config.toml`.
+The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
 
 You can use the `config.toml` to
 define more [advanced runner configurations](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).

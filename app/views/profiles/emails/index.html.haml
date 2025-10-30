@@ -9,9 +9,14 @@
   - c.with_description do
     = s_('Profiles|Control emails linked to your account')
   - c.with_body do
+    - if @show_unconfirmed_emails_alert
+      = render Pajamas::AlertComponent.new(dismissible: false, variant: :warning, alert_options: { class: 'gl-mb-5' }) do |c|
+        = c.with_body do
+          = s_('Profiles|Unverified secondary email addresses are automatically deleted after three days')
+
     = render ::Layouts::CrudComponent.new(s_('Profiles|Linked emails'),
       icon: 'mail',
-      count: @emails.load.size,
+      count: @emails.size,
       toggle_text: s_('Profiles|Add new email'),
       toggle_options: { data: { testid: 'toggle-email-address-field' } }) do |c|
       - c.with_form do
@@ -49,10 +54,6 @@
             - @emails.reject(&:user_primary_email?).each do |email|
               %li{ class: '!gl-px-5', data: { testid: 'email-row-content' } }
                 .gl-flex.gl-justify-between.gl-flex-wrap.gl-gap-3
-                  - unless email.confirmed?
-                    = render Pajamas::AlertComponent.new(dismissible: false, variant: :warning, alert_options: { class: 'gl-w-full' }) do |c|
-                      = c.with_body do
-                        = s_('Profiles|Unverified secondary email addresses are automatically deleted after three days')
                   %div
                     = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
                     %ul
@@ -82,4 +83,3 @@
                       category: :tertiary,
                       icon: 'remove',
                       button_options: { class: 'has-tooltip', title: _('Remove'), data: { confirm: _('Are you sure?'), confirm_btn_variant: 'danger', testid: 'delete-email-link' } })
-

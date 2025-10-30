@@ -65,7 +65,7 @@ To create an agent:
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**.
-1. Select **New agent**.
+1. Select the **Agents** tab, then select **New agent**.
 1. Under **Basic information**:
    1. In **Display name**, enter a name for the agent.
    1. In **Description**, enter a description for the agent.
