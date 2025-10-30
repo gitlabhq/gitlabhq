@@ -132,6 +132,21 @@ To close projects:
 1. Ensure repositories are shown: on the **Source Control** label, right-click and select **Repositories**.
 1. Right-click the repository you want to close and select **Close Repository**.
 
+#### Git remote with SSH custom alias
+
+If your repository remote uses an SSH custom alias (for example, `git@my-work-gitlab:group/project.git` instead of `git@gitlab.com:group/project.git`), the GitLab Workflow extension might not correctly match your repository to your GitLab project.
+
+To resolve this issue, you can:
+
+- Change the remote to use SSH without a custom alias, or HTTP.
+- Configure the default namespace for the Agent Platform.
+
+To configure the default namespace:
+
+1. [Determine the namespace your project is in](../namespace/_index.md#determine-which-type-of-namespace-youre-in).
+1. In VS Code, select **File** > **Preferences** > **Settings**.
+1. Search for **GitLab > Duo Agent Platform: Default Namespace** and enter your namespace.
+
 ### Project not in a group namespace
 
 GitLab Duo Agent Platform requires that projects belong to a group namespace.

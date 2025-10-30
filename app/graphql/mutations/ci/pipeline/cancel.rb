@@ -6,6 +6,11 @@ module Mutations
       class Cancel < Base
         graphql_name 'PipelineCancel'
 
+        field :pipeline,
+          Types::Ci::PipelineType,
+          null: true,
+          description: 'Pipeline after mutation.'
+
         authorize :cancel_pipeline
 
         def resolve(id:)
@@ -14,9 +19,17 @@ module Mutations
           result = ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
 
           if result.success?
-            { success: true, errors: [] }
+            {
+              pipeline: pipeline,
+              success: true,
+              errors: []
+            }
           else
-            { success: false, errors: [result.message] }
+            {
+              pipeline: pipeline,
+              success: false,
+              errors: [result.message]
+            }
           end
         end
       end

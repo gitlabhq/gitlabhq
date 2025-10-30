@@ -53,18 +53,6 @@ RSpec.describe Git::TagHooksService, :service, feature_category: :source_code_ma
 
       expect(Ci::Pipeline.last).to be_push
     end
-
-    context 'when feature flag "async_pipeline_creation_on_push" is disabled' do
-      before do
-        stub_feature_flags(async_pipeline_creation_on_push: false)
-      end
-
-      it "creates a new pipeline" do
-        expect { service.execute }.to change { Ci::Pipeline.count }.by(1)
-
-        expect(Ci::Pipeline.last).to be_push
-      end
-    end
   end
 
   describe 'Push data' do

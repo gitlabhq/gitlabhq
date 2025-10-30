@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
   context 'when note is authored from external author for service desk' do
     before do
-      SentNotification.find_by(reply_key: mail_key).update!(recipient: Users::Internal.support_bot)
+      SentNotification.for(mail_key).update!(recipient: Users::Internal.support_bot)
     end
 
     context 'when email contains text, quoted text and quick commands' do

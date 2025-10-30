@@ -44,7 +44,9 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
       if matches[:reply_key]
         ::PartitionedSentNotification.find_by(partition: matches[:partition], reply_key: matches[:reply_key])
       else
-        find_by(reply_key: matches[:legacy_key])
+        klass = Feature.enabled?(:insert_into_p_sent_notifications, :instance) ? ::PartitionedSentNotification : self
+
+        klass.find_by(reply_key: matches[:legacy_key])
       end
     end
 
@@ -67,8 +69,16 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
         commit_id: commit_id
       )
 
-      # Non-sticky write is used as `.record` is only used in ActionMailer
-      # where there are no queries to SentNotification.
+      if Feature.enabled?(:insert_into_p_sent_notifications, :instance)
+        # Non-sticky write is used as `.record` is only used in ActionMailer
+        # where there are no queries to SentNotification.
+        new_record = ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
+          ::PartitionedSentNotification.create(attrs)
+        end
+
+        return new_record
+      end
+
       legacy_record = ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
         create(attrs)
       end

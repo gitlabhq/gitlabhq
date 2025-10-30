@@ -353,4 +353,45 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       end
     end
   end
+
+  describe '#allowed?' do
+    subject(:allowed) { service.allowed?(merge_request) }
+
+    context 'when both conditions are met' do
+      before do
+        allow(service).to receive(:can_create_pipeline_for?).with(merge_request).and_return(true)
+        # user is developer of project
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when can_create_pipeline_for? returns false' do
+      before do
+        allow(service).to receive(:can_create_pipeline_for?).with(merge_request).and_return(false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when user_can_run_pipeline? returns false' do
+      let(:actor) { create(:user) }
+
+      before do
+        allow(service).to receive(:can_create_pipeline_for?).with(merge_request).and_return(true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when both conditions are false' do
+      let(:actor) { create(:user) }
+
+      before do
+        allow(service).to receive(:can_create_pipeline_for?).with(merge_request).and_return(false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

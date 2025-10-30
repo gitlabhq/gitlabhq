@@ -17,14 +17,6 @@ RSpec.describe Import::UserMapping::AdminBypassAuthorizer, feature_category: :im
       expect(authorizer).to be_allowed
     end
 
-    context 'when the importer_user_mapping_allow_bypass_of_confirmation flag is disabled', :enable_admin_mode do
-      before do
-        stub_feature_flags(importer_user_mapping_allow_bypass_of_confirmation: false)
-      end
-
-      it { is_expected.not_to be_allowed }
-    end
-
     context 'when the allow_bypass_placeholder_confirmation application setting is disabled', :enable_admin_mode do
       before do
         stub_application_setting(allow_bypass_placeholder_confirmation: false)

@@ -199,6 +199,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="queryadminprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
 | <a id="queryadminprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
+| <a id="queryadminprojectswithduoeligible"></a>`withDuoEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Include only projects that are eligible for GitLab Duo and have Duo features enabled.Applies only if the feature flag `with_duo_eligible_projects_filter` is enabled. |
 | <a id="queryadminprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="queryadminprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
@@ -1566,6 +1567,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="queryprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
 | <a id="queryprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
+| <a id="queryprojectswithduoeligible"></a>`withDuoEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Include only projects that are eligible for GitLab Duo and have Duo features enabled.Applies only if the feature flag `with_duo_eligible_projects_filter` is enabled. |
 | <a id="queryprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="queryprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
@@ -10147,6 +10149,7 @@ Input type: `PipelineCancelInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinecancelclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinecancelerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationpipelinecancelpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline after mutation. |
 
 ### `Mutation.pipelineCreate`
 
@@ -38096,6 +38099,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="organizationprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
 | <a id="organizationprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
+| <a id="organizationprojectswithduoeligible"></a>`withDuoEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Include only projects that are eligible for GitLab Duo and have Duo features enabled.Applies only if the feature flag `with_duo_eligible_projects_filter` is enabled. |
 | <a id="organizationprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="organizationprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 

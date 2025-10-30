@@ -14,6 +14,7 @@ module Gitlab
           remove_email_single
           q
           status
+          ship
         ].freeze
 
         # Tracks the quick action with name `name`.

@@ -20,11 +20,13 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       }
     end
 
-    before do
+    def post_list_tools
       post api('/mcp', user, oauth_access_token: access_token), params: params
     end
 
     it 'returns success' do
+      post_list_tools
+
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['jsonrpc']).to eq(params[:jsonrpc])
       expect(json_response['id']).to eq(params[:id])
@@ -32,6 +34,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
     end
 
     it 'returns all expected tools' do
+      post_list_tools
+
       tools = json_response['result']['tools']
       tool_names = tools.pluck('name')
 
@@ -49,8 +53,25 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       )
     end
 
+    context 'when a service tool is not available' do
+      before do
+        # We have to use `allow_any_instance_of` since tools are initialized
+        # *on class definition time* in Mcp::Tools::Manager
+        allow_any_instance_of(::Mcp::Tools::GetServerVersionService).to receive(:available?).and_return(false) # rubocop: disable RSpec/AnyInstanceOf -- see explanation above
+      end
+
+      it 'is excluded from the list' do
+        post_list_tools
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).not_to include('get_mcp_server_version')
+      end
+    end
+
     context 'when running with EE features', if: Gitlab.ee? do
       it 'validates that fields parameter is available' do
+        post_list_tools
+
         tools = json_response['result']['tools']
         gitlab_search_tool = tools.find { |tool| tool['name'] == 'gitlab_search' }
 
@@ -62,6 +83,10 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
     end
 
     context 'when running CE', unless: Gitlab.ee? do
+      before do
+        post_list_tools
+      end
+
       it 'returns get_pipeline_jobs tool with correct structure' do
         tools = json_response['result']['tools']
         pipeline_jobs_tool = tools.find { |tool| tool['name'] == 'get_pipeline_jobs' }

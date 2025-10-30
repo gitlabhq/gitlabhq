@@ -103,6 +103,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :auto_merge
+- :name: auto_merge:merge_requests_ship_merge_request
+  :worker_name: MergeRequests::ShipMergeRequestWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 3
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :auto_merge
 - :name: batched_background_migrations:database_batched_background_migration_ci_execution
   :worker_name: Database::BatchedBackgroundMigration::CiExecutionWorker
   :feature_category: :database

@@ -70,6 +70,12 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     end
   end
 
+  describe '#available?' do
+    it 'returns true' do
+      expect(service.available?).to be true
+    end
+  end
+
   describe '#to_h' do
     it 'returns tool metadata' do
       result = test_service.to_h

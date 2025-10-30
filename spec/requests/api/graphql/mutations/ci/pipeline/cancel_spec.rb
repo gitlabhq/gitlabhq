@@ -13,7 +13,16 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
     variables = {
       id: pipeline.to_global_id.to_s
     }
-    graphql_mutation(:pipeline_cancel, variables, 'errors')
+    graphql_mutation(
+      :pipeline_cancel,
+      variables,
+      <<-QL
+        errors
+        pipeline {
+          id
+        }
+      QL
+    )
   end
 
   let(:mutation_response) { graphql_mutation_response(:pipeline_cancel) }
@@ -38,6 +47,7 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
 
   context 'when a build is running' do
     let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
+    let_it_be(:pipeline_id) { ::Gitlab::GlobalId.build(pipeline, id: pipeline.id).to_s }
 
     context 'when supports canceling is true' do
       include_context 'when canceling support'
@@ -48,6 +58,7 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:success)
         expect(job.reload).to be_canceling
         expect(pipeline.reload).to be_canceling
+        expect(mutation_response['pipeline']['id']).to eq(pipeline_id)
       end
     end
 
@@ -58,6 +69,7 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:success)
         expect(job.reload).to be_canceled
         expect(pipeline.reload).to be_canceled
+        expect(mutation_response['pipeline']['id']).to eq(pipeline_id)
       end
     end
   end

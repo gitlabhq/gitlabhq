@@ -3299,26 +3299,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         expect(merge_request.approved_by_users).to eq([developer])
       end
 
-      context 'when user has review comments' do
-        it 'submits the users current review' do
-          draft_note = create(:draft_note, merge_request: merge_request, author: developer)
-
-          _, _, message = service.execute(content, merge_request)
-
-          expect { draft_note.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          expect(merge_request.notes.reload.size).to eq(1)
-          expect(merge_request.approved_by_users).to eq([developer])
-          expect(message).to eq("Submitted the current review. Approved the current merge request.")
-        end
-
-        it 'does not submit review if there is no draft notes' do
-          _, _, message = service.execute(content, merge_request)
-
-          expect(merge_request.approved_by_users).to eq([developer])
-          expect(message).to eq("Approved the current merge request.")
-        end
-      end
-
       context "when the user can't approve" do
         before do
           project.team.truncate
@@ -3397,6 +3377,51 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       it_behaves_like 'unapprove command unavailable' do
         let(:issuable) { issue }
+      end
+    end
+
+    describe 'ship command' do
+      let_it_be(:merge_request) do
+        create(:merge_request, source_project: project)
+      end
+
+      let(:content) { '/ship' }
+
+      before do
+        allow(::MergeRequests::ShipMergeRequestWorker)
+          .to receive(:allowed?)
+          .with(merge_request: merge_request, current_user: current_user)
+          .and_return(is_allowed)
+      end
+
+      context 'when action is not allowed' do
+        let(:is_allowed) { false }
+
+        it 'does not run the command' do
+          expect(::MergeRequests::ShipMergeRequestWorker)
+            .not_to receive(:perform_async)
+
+          result = service.execute(content, merge_request)
+          expect(result).to eq(
+            ['', {}, 'Could not apply ship command.', ['ship']]
+          )
+        end
+      end
+
+      context 'when action is allowed' do
+        let(:is_allowed) { true }
+
+        it 'runs the pipeline async' do
+          expect(::MergeRequests::ShipMergeRequestWorker)
+            .to receive(:perform_async)
+            .with(current_user.id, merge_request.id)
+
+          result = service.execute(content, merge_request)
+
+          expect(result).to eq(
+            ['', {}, 'Actions to ship this merge request have been scheduled.', ['ship']]
+          )
+        end
       end
     end
 

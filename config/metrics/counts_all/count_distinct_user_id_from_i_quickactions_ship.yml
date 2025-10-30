@@ -1,0 +1,23 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_i_quickactions_ship
+description: Count of unique users using /ship quickaction
+product_group: code_review
+product_categories:
+- code_review_workflow
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '18.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78998/diffs
+time_frame:
+- 28d
+- 7d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: i_quickactions_ship
+  unique: user.id

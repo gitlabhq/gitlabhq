@@ -28069,6 +28069,7 @@ CREATE TABLE vulnerabilities (
     cvss jsonb DEFAULT '[]'::jsonb,
     auto_resolved boolean DEFAULT false NOT NULL,
     uuid uuid,
+    solution text,
     CONSTRAINT check_4d8a873f1f CHECK ((finding_id IS NOT NULL))
 );
 
@@ -33294,6 +33295,9 @@ ALTER TABLE work_item_custom_statuses
 
 ALTER TABLE packages_packages
     ADD CONSTRAINT check_d6301aedeb CHECK ((char_length(status_message) <= 255)) NOT VALID;
+
+ALTER TABLE vulnerabilities
+    ADD CONSTRAINT check_d7634b42b6 CHECK ((char_length(solution) <= 7000)) NOT VALID;
 
 ALTER TABLE commit_user_mentions
     ADD CONSTRAINT check_ddd6f289f4 CHECK ((namespace_id IS NOT NULL)) NOT VALID;

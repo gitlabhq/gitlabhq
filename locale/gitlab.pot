@@ -4098,6 +4098,9 @@ msgstr ""
 msgid "Actions for"
 msgstr ""
 
+msgid "Actions to ship this merge request have been scheduled."
+msgstr ""
+
 msgid "Activate Service Desk"
 msgstr ""
 
@@ -62854,6 +62857,12 @@ msgid "ShellOperations|Limit the number of Git operations a user can perform per
 msgstr ""
 
 msgid "ShellOperations|Maximum number of Git operations per minute"
+msgstr ""
+
+msgid "Ship merge request (run pipeline and set auto-merge)"
+msgstr ""
+
+msgid "Ship merge request by creating a pipeline and set auto-merge."
 msgstr ""
 
 msgid "Short name"

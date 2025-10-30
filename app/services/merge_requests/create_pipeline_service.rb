@@ -41,6 +41,16 @@ module MergeRequests
       pipeline
     end
 
+    def allowed?(merge_request)
+      can_create_pipeline_for?(merge_request) && user_can_run_pipeline?(merge_request)
+    end
+
+    def allow_duplicate
+      params[:allow_duplicate]
+    end
+
+    private
+
     def can_create_pipeline_for?(merge_request)
       ##
       # UpdateMergeRequestsWorker could be retried by an exception.
@@ -51,11 +61,13 @@ module MergeRequests
       true
     end
 
-    def allow_duplicate
-      params[:allow_duplicate]
+    def user_can_run_pipeline?(merge_request)
+      current_user.can?(:create_pipeline, pipeline_project(merge_request))
     end
 
-    private
+    def pipeline_project(merge_request)
+      pipeline_project_and_ref(merge_request).first
+    end
 
     def pipeline_project_and_ref(merge_request)
       if can_create_pipeline_in_target_project?(merge_request)

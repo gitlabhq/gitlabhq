@@ -254,23 +254,11 @@ module Gitlab
           quick_action_target.persisted? && quick_action_target.eligible_for_approval_by?(current_user) && !quick_action_target.merged?
         end
         command :approve do
-          @execution_message[:approve] = []
-
-          if quick_action_target.draft_notes.authored_by(current_user).any?
-            result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
-
-            @execution_message[:approve] = if result[:status] == :success
-                                             [_('Submitted the current review.')]
-                                           else
-                                             [result[:message]]
-                                           end
-          end
-
           success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
 
-          @execution_message[:approve] << _('Approved the current merge request.')
+          @execution_message[:approve] = _('Approved the current merge request.')
         end
 
         ########################################################################
@@ -473,6 +461,23 @@ module Gitlab
             @execution_message[:unassign_reviewer] = _("Removed %{reviewer_text} %{reviewer_references}.") %
               { reviewer_text: 'reviewer'.pluralize(removed_reviewers.size), reviewer_references: removed_reviewers.map(&:to_reference).to_sentence }
           end
+        end
+
+        desc { _('Ship merge request (run pipeline and set auto-merge)') }
+        explanation { _('Ship merge request by creating a pipeline and set auto-merge.') }
+        types MergeRequest
+        condition do
+          ::MergeRequests::ShipMergeRequestWorker.allowed?(
+            merge_request: quick_action_target,
+            current_user: current_user)
+        end
+        command :ship do
+          ::MergeRequests::ShipMergeRequestWorker.perform_async(
+            current_user.id,
+            quick_action_target.id
+          )
+
+          @execution_message[:ship] = _('Actions to ship this merge request have been scheduled.')
         end
       end
 

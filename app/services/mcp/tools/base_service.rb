@@ -29,6 +29,12 @@ module Mcp
         }
       end
 
+      # Tool availability check, returns `true` by default.
+      # Tools should override this method if they need to check for specific conditions.
+      def available?
+        true
+      end
+
       protected
 
       def perform(_arguments = {}, _query = {})

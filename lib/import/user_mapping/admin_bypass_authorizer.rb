@@ -9,7 +9,6 @@ module Import
 
       def allowed?
         return false unless reassigning_user
-        return false unless Feature.enabled?(:importer_user_mapping_allow_bypass_of_confirmation, reassigning_user)
 
         ::Gitlab::CurrentSettings.allow_bypass_placeholder_confirmation &&
           reassigning_user.can_admin_all_resources? &&

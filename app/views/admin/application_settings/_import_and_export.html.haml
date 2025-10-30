@@ -27,18 +27,17 @@
       - allow_contribution_mapping_to_admins_label_text = safe_format(s_('AdminSettings|Allow contribution mapping to administrators %{allow_contribution_mapping_to_admins_link_start}%{icon}%{allow_contribution_mapping_to_admins_link_end}'), tag_pair_allow_contribution_mapping_to_admins, icon: sprite_icon('question-o'))
       = f.label :allow_contribution_mapping_to_admins, allow_contribution_mapping_to_admins_label_text, class: 'gl-font-bold'
       = f.gitlab_ui_checkbox_component :allow_contribution_mapping_to_admins, s_('AdminSettings|Enabled')
-    - if Feature.enabled?(:importer_user_mapping_allow_bypass_of_confirmation, current_user)
-      .form-group
-        - bypass_placeholder_confirmation_help_path = help_page_path('administration/settings/import_and_export_settings.md',
-          anchor: 'skip-confirmation-when-administrators-reassign-placeholder-users')
-        - bypass_placeholder_confirmation_help_link = link_to('', bypass_placeholder_confirmation_help_path, target: '_blank', rel: 'noopener noreferrer')
-        - tag_pair_bypass_placeholder_confirmation = tag_pair(bypass_placeholder_confirmation_help_link, :link_start, :link_end)
-        - bypass_placeholder_confirmation_label_text = safe_format(s_('AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}'), tag_pair_bypass_placeholder_confirmation, icon: sprite_icon('question-o'))
-        = f.label :allow_bypass_placeholder_confirmation, bypass_placeholder_confirmation_label_text, class: 'gl-font-bold'
-        - if Gitlab.config.gitlab.impersonation_enabled
-          = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled')
-        - else
-          = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled'), checkbox_options: { disabled: true }, label_options: { title: s_('AdminSettings|User impersonation is not enabled on the GitLab instance.'), data: { toggle: 'tooltip', container: 'body' } }
+    .form-group
+      - bypass_placeholder_confirmation_help_path = help_page_path('administration/settings/import_and_export_settings.md',
+        anchor: 'skip-confirmation-when-administrators-reassign-placeholder-users')
+      - bypass_placeholder_confirmation_help_link = link_to('', bypass_placeholder_confirmation_help_path, target: '_blank', rel: 'noopener noreferrer')
+      - tag_pair_bypass_placeholder_confirmation = tag_pair(bypass_placeholder_confirmation_help_link, :link_start, :link_end)
+      - bypass_placeholder_confirmation_label_text = safe_format(s_('AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}'), tag_pair_bypass_placeholder_confirmation, icon: sprite_icon('question-o'))
+      = f.label :allow_bypass_placeholder_confirmation, bypass_placeholder_confirmation_label_text, class: 'gl-font-bold'
+      - if Gitlab.config.gitlab.impersonation_enabled
+        = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled')
+      - else
+        = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled'), checkbox_options: { disabled: true }, label_options: { title: s_('AdminSettings|User impersonation is not enabled on the GitLab instance.'), data: { toggle: 'tooltip', container: 'body' } }
     .form-group
       = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'
       = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }

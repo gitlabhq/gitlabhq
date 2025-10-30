@@ -1002,7 +1002,7 @@ If you're running an affected GitLab chart configuration, you must do one of the
 - Migrate to a supported GitLab reference architecture.
 - Upgrade to a patched chart version.
 - Configure the legacy repository in your chart values. For an example, see
-  [merge request 4421][https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/4421].
+  [merge request 4421](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/4421).
 
 Looking ahead, [we will assess alternatives](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089) to replace
 or potentially remove Bitnami components from the GitLab chart entirely. For more information, see the

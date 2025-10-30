@@ -50,7 +50,9 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         expect(subject.parts[1].content_type).to include('text/html')
 
         # Sets issue email participant in sent notification
-        expect(issue.reset.sent_notifications.first.issue_email_participant).to eq(issue_email_participant)
+        expect(
+          PartitionedSentNotification.where(noteable: issue).first.issue_email_participant)
+        .to eq(issue_email_participant)
       end
     end
 
