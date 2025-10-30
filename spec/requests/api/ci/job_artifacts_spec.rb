@@ -289,7 +289,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
     shared_examples 'downloads artifact' do
       let(:download_headers) do
         { 'Content-Transfer-Encoding' => 'binary',
-          'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
+          'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip),
+          'X-Sendfile' => job.artifacts_file.file.path }
       end
 
       let(:expected_params) { { artifact_size: job.artifacts_file.size } }
@@ -300,7 +301,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers.to_h).to include(download_headers)
-        expect(response.body).to match_file(job.artifacts_file.file.file)
       end
 
       it_behaves_like 'storing arguments in the application context'

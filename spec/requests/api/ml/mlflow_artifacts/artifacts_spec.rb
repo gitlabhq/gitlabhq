@@ -118,9 +118,7 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
       it 'returns the artifact file', :aggregate_failures do
         is_expected.to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Disposition']).to match("attachment; filename=\"#{package_file.file_name}\"")
-        expect(response.body)
-          .to eq(package_file.file.read)
-        expect(response.headers['Content-Length']).to eq(package_file.size.to_s)
+        expect(response.headers['X-Sendfile']).to eq(package_file.file.path)
       end
     end
 
@@ -135,8 +133,7 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
         expect(response.headers['Content-Disposition']).to match(
           "attachment; filename=\"#{candidate_package_file.file_name}\""
         )
-        expect(response.body).to eq(candidate_package_file.file.read)
-        expect(response.headers['Content-Length']).to eq(candidate_package_file.size.to_s)
+        expect(response.headers['X-Sendfile']).to eq(candidate_package_file.file.path)
       end
     end
 

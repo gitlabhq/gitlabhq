@@ -157,7 +157,7 @@ RSpec.shared_examples 'grants terraform module package file access' do |user_typ
 
       expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq('application/octet-stream')
-      expect(response.body).to eq(package.package_files.last.file.read)
+      expect(response.headers['X-Sendfile']).to eq(package.package_files.last.file.path)
     end
   end
 end

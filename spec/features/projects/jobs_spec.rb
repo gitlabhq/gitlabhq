@@ -1075,7 +1075,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           end
 
           it 'sends the right headers' do
-            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            requests = inspect_requests do
               visit raw_project_job_path(project, job)
             end
 
@@ -1089,7 +1089,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
           it 'sends the right headers' do
-            requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            requests = inspect_requests do
               visit raw_project_job_path(project, job)
             end
 
@@ -1106,7 +1106,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         end
 
         it 'sends the right headers' do
-          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+          requests = inspect_requests do
             visit raw_project_job_path(project, job2)
           end
           expect(requests.first.status_code).to eq(404)

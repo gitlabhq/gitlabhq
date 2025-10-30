@@ -30,7 +30,6 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
     context 'when metadata cache exists', :aggregate_failures do
       let!(:npm_metadata_cache) { create(:npm_metadata_cache, package_name: package.name, project_id: project.id) }
-      let(:metadata) { Gitlab::Json.parse(npm_metadata_cache.file.read.gsub('dist_tags', 'dist-tags')) }
 
       subject { get(url) }
 
@@ -45,7 +44,7 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
         subject
 
-        expect(json_response).to eq(metadata)
+        expect(response.headers['X-Sendfile']).to eq(npm_metadata_cache.file.path)
       end
 
       it 'bumps last_downloaded_at of metadata cache' do
