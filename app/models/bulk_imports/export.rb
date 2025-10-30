@@ -13,6 +13,7 @@ module BulkImports
     belongs_to :project, optional: true
     belongs_to :group, optional: true
     belongs_to :user, optional: true
+    belongs_to :offline_export, optional: true, class_name: 'Import::Offline::Export'
 
     has_one :upload, class_name: 'BulkImports::ExportUpload'
     has_many :batches, class_name: 'BulkImports::ExportBatch'
@@ -82,6 +83,10 @@ module BulkImports
 
     def relation_has_user_contributions?
       config.relation_has_user_contributions?(relation)
+    end
+
+    def offline?
+      offline_export_id.present?
     end
   end
 end

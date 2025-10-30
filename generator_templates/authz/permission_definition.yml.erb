@@ -1,0 +1,10 @@
+---
+name: <%= name %>
+description:
+feature_category:
+<% if options[:action] -%>
+action: <%= options[:action] %>
+<% end -%>
+<% if options[:resource] -%>
+resource: <%= options[:resource] %>
+<% end -%>

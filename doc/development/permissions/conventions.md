@@ -34,6 +34,14 @@ To generate a new definition file, run the following command.
 bundle exec rails generate authz:permission <permission_name>
 ```
 
+Optionally, if you need to override the default action or resource you can use the `--action` and/or `--resource` options. This is helpful if the action is more than one word. For example, consider the permission `force_delete_ai_catalog_item`. By default the generator will assume that the permission action is `force` and the resource is `delete_ai_catalog_item` which would result in a definition file being written to `config/authz/permissions/delete_ai_catalog_item/force.yml`, which is incorrect.
+
+The following command can be used to generate a definition file with the correct action and resource which will result in the definition file being written to `config/authz/permissions/ai_catalog_item/force_delete.yml`.
+
+```shell
+bundle exec rails generate authz:permission force_delete_ai_catalog_item --action force_delete
+```
+
 ### Naming Permissions
 
 Our goal is for all permissions to follow a consistent pattern: `action_resource(_subresource)`. The resource and subresource should always be in the singular and match the object being acted upon. For example, if an action is being evaluated against a `Project` the permission name should be in the format `action_project`. Additionally, we aim to limit the actions used to ensure clarity. The preferred actions are:

@@ -45555,6 +45555,12 @@ msgstr ""
 msgid "Offline nodes automatically deleted after"
 msgstr ""
 
+msgid "OfflineTransfer|Export failed. Entity types and full paths must be provided."
+msgstr ""
+
+msgid "OfflineTransfer|Export failed. You do not have permission to export the following resources or they do not exist: %{paths}"
+msgstr ""
+
 msgid "Oh no!"
 msgstr ""
 

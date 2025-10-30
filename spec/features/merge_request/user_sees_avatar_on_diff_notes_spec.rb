@@ -188,6 +188,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4262' do
         before do
           create_list(:diff_note_on_merge_request, 3, project: project, noteable: merge_request, in_reply_to: note)
+          visit diffs_project_merge_request_path(project, merge_request, view: view)
 
           wait_for_requests
         end

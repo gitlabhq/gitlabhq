@@ -55,8 +55,18 @@ module Authz
       definition[:description]
     end
 
-    def scopes
-      definition[:scopes] || []
+    def action
+      return definition[:action] if definition[:action]
+      return name.delete_suffix("_#{resource}") if definition[:resource]
+
+      name.split('_')[0]
+    end
+
+    def resource
+      return definition[:resource] if definition[:resource]
+      return name.delete_prefix("#{action}_") if definition[:action]
+
+      name.split('_', 2)[1]
     end
 
     def feature_category

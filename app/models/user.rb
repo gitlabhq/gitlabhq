@@ -273,6 +273,7 @@ class User < ApplicationRecord
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
 
   has_many :bulk_imports
+  has_many :import_offline_exports, class_name: 'Import::Offline::Export', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085, fk cascade delete implemented
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail', foreign_key: :placeholder_user_id, inverse_of: :placeholder_user
 

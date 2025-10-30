@@ -13083,6 +13083,7 @@ CREATE TABLE bulk_import_exports (
     batches_count integer DEFAULT 0 NOT NULL,
     total_objects_count integer DEFAULT 0 NOT NULL,
     user_id bigint,
+    offline_export_id bigint,
     CONSTRAINT check_24cb010672 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_8f0f357334 CHECK ((char_length(error) <= 255)),
     CONSTRAINT check_9ee6d14d33 CHECK ((char_length(jid) <= 255)),
@@ -17806,6 +17807,27 @@ CREATE SEQUENCE import_failures_id_seq
     CACHE 1;
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
+
+CREATE TABLE import_offline_exports (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    has_failures boolean DEFAULT false NOT NULL,
+    source_hostname text NOT NULL,
+    CONSTRAINT check_dcd47fbc18 CHECK ((char_length(source_hostname) <= 255))
+);
+
+CREATE SEQUENCE import_offline_exports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_offline_exports_id_seq OWNED BY import_offline_exports.id;
 
 CREATE TABLE import_placeholder_memberships (
     id bigint NOT NULL,
@@ -31013,6 +31035,8 @@ ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('impo
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
 
+ALTER TABLE ONLY import_offline_exports ALTER COLUMN id SET DEFAULT nextval('import_offline_exports_id_seq'::regclass);
+
 ALTER TABLE ONLY import_placeholder_memberships ALTER COLUMN id SET DEFAULT nextval('import_placeholder_memberships_id_seq'::regclass);
 
 ALTER TABLE ONLY import_placeholder_user_details ALTER COLUMN id SET DEFAULT nextval('import_placeholder_user_details_id_seq'::regclass);
@@ -33964,6 +33988,9 @@ ALTER TABLE ONLY import_export_uploads
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_offline_exports
+    ADD CONSTRAINT import_offline_exports_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY import_placeholder_memberships
     ADD CONSTRAINT import_placeholder_memberships_pkey PRIMARY KEY (id);
@@ -39037,6 +39064,8 @@ CREATE INDEX index_bulk_import_export_uploads_on_project_id ON bulk_import_expor
 
 CREATE INDEX index_bulk_import_exports_on_group_id ON bulk_import_exports USING btree (group_id);
 
+CREATE INDEX index_bulk_import_exports_on_offline_export_id ON bulk_import_exports USING btree (offline_export_id);
+
 CREATE INDEX index_bulk_import_exports_on_project_id ON bulk_import_exports USING btree (project_id);
 
 CREATE INDEX index_bulk_import_exports_on_user_id ON bulk_import_exports USING btree (user_id);
@@ -40222,6 +40251,10 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
+
+CREATE INDEX index_import_offline_exports_on_organization_id ON import_offline_exports USING btree (organization_id);
+
+CREATE INDEX index_import_offline_exports_on_user_id ON import_offline_exports USING btree (user_id);
 
 CREATE INDEX index_import_placeholder_memberships_on_group_id ON import_placeholder_memberships USING btree (group_id);
 
@@ -47748,6 +47781,9 @@ ALTER TABLE ONLY incident_management_timeline_events
 ALTER TABLE ONLY terraform_state_versions
     ADD CONSTRAINT fk_180cde327a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_exports
+    ADD CONSTRAINT fk_18441f89c5 FOREIGN KEY (offline_export_id) REFERENCES import_offline_exports(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_features
     ADD CONSTRAINT fk_18513d9b92 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -48047,6 +48083,9 @@ ALTER TABLE ONLY user_project_callouts
 
 ALTER TABLE ONLY projects_branch_rules_squash_options
     ADD CONSTRAINT fk_33b614a558 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_offline_exports
+    ADD CONSTRAINT fk_34265d27dc FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_3448c97865 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;
@@ -48719,6 +48758,9 @@ ALTER TABLE ONLY merge_requests_approval_rules
 
 ALTER TABLE ONLY organization_cluster_agent_mappings
     ADD CONSTRAINT fk_7b441007e5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY import_offline_exports
+    ADD CONSTRAINT fk_7b730f0df3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;

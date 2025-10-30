@@ -6,12 +6,16 @@ require 'spec_helper'
 RSpec.describe Authz::Permission, feature_category: :permissions do
   let(:scopes) { ['project'] }
   let(:source_file) { 'config/authz/permissions/permission/test.yml' }
+  let(:name) { 'test_permission' }
+  let(:action) { nil }
+  let(:resource) { nil }
   let(:definition) do
     {
-      name: 'test_permission',
+      name: name,
       description: 'Test permission description',
-      scopes: scopes,
-      feature_category: 'team_planning'
+      feature_category: 'team_planning',
+      action: action,
+      resource: resource
     }
   end
 
@@ -79,23 +83,75 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
     end
   end
 
-  describe '#scopes' do
+  describe '#source_file' do
     specify do
-      expect(permission.scopes).to eq(scopes)
+      expect(permission.source_file).to eq(source_file)
+    end
+  end
+
+  describe '#action' do
+    let(:name) { 'another_test_permission' }
+
+    subject { permission.action }
+
+    it { is_expected.to eq('another') }
+
+    context 'when an action is defined' do
+      let(:action) { 'another_test' }
+
+      it 'is expected to use the defined action' do
+        is_expected.to eq('another_test')
+      end
     end
 
-    context 'when scopes are not defined' do
-      let(:scopes) { nil }
+    context 'when a resource is defined' do
+      let(:resource) { 'permission' }
 
-      it 'returns an empty array' do
-        expect(permission.scopes).to eq([])
+      it 'is expected to infer the action based on the resource' do
+        is_expected.to eq('another_test')
+      end
+    end
+
+    context 'when an action and resource are defined' do
+      let(:action) { 'another_test' }
+      let(:resource) { 'test_permission' }
+
+      it 'is expected use the defined action' do
+        is_expected.to eq('another_test')
       end
     end
   end
 
-  describe '#source_file' do
-    specify do
-      expect(permission.source_file).to eq(source_file)
+  describe '#resource' do
+    let(:name) { 'another_test_permission' }
+
+    subject { permission.resource }
+
+    it { is_expected.to eq('test_permission') }
+
+    context 'when a resource is defined' do
+      let(:resource) { 'permission' }
+
+      it 'is expected to use the defined resource' do
+        is_expected.to eq('permission')
+      end
+    end
+
+    context 'when an action is defined' do
+      let(:action) { 'another_test' }
+
+      it 'is expected to infer the resource based on the action' do
+        is_expected.to eq('permission')
+      end
+    end
+
+    context 'when a resource and action are defined' do
+      let(:action) { 'another_test' }
+      let(:resource) { 'test_permission' }
+
+      it 'is expected use the defined resource' do
+        is_expected.to eq('test_permission')
+      end
     end
   end
 end

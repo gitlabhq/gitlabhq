@@ -180,12 +180,9 @@ module Tasks
         end
 
         def validate_action(permission)
-          action = permission.name.to_s.split('_').first.to_sym
+          return unless DISALLOWED_ACTIONS.has_key?(permission.action.to_sym)
 
-          preferred_action = DISALLOWED_ACTIONS[action]
-          return unless preferred_action
-
-          violations[:action][permission.name] = action
+          violations[:action][permission.name] = permission.action.to_sym
         end
 
         def validate_name(permission)
@@ -195,12 +192,10 @@ module Tasks
         end
 
         def validate_file(permission)
-          action, resource = permission.name.split('_', 2)
-
           # No need to check the file path with an invalid name
-          return unless action && resource
+          return unless permission.action && permission.resource
 
-          expected_file = "#{PERMISSION_DIR}/#{resource}/#{action}.yml"
+          expected_file = "#{PERMISSION_DIR}/#{permission.resource}/#{permission.action}.yml"
           return if permission.source_file.ends_with?(expected_file)
 
           violations[:file][permission.name] = expected_file

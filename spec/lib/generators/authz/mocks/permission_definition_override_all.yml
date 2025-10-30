@@ -1,0 +1,6 @@
+---
+name: read_fake_test_resource
+description:
+feature_category:
+action: read_fake
+resource: resource

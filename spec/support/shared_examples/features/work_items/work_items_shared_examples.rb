@@ -1142,6 +1142,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   it 'creates and reorders child items', :aggregate_failures do
     # https://gitlab.com/gitlab-org/gitlab/-/issues/467207
     allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(300)
+    page.current_window.resize_to(1200, 2400)
 
     within_testid testid do
       create_child(type, 'Child 1')

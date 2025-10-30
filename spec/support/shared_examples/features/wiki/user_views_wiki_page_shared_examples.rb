@@ -110,8 +110,6 @@ RSpec.shared_examples 'User views a wiki page' do
         expect(page).to have_xpath("//img[@src='#{wiki.wiki_base_path}/#{path}']")
         expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/#{path}")
 
-        find('.js-sidebar-wiki-toggle-close').click if Users::ProjectStudio.enabled_for_user?(user)
-
         click_on('image')
 
         expect(page).to have_current_path(%r{wikis/#{path}})
@@ -120,7 +118,6 @@ RSpec.shared_examples 'User views a wiki page' do
 
     it 'shows the page doesn\'t exist if file does not exist' do
       expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/#{path}")
-      find('.js-sidebar-wiki-toggle-close').click if Users::ProjectStudio.enabled_for_user?(user)
       click_on('image')
 
       expect(page).to have_current_path(%r{wikis/#{path}})

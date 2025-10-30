@@ -14,7 +14,7 @@ class MergeRequestDiff < ApplicationRecord
   ignore_columns %i[
     id_convert_to_bigint
     merge_request_id_convert_to_bigint
-  ], remove_with: '18.3', remove_after: '2025-07-17'
+  ], remove_with: '18.7', remove_after: '2025-11-20'
 
   STORE_COLUMN = :external_diff_store
 
