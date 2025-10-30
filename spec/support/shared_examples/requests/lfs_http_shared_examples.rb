@@ -82,8 +82,7 @@ RSpec.shared_examples 'LFS http requests' do
   let(:authorization) { authorize_user }
   let(:headers) do
     {
-      'Authorization' => authorization,
-      'X-Sendfile-Type' => 'X-Sendfile'
+      'Authorization' => authorization
     }
   end
 

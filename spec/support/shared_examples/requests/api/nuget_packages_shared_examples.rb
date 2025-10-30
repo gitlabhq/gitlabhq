@@ -1008,7 +1008,7 @@ RSpec.shared_examples 'nuget symbol file endpoint' do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq('application/octet-stream')
-        expect(response.body).to eq(symbol.file.read)
+        expect(response.headers['X-Sendfile']).to eq(symbol.file.path)
       end
     end
 

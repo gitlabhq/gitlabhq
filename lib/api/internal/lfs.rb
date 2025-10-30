@@ -3,7 +3,7 @@
 module API
   module Internal
     class Lfs < ::API::Base
-      use Rack::Sendfile
+      use Rack::Sendfile, 'X-Sendfile'
 
       before { authenticate_by_gitlab_shell_token! }
 

@@ -8,7 +8,11 @@ RSpec.shared_examples 'Debian packages GET request' do |status, body = nil|
 
     expect(response).to have_gitlab_http_status(status)
 
-    unless body.nil?
+    next if body.nil?
+
+    if response.headers['X-Sendfile'].present?
+      expect(File.open(response.headers['X-Sendfile'], 'rb').read).to match(body)
+    else
       expect(response.body).to match(body)
     end
   end
