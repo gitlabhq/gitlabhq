@@ -119,4 +119,3 @@ API/DescriptionDetail:
     - 'lib/api/users.rb'
     - 'lib/api/vs_code/settings/vs_code_settings_sync.rb'
     - 'lib/api/wikis.rb'
-

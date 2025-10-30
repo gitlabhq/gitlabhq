@@ -1,5 +1,5 @@
 import { GlAlert, GlBadge, GlButton, GlCard, GlSkeletonLoader } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -8,6 +8,7 @@ import RefTrackingList, {
   MAX_TRACKED_REFS,
 } from '~/security_configuration/components/ref_tracking_list.vue';
 import RefTrackingListItem from '~/security_configuration/components/ref_tracking_list_item.vue';
+import RefUntrackingConfirmation from '~/security_configuration/components/ref_untracking_confirmation.vue';
 import securityTrackedRefsQuery from '~/security_configuration/graphql/security_tracked_refs.query.graphql';
 import { createTrackedRef } from '../mock_data';
 
@@ -81,6 +82,12 @@ describe('RefTrackingList component', () => {
   const findRefListItems = () => wrapper.findAllComponents(RefTrackingListItem);
   const findSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
+  const findUntrackConfirmation = () => wrapper.findComponent(RefUntrackingConfirmation);
+
+  const triggerUntrackRefItem = async (refToUntrack) => {
+    findRefListItems().at(0).vm.$emit('untrack', refToUntrack);
+    await nextTick();
+  };
 
   describe('rendering', () => {
     beforeEach(async () => {
@@ -176,6 +183,62 @@ describe('RefTrackingList component', () => {
 
     it('does not show the ref list', () => {
       expect(findRefList().exists()).toBe(false);
+    });
+  });
+
+  describe('untrack functionality', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('passes the tracked ref to the untrack confirmation modal when a list item emits the "untrack" event', async () => {
+      const refToUntrack = mockTrackedRefs[0];
+
+      expect(findUntrackConfirmation().props('refToUntrack')).toBeNull();
+
+      await triggerUntrackRefItem(refToUntrack);
+
+      expect(findUntrackConfirmation().props('refToUntrack')).toEqual(refToUntrack);
+    });
+
+    it('calls the mutation with the correct variables when the untrack confirmation modal emits the "confirm" event', async () => {
+      const refToUntrack = mockTrackedRefs[0];
+      // Note: Once we have the actual mutation available on the BE, we can move from using a spy to mocking the actual mutation.
+      // Currently this would cause an error with mock-apollo
+      const mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
+        data: {
+          securityTrackedRefsUntrack: {
+            success: true,
+            untrackedRefIds: [refToUntrack.id],
+          },
+        },
+      });
+
+      await triggerUntrackRefItem(refToUntrack);
+
+      expect(findUntrackConfirmation().props('refToUntrack')).toEqual(refToUntrack);
+
+      findUntrackConfirmation().vm.$emit('confirm', {
+        refId: refToUntrack.id,
+        archiveVulnerabilities: false,
+      });
+      await waitForPromises();
+
+      expect(mutateSpy).toHaveBeenCalled();
+    });
+
+    it('resets the tracked ref to `null` when the untrack confirmation modal emits the "cancel" event', async () => {
+      const refToUntrack = mockTrackedRefs[0];
+
+      await triggerUntrackRefItem(refToUntrack);
+
+      expect(findUntrackConfirmation().props('refToUntrack')).toEqual(refToUntrack);
+
+      findUntrackConfirmation().vm.$emit('cancel');
+      await nextTick();
+
+      expect(findUntrackConfirmation().props('refToUntrack')).toBeNull();
     });
   });
 });

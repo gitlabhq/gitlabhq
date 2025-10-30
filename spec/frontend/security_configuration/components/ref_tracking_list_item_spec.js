@@ -1,5 +1,6 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RefTrackingListItem from '~/security_configuration/components/ref_tracking_list_item.vue';
 import RefTrackingMetadata from '~/security_configuration/components/ref_tracking_metadata.vue';
 import { createTrackedRef } from '../mock_data';
@@ -12,6 +13,9 @@ describe('RefTrackingListItem component', () => {
       propsData: {
         trackedRef,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
@@ -19,6 +23,7 @@ describe('RefTrackingListItem component', () => {
   const findMetadataComponent = () => wrapper.findComponent(RefTrackingMetadata);
   const findVulnerabilitiesCount = () => wrapper.findByTestId('vulnerabilities-count');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownTooltip = () => getBinding(findDropdown().element, 'gl-tooltip');
 
   describe('component rendering', () => {
     beforeEach(() => {
@@ -79,25 +84,43 @@ describe('RefTrackingListItem component', () => {
       });
     });
 
-    it('contains remove action with correct properties', () => {
+    it('contains untrack action with correct properties', () => {
       const items = findDropdown().props('items');
-      const removeAction = items[0];
+      const untrackAction = items[0];
 
       expect(items).toHaveLength(1);
-      expect(removeAction).toMatchObject({
+      expect(untrackAction).toMatchObject({
         text: 'Remove ref tracking',
         variant: 'danger',
       });
     });
 
-    it('emits remove event with tracked ref id when remove action is triggered', () => {
+    it('emits untrack event with tracked ref when untrack action is triggered', () => {
       const dropdown = findDropdown();
-      const removeAction = dropdown.props('items')[0].action;
+      const untrackAction = dropdown.props('items')[0].action;
 
-      removeAction();
+      untrackAction();
 
-      expect(wrapper.emitted('remove')).toHaveLength(1);
-      expect(wrapper.emitted('remove')[0]).toEqual([createTrackedRef().id]);
+      expect(wrapper.emitted('untrack')).toHaveLength(1);
+      expect(wrapper.emitted('untrack')[0]).toEqual([createTrackedRef()]);
     });
+
+    it('disables the dropdown when the tracked ref is the default ref', () => {
+      createComponent({ trackedRef: createTrackedRef({ isDefault: true }) });
+
+      const dropdown = findDropdown();
+      expect(dropdown.props('disabled')).toBe(true);
+    });
+
+    it.each([true, false])(
+      'shows a tooltip on the dropdown when the tracked ref is the default ref: $isDefault',
+      ({ isDefault }) => {
+        createComponent({ trackedRef: createTrackedRef({ isDefault }) });
+
+        expect(findDropdownTooltip().value).toBe(
+          isDefault ? 'The default ref cannot be removed from being tracked' : '',
+        );
+      },
+    );
   });
 });

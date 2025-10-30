@@ -1,13 +1,13 @@
 ---
-stage: Systems
-group: Geo
+stage: Data Access
+group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 新しいサーバーに移行する
 ---
 
 <!-- some details borrowed from GitLab.com move from Azure to GCP detailed at https://gitlab.com/gitlab-com/migration/-/blob/master/.gitlab/issue_templates/failover.md -->
 
-GitLabのバックアップと復元機能を使用して、インスタンスを新しいサーバーに移行できます。このセクションでは、単一のサーバーで実行されているGitLabデプロイの一般的な手順の概要を説明します。GitLab Geoを実行している場合、代替手段として[計画フェイルオーバーにおけるGeoディザスタリカバリ](../geo/disaster_recovery/planned_failover.md)があります。移行手段としてGeoを選択する前に、すべてのサイトが[Geoの要件](../geo/_index.md#requirements-for-running-geo)を満たしていることを確認する必要があります。
+GitLabのバックアップと復元機能を使用して、インスタンスを新しいサーバーに移行できます。このセクションでは、単一のサーバーで実行されているGitLabデプロイの一般的な手順の概要を説明します。GitLab Geoを実行している場合、代替手段として[計画フェイルオーバーにおけるGeoディザスターリカバリー](../geo/disaster_recovery/planned_failover.md)があります。移行手段としてGeoを選択する前に、すべてのサイトが[Geoの要件](../geo/_index.md#requirements-for-running-geo)を満たしていることを確認する必要があります。
 
 {{< alert type="warning" >}}
 
@@ -20,7 +20,7 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
 - 移行の少し前に、[ブロードキャストメッセージバナー](../broadcast_messages.md)で今後のスケジュール済みメンテナンスについてユーザーに通知することを検討してください。
 - バックアップが完了し、最新の状態であることを確認してください。破壊的なコマンド（`rm`など）が誤って実行された場合に備えて、システムレベルの完全なバックアップを作成するか、移行に関わるすべてのサーバーのスナップショットを作成しておいてください。
 
-## 新しいサーバーを準備する
+## 新しいサーバーを準備する {#prepare-the-new-server}
 
 新しいサーバーを準備するには、次の手順に従います。
 
@@ -47,14 +47,14 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
    sudo gitlab-ctl stop
    ```
 
-1. RedisデータベースおよびGitLabバックアップファイルを受信できるように、新サーバーを設定します。
+1. RedisデータベースおよびGitLabバックアップファイルを受信できるように、新しいサーバーを設定します。
 
    ```shell
    sudo rm -f /var/opt/gitlab/redis/dump.rdb
    sudo chown <your-linux-username> /var/opt/gitlab/redis /var/opt/gitlab/backups
    ```
 
-## 旧サーバーのコンテンツを準備して転送する
+## 旧サーバーのコンテンツを準備して転送する {#prepare-and-transfer-content-from-the-old-server}
 
 1. 旧サーバーの最新のシステムレベルのバックアップまたはスナップショットがあることを確認します。
 1. お使いのGitLabのエディションでサポートされている場合は、[メンテナンスモード](../maintenance_mode/_index.md)を有効にします。
@@ -73,12 +73,12 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
 
 1. 定期的なバックグラウンドジョブを無効にします。
    1. 左側のサイドバーの下部で、**管理者**を選択します。
-   1. 左側のサイドバーで、**モニタリング > バックグラウンドジョブ**を選択します。
-   1. Sidekiqのダッシュボードで、**Cron**タブを選択し、次に**Disable All**（すべて無効にする）を選択します。
-1. 実行中のCI/CDジョブが完了するまで待ちます。そうしないと、完了していないジョブが失われる可能性があります。実行中のジョブを表示するには、左側のサイドバーで、**概要 > ジョブ**を選択し、**実行中**を選択します。
+   1. 左側のサイドバーで、**モニタリング** > **バックグラウンドジョブ**を選択します。
+   1. Sidekiqのダッシュボードで、**Cron**タブを選択し、次に**Disable All**を選択します。
+1. 実行中のCI/CDジョブが完了するまで待ちます。そうしないと、完了していないジョブが失われる可能性があります。実行中のジョブを表示するには、左側のサイドバーで**Overviews** > **Jobs**を選択し、次に**Running**を選択します。
 1. Sidekiqジョブが完了するのを待ちます。
-   1. 左側のサイドバーで、**モニタリング > バックグラウンドジョブ**を選択します。
-   1. Sidekiqダッシュボードで、**Queues**（キュー）を選択し、次に**Live Poll**（ライブポール）を選択します。**Busy**（ビジー）および**Enqueued**（キューに投入済み）が0になるまで待ちます。これらのキューにはユーザーから送信された作業が含まれています。これらのジョブが完了する前にシャットダウンすると、作業が失われる可能性があります。移行後の検証に備えて、Sidekiqダッシュボードに表示されている数値をメモしておいてください。
+   1. 左側のサイドバーで、**モニタリング** > **バックグラウンドジョブ**を選択します。
+   1. Sidekiqダッシュボードで、**Queues**を選択し、次に**Live Poll**を選択します。**Busy**および**Enqueued**が0になるまで待ちます。これらのキューにはユーザーから送信された作業が含まれています。これらのジョブが完了する前にシャットダウンすると、作業が失われる可能性があります。移行後の検証に備えて、Sidekiqダッシュボードに表示されている数値をメモしておいてください。
 1. Redisデータベースをディスクにフラッシュし、移行に必要なサービス以外のGitLabを停止します。
 
    ```shell
@@ -95,6 +95,7 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
 
    ```ruby
    alertmanager['enable'] = false
+   gitaly['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_pages['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -125,7 +126,7 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
    sudo gitlab-ctl status
    ```
 
-1. Redisデータベースのバックアップを転送する前に、**新しいサーバー**上のRedisを停止します。
+1. Redisデータベースのバックアップを転送する前に、新しいサーバー上のRedisを停止します。
 
    ```shell
    sudo gitlab-ctl stop redis
@@ -138,9 +139,9 @@ GitLabのバックアップと復元機能を使用して、インスタンス�
    sudo scp /var/opt/gitlab/backups/your-backup.tar <your-linux-username>@new-server:/var/opt/gitlab/backups
    ```
 
-### Gitやオブジェクトのデータ量が多いインスタンスの場合
+### Gitやオブジェクトのデータ量が多いインスタンスの場合 {#for-instances-with-a-large-volume-of-git-and-object-data}
 
-GitLabインスタンスのローカルボリューム上に大量のデータがある場合、たとえば1 TBを超えるようなケースでは、バックアップに時間がかかることがあります。そのような場合は、新しいインスタンスの適切なボリュームにデータを転送する方が簡単なこともあります。
+GitLabインスタンスのローカルボリューム上に大量のデータがある場合、たとえば1 TBを超えるようなケースでは、バックアップに時間がかかることがあります。そのような場合は、新しいインスタンスの適切なボリュームにデータを転送する方が簡単なこともあります。
 
 手動で移行する必要がある主なボリュームは次のとおりです。
 
@@ -150,7 +151,7 @@ GitLabインスタンスのローカルボリューム上に大量のデータ�
 
 すべてのGitLabサービスが停止したら、`rsync`などのツールを使用するか、ボリュームスナップショットをマウントして、新しい環境にデータを移行できます。
 
-## 新しいサーバーでデータを復元する
+## 新しいサーバーでデータを復元する {#restore-data-on-the-new-server}
 
 1. 適切なファイルシステムの権限を復元します。
 
@@ -172,9 +173,9 @@ GitLabインスタンスのローカルボリューム上に大量のデータ�
 1. [GitLabバックアップを復元](restore_gitlab.md)します。
 1. Redisデータベースが正しく復元されたことを確認します。
    1. 左側のサイドバーの下部で、**管理者**を選択します。
-   1. 左側のサイドバーで、**モニタリング > バックグラウンドジョブ**を選択します。
+   1. 左側のサイドバーで、**モニタリング** > **バックグラウンドジョブ**を選択します。
    1. Sidekiqダッシュボードで、表示されている数値が旧サーバーの数値と一致することを確認します。
-   1. Sidekiqダッシュボードで、**Cron**を選択し、次に**Enable All**（すべて有効にする）を選択して、定期的なバックグラウンドジョブを再度有効にします。
+   1. Sidekiqダッシュボードで、**Cron**を選択し、次に**Enable All**を選択して、定期的なバックグラウンドジョブを再度有効にします。
 1. GitLabインスタンスでの読み取り専用操作が期待どおりに機能することをテストします。たとえば、プロジェクトのリポジトリファイル、マージリクエスト、イシューを参照します。
 1. 以前に[メンテナンスモード](../maintenance_mode/_index.md)を有効にしていた場合は、無効にします。
 1. GitLabインスタンスが期待どおりに動作していることをテストします。

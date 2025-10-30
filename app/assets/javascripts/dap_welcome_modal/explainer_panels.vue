@@ -13,7 +13,7 @@ export default {
     <p class="gl-mb-7">
       {{
         __(
-          'Panels present information side by side, allowing you to work more contextually. When you select an issue from the Issues page, it opens in the details panel.',
+          'Stay in your workflow with contextual panels. Select an issue to view its details right alongside your list, so you can quickly review, edit, and move on to the next task.',
         )
       }}
     </p>

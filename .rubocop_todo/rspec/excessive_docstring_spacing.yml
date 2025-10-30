@@ -28,7 +28,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'ee/spec/services/users/service_accounts/create_service_spec.rb'
     - 'ee/spec/support/shared_examples/features/password_complexity_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/concerns/protected_ref_access_shared_examples.rb'
-    - 'ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb'
     - 'ee/spec/workers/analytics/code_review_metrics_worker_spec.rb'
     - 'qa/spec/specs/helpers/context_selector_spec.rb'
     - 'spec/components/pajamas/button_component_spec.rb'

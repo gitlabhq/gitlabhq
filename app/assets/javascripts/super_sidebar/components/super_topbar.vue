@@ -3,6 +3,7 @@ import { GlBadge, GlButton, GlIcon, GlModalDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
@@ -51,10 +52,16 @@ export default {
   },
   computed: {
     isAdmin() {
-      return this.sidebarData?.admin_mode?.user_is_admin;
+      return parseBoolean(this.sidebarData?.admin_mode?.user_is_admin);
     },
     isLoggedIn() {
-      return this.sidebarData.is_logged_in;
+      return parseBoolean(this.sidebarData.is_logged_in);
+    },
+    allowSignUp() {
+      return parseBoolean(this.sidebarData?.allow_signup);
+    },
+    signInVisible() {
+      return parseBoolean(this.sidebarData?.sign_in_visible);
     },
     shouldShowOrganizationSwitcher() {
       return (
@@ -160,7 +167,7 @@ export default {
       </template>
       <template v-else>
         <gl-button
-          v-if="sidebarData.allow_signup"
+          v-if="allowSignUp"
           :href="sidebarData.new_user_registration_path"
           variant="confirm"
           class="topbar-signup-button gl-hidden lg:gl-flex"
@@ -169,7 +176,7 @@ export default {
           {{ isSaas ? __('Get free trial') : __('Register') }}
         </gl-button>
         <gl-button
-          v-if="sidebarData.sign_in_visible"
+          v-if="signInVisible"
           :href="sidebarData.sign_in_path"
           class="gl-hidden lg:gl-flex"
           data-testid="topbar-signin-button"

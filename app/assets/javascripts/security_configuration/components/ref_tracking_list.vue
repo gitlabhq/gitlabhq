@@ -1,8 +1,11 @@
 <script>
 import { GlCard, GlButton, GlBadge, GlSkeletonLoader, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { untrackRefsOptimisticResponse, updateUntrackedRefsCache } from '../graphql/cache_utils';
 import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql';
+import untrackSecurityTrackedRefsMutation from '../graphql/untrack_security_tracked_refs.mutation.graphql';
 import RefTrackingListItem from './ref_tracking_list_item.vue';
+import RefUntrackingConfirmation from './ref_untracking_confirmation.vue';
 
 export const MAX_TRACKED_REFS = 16;
 
@@ -14,6 +17,7 @@ export default {
     GlBadge,
     GlSkeletonLoader,
     RefTrackingListItem,
+    RefUntrackingConfirmation,
   },
   inject: ['projectFullPath'],
   apollo: {
@@ -28,6 +32,7 @@ export default {
         return data.project?.securityTrackedRefs || [];
       },
       error() {
+        this.hasFetchError = true;
         this.errorMessage = s__(
           'SecurityConfiguration|Could not fetch tracked refs. Please refresh the page, or try again later.',
         );
@@ -38,6 +43,9 @@ export default {
     return {
       trackedRefs: [],
       errorMessage: '',
+      refToUntrack: null,
+      hasFetchError: false,
+      hasUntrackError: false,
     };
   },
   computed: {
@@ -47,14 +55,43 @@ export default {
     isLoading() {
       return this.$apollo.queries.trackedRefs.loading;
     },
-    hasFetchError() {
-      return Boolean(this.errorMessage);
-    },
   },
   methods: {
-    handleRemoveRef() {
-      // The removal logic is handled in a separate issue
-      // See https://gitlab.com/gitlab-org/gitlab/-/issues/577517
+    async untrackRef({ refId, archiveVulnerabilities }) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: untrackSecurityTrackedRefsMutation,
+          variables: {
+            input: {
+              projectPath: this.projectFullPath,
+              refIds: [refId],
+              archiveVulnerabilities,
+            },
+          },
+          optimisticResponse: untrackRefsOptimisticResponse([refId]),
+          update: updateUntrackedRefsCache({
+            query: securityTrackedRefs,
+            variables: { fullPath: this.projectFullPath },
+          }),
+        });
+
+        if (data.securityTrackedRefsUntrack.errors?.length) {
+          throw new Error();
+        }
+      } catch {
+        this.hasUntrackError = true;
+        this.errorMessage = s__(
+          'SecurityConfiguration|Could not remove tracked ref. Please refresh the page, or try again later.',
+        );
+      } finally {
+        this.closeUntrackConfirmation();
+      }
+    },
+    openUntrackConfirmation(ref) {
+      this.refToUntrack = ref;
+    },
+    closeUntrackConfirmation() {
+      this.refToUntrack = null;
     },
   },
   MAX_TRACKED_REFS,
@@ -81,7 +118,12 @@ export default {
       </div>
     </template>
 
-    <gl-alert v-if="hasFetchError" variant="danger" :dismissible="false">
+    <gl-alert
+      v-if="hasFetchError || hasUntrackError"
+      variant="danger"
+      :dismissible="hasUntrackError"
+      @dismiss="hasUntrackError = false"
+    >
       {{ errorMessage }}
     </gl-alert>
 
@@ -102,8 +144,13 @@ export default {
         v-for="ref in trackedRefs"
         :key="ref.id"
         :tracked-ref="ref"
-        @remove="handleRemoveRef"
+        @untrack="openUntrackConfirmation"
       />
     </ul>
+    <ref-untracking-confirmation
+      :ref-to-untrack="refToUntrack"
+      @confirm="untrackRef"
+      @cancel="closeUntrackConfirmation"
+    />
   </gl-card>
 </template>

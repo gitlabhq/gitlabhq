@@ -19,3 +19,14 @@ type LocalTrackedRef {
   commit: LocalTrackedCommit
   vulnerabilitiesCount: Int!
 }
+
+input SecurityTrackedRefsUntrackInput {
+  projectPath: ID!
+  refIds: [ID!]!
+  archiveVulnerabilities: Boolean!
+}
+
+type SecurityTrackedRefsUntrackPayload {
+  untrackedRefIds: [ID!]!
+  errors: [String]!
+}

@@ -11,6 +11,19 @@ PARTITION BY toYYYYMM(timestamp)
 ORDER BY (namespace_path, event, timestamp, user_id)
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE ai_usage_events_daily
+(
+    `namespace_path` String DEFAULT '0/',
+    `date` Date32 DEFAULT toDate(now64()),
+    `event` UInt16 DEFAULT 0,
+    `user_id` UInt64 DEFAULT 0,
+    `occurrences` UInt64 DEFAULT 0
+)
+ENGINE = SummingMergeTree
+PARTITION BY toYear(date)
+ORDER BY (namespace_path, date, event, user_id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE ci_finished_builds
 (
     `id` UInt64 DEFAULT 0,
@@ -1210,6 +1223,22 @@ ENGINE = ReplacingMergeTree(version, deleted)
 PRIMARY KEY (work_item_id, label_id, id)
 ORDER BY (work_item_id, label_id, id)
 SETTINGS index_granularity = 8192;
+
+CREATE MATERIALIZED VIEW ai_usage_events_daily_mv TO ai_usage_events_daily
+(
+    `namespace_path` String,
+    `date` Date,
+    `event` UInt16,
+    `user_id` UInt64,
+    `occurrences` UInt8
+)
+AS SELECT
+    namespace_path AS namespace_path,
+    toDate(timestamp) AS date,
+    event AS event,
+    user_id AS user_id,
+    1 AS occurrences
+FROM ai_usage_events;
 
 CREATE MATERIALIZED VIEW ci_finished_builds_aggregated_queueing_delay_percentiles_by_owner_mv TO ci_finished_builds_aggregated_queueing_delay_percentiles_by_owner
 (

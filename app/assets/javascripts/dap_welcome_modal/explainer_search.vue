@@ -13,7 +13,7 @@ export default {
     <p class="gl-mb-7">
       {{
         __(
-          'Other subtle usability-driven improvements include moving the global search box to the top center for improved accessibility. Global navigation elements, including your assigned issues, merge requests, to-do items, and the user icon, move to the top right.',
+          'GitLab now has a sleek panel-based layout. Find what you need faster with centered search and all your work items conveniently positioned in the upper right.',
         )
       }}
     </p>

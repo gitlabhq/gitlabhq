@@ -39,6 +39,7 @@ export default {
       return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
     },
   },
+  expose: ['focusInput'],
   methods: {
     focusInput() {
       this.$refs.searchInput?.focusInput();

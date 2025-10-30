@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import RefTrackingMetadata from './ref_tracking_metadata.vue';
 
@@ -9,6 +9,9 @@ export default {
     GlDisclosureDropdown,
     RefTrackingMetadata,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     trackedRef: {
       type: Object,
@@ -16,19 +19,19 @@ export default {
     },
   },
   computed: {
-    removeAction() {
+    untrackAction() {
       return [
         {
           text: s__('SecurityTrackedRefs|Remove ref tracking'),
-          action: () => this.handleRemove(),
+          action: () => this.handleUntrack(),
           variant: 'danger',
         },
       ];
     },
   },
   methods: {
-    handleRemove() {
-      this.$emit('remove', this.trackedRef.id);
+    handleUntrack() {
+      this.$emit('untrack', this.trackedRef);
     },
   },
 };
@@ -53,7 +56,12 @@ export default {
           }}
         </span>
         <gl-disclosure-dropdown
-          :items="removeAction"
+          v-gl-tooltip="
+            trackedRef.isDefault
+              ? s__('SecurityTrackedRefs|The default ref cannot be removed from being tracked')
+              : ''
+          "
+          :items="untrackAction"
           icon="ellipsis_v"
           no-caret
           category="tertiary"
@@ -61,6 +69,7 @@ export default {
           text-sr-only
           placement="bottom-end"
           data-testid="ref-actions-dropdown"
+          :disabled="trackedRef.isDefault"
         />
       </div>
     </div>

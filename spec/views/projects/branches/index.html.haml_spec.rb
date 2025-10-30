@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/branches/index.html.haml' do
+RSpec.describe 'projects/branches/index.html.haml', feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:repository) { project.repository }
 
@@ -19,7 +19,6 @@ RSpec.describe 'projects/branches/index.html.haml' do
     assign(:related_merge_requests, {})
     assign(:overview_max_branches, 5)
     assign(:branch_pipeline_statuses, {})
-    assign(:refs_pipelines, {})
   end
 
   it 'renders list of active and stale branches' do

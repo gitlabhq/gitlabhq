@@ -28,10 +28,6 @@ export default {
       type: String,
       required: true,
     },
-    dropdownHeaderTitle: {
-      type: String,
-      required: true,
-    },
     moveInProgress: {
       type: Boolean,
       required: false,

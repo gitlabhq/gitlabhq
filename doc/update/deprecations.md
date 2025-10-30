@@ -214,33 +214,6 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 
 <div class="deprecation breaking-change" data-milestone="20.0">
 
-### GitLab Runner registration token in Runner Operator
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382077).
-
-</div>
-
-The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator/#install-the-kubernetes-operator) parameter that uses the OpenShift and Kubernetes Vanilla Operator to install a runner on Kubernetes is deprecated. Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be removed in a future GitLab release. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
-The configuration arguments disabled for authentication tokens are:
-
-- `--locked`
-- `--access-level`
-- `--run-untagged`
-- `--tag-list`
-
-This change is a breaking change. You must use an [authentication token](https://docs.gitlab.com/ci/runners/runners_scope/) in the `gitlab-runner register` command instead.
-
-See also how to [prevent your runner registration workflow from breaking](https://docs.gitlab.com/ci/runners/new_creation_workflow/#prevent-your-runner-registration-workflow-from-breaking) in GitLab 17.0 and later.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
 ### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
 
 <div class="deprecation-notes">
@@ -294,22 +267,6 @@ While this functionality will continue to work when using the Gemnasium analyzer
 See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
 
 A replacement feature is planned as part of the [Auto Remediation vision](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.11</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/453949).
-
-</div>
-
-The [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN`](https://docs.gitlab.com/administration/environment_variables/#supported-environment-variables) environment variable is deprecated. GitLab introduced a new [GitLab Runner token architecture](https://docs.gitlab.com/architecture/blueprints/runner_tokens/) in GitLab 15.8, which introduces a new method for registering runners and eliminates the legacy runner registration token. Please refer to the [documentation](https://docs.gitlab.com/ci/runners/new_creation_workflow/) for guidance on migrating to the new workflow.
 
 </div>
 </div>

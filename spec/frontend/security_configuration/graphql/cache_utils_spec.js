@@ -1,6 +1,8 @@
 import {
   updateSecurityTrainingCache,
   updateSecurityTrainingOptimisticResponse,
+  untrackRefsOptimisticResponse,
+  updateUntrackedRefsCache,
 } from '~/security_configuration/graphql/cache_utils';
 
 describe('EE - Security configuration graphQL cache utils', () => {
@@ -103,6 +105,80 @@ describe('EE - Security configuration graphQL cache utils', () => {
           },
         }),
       );
+    });
+  });
+
+  describe('untrackRefsOptimisticResponse', () => {
+    it('returns an optimistic response in the correct shape with provided refIds', () => {
+      const refIds = ['gid://gitlab/TrackedRef/1', 'gid://gitlab/TrackedRef/2'];
+      const mutationResponse = untrackRefsOptimisticResponse(refIds);
+
+      expect(mutationResponse).toEqual({
+        __typename: 'Mutation',
+        securityTrackedRefsUntrack: {
+          __typename: 'SecurityTrackedRefsUntrackPayload',
+          errors: [],
+          untrackedRefIds: refIds,
+        },
+      });
+    });
+  });
+
+  describe('updateUntrackedRefsCache', () => {
+    let mockCache;
+
+    beforeEach(() => {
+      const mockCacheData = {
+        project: {
+          id: 'gid://gitlab/Project/1',
+          __typename: 'Project',
+          securityTrackedRefs: [
+            { id: 'gid://gitlab/TrackedRef/1', name: 'main' },
+            { id: 'gid://gitlab/TrackedRef/2', name: 'develop' },
+            { id: 'gid://gitlab/TrackedRef/3', name: 'feature' },
+          ],
+        },
+      };
+
+      mockCache = {
+        updateQuery: jest.fn((options, updateFn) => {
+          const result = updateFn(mockCacheData);
+          return result;
+        }),
+      };
+    });
+
+    it('removes untracked refs from the cache', () => {
+      const untrackedRefIds = ['gid://gitlab/TrackedRef/1', 'gid://gitlab/TrackedRef/2'];
+
+      updateUntrackedRefsCache({
+        query: 'GraphQL query',
+        variables: { fullPath: 'gitlab/project' },
+      })(mockCache, {
+        data: {
+          securityTrackedRefsUntrack: {
+            untrackedRefIds,
+          },
+        },
+      });
+
+      expect(mockCache.updateQuery).toHaveBeenCalled();
+      const updateFn = mockCache.updateQuery.mock.calls[0][1];
+      const result = updateFn({
+        project: {
+          id: 'gid://gitlab/Project/1',
+          __typename: 'Project',
+          securityTrackedRefs: [
+            { id: 'gid://gitlab/TrackedRef/1', name: 'main' },
+            { id: 'gid://gitlab/TrackedRef/2', name: 'develop' },
+            { id: 'gid://gitlab/TrackedRef/3', name: 'feature' },
+          ],
+        },
+      });
+
+      untrackedRefIds.forEach((refId) => {
+        expect(result.project.securityTrackedRefs.some((ref) => ref.id === refId)).toBe(false);
+      });
     });
   });
 });

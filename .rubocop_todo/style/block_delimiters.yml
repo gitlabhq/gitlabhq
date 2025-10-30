@@ -17,8 +17,6 @@ Style/BlockDelimiters:
     - 'ee/spec/models/analytics/cycle_analytics/value_stream_setting_spec.rb'
     - 'ee/spec/models/audit_events/streaming/instance_event_type_filter_spec.rb'
     - 'ee/spec/models/compliance_management/framework_spec.rb'
-    - 'ee/spec/models/ee/design_management/repository_spec.rb'
-    - 'ee/spec/models/ee/projects/wiki_repository_spec.rb'
     - 'ee/spec/models/geo/design_management_repository_state_spec.rb'
     - 'ee/spec/models/geo/wiki_repository_state_spec.rb'
     - 'ee/spec/models/namespace_setting_spec.rb'

@@ -184,10 +184,14 @@
   }
 }
 
+#dap_welcome_modal .modal-dialog {
+  overflow: clip;
+}
+
 #dap_welcome_modal .slides {
   display: flex;
   width: 100%;
-  overflow: hidden;
+  clip-path: inset(0);
 
   .slide:not(.active) {
     opacity: 0;
@@ -196,6 +200,7 @@
   .slide {
     width: 100%;
     flex-shrink: 0;
+    @apply gl-pt-2;
     transition: all 0.2s $gl-easing-out-cubic;
   }
 
@@ -461,59 +466,6 @@
   55%,
   95% {
     width: 112px;
-  }
-}
-
-
-// navbar explainer illustration
-#dap_welcome_modal .active .explainer-sidebar {
-  --_animation: 3s cubic-bezier(0.22, 0.61, 0.36, 1) both infinite;
-}
-
-#dap_welcome_modal .explainer-sidebar {
-  display: block;
-  margin: auto;
-  max-width: 100%;
-  --_svg-color: var(--_svg-color-new);
-
-  .sidebar {
-    animation: dap-welcome-modal-explainer-sidebar-sidebar var(--_animation);
-  }
-
-  .panel {
-    animation: dap-welcome-modal-explainer-sidebar-panel var(--_animation);
-  }
-
-  .ui {
-    opacity: 0.4;
-  }
-}
-
-@keyframes dap-welcome-modal-explainer-sidebar-sidebar {
-  0%,
-  45%,
-  100% {
-    width: 68px;
-  }
-
-  50%,
-  95% {
-    width: 12px;
-  }
-}
-
-@keyframes dap-welcome-modal-explainer-sidebar-panel {
-  0%,
-  45%,
-  100% {
-    width: 204px;
-    translate: 0 0;
-  }
-
-  50%,
-  95% {
-    width: 260px;
-    translate: -56px 0;
   }
 }
 

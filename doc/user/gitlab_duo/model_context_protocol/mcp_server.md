@@ -65,7 +65,7 @@ To use the MCP server:
 
 ## Connect Cursor to a GitLab MCP server
 
-You can configure the GitLab MCP sever in Cursor by using:
+You can configure the GitLab MCP server in Cursor by using:
 
 - **HTTP transport (recommended)**: Direct connection without additional dependencies.
 - **stdio transport with `mcp-remote`**: Connection through a proxy (requires Node.js).

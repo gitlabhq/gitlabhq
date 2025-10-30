@@ -160,7 +160,6 @@ export default {
       :projects-fetch-path="projectsFetchPath"
       :move-in-progress="moveInProgress"
       :disabled="!issuesSelected && !incidentsSelected"
-      :dropdown-header-title="$options.i18n.dropdownButtonTitle"
       :dropdown-button-title="$options.i18n.dropdownButtonTitle"
       @move-issuable="moveIssues"
     />

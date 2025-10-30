@@ -194,7 +194,6 @@ Rails/Date:
     - 'spec/services/users/upsert_credit_card_validation_service_spec.rb'
     - 'spec/services/work_items/callbacks/start_and_due_date_spec.rb'
     - 'spec/services/work_items/update_service_spec.rb'
-    - 'spec/support/helpers/value_streams_dashboard_helpers.rb'
     - 'spec/support/shared_examples/features/deploy_token_shared_examples.rb'
     - 'spec/support/shared_examples/features/sidebar/sidebar_due_date_shared_examples.rb'
     - 'spec/support/shared_examples/graphql/notes_quick_actions_for_work_items_shared_examples.rb'

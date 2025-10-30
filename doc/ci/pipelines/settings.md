@@ -292,3 +292,6 @@ The system automatically deletes pipelines that were created before the configur
    Must be one day or more, and less than one year. Leave empty to never delete pipelines automatically.
    Empty by default.
 1. Select **Save changes**.
+
+For GitLab Self-Managed, administrators can increase the upper limit for
+[automatic pipeline cleanup](../../administration/instance_limits.md#maximum-config-value-for-automatic-pipeline-cleanup).

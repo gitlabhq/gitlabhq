@@ -170,6 +170,7 @@ export const sidebarData = {
   username: 'root',
   avatar_url: 'path/to/img_administrator',
   logo_url: 'path/to/logo',
+  compare_plans_url: 'path/to/compare_plans',
   user_counts: {
     last_update: Date.now(),
     todos: 3,

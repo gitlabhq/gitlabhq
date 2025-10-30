@@ -113,7 +113,7 @@ module QA
         def dismiss_welcome_modal_if_present
           return unless has_element?('#dap_welcome_modal___BV_modal_footer_', wait: 1)
 
-          click_button 'Get Started'
+          click_button 'Get started'
           within(find('#dap_welcome_modal___BV_modal_content_')) { click_element('close-icon') }
           wait_until(reload: false) do
             !has_css?('#dap_welcome_modal___BV_modal_footer_')

@@ -150,7 +150,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/controllers/groups/roadmap_controller_spec.rb'
     - 'ee/spec/controllers/projects/protected_environments_controller_spec.rb'
     - 'ee/spec/db/production/license_spec.rb'
-    - 'ee/spec/factories/ci/builds.rb'
     - 'ee/spec/factories/group_saml_identities.rb'
     - 'ee/spec/factories/protected_environments.rb'
     - 'ee/spec/factories/protected_environments/deploy_access_levels.rb'

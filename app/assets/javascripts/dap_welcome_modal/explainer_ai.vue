@@ -13,7 +13,7 @@ export default {
     <p class="gl-mb-7">
       {{
         __(
-          'If you enabled Duo, you can open the GitLab Duo panel on the right side as an on-demand assistant. There, you can ask agents contextual questions and instructions from anywhere in the GitLab experience.',
+          'Open the GitLab Duo AI assistant panel from anywhere in GitLab. Ask questions, request code help, or get guidance without interrupting your workflow.',
         )
       }}
     </p>

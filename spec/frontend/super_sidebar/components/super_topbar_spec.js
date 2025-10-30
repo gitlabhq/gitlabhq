@@ -269,6 +269,15 @@ describe('SuperTopbar', () => {
         });
 
         expect(findPromoMenu().exists()).toBe(true);
+
+        createComponent({
+          sidebarData: {
+            ...mockSidebarData,
+            is_logged_in: 'false',
+          },
+        });
+
+        expect(findPromoMenu().exists()).toBe(true);
       });
 
       it('does not render when user is logged in', () => {
@@ -289,6 +298,15 @@ describe('SuperTopbar', () => {
             },
           });
           expect(findSigninButton().exists()).toBe(false);
+
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: 'false',
+              sign_in_visible: 'false',
+            },
+          });
+          expect(findSigninButton().exists()).toBe(false);
         });
 
         it('renders', () => {
@@ -296,6 +314,14 @@ describe('SuperTopbar', () => {
             sidebarData: {
               ...mockSidebarData,
               is_logged_in: false,
+            },
+          });
+          expect(findSigninButton().attributes('href')).toBe(mockSidebarData.sign_in_path);
+
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: 'false',
             },
           });
           expect(findSigninButton().attributes('href')).toBe(mockSidebarData.sign_in_path);
@@ -321,6 +347,15 @@ describe('SuperTopbar', () => {
             },
           });
           expect(findSignupButton().exists()).toBe(false);
+
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: 'false',
+              allow_signup: 'false',
+            },
+          });
+          expect(findSignupButton().exists()).toBe(false);
         });
 
         it('renders register when not in SaaS mode', () => {
@@ -328,6 +363,14 @@ describe('SuperTopbar', () => {
             sidebarData: {
               ...mockSidebarData,
               is_logged_in: false,
+            },
+          });
+          expect(findSignupButton().text()).toBe('Register');
+
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: 'false',
             },
           });
           expect(findSignupButton().text()).toBe('Register');
@@ -342,6 +385,17 @@ describe('SuperTopbar', () => {
               sidebarData: {
                 ...mockSidebarData,
                 is_logged_in: false,
+              },
+            },
+            { isSaas: true },
+          );
+          expect(findSignupButton().text()).toBe('Get free trial');
+
+          createComponent(
+            {
+              sidebarData: {
+                ...mockSidebarData,
+                is_logged_in: 'false',
               },
             },
             { isSaas: true },

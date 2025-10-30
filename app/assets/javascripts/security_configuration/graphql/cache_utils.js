@@ -38,3 +38,33 @@ export const updateSecurityTrainingCache =
       data: { project: updatedProject },
     });
   };
+
+export const untrackRefsOptimisticResponse = (refIds) => ({
+  __typename: 'Mutation',
+  securityTrackedRefsUntrack: {
+    __typename: 'SecurityTrackedRefsUntrackPayload',
+    untrackedRefIds: refIds,
+    errors: [],
+  },
+});
+
+export const updateUntrackedRefsCache =
+  ({ query, variables }) =>
+  (cache, { data }) => {
+    const {
+      securityTrackedRefsUntrack: { untrackedRefIds },
+    } = data;
+
+    cache.updateQuery({ query, variables }, (sourceData) =>
+      produce(sourceData, (draftData) => {
+        if (!draftData?.project?.securityTrackedRefs) {
+          return;
+        }
+
+        // Remove untracked refs from the list
+        draftData.project.securityTrackedRefs = draftData.project.securityTrackedRefs.filter(
+          (ref) => !untrackedRefIds.includes(ref.id),
+        );
+      }),
+    );
+  };
