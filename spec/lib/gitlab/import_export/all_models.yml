@@ -978,6 +978,7 @@ project:
 - approval_policies
 - project_requirement_compliance_statuses
 - analyzer_statuses
+- security_inventory_filters
 - configured_ai_catalog_items
 - security_project_tracked_contexts
 - security_attributes

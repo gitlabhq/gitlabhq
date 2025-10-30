@@ -37,19 +37,19 @@ describe('HomepageApp', () => {
   const MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH = '/merge/requests/review/requested/path';
   const MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_ERROR_TEXT =
     'The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.';
-  const MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_TEXT = 'Merge requests waiting for your review';
+  const MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_TEXT = 'Waiting for your review';
   const MOCK_ASSIGNED_MERGE_REQUESTS_PATH = '/merge/requests/assigned/to/you/path';
   const MOCK_ASSIGNED_MERGE_REQUESTS_ERROR_TEXT =
     'The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.';
-  const MOCK_ASSIGNED_MERGE_REQUESTS_TEXT = 'Merge requests assigned to you';
+  const MOCK_ASSIGNED_MERGE_REQUESTS_TEXT = 'Assigned to you';
   const MOCK_ASSIGNED_WORK_ITEMS_PATH = '/work/items/assigned/to/you/path';
   const MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT =
     'The number of issues is not available. Please refresh the page to try again, or visit the issue list.';
-  const MOCK_ASSIGNED_WORK_ITEMS_TEXT = 'Issues assigned to you';
+  const MOCK_ASSIGNED_WORK_ITEMS_TEXT = 'Assigned to you';
   const MOCK_AUTHORED_WORK_ITEMS_PATH = '/work/items/authored/to/you/path';
   const MOCK_AUTHORED_WORK_ITEMS_ERROR_TEXT =
     'The number of issues is not available. Please refresh the page to try again, or visit the issue list.';
-  const MOCK_AUTHORED_WORK_ITEMS_TEXT = 'Issues authored by you';
+  const MOCK_AUTHORED_WORK_ITEMS_TEXT = 'Authored by you';
   const MOCK_ACTIVITY_PATH = '/activity/path';
   const MOCK_DUO_CODE_REVIEW_BOT_USERNAME = 'GitLabDuo';
 
@@ -146,6 +146,7 @@ describe('HomepageApp', () => {
       expect(findReviewRequestedWidget().props()).toEqual({
         errorText: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_ERROR_TEXT,
         hasError: false,
+        cardText: 'Merge requests',
         linkText: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_TEXT,
         path: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
         userItems: mergeRequestsDataWithItems.data.currentUser.reviewRequestedMergeRequests,
@@ -159,6 +160,7 @@ describe('HomepageApp', () => {
       expect(findAssignedMergeRequestsWidget().props()).toEqual({
         errorText: MOCK_ASSIGNED_MERGE_REQUESTS_ERROR_TEXT,
         hasError: false,
+        cardText: 'Merge requests',
         linkText: MOCK_ASSIGNED_MERGE_REQUESTS_TEXT,
         path: MOCK_ASSIGNED_MERGE_REQUESTS_PATH,
         userItems: mergeRequestsDataWithItems.data.currentUser.assignedMergeRequests,
@@ -172,9 +174,13 @@ describe('HomepageApp', () => {
       expect(findAssignedWorkItemsWidget().props()).toEqual({
         errorText: MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT,
         hasError: false,
+        cardText: 'Issues',
         linkText: MOCK_ASSIGNED_WORK_ITEMS_TEXT,
         path: MOCK_ASSIGNED_WORK_ITEMS_PATH,
-        userItems: workItemsDataWithItems.data.currentUser.assigned,
+        userItems: {
+          ...workItemsDataWithItems.data.currentUser.assigned,
+          count: 5,
+        },
         iconName: 'work-item-issue',
       });
     });
@@ -185,11 +191,37 @@ describe('HomepageApp', () => {
       expect(findAuthoredWorkItemsWidget().props()).toEqual({
         errorText: MOCK_AUTHORED_WORK_ITEMS_ERROR_TEXT,
         hasError: false,
+        cardText: 'Issues',
         linkText: MOCK_AUTHORED_WORK_ITEMS_TEXT,
         path: MOCK_AUTHORED_WORK_ITEMS_PATH,
         userItems: workItemsDataWithItems.data.currentUser.authored,
         iconName: 'work-item-issue',
       });
+    });
+
+    it('passes null userItems to assigned work items widget when workItemsMetadata.assigned is null', async () => {
+      const workItemsDataWithoutAssigned = {
+        data: {
+          currentUser: {
+            assigned: null,
+            authored: workItemsDataWithItems.data.currentUser.authored,
+          },
+        },
+      };
+
+      createApolloWrapper({
+        workItemsWidgetMetadataQueryHandler: workItemsWidgetMetadataQuerySuccessHandler(
+          workItemsDataWithoutAssigned,
+        ),
+      });
+
+      await waitForPromises();
+
+      expect(findAssignedWorkItemsWidget().props()).toEqual(
+        expect.objectContaining({
+          userItems: null,
+        }),
+      );
     });
 
     describe('query errors', () => {
@@ -337,6 +369,7 @@ describe('HomepageApp', () => {
 
         // queried after visibility change
         expect(mergeRequestsHandler).toHaveBeenCalledTimes(2);
+        expect(workItemsHandler).toHaveBeenCalledTimes(2);
       });
     });
   });

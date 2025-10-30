@@ -923,4 +923,22 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       end.not_to exceed_all_query_limit(max_count)
     end
   end
+
+  it_behaves_like 'a reference which does not unescape its content in data-original' do
+    let(:context)     { { project: project } }
+    let(:label_title) { "x&lt;script&gt;alert('xss');&lt;/script&gt;" }
+    let(:resource)    { create(:label, title: label_title, project: project) }
+    let(:reference)   { %(#{resource.class.reference_prefix}"#{label_title}") }
+
+    # This is probably bad (why are we unescaping entities in the input title like this?),
+    # but it is the case today, and we need to be safe in spite of this.
+    let(:expected_resource_title) { "x<script>alert('xss');</script>" }
+
+    let(:expected_href)             { urls.project_issues_url(project, label_name: expected_resource_title) }
+    let(:expected_replacement_text) { expected_resource_title }
+  end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:filter_instance) { described_class.new(nil, { project: }) }
+  end
 end

@@ -345,4 +345,9 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     let(:text) { "#{commit.id} #{commit.id} #{commit.id}" }
     let(:ends_with) { "</a> #{commit.id}" }
   end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:reference) { commit.id }
+    let(:filter_instance) { described_class.new(nil, { project: }) }
+  end
 end

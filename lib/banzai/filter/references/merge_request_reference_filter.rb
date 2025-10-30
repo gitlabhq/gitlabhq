@@ -52,7 +52,7 @@ module Banzai
           super
         end
 
-        def data_attributes_for(text, parent, object, **data)
+        def data_attributes_for(original, parent, object, **data)
           super.merge(project_path: parent.full_path, iid: object.iid)
         end
 

@@ -29,7 +29,7 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_cate
 
   it 'uses gsub_with_limit' do
     allow(described_class).to receive(:object_class).and_return(Issue)
-    expect(Gitlab::Utils::Gsub).to receive(:gsub_with_limit).with(anything, anything, limit: Banzai::Filter::FILTER_ITEM_LIMIT).and_call_original
+    expect(Gitlab::Utils::Gsub).to receive(:gsub_with_limit).with(anything, anything, limit: Banzai::Filter::FILTER_ITEM_LIMIT).twice.and_call_original
 
     filter_instance.references_in('text')
   end
@@ -51,5 +51,34 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_cate
   it_behaves_like 'pipeline timing check', context: { project: nil }
   it_behaves_like 'a filter timeout' do
     let(:text) { 'text' }
+  end
+
+  describe '#references_in' do
+    let(:reference) { %(~"my <label>") }
+
+    let(:fake_label_class) { Class.new }
+
+    before do
+      allow(filter_instance).to receive(:object_class).and_return(fake_label_class)
+      allow(fake_label_class).to receive_messages(
+        name: "fake_label",
+        reference_pattern: %r{~"[^"]+"},
+        reference_valid?: reference_valid?)
+    end
+
+    context 'subclass determines the reference is valid' do
+      let(:reference_valid?) { true }
+
+      it_behaves_like 'ReferenceFilter#references_in'
+    end
+
+    context 'subclass determines the reference is invalid' do
+      let(:reference_valid?) { false }
+
+      it_behaves_like 'ReferenceFilter#references_in' do
+        # It should not replace anything.
+        let(:expected_replacement) { nil }
+      end
+    end
   end
 end

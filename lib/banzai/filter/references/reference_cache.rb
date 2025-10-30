@@ -203,15 +203,11 @@ module Banzai
         end
 
         def prepare_doc_for_scan
-          filter.requires_unescaping? ? unescape_html_entities(html_content) : html_content
+          filter.requires_unescaping? ? CGI.unescapeHTML(html_content) : html_content
         end
 
         def html_content
           result[:rendered_html] ||= filter.doc.to_html
-        end
-
-        def unescape_html_entities(text)
-          CGI.unescapeHTML(text.to_s)
         end
       end
     end

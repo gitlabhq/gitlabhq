@@ -39,7 +39,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
     wait_for_requests
 
-    find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+    find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
 
     expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
 
@@ -70,7 +70,11 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     wait_for_requests
 
     # make sure comment form is in view
-    execute_script("window.scrollBy(0, 200)")
+    if Users::ProjectStudio.enabled_for_user?(user)
+      execute_script("document.querySelector('.js-static-panel-inner').scrollBy(0, 200)")
+    else
+      execute_script("window.scrollBy(0, 200)")
+    end
 
     write_comment(text: 'Testing update', button_text: 'Save comment')
 
@@ -101,7 +105,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       # All of the Diff helpers like click_diff_line (or write_diff_comment)
       #     fail very badly when run a second time.
       # This recreates the relevant logic.
-      line = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+      line = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
       line.hover
       line.find('.js-add-diff-note-button').click
 
@@ -241,7 +245,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       write_reply_to_discussion(button_text: 'Add comment now', unresolve: true)
 
       page.within(first('.discussions-counter')) do
-        expect(page).to have_content('1 unresolved thread')
+        expect(page).to have_content('1 open thread')
       end
     end
 
@@ -262,7 +266,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       wait_for_requests
 
       page.within(first('.discussions-counter')) do
-        expect(page).to have_content('1 unresolved thread')
+        expect(page).to have_content('1 open thread')
       end
     end
   end
@@ -280,13 +284,13 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   end
 
   def write_diff_comment(...)
-    click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']"))
+    click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']"))
 
     write_comment(...)
   end
 
   def write_parallel_comment(line, **params)
-    line_element = find_by_scrolling("[id='#{line}']")
+    line_element = find_in_page_or_panel_by_scrolling("[id='#{line}']")
     scroll_to_elements_bottom(line_element)
     line_element.hover
     find(".js-add-diff-note-button").click
@@ -321,5 +325,13 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     end
 
     wait_for_requests
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, **options)
+    if Users::ProjectStudio.enabled_for_user?(user)
+      find_in_panel_by_scrolling(selector, **options)
+    else
+      find_by_scrolling(selector, **options)
+    end
   end
 end

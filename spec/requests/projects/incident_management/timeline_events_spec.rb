@@ -38,8 +38,9 @@ RSpec.describe 'Timeline Events', feature_category: :incident_management do
           params: { text: timeline_text }
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response["body"]).to eq_html(expected_body)
         expect(json_response).to eq({
-          body: expected_body,
+          body: json_response["body"],
           references: {
             commands: '',
             suggestions: [],

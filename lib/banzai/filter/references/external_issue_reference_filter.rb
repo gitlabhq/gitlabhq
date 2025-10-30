@@ -24,25 +24,30 @@ module Banzai
 
         # Public: Find `JIRA-123` issue references in text
         #
-        #   references_in(text, pattern) do |match, issue|
+        #   references_in(text, pattern) do |match_text, issue|
         #     "<a href=...>##{issue}</a>"
         #   end
         #
         # text - String text to search.
         #
-        # Yields the String match and the String issue reference.
+        # Yields the String text match and the String issue reference.
         #
-        # Returns a String replaced with the return of the block.
+        # Returns a HTML String replaced with the return of the block.
+        #
+        # See ReferenceFilter#references_in for a detailed discussion.
         def references_in(text, pattern = object_reference_pattern)
-          case pattern
-          when Regexp
-            Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
-              yield match_data[0], match_data[:issue]
+          enumerator =
+            case pattern
+            when Regexp
+              Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT)
+            when Gitlab::UntrustedRegexp
+              pattern.replace_gsub(text, limit: Banzai::Filter::FILTER_ITEM_LIMIT)
+            else
+              raise ArgumentError, "#{self.class.name} given #{pattern.class.name} pattern; should be Regexp or Gitlab::UntrustedRegexp"
             end
-          when Gitlab::UntrustedRegexp
-            pattern.replace_gsub(text, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match|
-              yield match, match[:issue]
-            end
+
+          replace_references_in_text_with_html(enumerator) do |match_data|
+            yield match_data[0], match_data[:issue]
           end
         end
 
@@ -59,15 +64,17 @@ module Banzai
         # issue's details page.
         #
         # text - String text to replace references in.
-        # link_content - Original content of the link being replaced.
+        # link_content_html - Original HTML content of the link being replaced.
         #
-        # Returns a String with `JIRA-123` references replaced with links. All
+        # Returns a HTML String with `JIRA-123` references replaced with links. All
         # links have `gfm` and `gfm-issue` class names attached for styling.
-        def object_link_filter(text, pattern, link_content: nil, link_reference: false)
-          references_in(text) do |match, id|
+        #
+        # Returns nil if no replacements are made.
+        def object_link_filter(text, pattern, link_content_html: nil, link_reference: false)
+          references_in(text) do |match_text, id|
             klass = reference_class(:issue)
             data  = data_attribute(project: project.id, external_issue: id)
-            content = link_content || match
+            content = link_content_html || CGI.escapeHTML(match_text)
 
             write_opening_tag("a", {
               "title" => issue_title,

@@ -257,4 +257,9 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     let(:text) { "#{range.to_reference} #{range.to_reference} #{range.to_reference}" }
     let(:ends_with) { "</a> #{range.to_reference}" }
   end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:reference) { range.to_reference }
+    let(:filter_instance) { described_class.new(nil, { project: nil }) }
+  end
 end

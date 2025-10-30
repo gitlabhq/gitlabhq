@@ -35,13 +35,17 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
       end
 
       context 'when data-original attribute provided' do
-        let(:original_content) { '&lt;script&gt;alert(1);&lt;/script&gt;' }
-
-        it 'replaces redacted reference with original content' do
-          doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue' data-original='#{original_content}'>bar</a>")
-          redactor.redact([doc])
-          expect(doc.to_html).to eq(original_content)
+        RSpec.shared_examples 'substitutes original content back in as-is' do |original_content|
+          it 'replaces redacted reference with original content' do
+            doc = Nokogiri::HTML.fragment("<a class='gfm' href='https://www.gitlab.com' data-reference-type='issue'>bar</a>")
+            doc.css('a')[0]["data-original"] = original_content
+            redactor.redact([doc])
+            expect(doc.to_html).to eq(original_content)
+          end
         end
+
+        it_behaves_like 'substitutes original content back in as-is', '&lt;script&gt;alert(1);&lt;/script&gt;'
+        it_behaves_like 'substitutes original content back in as-is', '<code>foo</code>'
 
         it 'does not replace redacted reference with original content if href is given' do
           html = "<a href='https://www.gitlab.com' data-link-reference='true' class='gfm' data-reference-type='issue' data-reference-type='issue' data-original='Marge'>Marge</a>"

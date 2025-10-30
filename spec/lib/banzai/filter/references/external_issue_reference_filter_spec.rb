@@ -373,4 +373,33 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
       expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control)
     end
   end
+
+  context 'ReferenceFilter#references_in' do
+    let(:issue) { ExternalIssue.new("T-123", project) }
+    let(:reference) { issue.to_reference }
+
+    let(:filter_instance) { described_class.new(nil, { project: }) }
+
+    context "pattern is Regexp" do
+      it_behaves_like 'ReferenceFilter#references_in' do
+        let_it_be(:integration) { create(:redmine_integration, project: project) }
+      end
+    end
+
+    context "pattern is Gitlab::UntrustedRegexp" do
+      it_behaves_like 'ReferenceFilter#references_in' do
+        let_it_be(:integration) { create(:redmine_integration, project: project) }
+
+        before do
+          allow_any_instance_of(described_class).to receive(:object_reference_pattern).and_return(Gitlab::UntrustedRegexp.new("\\b[A-Z][A-Z0-9_]*-(?<issue>\\d{1,20})"))
+        end
+      end
+    end
+
+    context "pattern is unknown type" do
+      it 'raises ArgumentError' do
+        expect { filter_instance.references_in("some text", Object.new) }.to raise_error(ArgumentError)
+      end
+    end
+  end
 end

@@ -344,12 +344,11 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     context 'with template' do
       context 'with all-user reference in a an external author comment' do
         let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: Users::Internal.support_bot) }
+        let(:expected_template_html) { 'Hey @all, just a ping' }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
 
         context 'when `disable_all_mention` is disabled' do
-          let(:expected_template_html) { 'Hey , just a ping' }
-
           before do
             stub_feature_flags(disable_all_mention: false)
           end
@@ -358,8 +357,6 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         end
 
         context 'when `disable_all_mention` is enabled' do
-          let(:expected_template_html) { 'Hey @all, just a ping' }
-
           before do
             stub_feature_flags(disable_all_mention: true)
           end

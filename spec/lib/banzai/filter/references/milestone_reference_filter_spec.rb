@@ -340,7 +340,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
       result = reference_filter("See #{absolute_reference}")
 
       expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
-      expect(result.css('a').first.attr('data-original')).to eq(absolute_reference)
+      expect(result.css('a').first.attr('data-original')).to eq_html(absolute_reference)
       expect(result.content).to eq "See %#{milestone.title}"
     end
   end
@@ -626,5 +626,25 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
         reference_filter(markdown)
       end.not_to exceed_all_query_limit(control_count)
     end
+  end
+
+  it_behaves_like 'a reference which does not unescape its content in data-original' do
+    let(:context)         { { project: project } }
+    let(:milestone_title) { "x&lt;script&gt;alert('xss');&lt;/script&gt;" }
+    let(:resource)        { create(:milestone, title: milestone_title, project: project) }
+    let(:reference)       { %(#{resource.class.reference_prefix}"#{milestone_title}") }
+
+    # This is probably bad (why are we unescaping entities in the input title like this?),
+    # but it is the case today, and we need to be safe in spite of this.
+    let(:expected_resource_title) { "x<script>alert('xss');</script>" }
+
+    let(:expected_href)             { urls.milestone_url(resource) }
+    let(:expected_replacement_text) { %(#{resource.class.reference_prefix}#{expected_resource_title}) }
+  end
+
+  it_behaves_like 'ReferenceFilter#references_in' do
+    let(:milestone) { create(:milestone, project: project) }
+    let(:reference) { milestone.to_reference }
+    let(:filter_instance) { described_class.new(nil, { project: }) }
   end
 end

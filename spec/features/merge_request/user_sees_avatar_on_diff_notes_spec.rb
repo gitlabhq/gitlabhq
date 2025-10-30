@@ -126,7 +126,11 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
 
       it 'removes avatar when note is deleted',
         quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4253' do
-        open_more_actions_dropdown(note)
+        if Users::ProjectStudio.enabled_for_user?(user)
+          open_more_actions_dropdown_in_panel(note)
+        else
+          open_more_actions_dropdown(note)
+        end
 
         accept_gl_confirm(button_text: 'Delete comment') do
           find(".note-row-#{note.id} .js-note-delete").click
@@ -140,7 +144,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
       end
 
       it 'adds avatar when commenting', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5899' do
-        find_by_scrolling('[data-discussion-id]', match: :first)
+        find_in_page_or_panel_by_scrolling('[data-discussion-id]', match: :first)
         find_field('Reply…', match: :first).click
 
         page.within '.js-discussion-note-form' do
@@ -161,7 +165,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
       it 'adds multiple comments',
         quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5874' do
         3.times do
-          find_by_scrolling('[data-discussion-id]', match: :first)
+          find_in_page_or_panel_by_scrolling('[data-discussion-id]', match: :first)
           find_field('Reply…', match: :first).click
 
           page.within '.js-discussion-note-form' do
@@ -184,7 +188,6 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
         quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4262' do
         before do
           create_list(:diff_note_on_merge_request, 3, project: project, noteable: merge_request, in_reply_to: note)
-          visit diffs_project_merge_request_path(project, merge_request, view: view)
 
           wait_for_requests
         end
@@ -201,8 +204,16 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
   end
 
   def find_line(line_code)
-    line = find_by_scrolling("[id='#{line_code}']")
+    line = find_in_page_or_panel_by_scrolling("[id='#{line_code}']")
     line = line.find(:xpath, 'preceding-sibling::*[1][self::td]/preceding-sibling::*[1][self::td]') if line.tag_name == 'td'
     line
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, **options)
+    if Users::ProjectStudio.enabled_for_user?(user)
+      find_in_panel_by_scrolling(selector, **options)
+    else
+      find_by_scrolling(selector, **options)
+    end
   end
 end

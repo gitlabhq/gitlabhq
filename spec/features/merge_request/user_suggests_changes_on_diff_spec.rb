@@ -23,6 +23,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   before do
     project.add_maintainer(user)
+    enable_project_studio!(user)
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))
@@ -34,7 +35,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     let(:line_code) { sample_compare.changes[1][:line_code] }
 
     before do
-      container = find_by_scrolling("[id='#{file_hash}']") # scroll to the file
+      container = find_in_page_or_panel_by_scrolling("[id='#{file_hash}']") # scroll to the file
       page.within(container) do
         click_diff_line(find("[id='#{line_code}']")) # Click on the line
       end
@@ -135,7 +136,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
     before do
       files.each_with_index do |file, index|
-        container = find_by_scrolling("[id='#{file[:hash]}']")
+        container = find_in_page_or_panel_by_scrolling("[id='#{file[:hash]}']")
 
         page.within(container) do
           find('.js-diff-more-actions').click
@@ -155,7 +156,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
     it 'can add and remove suggestions from a batch' do
       files.each_with_index do |file, index|
-        container = find_by_scrolling("[id='#{file[:hash]}']")
+        container = find_in_page_or_panel_by_scrolling("[id='#{file[:hash]}']")
 
         page.within(container) do
           expect(page).not_to have_content('Applied')
@@ -173,7 +174,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         end
       end
 
-      container = find_by_scrolling("[id='#{files[0][:hash]}']")
+      container = find_in_page_or_panel_by_scrolling("[id='#{files[0][:hash]}']")
       page.within(container) do
         click_button('Remove from batch')
         wait_for_requests
@@ -181,7 +182,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         expect(page).to have_content('Add suggestion to batch')
       end
 
-      container = find_by_scrolling("[id='#{files[1][:hash]}']")
+      container = find_in_page_or_panel_by_scrolling("[id='#{files[1][:hash]}']")
       page.within(container) do
         expect(page).to have_content('Remove from batch')
         expect(page).to have_content('Apply suggestion')
@@ -190,7 +191,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
     it 'can apply multiple suggestions as a batch' do
       files.each_with_index do |file, index|
-        container = find_by_scrolling("[id='#{file[:hash]}']")
+        container = find_in_page_or_panel_by_scrolling("[id='#{file[:hash]}']")
 
         page.within(container) do
           expect(page).to have_button('Add suggestion to batch')
@@ -203,7 +204,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       expect(page).not_to have_content('Applied')
       expect(page).to have_button("Apply #{files.count} suggestions").twice
 
-      container = find_by_scrolling("[id='#{files[0][:hash]}']")
+      container = find_in_page_or_panel_by_scrolling("[id='#{files[0][:hash]}']")
       page.within(container) do
         click_button("Apply #{files.count} suggestions")
         click_button('Apply')
@@ -231,7 +232,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       ]
       changes = sample_compare(expanded_changes).changes.last(expanded_changes.size)
 
-      container = find_by_scrolling("[id='#{hash}']")
+      container = find_in_page_or_panel_by_scrolling("[id='#{hash}']")
       page.within(container) do
         find('.js-diff-more-actions').click
         click_button 'Show full file'
@@ -267,7 +268,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       expect(page).to have_button('Apply suggestion').twice
       expect(page).to have_button('Add suggestion to batch').twice
 
-      container = find_by_scrolling("[id='#{hash}']")
+      container = find_in_page_or_panel_by_scrolling("[id='#{hash}']")
       page.within(container) do
         all('button', text: 'Apply suggestion').first.click
         click_button('Apply')
@@ -290,7 +291,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     let(:line_code) { sample_compare.changes[1][:line_code] }
 
     it 'suggestions are presented' do
-      container = find_by_scrolling("[id='#{file_hash}']")
+      container = find_in_page_or_panel_by_scrolling("[id='#{file_hash}']")
       page.within(container) do
         click_diff_line(find("[id='#{line_code}']"))
 
@@ -343,7 +344,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     let(:hash) { Digest::SHA1.hexdigest(last_change[:file_path]) }
 
     before do
-      container = find_by_scrolling("[id='#{hash}']")
+      container = find_in_page_or_panel_by_scrolling("[id='#{hash}']")
 
       page.within(container) do
         click_diff_line(find("[id='#{last_change[:line_code]}']"))
@@ -422,7 +423,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     before do
       stub_const('Projects::MergeRequests::DiffsController', dummy_controller)
 
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
+      click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
@@ -444,6 +445,14 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
         expect(page).to have_content('Unable to fully load the default commit message. You can still apply this suggestion and the commit message will be correct.')
       end
+    end
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, **options)
+    if Users::ProjectStudio.enabled_for_user?(user)
+      find_in_panel_by_scrolling(selector, **options)
+    else
+      find_by_scrolling(selector, **options)
     end
   end
 end

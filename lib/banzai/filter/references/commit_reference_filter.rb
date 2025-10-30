@@ -11,7 +11,8 @@ module Banzai
         self.object_class   = Commit
 
         def references_in(text, pattern = object_reference_pattern)
-          Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
+          replace_references_in_text_with_html(Gitlab::Utils::Gsub.gsub_with_limit(text, pattern,
+            limit: Banzai::Filter::FILTER_ITEM_LIMIT)) do |match_data|
             yield match_data[0], match_data[:commit], match_data[:project], match_data[:namespace],
               match_data
           end

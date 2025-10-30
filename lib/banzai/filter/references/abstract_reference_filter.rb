@@ -16,47 +16,31 @@ module Banzai
           @reference_cache = ReferenceCache.new(self, context, result)
         end
 
-        # REFERENCE_PLACEHOLDER is used for re-escaping HTML text except found
-        # reference (which we replace with placeholder during re-scaping).  The
-        # random number helps ensure it's pretty close to unique. Since it's a
-        # transitory value (it never gets saved) we can initialize once, and it
-        # doesn't matter if it changes on a restart.
-        REFERENCE_PLACEHOLDER = "_reference_#{SecureRandom.hex(16)}_"
-        REFERENCE_PLACEHOLDER_PATTERN = %r{#{REFERENCE_PLACEHOLDER}(\d+)}
-
-        # Public: Find references in text (like `!123` for merge requests)
+        # See ReferenceFilter#references_in for requirements on the input, block,
+        # and return value of this function.
         #
-        #   references_in(text) do |match, id, project_ref, matches|
-        #     object = find_object(project_ref, id)
-        #     "<a href=...>#{object.to_reference}</a>"
-        #   end
-        #
-        # text - String text to search.
-        #
-        # Yields the String match, the Integer referenced object ID, an optional String
-        # of the external project reference, and all of the matchdata.
-        #
-        # Returns a String replaced with the return of the block.
+        # This function yields the String match, the Integer referenced object ID, an optional String
+        # of the external project reference, an optional String of the namespace reference,
+        # and the full MatchData.
         def references_in(text, pattern = object_class.reference_pattern)
-          Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
+          replace_references_in_text_with_html(Gitlab::Utils::Gsub.gsub_with_limit(text, pattern,
+            limit: Banzai::Filter::FILTER_ITEM_LIMIT)) do |match_data|
             if ident = identifier(match_data)
-              yield match_data[0], ident, match_data.named_captures['project'], match_data.named_captures['namespace'],
-                match_data
-            else
-              match_data[0]
+              yield match_data[0], ident, match_data.named_captures['project'],
+                 match_data.named_captures['namespace'], match_data
             end
           end
         end
 
         def identifier(match_data)
-          symbol = symbol_from_match(match_data)
+          symbol = symbol_from_match_data(match_data)
 
           parse_symbol(symbol, match_data) if object_class.reference_valid?(symbol)
         end
 
-        def symbol_from_match(match)
+        def symbol_from_match_data(match_data)
           key = object_sym
-          match[key] if match.names.include?(key.to_s)
+          match_data[key] if match_data.names.include?(key.to_s)
         end
 
         # Transform a symbol extracted from the text to a meaningful value
@@ -133,34 +117,32 @@ module Banzai
 
           nodes.each_with_index do |node, index|
             if text_node?(node) && ref_pattern
-              replace_text_when_pattern_matches(node, index, ref_pattern) do |content|
+              replace_node_when_text_matches(node, index, ref_pattern) do |content|
                 object_link_filter(content, ref_pattern)
               end
 
             elsif element_node?(node)
-              yield_valid_link(node) do |link, inner_html|
+              yield_valid_link(node) do |link, text, inner_html|
                 if ref_pattern && link =~ ref_pattern_anchor
-                  replace_link_node_with_href(node, index, link) do
-                    object_link_filter(link, ref_pattern_anchor, link_content: inner_html)
-                  end
+                  html = object_link_filter(link, ref_pattern_anchor, link_content_html: inner_html)
+                  replace_node_with_html(node, index, html) if html
 
                   next
                 end
 
                 next unless link_pattern
 
-                if link == inner_html && inner_html =~ link_pattern_start
-                  replace_link_node_with_text(node, index) do
-                    object_link_filter(inner_html, link_pattern_start, link_reference: true)
-                  end
+                if link == text && text =~ link_pattern_start
+                  html = object_link_filter(text, link_pattern_start, link_reference: true)
+                  replace_node_with_html(node, index, html) if html
 
                   next
                 end
 
                 if link_pattern_anchor.match?(link)
-                  replace_link_node_with_href(node, index, link) do
-                    object_link_filter(link, link_pattern_anchor, link_content: inner_html, link_reference: true)
-                  end
+                  html = object_link_filter(link, link_pattern_anchor, link_content_html: inner_html,
+                    link_reference: true)
+                  replace_node_with_html(node, index, html) if html
 
                   next
                 end
@@ -176,14 +158,21 @@ module Banzai
         #
         # text - String text to replace references in.
         # pattern - Reference pattern to match against.
-        # link_content - Original content of the link being replaced.
+        # link_content_html - Original HTML content of the link being replaced.
         # link_reference - True if this was using the link reference pattern,
         #                  false otherwise.
         #
-        # Returns a String with references replaced with links. All links
-        # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
-        def object_link_filter(text, pattern, link_content: nil, link_reference: false)
-          references_in(text, pattern) do |match, id, project_ref, namespace_ref, matches|
+        # Returns String HTML with references replaced with links, or nil if no
+        # replacements were made. All links have `gfm` and `gfm-OBJECT_NAME`
+        # class names attached for styling.
+        #
+        # Note carefully:
+        #
+        # * `text` is text, not HTML.
+        # * `link_content_html`, if provided, is HTML.
+        # * The return value is HTML (or nil).
+        def object_link_filter(text, pattern, link_content_html: nil, link_reference: false)
+          references_in(text, pattern) do |match_text, id, project_ref, namespace_ref, matches|
             parent_path = if parent_type == :group
                             reference_cache.full_group_path(namespace_ref)
                           elsif parent_type == :namespace
@@ -193,54 +182,51 @@ module Banzai
                           end
 
             parent = from_ref_cached(parent_path)
+            next unless parent
 
-            if parent
-              object =
-                if link_reference
-                  find_object_from_link_cached(parent, id)
-                else
-                  find_object_cached(parent, id)
-                end
-            end
+            object =
+              if link_reference
+                find_object_from_link_cached(parent, id)
+              else
+                find_object_cached(parent, id)
+              end
 
-            if object
-              title = object_link_title(object, matches)
-              klass = reference_class(object_sym)
+            next unless object
 
-              data_attributes = data_attributes_for(
-                link_content || match,
-                parent,
-                object,
-                link_content: !!link_content,
-                link_reference: link_reference
-              )
-              data_attributes[:reference_format] = matches[:format] if matches.names.include?("format")
-              data_attributes.merge!(additional_object_attributes(object))
+            title = object_link_title(object, matches)
+            klass = reference_class(object_sym)
 
-              data = data_attribute(data_attributes)
+            data_attributes = data_attributes_for(
+              link_content_html || CGI.escapeHTML(match_text),
+              parent,
+              object,
+              link_content: !!link_content_html,
+              link_reference: link_reference
+            )
+            data_attributes[:reference_format] = matches[:format] if matches.names.include?("format")
+            data_attributes.merge!(additional_object_attributes(object))
 
-              url =
-                if matches.names.include?("url") && matches[:url]
-                  matches[:url]
-                else
-                  url_for_object_cached(object, parent)
-                end
+            data = data_attribute(data_attributes)
 
-              url.chomp!(matches[:format]) if matches.names.include?("format")
+            url =
+              if matches.names.include?("url") && matches[:url]
+                matches[:url]
+              else
+                url_for_object_cached(object, parent)
+              end
 
-              content = context[:link_text] || link_content || object_link_text(object, matches)
+            url.chomp!(matches[:format]) if matches.names.include?("format")
 
-              link = write_opening_tag("a", {
-                "href" => url,
-                "title" => title,
-                "class" => klass,
-                **data
-              }) << content.to_s << "</a>"
+            content = context[:link_text] || link_content_html || object_link_text(object, matches)
 
-              wrap_link(link, object)
-            else
-              match
-            end
+            link = write_opening_tag("a", {
+              "href" => url,
+              "title" => title,
+              "class" => klass,
+              **data
+            }) << content.to_s << "</a>"
+
+            wrap_link(link, object)
           end
         end
 
@@ -248,7 +234,9 @@ module Banzai
           link
         end
 
-        def data_attributes_for(text, parent, object, link_content: false, link_reference: false)
+        # "link_content" is true when "original" is the inner HTML content, or false when "original"
+        # is HTML-escaped plain text representing the link as written.
+        def data_attributes_for(original, parent, object, link_content: false, link_reference: false)
           parent_id = case parent
                       when Group
                         { group: parent.id, namespace: parent.id }
@@ -259,7 +247,7 @@ module Banzai
                       end
 
           {
-            original: text,
+            original: original,
             link: link_content,
             link_reference: link_reference,
             object_sym => object.id
@@ -305,14 +293,6 @@ module Banzai
         private
 
         attr_accessor :reference_cache
-
-        def escape_with_placeholders(text, placeholder_data)
-          escaped = escape_html_entities(text)
-
-          escaped.gsub(REFERENCE_PLACEHOLDER_PATTERN) do |match|
-            placeholder_data[Regexp.last_match(1).to_i]
-          end
-        end
 
         def additional_object_attributes(object)
           {}

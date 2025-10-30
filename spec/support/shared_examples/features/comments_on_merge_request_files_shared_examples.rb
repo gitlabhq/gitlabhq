@@ -2,7 +2,11 @@
 
 RSpec.shared_examples 'comment on merge request file' do
   it 'adds a comment' do
-    click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
+    if Users::ProjectStudio.enabled_for_user?(user)
+      click_diff_line(find_in_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
+    else
+      click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
+    end
 
     page.within('.js-discussion-note-form') do
       fill_in(:note_note, with: 'Line is wrong')

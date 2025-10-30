@@ -16,6 +16,10 @@ module WorkItems
     include Gitlab::Utils::StrongMemoize
     include TimeFrameFilter
 
+    ROOT_TRAVERSAL_IDS_SORTING_OPTIONS = %w[
+      updated_asc updated_desc created_asc created_desc
+    ].freeze
+
     def klass
       WorkItem
     end
@@ -147,7 +151,12 @@ module WorkItems
       return false unless include_descendants?
       return false unless user_can_access_subgroup_work_items?
 
-      true
+      # For sub-groups it's performant enough to use the traversal_ids and sort in memory.
+      return true unless params.group.root?
+
+      # For root groups, we don't have an index on all columns that we support sorting for.
+      # For all columns we don't have an index for, we need to fallback to the old query.
+      sorting_covered_by_index?
     end
 
     def include_group_work_items?
@@ -176,6 +185,13 @@ module WorkItems
       params.fetch(:exclude_projects, false)
     end
     strong_memoize_attr :exclude_projects?
+
+    def sorting_covered_by_index?
+      return true if params[:sort].blank?
+
+      sort_param = params[:sort].to_s
+      sort_param.in?(ROOT_TRAVERSAL_IDS_SORTING_OPTIONS)
+    end
   end
 end
 

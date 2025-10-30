@@ -66,7 +66,7 @@ module Banzai
           Gitlab::Routing.url_helpers.designs_project_issue_path(project, design.issue, path_options)
         end
 
-        def data_attributes_for(_text, _project, design, **_kwargs)
+        def data_attributes_for(_original, _project, design, **_kwargs)
           super.merge(issue: design.issue_id)
         end
 

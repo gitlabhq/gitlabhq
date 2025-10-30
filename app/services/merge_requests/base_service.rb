@@ -330,6 +330,18 @@ module MergeRequests
     def invalidate_all_users_cache_count(merge_request)
       invalidate_cache_counts(merge_request, users: [*merge_request.assignees, *merge_request.reviewers, merge_request.author].uniq)
     end
+
+    override :change_state
+    def change_state(merge_request)
+      case params[:state_event]
+      when 'close'
+        close_service.new(**close_service.constructor_container_arg(project), current_user: current_user)
+                     .execute(merge_request, skip_reset: true)
+        params.delete(:state_event)
+      else
+        super
+      end
+    end
   end
 end
 

@@ -70,23 +70,10 @@ module Banzai
         end
 
         def references_in(text, pattern = Label.reference_pattern)
-          labels = {}
-
-          unescaped_html = unescape_html_entities(text).gsub(pattern).with_index do |match, index|
-            ident = identifier($~)
-            label = yield match, ident, $~[:project], $~[:namespace], $~
-
-            if label != match
-              labels[index] = label
-              "#{REFERENCE_PLACEHOLDER}#{index}"
-            else
-              match
-            end
+          replace_references_in_text_with_html(text.gsub(pattern)) do |match_data|
+            ident = identifier(match_data)
+            yield match_data[0], ident, match_data[:project], match_data[:namespace], match_data
           end
-
-          return text if labels.empty?
-
-          escape_with_placeholders(unescaped_html, labels)
         end
 
         def find_labels(parent, absolute_path: false)

@@ -55,14 +55,14 @@ module Banzai
       end
 
       def download_link(doc, element)
-        link_content = element['title'] || element['alt']
+        link_text = element['title'] || element['alt']
 
         link_element_attrs = {
           class: 'gl-text-sm gl-text-subtle gl-mb-1',
           href: element['src'],
           target: '_blank',
           rel: 'noopener noreferrer',
-          title: "Download '#{link_content}'"
+          title: "Download '#{link_text}'"
         }
 
         # make sure the original non-proxied src carries over
@@ -70,7 +70,7 @@ module Banzai
           link_element_attrs['data-canonical-src'] = element['data-canonical-src']
         end
 
-        doc.document.create_element('a', link_content, link_element_attrs)
+        doc.document.create_element('a', link_text, link_element_attrs)
       end
 
       def media_node(doc, element)

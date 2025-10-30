@@ -58,7 +58,11 @@ module Banzai
             # holds the iid
             { milestone_iid: symbol.to_i, milestone_name: nil, absolute_path: absolute_path }
           else
-            { milestone_iid: match_data[:milestone_iid]&.to_i, milestone_name: match_data[:milestone_name]&.tr('"', ''), absolute_path: absolute_path }
+            {
+              milestone_iid: match_data[:milestone_iid]&.to_i,
+              milestone_name: match_data[:milestone_name]&.tr('"', ''),
+              absolute_path: absolute_path
+            }
           end
         end
 
@@ -87,23 +91,10 @@ module Banzai
           # default implementation.
           return super(text, pattern) if pattern != Milestone.reference_pattern
 
-          milestones = {}
-
-          unescaped_html = unescape_html_entities(text).gsub(pattern).with_index do |match, index|
-            ident = identifier($~)
-            milestone = yield match, ident, $~[:project], $~[:namespace], $~
-
-            if milestone != match
-              milestones[index] = milestone
-              "#{REFERENCE_PLACEHOLDER}#{index}"
-            else
-              match
-            end
+          replace_references_in_text_with_html(text.gsub(pattern)) do |match_data|
+            ident = identifier(match_data)
+            yield match_data[0], ident, match_data[:project], match_data[:namespace], match_data
           end
-
-          return text if milestones.empty?
-
-          escape_with_placeholders(unescaped_html, milestones)
         end
 
         def find_milestones(parent, find_by_iid = false, absolute_path: false)
@@ -159,7 +150,7 @@ module Banzai
           true
         end
 
-        def data_attributes_for(text, parent, object, link_content: false, link_reference: false)
+        def data_attributes_for(original, parent, object, link_content: false, link_reference: false)
           object_parent = object.resource_parent
 
           return super unless object_parent.is_a?(Group)

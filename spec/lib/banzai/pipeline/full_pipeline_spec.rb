@@ -43,9 +43,45 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
 
       markdown.delete!("\n")
 
-      result = described_class.to_html(markdown, project: project)
+      # Part of understanding this spec means knowing how the above is actually treated
+      # by the FullPipeline.  The PlainMarkdownPipeline runs first and produces the DOM
+      # which is actually operated on by the GfmPipeline.
+      #
+      # Here we recreate the PlainMarkdownPipeline's effects by themselves and assert the
+      # result, to clarify what the malicious input is interpreted as:
 
+      html_after_plain_markdown_pipeline = Banzai::Pipeline::PlainMarkdownPipeline.to_html(markdown, project:)
+      expect(html_after_plain_markdown_pipeline).to eq_html(<<-HTML, trim_text_nodes: true)
+        <div>
+          <a href="#{reference_link}&lt;i&gt;&lt;a%20alt='&quot;#{reference_link}'&gt;&lt;/a&gt;&lt;/i&gt;">
+            #{reference_link}
+            <i>
+              <a alt='"#{reference_link}'></a>
+            </i>
+          </a>
+        </div>
+      HTML
+
+      result = described_class.to_html(markdown, project: project)
       expect(result).to include "<a alt='\"#{reference_link}'></a>"
+
+      # As above, we assert the full result to clarify the full result. We used to interpret
+      # this input as a valid reference link, which eventually lead to the original XSS whose
+      # fix this spec initially accompanied.
+      #
+      # We no longer do; we do not compare the full inner HTML of the link with the href
+      # attribute, but only its textual contents.
+      expect(result).to eq_html(<<-HTML, trim_text_nodes: true)
+        <div>
+          <a href="#{reference_link}&lt;i&gt;&lt;a%20alt='%22#{reference_link}'&gt;&lt;/a&gt;&lt;/i&gt;"
+             rel="nofollow noreferrer noopener" target="_blank">
+            #{reference_link}
+            <i>
+              <a alt='"#{reference_link}'></a>
+            </i>
+          </a>
+        </div>
+      HTML
     end
 
     it 'escapes the data-original attribute on a reference' do

@@ -38,7 +38,7 @@ module Banzai
           super
         end
 
-        def data_attributes_for(text, parent, object, **data)
+        def data_attributes_for(original, parent, object, **data)
           additional_attributes = { iid: object.iid, namespace_path: parent.full_path }
           if parent.is_a?(Namespaces::ProjectNamespace) || parent.is_a?(Project)
             additional_attributes[:project_path] = parent.full_path

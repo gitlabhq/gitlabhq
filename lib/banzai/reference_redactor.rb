@@ -65,7 +65,6 @@ module Banzai
     #
     def redacted_node_content(node)
       original_content = node.attr('data-original')
-      original_content = CGI.escape_html(original_content) if original_content
 
       # Build the raw <a> tag just with a link as href and content if
       # it's originally a link pattern. We shouldn't return a plain text href.

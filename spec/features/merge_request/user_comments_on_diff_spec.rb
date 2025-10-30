@@ -24,7 +24,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     context 'when toggling inline comments' do
       context 'in a single file' do
         it 'hides a comment' do
-          line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']").find(:xpath, "..")
+          line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']").find(:xpath, "..")
           click_diff_line(line_element)
 
           page.within('.js-discussion-note-form') do
@@ -45,7 +45,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       context 'in multiple files' do
         it 'toggles comments', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393518' do
-          first_line_element = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
+          first_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
           first_root_element = first_line_element.ancestor('[data-path]')
           click_diff_line(first_line_element)
 
@@ -60,7 +60,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
             expect(page).to have_content('Line is correct')
           end
 
-          second_line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
+          second_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
           second_root_element = second_line_element.ancestor('[data-path]')
 
           click_diff_line(second_line_element)
@@ -82,9 +82,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
           # At this moment a user should see only one comment.
           # The other one should be hidden.
-          page.within(first_root_element) do
-            expect(page).to have_content('Line is correct')
-          end
+          expect(find_in_page_or_panel_by_scrolling(".js-discussion-container", index: 0)).to have_content('Line is correct')
 
           # Show the comment.
           page.within(second_root_element) do
@@ -93,20 +91,20 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           end
 
           # Now both the comments should be shown.
-          page.within(second_root_element) do
-            expect(page).to have_content('Line is wrong')
-          end
-
-          page.within(first_root_element) do
-            expect(page).to have_content('Line is correct')
-          end
+          expect(find_in_page_or_panel_by_scrolling(".js-discussion-container", index: 1)).to have_content('Line is wrong')
+          expect(find_in_page_or_panel_by_scrolling(".js-discussion-container", index: 0)).to have_content('Line is correct')
 
           # Check the same comments in the side-by-side view.
-          execute_script "window.scrollTo(0,0)"
+          if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+            page.execute_script "document.querySelector('.js-static-panel-inner').scrollTo(0,0)"
+          else
+            execute_script "window.scrollTo(0,0)"
+          end
+
           find('.js-show-diff-settings').click
           find_by_testid('listbox-item-parallel').click
 
-          second_line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
+          second_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
           second_root_element = second_line_element.ancestor('[data-path]')
 
           wait_for_requests
@@ -115,7 +113,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
             expect(page).to have_content('Line is wrong')
           end
 
-          first_line_element = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
+          first_line_element = find_in_page_or_panel_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
           first_root_element = first_line_element.ancestor('[data-path]')
 
           page.within(first_root_element) do
@@ -131,7 +129,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
     context 'when adding a diff suggestion in rich text editor' do
       it 'works on the Overview tab' do
-        click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
+        click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
 
         page.within('.js-discussion-note-form') do
           fill_in(:note_note, with: "```suggestion:-0+0\nchanged line\n```")
@@ -155,8 +153,8 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   context 'when adding multiline comments' do
     it 'saves a multiline comment' do
-      click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']").find(:xpath, '..'))
-      add_comment('-13', '+14')
+      click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']").find(:xpath, '..'))
+      add_comment('-13')
     end
 
     context 'when in side-by-side view' do
@@ -167,39 +165,39 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       # In `files/ruby/popen.rb`
       it 'allows comments for changes involving both sides' do
         # click +15, select -13 add and verify comment
-        click_diff_line(find_by_scrolling('div[data-path="files/ruby/popen.rb"] .right-side a[data-linenumber="15"]').find(:xpath, '../../..'), 'right')
-        add_comment('-13', '+15')
+        click_diff_line(find_in_page_or_panel_by_scrolling('div[data-path="files/ruby/popen.rb"] .right-side a[data-linenumber="15"]').find(:xpath, '../../..'), 'right')
+        add_comment('-13')
       end
 
       it 'allows comments on previously hidden lines at the top of a file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/285294' do
         # Click -9, expand up, select 1 add and verify comment
-        page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
+        page.within find_in_page_or_panel_by_scrolling('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-all')[0].click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="9"]').find(:xpath, '../..'), 'left')
-        add_comment('1', '-9')
+        add_comment('-9')
       end
 
       it 'allows comments on previously hidden lines the middle of a file' do
         # Click 27, expand up, select 18, add and verify comment
-        page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
+        page.within find_in_page_or_panel_by_scrolling('[data-path="files/ruby/popen.rb"]') do
           first('.js-unfold-all').click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="21"]').find(:xpath, '../..'), 'left')
-        add_comment('18', '21')
+        add_comment('18')
       end
 
       it 'allows comments on previously hidden lines at the bottom of a file' do
         # Click +28, expand down, select 37 add and verify comment
-        page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
+        page.within find_in_page_or_panel_by_scrolling('[data-path="files/ruby/popen.rb"]') do
           first('.js-unfold-down').click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
-        add_comment('+28', '30')
+        add_comment('+28')
       end
     end
 
-    def add_comment(start_line, end_line)
+    def add_comment(start_line)
       page.within('.discussion-form') do
         find('#comment-line-start option', exact_text: start_line).select_option
       end
@@ -213,7 +211,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       page.within('.notes_holder') do
         expect(page).to have_content('Line is wrong')
-        expect(page).to have_content("Comment on lines #{start_line} to #{end_line}")
       end
 
       visit(merge_request_path(merge_request))
@@ -232,7 +229,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   context 'when editing comments' do
     it 'edits a comment' do
-      click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
+      click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in(:note_note, with: 'Line is wrong')
@@ -258,7 +255,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   context 'when deleting comments' do
     it 'deletes a comment' do
-      click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
+      click_diff_line(find_in_page_or_panel_by_scrolling("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
         fill_in(:note_note, with: 'Line is wrong')
@@ -288,6 +285,18 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       page.within('.notes-tab .badge') do
         expect(page).to have_content('0')
       end
+    end
+  end
+
+  def find_in_page_or_panel_by_scrolling(selector, index: nil, **options)
+    if index.nil? # rubocop:disable RSpec/AvoidConditionalStatements -- This is to make index param optional
+      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        find_in_panel_by_scrolling(selector, **options)
+      else
+        find_by_scrolling(selector, **options)
+      end
+    else
+      all(selector, **options)[index]
     end
   end
 end

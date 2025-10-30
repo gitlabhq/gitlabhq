@@ -14,18 +14,21 @@ module Banzai
 
         # Public: Find `@user` user references in text
         #
-        #   references_in(text) do |match, username|
+        #   references_in(text) do |match_text, username|
         #     "<a href=...>@#{user}</a>"
         #   end
         #
         # text - String text to search.
         #
-        # Yields the String match, and the String user name.
+        # Yields the String match text, and the String user name.
         #
-        # Returns a String replaced with the return of the block.
+        # Returns a HTML String with replacements made, or nil if no replacements were made.
+        #
+        # See ReferenceFilter#references_in for a detailed discussion.
         def references_in(text, pattern = object_reference_pattern)
-          Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
-            yield match_data[0], match_data['user']
+          replace_references_in_text_with_html(Gitlab::Utils::Gsub.gsub_with_limit(text, pattern,
+            limit: Banzai::Filter::FILTER_ITEM_LIMIT)) do |match_data|
+            yield match_data[0], match_data[:user]
           end
         end
 
@@ -41,23 +44,23 @@ module Banzai
         # user's profile page.
         #
         # text - String text to replace references in.
-        # link_content - Original content of the link being replaced.
+        # link_content_html - Original HTML content of the link being replaced.
         #
-        # Returns a String with `@user` references replaced with links. All links
+        # Returns a HTML String with `@user` references replaced with links. All links
         # have `gfm` and `gfm-project_member` class names attached for styling.
-        def object_link_filter(text, pattern, link_content: nil, link_reference: false)
-          references_in(text, pattern) do |match, username|
+        #
+        # Returns nil if no replacements were made.
+        def object_link_filter(text, pattern, link_content_html: nil, link_reference: false)
+          references_in(text, pattern) do |match_text, username|
             if Feature.disabled?(:disable_all_mention) && username == 'all' && !skip_project_check?
-              link_to_all(link_content: link_content)
+              link_to_all(link_content_html: link_content_html)
             else
-              cached_call(:banzai_url_for_object, match, path: [User, username.downcase]) do
+              cached_call(:banzai_url_for_object, match_text, path: [User, username.downcase]) do
                 # order is important: per-organization usernames should be checked before global namespace
                 if org_user_detail = org_user_details[username.downcase]
                   link_to_org_user_detail(org_user_detail)
                 elsif namespace = namespaces[username.downcase]
-                  link_to_namespace(namespace, link_content: link_content) || match
-                else
-                  match
+                  link_to_namespace(namespace, link_content_html: link_content_html)
                 end
               end
             end
@@ -111,56 +114,56 @@ module Banzai
           [reference_class(:project_member, tooltip: false), "js-user-link"].join(" ")
         end
 
-        def link_to_all(link_content: nil)
+        def link_to_all(link_content_html: nil)
           author = context[:author]
 
           if author && !team_member?(author)
-            link_content
+            link_content_html
           else
-            parent_url(link_content, author)
+            parent_url(link_content_html, author)
           end
         end
 
-        def link_to_namespace(namespace, link_content: nil)
+        def link_to_namespace(namespace, link_content_html: nil)
           if namespace.is_a?(Group)
-            link_to_group(namespace.full_path, namespace, link_content: link_content)
+            link_to_group(namespace.full_path, namespace, link_content_html: link_content_html)
           else
-            link_to_user(namespace.path, namespace, link_content: link_content)
+            link_to_user(namespace.path, namespace, link_content_html: link_content_html)
           end
         end
 
-        def link_to_group(group, namespace, link_content: nil)
+        def link_to_group(group, namespace, link_content_html: nil)
           url = urls.group_url(group, only_path: context[:only_path])
           data = data_attribute(group: namespace.id)
-          content = link_content || (Group.reference_prefix + group)
+          html_content = link_content_html || CGI.escapeHTML(Group.reference_prefix + group)
 
-          link_tag(url, data, content, namespace.full_name)
+          link_tag(url, data, html_content, namespace.full_name)
         end
 
-        def link_to_user(user, namespace, link_content: nil)
+        def link_to_user(user, namespace, link_content_html: nil)
           url = urls.user_url(user, only_path: context[:only_path])
           data = data_attribute(user: namespace.owner_id)
-          content = link_content || (User.reference_prefix + user)
+          html_content = link_content_html || CGI.escapeHTML(User.reference_prefix + user)
 
-          link_tag(url, data, content, namespace.owner_name)
+          link_tag(url, data, html_content, namespace.owner_name)
         end
 
-        def link_to_org_user_detail(org_user_detail, link_content: nil)
+        def link_to_org_user_detail(org_user_detail, link_content_html: nil)
           user = org_user_detail.user
           url = urls.user_url(user, only_path: context[:only_path])
           data = data_attribute(user: user.id)
-          content = link_content || org_user_detail.to_reference
+          html_content = link_content_html || CGI.escapeHTML(org_user_detail.to_reference)
 
-          link_tag(url, data, content, org_user_detail.username)
+          link_tag(url, data, html_content, org_user_detail.username)
         end
 
-        def link_tag(url, data, link_content, title)
+        def link_tag(url, data, link_content_html, title)
           write_opening_tag("a", {
             "href" => url,
             "title" => title,
             "class" => link_class,
             **data
-          }) << link_content << "</a>"
+          }) << link_content_html << "</a>"
         end
 
         def organization
@@ -182,7 +185,7 @@ module Banzai
           parent.member?(user)
         end
 
-        def parent_url(link_content, author)
+        def parent_url(link_content_html, author)
           if parent_group?
             url = urls.group_url(parent, only_path: context[:only_path])
             data = data_attribute(group: group.id, author: author.try(:id))
@@ -191,8 +194,8 @@ module Banzai
             data = data_attribute(project: project.id, author: author.try(:id))
           end
 
-          content = link_content || (User.reference_prefix + 'all')
-          link_tag(url, data, content, 'All Project and Group Members')
+          html_content = link_content_html || CGI.escapeHTML(User.reference_prefix + 'all')
+          link_tag(url, data, html_content, 'All Project and Group Members')
         end
       end
     end

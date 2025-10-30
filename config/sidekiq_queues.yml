@@ -955,9 +955,13 @@
   - 1
 - - security_analyzer_namespace_statuses_process_group_deleted_events
   - 1
+- - security_analyzer_namespace_statuses_recalculate
+  - 1
 - - security_analyzers_status_process_archived_events
   - 1
 - - security_analyzers_status_process_deleted_events
+  - 1
+- - security_analyzers_status_process_group_archived_events
   - 1
 - - security_analyzers_status_process_group_transfer_events
   - 1
@@ -966,6 +970,8 @@
 - - security_analyzers_status_schedule_setting_changed_update
   - 1
 - - security_analyzers_status_setting_changed_update
+  - 1
+- - security_analyzers_status_update_archived_analyzer_status
   - 1
 - - security_attributes_cleanup_batch
   - 1
