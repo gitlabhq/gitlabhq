@@ -55,7 +55,6 @@ RSpec/ContextWording:
     - 'ee/spec/controllers/security/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/security/vulnerabilities_controller_spec.rb'
     - 'ee/spec/controllers/users_controller_spec.rb'
-    - 'ee/spec/elastic_integration/global_search_spec.rb'
     - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
     - 'ee/spec/features/admin/admin_credentials_inventory_spec.rb'
     - 'ee/spec/features/admin/admin_dev_ops_reports_spec.rb'
