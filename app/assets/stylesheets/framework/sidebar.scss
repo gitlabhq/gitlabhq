@@ -188,50 +188,6 @@
   font-size: 12px;
 }
 
-.ancestor-tree {
-  $line-height: map.get($spacers, 4);
-
-  .vertical-timeline {
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
-    &::before {
-      content: '';
-      border-left: 1px solid $gray-300;
-      position: absolute;
-      top: $gl-padding;
-      bottom: $gl-padding;
-      left: map.get($spacers, 2) - px-to-rem(1px);
-    }
-  }
-
-  .vertical-timeline-row {
-    margin-top: map.get($spacers, 3);
-
-    &:nth-child(1) {
-      margin-top: 0;
-    }
-  }
-
-  .vertical-timeline-icon {
-    height: $line-height;
-    z-index: 1;
-    position: relative;
-    padding: $gl-padding-4 0;
-
-    svg {
-      vertical-align: baseline;
-    }
-  }
-
-  .vertical-timeline-content {
-    line-height: $line-height;
-    margin-left: $gl-padding-8;
-  }
-}
-
 .toggle-right-sidebar-button {
   @apply gl-transition-width;
   height: $toggle-sidebar-height;

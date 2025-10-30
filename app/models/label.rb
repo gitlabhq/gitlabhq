@@ -233,10 +233,6 @@ class Label < ApplicationRecord
     priority.try(:priority)
   end
 
-  def priority?
-    priorities.present?
-  end
-
   ##
   # Returns the String necessary to reference this Label in Markdown
   #

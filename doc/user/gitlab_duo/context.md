@@ -16,6 +16,12 @@ Information can be available:
 
 ## GitLab Duo Chat
 
+{{< history >}}
+
+- Current page title and URL [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209186) in GitLab 18.6.
+
+{{< /history >}}
+
 The following context is available to GitLab Duo Chat.
 
 ### Always available
@@ -23,6 +29,7 @@ The following context is available to GitLab Duo Chat.
 - GitLab documentation.
 - General programming knowledge, best practices, and language specifics.
 - Content in the file you're viewing or editing, including code before and after your cursor.
+- When using Chat in the GitLab UI, the current page title and URL.
 - The `/refactor`, `/fix`, and `/tests` slash commands have access to the latest
   [Repository X-Ray report](../project/repository/code_suggestions/repository_xray.md).
 

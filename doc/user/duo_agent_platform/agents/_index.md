@@ -75,7 +75,7 @@ To create an agent:
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,
-   select which tools the agent can access.
+   select which tools the agent can access. For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
    For example, for the agent to create issues automatically, select **Create issue**.
 1. Select **Create agent**.
 

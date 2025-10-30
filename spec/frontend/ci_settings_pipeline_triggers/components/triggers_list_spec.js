@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlTable, GlBadge } from '@gitlab/ui';
+import { GlTable, GlBadge, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -100,10 +100,14 @@ describe('TriggersList', () => {
 
       expect(findCell(0, 0).text()).toBe(trigger.token);
       expect(findCell(0, 1).text()).toBe(trigger.description);
-      expect(findCell(0, 2).text()).toContain(trigger.owner.name);
+      expect(findCell(0, 2).findComponent(GlAvatarLink).attributes()).toMatchObject({
+        href: trigger.owner.path,
+        title: trigger.owner.name,
+      });
+      expect(findCell(0, 2).findComponent(GlAvatar).props('alt')).toBe(trigger.owner.name);
     });
 
-    it('displays a "copy to cliboard" button for exposed tokens', () => {
+    it('displays a "copy to clipboard" button for exposed tokens', () => {
       expect(findClipboardBtn(0).exists()).toBe(true);
       expect(findClipboardBtn(0).props('text')).toBe(triggers[0].token);
 
@@ -179,6 +183,29 @@ describe('TriggersList', () => {
       expect(wrapper.text()).toBe(
         'No trigger tokens have been created yet. Add one using the form above.',
       );
+    });
+  });
+
+  describe('when trigger has null owner', () => {
+    const triggerWithNullOwner = {
+      id: 3,
+      hasTokenExposed: false,
+      token: '2222',
+      description: 'Trigger with null owner',
+      owner: null,
+      lastUsed: null,
+      expiresAt: null,
+      canAccessProject: true,
+      projectTriggerPath: '/trigger/3',
+    };
+
+    beforeEach(() => {
+      createComponent({ initTriggers: [triggerWithNullOwner] });
+    });
+
+    it('does not display owner information', () => {
+      expect(findCell(0, 2).text()).toBe('');
+      expect(findCell(0, 2).findComponent(GlAvatarLink).exists()).toBe(false);
     });
   });
 

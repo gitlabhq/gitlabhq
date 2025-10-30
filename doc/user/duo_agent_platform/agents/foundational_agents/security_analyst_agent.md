@@ -39,6 +39,8 @@ The GitLab Security Analyst Agent understands GitLab-specific security implement
 vulnerability states, severity levels, and security scanner outputs. It can interpret EPSS scores,
 CVE data, and reachability analysis to provide contextual security guidance.
 
+Please leave feedback in [issue 574028](https://gitlab.com/gitlab-org/gitlab/-/issues/574028).
+
 ### Access the GitLab Security Analyst Agent
 
 Prerequisites:

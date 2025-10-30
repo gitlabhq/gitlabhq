@@ -23,7 +23,7 @@ title: AI Catalog
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `global_ai_catalog`. Enabled on GitLab.com. This feature is an [experiment](../../policy/development_stages_support.md).
-- Support for CLI agents [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610) in GitLab 18.6 with a flag named `ai_catalog_third_party_flows`. Enabled on GitLab.com.
+- Support for third-party agents [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207610) in GitLab 18.6 with a flag named `ai_catalog_third_party_flows`. Enabled on GitLab.com.
 
 {{< /history >}}
 
@@ -61,4 +61,4 @@ A list of agents is displayed. To view available flows, select the **Flows** tab
 ## Related topics
 
 - [Agents](agents/_index.md)
-- [CLI agents](agent_assistant.md)
+- [Third-party agents](agents/third_party.md)

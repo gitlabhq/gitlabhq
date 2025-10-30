@@ -37,6 +37,8 @@ Use GitLab Duo Planner when you need help with:
 - Backlog management: Identifying stale issues, duplicates, or items needing refinement.
 - Estimation: Suggesting relative sizing or effort estimates for work items.
 
+Please leave feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/issues/576622).
+
 ## Access GitLab Duo Planner
 
 Prerequisites:

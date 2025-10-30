@@ -608,22 +608,6 @@ You shouldn't experience any impact as a result of this change, as these are end
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### The GitLab legacy requirement IID is deprecated in favor of work item IID
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390263).
-
-</div>
-
-We will be transitioning to a new IID as a result of moving requirements to a [work item type](https://docs.gitlab.com/development/work_items/#work-items-and-work-item-types). Users should begin using the new IID as support for the legacy IID and existing formatting will end in GitLab 18.0. The legacy requirement IID remains available until its removal in GitLab 18.0.
-
-</div>
-
 <div class="deprecation " data-milestone="19.0">
 
 ### The `ci_job_token_scope_enabled` projects API attribute is deprecated

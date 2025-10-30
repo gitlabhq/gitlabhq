@@ -1604,7 +1604,6 @@ Layout/LineLength:
     - 'ee/spec/services/iterations/cadences/update_service_spec.rb'
     - 'ee/spec/services/iterations/delete_service_spec.rb'
     - 'ee/spec/services/jira/jql_builder_service_spec.rb'
-    - 'ee/spec/services/jira/requests/issues/list_service_spec.rb'
     - 'ee/spec/services/ldap_group_reset_service_spec.rb'
     - 'ee/spec/services/members/activate_service_spec.rb'
     - 'ee/spec/services/merge_requests/create_from_vulnerability_data_service_spec.rb'

@@ -1,9 +1,0 @@
-mutation issueSetSubscription($input: IssueSetSubscriptionInput!) {
-  updateIssuableSubscription: issueSetSubscription(input: $input) {
-    issue {
-      id
-      subscribed
-    }
-    errors
-  }
-}

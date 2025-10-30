@@ -142,6 +142,10 @@ FactoryBot.define do
       jira_auth_type { 0 }
     end
 
+    trait :jira_server do
+      deployment_type { 'server' }
+    end
+
     after(:build) do |integration, evaluator|
       integration.instance_variable_set(:@old_data_fields, nil)
 

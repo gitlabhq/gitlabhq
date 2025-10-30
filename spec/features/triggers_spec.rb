@@ -48,7 +48,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         aggregate_failures 'display creation notice and trigger is created' do
           expect(find_by_testid('alert-info')).to have_content 'Trigger token was created successfully.'
           expect(page.find('.triggers-list')).to have_content 'trigger desc'
-          expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
+          expect(page.find('.triggers-list .trigger-owner')['title']).to eq user.name
         end
       end
 
@@ -108,7 +108,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
 
         aggregate_failures 'display update notice and trigger is updated' do
           expect(page.find('.triggers-list')).to have_content new_trigger_title
-          expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
+          expect(page.find('.triggers-list .trigger-owner')['title']).to eq user.name
         end
       end
     end
@@ -210,7 +210,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         aggregate_failures 'shows truncated token, no clipboard button and no edit link' do
           expect(page.find('.triggers-list')).to have_content(project.triggers.first.short_token)
           expect(page.find('.triggers-list')).not_to have_selector('[data-testid="clipboard-btn"]')
-          expect(page.find('.triggers-list .trigger-owner')).not_to have_content user.name
+          expect(page.find('.triggers-list .trigger-owner')['title']).to eq(user2.name)
           expect(page.find('.triggers-list')).not_to have_selector('a[title="Edit"]')
         end
       end
@@ -224,7 +224,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         aggregate_failures 'shows full token, clipboard button and edit link' do
           expect(page.find('.triggers-list')).to have_content project.triggers.first.token
           expect(page.find('.triggers-list')).to have_selector('[data-testid="clipboard-btn"]')
-          expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
+          expect(page.find('.triggers-list .trigger-owner')['title']).to eq user.name
           expect(page.find('.triggers-list')).to have_selector('button[title="Edit"]')
         end
       end

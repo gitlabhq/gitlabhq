@@ -377,8 +377,6 @@ owner_class_attribute_default:
   file: app/models/jira_import_state.rb
 non_initial?:
   file: app/models/jira_import_state.rb
-priority?:
-  file: app/models/label.rb
 diff_base_commit:
   file: app/models/merge_request.rb
 diff_start_commit:

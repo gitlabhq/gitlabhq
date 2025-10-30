@@ -9,7 +9,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import PipelineSchedulesForm from '~/ci/pipeline_schedules/components/pipeline_schedules_form.vue';
-import PipelineVariablesFormGroup from '~/ci/pipeline_schedules/components/pipeline_variables_form_group.vue';
+import VariablesForm from '~/ci/common/variables_form.vue';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
@@ -108,7 +108,7 @@ describe('Pipeline schedules form', () => {
   const findCancelButton = () => wrapper.findByTestId('schedule-cancel-button');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);
-  const findPipelineVariables = () => wrapper.findComponent(PipelineVariablesFormGroup);
+  const findPipelineVariables = () => wrapper.findComponent(VariablesForm);
 
   const emitInputEvents = (updateData) => {
     findPipelineInputsForm().vm.$emit('update-inputs', updateData);
@@ -190,9 +190,10 @@ describe('Pipeline schedules form', () => {
       createComponent();
 
       expect(findPipelineVariables().exists()).toBe(true);
-      expect(findPipelineVariables().props()).toEqual({
+      expect(findPipelineVariables().props()).toMatchObject({
         initialVariables: [],
         editing: false,
+        userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
       });
     });
 
@@ -249,10 +250,8 @@ describe('Pipeline schedules form', () => {
     it('displays empty variable list', () => {
       createComponent();
 
-      expect(findPipelineVariables().props()).toEqual({
-        initialVariables: [],
-        editing: false,
-      });
+      expect(findPipelineVariables().props('initialVariables')).toEqual([]);
+      expect(findPipelineVariables().props('editing')).toEqual(false);
     });
 
     it('tracks the modified inputs', async () => {

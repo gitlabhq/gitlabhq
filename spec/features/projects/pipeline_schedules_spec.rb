@@ -222,10 +222,10 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         visit_pipelines_schedules
         click_link 'New schedule'
         fill_in_schedule_form
-        all('[data-testid="pipeline-form-ci-variable-key"]')[0].set('AAA')
-        all('[data-testid="pipeline-form-ci-variable-value"]')[0].set('AAA123')
-        all('[data-testid="pipeline-form-ci-variable-key"]')[1].set('BBB')
-        all('[data-testid="pipeline-form-ci-variable-value"]')[1].set('BBB123')
+        all('[data-testid="pipeline-form-ci-variable-key-field"]')[0].set('AAA')
+        all('[data-testid="pipeline-form-ci-variable-value-field"]')[0].set('AAA123')
+        all('[data-testid="pipeline-form-ci-variable-key-field"]')[1].set('BBB')
+        all('[data-testid="pipeline-form-ci-variable-value-field"]')[1].set('BBB123')
         create_pipeline_schedule
       end
 
@@ -234,8 +234,8 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           .click
 
         expected_keys = [
-          all("[data-testid='pipeline-form-ci-variable-key']")[0].value,
-          all("[data-testid='pipeline-form-ci-variable-key']")[1].value
+          all("[data-testid='pipeline-form-ci-variable-key-field']")[0].value,
+          all("[data-testid='pipeline-form-ci-variable-key-field']")[1].value
         ]
         expect(expected_keys).to include('AAA', 'BBB')
       end
@@ -250,20 +250,20 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         visit_pipelines_schedules
         first('[data-testid="edit-pipeline-schedule-btn"]').click
         click_button _('Reveal values')
-        first('[data-testid="pipeline-form-ci-variable-key"]').set('foo')
-        first('[data-testid="pipeline-form-ci-variable-value"]').set('bar')
+        first('[data-testid="pipeline-form-ci-variable-key-field"]').set('foo')
+        first('[data-testid="pipeline-form-ci-variable-value-field"]').set('bar')
         save_pipeline_schedule
       end
 
       it 'user sees the updated variable' do
         first('[data-testid="edit-pipeline-schedule-btn"]').click
 
-        expect(first('[data-testid="pipeline-form-ci-variable-key"]').value).to eq('foo')
-        expect(first('[data-testid="pipeline-form-ci-variable-value"]').value).to eq('')
+        expect(first('[data-testid="pipeline-form-ci-variable-key-field"]').value).to eq('foo')
+        expect(first('[data-testid="pipeline-form-ci-variable-value-field"]').value).to eq('')
 
         click_button _('Reveal values')
 
-        expect(first('[data-testid="pipeline-form-ci-variable-value"]').value).to eq('bar')
+        expect(first('[data-testid="pipeline-form-ci-variable-value-field"]').value).to eq('bar')
       end
     end
 
@@ -282,8 +282,8 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       it 'user does not see the removed variable in edit window' do
         first('[data-testid="edit-pipeline-schedule-btn"]').click
 
-        expect(first('[data-testid="pipeline-form-ci-variable-key"]').value).to eq('')
-        expect(first('[data-testid="pipeline-form-ci-variable-value"]').value).to eq('')
+        expect(first('[data-testid="pipeline-form-ci-variable-key-field"]').value).to eq('')
+        expect(first('[data-testid="pipeline-form-ci-variable-value-field"]').value).to eq('')
       end
     end
 

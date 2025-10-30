@@ -10,6 +10,10 @@ module QA
             element 'issuable-search-container'
           end
 
+          view 'app/assets/javascripts/work_items/components/work_item_list_actions.vue' do
+            element 'work-items-list-more-actions-dropdown'
+          end
+
           view 'app/assets/javascripts/issuable/components/issue_assignees.vue' do
             element 'assignee-link'
             element 'avatar-counter-content'
@@ -75,6 +79,12 @@ module QA
           end
 
           def go_to_jira_import_form
+            unless has_element?('import-from-jira-link', wait: 0)
+              within_element('work-item-router-view') do
+                click_element('work-items-list-more-actions-dropdown')
+              end
+            end
+
             click_import_from_jira_link
           end
 

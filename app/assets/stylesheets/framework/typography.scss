@@ -100,7 +100,7 @@
   }
 
   // make default paragraph of summary text behave nicely with the summary marker
-  summary > p {
+  summary > p, summary > .markdown-code-block {
     max-width: calc(100% - 1rem);
   }
 

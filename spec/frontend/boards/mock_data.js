@@ -1031,28 +1031,6 @@ export const epicBoardListQueryResponse = (totalWeight = 5) => ({
   },
 });
 
-export const updateIssueTitleResponse = {
-  data: {
-    updateIssuableTitle: {
-      issue: {
-        id: 'gid://gitlab/Issue/436',
-        title: 'Issue 1 edit',
-      },
-    },
-  },
-};
-
-export const updateEpicTitleResponse = {
-  data: {
-    updateIssuableTitle: {
-      epic: {
-        id: 'gid://gitlab/Epic/426',
-        title: 'Epic 1 edit',
-      },
-    },
-  },
-};
-
 export const createBoardListResponse = {
   data: {
     boardListCreate: {

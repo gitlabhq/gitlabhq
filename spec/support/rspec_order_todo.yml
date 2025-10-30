@@ -2025,7 +2025,6 @@
 - './ee/spec/services/iterations/roll_over_issues_service_spec.rb'
 - './ee/spec/services/iterations/update_service_spec.rb'
 - './ee/spec/services/jira/jql_builder_service_spec.rb'
-- './ee/spec/services/jira/requests/issues/list_service_spec.rb'
 - './ee/spec/services/keys/last_used_service_spec.rb'
 - './ee/spec/services/ldap_group_reset_service_spec.rb'
 - './ee/spec/services/lfs/lock_file_service_spec.rb'

@@ -3016,6 +3016,12 @@ msgstr ""
 msgid "AI|Explain or Resolve with AI"
 msgstr ""
 
+msgid "AI|Explain this code."
+msgstr ""
+
+msgid "AI|Explain this vulnerability and provide insights about potential solutions."
+msgstr ""
+
 msgid "AI|Explain with AI"
 msgstr ""
 
@@ -3091,6 +3097,9 @@ msgstr ""
 msgid "AI|Something went wrong. Please try again later"
 msgstr ""
 
+msgid "AI|Summarize the comments on this issue."
+msgstr ""
+
 msgid "AI|Thank you for your feedback."
 msgstr ""
 
@@ -3104,6 +3113,9 @@ msgid "AI|The existing description will be replaced when you submit."
 msgstr ""
 
 msgid "AI|To help improve the quality of the content, send your feedback to GitLab team members."
+msgstr ""
+
+msgid "AI|Troubleshoot this broken pipeline."
 msgstr ""
 
 msgid "AI|Use GitLab Duo to generate a merge request with a suggested solution."
@@ -7826,9 +7838,6 @@ msgstr ""
 msgid "An error occurred when trying to display this embedded view:"
 msgstr ""
 
-msgid "An error occurred when updating the title"
-msgstr ""
-
 msgid "An error occurred while adding approvers"
 msgstr ""
 
@@ -7881,9 +7890,6 @@ msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
 msgid "An error occurred while fetching Markdown preview"
-msgstr ""
-
-msgid "An error occurred while fetching ancestors"
 msgstr ""
 
 msgid "An error occurred while fetching branches."
@@ -8347,9 +8353,6 @@ msgid "Analyze your source code for vulnerabilities."
 msgstr ""
 
 msgid "Analyzing file…"
-msgstr ""
-
-msgid "Ancestors"
 msgstr ""
 
 msgid "Anonymous"
@@ -11284,9 +11287,6 @@ msgstr ""
 msgid "Boards|An error occurred while moving the list. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while selecting the card. Please try again."
-msgstr ""
-
 msgid "Boards|An error occurred while updating the list. Please try again."
 msgstr ""
 
@@ -13362,9 +13362,6 @@ msgstr ""
 msgid "Changes the title to \"%{title_param}\"."
 msgstr ""
 
-msgid "Changes to the title have not been saved"
-msgstr ""
-
 msgid "Changes:"
 msgstr ""
 
@@ -13935,6 +13932,9 @@ msgid "CiVariables|Group"
 msgstr ""
 
 msgid "CiVariables|Hidden"
+msgstr ""
+
+msgid "CiVariables|Hidden variable value"
 msgstr ""
 
 msgid "CiVariables|In all projects that do not use pipeline variables, change the %{strongStart}Minimum role to use pipeline variables%{strongEnd} setting to %{strongStart}No one allowed%{strongEnd}. Project owners can later choose a different setting if needed."
@@ -26896,9 +26896,6 @@ msgstr ""
 msgid "Epic cannot be found."
 msgstr ""
 
-msgid "Epic details"
-msgstr ""
-
 msgid "Epic events"
 msgstr ""
 
@@ -34809,9 +34806,6 @@ msgstr ""
 msgid "Incident creation cancelled."
 msgstr ""
 
-msgid "Incident details"
-msgstr ""
-
 msgid "Incident template (optional)."
 msgstr ""
 
@@ -36234,9 +36228,6 @@ msgid "Issue created from vulnerability %{vulnerability_link}"
 msgstr ""
 
 msgid "Issue creation requests"
-msgstr ""
-
-msgid "Issue details"
 msgstr ""
 
 msgid "Issue events"
@@ -49159,9 +49150,6 @@ msgstr ""
 msgid "Pipeline|Failed to retrieve CI/CD variables."
 msgstr ""
 
-msgid "Pipeline|File"
-msgstr ""
-
 msgid "Pipeline|Manual"
 msgstr ""
 
@@ -49322,9 +49310,6 @@ msgid "Pipeline|Trigger author"
 msgstr ""
 
 msgid "Pipeline|Variable"
-msgstr ""
-
-msgid "Pipeline|Variable type"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -55293,10 +55278,10 @@ msgstr ""
 msgid "Requirement|Legacy requirement ID: %{legacyId}"
 msgstr ""
 
-msgid "Requirement|Legacy requirement IDs are being deprecated. Update your links to reference this item's new ID %{id}. %{linkStart}Learn more%{linkEnd}."
+msgid "Requirement|Legacy requirement IDs are being deprecated. Update your links to reference this item's new ID %{id}."
 msgstr ""
 
-msgid "Requirement|Requirements have become work items and the legacy requirement IDs are being deprecated. Update your links to reference this item's new ID %{id}. %{linkStart}Learn more%{linkEnd}."
+msgid "Requirement|Requirements have become work items and the legacy requirement IDs are being deprecated. Update your links to reference this item's new ID %{id}."
 msgstr ""
 
 msgid "Requires %d approval"
@@ -77075,9 +77060,6 @@ msgid "You don't have permission to manage this issue."
 msgstr ""
 
 msgid "You don't have permission to update the setting %{attribute}."
-msgstr ""
-
-msgid "You don't have permission to view this epic"
 msgstr ""
 
 msgid "You don't have permissions to import this project"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Snippets::BlobsResolver do
+RSpec.describe Resolvers::Snippets::BlobsResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
   specify do

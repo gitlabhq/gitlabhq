@@ -123,9 +123,8 @@ module Gitlab
     end
 
     def cache_issues_count?
-      return false if group_issues_list? && !group_issues_count_cacheable?
-
       @store_in_redis_cache &&
+        (!group_issues_list? || group_issues_count_cacheable?) &&
         finder.class <= IssuesFinder &&
         parent_group.present? &&
         !params_include_filters?
@@ -136,8 +135,8 @@ module Gitlab
     end
 
     def group_issues_list?
-      # [group_work_items => epics] which are excluded on the group issues page
-      finder.params[:exclude_group_work_items] == true
+      # [group_work_items => epics] which are excluded only on the group issues page
+      finder.params[:exclude_group_work_items] != false
     end
 
     def group_issues_count_cacheable?
