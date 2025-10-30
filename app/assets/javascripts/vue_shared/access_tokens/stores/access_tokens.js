@@ -84,12 +84,11 @@ export const useAccessTokens = defineStore('accessTokens', {
         this.page = 1;
         await this.fetchTokens({ clearAlert: false });
       } catch (error) {
-        const responseData = error?.response?.data;
-        const message =
-          responseData?.error ??
-          responseData?.message ??
-          s__('AccessTokens|An error occurred while creating the token.');
-        this.alert = createAlert({ message });
+        const message = this.formatErrors(
+          error?.response?.data,
+          s__('AccessTokens|An error occurred while creating the token.'),
+        );
+        this.alert = createAlert({ message, renderMessageHTML: true });
       } finally {
         smoothScrollTop();
         this.busy = false;
@@ -149,6 +148,29 @@ export const useAccessTokens = defineStore('accessTokens', {
       }
     },
     /**
+     * @param {{error?: string, errors?: string[], message?: string}|null} response
+     * @param {string} defaultMessage
+     */
+    formatErrors(response, defaultMessage) {
+      if (response?.error) {
+        return response?.error;
+      }
+
+      if (response?.errors) {
+        if (response.errors.length === 1) {
+          return response.errors[0];
+        }
+
+        return `<ul class="gl-m-0">${response.errors.map((error) => `<li>${error}</li>`).join('')}</ul>`;
+      }
+
+      if (response?.message) {
+        return response?.message;
+      }
+
+      return defaultMessage;
+    },
+    /**
      * @param {number} tokenId
      */
     async revokeToken(tokenId) {
@@ -170,10 +192,12 @@ export const useAccessTokens = defineStore('accessTokens', {
         // is revoked the page shows `No tokens access tokens` (but there are 20 tokens on page 1).
         this.page = 1;
         await this.fetchTokens({ clearAlert: false });
-      } catch {
-        this.alert = createAlert({
-          message: s__('AccessTokens|An error occurred while revoking the token.'),
-        });
+      } catch (error) {
+        const message = this.formatErrors(
+          error?.response?.data,
+          s__('AccessTokens|An error occurred while revoking the token.'),
+        );
+        this.alert = createAlert({ message, renderMessageHTML: true });
       } finally {
         smoothScrollTop();
         this.busy = false;
@@ -198,12 +222,11 @@ export const useAccessTokens = defineStore('accessTokens', {
         this.page = 1;
         await this.fetchTokens({ clearAlert: false });
       } catch (error) {
-        const responseData = error?.response?.data;
-        const message =
-          responseData?.error ??
-          responseData?.message ??
-          s__('AccessTokens|An error occurred while rotating the token.');
-        this.alert = createAlert({ message });
+        const message = this.formatErrors(
+          error?.response?.data,
+          s__('AccessTokens|An error occurred while rotating the token.'),
+        );
+        this.alert = createAlert({ message, renderMessageHTML: true });
       } finally {
         smoothScrollTop();
         this.busy = false;

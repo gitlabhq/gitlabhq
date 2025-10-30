@@ -28,7 +28,9 @@ module Gitlab
         hook_data[:assignees] = issuable.assignees.map(&:hook_attrs) if issuable.assignees.any?
 
         if issuable.allows_reviewers? && issuable.reviewers.any?
-          hook_data[:reviewers] = issuable.reviewers.map(&:hook_attrs)
+          # Check if there's a re-requested reviewer in the changes
+          re_requested_reviewer_id = extract_re_requested_reviewer_id(changes)
+          hook_data[:reviewers] = issuable.reviewers_hook_attrs(re_requested_reviewer_id: re_requested_reviewer_id)
         end
 
         hook_data
@@ -69,6 +71,18 @@ module Gitlab
 
       def final_changes(changes_hash)
         changes_hash.transform_values { |changes_array| Hash[CHANGES_KEYS.zip(changes_array)] }
+      end
+
+      def extract_re_requested_reviewer_id(changes)
+        # Look for a reviewer change where any reviewer has re_requested: true
+        return unless changes[:reviewers].present?
+
+        _old_reviewers, current_reviewers = changes[:reviewers]
+        return unless current_reviewers.present?
+
+        # Find the reviewer with re_requested: true in the current state
+        re_requested_reviewer = current_reviewers.find { |reviewer| reviewer[:re_requested] == true }
+        re_requested_reviewer&.dig(:id)
       end
     end
   end

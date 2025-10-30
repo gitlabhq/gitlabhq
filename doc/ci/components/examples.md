@@ -207,6 +207,72 @@ each corresponding to a different hidden job.
 By extending the component job with `extends: '.my-component:cache_mode:$[[ inputs.cache_mode ]]'`,
 the job dynamically inherits the correct caching configuration based on the selected option.
 
+### Use component context to reference versioned resources
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Disabled by default.
+
+{{< /history >}}
+
+Use component context [CI/CD expressions](../yaml/expressions.md) to reference component metadata, like version and commit SHA.
+One use case is to build and publish versioned resources (like Docker images) with your component,
+and ensure the component uses the matching version.
+
+For example, you can:
+
+- Build a Docker image in the component's release pipeline with a tag that matches the component version.
+- Have the component reference that same image version.
+
+In the component project's release pipeline (`.gitlab-ci.yml`):
+
+```yaml
+build-image:
+  stage: build
+  image: docker:latest
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE/my-tool:$CI_COMMIT_TAG .
+    - docker push $CI_REGISTRY_IMAGE/my-tool:$CI_COMMIT_TAG
+
+create-release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  script: echo "Creating release $CI_COMMIT_TAG"
+  rules:
+    - if: $CI_COMMIT_TAG
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: "Release $CI_COMMIT_TAG"
+```
+
+In the component template (`templates/my-component/template.yml`):
+
+```yaml
+spec:
+  component: [version, reference]
+  inputs:
+    stage:
+      default: test
+---
+
+run-tool:
+  stage: $[[ inputs.stage ]]
+  image: $CI_REGISTRY_IMAGE/my-tool:$[[ component.version ]]
+  script:
+    - echo "Running tool version $[[ component.version ]]"
+    - echo "Component was included using reference: $[[ component.reference ]]"
+    - my-tool --version
+```
+
+In this example:
+
+- If you include the component with `@1.0.0`, the job uses the image `my-tool:1.0.0`.
+- If you include it with `@1.0`, it resolves to the latest `1.0.x` version, for example `1.0.3`,
+  and therefore uses `my-tool:1.0.3`.
+- If you include it with `@~latest`, it uses the latest released version.
+- The `component.reference` field shows the exact reference you specified, like `1.0`, `~latest`, or a SHA.
+  The reference could be useful for logging or debugging.
+
 ## CI/CD component migration examples
 
 This section shows practical examples of migrating CI/CD templates and pipeline configuration

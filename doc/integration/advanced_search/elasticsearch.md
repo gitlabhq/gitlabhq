@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Set up and configure Elasticsearch to use advanced search in GitLab.
 title: Elasticsearch
 ---
 

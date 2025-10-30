@@ -18,6 +18,20 @@ include:
     paths:
       - pg_dumpall.sql
 
+clickhouse:check-schema:
+  variables:
+    DISABLE_WEBMOCK: "true"
+    ENABLE_CLICKHOUSE_DB_DUMP: "true"
+  extends:
+    - .rspec-base
+    - .use-pg16-clickhouse25
+    - .rails:rules:clickhouse-migration-changes
+  allow_failure: true
+  script:
+    - !reference [.clickhouse-setup, script]
+    - bundle exec rake gitlab:clickhouse:drop:main gitlab:clickhouse:create:main gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main
+    - git diff --exit-code HEAD -- db/click_house/main.sql || { echo "The committed ClickHouse main.sql schema file does not match with the schema rebuilt from the migration files."; exit 1; }
+
 db:setup pg16:
   extends:
     - .db:setup pg16

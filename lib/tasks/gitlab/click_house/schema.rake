@@ -82,7 +82,7 @@ namespace :gitlab do
     end
 
     def dump(database)
-      return if Rails.env.test?
+      return if Rails.env.test? && !Gitlab::Utils.to_boolean(ENV['ENABLE_CLICKHOUSE_DB_DUMP'])
 
       connection = ClickHouse::Connection.new(database)
       database_name = connection.database_name
@@ -93,7 +93,8 @@ namespace :gitlab do
         FROM
           (
             SELECT
-              replaceRegexpAll (formatQuery (create_table_query), {database_pattern:String}, '') AS formatted_statement            FROM
+              replaceRegexpAll (formatQuery (create_table_query), {database_pattern:String}, '') AS formatted_statement
+            FROM
               system.tables
             WHERE
               database = {database:String}
@@ -115,6 +116,7 @@ namespace :gitlab do
       )
 
       result = connection.select(query).dig(0, 'all_statements')
+      result = result.to_s.gsub(/[ \t]+$/, '') # remove trailing spaces
 
       path_to_sql = Rails.root.join('db', 'click_house', "#{database}.sql")
       if File.writable?(path_to_sql)

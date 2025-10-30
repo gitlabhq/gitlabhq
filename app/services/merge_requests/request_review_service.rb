@@ -6,6 +6,9 @@ module MergeRequests
       return error("Invalid permissions") unless can?(current_user, :update_merge_request, merge_request)
 
       with_valid_reviewer(merge_request, user) do |reviewer|
+        # Capture old state for webhook (re_requested will be false for historical state)
+        old_reviewers_hook_attrs = merge_request.reviewers_hook_attrs
+
         has_unapproved = remove_approval(merge_request, user).present?
 
         break error("Failed to update reviewer") unless reviewer.update(state: :unreviewed)
@@ -16,6 +19,13 @@ module MergeRequests
         trigger_merge_request_approval_state_updated(merge_request)
         trigger_user_merge_request_updated(merge_request)
         create_system_note(merge_request, user, has_unapproved)
+
+        # Trigger webhook with old association data to show state change
+        old_associations = {
+          reviewers_hook_attrs: old_reviewers_hook_attrs,
+          re_requested_reviewer_id: reviewer.user_id
+        }
+        execute_hooks(merge_request, 'update', old_associations: old_associations)
 
         user.invalidate_merge_request_cache_counts
         current_user.invalidate_merge_request_cache_counts

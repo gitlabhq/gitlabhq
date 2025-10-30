@@ -194,7 +194,44 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
       it 'returns correct hook data' do
         expect(data[:object_attributes]['reviewer_ids']).to match_array([user.id])
-        expect(data[:reviewers].first).to eq(user.hook_attrs)
+        expect(data[:reviewers].first).to eq(user.hook_attrs.merge(state: 'unreviewed', re_requested: false))
+      end
+    end
+
+    context 'when merge_request has reviewers and changes with re-requested reviewer' do
+      let_it_be(:reviewer1) { create(:user) }
+      let_it_be(:reviewer2) { create(:user) }
+      let(:merge_request) do
+        create(:merge_request, reviewers: [reviewer1, reviewer2], source_project: reusable_project)
+      end
+
+      let(:changes) do
+        {
+          reviewers: [
+            # Old state: both reviewers not re-requested
+            [
+              reviewer1.hook_attrs.merge(state: 'reviewed', re_requested: false),
+              reviewer2.hook_attrs.merge(state: 'unreviewed', re_requested: false)
+            ],
+            # Current state: reviewer1 is re-requested
+            [
+              reviewer1.hook_attrs.merge(state: 'unreviewed', re_requested: true),
+              reviewer2.hook_attrs.merge(state: 'unreviewed', re_requested: false)
+            ]
+          ]
+        }
+      end
+
+      let(:data) { described_class.new(merge_request).build(user: user, changes: changes, action: 'updated') }
+
+      it 'marks the matching re-requested reviewer as re_requested: true' do
+        reviewers = data[:reviewers]
+
+        reviewer1_data = reviewers.find { |r| r[:id] == reviewer1.id }
+        reviewer2_data = reviewers.find { |r| r[:id] == reviewer2.id }
+
+        expect(reviewer1_data[:re_requested]).to be(true)
+        expect(reviewer2_data[:re_requested]).to be(false)
       end
     end
 

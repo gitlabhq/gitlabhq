@@ -1210,6 +1210,70 @@ title: The pipeline configuration would follow...
 
 ---
 
+##### `spec:component`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Disabled by default.
+
+{{< /history >}}
+
+Use `spec:component` to define which component context data is available for interpolation
+in a [CI/CD component](../components/_index.md).
+
+Component context provides metadata about the component itself, such as its name, version,
+and the commit SHA. This allows component templates to reference their own metadata dynamically.
+
+Use the interpolation format `$[[ component.field-name ]]` to reference component context
+values in the component template.
+
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
+in a header section.
+
+**Supported values**: An array of strings. Each string must be one of:
+
+- `name`: The component name as specified in the component path.
+- `sha`: The commit SHA of the component.
+- `version`: The resolved semantic version from the catalog resource. Returns `null` if:
+  - The component is not a catalog resource.
+  - The reference is a branch name or commit SHA (not a released version).
+- `reference`: The original reference specified after `@` in the component path.
+  For example, `1.0`, `~latest`, a branch name, or a commit SHA.
+
+**Example of `spec:component`**:
+
+```yaml
+spec:
+  component: [name, version, reference]
+  inputs:
+    image_tag:
+      default: latest
+---
+
+build-image:
+  image: registry.example.com/$[[ component.name ]]:$[[ component.version ]]
+  script:
+    - echo "Building with component version $[[ component.version ]]"
+    - echo "Component reference: $[[ component.reference ]]"
+```
+
+**Additional details**:
+
+- The `version` field resolves to the actual semantic version when using:
+  - A full version like `@1.0.0` (returns `1.0.0`)
+  - A partial version like `@1.0` (returns the latest matching version, for example `1.0.2`)
+  - `@~latest` (returns the latest version)
+- The `reference` field always returns the exact value specified after `@`:
+  - `@1.0` returns `1.0` (while `version` might return `1.0.2`)
+  - `@~latest` returns `~latest` (while `version` returns the actual version number)
+  - `@abc123` returns `abc123` (while `version` returns `null`)
+
+**Related topics**:
+
+- [Use component context in components](../components/_index.md#use-component-context-in-components).
+
+---
+
 ## Job keywords
 
 The following topics explain how to use keywords to configure CI/CD pipelines.

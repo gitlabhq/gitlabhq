@@ -24926,7 +24926,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Automate"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Concise"
+msgid "DuoAgentsPlatform|Concise view"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Config Path"
@@ -24972,9 +24972,6 @@ msgid "DuoAgentsPlatform|Delete trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Description"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Detail level"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Do not assign the service account a role in your project with higher permissions than the users of that service account."
@@ -25037,7 +25034,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|From the flows configured for this project, select the flow that this trigger will execute."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Full"
+msgid "DuoAgentsPlatform|Full view"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Get issue"
@@ -29533,6 +29530,12 @@ msgid "Geo|CI Secure File"
 msgstr ""
 
 msgid "Geo|CI Secure Files"
+msgstr ""
+
+msgid "Geo|Checksum status"
+msgstr ""
+
+msgid "Geo|Checksum: %{status}"
 msgstr ""
 
 msgid "Geo|Checksum: %{verificationChecksum}"

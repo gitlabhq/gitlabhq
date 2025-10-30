@@ -4,6 +4,7 @@ class CreateSiphonNotes < ClickHouse::Migration
   def up
     execute <<-SQL
       CREATE TABLE IF NOT EXISTS siphon_notes
+
       (
         note Nullable(String),
         noteable_type LowCardinality(String),

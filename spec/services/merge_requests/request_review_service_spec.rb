@@ -100,6 +100,70 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
 
         service.execute(merge_request, user)
       end
+
+      describe 'webhooks' do
+        it 'executes webhook' do
+          expect(service).to receive(:execute_hooks).with(
+            merge_request,
+            'update',
+            hash_including(old_associations: anything)
+          ).and_call_original
+
+          service.execute(merge_request, user)
+        end
+
+        it 'includes old and current reviewer state with re_requested flag in webhook payload' do
+          old_associations_data = nil
+          current_merge_request = nil
+
+          allow(service).to receive(:execute_hooks) do |mr, _action, options|
+            old_associations_data = options[:old_associations]
+            current_merge_request = mr
+          end
+
+          service.execute(merge_request, user)
+
+          # Verify old associations structure
+          expect(old_associations_data).to include(:reviewers_hook_attrs)
+          expect(old_associations_data).to include(:re_requested_reviewer_id)
+          expect(old_associations_data[:re_requested_reviewer_id]).to eq(reviewer.user_id)
+
+          # Verify old reviewer state
+          old_reviewer_data = old_associations_data[:reviewers_hook_attrs].find { |r| r[:id] == reviewer.user_id }
+          expect(old_reviewer_data[:state]).to eq('reviewed')
+          expect(old_reviewer_data[:re_requested]).to be(false)
+
+          # Verify current reviewer state includes re_requested flag
+          current_reviewers = current_merge_request.reviewers_hook_attrs(re_requested_reviewer_id: reviewer.user_id)
+          current_reviewer_data = current_reviewers.find { |r| r[:id] == reviewer.user_id }
+          expect(current_reviewer_data[:re_requested]).to be(true)
+        end
+
+        it 'ensures consistency between reviewers and changes.reviewers attributes' do
+          # Test the actual webhook payload structure for consistency
+          webhook_payload = nil
+
+          allow(service).to receive(:execute_hooks) do |mr, action, options|
+            webhook_payload = Gitlab::DataBuilder::Issuable.new(mr).build(
+              user: user,
+              changes: mr.hook_reviewer_changes(options[:old_associations]),
+              action: action
+            )
+          end
+
+          service.execute(merge_request, user)
+
+          expect(webhook_payload).to be_present
+
+          # Find reviewer B in both places
+          reviewer_in_reviewers = webhook_payload[:reviewers].find { |r| r[:id] == reviewer.user_id }
+          reviewer_in_changes = webhook_payload[:changes][:reviewers][:current].find { |r| r[:id] == reviewer.user_id }
+
+          # Both should show re_requested: true for consistency
+          expect(reviewer_in_reviewers[:re_requested]).to be(true)
+          expect(reviewer_in_changes[:re_requested]).to be(true)
+        end
+      end
     end
   end
 end

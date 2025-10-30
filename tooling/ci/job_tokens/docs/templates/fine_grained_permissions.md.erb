@@ -47,7 +47,7 @@ resources are available to these groups and projects.
 To add fine-grained permissions to groups or projects on the job token allowlist:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
 1. In the **CI/CD job token allowlist** section, select **Add**.
 1. From the dropdown list, select **Group or project**.

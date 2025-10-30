@@ -22,10 +22,11 @@ All configuration expressions share these characteristics:
 
 Configuration expressions support different contexts for accessing values:
 
-| Context                           | Syntax                     | Availability | Purpose |
-|-----------------------------------|----------------------------|--------------|---------|
-| [Inputs context](#inputs-context) | `$[[ inputs.INPUT_NAME ]]` | GitLab 17.0  | Reference CI/CD inputs in reusable configurations. |
-| [Matrix context](#matrix-context) | `$[[ matrix.IDENTIFIER ]]` | GitLab 18.6 (Beta)  | Reference `parallel:matrix` identifiers in job dependencies. |
+| Context                                 | Syntax                        | Availability       | Purpose |
+|-----------------------------------------|-------------------------------|--------------------|---------|
+| [Inputs context](#inputs-context)       | `$[[ inputs.INPUT_NAME ]]`    | GitLab 17.0        | Reference CI/CD inputs in reusable configurations. |
+| [Matrix context](#matrix-context)       | `$[[ matrix.IDENTIFIER ]]`    | GitLab 18.6 (Beta) | Reference `parallel:matrix` identifiers in job dependencies. |
+| [Component context](#component-context) | `$[[ component.FIELD_NAME ]]` | GitLab 18.6 (Beta) | Reference component metadata in component templates. |
 
 ### Inputs context
 
@@ -102,8 +103,42 @@ test:
 - Scoped to job-level `parallel:matrix`: Only values from the current job can be referenced.
 - Automatic mapping: Creates 1:1 dependencies between matrix jobs across stages
 
+### Component context
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Disabled by default.
+
+{{< /history >}}
+
+Use the `component.` context to reference [CI/CD component](../components/_index.md) metadata
+in component templates using `$[[ component.FIELD_NAME ]]` syntax.
+
+Component context provides metadata about the component itself, such as its name, version,
+and the commit SHA. This allows component templates to reference their own metadata dynamically.
+
+To use component context, declare which fields are needed in the [`spec:component`](_index.md#speccomponent)
+header, then reference them in the component template.
+
+For example:
+
+```yaml
+spec:
+  component: [name, version]
+  inputs:
+    image_tag:
+      default: latest
+---
+
+build-job:
+  image: registry.example.com/$[[ component.name ]]:$[[ component.version ]]
+  script:
+    - echo "Building with component version $[[ component.version ]]"
+```
+
 ## Related topics
 
 - [CI/CD inputs](../inputs/_index.md)
+- [CI/CD components](../components/_index.md)
 - [Matrix expressions](matrix_expressions.md)
 - [YAML optimization](yaml_optimization.md)

@@ -2430,6 +2430,16 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
+.rails:rules:clickhouse-migration-changes:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - if: '$ENABLE_RSPEC_UNIT == "true"'
+    - <<: *if-default-refs
+      changes:
+        - "db/click_house/**/*"
+        - "lib/click_house/**/*"
+
 .rails:rules:ee-only-clickhouse-changes:
   rules:
     - <<: *if-not-ee

@@ -13,6 +13,7 @@ namespace :gitlab do
             next
           end
 
+          enable_clickhouse_connectivity!
           drop_db(database)
         end
       end
@@ -20,6 +21,7 @@ namespace :gitlab do
       namespace :setup do
         desc "GitLab | ClickHouse | Setup the #{database} database"
         task database do
+          enable_clickhouse_connectivity!
           create_db(database)
           migrate(:up, database)
         end
@@ -40,6 +42,7 @@ namespace :gitlab do
             next
           end
 
+          enable_clickhouse_connectivity!
           migrate(:up, database)
         end
       end
@@ -86,6 +89,11 @@ namespace :gitlab do
     end
 
     private
+
+    def enable_clickhouse_connectivity!
+      # The hostname of the ClickHouse server is set to "clickhouse" on CI.
+      WebMock.allow_net_connect!(localhost: true, allow: %w[clickhouse]) if Rails.env.test? && ENV['DISABLE_WEBMOCK']
+    end
 
     def drop_db(database)
       db = ClickHouse::Client.configuration.databases[database]

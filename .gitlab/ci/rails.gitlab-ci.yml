@@ -227,7 +227,7 @@ rspec system pg16 project-studio-enabled:
   extends:
     - .rspec-base-pg16
     - .rspec-system-parallel
-    - .rails:rules:ee-and-foss-system
+    - .rails:rules:ee-only-system
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
     GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED: true
@@ -236,7 +236,7 @@ rspec system pg16 project-studio-enabled:
   rules:
     - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
       when: never
-    - !reference [.rails:rules:ee-and-foss-system, rules]
+    - !reference [.rails:rules:ee-only-system, rules]
 
 rspec system pg16 vue3:
   extends:

@@ -897,6 +897,7 @@ Merge request events are triggered when:
 - A new merge request is created.
 - An existing merge request is updated, approved (by all required approvers), unapproved, merged, or closed.
 - An individual user adds or removes their approval to an existing merge request.
+- A reviewer is re-requested to review a merge request.
 - A commit is added in the source branch.
 - All threads are resolved on the merge request.
 
@@ -909,12 +910,11 @@ The available values for `object_attributes.action` in the payload are:
 - `open`
 - `close`
 - `reopen`
-- `update`
+- `update`: Includes general updates and re-request review actions. Check the `changes` field to determine the specific type of update.
 - `approval`: An individual user has added their approval.
 - `approved`: A merge request has been fully approved by all required approvers.
 - `unapproval`: An individual user has removed their approval, either manually or by the system.
 - `unapproved`: A previously-approved merge request has lost its approved status, either manually or by the system.
-
 - `merge`
 
 The field `object_attributes.oldrev` is only available when there are actual code changes, like:
@@ -939,13 +939,89 @@ and include more fields in the payload:
 
 Other approval reset scenarios do not trigger webhooks.
 
+### Reviewer state tracking
+
+The `reviewers` array in merge request webhook payloads includes a `state` field for each reviewer. The `state` field indicates the current review state of the reviewer:
+
+- `unreviewed`: Reviewer has not yet reviewed the merge request
+- `review_started`: Reviewer has started their review but not completed it
+- `reviewed`: Reviewer has completed their review
+- `requested_changes`: Reviewer has requested changes to be made
+- `approved`: Reviewer has approved the merge request
+- `unapproved`: Reviewer had previously approved but their approval was removed
+
+**Example reviewers array (partial payload):**
+
+```json
+{
+  "reviewers": [
+    {
+      "id": 6,
+      "name": "User1",
+      "username": "user1",
+      "state": "unreviewed",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "email": "user1@example.com"
+    }
+  ]
+}
+```
+
+### Re-request review events
+
+When a reviewer is re-requested for a merge request, a webhook is triggered with `action: "update"` containing enhanced information in the `changes` object. The changes payload includes:
+
+- **Previous state** (first array): Shows the reviewer's state before the re-request, with `re_requested: false`
+- **Current state** (second array): Shows the reviewer's updated state after the re-request, with `re_requested: true` for re-requested reviewers
+- **State transitions**: Demonstrates how the reviewer's state changed (for example, from `approved` to `unreviewed`)
+
+**Example re-request review changes (partial payload):**
+
+```json
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "object_attributes": {
+    "action": "update"
+  },
+  "changes": {
+    "reviewers": [
+      [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "state": "approved",
+          "re_requested": false,
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+          "email": "user1@example.com"
+        }
+      ],
+      [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "state": "unreviewed",
+          "re_requested": true,
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+          "email": "user1@example.com"
+        }
+      ]
+    ]
+  }
+}
+```
+
+### Complete payload example
+
 Request header:
 
 ```plaintext
 X-Gitlab-Event: Merge Request Hook
 ```
 
-Payload example:
+Complete merge request webhook payload:
 
 ```json
 {
@@ -1145,6 +1221,7 @@ Payload example:
       "id": 6,
       "name": "User1",
       "username": "user1",
+      "state": "unreviewed",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
     }
   ]

@@ -586,11 +586,24 @@ module Issuable
   end
   # rubocop:enable Metrics/PerceivedComplexity
 
+  def reviewers_hook_attrs(re_requested_reviewer_id: nil)
+    return [] unless allows_reviewers?
+
+    merge_request_reviewers.includes(:reviewer).map do |mr_reviewer|
+      attrs = mr_reviewer.reviewer.hook_attrs.merge(state: mr_reviewer.state)
+      attrs[:re_requested] = !!(re_requested_reviewer_id && mr_reviewer.reviewer.id == re_requested_reviewer_id)
+      attrs
+    end
+  end
+
   def hook_reviewer_changes(old_associations)
     changes = {}
-    old_reviewers = old_associations.fetch(:reviewers, reviewers)
 
-    changes[:reviewers] = [old_reviewers.map(&:hook_attrs), reviewers.map(&:hook_attrs)] if old_reviewers != reviewers
+    re_requested_reviewer_id = old_associations.fetch(:re_requested_reviewer_id, nil)
+    old_reviewer_attrs = old_associations.fetch(:reviewers_hook_attrs, [])
+    current_reviewer_attrs = reviewers_hook_attrs(re_requested_reviewer_id: re_requested_reviewer_id)
+
+    changes[:reviewers] = [old_reviewer_attrs, current_reviewer_attrs] if old_reviewer_attrs != current_reviewer_attrs
 
     changes
   end
