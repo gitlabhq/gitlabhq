@@ -154,14 +154,14 @@ module Ci
       definition_attrs = attrs.extract!(*Ci::JobDefinition::CONFIG_ATTRIBUTES)
       attrs[:tag_list] = definition_attrs[:tag_list] if definition_attrs.key?(:tag_list)
 
-      new(attrs).tap do |build|
+      new(attrs).tap do |job|
         job_definition = ::Ci::JobDefinition.fabricate(
           config: definition_attrs,
-          project_id: build.project_id,
-          partition_id: build.partition_id
+          project_id: job.project_id,
+          partition_id: job.partition_id
         )
 
-        build.temp_job_definition = job_definition
+        job.temp_job_definition = job_definition
       end
     end
 

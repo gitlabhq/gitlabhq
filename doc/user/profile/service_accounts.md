@@ -39,7 +39,8 @@ Service accounts:
 - Are identified in the group and project membership as service accounts.
 - Do not receive notification emails without [adding a custom email address](../../api/service_accounts.md#create-an-instance-service-account).
 - Are not [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) or [internal users](../../administration/internal_users.md).
-- Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
+- Are available for [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html)
+of GitLab.com after the Owner of the top-level group verifies their identity.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
 
 You can also manage service accounts through the [service accounts API](../../api/service_accounts.md).

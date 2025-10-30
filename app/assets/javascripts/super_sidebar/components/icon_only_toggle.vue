@@ -36,6 +36,7 @@ export default {
     :button-text-classes="isIconOnly ? 'gl-hidden' : null"
     :icon="icon"
     category="tertiary"
+    data-testid="super-sidebar-collapse-button"
     @click="emitToggle"
     >{{ text }}</gl-button
   >

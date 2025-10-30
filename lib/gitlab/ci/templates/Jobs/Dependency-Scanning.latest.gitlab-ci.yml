@@ -269,11 +269,15 @@ dependency-scanning:
     ANALYZER_SUPPORTED_FILES: "packages.lock.json,conan.lock,conda-lock.yml,pubspec.lock,go.mod,go.graph,ivy-report.xml,maven.graph.json,dependencies.lock,package-lock.json,npm-shrinkwrap.json,pnpm-lock.yaml,yarn.lock,Podfile.lock,composer.lock,pipdeptree.json,requirements.txt,Pipfile.lock,pipenv.graph.json,poetry.lock,uv.lock,Gemfile.lock,gems.locked,Cargo.lock,dependencies-compile.dot,Package.resolved"
     ADDITIONAL_SUPPORTED_FILES: "pom.xml,build.gradle,build.gradle.kts,build.sbt,requirements.pip,Pipfile,requires.txt,setup.py,*.csproj,*.vbproj"
     SCA_TO_SARIF_MATCHER_VERSION: "v2.0.2"
+    # Variable used to track the template introducing DS analyzer. Please do not override.
+    # This is an internal variable
+    INTERNAL_DS_ANALYZER_CI_INTEGRATION: "template::latest"
   stage: !reference [.ds-analyzer, stage]
   image:
     name: "$SECURE_ANALYZERS_PREFIX/dependency-scanning:v0"
   script:
     - |
+      echo "Using Dependency-Scanning.latest.gitlab-ci.yml"
       /analyzer run
   allow_failure: true
   artifacts:

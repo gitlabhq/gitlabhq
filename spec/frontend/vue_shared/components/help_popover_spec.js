@@ -193,7 +193,7 @@ describe('HelpPopover', () => {
 
     it('overrides title and content from options', () => {
       expect(findPopover().html()).not.toContain(title);
-      expect(findPopover().html()).toContain(content);
+      expect(findPopover().props('content')).toBe(content);
     });
   });
 });

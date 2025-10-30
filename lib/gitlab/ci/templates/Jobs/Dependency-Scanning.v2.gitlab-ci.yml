@@ -77,6 +77,9 @@ variables:
   # Setting this variable affects all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  # Variable used to track the template/compopnent introducing DS analyzer. Please do not override.
+  # This is an internal variable
+  INTERNAL_DS_ANALYZER_CI_INTEGRATION: "template::v2"
 
 "$[[ inputs.job_name ]]":
   variables:
@@ -85,6 +88,7 @@ variables:
   stage: $[[ inputs.stage ]]
   allow_failure: $[[ inputs.allow_failure ]]
   script:
+    - echo "Using Dependency-Scanning.v2.gitlab-ci.yml"
     # Variable fallback for legacy variables used by version 1 of the Dependency Scanning template.
     - export DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN="${DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN:-$[[ inputs.pipcompile_requirements_file_name_pattern ]]}"
     - export DS_MAX_DEPTH="${DS_MAX_DEPTH:-$[[ inputs.max_scan_depth ]]}"

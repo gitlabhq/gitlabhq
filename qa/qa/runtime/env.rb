@@ -684,7 +684,7 @@ module QA
         elsif LIVE_ENVS.include?(ci_project_name)
           test_subset = enabled?('SMOKE_ONLY', default: false) ? 'smoke' : 'full'
 
-          "#{ci_project_name}-#{test_subset}"
+          "e2e-#{test_subset}"
         end
       end
 

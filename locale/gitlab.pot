@@ -48077,6 +48077,9 @@ msgstr ""
 msgid "Pipeline creation rate limits"
 msgstr ""
 
+msgid "Pipeline creation requests per project, commit, and user"
+msgstr ""
+
 msgid "Pipeline durations for the last 30 commits"
 msgstr ""
 

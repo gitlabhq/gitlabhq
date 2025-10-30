@@ -274,7 +274,8 @@ RSpec.describe InstanceConfiguration do
             raw_blob_request_limit: 1021,
             search_rate_limit: 1022,
             search_rate_limit_unauthenticated: 1000,
-            users_get_by_id_limit: 1023
+            users_get_by_id_limit: 1023,
+            pipeline_limit_per_project_user_sha: 1024
           )
         end
 
@@ -300,6 +301,7 @@ RSpec.describe InstanceConfiguration do
           expect(rate_limits[:search_rate_limit]).to eq({ enabled: true, requests_per_period: 1022, period_in_seconds: 60 })
           expect(rate_limits[:search_rate_limit_unauthenticated]).to eq({ enabled: true, requests_per_period: 1000, period_in_seconds: 60 })
           expect(rate_limits[:users_get_by_id]).to eq({ enabled: true, requests_per_period: 1023, period_in_seconds: 600 })
+          expect(rate_limits[:pipeline_creation]).to eq({ enabled: true, requests_per_period: 1024, period_in_seconds: 60 })
         end
       end
     end

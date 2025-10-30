@@ -121,7 +121,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       deploy_tokens
       design_management_action_uploads
       import_export_upload_uploads
-      lists
       ml_experiments
       merge_requests_compliance_violations
       merge_requests_merge_data
@@ -145,7 +144,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       catalog_resource_versions
       cluster_agent_tokens
       cluster_agent_url_configurations
-      custom_fields
       design_management_versions
       incident_management_timeline_events
       merge_trains
@@ -159,8 +157,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       terraform_states
       user_namespace_callouts
       uploads_9ba88c4165
-      work_item_custom_lifecycles
-      work_item_custom_statuses
     ]
   end
 

@@ -14,10 +14,13 @@ RSpec.describe QA::Scenario::Template do
     stub_const('QA::Runtime::Scenario', scenario)
     stub_const('QA::Specs::Runner', runner)
 
-    allow(QA::Runtime::Env).to receive(:knapsack?).and_return(false)
-    allow(QA::Runtime::Env).to receive(:gitlab_url).and_return(gitlab_address_from_env)
-
     allow(QA::Runtime::Browser).to receive(:configure!)
+    allow(QA::Runtime::Env).to receive_messages(
+      knapsack?: false,
+      gitlab_url: gitlab_address_from_env
+    )
+
+    allow(File).to receive(:exist?).with("../config/gitlab.yml").and_return(false)
 
     allow(scenario).to receive(:attributes).and_return({ gitlab_address: gitlab_address })
     allow(scenario).to receive(:define)

@@ -264,7 +264,7 @@ For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](htt
 
 {{< details >}}
 
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Beta
 
 {{< /details >}}
@@ -273,6 +273,7 @@ For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](htt
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19251) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) feature with a [flag](../../administration/feature_flags/_index.md) called `ai_user_model_switching`. Disabled by default.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
+- [Available on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/19344) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -293,6 +294,7 @@ Prerequisites:
 - The Owner of the top-level group has not selected a model for the GitLab Duo Agent Platform.
 If a model has been selected for the group, you cannot change the model for Chat.
 - You must be using Chat in the top-level group. You cannot change the model if you access Chat in the organization.
+- On GitLab Self-Managed, your instance must be connected to the GitLab AI gateway.
 
 To select a model:
 

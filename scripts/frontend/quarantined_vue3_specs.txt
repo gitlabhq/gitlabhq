@@ -7,4 +7,3 @@ spec/frontend/design_management/pages/index_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/performance_bar/index_spec.js
-spec/frontend/vue_popovers_spec.js

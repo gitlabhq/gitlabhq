@@ -130,6 +130,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     subject(:fabricate) { described_class.fabricate(build_attributes) }
 
     it 'initializes with temp_job_definition' do
+      expect(fabricate.metadata&.config_options).to be_nil
       expect(fabricate).to have_attributes(
         temp_job_definition: instance_of(Ci::JobDefinition),
         job_definition: nil
