@@ -28,7 +28,7 @@ RSpec.describe Projects::AttestationsController, feature_category: :artifact_sec
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers['Content-Disposition'])
             .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
-          expect(response.body).to eq(fixture_file('supply_chain/attestation.json'))
+          expect(response.headers['X-Sendfile']).to eq(attestation.file.path)
         end
       end
 

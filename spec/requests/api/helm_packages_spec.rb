@@ -104,7 +104,7 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
         api_request
 
-        expect(response.body).to eq(metadata_cache.file.read)
+        expect(response.headers['X-Sendfile']).to eq(metadata_cache.file.path)
       end
 
       it 'updates last_downloaded_at' do

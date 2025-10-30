@@ -146,7 +146,7 @@ RSpec.shared_examples 'PyPI package download' do |user_type, status, add_member 
     it 'returns the package listing' do
       subject
 
-      expect(response.body).to eq(File.open(package.package_files.first.file.path, "rb").read)
+      expect(response.headers['X-Sendfile']).to eq(package.package_files.first.file.path)
     end
 
     it_behaves_like 'returning response status', status
