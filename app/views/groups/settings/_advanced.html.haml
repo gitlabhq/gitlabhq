@@ -1,5 +1,3 @@
-- remove_form_id = 'js-remove-group-form'
-
 .gl-flex.gl-gap-5.gl-flex-col
   = render 'groups/settings/export', group: @group
   = render 'groups/settings/archive', group: @group
@@ -32,6 +30,5 @@
         = f.submit s_('GroupSettings|Change group URL'), class: 'btn-danger', pajamas_button: true
 
   = render 'groups/settings/transfer', group: @group
-  = render 'groups/settings/remove', group: @group, remove_form_id: remove_form_id
+  = render 'groups/settings/delete'
   = render 'shared/groups_projects/settings/restore', context: @group
-  = render 'groups/settings/immediately_remove', group: @group, remove_form_id: remove_form_id

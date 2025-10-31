@@ -5,7 +5,7 @@ import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import SetStatusModalWrapper from '~/set_status_modal/set_status_modal_wrapper.vue';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
 import { extractEmojiColor } from '~/emoji/utils';
-import { borderStyle, gradientStyle } from '~/lib/utils/color_utils';
+import { gradientStyle } from '~/lib/utils/color_utils';
 import getUserStatusQuery from '~/homepage/graphql/queries/user_status.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { initEmojiMap, getEmojiInfo } from '~/emoji';
@@ -60,9 +60,6 @@ export default {
     },
     gradientStyle() {
       return gradientStyle(this.emojiColor);
-    },
-    borderStyle() {
-      return borderStyle(this.emojiColor);
     },
     tooltipMessage() {
       return this.statusMessage || this.setStatusAltText;
@@ -150,13 +147,12 @@ export default {
     <div v-else class="gl-display-inline-block gl-relative">
       <div class="gl-relative gl-rounded-full gl-p-1" :style="gradientStyle">
         <div class="gl-relative gl-rounded-full gl-bg-white gl-p-1">
-          <gl-avatar :src="avatar" :alt="avatarAltText" />
+          <gl-avatar :src="avatar" :size="64" :alt="avatarAltText" />
         </div>
         <button
           v-gl-tooltip="tooltipMessage"
-          class="gl-absolute gl-bottom-0 gl-right-0 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-border-2 gl-border-solid gl-border-gray-400 gl-bg-white gl-p-0 hover:gl-bg-strong dark:gl-bg-gray-900"
+          class="gl-absolute -gl-bottom-2 -gl-right-1 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-border-2 gl-border-solid gl-border-white gl-bg-white gl-p-0 gl-shadow-md hover:gl-bg-strong dark:gl-bg-gray-900"
           data-testid="status-emoji-badge"
-          :style="borderStyle"
           :aria-label="tooltipMessage"
           @click="openStatusModal"
         >

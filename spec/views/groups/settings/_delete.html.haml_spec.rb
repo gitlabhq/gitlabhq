@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups/settings/_remove.html.haml', feature_category: :groups_and_projects do
+RSpec.describe 'groups/settings/_delete.html.haml', feature_category: :groups_and_projects do
   let_it_be(:group) { build_stubbed(:group) }
 
   before do
@@ -16,7 +16,8 @@ RSpec.describe 'groups/settings/_remove.html.haml', feature_category: :groups_an
       end
 
       it 'enables the Remove group button for a group' do
-        render 'groups/settings/remove', group: group
+        @group = group
+        render 'groups/settings/delete'
 
         expect(rendered).to have_selector '[data-button-testid="remove-group-button"]'
         expect(rendered).not_to have_selector '[data-button-testid="remove-group-button"].disabled'
@@ -30,7 +31,8 @@ RSpec.describe 'groups/settings/_remove.html.haml', feature_category: :groups_an
       end
 
       it 'disables the Remove group button for a group' do
-        output = view.render('groups/settings/remove', group: group)
+        @group = group
+        output = view.render('groups/settings/delete')
 
         expect(output).to be_nil
       end

@@ -12,12 +12,9 @@ title: Resource state events API
 
 {{< /details >}}
 
-Resource state events keep track of what happens to GitLab [issues](../user/project/issues/_index.md)
-[merge requests](../user/project/merge_requests/_index.md) and [epics starting with GitLab 15.4](../user/group/epics/_index.md)
+Use this API to interact with state change events for issues, merge requests, and epics.
 
-Use them to track which state was set, who did it, and when it happened.
-
-Resource state events API does not track the initial state ("create" or "open") of resources.
+This API does not track the initial state ("create" or "open") of resources.
 For a resource that was not closed or re-opened, an empty list is returned.
 
 ## Issues

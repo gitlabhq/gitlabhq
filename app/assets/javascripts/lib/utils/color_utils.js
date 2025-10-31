@@ -82,41 +82,23 @@ export function getAdaptiveStatusColor(color = '') {
 }
 
 /**
- * Creates a CSS style object with a linear gradient background
- * from the specified color to white at a 315-degree angle.
+ * Creates a CSS style object with a radial gradient background
+ * with circle shape from white to the specified color.
  *
- * @param {string} color - The starting color for the gradient (any valid CSS color format)
+ * @param {string} color - The end color for the gradient (any valid CSS color format)
  * @returns {Object} CSS style object with background property
  *
  * @example
- * // Create a gradient from blue to white
+ * // Create a gradient from white to blue
  * const style = gradientStyle('#0066cc');
- * // Returns: { background: 'linear-gradient(315deg, #0066cc, white)' }
+ * // Returns: { background: 'radial-gradient(circle at center, white 20%, #0066cc 100%)' }
  *
  * @example
  * // Use with Vue or React components
  * <div :style="gradientStyle('#ff6b6b')">Content</div>
  */
 export const gradientStyle = (color) => {
-  return { background: `linear-gradient(315deg, ${color}, white)` };
-};
-
-/**
- * Creates a CSS style object with a 2px solid border in the specified color.
- *
- * @param {string} color - The border color (any valid CSS color format)
- * @returns {Object} CSS style object with border property
- *
- * @example
- * // Create a red border
- * const style = borderStyle('#ff0000');
- * // Returns: { border: '2px solid #ff0000' }
- *
- * @example
- * // Use with Vue or React components
- * <div :style="borderStyle('rgba(255, 0, 0, 0.5)')">Content</div>
- */
-export const borderStyle = (color) => {
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  return { border: `2px solid ${color}` };
+  return {
+    background: `radial-gradient(circle at center, white 20%, ${color} 100%)`,
+  };
 };

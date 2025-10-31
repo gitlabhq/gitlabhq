@@ -4,7 +4,6 @@ import {
   darkModeEnabled,
   getAdaptiveStatusColor,
   gradientStyle,
-  borderStyle,
 } from '~/lib/utils/color_utils';
 import { getSystemColorScheme } from '~/lib/utils/css_utils';
 
@@ -94,22 +93,9 @@ describe('Color utils', () => {
       ${'#0066cc'}
       ${'rgba(255, 0, 0, 0.5)'}
       ${'var(--gl-brand-color)'}
-    `('returns a linear gradient style for $color', ({ color }) => {
+    `('returns a radial gradient style for $color', ({ color }) => {
       expect(gradientStyle(color)).toEqual({
-        background: `linear-gradient(315deg, ${color}, white)`,
-      });
-    });
-  });
-
-  describe('borderStyle', () => {
-    it.each`
-      color
-      ${'#ff0000'}
-      ${'rgb(0, 128, 0)'}
-      ${'var(--gl-border)'}
-    `('returns a 2px solid border style for $color', ({ color }) => {
-      expect(borderStyle(color)).toEqual({
-        border: `2px solid ${color}`,
+        background: `radial-gradient(circle at center, white 20%, ${color} 100%)`,
       });
     });
   });

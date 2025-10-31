@@ -1275,6 +1275,58 @@ This log is located:
 - In the `/home/git/gitlab/log/active_context.log` file on self-compiled installations.
 - On the Sidekiq pods under the `subcomponent="activecontext"` key on Helm chart installations.
 
+## `user_experience_slis.log`
+
+This log is located:
+
+- In the `/var/log/gitlab/gitlab-rails/user_experience_slis.log` file on Linux package installations.
+- In the `/home/git/gitlab/log/user_experience_slis.log` file on self-compiled installations.
+- On the Webservice pods under the `subcomponent="user_experience_slis"` key on Helm chart installations.
+
+It contains a JSON structured log for User Experience SLIs that match with its metrics.
+
+Each line contains JSON that can be ingested by services like Elasticsearch.
+
+Example:
+
+```json
+{
+  "checkpoint": "start",
+  "component": "gitlab",
+  "correlation_id": "3823a1550b64417f9c9ed8ee0f48087e",
+  "covered_experience": "create_merge_request",
+  "elapsed_time_s": 0,
+  "environment": "gprd",
+  "feature_category": "code_review_workflow",
+  "logtag": "F",
+  "meta": {
+    "caller_id": "Projects::MergeRequests::CreationsController#create",
+    "client_id": "user/123",
+    "feature_category": "code_review_workflow",
+    "gl_user_id": 123,
+    "organization_id": 456,
+    "project": "project/path/here",
+    "remote_ip": "x.x.x.x",
+    "root_namespace": "project",
+    "subscription_plan": "ultimate",
+    "user": "a_username"
+  },
+  "severity": "INFO",
+  "shard": "default",
+  "stage": "cny",
+  "start_time": "2025-10-31 15:21:40 UTC",
+  "subcomponent": "user_experience_slis",
+  "tag": "web-cny-rails.var.log.containers.gitlab-cny-webservice-web-123-abc_gitlab-cny_webservice-4567890.log",
+  "tier": "sv",
+  "time": "2025-10-31T15:21:40.333Z",
+  "type": "web",
+  "urgency": "async_fast",
+  "urgency_threshold_s": 15
+}
+```
+
+The available fields are documented on the [design document for User Experience SLIs](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/user_experience_slis/#sdk-requirements).
+
 ## Registry logs
 
 For Linux package installations, container registry logs are in `/var/log/gitlab/registry/current`.

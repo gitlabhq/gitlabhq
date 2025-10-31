@@ -1,0 +1,23 @@
+- return unless can?(current_user, :remove_group, @group)
+
+- allow_immediate_namespaces_deletion = Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
+- remove_form_id = 'js-remove-group-form'
+
+= render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
+  - c.with_header do
+    %h4.gl-text-base.gl-leading-24.gl-m-0
+      = _('Delete group')
+  - c.with_body do
+    - if @group.linked_to_subscription?
+      = html_escape(_("This group can't be deleted because it is linked to a subscription. To delete this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/manage_subscription.md', anchor: 'link-subscription-to-a-group')}\">".html_safe, linkEnd: '</a>'.html_safe }
+    - elsif @group.self_deletion_scheduled? && allow_immediate_namespaces_deletion
+      = form_tag(@group, method: :delete, id: remove_form_id) do
+        %p= delete_immediately_namespace_scheduled_for_deletion_message(@group)
+        = hidden_field_tag(:permanently_remove, true)
+        = render 'groups/settings/delete_button', remove_form_id: remove_form_id, button_text: s_('GroupSettings|Delete immediately')
+    - elsif @group.scheduled_for_deletion_in_hierarchy_chain?
+      -# Immediate deletion not available: either because of ancestor, or instance setting
+      %p.gl-m-0
+        = self_or_ancestors_deletion_in_progress_or_scheduled_message(@group)
+    - else
+      = render 'groups/settings/delete_delayed', remove_form_id: remove_form_id

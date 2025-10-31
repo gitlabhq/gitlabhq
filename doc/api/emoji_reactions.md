@@ -18,9 +18,10 @@ title: Emoji reactions API
 
 {{< /history >}}
 
-An [emoji reaction](../user/emoji_reactions.md) tells a thousand words.
+Use this API to manage [emoji reactions](../user/emoji_reactions.md).
 
-We call GitLab objects that accept emoji reactions awardables. You can react with emoji on the following:
+GitLab objects that accept emoji reactions are called awardables.
+You can react with emoji on the following resources:
 
 - [Epics](../user/group/epics/_index.md) ([API](epics.md)).
 - [Issues](../user/project/issues/_index.md) ([API](issues.md)).

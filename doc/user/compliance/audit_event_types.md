@@ -772,6 +772,13 @@ Audit event types belong to the following product categories.
 | [`secure_ci_job_token_project_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Project added to inbound CI_JOB_TOKEN scope | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 | [`secure_ci_job_token_project_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Project removed from inbound CI_JOB_TOKEN scope | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 
+### Virtual registry
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`virtual_registries_container_cache_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry container cache entry was deleted | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
+| [`virtual_registries_packages_maven_cache_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry Maven cache entry was deleted | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
+
 ### Vulnerability management
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

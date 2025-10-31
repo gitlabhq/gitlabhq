@@ -347,6 +347,7 @@ export default {
             />
           </template>
 
+          <!-- TODO: Replace with resolver.vue (https://gitlab.com/gitlab-org/gitlab/-/issues/577530) -->
           <data-presenter
             ref="presenter"
             :data="data"

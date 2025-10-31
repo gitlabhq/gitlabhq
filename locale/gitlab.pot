@@ -2785,9 +2785,6 @@ msgstr ""
 msgid "AICatalog|Name your flow."
 msgstr ""
 
-msgid "AICatalog|New"
-msgstr ""
-
 msgid "AICatalog|New agent"
 msgstr ""
 
@@ -10027,6 +10024,9 @@ msgstr ""
 msgid "Avg"
 msgstr ""
 
+msgid "Awaiting input"
+msgstr ""
+
 msgid "Awaiting user signup"
 msgstr ""
 
@@ -13018,6 +13018,9 @@ msgid "Cancel your account"
 msgstr ""
 
 msgid "Cancel, keep project"
+msgstr ""
+
+msgid "Canceled"
 msgstr ""
 
 msgid "Canceled deployment to"
@@ -25034,9 +25037,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Manage automated flows within your project."
 msgstr ""
 
-msgid "DuoAgentsPlatform|New"
-msgstr ""
-
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
 msgstr ""
 
@@ -25059,9 +25059,6 @@ msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Prompt"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Raw text search is not currently supported. Please use the available search tokens."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Read file"
@@ -32587,9 +32584,6 @@ msgid "GroupSettings|Customize this group's badges."
 msgstr ""
 
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
-msgstr ""
-
-msgid "GroupSettings|Delete group"
 msgstr ""
 
 msgid "GroupSettings|Delete immediately"
@@ -67320,9 +67314,6 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified."
 msgstr ""
 
-msgid "This action will permanently delete this group, including its subgroups and projects."
-msgstr ""
-
 msgid "This action will place this group, including its subgroups and projects, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{date}."
 msgstr ""
 
@@ -67531,9 +67522,6 @@ msgid "This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd
 msgstr ""
 
 msgid "This group can't be deleted because it is linked to a subscription. To delete this group, %{linkStart}link the subscription%{linkEnd} with a different group."
-msgstr ""
-
-msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."
 msgstr ""
 
 msgid "This group can't be transferred because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group."
@@ -70597,15 +70585,13 @@ msgid_plural "UsageBilling|%{poolCreditsRemaining} credits remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "UsageBilling|%{timeframe} - %{days} day remaining"
-msgid_plural "UsageBilling|%{timeframe} - %{days} days remaining"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "UsageBilling|Action"
 msgstr ""
 
 msgid "UsageBilling|An error occurred while fetching data"
+msgstr ""
+
+msgid "UsageBilling|Billing period:"
 msgstr ""
 
 msgid "UsageBilling|Credit amount"
@@ -70636,6 +70622,9 @@ msgid "UsageBilling|Increase monthly credit commitment"
 msgstr ""
 
 msgid "UsageBilling|Increase your commitment to unlock deeper discounts. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs. %{linkStart}GitLab Credit pricing%{linkEnd}."
+msgstr ""
+
+msgid "UsageBilling|Last event transaction at:"
 msgstr ""
 
 msgid "UsageBilling|Last updated:"
@@ -70676,6 +70665,11 @@ msgstr ""
 
 msgid "UsageBilling|Used this billing period"
 msgstr ""
+
+msgid "UsageBilling|Used this billing period, resets in %{days} day"
+msgid_plural "UsageBilling|Used this billing period, resets in %{days} days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"
 msgstr ""

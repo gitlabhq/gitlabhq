@@ -638,7 +638,7 @@ lib/gitlab/checks/
 /doc/administration/integration/mailgun.md @msedlakjakubowski
 /doc/administration/integration/plantuml.md @brendan777
 /doc/administration/invalidate_markdown_cache.md @msedlakjakubowski
-/doc/administration/issue_closing_pattern.md @aqualls
+/doc/administration/issue_closing_pattern.md @brendan777
 /doc/administration/labels.md @msedlakjakubowski
 /doc/administration/lfs/ @brendan777
 /doc/administration/libravatar.md @axil @eread
@@ -648,7 +648,7 @@ lib/gitlab/checks/
 /doc/administration/load_balancer.md @axil @eread
 /doc/administration/logs/ @axil @eread
 /doc/administration/maintenance_mode/ @axil
-/doc/administration/merge_request_diffs.md @aqualls
+/doc/administration/merge_request_diffs.md @brendan777
 /doc/administration/merge_requests_approvals.md @brendan777
 /doc/administration/moderate_users.md @lciutacu
 /doc/administration/monitoring/ @ashrafkhamis
@@ -743,13 +743,14 @@ lib/gitlab/checks/
 /doc/api/compliance_policy_settings.md @rlehmann1
 /doc/api/container_registry.md @z_painter
 /doc/api/container_repository_protection_rules.md @z_painter
+/doc/api/container_virtual_registries.md @z_painter
 /doc/api/custom_attributes.md @msedlakjakubowski
 /doc/api/dependencies.md @rdickenson
 /doc/api/dependency_list_export.md @rlehmann1
 /doc/api/dependency_proxy.md @z_painter
 /doc/api/discussions.md @brendan777
 /doc/api/dora/ @lciutacu
-/doc/api/draft_notes.md @aqualls
+/doc/api/draft_notes.md @brendan777
 /doc/api/emoji_reactions.md @msedlakjakubowski
 /doc/api/epic_issues.md @msedlakjakubowski
 /doc/api/epic_links.md @msedlakjakubowski
@@ -805,9 +806,9 @@ lib/gitlab/checks/
 /doc/api/member_roles.md @idurham
 /doc/api/members.md @z_painter
 /doc/api/merge_request_approval_settings.md @brendan777
-/doc/api/merge_request_approvals.md @aqualls
-/doc/api/merge_request_context_commits.md @aqualls
-/doc/api/merge_requests.md @aqualls
+/doc/api/merge_request_approvals.md @brendan777
+/doc/api/merge_request_context_commits.md @brendan777
+/doc/api/merge_requests.md @brendan777
 /doc/api/merge_trains.md @lyspin
 /doc/api/milestones.md @msedlakjakubowski
 /doc/api/namespaces.md @z_painter
@@ -883,6 +884,7 @@ lib/gitlab/checks/
 /doc/api/user_moderation.md @idurham
 /doc/api/user_tokens.md @idurham
 /doc/api/users.md @idurham
+/doc/api/virtual_registries_cleanup_policies.md @z_painter
 /doc/api/vulnerabilities.md @rlehmann1
 /doc/api/vulnerability_exports.md @rlehmann1
 /doc/api/vulnerability_findings.md @rlehmann1
@@ -985,7 +987,7 @@ lib/gitlab/checks/
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @scawood
-/doc/editor_extensions/gitlab_cli/ @aqualls
+/doc/editor_extensions/gitlab_cli/ @brendan777
 /doc/install/ @axil @eread
 /doc/install/install_ai_gateway.md @sselhorn
 /doc/integration/ @idurham
@@ -1036,12 +1038,12 @@ lib/gitlab/checks/
 /doc/tutorials/issue_triage_group/ @msedlakjakubowski
 /doc/tutorials/kanban/ @msedlakjakubowski
 /doc/tutorials/left_sidebar/ @kpaizee
-/doc/tutorials/merge_requests/ @aqualls
+/doc/tutorials/merge_requests/ @brendan777
 /doc/tutorials/move_personal_project_to_group/ @z_painter
 /doc/tutorials/personal_homepage/ @kpaizee
 /doc/tutorials/pipeline_execution_policy/ @rlehmann1
-/doc/tutorials/protected_workflow/ @aqualls
-/doc/tutorials/reviews/ @aqualls
+/doc/tutorials/protected_workflow/ @brendan777
+/doc/tutorials/reviews/ @brendan777
 /doc/tutorials/scan_execution_policy/ @rlehmann1
 /doc/tutorials/scan_result_policy/ @rlehmann1
 /doc/tutorials/scrum_events/ @msedlakjakubowski
@@ -1064,7 +1066,6 @@ lib/gitlab/checks/
 /doc/user/application_security/get-started-security.md @phillipwells
 /doc/user/application_security/policies/ @rlehmann1
 /doc/user/application_security/secret_detection/ @phillipwells
-/doc/user/application_security/security_attributes/ @rlehmann1
 /doc/user/application_security/security_dashboard/ @rlehmann1
 /doc/user/application_security/security_inventory/ @rlehmann1
 /doc/user/application_security/vulnerabilities/_index.md @rlehmann1
@@ -1078,7 +1079,7 @@ lib/gitlab/checks/
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/custom_roles/ @idurham
-/doc/user/discussions/ @aqualls
+/doc/user/discussions/ @brendan777
 /doc/user/duo_agent_platform/ @sselhorn
 /doc/user/duo_amazon_q/ @sselhorn
 /doc/user/emoji_reactions.md @msedlakjakubowski
@@ -1129,13 +1130,13 @@ lib/gitlab/checks/
 /doc/user/permissions.md @idurham
 /doc/user/profile/ @idurham
 /doc/user/profile/account/create_accounts.md @lciutacu
-/doc/user/profile/comment_templates.md @aqualls
+/doc/user/profile/comment_templates.md @brendan777
 /doc/user/profile/notifications.md @kpaizee
 /doc/user/project/_index.md @z_painter
 /doc/user/project/autocomplete_characters.md @brendan777
 /doc/user/project/badges.md @z_painter
 /doc/user/project/changelogs.md @brendan777
-/doc/user/project/code_intelligence.md @aqualls
+/doc/user/project/code_intelligence.md @brendan777
 /doc/user/project/codeowners/ @brendan777
 /doc/user/project/description_templates.md @msedlakjakubowski
 /doc/user/project/file_lock.md @brendan777
@@ -1165,12 +1166,8 @@ lib/gitlab/checks/
 /doc/user/project/issues/csv_import.md @ashrafkhamis
 /doc/user/project/labels.md @msedlakjakubowski
 /doc/user/project/members/ @z_painter
-/doc/user/project/merge_requests/ @aqualls
-/doc/user/project/merge_requests/approvals/ @brendan777
-/doc/user/project/merge_requests/cherry_pick_changes.md @brendan777
+/doc/user/project/merge_requests/ @brendan777
 /doc/user/project/merge_requests/duo_in_merge_requests.md @scawood
-/doc/user/project/merge_requests/methods/ @brendan777
-/doc/user/project/merge_requests/squash_and_merge.md @brendan777
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/organize_work_with_projects.md @z_painter

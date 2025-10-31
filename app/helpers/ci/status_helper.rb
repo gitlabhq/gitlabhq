@@ -53,7 +53,7 @@ module Ci
 
     def render_commit_status(commit, status, ref: nil, tooltip_placement: 'left')
       project = commit.project
-      path = pipelines_project_commit_path(project, commit, ref: ref)
+      path = pipelines_project_commit_path(project, commit.id, ref: ref)
 
       render_ci_icon(
         status,

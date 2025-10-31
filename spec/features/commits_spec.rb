@@ -75,14 +75,80 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
             )
           end
 
-          before do
-            visit project_commits_path(project, :master)
+          context 'while viewing a branch' do
+            before do
+              visit project_commits_path(project, :master)
+            end
+
+            it 'shows correct build status from default branch' do
+              page.within("//li[@id='commit-#{pipeline.short_sha}']") do
+                expect(page).to have_css("[data-testid='ci-icon']")
+                expect(page).to have_css('[data-testid="status_success_borderless-icon"]')
+              end
+            end
           end
 
-          it 'shows correct build status from default branch' do
-            page.within("//li[@id='commit-#{pipeline.short_sha}']") do
-              expect(page).to have_css("[data-testid='ci-icon']")
-              expect(page).to have_css('[data-testid="status_success_borderless-icon"]')
+          context 'while viewing a commit' do
+            let_it_be(:sha) { project.commit.sha }
+            let_it_be(:short_sha) { sha[..7] }
+
+            before_all do
+              project.repository.add_branch(user, sha, 'master', skip_ci: true)
+              project.repository.add_branch(user, short_sha, 'master', skip_ci: true)
+            end
+
+            context 'when ref is a commit short sha' do
+              context 'without ref_type' do
+                before do
+                  visit project_commits_path(project, short_sha)
+                end
+
+                it 'shows latest build status for the commit sha' do
+                  page.within("//li[@id='commit-#{short_sha}']") do
+                    expect(page).to have_css("[data-testid='ci-icon']")
+                    expect(page).to have_css('[data-testid="status_failed_borderless-icon"]')
+                  end
+                end
+              end
+
+              context 'with ref_type' do
+                before do
+                  visit project_commits_path(project, short_sha, ref_type: 'heads')
+                end
+
+                it 'does not show any build status' do
+                  page.within("//li[@id='commit-#{short_sha}']") do
+                    expect(page).not_to have_css("[data-testid='ci-icon']")
+                  end
+                end
+              end
+            end
+
+            context 'when ref is a commit sha' do
+              context 'without ref_type' do
+                before do
+                  visit project_commits_path(project, sha)
+                end
+
+                it 'shows latest build status for the commit sha' do
+                  page.within("//li[@id='commit-#{short_sha}']") do
+                    expect(page).to have_css("[data-testid='ci-icon']")
+                    expect(page).to have_css('[data-testid="status_failed_borderless-icon"]')
+                  end
+                end
+              end
+
+              context 'with ref_type' do
+                before do
+                  visit project_commits_path(project, sha, ref_type: 'heads')
+                end
+
+                it 'does not show any build status' do
+                  page.within("//li[@id='commit-#{short_sha}']") do
+                    expect(page).not_to have_css("[data-testid='ci-icon']")
+                  end
+                end
+              end
             end
           end
         end

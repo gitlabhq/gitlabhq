@@ -28,7 +28,7 @@ module TwCodeowners
     CodeOwnerRule.new('Build', '@axil @eread'),
     CodeOwnerRule.new('Cells Infrastructure', '@emily.sahlani'),
     CodeOwnerRule.new('Code Creation', '@scawood'),
-    CodeOwnerRule.new('Code Review', '@aqualls'),
+    CodeOwnerRule.new('Code Review', '@brendan777'),
     # CodeOwnerRule.new('Compliance', ''),
     CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
     CodeOwnerRule.new('Container Registry', '@z_painter'),

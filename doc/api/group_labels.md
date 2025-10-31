@@ -18,9 +18,9 @@ title: Group labels API
 
 {{< /history >}}
 
-This API supports managing [group labels](../user/project/labels.md#types-of-labels).
-It allows users to list, create, update, and delete group labels. Furthermore, users can subscribe to and
-unsubscribe from group labels.
+Use this API to manage [group labels](../user/project/labels.md#types-of-labels).
+
+For project labels, use the [project labels API](labels.md).
 
 ## List group labels
 

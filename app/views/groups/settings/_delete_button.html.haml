@@ -1,0 +1,4 @@
+- remove_form_id = local_assigns.fetch(:remove_form_id, nil)
+- button_text = local_assigns.fetch(:button_text, nil)
+
+.js-confirm-danger{ data: group_confirm_modal_data(group: @group, remove_form_id: remove_form_id, button_text: button_text) }

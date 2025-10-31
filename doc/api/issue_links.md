@@ -19,6 +19,8 @@ title: Issue links API
 
 {{< /history >}}
 
+Use this API to manage [issue links](../user/project/issues/related_issues.md).
+
 ## List issue relations
 
 Get a list of a given issue's [linked issues](../user/project/issues/related_issues.md),

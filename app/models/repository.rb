@@ -1143,13 +1143,10 @@ class Repository
     # We need to use RE2 to match Gitaly's regexp engine
     regexp_string = RE2::Regexp.escape(path)
 
-    any_directories_or_root = '(.*?\/)?'
-    any_characters = '.*?'
-    any_characters_except_slash = '([^\/])*?'
-
-    regexp_string.gsub!('\*\*\/', any_directories_or_root)
-    regexp_string.gsub!('\*\*', any_characters)
-    regexp_string.gsub!('\*', any_characters_except_slash)
+    anything = '.*?'
+    anything_but_not_slash = '([^\/])*?'
+    regexp_string.gsub!('\*\*', anything)
+    regexp_string.gsub!('\*', anything_but_not_slash)
 
     raw_repository.search_files_by_regexp("^#{regexp_string}$", ref)
   end

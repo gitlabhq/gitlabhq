@@ -12,8 +12,8 @@ title: Group Markdown uploads API
 
 {{< /details >}}
 
-Markdown uploads are [files uploaded to a group](../security/user_file_uploads.md)
-that can be referenced in Markdown text in an epic or a wiki page.
+Use this API to manage [Markdown uploads](../security/user_file_uploads.md) that can be referenced
+in Markdown text in epics or wiki pages.
 
 ## List uploads
 

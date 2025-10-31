@@ -12,10 +12,11 @@ title: Custom Attributes API
 
 {{< /details >}}
 
-Every API call to custom attributes must be authenticated as administrator.
+Use this API to manage custom attributes for users, groups, and projects.
 
-Custom attributes are currently available on users, groups, and projects,
-which is referred to as "resource" in this documentation.
+Prerequisites:
+
+- You must be an administrator for the instance.
 
 ## List custom attributes
 

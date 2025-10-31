@@ -13,7 +13,8 @@ title: Issues statistics API
 
 {{< /details >}}
 
-Every API call to the [issues](../user/project/issues/_index.md) statistics API must be authenticated.
+Use this API to retrieve statistics about [issues](../user/project/issues/_index.md).
+Every call to this API requires authentication.
 
 If a user is not a member of a project and the project is private, a `GET`
 request on that project results in a `404` status code.

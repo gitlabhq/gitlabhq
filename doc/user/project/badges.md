@@ -22,10 +22,9 @@ You can use badges at the [project](#project-badges) and [group](#group-badges) 
 
 GitLab provides the following pipeline badges:
 
-- [Pipeline status badge](#pipeline-status-badges)
-- [Test coverage report badge](#test-coverage-report-badges)
-- [Latest release badge](#latest-release-badges)
-- [Custom badge](#custom-badges)
+- [Pipeline status badges](#pipeline-status-badges)
+- [Test coverage report badges](#test-coverage-report-badges)
+- [Latest release badges](#latest-release-badges)
 
 GitLab also supports [adjusting badge style](#customize-badges).
 
@@ -218,7 +217,7 @@ The pipeline status badge is based on specific Git revisions (branches). Ensure 
 
 {{< /alert >}}
 
-## Custom badges
+## Customize badges
 
 {{< history >}}
 
@@ -226,35 +225,10 @@ The pipeline status badge is based on specific Git revisions (branches). Ensure 
 
 {{< /history >}}
 
-Custom badges allows changing the following attributes:
-
-- `key_text`
-- `key_color`
-- `key_width`
-- `value_text`
-- `value_color`
-- `value_width`
-
-Colors can be passed as [a named color](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color), for example `blue` or hexadecimal representation like `fff` or `7bc043` (without leading `#`).
-
-You can access a latest release badge image by using the following link:
-
-```plaintext
-https://gitlab.example.com/<namespace>/<project>/-/badges/custom.svg
-```
-
-For example, you can use [placeholders](#placeholders) to create a badge for the latest tag:
-
-```plaintext
-https://%{gitlab_server}/%{project_path}/badges/custom.svg?key_text=Latest_tag&key_value=%{latest_tag}&key_color=white&value_color=7bc043
-```
-
-## Customize badges
-
 You can customize how badges appear in your project:
 
-- [Basic customization](#basic-customization) works for all badge types
-- [Advanced customization](#custom-badges) is available only for custom badges
+- [Basic customization](#basic-customization) works for all badge types.
+- [Advanced customization](#custom-badges) is available only for custom badges.
 
 ### Basic customization
 

@@ -1,6 +1,0 @@
-- return unless can?(current_user, :remove_group, group)
-- return if group.scheduled_for_deletion_in_hierarchy_chain?
-
-- remove_form_id = local_assigns.fetch(:remove_form_id, nil)
-
-= render 'groups/settings/delayed_deletion', group: group, remove_form_id: remove_form_id

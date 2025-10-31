@@ -12,14 +12,13 @@ title: Notes API
 
 {{< /details >}}
 
-The Notes API manages comments and system records attached to GitLab content.
-The Notes API:
+Use this API to manage comments and system records attached to GitLab content. You can:
 
-- Creates and modifies comments on issues, merge requests, epics, snippets, and commits.
-- Retrieves [system-generated notes](../user/project/system_notes.md) about object changes.
-- Provides options for sorting and pagination.
-- Controls visibility through confidential and internal flags.
-- Supports rate limiting to prevent abuse.
+- Create and modify comments on issues, merge requests, epics, snippets, and commits.
+- Retrieve [system-generated notes](../user/project/system_notes.md) about object changes.
+- Sort and paginate results.
+- Control visibility with confidential and internal flags.
+- Prevent abuse with rate limiting.
 
 Some system-generated notes are tracked as separate resource events:
 

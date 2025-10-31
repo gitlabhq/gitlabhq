@@ -12,10 +12,7 @@ title: Resource milestone events API
 
 {{< /details >}}
 
-Resource [milestone](../user/project/milestones/_index.md) events keep track of what happens to
-GitLab [issues](../user/project/issues/_index.md) and [merge requests](../user/project/merge_requests/_index.md).
-
-Use them to track which milestone was added or removed, who did it, and when it happened.
+Use this API to interact with milestone events for issues and merge requests.
 
 ## Issues
 

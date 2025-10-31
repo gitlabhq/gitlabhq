@@ -419,7 +419,7 @@ This strategy adds custom CI/CD configurations into the existing project pipelin
 
 Unlike the deprecated `inject_ci` strategy, `inject_policy` allows you to inject custom policy stages into your pipeline, giving you more granular control over where policy rules are applied in your CI/CD workflow.
 
-If you have multiple policies enabled, this strategy injects all of jobs from each policy.
+If you have multiple policies enabled, this strategy injects all of the jobs from each policy.
 
 When you use this strategy, a project CI/CD configuration cannot override any behavior defined in the policy pipelines because each pipeline has an isolated YAML configuration.
 

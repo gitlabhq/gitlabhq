@@ -4364,6 +4364,26 @@ Input type: `BulkRunnerDeleteInput`
 | <a id="mutationbulkrunnerdeletedeletedids"></a>`deletedIds` | [`[CiRunnerID!]`](#cirunnerid) | IDs of records effectively deleted. Only present if operation was performed synchronously. |
 | <a id="mutationbulkrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.bulkUpdateSecurityAttributes`
+
+Input type: `BulkUpdateSecurityAttributesInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkupdatesecurityattributesattributes"></a>`attributes` | [`[SecurityAttributeID!]!`](#securityattributeid) | Global IDs of security attributes to apply. |
+| <a id="mutationbulkupdatesecurityattributesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkupdatesecurityattributesitems"></a>`items` | [`[ID!]!`](#id) | Global IDs of groups and projects to update. |
+| <a id="mutationbulkupdatesecurityattributesmode"></a>`mode` | [`SecurityAttributeBulkUpdateMode!`](#securityattributebulkupdatemode) | Update mode: add or remove attributes. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkupdatesecurityattributesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkupdatesecurityattributeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered while initiating the bulk update operation. |
+
 ### `Mutation.catalogResourcesCreate`
 
 {{< details >}}
@@ -51059,6 +51079,15 @@ Status of secret rotation.
 | <a id="secretrotationstatusapproaching"></a>`APPROACHING` | Rotation is due within 7 days. |
 | <a id="secretrotationstatusok"></a>`OK` | Rotation is not due soon. |
 | <a id="secretrotationstatusoverdue"></a>`OVERDUE` | Rotation is overdue (reminder was sent). |
+
+### `SecurityAttributeBulkUpdateMode`
+
+Mode for bulk updating security attributes.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityattributebulkupdatemodeadd"></a>`ADD` | Add attributes to projects (keeps existing attributes). |
+| <a id="securityattributebulkupdatemoderemove"></a>`REMOVE` | Remove attributes from projects. |
 
 ### `SecurityCategoryEditableState`
 
