@@ -101,6 +101,16 @@ export default {
       required: false,
       default: '',
     },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    fromGlobalMenu: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const draftWorkItemType = getDraftWorkItemType({
@@ -345,6 +355,8 @@ export default {
         :should-discard-draft="shouldDiscardDraft"
         :namespace-full-name="namespaceFullName"
         :is-modal="true"
+        :is-epics-list="isEpicsList"
+        :from-global-menu="fromGlobalMenu"
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"
         @discardDraft="handleDiscardDraft('createModal')"

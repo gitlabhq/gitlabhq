@@ -8,6 +8,11 @@ module WorkItemsHelpers
     select type.to_s.capitalize, from: 'Type'
   end
 
+  def select_namespace(default_namespace, namespace)
+    click_button default_namespace
+    select_listbox_item namespace
+  end
+
   def add_labels_on_bulk_edit(items = [])
     select_items_from_dropdown(items, 'Select labels', 'bulk-edit-add-labels')
   end

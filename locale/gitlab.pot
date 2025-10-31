@@ -26419,6 +26419,9 @@ msgstr ""
 msgid "Enter one or more user ID separated by commas"
 msgstr ""
 
+msgid "Enter recovery code"
+msgstr ""
+
 msgid "Enter text"
 msgstr ""
 
@@ -28274,6 +28277,9 @@ msgid "Failed to save preferences."
 msgstr ""
 
 msgid "Failed to save timelog"
+msgstr ""
+
+msgid "Failed to send email OTP. Please try again. If the problem persists, please refresh your page or sign in again."
 msgstr ""
 
 msgid "Failed to set due date because the date format is invalid."
@@ -33272,6 +33278,9 @@ msgid "Hashed repository storage paths"
 msgstr ""
 
 msgid "Hashed storage can't be disabled anymore for new projects"
+msgstr ""
+
+msgid "Having trouble signing in? %{recoveryCodeLinkStart}Enter recovery code%{recoveryCodeLinkEnd} or %{sendCodeLinkStart}send code to email address%{sendCodeLinkEnd}."
 msgstr ""
 
 msgid "Header logo"
@@ -44018,6 +44027,9 @@ msgid "Not permitted to update requirement"
 msgstr ""
 
 msgid "Not permitted to update requirement control"
+msgstr ""
+
+msgid "Not permitted."
 msgstr ""
 
 msgid "Not ready yet. Try again later."

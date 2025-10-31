@@ -69,10 +69,13 @@ export default {
         crossAxis: this.projectStudioEnabled ? -8 : DROPDOWN_X_OFFSET_BASE,
       };
     },
+    isEpicsList() {
+      // If consolidated list is disabled and is group
+      // New epic is show which is similar to epic list experience
+      return !this.workItemPlanningViewEnabled && this.isGroup;
+    },
     preselectedWorkItemType() {
-      return !this.workItemPlanningViewEnabled && this.isGroup
-        ? WORK_ITEM_TYPE_NAME_EPIC
-        : undefined;
+      return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : undefined;
     },
   },
   methods: {
@@ -168,6 +171,8 @@ export default {
       :is-group="isGroup"
       :preselected-work-item-type="preselectedWorkItemType"
       :visible="isCreateWorkItemModalVisible"
+      :is-epics-list="isEpicsList"
+      from-global-menu
       data-testid="new-work-item-modal"
       @hideModal="isCreateWorkItemModalVisible = false"
     />

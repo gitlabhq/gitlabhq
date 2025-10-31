@@ -1475,6 +1475,7 @@ export default {
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
+              :is-epics-list="isEpicsList"
               @workItemCreated="handleWorkItemCreated"
             />
             <new-resource-dropdown
@@ -1519,6 +1520,7 @@ export default {
                 :full-path="rootPageFullPath"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
+                :is-epics-list="isEpicsList"
                 @workItemCreated="handleWorkItemCreated"
               />
               <new-resource-dropdown
@@ -1579,6 +1581,7 @@ export default {
                   :full-path="rootPageFullPath"
                   :is-group="isGroup"
                   :preselected-work-item-type="preselectedWorkItemType"
+                  :is-epics-list="isEpicsList"
                   @workItemCreated="handleWorkItemCreated"
                 />
                 <new-resource-dropdown

@@ -248,6 +248,25 @@ describe('Create work item component', () => {
 
       expect(wrapper.emitted('discardDraft')).toEqual([[]]);
     });
+
+    it.each`
+      scenario                               | fullPath                               | expectedGroupPath
+      ${'group-path'}                        | ${'group-path'}                        | ${'group-path'}
+      ${'group-path/sub-group-path'}         | ${'group-path/sub-group-path'}         | ${'group-path'}
+      ${'group-path/project'}                | ${'group-path/project'}                | ${'group-path'}
+      ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path'}
+    `(
+      'passes correct group path "$expectedGroupPath" for fullpath $scenario',
+      async ({ fullPath, expectedGroupPath }) => {
+        createComponent({
+          fullPath,
+        });
+
+        await waitForPromises();
+
+        expect(findParentWidget().props().groupPath).toBe(expectedGroupPath);
+      },
+    );
   });
 
   describe('Cache clearing', () => {
@@ -347,41 +366,32 @@ describe('Create work item component', () => {
 
   describe('Group/project selector', () => {
     it('renders with the current namespace selected by default', async () => {
-      createComponent({ provide: { workItemPlanningViewEnabled: true } });
+      createComponent({
+        props: { isGroup: true },
+        provide: { workItemPlanningViewEnabled: true },
+      });
       await waitForPromises();
 
       expect(findGroupProjectSelector().exists()).toBe(true);
       expect(findGroupProjectSelector().props('fullPath')).toBe('full-path');
     });
 
-    describe.each`
-      workItemPlanningViewEnabled
-      ${true}
-      ${false}
+    it.each`
+      scenario                   | isGroup  | fromGlobalMenu | isEpicsList | workItemPlanningViewEnabled | expected
+      ${'group list page'}       | ${true}  | ${false}       | ${false}    | ${true}                     | ${true}
+      ${'project global menu'}   | ${false} | ${true}        | ${false}    | ${true}                     | ${true}
+      ${'legacy epics list'}     | ${true}  | ${false}       | ${true}     | ${false}                    | ${false}
+      ${'disabled feature flag'} | ${true}  | ${false}       | ${false}    | ${false}                    | ${false}
     `(
-      'parent widget group path when workItemPlanningViewEnabled is $workItemPlanningViewEnabled',
-      ({ workItemPlanningViewEnabled }) => {
-        it.each`
-          scenario                               | fullPath                               | expectedGroupPath
-          ${'group-path'}                        | ${'group-path'}                        | ${'group-path'}
-          ${'group-path/sub-group-path'}         | ${'group-path/sub-group-path'}         | ${'group-path'}
-          ${'group-path/project'}                | ${'group-path/project'}                | ${'group-path'}
-          ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path'}
-        `(
-          'passes correct group path "$expectedGroupPath" for fullpath $scenario',
-          async ({ fullPath, expectedGroupPath }) => {
-            createComponent({
-              fullPath,
-              provide: {
-                workItemPlanningViewEnabled,
-              },
-            });
+      '$scenario shows selector: $expected',
+      async ({ isGroup, fromGlobalMenu, isEpicsList, workItemPlanningViewEnabled, expected }) => {
+        createComponent({
+          props: { isGroup, fromGlobalMenu, isEpicsList },
+          provide: { workItemPlanningViewEnabled },
+        });
 
-            await waitForPromises();
-
-            expect(findParentWidget().props().groupPath).toBe(expectedGroupPath);
-          },
-        );
+        await waitForPromises();
+        expect(findGroupProjectSelector().exists()).toBe(expected);
       },
     );
   });

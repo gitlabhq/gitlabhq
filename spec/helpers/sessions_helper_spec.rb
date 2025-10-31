@@ -105,4 +105,180 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       it { is_expected.to be false }
     end
   end
+
+  describe '#fallback_to_email_otp_permitted?' do
+    let(:user) { build_stubbed(:user) }
+
+    context 'when email_based_mfa feature flag is disabled' do
+      before do
+        stub_feature_flags(email_based_mfa: false)
+      end
+
+      it 'returns false' do
+        expect(helper.fallback_to_email_otp_permitted?(user)).to be false
+      end
+    end
+
+    context 'when email_based_mfa feature flag is enabled' do
+      before do
+        stub_feature_flags(email_based_mfa: user)
+      end
+
+      context 'when user has email_otp_required_after set to nil' do
+        let(:user) { build_stubbed(:user, email_otp_required_after: nil) }
+
+        it 'returns false' do
+          expect(helper.fallback_to_email_otp_permitted?(user)).to be_falsy
+        end
+      end
+
+      context 'when user has email_otp_required_after set to future date' do
+        let(:user) do
+          build_stubbed(:user, email_otp_required_after: Time.zone.today + 1.day)
+        end
+
+        it 'returns false' do
+          expect(helper.fallback_to_email_otp_permitted?(user)).to be false
+        end
+      end
+
+      context 'when user has email_otp_required_after set to today' do
+        let(:user) { build_stubbed(:user, email_otp_required_after: Time.zone.today) }
+
+        it 'returns true' do
+          expect(helper.fallback_to_email_otp_permitted?(user)).to be true
+        end
+      end
+
+      context 'when user has email_otp_required_after set to past date' do
+        let(:user) { build_stubbed(:user, email_otp_required_after: Time.zone.today - 1.day) }
+
+        it 'returns true' do
+          expect(helper.fallback_to_email_otp_permitted?(user)).to be true
+        end
+      end
+    end
+  end
+
+  describe '#webauthn_authentication_data' do
+    let(:user) { build_stubbed(:user) }
+    let(:params) { { user: { remember_me: 1 } } }
+    let(:remember_me_enabled) { true }
+
+    before do
+      allow(helper).to receive(:remember_me_enabled?).and_return(remember_me_enabled)
+    end
+
+    context 'when admin_mode is false' do
+      it 'returns correct target_path' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:target_path]).to eq(user_session_path)
+      end
+
+      it 'returns render_remember_me as true when remember_me is enabled' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:render_remember_me]).to eq('true')
+      end
+
+      it 'returns remember_me value from params' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:remember_me]).to eq(1)
+      end
+    end
+
+    context 'when admin_mode is true' do
+      it 'returns admin session path as target_path' do
+        data = helper.webauthn_authentication_data(user: user, params: params, admin_mode: true)
+
+        expect(data[:target_path]).to eq(admin_session_path)
+      end
+
+      it 'returns render_remember_me as false' do
+        data = helper.webauthn_authentication_data(user: user, params: params, admin_mode: true)
+
+        expect(data[:render_remember_me]).to eq('false')
+      end
+    end
+
+    context 'when remember_me is disabled' do
+      let(:remember_me_enabled) { false }
+
+      it 'returns render_remember_me as false' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:render_remember_me]).to eq('false')
+      end
+    end
+
+    context 'when user params is not present' do
+      let(:params) { {} }
+
+      it 'returns default remember_me value of 0' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:remember_me]).to eq(0)
+      end
+    end
+
+    context 'when fallback_to_email_otp is permitted' do
+      before do
+        allow(helper).to receive(:fallback_to_email_otp_permitted?).and_return(true)
+        allow(helper).to receive(:verification_data).with(user).and_return({
+          username: user.username,
+          obfuscated_email: 'u***@example.com',
+          verify_path: '/verify',
+          resend_path: '/resend',
+          skip_path: nil
+        })
+      end
+
+      it 'includes send_email_otp_path' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:send_email_otp_path]).to eq(users_fallback_to_email_otp_path)
+      end
+
+      it 'includes username' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:username]).to eq(user.username)
+      end
+
+      it 'includes email_verification_data as JSON' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:email_verification_data]).to be_present
+        parsed_data = Gitlab::Json.parse(data[:email_verification_data])
+        expect(parsed_data['username']).to eq(user.username)
+        expect(parsed_data['obfuscatedEmail']).to eq('u***@example.com')
+      end
+    end
+
+    context 'when fallback_to_email_otp is not permitted' do
+      before do
+        allow(helper).to receive(:fallback_to_email_otp_permitted?).and_return(false)
+      end
+
+      it 'does not include send_email_otp_path' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:send_email_otp_path]).to be_nil
+      end
+
+      it 'includes username' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data[:username]).to eq(user.username)
+      end
+
+      it 'does not include email_verification_data' do
+        data = helper.webauthn_authentication_data(user: user, params: params)
+
+        expect(data.key?(:email_verification_data)).to be false
+      end
+    end
+  end
 end

@@ -125,6 +125,18 @@ module VerifiesWithEmail
     end
   end
 
+  def fallback_to_email_otp
+    return respond_422 unless user = find_user
+
+    if fallback_to_email_otp_permitted?(user)
+      clear_two_factor_attempt!
+      session[:verification_user_id] = user.id
+      resend_verification_code
+    else
+      render json: { success: false, message: _('Not permitted.') }, status: :bad_request
+    end
+  end
+
   private
 
   def skip_verify_with_email?

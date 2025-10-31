@@ -7,6 +7,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
   include UserLoginHelper
   include SessionHelpers
   include Features::TwoFactorHelpers
+  include EmailHelpers
 
   before do
     stub_authentication_activity_metrics(debug: true)
@@ -404,6 +405,73 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
         let(:user) { create(:user, :two_factor_via_webauthn, registrations_count: 1) }
 
         include_examples 'can login with recovery codes', only_two_factor_webauthn_enabled: true
+      end
+    end
+
+    context 'when signing in with WebAuthn' do
+      let(:user) { create(:user, :two_factor_via_webauthn) }
+      let(:current_organization) { user.organization }
+
+      before do
+        visit new_user_session_path
+        fill_in 'user_login', with: user.username
+        fill_in 'user_password', with: user.password
+        click_button 'Sign in'
+      end
+
+      context 'Fallback to email OTP' do
+        context 'when email_based_mfa feature flag is disabled' do
+          before do
+            stub_feature_flags(email_based_mfa: false)
+          end
+
+          it 'does not show the email OTP fallback footer' do
+            expect(page).not_to have_content('Having trouble signing in?')
+            expect(page).not_to have_link('send code to email address')
+          end
+        end
+
+        context 'when email_based_mfa feature flag is enabled' do
+          # we will not be testing different email_otp_required_after values
+          # since this is covered in the unit test level
+          context 'when user has email_otp_required_after set to past date' do
+            let(:user) { create(:user, :two_factor_via_webauthn, email_otp_required_after: 1.day.ago) }
+
+            context 'when WebAuthn authentication fails' do
+              before do
+                ActionMailer::Base.deliveries.clear
+              end
+
+              it 'shows the email OTP fallback footer with helpful links' do
+                expect(page).to have_content('Having trouble signing in?')
+                expect(page).to have_link('Enter recovery code')
+                expect(page).to have_button('send code to email address')
+
+                expect(authentication_metrics)
+                  .to increment(:user_authenticated_counter)
+                  .and increment(:user_session_override_counter)
+
+                perform_enqueued_jobs do
+                  click_button 'send code to email address'
+                  expect(page).to have_content('Verification code')
+
+                  # WebAuthn UI should be hidden
+                  expect(page).not_to have_content('Trying to communicate with your device')
+
+                  mail = wait_for('mail found for user') { find_email_for(user) }
+                  mail_to = mail&.to
+                  expect(mail_to).to match_array([user.email])
+                  expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
+
+                  code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+                  fill_in s_('IdentityVerification|Verification code'), with: code
+
+                  expect { click_button s_('IdentityVerification|Verify code') }.to change { user.reload.sign_in_count }
+                end
+              end
+            end
+          end
+        end
       end
     end
 

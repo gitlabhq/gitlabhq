@@ -82,7 +82,6 @@ describe('Work items router', () => {
         labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',
         newTrialPath: '',
-        workItemPlanningViewEnabled: false,
       },
       propsData: {
         rootPageFullPath: '/',

@@ -218,6 +218,16 @@ export default {
       required: false,
       default: '',
     },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    fromGlobalMenu: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -608,13 +618,13 @@ export default {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
     },
     inputNamespacePath() {
-      if (this.workItemPlanningViewEnabled) {
+      if (this.shouldShowNamespaceSelector) {
         return this.selectedNamespacePath;
       }
       return this.selectedProjectFullPath;
     },
     showItemTypeSelect() {
-      if (this.workItemPlanningViewEnabled) {
+      if (this.shouldShowNamespaceSelector) {
         return true;
       }
       return this.showWorkItemTypeSelect || this.alwaysShowWorkItemTypeSelect;
@@ -632,6 +642,12 @@ export default {
       return this.selectedProjectFullPath
         ? this.selectedProjectFullPath.substring(0, this.selectedProjectFullPath.lastIndexOf('/'))
         : this.groupPath;
+    },
+    shouldShowNamespaceSelector() {
+      if (this.workItemPlanningViewEnabled) {
+        return this.fromGlobalMenu || (this.isGroup && !this.isEpicsList);
+      }
+      return false;
     },
   },
   watch: {
@@ -1015,12 +1031,13 @@ export default {
         <page-heading v-if="!hideFormTitle" :heading="titleText" />
 
         <div class="gl-flex gl-items-center gl-gap-4">
-          <template v-if="workItemPlanningViewEnabled">
+          <template v-if="shouldShowNamespaceSelector">
             <gl-form-group class="gl-mr-4 gl-max-w-26 gl-flex-grow" :label="__('Group/project')">
               <work-item-namespace-listbox
                 v-model="selectedNamespacePath"
                 :full-path="fullPath"
                 :is-group="isGroup"
+                :limit-to-current-namespace="!fromGlobalMenu"
               />
             </gl-form-group>
           </template>

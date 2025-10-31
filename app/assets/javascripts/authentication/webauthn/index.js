@@ -9,7 +9,14 @@ export const initWebauthnAuthenticate = () => {
     return false;
   }
 
-  const { targetPath, renderRememberMe, rememberMe } = el.dataset;
+  const {
+    targetPath,
+    renderRememberMe,
+    rememberMe,
+    sendEmailOtpPath,
+    username,
+    emailVerificationData,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -21,6 +28,9 @@ export const initWebauthnAuthenticate = () => {
           targetPath,
           renderRememberMe: parseBoolean(renderRememberMe),
           rememberMe,
+          sendEmailOtpPath,
+          username,
+          emailVerificationData: emailVerificationData && JSON.parse(emailVerificationData),
         },
       });
     },

@@ -33,6 +33,11 @@ export default {
       type: String,
       default: null,
     },
+    limitToCurrentNamespace: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -50,7 +55,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.rootPath,
+          fullPath: this.limitToCurrentNamespace ? this.fullPath : this.rootPath,
           projectSearch: this.searchKey,
         };
       },
@@ -70,7 +75,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.groupPath,
+          fullPath: this.limitToCurrentNamespace ? this.fullPath : this.groupPath,
           groupSearch: this.searchKey,
         };
       },
@@ -296,6 +301,7 @@ export default {
     :searching="isLoading"
     fluid-width
     class="gl-relative"
+    data-testid="work-item-namespace-selector"
     @search="debouncedSearch"
     @select="handleSelect"
     @shown="handleDropdownShow"

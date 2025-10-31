@@ -1,5 +1,5 @@
 - target_path = admin_mode ? admin_session_path : user_session_path
-- render_remember_me =  admin_mode ? false : remember_me_enabled?
+- render_remember_me = admin_mode ? false : remember_me_enabled?
 - user_params = params[:user].presence || params
 
 = gitlab_ui_form_for(:user, url: target_path, method: :post, html: { class: "gl-show-field-errors js-2fa-form #{'hidden' if @user.two_factor_webauthn_enabled?}", aria: { live: 'assertive' }}) do |f|
@@ -17,4 +17,4 @@
     = _("Verify code")
 
 - if @user.two_factor_webauthn_enabled?
-  #js-authentication-webauthn{ data: { target_path: target_path, render_remember_me: render_remember_me.to_s, remember_me: user_params.fetch(:remember_me, 0) } }
+  #js-authentication-webauthn{ data: webauthn_authentication_data(user: @user, params: params, admin_mode: admin_mode) }
