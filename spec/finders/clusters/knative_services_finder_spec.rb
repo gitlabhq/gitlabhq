@@ -7,10 +7,10 @@ RSpec.describe Clusters::KnativeServicesFinder do
   include ReactiveCachingHelpers
 
   let(:project) { create(:project, :repository) }
-  let(:cluster) { deployment.cluster }
+  let(:cluster) { create(:cluster, :instance, :provided_by_user) }
   let(:service) { environment.deployment_platform }
   let(:environment) { create(:environment, project: project) }
-  let!(:deployment) { create(:deployment, :success, :on_cluster, environment: environment) }
+  let!(:deployment) { create(:deployment, :success, environment: environment) }
   let(:namespace) do
     create(:cluster_kubernetes_namespace,
       cluster: cluster,

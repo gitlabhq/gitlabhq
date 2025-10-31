@@ -28,8 +28,6 @@ module Packages
             .where(Packages::Composer::Metadatum.table_name => { target_sha: target })
         end
 
-        scope :preload_composer, -> { preload(:composer_metadatum) }
-
         private
 
         def valid_composer_global_name

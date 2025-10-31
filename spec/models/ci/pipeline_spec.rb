@@ -3095,8 +3095,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when kubernetes is active' do
       context 'when user configured kubernetes from CI/CD > Clusters' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
+        let!(:cluster) { create(:cluster, :instance, :provided_by_user) }
 
         it 'returns true' do
           expect(pipeline).to have_kubernetes_active

@@ -51,5 +51,9 @@ module WebIde
     def self.extension_host_domain_changed?
       extension_host_domain != DEFAULT_EXTENSION_HOST_DOMAIN
     end
+
+    def self.origin_matches_extension_host_regexp
+      %r{^https://((?:v--|workbench-)?[a-z0-9]{30,56})\.#{Regexp.escape(extension_host_domain)}$}
+    end
   end
 end

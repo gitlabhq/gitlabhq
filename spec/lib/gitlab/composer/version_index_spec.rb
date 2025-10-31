@@ -64,14 +64,6 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
 
     context 'with a public project' do
       it_behaves_like 'returns the packages json'
-
-      # TODO: Remove with the rollout of the FF packages_composer_read_from_detached_table
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/562123
-      context 'with Packages::Composer::Sti::Package instances' do
-        it_behaves_like 'returns the packages json' do
-          let(:packages) { [package1_sti, package2_sti] }
-        end
-      end
     end
 
     context 'with an internal project' do

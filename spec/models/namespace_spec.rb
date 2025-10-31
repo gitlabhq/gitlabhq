@@ -1412,55 +1412,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe "after_commit :expire_child_caches" do
-    let(:namespace) { create(:group, organization: organization) }
-
-    it "expires the child caches when updated" do
-      child_1 = create(:group, parent: namespace, updated_at: 1.week.ago)
-      child_2 = create(:group, parent: namespace, updated_at: 1.day.ago)
-      grandchild = create(:group, parent: child_1, updated_at: 1.week.ago)
-      project_1 = create(:project, namespace: namespace, updated_at: 2.days.ago)
-      project_2 = create(:project, namespace: child_1, updated_at: 3.days.ago)
-      project_3 = create(:project, namespace: grandchild, updated_at: 4.years.ago)
-
-      freeze_time do
-        namespace.update!(path: "foo")
-
-        [namespace, child_1, child_2, grandchild, project_1, project_2, project_3].each do |record|
-          expect(record.reload.updated_at).to eq(Time.zone.now)
-        end
-      end
-    end
-
-    it "expires on name changes" do
-      expect(namespace).to receive(:expire_child_caches).once
-
-      namespace.update!(name: "Foo")
-    end
-
-    it "expires on path changes" do
-      expect(namespace).to receive(:expire_child_caches).once
-
-      namespace.update!(path: "bar")
-    end
-
-    it "expires on parent changes" do
-      expect(namespace).to receive(:expire_child_caches).once
-
-      new_parent = create(:group, organization: organization)
-      namespace.update!(parent: new_parent)
-    end
-
-    it "doesn't expire on other field changes" do
-      expect(namespace).not_to receive(:expire_child_caches)
-
-      namespace.update!(
-        description: "Foo bar",
-        max_artifacts_size: 10
-      )
-    end
-  end
-
   describe '#owner_required?' do
     specify { expect(build(:project_namespace).owner_required?).to be_falsey }
     specify { expect(build(:group).owner_required?).to be_falsey }

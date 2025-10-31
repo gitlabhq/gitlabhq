@@ -48,19 +48,6 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
       expect(result['1.0.0']).to eq(expected_json(packages[0]))
       expect(result['2.0.0']).to eq(expected_json(packages[1]))
     end
-
-    # TODO: Remove with the rollout of the FF packages_composer_read_from_detached_table
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/562123
-    context 'with Packages::Composer::Sti::Package instances' do
-      let(:packages) { [package1_sti, package2_sti] }
-
-      it 'returns the packages json' do
-        result = subject['packages'][package_name]
-
-        expect(result['1.0.0']).to eq(expected_json(packages[0]))
-        expect(result['2.0.0']).to eq(expected_json(packages[1]))
-      end
-    end
   end
 
   describe '#provider' do
@@ -78,16 +65,6 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
 
     it 'returns the provider json' do
       expect(subject).to match(expected_json)
-    end
-
-    # TODO: Remove with the rollout of the FF packages_composer_read_from_detached_table
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/562123
-    context 'with Packages::Composer::Sti::Package instances' do
-      let(:packages) { [package1_sti, package2_sti] }
-
-      it 'returns the provider json' do
-        expect(subject).to match(expected_json)
-      end
     end
   end
 
@@ -109,16 +86,6 @@ RSpec.describe ::Packages::Composer::PackagesPresenter do
 
     it 'returns the provider json' do
       expect(subject).to match(expected_json)
-    end
-
-    # TODO: Remove with the rollout of the FF packages_composer_read_from_detached_table
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/562123
-    context 'with Packages::Composer::Sti::Package instances' do
-      let(:packages) { [package1_sti, package2_sti] }
-
-      it 'returns the provider json' do
-        expect(subject).to match(expected_json)
-      end
     end
 
     context 'with a client version 2' do

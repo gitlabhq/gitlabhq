@@ -517,4 +517,36 @@ RSpec.describe Label, feature_category: :team_planning do
       expect(pluck_titles).to contain_exactly(label1.title, label2.title)
     end
   end
+
+  describe '#refresh_markdown_cache!' do
+    before do
+      described_class.connection.execute(<<~SQL)
+        ALTER TABLE labels DROP CONSTRAINT check_2d9a8c1bca;
+      SQL
+
+      label
+
+      described_class.connection.execute(<<~SQL)
+        ALTER TABLE labels
+          ADD CONSTRAINT check_2d9a8c1bca CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+      SQL
+    end
+
+    context 'when label has both project_id and group_id present' do
+      let(:label) do
+        create(:label, project: project).tap do |r|
+          r.group = group
+          r.save!(validate: false)
+        end
+      end
+
+      it 'updates sharding key unless exactly one sharding key column is present' do
+        expect do
+          label.refresh_markdown_cache!
+        end.to change { [label.project_id, label.group_id, label.organization_id] }
+          .from([project.id, group.id, nil])
+          .to([project.id, nil, nil])
+      end
+    end
+  end
 end

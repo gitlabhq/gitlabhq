@@ -218,12 +218,6 @@ module API
 
           not_found! unless package
 
-          if Feature.disabled?(:packages_composer_read_from_detached_table, Feature.current_request)
-            metadata = package.composer_metadatum
-
-            not_found! unless metadata
-          end
-
           track_package_event('pull_package', :composer, project: project, namespace: project.namespace)
 
           # For now we keep writing to the existing packages_packages table.

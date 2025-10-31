@@ -285,7 +285,26 @@ class Label < ApplicationRecord
     super(**attributes.merge(presenter_class: ::LabelPresenter))
   end
 
+  # TODO: Remove when sharding key NOT NULL constraint is validated
+  # This should not happen often, and will only happen once for any record
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/558353
+  def refresh_markdown_cache
+    return super if sharding_key_columns.count { |s_column| self[s_column].present? } == 1
+
+    # Using model callbacks to get sharding key values
+    ensure_single_parent_for_given_type
+
+    sharding_key_changes = changes.select { |k, _| sharding_key_columns.include?(k.to_sym) }
+    sharding_key_updates = sharding_key_changes.transform_values(&:last)
+
+    super.merge(sharding_key_updates)
+  end
+
   private
+
+  def sharding_key_columns
+    %i[project_id group_id organization_id]
+  end
 
   def validate_description_length?
     return false unless description_changed?

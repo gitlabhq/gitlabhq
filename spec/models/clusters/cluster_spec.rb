@@ -271,17 +271,17 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
         let(:group) { create(:group) }
 
         before do
-          create(:cluster, cluster_type: :group_type, groups: [group], environment_scope: 'product/*')
+          create(:cluster, :group, groups: [group], environment_scope: 'product/*')
         end
 
         context 'when identical environment scope exists in group' do
-          let(:cluster) { build(:cluster, cluster_type: :group_type, groups: [group], environment_scope: 'product/*') }
+          let(:cluster) { build(:cluster, :group, groups: [group], environment_scope: 'product/*') }
 
           it { is_expected.to be_falsey }
         end
 
         context 'when identical environment scope does not exist in group' do
-          let(:cluster) { build(:cluster, cluster_type: :group_type, groups: [group], environment_scope: '*') }
+          let(:cluster) { build(:cluster, :group, groups: [group], environment_scope: '*') }
 
           it { is_expected.to be_truthy }
         end
@@ -369,11 +369,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
         end
 
         context 'when record is persisted' do
-          let(:name) { 'cluster-name-1' }
-
-          before do
-            cluster.save!
-          end
+          let!(:cluster) { create(:cluster, :provided_by_gcp, name: 'cluster-name-1') }
 
           context 'when name is changed' do
             before do
@@ -385,7 +381,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
           context 'when name is same' do
             before do
-              cluster.name = name
+              cluster.name = 'cluster-name-1'
             end
 
             it { is_expected.to be_truthy }
@@ -517,7 +513,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '.ancestor_clusters_for_clusterable' do
-    let(:group_cluster) { create(:cluster, :provided_by_gcp, :group) }
+    let(:group_cluster) { create(:cluster, :group) }
     let(:group) { group_cluster.group }
     let(:hierarchy_order) { :desc }
     let(:clusterable) { project }
@@ -544,7 +540,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'when group and instance have configured kubernetes clusters' do
       let(:project) { create(:project, group: group) }
-      let!(:instance_cluster) { create(:cluster, :provided_by_gcp, :instance) }
+      let!(:instance_cluster) { create(:cluster, :instance) }
 
       it 'returns clusters in order, descending the hierachy' do
         is_expected.to eq([group_cluster, instance_cluster])
@@ -552,7 +548,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when sub-group has configured kubernetes cluster' do
-      let(:sub_group_cluster) { create(:cluster, :provided_by_gcp, :group) }
+      let(:sub_group_cluster) { create(:cluster, :group) }
       let(:sub_group) { sub_group_cluster.group }
       let(:project) { create(:project, group: sub_group) }
 
@@ -570,7 +566,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
           described_class.ancestor_clusters_for_clusterable(another_project, hierarchy_order: hierarchy_order)
         end
 
-        cluster2 = create(:cluster, :provided_by_gcp, :group)
+        cluster2 = create(:cluster, :group)
         child2 = cluster2.group
         child2.update!(parent: sub_group)
         project = create(:project, group: child2)
@@ -650,7 +646,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when cluster does not belong to projects' do
-      let(:cluster) { create(:cluster) }
+      let(:cluster) { create(:cluster, :group) }
 
       it { is_expected.to be_nil }
     end
@@ -678,13 +674,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'project type cluster' do
       context 'gitlab managed' do
-        let(:cluster) { build(:cluster, :provided_by_gcp) }
+        let(:cluster) { build(:cluster) }
 
         it { is_expected.to be_truthy }
       end
 
       context 'not managed' do
-        let(:cluster) { build(:cluster, :provided_by_gcp, managed: false) }
+        let(:cluster) { build(:cluster, managed: false) }
 
         it { is_expected.to be_truthy }
       end
@@ -692,13 +688,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'group type cluster' do
       context 'gitlab managed' do
-        let(:cluster) { build(:cluster, :provided_by_gcp, :group) }
+        let(:cluster) { build(:cluster, :group) }
 
         it { is_expected.to be_falsey }
       end
 
       context 'not managed' do
-        let(:cluster) { build(:cluster, :provided_by_gcp, :group, managed: false) }
+        let(:cluster) { build(:cluster, :group, managed: false) }
 
         it { is_expected.to be_truthy }
       end
@@ -706,13 +702,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'instance type cluster' do
       context 'gitlab managed' do
-        let(:cluster) { build(:cluster, :provided_by_gcp, :instance) }
+        let(:cluster) { build(:cluster, :instance) }
 
         it { is_expected.to be_falsey }
       end
 
       context 'not managed' do
-        let(:cluster) { build(:cluster, :provided_by_gcp, :instance, managed: false) }
+        let(:cluster) { build(:cluster, :instance, managed: false) }
 
         it { is_expected.to be_truthy }
       end
@@ -750,18 +746,18 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   end
 
   describe '#kube_ingress_domain' do
-    let(:cluster) { build(:cluster, :provided_by_gcp) }
+    let(:cluster) { build(:cluster) }
 
     subject { cluster.kube_ingress_domain }
 
     context 'with domain set in cluster' do
-      let(:cluster) { build(:cluster, :provided_by_gcp, :with_domain) }
+      let(:cluster) { build(:cluster, :with_domain) }
 
       it { is_expected.to eq(cluster.domain) }
     end
 
     context 'with no domain on cluster' do
-      let(:cluster) { build(:cluster, :project, :provided_by_gcp) }
+      let(:cluster) { build(:cluster, :project) }
       let(:project) { cluster.project }
 
       context 'with domain set at instance level' do
@@ -836,7 +832,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     subject { cluster.predefined_variables }
 
     context 'with an instance domain' do
-      let(:cluster) { create(:cluster, :provided_by_gcp) }
+      let(:cluster) { create(:cluster) }
 
       before do
         stub_application_setting(auto_devops_domain: 'global_domain.com')
@@ -848,7 +844,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'with a cluster domain' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, domain: 'example.com') }
+      let(:cluster) { create(:cluster, domain: 'example.com') }
 
       it 'includes KUBE_INGRESS_BASE_DOMAIN' do
         expect(subject.to_hash).to include(KUBE_INGRESS_BASE_DOMAIN: 'example.com')
@@ -856,7 +852,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'with no domain' do
-      let(:cluster) { build(:cluster, :provided_by_gcp, :project) }
+      let(:cluster) { build(:cluster, :project) }
 
       it 'returns an empty array' do
         expect(subject.to_hash).to be_empty
@@ -884,7 +880,8 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     subject { cluster.status_name }
 
     context 'the cluster has a provider' do
-      let(:cluster) { build(:cluster, :provided_by_gcp) }
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
       let(:provider_status) { :errored }
 
       before do

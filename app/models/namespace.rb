@@ -214,11 +214,6 @@ class Namespace < ApplicationRecord
 
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
-  after_commit :expire_child_caches, on: :update, if: -> {
-    (Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
-      saved_change_to_name?) || saved_change_to_path? || saved_change_to_parent_id?
-  }
-
   scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
@@ -912,16 +907,6 @@ class Namespace < ApplicationRecord
 
   def certificate_based_clusters_enabled_ff?
     Feature.enabled?(:certificate_based_clusters, type: :ops)
-  end
-
-  def expire_child_caches
-    Namespace.where(id: descendants).each_batch do |namespaces|
-      namespaces.touch_all
-    end
-
-    all_projects.each_batch do |projects|
-      projects.touch_all
-    end
   end
 
   def parent_changed?

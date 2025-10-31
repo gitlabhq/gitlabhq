@@ -61,15 +61,18 @@ FactoryBot.define do
       create(:cluster_agent_token, agent: create(:cluster_agent, project: projects[1]))
 
       # Enabled clusters
-      create(:cluster_provider_gcp, :created).cluster
-      create(:cluster_provider_aws, :created)
-      create(:cluster_platform_kubernetes)
-      create(:cluster, :management_project, management_project: projects[0])
+      gcp_cluster = create(:cluster, provider_type: :gcp, projects: [projects[0]])
+      aws_cluster = create(:cluster, provider_type: :aws, projects: [projects[1]])
+      kubernetes_cluster = create(:cluster, provider_type: :user, projects: [projects[2]])
+      create(:cluster_provider_gcp, :created, cluster: gcp_cluster)
+      create(:cluster_provider_aws, :created, cluster: aws_cluster)
+      create(:cluster_platform_kubernetes, cluster: kubernetes_cluster)
+      create(:cluster, :management_project, projects: [projects[3]], management_project: projects[0])
       create(:cluster, :group)
       create(:cluster, :instance, :production_environment)
 
       # Disabled clusters
-      create(:cluster, :disabled)
+      create(:cluster, :disabled, projects: [projects[0]], environment_scope: 'disabled')
       create(:cluster, :group, :disabled)
       create(:cluster, :instance, :disabled)
 

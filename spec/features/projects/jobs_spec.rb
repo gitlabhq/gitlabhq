@@ -529,9 +529,10 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         end
 
         context 'when there is a cluster used for the deployment' do
-          let(:deployment) { create(:deployment, :success, :on_cluster, environment: environment) }
+          let(:cluster) { create(:cluster, :provided_by_user, projects: [environment.project]) }
+          let(:deployment) { create(:deployment, :success, environment: environment) }
+          let!(:deployment_cluster) { create(:deployment_cluster, cluster: cluster, deployment: deployment) }
           let(:user_access_level) { :maintainer }
-          let(:cluster) { deployment.cluster }
 
           it 'shows a link to the cluster' do
             expect(page).to have_link cluster.name

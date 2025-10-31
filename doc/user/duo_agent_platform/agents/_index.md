@@ -38,7 +38,7 @@ Create custom agents to accomplish specific tasks, like creating
 merge requests or reviewing code. Or, use the AI Catalog to discover
 agents created by GitLab.
 
-When you're ready to interact with an agent, you can enable it or execute a test run.
+When you're ready to interact with an agent, you can enable it to start using it with GitLab Duo Chat.
 
 ## Prerequisites
 
@@ -75,8 +75,10 @@ To create an agent:
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,
-   select which tools the agent can access. For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
+   select which tools the agent can access.
    For example, for the agent to create issues automatically, select **Create issue**.
+
+   For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
 1. Select **Create agent**.
 
 The agent is enabled in the source project, and appears in the AI Catalog.
@@ -97,23 +99,6 @@ Prerequisites:
 1. Select **Enable**.
 
 The agent appears on the project's **Agents** page.
-
-## Run an agent
-
-Execute a test run to start a session with the agent.
-
-Prerequisites:
-
-- You must be a member of the source project and have at least the Maintainer role.
-
-To run an agent:
-
-1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**.
-1. Select your agent, then select **Test**.
-1. On the dialog, enter your instructions, then select **Run**.
-
-To monitor progress, select **Automate** > **Sessions**.
 
 ## Duplicate an agent
 

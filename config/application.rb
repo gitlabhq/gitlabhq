@@ -85,6 +85,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_attack_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
+    require_dependency Rails.root.join('lib/gitlab/middleware/cors_static_assets')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
@@ -450,6 +451,9 @@ module Gitlab
 
     config.middleware.insert_after ActionDispatch::ShowExceptions, ::Gitlab::Middleware::JsonValidation
 
+    # Insert this early in the middleware stack to bypass ActionDispatch::HostAuthorization
+    config.middleware.unshift ::Gitlab::Middleware::CorsStaticAssets
+
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
       headers_to_expose = %w[Link X-Total X-Total-Pages X-Per-Page X-Page X-Next-Page X-Prev-Page X-Gitlab-Blob-Id X-Gitlab-Commit-Id X-Gitlab-Content-Sha256 X-Gitlab-Encoding X-Gitlab-File-Name X-Gitlab-File-Path X-Gitlab-Last-Commit-Id X-Gitlab-Ref X-Gitlab-Size X-Request-Id ETag]
@@ -527,24 +531,6 @@ module Gitlab
             credentials: false,
             methods: %i[get head]
         end
-      end
-
-      # Allow assets to be loaded to web-ide
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/421177
-      allow do
-        origins 'https://*.web-ide.gitlab-static.net'
-        resource '/assets/webpack/*',
-          credentials: false,
-          methods: %i[get head]
-      end
-
-      # Allow assets to be loaded to web-ide
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/421177
-      allow do
-        origins 'https://*.web-ide.gitlab-static.net'
-        resource '/assets/vite/*',
-          credentials: false,
-          methods: %i[get head]
       end
     end
 

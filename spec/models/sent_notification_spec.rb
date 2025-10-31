@@ -143,13 +143,19 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
         found_sent_notification
       end
 
-      context 'when insert_into_p_sent_notifications feature flag is disabled' do
+      context 'when sent_notification is only found in the legacy table' do
         before do
-          stub_feature_flags(insert_into_p_sent_notifications: false)
+          PartitionedSentNotification.where(id: sent_notification.id).delete_all
         end
 
-        it 'finds in the legacy sent_notifications table' do
-          expect(described_class).to receive(:find_by)
+        it { is_expected.to eq(sent_notification) }
+
+        it 'logs that a record was only found in the legacy table' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            class: described_class.name,
+            message: 'SentNotification found but not backfilled',
+            sent_notification_id: sent_notification.id
+          )
 
           found_sent_notification
         end

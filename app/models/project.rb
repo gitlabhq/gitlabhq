@@ -1343,10 +1343,6 @@ class Project < ApplicationRecord
     self
   end
 
-  def parent_loaded?
-    association(:namespace).loaded?
-  end
-
   def certificate_based_clusters_enabled?
     !!namespace&.certificate_based_clusters_enabled?
   end

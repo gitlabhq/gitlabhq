@@ -356,13 +356,15 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'with deployment' do
+        let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
         let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
         let(:job) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
 
         let(:user) { maintainer }
 
         before do
-          create(:deployment, :success, :on_cluster, environment: environment, project: project)
+          deployment = create(:deployment, :success, environment: environment, project: project)
+          create(:deployment_cluster, cluster: cluster, deployment: deployment)
         end
 
         it 'exposes the deployment information' do

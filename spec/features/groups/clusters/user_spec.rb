@@ -84,7 +84,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
   end
 
   context 'when user does have a cluster and visits cluster page' do
-    let(:cluster) { create(:cluster, :provided_by_user, cluster_type: :group_type, groups: [group]) }
+    let(:cluster) { create(:cluster, :provided_by_user, :group, groups: [group]) }
 
     before do
       visit group_cluster_path(group, cluster)

@@ -8987,26 +8987,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#parent_loaded?' do
-    let_it_be(:project) { create(:project) }
-
-    before do
-      project.namespace = create(:namespace)
-
-      project.reload
-    end
-
-    it 'is false when the parent is not loaded' do
-      expect(project.parent_loaded?).to be_falsey
-    end
-
-    it 'is true when the parent is loaded' do
-      project.parent
-
-      expect(project.parent_loaded?).to be_truthy
-    end
-  end
-
   describe '#bots' do
     subject { project.bots }
 

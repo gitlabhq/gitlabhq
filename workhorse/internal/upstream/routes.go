@@ -60,7 +60,6 @@ type routeOptions struct {
 	tracing         bool
 	isGeoProxyRoute bool
 	matchers        []matcherFunc
-	allowOrigins    *regexp.Regexp
 	bodyLimit       int64
 	bodyLimitMode   bodylimit.Mode
 }
@@ -119,12 +118,6 @@ func withoutTracing() func(*routeOptions) {
 func withGeoProxy() func(*routeOptions) {
 	return func(options *routeOptions) {
 		options.isGeoProxyRoute = true
-	}
-}
-
-func withAllowOrigins(pattern string) func(*routeOptions) {
-	return func(options *routeOptions) {
-		options.allowOrigins = compileRegexp(pattern)
 	}
 }
 
@@ -203,9 +196,6 @@ func (u *upstream) route(method string, metadata routeMetadata, handler http.Han
 	if options.tracing {
 		// Add distributed tracing
 		handler = tracing.Handler(handler, tracing.WithRouteIdentifier(metadata.regexpStr))
-	}
-	if options.allowOrigins != nil {
-		handler = corsMiddleware(handler, options.allowOrigins)
 	}
 
 	if options.bodyLimit > 0 {
@@ -301,7 +291,7 @@ func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg conf
 
 func configureRoutes(u *upstream) {
 	api := u.APIClient
-	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude}
+	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude, API: u.APIClient}
 	dependencyProxyInjector := dependencyproxy.NewInjector()
 
 	// Build proxy with optional success tracking
@@ -580,7 +570,6 @@ func configureRoutes(u *upstream) {
 				assetsNotFoundHandler,
 			),
 			withoutTracing(), // Tracing on assets is very noisy
-			withAllowOrigins("^https://.*\\.web-ide\\.gitlab-static\\.net$"),
 		),
 
 		// Uploads
@@ -671,7 +660,6 @@ func configureRoutes(u *upstream) {
 				assetsNotFoundHandler,
 			),
 			withoutTracing(), // Tracing on assets is very noisy
-			withAllowOrigins("^https://.*\\.web-ide\\.gitlab-static\\.net$"),
 		),
 
 		// Don't define a catch-all route. If a route does not match, then we know
@@ -684,23 +672,6 @@ func denyWebsocket(next http.Handler) http.Handler {
 		if websocket.IsWebSocketUpgrade(r) {
 			httpError(w, r, "websocket upgrade not allowed", http.StatusBadRequest)
 			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestOrigin := r.Header.Get("Origin")
-		hasOriginMatch := allowOriginRegex.MatchString(requestOrigin)
-		hasMethodMatch := r.Method == "GET" || r.Method == "HEAD" || r.Method == "OPTIONS"
-
-		if hasOriginMatch && hasMethodMatch {
-			w.Header().Set("Access-Control-Allow-Origin", requestOrigin)
-			// why: `Vary: Origin` is needed because allowable origin is variable
-			//      https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#the_http_response_headers
-			w.Header().Set("Vary", "Origin")
 		}
 
 		next.ServeHTTP(w, r)

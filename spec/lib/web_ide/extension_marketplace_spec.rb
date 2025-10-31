@@ -145,4 +145,69 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
       it { is_expected.to be(true) }
     end
   end
+
+  describe '#origin_matches_extension_host_regexp' do
+    subject(:regexp) { described_class.origin_matches_extension_host_regexp }
+
+    where(:extension_host_domain, :origin, :should_match) do
+      # matches valid origins with minimum length identifier
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz1234.web-ide.net' | true
+      # matches valid origins with maximum length identifier
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz123456789012345678901234567890.web-ide.net' | true
+      # matches origins with v-- prefix
+      'web-ide.net' | 'https://v--abcdefghijklmnopqrstuvwxyz1234.web-ide.net' | true
+      # matches origins with workbench- prefix
+      'web-ide.net' | 'https://workbench-abcdefghijklmnopqrstuvwxyz1234.web-ide.net' | true
+      # matches origins with port
+      'web-ide.net:3443' | 'https://workbench-abcdefghijklmnopqrstuvwxyz1234.web-ide.net:3443' | true
+
+      # invalid cases
+      # does not match origins with too short identifier
+      'web-ide.net' | 'https://abc123.web-ide.net' | false
+      # does not match origins with too long identifier
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz1234567890123456789012345678901.web-ide.net' | false
+      # does not match origins with uppercase letters in identifier
+      'web-ide.net' | 'https://ABCDEFGHIJKLMNOPQRSTUVWXYZ1234.web-ide.net' | false
+      # does not match origins with special characters in identifier
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz-123.web-ide.net' | false
+      # does not match http origins
+      'web-ide.net' | 'http://abcdefghijklmnopqrstuvwxyz1234.web-ide.net' | false
+      # does not match origins without protocol
+      'web-ide.net' | 'abcdefghijklmnopqrstuvwxyz1234.web-ide.net' | false
+      # does not match origins with wrong domain
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz1234.example.com' | false
+      # does not match origins with path
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz1234.web-ide.net/path' | false
+      # does not match origins with query parameters
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz1234.web-ide.net?param=value' | false
+      # does not match origins with fragment
+      'web-ide.net' | 'https://abcdefghijklmnopqrstuvwxyz1234.web-ide.net#fragment' | false
+    end
+
+    with_them do
+      before do
+        Gitlab::CurrentSettings.update!(
+          vscode_extension_marketplace_extension_host_domain: extension_host_domain
+        )
+      end
+
+      it 'matches valid origins and rejects invalid ones' do
+        if should_match
+          expect(origin).to match(regexp)
+        else
+          expect(origin).not_to match(regexp)
+        end
+      end
+    end
+
+    it "captures subdomain in group 1" do
+      Gitlab::CurrentSettings.update!(
+        vscode_extension_marketplace_extension_host_domain: 'web-ide.net'
+      )
+      origin = 'https://abcdefghijklmnopqrstuvwxyz1234.web-ide.net'
+
+      expect(described_class.origin_matches_extension_host_regexp.match(origin)[1])
+        .to eq('abcdefghijklmnopqrstuvwxyz1234')
+    end
+  end
 end

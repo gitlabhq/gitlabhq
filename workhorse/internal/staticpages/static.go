@@ -1,11 +1,16 @@
 package staticpages
 
-import "net/http"
+import (
+	"net/http"
+
+	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+)
 
 // Static represents a package for serving static pages and handling errors.
 type Static struct {
 	DocumentRoot string
 	Exclude      []string
+	API          *apipkg.API
 }
 
 func setNoCacheHeaders(header http.Header) {

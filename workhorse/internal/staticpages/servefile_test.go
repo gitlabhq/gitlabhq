@@ -9,9 +9,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-
 	"github.com/stretchr/testify/require"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
 
 const (
@@ -156,4 +159,195 @@ func TestServingThePregzippedFile(t *testing.T) {
 
 func TestServingThePregzippedFileWithoutEncoding(t *testing.T) {
 	testServingThePregzippedFile(t, false)
+}
+
+// testRailsServer creates a mock Rails server that returns the specified headers
+func testRailsServer(t *testing.T, headers map[string]string) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		// Set the headers that Rails would return
+		for k, v := range headers {
+			w.Header().Set(k, v)
+		}
+		w.WriteHeader(http.StatusOK)
+	}))
+}
+
+// verifyCorsHeaders verifies that the expected CORS headers are present and no unexpected CORS headers are set
+func verifyCorsHeaders(t *testing.T, w *httptest.ResponseRecorder, expectedHeaders map[string]string) {
+	t.Helper()
+
+	// Verify expected CORS headers are present with correct values
+	for expectedKey, expectedValue := range expectedHeaders {
+		require.Equal(t, expectedValue, w.Header().Get(expectedKey),
+			"Expected CORS header %s to be %s", expectedKey, expectedValue)
+	}
+
+	// Verify that headers NOT in expectedHeaders are NOT set
+	allCorsHeaders := []string{
+		"Access-Control-Allow-Origin",
+		"Access-Control-Allow-Methods",
+		"Access-Control-Allow-Headers",
+		"Access-Control-Allow-Credentials",
+		"Vary",
+	}
+	for _, header := range allCorsHeaders {
+		if _, expected := expectedHeaders[header]; !expected {
+			require.Empty(t, w.Header().Get(header),
+				"Header %s should not be set", header)
+		}
+	}
+}
+
+func TestResolveCorsHeaders(t *testing.T) {
+	dir := t.TempDir()
+
+	// Create a test file in the assets directory
+	assetsDir := filepath.Join(dir, "assets")
+	err := os.MkdirAll(assetsDir, 0755)
+	require.NoError(t, err)
+
+	fileContent := "STATIC ASSET"
+	err = os.WriteFile(filepath.Join(assetsDir, "test.js"), []byte(fileContent), 0600)
+	require.NoError(t, err)
+
+	testCases := []struct {
+		desc            string
+		path            string
+		method          string
+		hasOriginHeader bool
+		railsHeaders    map[string]string
+		expectedHeaders map[string]string
+	}{
+		{
+			desc:            "CORS headers returned for GET request on /assets/ with Origin header",
+			path:            "/assets/test.js",
+			method:          "GET",
+			hasOriginHeader: true,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin":      "https://example.com",
+				"Access-Control-Allow-Methods":     "GET, HEAD, OPTIONS",
+				"Access-Control-Allow-Headers":     "Content-Type",
+				"Access-Control-Allow-Credentials": "true",
+				"Vary":                             "Origin",
+			},
+			expectedHeaders: map[string]string{
+				"Access-Control-Allow-Origin":      "https://example.com",
+				"Access-Control-Allow-Methods":     "GET, HEAD, OPTIONS",
+				"Access-Control-Allow-Headers":     "Content-Type",
+				"Access-Control-Allow-Credentials": "true",
+				"Vary":                             "Origin",
+			},
+		},
+		{
+			desc:            "CORS headers returned for OPTIONS request on /assets/ with Origin header",
+			path:            "/assets/test.js",
+			method:          "OPTIONS",
+			hasOriginHeader: true,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+			},
+			expectedHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+			},
+		},
+		{
+			desc:            "CORS headers returned for HEAD request on /assets/ with Origin header",
+			path:            "/assets/test.js",
+			method:          "HEAD",
+			hasOriginHeader: true,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+			},
+			expectedHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+			},
+		},
+		{
+			desc:            "No CORS headers when Origin header is missing",
+			path:            "/assets/test.js",
+			method:          "GET",
+			hasOriginHeader: false,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin": "https://example.com",
+			},
+			expectedHeaders: map[string]string{},
+		},
+		{
+			desc:            "No CORS headers for POST request (not in allowed methods)",
+			path:            "/assets/test.js",
+			method:          "POST",
+			hasOriginHeader: true,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin": "https://example.com",
+			},
+			expectedHeaders: map[string]string{},
+		},
+		{
+			desc:            "No CORS headers for non-assets path",
+			path:            "/other/test.js",
+			method:          "GET",
+			hasOriginHeader: true,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin": "https://example.com",
+			},
+			expectedHeaders: map[string]string{},
+		},
+		{
+			desc:            "Only allowed CORS headers are copied",
+			path:            "/assets/test.js",
+			method:          "GET",
+			hasOriginHeader: true,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin": "https://example.com",
+				"X-Custom-Header":             "should-not-be-copied",
+				"Content-Type":                "application/json",
+			},
+			expectedHeaders: map[string]string{
+				"Access-Control-Allow-Origin": "https://example.com",
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			testhelper.ConfigureSecret()
+
+			// Create a mock Rails server that returns the specified CORS headers
+			ts := testRailsServer(t, tc.railsHeaders)
+			defer ts.Close()
+
+			// Create API client
+			backend := helper.URLMustParse(ts.URL)
+			rt := roundtripper.NewTestBackendRoundTripper(backend)
+			apiClient := api.NewAPI(backend, "123", rt)
+
+			// Create request
+			httpRequest, err := http.NewRequest(tc.method, tc.path, nil)
+			require.NoError(t, err)
+
+			if tc.hasOriginHeader {
+				httpRequest.Header.Set("Origin", "https://example.com")
+			}
+
+			// Create static handler with API client
+			w := httptest.NewRecorder()
+			st := &Static{DocumentRoot: dir, API: apiClient}
+			st.ServeExisting("/", CacheDisabled, nil).ServeHTTP(w, httpRequest)
+
+			// For paths where the file exists, we get 200
+			// For paths outside /assets or without origin, we get 200 but no CORS headers
+			// For valid cases with CORS, we should get 200 with CORS headers
+			if tc.path == "/assets/test.js" && (tc.method == "GET" || tc.method == "OPTIONS") {
+				require.Equal(t, 200, w.Code, "Request should succeed when file exists")
+			}
+
+			// Verify CORS headers
+			verifyCorsHeaders(t, w, tc.expectedHeaders)
+		})
+	}
 }

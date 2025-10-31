@@ -5,29 +5,41 @@ FactoryBot.define do
     user
     name { 'test-cluster' }
     cluster_type { :project_type }
+    projects { [association(:project)] }
+    groups { [] }
     managed { true }
     namespace_per_environment { true }
 
     factory :cluster_for_group, traits: [:provided_by_gcp, :group]
 
+    after(:build) do |cluster|
+      if cluster.project_type?
+        cluster.project_id ||= cluster.first_project.id
+
+      elsif cluster.group_type?
+        cluster.group_id ||= cluster.first_group.id
+
+      elsif cluster.instance_type?
+        cluster.organization_id ||= create(:common_organization).id
+      end
+    end
+
     trait :instance do
       cluster_type { Clusters::Cluster.cluster_types[:instance_type] }
+      projects { [] }
+      groups { [] }
     end
 
     trait :project do
       cluster_type { Clusters::Cluster.cluster_types[:project_type] }
-
-      before(:create) do |cluster, evaluator|
-        cluster.projects << create(:project) unless cluster.projects.present?
-      end
+      projects { [association(:project)] }
+      groups { [] }
     end
 
     trait :group do
       cluster_type { Clusters::Cluster.cluster_types[:group_type] }
-
-      before(:create) do |cluster, evalutor|
-        cluster.groups << create(:group) unless cluster.groups.present?
-      end
+      projects { [] }
+      groups { [association(:group)] }
     end
 
     trait :management_project do

@@ -269,6 +269,13 @@ GitLab.com load content from these hostnames:
 Documentation and GitLab company pages served over `docs.gitlab.com` and `about.gitlab.com`
 also load certain page content directly from common public CDN hostnames.
 
+### Container registry hostname list
+
+Add these additional hostnames to your allow-lists if you pull images from `registry.gitlab.com`:
+
+- `*.storage.googleapis.com`
+- `*.cdn.registry.gitlab-static.net`
+
 ## Imports
 
 GitLab.com uses settings to limit importing data into GitLab.

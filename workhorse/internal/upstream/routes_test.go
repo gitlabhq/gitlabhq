@@ -20,24 +20,6 @@ import (
 	configRedis "gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 )
 
-func TestStaticCORS(t *testing.T) {
-	path := "/assets/static.txt"
-	content := "local geo asset"
-	testhelper.SetupStaticFileHelper(t, path, content, testDocumentRoot)
-
-	testCases := []testCaseRequest{
-		{"With no origin, does not set cors headers", "GET", "/assets/static.txt", map[string]string{}, map[string]string{"Access-Control-Allow-Origin": ""}},
-		{"With unknown origin, does not set cors headers", "GET", "/assets/static.txt", map[string]string{"Origin": "https://example.com"}, map[string]string{"Access-Control-Allow-Origin": ""}},
-		{"With known origin, sets cors headers", "GET", "/assets/static.txt", map[string]string{"Origin": "https://123.cdn.web-ide.gitlab-static.net"}, map[string]string{"Access-Control-Allow-Origin": "https://123.cdn.web-ide.gitlab-static.net", "Vary": "Origin"}},
-		{"With known origin HEAD, sets cors headers", "HEAD", "/assets/static.txt", map[string]string{"Origin": "https://123.cdn.web-ide.gitlab-static.net"}, map[string]string{"Access-Control-Allow-Origin": "https://123.cdn.web-ide.gitlab-static.net", "Vary": "Origin"}},
-		{"With known origin OPTIONS, sets cors headers", "OPTIONS", "/assets/static.txt", map[string]string{"Origin": "https://123.cdn.web-ide.gitlab-static.net"}, map[string]string{"Access-Control-Allow-Origin": "https://123.cdn.web-ide.gitlab-static.net", "Vary": "Origin"}},
-		{"With known origin POST, does not set cors headers", "POST", "/assets/static.txt", map[string]string{"Origin": "https://123.cdn.web-ide.gitlab-static.net"}, map[string]string{"Access-Control-Allow-Origin": ""}},
-		{"With evil origin, does not set cors headers", "GET", "/assets/static.txt", map[string]string{"Origin": "https://123.cdn.web-ide.gitlab-static.net.evil.com"}, map[string]string{"Access-Control-Allow-Origin": ""}},
-	}
-
-	runTestCasesWithGeoProxyEnabledRequest(t, testCases)
-}
-
 func TestAdminGeoPathsWithGeoProxy(t *testing.T) {
 	testCases := []testCase{
 		{"Regular admin/geo", "/admin/geo", "Geo primary received request to path /admin/geo"},
