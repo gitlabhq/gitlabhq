@@ -52,7 +52,7 @@ RSpec.shared_examples 'work items comments' do |type|
   end
 
   context 'for work item note actions signed in user with developer role' do
-    let!(:owner) { create(:user) }
+    let_it_be_with_refind(:owner) { create(:user) }
 
     before do
       project.add_owner(owner)
@@ -327,7 +327,7 @@ RSpec.shared_examples 'work items description' do
   end
 
   context 'on conflict' do
-    let!(:other_user) { create(:user) }
+    let_it_be_with_refind(:other_user) { create(:user) }
     let(:expected_warning) { 'Someone edited the description at the same time you did.' }
 
     before do
@@ -650,8 +650,8 @@ end
 RSpec.shared_examples 'work items iteration' do
   include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
-  let!(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
-  let!(:iteration) do
+  let_it_be_with_refind(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
+  let_it_be_with_refind(:iteration) do
     create(
       :iteration,
       iterations_cadence: iteration_cadence,
@@ -661,7 +661,7 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  let!(:iteration2) do
+  let_it_be_with_refind(:iteration2) do
     create(
       :iteration,
       iterations_cadence: iteration_cadence,
@@ -1170,7 +1170,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 end
 
 RSpec.shared_examples 'work items linked items' do |is_group = false|
-  before do
+  before_all do
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629

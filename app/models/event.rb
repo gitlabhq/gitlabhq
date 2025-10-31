@@ -29,7 +29,7 @@ class Event < ApplicationRecord
 
   private_constant :ACTIONS
 
-  PROJECT_ACTIONS = [:created, :joined, :left, :expired].freeze
+  PROJECT_ACTIONS = [:created, :pushed, :joined, :left, :expired].freeze
   WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
   DESIGN_ACTIONS = [:created, :updated, :destroyed].freeze
   TEAM_ACTIONS = [:joined, :left, :expired].freeze
@@ -249,24 +249,21 @@ class Event < ApplicationRecord
   end
 
   def target_id
-    return super if super.present?
-    return project_id if action && PROJECT_ACTIONS.include?(action.to_sym)
+    return project_id if project_as_target?(super)
 
-    nil
+    super
   end
 
   def target_type
-    return super if super.present?
-    return 'Project' if action && PROJECT_ACTIONS.include?(action.to_sym) && project_id
+    return 'Project' if project_as_target?(super)
 
-    nil
+    super
   end
 
   def target
-    return super if super.present?
-    return project if action && PROJECT_ACTIONS.include?(action.to_sym)
+    return project if project_as_target?(super)
 
-    nil
+    super
   end
 
   def milestone
@@ -527,6 +524,14 @@ class Event < ApplicationRecord
 
   def action_enum_value
     self.class.actions[action]
+  end
+
+  def project_as_target?(original_value)
+    return false if original_value.present?
+    return false unless project_id
+    return false unless action
+
+    PROJECT_ACTIONS.include?(action.to_sym)
   end
 end
 

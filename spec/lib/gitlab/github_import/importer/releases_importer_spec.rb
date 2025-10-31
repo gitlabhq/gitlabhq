@@ -261,9 +261,9 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
 
         it 'returns ghost user when author is empty in Github release' do
           github_release[:author] = nil
-          ghost_author = { id: Gitlab::GithubImport.ghost_user_id, login: 'ghost' }
+          ghost_author = { id: Gitlab::GithubImport.ghost_user_id(project.organization), login: 'ghost' }
 
-          expect(release_hash[:author_id]).to eq(Gitlab::GithubImport.ghost_user_id)
+          expect(release_hash[:author_id]).to eq(Gitlab::GithubImport.ghost_user_id(project.organization))
           expect(importer.github_users).to eq([ghost_author])
         end
       end
@@ -512,7 +512,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
         it 'returns ghost user when author is empty in Github release' do
           github_release[:author] = nil
 
-          expect(release_hash[:author_id]).to eq(Gitlab::GithubImport.ghost_user_id)
+          expect(release_hash[:author_id]).to eq(Gitlab::GithubImport.ghost_user_id(project.organization))
         end
 
         context 'when Github author is not found in Gitlab' do

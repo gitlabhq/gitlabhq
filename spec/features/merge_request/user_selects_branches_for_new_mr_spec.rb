@@ -6,8 +6,8 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
   include ListboxHelpers
   include RapidDiffsHelpers
 
-  let!(:user) { create(:user) }
-  let!(:project) { create(:project, :public, :repository, namespace: user.namespace) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository, namespace: user.namespace) }
 
   def select_source_branch(branch_name)
     find('.js-source-branch', match: :first).click
@@ -105,8 +105,8 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
   end
 
   context 'on changes tab' do
-    let!(:params) { { target_branch: 'master', source_branch: 'fix' } }
-    let!(:merge_request) do
+    let_it_be(:params) { { target_branch: 'master', source_branch: 'fix' } }
+    let_it_be(:merge_request) do
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         @merge_request = ::MergeRequests::BuildService
                            .new(project: project, current_user: user, params: params)
@@ -114,7 +114,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
       end
     end
 
-    let!(:diffs) { merge_request.diffs }
+    let_it_be(:diffs) { merge_request.diffs }
 
     before do
       visit project_new_merge_request_path(project, merge_request: params)

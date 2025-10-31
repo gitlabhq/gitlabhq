@@ -113,4 +113,12 @@ class PushEvent < Event
 
     errors.add(:action, "the action #{action.inspect} is not valid")
   end
+
+  private
+
+  def project_as_target?(original_value)
+    return false if validation_context
+
+    super
+  end
 end

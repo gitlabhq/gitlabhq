@@ -12,6 +12,8 @@ RSpec.shared_examples 'migrating records to the ghost user' do |record_class, fi
     end
   end
 
+  let(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+
   before do
     project.add_developer(user)
   end
@@ -32,7 +34,7 @@ RSpec.shared_examples 'migrating records to the ghost user' do |record_class, fi
       migrated_record = record_class.find_by_id(record.id)
 
       migrated_fields.each do |field|
-        expect(migrated_record.public_send(field)).to eq(Users::Internal.ghost)
+        expect(migrated_record.public_send(field)).to eq(ghost_user)
       end
     end
   end

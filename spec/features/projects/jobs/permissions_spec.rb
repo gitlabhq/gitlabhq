@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Project Jobs Permissions', feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
-  let!(:group) { create(:group, name: 'some group') }
-  let!(:project) { create(:project, :repository, namespace: group) }
-  let!(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
-  let!(:user) { create(:user) }
-  let!(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
+  let_it_be_with_reload(:group) { create(:group, name: 'some group') }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: group) }
+  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
 
   before do
     sign_in(user)
@@ -112,7 +112,7 @@ RSpec.describe 'Project Jobs Permissions', feature_category: :continuous_integra
 
   describe 'artifacts page' do
     context 'when recent job has artifacts available' do
-      before do
+      before_all do
         archive = fixture_file_upload('spec/fixtures/ci_build_artifacts.zip')
 
         create(:ci_job_artifact, :archive, file: archive, job: job)

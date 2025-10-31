@@ -13,6 +13,8 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
     )
   end
 
+  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:settings) { Gitlab::GithubImport::Settings.new }
   let(:user_mapping_enabled) { true }
@@ -42,19 +44,19 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
         user = { id: 4, login: 'kittens' }
         note = { author: user }
 
-        expect(finder).to receive(:user_id_for).with(user, ghost: true).and_return(Users::Internal.ghost.id)
+        expect(finder).to receive(:user_id_for).with(user, ghost: true).and_return(ghost_user.id)
 
-        expect(finder.author_id_for(note)).to eq([Users::Internal.ghost.id, true])
+        expect(finder.author_id_for(note)).to eq([ghost_user.id, true])
       end
 
       it 'returns the ID of the ghost user when the object has no user' do
         note = { author: nil }
 
-        expect(finder.author_id_for(note)).to eq([Users::Internal.ghost.id, true])
+        expect(finder.author_id_for(note)).to eq([ghost_user.id, true])
       end
 
       it 'returns the ID of the ghost user when the given object is nil' do
-        expect(finder.author_id_for(nil)).to eq([Users::Internal.ghost.id, true])
+        expect(finder.author_id_for(nil)).to eq([ghost_user.id, true])
       end
     end
 
@@ -86,7 +88,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   describe '#user_id_for' do
     context 'when passed `nil`' do
       it 'returns the ghost user id' do
-        expect(finder.user_id_for(nil)).to eq(Users::Internal.ghost.id)
+        expect(finder.user_id_for(nil)).to eq(ghost_user.id)
       end
 
       context 'when `ghost:` is false' do
@@ -98,7 +100,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
     context 'when user is GitHub ghost user' do
       it 'returns the ghost user id' do
-        expect(finder.user_id_for({ login: 'ghost' })).to eq(Users::Internal.ghost.id)
+        expect(finder.user_id_for({ login: 'ghost' })).to eq(ghost_user.id)
       end
 
       context 'when `ghost:` is false' do

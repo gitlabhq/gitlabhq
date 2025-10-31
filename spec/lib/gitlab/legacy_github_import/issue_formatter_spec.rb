@@ -35,6 +35,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
   end
 
   let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
+  let(:internal_ghost_user) { Users::Internal.for_organization(project.organization).ghost }
   let(:ghost_user) { { id: -1, login: 'Ghost' } }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -142,7 +143,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
         let(:raw_data) { base_data.merge(assignee: ghost_user) }
 
         it 'returns gitlab ghost user id for assignee_ids' do
-          expect(issue.attributes.fetch(:assignee_ids)).to include(Users::Internal.ghost.id)
+          expect(issue.attributes.fetch(:assignee_ids)).to include(internal_ghost_user.id)
         end
       end
 
@@ -237,7 +238,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
         let(:raw_data) { base_data.merge(user: ghost_user) }
 
         it 'returns the project gitlab ghost user id' do
-          expect(issue.attributes.fetch(:author_id)).to eq(Users::Internal.ghost.id)
+          expect(issue.attributes.fetch(:author_id)).to eq(internal_ghost_user.id)
         end
       end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Incident details', :js, feature_category: :incident_management do
   include MergeRequestDiffHelpers
 
-  let!(:payload) do
+  let_it_be(:payload) do
     {
       'title' => 'Alert title',
       'start_time' => '2020-04-27T10:10:22.265949279Z',
@@ -20,24 +20,24 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     }
   end
 
-  let!(:project) { create(:project) }
-  let!(:developer) { create(:user, developer_of: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
-  let!(:alert) do
+  let_it_be(:alert) do
     create(:alert_management_alert, project: project, payload: payload)
   end
 
-  let!(:confidential_incident) do
+  let_it_be(:confidential_incident) do
     create(:incident, confidential: true, project: project, author: developer, description: 'Confidential')
   end
 
-  let!(:incident) do
+  let_it_be_with_reload(:incident) do
     create(:incident, project: project, author: developer, description: 'description', alert_management_alert: alert)
   end
 
-  let!(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: incident) }
+  let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: incident) }
 
-  let!(:issue) do
+  let_it_be_with_reload(:issue) do
     create(:issue, project: project, author: developer, description: 'Issue description')
   end
 

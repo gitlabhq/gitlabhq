@@ -240,7 +240,7 @@ When a secret is detected a vulnerability is created for it. The vulnerability r
 detected" even if the secret is removed from the scanned file and pipeline secret detection has been
 run again. This is because the leaked secret continues to be a security risk until it has been revoked.
 Removed secrets also persist in the Git history. To remove a secret from the Git repository's history, see
-[Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
+[Redact text from repository](../../../project/repository/repository_size.md#redact-text-from-repository).
 
 ### Excluded items
 

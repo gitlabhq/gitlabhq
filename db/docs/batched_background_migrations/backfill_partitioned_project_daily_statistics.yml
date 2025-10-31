@@ -1,8 +1,8 @@
 ---
 migration_job_name: BackfillPartitionedProjectDailyStatistics
-description: This migration copies records from project_daily_statistics to the new partitioned pproject_daily_statistics_b8088ecbd2 table
+description: This migration copies records from project_daily_statistics to the new partitioned project_daily_statistics_b8088ecbd2 table
 feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207226
 milestone: '18.5'
 queued_migration_version: 20251002061931
-finalized_by:
+finalized_by: 20251029020542

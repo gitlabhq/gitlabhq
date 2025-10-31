@@ -12,6 +12,8 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
     end
   end
 
+  let(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+
   before do
     project.add_developer(user)
   end
@@ -38,7 +40,7 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
       migrated_record = record_class.find_by_id(record.id)
 
       migrated_fields.each do |field|
-        expect(migrated_record.public_send(field)).to eq(Users::Internal.ghost)
+        expect(migrated_record.public_send(field)).to eq(ghost_user)
       end
     end
 
@@ -47,7 +49,7 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
 
       migrated_record = record_class.find_by_id(record.id)
 
-      check_user = always_ghost ? Users::Internal.ghost : user
+      check_user = always_ghost ? ghost_user : user
 
       migrated_fields.each do |field|
         expect(migrated_record.public_send(field)).to eq(check_user)

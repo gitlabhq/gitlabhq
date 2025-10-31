@@ -12,6 +12,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
     )
   end
 
+  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
   let_it_be(:merge_request) { create(:merged_merge_request, project: project) }
   let_it_be(:merger_source_user) { generate_source_user(project, 999) }
 
@@ -161,7 +162,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
             .and not_change(merge_request, :updated_at)
 
           metrics = merge_request.metrics.reload
-          expect(metrics.merged_by).to eq(Users::Internal.ghost)
+          expect(metrics.merged_by).to eq(ghost_user)
           expect(metrics.merged_at).to eq(merged_at)
 
           last_note = merge_request.notes.last

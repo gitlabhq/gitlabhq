@@ -81,8 +81,9 @@ module Gitlab
       #   If `false`, nil is returned.
       # @return [Integer, NilClass]
       def user_id_for(user, ghost: true)
+        # user[:login] == 'ghost' here refers to the Github username
         if user.nil? || user[:login].nil? || user[:login] == 'ghost'
-          return ghost ? GithubImport.ghost_user_id : nil
+          return ghost ? GithubImport.ghost_user_id(project.organization_id) : nil
         end
 
         return find(user[:id], user[:login]) unless user_mapping_enabled?

@@ -5,20 +5,20 @@ require 'spec_helper'
 RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   include ListboxHelpers
 
-  let!(:user) { create(:user) }
-  let!(:user2) { create(:user, name: 'John') }
+  let_it_be_with_refind(:user) { create(:user) }
+  let_it_be_with_refind(:user2) { create(:user, name: 'John') }
 
-  let!(:group) { create(:group) }
-  let!(:project) { create(:project, :public, :repository, group: group) }
-  let!(:label) { create(:label, project: project, title: "testing-label") }
-  let!(:label2) { create(:label, project: project, title: "another-label") }
-  let!(:work_item) { create(:work_item, project: project, labels: [label]) }
-  let!(:task) { create(:work_item, :task, project: project) }
-  let!(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
-  let!(:milestone) { create(:milestone, project: project) }
-  let!(:milestones) { create_list(:milestone, 10, project: project) }
-  let!(:note) { create(:note, noteable: work_item, project: work_item.project) }
-  let!(:contact) { create(:contact, group: group) }
+  let_it_be_with_refind(:group) { create(:group) }
+  let_it_be_with_refind(:project) { create(:project, :public, :repository, group: group) }
+  let_it_be_with_refind(:label) { create(:label, project: project, title: "testing-label") }
+  let_it_be_with_refind(:label2) { create(:label, project: project, title: "another-label") }
+  let_it_be_with_refind(:work_item) { create(:work_item, project: project, labels: [label]) }
+  let_it_be_with_refind(:task) { create(:work_item, :task, project: project) }
+  let_it_be_with_refind(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
+  let_it_be_with_refind(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_refind(:milestones) { create_list(:milestone, 10, project: project) }
+  let_it_be_with_refind(:note) { create(:note, noteable: work_item, project: work_item.project) }
+  let_it_be_with_refind(:contact) { create(:contact, group: group) }
   let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }
   let(:list_path) { project_issues_path(project) }
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
@@ -42,9 +42,12 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   context 'for signed in user' do
     let(:linked_item) { task }
 
-    before do
+    before_all do
       stub_feature_flags(comment_temperature: false)
       group.add_developer(user)
+    end
+
+    before do
       stub_feature_flags(notifications_todos_buttons: false, work_item_planning_view: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
       sign_in(user)
@@ -107,8 +110,11 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'when item is a task' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       sign_in(user)
       visit project_work_item_path(project, task.iid)
     end
@@ -118,13 +124,16 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'for signed in admin' do
-    let!(:admin) { create(:admin) }
+    let_it_be_with_refind(:admin) { create(:admin) }
 
     context 'with akismet integration' do
-      let!(:user_agent_detail) { create(:user_agent_detail, subject: work_item) }
+      let_it_be_with_refind(:user_agent_detail) { create(:user_agent_detail, subject: work_item) }
+
+      before_all do
+        project.add_maintainer(admin)
+      end
 
       before do
-        project.add_maintainer(admin)
         stub_application_setting(akismet_enabled: true)
         sign_in(admin)
         visit work_items_path
@@ -135,8 +144,11 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'for signed in owner' do
-    before do
+    before_all do
       project.add_owner(user)
+    end
+
+    before do
       sign_in(user)
       visit work_items_path
     end
@@ -145,13 +157,13 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'for guest users' do
-    before do
+    before_all do
       project.add_guest(user)
     end
 
     context 'for work item authored by guest user' do
-      let!(:key_result) { create(:work_item, :key_result, author: user, project: project) }
-      let!(:note) { create(:note, noteable: key_result, project: key_result.project) }
+      let_it_be_with_refind(:key_result) { create(:work_item, :key_result, author: user, project: project) }
+      let_it_be_with_refind(:note) { create(:note, noteable: key_result, project: key_result.project) }
 
       before do
         sign_in(user)
@@ -196,7 +208,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   end
 
   context 'for development widget' do
-    let!(:merge_request) do
+    let_it_be_with_refind(:merge_request) do
       create(
         :merge_request,
         source_project: project,
@@ -208,7 +220,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
       )
     end
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 

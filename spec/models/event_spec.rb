@@ -148,14 +148,15 @@ RSpec.describe Event, feature_category: :user_profile do
         context 'with project actions' do
           let_it_be(:project_action_events) do
             described_class::PROJECT_ACTIONS.map do |action|
-              create(:event, target: nil, action: action, project: project)
+              factory = action == :pushed ? :push_event : :event
+              create(factory, target: nil, action: action, project: project)
             end
           end
 
           let_it_be(:orphaned_project_action_events) do
-            described_class::PROJECT_ACTIONS.map do |action|
-              create(:event, target: nil, action: action, project: nil)
-            end
+            described_class::PROJECT_ACTIONS
+              .excluding(:pushed) # PushEvent has a presence validation requirement for Project.
+              .map { |action| create(:event, target: nil, action: action, project: nil) }
           end
 
           it 'only return events with defined project' do
@@ -165,8 +166,8 @@ RSpec.describe Event, feature_category: :user_profile do
         end
 
         context 'with non-project actions' do
-          let_it_be(:non_project_action_event) { create(:event, target: nil, action: :pushed, project: project) }
-          let_it_be(:orphaned_non_project_action_event) { create(:event, target: nil, action: :pushed, project: nil) }
+          let_it_be(:non_project_action_event) { create(:event, target: nil, action: :closed, project: project) }
+          let_it_be(:orphaned_non_project_action_event) { create(:event, target: nil, action: :closed, project: nil) }
 
           it 'excludes all non-project action events regardless of project presence' do
             is_expected.not_to include(non_project_action_event, orphaned_non_project_action_event)
@@ -335,7 +336,7 @@ RSpec.describe Event, feature_category: :user_profile do
     end
 
     context 'when target_type is not present and action is not a PROJECT_ACTION' do
-      let(:event) { build(:event, target: nil, project: project, action: :pushed) }
+      let(:event) { build(:event, target: nil, project: project, action: :closed) }
 
       it 'returns nil' do
         expect(event.target_type).to be_nil

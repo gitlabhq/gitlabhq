@@ -33,6 +33,52 @@ for GitLab Self-Managed. For GitLab SaaS, size limits are [pre-defined](../../gi
 When a project reaches its size limit, certain operations like pushing, creating merge requests,
 and uploading LFS objects are restricted.
 
+## Before you rewrite Git history
+
+Before you rewrite the Git history and remove data from a repository, you must take into account the information in the following sections.
+
+### Local clones must be changed
+
+Everyone who has a clone of the repository must either:
+
+- Delete their local copy and clone a new copy of the repository.
+- Fetch all remote changes and ensure all ongoing work is rebased on top of that.
+
+When not done properly, users pushing local changes can revive files that were supposed to be deleted.
+
+### Running pipelines can cause cleanup to fail
+
+When there are still pipelines running during a cleanup, they can interact with the repository and can cause the cleanup to not work properly.
+
+### Garbage collection grace period
+
+GitLab runs Git garbage collection with a grace period of 30 minutes. This
+process cleans up objects that are both:
+
+- Not reachable from any reference.
+- At least 30 minutes old.
+
+If the data you wanted to remove is reachable from any commit or is less than
+30 minutes old, Git garbage collection will not remove it.
+
+As a result, you must wait at least 30 minutes before selecting **Prune unreachable objects** after running housekeeping.
+
+### History cannot be rewritten on forked project
+
+The builtin methods cannot be used on repositories that are forked. The way
+GitLab objects are stored across forks makes it impossible for Git to garbage
+collect objects that are shared between forks.
+
+### Workaround: Archive the project
+
+If you [archive](../working_with_projects.md#archive-a-project) before doing the
+cleanup, the repository will be read-only. This will ensure no one will make
+changes while the cleanup is in progress.
+
+Archiving a repository will also remove the fork relation. This would allow you
+the clean up data. But if the data was pulled up into a fork, cleanup would need
+to happen there as well.
+
 ## Methods to reduce repository size
 
 The following methods are available to reduce the size of a repository:
@@ -54,7 +100,7 @@ the potential impact on users.
 
 You can [purge files with `git filter-repo`](../../../topics/git/repository.md#purge-files-from-repository-history)
 to remove large files from Git history. Do not use this method to remove sensitive data like passwords or keys.
-Instead use [Remove blobs](#remove-blobs).
+Instead use [remove blobs](#remove-blobs) or [redact text](#redact-text-from-repository).
 
 This process:
 
@@ -117,6 +163,13 @@ To clean up a repository:
 
 GitLab sends an email notification with the recalculated repository size after the cleanup completes.
 
+## Remove data from a repository
+
+To remove sensitive or confidential data from a repository, use one of these methods:
+
+- To remove the files completely, [remove blobs](#remove-blobs).
+- To keep the files, but replace confidential text with the replacement text `***REMOVED***`, [redact text](#redact-text-from-repository).
+
 ### Remove blobs
 
 {{< history >}}
@@ -145,7 +198,8 @@ This process:
 
 {{< alert type="note" >}}
 
-To replace strings with `***REMOVED***`, see [Redact information](../../../topics/git/undo.md#redact-information).
+You can also replace strings with the replacement string `***REMOVED***`. For more information, see
+[redact text from repository](#redact-text-from-repository).
 
 {{< /alert >}}
 
@@ -221,7 +275,85 @@ To get a list of blobs at a given commit or branch sorted by size:
 
    The third column in the output is the object ID of the blob. For example: `8150ee86f923548d376459b29afecbe8495514e9`.
 
+### Redact text from repository
+
+{{< history >}}
+
+- Introduced in GitLab 17.1 [with a flag](../../../administration/feature_flags/_index.md) named `rewrite_history_ui`. Disabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/450701`.
+- Enabled on GitLab.com in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.2.
+- Enabled on GitLab Self-Managed and GitLab Dedicated in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.3.
+- Generally available in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/472018` in GitLab 17.9. Feature flag `rewrite_history_ui` removed.
+
+{{< /history >}}
+
+Permanently delete sensitive or confidential information that was accidentally committed, ensuring
+it's no longer accessible in your repository's history.
+Replaces a list of strings with `***REMOVED***`.
+
+{{< alert type="warning" >}}
+
+This action is irreversible. After rewriting history and running housekeeping, the changes are permanent.
+
+{{< /alert >}}
+
+While redacting files in GitLab removes exposed secrets, it also:
+
+- Rewrites Git history. Historical tags and branches based on the old commit history might not function correctly.
+- Is destructive. Existing local clones are incompatible with the updated repository and must be re-cloned.
+- Updates commit hashes because the redaction updates their content.
+- Drops commit signatures during the rewrite process.
+- Breaks features that depend on commit hashes, including:
+  - Open merge requests. Open merge requests might fail to merge, and require a manual rebase.
+  - Links to previous commits, which results in 404 errors.
+- Might break pipelines that reference old commit SHAs and require reconfiguration.
+
+For better repository integrity, you should instead:
+
+- Revoke or rotate exposed secrets.
+- Implement [the secret detection capabilities of GitLab](../../application_security/secret_detection/_index.md).
+
+This approach:
+
+- Proactively prevents future secret leaks.
+- Maintains Git history while ensuring security compliance.
+
+For more information, see [secret push protection](../../application_security/secret_detection/secret_push_protection/_index.md).
+
+Alternatively, to completely delete specific files from a repository, see
+[Remove blobs](#remove-blobs).
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+To redact text from your repository:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings** > **Repository**.
+1. Expand **Repository maintenance**.
+1. Select **Redact text**.
+1. On the drawer, enter the text to redact. Regexes and glob patterns are accepted.
+1. Select **Redact matching strings**.
+1. On the confirmation dialog, enter your project path.
+1. Select **Yes, redact matching strings**.
+1. On the left sidebar, select **Settings** > **General**.
+1. Expand **Advanced**.
+1. Select **Run housekeeping**. Wait at least 30 minutes for the operation to complete.
+1. In the same **Settings** > **General** > **Advanced** section, select **Prune unreachable objects**.
+   This operation takes approximately 5-10 minutes to complete.
+
+{{< alert type="note" >}}
+
+If the project containing the sensitive information has been forked, the housekeeping task might fail to
+complete this redaction process to maintain the integrity of the special object pool repository
+[which contains the forked data](../../../administration/housekeeping.md#object-pool-repositories).
+For help, contact GitLab Support.
+
+{{< /alert >}}
+
 ## Troubleshooting
+
+These sections have solutions for issues you might encounter.
 
 ### Incorrect repository statistics shown in the GUI
 

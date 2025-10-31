@@ -90,7 +90,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 
-        find_by_scrolling("[id=\"#{changelog_id}\"]")
+        find_in_page_or_panel_by_scrolling("[id=\"#{changelog_id}\"]")
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
         find("[id=\"#{changelog_id}\"] .js-diff-more-actions").click
@@ -137,7 +137,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
 
         visit diffs_project_merge_request_path(project, merge_request)
 
-        find_by_scrolling("[id='#{file_hash}']")
+        find_in_page_or_panel_by_scrolling("[id='#{file_hash}']")
 
         expect(page).to have_text("function foo<input> {")
         expect(page).to have_css(".line[data-lang=\"rust\"] .k")
@@ -205,6 +205,14 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       ).execute
 
       project.commit(branch_name)
+    end
+
+    def find_in_page_or_panel_by_scrolling(selector, **options)
+      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        find_in_panel_by_scrolling(selector, **options)
+      else
+        find_by_scrolling(selector, **options)
+      end
     end
   end
 end

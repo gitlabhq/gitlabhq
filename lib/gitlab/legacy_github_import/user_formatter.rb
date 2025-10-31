@@ -26,7 +26,7 @@ module Gitlab
 
       def gitlab_id
         return find_by_email unless user_mapping_enabled?
-        return GithubImport.ghost_user_id if ghost_user?
+        return GithubImport.ghost_user_id(project.organization_id) if ghost_user?
         return project.root_ancestor.owner_id if map_to_personal_namespace_owner?
 
         gitlab_user&.id

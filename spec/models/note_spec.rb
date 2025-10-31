@@ -843,7 +843,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       it 'returns the ghost user' do
-        expect(note.last_edited_by).to eq(Users::Internal.ghost)
+        expect(note.last_edited_by).to eq(Users::Internal.for_organization(note.organization_id).ghost)
       end
     end
 

@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers -- legacy spec file
 RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include Import::UserMappingHelper
 
@@ -38,6 +39,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
   let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
   let(:ghost_user) { { id: -1, login: 'Ghost' } }
+  let(:internal_ghost_user) { Users::Internal.for_organization(project.organization).ghost }
   let(:source_sha) { create(:commit, project: project).id }
   let(:target_commit) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit) }
   let(:target_sha) { target_commit.id }
@@ -188,7 +190,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         let(:raw_data) { base_data.merge(assignee: ghost_user) }
 
         it 'returns gitlab ghost user id for assignee_id' do
-          expect(pull_request.attributes.fetch(:assignee_id)).to eq(Users::Internal.ghost.id)
+          expect(pull_request.attributes.fetch(:assignee_id)).to eq(internal_ghost_user.id)
         end
       end
 
@@ -262,7 +264,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         let(:raw_data) { base_data.merge(user: ghost_user) }
 
         it 'returns the gitlab ghost user id' do
-          expect(pull_request.attributes.fetch(:author_id)).to eq(Users::Internal.ghost.id)
+          expect(pull_request.attributes.fetch(:author_id)).to eq(internal_ghost_user.id)
         end
       end
 
@@ -636,3 +638,4 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

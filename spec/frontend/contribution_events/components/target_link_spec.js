@@ -40,7 +40,8 @@ describe('TargetLink', () => {
 
   describe('when target type is not defined', () => {
     beforeEach(() => {
-      createComponent({ propsData: { event: eventPushed() } });
+      const event = { ...eventPushed(), target: {} };
+      createComponent({ propsData: { event } });
     });
 
     it('renders nothing', () => {

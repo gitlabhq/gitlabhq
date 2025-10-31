@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown do
-  let!(:project) { create(:project, :public, :repository) }
-  let!(:description) do
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:description) do
     <<~MERMAID
     ```mermaid
     graph TD;

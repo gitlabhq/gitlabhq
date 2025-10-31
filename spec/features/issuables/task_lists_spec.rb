@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
   include Warden::Test::Helpers
 
-  let!(:project) { create(:project, :public, :repository) }
-  let!(:user)    { create(:user, maintainer_of: project) }
-  let!(:user2)   { create(:user, guest_of: project) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:user)    { create(:user, maintainer_of: project) }
+  let_it_be(:user2)   { create(:user, guest_of: project) }
 
   let(:markdown) do
     <<-MARKDOWN.strip_heredoc

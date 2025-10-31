@@ -1169,6 +1169,9 @@ msgstr ""
 msgid "%{list} list help popover"
 msgstr ""
 
+msgid "%{loadedProjects} of %{totalProjectsCount} %{projects} loaded"
+msgstr ""
+
 msgid "%{locker} has a lock on \"%{path}\". %{additionalPhrase}"
 msgstr ""
 
@@ -58002,6 +58005,9 @@ msgid "Scroll right"
 msgstr ""
 
 msgid "Scroll to bottom"
+msgstr ""
+
+msgid "Scroll to the bottom to load more projects"
 msgstr ""
 
 msgid "Scroll to top"

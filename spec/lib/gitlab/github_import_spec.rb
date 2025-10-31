@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport, feature_category: :importers do
+  let(:organization) { create(:common_organization) }
+  let(:ghost_user) { Users::Internal.for_organization(organization.id).ghost }
+
   context 'github.com' do
     let(:project) { double(:project, unsafe_import_url: 'http://t0ken@github.com/user/repo.git', id: 1, group: nil) }
 
@@ -35,7 +38,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     end
 
     it 'returns the ID of the ghost user', :clean_gitlab_redis_shared_state do
-      expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
+      expect(described_class.ghost_user_id(organization.id)).to eq(ghost_user.id)
     end
 
     it 'caches the ghost user ID', :clean_gitlab_redis_cache do
@@ -45,7 +48,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
         .and_call_original
 
       2.times do
-        described_class.ghost_user_id
+        described_class.ghost_user_id(organization.id)
       end
     end
 
@@ -94,7 +97,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     end
 
     it 'returns the ID of the ghost user', :clean_gitlab_redis_shared_state do
-      expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
+      expect(described_class.ghost_user_id(organization.id)).to eq(ghost_user.id)
     end
 
     it 'caches the ghost user ID', :clean_gitlab_redis_shared_state do
@@ -104,7 +107,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
         .and_call_original
 
       2.times do
-        described_class.ghost_user_id
+        described_class.ghost_user_id(organization.id)
       end
     end
 

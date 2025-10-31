@@ -684,7 +684,8 @@ end
 When it's not possible/logical to modify the implementation of a method, then
 wrap it in a self-descriptive method and use that method.
 
-For example, in GitLab-FOSS, the only user created by the system is `Users::Internal.ghost`
+For example, in GitLab-FOSS, the only user created by the system is
+`Users::Internal.for_organization(Organizations::Organization.first).ghost`
 but in EE there are several types of bot-users that aren't really users. It would
 be incorrect to override the implementation of `User#ghost?`, so instead we add
 a method `#internal?` to `app/models/user.rb`. The implementation:

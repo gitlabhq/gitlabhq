@@ -12,7 +12,7 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
   end
 
   # GitLab's system ghost user - used as mapping for Gitea ghost user
-  let_it_be(:gitlab_ghost_user) { Users::Internal.ghost }
+  let_it_be(:gitlab_ghost_user) { Users::Internal.for_organization(project.organization).ghost }
 
   let(:source_user_mapper) do
     Gitlab::Import::SourceUserMapper.new(

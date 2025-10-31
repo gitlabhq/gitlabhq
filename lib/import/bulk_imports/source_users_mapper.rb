@@ -31,7 +31,7 @@ module Import
         end
 
         def ghost_user_id
-          Users::Internal.ghost.id
+          @source_user_mapper.ghost_user.id
         end
         strong_memoize_attr :ghost_user_id
       end

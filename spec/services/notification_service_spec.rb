@@ -10,6 +10,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   let_it_be_with_refind(:project, reload: true) { create(:project, :public) }
   let_it_be_with_refind(:assignee) { create(:user) }
 
+  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+
   let(:notification) { described_class.new }
 
   around(:example, :deliver_mails_inline) do |example|
@@ -314,7 +316,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: Users::Internal.ghost } }
+        let(:key_options) { { user: ghost_user } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_ssh_key_email")
@@ -335,7 +337,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: Users::Internal.ghost } }
+        let(:key_options) { { user: ghost_user } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_gpg_key_email")
