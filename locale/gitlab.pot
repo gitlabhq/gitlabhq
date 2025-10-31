@@ -67746,6 +67746,9 @@ msgstr ""
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
+msgid "This label is archived and not available for use. Unarchive to use it again."
+msgstr ""
+
 msgid "This license has already expired."
 msgstr ""
 
@@ -70048,6 +70051,9 @@ msgid "Unapproved the current merge request."
 msgstr ""
 
 msgid "Unarchive"
+msgstr ""
+
+msgid "Unarchive label"
 msgstr ""
 
 msgid "Unassign"

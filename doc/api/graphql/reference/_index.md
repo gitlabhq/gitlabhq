@@ -33084,7 +33084,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="groupworkitemstatecountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="groupworkitemstatecountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
-| <a id="groupworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="groupworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. |
 | <a id="groupworkitemstatecountsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemstatecountsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -33171,7 +33171,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="groupworkitemsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="groupworkitemsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
-| <a id="groupworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="groupworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. |
 | <a id="groupworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -37592,7 +37592,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="namespaceworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="namespaceworkitemstatecountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="namespaceworkitemstatecountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
-| <a id="namespaceworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="namespaceworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. |
 | <a id="namespaceworkitemstatecountsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="namespaceworkitemstatecountsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -37684,7 +37684,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="namespaceworkitemsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="namespaceworkitemsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
-| <a id="namespaceworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="namespaceworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. |
 | <a id="namespaceworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="namespaceworkitemsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -41900,7 +41900,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="projectworkitemstatecountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="projectworkitemstatecountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
-| <a id="projectworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="projectworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. |
 | <a id="projectworkitemstatecountsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="projectworkitemstatecountsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -41981,7 +41981,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="projectworkitemsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="projectworkitemsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
-| <a id="projectworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="projectworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. |
 | <a id="projectworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="projectworkitemsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 

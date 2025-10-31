@@ -143,6 +143,62 @@ The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/securi
 With this setup, your build job produces a single `compile_commands.json`.
 The `split_cdb` script creates multiple partitions, and the analyzer jobs run in parallel, with each job processing one partition.
 
+## Ruleset configuration
+
+GitLab Advanced SAST CPP supports [custom rulesets](customize_rulesets.md) where a "rule" is a GitLab Advanced SAST CPP checker.
+
+Custom rulesets can be created with [passthroughs](customize_rulesets.md#build-a-custom-configuration-using-a-passthrough-chain-for-semgrep) composed of [`CodeChecker` configuration files](https://github.com/Ericsson/codechecker/blob/master/docs/config_file.md).
+
+Passthrough configuration is handled as follows:
+
+- `targetDir` and `target` are ignored. After processing passthroughs, any resulting flags are passed directly to `CodeChecker`
+- `overwrite` mode replaces the entire configuration and `append` mode appends flags
+- Certain `CodeChecker` flags cannot be customized, including the analyzer flags `-o`, `--output` and the parse flags `-o, --output, -e, --export`
+- `server` and `store` configuration items are ignored
+
+For example, given the following `.gitlab/sastconfig.toml`:
+
+```toml
+[gitlab-advanced-sast-cpp]
+    description = "My ruleset"
+
+    [[gitlab-advanced-sast-cpp.passthrough]]
+        # replace the GitLab default configuration with my own
+        mode  = "overwrite"
+        type  = "url"
+        value = "https://example.com/gitlab-advanced-sast-cpp.yaml"
+
+    [[gitlab-advanced-sast-cpp.passthrough]]
+        # append flags from a file in the current repository
+        mode  = "append"
+        type  = "file"
+        value = "gitlab-advanced-sast-cpp.yml"
+```
+
+with the following content at `https://example.com/gitlab-advanced-sast-cpp.yaml`:
+
+```yaml
+analyzer:
+  - --disable-all
+  - --enable=core.DivideZero
+```
+
+and `gitlab-advanced-sast-cpp.yml` containing:
+
+```yaml
+analyzer:
+  - --enable=core.CallAndMessage
+```
+
+the effective resulting configuration will be:
+
+```yaml
+analyzer:
+  - --disable-all
+  - --enable=core.DivideZero
+  - --enable=core.CallAndMessage
+```
+
 ## Troubleshooting
 
 ### Rebasing paths with `cdb-rebase`

@@ -90,7 +90,16 @@ required upgrade stops occur at versions:
 
 ## 18.4.2
 
-The Geo [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) that causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)` is fixed.
+- Upgrades to `18.4.2` or `18.4.3` might fail with a `no implicit conversion of nil into String` error for these batched background migrations:
+  - `FixIncompleteInstanceExternalAuditDestinations`
+  - `FinalizeAuditEventDestinationMigrations`
+
+  To resolve this issue, upgrade to the latest patch release or use the [workaround in issue 578938](https://gitlab.com/gitlab-org/gitlab/-/issues/578938#workaround).
+
+### Geo installations 18.4.2
+
+- The Geo [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) that causes replication events to fail with the error message `no implicit conversion of String into
+  Array (TypeError)` is fixed.
 
 ## 18.4.1
 
