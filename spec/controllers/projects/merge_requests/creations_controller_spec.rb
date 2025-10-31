@@ -292,7 +292,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       expect do
         post_request(params)
       end.to change { MergeRequest.count }.by(1)
-      .and start_covered_experience(:create_merge_request)
+      .and start_user_experience(:create_merge_request)
     end
 
     context 'when the merge request is not created from the web ide' do

@@ -20,6 +20,7 @@ RSpec.describe QA::Scenario::Template do
       gitlab_url: gitlab_address_from_env
     )
 
+    allow(File).to receive(:exist?).and_call_original
     allow(File).to receive(:exist?).with("../config/gitlab.yml").and_return(false)
 
     allow(scenario).to receive(:attributes).and_return({ gitlab_address: gitlab_address })

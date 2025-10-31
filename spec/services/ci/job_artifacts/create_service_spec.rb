@@ -39,6 +39,46 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
       end
     end
 
+    shared_examples_for 'handling scip artifact' do
+      context 'when artifact is scip' do
+        let(:artifact_type) { 'scip' }
+        let(:max_artifact_size) { 200.megabytes.to_i }
+
+        before do
+          allow(Ci::JobArtifact)
+            .to receive(:max_artifact_size)
+            .with(type: artifact_type, project: project)
+            .and_return(max_artifact_size)
+        end
+
+        context 'when scip_code_intelligence feature flag is enabled' do
+          before do
+            stub_feature_flags(scip_code_intelligence: true)
+          end
+
+          it 'includes ProcessLsif in the headers' do
+            expect(authorize[:headers][:ProcessLsif]).to eq(true)
+          end
+
+          it 'returns 200MB in bytes as maximum size' do
+            expect(authorize[:headers][:MaximumSize]).to eq(200.megabytes.to_i)
+          end
+        end
+
+        context 'when scip_code_intelligence feature flag is disabled' do
+          before do
+            stub_feature_flags(scip_code_intelligence: false)
+          end
+
+          it 'returns an error' do
+            expect(authorize[:status]).to eq(:error)
+            expect(authorize[:http_status]).to eq(:bad_request)
+            expect(authorize[:message]).to eq('SCIP artifact type is not enabled')
+          end
+        end
+      end
+    end
+
     shared_examples_for 'validating requirements' do
       context 'when filesize is specified' do
         let(:max_artifact_size) { 10 }
@@ -85,6 +125,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
       end
 
       it_behaves_like 'handling lsif artifact'
+      it_behaves_like 'handling scip artifact'
       it_behaves_like 'validating requirements'
     end
 
@@ -118,6 +159,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
         end
 
         it_behaves_like 'handling lsif artifact'
+        it_behaves_like 'handling scip artifact'
         it_behaves_like 'validating requirements'
       end
 

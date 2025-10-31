@@ -29,12 +29,14 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       expect(item.name).to eq('Item 2')
     end
 
-    it 'returns nil for non-numeric string id' do
-      expect(TestStaticModel.find('invalid')).to be_nil
+    it 'returns error for non-numeric string id' do
+      expect { TestStaticModel.find('invalid') }.to raise_error(ActiveRecord::FixedItemsModel::RecordNotFound,
+        "Couldn't find TestStaticModel with 'id'=invalid")
     end
 
-    it 'returns nil for non-existent id' do
-      expect(TestStaticModel.find(999)).to be_nil
+    it 'raises error for non-existent id' do
+      expect { TestStaticModel.find(999) }.to raise_error(ActiveRecord::FixedItemsModel::RecordNotFound,
+        "Couldn't find TestStaticModel with 'id'=999")
     end
 
     it 'caches the found instance' do
@@ -99,6 +101,20 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       items = TestStaticModel.where(category: [:a, :b])
       expect(items.map(&:id)).to eq([1, 2, 3])
     end
+
+    it 'raises error for invalid attribute' do
+      expect do
+        TestStaticModel.where(invalid_column: 1)
+      end.to raise_error(ActiveRecord::FixedItemsModel::UnknownAttribute,
+        "Unknown attribute 'invalid_column' for TestStaticModel")
+    end
+
+    it 'raises error for invalid attribute in multiple conditions' do
+      expect do
+        TestStaticModel.where(category: :a, invalid_column: 1)
+      end.to raise_error(ActiveRecord::FixedItemsModel::UnknownAttribute,
+        "Unknown attribute 'invalid_column' for TestStaticModel")
+    end
   end
 
   describe '.find_by' do
@@ -109,6 +125,13 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
 
     it 'returns nil when no items match' do
       expect(TestStaticModel.find_by(category: :c)).to be_nil
+    end
+
+    it 'raises error for invalid attribute' do
+      expect do
+        TestStaticModel.find_by(invalid_column: 1)
+      end.to raise_error(ActiveRecord::FixedItemsModel::UnknownAttribute,
+        "Unknown attribute 'invalid_column' for TestStaticModel")
     end
   end
 

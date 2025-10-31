@@ -50,7 +50,7 @@ module Mutations
         project = authorized_find!(project_path)
         params = parse_arguments(attributes)
 
-        Labkit::CoveredExperience.start(:create_merge_request, **params)
+        Labkit::UserExperienceSli.start(:create_merge_request, **params)
 
         merge_request = ::MergeRequests::CreateService.new(
           project: project,

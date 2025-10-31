@@ -18,7 +18,7 @@ class NewMergeRequestWorker
 
   def perform(merge_request_id, user_id)
     context = { merge_request_id: merge_request_id, user_id: user_id }
-    xp = Labkit::CoveredExperience.resume(:create_merge_request, **context)
+    xp = Labkit::UserExperienceSli.resume(:create_merge_request, **context)
 
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/337182')
 

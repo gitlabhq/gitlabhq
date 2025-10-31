@@ -232,7 +232,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
         wait_for_all_requests
       end
 
-      it 'shows development widget with merge request' do
+      it 'shows development widget with merge request',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4174' do
         within_testid('work-item-development') do
           expect(page.find('li a')[:href]).to include(merge_request_path(merge_request))
         end

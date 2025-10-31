@@ -772,7 +772,7 @@ GEM
       rb_sys (~> 0.9.109)
     gitlab-kas-grpc (18.5.0.pre.rc4)
       grpc (~> 1.0)
-    gitlab-labkit (0.42.1)
+    gitlab-labkit (0.42.2)
       actionpack (>= 5.0.0, < 8.1.0)
       activesupport (>= 5.0.0, < 8.1.0)
       google-protobuf (~> 3)
@@ -2191,7 +2191,7 @@ DEPENDENCIES
   gitlab-housekeeper!
   gitlab-http!
   gitlab-kas-grpc (~> 18.5.0.pre.rc4)
-  gitlab-labkit (~> 0.42.0)
+  gitlab-labkit (~> 0.42.2)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)
   gitlab-markup (~> 2.0.0)

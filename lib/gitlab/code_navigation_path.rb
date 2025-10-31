@@ -52,7 +52,7 @@ module Gitlab
         next unless pipeline
 
         artifact = Timeout.timeout(ARTIFACT_TIMEOUT) do
-          pipeline.job_artifacts.with_file_types(['lsif']).last
+          pipeline.job_artifacts.with_file_types(%w[lsif scip]).last
         end
 
         artifact&.job

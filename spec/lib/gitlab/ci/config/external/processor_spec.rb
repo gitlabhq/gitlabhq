@@ -425,6 +425,17 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
         output = processor.perform
         expect(output.keys).to match_array([:image, :component_x_job])
       end
+
+      it 'propagates the pipeline logger' do
+        processor.perform
+
+        process_obs_count = processor
+          .logger
+          .observations_hash
+          .dig('config_file_fetch_component_content_duration_s', 'count')
+
+        expect(process_obs_count).to eq(1)
+      end
     end
 
     context 'when a valid project file is defined' do

@@ -413,31 +413,13 @@ When you cancel a job, what happens next depends on its state and the GitLab Run
 
 - For jobs that haven't started executing yet, the job is canceled immediately.
 - For running jobs:
-  - For GitLab Runner 16.10 and later with GitLab 17.0 and later, the job is marked as `canceling` while the runner runs the job's [`after_script`](../yaml/_index.md#after_script).
-    When `after_script` completes, the job is marked as `canceled`.
+  - For GitLab Runner 16.10 and later with GitLab 17.0 and later:
+    1. The job is marked as `canceling`.
+    1. The currently-running command is allowed to complete. The rest of the commands in the job's
+       [`before_script`](../yaml/_index.md#before_script) or [`script`](../yaml/_index.md#script) are skipped.
+    1. If the job has an `after_script` section, it always starts and runs to completion.
+    1. The job is marked as `canceled`.
   - For GitLab Runner 16.9 and earlier with GitLab 16.11 and earlier, the job is `canceled` immediately without running `after_script`.
-
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-stateDiagram-v2
-    accTitle: CI/CD job state transitions
-    accDescr: Shows possible state transitions for CI/CD jobs, including cancellation paths.
-
-    direction TB
-    state if_versions <>
-    [*] --> pending: Job created
-    pending --> canceled: Cancel requested
-    canceled --> [*]
-    pending --> running: Runner picks up job
-    running --> success: Job succeeds
-    success --> [*]
-    running --> failed: Job fails
-    failed --> [*]
-    running --> if_versions: Cancel requested
-    if_versions --> canceling: GitLab 17.0 and later with GitLab Runner 16.10 and later
-    if_versions --> canceled: GitLab 16.11 and earlier with GitLab Runner 16.9 and earlier
-    canceling --> canceled: after_script complete
-```
 
 If you need to cancel a job immediately without waiting for the `after_script`, use [force cancel](#force-cancel-a-job).
 

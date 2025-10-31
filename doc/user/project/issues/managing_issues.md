@@ -812,12 +812,6 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 ### Open issues in a drawer
 
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `issues_list_drawer`. Disabled by default.

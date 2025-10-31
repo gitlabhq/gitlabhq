@@ -243,7 +243,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create_merge_request
-    Labkit::CoveredExperience.start(:create_merge_request)
+    Labkit::UserExperienceSli.start(:create_merge_request)
 
     create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
     create_params[:target_project_id] = params[:target_project_id]

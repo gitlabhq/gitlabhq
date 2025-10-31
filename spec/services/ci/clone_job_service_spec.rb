@@ -67,7 +67,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         job_artifacts_container_scanning job_artifacts_cluster_image_scanning job_artifacts_dast
         job_artifacts_license_scanning
         job_artifacts_performance job_artifacts_browser_performance job_artifacts_load_performance
-        job_artifacts_lsif job_artifacts_terraform job_artifacts_cluster_applications
+        job_artifacts_lsif job_artifacts_scip job_artifacts_terraform job_artifacts_cluster_applications
         job_artifacts_codequality job_artifacts_metrics scheduled_at
         job_variables waiting_for_resource_at job_artifacts_metrics_referee
         job_artifacts_network_referee job_artifacts_dotenv

@@ -355,7 +355,7 @@ module API
 
         authorize! :create_merge_request_from, user_project
 
-        Labkit::CoveredExperience.start(:create_merge_request)
+        Labkit::UserExperienceSli.start(:create_merge_request)
 
         mr_params = declared_params(include_missing: false)
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)

@@ -582,17 +582,17 @@ RSpec.configure do |config|
     allow_any_instance_of(UserPreference).to receive(:text_editor_type).and_return(0) # not_set
   end
 
-  # Labkit::CoveredExperience hooks
+  # Labkit::UserExperienceSli hooks
   config.around do |example|
-    Labkit::CoveredExperience.configure do |config|
+    Labkit::UserExperienceSli.configure do |config|
       # Ignore logs by default in tests
       config.logger = Labkit::Logging::JsonLogger.new("/dev/null")
     end
 
     example.run
 
-    Labkit::CoveredExperience::Current.reset
-    Labkit::CoveredExperience.reset_configuration
+    Labkit::UserExperienceSli::Current.reset
+    Labkit::UserExperienceSli.reset_configuration
   end
 
   config.backtrace_exclusion_patterns << %r{lib/gitlab/database}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::DeployKeysController, feature_category: :continuous_delivery do
+RSpec.describe Projects::DeployKeysController, :with_current_organization, feature_category: :continuous_delivery do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
@@ -136,6 +136,9 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
       expect { post :create, params: create_params }.to change(project.deploy_keys, :count).by(1)
 
       expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
+
+      key = project.deploy_keys.find_by(title: create_params.dig(:deploy_key, :title))
+      expect(key.organization).to eq(current_organization)
     end
 
     it 'redirects to project settings with the correct anchor' do

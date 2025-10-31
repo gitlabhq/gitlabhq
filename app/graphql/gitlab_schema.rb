@@ -105,7 +105,7 @@ class GitlabSchema < GraphQL::Schema
         begin
           gid.find
         # other if conditions return nil when the record is not found
-        rescue ActiveRecord::RecordNotFound
+        rescue ActiveRecord::RecordNotFound, ActiveRecord::FixedItemsModel::RecordNotFound
           nil
         end
       end

@@ -18627,6 +18627,29 @@ The edge type for [`GitlabSubscriptionUsageUser`](#gitlabsubscriptionusageuser).
 | <a id="gitlabsubscriptionusageuseredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="gitlabsubscriptionusageuseredgenode"></a>`node` | [`GitlabSubscriptionUsageUser`](#gitlabsubscriptionusageuser) | The item at the end of the edge. |
 
+#### `GitlabSubscriptionUsageUserEventConnection`
+
+The connection type for [`GitlabSubscriptionUsageUserEvent`](#gitlabsubscriptionusageuserevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusereventconnectionedges"></a>`edges` | [`[GitlabSubscriptionUsageUserEventEdge]`](#gitlabsubscriptionusageusereventedge) | A list of edges. |
+| <a id="gitlabsubscriptionusageusereventconnectionnodes"></a>`nodes` | [`[GitlabSubscriptionUsageUserEvent]`](#gitlabsubscriptionusageuserevent) | A list of nodes. |
+| <a id="gitlabsubscriptionusageusereventconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GitlabSubscriptionUsageUserEventEdge`
+
+The edge type for [`GitlabSubscriptionUsageUserEvent`](#gitlabsubscriptionusageuserevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusereventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="gitlabsubscriptionusageusereventedgenode"></a>`node` | [`GitlabSubscriptionUsageUserEvent`](#gitlabsubscriptionusageuserevent) | The item at the end of the edge. |
+
 #### `GoogleCloudArtifactRegistryArtifactConnection`
 
 The connection type for [`GoogleCloudArtifactRegistryArtifact`](#googlecloudartifactregistryartifact).
@@ -30968,24 +30991,11 @@ Describes the user with their usage data.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageuseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="gitlabsubscriptionusageuserevents"></a>`events` | [`GitlabSubscriptionUsageUserEventConnection`](#gitlabsubscriptionusageusereventconnection) | Billable events from the user. (see [Connections](#connections)) |
 | <a id="gitlabsubscriptionusageuserid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="gitlabsubscriptionusageusername"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
 | <a id="gitlabsubscriptionusageuserusage"></a>`usage` | [`GitlabSubscriptionUsageUserUsage`](#gitlabsubscriptionusageuserusage) | Usage of consumables for a user under the subscription. |
 | <a id="gitlabsubscriptionusageuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within the instance of GitLab. |
-
-#### Fields with arguments
-
-##### `GitlabSubscriptionUsageUser.events`
-
-Billable events from the user.
-
-Returns [`[GitlabSubscriptionUsageUserEvent!]`](#gitlabsubscriptionusageuserevent).
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="gitlabsubscriptionusageusereventspage"></a>`page` | [`Int`](#int) | Page number to fetch the events. |
 
 ### `GitlabSubscriptionUsageUserEvent`
 
@@ -33503,6 +33513,7 @@ Returns [`String`](#string).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouppermissionsadminaicatalogitemconsumer"></a>`adminAiCatalogItemConsumer` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_ai_catalog_item_consumer` on this resource. |
 | <a id="grouppermissionsadminallresources"></a>`adminAllResources` | [`Boolean!`](#boolean) | If `true`, the user is an instance administrator. |
 | <a id="grouppermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
 | <a id="grouppermissionsadminworkitemlifecycle"></a>`adminWorkItemLifecycle` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_lifecycle` on this resource. |
@@ -49819,6 +49830,7 @@ Iteration ID wildcard values.
 | <a id="jobartifactfiletyperequirements"></a>`REQUIREMENTS` | REQUIREMENTS job artifact file type. |
 | <a id="jobartifactfiletyperequirements_v2"></a>`REQUIREMENTS_V2` | REQUIREMENTS V2 job artifact file type. |
 | <a id="jobartifactfiletypesast"></a>`SAST` | SAST job artifact file type. |
+| <a id="jobartifactfiletypescip"></a>`SCIP` | SCIP job artifact file type. |
 | <a id="jobartifactfiletypesecret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION job artifact file type. |
 | <a id="jobartifactfiletypeterraform"></a>`TERRAFORM` | TERRAFORM job artifact file type. |
 | <a id="jobartifactfiletypetrace"></a>`TRACE` | TRACE job artifact file type. |

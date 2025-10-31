@@ -171,7 +171,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    - Sends new tokens in the response.
 
    ```ruby
-     parameters = 'client_id=APP_ID&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
+     parameters = 'client_id=APP_ID&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI'
      RestClient.post 'https://gitlab.example.com/oauth/token', parameters
    ```
 

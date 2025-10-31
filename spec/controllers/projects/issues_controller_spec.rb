@@ -1634,7 +1634,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     it 'starts covered experience for create_merge_request' do
-      expect { create_merge_request }.to start_covered_experience(:create_merge_request)
+      expect { create_merge_request }.to start_user_experience(:create_merge_request)
     end
 
     def create_merge_request

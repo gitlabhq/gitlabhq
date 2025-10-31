@@ -8,5 +8,6 @@ description: Time spend data recorded by users on issues
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/870
 milestone: '8.14'
 gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514588
+sharding_key:
+  namespace_id: namespaces
 table_size: small

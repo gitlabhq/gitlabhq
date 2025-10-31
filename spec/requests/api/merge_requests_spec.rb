@@ -2352,7 +2352,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it 'starts covered experience' do
         expect do
           post api("/projects/#{project.id}/merge_requests", user), params: params
-        end.to start_covered_experience(:create_merge_request)
+        end.to start_user_experience(:create_merge_request)
       end
 
       it 'creates a new merge request when assignee_id is empty' do

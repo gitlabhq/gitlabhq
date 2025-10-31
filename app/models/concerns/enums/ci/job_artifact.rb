@@ -36,6 +36,7 @@ module Enums
         load_performance: 'load-performance.json',
         metrics: 'metrics.txt',
         lsif: 'lsif.json',
+        scip: 'index.scip',
         dotenv: '.env',
         cobertura: 'cobertura-coverage.xml',
         jacoco: 'jacoco-coverage.xml',
@@ -66,6 +67,7 @@ module Enums
         jacoco: :gzip,
         cluster_applications: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
         lsif: :zip,
+        scip: :zip,
         cyclonedx: :gzip,
         annotations: :gzip,
         repository_xray: :gzip,
@@ -109,6 +111,7 @@ module Enums
         junit
         license_scanning
         lsif
+        scip
         metrics
         performance
         browser_performance
@@ -184,7 +187,8 @@ module Enums
           requirements_v2: 29, ## EE-specific
           annotations: 30,
           repository_xray: 31, ## EE-specific
-          jacoco: 32
+          jacoco: 32,
+          scip: 33 # SCIP data for code navigation
         }
       end
 

@@ -482,6 +482,7 @@ builds:
 - job_artifacts_metrics_referee
 - job_artifacts_network_referee
 - job_artifacts_lsif
+- job_artifacts_scip
 - job_artifacts_dotenv
 - job_artifacts_cobertura
 - job_artifacts_jacoco

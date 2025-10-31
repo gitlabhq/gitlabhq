@@ -199,7 +199,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :create_incident
     prevent :admin_software_license_policy
     prevent :create_test_case
-    prevent :admin_ai_catalog_item
     prevent :set_issue_created_at
     prevent :set_issue_updated_at
     prevent :set_epic_created_at

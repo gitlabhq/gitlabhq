@@ -22922,7 +22922,8 @@ CREATE TABLE plan_limits (
     import_placeholder_user_limit_tier_3 integer DEFAULT 0 NOT NULL,
     import_placeholder_user_limit_tier_4 integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_slsa_provenance_statement bigint DEFAULT 0 NOT NULL,
-    cargo_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL
+    cargo_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
+    ci_max_artifact_size_scip integer DEFAULT 200 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -27207,7 +27208,7 @@ CREATE TABLE timelogs (
     summary text,
     note_id bigint,
     timelog_category_id bigint,
-    namespace_id bigint DEFAULT 0 NOT NULL,
+    namespace_id bigint NOT NULL,
     CONSTRAINT check_271d321699 CHECK ((char_length(summary) <= 255)),
     CONSTRAINT check_3b0344e3b6 CHECK ((num_nonnulls(issue_id, merge_request_id) = 1))
 );
@@ -49730,7 +49731,7 @@ ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_d7653ef780 FOREIGN KEY (revoked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY timelogs
-    ADD CONSTRAINT fk_d774bdf1ae FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_d774bdf1ae FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_proxy_manifest_states
     ADD CONSTRAINT fk_d79f184865 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

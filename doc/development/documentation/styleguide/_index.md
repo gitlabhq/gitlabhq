@@ -1698,7 +1698,7 @@ Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
 
 ## GitLab SVG icons
 
-You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
+You can use icons from the [GitLab SVG library](https://design.gitlab.com/svgs/)
 directly in the documentation. For example, `{{</* icon name="tanuki" */>}}` renders as: {{< icon name="tanuki" >}}.
 
 In most cases, avoid icons in text.

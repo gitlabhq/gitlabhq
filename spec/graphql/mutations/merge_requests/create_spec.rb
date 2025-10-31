@@ -134,7 +134,7 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
         end
 
         it 'starts covered experience for create_merge_request' do
-          expect { subject }.to start_covered_experience(:create_merge_request)
+          expect { subject }.to start_user_experience(:create_merge_request)
         end
       end
     end

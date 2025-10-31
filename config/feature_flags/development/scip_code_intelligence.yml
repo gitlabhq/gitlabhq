@@ -1,0 +1,7 @@
+---
+name: scip_code_intelligence
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/412981
+milestone: '18.6'
+type: development
+group: group::code review
+default_enabled: false
