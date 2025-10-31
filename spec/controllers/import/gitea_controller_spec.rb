@@ -30,21 +30,28 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
     it_behaves_like 'a GitHub-ish import controller: POST personal_access_token'
   end
 
-  describe "GET status" do
+  describe "GET status", :clean_gitlab_redis_rate_limiting do
     it_behaves_like 'a GitHub-ish import controller: GET status' do
       let(:extra_assign_expectations) { { gitea_host_url: host_url } }
 
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
         assign_host_url
       end
 
       it "requests provider repos list" do
-        expect(stub_client(repos: [], orgs: [])).to receive(:repos)
-
         get :status
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
+  describe 'GET status.json', :clean_gitlab_redis_rate_limiting do
+    it_behaves_like 'a GitHub-ish import controller: GET status' do
+      let(:extra_assign_expectations) { { gitea_host_url: host_url } }
+
+      before do
+        assign_host_url
       end
 
       shared_examples "unacceptable url" do |url, expected_error|
@@ -107,7 +114,7 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
       end
     end
 
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :gitea_import, with_redirect: true do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :gitea_import do
       let_it_be(:second_user) { create(:user) }
 
       let(:token) { 'gitea token' }
@@ -120,14 +127,14 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
       end
 
       def request
-        get :status
+        get :status, format: :json
       end
 
       def request_with_second_scope
         sign_in(second_user)
         session[:gitea_access_token] = token
         assign_host_url
-        get :status
+        get :status, format: :json
       end
     end
   end

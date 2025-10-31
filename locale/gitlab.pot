@@ -34587,6 +34587,9 @@ msgstr ""
 msgid "Import|In progress"
 msgstr ""
 
+msgid "Import|Invalid credentials"
+msgstr ""
+
 msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
 msgstr ""
 

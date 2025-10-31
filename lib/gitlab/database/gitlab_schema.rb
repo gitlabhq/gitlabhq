@@ -84,7 +84,8 @@ module Gitlab
         # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl
         self.table_schema(name) || raise(
           UnknownSchemaError,
-          "Could not find gitlab schema for table #{name}: Any new or deleted tables must be added to the database dictionary " \
+          "Could not find gitlab schema for table #{name}: Any new or deleted tables must be added to the database dictionary. " \
+          "Use `bin/rake gitlab:db:dictionary:generate` to create a new dictionary file. " \
           "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
         )
         # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl

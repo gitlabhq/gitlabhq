@@ -1,6 +1,7 @@
 - commit = @repository.commit(tag.dereferenced_target)
 - release = @releases.find { |release| release.tag == tag.name }
-- commit_status = @tag_pipeline_statuses[tag.name] unless @tag_pipeline_statuses.nil?
+- commit_status = @tag_pipeline_statuses[tag.name] if @tag_pipeline_statuses
+- pipeline = commit_status&.subject
 
 %li.gl-justify-between{ class: "@md/panel:!gl-flex !gl-items-start !gl-px-5", data: { testid: 'tag-row' } }
   .gl-flex-auto
@@ -31,6 +32,7 @@
       = render partial: 'projects/commit/signature', object: tag_view_signature(tag)
 
     - if commit_status
+
       = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-inline-flex gl-align-middle'
     - elsif @tag_pipeline_statuses && @tag_pipeline_statuses.any?
       .gl-inline-flex.gl-align-middle
@@ -39,7 +41,7 @@
     - if can?(current_user, :admin_tag, @project)
       = render 'edit_release_button', tag: tag, project: @project, release: release
 
-    = render 'projects/buttons/download', project: @project, ref: tag.name, ref_type: :tags, pipeline: @tags_pipelines[tag.name]
+    = render 'projects/buttons/download', project: @project, ref: tag.name, ref_type: :tags, pipeline: pipeline
 
     - if can?(current_user, :admin_tag, @project)
       = render 'projects/buttons/remove_tag', project: @project, tag: tag

@@ -11,8 +11,6 @@ build-qa-image:
   extends:
     - .base-image-build-buildx
     - .build-images:rules:build-qa-image
-  variables:
-    CHROME_VERSION: "138" # Remove when default image catches up, defined in .gitlab/ci/version.yml
   stage: build-images
   needs: []
   script:

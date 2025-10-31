@@ -24,5 +24,3 @@ variables:
   # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder
   QA_PATH: "qa"
   MAX_E2E_TEST_EXECUTION_TIME: 45m
-  # Remove CHROME_VERSION when default image catches up, defined in .gitlab/ci/version.yml
-  CHROME_VERSION: "138"

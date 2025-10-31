@@ -48,18 +48,39 @@ job:
     DATABASE_PASSWORD:
       token: $AZURE_JWT
       azure_key_vault:
-        name: 'test'
+        name: 'DATABASE-PASSWORD'
         version: '00000000000000000000000000000000'
 ```
 
-In this example:
+To use multiple secrets from Azure Key Vault in the same job, define each secret under the `secrets` keyword:
+
+```yaml
+job:
+  id_tokens:
+    AZURE_JWT:
+      aud: 'https://gitlab.com'
+  secrets:
+    REDIS_PASSWORD:
+      token: $AZURE_JWT
+      azure_key_vault:
+        name: 'REDIS-PASSWORD'
+        version: '00000000000000000000000000000000'
+    DATABASE_PASSWORD:
+      token: $AZURE_JWT
+      azure_key_vault:
+        name: 'DATABASE-PASSWORD'
+        version: '00000000000000000000000000000000'
+```
+
+In these examples:
 
 - `aud` is the audience, which must match the audience used when [creating the federated identity credentials](../cloud_services/azure/_index.md#create-azure-ad-federated-identity-credentials)
 - `name` is the name of the secret in Azure Key Vault.
 - `version` is the version of the secret in Azure Key Vault. The version is a generated
   GUID without dashes, which can be found on the Azure Key Vault secrets page.
 - GitLab fetches the secret from Azure Key Vault and stores the value in a temporary file.
-  The path to this file is stored in a `DATABASE_PASSWORD` CI/CD variable, similar to
+  The path to this file is stored in a CI/CD variable with the name you defined under secrets
+  (such as `DATABASE_PASSWORD` or `REDIS_PASSWORD`), similar to
   [file type CI/CD variables](../variables/_index.md#use-file-type-cicd-variables).
 
 ## Troubleshooting

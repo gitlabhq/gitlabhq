@@ -297,6 +297,31 @@ describe('import_projects store actions', () => {
         );
       });
     });
+
+    describe('when ciCdOnly is enabled', () => {
+      it.each`
+        description                               | expectedUrl                             | expectedState
+        ${'includes ci_cd_only parameter'}        | ${'ci_cd_only=true'}                    | ${{ ciCdOnly: true }}
+        ${'combines ciCdOnly with other filters'} | ${'some_filter=filter&ci_cd_only=true'} | ${{ filter: { some_filter: 'filter' }, ciCdOnly: true }}
+      `('$description in request', ({ expectedUrl, expectedState }) => {
+        mock.onGet(`${TEST_HOST}/endpoint.json?${expectedUrl}`).reply(HTTP_STATUS_OK, payload);
+
+        return testAction(
+          fetchRepos,
+          null,
+          { ...localState, ...expectedState },
+          [
+            { type: REQUEST_REPOS },
+            { type: SET_PAGE, payload: 1 },
+            {
+              type: RECEIVE_REPOS_SUCCESS,
+              payload: convertObjectPropsToCamelCase(payload, { deep: true }),
+            },
+          ],
+          [],
+        );
+      });
+    });
   });
 
   describe('fetchImport', () => {

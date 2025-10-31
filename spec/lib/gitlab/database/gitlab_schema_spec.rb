@@ -85,7 +85,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
                 "Missing table/view(s) #{missing_data_sources.to_a} not found in " \
                 "#{described_class}.views_and_tables_to_schema. " \
                 "Any new tables or views must be added to the database dictionary. " \
-                "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
+                "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html " \
+                "Use `bin/rake gitlab:db:dictionary:generate` to create a new dictionary file."
             end
 
             it 'non-existing data sources are removed' do
@@ -183,7 +184,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         expect { subject }.to raise_error(
           Gitlab::Database::GitlabSchema::UnknownSchemaError,
           "Could not find gitlab schema for table #{name}: " \
-          "Any new or deleted tables must be added to the database dictionary " \
+          "Any new or deleted tables must be added to the database dictionary. " \
+          "Use `bin/rake gitlab:db:dictionary:generate` to create a new dictionary file. " \
           "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
         )
       end

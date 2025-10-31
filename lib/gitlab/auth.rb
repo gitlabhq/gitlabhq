@@ -526,7 +526,8 @@ module Gitlab
       def unavailable_scopes_for_resource(resource)
         unavailable_ai_features_scopes +
           unavailable_observability_scopes_for_resource(resource) +
-          unavailable_virtual_registry_scopes_for_resource(resource)
+          unavailable_virtual_registry_scopes_for_resource(resource) +
+          [GRANULAR_SCOPE]
       end
 
       def unavailable_ai_features_scopes

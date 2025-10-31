@@ -277,7 +277,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
           expect { run_migration }.to raise_error(
             Gitlab::Database::GitlabSchema::UnknownSchemaError,
             "Could not find gitlab schema for table foobar: " \
-            "Any new or deleted tables must be added to the database dictionary " \
+            "Any new or deleted tables must be added to the database dictionary. " \
+            "Use `bin/rake gitlab:db:dictionary:generate` to create a new dictionary file. " \
             "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
           )
         end
