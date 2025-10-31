@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
-import { getHTTPProtocol } from '~/lib/utils/url_utility';
+import { getHTTPProtocol, mergeUrlParams } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { GO_TO_PROJECT_WEBIDE, keysFor } from '~/behaviors/shortcuts/keybindings';
 import CodeDropdownCloneItem from './code_dropdown_clone_item.vue';
@@ -151,14 +151,18 @@ export default {
       }));
     },
     directoryDownloadGroup() {
-      return this.directoryDownloadLinks.map((link) => ({
-        text: link.text,
-        href: `${link.path}?path=${this.currentPath}`,
-        extraAttrs: {
-          rel: 'nofollow',
-          download: '',
-        },
-      }));
+      return this.directoryDownloadLinks.map((link) => {
+        const hrefEncoded = mergeUrlParams({ path: this.currentPath }, link.path);
+        const href = hrefEncoded.replace(/%2F/g, '/');
+        return {
+          text: link.text,
+          href,
+          extraAttrs: {
+            rel: 'nofollow',
+            download: '',
+          },
+        };
+      });
     },
     groups() {
       let firstVisibleGroup = null;

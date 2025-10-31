@@ -261,10 +261,22 @@ export const headerAppInjected = {
   sshUrl: 'git@gitlab.com:example-group/example-project.git',
   kerberosUrl: '',
   downloadLinks: [
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.zip',
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.gz',
-    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.bz2',
-    'https://gitlab.com/example-group/example-project/-/releases',
+    {
+      text: 'zip',
+      path: 'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.zip',
+    },
+    {
+      text: 'tar.gz',
+      path: 'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.gz',
+    },
+    {
+      text: 'tar.bz2',
+      path: 'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.bz2',
+    },
+    {
+      text: 'tar',
+      path: 'https://gitlab.com/example-group/example-project/-/releases',
+    },
   ],
   downloadArtifacts: [
     'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',
