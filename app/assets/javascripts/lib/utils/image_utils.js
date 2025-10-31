@@ -1,4 +1,3 @@
-import { domToBlob } from 'modern-screenshot';
 import vector from './vector';
 import { readFileAsDataURL } from './file_utility';
 
@@ -94,7 +93,3 @@ export const getRetinaDimensions = async (file) => {
     return fallbackDimensions;
   }
 };
-
-export function domElementToBlob(domElement) {
-  return domToBlob(domElement);
-}

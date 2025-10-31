@@ -6,9 +6,6 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   include Devise::Test::ControllerHelpers
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
   end
 
@@ -251,6 +248,69 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             )
           end
         end
+      end
+    end
+  end
+
+  describe '#work_item_views_only_data' do
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:generate_feed_token).with(:atom).and_return('atom-feed-token')
+      allow(helper).to receive(:generate_feed_token).with(:ics).and_return('ics-feed-token')
+    end
+
+    describe 'with project context' do
+      let_it_be(:project) { build(:project) }
+      let_it_be(:current_user) { build(:user, owner_of: project) }
+
+      before do
+        allow(helper).to receive_messages(
+          can?: true,
+          safe_params: ActionController::Parameters.new(
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param
+          ).permit!)
+      end
+
+      it 'returns minimal server data' do
+        expect(helper.work_item_views_only_data(project, current_user)).to include(
+          {
+            autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+            can_bulk_update: 'true',
+            can_edit: 'true',
+            full_path: project.full_path,
+            group_path: nil,
+            issues_list_path: project_issues_path(project),
+            project_namespace_full_path: project.namespace.full_path,
+            default_branch: project.default_branch_or_main,
+            initial_sort: current_user&.user_preference&.issues_sort,
+            is_signed_in: current_user.present?.to_s,
+            is_issue_repositioning_disabled: 'false',
+            time_tracking_limit_to_hours: "false",
+            can_read_crm_organization: 'true',
+            releases_path: project_releases_path(project, format: :json),
+            project_import_jira_path: project_import_jira_path(project),
+            can_read_crm_contact: 'true',
+            rss_path: project_work_items_path(project, format: :atom, feed_token: 'atom-feed-token'),
+            can_import_work_items: "true",
+            export_csv_path: export_csv_project_issues_path(project),
+            new_issue_path: new_project_issue_path(project),
+            has_projects: 'false'
+          }
+        )
+      end
+
+      it 'does not include properties provided by GraphQL' do
+        data = helper.work_item_views_only_data(project, current_user)
+        # These are provided by GraphQL metadata provider, not server
+        expect(data).not_to have_key(:can_admin_label)
+        expect(data).not_to have_key(:can_create_projects)
+        expect(data).not_to have_key(:labels_manage_path)
+        expect(data).not_to have_key(:register_path)
+        expect(data).not_to have_key(:sign_in_path)
+        expect(data).not_to have_key(:new_comment_template_paths)
+        expect(data).not_to have_key(:report_abuse_path)
+        expect(data).not_to have_key(:new_project_path)
       end
     end
   end

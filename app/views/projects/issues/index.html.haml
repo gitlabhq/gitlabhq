@@ -15,7 +15,7 @@
   project_path: @project.full_path } }
 
 - if Feature.enabled?(:work_item_view_for_issues, @project.group)
-  #js-work-items{ data: work_items_data(@project, current_user) }
+  #js-work-items{ data: work_item_views_only_data(@project, current_user) }
 - else
   .js-issues-list-root{ data: project_issues_list_data(@project, current_user) }
   - if can?(current_user, :admin_issue, @project)

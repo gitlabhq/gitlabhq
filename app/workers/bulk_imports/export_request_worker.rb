@@ -15,7 +15,15 @@ module BulkImports
     end
 
     def perform(entity_id)
-      @entity = BulkImports::Entity.find(entity_id)
+      @entity = BulkImports::Entity.find_by_id(entity_id)
+      unless @entity
+        Sidekiq.logger.warn(
+          class: self.class.name,
+          entity_id: entity_id,
+          message: 'Entity not found'
+        )
+        return
+      end
 
       set_source_xid
       request_export
@@ -26,8 +34,24 @@ module BulkImports
     end
 
     def perform_failure(exception, entity_id)
-      @entity = BulkImports::Entity.find(entity_id)
+      @entity = BulkImports::Entity.find_by_id(entity_id)
 
+      unless @entity
+        Sidekiq.logger.warn(
+          class: self.class.name,
+          entity_id: entity_id,
+          message: 'Entity not found (failure)'
+        )
+        return
+      end
+
+      Gitlab::ErrorTracking.track_exception(
+        exception,
+        message: 'Export request failed',
+        entity_id: entity_id,
+        worker: self.class.name,
+        source_type: @entity.source_type
+      )
       log_and_fail(exception)
     end
 

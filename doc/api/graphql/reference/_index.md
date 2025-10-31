@@ -27057,6 +27057,7 @@ Represents finding.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="comparedsecurityreportfindingairesolutionenabled"></a>`aiResolutionEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Indicates whether the specific finding can be resolved with AI. |
 | <a id="comparedsecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingdetails"></a>`details` {{< icon name="warning-solid" >}} | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | **Introduced** in GitLab 17.6. **Status**: Experiment. Details of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |

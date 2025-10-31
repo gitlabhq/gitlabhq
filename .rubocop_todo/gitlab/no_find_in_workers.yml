@@ -1,10 +1,6 @@
 ---
 Gitlab/NoFindInWorkers:
   Exclude:
-    - 'app/workers/auto_devops/disable_worker.rb'
-    - 'app/workers/bulk_imports/entity_worker.rb'
-    - 'app/workers/bulk_imports/export_request_worker.rb'
-    - 'app/workers/bulk_imports/finish_batched_pipeline_worker.rb'
     - 'app/workers/bulk_imports/pipeline_batch_worker.rb'
     - 'app/workers/bulk_imports/pipeline_worker.rb'
     - 'app/workers/bulk_imports/relation_batch_export_worker.rb'

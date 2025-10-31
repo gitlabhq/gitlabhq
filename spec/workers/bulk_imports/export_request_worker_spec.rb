@@ -20,6 +20,23 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
       allow(Gitlab::HTTP).to receive(:post).and_return(response_double)
     end
 
+    context 'when entity is not found' do
+      let(:non_existing_entity_id) { non_existing_record_id }
+
+      it 'logs a warning and does not execute any side effects', :aggregate_failures do
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: described_class.name,
+          entity_id: non_existing_entity_id,
+          message: 'Entity not found'
+        )
+
+        expect(Gitlab::HTTP).not_to receive(:post)
+        expect(BulkImports::EntityWorker).not_to receive(:perform_async)
+
+        described_class.new.perform(non_existing_entity_id)
+      end
+    end
+
     shared_examples 'requests relations export for api resource' do
       it_behaves_like 'an idempotent worker' do
         it 'requests relations export & schedules entity worker' do
@@ -144,6 +161,25 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
 
       expect(entity.reload.failed?).to eq(true)
       expect(entity.failures.last.exception_message).to eq(error)
+    end
+
+    context 'when entity is not found' do
+      let(:non_existing_entity_id) { non_existing_record_id }
+
+      it 'logs a warning and does not mark any entity as failed' do
+        exception = StandardError.new('Exhausted error!')
+
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: described_class.name,
+          entity_id: non_existing_entity_id,
+          message: 'Entity not found (failure)'
+        )
+
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+        expect(BulkImports::Logger).not_to receive(:new)
+
+        described_class.sidekiq_retries_exhausted_block.call({ 'args' => [non_existing_entity_id] }, exception)
+      end
     end
   end
 end

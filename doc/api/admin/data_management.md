@@ -118,17 +118,19 @@ Example response:
 ]
 ```
 
-## Recalculate the checksum of all model records
+## Recalculate the checksum of selected model records
 
 ```plaintext
 PUT /admin/data_management/:model_name/checksum
 ```
 
-| Attribute           | Type              | Required | Description                                                                                 |
-|---------------------|-------------------|----------|---------------------------------------------------------------------------------------------|
-| `model_name`        | string            | Yes      | The name of the requested model. Must belong to the `:model_name` list above.               |
+| Attribute          | Type    | Required | Description                                                                                                                 |
+|--------------------|---------|----------|-----------------------------------------------------------------------------------------------------------------------------|
+| `model_name`       | string  | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                               |
+| `checksum_state`   | string  | No       | Filter by checksum status. Allowed values: pending, started, succeeded, failed, disabled.                                   |
+| `identifiers`      | array   | No       | Filter records with an array of unique identifiers of the requested model, which can be integers or base64 encoded strings. |
 
-This endpoint marks all records from the model for checksum recalculation. It enqueues a background job to do so. If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and a JSON response containing the following information:
+This endpoint marks all selected records from the model for checksum recalculation, filtered by `checksum_state` and `identifiers` parameters if provided. It enqueues a background job to do so. If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and a JSON response containing the following information:
 
 | Attribute | Type   | Description                                       |
 |-----------|--------|---------------------------------------------------|

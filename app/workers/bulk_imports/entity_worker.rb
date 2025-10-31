@@ -19,7 +19,16 @@ module BulkImports
     PERFORM_DELAY = 5.seconds
 
     def perform(entity_id)
-      @entity = ::BulkImports::Entity.find(entity_id)
+      @entity = ::BulkImports::Entity.find_by_id(entity_id)
+
+      unless @entity
+        Sidekiq.logger.warn(
+          class: self.class.name,
+          entity_id: entity_id,
+          message: 'Entity not found'
+        )
+        return
+      end
 
       return unless @entity.started?
 
@@ -36,7 +45,16 @@ module BulkImports
     end
 
     def perform_failure(exception, entity_id)
-      @entity = ::BulkImports::Entity.find(entity_id)
+      @entity = ::BulkImports::Entity.find_by_id(entity_id)
+
+      unless @entity
+        Sidekiq.logger.warn(
+          class: self.class.name,
+          entity_id: entity_id,
+          message: 'Entity not found (failure)'
+        )
+        return
+      end
 
       Gitlab::ErrorTracking.track_exception(
         exception,

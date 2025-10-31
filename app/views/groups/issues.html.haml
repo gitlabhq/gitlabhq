@@ -6,4 +6,4 @@
 
 %h1.gl-sr-only= page_title
 
-#js-work-items{ data: work_items_data(@group, current_user).merge(is_group_issues_list: 'true') }
+#js-work-items{ data: work_item_views_only_data(@group, current_user).merge(is_group_issues_list: 'true') }
