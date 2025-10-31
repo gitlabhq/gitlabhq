@@ -93,7 +93,7 @@ export default {
             code_challenge_method: PKCE_CODE_CHALLENGE_DIGEST_ALGORITHM.short,
             client_id: this.clientId,
           },
-          oauthAuthorizeURL,
+          { url: oauthAuthorizeURL },
         ),
       );
 

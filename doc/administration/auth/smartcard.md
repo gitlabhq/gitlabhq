@@ -306,6 +306,17 @@ For self-compiled installations:
 1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
+### Additional security recommendations
+
+For extra security, deploy GitLab behind a firewall such as CloudFlare WAF or a server running [ModSecurity](https://modsecurity.org/). URLs matching the following patterns should be accessible to NGINX deployed as part of GitLab, but not to external clients:
+
+```plaintext
+/-/smartcard/extract_certificate
+/-/smartcard/verify_certificate
+```
+
+These paths should only be externally accessible using the smartcard hostname and port allocated to NGINX, and not externally accessible using the primary GitLab hostname and port. This should be robust against [HTTP Host Header attacks](https://portswigger.net/web-security/host-header), so that users cannot submit their own certificate parameters without going through NGINX.
+
 ### Additional steps when using SAN extensions
 
 For Linux package installations:

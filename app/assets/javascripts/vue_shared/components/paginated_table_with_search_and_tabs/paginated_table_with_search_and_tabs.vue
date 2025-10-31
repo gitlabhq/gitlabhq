@@ -257,7 +257,7 @@ export default {
       };
 
       updateHistory({
-        url: setUrlParams(params, window.location.href, true),
+        url: setUrlParams(params, { url: window.location.href, clearParams: true }),
         title: document.title,
         replace: true,
       });

@@ -9411,3 +9411,40 @@ export const workItemMetadataProviderResponse = {
     },
   },
 };
+
+export const userPreferenceQueryResponse = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      workItemPreferencesWithType: {
+        sort: 'RELATIVE_POSITION_ASC',
+        __typename: 'WorkItemTypesUserPreference',
+      },
+      __typename: 'CurrentUser',
+    },
+  },
+};
+
+export const workItemUserPreferenceUpdateMutationResponse = {
+  workItemUserPreferenceUpdate: {
+    errors: [],
+    userPreferences: {
+      displaySettings: {
+        hiddenMetadataKeys: ['assignee', 'labels'],
+      },
+      sort: 'MILESTONE_DUE_ASC',
+      __typename: 'WorkItemTypesUserPreference',
+    },
+    __typename: 'WorkItemUserPreferenceUpdatePayload',
+  },
+};
+
+export const workItemUserPreferenceUpdateMutationResponseWithErrors = {
+  data: {
+    workItemUserPreferenceUpdate: {
+      errors: ['oh no!'],
+      userPreferences: null,
+      __typename: 'WorkItemUserPreferenceUpdatePayload',
+    },
+  },
+};

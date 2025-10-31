@@ -26,15 +26,15 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     let_it_be(:paused_worker) { create(worker_factory, :paused) }
     let_it_be(:finished_worker) { create(worker_factory, :finished) }
 
-    let(:executable_workers) { [queued_worker, active_worker, paused_worker] }
+    let(:unfinished_workers) { [queued_worker, active_worker, paused_worker] }
 
-    describe '.executable' do
+    describe '.unfinished' do
       it 'returns workers with queued, active or paused status' do
-        expect(described_class.executable).to match_array(executable_workers)
+        expect(described_class.unfinished).to match_array(unfinished_workers)
       end
     end
 
-    describe '.executables_with_config' do
+    describe '.unfinished_with_config' do
       let(:config) do
         {
           job_class_name: 'CustomJobClass',
@@ -48,21 +48,59 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         active_worker.update!(**config)
       end
 
-      it 'returns executable workers with the given configurations' do
+      it 'returns unfinished workers with the given configurations' do
         extra_param = if worker_factory == :background_operation_worker
                         { org_id: active_worker.organization_id }
                       else
                         {}
                       end
 
-        expect(described_class.executables_with_config(*config.values, **extra_param))
+        expect(described_class.unfinished_with_config(*config.values, **extra_param))
           .to match_array([active_worker])
+      end
+    end
+
+    describe '.executable' do
+      let_it_be(:paused_without_hold) { create(worker_factory, :paused, on_hold_until: 2.days.ago) }
+
+      it 'returns workers with queued, paused status and on_hold_until in the past' do
+        expect(described_class.executable).to match_array([queued_worker, paused_without_hold])
       end
     end
   end
 
+  describe '.schedulable_workers' do
+    let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
+
+    it 'returns executable workers in asc order with the limit' do
+      projects_worker_1 = create(worker_factory, :queued, table_name: 'projects')
+
+      travel(described_class::PARTITION_DURATION + 1.minute)
+      partition_manager.sync_partitions
+
+      projects_worker_2 = create(worker_factory, :queued, table_name: 'projects')
+      namespaces_worker_2 = create(worker_factory, :queued, table_name: 'namespaces')
+
+      issues_worker_2 = create(
+        worker_factory,
+        :paused,
+        table_name: 'issues',
+        on_hold_until: (described_class::PARTITION_DURATION + 5.days).ago
+      )
+
+      # Won't be scheduled as its over the limit
+      create(worker_factory, :active, table_name: 'users')
+
+      expected_worker_ids = [projects_worker_1, projects_worker_2, namespaces_worker_2, issues_worker_2].map do |w|
+        w.attributes['id']
+      end
+
+      expect(described_class.schedulable_workers(4).pluck(:id))
+        .to match_array(expected_worker_ids)
+    end
+  end
+
   describe 'sliding_list partitioning' do
-    let(:connection) { described_class.connection }
     let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
 
     describe 'next_partition_if callback' do
@@ -97,7 +135,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
       subject(:value) { described_class.partitioning_strategy.detach_partition_if.call(active_partition) }
 
-      context 'when the partition contains executable workers' do
+      context 'when the partition contains unfinished workers' do
         before do
           create(worker_factory, :active)
           create(worker_factory, :paused)
@@ -107,7 +145,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         it { is_expected.to be(false) }
       end
 
-      context 'when the partition contains only non-executable workers' do
+      context 'when the partition contains only non-unfinished workers' do
         before do
           create(worker_factory, :finished)
           create(worker_factory, :failed)
@@ -145,7 +183,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         # and we can insert to the new partition
         expect { create(worker_factory) }.not_to raise_error # rubocop:disable Rails/SaveBang -- factory
 
-        # after marking old records as non-executable
+        # after marking old records as non-unfinished
         described_class.for_partition(1).update_all(status: 3)
 
         partition_manager.sync_partitions

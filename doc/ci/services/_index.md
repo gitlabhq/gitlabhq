@@ -580,7 +580,7 @@ make runner-bin-host
 EOF
 ```
 
-Here we use as an example the GitLab Runner repository which contains a Makefile, so running `make` executes the target
+This example uses the GitLab Runner repository which contains a Makefile, so running `make` executes the target
 defined in the Makefile. Instead of `make runner-bin-host`, you could run the command which is specific to your project.
 
 Then create a service container:
@@ -592,7 +592,7 @@ docker run -d --name service-redis redis:latest
 The previous command creates a service container named `service-redis` using the latest Redis image. The service
 container runs in the background (`-d`).
 
-Finally, create a build container by executing the `build_script` file we created earlier:
+Finally, create a build container by executing the `build_script` file you created earlier:
 
 ```shell
 docker run --name build -i --link=service-redis:redis golang:latest /bin/bash < build_script

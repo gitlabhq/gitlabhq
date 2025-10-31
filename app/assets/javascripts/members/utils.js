@@ -132,7 +132,10 @@ export const buildSortHref = ({
     filterParams[filteredSearchBarSearchParam] = getParameterByName(filteredSearchBarSearchParam);
   }
 
-  return setUrlParams({ ...filterParams, sort: sortParam }, window.location.href, true);
+  return setUrlParams(
+    { ...filterParams, sort: sortParam },
+    { url: window.location.href, clearParams: true },
+  );
 };
 
 // Defined in `ee/app/assets/javascripts/members/utils.js`

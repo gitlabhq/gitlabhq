@@ -105,9 +105,9 @@ For more information about the cost factor applied to the machine type based on 
 
 ### SLO & Release cycle for hosted runners for GitLab.com
 
-Our SLO objective is to make 90% of CI/CD jobs start executing in 120 seconds or less. The error rate should be less than 0.5%.
+The SLO objective is to make 90% of CI/CD jobs start executing in 120 seconds or less. The error rate should be less than 0.5%.
 
-We aim to update to the latest version of [GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) within a week of its release.
+GitLab aims to update to the latest version of [GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) within a week of its release.
 You can find all GitLab Runner breaking changes under [Deprecations and removals](../../../update/deprecations.md).
 
 ## Hosted runners for GitLab community contributions
@@ -124,7 +124,7 @@ If you want to [contribute to GitLab](https://about.gitlab.com/community/contrib
 These runners are backed by the same machine type as our `small` Linux x86-64 runners.
 Unlike hosted runners for GitLab.com, hosted runners for GitLab community contributions are re-used up to 40 times.
 
-As we want to encourage people to contribute, these runners are free of charge.
+Because everyone is encouraged to contribute, these runners are free of charge.
 
 ## Hosted runners for GitLab Dedicated
 

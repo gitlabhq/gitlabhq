@@ -36,7 +36,7 @@ GitLab.com generates an application ID and secret key for you to use.
    If you:
 
    - Plan to use the importer, you can leave scopes as they are.
-   - Only want to use this application for authentication, we recommend using a more minimal set of scopes. `read_user` is sufficient.
+   - Only want to use this application for authentication, you should use a more minimal set of scopes. `read_user` is sufficient.
 
 1. Select **Save application**.
 1. You should now see an **Application ID** and **Secret**. Keep this page open as you continue
@@ -113,7 +113,7 @@ GitLab.com generates an application ID and secret key for you to use.
    {{< alert type="note" >}}
 
    In GitLab 15.1 and earlier, the `site` parameter requires an `/api/v4` suffix.
-   We recommend you drop this suffix after you upgrade to GitLab 15.2 or later.
+   You should drop this suffix after upgrading to GitLab 15.2 or later.
 
    {{< /alert >}}
 

@@ -7,6 +7,7 @@ module Gitlab
         extend ActiveSupport::Concern
 
         include PartitionedTable
+        include FromUnion
 
         MINIMUM_PAUSE_MS = 100
         PARTITION_DURATION = 14.days
@@ -38,10 +39,15 @@ module Gitlab
           }
 
           scope :for_partition, ->(partition) { where(partition: partition) }
-          scope :executable, -> { with_statuses(:queued, :active, :paused) }
+          scope :unfinished, -> { with_statuses(:queued, :active, :paused) }
           scope :with_job_arguments, ->(args) { where("job_arguments = ?", args.to_json) } # rubocop:disable Rails/WhereEquals -- to override Rails comparison
+          scope :not_on_hold, -> { where('on_hold_until IS NULL OR on_hold_until < NOW()') }
 
-          scope :executables_with_config, ->(job_class_name, table_name, column_name, job_arguments, org_id: nil) do
+          scope :executable, -> do
+            with_statuses(:queued, :paused).not_on_hold
+          end
+
+          scope :unfinished_with_config, ->(job_class_name, table_name, column_name, job_arguments, org_id: nil) do
             config = {
               job_class_name: job_class_name,
               table_name: table_name,
@@ -50,7 +56,7 @@ module Gitlab
 
             config = config.merge(organization_id: org_id) if org_id.present?
 
-            executable.with_job_arguments(job_arguments).where(config)
+            unfinished.with_job_arguments(job_arguments).where(config)
           end
 
           partitioned_by :partition, strategy: :sliding_list,
@@ -68,7 +74,7 @@ module Gitlab
             detach_partition_if: ->(partition) do
               !worker_class
                  .for_partition(partition.value)
-                 .executable
+                 .unfinished
                  .exists?
             end
 
@@ -78,6 +84,25 @@ module Gitlab
             state :paused, value: 2
             state :finished, value: 3
             state :failed, value: 4
+          end
+        end
+
+        class_methods do
+          def schedulable_workers(limit)
+            unions = Gitlab::Database::PostgresPartitionedTable.each_partition(table_name).map do |partition|
+              partition_name = partition.name
+
+              select('id, partition, created_at')
+                .from("#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition_name} AS #{table_name}")
+                .executable
+                .order(created_at: :asc)
+                .limit(limit)
+            end
+
+            select('id, partition')
+              .from_union(unions, remove_duplicates: false, remove_order: false)
+              .order(partition: :asc, created_at: :asc)
+              .limit(limit)
           end
         end
       end

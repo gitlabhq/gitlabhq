@@ -59,7 +59,7 @@ To integrate Diffblue Cover into your pipeline:
 
 ### Configure a pipeline
 
-Here we'll create a merge request pipeline for the project that will download the latest version of Diffblue Cover, build the project, write Java unit tests for the project, and commit the changes to the branch.
+Create a merge request pipeline for the project that downloads the latest version of Diffblue Cover, builds the project, writes Java unit tests for the project, and commits the changes to the branch.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Copy the contents of the [`Diffblue-Cover.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Diffblue-Cover.gitlab-ci.yml)

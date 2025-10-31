@@ -84,7 +84,7 @@ export default {
           [BACK_URL_PARAM]: window.location.href,
         };
 
-        return setUrlParams(queryParams, this.release._links.editUrl);
+        return setUrlParams(queryParams, { url: this.release._links.editUrl });
       }
 
       return undefined;

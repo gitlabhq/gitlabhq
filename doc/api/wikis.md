@@ -12,7 +12,7 @@ title: Project wikis API
 
 {{< /details >}}
 
-The project [wikis](../user/project/wiki/_index.md) API is available only in APIv4.
+Use this API to manage [project wikis](../user/project/wiki/_index.md).
 An API for [group wikis](group_wikis.md) is also available.
 
 ## List wiki pages

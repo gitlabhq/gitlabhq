@@ -87,7 +87,7 @@ To manually enable GitLab CI/CD for your repository:
 
    The web hook URL should be set to the GitLab API to
    [trigger pull mirroring](../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
-   using the GitLab personal access token we just created:
+   using the GitLab personal access token you just created:
 
    ```plaintext
    https://gitlab.com/api/v4/projects/<NAMESPACE>%2F<PROJECT>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>

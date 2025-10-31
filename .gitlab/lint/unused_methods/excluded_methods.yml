@@ -1,5 +1,5 @@
 # The methods listed here have been identified as "unused" by the linter
-#   scripts/lint/unused_helper_methods.rb, however subsequent research shows
+#   scripts/lint/unused_methods.rb, however subsequent research shows
 #   them to be false positives, and should be ignored when running that script.
 #
 sort_value_stars_desc:

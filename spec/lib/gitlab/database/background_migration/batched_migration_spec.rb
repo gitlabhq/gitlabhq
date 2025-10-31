@@ -279,7 +279,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       create(:batched_background_migration, :finished)
       # migration put on hold
       create(:batched_background_migration, :active, on_hold_until: 10.minutes.from_now)
-      # migration not availab for the current connection
+      # migration not available for the current connection
       create(:batched_background_migration, :active, gitlab_schema: :gitlab_not_existing)
       # active migration that is no longer on hold
       migration_1 = create(:batched_background_migration, :active, table_name: :users, on_hold_until: 10.minutes.ago)
@@ -295,7 +295,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       expect(actual).to eq([migration_1, migration_2])
     end
 
-    it 'returns epmty collection when there are no pending executable migrations' do
+    it 'returns an empty collection when there are no pending executable migrations' do
       actual = described_class.active_migrations_distinct_on_table(connection: connection, limit: 2)
 
       expect(actual).to be_empty

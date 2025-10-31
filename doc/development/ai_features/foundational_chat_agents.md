@@ -5,10 +5,48 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Managing foundational agents
 ---
 
-Foundational agents are specialized agents that are created and maintained by GitLab, providing more accurate responses for specific use cases.
-You can select a foundational agent when you start a chat.
+[Foundational agents](../../user/duo_agent_platform/agents/foundational_agents/_index.md) are specialized agents
+that are created and maintained by GitLab, providing more accurate responses for specific use cases. These agents are
+available by default on any place chat and duo chat are available, including groups, and are supported on Duo Self-hosted.
 
 ## Create a foundational agent
+
+There are two ways of creating a foundational agent, using the AI Catalog or Duo Workflow Service. AI Catalog provides
+a user-friendly interface, and it is the preferred approach, but writing a definition on Duo Workflow Service provides
+more flexibility for complex cases.
+
+### Using the AI catalog
+
+1. Create your agent on the [AI Catalog](https://gitlab.com/explore/ai-catalog/agents/), and note its ID. Make sure the agent is set to
+   public. Example: [Duo Planner](https://gitlab.com/explore/ai-catalog/agents/356/) has ID 356.
+
+1. Agents created on the AI Catalog need to be bundled into Duo Workflow Service, so they can be available to self-hosted
+   setups that do not have access to our SaaS. To achieve this, open an MR to Duo Workflow Service adding the ID of the
+   agent:
+
+   ```diff
+   # https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/Dockerfile
+   - RUN poetry run fetch-foundational-agents "https://gitlab.com" "$GITLAB_TOKEN" "348,356" \
+   + RUN poetry run fetch-foundational-agents "https://gitlab.com" "$GITLAB_TOKEN" "348,356,<your-id-here>" \
+   ```
+
+   The command above can also be executed locally for testing purposes.
+
+1. To make the agent be selectable, add it to the [`FoundationalChatAgentsDefinitions.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb).
+   The `reference` field must be the name of the agent lowercased and underscored, version must be `v1`. For example,
+   a definition for an agent named `Test Agent` would be:
+
+   ```ruby
+   {
+     id: 3,
+     reference: 'test_agent',
+     version: 'v1',
+     name: 'Test Agent',
+     description: "An agent for testing"
+   }
+   ```
+
+### Using Duo workflow service
 
 1. Create a flow configuration file in `/duo_workflow_service/agent_platform/v1/flows/configs/` (located either on your GDK under `PATH-TO-YOUR-GDK/gdk/gitlab-ai-gateway` or on the [ai-assist repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/duo_workflow_service/agent_platform/v1/flows/configs/)):
 
@@ -99,7 +137,7 @@ Control the release of new foundational agents with feature flags:
     filtered_agents = []
     filtered_agents << 'foundational_pirate_agent' if Feature.disabled?(:my_feature_flag, project)
     # filtered_agents << 'foundational_pirate_agent' if Feature.disabled?(:my_feature_flag, current_user)
-    
+
     ::Ai::FoundationalChatAgent
  .select {|agent| filtered_agents.exclude?(agent.reference) }
       .sort_by(&:id)
@@ -114,4 +152,10 @@ Not every agent is useful in every area. For example, some agents operate in pro
 
 ## Triggers
 
-Triggers are not supported for foundational agents. See [issue 577394](https://gitlab.com/gitlab-org/gitlab/-/issues/577394)
+Triggers are not supported for foundational chat agents by default, but if they are defined on AI Catalog, users can
+still add it to their project at which point they can be used through triggers.
+
+## Versioning
+
+Versioning of agents is not yet supported. Consider potential breaking changes to older GitLab versions
+before doing changes to an agent.

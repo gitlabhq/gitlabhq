@@ -28,6 +28,7 @@ FactoryBot.define do
 
     trait :paused do
       status { 2 }
+      on_hold_until { 2.days.after }
     end
 
     trait :finished do

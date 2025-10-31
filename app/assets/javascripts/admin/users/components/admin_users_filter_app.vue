@@ -65,7 +65,7 @@ export default {
         newParams.sort = this.sort;
       }
 
-      const newUrl = setUrlParams(newParams, window.location.href, true);
+      const newUrl = setUrlParams(newParams, { url: window.location.href, clearParams: true });
       visitUrl(newUrl);
     },
   },

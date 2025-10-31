@@ -229,7 +229,7 @@ to provide details about your Vault server:
 
 - `VAULT_SERVER_URL`: The URL of your Vault server, for example `https://vault.example.com:8200`.
 - `VAULT_AUTH_ROLE`: Optional. Name of the Vault JWT Auth role to use when attempting to authenticate. In this tutorial,
-  we already created two roles with the names `myproject-staging` and `myproject-production`. If no role is specified,
+  you already created two roles with the names `myproject-staging` and `myproject-production`. If no role is specified,
   Vault uses the [default role](https://developer.hashicorp.com/vault/api-docs/auth/jwt#default_role)
   specified when the authentication method was configured.
 - `VAULT_AUTH_PATH`: Optional. The path where the authentication method is mounted.

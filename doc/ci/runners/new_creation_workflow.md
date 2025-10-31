@@ -14,7 +14,7 @@ title: Migrating to the new runner registration workflow
 
 {{< alert type="disclaimer" />}}
 
-In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register
+GitLab 16.0 introduced a new runner creation workflow that uses runner authentication tokens to register
 runners. The legacy workflow that uses registration tokens is not recommended.
 Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token) instead.
 

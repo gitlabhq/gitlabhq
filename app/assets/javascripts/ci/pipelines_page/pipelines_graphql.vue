@@ -266,7 +266,10 @@ export default {
       this.pagination = { ...DEFAULT_PAGINATION };
 
       updateHistory({
-        url: setUrlParams({ scope: this.scope, ...this.filterParams }, window.location.href, true),
+        url: setUrlParams(
+          { scope: this.scope, ...this.filterParams },
+          { url: window.location.href, clearParams: true },
+        ),
       });
 
       this.track('click_filter_tabs', { label: TRACKING_CATEGORIES.tabs, property: scope });

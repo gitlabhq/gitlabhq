@@ -15805,6 +15805,9 @@ msgstr ""
 msgid "Collapse %{accessibleLabel}"
 msgstr ""
 
+msgid "Collapse %{name} directory"
+msgstr ""
+
 msgid "Collapse %{section} merge requests"
 msgstr ""
 
@@ -20598,6 +20601,9 @@ msgid "CurrentUser|One of your groups is running out"
 msgstr ""
 
 msgid "CurrentUser|Preferences"
+msgstr ""
+
+msgid "CurrentUser|Start an Ultimate trial"
 msgstr ""
 
 msgid "CurrentUser|Switch to GitLab Next"
@@ -27568,6 +27574,9 @@ msgid "Expand"
 msgstr ""
 
 msgid "Expand %{accessibleLabel}"
+msgstr ""
+
+msgid "Expand %{name} directory"
 msgstr ""
 
 msgid "Expand %{section} merge requests"

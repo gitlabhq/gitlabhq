@@ -240,7 +240,7 @@ To deploy to EC2, complete the following steps.
 
 ### Error `'ascii' codec can't encode character '\uxxxx'`
 
-This error can occur when the response from the `aws-cli` utility used by the Cloud Deploy images contains a Unicode character. The Cloud Deploy images we provide do not have a defined locale and default to using ASCII. To resolve this error, add the following CI/CD variable:
+This error can occur when the response from the `aws-cli` utility used by the Cloud Deploy images contains a Unicode character. The Cloud Deploy images do not have a defined locale and default to using ASCII. To resolve this error, add the following CI/CD variable:
 
 ```yaml
 variables:

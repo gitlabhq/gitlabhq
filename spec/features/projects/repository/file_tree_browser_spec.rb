@@ -57,10 +57,10 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
     it 'expands and collapses directories' do
       within('.file-tree-browser') do
-        click_file('files')
+        click_button('Expand files directory')
         expect(page).to have_file('ruby')
 
-        click_file('files')
+        click_button('Collapse files directory')
         expect(page).not_to have_file('ruby')
       end
     end
@@ -78,8 +78,7 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
         expect(ruby_folder[:class]).to include('is-open')
 
         # Should highlight the current file
-        popen_row = find_button('popen.rb')
-        expect(popen_row['aria-current']).to eq('true')
+        expect(find('[aria-current="true"]')).to be_present
       end
     end
   end

@@ -12,7 +12,7 @@ title: Group wikis API
 
 {{< /details >}}
 
-The [group wikis](../user/project/wiki/group.md) API is available only in APIv4.
+Use this API to manage [group wikis](../user/project/wiki/group.md).
 An API for [project wikis](wikis.md) is also available.
 
 ## List wiki pages

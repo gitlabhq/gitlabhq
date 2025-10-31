@@ -105,7 +105,7 @@ export default {
     },
     fetchPage(variables) {
       updateHistory({
-        url: setUrlParams(variables, window.location.href, true),
+        url: setUrlParams(variables, { url: window.location.href, clearParams: true }),
         title: document.title,
         replace: true,
       });

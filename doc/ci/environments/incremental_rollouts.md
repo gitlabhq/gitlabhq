@@ -20,7 +20,7 @@ if there are no problems, all pods can be updated.
 
 GitLab supports both manually triggered and timed rollouts to a Kubernetes production system
 using Incremental Rollouts. When using Manual Rollouts, the release of each tranche
-of pods is manually triggered, while in Timed Rollouts, the release is performed in
+of pods is manually triggered. With Timed Rollouts, the release is performed in
 tranches after a default pause of 5 minutes.
 Timed rollouts can also be manually triggered before the pause period has expired.
 
@@ -34,8 +34,8 @@ Continuous Deployment strategy.
 You can also combine both of them in a way that the app is deployed automatically
 unless you eventually intervene manually if necessary.
 
-We created sample applications to demonstrate the three options, which you can
-use as examples to build your own:
+The following sample applications demonstrate the three options. You can use them as
+examples to build your own:
 
 - [Manual incremental rollouts](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml)
 - [Timed incremental rollouts](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml)
@@ -51,7 +51,7 @@ cluster is created.
 For example, if your application has 10 pods and a 10% rollout job runs, the new instance of the
 application is deployed to a single pod while the rest of the pods show the previous instance of the application.
 
-First we [define the template as manual](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L100-103):
+First, [define the template as manual](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L100-103):
 
 ```yaml
 .manual_rollout_template: &manual_rollout_template
@@ -60,7 +60,7 @@ First we [define the template as manual](https://gitlab.com/gl-release/increment
   when: manual
 ```
 
-Then we [define the rollout amount for each step](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L152-155):
+Next, [define the rollout amount for each step](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L152-155):
 
 ```yaml
 rollout 10%:
@@ -86,7 +86,7 @@ delay in minutes before it deploys. Selecting the job reveals the countdown.
 It is possible to combine this functionality with manual incremental rollouts so that the job
 counts down and then deploys.
 
-First we [define the template as timed](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L86-89):
+First, [define the template as timed](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L86-89):
 
 ```yaml
 .timed_rollout_template: &timed_rollout_template
@@ -95,13 +95,13 @@ First we [define the template as timed](https://gitlab.com/gl-release/timed-roll
   start_in: 1 minutes
 ```
 
-We can define the delay period using the `start_in` key:
+You can define the delay period using the `start_in` key:
 
 ```yaml
 start_in: 1 minutes
 ```
 
-Then we [define the rollout amount for each step](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L97-101):
+Next, [define the rollout amount for each step](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L97-101):
 
 ```yaml
 timed rollout 30%:

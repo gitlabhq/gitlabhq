@@ -2362,6 +2362,7 @@ This text is also visible.
 When rendered, only the visible text appears:
 
 > This text is visible.
+>
 > This text is also visible.
 
 #### Comments in code blocks

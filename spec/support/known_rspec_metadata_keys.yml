@@ -163,6 +163,7 @@
 - :with_cloud_connector
 - :with_current_organization
 - :with_license
+- :with_namespace_eligible_trials
 - :with_organization_url_helpers
 - :with_sidekiq_context
 - :with_trial_types

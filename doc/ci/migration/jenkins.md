@@ -464,7 +464,7 @@ stage('deploy_staging') {
 }
 ```
 
-In this example, the job only runs when the branch we are committing to is named `staging`.
+In this example, the job only runs when the branch you are committing to is named `staging`.
 
 The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
 

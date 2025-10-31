@@ -4,6 +4,7 @@ module Database
   module BatchedBackgroundMigration
     module ExecutionWorker
       extend ActiveSupport::Concern
+
       include ExclusiveLeaseGuard
       include Gitlab::Utils::StrongMemoize
       include ApplicationWorker

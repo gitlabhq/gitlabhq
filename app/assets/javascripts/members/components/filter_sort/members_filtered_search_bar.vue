@@ -115,8 +115,7 @@ export default {
             ...(sortParamValue && { [SORT_QUERY_PARAM_NAME]: sortParamValue }),
             ...(activeTabParamValue && { [ACTIVE_TAB_QUERY_PARAM_NAME]: activeTabParamValue }),
           },
-          window.location.href,
-          true,
+          { url: window.location.href, clearParams: true },
         ),
       );
     },

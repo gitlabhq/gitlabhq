@@ -1,6 +1,7 @@
 <script>
 import { GlTruncate, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
+import { __, sprintf } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import { InternalEvents } from '~/tracking';
@@ -42,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    showTreeToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isTree() {
@@ -51,12 +57,14 @@ export default {
       return this.file.type === 'blob';
     },
     fileClass() {
+      const addFilePadding = !this.isTree && this.showTreeToggle;
       return {
         'file-open': this.isBlob && this.file.opened,
         'is-active': this.isBlob && this.file.active,
         folder: this.isTree,
         'is-open': this.file.opened,
         'is-linked': this.file.linked,
+        'pl-3': addFilePadding,
       };
     },
     textForTitle() {
@@ -65,6 +73,15 @@ export default {
     },
     fileRouterUrl() {
       return this.fileUrl || `/project${this.file.url}`;
+    },
+    chevronIcon() {
+      return this.file.opened ? 'chevron-down' : 'chevron-right';
+    },
+    chevronAriaLabel() {
+      const action = this.file.opened
+        ? __('Collapse %{name} directory')
+        : __('Expand %{name} directory');
+      return sprintf(action, { name: this.file.name });
     },
   },
   watch: {
@@ -83,11 +100,15 @@ export default {
     toggleTreeOpen(path) {
       this.$emit('toggleTreeOpen', path);
     },
+    onChevronClick(event) {
+      event.stopPropagation();
+      this.$emit('clickTree');
+    },
     clickFile() {
       this.trackEvent('click_file_tree_browser_on_repository_page');
 
       // Manual Action if a tree is selected/opened
-      if (this.isTree) this.$emit('clickTree', this.file.path);
+      if (this.isTree) this.$emit('clickTree', { toggleClose: false });
       if (this.isTree && this.hasUrlAtCurrentRoute()) {
         this.toggleTreeOpen(this.file.path);
       }
@@ -140,52 +161,74 @@ export default {
   >
     {{ __('Show more') }}
   </gl-button>
-  <button
-    v-else
-    :class="fileClass"
-    :title="textForTitle"
-    :data-level="level"
-    class="file-row"
-    :aria-expanded="file.type === 'tree' ? file.opened.toString() : undefined"
-    :aria-label="file.name"
-    @click="clickFile"
-  >
-    <span
-      ref="textOutput"
-      class="file-row-name"
-      :title="file.name"
-      :data-qa-file-name="file.name"
-      data-testid="file-row-name-container"
-      :class="[fileClasses, { 'str-truncated': !truncateMiddle, 'gl-min-w-0': truncateMiddle }]"
+
+  <div v-else class="gl-flex gl-items-center">
+    <gl-button
+      v-if="isTree && showTreeToggle"
+      category="tertiary"
+      size="small"
+      :icon="chevronIcon"
+      data-testid="tree-toggle-button"
+      class="file-row-indentation gl-mr-1 gl-shrink-0"
+      :aria-label="chevronAriaLabel"
+      @click="onChevronClick"
+    />
+
+    <button
+      :class="fileClass"
+      :title="textForTitle"
+      :data-level="level"
+      class="file-row gl-flex-grow-1"
+      :data-file-row="file.fileHash"
+      data-testid="file-row"
+      :aria-expanded="file.type === 'tree' ? file.opened.toString() : undefined"
+      :aria-label="file.name"
+      @click="clickFile"
     >
-      <gl-icon
-        v-if="file.linked"
-        v-gl-tooltip="
-          __('This file was linked in the page URL and will appear as the first one in the list')
-        "
-        name="link"
-        :size="16"
-      />
-      <file-icon
-        class="gl-mr-2"
-        :class="{ 'gl-text-subtle': file.type === 'tree' }"
-        :file-name="file.name"
-        :loading="file.loading"
-        :folder="isTree"
-        :opened="file.opened"
-        :size="16"
-        :submodule="file.submodule"
-      />
-      <gl-truncate
-        v-if="truncateMiddle"
-        :text="file.name"
-        position="middle"
-        class="gl-items-center gl-pr-7"
-      />
-      <template v-else>{{ file.name }}</template>
-    </span>
-    <slot></slot>
-  </button>
+      <span
+        ref="textOutput"
+        class="file-row-name"
+        :title="file.name"
+        :data-qa-file-name="file.name"
+        data-testid="file-row-name-container"
+        :class="[
+          fileClasses,
+          {
+            'str-truncated': !truncateMiddle,
+            'gl-min-w-0': truncateMiddle,
+            'file-row-indentation': !(isTree && showTreeToggle),
+          },
+        ]"
+      >
+        <gl-icon
+          v-if="file.linked"
+          v-gl-tooltip="
+            __('This file was linked in the page URL and will appear as the first one in the list')
+          "
+          name="link"
+          :size="16"
+        />
+        <file-icon
+          class="gl-mr-2"
+          :class="{ 'gl-text-subtle': file.type === 'tree' }"
+          :file-name="file.name"
+          :loading="file.loading"
+          :folder="isTree"
+          :opened="file.opened"
+          :size="16"
+          :submodule="file.submodule"
+        />
+        <gl-truncate
+          v-if="truncateMiddle"
+          :text="file.name"
+          position="middle"
+          class="gl-items-center gl-pr-7"
+        />
+        <template v-else>{{ file.name }}</template>
+      </span>
+      <slot></slot>
+    </button>
+  </div>
 </template>
 
 <style>
@@ -209,6 +252,10 @@ export default {
   overflow: visible;
 }
 
+.file-row-indentation {
+  margin-left: calc(var(--level) * var(--file-row-level-padding, 16px));
+}
+
 .file-row-name {
   display: flex;
   align-items: center;
@@ -217,6 +264,5 @@ export default {
   line-height: 1rem;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-left: calc(var(--level) * var(--file-row-level-padding, 16px));
 }
 </style>

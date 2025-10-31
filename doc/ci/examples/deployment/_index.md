@@ -55,7 +55,7 @@ staging:
   environment: staging
 ```
 
-In the previous example we use Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
+The previous example used Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
 
 To use different provider take a look at long list of [Supported Providers](https://github.com/travis-ci/dpl#supported-providers).
 
@@ -86,9 +86,9 @@ The previous example is valid for all Debian-compatible systems.
 ## Usage in staging and production
 
 It's pretty common in the development workflow to have staging (development) and
-production environments
+production environments.
 
-Let's consider the following example: we would like to deploy the `main`
+Consider the following example: you would like to deploy the `main`
 branch to `staging` and all tags to the `production` environment.
 The final `.gitlab-ci.yml` for that setup would look like this:
 
@@ -112,12 +112,12 @@ production:
   environment: production
 ```
 
-We created two deploy jobs that are executed on different events:
+You created two deploy jobs that are executed on different events:
 
 - `staging`: Executed for all commits pushed to the `main` branch
 - `production`: Executed for all pushed tags
 
-We also use two secure variables:
+The jobs also use two secure variables:
 
 - `HEROKU_STAGING_API_KEY`: Heroku API key used to deploy staging app
 - `HEROKU_PRODUCTION_API_KEY`: Heroku API key used to deploy production app

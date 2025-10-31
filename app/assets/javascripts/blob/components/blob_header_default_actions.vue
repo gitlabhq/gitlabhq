@@ -72,7 +72,10 @@ export default {
   },
   computed: {
     downloadUrl() {
-      return setUrlParams({ inline: false }, relativePathToAbsolute(this.rawPath, getBaseURL()));
+      return setUrlParams(
+        { inline: false },
+        { url: relativePathToAbsolute(this.rawPath, getBaseURL()) },
+      );
     },
     copyDisabled() {
       return this.activeViewer === RICH_BLOB_VIEWER;
@@ -96,7 +99,10 @@ export default {
       return this.fileType?.includes('pdf');
     },
     openInNewWindowUrl() {
-      return setUrlParams({ inline: true }, relativePathToAbsolute(this.rawPath, getBaseURL()));
+      return setUrlParams(
+        { inline: true },
+        { url: relativePathToAbsolute(this.rawPath, getBaseURL()) },
+      );
     },
   },
   methods: {

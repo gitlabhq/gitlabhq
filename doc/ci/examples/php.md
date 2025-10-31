@@ -20,17 +20,16 @@ using the Shell executor.
 ## Test PHP projects using the Docker executor
 
 While it is possible to test PHP apps on any system, this would require manual
-configuration from the developer. To overcome this we use the
-official [PHP Docker image](https://hub.docker.com/_/php) that can be found in Docker Hub.
+configuration from the developer. You can overcome this by using the
+official [PHP Docker image](https://hub.docker.com/_/php) found in Docker Hub.
 
-This allows us to test PHP projects against different versions of PHP.
-However, not everything is plug 'n' play, you still need to configure some
-things manually.
+This allows you to test PHP projects against different versions of PHP.
+However, you still need to configure some things manually.
 
 As with every job, you need to create a valid `.gitlab-ci.yml` describing the
 build environment.
 
-Let's first specify the PHP image that is used for the job process.
+First, specify the PHP image that is used for the job process.
 (You can read more about what an image means in the runner's lingo reading
 about [Using Docker images](../docker/using_docker_images.md#what-is-an-image).)
 
@@ -40,18 +39,17 @@ Start by adding the image to your `.gitlab-ci.yml`:
 image: php:5.6
 ```
 
-The official images are great, but they lack a few useful tools for testing.
-We need to first prepare the build environment. A way to overcome this is to
-create a script which installs all prerequisites prior the actual testing is
-done.
+The official images are great, but they lack a few testing tools.
+You need to first prepare the build environment. To achieve this,
+create a script that installs all prerequisites before the actual testing begins.
 
-Let's create a `ci/docker_install.sh` file in the root directory of our
+Create a `ci/docker_install.sh` file in the root directory of your
 repository with the following content:
 
 ```shell
 #!/bin/bash
 
-# We need to install dependencies only for Docker
+# You need to install dependencies only for Docker
 [[ ! -e /.dockerenv ]] && exit 0
 
 set -xe
@@ -60,7 +58,7 @@ set -xe
 apt-get update -yqq
 apt-get install git -yqq
 
-# Install phpunit, the tool that we will use for testing
+# Install phpunit, the tool that you will use for testing
 curl --location --output /usr/local/bin/phpunit "https://phar.phpunit.de/phpunit.phar"
 chmod +x /usr/local/bin/phpunit
 
@@ -70,11 +68,11 @@ docker-php-ext-install pdo_mysql
 ```
 
 You might wonder what `docker-php-ext-install` is. In short, it is a script
-provided by the official PHP Docker image that you can use to easily install
+provided by the official PHP Docker image that you can use to install
 extensions. For more information read [the documentation](https://hub.docker.com/_/php).
 
-Now that we created the script that contains all prerequisites for our build
-environment, let's add it in `.gitlab-ci.yml`:
+Now that you have created the script with the prerequisites for your build
+environment, you can add it to `.gitlab-ci.yml`:
 
 ```yaml
 before_script:
@@ -118,13 +116,13 @@ default:
     # Install dependencies
     - bash ci/docker_install.sh > /dev/null
 
-# We test PHP5.6
+# Test PHP5.6
 test:5.6:
   image: php:5.6
   script:
     - phpunit --configuration phpunit_myapp.xml
 
-# We test PHP7.0 (good luck with that)
+# Test PHP7.0 (good luck with that)
 test:7.0:
   image: php:7.0
   script:
@@ -260,8 +258,8 @@ documentation.
 
 ## Example project
 
-We have set up an [Example PHP Project](https://gitlab.com/gitlab-examples/php) for your convenience
-that runs on [GitLab.com](https://gitlab.com) using our publicly available
+For your convenience, there is an [Example PHP Project](https://gitlab.com/gitlab-examples/php)
+that runs on [GitLab.com](https://gitlab.com) using publicly available
 [instance runners](../runners/_index.md).
 
 Want to hack on it? Fork it, commit, and push your changes. Within a few

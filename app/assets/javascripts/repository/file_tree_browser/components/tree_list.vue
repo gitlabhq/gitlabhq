@@ -299,7 +299,7 @@ export default {
       await expand();
     },
 
-    toggleDirectory(normalizedPath) {
+    toggleDirectory(normalizedPath, { toggleClose = true } = {}) {
       if (!this.expandedPathsMap[normalizedPath]) {
         // If directory is collapsed, expand it
         this.expandedPathsMap = {
@@ -307,8 +307,8 @@ export default {
           [normalizedPath]: true,
         };
         this.fetchDirectory(normalizedPath);
-      } else {
-        // If directory is already expanded, collapse it
+      } else if (toggleClose) {
+        // If directory is already expanded and toggleClose=true, collapse it
         const newExpandedPaths = { ...this.expandedPathsMap };
         delete newExpandedPaths[normalizedPath];
         this.expandedPathsMap = newExpandedPaths;
@@ -413,7 +413,8 @@ export default {
           :level="item.level"
           :opened="item.opened"
           :loading="item.loading"
-          :tabindex="item.loading ? -1 : 0"
+          show-tree-toggle
+          tabindex="-1"
           :aria-current="isCurrentPath(item.path)"
           role="treeitem"
           :aria-expanded="item.opened"
@@ -428,7 +429,7 @@ export default {
           }"
           class="gl-relative !gl-mx-0"
           truncate-middle
-          @clickTree="toggleDirectory(item.path)"
+          @clickTree="(options) => toggleDirectory(item.path, options)"
           @showMore="fetchDirectory(item.parentPath)"
         />
       </div>

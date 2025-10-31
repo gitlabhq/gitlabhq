@@ -23,6 +23,6 @@ export function goTo(sortValue, sortIsAsc, tokens) {
 
   const sortOption = SORT_OPTIONS.find((item) => item.value === sortValue).sort;
   newParams.sort = sortIsAsc ? sortOption.asc : sortOption.desc;
-  const newUrl = setUrlParams(newParams, window.location.href, true);
+  const newUrl = setUrlParams(newParams, { url: window.location.href, clearParams: true });
   visitUrl(newUrl);
 }

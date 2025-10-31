@@ -164,7 +164,7 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
       const draftToggle = el;
       const url = setUrlParams(
         { 'merge_request[wip_event]': isReady ? 'draft' : 'ready' },
-        draftToggle.href,
+        { url: draftToggle.href },
       );
 
       draftToggle.setAttribute('href', url);

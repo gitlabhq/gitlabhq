@@ -38,7 +38,7 @@ module Gitlab
             Gitlab::Database::SharedModel.using_connection(operation_connection) do
               config = [job_class_name, table_name, column_name, job_arguments]
 
-              if executables_with_config(*config, org_id: user&.organization_id).exists?
+              if unfinished_with_config(*config, org_id: user&.organization_id).exists?
                 Gitlab::AppLogger.warn(
                   format(EXISTING_OPERATION_MSG, job_class_name, table_name, column_name, job_arguments.join(', '))
                 )

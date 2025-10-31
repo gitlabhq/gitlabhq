@@ -453,7 +453,7 @@ export default {
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
 
-      <user-menu-upgrade-subscription v-if="data.upgrade_url" :upgrade-url="data.upgrade_url" />
+      <user-menu-upgrade-subscription v-if="data.upgrade_link" :upgrade-link="data.upgrade_link" />
 
       <gl-disclosure-dropdown-group v-if="addBuyPipelineMinutesMenuItem" bordered>
         <gl-disclosure-dropdown-item

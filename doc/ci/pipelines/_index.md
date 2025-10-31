@@ -420,7 +420,7 @@ AAAAAAA
                   CCCC
 ```
 
-Because A is retried, we ignore it and count only job A'.
+Because A is retried, it is ignored, and only job A' is counted.
 The union of B, A', and C is (1, 4) and (6, 7). Therefore, the total
 running time is:
 

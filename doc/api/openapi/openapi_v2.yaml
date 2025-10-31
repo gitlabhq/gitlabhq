@@ -53633,6 +53633,7 @@ definitions:
         - annotations
         - repository_xray
         - jacoco
+        - scip
         example: archive
       size:
         type: integer
@@ -67869,6 +67870,7 @@ definitions:
         - annotations
         - repository_xray
         - jacoco
+        - scip
         default: archive
     description: Authorize uploading job artifact
   postApiV4JobsIdArtifacts:
@@ -67919,6 +67921,7 @@ definitions:
         - annotations
         - repository_xray
         - jacoco
+        - scip
         default: archive
       artifact_format:
         type: string

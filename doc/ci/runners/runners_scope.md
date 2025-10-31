@@ -232,13 +232,13 @@ When several CI/CD jobs run concurrently, the fair usage algorithm assigns jobs 
 When only one job runs at a time, the fair usage algorithm assigns jobs in this order:
 
 1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects).
-1. We finish Job 1.
+1. Job 1 finishes.
 1. Job 2 is next, because, having finished Job 1, all projects have 0 jobs running again, and 2 is the lowest available job number.
 1. Job 4 is next, because with Project 1 running a Job, 4 is the lowest number from projects running no jobs (Projects 2 and 3).
-1. We finish Job 4.
+1. Job 4 finishes.
 1. Job 5 is next, because having finished Job 4, Project 2 has no jobs running again.
 1. Job 6 is next, because Project 3 is the only project left with no running jobs.
-1. Lastly we choose Job 3, because, again, it's the only job left.
+1. Finally, Job 3 is next because it's the only job left.
 
 ## Group runners
 

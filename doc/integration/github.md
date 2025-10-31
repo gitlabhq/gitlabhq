@@ -35,7 +35,7 @@ vulnerability can compromise GitLab accounts.
 To mitigate this vulnerability, append `/users/auth` to the authorization
 callback URL.
 
-However, as far as we know, GitHub does not validate the subdomain part of the `redirect_uri`.
+However, GitHub does not validate the subdomain part of the `redirect_uri`.
 Therefore, a subdomain takeover, an XSS, or an open redirect on any subdomain of
 your website could enable the covert redirect attack.
 

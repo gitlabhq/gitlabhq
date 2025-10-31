@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { file } from 'jest/ide/helpers';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
@@ -15,7 +15,7 @@ describe('File row component', () => {
   let wrapper;
 
   function createComponent(propsData, $router = undefined) {
-    wrapper = shallowMount(FileRow, {
+    wrapper = shallowMountExtended(FileRow, {
       propsData,
       mocks: {
         $router,
@@ -24,6 +24,8 @@ describe('File row component', () => {
   }
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+  const findFileButton = () => wrapper.findByTestId('file-row');
 
   it('renders name', () => {
     const fileName = 't4';
@@ -62,7 +64,7 @@ describe('File row component', () => {
       level: 1,
     });
 
-    expect(wrapper.element.title.trim()).toEqual('path/to/file/with a very long folder name/');
+    expect(findFileButton().attributes('title')).toBe('path/to/file/with a very long folder name/');
   });
 
   it('does not render a title attribute if no tree present', () => {
@@ -84,21 +86,21 @@ describe('File row component', () => {
       level: 0,
     });
 
-    wrapper.element.click();
+    findFileButton().trigger('click');
 
     expect(wrapper.emitted('toggleTreeOpen')[0][0]).toEqual(fileName);
   });
 
-  it('emits clickTree on tree click with file path', () => {
+  it('emits clickTree on tree click with correct options', () => {
     const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
     const fileName = 'folder';
     const filePath = 'path/to/folder';
     createComponent({ file: { ...file(fileName), type: 'tree', path: filePath }, level: 0 });
 
-    wrapper.element.click();
+    findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickTree')[0][0]).toEqual(filePath);
+    expect(wrapper.emitted('clickTree')[0][0]).toEqual({ toggleClose: false });
     expect(trackEventSpy).toHaveBeenCalledWith(
       'click_file_tree_browser_on_repository_page',
       {},
@@ -119,7 +121,7 @@ describe('File row component', () => {
       level: 1,
     });
 
-    wrapper.element.click();
+    findFileButton().trigger('click');
 
     expect(wrapper.emitted('clickFile')[0][0]).toEqual(fileProp);
     expect(trackEventSpy).toHaveBeenCalledWith(
@@ -248,6 +250,53 @@ describe('File row component', () => {
       createComponent({ file: { isShowMore: true, loading: true }, level: 0 });
 
       expect(findShowMoreButton().props('loading')).toBe(true);
+    });
+  });
+
+  describe('Tree toggle chevron button', () => {
+    const findChevronButton = () => wrapper.findByTestId('tree-toggle-button');
+    const folderPath = 'path/to/folder';
+    const mockFile = { ...file(folderPath), type: 'tree', opened: false };
+
+    beforeEach(() => {
+      createComponent({
+        file: mockFile,
+        level: 0,
+        showTreeToggle: true,
+      });
+    });
+
+    it('renders chevron button with correct icon and text text', () => {
+      expect(findChevronButton().props()).toMatchObject({
+        category: 'tertiary',
+        size: 'small',
+        icon: 'chevron-right',
+      });
+
+      expect(findChevronButton().attributes('aria-label')).toBe('Expand path/to/folder directory');
+
+      // Ensure correct icon and aria-label when folder is expanded
+      createComponent({ file: { ...mockFile, opened: true }, level: 0, showTreeToggle: true });
+      expect(findChevronButton().props('icon')).toBe('chevron-down');
+      expect(findChevronButton().attributes('aria-label')).toBe(
+        'Collapse path/to/folder directory',
+      );
+    });
+
+    it('renders chevron button for trees and emits clickTree when clicked', () => {
+      findChevronButton().vm.$emit('click', { stopPropagation: jest.fn() });
+
+      expect(wrapper.emitted('clickTree')).toHaveLength(1);
+    });
+
+    it('does not render when showTreeToggle is false', () => {
+      createComponent({
+        file: mockFile,
+        level: 0,
+        showTreeToggle: false,
+      });
+
+      expect(findChevronButton().exists()).toBe(false);
     });
   });
 });

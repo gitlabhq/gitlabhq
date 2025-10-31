@@ -202,7 +202,7 @@ export default {
       };
 
       updateHistory({
-        url: setUrlParams(defaultParams, window.location.href, true),
+        url: setUrlParams(defaultParams, { url: window.location.href, clearParams: true }),
       });
     }
   },
@@ -219,7 +219,7 @@ export default {
       this.$apollo.queries.jobsCount.refetch(this.requestData);
 
       updateHistory({
-        url: setUrlParams(this.requestData, window.location.href, true),
+        url: setUrlParams(this.requestData, { url: window.location.href, clearParams: true }),
       });
     },
     fetchJobsByStatus(scope) {

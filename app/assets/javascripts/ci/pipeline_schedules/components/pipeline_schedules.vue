@@ -445,7 +445,7 @@ export default {
       // We want to replace the history state so that back button
       // correctly reloads the page with previous URL.
       updateHistory({
-        url: setUrlParams(queryParams, href, true),
+        url: setUrlParams(queryParams, { url: href, clearParams: true }),
         title: document.title,
         replace: true,
       });

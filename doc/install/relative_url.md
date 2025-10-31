@@ -45,8 +45,7 @@ After all the changes, you must recompile the assets and [restart GitLab](../adm
 If you configure GitLab with a relative URL, the assets (including JavaScript,
 CSS, fonts, and images) must be recompiled, which can consume a lot of CPU and
 memory resources. To avoid out-of-memory errors, you should have at least 2 GB
-of RAM available on your computer, and we recommend 4 GB RAM, and four or eight
-CPU cores.
+of RAM available on your computer. Ideally, you should have 4 GB RAM, and four or eight CPU cores.
 
 See the [requirements](requirements.md) document for more information.
 

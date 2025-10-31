@@ -81,7 +81,7 @@ for high loads. You should ensure it's able to handle the
 It's also typically required to have representative test data in the target environment
 for the load performance test to use.
 
-We strongly recommend [not running these tests against a production environment](https://k6.io/our-beliefs#load-test-in-a-pre-production-environment).
+You should not run these tests against a production environment. Instead, run tests in a [pre-production environment](https://k6.io/our-beliefs#load-test-in-a-pre-production-environment).
 
 ### Write the load performance test
 
@@ -165,7 +165,7 @@ but it can be extended to work with [review apps](../review_apps/_index.md) or
 [dynamic environments](../environments/_index.md) with a few extra steps.
 
 The best approach is to capture the dynamic URL in a [`.env` file](https://docs.docker.com/compose/environment-variables/env-file/)
-as a job artifact to be shared, then use a custom CI/CD variable we've provided named `K6_DOCKER_OPTIONS`
+as a job artifact to be shared, then use the custom CI/CD variable named `K6_DOCKER_OPTIONS`
 to configure the k6 Docker container to use the file. With this, k6 can then use any
 environment variables from the `.env` file in scripts using standard JavaScript,
 such as: ``http.get(`${__ENV.ENVIRONMENT_URL}`)``.

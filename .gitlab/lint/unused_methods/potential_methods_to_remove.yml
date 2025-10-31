@@ -1,5 +1,5 @@
 # The methods listed here have been identified as "unused" by the linter
-#   scripts/lint/unused_helper_methods.rb, and are potential targets for future
+#   scripts/lint/unused_methods.rb, and are potential targets for future
 #   removal.
 #
 # If it turns out that a method you are attempting to remove is in fact in use,

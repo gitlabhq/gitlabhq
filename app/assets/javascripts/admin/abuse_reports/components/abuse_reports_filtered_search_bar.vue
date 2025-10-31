@@ -94,12 +94,12 @@ export default {
         params = { ...params, sort };
       }
 
-      visitUrl(setUrlParams(params, window.location.href, true));
+      visitUrl(setUrlParams(params, { url: window.location.href, clearParams: true }));
     },
     handleSort(sort) {
       const { page, ...query } = this.query;
 
-      visitUrl(setUrlParams({ ...query, sort }, window.location.href, true));
+      visitUrl(setUrlParams({ ...query, sort }, { url: window.location.href, clearParams: true }));
     },
   },
   filteredSearchNamespace: 'abuse_reports',

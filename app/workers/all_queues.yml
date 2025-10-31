@@ -597,8 +597,78 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_base_scheduler
+  :worker_name: Database::BackgroundOperation::BaseSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_ci_scheduler
+  :worker_name: Database::BackgroundOperation::CiSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_ci_scheduler_cell_local
+  :worker_name: Database::BackgroundOperation::CiSchedulerCellLocalWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_background_operation_cron_enqueue
   :worker_name: Database::BackgroundOperation::CronEnqueueWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_main_scheduler
+  :worker_name: Database::BackgroundOperation::MainSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_main_scheduler_cell_local
+  :worker_name: Database::BackgroundOperation::MainSchedulerCellLocalWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_sec_scheduler
+  :worker_name: Database::BackgroundOperation::SecSchedulerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_background_operation_sec_scheduler_cell_local
+  :worker_name: Database::BackgroundOperation::SecSchedulerCellLocalWorker
   :feature_category: :database
   :has_external_dependencies: false
   :urgency: :low

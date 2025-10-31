@@ -9,6 +9,7 @@ import {
   GlSkeletonLoader,
   GlModalDirective,
 } from '@gitlab/ui';
+import produce from 'immer';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -55,7 +56,8 @@ import {
   RELATIVE_POSITION_ASC,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -134,9 +136,9 @@ import {
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   METADATA_KEYS,
 } from '../constants';
-import getUserWorkItemsDisplaySettingsPreferences from '../graphql/get_user_preferences.query.graphql';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
 import { findHierarchyWidget } from '../utils';
+import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -215,7 +217,6 @@ export default {
     'hasOkrsFeature',
     'hasQualityManagementFeature',
     'hasCustomFieldsFeature',
-    'initialSort',
     'isGroup',
     'isProject',
     'isSignedIn',
@@ -278,14 +279,17 @@ export default {
       showLocalBoard: false,
       namespaceId: null,
       displaySettings: {},
+      workItemTypes: [],
+      isSortKeyInitialized: !this.isSignedIn,
     };
   },
   apollo: {
     displaySettings: {
-      query: getUserWorkItemsDisplaySettingsPreferences,
+      query: getUserWorkItemsPreferences,
       variables() {
         return {
           namespace: this.rootPageFullPath,
+          workItemTypeId: this.workItemTypeId,
         };
       },
       update(data) {
@@ -298,10 +302,23 @@ export default {
           namespacePreferences,
         };
       },
+      result({ data }) {
+        const { sort } = data?.currentUser?.workItemPreferencesWithType ?? {};
+        let sortKey = deriveSortKey({
+          sort: getParameterByName(PARAM_SORT) || sort,
+        });
+        if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+          this.showIssueRepositioningMessage();
+          sortKey = this.state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+        }
+        this.sortKey = sortKey;
+        this.isSortKeyInitialized = true;
+      },
       skip() {
-        return !this.isSignedIn;
+        return !this.workItemTypeId || !this.isSignedIn;
       },
       error(error) {
+        this.isSortKeyInitialized = true;
         this.error = __('An error occurred while getting work item user preference.');
         Sentry.captureException(error);
       },
@@ -375,6 +392,20 @@ export default {
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
+        Sentry.captureException(error);
+      },
+    },
+    workItemTypes: {
+      query: namespaceWorkItemTypesQuery,
+      variables() {
+        return {
+          fullPath: this.rootPageFullPath,
+        };
+      },
+      update(data) {
+        return data?.workspace?.workItemTypes?.nodes;
+      },
+      error(error) {
         Sentry.captureException(error);
       },
     },
@@ -867,6 +898,13 @@ export default {
 
       return n__('WorkItem|%d item', 'WorkItem|%d items', count);
     },
+    workItemTypeId() {
+      const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
+      return this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName)?.id;
+    },
+    shouldLoad() {
+      return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -890,7 +928,7 @@ export default {
     },
   },
   created() {
-    this.updateData(this.initialSort);
+    this.updateData(getParameterByName(PARAM_SORT));
     this.addStateToken();
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
@@ -1071,20 +1109,47 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
-    saveSortPreference(sortKey) {
-      this.$apollo
-        .mutate({
-          mutation: setSortPreferenceMutation,
-          variables: { input: { issuesSort: sortKey } },
-        })
-        .then(({ data }) => {
-          if (data.userPreferencesUpdate.errors.length) {
-            throw new Error(data.userPreferencesUpdate.errors);
-          }
-        })
-        .catch((error) => {
-          Sentry.captureException(error);
+    async saveSortPreference(sortKey) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateWorkItemListUserPreference,
+          variables: {
+            namespace: this.rootPageFullPath,
+            workItemTypeId: this.workItemTypeId,
+            sort: sortKey,
+          },
+          update: (
+            cache,
+            {
+              data: {
+                workItemUserPreferenceUpdate: { userPreferences },
+              },
+            },
+          ) => {
+            if (!userPreferences) {
+              return;
+            }
+            cache.updateQuery(
+              {
+                query: getUserWorkItemsPreferences,
+                variables: {
+                  namespace: this.rootPageFullPath,
+                  workItemTypeId: this.workItemTypeId,
+                },
+              },
+              (existingData) =>
+                produce(existingData, (draftData) => {
+                  draftData.currentUser.workItemPreferencesWithType.sort = userPreferences.sort;
+                }),
+            );
+          },
         });
+        if (data?.workItemUserPreferenceUpdate?.errors?.length) {
+          throw new Error(data.workItemUserPreferenceUpdate.errors);
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+      }
     },
     deleteItem() {
       this.activeItem = null;
@@ -1317,7 +1382,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="!isInitialLoadComplete && !error" class="gl-mt-5" size="lg" />
+  <gl-loading-icon v-if="shouldLoad" class="gl-mt-5" size="lg" />
 
   <div v-else-if="shouldShowList">
     <div v-if="showLocalBoard">
@@ -1381,6 +1446,8 @@ export default {
             :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
             :is-group="isGroup"
+            :work-item-type-id="workItemTypeId"
+            :sort-key="sortKey"
           />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
