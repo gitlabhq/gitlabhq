@@ -42,7 +42,7 @@ module Gitlab
         end
 
         def cursor?
-          cursor_columns.count > 1
+          cursor_columns.count >= 1
         end
 
         def cursor(*args)

@@ -16,7 +16,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/components/gitlab_subscriptions/trials/ultimate/trial_form_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/ultimate/trial_form_with_errors_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/welcome/trial_form_component_spec.rb'
-    - 'ee/spec/components/namespaces/block_seat_overages/all_seats_used_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/combined_storage_users/non_owner_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/combined_storage_users/owner_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/free_user_cap/enforcement_alert_component_spec.rb'

@@ -40,11 +40,21 @@ more flexibility for complex cases.
    {
      id: 3,
      reference: 'test_agent',
-     version: 'v1',
+     version: 'experimental',
      name: 'Test Agent',
      description: "An agent for testing"
    }
    ```
+
+It is possible to test the setup locally. To do so, create the agent in your GDK. Then, on `$GDK/gitlab-ai-gateway`, run the following command:
+
+```shell
+poetry run fetch-foundational-agents "http://gdk.test:3000" "<TOKEN TO YOUR GDK>" \
+  "<ID OF AGENT IN YOUR GDK>" \
+  --output-path duo_workflow_service/agent_platform/experimental/flows/configs
+```
+
+With the changes to `FoundationalChatAgentsDefinitions.rb`, it is possible now to select your foundational agent in the web chat locally.
 
 ### Using Duo workflow service
 
@@ -123,6 +133,8 @@ Tips:
    Create a new private agent in the AI Catalog with the same prompt and same tools, and enable it on your test project.
    Once results reach desired levels, add to Duo Workflow Service.
 1. Add prompts to the Duo Workflow Service to enable testing the agent in your local GDK.
+1. When using AI catalog, the version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `experimental`. 
+   When creating the definition in Duo workflow service, the version should be `v1`.
 
 ## Use feature flags for releasing chat agents
 

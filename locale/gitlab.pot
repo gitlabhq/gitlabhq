@@ -2710,6 +2710,9 @@ msgstr ""
 msgid "AICatalog|Failed to delete flow. %{error}"
 msgstr ""
 
+msgid "AICatalog|Failed to load group flows"
+msgstr ""
+
 msgid "AICatalog|Failed to remove agent. %{error}"
 msgstr ""
 
@@ -2717,6 +2720,9 @@ msgid "AICatalog|Failed to remove flow. %{error}"
 msgstr ""
 
 msgid "AICatalog|Flow"
+msgstr ""
+
+msgid "AICatalog|Flow ID: %{id}"
 msgstr ""
 
 msgid "AICatalog|Flow configuration"
@@ -2732,6 +2738,9 @@ msgid "AICatalog|Flow does not exist"
 msgstr ""
 
 msgid "AICatalog|Flow enabled in %{name}."
+msgstr ""
+
+msgid "AICatalog|Flow is required."
 msgstr ""
 
 msgid "AICatalog|Flow node"
@@ -2818,7 +2827,7 @@ msgstr ""
 msgid "AICatalog|Project is required."
 msgstr ""
 
-msgid "AICatalog|Project members will be able to run this %{itemType}."
+msgid "AICatalog|Project members will be able to use this %{itemType}."
 msgstr ""
 
 msgid "AICatalog|Project-specific automation."
@@ -2843,6 +2852,9 @@ msgid "AICatalog|Save changes"
 msgstr ""
 
 msgid "AICatalog|Search and select tools for this agent."
+msgstr ""
+
+msgid "AICatalog|Select a flow"
 msgstr ""
 
 msgid "AICatalog|Select a project for your AI agent to be associated with."
@@ -2950,6 +2962,12 @@ msgstr ""
 msgid "AICatalog|agents"
 msgstr ""
 
+msgid "AICatalog|can be set only for project consumers"
+msgstr ""
+
+msgid "AICatalog|can be set only for top-level group consumers"
+msgstr ""
+
 msgid "AICatalog|cannot be changed as it has been released"
 msgstr ""
 
@@ -2969,6 +2987,15 @@ msgid "AICatalog|flows"
 msgstr ""
 
 msgid "AICatalog|is private to another project"
+msgstr ""
+
+msgid "AICatalog|must be a service account"
+msgstr ""
+
+msgid "AICatalog|must be provisioned by the group"
+msgstr ""
+
+msgid "AICatalog|must belong to this project's top-level group"
 msgstr ""
 
 msgid "AICatalog|must have at least one node"
@@ -75993,6 +76020,9 @@ msgid "WorkItem|Start from a default configuration"
 msgstr ""
 
 msgid "WorkItem|Starting statuses"
+msgstr ""
+
+msgid "WorkItem|Status"
 msgstr ""
 
 msgid "WorkItem|Status name is too long. Use maximum 32 characters."

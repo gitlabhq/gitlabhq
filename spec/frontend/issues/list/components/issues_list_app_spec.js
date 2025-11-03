@@ -38,7 +38,6 @@ import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_a
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   CREATED_DESC,
@@ -60,7 +59,6 @@ import {
   removeParams,
 } from '~/lib/utils/url_utility';
 import {
-  CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
@@ -173,7 +171,6 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
-  const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
@@ -378,37 +375,6 @@ describe('CE IssuesListApp component', () => {
       });
     });
 
-    describe('create modal', () => {
-      it.each([true, false])(
-        'renders depending on whether issuesListCreateModal=%s',
-        (issuesListCreateModal) => {
-          wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal } } });
-
-          expect(findCreateWorkItemModal().exists()).toBe(issuesListCreateModal);
-        },
-      );
-
-      it('renders in "list route" creation context', () => {
-        wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal: true } } });
-
-        expect(findCreateWorkItemModal().props('creationContext')).toBe(
-          CREATION_CONTEXT_LIST_ROUTE,
-        );
-      });
-
-      it('renders in empty state with issues when issuesListCreateModal is on', async () => {
-        wrapper = mountComponent({
-          provide: { glFeatures: { issuesListCreateModal: true } },
-          issuesQueryResponse: jest.fn().mockResolvedValue(getIssuesQueryEmptyResponse),
-        });
-
-        await waitForPromises();
-
-        const emptyStateComponent = wrapper.findComponent(EmptyStateWithAnyIssues);
-        expect(emptyStateComponent.findComponent(CreateWorkItemModal).exists()).toBe(true);
-      });
-    });
-
     describe('new issue button', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: true }, mountFn: mount });
@@ -419,14 +385,6 @@ describe('CE IssuesListApp component', () => {
 
       it('does not render when user does not have permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: false }, mountFn: mount });
-
-        expect(findGlButtons().filter((button) => button.text() === 'Create issue')).toHaveLength(
-          0,
-        );
-      });
-
-      it('does not render when `issuesListCreateModal` is enabled', () => {
-        wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal: true } } });
 
         expect(findGlButtons().filter((button) => button.text() === 'Create issue')).toHaveLength(
           0,
@@ -445,14 +403,6 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
 
         expect(findNewResourceDropdown().exists()).toBe(true);
-      });
-
-      it('does not render when `issuesListCreateModal` is enabled', () => {
-        wrapper = mountComponent({
-          provide: { isProject: false, glFeatures: { issuesListCreateModal: true } },
-        });
-
-        expect(findNewResourceDropdown().exists()).toBe(false);
       });
 
       it('renders in empty state with issues in group context', () => {

@@ -5,6 +5,16 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }
 
+  specify do
+    expect(described_class::TIMEOUT_EXCEPTIONS).to contain_exactly(
+      ActiveRecord::StatementTimeout,
+      ActiveRecord::ConnectionTimeoutError,
+      ActiveRecord::AdapterTimeout,
+      ActiveRecord::LockWaitTimeout,
+      ActiveRecord::QueryCanceled
+    )
+  end
+
   describe 'associations' do
     let_it_be(:worker) { create(worker_factory) } # rubocop:disable Rails/SaveBang -- factory, not an AR object
     let_it_be(:job) { create(job_factory, worker: worker, worker_partition: worker.partition) }
@@ -30,12 +40,53 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
   describe 'scopes' do
     let_it_be(:job_1) { create(job_factory, :pending) }
     let_it_be(:job_2) { create(job_factory, :running) }
-    let_it_be(:job_3) { create(job_factory, :failed) }
+    let_it_be(:job_3) { create(job_factory, :failed, attempts: 3) }
     let_it_be(:job_4) { create(job_factory, :succeeded) }
 
     describe '.executable' do
       it 'returns jobs with only with pending or running status' do
         expect(described_class.executable).to contain_exactly(job_1, job_2)
+      end
+    end
+
+    describe '.running' do
+      it 'returns jobs with only with running status' do
+        expect(described_class.running).to contain_exactly(job_2)
+      end
+    end
+
+    describe '.failed' do
+      it 'returns jobs with only with failed status' do
+        expect(described_class.failed).to contain_exactly(job_3)
+      end
+    end
+
+    describe '.created_since', :freeze_time do
+      let(:cutoff_time) { 1.minute.from_now }
+      let!(:job_5) { create(job_factory, created_at: 2.minutes.from_now) }
+
+      it 'returns jobs created since the cutoff time' do
+        expect(described_class.created_since(cutoff_time)).to contain_exactly(job_5)
+      end
+    end
+
+    describe '.below_max_attempts' do
+      before do
+        job_4.update!(attempts: 2)
+      end
+
+      it 'returns jobs below max attempts' do
+        expect(described_class.below_max_attempts).to contain_exactly(job_1, job_2, job_4)
+      end
+    end
+
+    describe '.retriable' do
+      before do
+        job_3.update!(attempts: 2)
+      end
+
+      it 'returns jobs that are retriable' do
+        expect(described_class.retriable).to contain_exactly(job_3)
       end
     end
   end

@@ -151,6 +151,12 @@ export default {
     canUpdateMetadata() {
       return this.workItem?.userPermissions?.setWorkItemMetadata;
     },
+    canAdminWorkItemLink() {
+      return this.workItem?.userPermissions?.adminWorkItemLink;
+    },
+    canUpdateParent() {
+      return this.canUpdateMetadata || this.canAdminWorkItemLink;
+    },
     workItemParticipantNodes() {
       return this.workItemParticipants.nodes || [];
     },
@@ -283,7 +289,7 @@ export default {
     <work-item-parent
       v-if="showParent"
       class="work-item-attributes-item"
-      :can-update="canUpdateMetadata"
+      :can-update="canUpdateParent"
       :full-path="fullPath"
       :work-item-id="workItem.id"
       :work-item-type="workItemType"

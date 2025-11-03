@@ -34,7 +34,10 @@ module API
       helpers ::API::Helpers::InternalHelpers
 
       VALID_PAT_SCOPES = Set.new(
-        Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth::REGISTRY_SCOPES
+        Gitlab::Auth::API_SCOPES +
+        Gitlab::Auth::REPOSITORY_SCOPES +
+        Gitlab::Auth::REGISTRY_SCOPES +
+        Gitlab::Auth::AI_FEATURES_SCOPES
       ).freeze
 
       helpers do

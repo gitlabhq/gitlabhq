@@ -1036,12 +1036,11 @@ module API
     end
 
     def url_with_project_id(project)
-      new_params = params.merge(id: project.id.to_s).transform_values { |v| v.is_a?(String) ? CGI.escape(v) : v }
-      new_path = GrapePathHelpers::DecoratedRoute.new(route).path_segments_with_values(new_params).join('/')
+      path_values = params.merge(id: project.id).transform_values { |v| v.is_a?(String) ? CGI.escape(v) : v }
+      path = GrapePathHelpers::DecoratedRoute.new(route).path_segments_with_values(path_values).join('/')
+      extension = File.extname(request.path_info)
 
-      Rack::Request.new(env).tap do |r|
-        r.path_info = "/#{new_path}"
-      end.url
+      Rack::Request.new(env).tap { |r| r.path_info = "/#{path}#{extension}" }.url
     end
 
     def handle_job_token_failure!(project)

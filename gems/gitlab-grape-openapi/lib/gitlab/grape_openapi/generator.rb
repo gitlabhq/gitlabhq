@@ -5,26 +5,27 @@ module Gitlab
     class Generator
       attr_reader :tag_registry
 
-      def initialize(api_classes, options = {})
-        @api_classes = api_classes
-        @options = options
+      def initialize(options = {})
+        @api_classes = Array(options[:api_classes])
+        @entity_classes = Array(options[:entity_classes])
         @schema_registry = SchemaRegistry.new
         @tag_registry = TagRegistry.new
       end
 
       def generate
         initialize_tags
+        register_explicit_entities
+        register_entities_from_routes
 
-        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/572530
         {
           openapi: '3.0.0',
           info: Gitlab::GrapeOpenapi.configuration.info.to_h,
           tags: tag_registry.tags,
           servers: Gitlab::GrapeOpenapi.configuration.servers.map(&:to_h),
-
           paths: paths,
           components: {
-            securitySchemes: security_schemes
+            securitySchemes: security_schemes,
+            schemas: schemas
           },
           security: security_schemes.keys.map { |s| { s => [] } }
         }
@@ -42,9 +43,57 @@ module Gitlab
         end
       end
 
+      def register_explicit_entities
+        @entity_classes.each do |entity_class|
+          next unless grape_entity?(entity_class)
+
+          Converters::EntityConverter.new(entity_class, @schema_registry).convert
+        end
+      end
+
+      def register_entities_from_routes
+        all_routes = @api_classes.flat_map(&:routes)
+
+        all_routes.each do |route|
+          entity = route.options[:entity]
+          next unless entity
+
+          register_entity(entity)
+        end
+      end
+
       def paths
         all_routes = @api_classes.flat_map(&:routes)
-        Converters::PathConverter.convert(all_routes)
+        Converters::PathConverter.convert(all_routes, @schema_registry)
+      end
+
+      private
+
+      def register_entity(entity)
+        case entity
+        when Class
+          return unless grape_entity?(entity)
+
+          Converters::EntityConverter.new(entity, @schema_registry).convert
+        when Hash
+          return unless entity[:model] && grape_entity?(entity[:model])
+
+          Converters::EntityConverter.new(entity[:model], @schema_registry).convert
+        when Array
+          entity.each do |definition|
+            next unless definition.is_a?(Hash) && definition[:model] && grape_entity?(definition[:model])
+
+            Converters::EntityConverter.new(definition[:model], @schema_registry).convert
+          end
+        end
+      end
+
+      def grape_entity?(klass)
+        klass.is_a?(Class) && klass.ancestors.include?(Grape::Entity)
+      end
+
+      def schemas
+        @schema_registry.schemas.transform_values(&:to_h)
       end
     end
   end

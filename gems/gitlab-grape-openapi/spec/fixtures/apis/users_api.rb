@@ -3,7 +3,11 @@
 # rubocop:disable API/Base -- Test fixture
 module TestApis
   class UsersApi < Grape::API
-    desc 'Get all users'
+    desc 'Get all users' do
+      detail 'Returns a list of all users'
+      success TestEntities::UserEntity
+      tags %w[users_api]
+    end
     get '/api/:version/users' do
       status 200
       [
@@ -12,13 +16,21 @@ module TestApis
       ]
     end
 
-    desc 'Create a user'
+    desc 'Create a user' do
+      detail 'Creates a new user with the provided information'
+      success code: 201, model: TestEntities::UserEntity
+      tags %w[users_api]
+    end
     post '/api/:version/users' do
       status 201
       { id: 3, name: params[:name], email: params[:email], created_at: '2025-10-20 15:55:15.465357 -0700' }
     end
 
-    desc 'Update a user (full replacement)'
+    desc 'Update a user (full replacement)' do
+      detail 'Replaces all user information with the provided data'
+      success TestEntities::UserEntity
+      tags %w[users_api]
+    end
     put '/api/:version/users/:id' do
       status 200
       {
@@ -29,13 +41,21 @@ module TestApis
       }
     end
 
-    desc 'Update a user (partial)'
+    desc 'Update a user (partial)' do
+      detail 'Updates only the specified user fields'
+      success TestEntities::UserEntity
+      tags %w[users_api]
+    end
     patch '/api/:version/users/:id' do
       status 200
       { id: params[:id].to_i, name: params[:name], updated_at: '2025-10-20 15:55:15.465357 -0700' }
     end
 
-    desc 'Delete a user'
+    desc 'Delete a user' do
+      detail 'Permanently removes a user from the system'
+      success code: 204
+      tags %w[users_api]
+    end
     delete '/api/:version/users/:id' do
       status 204
       nil

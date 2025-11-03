@@ -231,6 +231,17 @@ describe('WorkItemAttributesWrapper component', () => {
 
       expect(wrapper.emitted('error')).toEqual([[updateError]]);
     });
+
+    it('allows update when user has adminWorkItemLink permission even without setWorkItemMetadata', async () => {
+      const response = workItemResponseFactory({
+        userPermissions: { setWorkItemMetadata: false, adminWorkItemLink: true },
+      });
+      createComponent({ workItem: response.data.workItem });
+
+      await waitForPromises();
+
+      expect(findWorkItemParent().props('canUpdate')).toBe(true);
+    });
   });
 
   describe('time tracking widget', () => {

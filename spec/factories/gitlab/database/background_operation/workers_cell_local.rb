@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :background_operation_worker_cell_local, class: 'Gitlab::Database::BackgroundOperation::WorkerCellLocal' do
-    job_class_name { 'CopyColumnUsingBackgroundMigrationJob' }
-    batch_class_name { 'PrimaryKeyBatchingStrategy' }
+    job_class_name { 'DummyTest' }
+    batch_class_name { 'PrimaryKey' }
     table_name { :users }
     column_name { :id }
     gitlab_schema { :gitlab_main_org }

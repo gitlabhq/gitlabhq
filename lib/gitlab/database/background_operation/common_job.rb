@@ -10,6 +10,7 @@ module Gitlab
 
         MINIMUM_PAUSE_MS = 100
         PARTITION_DURATION = 14.days
+        MAX_ATTEMPTS = 3
 
         REQUIRED_COLUMNS = %i[
           batch_size
@@ -38,6 +39,11 @@ module Gitlab
 
           scope :for_partition, ->(partition) { where(partition: partition) }
           scope :executable, -> { with_statuses(:pending, :running) }
+          scope :failed, -> { with_status(:failed) }
+          scope :running, -> { with_status(:running) }
+          scope :created_since, ->(date) { where(arel_table[:created_at].gteq(date)) }
+          scope :below_max_attempts, -> { where(arel_table[:attempts].lt(MAX_ATTEMPTS)) }
+          scope :retriable, -> { failed.below_max_attempts }
 
           # Partition should not be changed once the record is created
           attr_readonly :partition
@@ -65,6 +71,26 @@ module Gitlab
             state :running, value: 1
             state :failed, value: 2
             state :succeeded, value: 3
+
+            event :run do
+              transition pending: :running
+            end
+
+            event :succeed do
+              transition any => :succeeded
+            end
+
+            event :failure do
+              transition any => :failed
+            end
+          end
+
+          def first
+            order(created_at: :asc).first
+          end
+
+          def last
+            order(created_at: :desc).first
           end
         end
       end

@@ -189,7 +189,6 @@ Performance/StringIdentifierArgument:
     - 'spec/support/shared_examples/controllers/githubish_import_controller_shared_examples.rb'
     - 'spec/support/shared_examples/database_health_status_indicators/prometheus_alert_based_shared_examples.rb'
     - 'spec/support/shared_examples/graphql/container_expiration_policy_shared_examples.rb'
-    - 'spec/support/shared_examples/lib/banzai/filters/reference_filter_shared_examples.rb'
     - 'spec/support/shared_examples/models/active_record_enum_shared_examples.rb'
     - 'spec/support/shared_examples/models/application_setting_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/cascading_namespace_setting_shared_examples.rb'

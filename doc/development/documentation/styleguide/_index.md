@@ -1382,6 +1382,7 @@ To emphasize an area in a screenshot, use an arrow.
   - Width should be 1000 pixels or less.
   - Height should be 500 pixels or less.
   - Make sure the screenshot is still clear after being resized and compressed.
+- Use PNG images instead of JPEG.
 - All images **must** be [compressed](#compress-images) to 100 KB or less.
   In many cases, 25-50 KB or less is often possible without reducing image quality.
 - Save the image with a lowercase filename that's descriptive of the feature
@@ -1395,49 +1396,86 @@ To emphasize an area in a screenshot, use an arrow.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
   - Do not link to externally-hosted images. Download a copy and store it in the appropriate `img` directory within the docs directory.
-- Consider PNG images instead of JPEG.
 - Compress GIFs with <https://ezgif.com/optimize> or similar tool.
 
 See also how to link and embed [videos](#videos) to illustrate the documentation.
 
 #### Compress images
 
-You should always compress any new images you add to the documentation. One
-known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
+Compress new images you add to the documentation.
+This helps reduce file sizes and improve page loading performance.
+
+You can use [`pngquant`](https://pngquant.org/), which is cross-platform and
 open source. Install it by visiting the official website and following the
 instructions for your OS.
 
-If you use macOS and want all screenshots to be compressed automatically, read
-[One simple trick to make your screenshots 80% smaller](https://about.gitlab.com/blog/2020/01/30/simple-trick-for-smaller-screenshots/).
+You can compress images automatically or manually:
 
-GitLab has a [Ruby script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/pngquant)
-to simplify the manual process. In the root directory of your local
-copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
+- For automatic compression on macOS, see
+  [One simple trick to make your screenshots 80% smaller](https://about.gitlab.com/blog/2020/01/30/simple-trick-for-smaller-screenshots/).
+- For manual compression, use the [`pngquant` script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/pngquant).
 
-- Before compressing, if you want, check that all documentation PNG images have
-  been compressed:
+To use the `pngquant` script, in the root directory of your local copy of `https://gitlab.com/gitlab-org/gitlab`,
+run the following commands as needed:
+
+- To check that all documentation PNG images are compressed:
 
   ```shell
   bin/pngquant lint
   ```
 
-- Compress all documentation PNG images by using `pngquant`:
+- To compress all documentation PNG images:
 
   ```shell
   bin/pngquant compress
   ```
 
-- Compress specific files:
+- To compress specific files:
 
   ```shell
   bin/pngquant compress doc/user/img/award_emoji_select.png doc/user/img/markdown_logo.png
   ```
 
-- Compress all PNG files in a specific directory:
+- To compress all PNG files in a specific directory:
 
   ```shell
   bin/pngquant compress doc/user/img
   ```
+
+##### Convert image files to PNG format
+
+If the compression script creates files with `.compressed` extensions instead of compressing
+the original files in place, the files likely have PNG extensions but are actually other
+image formats.
+
+This issue occurs when the `png_quantizator` gem crashes trying to process files that aren't
+actual PNG format, preventing the script from completing its workflow.
+
+To convert image files to PNG format:
+
+1. Check the file format:
+
+   ```shell
+   file doc/user/img/problematic_file.png
+   ```
+
+   The `file` command examines the actual file contents (magic bytes/headers) rather than
+   the extension. A misnamed JPEG file shows:
+  
+   ```shell
+   doc/user/img/problematic_file.png: JPEG image data, JFIF standard 1.01...
+   ```
+
+1. Convert the file to actual PNG format:
+
+   ```shell
+   gm convert problematic_file.png corrected_file.png
+   ```
+
+1. Run the compression script again.
+
+If the original was a JPEG file, the converted PNG file might appear larger
+because PNG uses lossless compression while JPEG uses lossy compression.
 
 #### Animated images
 

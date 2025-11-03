@@ -104,7 +104,6 @@ RSpec/NoExpectationExample:
     - 'spec/lib/gitlab/x509/certificate_spec.rb'
     - 'spec/lib/gitlab/x509/commit_sigstore_spec.rb'
     - 'spec/lib/google_api/cloud_platform/client_spec.rb'
-    - 'spec/mailers/notify_spec.rb'
     - 'spec/models/active_session_spec.rb'
     - 'spec/models/appearance_spec.rb'
     - 'spec/models/ci/build_spec.rb'

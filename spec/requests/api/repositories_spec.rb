@@ -437,6 +437,36 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           get api(route, current_user), headers: headers
         end
       end
+
+      context 'when a project is moved' do
+        where(:url_suffix) do
+          [
+            %w[repository/archive],
+            %w[repository/archive?sha=123],
+            %w[repository/archive.zip],
+            %w[repository/archive.zip?sha=123]
+          ]
+        end
+
+        with_them do
+          let(:redirect_route) { 'new/project/location' }
+          let(:route) { "/projects/#{CGI.escape(redirect_route)}/#{url_suffix}" }
+          let(:location) { "#{request.base_url}/api/v4/projects/#{project.id}/#{url_suffix}" }
+
+          before do
+            project.route.create_redirect(redirect_route)
+          end
+
+          it 'redirects to the new project location' do
+            get api(route, current_user)
+
+            expect(response).to have_gitlab_http_status(:moved_permanently)
+            # We use `start_with?` instead of `eq` because `api` appends a
+            # personal token to the query string.
+            expect(response.headers['Location']).to start_with(location)
+          end
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do

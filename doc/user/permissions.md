@@ -203,6 +203,7 @@ Group permissions for [group features](group/_index.md):
 | [Search](search/_index.md) epics <sup>1</sup>                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add issues to an [epic](group/epics/_index.md) <sup>2</sup>                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add [child epics](group/epics/manage_epics.md#multi-level-child-epics) <sup>3</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Add parent epic <sup>4</sup>                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal notes                                                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create epics                                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Update epic details                                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -214,6 +215,7 @@ Group permissions for [group features](group/_index.md):
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
 1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.
+1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent epic.
 
 Group permissions for [wikis](project/wiki/group.md):
 

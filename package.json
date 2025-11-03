@@ -282,7 +282,7 @@
     "crypto": "^1.0.1",
     "custom-jquery-matchers": "^2.1.0",
     "dependency-cruiser": "^16.9.0",
-    "eslint": "9.38.0",
+    "eslint": "9.39.0",
     "eslint-formatter-gitlab": "^6.0.1",
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.10",

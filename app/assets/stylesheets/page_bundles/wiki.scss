@@ -109,7 +109,7 @@
       @apply gl-grow;
     }
 
-    .wiki-pages-list-container  {
+    .wiki-pages-list-container, .wiki-sidebar-custom-content  {
       @apply gl-grow;
       @apply gl-overflow-y-auto;
     }

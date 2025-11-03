@@ -10106,6 +10106,8 @@ CREATE TABLE ai_catalog_item_consumers (
     enabled boolean DEFAULT false NOT NULL,
     locked boolean DEFAULT true NOT NULL,
     pinned_version_prefix text,
+    service_account_id bigint,
+    parent_item_consumer_id bigint,
     CONSTRAINT check_55026cf703 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)),
     CONSTRAINT check_a788d1fdfa CHECK ((char_length(pinned_version_prefix) <= 50))
 );
@@ -18311,56 +18313,6 @@ CREATE SEQUENCE instance_audit_events_streaming_headers_id_seq
 
 ALTER SEQUENCE instance_audit_events_streaming_headers_id_seq OWNED BY instance_audit_events_streaming_headers.id;
 
-CREATE TABLE instance_integrations (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    comment_detail integer,
-    active boolean DEFAULT false NOT NULL,
-    push_events boolean DEFAULT true,
-    issues_events boolean DEFAULT true,
-    merge_requests_events boolean DEFAULT true,
-    tag_push_events boolean DEFAULT true,
-    note_events boolean DEFAULT true NOT NULL,
-    wiki_page_events boolean DEFAULT true,
-    pipeline_events boolean DEFAULT false NOT NULL,
-    confidential_issues_events boolean DEFAULT true NOT NULL,
-    commit_events boolean DEFAULT true NOT NULL,
-    job_events boolean DEFAULT false NOT NULL,
-    confidential_note_events boolean DEFAULT true,
-    deployment_events boolean DEFAULT false NOT NULL,
-    comment_on_event_enabled boolean DEFAULT true NOT NULL,
-    alert_events boolean,
-    vulnerability_events boolean DEFAULT false NOT NULL,
-    archive_trace_events boolean DEFAULT false NOT NULL,
-    incident_events boolean DEFAULT false NOT NULL,
-    group_mention_events boolean DEFAULT false NOT NULL,
-    group_confidential_mention_events boolean DEFAULT false NOT NULL,
-    category text DEFAULT 'common'::text,
-    encrypted_properties bytea,
-    encrypted_properties_iv bytea,
-    project_id bigint,
-    group_id bigint,
-    inherit_from_id bigint,
-    instance boolean DEFAULT true,
-    type_new text,
-    CONSTRAINT check_2f305455fe CHECK ((char_length(type_new) <= 255)),
-    CONSTRAINT check_611836812c CHECK ((char_length(category) <= 255)),
-    CONSTRAINT group_id_null_constraint CHECK ((group_id IS NULL)),
-    CONSTRAINT inherit_from_id_null_constraint CHECK ((inherit_from_id IS NULL)),
-    CONSTRAINT instance_is_true_constraint CHECK ((instance = true)),
-    CONSTRAINT project_id_null_constraint CHECK ((project_id IS NULL))
-);
-
-CREATE SEQUENCE instance_integrations_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE instance_integrations_id_seq OWNED BY instance_integrations.id;
-
 CREATE TABLE instance_model_selection_feature_settings (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25740,6 +25692,7 @@ CREATE TABLE security_attributes (
     description text,
     color text NOT NULL,
     template_type smallint,
+    deleted_at timestamp with time zone,
     CONSTRAINT check_219cd2b143 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_518516df75 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_5f6fd50ef3 CHECK ((char_length(name) <= 255))
@@ -25764,6 +25717,7 @@ CREATE TABLE security_categories (
     multiple_selection boolean DEFAULT false NOT NULL,
     name text NOT NULL,
     description text,
+    deleted_at timestamp with time zone,
     CONSTRAINT check_6a761c4c9f CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_d643dfc44b CHECK ((char_length(description) <= 255))
 );
@@ -31171,8 +31125,6 @@ ALTER TABLE ONLY insights ALTER COLUMN id SET DEFAULT nextval('insights_id_seq':
 
 ALTER TABLE ONLY instance_audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('instance_audit_events_streaming_headers_id_seq'::regclass);
 
-ALTER TABLE ONLY instance_integrations ALTER COLUMN id SET DEFAULT nextval('instance_integrations_id_seq'::regclass);
-
 ALTER TABLE ONLY instance_model_selection_feature_settings ALTER COLUMN id SET DEFAULT nextval('instance_model_selection_feature_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY integrations ALTER COLUMN id SET DEFAULT nextval('integrations_id_seq'::regclass);
@@ -34150,9 +34102,6 @@ ALTER TABLE ONLY instance_audit_events
 
 ALTER TABLE ONLY instance_audit_events_streaming_headers
     ADD CONSTRAINT instance_audit_events_streaming_headers_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY instance_integrations
-    ADD CONSTRAINT instance_integrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY instance_model_selection_feature_settings
     ADD CONSTRAINT instance_model_selection_feature_settings_pkey PRIMARY KEY (id);
@@ -38656,7 +38605,11 @@ CREATE INDEX index_ai_catalog_item_consumers_on_group_id ON ai_catalog_item_cons
 
 CREATE INDEX index_ai_catalog_item_consumers_on_organization_id ON ai_catalog_item_consumers USING btree (organization_id);
 
+CREATE INDEX index_ai_catalog_item_consumers_on_parent_item_consumer_id ON ai_catalog_item_consumers USING btree (parent_item_consumer_id);
+
 CREATE INDEX index_ai_catalog_item_consumers_on_project_id ON ai_catalog_item_consumers USING btree (project_id);
+
+CREATE INDEX index_ai_catalog_item_consumers_on_service_account_id ON ai_catalog_item_consumers USING btree (service_account_id);
 
 CREATE INDEX index_ai_catalog_item_version_dependencies_on_dependency_id ON ai_catalog_item_version_dependencies USING btree (dependency_id);
 
@@ -42440,9 +42393,13 @@ CREATE INDEX index_secret_rotation_infos_on_next_reminder_at ON secret_rotation_
 
 CREATE INDEX index_security_attributes_on_namespace_id ON security_attributes USING btree (namespace_id);
 
+CREATE INDEX index_security_attributes_on_namespace_id_where_not_deleted ON security_attributes USING btree (namespace_id) WHERE (deleted_at IS NULL);
+
 CREATE UNIQUE INDEX index_security_attributes_security_category_name ON security_attributes USING btree (security_category_id, name);
 
 CREATE UNIQUE INDEX index_security_categories_namespace_name ON security_categories USING btree (namespace_id, name);
+
+CREATE INDEX index_security_categories_on_namespace_id_where_not_deleted ON security_categories USING btree (namespace_id) WHERE (deleted_at IS NULL);
 
 CREATE UNIQUE INDEX index_security_inventory_filters_on_project_id ON security_inventory_filters USING btree (project_id);
 
@@ -48252,6 +48209,9 @@ ALTER TABLE ONLY approval_group_rules_users
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_39c726d3b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_item_consumers
+    ADD CONSTRAINT fk_39cdf1cefd FOREIGN KEY (parent_item_consumer_id) REFERENCES ai_catalog_item_consumers(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_39f8aa0b8a FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
 
@@ -48722,6 +48682,9 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 
 ALTER TABLE ONLY bulk_import_failures
     ADD CONSTRAINT fk_70f30b02fd FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_item_consumers
+    ADD CONSTRAINT fk_70fabda179 FOREIGN KEY (service_account_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

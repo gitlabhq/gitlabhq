@@ -69,6 +69,7 @@ module Gitlab
           project_id: project_id,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
           realm: realm,
+          deployment_type: deployment_type,
           instance_id: ::Gitlab::GlobalAnonymousId.instance_id,
           unique_instance_id: Gitlab::GlobalAnonymousId.instance_uuid,
           host_name: Gitlab.config.gitlab.host,
@@ -109,6 +110,10 @@ module Gitlab
       end
 
       def realm
+        GITLAB_REALM_SELF_MANAGED
+      end
+
+      def deployment_type
         GITLAB_REALM_SELF_MANAGED
       end
     end

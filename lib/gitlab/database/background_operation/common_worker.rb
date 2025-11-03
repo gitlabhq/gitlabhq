@@ -8,9 +8,14 @@ module Gitlab
 
         include PartitionedTable
         include FromUnion
+        include ::Gitlab::Utils::StrongMemoize
 
         MINIMUM_PAUSE_MS = 100
         PARTITION_DURATION = 14.days
+        JOB_CLASS_MODULE = 'Gitlab::BackgroundOperation'
+        BATCH_CLASS_MODULE = 'Gitlab::Database::Batch::Strategies'
+        MINIMUM_JOBS_FOR_FAILURE_CHECK = 50
+        MAXIMUM_FAILURE_RATIO = 0.5
 
         REQUIRED_COLUMNS = %i[
           batch_size
@@ -84,6 +89,66 @@ module Gitlab
             state :paused, value: 2
             state :finished, value: 3
             state :failed, value: 4
+
+            event :finish do
+              transition [:paused, :finished, :active, :finalizing] => :finished
+            end
+
+            event :failure do
+              transition [:failed, :finalizing, :active] => :failed
+            end
+          end
+
+          def job_class
+            "#{JOB_CLASS_MODULE}::#{job_class_name}".constantize
+          end
+
+          def batch_class
+            "#{BATCH_CLASS_MODULE}::#{batch_class_name}".constantize
+          end
+
+          def should_stop?
+            return false unless started_at
+            return false unless sufficient_jobs_for_failure_check?
+
+            failure_ratio_exceeded?
+          end
+
+          def create_job!(min, max)
+            jobs.create!(
+              batch_size: batch_size,
+              sub_batch_size: sub_batch_size,
+              pause_ms: pause_ms,
+              min_cursor: min,
+              max_cursor: max,
+              worker_partition: partition,
+              organization_id: organization_id
+            )
+          end
+
+          # Returns the end cursor of the last batch as the starting point for the next batch.
+          # The cursor must be positioned before the actual start of iteration to avoid
+          # skipping the first row, as required by KeysetIterator.
+          def next_min_cursor
+            last_job&.max_cursor || min_cursor
+          end
+
+          private
+
+          def sufficient_jobs_for_failure_check?
+            total_jobs_since(started_at) >= MINIMUM_JOBS_FOR_FAILURE_CHECK
+          end
+
+          def failure_ratio_exceeded?
+            total_jobs = total_jobs_since(started_at)
+            failed_jobs = jobs.failed.created_since(started_at).count
+            failed_jobs.fdiv(total_jobs) > MAXIMUM_FAILURE_RATIO
+          end
+
+          def total_jobs_since(date)
+            strong_memoize_with(:total_jobs_since, date) do
+              jobs.created_since(started_at).count
+            end
           end
         end
 

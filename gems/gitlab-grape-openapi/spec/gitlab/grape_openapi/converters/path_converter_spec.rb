@@ -1,40 +1,32 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Gitlab::GrapeOpenapi::Converters::PathConverter do
-  let(:api_prefix) { '/api' }
-  let(:api_version) { 'v1' }
-  let(:base_path) { "#{api_prefix}/#{api_version}" }
+  let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+  let(:routes) { TestApis::UsersApi.routes }
 
   describe '.convert' do
-    let(:users_api) { TestApis::UsersApi }
-    let(:routes) { users_api.routes }
-
-    subject(:paths) { described_class.convert(routes) }
+    subject(:paths) { described_class.convert(routes, schema_registry) }
 
     it 'groups routes by normalized path' do
-      expect(paths.keys).to eq(["#{base_path}/users", '/api/v1/users/{id}'])
+      expect(paths.keys).to include('/api/v1/users')
     end
 
     it 'includes both operations' do
-      expect(paths["#{base_path}/users"].keys).to contain_exactly('get', 'options', 'post')
+      expect(paths['/api/v1/users'].keys).to include('get', 'post')
     end
 
     it 'has correct GET operation details' do
-      get_operation = paths["#{base_path}/users"]['get']
+      get_operation = paths['/api/v1/users']['get']
 
       expect(get_operation[:operationId]).to eq('getApiV1Users')
       expect(get_operation[:description]).to eq('Get all users')
-      expect(get_operation[:tags]).to eq(['users'])
     end
 
     it 'has correct POST operation details' do
-      post_operation = paths["#{base_path}/users"]['post']
+      post_operation = paths['/api/v1/users']['post']
 
       expect(post_operation[:operationId]).to eq('postApiV1Users')
       expect(post_operation[:description]).to eq('Create a user')
-      expect(post_operation[:tags]).to eq(['users'])
     end
 
     context 'with empty routes' do

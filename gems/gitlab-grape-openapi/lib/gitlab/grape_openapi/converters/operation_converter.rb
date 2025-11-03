@@ -4,13 +4,13 @@ module Gitlab
   module GrapeOpenapi
     module Converters
       class OperationConverter
-        # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#operation-object
-        def self.convert(route)
-          new(route).convert
+        def self.convert(route, schema_registry)
+          new(route, schema_registry).convert
         end
 
-        def initialize(route)
+        def initialize(route, schema_registry)
           @route = route
+          @schema_registry = schema_registry
           @config = Gitlab::GrapeOpenapi.configuration
         end
 
@@ -19,12 +19,13 @@ module Gitlab
             operation.operation_id = operation_id
             operation.description = extract_description
             operation.tags = extract_tags
+            operation.responses = ResponseConverter.new(@route, @schema_registry).convert
           end
         end
 
         private
 
-        attr_reader :config, :route
+        attr_reader :config, :route, :schema_registry
 
         def operation_id
           method = http_method.downcase

@@ -2,10 +2,10 @@
 RSpec/InstanceVariable:
   Exclude:
     - 'ee/spec/controllers/admin/geo/settings_controller_spec.rb'
+    - 'ee/spec/controllers/ee/passwords_controller_spec.rb'
     - 'ee/spec/controllers/ee/sessions_controller_spec.rb'
     - 'ee/spec/controllers/groups/groups_controller_spec.rb'
     - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
-    - 'ee/spec/controllers/ee/passwords_controller_spec.rb'
     - 'ee/spec/features/markdown/markdown_spec.rb'
     - 'ee/spec/frontend/fixtures/dast_profiles.rb'
     - 'ee/spec/frontend/fixtures/epic.rb'
@@ -13,8 +13,8 @@ RSpec/InstanceVariable:
     - 'ee/spec/graphql/types/vulnerability_request_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_response_type_spec.rb'
     - 'ee/spec/helpers/ee/issuables_helper_spec.rb'
-    - 'ee/spec/helpers/ee/wiki_helper_spec.rb'
     - 'ee/spec/helpers/ee/notes_helper_spec.rb'
+    - 'ee/spec/helpers/ee/wiki_helper_spec.rb'
     - 'ee/spec/helpers/search_helper_spec.rb'
     - 'ee/spec/lib/gitlab/reference_extractor_spec.rb'
     - 'ee/spec/services/ee/merge_requests/update_service_spec.rb'

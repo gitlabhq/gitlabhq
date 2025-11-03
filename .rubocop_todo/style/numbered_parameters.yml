@@ -28,7 +28,6 @@ Style/NumberedParameters:
     - 'ee/spec/models/vulnerabilities/statistic_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_remediations_spec.rb'
-    - 'lib/api/entities/hook.rb'
     - 'lib/api/helpers/web_hooks_helpers.rb'
     - 'lib/api/hooks/url_variables.rb'
     - 'lib/error_tracking/sentry_client/issue.rb'

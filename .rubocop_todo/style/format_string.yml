@@ -20,7 +20,6 @@ Style/FormatString:
     - 'app/helpers/timeboxes_helper.rb'
     - 'app/helpers/tree_helper.rb'
     - 'app/helpers/users_helper.rb'
-    - 'app/mailers/emails/members.rb'
     - 'app/mailers/emails/pages_domains.rb'
     - 'app/mailers/emails/profile.rb'
     - 'app/models/application_setting_implementation.rb'

@@ -3,9 +3,9 @@
 FactoryBot.define do
   factory :background_operation_worker, class: 'Gitlab::Database::BackgroundOperation::Worker' do
     organization_id { create(:common_organization).id }
-    job_class_name { 'CopyColumnUsingBackgroundMigrationJob' }
-    batch_class_name { 'PrimaryKeyBatchingStrategy' }
-    table_name { :users }
+    job_class_name { 'DummyTest' }
+    batch_class_name { 'PrimaryKey' }
+    table_name { :events }
     column_name { :id }
     gitlab_schema { :gitlab_main_org }
     batch_size { 1000 }

@@ -18,6 +18,9 @@ module Gitlab
         end
 
         def convert
+          normalized_name = schema_registry.normalize_entity_class(entity_class)
+          return schema_registry.schemas[normalized_name] if schema_registry.schemas.key?(normalized_name)
+
           schema = build_schema
           schema_registry.register(entity_class, schema)
           schema

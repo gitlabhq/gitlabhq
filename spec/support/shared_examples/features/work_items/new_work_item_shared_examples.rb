@@ -15,8 +15,7 @@ RSpec.shared_examples 'creates work item with widgets from a modal' do |work_ite
 end
 
 RSpec.shared_examples 'creates work item in a particular namespace' do |work_item_type|
-  it "creates #{work_item_type} work item with expected widgets", :aggregate_failures,
-    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/12690' do
+  it "creates #{work_item_type} work item with expected widgets", :aggregate_failures do
     select_namespace(default_namespace.name, namespace.full_name)
 
     select_work_item_type(work_item_type.to_s.capitalize)

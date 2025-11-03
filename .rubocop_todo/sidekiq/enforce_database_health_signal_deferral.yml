@@ -38,7 +38,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'app/workers/container_registry/delete_container_repository_worker.rb'
     - 'app/workers/container_registry/record_data_repair_detail_worker.rb'
     - 'app/workers/counters/cleanup_refresh_worker.rb'
-    - 'app/workers/database/background_operation/cron_enqueue_worker.rb'
     - 'app/workers/dependency_proxy/cleanup_blob_worker.rb'
     - 'app/workers/dependency_proxy/cleanup_manifest_worker.rb'
     - 'app/workers/design_management/copy_design_collection_worker.rb'

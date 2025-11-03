@@ -6,4 +6,4 @@
 
 .js-merge-request-list-root{ data: group_merge_requests_list_data(@group, current_user) }
 - if has_bulk_update_permission
-  = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :merge_requests
+  = render_if_exists 'groups/group_bulk_update_sidebar', group: @group, type: :merge_requests

@@ -32,7 +32,6 @@ RSpec/RepeatedExampleGroupDescription:
     - 'spec/helpers/admin/user_actions_helper_spec.rb'
     - 'spec/helpers/dropdowns_helper_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
-    - 'spec/lib/banzai/pipeline/gfm_pipeline_spec.rb'
     - 'spec/lib/gitlab/alert_management/payload/base_spec.rb'
     - 'spec/lib/gitlab/auth/atlassian/auth_hash_spec.rb'
     - 'spec/lib/gitlab/auth/blocked_user_tracker_spec.rb'

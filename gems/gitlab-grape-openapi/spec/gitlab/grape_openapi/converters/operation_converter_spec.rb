@@ -1,32 +1,21 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
-  let(:api_prefix) { '/api' }
-  let(:api_version) { 'v1' }
-
-  def api_prefix_camelized
-    "Api#{api_version.capitalize}"
-  end
-
-  def find_route_by_method(routes, method)
-    routes.find { |r| r.instance_variable_get(:@options)[:method] == method }
-  end
-
-  def find_route_by_pattern(routes, pattern)
-    routes.find do |r|
-      r.instance_variable_get(:@pattern).instance_variable_get(:@origin) == pattern
-    end
-  end
+  let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+  let(:api_classes) { [TestApis::NestedApi] }
+  let(:routes) { api_classes.flat_map(&:routes) }
 
   describe '.convert' do
     context 'with simple routes' do
-      let(:routes) { TestApis::UsersApi.routes }
+      let(:api_classes) { [TestApis::UsersApi] }
 
       context 'with GET route' do
-        subject(:operation) { described_class.convert(find_route_by_method(routes, 'GET')) }
+        let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'GET' } }
+
+        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates correct operation_id' do
-          expect(operation.operation_id).to eq("get#{api_prefix_camelized}Users")
+          expect(operation.operation_id).to eq('getApiV1Users')
         end
 
         it 'extracts description' do
@@ -39,10 +28,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       end
 
       context 'with POST route' do
-        subject(:operation) { described_class.convert(find_route_by_method(routes, 'POST')) }
+        let(:route) { routes.find { |r| r.instance_variable_get(:@options)[:method] == 'POST' } }
+
+        subject(:operation) { described_class.convert(route, schema_registry) }
 
         it 'generates correct operation_id' do
-          expect(operation.operation_id).to eq("post#{api_prefix_camelized}Users")
+          expect(operation.operation_id).to eq('postApiV1Users')
         end
 
         it 'extracts description' do
@@ -56,74 +47,96 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
     end
 
     context 'with nested routes to ensure uniqueness' do
-      let(:routes) { TestApis::NestedApi.routes }
+      let(:operations) do
+        routes.map { |route| described_class.convert(route, schema_registry) }
+      end
 
       it 'generates unique operation IDs for all routes' do
-        operation_ids = routes.map { |route| described_class.convert(route).operation_id }
+        operation_ids = operations.map(&:operation_id)
 
-        expect(operation_ids).to contain_exactly(
-          "get#{api_prefix_camelized}Users",
-          "get#{api_prefix_camelized}AdminUsers",
-          "get#{api_prefix_camelized}ProjectsProjectIdUsers",
-          "get#{api_prefix_camelized}ProjectsProjectIdMergeRequests",
-          "get#{api_prefix_camelized}ProjectsProjectIdMergeRequestsMergeRequestIdComments",
-          "post#{api_prefix_camelized}ProjectsProjectIdMergeRequestsMergeRequestIdComments",
-          "post#{api_prefix_camelized}ProjectsProjectIdUsers"
-        )
+        expect(operation_ids).to eq(%w[
+          getApiV1Users
+          getApiV1AdminUsers
+          getApiV1ProjectsProjectIdUsers
+          postApiV1ProjectsProjectIdUsers
+          getApiV1ProjectsProjectIdMergeRequests
+          getApiV1ProjectsProjectIdMergeRequestsMergeRequestIdComments
+          postApiV1ProjectsProjectIdMergeRequestsMergeRequestIdComments
+        ])
       end
 
       it 'has no duplicate operation IDs' do
-        operation_ids = routes.map { |route| described_class.convert(route).operation_id }
-
-        expect(operation_ids.uniq.size).to eq(operation_ids.size)
+        operation_ids = operations.map(&:operation_id)
+        expect(operation_ids.uniq.length).to eq(operation_ids.length)
       end
 
       context 'with /api/:version/users route' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin) == '/api/:version/users'
+          end
+        end
+
+        subject(:operation) { described_class.convert(route, schema_registry) }
+
         it 'generates simple operation_id' do
-          route = find_route_by_pattern(routes, "#{api_prefix}/:version/users")
-          operation = described_class.convert(route)
-          expect(operation.operation_id).to eq("get#{api_prefix_camelized}Users")
+          expect(operation.operation_id).to eq('getApiV1Users')
         end
       end
 
       context 'with /api/:version/admin/users route' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin) == '/api/:version/admin/users'
+          end
+        end
+
+        subject(:operation) { described_class.convert(route, schema_registry) }
+
         it 'generates operation_id with admin prefix' do
-          route = find_route_by_pattern(routes, "#{api_prefix}/:version/admin/users")
-          operation = described_class.convert(route)
-          expect(operation.operation_id).to eq("get#{api_prefix_camelized}AdminUsers")
+          expect(operation.operation_id).to eq('getApiV1AdminUsers')
         end
 
         it 'extracts correct tags' do
-          route = find_route_by_pattern(routes, "#{api_prefix}/:version/admin/users")
-          operation = described_class.convert(route)
           expect(operation.tags).to eq(['admin'])
         end
       end
 
       context 'with /api/:version/projects/:project_id/users route' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin) ==
+              '/api/:version/projects/:project_id/users' &&
+              r.instance_variable_get(:@options)[:method] == 'GET'
+          end
+        end
+
+        subject(:operation) { described_class.convert(route, schema_registry) }
+
         it 'generates operation_id with all segments' do
-          route = find_route_by_pattern(routes, "#{api_prefix}/:version/projects/:project_id/users")
-          operation = described_class.convert(route)
-          expect(operation.operation_id).to eq("get#{api_prefix_camelized}ProjectsProjectIdUsers")
+          expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdUsers')
         end
 
         it 'extracts correct tags from first segment' do
-          route = find_route_by_pattern(routes, "#{api_prefix}/:version/projects/:project_id/users")
-          operation = described_class.convert(route)
           expect(operation.tags).to eq(['projects'])
         end
       end
 
       context 'with /api/:version/projects/:project_id/merge_requests route' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin) ==
+              '/api/:version/projects/:project_id/merge_requests'
+          end
+        end
+
+        subject(:operation) { described_class.convert(route, schema_registry) }
+
         it 'generates operation_id with camelized segments' do
-          route = find_route_by_pattern(routes, "#{api_prefix}/:version/projects/:project_id/merge_requests")
-          operation = described_class.convert(route)
-          expect(operation.operation_id).to eq("get#{api_prefix_camelized}ProjectsProjectIdMergeRequests")
+          expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdMergeRequests')
         end
 
         it 'preserves underscores in tags' do
-          route = find_route_by_pattern(routes, "#{api_prefix}/:version/projects/:project_id/merge_requests")
-          operation = described_class.convert(route)
           expect(operation.tags).to eq(['projects'])
         end
       end

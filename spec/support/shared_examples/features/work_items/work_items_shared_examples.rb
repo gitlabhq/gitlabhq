@@ -425,10 +425,6 @@ RSpec.shared_examples 'authored work item guest user permissions' do
       expect(page).to have_button 'Delete key result'
     end
 
-    within_testid 'work-item-overview-right-sidebar' do
-      expect(page).not_to have_button 'Edit'
-    end
-
     page.within('.main-notes-list') do
       click_button _('More actions'), match: :first
 
@@ -452,10 +448,6 @@ RSpec.shared_examples 'non-authored work item guest user permissions' do
       expect(page).to have_button 'Copy reference'
       expect(page).to have_button 'Report abuse'
       expect(page).not_to have_button 'Delete key result'
-    end
-
-    within_testid 'work-item-overview-right-sidebar' do
-      expect(page).not_to have_button 'Edit'
     end
 
     page.within('.main-notes-list') do

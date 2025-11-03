@@ -10,15 +10,14 @@ description: Learn about an upcoming redesign of GitLab user interface.
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18710) in GitLab 18.5 [with flags](../administration/feature_flags/_index.md) named `paneled_view`.
-  Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/577994) in GitLab 18.6 for members of groups that use [GitLab Duo experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18710) in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `paneled_view`.
+  Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/577994) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -26,7 +25,6 @@ description: Learn about an upcoming redesign of GitLab user interface.
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
@@ -36,9 +34,7 @@ This modernized interface centralizes AI interactions in a persistent sidebar, i
 a panel-based layout that accommodates both traditional development tasks and AI-assisted workflows,
 and reduces navigation complexity.
 
-This feature is an [experiment](../policy/development_stages_support.md).
 To test this feature on GitLab Self-Managed: Contact your GitLab administrator.
-
 Provide feedback in [issue 577554](https://gitlab.com/gitlab-org/gitlab/-/issues/577554).
 
 ![Projects page with the new UI.](img/paneled_view_projects_v18_5.png)

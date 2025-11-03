@@ -215,5 +215,30 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::EntityConverter do
         include_examples 'array of items', nil, { type: "string" }
       end
     end
+
+    context 'with deduplication' do
+      let(:entity_class) { TestEntities::UserEntity }
+      let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+
+      it 'returns same schema object when entity already registered' do
+        converter1 = described_class.new(entity_class, schema_registry)
+        converter2 = described_class.new(entity_class, schema_registry)
+
+        schema1 = converter1.convert
+        schema2 = converter2.convert
+
+        expect(schema1.object_id).to eq(schema2.object_id)
+      end
+
+      it 'only registers entity once in schema registry' do
+        converter1 = described_class.new(entity_class, schema_registry)
+        converter2 = described_class.new(entity_class, schema_registry)
+
+        converter1.convert
+        converter2.convert
+
+        expect(schema_registry.schemas.count).to eq(1)
+      end
+    end
   end
 end

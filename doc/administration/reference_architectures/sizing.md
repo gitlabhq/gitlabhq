@@ -90,6 +90,20 @@ If absolute peaks are rare anomalies, sizing for sustained load may be appropria
 
 Adjust time ranges in queries based on retention (change `[7d]` to `[30d]` if longer history available).
 
+{{< alert type="note" >}}
+
+For high-activity environments, `max_over_time` or `quantile_over_time` queries may time out.
+If this occurs, remove the outer aggregation function and visualize the inner query with a graph.
+For example, for API traffic peak, use:
+
+```prometheus
+sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))
+```
+
+Then visually identify the peak values from the graphed results over your monitoring period.
+
+{{< /alert >}}
+
 #### Query absolute peaks
 
 To identify maximum observed RPS over the specified time period:
@@ -108,7 +122,7 @@ To identify maximum observed RPS over the specified time period:
 
      ```prometheus
      max_over_time(
-       sum(rate(gitlab_transaction_duration_seconds_count{controller!~"Grape|HealthController|MetricsController|Repositories::GitHttpController"}[1m]))[7d:1m]
+       sum(rate(gitlab_transaction_duration_seconds_count{controller!~"Grape|HealthController|MetricsController|Repositories::GitHttpController|GraphqlController"}[1m]))[7d:1m]
      )
      ```
 
@@ -150,7 +164,7 @@ To identify typical high-load levels, filtering out rare spikes:
 
      ```prometheus
      quantile_over_time(0.95,
-       sum(rate(gitlab_transaction_duration_seconds_count{controller!~"Grape|HealthController|MetricsController|Repositories::GitHttpController"}[1m]))[7d:1m]
+       sum(rate(gitlab_transaction_duration_seconds_count{controller!~"Grape|HealthController|MetricsController|Repositories::GitHttpController|GraphqlController"}[1m]))[7d:1m]
      )
      ```
 
@@ -215,6 +229,7 @@ General guidelines:
 - Beyond 15%, start with the peak-based RA, then monitor and adjust if metrics support downsizing.
   - Example 1: Peak is 110 RPS, Large RA handles "up to 100 RPS" → 10% over → Large should suffice (Reference architectures have built-in headroom)
   - Example 2: Peak is 150 RPS, Large RA handles "up to 100 RPS" → 50% over → Use X-Large (up to 200 RPS)
+  - Example 3: Peak is 100 RPS (Large/100 RPS) but sustained is 50 RPS (Medium/60 RPS). Raw RPS graphs show automation spikes cause peaks while majority of time load is <50 RPS. User evaluates whether to start conservative with Large then scale down, or start Medium with [workload-specific scaling](#identify-component-adjustments) (higher risk).
 
 For environments under 40 RPS and where high availability (HA) is a requirement, consult the
 [high availability section](_index.md#high-availability-ha) to identify whether switching to the 60 RPS / 3,000 user
@@ -425,7 +440,9 @@ Common network load sources:
 
 #### Measure network usage
 
-Calculate peak network consumption to identify potential bottlenecks.
+Calculate peak and baseline network consumption to identify potential bottlenecks.
+Assess both to distinguish between occasional spikes (handled by burst capacity)
+and sustained high traffic (requiring network-enhanced VMs).
 
 1. Run the following queries:
 
@@ -439,11 +456,11 @@ Calculate peak network consumption to identify potential bottlenecks.
 
    ```
 
-1. Record the results:
+1. Record both peak spikes and typical baseline observed across your monitoring period:
 
    ```plaintext
-   Max outbound traffic: _____ Gbps
-   Max inbound traffic: _____ Gbps
+   Peak outbound traffic: _____ Gbps (baseline: _____ Gbps)
+   Peak inbound traffic: _____ Gbps (baseline: _____ Gbps)
    ```
 
 #### Network capacity requirements
@@ -471,8 +488,8 @@ Data Profile Summary:
 - Large monorepos (>10GB): _____
 - Gitaly adjustments needed: _____
 - Rails adjustments needed: _____
-- Peak outbound traffic: _____ Gbps
-- Peak inbound traffic: _____ Gbps
+- Peak outbound traffic: _____ Gbps (sustained baseline: _____ Gbps)
+- Peak inbound traffic: _____ Gbps (sustained baseline: _____ Gbps)
 - Network infrastructure changes: _____
 ```
 
@@ -654,7 +671,7 @@ Assessment Summary:
 │   └── Type: [ ] Database-Intensive [ ] Sidekiq-Intensive [ ] None
 ├── Data Profile
 │   ├── Large repos (>2GB): _____ | Monorepos (>10GB): _____
-│   └── Network peak: _____ Gbps
+│   └── Network: Peak _____ Gbps | Baseline _____ Gbps
 ├── Current State
 │   ├── Nearest RA: _____
 |   └── Discrepancies and customizations: _____

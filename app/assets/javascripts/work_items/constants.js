@@ -341,6 +341,7 @@ export const WORK_ITEM_WIDGETS_NAME_MAP = {
   [WIDGET_TYPE_DEVELOPMENT]: s__('WorkItem|Development'),
   [WIDGET_TYPE_CRM_CONTACTS]: s__('WorkItem|Contacts'),
   [WIDGET_TYPE_VULNERABILITIES]: s__('WorkItem|Related vulnerabilities'),
+  [WIDGET_TYPE_STATUS]: s__('WorkItem|Status'),
 };
 
 export const CUSTOM_FIELDS_TYPE_NUMBER = 'NUMBER';

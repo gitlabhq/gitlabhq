@@ -15,6 +15,11 @@ module Gitlab
           foreign_key: :worker_id,
           inverse_of: :worker,
           partition_foreign_key: :worker_partition
+
+        has_one :last_job, -> { order(max_cursor: :desc, created_at: :desc) },
+          class_name: 'Gitlab::Database::BackgroundOperation::JobCellLocal',
+          inverse_of: :worker,
+          partition_foreign_key: :worker_partition
       end
     end
   end

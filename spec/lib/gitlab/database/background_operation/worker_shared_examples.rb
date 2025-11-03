@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'background operation worker functionality' do |worker_factory|
+RSpec.shared_examples 'background operation worker functionality' do |worker_factory, job_factory|
   using RSpec::Parameterized::TableSyntax
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }
@@ -194,6 +194,56 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         # and we only have the newly created partition left.
         expect(described_class.count).to eq(1)
       end
+    end
+  end
+
+  describe '#should_stop?' do
+    let(:worker) { create(worker_factory, :active, started_at: started_at) }
+
+    subject(:should_stop?) { worker.should_stop? }
+
+    before do
+      stub_const('Gitlab::Database::BackgroundOperation::CommonWorker::MINIMUM_JOBS_FOR_FAILURE_CHECK', 1)
+    end
+
+    context 'when started_at is nil' do
+      let(:started_at) { nil }
+
+      it { expect(should_stop?).to be_falsey }
+    end
+
+    context 'when the number of jobs is less than MINIMUM_JOBS_FOR_FAILURE_CHECK' do
+      let(:started_at) { 6.days.ago }
+
+      before do
+        stub_const('Gitlab::Database::BackgroundOperation::CommonWorker::MINIMUM_JOBS_FOR_FAILURE_CHECK', 10)
+        create_list(job_factory, 1, :succeeded, worker: worker)
+        create_list(job_factory, 3, :failed, worker: worker)
+      end
+
+      it { expect(should_stop?).to be_falsey }
+    end
+
+    context 'when the calculated value is greater than the threshold' do
+      let(:started_at) { 6.days.ago }
+
+      before do
+        stub_const('Gitlab::Database::BackgroundOperation::CommonWorker::MAXIMUM_FAILURE_RATIO', 0.70)
+        create_list(job_factory, 1, :succeeded, worker: worker)
+        create_list(job_factory, 3, :failed, worker: worker)
+      end
+
+      it { expect(should_stop?).to be_truthy }
+    end
+
+    context 'when the calculated value is lesser than the threshold' do
+      let(:started_at) { 6.days.ago }
+
+      before do
+        create_list(job_factory, 2, :succeeded, worker: worker)
+      end
+
+      it { expect(should_stop?).to be_falsey }
     end
   end
 end

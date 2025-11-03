@@ -9,7 +9,6 @@ Database/AvoidUsingConnectionExecute:
     - 'app/models/merge_request/metrics.rb'
     - 'app/models/namespaces/descendants.rb'
     - 'app/models/postgresql/replication_slot.rb'
-    - 'app/models/project_group_link.rb'
     - 'app/models/trending_project.rb'
     - 'ee/app/models/concerns/geo/verification_state.rb'
     - 'ee/app/models/dora/daily_metrics.rb'
