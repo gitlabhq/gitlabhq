@@ -2743,7 +2743,7 @@ msgstr ""
 msgid "AICatalog|Flow not found."
 msgstr ""
 
-msgid "AICatalog|Flow removed successfully from this project."
+msgid "AICatalog|Flow removed from this %{namespaceType}."
 msgstr ""
 
 msgid "AICatalog|Flow updated."
@@ -2836,7 +2836,7 @@ msgstr ""
 msgid "AICatalog|Remove agent from this project"
 msgstr ""
 
-msgid "AICatalog|Remove flow from this project"
+msgid "AICatalog|Remove flow from this %{namespaceType}"
 msgstr ""
 
 msgid "AICatalog|Save changes"
@@ -2926,7 +2926,7 @@ msgstr ""
 msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer complex questions."
 msgstr ""
 
-msgid "AICatalog|Use flows in your project."
+msgid "AICatalog|Use flows in your %{namespaceType}."
 msgstr ""
 
 msgid "AICatalog|Version"

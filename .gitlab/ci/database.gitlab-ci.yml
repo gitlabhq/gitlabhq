@@ -49,7 +49,7 @@ db:rollback single-db-ci-connection:
 
 db:migrate:reset single-db-ci-connection:
   extends:
-    - db:migrate:reset
+    - .db:migrate:reset
     - .single-db-ci-connection
     - .rails:rules:single-db-ci-connection
 
@@ -73,7 +73,7 @@ db:rollback single-db-sec-connection:
 
 db:migrate:reset single-db-sec-connection:
   extends:
-    - db:migrate:reset
+    - .db:migrate:reset
     - .single-db-sec-connection
     - .rails:rules:single-db-sec-connection
 
@@ -126,16 +126,15 @@ db:migrate:multi-version-upgrade-pg17:
     - db:migrate:multi-version-upgrade
     - .use-pg17
 
-db:migrate:reset:
+.db:migrate:reset:
   extends: .db-job-base
   script:
     - bundle exec rake db:migrate:reset
 
 db:migrate:reset single-db:
   extends:
-    - db:migrate:reset
+    - .db:migrate:reset
     - .single-db
-    - .rails:rules:single-db
 
 db:check-schema:
   extends:

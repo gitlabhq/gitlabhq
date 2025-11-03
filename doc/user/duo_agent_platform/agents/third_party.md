@@ -60,6 +60,9 @@ The following third-party integrations have been tested by GitLab and are availa
 - [Amazon Q](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html)
 - [Google Gemini CLI](https://github.com/google-gemini/gemini-cli)
 
+For a click-through demo, see [DAP with Amazon Q](https://gitlab.navattic.com/dap-with-q).
+<!-- Demo published on 2025-11-03 -->
+
 ## Prerequisites
 
 Before you can create an agent and integrate it with a third-party AI model

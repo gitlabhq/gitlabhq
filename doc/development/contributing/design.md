@@ -66,7 +66,7 @@ Check visual design properties using your browser's elements inspector ([Chrome]
 - Use recommended [colors based on semantic meaning](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens) as part of designing a unified product experience. These color combinations are supported in all modes.
 - Follow [typography guidelines](https://design.gitlab.com/product-foundations/type-fundamentals/).
 - Follow [layout guidelines](https://design.gitlab.com/product-foundations/layout#grid).
-- Use existing [icons](https://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](https://gitlab-org.gitlab.io/gitlab-svgs/illustrations/)
+- Use existing [icons](https://design.gitlab.com/svgs/) and [illustrations](https://design.gitlab.com/svgs/illustrations/)
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration-creation-guide/)
   guidelines.
