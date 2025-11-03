@@ -25166,7 +25166,7 @@ msgstr ""
 msgid "DuoChat|AI features are now available"
 msgstr ""
 
-msgid "DuoChat|Agentic mode (Beta)"
+msgid "DuoChat|Agentic mode"
 msgstr ""
 
 msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
@@ -58889,7 +58889,7 @@ msgstr ""
 msgid "SecurityAttributes|Security attributes for %{projectName}"
 msgstr ""
 
-msgid "SecurityAttributes|Security attributes help classify and organize your projects. Attributes are managed at the group level. You can add or remove attributes to this project as needed."
+msgid "SecurityAttributes|Security attributes help classify and organize your projects. Attributes are managed at the group level."
 msgstr ""
 
 msgid "SecurityAttributes|Select security attributes"
@@ -58938,6 +58938,9 @@ msgid "SecurityAttributes|View category settings and associated attributes."
 msgstr ""
 
 msgid "SecurityAttributes|View the attributes available in this category"
+msgstr ""
+
+msgid "SecurityAttributes|You can add or remove attributes to this project as needed."
 msgstr ""
 
 msgid "SecurityAttributes|You cannot change the selection type after the category is created. To use a different selection type, create a new category."

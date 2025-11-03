@@ -5,12 +5,16 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import DeleteAccountModal from './components/delete_account_modal.vue';
 import UpdateUsername from './components/update_username.vue';
 
-export default () => {
-  Vue.use(Translate);
+Vue.use(Translate);
 
+const initUpdateUsername = () => {
   const updateUsernameElement = document.getElementById('update-username');
-  // eslint-disable-next-line no-new
-  new Vue({
+
+  if (!updateUsernameElement) {
+    return false;
+  }
+
+  return new Vue({
     el: updateUsernameElement,
     components: {
       UpdateUsername,
@@ -21,9 +25,16 @@ export default () => {
       });
     },
   });
+};
 
+const initDeleteAccountModal = () => {
   const deleteAccountButton = document.getElementById('delete-account-button');
   const deleteAccountModalEl = document.getElementById('delete-account-modal');
+
+  if (!deleteAccountButton || !deleteAccountModalEl) {
+    return false;
+  }
+
   const { actionUrl, confirmWithPassword, username, delayUserAccountSelfDeletion } =
     deleteAccountModalEl.dataset;
 
@@ -49,4 +60,9 @@ export default () => {
       });
     },
   });
+};
+
+export default () => {
+  initUpdateUsername();
+  initDeleteAccountModal();
 };

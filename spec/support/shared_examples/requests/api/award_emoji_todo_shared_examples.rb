@@ -48,7 +48,7 @@ RSpec.shared_examples 'creating award emojis marks Todos as done' do
     end
 
     context 'PersonalSnippet Notes' do
-      let(:awardable) { create(:note, noteable: create(:personal_snippet, author: user)) }
+      let(:awardable) { create(:note_on_personal_snippet, noteable: create(:personal_snippet, author: user)) }
 
       it 'does not mark the Todo as done' do
         subject

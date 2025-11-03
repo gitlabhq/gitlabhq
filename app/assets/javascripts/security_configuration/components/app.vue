@@ -66,7 +66,7 @@ export default {
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath', 'canManageAttributes'],
+  inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath', 'canReadAttributes'],
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -134,7 +134,7 @@ export default {
       return (
         window.gon?.licensed_features?.securityAttributes &&
         this.glFeatures?.securityContextLabels &&
-        this.canManageAttributes
+        this.canReadAttributes
       );
     },
     trackedRefsHelpPagePath() {

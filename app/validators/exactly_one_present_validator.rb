@@ -22,7 +22,7 @@ class ExactlyOnePresentValidator < ActiveModel::Validator # rubocop:disable Gitl
     values = fields.filter_map do |field|
       symbol_field = field.to_sym
       if record.class.reflect_on_association(symbol_field)
-        record.association(symbol_field).load_target
+        record.association(symbol_field).reader
       else
         record[symbol_field].presence
       end

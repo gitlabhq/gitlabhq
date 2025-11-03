@@ -16,7 +16,7 @@ title: Foundational agents
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576618) in GitLab 18.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576618) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -44,7 +44,7 @@ actionable, and contextually appropriate responses compared to general-purpose A
 
 ## Available foundational agents
 
-The following foundational agents are available in GitLab 18.5:
+The following foundational agents are available in GitLab 18.6:
 
 - [GitLab Duo Planner](planner.md), for product management and
   planning workflows.

@@ -86,6 +86,19 @@ RSpec.describe WorkItems::DataSync::Handlers::Notes::CopyService, feature_catego
       expect(expected_description_version.issue_id).to eq(target_work_item.id)
     end
 
+    it 'sets correct attributes from target on copied award emoji', :aggregate_failures do
+      expect { execute_service }.to change { ::AwardEmoji.count }.by(4)
+
+      copied_award_emoji = AwardEmoji.last(4)
+
+      expect(copied_award_emoji).to contain_exactly(
+        have_attributes(organization_id: nil, namespace_id: target_work_item.namespace_id),
+        have_attributes(organization_id: nil, namespace_id: target_work_item.namespace_id),
+        have_attributes(organization_id: nil, namespace_id: target_work_item.namespace_id),
+        have_attributes(organization_id: nil, namespace_id: target_work_item.namespace_id)
+      )
+    end
+
     it 'sets correct attributes from target on copied system_note_metadata', :aggregate_failures do
       expect { execute_service }.to change { ::SystemNoteMetadata.count }.by(2)
 

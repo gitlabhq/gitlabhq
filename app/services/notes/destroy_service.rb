@@ -7,9 +7,14 @@ module Notes
         note.destroy
       end
 
+      if note.for_merge_request?
+        track_note_removal_usage_for_merge_requests(note)
+
+        GraphqlTriggers.merge_request_merge_status_updated(note.noteable) if note.to_be_resolved?
+      end
+
       clear_noteable_diffs_cache(note)
       track_note_removal_usage_for_issues(note) if note.for_issue?
-      track_note_removal_usage_for_merge_requests(note) if note.for_merge_request?
       track_note_removal_usage_for_design(note) if note.for_design?
       track_note_removal_usage_for_wiki(note) if note.for_wiki_page?
     end

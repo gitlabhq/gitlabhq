@@ -73,6 +73,22 @@ RSpec.describe Notes::DestroyService, feature_category: :team_planning do
         described_class.new(repo_project, user).execute(note)
       end
 
+      it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(note.noteable)
+
+        described_class.new(repo_project, user).execute(note)
+      end
+
+      context 'non-resolvable note' do
+        let_it_be(:note) { create(:note, project: repo_project, noteable: merge_request) }
+
+        it 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+          expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(note.noteable)
+
+          described_class.new(repo_project, user).execute(note)
+        end
+      end
+
       context 'noteable highlight cache clearing' do
         before do
           allow(note.position).to receive(:unfolded_diff?) { true }

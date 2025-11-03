@@ -570,7 +570,9 @@ CREATE TABLE siphon_award_emoji
     `created_at` DateTime64(6, 'UTC'),
     `updated_at` DateTime64(6, 'UTC'),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `_siphon_deleted` Bool DEFAULT false
+    `_siphon_deleted` Bool DEFAULT false,
+    `namespace_id` Nullable(Int64),
+    `organization_id` Nullable(Int64)
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id

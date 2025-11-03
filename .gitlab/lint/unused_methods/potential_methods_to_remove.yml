@@ -453,8 +453,6 @@ members_with_access_levels:
   file: app/models/project_team.rb
 mark_for_retry!:
   file: app/models/remote_mirror.rb
-mirror_url_changed?:
-  file: app/models/remote_mirror.rb
 owner_class_attribute_default:
   file: app/models/service_desk/custom_email_verification.rb
 valid_secret_token?:

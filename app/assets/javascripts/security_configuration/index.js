@@ -24,6 +24,7 @@ export const initSecurityConfiguration = (el) => {
   const {
     projectFullPath,
     groupFullPath,
+    canReadAttributes,
     canManageAttributes,
     groupManageAttributesPath,
     upgradePath,
@@ -48,6 +49,7 @@ export const initSecurityConfiguration = (el) => {
     provide: {
       projectFullPath,
       groupFullPath,
+      canReadAttributes: parseBoolean(canReadAttributes),
       canManageAttributes: parseBoolean(canManageAttributes),
       groupManageAttributesPath,
       upgradePath,

@@ -936,6 +936,8 @@ excluded_attributes:
   merge_requests: *merge_request_excluded_definition
   award_emoji:
     - :awardable_id
+    - :namespace_id
+    - :organization_id
   statuses: &statuses_excluded_definition
     - :trace
     - :token

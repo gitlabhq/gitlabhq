@@ -16,7 +16,7 @@ title: GitLab Duo Planner
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576618) in GitLab 18.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576618) in GitLab 18.6.
 
 {{< /history >}}
 

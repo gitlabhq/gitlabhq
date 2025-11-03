@@ -1,5 +1,5 @@
 import { GlForm, GlFormFields, GlToggle, GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import SettingsForm from '~/vscode_extension_marketplace/components/settings_form.vue';
 import { PRESETS } from '../mock_data';
 
@@ -24,7 +24,7 @@ describe('~/vscode_extension_marketplace/components/settings_form.vue', () => {
   const findButton = () => findForm().findComponent(GlButton);
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(SettingsForm, {
+    wrapper = mount(SettingsForm, {
       propsData: {
         presets: PRESETS,
         submitButtonAttrs: TEST_SUBMIT_BUTTON_ATTRS,
@@ -88,21 +88,20 @@ describe('~/vscode_extension_marketplace/components/settings_form.vue', () => {
     });
 
     it('renders open vsx toggle', () => {
-      expect(findOpenVsxToggle().props('value')).toEqual(true);
-      expect(findOpenVsxToggle().attributes()).toMatchObject({
-        id: 'gl-form-field-uniqueId',
+      expect(findOpenVsxToggle().props()).toMatchObject({
+        value: true,
         label: 'Use Open VSX extension registry',
-        labelposition: 'hidden',
+        labelPosition: 'hidden',
       });
     });
 
     it('renders save button', () => {
-      expect(findButton().attributes()).toMatchObject({
+      expect(findButton().props()).toMatchObject({
         type: 'submit',
         variant: 'confirm',
         category: 'primary',
-        ...TEST_SUBMIT_BUTTON_ATTRS,
       });
+      expect(findButton().attributes()).toMatchObject(TEST_SUBMIT_BUTTON_ATTRS);
     });
   });
 

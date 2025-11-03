@@ -988,6 +988,8 @@ project:
 award_emoji:
 - awardable
 - user
+- namespace
+- organization
 priorities:
 - label
 timelogs:

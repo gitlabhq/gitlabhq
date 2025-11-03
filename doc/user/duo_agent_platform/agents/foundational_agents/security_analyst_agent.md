@@ -16,7 +16,7 @@ title: Security Analyst Agent
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19659) in GitLab 18.5.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19659) in GitLab 18.6.
 
 {{< /history >}}
 
