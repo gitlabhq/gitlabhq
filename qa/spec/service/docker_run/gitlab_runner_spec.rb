@@ -226,6 +226,51 @@ module QA
       end
     end
 
+    describe '#add_gitlab_tls_cert' do
+      let(:certificate_content) { "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----" }
+
+      before do
+        allow(QA::Runtime::Env).to receive(:gitlab_tls_certificate).and_return(certificate_content)
+      end
+
+      context 'with valid address' do
+        let(:address) { 'https://gitlab.test' }
+
+        it 'creates docker cp command with correct certificate name' do
+          result = subject.send(:add_gitlab_tls_cert)
+
+          expect(result).to include('&& docker cp')
+          expect(result).to include("#{runner_name}:/etc/gitlab-runner/certs/gitlab.test.crt")
+        end
+      end
+
+      context 'with full URL address' do
+        let(:address) { 'https://my-gitlab.example.com' }
+
+        it 'extracts hostname for certificate name' do
+          result = subject.send(:add_gitlab_tls_cert)
+
+          expect(result).to include('my-gitlab.example.com.crt')
+        end
+      end
+
+      context 'with invalid URI format' do
+        let(:address) { 'ht!tp://invalid-uri' }
+
+        it 'raises an error with descriptive message' do
+          expect { subject.send(:add_gitlab_tls_cert) }.to raise_error(/Invalid address format/)
+        end
+      end
+
+      context 'with address missing host' do
+        let(:address) { 'mailto:user@domain.com' }
+
+        it 'raises an error when no host found' do
+          expect { subject.send(:add_gitlab_tls_cert) }.to raise_error(/No host found in address/)
+        end
+      end
+    end
+
     RSpec::Matchers.define "have_received_masked_shell_command" do |cmd|
       match do |actual|
         expect(actual).to have_received(:shell).with(cmd, mask_secrets: anything)

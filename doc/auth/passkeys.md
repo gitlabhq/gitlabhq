@@ -53,7 +53,7 @@ This approach ensures that if GitLab servers are compromised, attackers cannot u
 To view information about your registered passkeys, including the passkey name, device type,
 and usage details:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Manage authentication**.
@@ -71,7 +71,7 @@ Prerequisites:
 
 To add a passkey:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Manage authentication**.
@@ -122,7 +122,7 @@ If you delete your only passkey, GitLab will also disable passkey sign-in for yo
 
 To delete a passkey:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Manage authentication**.

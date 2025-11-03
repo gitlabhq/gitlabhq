@@ -118,7 +118,7 @@ For invalid or unauthorized access tokens, returns [`404`](../../../api/rest/tro
 To sign out of your GitLab Pages website, revoke the application access token
 for GitLab Pages:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. Select **Applications**.
 1. In the **Authorized applications** section, find the **GitLab Pages**

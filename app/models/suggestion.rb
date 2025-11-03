@@ -3,6 +3,7 @@
 class Suggestion < ApplicationRecord
   include Importable
   include Suggestible
+  include WithAssociatedNote
 
   belongs_to :note, inverse_of: :suggestions
   validates :note, presence: true, unless: :importing?
@@ -86,5 +87,13 @@ class Suggestion < ApplicationRecord
     else
       _("Can't apply as these lines were changed in a more recent version.")
     end
+  end
+
+  def skip_namespace_validation?
+    importing?
+  end
+
+  def note_namespace_id
+    note&.namespace_id || note&.project&.project_namespace_id
   end
 end

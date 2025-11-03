@@ -105,7 +105,7 @@ Note the following when promoting a secondary:
 - If you are using [location-aware DNS](../secondary_proxy/_index.md#configure-location-aware-dns), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
-    1. On the left sidebar, at the bottom, select **Admin**.
+    1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
     1. Select **CI/CD** > **Runners** and remove them.
   - Using the [Runners API](../../../api/runners.md).
 

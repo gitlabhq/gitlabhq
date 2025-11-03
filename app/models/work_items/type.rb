@@ -101,12 +101,8 @@ module WorkItems
     end
 
     # method overridden in EE to perform the corresponding checks for the Epic type
-    def self.allowed_group_level_types(resource_parent)
-      if Feature.enabled?(:create_group_level_work_items, resource_parent, type: :wip)
-        base_types.keys.excluding('epic')
-      else
-        []
-      end
+    def self.allowed_group_level_types(_resource_parent)
+      []
     end
 
     # resource_parent is used in EE

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'resolv'
+require 'uri'
 
 module QA
   module Service
@@ -151,8 +152,15 @@ module QA
           gitlab_tls_certificate.write(Runtime::Env.gitlab_tls_certificate)
           gitlab_tls_certificate.close
 
+          begin
+            uri = URI(@address)
+            host = uri.host || raise("No host found in address: #{@address}")
+          rescue URI::InvalidURIError => e
+            raise("Invalid address format: #{@address} - #{e.message}")
+          end
+
           <<~CMD
-            && docker cp #{gitlab_tls_certificate.path} #{@name}:/etc/gitlab-runner/certs/gitlab.test.crt
+            && docker cp #{gitlab_tls_certificate.path} #{@name}:/etc/gitlab-runner/certs/#{host}.crt
           CMD
         end
 

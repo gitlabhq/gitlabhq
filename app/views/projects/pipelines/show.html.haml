@@ -6,7 +6,6 @@
 - add_page_specific_style 'page_bundles/pipeline'
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
-- add_page_specific_style 'page_bundles/merge_request'
 - add_page_startup_graphql_call('pipelines/get_pipeline_details', { projectPath: @project.full_path, iid: @pipeline.iid })
 
 #js-pipeline-header{ data: js_pipeline_header_data(@project, @pipeline) }

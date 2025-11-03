@@ -49,7 +49,7 @@ Whether you want to install the GitLab for Jira Cloud app [from the Atlassian Ma
 
 To create an OAuth application on your GitLab Self-Managed instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Applications**.
 1. Select **New application**.
 1. In **Redirect URI**:
@@ -142,7 +142,7 @@ Alternatively, you might want to [install the GitLab for Jira Cloud app manually
 
 To set up your GitLab Self-Managed instance for Atlassian Marketplace installation in GitLab 15.7 and later:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Proxy URL**, enter `https://gitlab.com` to install the app from the Atlassian Marketplace.
@@ -222,7 +222,7 @@ To support your GitLab Self-Managed instance with Jira Cloud, do one of the foll
 
 To set up your GitLab Self-Managed instance for manual installation in GitLab 15.7 and later:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Leave **Jira Connect Proxy URL** blank to install the app manually.
@@ -336,7 +336,7 @@ You might want to use a proxy if you're managing multiple GitLab instances but o
 
 To configure your GitLab instance to serve as a proxy:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Select **Enable public key storage**.
@@ -507,7 +507,7 @@ In some reverse proxy configurations, you might have to set
 the reverse proxy FQDN as an additional JWT audience.
 To set an additional JWT audience:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Additional Audience URL**, enter the additional audience

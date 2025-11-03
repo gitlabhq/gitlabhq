@@ -53,7 +53,7 @@ Prerequisites:
 
 To configure Git LFS rate limits:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Git LFS Rate Limits**.
 1. Select **Enable authenticated Git LFS request rate limit**.

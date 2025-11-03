@@ -75,7 +75,7 @@ However, commits are never displayed.
 
 To create a system hook:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **System hooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.

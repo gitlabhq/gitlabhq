@@ -50,7 +50,7 @@ Create the application project in the group hierarchy at the same level or below
 
 {{< /alert >}}
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create from template**.
 1. Select the **Ruby on Rails** template.
 1. Give your project a name, optionally a description, and make it public so that

@@ -166,6 +166,7 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_review_workfl
           expect(suggestion.to_content).to eq(expected_data[:to_content])
           expect(suggestion.lines_above).to eq(expected_data[:lines_above])
           expect(suggestion.lines_below).to eq(expected_data[:lines_below])
+          expect(suggestion.namespace_id).to eq(note.project.project_namespace_id)
         end
       end
 

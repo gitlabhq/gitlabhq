@@ -53,7 +53,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
    - To create a personal snippet, do one of the following:
      - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select **New snippet**.
      - From a project: On the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
-     - From any other page: On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**.
+     - From any other page: On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
      - From the `glab` CLI, using the
        [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
        For full instructions, see the command's documentation.

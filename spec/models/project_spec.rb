@@ -1532,6 +1532,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#root_group' do
+    context 'when root_namespace is not personal' do
+      let_it_be(:group) { build(:group) }
+      let_it_be(:project) { build(:project, group: group) }
+
+      it 'returns the root_namespace' do
+        expect(project.root_group).to eq(group)
+      end
+    end
+
+    context 'when root_namespace is personal' do
+      let_it_be(:user) { build(:user) }
+      let_it_be(:project) { build(:project, namespace: user.namespace) }
+
+      it 'returns nil' do
+        expect(project.root_group).to be_nil
+      end
+    end
+  end
+
   describe '#ci_pipelines' do
     let_it_be(:project) { create(:project) }
 

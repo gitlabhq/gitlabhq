@@ -45,7 +45,7 @@ flux -v
 To authenticate with the Flux CLI, create a personal access token with
 the `api` scope:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. Select **Personal access tokens**.
 1. Enter a name and optional expiry date for the token.

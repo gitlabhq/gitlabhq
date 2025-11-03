@@ -70,15 +70,15 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
     describe 'CI/CD' do
       let(:item_id) { :ci_cd }
 
-      describe 'when project is archived' do
+      describe 'when project or its ancestor is archived' do
         before do
-          allow(project).to receive(:archived?).and_return(true)
+          allow(project).to receive(:self_or_ancestors_archived?).and_return(true)
         end
 
         it { is_expected.to be_nil }
       end
 
-      describe 'when project is not archived' do
+      describe 'when project and ancestors are not archived' do
         it { is_expected.not_to be_nil }
 
         describe 'when the user does not have access' do
@@ -92,15 +92,15 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
     describe 'Monitor' do
       let(:item_id) { :monitor }
 
-      describe 'when project is archived' do
+      describe 'when project or its ancestor is archived' do
         before do
-          allow(project).to receive(:archived?).and_return(true)
+          allow(project).to receive(:self_or_ancestors_archived?).and_return(true)
         end
 
         it { is_expected.to be_nil }
       end
 
-      describe 'when project is not archived' do
+      describe 'when project and ancestors are not archived' do
         it { is_expected.not_to be_nil }
 
         specify { expect(subject.title).to eq 'Monitor' }

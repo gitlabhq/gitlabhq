@@ -69,7 +69,7 @@ To create a custom member role:
 
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
-   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
 1. GitLab Self-Managed and GitLab Dedicated instances only. Select **Member role**.
@@ -98,7 +98,7 @@ Prerequisites:
 
 To create a custom admin role:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
 1. Select **Admin role**.
@@ -128,7 +128,7 @@ To edit a custom role:
 
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
-   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit role**.
 1. Modify the role.
@@ -154,7 +154,7 @@ To view details of a custom role:
 
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
-   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **View details**.
 
@@ -171,7 +171,7 @@ To delete a custom role:
 
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
-   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete role**.
 1. On the confirmation dialog, select **Delete role**.
@@ -216,7 +216,7 @@ Prerequisites:
 
 To assign a custom admin role to an existing user:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Overview** > **Users**.
 1. Select **Edit** for a user.
 1. In the **Access** section, set the access level to either **Regular** or **Auditor**.
@@ -301,7 +301,7 @@ Prerequisites:
 
 To link a custom admin role with an LDAP CN:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `Group cn`.
@@ -320,7 +320,7 @@ Prerequisites:
 
 To link a custom admin role with an LDAP filter:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `User filter`.

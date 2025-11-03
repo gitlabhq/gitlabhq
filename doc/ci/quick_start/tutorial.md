@@ -43,7 +43,7 @@ Before adding the pipeline configuration, you must first set up a Docusaurus pro
 on GitLab.com:
 
 1. Create a new project under your username (not a group):
-   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
    1. Select **Create blank project**.
    1. Enter the project details:
       - In the **Project name** field, enter the name of your project, for example `My Pipeline Tutorial Project`.

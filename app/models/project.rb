@@ -3302,6 +3302,12 @@ class Project < ApplicationRecord
     end
   end
 
+  def root_group
+    return if personal?
+
+    root_namespace
+  end
+
   # for projects that are part of user namespace, return project.
   def self_or_root_group_ids
     if group

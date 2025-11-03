@@ -27,7 +27,7 @@ Your profile also includes settings, which you use to customize your GitLab expe
 
 To access your profile:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select your name or username.
 
 You can also access a users' profile page by using the ID instead of the username at `https://gitlab.example.com/-/u/<id>`.
@@ -48,7 +48,7 @@ To find the user ID:
 
 To access your user settings:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 
 ## Generate or change your Support PIN
@@ -58,7 +58,7 @@ The PIN expires seven days after creation.
 
 To generate a new Support PIN:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Generate New PIN**.
@@ -70,7 +70,7 @@ the PIN is accessible in your profile and expires seven days after creation.
 
 To access your Support PIN:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 
@@ -97,7 +97,7 @@ Prerequisites:
 
 To change your username:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
@@ -107,7 +107,7 @@ To change your username:
 
 To add a new email address to your account:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
 1. Select **Add new email**.
@@ -151,7 +151,7 @@ the deleted email address.
 
 To delete an email address from your account:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
 1. Select **Delete** ({{< icon name="remove" >}}) and confirm you want to **Remove**.
@@ -170,7 +170,7 @@ A GitLab administrator can [disable](../../administration/settings/account_and_l
 
 To make your profile private:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. Select the **Private profile** checkbox.
 1. Select **Update profile settings**.
@@ -208,7 +208,7 @@ the README file with information, it's included on your profile page.
 
 To create a new project and add its README to your profile:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name for your new project.
@@ -245,7 +245,7 @@ They can help other users connect with you on other platforms.
 
 To add links to other accounts:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your:
    - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
@@ -265,7 +265,7 @@ In the user contribution calendar graph and recent activity list, you can see yo
 
 To show private contributions:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Main settings** section, select the **Include private contributions on my profile** checkbox.
 1. Select **Update profile settings**.
@@ -277,7 +277,7 @@ your name in your profile.
 
 To specify your pronouns:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Pronouns** text box, enter your pronouns. The text must be 50 characters or less.
 1. Select **Update profile settings**.
@@ -289,7 +289,7 @@ your name.
 
 To add your name pronunciation:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Pronunciation** text box, enter how your name is pronounced. The pronunciation must be plain text and 255 characters or less.
 1. Select **Update profile settings**.
@@ -306,7 +306,7 @@ Your status consists of the following elements. You can use each separately to i
 
 To set your current status:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Set status**. If you've previously set a status, select **Edit status** instead.
 1. Optional. Enter a status message.
 1. Optional. Select the **Set yourself as busy** checkbox.
@@ -324,7 +324,7 @@ You can set your local time zone to:
 
 To set your time zone:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Time settings** section, select your time zone from the dropdown list.
 
@@ -337,7 +337,7 @@ Your primary email is used by default.
 
 To change your commit email:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select an email address.
 1. Select **Update profile settings**.
@@ -350,7 +350,7 @@ allows commits made with your original primary email to remain associated with y
 
 To change your primary email:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Email** field, enter your new email address.
 1. Select **Update profile settings**.
@@ -360,7 +360,7 @@ To change your primary email:
 
 You can select one of your [configured email addresses](#add-emails-to-your-user-profile) to be displayed on your public profile:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Public email** field, select one of the available email addresses.
 1. Select **Update profile settings**.
@@ -372,7 +372,7 @@ so you can keep your email information private.
 
 To use a private commit email:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select **Use a private email**.
 1. Select **Update profile settings**.
@@ -411,7 +411,7 @@ blocked users don't appear in the followers list on user profiles.
 
 You can disable following and being followed by other users.
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. Select **Preferences**.
 1. Clear the **Enable follow users** checkbox.
@@ -459,7 +459,7 @@ Instead of using a regular username and password to sign in to GitLab, you can u
 
 To connect a sign-in service to use for signing in to GitLab:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. Select **Account**.
 1. Locate the **Service sign-in** section.
@@ -471,7 +471,7 @@ To connect a sign-in service to use for signing in to GitLab:
 
 To disconnect a sign-in service used for signing in to GitLab:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. Select **Account**.
 1. Locate the **Service sign-in** section.

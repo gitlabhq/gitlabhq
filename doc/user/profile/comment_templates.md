@@ -50,7 +50,7 @@ You can create comment templates for your own use, or to share with all members 
 
 To create a comment template for your own use:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
 1. Select **Add new**.
@@ -99,7 +99,7 @@ To create a comment template shared with all members of a project:
 
 To see existing comment templates:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
 1. Scroll to **Comment templates**.
@@ -132,7 +132,7 @@ To see existing comment templates:
 
 To edit or delete an existing comment template:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
 1. Scroll to **Comment templates**, and identify the comment template you want to edit.

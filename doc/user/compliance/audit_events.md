@@ -51,7 +51,7 @@ Audit events can be viewed at the group, project, instance, and sign-in level. E
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile** > **Authentication log**.
 
 After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.

@@ -401,7 +401,7 @@ export default {
     >
       <div
         v-if="filteredFlatFilesList.length"
-        class="gl-h-full gl-min-h-0 gl-flex-grow gl-overflow-y-auto"
+        class="gl-h-full gl-min-h-0 gl-flex-grow gl-overflow-y-auto gl-pl-2"
         role="tree"
         @keydown="onTreeKeydown"
       >

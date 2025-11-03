@@ -27,8 +27,8 @@ pages from within your instance.
 
 ## Container registry URL
 
-The URL to the container image you want depends on the version of the GitLab Docs you need. See the following table
-as a guide for the URL to use in the following sections.
+The URL to the container image you want depends on the version of the GitLab Docs you need.
+See the following table as a guide for the URL to use in the following sections.
 
 | GitLab version | Container registry                                                                           | Container image URL |
 |:---------------|:---------------------------------------------------------------------------------------------|:--------------------|
@@ -55,7 +55,8 @@ In the following example, we expose this on the host under the same port.
 Make sure you either:
 
 - Allow port `4000` in your firewall.
-- Use a different port. In following examples, replace the leftmost `4000` with a different port number.
+- Use a different port.
+In following examples, replace the leftmost `4000` with a different port number.
 
 To run the GitLab product documentation website in a Docker container:
 
@@ -77,7 +78,7 @@ To run the GitLab product documentation website in a Docker container:
      services:
        gitlab_docs:
          image: registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/archives:17.8
-         hostname: 'https://docs.gitlab.example.com:4000'
+         hostname: 'docs.gitlab.example.com'
          ports:
            - '4000:4000'
      ```
@@ -155,8 +156,8 @@ The `html` directory should be served as is and it has the following structure:
 In this example:
 
 - `17.8/` is the directory where the documentation is hosted.
-- `index.html` is a simple HTML file that redirects to the directory containing the documentation. In this
-  case, `17.8/`.
+- `index.html` is a simple HTML file that redirects to the directory containing the documentation.
+In this case, `17.8/`.
 
 To extract the HTML files of the documentation site:
 
@@ -202,7 +203,7 @@ documentation URL requests as needed. For example, if your GitLab version is
 
 To test the setting, in GitLab, select a **Learn more** link. For example:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. In the **Syntax highlighting theme** section, select **Learn more**.
 
@@ -243,7 +244,7 @@ To upgrade to a later version [using Docker](#self-host-the-product-documentatio
      services:
        gitlab_docs:
          image: registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/archives:17.8
-         hostname: 'https://docs.gitlab.example.com:4000'
+         hostname: 'docs.gitlab.example.com'
          ports:
            - '4000:4000'
      ```
@@ -305,4 +306,4 @@ the [correct registry URL](#container-registry-url).
 When previewing the GitLab documentation in Docker on macOS, you may encounter an issue preventing
 redirection to the documentation, yielding the message `If you are not redirected automatically, click here.`
 
-To escape the redirect, you need to append the version number to the URL, such as `http://127.0.0.0.1:4000/16.8/`.
+To escape the redirect, you need to append the version number to the URL, such as `http://127.0.0.1:4000/16.8/`.

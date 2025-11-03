@@ -67,7 +67,7 @@ You add your users as members in the group, and assign them a role.
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. Complete the fields. Name your group `Paperclip Software Factory`.
 1. Select **Create group**.
@@ -83,7 +83,7 @@ upcoming code changes.
 To create a blank project:
 
 1. In your group, on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and then select
-   **In this group** > **New project/repository**.
+   **In this group** > **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, name your project `Paperclip Assistant`.

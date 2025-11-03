@@ -326,7 +326,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
                 expect(f).to be_an_instance_of(ObjectStorage::Concern::OpenFile)
                 expect(File.exist?(f.file_path)).to be_truthy
                 expect(f.original_filename).not_to be_nil
-                expect(f.original_filename).to eq(File.basename(f.file_path))
+                expect(f.original_filename).to eq(uploader.filename)
               end
             )
           end

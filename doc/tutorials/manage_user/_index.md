@@ -54,7 +54,7 @@ You first create a group, Development, to serve as the parent group for the whol
 software development organization.
 
 1. Open GitLab Self-Managed.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. In **Group name**, enter `Development`.
 1. Enter `development-group` for the group in **Group URL**. You see a message
@@ -116,7 +116,7 @@ for the organization.
 You will now manually create the users for your organization. These are test
 users. To create the first test user, Alex Smith:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Overview** > **Users**.
 1. Select **New user**.
 1. Complete the required fields:
@@ -392,7 +392,7 @@ that work, you are going to create a project in the Development parent group, an
 add different users to that project.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
-1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter `Release 2.0` as the name of your project.

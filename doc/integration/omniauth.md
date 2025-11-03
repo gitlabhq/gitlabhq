@@ -268,7 +268,7 @@ created, you can activate an OmniAuth provider. For example, if you originally s
 provider like Google.
 
 1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Connected Accounts** section, select the OmniAuth provider, such as Google.
@@ -289,7 +289,7 @@ By default, sign-in is enabled for all the OAuth providers configured in `config
 
 To enable or disable an OmniAuth provider:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. In the **Enabled OAuth authentication sources** section, select or clear the checkbox for each provider you want to enable or disable.

@@ -259,7 +259,7 @@ These shortcuts are available when viewing [epics](group/epics/_index.md):
 
 To disable keyboard shortcuts:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. In the **Behavior** section, clear the **Enable keyboard shortcuts** checkbox.
 1. Select **Save changes**.
@@ -274,7 +274,7 @@ To disable keyboard shortcuts:
 
 To enable keyboard shortcuts:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. In the **Behavior** section, select the **Enable keyboard shortcuts** checkbox.
 1. Select **Save changes**.

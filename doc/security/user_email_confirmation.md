@@ -16,7 +16,7 @@ GitLab can be configured to require confirmation of a user's email address when
 the user signs up. When this setting is enabled, the user is unable to sign in until
 they confirm their email address.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions** and look for the **Email confirmation settings** options.
 

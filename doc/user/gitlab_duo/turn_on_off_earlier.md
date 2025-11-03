@@ -234,7 +234,7 @@ Prerequisites:
 
 To turn GitLab Duo on or off for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **AI-powered features**.
 1. Select or clear the **Use Duo features** checkbox.

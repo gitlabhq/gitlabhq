@@ -68,7 +68,7 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 
 GitLab Self-Managed administrators can reduce their attack surface by disabling import sources they don't need:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
@@ -277,7 +277,7 @@ Prerequisites:
 Placeholder users are created on the destination instance while a group or project is imported.
 To filter for placeholder users created during imports for an entire instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Overview** > **Users**.
 1. In the search box, filter users by **type**.
 
@@ -759,7 +759,7 @@ You can view all project imports created by you. This list includes the followin
 To view project import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import project**.
 1. In the upper-right corner, select the **History** link.
 1. If there are any errors for a particular import, select **Details** to see them.

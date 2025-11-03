@@ -80,7 +80,7 @@ namespace.
 To purchase additional compute minutes for your personal namespace:
 
 1. Sign in to GitLab.com.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage quotas**.
 1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
@@ -120,7 +120,7 @@ To resolve the issue:
 
 - Ensure that your user profile has a last name filled in:
 
-  1. On the left sidebar, select your avatar.
+  1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
   1. Select **Edit profile**.
   1. Update the **Full name** field to have both first name and last name, then save the changes.
 

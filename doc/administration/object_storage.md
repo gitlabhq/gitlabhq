@@ -1542,7 +1542,7 @@ administrators can observe that the secondary still tries to replicate data:
 
 On the primary site:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Look at the **primary site** and check the verification information. All uploads were verified:
    ![The Geo Sites dashboard displaying successful verification of the primary.](img/geo_primary_uploads_verification_v17_11.png)

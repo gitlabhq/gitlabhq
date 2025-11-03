@@ -15,7 +15,7 @@ title: GitLab Prometheus metrics
 To enable the GitLab Prometheus metrics:
 
 1. Sign in to GitLab as a user with administrator access.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Enable GitLab Prometheus metrics endpoint**.
 1. [Restart GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.

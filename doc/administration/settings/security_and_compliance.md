@@ -20,7 +20,7 @@ The settings for package metadata synchronization are located in the [**Admin** 
 
 To choose the packages you want to synchronize with the GitLab Package Metadata Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [continuous vulnerability scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Security and compliance**.
 1. Expand **License Compliance**.
 1. In **Package registry metadata to sync**, select or clear checkboxes for the

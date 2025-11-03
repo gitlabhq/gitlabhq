@@ -52,7 +52,7 @@ Prerequisites:
 
 To change the default quota that applies to all namespaces:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Compute quota** box, enter a limit.
@@ -71,7 +71,7 @@ Prerequisites:
 
 To set a compute quota for a group or namespace:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Overview** > **Groups**.
 1. For the group you want to update, select **Edit**.
 1. In the **Compute quota** box, enter the maximum number of compute minutes.

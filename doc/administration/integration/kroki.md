@@ -21,7 +21,7 @@ you can create diagrams-as-code within AsciiDoc, Markdown, reStructuredText, and
 You need to enable Kroki integration from Settings under **Admin** area.
 To do that, sign in with an administrator account and follow these steps:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Go to **Settings** > **General**.
 1. Expand the **Kroki** section.
 1. Select **Enable Kroki** checkbox.

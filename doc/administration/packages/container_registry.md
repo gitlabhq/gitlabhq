@@ -388,7 +388,7 @@ the container registry by themselves, follow the steps below.
 In GitLab, tokens for the container registry expire every five minutes.
 To increase the token duration:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Container Registry**.
 1. For the **Authorization token duration (minutes)**, update the value.

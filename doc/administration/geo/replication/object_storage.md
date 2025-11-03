@@ -75,7 +75,7 @@ whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Select **Edit** on the **secondary** site.
 1. In the **Synchronization Settings** section, find the **Allow this secondary site to replicate content on Object Storage**

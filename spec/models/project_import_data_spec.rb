@@ -40,17 +40,6 @@ RSpec.describe ProjectImportData do
     end
   end
 
-  describe '#clear_credentials' do
-    it 'clears out the Hash' do
-      row = described_class.new
-
-      row.merge_credentials('number' => 10)
-      row.clear_credentials
-
-      expect(row.credentials).to eq({})
-    end
-  end
-
   describe '#user_mapping_enabled?' do
     it 'returns user_contribution_mapping_enabled when present in data' do
       import_data_enabled = described_class.new(data: { 'user_contribution_mapping_enabled' => true })

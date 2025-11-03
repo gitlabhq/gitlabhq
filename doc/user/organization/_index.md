@@ -52,7 +52,7 @@ Support for only private organizations is proposed for [cells 1.0](https://gitla
 
 {{< /alert >}}
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New organization**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New organization**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. In the **Organization name** text box, enter a name for the organization.
 1. In the **Organization URL** text box, enter a path for the organization.
 1. In the **Organization description** text box, enter a description for the organization. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).

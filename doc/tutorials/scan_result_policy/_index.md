@@ -29,7 +29,7 @@ users, you must first create them. For details, see [Creating users](../../user/
 
 ## Create a test project
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Complete the fields.
    - **Project name**: `sast-scan-result-policy`.

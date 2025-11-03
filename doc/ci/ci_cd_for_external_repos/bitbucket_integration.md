@@ -30,7 +30,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 1. In GitLab, create a project:
 
-   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
    1. Select **Run CI/CD for external repository**.
    1. Select **Repository by URL**.
    1. Complete the fields:
@@ -49,7 +49,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 1. In Bitbucket, from **Settings** > **Webhooks**, create a new webhook to notify
    GitLab of new commits.
 
-1. Set the webhook URL to the [GitLab pull mirroring](../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project) endpoint, and 
+1. Set the webhook URL to the [GitLab pull mirroring](../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project) endpoint, and
    use the personal access token you just generated for authentication.
 
    ```plaintext

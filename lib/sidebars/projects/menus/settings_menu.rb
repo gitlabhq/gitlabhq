@@ -105,7 +105,8 @@ module Sidebars
         end
 
         def ci_cd_menu_item
-          if context.project.archived? || !context.project.feature_available?(:builds, context.current_user)
+          if context.project.self_or_ancestors_archived? ||
+              !context.project.feature_available?(:builds, context.current_user)
             return ::Sidebars::NilMenuItem.new(item_id: :ci_cd)
           end
 
@@ -131,7 +132,8 @@ module Sidebars
         end
 
         def monitor_menu_item
-          if context.project.archived? || !can?(context.current_user, :admin_operations, context.project)
+          if context.project.self_or_ancestors_archived? ||
+              !can?(context.current_user, :admin_operations, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :monitor)
           end
 

@@ -164,7 +164,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:
@@ -209,7 +209,7 @@ Prerequisites:
 - You must be an administrator.
 - You must have GitLab 17.5 or later.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **GitLab Duo**.
 1. On the bottom right, you can adjust the page display to show **50** or **100** items to increase the number of users available for selection.
 1. Select the users to assign or remove seats for:
@@ -278,7 +278,7 @@ Prerequisites:
 - You must be an administrator.
 - You must have GitLab 17.5 or later.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:

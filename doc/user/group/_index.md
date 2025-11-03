@@ -141,7 +141,7 @@ To view all inactive groups:
 1. Select **View all my groups**.
 1. Select the **Inactive** tab.
 
-Each inactive group in the list displays a badge to indicate that the group is either 
+Each inactive group in the list displays a badge to indicate that the group is either
 archived or pending deletion.
 
 If the group is pending deletion, the list also shows:
@@ -213,7 +213,7 @@ To create a group:
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).

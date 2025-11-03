@@ -42,10 +42,10 @@ You can access your personal homepage from anywhere in GitLab:
 
 ## Layout of the homepage
 
-Near the top, select your avatar to set your status.
+Near the top, select your avatar to set your status. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 If you have set a status, your avatar displays a status badge and emoji, and you can hover to view your status text.
 
-Below your avatar, view the number of merge requests and issues that you're involved with.
+Below your avatar, view the number of merge requests and issues that you're involved with. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), these buttons are in the upper-right corner.
 
 The **Items that need your attention** list shows all work items across GitLab that need your input.
 

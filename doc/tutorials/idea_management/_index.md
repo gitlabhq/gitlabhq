@@ -49,7 +49,7 @@ A project contains the issues that will be used to track ideas.
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details.
    - For **Project name**, enter `Idea management tutorial`.

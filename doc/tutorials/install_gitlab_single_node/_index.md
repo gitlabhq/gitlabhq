@@ -378,7 +378,7 @@ Prerequisites:
 
 To require email verification for locked accounts:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. Select the **Email verification for locked accounts** checkbox.

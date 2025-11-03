@@ -43,7 +43,7 @@ A [group](../../user/group/_index.md) is, in essence, a container for multiple p
 
 To create a new group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and select **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and select **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. Enter the group details.
    - For **Group name**, enter `triage-tutorial`.
@@ -55,7 +55,7 @@ To manage issue-tracking across multiple projects, you need to create at least t
 
 To create a new project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - For **Project name**, enter `test-project-1`. For more information, see project [naming rules](../../user/reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs).

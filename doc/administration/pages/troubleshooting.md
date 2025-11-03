@@ -326,7 +326,7 @@ Upgrading to an [officially supported operating system](../../install/package/_i
 
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Applications > GitLab Pages**.
 1. Edit the application.
 1. Under **Scopes**, ensure that the `api` scope is selected.
@@ -369,7 +369,7 @@ You may see this error if `pages_external_url` was updated at some point of time
 
 1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
 
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
    1. Select **Applications** and then **Add new application**.
    1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that
       `pages_external_url` is configured to use.

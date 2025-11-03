@@ -206,19 +206,19 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           create(:merge_request, source_project: project_with_repo, target_project: project_with_repo)
         end
 
+        let_it_be(:position) do
+          Gitlab::Diff::Position.new(
+            old_path: "files/ruby/popen.rb",
+            new_path: "files/ruby/popen.rb",
+            old_line: nil,
+            new_line: 14,
+            diff_refs: merge_request.diff_refs
+          )
+        end
+
         let(:new_opts) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
 
         context 'noteable highlight cache clearing' do
-          let(:position) do
-            Gitlab::Diff::Position.new(
-              old_path: "files/ruby/popen.rb",
-              new_path: "files/ruby/popen.rb",
-              old_line: nil,
-              new_line: 14,
-              diff_refs: merge_request.diff_refs
-            )
-          end
-
           let(:new_opts) do
             opts.merge(
               in_reply_to_discussion_id: nil,
@@ -273,17 +273,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
 
         context 'note diff file' do
-          let(:line_number) { 14 }
-          let(:position) do
-            Gitlab::Diff::Position.new(
-              old_path: "files/ruby/popen.rb",
-              new_path: "files/ruby/popen.rb",
-              old_line: nil,
-              new_line: line_number,
-              diff_refs: merge_request.diff_refs
-            )
-          end
-
           let(:previous_note) do
             create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
           end
@@ -408,6 +397,36 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
                 expect(note.note_diff_file).to be_nil
               end
             end
+          end
+        end
+
+        context 'with suggestions' do
+          before do
+            allow_any_instance_of(Suggestions::CreateService).to receive(:execute).and_call_original
+          end
+
+          let(:new_opts) do
+            {
+              in_reply_to_discussion_id: nil,
+              note: "```suggestion\nsuggested change\n```",
+              type: 'DiffNote',
+              noteable_type: 'MergeRequest',
+              noteable_id: merge_request.id,
+              position: position.to_h,
+              confidential: false
+            }
+          end
+
+          it 'calls Suggestions::CreateService to process the suggestion' do
+            expect_next_instance_of(Suggestions::CreateService) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            note = described_class.new(project_with_repo, user, new_opts).execute
+
+            expect(note).to be_persisted
+            expect(note.suggestions.count).to eq(1)
+            expect(note.suggestions.first.namespace_id).to eq(project_with_repo.project_namespace_id)
           end
         end
       end

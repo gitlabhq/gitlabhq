@@ -73,8 +73,16 @@ If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user exp
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/562168) to be available on all pages in the GitLab UI for GitLab.com in GitLab 18.5.
+- New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of the new navigation and GitLab Duo sidebar is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -84,13 +92,40 @@ Prerequisites:
   - Your **User settings** page.
   - The **Help** menu.
 
-To use GitLab Duo Chat in the GitLab UI:
+Instructions are provided for the new navigation and classic navigation. 
+Select the tab for your navigation type, or [learn how to switch](../interface_redesign.md#turn-new-navigation-on-or-off).
 
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
+{{< tabs >}}
+
+{{< tab title="New navigation" >}}
+
+1. On the top bar, select **Search or go to** and find your project.
+1. On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}}) or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+   A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
-   - It may take a few seconds for the interactive AI chat to produce an answer.
-1. Optional. Ask a follow-up question.
+   - It might take a few seconds for the interactive AI chat to produce an answer.
+1. Optional. You can:
+   - Ask a follow-up question.
+   - Start [another conversation](#have-multiple-conversations).
+
+{{< /tab >}}
+
+{{< tab title="Classic navigation" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+   A drawer opens on the right side of your screen.
+1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
+   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - It might take a few seconds for the interactive AI chat to produce an answer.
+1. Optional. You can:
+   - Ask a follow-up question.
+   - Start [another conversation](#have-multiple-conversations).
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To ask a new, unrelated question, type `/reset` and select **Send** to clear the context.
 
@@ -98,9 +133,21 @@ To ask a new, unrelated question, type `/reset` and select **Send** to clear the
 
 The 25 most recent messages are retained in the chat history.
 
-To view the history:
+{{< tabs >}}
 
-- In the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
+{{< tab title="New navigation" >}}
+
+On the GitLab Duo sidebar, select **GitLab Duo Chat history** ({{< icon name="history" >}}).
+
+{{< /tab >}}
+
+{{< tab title="Classic navigation" >}}
+
+In the upper-right corner of the Chat, select **Chat history** ({{< icon name="history" >}}).
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Have multiple conversations
 
@@ -114,15 +161,32 @@ To view the history:
 
 In GitLab 17.10 and later, you can have an unlimited number of simultaneous conversations with Chat.
 
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
-1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
-1. Create a new conversation with Chat by selecting one of the following:
-   - In the upper-right corner of the drawer, select **New chat** ({{< icon name="duo-chat-new" >}}).
+{{< tabs >}}
+
+{{< tab title="New navigation" >}}
+
+1. Create a new Chat conversation by doing either of the following:
+   - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="plus" >}}).
    - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
-   A new Chat drawer replaces the previous one.
-1. Create another new conversation.
-1. To view all of your conversations, in the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
+   A new Chat conversation replaces the previous one.
+1. To view all of your conversations, view the [Chat history](#view-the-chat-history).
 1. To switch between conversations, in your Chat history, select the appropriate conversation.
+
+{{< /tab >}}
+
+{{< tab title="Classic navigation" >}}
+
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
+1. Create a new Chat conversation by doing either of the following:
+   - In the upper-right corner of an existing conversation, select **New chat** ({{< icon name="duo-chat-new" >}}).
+   - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+   A new Chat conversation replaces the previous one.
+1. To view all of your conversations, view the [Chat history](#view-the-chat-history).
+1. To switch between conversations, in your Chat history, select the appropriate conversation.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Every conversation persists an unlimited number of messages. However, only the last 25 messages are sent to the LLM to fit the content in the LLM's context window.
 
@@ -132,10 +196,11 @@ Conversations created before this feature was enabled are not visible in the Cha
 
 To delete a conversation:
 
-1. In the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
-1. In the history, select **Delete conversation** ({{< icon name="remove" >}}).
+1. Select the [Chat history](#view-the-chat-history).
+1. In the history, select **Delete this chat** ({{< icon name="remove" >}}).
 
 By default, individual conversations expire and are automatically deleted after 30 days of inactivity.
+
 However, administrators can [change this expiration period](#configure-chat-conversation-expiration).
 
 ## Use GitLab Duo Chat in the Web IDE
@@ -367,7 +432,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **GitLab Duo**.
 1. In the lower-right corner, select **Change configuration**.
 1. In the **GitLab Duo Chat conversation expiration** section, select either of the following options:

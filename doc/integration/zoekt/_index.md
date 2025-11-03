@@ -64,7 +64,7 @@ Prerequisites:
 
 To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Enable indexing** and **Enable searching** checkboxes.
@@ -249,7 +249,7 @@ Prerequisites:
 
 To pause indexing for [exact code search](../../user/search/exact_code_search.md):
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Pause indexing** checkbox.
@@ -273,7 +273,7 @@ Prerequisites:
 You can index both existing and new root namespaces automatically.
 To index all root namespaces automatically:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Index root namespaces automatically** checkbox.
@@ -308,7 +308,7 @@ This feature is enabled by default and caches results for five minutes.
 
 To cache search results:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Cache search results for five minutes** checkbox.
@@ -335,7 +335,7 @@ The default value is `1.0` (one task per CPU core).
 You can adjust this value based on the node's performance and workload.
 To set the number of concurrent indexing tasks:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. In the **Indexing CPU to tasks multiplier** text box, enter a value.
@@ -365,7 +365,7 @@ The default value is `1` (one process per indexing task).
 You can adjust this value based on the node's performance and workload.
 To set the number of parallel processes per indexing task:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. In the **Number of parallel processes per indexing task** text box, enter a value.
@@ -389,7 +389,7 @@ You can adjust this value based on the node's performance and workload.
 
 To set the number of namespaces per indexing rollout:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. In the **Number of namespaces per indexing rollout** text box,
@@ -416,7 +416,7 @@ The default value is `12h` (12 hours).
 Use this setting to manage your Zoekt infrastructure and prevent orphaned resources.
 To define when offline nodes are automatically deleted:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. In the **Offline nodes automatically deleted after** text box, enter a value
@@ -441,7 +441,7 @@ The default value is `30m` (30 minutes).
 
 To define the indexing timeout for a project:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. In the **Indexing timeout per project** text box, enter a value
@@ -468,7 +468,7 @@ The default value is `500,000`.
 You can adjust this value based on the node's performance and workload.
 To set the maximum number of files in a project to be indexed:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. In the **Maximum number of files per project to be indexed** text box, enter a number greater than zero.
@@ -492,7 +492,7 @@ A value of `0` means failed namespaces never retry.
 
 To define the retry interval for failed namespaces:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search configuration**.
 1. In the **Retry interval for failed namespaces** text box, enter a value

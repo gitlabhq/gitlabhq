@@ -16,7 +16,7 @@ description: Configure labels to add to new projects.
 
 To manage labels for the GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Labels**.
 
 For more details on how to manage labels, see [Labels](../user/project/labels.md).

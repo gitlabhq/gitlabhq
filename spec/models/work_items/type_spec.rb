@@ -276,19 +276,10 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
   describe '.allowed_group_level_types' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:non_ee_types) { described_class.base_types.keys.excluding('epic') }
 
     subject { described_class.allowed_group_level_types(group) }
 
-    it { is_expected.to include(*non_ee_types) }
-
-    context 'when create_group_level_work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(create_group_level_work_items: false)
-      end
-
-      it { is_expected.to be_empty }
-    end
+    it { is_expected.to be_empty }
   end
 
   describe '#supported_conversion_types' do

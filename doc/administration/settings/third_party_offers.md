@@ -22,7 +22,7 @@ questions when creating a group.
 
 To toggle the display of customer experience improvement content and third-party offers:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Customer experience improvement and third-party offers**.
 1. Select **Do not display content for customer experience improvement and offers from third parties**.

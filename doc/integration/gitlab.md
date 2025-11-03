@@ -18,7 +18,7 @@ To enable the GitLab.com OmniAuth provider you must register your application wi
 GitLab.com generates an application ID and secret key for you to use.
 
 1. Sign in to GitLab.com.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Applications**.
 1. Provide the required details for **Add new application**.

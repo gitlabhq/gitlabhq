@@ -45,7 +45,7 @@ It allows users to manage multiple projects and communicate with group members a
 
 To create a new group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and select **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and select **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. Enter the group details:
    - For **Group name**, enter `Web App Dev` or another value.
@@ -59,7 +59,7 @@ Subgroups help organize large projects and manage permissions.
 To create a new subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your **Web App Dev** group.
-1. Select **Create new** ({{< icon name="plus" >}}) and **New subgroup**.
+1. Select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Enter the subgroup details:
    - For **Subgroup name**, enter `Frontend` or another value.
 1. Select **Create subgroup**.
@@ -72,7 +72,7 @@ To manage issue-tracking across multiple projects, you need to create projects i
 To create a new project:
 
 1. On the left sidebar, select **Search or go to** and find your `Frontend` subgroup.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and select **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and select **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - For **Project name**, enter `Web UI`. For more information, see project

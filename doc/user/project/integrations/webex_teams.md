@@ -36,7 +36,7 @@ notifications:
      1. On the left sidebar, select **Search or go to** and find your project or group.
      1. Select **Settings** > **Integrations**.
    - At the instance level:
-     1. On the left sidebar, at the bottom, select **Admin**.
+     1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
      1. Select **Settings** > **Integrations**.
 1. Select the **Webex Teams** integration.
 1. Ensure that the **Active** toggle is enabled.

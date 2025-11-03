@@ -712,7 +712,7 @@ To view all issues assigned to you:
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd>+<kbd>i</kbd>.
-- On the left sidebar, at the top, select **Assigned issues** ({{< icon name="issues" >}}).
+- On the left sidebar, at the top, select **Assigned issues** ({{< icon name="issues" >}}). If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 <!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 
 ## Issue list

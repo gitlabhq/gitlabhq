@@ -403,7 +403,7 @@ To resolve this issue, you must update the OAuth callback URL to match the URL u
 
 To update the OAuth callback URL:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Applications**.
 1. For **GitLab Web IDE**, select **Edit**.
 1. Enter the OAuth callback URL.

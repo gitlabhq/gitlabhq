@@ -30,7 +30,7 @@ comments display your username.
 
 To add an account manager:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Add account manager**.
@@ -41,7 +41,7 @@ To add an account manager:
 
 To edit an account manager:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Next to the account manager, select **Edit** ({{< icon name="pencil" >}}).
@@ -52,7 +52,7 @@ To edit an account manager:
 
 To delete an account manager:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Next to the account manager, select **Delete** ({{< icon name="remove" >}}).
@@ -70,7 +70,7 @@ also specify their relationship to you.
 
 To add an account successor:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Add account successor**.
@@ -81,7 +81,7 @@ To add an account successor:
 
 To edit an account successor:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Next to the account successor, select **Edit** ({{< icon name="pencil" >}}).
@@ -92,7 +92,7 @@ To edit an account successor:
 
 To delete an account successor:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Next to the account successor, select **Delete** ({{< icon name="remove" >}}).

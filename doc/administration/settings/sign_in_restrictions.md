@@ -19,7 +19,7 @@ Use sign-in restrictions to customize authentication restrictions for web interf
 
 To access sign-in restriction settings:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 
@@ -94,7 +94,7 @@ Open the [Rails console](../operations/rails_console.md) and run the following:
 
 To enable Admin Mode through the UI:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. Select **Enable Admin Mode**.
@@ -104,7 +104,7 @@ To enable Admin Mode through the UI:
 
 To turn on Admin Mode for your current session and access potentially dangerous resources:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Enter Admin Mode**.
 1. Try to access any part of the UI with `/admin` in the URL (which requires administrator access).
 
@@ -130,7 +130,7 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 
 Go to your list of active sessions:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Active sessions**.
 
@@ -140,7 +140,7 @@ Sessions which have Admin Mode turned on display the text **Signed in on `date o
 
 To turn off Admin Mode for your current session:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Leave Admin Mode**.
 
 ### Known issues

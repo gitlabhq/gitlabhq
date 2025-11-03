@@ -20,7 +20,7 @@ from built-in or custom templates, or [create a project with `git push`](../../t
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    1. **Project name**: Enter the name of your project.
@@ -47,7 +47,7 @@ Anyone can contribute to built-in project templates.
 
 To create a project from a built-in template:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. From the list of templates:
@@ -80,7 +80,7 @@ HIPAA Audit Protocol published by the U.S Department of Health and Human Service
 
 To create a project from the HIPAA Audit Protocol template:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. Locate the **HIPAA Audit Protocol** template:
@@ -102,7 +102,7 @@ and [group](../group/custom_project_templates.md).
 
 To create a project from a custom template:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create from template**.
 1. Select the **Instance** or **Group** tab.
 1. From the list of templates:
@@ -143,7 +143,7 @@ Git does not support migrating to SHA-256 later, or migrating back to SHA-1.
 
 To create a project that uses SHA-256 hashing:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Enter the project details:
    - **Project name**: Enter the name of your project.
    - **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.

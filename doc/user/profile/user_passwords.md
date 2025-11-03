@@ -34,7 +34,7 @@ You can change your password. The new password must meet the password requiremen
 
 To change your password:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Password**.
 1. In the **Current password** text box, enter your current password.

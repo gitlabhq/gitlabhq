@@ -46,7 +46,7 @@ Maintainer role for the group.
 
 If you don't have a group, create one:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.
 1. Choose the [visibility level](../../user/public_access.md).

@@ -58,7 +58,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
@@ -250,7 +250,7 @@ runners to Google Compute Engine:
 Now that you've automated your runner creation and registration, you can view
 the runners that use the same configuration in the GitLab UI.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **CI/CD** > **Runners**.
 1. In the search box, enter the runner description or search the list of runners.
 1. To view the runners that use the same configuration, in the **Details** tab,

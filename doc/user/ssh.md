@@ -238,7 +238,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    {{< /tabs >}}
 
 1. Sign in to GitLab.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Select **Add new key**.
@@ -380,7 +380,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 - Use an existing SSH key in your 1Password vault to authenticate with GitLab.
 
 1. Sign in to GitLab.
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Select **Add new key**.
@@ -412,7 +412,7 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 To view the SSH keys for your account:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 
@@ -447,7 +447,7 @@ Prerequisites:
 
 To revoke an SSH key:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Next to the SSH key you want to revoke, select **Revoke**.
@@ -457,7 +457,7 @@ To revoke an SSH key:
 
 To delete an SSH key:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
 1. Next to the key you want to delete, select **Remove** ({{< icon name="remove" >}}).

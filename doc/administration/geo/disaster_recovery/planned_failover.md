@@ -264,7 +264,7 @@ Database settings are automatically replicated to the secondary site. However, y
 OAuth or LDAP integration are enabled on the primary site but not the secondary site, they are lost during failover.
 
 Review the `/etc/gitlab/gitlab.rb` file for both sites. Ensure the secondary site
-supports everything the primary site does before scheduling a planned failover. 
+supports everything the primary site does before scheduling a planned failover.
 Make sure that [GitLab Geo Roles](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) are configured correctly.
 
 ### Run system checks
@@ -315,7 +315,7 @@ ensure these processes are close to 100% as possible during active use.
 
 On the secondary site:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Geo** > **Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
@@ -344,7 +344,7 @@ For more information, see [automatic background verification](background_verific
 
 On the primary site:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Messages**.
 1. Add a message notifying users on the maintenance window. To estimate the time needed to finish
    syncing, go to **Geo** > **Sites**.
@@ -381,7 +381,7 @@ To ensure that all data replicates to a secondary site, disable updates (write r
 on the primary site to give the secondary site time to catch up:
 
 1. Enable [maintenance mode](../../maintenance_mode/_index.md) on the primary site.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Monitoring** > **Background jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
@@ -399,7 +399,7 @@ on the primary site to give the secondary site time to catch up:
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
 1. On the primary site:
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
    1. On the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**. Wait for all queues, except
       those with `geo` in the name, to drop to 0.
@@ -414,7 +414,7 @@ on the primary site to give the secondary site time to catch up:
       - The Geo log cursor is up to date (0 events behind).
 
 1. On the secondary site:
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
    1. On the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**. Wait for all the `geo`
       queues to drop to 0 queued and 0 running jobs.

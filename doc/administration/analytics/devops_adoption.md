@@ -47,7 +47,7 @@ before this feature becomes available.
 
 To view DevOps adoption for your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Analytics** > **DevOps adoption**.
 
 ## Add a group to DevOps adoption
@@ -58,7 +58,7 @@ Prerequisites:
 
 To add a group to DevOps adoption:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Analytics** > **DevOps adoption**.
 1. From the **Add or remove groups** dropdown list, select the group you want to add.
 

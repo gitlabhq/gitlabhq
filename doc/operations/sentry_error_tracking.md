@@ -77,7 +77,7 @@ On-premise Sentry integrations may encounter this issue when attempting to conne
 
 To fix this issue:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** and **Allow requests to the local network from system hooks** checkboxes.

@@ -169,7 +169,7 @@ export default {
       size="small"
       :icon="chevronIcon"
       data-testid="tree-toggle-button"
-      class="file-row-indentation gl-mr-1 gl-shrink-0"
+      class="file-row-indentation gl-z-3 gl-mr-1 gl-shrink-0"
       :aria-label="chevronAriaLabel"
       @click="onChevronClick"
     />

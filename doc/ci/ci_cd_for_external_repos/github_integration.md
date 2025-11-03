@@ -43,7 +43,7 @@ repositories:
       `repo` and `admin:repo_hook` so that GitLab can access your project,
       update commit statuses, and create a web hook to notify GitLab of new commits.
 1. In GitLab, create a project:
-   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
    1. Select **Run CI/CD for external repository**.
    1. Select **GitHub**.
    1. For **Personal access token**, paste the token.
@@ -70,7 +70,7 @@ To manually enable GitLab CI/CD for your repository:
    1. Enter a **Token description** and update the scope to allow
       `repo` so that GitLab can access your project and update commit statuses.
 1. In GitLab, create a project:
-   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
    1. Select **Run CI/CD for external repository** and **Repository by URL**.
    1. In the **Git repository URL** field, enter the HTTPS URL for your GitHub repository.
       If your project is private, use the personal access token you just created for authentication.

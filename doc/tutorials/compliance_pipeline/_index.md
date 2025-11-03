@@ -51,7 +51,7 @@ Compliance frameworks are configured in top-level groups. In this tutorial, you 
 
 To create the new group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. In the **Group name** field, enter `Tutorial group`.
 1. Select **Create group**.
@@ -120,7 +120,7 @@ compliance pipeline configuration in their pipelines.
 To create a new project for running the compliance pipeline configuration:
 
 1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
-1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial project`.
 1. Select **Create project**.

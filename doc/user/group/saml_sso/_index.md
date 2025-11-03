@@ -590,7 +590,7 @@ group owner, and then you can unlink the account.
 
 For example, to unlink the `MyOrg` account:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Disconnect** next to the connected account.

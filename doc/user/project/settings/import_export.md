@@ -143,7 +143,7 @@ Before you can migrate projects on GitLab Self-Managed using file exports, GitLa
 
 To enable file exports as an import source for the destination instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
@@ -287,7 +287,7 @@ may be possible for an attacker to steal your sensitive data.
 
 To import a project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import project**.
 1. In **Import project from**, select **GitLab export**.
 1. Enter your project name and URL. Then select the file you exported previously.
@@ -472,7 +472,7 @@ To export the contents of a group:
 
 To import the group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import group**.
 1. In the **Import group from file** section, enter a group name and accept or modify the associated group URL.
 1. Select **Choose file**.

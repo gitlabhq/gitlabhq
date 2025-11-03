@@ -38,7 +38,7 @@ rename the `alex` namespace to `alex-user`, and `alex-group` namespace to the no
 
 ## Create a group
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.
    Don't worry about the actual path, this is only temporary. You change this URL to the username of the personal namespace in the [final step](#rename-the-new-group-namespace-to-the-original-username).
@@ -77,7 +77,7 @@ From the moment you rename the personal namespace, the username becomes availabl
 
 To [change a user's username](../../user/profile/_index.md#change-your-username):
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.

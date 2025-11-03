@@ -38,7 +38,7 @@ DELETE /admin/sidekiq/queues/:queue_name
 | `project`           | string | no       | The full path of the project where the jobs were scheduled from |
 | `root_namespace`    | string | no       | The root namespace of the project |
 | `subscription_plan` | string | no       | The subscription plan of the root namespace (GitLab.com only) |
-| `caller_id`         | string | no       | The endpoint or background job that schedule the job (for example: `ProjectsController#create`, `/api/:version/projects/:id`, `PostReceive`) |
+| `caller_id`         | string | no       | The endpoint or background job that scheduled the job (for example: `ProjectsController#create`, `/api/:version/projects/:id`, `PostReceive`) |
 | `feature_category`  | string | no       | The feature category of the background job (for example: `team_planning` or `code_review`) |
 | `worker_class`      | string | no       | The class of the background job worker (for example: `PostReceive` or `MergeWorker`) |
 

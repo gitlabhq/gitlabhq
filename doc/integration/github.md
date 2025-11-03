@@ -239,7 +239,7 @@ and then connect it to your GitHub account
 
 To fix this issue, you must activate GitHub sign-in in GitLab:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect to GitHub**.

@@ -46,7 +46,7 @@ For the first step here, you create a demo application from a project template.
 Use a GitLab project template to get started. As the name suggests, these projects provide a
 bare-bones application built on some well-known frameworks.
 
-1. In GitLab on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. In GitLab on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create from template**, where you can choose from a Ruby on Rails, Spring, or
    NodeJS Express project. For this guide, use the Ruby on Rails template.
 1. Give your project a name. In this example, it's named `ecs-demo`. Make it public so that you can

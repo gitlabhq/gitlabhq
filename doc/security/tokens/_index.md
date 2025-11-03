@@ -299,7 +299,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Under **Feed token**, select the **Disable feed token** checkbox, then select **Save changes**.

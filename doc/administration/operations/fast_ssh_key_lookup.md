@@ -136,7 +136,7 @@ To resolve this, you can disable writes to the `authorized_keys` file:
 1. Confirm SSH works. This step is important because otherwise the file quickly becomes out-of-date.
 1. Disable writes to the `authorized_keys` file:
 
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
    1. Select **Settings** > **Network**.
    1. Expand **Performance optimization**.
    1. Clear the **Use `authorized_keys` file to authenticate SSH keys** checkbox.
@@ -157,7 +157,7 @@ or for users to re-add their keys.
 This overview is brief. Refer to the previous instructions for more context.
 
 1. Enable writes to the `authorized_keys` file.
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
    1. On the left sidebar, select **Settings** > **Network**.
    1. Expand **Performance optimization**.
    1. Select the **Use `authorized_keys` file to authenticate SSH keys** checkbox.

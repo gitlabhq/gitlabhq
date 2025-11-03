@@ -22,7 +22,7 @@ reports in the **Admin** area.
 
 To receive notifications of new abuse reports by email:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Reporting**.
 1. Expand the **Abuse reports** section.
 1. Provide an email address and select **Save changes**.
@@ -45,7 +45,7 @@ To find out more about reporting abuse, see
 
 To access abuse reports:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Abuse reports**.
 
 There are four ways to resolve an abuse report, with a button for each method:

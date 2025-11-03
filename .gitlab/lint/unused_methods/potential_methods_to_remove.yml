@@ -437,8 +437,6 @@ enabled_group_deploy_keys:
   file: app/models/project.rb
 updated_today?:
   file: app/models/project_feature_usage.rb
-clear_credentials:
-  file: app/models/project_import_data.rb
 update_wiki_size:
   file: app/models/project_statistics.rb
 update_snippets_size:

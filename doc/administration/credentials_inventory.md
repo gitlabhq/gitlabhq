@@ -43,7 +43,7 @@ As an administrator, you can:
 
 To revoke a personal access token in your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Credentials**.
 1. Next to the personal access token, select **Revoke**.
    If the token was previously expired or revoked, you'll see the date this happened instead.
@@ -54,7 +54,7 @@ The access token is revoked and the user is notified by email.
 
 To revoke a project access token in your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Credentials**.
 1. Select the **Project and group access tokens** tab.
 1. Next to the project access token, select **Revoke**.
@@ -65,7 +65,7 @@ The access token is revoked and a background process begins to delete the associ
 
 To delete an SSH key in your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
 1. Next to the SSH key, select **Delete**.
@@ -78,6 +78,6 @@ You can see details for each GPG key including the owner, ID, and [verification 
 
 To view information about GPG keys in your instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Credentials**.
 1. Select the **GPG keys** tab.

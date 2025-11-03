@@ -108,7 +108,7 @@ If this happens, GitLab Duo uses the LLMs you have selected in your default name
 
 To select a default namespace:
 
-1. In GitLab.com, on the left sidebar, select your avatar.
+1. In GitLab.com, on the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Go to the **Behavior** section.
 1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.

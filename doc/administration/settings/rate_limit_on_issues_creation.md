@@ -21,7 +21,7 @@ action blocks requests that exceed a rate of 300 per minute. Access to the endpo
 
 To limit the number of requests made to the issue and epic creation endpoints:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Issues Rate Limits**.
 1. Under **Max requests per minute**, enter the new value.

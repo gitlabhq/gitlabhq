@@ -66,7 +66,7 @@ Prerequisites:
 
 To check the status of batched background migrations:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Monitoring** > **Background migrations**.
 1. Select **Queued** or **Finalizing** to see incomplete migrations,
    and **Failed** for failed migrations.
@@ -236,7 +236,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Monitoring** > **Background migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
 1. Select the failed **Migration** to see the migration parameters and the jobs that failed.
@@ -251,7 +251,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Monitoring** > **Background migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
 1. Select a failed batched background migration to retry by clicking on the retry button ({{< icon name="retry" >}}).

@@ -11,8 +11,6 @@ module Groups
       push_frontend_feature_flag(:notifications_todos_buttons, current_user)
       push_force_frontend_feature_flag(:work_items_beta, !!group&.work_items_beta_feature_flag_enabled?)
       push_force_frontend_feature_flag(:work_items_alpha, !!group&.work_items_alpha_feature_flag_enabled?)
-      push_force_frontend_feature_flag(:create_group_level_work_items,
-        !!group&.create_group_level_work_items_feature_flag_enabled?)
       push_force_frontend_feature_flag(:glql_load_on_click, !!group&.glql_load_on_click_feature_flag_enabled?)
       push_force_frontend_feature_flag(:work_item_planning_view, !!group&.work_items_consolidated_list_enabled?)
     end

@@ -1463,7 +1463,7 @@ Use **in** as a preposition when describing UI element locations. For example:
 
 - In the left sidebar, select **Settings** > **CI/CD**.
 - In the **Grant permission** dialog, select **Group**.
-- In the upper-right corner, select your avatar.
+- In the upper-right corner, select your avatar. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 
 Use **on** only for:
 

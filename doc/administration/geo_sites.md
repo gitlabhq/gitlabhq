@@ -19,7 +19,7 @@ You can configure various settings for GitLab Geo sites. For more information, s
 
 On either the primary or secondary site:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Geo** > **Sites**.
 
 ## Common settings
@@ -90,7 +90,7 @@ display in the Admin Area at **Geo** > **Sites** > **Project Repositories**.
 
 The internal URL defaults to external URL. To change it:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Select **Edit** on the site you want to customize.
 1. Edit the internal URL.

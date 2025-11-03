@@ -1160,7 +1160,7 @@ elements:
 
 All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
 
-Guidance for individual UI elements is in [the word list](word_list.md). 
+Guidance for individual UI elements is in [the word list](word_list.md).
 For guidance about the paneled UI while it is in development, see
 [Names for external communication](https://design.gitlab.com/product-foundations/layout/#names-for-external-communication) in Pajamas.
 
@@ -1206,19 +1206,19 @@ To open either project or group settings:
 To create a project:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 ```
 
 To create a group:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 ```
 
 To open the **Admin** area:
 
 ```markdown
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **CI/CD**.
 ```
 
@@ -1234,7 +1234,7 @@ To open the **Your work** menu item:
 To select your avatar:
 
 ```markdown
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 ```
 
 To save the selection in some dropdown lists:
@@ -1461,7 +1461,7 @@ To convert image files to PNG format:
 
    The `file` command examines the actual file contents (magic bytes/headers) rather than
    the extension. A misnamed JPEG file shows:
-  
+
    ```shell
    doc/user/img/problematic_file.png: JPEG image data, JFIF standard 1.01...
    ```

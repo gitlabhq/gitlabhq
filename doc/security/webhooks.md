@@ -55,7 +55,7 @@ To prevent exploitation of insecure internal web services, all webhook and integ
 
 To allow access to these addresses:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** checkbox.
@@ -68,7 +68,7 @@ Prerequisites:
 
 [System hooks](../administration/system_hooks.md) can make requests to the local network by default. To prevent system hook requests to the local network:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
@@ -81,7 +81,7 @@ Prerequisites:
 
 [DNS rebinding](https://en.wikipedia.org/wiki/DNS_rebinding) is a technique to make a malicious domain name resolve to an internal network resource to bypass local network access restrictions. GitLab has protection against this attack enabled by default. To disable this protection:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Clear the **Enforce DNS-rebinding attack protection** checkbox.
@@ -100,7 +100,7 @@ Prerequisites:
 
 To filter requests by blocking many requests:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. Select the **Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist** checkbox.
@@ -123,7 +123,7 @@ Prerequisites:
 
 To allow outbound requests to certain IP addresses and domains:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**.
 1. In **Local IP addresses and domain names that hooks and integrations can access**, enter your IP addresses and domains.

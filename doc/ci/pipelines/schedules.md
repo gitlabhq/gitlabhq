@@ -114,7 +114,7 @@ To take ownership of a schedule:
 
 To view the active pipeline schedules that you own across all your projects:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. Select **Account**.
 1. Scroll to **Scheduled pipelines you own**.

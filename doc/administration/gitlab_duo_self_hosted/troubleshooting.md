@@ -178,7 +178,7 @@ This missing configuration might be because of either of the following:
 
 To check if GitLab Duo was configured correctly:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Self-hosted models**
 1. Expand **AI-native features**.
 1. Under **Features**, check that **Code Suggestions** and **Code generation** are set to **Self-hosted model**.

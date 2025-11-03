@@ -23,7 +23,7 @@ To use reCAPTCHA, first create a site and private key.
 1. Go to the [Google reCAPTCHA page](https://www.google.com/recaptcha/admin).
 1. To get reCAPTCHA v2 keys, fill in the form and select **Submit**.
 1. Sign in to your GitLab server as an administrator.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Reporting**.
 1. Expand **Spam and Anti-bot Protection**.
 1. In the reCAPTCHA fields, enter the keys you obtained in the previous steps.

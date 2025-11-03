@@ -48,9 +48,33 @@ Prerequisites:
 - During the beta, GitLab Duo Planner is in read-only mode.
 
 1. On the left sidebar, select **Search or go to** and find your project.
+
+   If you've [turned the new navigation on](../../../interface_redesign.md#turn-new-navigation-on-or-off),
+   this field is on the top bar.
+
 1. Open an issue, epic, or merge request in your project.
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+1. Open GitLab Duo Chat:
+
+   {{< tabs >}}
+
+   {{< tab title="New navigation" >}}
+
+   On the GitLab Duo sidebar, select either **Current GitLab Duo Chat** ({{< icon name="comment" >}})
+   or **New GitLab Duo Chat** ({{< icon name="plus" >}}).
+
+   A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
+
+   {{< /tab >}}
+
+   {{< tab title="Classic navigation" >}}
+
+   In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
    A drawer opens on the right side of your screen.
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
+
 1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Duo Planner**.
 1. Enter your planning-related question or request. To get the best results from your request:
 

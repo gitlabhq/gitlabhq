@@ -38,7 +38,7 @@ On GitLab.com, you cannot override the job timeout for GitLab hosted instance ru
 
 To set the maximum job timeout:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner, you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
@@ -275,7 +275,7 @@ Prerequisites:
 
 To automatically rotate runner authentication tokens:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.
@@ -299,7 +299,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
@@ -347,7 +347,7 @@ Prerequisites:
 
 To control the jobs that an instance runner can run:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:

@@ -69,7 +69,7 @@ The ability to create personal access tokens without an expiry date was [depreca
 
 You can create as many personal access tokens as you like.
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
@@ -117,7 +117,7 @@ immediately, and both versions remain in the system for audit purposes.
 
 To rotate a personal access token:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -138,7 +138,7 @@ You cannot permanently delete tokens, but you can filter token lists to show onl
 
 To revoke a personal access token:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -193,7 +193,7 @@ After you have used the API to disable personal access tokens, those tokens cann
 
 In GitLab 17.3 and later, you can use the Admin UI to disable personal access tokens:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Select the **Disable personal access tokens** checkbox.
@@ -253,7 +253,7 @@ Token usage information updates periodically. The time the token was last used u
 
 To view the last time a token was used, and the IP addresses from where the token was used:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. In the **Active personal access tokens** area, view the **Last Used** date and **Last Used IPs** for
@@ -404,7 +404,7 @@ Prerequisites:
 
 - You must be an administrator for your GitLab Self-Managed instance.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.
@@ -457,7 +457,7 @@ Prerequisites:
 
 To require DPoP on all calls to the REST and GraphQL APIs:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Personal access tokens**.
 1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.

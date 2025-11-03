@@ -32,7 +32,7 @@ Before you begin this tutorial, make sure you have the following:
 
 First, create a project and enable secret detection:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) > **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) > **New project/repository**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    1. Enter a name and project slug.

@@ -43,7 +43,7 @@ After adding an OAuth 2 application to an instance, you can use OAuth 2 to:
 
 To create a new application for your user:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Applications**.
 1. Select **Add new application**.
@@ -82,7 +82,7 @@ To create a new application for a group:
 
 To create an application for your GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Applications**.
 1. Select **New application**.
 
@@ -100,7 +100,7 @@ The user authorization step is automatically skipped for this application.
 
 To see all the application you've authorized with your GitLab credentials:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile** and then select **Applications**.
 1. See the **Authorized applications** section.
 

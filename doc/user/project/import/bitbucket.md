@@ -113,7 +113,7 @@ For user contributions to be mapped, each user must complete the following befor
 {{< /history >}}
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Import project**.
 1. Select **Bitbucket Cloud**.
 1. Sign in to Bitbucket, then select **Grant access** to give GitLab access to your Bitbucket account.

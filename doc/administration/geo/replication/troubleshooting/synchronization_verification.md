@@ -265,7 +265,7 @@ replication or verification.
 
 You can schedule a full resync of all resources of one component from the UI:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Resync all**.
@@ -351,7 +351,7 @@ reverification sooner:
 If you believe the **primary** site checksums are correct, you can schedule a reverification of one
 component on one **secondary** site from the UI:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Under **Replication details**, select the desired component.
 1. Select **Reverify all**.

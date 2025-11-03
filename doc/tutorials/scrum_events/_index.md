@@ -103,7 +103,7 @@ It will contain your boards, features (epics), story (issue) roll up, and labels
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../../user/reserved_names.md).
@@ -123,7 +123,7 @@ Your project will contain the stories that roll up to your parent group.
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. See the

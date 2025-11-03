@@ -268,7 +268,7 @@ By default, GitLab deletes group and project access tokens and their [token fami
 
 To modify the retention period for inactive tokens:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. In the **Inactive project and group access token retention period** text box, modify the retention period.

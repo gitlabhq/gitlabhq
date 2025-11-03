@@ -335,7 +335,8 @@ Returns [`AvailableModels`](#availablemodels).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryaichatavailablemodelsrootnamespaceid"></a>`rootNamespaceId` | [`GroupID!`](#groupid) | Global ID of the namespace the user is acting on. |
+| <a id="queryaichatavailablemodelsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
+| <a id="queryaichatavailablemodelsrootnamespaceid"></a>`rootNamespaceId` | [`GroupID`](#groupid) | Global ID of the namespace the user is acting on. |
 
 ### `Query.aiChatContextPresets`
 
@@ -39528,6 +39529,7 @@ Project-level settings for product analytics provider.
 | <a id="projectrepositorysizeexcess"></a>`repositorySizeExcess` | [`Float`](#float) | Size of repository that exceeds the limit in bytes. |
 | <a id="projectrequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request member access to the project. |
 | <a id="projectrequirementstatescount"></a>`requirementStatesCount` | [`RequirementStatesCount`](#requirementstatescount) | Number of requirements for the project by their state. |
+| <a id="projectrootgroup"></a>`rootGroup` | [`Group`](#group) | Top-level group of the project. |
 | <a id="projectsastciconfiguration"></a>`sastCiConfiguration` | [`SastCiConfiguration`](#sastciconfiguration) | SAST CI configuration for the project. |
 | <a id="projectsavedreplies"></a>`savedReplies` | [`ProjectSavedReplyConnection`](#projectsavedreplyconnection) | Saved replies available to the project. (see [Connections](#connections)) |
 | <a id="projectsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Indicates whether Secret Push Protection is on or not for the project. |

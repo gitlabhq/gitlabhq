@@ -130,9 +130,9 @@ Prerequisites:
   - The Owner role for a top-level group and
     [permission to create service accounts](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
-A unique [service account](../../../user/profile/service_accounts.md) must exist
-for each project where you want to mention a third-party agent. The service account username
-is the name you mention when giving the third-party agent a task.
+Each project that mentions a third-party agent must have a unique
+[group service account](../../../user/profile/service_accounts.md). Mention the service account
+username when you assign tasks to the third-party agent.
 
 {{< alert type="warning" >}}
 
@@ -721,3 +721,10 @@ Prerequisites:
    is displayed. You can select **here** to see the pipeline in progress.
 1. After the third-party agent has completed the task, you see a confirmation, and either a
    ready-to-merge change or an inline comment.
+
+{{< alert type="note" >}}
+
+You might need to create [branch rules](../../project/repository/branches/branch_rules.md)
+that allow the agent to push to `workloads/*`
+
+{{< /alert >}}

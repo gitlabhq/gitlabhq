@@ -259,6 +259,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           expect(note.suggestions.count).to eq(1)
           expect(note.suggestions.first.from_content).to eq("Original line\n")
+          expect(note.suggestions.first.namespace_id).to eq(note.project.project_namespace.id)
         end
 
         context 'event at forth level of the tree' do

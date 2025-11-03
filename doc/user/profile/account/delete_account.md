@@ -68,7 +68,7 @@ another user takes the username, you cannot reclaim it.
 
 To delete your own account:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
@@ -91,7 +91,7 @@ Prerequisites:
 
 To delete a user:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Overview** > **Users**.
 1. Select a user.
 1. Under the **Account** tab, select:

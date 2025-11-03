@@ -4,6 +4,7 @@ module Suggestions
   class CreateService
     def initialize(note)
       @note = note
+      @project = note.project
     end
 
     def execute
@@ -11,7 +12,7 @@ module Suggestions
 
       suggestions = Gitlab::Diff::SuggestionsParser.parse(
         @note.note,
-        project: @note.project,
+        project: @project,
         position: @note.position
       )
 
@@ -23,7 +24,11 @@ module Suggestions
           :lines_below
         )
 
-        creation_params.merge!(note_id: @note.id, relative_order: index)
+        creation_params.merge!(
+          note_id: @note.id,
+          relative_order: index,
+          namespace_id: @project.project_namespace_id
+        )
       end
 
       rows.in_groups_of(100, false) do |rows|

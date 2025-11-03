@@ -288,7 +288,7 @@ that cannot establish a network connection to the GitLab instance, but can be co
 
 To enable receptive agents:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Agent for Kubernetes**.
 1. Turn on the **Enable receptive mode** toggle.

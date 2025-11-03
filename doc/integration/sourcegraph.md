@@ -72,7 +72,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sourcegraph**.
 1. Select **Enable Sourcegraph**.
@@ -94,7 +94,7 @@ Prerequisites:
 
 To enable this feature in your GitLab user preferences:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Integrations** section. Under **Sourcegraph**, select **Enable integrated code intelligence on code views**.
 1. Select **Save changes**.

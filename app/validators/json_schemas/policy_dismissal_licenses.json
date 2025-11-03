@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Policy dismissal licenses",
+  "type": "object",
+  "minProperties": 1,
+  "patternProperties": {
+    "^.+$": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

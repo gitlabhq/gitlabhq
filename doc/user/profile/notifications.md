@@ -66,7 +66,7 @@ anyone else.
 
 To edit your notification settings:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. In **Global notification email**, enter the email address your notifications are sent to.
@@ -137,7 +137,7 @@ You can select a notification level and email address for each group.
 
 To select a notification level for a group, use either of these methods:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the group in the **Groups** section.
@@ -154,7 +154,7 @@ Or:
 You can select an email address to receive notifications for each group you belong to.
 You can use group notifications, for example, if you work freelance, and want to keep email about clients' projects separate.
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the group in the **Groups** section.
@@ -166,7 +166,7 @@ To help you stay up to date, you can select a notification level for each projec
 
 To select a notification level for a project, use either of these methods:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Projects** section.
@@ -429,7 +429,7 @@ This reminds group or project members to extend their access duration if they wa
 
 If you no longer wish to receive any email notifications:
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Set your **Global notification level** to **Disabled**.

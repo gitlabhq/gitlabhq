@@ -192,7 +192,7 @@ setting in a merge request, it updates your user settings as well.
 
 {{< tab title="In your user preferences" >}}
 
-1. On the left sidebar, select your avatar.
+1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section and select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.

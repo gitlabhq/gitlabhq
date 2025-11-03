@@ -123,7 +123,7 @@ To view the projects you have interacted with:
 
 You can also view your starred and personal projects from your personal profile:
 
-1. On the left sidebar, select your avatar and then your username.
+1. On the left sidebar, select your avatar and then your username. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. On the left sidebar, select **Starred projects** or **Personal projects**.
 
 ### View inactive projects
@@ -146,7 +146,7 @@ To view all inactive projects:
    - **Explore**, to filter all projects you can access.
 1. Select the **Inactive** tab.
 
-Each inactive project in the list displays a badge to indicate that the project is either 
+Each inactive project in the list displays a badge to indicate that the project is either
 archived or pending deletion.
 
 If the project is pending deletion, the list also shows:
@@ -154,7 +154,7 @@ If the project is pending deletion, the list also shows:
 - The time the project is scheduled for final deletion.
 - A **Restore** action. When you restore a project:
   - The **Pending deletion** label is removed. The project is no longer scheduled for deletion.
-  - The project is removed from the **Inactive** tab. 
+  - The project is removed from the **Inactive** tab.
 
 ### View only projects you own
 

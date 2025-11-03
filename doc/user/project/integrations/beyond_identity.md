@@ -40,7 +40,7 @@ Prerequisites:
 To enable the Beyond Identity integration for your instance:
 
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Integrations**.
 1. Select **Beyond Identity**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -78,7 +78,7 @@ Prerequisites:
 To skip the push check for [service accounts](../../profile/service_accounts.md):
 
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Integrations**.
 1. Select **Beyond Identity**.
 1. Select the **Exclude service accounts** checkbox.
@@ -101,7 +101,7 @@ Prerequisites:
 To exclude groups or projects from the Beyond Identity check:
 
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Integrations**.
 1. Select **Beyond Identity**.
 1. Select the **Exclusions** tab.

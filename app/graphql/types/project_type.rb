@@ -321,6 +321,10 @@ module Types
       null: true,
       description: 'Group of the project.'
 
+    field :root_group, 'Types::GroupType',
+      null: true,
+      description: 'Top-level group of the project.'
+
     field :namespace, Types::NamespaceType,
       null: true,
       description: 'Namespace of the project.'
