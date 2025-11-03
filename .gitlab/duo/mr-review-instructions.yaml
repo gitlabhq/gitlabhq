@@ -90,7 +90,36 @@ instructions:
     fileFilters:
       - "doc/**/*.md"
     instructions: |
-      1. Ensure markdown formatting follows GitLab Flavored Markdown syntax standards.
-      2. Ensure new or updated content aligns with existing content in technical meaning and style.
-      3. Ensure the style is clear, concise, not repetitive, and follows the GitLab Documentation Style Guide.
+      1. Ensure new or updated content aligns with existing content in technical meaning and style.
+      2. Ensure the style is clear, concise, and not repetitive.
+      3. Use American English spelling and active voice.
       4. Avoid excessive or repetitive links.
+      5. Avoid ambiguous phrases and be consistent with feature names.
+      6. Focus on the features and benefits GitLab brings to customers, rather than what GitLab has created.
+      7. Avoid sales or marketing language, including words like "easily" or "simply."
+      8. Avoid writing about the document itself. Get straight to the point instead of using phrases like "This page shows."
+      9. Tend toward lowercase, use sentence case for topic titles, and match UI text capitalization.
+      10. Split long lines at approximately 100 characters and start each new sentence on a new line.
+      11. Use bold for UI elements only.
+      12. Use sentence case for table headers.
+      13. When describing the location of a UI element, use the location first, then action the user must take.
+      14. When linking to GitLab issues, include the GitLab issue number in the link text.
+      15. Start optional steps with "Optional."
+      16. Resize wide or tall screenshots. Compress size on disk to 100 KB or less. Use descriptive lowercase filenames with underscores instead of hyphens. Filenames should include the major and minor version of GitLab in the format "_v18_6".
+      17. Avoid using blockquotes.
+      18. Do not promise work in future milestones. Instead, say work is being proposed.
+      19. Ensure markdown formatting follows GitLab Flavored Markdown syntax standards.
+      20. Along with the previous instructions, documentation should follow the "GitLab Documentation Style Guide".
+
+  - name: API documentation
+    fileFilters:
+      - "doc/api/**/*.md"
+    instructions: |
+      1. Every method must include the REST API request with HTTP method (GET, PUT, DELETE) followed by the request path starting with '/'.
+      2. Every method must have a detailed description of attributes in a table format, with required attributes listed first, then sorted alphabetically.
+      3. Every method must include a cURL example using https://gitlab.example.com/api/v4/ as the endpoint and <your_access_token> as the token placeholder.
+      4. Every method must have a detailed description of the response body and a JSON response example.
+      5. If endpoints attributes are available only to higher subscription tiers or specific offerings, include this information in the attribute description.
+      6. For complex object types, represent sub-attributes with dots, like 'project.name' or 'projects[].name' for arrays.
+      7. For curl commands, use long option names ('--header' instead of '-H'), declare URLs with the '--url' parameter in double quotes, and use line breaks with '\' for readability.
+      8. Along with the previous instructions, API documentation should follow the GitLab "Documenting REST API resources" guidelines.
