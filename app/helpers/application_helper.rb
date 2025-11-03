@@ -132,11 +132,11 @@ module ApplicationHelper
   end
 
   def project_studio_available?
-    Users::ProjectStudio.new(current_user).available?
+    Users::ProjectStudio.new(current_user, studio_cookie: cookies[:studio]).available?
   end
 
   def project_studio_enabled?
-    Users::ProjectStudio.new(current_user).enabled?
+    Users::ProjectStudio.new(current_user, studio_cookie: cookies[:studio]).enabled?
   end
 
   def body_data

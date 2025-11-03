@@ -52,7 +52,7 @@ module SidebarsHelper
   def super_sidebar_logged_out_context(panel:, panel_type:)
     sidebar_context = super_sidebar_shared_context(panel: panel, panel_type: panel_type)
 
-    return sidebar_context unless Users::ProjectStudio.new(current_user).enabled?
+    return sidebar_context unless project_studio_enabled?
 
     sidebar_context.merge({
       sign_in_visible: header_link?(:sign_in).to_s,

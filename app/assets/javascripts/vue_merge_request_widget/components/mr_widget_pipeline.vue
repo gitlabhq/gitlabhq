@@ -9,6 +9,7 @@ import {
   GlTooltipDirective,
   GlButton,
 } from '@gitlab/ui';
+import MrWidgetPipelineDuoAction from 'ee_component/vue_merge_request_widget/components/mr_duo_fix_pipeline.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -59,6 +60,7 @@ export default {
     TooltipOnTruncate,
     HelpPopover,
     HelpIcon,
+    MrWidgetPipelineDuoAction,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -90,6 +92,11 @@ export default {
     sourceBranch: {
       type: String,
       required: false,
+    },
+    mergeRequestPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     mrTroubleshootingDocsPath: {
       type: String,
@@ -193,6 +200,9 @@ export default {
       const eventTypeName = this.pipeline?.details?.event_type_name;
 
       return PIPELINE_EVENT_TYPE_MAP[eventTypeName] || { title: '', content: '' };
+    },
+    showDuoWorkflowAction() {
+      return this.hasPipeline && this.status.group === 'failed' && !this.retargeted;
     },
   },
   errorText: s__(
@@ -354,6 +364,13 @@ export default {
                 {{ pipelineCoverageTooltipDeltaDescription }}
               </gl-tooltip>
             </div>
+            <mr-widget-pipeline-duo-action
+              v-if="showDuoWorkflowAction"
+              :pipeline="pipeline"
+              :merge-request-path="mergeRequestPath"
+              :target-project-full-path="targetProjectFullPath"
+              :source-branch="sourceBranch"
+            />
           </div>
         </div>
       </div>

@@ -26952,6 +26952,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="commitpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
+| <a id="commitpipelinesreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 | <a id="commitpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
 | <a id="commitpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="commitpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
@@ -35016,6 +35017,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
+| <a id="mergerequestpipelinesreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 | <a id="mergerequestpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
 | <a id="mergerequestpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="mergerequestpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
@@ -41257,6 +41259,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
+| <a id="projectpipelinesreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 | <a id="projectpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
 | <a id="projectpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="projectpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |

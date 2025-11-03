@@ -1899,49 +1899,44 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(user.reload.bio).to eq('')
     end
 
-    context 'with param :organization' do
-      context 'when existing attribute :organization is blank' do
-        before do
-          user.update!(user_detail_organization: '')
-        end
+    context 'when updating organization' do
+      using RSpec::Parameterized::TableSyntax
 
-        it 'updates user with organization' do
-          put api(path, admin, admin_mode: true), params: { organization: 'GitLab' }
+      shared_examples '200 response' do
+        it 'responds :ok and sets organization correctly' do
+          put api(path, admin, admin_mode: true), params: { organization: param_organization }
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['organization']).to eq('GitLab')
-          expect(user.reload.user_detail_organization).to eq('GitLab')
+          expect(json_response['organization']).to eq(expected_organization)
+          expect(user.reload.user_detail_organization).to eq(expected_organization)
         end
       end
 
-      context 'when existing attribute :organization is present' do
-        before do
-          user.update!(user_detail_organization: 'Other org')
+      shared_examples '400 response because organization too long' do
+        it 'responds :bad_request and sets organization correctly' do
+          put api(path, admin, admin_mode: true), params: { organization: param_organization }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq({ 'user_detail.organization' => ['is too long (maximum is 500 characters)'] })
+          expect(user.reload.user_detail_organization).to eq(expected_organization)
         end
+      end
 
-        it 'updates user without organization' do
-          put api(path, admin, admin_mode: true), params: {}
+      before_all do
+        user.update!(user_detail_organization: 'Previous org')
+      end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['organization']).to eq('Other org')
-          expect(user.reload.user_detail_organization).to eq('Other org')
-        end
+      where(:param_organization, :expected_organization, :example) do
+        'GitLab'                                    | 'GitLab'          | '200 response'
+        ''                                          | ''                | '200 response'
+        nil                                         | ''                | '200 response'
+        ('a' * 501)                                 | 'Previous org'    | '400 response because organization too long'
+        '<script>alert("xss")</script>Company Name' | 'Company Name'    | '200 response'
+        'Marks & Spencer'                           | 'Marks & Spencer' | '200 response'
+      end
 
-        it 'updates user with empty organization' do
-          put api(path, admin, admin_mode: true), params: { organization: '' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['organization']).to eq('')
-          expect(user.reload.user_detail_organization).to eq('')
-        end
-
-        it 'updates user with nil organization' do
-          put api(path, admin, admin_mode: true), params: { organization: nil }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['organization']).to eq('')
-          expect(user.reload.user_detail_organization).to eq('')
-        end
+      with_them do
+        it_behaves_like params[:example]
       end
     end
 

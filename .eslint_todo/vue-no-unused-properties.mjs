@@ -11,7 +11,6 @@ export default {
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/pages/details.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/pages/list.vue',
-    'app/assets/javascripts/popovers/components/popovers.vue',
     'app/assets/javascripts/ref/components/ref_selector.vue',
     'app/assets/javascripts/repository/components/blob_content_viewer.vue',
     'app/assets/javascripts/repository/components/blob_viewers/geo_json/geo_json_viewer.vue',

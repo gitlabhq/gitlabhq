@@ -73,6 +73,12 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
             perform
           end
 
+          it 'logs extra metadata with the result message' do
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:message, 'Job is not finished waiting')
+
+            perform
+          end
+
           it 'consistently reschedules with the same TTL value' do
             expect(described_class).to receive(:perform_in).with(described_class::RETRY_TIMEOUT, build_id).twice
 
@@ -96,6 +102,27 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
 
             perform
           end
+
+          it 'does not log extra metadata when result has no message' do
+            expect(worker).not_to receive(:log_extra_metadata_on_done)
+
+            perform
+          end
+
+          context 'when service returns success with a message' do
+            before do
+              allow_next_instance_of(Ci::RetryWaitingJobService, build) do |service|
+                allow(service).to(receive(:execute))
+                  .and_return(ServiceResponse.success(message: 'Job successfully retried'))
+              end
+            end
+
+            it 'logs extra metadata with the result message' do
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:message, 'Job successfully retried')
+
+              perform
+            end
+          end
         end
       end
 
@@ -118,6 +145,12 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
           expect_next_instance_of(Ci::RetryWaitingJobService, build) do |service|
             allow(service).to receive(:execute).and_return(ServiceResponse.success)
           end
+
+          perform
+        end
+
+        it 'does not log extra metadata when result has no message' do
+          expect(worker).not_to receive(:log_extra_metadata_on_done)
 
           perform
         end
@@ -145,6 +178,12 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
         end
 
         expect { perform }.not_to raise_error
+      end
+
+      it 'logs extra metadata with the result message' do
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:message, 'Job is not in waiting state')
+
+        perform
       end
     end
   end

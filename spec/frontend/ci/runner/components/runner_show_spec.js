@@ -9,7 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 
-import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import { captureException } from '~/ci/runner/sentry_utils';
 
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
@@ -22,7 +22,7 @@ import { runnerData } from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
+jest.mock('~/lib/utils/local_storage_alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 Vue.use(VueApollo);

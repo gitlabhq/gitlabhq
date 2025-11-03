@@ -49174,6 +49174,9 @@ msgstr ""
 msgid "Pipeline|Failed to retrieve CI/CD variables."
 msgstr ""
 
+msgid "Pipeline|Fix pipeline with Duo"
+msgstr ""
+
 msgid "Pipeline|Manual"
 msgstr ""
 

@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlForm } from '@gitlab/ui';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -13,11 +14,10 @@ import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import RunnerUpdateForm from '~/ci/runner/components/runner_update_form.vue';
 import runnerUpdateMutation from '~/ci/runner/graphql/edit/runner_update.mutation.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
-import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
 import { INSTANCE_TYPE } from '~/ci/runner/constants';
 import { runnerFormData } from '../mock_data';
 
-jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
+jest.mock('~/lib/utils/local_storage_alert');
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -60,12 +60,10 @@ describe('RunnerUpdateForm', () => {
       input: expect.objectContaining(submittedRunner),
     });
 
-    expect(saveAlertToLocalStorage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: expect.any(String),
-        variant: VARIANT_SUCCESS,
-      }),
-    );
+    expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
+      message: expect.any(String),
+      variant: VARIANT_SUCCESS,
+    });
     expect(visitUrl).toHaveBeenCalledWith(mockRunnerPath);
   };
 

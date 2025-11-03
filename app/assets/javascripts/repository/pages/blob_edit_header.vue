@@ -9,7 +9,7 @@ import { getParameterByName, visitUrl, joinPaths, mergeUrlParams } from '~/lib/u
 import { buildApiUrl } from '~/api/api_utils';
 import { VARIANT_INFO } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import getRefMixin from '../mixins/get_ref';
 import {
   prepareEditFormData,

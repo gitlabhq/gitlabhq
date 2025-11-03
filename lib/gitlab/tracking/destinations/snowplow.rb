@@ -17,10 +17,6 @@ module Gitlab
         def initialize(destination_configuration = DestinationConfiguration.snowplow_configuration)
           @destination_configuration = destination_configuration
           @event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
-
-          return if batching_disabled?
-
-          Kernel.at_exit { tracker.flush(async: false) }
         end
 
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
@@ -125,8 +121,6 @@ module Gitlab
           # Use test emitter in test environment to prevent HTTP requests
           return SnowplowTestEmitter if Rails.env.test?
 
-          sync_emitter = Feature.enabled?(:snowplow_sync_emitter, Feature.current_request) && ::Gitlab.staging?
-          return SnowplowTracker::Emitter if sync_emitter
           # snowplow_enabled? is true for gitlab.com and customers that configured their own Snowplow collector
           # In both bases we do not want to log the events being sent as the instance is controlled by the same company
           # controlling the Snowplow collector.
@@ -142,16 +136,12 @@ module Gitlab
             on_success: method(:increment_successful_events_emissions),
             on_failure: method(:failure_callback),
             method: 'post',
-            buffer_size: batching_disabled? ? 1 : 10
+            buffer_size: 1
           }
 
           return options if Feature.disabled?(:track_struct_event_logger, Feature.current_request)
 
           options.merge(logger: Gitlab::AppLogger)
-        end
-
-        def batching_disabled?
-          ::Feature.enabled?(:snowplow_emitter_batching_off, :instance)
         end
 
         def failure_callback(success_count, failures)

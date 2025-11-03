@@ -23,6 +23,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  expose: ['addPopovers', 'dispose'],
   data() {
     return {
       popovers: [],

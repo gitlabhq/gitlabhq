@@ -1,7 +1,7 @@
 import AccessorUtilities from '~/lib/utils/accessor';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { showAlertFromLocalStorage } from '~/repository/local_storage_alert/show_alert_from_local_storage';
-import { LOCAL_STORAGE_ALERT_KEY } from '~/repository/local_storage_alert/constants';
+import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert/show_alert_from_local_storage';
+import { LOCAL_STORAGE_ALERT_KEY } from '~/lib/utils/local_storage_alert/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { createAlert } from '~/alert';
 
@@ -15,7 +15,22 @@ describe('showAlertFromLocalStorage', () => {
     jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
   });
 
-  it('retrieves alert options from local storage and displays them', async () => {
+  it('retrieves message from local storage and displays it', async () => {
+    const mockAlert = { message: 'Message!' };
+
+    localStorage.getItem.mockReturnValueOnce(JSON.stringify(mockAlert));
+
+    await showAlertFromLocalStorage();
+
+    expect(localStorage.getItem).toHaveBeenCalledWith(LOCAL_STORAGE_ALERT_KEY);
+    expect(createAlert).toHaveBeenCalledTimes(1);
+    expect(createAlert).toHaveBeenCalledWith(mockAlert);
+
+    expect(localStorage.removeItem).toHaveBeenCalledTimes(1);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(LOCAL_STORAGE_ALERT_KEY);
+  });
+
+  it('retrieves complex alert options from local storage and displays them', async () => {
     const complexAlert = {
       message: 'Your changes have been committed successfully.',
       variant: 'success',
@@ -64,7 +79,7 @@ describe('showAlertFromLocalStorage', () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith(LOCAL_STORAGE_ALERT_KEY);
   });
 
-  it('handles JSON parsing errors gracefully and logs error to Sentry', async () => {
+  it('handles JSON parsing errors gracefully and logs error to Sentry by default', async () => {
     localStorage.getItem.mockReturnValueOnce('invalid json {');
 
     await showAlertFromLocalStorage();

@@ -2338,6 +2338,18 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           expect(json_response['assignee']['name']).to eq(user2.name)
           expect(json_response['assignees'].first['name']).to eq(user2.name)
         end
+
+        it "creates a new merge request for a project passed as a full path" do
+          post api(
+            "/projects/#{CGI.escape(project.full_path)}/merge_requests",
+            oauth_access_token: token
+          ), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['title']).to eq('Test merge request')
+          expect(json_response['assignee']['name']).to eq(user2.name)
+          expect(json_response['assignees'].first['name']).to eq(user2.name)
+        end
       end
 
       it 'creates a new merge request' do
@@ -3039,6 +3051,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it "allows access" do
         put api(
           "/projects/#{project.id}/merge_requests/#{merge_request.iid}?title=new_title",
+          oauth_access_token: token
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it "allows access to the project passed as a full path" do
+        put api(
+          "/projects/#{CGI.escape(project.full_path)}/merge_requests/#{merge_request.iid}?title=new_title",
           oauth_access_token: token
         )
 

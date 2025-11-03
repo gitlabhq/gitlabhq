@@ -18,6 +18,8 @@ module Ci
       build = Ci::Build.find_by_id(build_id)
 
       RetryWaitingJobService.new(build).execute.tap do |result|
+        log_extra_metadata_on_done(:message, result.message) if result.message
+
         if result.error? && result.payload[:reason] == :not_finished_waiting
           # If job is still waiting for runner ack (meaning runner is taking longer than expected to provision,
           # but still actively sending a heartbeat), then let's reschedule this job.

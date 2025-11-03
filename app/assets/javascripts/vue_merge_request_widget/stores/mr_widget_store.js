@@ -89,6 +89,7 @@ export default class MergeRequestStore {
     this.mergeRequestDiffsPath = data.diffs_path;
     this.approvalsWidgetType = data.approvals_widget_type;
     this.mergeRequestWidgetPath = data.merge_request_widget_path;
+    this.mergeRequestPath = this.mergeRequestPath || data.merge_request_path;
 
     if (data.issues_links) {
       const links = data.issues_links;

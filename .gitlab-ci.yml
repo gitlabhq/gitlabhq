@@ -248,6 +248,9 @@ variables:
   GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
   GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
 
+  # Test execution result export to ClickHouse
+  GLCI_EXPORT_TEST_METRICS: "true"
+
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   JEST_MATCHING_TEST_FILES_PATH: jest/matching_test_files.txt
   GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"

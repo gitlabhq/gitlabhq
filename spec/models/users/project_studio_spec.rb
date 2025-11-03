@@ -9,9 +9,29 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
 
   describe '#enabled?' do
     context 'when user is nil' do
-      subject { described_class.new(nil).enabled? }
+      context 'without studio_cookie' do
+        it 'returns false' do
+          expect(described_class.new(nil).enabled?).to be false
+        end
+      end
 
-      it { is_expected.to be false }
+      context 'with studio_cookie set to true' do
+        it 'returns true' do
+          expect(described_class.new(nil, studio_cookie: 'true').enabled?).to be true
+        end
+      end
+
+      context 'with studio_cookie set to false' do
+        it 'returns false' do
+          expect(described_class.new(nil, studio_cookie: 'false').enabled?).to be false
+        end
+      end
+
+      context 'with studio_cookie set to nil' do
+        it 'returns false' do
+          expect(described_class.new(nil, studio_cookie: nil).enabled?).to be false
+        end
+      end
     end
 
     context 'when user is present' do
@@ -52,9 +72,26 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
           )
         end
 
-        subject { described_class.new(user).enabled? }
+        it 'returns expected result' do
+          expect(described_class.new(user).enabled?).to be expected_result
+        end
+      end
 
-        it { is_expected.to be expected_result }
+      context 'when user is present, ignores cookie value' do
+        before do
+          user.user_preference.update!(
+            early_access_studio_participant: false,
+            project_studio_enabled: false
+          )
+          stub_feature_flags(
+            project_studio_early_access: false,
+            paneled_view: true
+          )
+        end
+
+        it 'uses user settings instead of cookie' do
+          expect(described_class.new(user, studio_cookie: 'true').enabled?).to be false
+        end
       end
     end
   end
@@ -65,9 +102,15 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
     end
 
     context 'when user is nil' do
-      subject { described_class.new(nil).enabled? }
+      it 'returns true' do
+        expect(described_class.new(nil).enabled?).to be true
+      end
+    end
 
-      it { is_expected.to be true }
+    context 'when user is nil with cookie set to false' do
+      it 'ENV override takes precedence over cookie' do
+        expect(described_class.new(nil, studio_cookie: 'false').enabled?).to be true
+      end
     end
 
     context 'when user is present' do
@@ -108,18 +151,38 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
           )
         end
 
-        subject { described_class.new(user).enabled? }
-
-        it { is_expected.to be expected_result }
+        it 'returns expected result' do
+          expect(described_class.new(user).enabled?).to be expected_result
+        end
       end
     end
   end
 
   describe '#available?' do
     context 'when user is nil' do
-      subject { described_class.new(nil).available? }
+      context 'without studio_cookie' do
+        it 'returns false' do
+          expect(described_class.new(nil).available?).to be false
+        end
+      end
 
-      it { is_expected.to be false }
+      context 'with studio_cookie set to true' do
+        it 'returns true' do
+          expect(described_class.new(nil, studio_cookie: 'true').available?).to be true
+        end
+      end
+
+      context 'with studio_cookie set to false' do
+        it 'returns false' do
+          expect(described_class.new(nil, studio_cookie: 'false').available?).to be false
+        end
+      end
+
+      context 'with studio_cookie set to nil' do
+        it 'returns false' do
+          expect(described_class.new(nil, studio_cookie: nil).available?).to be false
+        end
+      end
     end
 
     context 'when user is present' do
@@ -143,9 +206,23 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
           )
         end
 
-        subject { described_class.new(user).available? }
+        it 'returns expected result' do
+          expect(described_class.new(user).available?).to be expected_result
+        end
+      end
 
-        it { is_expected.to be expected_result }
+      context 'when user is present, ignores cookie value' do
+        before do
+          user.user_preference.update!(early_access_studio_participant: false)
+          stub_feature_flags(
+            project_studio_early_access: false,
+            paneled_view: false
+          )
+        end
+
+        it 'uses user settings instead of cookie' do
+          expect(described_class.new(user, studio_cookie: 'true').available?).to be false
+        end
       end
     end
   end

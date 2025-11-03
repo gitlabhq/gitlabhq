@@ -512,15 +512,15 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#project_studio_available' do
+  describe '#project_studio_available?' do
     let(:user) { build(:user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive_messages(current_user: user, cookies: { studio: 'true' })
     end
 
     it 'calls ProjectStudio#available?' do
-      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
+      expect_next_instance_of(Users::ProjectStudio, user, studio_cookie: 'true') do |studio|
         expect(studio).to receive(:available?)
       end
 
@@ -532,11 +532,11 @@ RSpec.describe ApplicationHelper do
     let(:user) { build(:user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive_messages(current_user: user, cookies: { studio: 'true' })
     end
 
     it 'calls ProjectStudio#enabled?' do
-      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
+      expect_next_instance_of(Users::ProjectStudio, user, studio_cookie: 'true') do |studio|
         expect(studio).to receive(:enabled?)
       end
 

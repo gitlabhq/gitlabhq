@@ -45,10 +45,14 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
     end
 
     context 'when scope is branches or tags' do
-      let!(:pipeline_branches1) { create_list(:ci_pipeline, 2, project: project) }
-      let!(:pipeline_branch2) { create(:ci_pipeline, project: project, ref: '2-mb-file') }
-      let!(:pipeline_tag1) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
-      let!(:pipeline_tag2) { create(:ci_pipeline, project: project, ref: 'v1.1.1', tag: true) }
+      let_it_be(:pipeline_branches1) { create_list(:ci_pipeline, 2, project: project) }
+      let_it_be(:pipeline_branch2) { create(:ci_pipeline, project: project, ref: '2-mb-file') }
+      let_it_be(:pipeline_tag1) { create(:ci_pipeline, :tag, project: project, ref: 'v1.0.0') }
+      let_it_be(:pipeline_tag2) { create(:ci_pipeline, :tag, project: project, ref: 'v1.1.1') }
+      let_it_be(:pipeline_tag2_branch) do
+        project.repository.add_branch(create(:user), 'v1.1.1', 'master')
+        create(:ci_pipeline, project: project, ref: 'v1.1.1')
+      end
 
       context 'when scope is branches' do
         let(:params) { { scope: 'branches' } }
@@ -69,12 +73,12 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
           end
 
           it 'filters out child pipelines and shows only the parent pipelines' do
-            is_expected.to match_array([pipeline_branches1.last, pipeline_branch2])
+            is_expected.to match_array([pipeline_branches1.last, pipeline_branch2, pipeline_tag2_branch])
           end
         end
 
         it 'returns matched pipelines' do
-          is_expected.to match_array([pipeline_branches1.last, pipeline_branch2])
+          is_expected.to match_array([pipeline_branches1.last, pipeline_branch2, pipeline_tag2_branch])
         end
       end
 
@@ -90,7 +94,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
         end
 
         context 'when project has child pipelines' do
-          let!(:child_pipeline) { create(:ci_pipeline, project: project, source: :parent_pipeline, ref: 'v1.0.0', tag: true) }
+          let!(:child_pipeline) { create(:ci_pipeline, :tag, project: project, source: :parent_pipeline, ref: 'v1.0.0') }
 
           let!(:pipeline_source) do
             create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_tag1)

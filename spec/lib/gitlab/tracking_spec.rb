@@ -10,7 +10,6 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
     stub_application_setting(snowplow_collector_hostname: 'gitfoo.com')
     stub_application_setting(snowplow_cookie_domain: '.gitfoo.com')
     stub_application_setting(snowplow_app_id: '_abc123_')
-    stub_feature_flags(snowplow_sync_emitter: false)
 
     described_class.instance_variable_set(:@tracker, nil)
   end
@@ -276,53 +275,6 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
               expect(Gitlab::AppLogger).not_to receive(:info)
 
               event
-            end
-          end
-        end
-      end
-
-      describe 'tracker reset' do
-        let(:context) { [] }
-
-        subject(:event) { proc { described_class.event('category', :some_action, context: context) } }
-
-        context 'when sending two events without changing any feature flags in between the triggers' do
-          it 'only creates the tracker once' do
-            expect(Gitlab::Tracking::Destinations::Snowplow).to receive(:new).once.and_call_original
-            event.call
-            event.call
-          end
-
-          context 'when in staging environment' do
-            it 'only creates the tracker once' do
-              allow(Gitlab).to receive(:staging?).and_return true
-
-              expect(Gitlab::Tracking::Destinations::Snowplow).to receive(:new).once.and_call_original
-              event.call
-              event.call
-            end
-          end
-        end
-
-        context 'when there are feature flags changes between the event triggers' do
-          it 'only creates the tracker once' do
-            stub_feature_flags(track_struct_event_logger: false)
-
-            expect(Gitlab::Tracking::Destinations::Snowplow).to receive(:new).once.and_call_original
-            event.call
-            Feature.enable(:track_struct_event_logger)
-            event.call
-          end
-
-          context 'when in staging environment' do
-            it 'resets the tracker' do
-              stub_feature_flags(track_struct_event_logger: false)
-              allow(Gitlab).to receive(:staging?).and_return true
-
-              expect(Gitlab::Tracking::Destinations::Snowplow).to receive(:new).twice.and_call_original
-              event.call
-              Feature.enable(:track_struct_event_logger)
-              event.call
             end
           end
         end

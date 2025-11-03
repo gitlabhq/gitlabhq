@@ -45,9 +45,6 @@ class ApplicationController < BaseActionController
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
   before_action :increment_http_router_metrics
-  before_action if: :html_request? do
-    push_frontend_feature_flag(:duo_side_rail, current_user)
-  end
 
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.

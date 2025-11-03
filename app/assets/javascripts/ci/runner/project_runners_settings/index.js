@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { showAlertFromLocalStorage } from '../local_storage_alert/show_alert_from_local_storage';
+import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import ProjectRunnersSettingsApp from './project_runners_settings_app.vue';
 
 Vue.use(VueApollo);

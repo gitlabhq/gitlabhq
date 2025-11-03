@@ -4,7 +4,10 @@ module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a ge
   module Concerns
     module TokenFallback
       extend ActiveSupport::Concern
+
       class_methods do
+        include Gitlab::Utils::StrongMemoize
+
         # Allow looking up previously plain tokens as a fallback
         # IFF a fallback strategy has been defined
         #
@@ -43,13 +46,30 @@ module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a ge
         end
 
         def fallback_strategies
-          if Gitlab::FIPS.enabled?
+          if Gitlab::FIPS.enabled? && fips_140_3?
             [Doorkeeper::SecretStoring::Plain]
           else
             [Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512,
               Doorkeeper::SecretStoring::Plain]
           end
         end
+
+        # Check if FIPS implementation is FIPS 140-3 or above
+        # This is a hacky solution to finf fips version as FIPS 140-3 mandates longer salt length
+        # Refer https://docs.gitlab.com/development/fips_gitlab/ for more details
+        def fips_140_3?
+          OpenSSL::KDF.pbkdf2_hmac(
+            'foo',
+            salt: ['1234'].pack("H*"),
+            iterations: 20000,
+            hash: OpenSSL::Digest.new("SHA512"),
+            length: 64
+          ).unpack1('H*')
+          false
+        rescue OpenSSL::KDF::KDFError => _
+          true
+        end
+        strong_memoize_attr :fips_140_3?
       end
     end
   end

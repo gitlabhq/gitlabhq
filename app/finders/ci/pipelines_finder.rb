@@ -119,9 +119,9 @@ module Ci
       when ALLOWED_SCOPES[:FINISHED]
         items.finished
       when ALLOWED_SCOPES[:BRANCHES]
-        pipelines_for_refs(items, branches)
+        pipelines_for_refs(items.no_tag, branches)
       when ALLOWED_SCOPES[:TAGS]
-        pipelines_for_refs(items, tags)
+        pipelines_for_refs(items.tag, tags)
       else
         items
       end

@@ -1,6 +1,6 @@
 import AccessorUtilities from '~/lib/utils/accessor';
-import { saveAlertToLocalStorage } from '~/repository/local_storage_alert/save_alert_to_local_storage';
-import { LOCAL_STORAGE_ALERT_KEY } from '~/repository/local_storage_alert/constants';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert/save_alert_to_local_storage';
+import { LOCAL_STORAGE_ALERT_KEY } from '~/lib/utils/local_storage_alert/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 const mockAlert = { message: 'Message!' };
@@ -12,7 +12,7 @@ describe('saveAlertToLocalStorage', () => {
     jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
   });
 
-  it('saves message to local storage', () => {
+  it('saves message to local storage with provided key', () => {
     saveAlertToLocalStorage(mockAlert);
 
     expect(localStorage.setItem).toHaveBeenCalledTimes(1);

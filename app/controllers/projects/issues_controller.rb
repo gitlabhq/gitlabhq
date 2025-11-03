@@ -482,8 +482,12 @@ class Projects::IssuesController < Projects::ApplicationController
   def redirect_index_to_work_items
     return unless index_html_request? && project&.work_items_consolidated_list_enabled?
 
-    params = request.query_parameters.except("type").merge('type[]' => 'issue')
-    redirect_to project_work_items_path(project, params: params)
+    redirect_to project_work_items_path(project, params: work_items_redirect_params(request.query_parameters))
+  end
+
+  # Overridden in EE
+  def work_items_redirect_params(params)
+    params.except("type").merge('type[]' => 'issue')
   end
 
   def require_incident_for_incident_routes

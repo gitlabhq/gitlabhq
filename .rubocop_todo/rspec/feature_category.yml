@@ -1307,7 +1307,6 @@ RSpec/FeatureCategory:
     - 'spec/graphql/resolvers/concerns/looks_ahead_spec.rb'
     - 'spec/graphql/resolvers/concerns/resolves_groups_spec.rb'
     - 'spec/graphql/resolvers/concerns/resolves_ids_spec.rb'
-    - 'spec/graphql/resolvers/concerns/resolves_pipelines_spec.rb'
     - 'spec/graphql/resolvers/concerns/resolves_project_spec.rb'
     - 'spec/graphql/resolvers/container_repositories_resolver_spec.rb'
     - 'spec/graphql/resolvers/crm/contact_state_counts_resolver_spec.rb'

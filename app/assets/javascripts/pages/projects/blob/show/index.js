@@ -29,7 +29,7 @@ import initFileTreeBrowser from '~/repository/file_tree_browser';
 import LastCommit from '~/repository/components/last_commit.vue';
 import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 import refsQuery from '~/repository/queries/ref.query.graphql';
-import { showAlertFromLocalStorage } from '~/repository/local_storage_alert/show_alert_from_local_storage';
+import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 

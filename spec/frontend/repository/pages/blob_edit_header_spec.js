@@ -8,16 +8,16 @@ import {
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
   HTTP_STATUS_FORBIDDEN,
 } from '~/lib/utils/http_status';
+import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import BlobEditHeader from '~/repository/pages/blob_edit_header.vue';
-import { saveAlertToLocalStorage } from '~/repository/local_storage_alert/save_alert_to_local_storage';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { stubComponent } from 'helpers/stub_component';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 jest.mock('~/alert');
-jest.mock('~/repository/local_storage_alert/save_alert_to_local_storage');
+jest.mock('~/lib/utils/local_storage_alert');
 jest.mock('lodash/uniqueId', () => {
   return jest.fn((input) => `${input}1`);
 });
@@ -39,7 +39,7 @@ describe('BlobEditHeader', () => {
   };
 
   const createWrapper = ({ action = 'update', glFeatures = {}, provided = {} } = {}) => {
-    return shallowMountExtended(BlobEditHeader, {
+    wrapper = shallowMountExtended(BlobEditHeader, {
       provide: {
         action,
         editor: mockEditor,
@@ -76,7 +76,7 @@ describe('BlobEditHeader', () => {
 
     visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl');
     mock = new MockAdapter(axios);
-    wrapper = createWrapper();
+    createWrapper();
   });
 
   afterEach(() => {
@@ -204,12 +204,12 @@ describe('BlobEditHeader', () => {
 
       it('on submit to new branch to a fork repo, saves success message with "original project" text', async () => {
         // Create wrapper with canPushToBranch: false to simulate fork scenario
-        wrapper = createWrapper({
+        createWrapper({
           glFeatures: { blobEditRefactor: true },
           provided: { canPushToBranch: false },
         });
 
-        // First click the commit button to open the modal and set up the file content
+        // Need to click the commit button first to open modal and set up file content
         clickCommitChangesButton();
 
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
@@ -370,7 +370,7 @@ describe('BlobEditHeader', () => {
 
     describe('when blobEditRefactor is disabled', () => {
       beforeEach(() => {
-        wrapper = createWrapper({ glFeatures: { blobEditRefactor: false } });
+        createWrapper({ glFeatures: { blobEditRefactor: false } });
         clickCommitChangesButton();
       });
 
@@ -440,7 +440,7 @@ describe('BlobEditHeader', () => {
 
   describe('for create blob', () => {
     beforeEach(() => {
-      wrapper = createWrapper({ action: 'create' });
+      createWrapper({ action: 'create' });
     });
 
     it('shows confirmation message on cancel button', () => {

@@ -431,6 +431,7 @@ export const mockStore = {
   targetProjectFullPath: '/group2/project2',
   sourceBranch: 'source-branch',
   sourceBranchLink: 'source-branch-link',
+  mergeRequestPath: '/gitlab-org/gitlab/-/merge_requests/1',
   deployments: [
     {
       id: 0,

@@ -1047,8 +1047,6 @@
   - 1
 - - security_scan_result_policies_create_project_warn_mode_audit_events
   - 1
-- - security_scan_result_policies_create_warn_mode_approval_audit_events
-  - 1
 - - security_scan_result_policies_create_warn_mode_audit_events
   - 1
 - - security_scan_result_policies_delete_scan_result_policy_reads

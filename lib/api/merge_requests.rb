@@ -53,11 +53,11 @@ module API
     end
 
     def self.mr_update?(request)
-      request.put? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests/\d+$})
+      request.put? && request.path.match?(%r{/api/v\d+/projects/[^/]+/merge_requests/\d+$})
     end
 
     def self.mr_create?(request)
-      request.post? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests$})
+      request.post? && request.path.match?(%r{/api/v\d+/projects/[^/]+/merge_requests$})
     end
 
     def self.update_params_at_least_one_of

@@ -70,6 +70,7 @@ describe('MrWidgetPipelineContainer', () => {
         ciStatus: mockStore.ciStatus,
         sourceBranch: mockStore.sourceBranch,
         sourceBranchLink: mockStore.sourceBranchLink,
+        mergeRequestPath: mockStore.mergeRequestPath,
         retargeted: false,
         targetProjectId: 1,
         iid: 1,
@@ -121,6 +122,7 @@ describe('MrWidgetPipelineContainer', () => {
         pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
         sourceBranch: mockStore.targetBranch,
         sourceBranchLink: mockStore.targetBranch,
+        mergeRequestPath: mockStore.mergeRequestPath,
       });
     });
 
