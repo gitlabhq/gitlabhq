@@ -25,7 +25,7 @@ Cloning a repository:
 Clone with SSH when you want to authenticate only one time.
 
 1. Authenticate with GitLab by following the instructions in the [SSH documentation](../../user/ssh.md).
-1. On the left sidebar, select **Search or go to** and find the project you want to clone.
+1. On the left sidebar, select **Search or go to** and find the project you want to clone. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
 1. Open a terminal and go to the directory where you want to clone the files.
    Git automatically creates a folder with the repository name and downloads the files there.
@@ -47,7 +47,7 @@ Clone with HTTPS when you want to authenticate each time you perform an operatio
 [OAuth credential helpers](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease
 the number of times you must manually authenticate, making HTTPS a seamless experience.
 
-1. On the left sidebar, select **Search or go to** and find the project you want to clone.
+1. On the left sidebar, select **Search or go to** and find the project you want to clone. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with HTTPS**.
 1. Open a terminal and go to the directory where you want to clone the files.
 1. Run the following command. Git automatically creates a folder with the repository name and downloads the files there.

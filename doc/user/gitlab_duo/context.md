@@ -211,7 +211,7 @@ For Duo Chat, excluded context is enforced within [GitLab Duo Chat (Agentic)](..
 
 ### Manage GitLab Duo context exclusions
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Under **GitLab Duo**, in the **GitLab Duo context exclusions** section, select **Manage exclusions**.
 1. Specify which project files and directories are excluded from GitLab Duo context, and select **Save exclusions**.

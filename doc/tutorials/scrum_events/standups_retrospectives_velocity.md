@@ -74,7 +74,7 @@ during retrospectives.
 
 To review an iteration report for a completed iteration:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. At the top, select **Done** and select your iteration cadence.
 1. Select the most recently completed iteration.

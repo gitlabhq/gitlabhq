@@ -217,6 +217,36 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
     end
   end
 
+  describe '.ci_pipeline_statuses_updated' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    it 'triggers the ci_pipeline_statuses_updated subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_statuses_updated,
+        { project_id: pipeline.project.to_gid },
+        pipeline
+      )
+
+      described_class.ci_pipeline_statuses_updated(pipeline)
+    end
+
+    describe 'when ci_pipeline_statuses_updated_subscription is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_statuses_updated_subscription: false)
+      end
+
+      it 'does not trigger the ci_pipeline_statuses_updated subscription' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
+          :ci_pipeline_statuses_updated,
+          { project_id: pipeline.project.to_gid },
+          pipeline
+        )
+
+        described_class.ci_pipeline_statuses_updated(pipeline)
+      end
+    end
+  end
+
   describe '.ci_pipeline_job_updated' do
     let_it_be(:job) { create(:ci_build) }
 

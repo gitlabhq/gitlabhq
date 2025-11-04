@@ -99,7 +99,7 @@ projects you create later.
 
 To create each label:
 
-1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group.
+1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `Frontend`.
@@ -124,7 +124,7 @@ to manage issues from all the projects that you might create later in this group
 
 To create a new group issue board:
 
-1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group.
+1. On the left sidebar, select **Search or go to** and find your **Paperclip Software Factory** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. Create the UX workflow and Frontend workflow boards.
 

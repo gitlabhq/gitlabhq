@@ -113,7 +113,7 @@ Prerequisites:
 
 To enable merge trains:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In GitLab 16.4 and earlier, in the **Merge method** section, verify that **Merge commit** is selected.
    In GitLab 16.5 and later, you can use any merge method.
@@ -153,7 +153,7 @@ The merge train details page shows active merge requests in the queue and merged
 
 To access the merge train details from the list of merge requests:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Merge trains**.
 1. Optional. Filter the merge trains by target branch.
@@ -284,7 +284,7 @@ Prerequisites:
 
 To enable skipping the train without pipeline restarts:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge options** section, ensure the **Enable merged results pipelines**
    and **Enable merge trains** options are enabled.

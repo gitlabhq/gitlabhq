@@ -64,7 +64,7 @@ Prerequisites:
 
 To view the subgroups of a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the **Subgroups and projects** tab.
 1. Select the subgroup you want to view.
    To view nested subgroups, expand ({{< icon name="chevron-down" >}}) a subgroup.
@@ -95,7 +95,7 @@ You cannot host a GitLab Pages subgroup website with a top-level domain name. Fo
 
 To create a subgroup:
 
-1. On the left sidebar, select **Search or go to** and find the group you want to create the subgroup in.
+1. On the left sidebar, select **Search or go to** and find the group you want to create the subgroup in. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the parent group's overview page, in the upper-right corner, select **New subgroup**.
 1. Fill in the fields. View a list of [reserved names](../../reserved_names.md) that cannot be used as group names.
 1. Select **Create subgroup**.
@@ -109,7 +109,7 @@ Prerequisites:
 To change who can create subgroups on a group:
 
 - As a user with the Owner role on the group:
-  1. On the left sidebar, select **Search or go to** and find your group.
+  1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Settings** > **General**.
   1. Expand **Permissions and group features**.
   1. From **Roles allowed to create subgroups**, select an option.
@@ -180,7 +180,7 @@ Group permissions for a member can be changed only by:
 
 To see if a member has inherited the permissions from a parent group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
    The member's inheritance is displayed in the **Source** column.
 

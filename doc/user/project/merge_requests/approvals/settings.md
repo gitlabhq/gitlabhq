@@ -42,7 +42,7 @@ Use any combination of these settings to configure approval limits for merge req
 
 To view or edit merge request approval settings for a single project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. Expand **Approvals**.
 
@@ -63,7 +63,7 @@ You must change the settings where they originated: the top-level group or insta
 
 By default, the creator of a merge request (author) cannot approve it. To change this setting:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    clear the **Prevent approval by merge request creator (author)** checkbox.
@@ -91,7 +91,7 @@ By default, users who commit to a merge request (the committers) can still appro
 committers in your project (or your instance) from approving merge requests that are partially
 their own:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Prevent approvals by users who add commits**.
@@ -122,7 +122,7 @@ By default, users can override the approval rules you [create for a project](rul
 on a per-merge-request basis. If you don't want users to change approval rules
 on merge requests, you can disable this setting:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Prevent editing approval rules in merge requests**.
@@ -164,7 +164,7 @@ Prerequisites:
 
 - This setting is only available on top-level groups.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Enable password authentication and SAML authentication. For more information on:
    - Password authentication, see
      [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
@@ -198,7 +198,7 @@ you perform commands like `git rebase` or `git merge <target>` on a feature bran
 
 To keep existing approvals after more changes are added to a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    clear the **Remove all approvals** checkbox.
@@ -219,7 +219,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Remove approvals by Code Owners if their files changed**.

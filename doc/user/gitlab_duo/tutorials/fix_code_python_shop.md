@@ -92,7 +92,7 @@ Select the tab for your navigation type, or [learn how to switch](../../interfac
 #### Use Chat in the Web IDE
 
 1. Open the Web IDE:
-   1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
+   1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of these methods:
    - On the left sidebar, select **GitLab Duo Chat**.

@@ -43,7 +43,7 @@ Start by [importing the example project by URL](../../../project/import/repo_by_
 
 To import the project:
 
-1. In GitLab, on the left sidebar, select **Search or go to**.
+1. In GitLab, on the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my projects**.
 1. On the right of the page, select **New project**.
 1. Select **Import project**.

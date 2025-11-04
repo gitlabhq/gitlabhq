@@ -57,13 +57,13 @@ To see all merge requests that need your attention, use one of these methods:
 
 - Press the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
 - On the left sidebar, select **Merge requests** ({{< icon name="merge-request">}}).
-- On the left sidebar, select **Search or go to** then, from the dropdown list, select **Merge requests I'm working on**.
+- On the left sidebar, select **Search or go to** then, from the dropdown list, select **Merge requests I'm working on**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 ## View the review status of a merge request
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. Scroll to the [merge request widget](../widgets.md) to see the mergeability and
@@ -85,7 +85,7 @@ When you've finished preparing your changes, it's time to request a review. To a
 your merge request, either use the `/assign_reviewer @user`
 [quick action](../../quick_actions.md#issues-merge-requests-and-epics) in any text field, or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. To find a reviewer by name: on the right sidebar, in the **Reviewers** section, select **Edit**.
@@ -130,7 +130,7 @@ After a reviewer completes their [merge request reviews](../../../discussions/_i
 the author of the merge request can request a new review from the reviewer.
 To do this, either use the `/request_review @user` quick action in any text field on the merge request, or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. If you have collapsed the right sidebar in the merge request, select the
@@ -283,7 +283,7 @@ if both of the following are true:
 
 To remove your change request without submitting a new review:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
@@ -296,7 +296,7 @@ To remove your change request without submitting a new review:
 If the user who requested changes is unavailable to re-review or approve,
 another user with permission to merge the merge request can override this check:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.

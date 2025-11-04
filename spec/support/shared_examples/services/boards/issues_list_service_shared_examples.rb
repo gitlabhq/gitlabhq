@@ -15,9 +15,9 @@ RSpec.shared_examples 'issues list service' do
     expect(described_class.new(parent, nil, params).execute).to be_kind_of(ActiveRecord::Relation)
   end
 
-  context 'with work_items_beta feature flag disabled' do
+  context 'with work_item_tasks_on_boards feature flag disabled' do
     before do
-      stub_feature_flags(work_items_beta: false)
+      stub_feature_flags(work_item_tasks_on_boards: false)
     end
 
     it 'returns issues for anonymous users' do

@@ -230,6 +230,6 @@ To check if runners are running in the GKE cluster, you can either:
   ```
 
 - Check the job log in GitLab:
-  1. On the left sidebar, select **Search or go to** and find your project.
+  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Build** > **Jobs** and find the job.
   1. To view the job log, select the job status.

@@ -47,7 +47,7 @@ Prerequisites:
 
 To view storage usage for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Do one of the following:
    - To view total storage usage, select **Settings** > **Usage quotas**.
     Under **Namespace entities**, select **Container Registry** to view individual repositories.
@@ -67,7 +67,7 @@ Prerequisites:
 
 To view storage usage for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab.
 
@@ -253,7 +253,7 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 
 To create a cleanup policy in the UI:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Container registry cleanup policies**, select **Set cleanup rules**.

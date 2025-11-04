@@ -44,7 +44,7 @@ To add or upload a file from the GitLab UI:
 <!-- Original source for this list: doc/user/project/repository/web_editor.md#upload-a-file -->
 <!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to the directory you want to upload the file to.
 1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **Upload file**.
 1. Drop or upload your file.
@@ -77,7 +77,7 @@ You can clone a repository using the:
 
 To download a repository's source code as a compressed file:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Above the file list, select **Code**.
 1. From the options, select the files you want to download:
 
@@ -103,7 +103,7 @@ change. For example, this occurs if Git or a third-party library that GitLab use
 To view all repository files and folders at a specific Git revision, such as a commit SHA,
 branch name, or tag:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. At the top, select to open the **Select Git revision** dropdown list.
 1. Select or search for a Git revision.
 

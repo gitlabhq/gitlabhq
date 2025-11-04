@@ -50,7 +50,7 @@ Prerequisites:
 
 To view the branch rules overview list:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 
@@ -58,7 +58,7 @@ To view the branch rules overview list:
 
 To view branch rules and protections for a single branch:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
@@ -88,7 +88,7 @@ Prerequisites:
 
 To create a branch rule:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
@@ -113,7 +113,7 @@ Not available for `all branches`.
 
 To add protections to a new branch:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
@@ -253,7 +253,7 @@ Prerequisites:
 
 To edit a branch rule target:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
@@ -301,7 +301,7 @@ Prerequisites:
 
 To delete a branch rule:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Next to a rule you want to delete, select **View details**.

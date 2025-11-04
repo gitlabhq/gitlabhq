@@ -50,7 +50,7 @@ For **GitLab Self-Managed** instances, make sure your administrator has
 
 Once you've met the requirements, enable Let's Encrypt integration:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 1. Turn on the **Automatic certificate management using Let's Encrypt** toggle.
@@ -77,7 +77,7 @@ continues to work until replaced by the Let's Encrypt certificate.
 
 If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings** > **General** > **Visibility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 1. In **Verification status**, select **Retry verification** ({{< icon name="retry" >}}).
@@ -99,7 +99,7 @@ This process can take some time. Please try again later.
 
 Remove and add the domain for GitLab Pages again by following these steps:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Pages**.
 1. Next to the domain name, select **Remove**.
 1. [Add the domain again, and verify it](_index.md#1-add-a-custom-domain).

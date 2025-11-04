@@ -104,7 +104,7 @@ In the following example:
 
 To change or add a commit to the contributor's merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to **Code** > **Merge requests** and find the merge request.
 1. In the upper-right corner, select **Code**, then select **Check out branch**.
 1. On the dialog, select **Copy** ({{< icon name="copy-to-clipboard" >}}).

@@ -45,7 +45,7 @@ An on-demand scan can be run in active or passive mode:
 
 To view on-demand scans:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **On-demand scans**.
 
 On-demand scans are grouped by their status. The scan library contains all available on-demand
@@ -61,7 +61,7 @@ Prerequisites:
 
 To run an existing on-demand scan:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
@@ -84,7 +84,7 @@ Create an on-demand scan to:
 
 To create an on-demand DAST scan:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **On-demand scans**.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** fields.
@@ -116,7 +116,7 @@ Prerequisites:
 
 To view details of an on-demand scan:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Edit**.
@@ -129,7 +129,7 @@ Prerequisites:
 
 To edit an on-demand scan:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Edit**.
@@ -144,7 +144,7 @@ Prerequisites:
 
 To delete an on-demand scan:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Delete**.

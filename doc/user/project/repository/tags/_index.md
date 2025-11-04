@@ -52,12 +52,12 @@ In the GitLab UI, each tag displays:
 
 To view all existing tags for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Tags**.
 
 ## View tagged commits in the commits list
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Commits with a tag are labeled with a tag icon ({{< icon name="tag" >}}) and the name of the tag.
    This example shows a commit tagged `v1.26.0`:
@@ -94,7 +94,7 @@ To create either a lightweight or annotated tag from the command line, and push 
 
 To create a tag from the GitLab UI:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Tags**.
 1. Select **New tag**.
 1. Provide a **Tag name**.
@@ -120,7 +120,7 @@ GitLab enforces these additional rules on all tags:
 
 To copy a tag name to your clipboard:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Tags**.
 1. Next to the tag name, select **Copy tag name** ({{< icon name="copy-to-clipboard" >}}).
 

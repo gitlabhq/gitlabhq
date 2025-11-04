@@ -50,7 +50,7 @@ You can assign the Guest role to a current member of a group or project, or assi
 
 To assign the Guest role to a current group or project member:
 
-1. On the left sidebar, select **Search or go to** and find your group or project.
+1. On the left sidebar, select **Search or go to** and find your group or project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. In the **Role** column of the group or project member you want to assign the Guest role to, select their current role (for example, **Developer**).
 1. In the **Role details** drawer, change the Role to **Guest**.
@@ -59,7 +59,7 @@ To assign the Guest role to a current group or project member:
 If the user you want to assign the Guest role to is not yet a
 member of the group or project:
 
-1. On the left sidebar, select **Search or go to** and find your group or project.
+1. On the left sidebar, select **Search or go to** and find your group or project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. In **Username, name or email address**, select the relevant user.

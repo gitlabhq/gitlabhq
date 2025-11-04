@@ -1721,7 +1721,7 @@ Prerequisites:
 
 To force step-up authentication for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under Step-up authentication, select an available authentication provider.

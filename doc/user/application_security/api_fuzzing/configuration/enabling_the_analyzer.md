@@ -46,7 +46,7 @@ a YAML snippet that you can paste in your GitLab CI/CD configuration.
 
 To generate an API fuzzing configuration snippet:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [available CI/CD variables](variables.md).

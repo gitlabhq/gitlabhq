@@ -77,7 +77,7 @@ export default {
         { icon: 'issue-type-incident', value: types.INCIDENT, title: incident },
       ];
 
-      if (this.glFeatures.workItemsBeta || this.glFeatures.workItemTasksOnBoards) {
+      if (this.glFeatures.workItemTasksOnBoards) {
         typeOptions.push({ icon: 'issue-type-task', value: types.TASK, title: task });
       }
 

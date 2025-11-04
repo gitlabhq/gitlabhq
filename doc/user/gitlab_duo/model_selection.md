@@ -61,7 +61,7 @@ Prerequisites:
 
 To select a different LLM for a feature:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 
    If **GitLab Duo** is not visible, ensure you have GitLab Duo Core, Pro, or Enterprise turned on for the group.
@@ -138,7 +138,7 @@ This might cause increased latency with code completion requests.
 When using a GitLab Duo feature with a selected LLM, you might get an error that states that you have not selected a default GitLab Duo namespace. For example, on:
 
 - GitLab Duo Code Suggestions, you might get `Error 422: No default Duo group found. Select a default Duo group in your user preferences and try again.`
-- GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences.`
+- GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
 
 This issue occurs when:
 

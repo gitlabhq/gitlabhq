@@ -112,7 +112,7 @@ Activity has not been recorded for members added before 2025-01-22. These member
 
 To turn on automatic dormant member removal:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Dormant members**.

@@ -89,7 +89,7 @@ Prerequisites:
 
 To enable SAST:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
 1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
 
@@ -130,7 +130,7 @@ For details on other configuration methods, see [Configuration](#configuration).
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -221,7 +221,7 @@ To optimize SAST according to your requirements you can:
 
 To disable a rule, for example because it generates too many false positives:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Create a `.gitlab/sast-ruleset.toml` file at the root of your project if one does not already exist.
 1. In the vulnerability's details, locate the ID of the rule that triggered the finding.
 1. Use the rule ID to disable the rule. For example, to disable `gosec.G107-1`, add the following in `.gitlab/sast-ruleset.toml`:
@@ -521,7 +521,7 @@ successfully, and an error might occur.
 
 To enable and configure SAST with customizations:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. If the latest pipeline for the default branch of the project has completed
    and produced valid `SAST` artifacts, select **Configure SAST**, otherwise
@@ -547,7 +547,7 @@ successfully, and an error might occur.
 
 To enable and configure SAST with default settings:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 1. Review and merge the merge request to enable SAST.

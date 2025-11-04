@@ -21,7 +21,7 @@ Use a `.gitlab-ci.yml` template when you have an existing project that you want 
 Your GitLab repository should contain files specific to an SSG, or plain HTML. After you complete
 these steps, you may have to do additional configuration for the Pages site to generate properly.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. From the **Add** ({{< icon name="plus" >}}) dropdown list, select **New file**.
 1. In the **Filename** text box, enter `.gitlab-ci.yml`. A dropdown list appears to the right of the text box.
 1. From the **Apply a template** dropdown list, in the **Pages** section, select the name of your SSG.

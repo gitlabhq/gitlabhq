@@ -102,7 +102,7 @@ Prerequisites:
 
 To enable Auto DevOps for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -131,7 +131,7 @@ Prerequisites:
 
 To enable Auto DevOps for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -143,7 +143,7 @@ clear the **Default to Auto DevOps pipeline** checkbox.
 After enabling Auto DevOps for a group, you can trigger the
 Auto DevOps pipeline for any project that belongs to that group:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
 1. Select **Build** > **Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **New pipeline**.

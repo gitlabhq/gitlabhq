@@ -31,7 +31,7 @@ For more information, see the history.
 
 {{< alert type="note" >}}
 
-The GitLab virtual registry is available as part of the GitLab [beta](../../../policy/development_stages_support.md#beta) program. While it is currently available on Premium and Ultimate, final availability and pricing will be announced when the virtual registry is generally available. 
+The GitLab virtual registry is available as part of the GitLab [beta](../../../policy/development_stages_support.md#beta) program. While it is currently available on Premium and Ultimate, final availability and pricing will be announced when the virtual registry is generally available.
 
 {{< /alert >}}
 Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries behind a single, well-known URL.
@@ -57,7 +57,7 @@ Prerequisites:
 
 To turn off the virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Settings** > **Packages and registries**.
 1. Under **Virtual Registry**, turn off the **Enable Virtual Registry** toggle.
 

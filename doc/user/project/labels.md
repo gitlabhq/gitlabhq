@@ -77,7 +77,7 @@ You can also assign and unassign labels with [quick actions](quick_actions.md):
 
 To view the **project's labels**:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 
 Or:
@@ -94,7 +94,7 @@ project or group path where it was created.
 
 To view the **group's labels**:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 
 Or:
@@ -122,7 +122,7 @@ Prerequisites:
 
 To create a project label:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter a short, descriptive name for the label. You
@@ -162,7 +162,7 @@ To do so:
 
 To create a group label:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter a short, descriptive name for the label. You
@@ -221,7 +221,7 @@ Prerequisites:
 
 To edit a **project** label:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Next to the label you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and then select **Edit**.
 1. Select **Save changes**.
@@ -230,7 +230,7 @@ To edit a **project** label:
 
 To edit a **group** label:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Next to the label you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and then select **Edit**.
 1. Select **Save changes**.
@@ -258,7 +258,7 @@ Prerequisites:
 
 To delete a **project** label:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Next to the **Subscribe** button, select ({{< icon name="ellipsis_v" >}}), and then select **Delete**.
 
@@ -266,7 +266,7 @@ To delete a **project** label:
 
 To delete a **group** label:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Either:
 
@@ -313,7 +313,7 @@ Prerequisites:
 
 To archive a label:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Next to the label you want to archive, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Archived** checkbox.
@@ -325,7 +325,7 @@ The label is archived and [deprioritized](#set-label-priority).
 
 To view archived labels:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Go to the labels page for your project or group.
 1. Select the **Archived** tab.
@@ -338,7 +338,7 @@ Prerequisites:
 
 To unarchive a label:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select the **Archived** tab.
 1. Next to the label you want to unarchive, select **Edit** ({{< icon name="pencil" >}}).
@@ -373,7 +373,7 @@ Prerequisites:
 
 To promote a project label to a group label:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Next to the **Subscribe** button, select the three dots ({{< icon name="ellipsis_v" >}}) and
    select **Promote to group label**.
@@ -436,7 +436,7 @@ Prerequisites:
 
 To add the default labels to the project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **Generate a default set of labels**.
 
@@ -596,7 +596,7 @@ Prerequisites:
 
 To prioritize a label:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Next to a label you want to prioritize, select the star ({{< icon name="star-o" >}}).
 
@@ -652,7 +652,7 @@ After you set a label as locked, nobody can undo it or delete the label.
 
 To set a label to get locked on merge:
 
-1. On the left sidebar, select **Search or go to** and find your group or project.
+1. On the left sidebar, select **Search or go to** and find your group or project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Next to the label you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and then select **Edit**.
 1. Select the **Lock label after a merge request is merged** checkbox.

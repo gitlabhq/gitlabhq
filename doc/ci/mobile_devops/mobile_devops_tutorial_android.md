@@ -133,7 +133,7 @@ Signed builds can be uploaded to the Google Play Store by using the Mobile DevOp
 
 1. [Create a Google service account](https://docs.fastlane.tools/actions/supply/#setup) in Google Cloud Platform and grant that account access to the project in Google Play.
 1. Enable the Google Play integration:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **Integrations**.
    1. Select **Google Play**.
    1. Under **Enable integration**, select the **Active** checkbox.

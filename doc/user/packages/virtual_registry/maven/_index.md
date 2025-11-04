@@ -76,14 +76,14 @@ You can also [use the API](../../../../api/maven_virtual_registries.md#manage-vi
 
 To view the virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 
 ### Create a Maven virtual registry
 
 To create a Maven virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Select **Create registry**.
 1. Enter a **Name** and optional **Description**.
@@ -93,7 +93,7 @@ To create a Maven virtual registry:
 
 To edit an existing virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. In the row of the registry you want to edit, select **Edit** ({{< icon name="pencil" >}}).
@@ -103,7 +103,7 @@ To edit an existing virtual registry:
 
 To delete a virtual registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, in the row of the registry you want to delete, select **Edit** ({{< icon name="pencil" >}}).
@@ -118,7 +118,7 @@ Manage upstream registries in a virtual registry.
 
 To view upstream registries:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Select the **Upstreams** tab to view all available upstreams.
@@ -133,7 +133,7 @@ Prerequisites:
 
 To create a Maven upstream registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, select a registry.
@@ -166,7 +166,7 @@ For more information about cache validity settings, see [Set the cache validity 
 
 To edit an upstream registry:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Select the **Upstreams** tab.
@@ -180,7 +180,7 @@ The virtual registry searches upstreams from top to bottom until it finds the re
 
 To change the order of upstream registries:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registries**.
 1. Under **Registry types**, select a registry.
 1. Under the **Registries** tab, select a registry.
@@ -198,7 +198,7 @@ For more information about the order of upstreams, see [Upstream prioritization]
 
 To view packages that have been cached from upstream registries:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select a registry.
 1. Under the **Upstreams** tab, select an upstream.
@@ -208,7 +208,7 @@ To view packages that have been cached from upstream registries:
 
 To delete cache entries:
 
-1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select a registry.
 1. Under the **Registries** tab, select a registry.

@@ -669,7 +669,7 @@ To recreate a pipeline execution policy:
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
 1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.

@@ -21,6 +21,11 @@ module Types
       description: 'Triggered when a pipeline status is updated.',
       experiment: { milestone: '17.10' }
 
+    field :ci_pipeline_statuses_updated,
+      subscription: Subscriptions::Ci::Pipelines::StatusesUpdated, null: true,
+      description: 'Triggered when any pipeline status is updated.',
+      experiment: { milestone: '18.6' }
+
     field :ci_pipeline_schedule_status_updated,
       subscription: Subscriptions::Ci::PipelineSchedule::StatusUpdated, null: true,
       description: 'Triggered when a pipeline schedule is updated.',

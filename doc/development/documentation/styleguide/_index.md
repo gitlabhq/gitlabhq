@@ -1173,7 +1173,7 @@ use these steps instead.
 To open project settings:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1181,7 +1181,7 @@ To open project settings:
 To open group settings:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1189,7 +1189,7 @@ To open group settings:
 To open settings for a top-level group:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
@@ -1198,7 +1198,7 @@ To open settings for a top-level group:
 To open either project or group settings:
 
 ```markdown
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1227,7 +1227,7 @@ You do not have to repeat `On the left sidebar` in your second step.
 To open the **Your work** menu item:
 
 ```markdown
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Your work**.
 ```
 
@@ -1249,14 +1249,14 @@ To save the selection in some dropdown lists:
 To view all your projects:
 
 ```markdown
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my projects**.
 ```
 
 To view all your groups:
 
 ```markdown
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 ```
 
@@ -1296,7 +1296,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.

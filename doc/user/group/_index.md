@@ -101,7 +101,7 @@ the immediate parent group.
 
 To explore all public or internal groups:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 1. In the upper right, select **Explore groups**.
 
@@ -116,7 +116,7 @@ To explore all public or internal groups:
 
 To view groups where you have direct or indirect membership:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 
 This page shows groups that you are a member of through:
@@ -137,7 +137,7 @@ A group is inactive when it is either pending deletion or it has been archived.
 
 To view all inactive groups:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 1. Select the **Inactive** tab.
 
@@ -171,7 +171,7 @@ The group overview page displays information about the group and its members, su
 
 To view a group:
 
-- On the left sidebar, select **Search or go to** and find your group.
+- On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 You can search for the subgroups and projects of the group
 and sort them in ascending or descending order.
@@ -186,7 +186,7 @@ You might need the group ID if you want to interact with it using the [GitLab AP
 
 To find the Group ID:
 
-1. On the left sidebar, select **Search or go to** and find your Group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the Group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy Group ID**.
 
@@ -194,7 +194,7 @@ To find the Group ID:
 
 To view the activity of a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Activity**.
 1. Optional. To filter activity by contribution type, select a tab:
 
@@ -240,7 +240,7 @@ Prerequisites:
 
 To edit group details:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. In the **Group name** text box, enter your group name. See the [limitations on group names](../reserved_names.md).
 1. Optional. In the **Group description (optional)** text box, enter your group description.
@@ -263,7 +263,7 @@ When you leave a group:
 
 To leave a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave group**, then **Leave group** again.
 
@@ -286,7 +286,7 @@ Prerequisites:
 
 To delete a group and its contents:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Delete group** section, select **Delete**.
@@ -294,7 +294,7 @@ To delete a group and its contents:
 
 You can also delete a group from the groups dashboard:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 1. Select ({{< icon name="ellipsis_v" >}}) for the group you want to delete.
 1. Select **Delete**.
@@ -338,7 +338,7 @@ Prerequisites:
 
 To immediately delete a group marked for deletion:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Delete group** section, select **Delete immediately**.
@@ -350,7 +350,7 @@ This action deletes the group, its subgroups, projects, and all related resource
 
 To restore a group that is marked for deletion:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Restore group** section, select **Restore group**.
@@ -366,7 +366,7 @@ Prerequisites:
 
 To access the **Actions** menu for groups:
 
-1. On the left sidebar, select **Search or go to** > **View all my groups**.
+1. On the left sidebar, select **Search or go to** > **View all my groups**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the **Groups** page, find your group and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
 1. Select an action.
 
@@ -382,7 +382,7 @@ The following actions are available, depending on the state of the group:
 
 As a user, you can request to be a member of a group, if an administrator allows it.
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 1. In the upper right, select **Explore groups**.
 1. In the **Search by name** text box, enter the name of the group you want to join.
@@ -399,7 +399,7 @@ If you change your mind before your request is approved, select
 
 To view members of a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 
 A table displays the member's:
@@ -437,7 +437,7 @@ In lists of group members, entries can display the following badges:
 - **SAML**, to indicate the member has a [SAML account](saml_sso/_index.md) connected to them.
 - **Enterprise**, to indicate that the member of the top-level group is an [enterprise user](../enterprise_user/_index.md).
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Above the list of members, in the **Filter members** text box, enter your search criteria. To view:
    - Direct members of the group, select **Membership = Direct**.
@@ -449,7 +449,7 @@ In lists of group members, entries can display the following badges:
 
 You can search for members by name, username, or [public email](../profile/_index.md#set-your-public-email).
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass ({{< icon name="search" >}}).
@@ -458,7 +458,7 @@ You can search for members by name, username, or [public email](../profile/_inde
 
 You can sort members by **Account**, **Access granted**, **Role**, or **Last sign-in**.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
@@ -484,7 +484,7 @@ Prerequisites:
   - If [user invitations are not allowed](../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects), an administrator must add the user.
   - If [administrator approval is enabled](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. If the user:
@@ -527,7 +527,7 @@ If [administrator approval for role promotions](../../administration/settings/si
 
 To view users pending promotion:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select the **Role promotions** tab.
 
@@ -544,7 +544,7 @@ Prerequisites:
 
 To remove a member from a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Next to the member you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Remove member**.
@@ -574,7 +574,7 @@ By default, users with at least the:
 
 To specify which roles can create projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. From **Minimum role required to create projects**, select an option.

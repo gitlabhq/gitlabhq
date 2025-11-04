@@ -680,12 +680,21 @@ module Ci
       :ci_pipelines
     end
 
+    def ci_pipeline_statuses_rate_limited?
+      Gitlab::ApplicationRateLimiter.throttled?(
+        :ci_pipeline_statuses_subscription,
+        scope: project
+      )
+    end
+
     def trigger_status_change_subscriptions
       GraphqlTriggers.ci_pipeline_status_updated(self)
 
-      return unless self.pipeline_schedule_id.present?
+      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule) if self.pipeline_schedule_id.present?
 
-      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule)
+      return if ci_pipeline_statuses_rate_limited?
+
+      GraphqlTriggers.ci_pipeline_statuses_updated(self)
     end
 
     def uses_needs?

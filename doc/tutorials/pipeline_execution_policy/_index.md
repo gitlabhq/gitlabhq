@@ -34,7 +34,7 @@ To complete this tutorial, you need:
 
 To begin, create a test project to apply your pipeline execution policy to:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields.
@@ -126,7 +126,7 @@ Next, add a pipeline execution policy to your test project:
 
 1. Go to the **Overview** tab and select **Merge**. This step creates a new project called `My Pipeline Execution Policy - Security Policy Project`. Security policy projects are used to store security policies so the same policy can be enforced across multiple projects.
 
-1. On the left sidebar, select **Search or go to** and find the `my-pipeline-execution-policy` project.
+1. On the left sidebar, select **Search or go to** and find the `my-pipeline-execution-policy` project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 1. Select **Secure** > **Policies**.
 

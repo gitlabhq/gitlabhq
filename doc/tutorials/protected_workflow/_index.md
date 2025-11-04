@@ -70,8 +70,8 @@ Then you'll add these new groups as members of the `engineering` group.
 
 First, create the new subgroup:
 
-1. On the left sidebar, select **Search or go to**
-   and search for `engineering`. Select the group named `Engineering`:
+1. On the left sidebar, select **Search or go to** and search for `engineering`. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the group named `Engineering`:
 
    ![The engineering group in search results](img/search_engineering_v16_2.png)
 
@@ -83,8 +83,8 @@ First, create the new subgroup:
 
 Next, add the subgroup as a member of the `engineering` group:
 
-1. On the left sidebar, select **Search or go to**
-   and search for `engineering`. Select the group named `Engineering`.
+1. On the left sidebar, select **Search or go to** and search for `engineering`. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the group named `Engineering`.
 1. Select **Manage** > **Members**.
 1. In the upper right, select **Invite a group**.
 1. For **Select a group to invite**, select `Engineering / Managers`.
@@ -113,8 +113,8 @@ for projects owned by `engineering`. As a result:
 
 To add a user to the `frontend` subgroup:
 
-1. On the left sidebar, select **Search or go to**
-   and search for `frontend`. Select the `Frontend` group.
+1. On the left sidebar, select **Search or go to** and search for `frontend`.If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the `Frontend` group.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Fill in the fields. Select the **Developer** role by default, increasing it
@@ -135,8 +135,8 @@ smaller subgroups you just created.
 
 To create the new `excelsior` project:
 
-1. On the left sidebar, select **Search or go to** and
-   search for `engineering`. Select the group named `Engineering`.
+1. On the left sidebar, select **Search or go to** and search for `engineering`.If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the group named `Engineering`.
 1. On the overview page for the `engineering` group, on the left sidebar, at the top,
    select **Create new** ({{< icon name="plus" >}}) and **In this group > New project/repository**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create blank project**.
@@ -173,8 +173,8 @@ GitLab Premium or Ultimate.
 
 To add a CODEOWNERS file to your `excelsior` project:
 
-1. On the left sidebar, select **Search or go to** and
-   search for `Excelsior`. Select the project named `Excelsior`.
+1. On the left sidebar, select **Search or go to** and search for `Excelsior`.If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the project named `Excelsior`.
 1. Next to the branch name, select the plus icon ({{< icon name="plus" >}}), then **New file**:
    ![Create a new file in the project](img/new_file_v16_2.png)
 1. For **Filename**, enter `CODEOWNERS`. This will create a file named `CODEOWNERS`
@@ -222,8 +222,8 @@ file types. Approval rules direct merge requests to those reviewers.
 Here, you will set up an approval rule that uses the information in your new CODEOWNERS
 file and adds protection for release branches:
 
-1. On the left sidebar, select **Search or go to** and
-   search for `Excelsior`. Select the project named `Excelsior`.
+1. On the left sidebar, select **Search or go to** and search for `Excelsior`.If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the project named `Excelsior`.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
 1. Select **Add approval rule**.
@@ -260,8 +260,8 @@ into the release branch.
 Rather than create protections for a branch at a time, configure wildcard branch rules
 to protect multiple branches:
 
-1. On the left sidebar, select **Search or go to** and
-   search for `Excelsior`. Select the project named `Excelsior`.
+1. On the left sidebar, select **Search or go to** and search for `Excelsior`.If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the project named `Excelsior`.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule** > **Branch name or pattern**.
@@ -286,8 +286,8 @@ Your rules are now in place, even though no `1.*` branches exist yet:
 
 Now that all branch protections in place, you're ready to create your 1.0.0 release branch:
 
-1. On the left sidebar, select **Search or go to** and
-   search for `Excelsior`. Select the project named `Excelsior`.
+1. On the left sidebar, select **Search or go to** and search for `Excelsior`. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select the project named `Excelsior`.
 1. Select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
 1. Select **Create branch**.

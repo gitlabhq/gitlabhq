@@ -49,7 +49,7 @@ The online garbage collector is an instance-wide feature, and applies to all nam
 
 To delete container images using the GitLab UI:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. For:
    - A group, select **Operate** > **Container Registry**.
    - A project, select **Deploy** > **Container Registry**.

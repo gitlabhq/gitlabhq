@@ -31,7 +31,7 @@ For more information, see [Name your branch](../repository/branches/_index.md#na
 
 You can create a merge request from the list of merge requests.
 
-1. On the left sidebar, select **Search or go to** and find your GitLab project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 1. In the upper-right corner, select **New merge request**.
 1. Select a source and target branch, then select **Compare branches and continue**.
@@ -50,7 +50,7 @@ After merging the merge request, the issue is closed automatically, unless
 
 To create a branch and a merge request at the same time:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues** and find your issue.
 1. Go to the bottom of the issue description.
 1. Select **Create merge request** > **Create merge request and branch**.
@@ -79,7 +79,7 @@ Prerequisites:
 
 To create a branch and a merge request at the same time:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. In the issue list, find your task.
 1. Go to the bottom of the task description.
@@ -118,7 +118,7 @@ You can create merge requests with the [Web Editor](../repository/web_editor.md)
 
 You can create a merge request when you create a branch.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Branches**.
 1. Type a branch name and select **New branch**.
 1. Above the file list, select **Create merge request**.
@@ -183,7 +183,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Target project** section, select the option you want to use for
    your default target project.
@@ -205,7 +205,7 @@ Prerequisites:
 
 To create a merge request by sending an email:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Merge requests**.
 1. If the project contains any merge requests, select **Email a new merge request to this project**.
 1. In the dialog, copy the email address shown. Keep this address private. Anyone who

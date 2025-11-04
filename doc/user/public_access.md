@@ -86,7 +86,7 @@ Prerequisites:
 
 - You must have the Owner role for a project.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. From the **Project visibility** dropdown list, select an option.
@@ -102,7 +102,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To enable or disable a feature, turn on or turn off the feature toggle.
@@ -119,7 +119,7 @@ Prerequisites:
   restrictive as the new setting of the parent group. For example, you cannot set a group
   to private if a project or subgroup in that group is public.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Naming, description, visibility**.
 1. For **Visibility level**, select an option.

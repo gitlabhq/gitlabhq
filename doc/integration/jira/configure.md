@@ -56,7 +56,7 @@ on GitLab Self-Managed.
 With this integration, your GitLab project can interact with all Jira projects on your instance.
 To configure your project settings in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -141,7 +141,7 @@ Prerequisites:
 You can enable Jira issues for a specific group or project, but you can view the issues in GitLab projects only.
 To view issues from one or more Jira projects in a GitLab project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Jira issues**.
 
 By default, the issues are sorted by **Created date**.
@@ -214,7 +214,7 @@ You can set up verification rules to ensure Jira issues referenced in commit mes
 
 To configure Jira verification:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira verification** section.
@@ -286,7 +286,7 @@ Prerequisites:
 You can create a Jira issue from GitLab to track any action taken to resolve or mitigate a vulnerability.
 To create a Jira issue for a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.

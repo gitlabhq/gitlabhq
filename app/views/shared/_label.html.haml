@@ -21,7 +21,7 @@
             size: :small,
             icon: 'star-o',
             button_options: { class: 'add-priority has-tooltip', title: _('Prioritize'), aria_label: _('Prioritize label'), data: { placement: 'bottom' } })
-      - if current_user
+      - if current_user && !label.archived
         %li.gl-inline-block.label-subscription.js-label-subscription.gl-ml-3.gl-mt-1
           - if label.can_subscribe_to_label_in_different_levels?
             = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-unsubscribe-button gl-w-full #{'hidden' if status.unsubscribed?}", data: { url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do

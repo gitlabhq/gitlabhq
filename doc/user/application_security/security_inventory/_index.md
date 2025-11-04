@@ -51,7 +51,7 @@ Prerequisites:
 
 To view the security inventory:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security inventory**.
 1. Complete one of the following actions:
    - To view a group's subgroups, projects, and security assets, select the group.

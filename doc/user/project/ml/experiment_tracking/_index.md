@@ -63,7 +63,7 @@ on how to use GitLab as a backend for the MLflow Client.
 
 To list the current active experiments, either go to `https/-/ml/experiments` or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Model experiments**.
 1. To display all runs that have been logged, along with their metrics, parameters, and metadata, select an experiment.
 1. To display details for a run, select **Details**.
@@ -84,7 +84,7 @@ When you run an experiment, GitLab logs certain related data, including its metr
 
 To view logged metrics:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Model experiments**.
 1. Select the experiment you want to view.
 1. Select the **Performance** tab.

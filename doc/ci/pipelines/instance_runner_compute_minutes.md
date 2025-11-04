@@ -79,8 +79,7 @@ Prerequisites:
 
 To view compute usage for your group:
 
-1. On the left sidebar, select **Search or go to** and
-   find your group. The group must not be a subgroup.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. The group must not be a subgroup.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Pipelines** tab.
 

@@ -1173,7 +1173,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
-  describe '.with_group_group_sharing_access' do
+  describe '.shared_members' do
     let_it_be(:shared_group) { create(:group) }
     let_it_be(:invited_group) { create(:group) }
 
@@ -1187,19 +1187,21 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         create(:group_group_link,
           shared_group: shared_group,
           shared_with_group: invited_group,
-          group_access: group_sharing_access)
+          group_access: group_sharing_access
+        )
       end
 
       let(:member) { create(:group_member, source: invited_group, access_level: member_access_in_invited_group) }
 
+      subject(:members) do
+        described_class
+          .shared_members(shared_group)
+          .id_in(member.id)
+          .to_a
+      end
+
       shared_examples 'returns the minimum of member access level and group sharing access level' do
         specify do
-          members = invited_group
-                         .members
-                         .with_group_group_sharing_access(shared_group)
-                         .id_in(member.id)
-                         .to_a
-
           expect(members.size).to eq(1)
           expect(members.first.access_level).to eq(Gitlab::Access::REPORTER)
         end

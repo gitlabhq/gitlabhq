@@ -19,7 +19,7 @@ In these issues, you can also see our friendly neighborhood [Support Bot](config
 
 To check what the Service Desk email address is for your project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Service Desk**.
 
 The email address is available at the top of the issue list.
@@ -88,7 +88,7 @@ Prerequisites:
 
 To view Service Desk issues:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Service Desk**.
 
 #### Redesigned issue list
@@ -112,7 +112,7 @@ a dedicated email address.
 
 ##### Filter the list of issues
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Service Desk**.
 1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
@@ -139,7 +139,7 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 
 ##### Filter issues by ID
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Service Desk**.
 1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
 

@@ -100,7 +100,7 @@ Prerequisites:
 
 To create a webhook:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Webhooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
@@ -122,7 +122,7 @@ are encrypted at rest in the database.
 
 To mask sensitive portions of a webhook URL:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Webhooks**.
 1. In **URL**, enter the full URL of the webhook.
 1. To define masked portions, select **Add URL masking**.
@@ -367,7 +367,7 @@ Prerequisites:
 
 To view the request history for a webhook:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
@@ -400,7 +400,7 @@ This page contains the body and headers of:
 
 To inspect the request and response details of a webhook event:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
@@ -422,7 +422,7 @@ Prerequisites:
 
 To test a webhook:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Webhooks** to see all webhooks for this project.
 1. To test a webhook directly from the list of configured webhooks:
    1. Locate the webhook you want to test.
@@ -490,7 +490,7 @@ GitLab automatically disables project or group webhooks that fail four consecuti
 
 To view auto-disabled webhooks:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Webhooks**.
 
 In the webhook list, auto-disabled webhooks display as:

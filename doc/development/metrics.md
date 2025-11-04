@@ -56,7 +56,7 @@ Prerequisites:
 You must have at least the Maintainer role for the project.
 
 1. Create an access token:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **Access tokens**.
    1. Create an access token with the `api` scope and **Developer** role or greater.
       Save the access token value for later.
@@ -81,7 +81,7 @@ When you run your application, the OpenTelemetry exporter sends metrics to GitLa
 
 You can view the metrics for a given project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Metrics**.
 
 A list of metrics is displayed.
@@ -132,7 +132,7 @@ GitLab has a retention limit of 30 days for all ingested metrics.
 
 You can create an issue to track any action taken to resolve or investigate a metric. To create an issue for a metric:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Metrics**.
 1. From the list of metrics, select a metric.
 1. Select **Create issue**.
@@ -142,7 +142,7 @@ You can edit the issue title and description.
 
 ### View issues related to a metric
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Metrics**.
 1. From the list of metrics, select a metric.
 1. Scroll to **Related issues**.

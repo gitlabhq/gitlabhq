@@ -1,7 +1,7 @@
 - empty_repo = @project.empty_repo?
 
 %header.project-home-panel.js-show-on-project-root.gl-mt-5{ class: [("empty-project" if empty_repo)] }
-  .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.gl-gap-5.gl-pl-4{ class: '@sm/panel:gl-flex-row' }
+  .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.gl-gap-5{ class: '@sm/panel:gl-flex-row' }
     .home-panel-title-row.gl-flex.gl-items-center
       = render Pajamas::AvatarComponent.new(@project, class: 'gl-self-start gl-shrink-0 gl-mr-4', size: 48, avatar_options: { itemprop: 'image' })
       %h1.home-panel-title.gl-heading-1.gl-flex.gl-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere.gl-mb-0{ data: { testid: 'project-name-content' }, itemprop: 'name' }

@@ -61,7 +61,7 @@ Before you start the transfer process, make sure you:
 
 To transfer a project to a group:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the group to transfer the project to.
@@ -89,7 +89,7 @@ Finally, rename the new group's URL to the username of the original personal nam
 
 To [change your group path](../../user/group/manage.md#change-a-groups-path) (group URL):
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter the user's original username.

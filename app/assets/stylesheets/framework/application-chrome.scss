@@ -437,7 +437,7 @@
   }
 
   .panel-content-inner {
-    @apply gl-px-2;
+    @apply gl-px-3;
     flex: 1;
   }
 
@@ -477,7 +477,7 @@
       @apply gl-w-full gl-border-b-subtle;
 
       .work-item-sticky-header-text {
-        @apply @xl/panel:gl-px-4 gl-py-2;
+        @apply gl-px-3 @lg/panel:gl-px-4 gl-py-2;
       }
     }
 

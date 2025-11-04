@@ -323,25 +323,53 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:pipeline) { build(:ci_pipeline, user: user) }
 
     %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
-      context "when pipeline receives #{action} event" do
-        context 'without a schedule' do
-          it 'triggers only GraphQL subscription ciPipelineStatusUpdated' do
-            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
-            expect(GraphqlTriggers).not_to receive(:ci_pipeline_schedule_status_updated)
+      context 'with rate limiting enabled' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .and_return(true)
+        end
+
+        it 'does not trigger GraphQL subscription ciPipelineStatusUpdated' do
+          expect(GraphqlTriggers).not_to receive(:ci_pipeline_statuses_updated).with(pipeline)
+
+          pipeline.public_send(action)
+        end
+      end
+
+      context 'with rate limiting disabled' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .and_return(false)
+        end
+
+        context "when pipeline receives #{action} event" do
+          it 'triggers GraphQL subscription ciPipelineStatusesUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_statuses_updated).with(pipeline)
 
             pipeline.public_send(action)
           end
-        end
 
-        context 'with a schedule' do
-          let(:schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
-          let(:pipeline) { build(:ci_pipeline, pipeline_schedule: schedule, project: project, user: user) }
+          context 'without a schedule' do
+            it 'triggers only GraphQL subscription ciPipelineStatusUpdated' do
+              expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+              expect(GraphqlTriggers).not_to receive(:ci_pipeline_schedule_status_updated)
 
-          it 'triggers both GraphQL subscriptions' do
-            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
-            expect(GraphqlTriggers).to receive(:ci_pipeline_schedule_status_updated).with(schedule)
+              pipeline.public_send(action)
+            end
+          end
 
-            pipeline.public_send(action)
+          context 'with a schedule' do
+            let(:schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+            let(:pipeline) { build(:ci_pipeline, pipeline_schedule: schedule, project: project, user: user) }
+
+            it 'triggers both GraphQL subscriptions' do
+              expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+              expect(GraphqlTriggers).to receive(:ci_pipeline_schedule_status_updated).with(schedule)
+
+              pipeline.public_send(action)
+            end
           end
         end
       end

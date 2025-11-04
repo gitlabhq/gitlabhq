@@ -71,7 +71,7 @@ Prerequisites:
 
 To view a list of dashboards (both built-in and custom) for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
@@ -91,7 +91,7 @@ Prerequisites:
 
 To view a list of dashboards (both built-in and custom) for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
@@ -113,9 +113,9 @@ Prerequisites:
 
 To change the location of a group's custom dashboards:
 
-1. On the left sidebar, select **Search or go to** and find the project you want to store your dashboard files in.
+1. On the left sidebar, select **Search or go to** and find the project you want to store your dashboard files in. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    The project must belong to the group for which you create the dashboards.
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
@@ -135,10 +135,10 @@ You can share dashboards only between projects that are located in the same grou
 
 To change the location of project dashboards:
 
-1. On the left sidebar, select **Search or go to** and find your project,
-   or select **Create new** ({{< icon name="plus" >}}) and **New project/repository**
-   to create the project to store your dashboard files. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
-1. On the left sidebar, select **Search or go to** and find the analytics project.
+1. Either:
+   - On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+   - Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**to create the project to store your dashboard files. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. On the left sidebar, select **Search or go to** and find the analytics project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.

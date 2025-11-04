@@ -73,6 +73,6 @@ To see the pipeline status from the merge request page of a forked project
 going back to the original project:
 
 1. [Create a group](../../group/_index.md#create-a-group) containing all the upstream members.
-1. On the left sidebar, select **Search or go to** and find the forked project.
+1. On the left sidebar, select **Search or go to** and find the forked project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to the **Manage** > **Members** page in the forked project and invite the newly-created
    group to the forked project.

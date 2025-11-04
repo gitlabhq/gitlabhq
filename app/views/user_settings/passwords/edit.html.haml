@@ -17,7 +17,7 @@
         - learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noreferrer')
         = safe_format(s_('ProfilesAuthentication|Add a passkey to sign in securely with your trusted device. %{link_start}Learn more about passkeys%{link_end}.'), tag_pair(learn_more_link, :link_start, :link_end))
       = c.with_actions do
-        = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path, variant: :confirm) do
+        = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path, variant: :confirm, icon: 'passkey') do
           = s_('ProfilesAuthentication|Add passkey')
 
 = render ::Layouts::SettingsSectionComponent.new(page_title) do |c|

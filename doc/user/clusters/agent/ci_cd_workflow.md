@@ -76,7 +76,7 @@ Authorization configuration can take one or two minutes to propagate.
 
 To authorize the GitLab project where you keep Kubernetes manifests to access the agent:
 
-1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`). If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `projects` attribute.
 1. For the `id`, add the path to the project.
 
@@ -108,7 +108,7 @@ After making these changes:
 
 To authorize all of the GitLab projects in a group or subgroup to access the agent:
 
-1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`). If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `groups` attribute.
 1. For the `id`, add the path:
 
@@ -172,7 +172,7 @@ To allow agents to be configured to authorize all projects in your GitLab instan
 
 To authorize the agent to access all of the GitLab projects:
 
-1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`). If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `instance` attribute:
 
    ```yaml

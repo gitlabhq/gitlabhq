@@ -54,7 +54,7 @@ In this file, you define:
 - The structure and order of jobs that the runner should execute.
 - The decisions the runner should make when specific conditions are encountered.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Project overview**.
 1. Select the plus icon ({{< icon name="plus" >}}), then select **New file**.
 1. In the **Filename** field, enter `.gitlab-ci.yml`.
@@ -86,7 +86,7 @@ to GitLab so that it can pick up jobs from the project pipeline.
 
 To create a project runner:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **New project runner**.
@@ -131,7 +131,7 @@ Here's what your `config.toml` should look like after you register and start the
 
 Next, trigger a pipeline in your project so you can view your runner execute a job.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Select a job to view the job log. The output should look similar to this example, which shows

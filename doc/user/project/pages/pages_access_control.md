@@ -29,7 +29,7 @@ on your GitLab instance. When enabled, only authenticated
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v=tSPAr5mQYc8).
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Toggle the **Pages** button to enable the access control. If you don't see the toggle button,
@@ -79,7 +79,7 @@ Prerequisites
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Pages public access**, select the **Remove public access** checkbox.

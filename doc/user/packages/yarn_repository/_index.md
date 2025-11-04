@@ -74,7 +74,7 @@ You can use pipeline variables when you publish with CI/CD.
 
 1. Create an authentication token for your project or group:
 
-   1. On the left sidebar, select **Search or go to** and find your project or group.
+   1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. On the left sidebar, select **Settings** > **Repository** > **Deploy Tokens**.
    1. Create a deployment token with `read_package_registry` and `write_package_registry` scopes and copy the generated token.
    1. On the left sidebar, select **Settings** > **CI/CD** > **Variables**.

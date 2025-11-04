@@ -31,7 +31,7 @@ Prerequisites:
 
 To add a group README:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
 1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
@@ -43,12 +43,12 @@ You can change the Owner of a group. Each group must always have at least one
 member with the Owner role.
 
 - As an administrator:
-  1. On the left sidebar, select **Search or go to** and find your group.
+  1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Refresh the page. You can now remove the Owner role from the original Owner.
 - As the current group's Owner:
-  1. On the left sidebar, select **Search or go to** and find your group.
+  1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Have the new Owner sign in and remove the Owner role from you.
@@ -69,7 +69,7 @@ create a new group and transfer projects to it instead.
 
 To change your group path (group URL):
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
@@ -136,7 +136,7 @@ Prerequisites:
 
 To archive a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Archive group** section, select **Archive**.
@@ -149,7 +149,7 @@ Archiving a group automatically archives all its subgroups and projects. Individ
 
 To archive a group from the **Your work** list view directly:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 1. In the **Member** tab, find the group you want to archive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Archive**.
@@ -170,7 +170,7 @@ Prerequisites:
 To unarchive a group:
 
 1. Find the archived group.
-   1. On the left sidebar, select **Search or go to**.
+   1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **View all my groups**.
    1. In the **Inactive** tab, select your group.
 1. On the left sidebar, select **Settings** > **General**.
@@ -179,7 +179,7 @@ To unarchive a group:
 
 To unarchive a group from the **Your work** list view directly:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 1. In the **Inactive** tab, find the group you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Unarchive**.
@@ -215,7 +215,7 @@ Prerequisites:
 
 To transfer a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Select **Transfer group**.
@@ -228,7 +228,7 @@ You can disable all email notifications related to the group, which includes its
 
 To disable email notifications:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Enable email notifications** checkbox.
@@ -254,7 +254,7 @@ Prerequisites:
 
 To disable diff previews for all projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Clear **Include diff previews**.
@@ -281,7 +281,7 @@ The following group and project members receive notification emails about access
 
 You can enable notifications to inherited members of a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Expiry notification emails about group and project access tokens within this group should be sent to:**, select **All direct and inherited members of the group or project**.
@@ -306,7 +306,7 @@ GitLab sends multiple [expiry emails](settings/group_access_tokens.md#group-acce
 
 To enable additional triggers for these webhooks:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select the **Add additional webhook triggers for group access token expiration** checkbox.
@@ -324,7 +324,7 @@ These visual cues are particularly helpful for groups with many users.
 
 To disable group mentions:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Group mentions are disabled**.
@@ -357,7 +357,7 @@ Prerequisites:
 
 To prevent invitations to a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Disable Group/Project members invitation**.
@@ -374,7 +374,7 @@ To prevent invitations to a group:
 
 You can export a list of members in a group or subgroup as a CSV.
 
-1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
@@ -481,7 +481,7 @@ Prerequisites:
 
 To specify a user cap:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    You can set a cap on the top-level group only.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
@@ -503,7 +503,7 @@ Prerequisites:
 
 To remove the user cap:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. From **Seat control**, select **Open access**.
@@ -524,7 +524,7 @@ Prerequisites:
 
 To approve members that are pending because they've exceeded the user cap:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
@@ -579,7 +579,7 @@ For more information, see [group-level project templates](custom_project_templat
 
 To enable group file templates:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Templates** section.
 1. Choose a project to act as the template repository.
@@ -619,7 +619,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **Pipelines must succeed**.
@@ -638,7 +638,7 @@ Prerequisites:
 
 To change this behavior:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**:
@@ -656,7 +656,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **All threads must be resolved**.
@@ -677,7 +677,7 @@ that belong to the group.
 
 To view the merge request approval settings for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
@@ -704,7 +704,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Activity**.
 
 To view the activity feed in Atom format, select the

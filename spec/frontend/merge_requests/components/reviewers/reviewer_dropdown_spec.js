@@ -38,12 +38,17 @@ const createMockUser = ({ id = 1, name = 'Administrator', username = 'root' } = 
 function createComponent(
   adminMergeRequest = true,
   propsData = { selectedReviewers: [createMockUser()] },
+  customUsers = null,
 ) {
+  const defaultUsers = [
+    createMockUser(),
+    createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+  ];
   autocompleteUsersMock = jest.fn().mockResolvedValue({
     data: {
       workspace: {
         id: 1,
-        users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+        users: customUsers || defaultUsers,
       },
     },
   });
@@ -197,6 +202,143 @@ describe('Reviewer dropdown component', () => {
             }),
           ]),
         );
+      });
+    });
+
+    describe('shows current user at top when relevant', () => {
+      beforeEach(() => {
+        window.gon = {
+          current_username: 'currentuser',
+          current_user_fullname: 'Current User',
+          current_user_avatar_url: 'https://example.com/avatar.jpg',
+        };
+      });
+
+      afterEach(() => {
+        delete window.gon;
+      });
+
+      describe('when current user is not selected', () => {
+        beforeEach(async () => {
+          createComponent(true, { selectedReviewers: [] }, [
+            createMockUser(),
+            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+            createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
+          ]);
+          await waitForPromises();
+
+          findDropdown().vm.$emit('shown');
+          await waitForPromises();
+        });
+
+        it('moves current user to the top of the unselected users list', () => {
+          const items = findDropdown().props('items');
+          const usersGroup = items.find((group) => group.text === 'Users');
+
+          expect(usersGroup.options[0]).toMatchObject({
+            value: 'currentuser',
+            text: 'Current User',
+            secondaryText: '@currentuser',
+          });
+        });
+      });
+
+      describe('when current user is already selected', () => {
+        beforeEach(async () => {
+          const currentUser = createMockUser({
+            id: 3,
+            name: 'Current User',
+            username: 'currentuser',
+          });
+
+          createComponent(
+            true,
+            {
+              selectedReviewers: [currentUser],
+              eligibleReviewers: [currentUser],
+            },
+            [
+              createMockUser(),
+              createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+              currentUser,
+            ],
+          );
+          await waitForPromises();
+
+          findDropdown().vm.$emit('shown');
+          await waitForPromises();
+        });
+
+        it('does not include current user in the unselected users list', () => {
+          const items = findDropdown().props('items');
+          const usersGroup = items.find((group) => group.text === 'Users');
+
+          expect(usersGroup.options.find((u) => u.value === 'currentuser')).toBeUndefined();
+        });
+
+        it('includes current user in the reviewers group', () => {
+          const items = findDropdown().props('items');
+          const reviewersGroup = items.find((group) => group.text === 'Reviewers');
+
+          expect(reviewersGroup.options.find((u) => u.value === 'currentuser')).toBeDefined();
+        });
+      });
+
+      describe('when searching', () => {
+        beforeEach(async () => {
+          createComponent(true, { selectedReviewers: [] }, [
+            createMockUser(),
+            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+          ]);
+          await waitForPromises();
+
+          autocompleteUsersMock.mockResolvedValueOnce({
+            data: {
+              workspace: {
+                id: 1,
+                users: [
+                  createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
+                  createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+                ],
+              },
+            },
+          });
+
+          findDropdown().vm.$emit('search', 'user');
+          jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+          await waitForPromises();
+        });
+
+        it('does not move current user to the top during search', () => {
+          const items = findDropdown().props('items');
+          const usersGroup = items.find((group) => group.text === 'Users');
+          expect(usersGroup.options[0].value).toBe('currentuser');
+          expect(usersGroup.options[1].value).toBe('bob');
+        });
+      });
+
+      describe('when current user is already first', () => {
+        beforeEach(async () => {
+          createComponent(true, { selectedReviewers: [] }, [
+            createMockUser({ id: 3, name: 'Current User', username: 'currentuser' }),
+            createMockUser(),
+            createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' }),
+          ]);
+          await waitForPromises();
+
+          findDropdown().vm.$emit('shown');
+          await waitForPromises();
+        });
+
+        it('maintains current user at the top without reordering', () => {
+          const items = findDropdown().props('items');
+          const usersGroup = items.find((group) => group.text === 'Users');
+
+          expect(usersGroup.options[0]).toMatchObject({
+            value: 'currentuser',
+            text: 'Current User',
+          });
+        });
       });
     });
 

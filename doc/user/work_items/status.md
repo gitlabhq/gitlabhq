@@ -99,7 +99,7 @@ Prerequisites:
 
 To create a lifecycle:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, select **Create lifecycle**.
 1. Add the lifecycle name and choose either the default lifecycle configuration or one of the existing lifecycles to start from. This pre-populates the new lifecycle with statuses which you can customize afterwards.
@@ -114,7 +114,7 @@ Prerequisites:
 
 To rename a lifecycle:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, hover over the lifecycle detail view.
 1. Select **Rename**.
@@ -130,7 +130,7 @@ Prerequisites:
 
 To remove a lifecycle:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, select **Remove lifecycle** for the lifecycle you want to remove.
 1. On the confirmation dialog, select **Remove**.
@@ -144,7 +144,7 @@ Prerequisites:
 
 To change the lifecycle for a work item type:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, either:
    - Select **Change lifecycle**.
@@ -178,7 +178,7 @@ Prerequisites:
 
 To configure custom statuses:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, select **Edit statuses** for the lifecycle being used by the work item type.
 1. Add, edit, or reorder statuses for the namespace.

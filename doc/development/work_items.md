@@ -72,15 +72,11 @@ Some terms have been used in the past but have since become confusing and are no
 
 ## Work items development
 
-During development, work items progress through three stages, managed by using feature flags:
-
-1. `work_items_alpha` for internal team testing ([`gitlab-org/plan-stage`](https://gitlab.com/gitlab-org/plan-stage)).
-1. `work_items_beta` for broader internal GitLab testing ([`gitlab-org`](https://gitlab.com/gitlab-org) and [`gitlab-com`](https://gitlab.com/gitlab-com)).
-1. `work_items`, enabled by default for SaaS and self-managed environments.
+During development, we can use `work_items_alpha` for internal team testing ([`gitlab-org/plan-stage`](https://gitlab.com/gitlab-org/plan-stage)).
 
 _Other groups may be included. For the latest information, query the feature flags within [chatops](feature_flags/controls.md)._
 
-For more information about these feature flags, see
+For more information about this feature flag, see
 [Work Items Architecture Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/#feature-flags).
 
 ## Migration strategy

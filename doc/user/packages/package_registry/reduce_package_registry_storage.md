@@ -24,7 +24,7 @@ You should implement a regular cleanup strategy to reduce package registry bloat
 
 To review the storage **Usage breakdown**:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. From the **Usage quotas** page, review the **Usage breakdown** for packages.
 
@@ -39,7 +39,7 @@ Prerequisites:
 
 To delete a package:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select the package you want to delete.
    - Or, from the **Package registry** page,
@@ -69,7 +69,7 @@ Prerequisites:
 
 To delete package assets:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select a package to view additional details.
 1. From the **Assets** table, find the name of the assets you want to delete.
@@ -102,7 +102,7 @@ Prerequisites:
 
 By default, the packages cleanup policy is disabled. To enable it:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Manage storage used by package assets**, set the rules appropriately.

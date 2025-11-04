@@ -113,15 +113,14 @@ export default {
           options: this.visibleReviewers.map((user) => this.mapUser(user)),
         });
       }
+      const filteredUsers = users
+        .filter((u) => (this.search ? true : !this.selectedReviewers.find(({ id }) => u.id === id)))
+        .map((user) => this.mapUser(user));
 
       items.push({
         textSrOnly: true,
         text: __('Users'),
-        options: users
-          .filter((u) =>
-            this.search ? true : !this.selectedReviewers.find(({ id }) => u.id === id),
-          )
-          .map((user) => this.mapUser(user)),
+        options: this.moveCurrentUserToStart(filteredUsers),
       });
 
       return items;
@@ -146,6 +145,16 @@ export default {
     },
     unassignLabel() {
       return this.multipleSelectionEnabled ? __('Unassign all') : __('Unassign');
+    },
+    currentUser() {
+      return {
+        username: gon?.current_username,
+        name: gon?.current_user_fullname,
+        avatarUrl: gon?.current_user_avatar_url,
+      };
+    },
+    isSearchEmpty() {
+      return this.search === '';
     },
   },
   watch: {
@@ -256,6 +265,25 @@ export default {
       });
 
       this.loading = false;
+    },
+    moveCurrentUserToStart(users = []) {
+      const currentUsername = this.currentUser.username;
+
+      const isSelected = this.selectedReviewers.some(
+        (reviewer) => reviewer.username === currentUsername,
+      );
+
+      if (!currentUsername || isSelected || !this.isSearchEmpty) return users;
+
+      const currentUserIndex = users.findIndex((user) => user.username === currentUsername);
+
+      if (currentUserIndex <= 0) return users;
+
+      return [
+        users[currentUserIndex],
+        ...users.slice(0, currentUserIndex),
+        ...users.slice(currentUserIndex + 1),
+      ];
     },
   },
   i18n: {

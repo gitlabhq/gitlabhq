@@ -94,7 +94,7 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 GitLab provides an RSS feed of a project's releases, in Atom format. To view the feed:
 
 1. For projects you are a member of:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Deploy** > **Releases**.
 1. For all projects:
    1. Go to the **Project overview** page.
@@ -118,7 +118,7 @@ Prerequisites:
 
 To create a release in the Releases page:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
@@ -287,7 +287,7 @@ To delete a release, use either the
 
 In the UI:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to delete, select **Edit this release**
    ({{< icon name="pencil" >}}).
@@ -387,7 +387,7 @@ This approach offers deployment control during critical maintenance, and ensures
 To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with the Maintainer role.
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Scroll to **Deploy freezes**.
 1. Select **Expand** to see the deploy freeze table.

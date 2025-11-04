@@ -72,7 +72,7 @@ Prerequisites:
 
 {{< tab title="From a project" >}}
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Edit** > **New workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
@@ -88,7 +88,7 @@ Prerequisites:
 
 {{< tab title="From a merge request" >}}
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Code** > **Merge requests**.
 1. Select the merge request you want to create a workspace for.
 1. Select **Code** > **Open in Workspace**.
@@ -245,7 +245,7 @@ To connect to a workspace with an SSH client:
 
 1. Get the name of the workspace:
 
-   1. On the left sidebar, select **Search or go to**.
+   1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Your work**.
    1. Select **Workspaces**.
    1. Copy the name of the workspace you want to connect to.

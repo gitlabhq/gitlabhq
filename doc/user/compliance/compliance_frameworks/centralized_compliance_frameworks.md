@@ -104,7 +104,7 @@ cannot edit or delete them from your group.
 
 To apply a compliance and security policy framework to projects in your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Compliance and security policy frameworks appear in the list with a special indicator.
@@ -114,7 +114,7 @@ To apply a compliance and security policy framework to projects in your group:
 
 To see which compliance frameworks apply to your projects:
 
-1. On the left sidebar, select **Search or go to** and find your project:
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. View all applied frameworks, including those from the compliance and security policy group.

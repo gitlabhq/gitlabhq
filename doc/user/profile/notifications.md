@@ -145,7 +145,7 @@ To select a notification level for a group, use either of these methods:
 
 Or:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the notification dropdown list, next to the bell icon ({{< icon name="notifications" >}}).
 1. Select the desired [notification level](#notification-levels).
 
@@ -174,7 +174,7 @@ To select a notification level for a project, use either of these methods:
 
 Or:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the notification dropdown list, next to the bell icon ({{< icon name="notifications" >}}).
 1. Select the desired [notification level](#notification-levels).
 

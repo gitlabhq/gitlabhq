@@ -3494,10 +3494,6 @@ class Project < ApplicationRecord
     self_deletion_in_progress? || hidden?
   end
 
-  def work_items_beta_feature_flag_enabled?
-    group&.work_items_beta_feature_flag_enabled? || Feature.enabled?(:work_items_beta, type: :beta)
-  end
-
   def work_item_tasks_on_boards_feature_flag_enabled?
     group&.work_item_tasks_on_boards_feature_flag_enabled? || Feature.enabled?(:work_item_tasks_on_boards, type: :wip)
   end

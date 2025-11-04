@@ -39,7 +39,7 @@ Prerequisites:
 
 To manage the group default settings for a project integration:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. Complete the fields.
@@ -82,7 +82,7 @@ Prerequisites:
 
 To remove a group default setting:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
@@ -97,7 +97,7 @@ Prerequisites:
 
 To use instance or group default settings for a project integration:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use default settings**.
@@ -114,7 +114,7 @@ Prerequisites:
 
 To use custom settings for a project or group integration:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use custom settings**.

@@ -38,7 +38,7 @@ To review a merge request:
 
 ## Go to the merge request
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Either:
    - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Review requests** page.
    - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.

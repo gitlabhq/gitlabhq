@@ -39,7 +39,7 @@ If you have hidden the left sidebar, you can display it temporarily by hovering 
 
 The next area of the left sidebar changes based on the information you're viewing. For example,
 you might be viewing a project, exploring projects or groups, or viewing your profile.
-To switch to other areas of the left sidebar, use **Search or go to**.
+To switch to other areas of the left sidebar, use **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 ![Context switching from the left sidebar.](img/sidebar_middle_v18_3.png)
 
@@ -52,7 +52,7 @@ Now let's go over a few common tasks you'll use the left sidebar for.
 
 To start, we will find the project we want to work on.
 
-1. To explore all available projects, on the left sidebar, select **Search or go to**.
+1. To explore all available projects, on the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Choose from the list of frequently visited projects, or
    type a colon `:` followed by the project name:
 
@@ -84,7 +84,7 @@ The items you pin while you're viewing a project are different than the items yo
 ## Use a more focused view
 
 On the left sidebar, you can also choose a more focused view into the areas you have access to.
-Select **Search or go to** and then select **Your work**.
+Select **Search or go to** and then select **Your work**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 
 ![The search bar and the Your work item.](img/your_work_v18_3.png)
 

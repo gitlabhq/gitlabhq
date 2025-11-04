@@ -33,7 +33,7 @@ notifications:
 
 1. To enable integration:
    - At the project or group level:
-     1. On the left sidebar, select **Search or go to** and find your project or group.
+     1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
      1. Select **Settings** > **Integrations**.
    - At the instance level:
      1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.

@@ -37,7 +37,7 @@ Prerequisites:
 
 To use advanced search:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the search box, enter your search term.
 
 You can also use advanced search in a project or group.

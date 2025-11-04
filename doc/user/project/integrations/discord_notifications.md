@@ -44,7 +44,7 @@ Prerequisites:
 
 With the webhook URL created in the Discord channel, you can set up the Discord Notifications integration in GitLab.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Discord Notifications**.
 1. Ensure that the **Active** toggle is enabled.

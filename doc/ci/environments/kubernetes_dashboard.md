@@ -51,7 +51,7 @@ Prerequisites:
 
 {{< tab title="The environment already exists" >}}
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Environments**.
 1. Select the environment to be associated with the agent for Kubernetes.
 1. Select **Edit**.
@@ -64,7 +64,7 @@ Prerequisites:
 
 {{< tab title="The environment doesn't exist" >}}
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Environments**.
 1. Select **New environment**.
 1. Complete the **Name** field.
@@ -119,7 +119,7 @@ The status of your Kubernetes resources and Flux reconciliation updates in real 
 
 To view a configured dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Environments**.
 1. Select the environment associated with the agent for Kubernetes.
 1. Select the **Kubernetes overview** tab.
@@ -264,7 +264,7 @@ The detailed dashboard is not linked from the sidebar navigation.
 To view a detailed dashboard:
 
 1. Find your agent for Kubernetes ID:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Operate** > **Kubernetes clusters**.
    1. Copy the numerical ID of the agent you want to access.
 1. Go to one of the following URLs, replacing `<agent_id>` with your agent ID:

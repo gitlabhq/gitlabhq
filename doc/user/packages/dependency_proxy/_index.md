@@ -46,7 +46,7 @@ For a list of planned additions, view the
 
 To enable or turn off the dependency proxy for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
@@ -59,7 +59,7 @@ for the entire GitLab instance.
 
 To view the dependency proxy for container images:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Dependency Proxy**.
 
 The dependency proxy is not available for projects.
@@ -228,7 +228,7 @@ To authenticate with Docker Hub, you can use:
 
 To set Docker Hub credentials for the dependency proxy for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. Turn on **Enable Proxy**.
@@ -286,7 +286,7 @@ If authentication is successful, you'll see activity in your [Docker Hub Usage d
 
 To store a Docker image in dependency proxy storage:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Dependency Proxy**.
 1. Copy the **Dependency Proxy image prefix**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.

@@ -42,7 +42,7 @@ Prerequisites:
 
 To turn off package request forwarding:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Packages and registries**.
 1. Under **Package forwarding**, clear the **Forward PyPI package requests** checkbox.
 

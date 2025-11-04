@@ -12,11 +12,7 @@ describe('IssueBoardFilter', () => {
 
   const findBoardsFilteredSearch = () => wrapper.findComponent(BoardFilteredSearch);
 
-  const createComponent = ({
-    isSignedIn = false,
-    workItemsBetaEnabled = false,
-    workItemTasksOnBoardsEnabled = false,
-  } = {}) => {
+  const createComponent = ({ isSignedIn = false, workItemTasksOnBoardsEnabled = false } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
       propsData: {
         boardId: 'gid://gitlab/Board/1',
@@ -28,7 +24,6 @@ describe('IssueBoardFilter', () => {
         fullPath: 'gitlab-org',
         isGroupBoard: true,
         glFeatures: {
-          workItemsBeta: workItemsBetaEnabled,
           workItemTasksOnBoards: workItemTasksOnBoardsEnabled,
         },
       },
@@ -76,10 +71,9 @@ describe('IssueBoardFilter', () => {
       },
     );
 
-    it('does not have `Task` in work item type filter token when `workItemsBeta` or `workItemTasksOnBoards` is disabled', () => {
+    it('does not have `Task` in work item type filter token when `workItemTasksOnBoards` is disabled', () => {
       createComponent({
         isSignedIn: true,
-        workItemsBetaEnabled: false,
         workItemTasksOnBoardsEnabled: false,
       });
 
@@ -96,10 +90,9 @@ describe('IssueBoardFilter', () => {
       );
     });
 
-    it('has `Task` in work item type filter token when `workItemsBeta` or `workItemTasksOnBoards` is enabled', () => {
+    it('has `Task` in work item type filter token when `workItemTasksOnBoards` is enabled', () => {
       createComponent({
         isSignedIn: true,
-        workItemsBetaEnabled: true,
         workItemTasksOnBoardsEnabled: true,
       });
 

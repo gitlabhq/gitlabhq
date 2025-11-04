@@ -53,7 +53,7 @@ Prerequisites:
 
 To view the AI Catalog:
 
-1. On the left sidebar, select **Search or go to** > **Explore**.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **AI Catalog**.
 
 A list of agents is displayed. To view available flows, select the **Flows** tab.

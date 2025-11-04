@@ -329,3 +329,37 @@ Information, such as open tabs in their IDE, files, and folders,
 that the user provides from their local environment to extend the default AI
 Context. This is sometimes called "pinned context" internally. GitLab Duo Chat users
 can provide supplementary user context with the `/include` command (IDE only).
+
+## GitLab Licensing and Subscription Terminology
+
+### Add-on
+
+Additional features or services that can be purchased and added to a GitLab subscription. Examples include:
+
+- **Duo Core**: Basic AI-powered features assigned at the namespace level
+- **Duo Pro**: Advanced AI-powered features for individual users
+- **Duo Enterprise**: Enterprise-level AI features with additional security and compliance capabilities
+
+### User add-on assignment
+
+The process of assigning add-on features to individual users. For most add-ons like Duo Pro and Duo Enterprise, this creates a direct user-to-add-on relationship. 
+
+However, Duo Core is an exception as it's assigned at the namespace level. On GitLab.com, Duo Core user access is determined by checking if the user has membership in any namespace with the Duo Core [turned on](../../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off). On other instances, Duo Core user access is determined by checking if the instance has Duo Core turned on.
+
+### License
+
+Specifically refers to the license file used for **Self-Managed GitLab instances**. The license file is uploaded to activate paid-tier features (Premium or Ultimate) on self-managed installations. Self-managed customers have both a subscription (what they pay for) and a license file (what they upload to activate features).
+
+### Subscription
+
+Refers to the tier level a customer is using, which determines available features:
+
+- **Free**: Basic GitLab features at no cost
+- **Premium**: Mid-tier features for teams and organizations
+- **Ultimate**: Full-featured tier with advanced security, compliance, and planning tools
+
+The implementation differs by deployment type:
+
+- **SaaS (GitLab.com)**: Only requires a subscription - no license file needed since GitLab manages everything
+- **Self-managed**: Requires both a subscription (billing) and a license file (feature activation)
+- **Community/Education**: Special free subscriptions for qualifying organizations (schools, open source projects) that provide paid-tier features at no cost

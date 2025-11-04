@@ -68,7 +68,7 @@ Prerequisites:
 To create a custom member role:
 
 1. On the left sidebar:
-   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab.com, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
@@ -127,7 +127,7 @@ Prerequisites:
 To edit a custom role:
 
 1. On the left sidebar:
-   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab.com, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit role**.
@@ -153,7 +153,7 @@ Prerequisites:
 To view details of a custom role:
 
 1. On the left sidebar:
-   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab.com, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **View details**.
@@ -170,7 +170,7 @@ Prerequisites:
 To delete a custom role:
 
 1. On the left sidebar:
-   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab.com, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete role**.
@@ -192,7 +192,7 @@ Prerequisites:
 
 To assign a custom member role to an existing user:
 
-1. On the left sidebar, select **Search or go to** and find your group or project.
+1. On the left sidebar, select **Search or go to** and find your group or project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. In the **Role** column, select the role for an existing member. The **Role details** drawer opens.
 1. From the **Role** dropdown list, select a role to assign to the member.

@@ -27,7 +27,7 @@ These visualizations can help development teams quickly understand the health an
 
 To view CI/CD analytics:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **CI/CD analytics**.
 
 ## Pipeline metrics

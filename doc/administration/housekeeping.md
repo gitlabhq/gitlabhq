@@ -121,7 +121,7 @@ housekeeping tasks. The manual trigger can be useful when either:
 
 To trigger housekeeping tasks manually:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
@@ -159,7 +159,7 @@ connection. Consider the project usage profile when using this option and select
 
 To trigger a manual prune of unreachable objects:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.

@@ -1,5 +1,5 @@
 - subscribed = params[:subscribed]
-- archived = params[:archived]
+- archived = params[:archived] || 'false'
 
 .top-area.adjust
   = gl_tabs_nav({ class: 'gl-grow gl-border-0' }) do
@@ -13,7 +13,7 @@
   .nav-controls
     = form_tag labels_filter_path, method: :get do
       = hidden_field_tag :subscribed, params[:subscribed]
-      = hidden_field_tag :archived, params[:archived]
+      = hidden_field_tag :archived, archived
       = hidden_field_tag :sort, 'relevance'
       .input-group.gl-flex-nowrap
         = search_field_tag :search, params[:search], { placeholder: _('Search'), id: 'label-search', "aria-label": _('Search labels'), class: 'form-control search-text-input input-short !gl-mb-0', spellcheck: false, autofocus: true }

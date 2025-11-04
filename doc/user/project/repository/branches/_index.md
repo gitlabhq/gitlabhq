@@ -42,7 +42,7 @@ The development workflow for branches is:
 
 To view and manage your branches in the GitLab user interface:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Code** > **Branches**.
 
 On this page, you can:
@@ -69,7 +69,7 @@ Prerequisites:
 
 To create a new branch from the GitLab UI:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
@@ -92,7 +92,7 @@ Prerequisites:
 
 To add a [default branch](default.md) to a blank project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Scroll to **The repository for this project is empty** and select the type of
    file you want to add.
 1. In the Web IDE, make any desired changes to this file, then select **Create commit**.
@@ -113,7 +113,7 @@ Prerequisites:
 
 To create a branch from an issue:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues** and find your issue.
 1. Below the issue description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**.
@@ -138,7 +138,7 @@ Prerequisites:
 
 To create a branch directly from a task:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. In the issue list, find your task.
 1. Below the task description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
@@ -211,7 +211,7 @@ Prerequisites:
 
 To change the default pattern for branches created from issues:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**.
 1. Scroll to **Branch name template** and enter a value. The field supports these variables:
@@ -321,7 +321,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Branches**.
 1. In the upper-right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
@@ -368,7 +368,7 @@ Prerequisites:
 
 To create a target branch workflow:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. Scroll down to **Merge request branch workflow**
 1. Select **Add branch target**.
@@ -407,7 +407,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. Select **Delete** on the branch target you want to delete.
 
@@ -473,7 +473,7 @@ Error: Could not set the default branch. Do you have a branch named 'HEAD' in yo
 
 To fix this problem:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Branches**.
 1. Search for a branch named `HEAD`.
 1. Make sure the branch has no uncommitted changes.

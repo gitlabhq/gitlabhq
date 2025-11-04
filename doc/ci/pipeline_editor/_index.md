@@ -48,7 +48,7 @@ use the pipeline editor validation tool. This tool simulates the creation of pip
 due to a Git push event, and can help troubleshoot logic issues, including incorrect
 `rules` and `needs` job dependencies:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Select the **Validate** tab.
 1. Optional. Select a different branch to use for the simulated push event by using

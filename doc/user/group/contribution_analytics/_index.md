@@ -41,7 +41,7 @@ GitLab records five commits, though the user made three unique commits.
 
 To view contribution analytics:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Contribution analytics**.
 1. Optional. Filter the results:
 

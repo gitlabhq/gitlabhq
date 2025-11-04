@@ -227,7 +227,7 @@ Disabling personal access tokens for enterprise users does not disable personal 
 
 To disable the enterprise users' personal access tokens:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Personal access tokens**, select **Disable personal access tokens**.
@@ -392,7 +392,7 @@ Prerequisites:
 
 - You must have the Owner role for the top-level group.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General** > **Permissions and group features**.
 1. Clear the **Service account token expiration** checkbox.
 

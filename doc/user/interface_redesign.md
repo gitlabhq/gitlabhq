@@ -110,7 +110,7 @@ On smaller screens, the detail panel covers the list or board panel.
 By default, work items like issues or epics open in the details panel.
 If you prefer to turn it off:
 
-1. On the top sidebar, select **Search or go to** and find your project or group.
+1. On the top sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues** or **Epics**.
 1. At the top of the Issues or Epics page, select **Display options** ({{< icon name="preferences" >}})
    and turn off the **Open items in side panel** toggle.

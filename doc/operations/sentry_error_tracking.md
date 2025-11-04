@@ -37,7 +37,7 @@ To enable the Sentry integration:
    Give the token at least the following scopes: `project:read`, `event:read`, and
    `event:write` (for resolving events).
 1. In GitLab, enable and configure Error Tracking:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Settings** > **Monitor**, then expand **Error Tracking**.
    1. For **Enable error tracking**, select **Active**.
    1. For **Error tracking backend**, select **Sentry**.

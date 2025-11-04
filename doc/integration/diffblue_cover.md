@@ -33,7 +33,7 @@ To integrate Diffblue Cover into your pipeline:
 
 ### Configure Diffblue Cover
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    - If you want to test the integration with a sample project, you can [import](../user/project/import/repo_by_url.md)
      the Diffblue [Spring PetClinic sample project](https://github.com/diffblue/demo-spring-petclinic).
 1. Select **Settings** > **Integrations**.
@@ -61,7 +61,7 @@ To integrate Diffblue Cover into your pipeline:
 
 Create a merge request pipeline for the project that downloads the latest version of Diffblue Cover, builds the project, writes Java unit tests for the project, and commits the changes to the branch.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Copy the contents of the [`Diffblue-Cover.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Diffblue-Cover.gitlab-ci.yml)
    into your project's `.gitlab-ci.yml` file.
 

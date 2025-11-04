@@ -31,7 +31,7 @@ Email notifications are available in projects for triggered alerts. Project
 members with the **Owner** or **Maintainer** roles have the option to receive
 a single email notification for new alerts.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Monitor**.
 1. Expand **Alerts**.
 1. On the **Alert settings** tab, select the

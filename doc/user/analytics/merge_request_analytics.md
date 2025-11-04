@@ -42,7 +42,7 @@ Prerequisites:
 
 To view merge request analytics:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **Merge request analytics**.
 
@@ -52,7 +52,7 @@ To view merge request analytics:
 
 To view the number of merge requests merged during a specific date range:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **Merge request analytics**.
 1. Optional. Filter results:
@@ -83,7 +83,7 @@ created and when it's merged. Closed and not yet merged merge requests are not i
 
 To view **Mean time to merge**:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **Merge request analytics**. The **Mean time to merge** number
    is displayed on the dashboard.

@@ -36,7 +36,7 @@ You can create an incident manually or automatically.
 
 To add an incident to an [iteration](../../user/group/iterations/_index.md):
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues** or **Monitor** > **Incidents**, then select your incident to view it.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to add this incident to.
@@ -52,7 +52,7 @@ Prerequisites:
 
 To create an incident from the **Incidents** page:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Incidents**.
 1. Select **Create incident**.
 
@@ -64,7 +64,7 @@ Prerequisites:
 
 To create an incident from the **Issues** page:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues**, and select **New issue**.
 1. From the **Type** dropdown list, select **Incident**. Only fields relevant to
    incidents are available on the page.
@@ -81,7 +81,7 @@ Prerequisites:
 
 To create an incident from an alert:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Alerts**.
 1. Select your desired alert.
 1. Select **Create incident**.
@@ -122,7 +122,7 @@ Prerequisites:
 
 To set up a webhook with PagerDuty:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Monitor**
 1. Expand **Incidents**.
 1. Select the **PagerDuty integration** tab.
@@ -138,7 +138,7 @@ check if a GitLab incident is created from the incident.
 
 To view a list of the [incidents](incidents.md#incidents-list):
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Monitor** > **Incidents**.
 
 To view an incident's [details page](incidents.md#incident-details), select it from the list.
@@ -280,7 +280,7 @@ Prerequisites:
 
 To configure the setting:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Monitor**.
 1. Expand the **Incidents** section.
 1. Select the **Automatically close associated incident** checkbox.

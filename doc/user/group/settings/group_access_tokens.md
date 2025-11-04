@@ -73,7 +73,7 @@ The ability to create group access tokens without an expiry date was [deprecated
 
 To create a group access token:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the group.
@@ -156,7 +156,7 @@ The inactive group access tokens table displays revoked and expired tokens until
 
 To revoke or rotate a group access token:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Access tokens**.
 1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Revoke** or **Rotate**.
@@ -195,7 +195,7 @@ To limit potential abuse, you can restrict users from creating tokens for a grou
 
 To restrict the creation of group access tokens:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.

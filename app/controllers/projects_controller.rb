@@ -50,7 +50,6 @@ class ProjectsController < Projects::ApplicationController
       push_licensed_feature(:security_orchestration_policies)
     end
 
-    push_force_frontend_feature_flag(:work_items_beta, !!@project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
   end
 

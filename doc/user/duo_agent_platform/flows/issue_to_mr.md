@@ -50,7 +50,7 @@ To create a merge request from an issue, you must:
 
 To convert your issue to a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issues**.
 1. Select the issue you want to create a merge request for.
 1. Below the issue header, select **Generate MR with Duo**.

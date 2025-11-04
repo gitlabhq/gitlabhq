@@ -101,7 +101,7 @@ Prerequisites:
 
 To configure review apps in your project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. In your `.gitlab-ci.yml` file, add a job that creates a [dynamic environment](../environments/_index.md#create-a-dynamic-environment).
    You can use a [predefined CI/CD variable](../variables/predefined_variables.md) to differentiate
@@ -130,7 +130,7 @@ GitLab provides a built-in template that's configured for merge request pipeline
 
 To use and customize this template:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Environments**.
 1. Select **Enable review apps**.
 1. From the **Enable Review Apps** dialog that appears, copy the YAML template:

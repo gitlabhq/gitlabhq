@@ -35,7 +35,7 @@ Wiki pages display a [sidebar](#sidebar), which you can customize.
 
 To access a project wiki:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. To display the wiki, either:
    - On the left sidebar, select **Plan** > **Wiki**.
    - On any page in the project, use the <kbd>g</kbd>+<kbd>w</kbd>
@@ -63,7 +63,7 @@ When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific path
 to be used as your wiki's home page. To create it:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Create your first page**.
 1. Optional. Change the **Title** of the home page.
@@ -89,7 +89,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **New page** on this page, or any other wiki page.
 1. Select a content format.
@@ -109,7 +109,7 @@ Wikis are based on Git repositories, so you can clone them locally and edit
 them like you would do with every other Git repository. To clone a wiki repository
 locally:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Clone repository**.
 1. Follow the on-screen instructions.
@@ -173,7 +173,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to edit, and either:
    - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
@@ -204,7 +204,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to delete.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Delete page**.
@@ -228,7 +228,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to move or rename.
 1. Select **Edit**.
@@ -250,7 +250,7 @@ Prerequisites:
 
 You can export a wiki page as a PDF file:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to export.
 1. In the upper right, select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then select **Print as PDF**.
@@ -290,7 +290,7 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
 1. Select **New Template**.
@@ -355,7 +355,7 @@ The history page shows:
 
 To view the changes for a wiki page:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the page you want to view history for.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history**.
@@ -364,7 +364,7 @@ To view the changes for a wiki page:
 
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. Go to the wiki page you're interested in.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history** to see all page versions.
@@ -400,7 +400,7 @@ Prerequisites:
 This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Wiki**.
 1. In the upper-left corner of the page, select **Add custom sidebar** ({{< icon name="settings" >}}).
 1. When complete, select **Save changes**.
@@ -434,7 +434,7 @@ You can disable group wikis from the [group settings](group.md#configure-group-w
 
 To add a link to an external wiki from a project's left sidebar:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
@@ -450,7 +450,7 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 
 To hide the link to an external wiki:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Under **Enable integration**, clear the **Active** checkbox.
@@ -460,7 +460,7 @@ To hide the link to an external wiki:
 
 To disable a project's internal wiki:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find and turn off the **Wiki** toggle (in gray).

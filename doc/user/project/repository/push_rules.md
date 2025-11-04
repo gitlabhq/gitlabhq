@@ -71,7 +71,7 @@ The push rule of an individual project overrides the global push rule.
 To override global push rules for a specific project, or to update the rules
 for an existing project to match new global push rules:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
@@ -330,7 +330,7 @@ When you enable this rule:
 
 To enable the **Reject unsigned commits** push rule:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Select **Reject unsigned commits**.

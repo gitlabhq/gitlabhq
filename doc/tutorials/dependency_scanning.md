@@ -145,7 +145,7 @@ need to upgrade the `fastify` package.
 
 To fix the vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the upper right, select **Code** > **Gitpod** and open
    Gitpod in a new tab.
 1. If you are prompted to, select **Continue with GitLab**, then select **Authorize**.

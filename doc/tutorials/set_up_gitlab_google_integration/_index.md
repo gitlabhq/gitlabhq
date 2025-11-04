@@ -35,7 +35,7 @@ To secure your usage of Google Cloud, you must set up the Google Cloud IAM integ
 After this step, your GitLab group or project is connected to Google Cloud. You can handle permissions for
 Google Cloud resources without the need for service accounts keys and the associated risks using workload identity federation.
 
-1. On the left sidebar, select **Search or go to** and find your group or project. If you configure this on a group, settings apply to all projects within by default.
+1. On the left sidebar, select **Search or go to** and find your group or project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar. If you configure this on a group, settings apply to all projects within by default.
 1. Select **Settings** > **Integrations**.
 1. Select **Google Cloud IAM**.
 1. Select **Guided setup** and follow the instructions.

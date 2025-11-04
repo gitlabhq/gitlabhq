@@ -21,6 +21,16 @@ module GraphqlTriggers
     GitlabSchema.subscriptions.trigger(:ci_pipeline_status_updated, { pipeline_id: pipeline.to_gid }, pipeline)
   end
 
+  def self.ci_pipeline_statuses_updated(pipeline)
+    return unless Feature.enabled?(:ci_pipeline_statuses_updated_subscription, pipeline.project)
+
+    GitlabSchema.subscriptions.trigger(
+      :ci_pipeline_statuses_updated,
+      { project_id: pipeline.project.to_gid },
+      pipeline
+    )
+  end
+
   def self.ci_pipeline_schedule_status_updated(schedule)
     GitlabSchema.subscriptions.trigger(
       :ci_pipeline_schedule_status_updated,

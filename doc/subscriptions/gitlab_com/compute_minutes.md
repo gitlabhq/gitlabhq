@@ -46,7 +46,7 @@ To purchase compute minutes for a group:
 {{< tab title="Group owner" >}}
 
 1. Sign in to GitLab.com.
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.

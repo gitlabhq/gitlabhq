@@ -145,7 +145,7 @@ Prerequisites:
 
 To configure secret variables:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Create a CI/CD variable with the prefix `K8S_SECRET_`. For example, you

@@ -327,7 +327,7 @@ The alert displays at the following intervals:
 
 To view a list of seats being used:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Seats** tab.
 
@@ -343,7 +343,7 @@ The counts for **Max seats used** and **Seats owed** are updated once per day.
 
 To view your subscription information and a summary of seat counts:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Billing**.
 
 - The usage statistics are updated once per day, which may cause a difference between the information
@@ -356,7 +356,7 @@ To view your subscription information and a summary of seat counts:
 You can view the users that use seats on your subscription.
 To search for a user's seat usage:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, in the search field, enter the user's name or username.
    The search string must have minimum three characters.
@@ -370,7 +370,7 @@ the search string `ami` results in a match, but `amr` does not.
 
 To export seat usage data as a CSV file:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export list**.
 
@@ -382,7 +382,7 @@ Prerequisites:
 
 To export seat usage history as a CSV file:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Usage quotas**.
 1. In the **Seats** tab, select **Export seat usage history**.
 
@@ -393,7 +393,7 @@ and is not affected by the current search.
 
 To remove a billable user from your GitLab.com subscription:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Billing**.
 1. In the **Seats currently in use** section, select **See usage**.
 1. In the row for the user you want to remove, on the right side, select **Remove user**.

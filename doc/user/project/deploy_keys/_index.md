@@ -83,7 +83,7 @@ To help detect a potential secret leak, you can use the
 
 To view the deploy keys available to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 
@@ -103,7 +103,7 @@ Prerequisites:
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Add new key**.
@@ -151,7 +151,7 @@ Prerequisites:
 
 To grant a public deploy key access to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Publicly accessible deploy keys**.
@@ -168,7 +168,7 @@ Prerequisites:
 
 To edit the project access permissions of a deploy key:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. In the key's row, select **Edit** ({{< icon name="pencil" >}}).
@@ -185,7 +185,7 @@ Prerequisites:
 
 To disable a deploy key:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Disable** ({{< icon name="cancel" >}}).

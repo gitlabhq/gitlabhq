@@ -562,7 +562,7 @@ You can create a new list between two existing lists or at the right of an issue
 
 To create a new list between two lists:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. Hover or move keyboard focus between two lists.
 1. Select **New list**.

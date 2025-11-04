@@ -710,7 +710,7 @@ Prerequisites:
 
 To troubleshoot a failed CI/CD job from a merge request:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to your merge request.
 1. Select the **Pipelines** tab.
 1. From the Failed jobs widget, either:
@@ -721,7 +721,7 @@ To troubleshoot a failed CI/CD job from a merge request:
 
 To troubleshoot a failed CI/CD job from the job log:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Jobs**.
 1. Select the failed CI/CD job.
 1. Below the job log, either:

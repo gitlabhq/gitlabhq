@@ -424,7 +424,7 @@ export default {
           :work-item-full-path="activeItemFullPath"
           :is-board="isBoard"
           is-drawer
-          class="js-dynamic-panel-inner work-item-drawer-content !gl-pt-0 @xl/panel:!gl-px-6"
+          class="js-dynamic-panel-inner work-item-drawer-content !gl-pt-0"
           @deleteWorkItem="deleteWorkItem"
           @work-item-updated="handleWorkItemUpdated"
           @workItemTypeChanged="$emit('workItemTypeChanged', $event)"

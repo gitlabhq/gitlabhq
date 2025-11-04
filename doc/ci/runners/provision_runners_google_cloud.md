@@ -44,7 +44,7 @@ Prerequisites:
 
 To create a group or project runner and provision it on Google Cloud:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Create a new runner.
    - To create a new group runner, select **Build > Runners > New group runner**.
    - To create a new project runner, select **Settings > CI/CD > Runners > New project runner**.

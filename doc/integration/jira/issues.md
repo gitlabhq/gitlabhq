@@ -65,7 +65,7 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select **Require an associated issue from Jira**.
 1. Select **Save**.
@@ -103,7 +103,7 @@ The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wik
 
 To define a regex pattern for Jira issue keys:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.
@@ -127,7 +127,7 @@ GitLab matches `JIRA#ALPHA-1` rather than `ALPHA-1`.
 
 To define a prefix for Jira issue keys:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.

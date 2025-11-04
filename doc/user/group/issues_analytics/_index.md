@@ -32,7 +32,7 @@ A table displays the top 100 issues based on the global page filters, with the f
 
 To view issue analytics:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Issue analytics**. To view the total number of issues for a month, hover over a bar.
 1. Optional. To filter the results, in **Search or filter results** text box, enter your criteria:
 

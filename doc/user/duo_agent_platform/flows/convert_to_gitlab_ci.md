@@ -50,7 +50,7 @@ To convert a Jenkinsfile, you must:
 
 To convert your Jenkinsfile to GitLab CI/CD:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Open your Jenkinsfile.
 1. Above the file, select **Convert to GitLab CI/CD**.
 1. Monitor progress by selecting **Automate** > **Sessions**.

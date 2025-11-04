@@ -72,7 +72,7 @@ Prerequisites:
 
 To view work items for a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Work items**.
 
 ### Filter work items

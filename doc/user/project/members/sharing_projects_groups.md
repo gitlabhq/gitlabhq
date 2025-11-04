@@ -134,7 +134,7 @@ Prerequisites:
 
 To invite a group to a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
@@ -197,7 +197,7 @@ A shared project is a project that has invited your group members to access its 
 
 To view projects that have shared access with your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the group page, select the **Shared projects** tab.
 
 A list of shared projects is displayed.
@@ -211,7 +211,7 @@ which can be confusing and difficult to control.
 
 To prevent a project from being shared with other groups:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
@@ -309,7 +309,7 @@ Prerequisites:
 
 To invite a group to your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
@@ -327,7 +327,7 @@ To invite a group to your group:
 
 To remove an invited group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select the **Groups** tab.
 1. To the right of the group you want to remove, select **Remove group** ({{< icon name="remove" >}}).
@@ -343,7 +343,7 @@ A shared group is a group that has invited your group members to access its reso
 
 To view groups that have shared access with your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the group page, select the **Shared groups** tab.
 
 A list of shared groups is displayed.
@@ -370,7 +370,7 @@ If you prevent inviting groups outside the hierarchy for the **Animals** group:
 
 To prevent inviting groups outside of the group's hierarchy:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.

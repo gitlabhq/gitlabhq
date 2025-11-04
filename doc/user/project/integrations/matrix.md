@@ -26,7 +26,7 @@ After you join to a Matrix room, you can configure GitLab to send notifications:
 
 1. To enable the integration:
    - **For your group or project**:
-     1. On the left sidebar, select **Search or go to** and find your project or group.
+     1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
      1. Select **Settings** > **Integrations**.
    - **For your instance**:
      1. On the left sidebar, at the bottom, select **Admin area**.

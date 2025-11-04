@@ -43,7 +43,7 @@ Prerequisites:
 
 To enable IaC scanning:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
 1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
 
@@ -78,7 +78,7 @@ After completing these steps, you can:
 
 You can review vulnerabilities in a pipeline:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -314,7 +314,7 @@ For example, you might need to avoid a regression in a later release.
 
 To use a specific analyzer version:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Build** > **Pipeline editor**.
 1. Add the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable, after the line that includes the
    `SAST-IaC.gitlab-ci.yml` template.

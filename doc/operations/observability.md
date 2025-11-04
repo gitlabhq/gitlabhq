@@ -69,7 +69,7 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 
 If GitLab Observability is not yet enabled for your group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Observability**.
 1. Select **Request Access**.
 1. Select **Enable Observability**.
@@ -83,7 +83,7 @@ The email includes your OpenTelemetry (`OTEL`) endpoint URL for instrumenting yo
 
 Once access is granted:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar, go directly to `https://gitlab.com/groups/<group_path>/-/observability/services`.
@@ -313,7 +313,7 @@ Configure the GitLab O11y URL for your group and enable the feature flag using t
 
 After you have configured GitLab O11y, to access the dashboard embedded in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your group where the feature flag is enabled.
+1. On the left sidebar, select **Search or go to** and find your group where the feature flag is enabled. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. On the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar,

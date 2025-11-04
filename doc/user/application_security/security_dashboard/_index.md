@@ -65,7 +65,7 @@ with up to 365 days of historical data for a given project. The dashboard is a h
 
 To view a project's security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
@@ -82,7 +82,7 @@ You can download an image of the vulnerability chart from the Project Security D
 to use in documentation, presentations, and so on. To download the image of the vulnerability
 chart:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Secure** > **Security dashboard**.
 1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
@@ -107,7 +107,7 @@ supplies the following:
 
 To view group security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Security > Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
@@ -136,7 +136,7 @@ The Security Center includes:
 
 To view the Security Center:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Your work**.
 1. Select **Security** > **Security dashboard**.
 
@@ -146,7 +146,7 @@ The Security Center is blank by default. You must add a project which have been 
 
 To add projects:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Your work**.
 1. Expand **Security**.
 1. Select **Settings**.
@@ -159,7 +159,7 @@ After you add projects, the security dashboard and vulnerability report show the
 
 The Security Center displays a maximum of 100 projects, so you may need to use the search function to remove a project. To remove projects:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Your work**.
 1. Expand **Security**.
 1. Select **Settings**.

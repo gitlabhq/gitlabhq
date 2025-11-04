@@ -25,7 +25,7 @@ For public and internal projects, you can change who can see your:
 
 To change the visibility of your pipelines and related features:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Select or clear the **Project-based pipeline visibility** checkbox.
@@ -57,7 +57,7 @@ This setting has no effect when:
 
 To change the pipeline visibility for non-project members:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. For **CI/CD**, choose:
@@ -73,7 +73,7 @@ is selected.
 
 You can set pending or running pipelines to cancel automatically when a pipeline for new changes runs on the same branch. You can enable this in the project settings:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General Pipelines**.
 1. Select the **Auto-cancel redundant pipelines** checkbox.
@@ -93,7 +93,7 @@ newer one, which may not be what you want.
 
 To avoid this scenario:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Select the **Prevent outdated deployment jobs** checkbox.
@@ -125,7 +125,7 @@ or completely prevent cancellation of any pipelines or jobs.
 
 To change the permissions to cancel pipelines or jobs:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Select an option from **Minimum role required to cancel a pipeline or job**.
@@ -138,7 +138,7 @@ directory. However, you can specify an alternate filename path, including locati
 
 To customize the path:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. In the **CI/CD configuration file** field, enter the filename. If the file:
@@ -190,7 +190,7 @@ able to edit it.
 
 You can choose how your repository is fetched from GitLab when a job runs.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Under **Git strategy**, select an option:
@@ -208,7 +208,7 @@ in the `.gitlab-ci.yml` file.
 You can limit the number of changes that GitLab CI/CD fetches when it clones
 a repository.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Under **Git strategy**, under **Git shallow clone**, enter a value.
@@ -224,7 +224,7 @@ in the `.gitlab-ci.yml` file.
 
 You can define how long a job can run before it times out.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Timeout** field, enter the number of minutes, or a human-readable value like `2 hours`.
@@ -258,7 +258,7 @@ When you disable GitLab CI/CD:
 
 To disable GitLab CI/CD in your project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. In the **Repository** section, turn off **CI/CD**.
@@ -285,7 +285,7 @@ These changes do not apply to projects in an [external integration](../../user/p
 Users with the Owner role can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
 The system automatically deletes pipelines that were created before the configured value.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Automatic pipeline cleanup** field, enter the number of seconds, or a human-readable value like `2 weeks`.

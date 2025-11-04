@@ -58,7 +58,7 @@ Prerequisites:
 
 To change GitLab Duo Core availability:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
@@ -106,7 +106,7 @@ Prerequisites:
 
 To change GitLab Duo availability for the top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
@@ -124,7 +124,7 @@ Prerequisites:
 
 To change GitLab Duo availability for a group or subgroup:
 
-1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
@@ -142,7 +142,7 @@ Prerequisites:
 
 To change GitLab Duo availability for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
@@ -181,7 +181,7 @@ Prerequisites:
 
 To change GitLab Duo availability for a group or subgroup:
 
-1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. On the left sidebar, select **Search or go to** and find your group or subgroup. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
@@ -199,7 +199,7 @@ Prerequisites:
 
 To change GitLab Duo availability for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
@@ -227,7 +227,7 @@ Prerequisites:
 
 To turn on GitLab Duo experiment and beta features for a top-level group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
 1. Under **GitLab Duo** section, select **Change configuration**.
 1. Under **Feature preview**, select **Turn on experiment and beta GitLab Duo features**.

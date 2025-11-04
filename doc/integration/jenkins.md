@@ -135,7 +135,7 @@ Configure the GitLab integration with Jenkins in one of the following ways.
 You should use this approach for Jenkins integrations if you can provide GitLab
 with your Jenkins server URL and authentication information.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Jenkins**.
 1. Select the **Active** checkbox.

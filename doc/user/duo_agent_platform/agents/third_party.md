@@ -177,7 +177,7 @@ Add the following CI/CD variables to your project's settings:
 
 To add or update a variable in the project settings:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and complete the fields:
@@ -226,7 +226,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** > **Explore**.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **AI Catalog**.
 1. Select the **Flows** tab, then select **New flow**.
 1. Under **Basic information**:
@@ -642,7 +642,7 @@ action that the user takes to trigger the third-party agent.
 
 To create a flow trigger:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Automate** > **Flow triggers**.
 1. Select **New flow trigger**.
 1. In **Description**, enter a description for the flow trigger.
@@ -669,14 +669,14 @@ a task. The third-party agent then tries to accomplish that task, using the flow
 
 ### Edit a flow trigger
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Automate** > **Flow triggers**.
 1. For the flow trigger you want to change, select **Edit flow trigger** ({{< icon name="pencil" >}}).
 1. Make the changes and select **Save changes**.
 
 ### Delete a flow trigger
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Automate** > **Flow triggers**.
 1. For the flow trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **OK**.

@@ -43,7 +43,7 @@ For a click-through demo, see [the Value Stream Management product tour](https:/
 
 To view the Value Streams Dashboard as an analytics dashboard for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
@@ -213,7 +213,7 @@ For further investigation, you can select a project name to drill down into that
 
 To enable or disable the overview count aggregation for the Value Streams Dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **Analytics**.
 1. In **Value Streams Dashboard**, select or clear the **Enable overview background aggregation for Value Streams Dashboard** checkbox.
@@ -236,12 +236,12 @@ To view the Value Streams Dashboard for a group:
 
 - From Analytics Dashboards:
 
-  1. On the group left sidebar, select **Search or go to** and find your group.
+  1. On the group left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Analyze** > **Analytics Dashboards**.
 
 - From Value Stream Analytics:
 
-  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
   1. Select **Analyze** > **Value stream analytics**.
   1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
   1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
@@ -257,7 +257,7 @@ To view the Value Streams Dashboard for a group:
 
 To view the Value Streams Dashboard as an analytics dashboard for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
@@ -292,14 +292,14 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Analytics**.
 1. Select the project where you would like to store your YAML configuration file.
 1. Select **Save changes**.
 
 After you have set up the project, set up the configuration file:
 
-1. On the left sidebar, select **Search or go to** and find the project you selected in the previous step.
+1. On the left sidebar, select **Search or go to** and find the project you selected in the previous step. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. In the default branch, create the configuration file: `.gitlab/analytics/dashboards/value_streams/value_streams.yaml`.
 1. In the `value_streams.yaml` configuration file, fill in the configuration options:
 

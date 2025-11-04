@@ -32,24 +32,24 @@ You can access the Web IDE through several methods.
 
 ### With a keyboard shortcut
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 ### From a directory
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to your directory.
 1. Select **Code** > **Open in Web IDE**.
 
 ### From a file
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to your file.
 1. Select **Edit** > **Open in Web IDE**.
 
 ### From a merge request
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to your merge request.
 1. In the upper right, select **Code** > **Open in Web IDE**.
 

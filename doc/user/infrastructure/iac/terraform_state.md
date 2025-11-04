@@ -146,7 +146,7 @@ inconsistent. Instead, use a remote storage resource.
    [initialized for CI/CD](#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd).
 1. Copy a pre-populated OpenTofu `init` command:
 
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Operate** > **Terraform states**.
    1. Next to the environment you want to use, select **Actions**
       ({{< icon name="ellipsis_v" >}}) and select **Copy Terraform init command**.
@@ -364,7 +364,7 @@ To read the OpenTofu state in the target project, you need at least the Develope
 
 To view OpenTofu state files:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Operate** > **Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.

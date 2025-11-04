@@ -63,7 +63,7 @@ Prerequisites:
 
 To create an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **AI Catalog**.
 1. Select the **Agents** tab, then select **New agent**.
 1. Under **Basic information**:
@@ -92,7 +92,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** > **Explore**.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **AI Catalog** and find the agent you want to enable.
 1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Enable in project**.
 1. From the **Project** dropdown list, select your project.
@@ -111,7 +111,7 @@ Prerequisites:
 
 To duplicate an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **AI Catalog** and find the agent you want to duplicate.
 1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
 1. Optional. Edit any fields you want to change.
@@ -125,7 +125,7 @@ Prerequisites:
 
 - You must be a member of the source project and have at least the Maintainer role.
 
-1. On the left sidebar, select **Search or go to** > **Explore**.
+1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **AI Catalog** and find the agent you want to manage.
 1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}).
    - To edit an agent:

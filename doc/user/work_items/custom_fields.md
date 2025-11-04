@@ -56,7 +56,7 @@ Prerequisites:
 
 To create a custom field:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **Issues**.
 1. Select **Create field**.
@@ -87,7 +87,7 @@ Prerequisites:
 
 To edit a custom field:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **Issues**.
 1. Next to the field you want to edit, select **Edit `<field name>`** ({{< icon name="pencil" >}}).
@@ -105,7 +105,7 @@ Prerequisites:
 
 To archive a custom field:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **Issues**.
 1. Next to the field you want to archive, select **Archive `<field name>`** ({{< icon name="archive" >}}).
@@ -121,7 +121,7 @@ Prerequisites:
 
 To unarchive a custom field:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    This group must be at the top level.
 1. Select **Settings** > **Issues**.
 1. Select the **Archived** tab to list archived fields.

@@ -130,7 +130,7 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-qa (15.5.0)
+    gitlab-qa (15.6.0)
       activesupport (>= 6.1, < 7.2)
       ffi (~> 1.17)
       gitlab (~> 4.19)
@@ -389,7 +389,7 @@ DEPENDENCIES
   faraday-retry (~> 2.3, >= 2.3.2)
   fog-google (~> 1.26)
   gitlab-orchestrator!
-  gitlab-qa (~> 15, >= 15.5.0)
+  gitlab-qa (~> 15, >= 15.6.0)
   gitlab-utils!
   gitlab_quality-test_tooling (~> 2.25.0)
   junit_merge (~> 0.1.2)

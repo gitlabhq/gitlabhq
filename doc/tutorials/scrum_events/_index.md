@@ -151,7 +151,7 @@ the previous one is removed.
 
 To create each label:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `priority::now`.
@@ -193,7 +193,7 @@ Prerequisites:
 
 To create an iteration cadence:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations**.
 1. Select **New iteration cadence**.
 1. Enter the title and description of the iteration cadence.
@@ -306,7 +306,7 @@ The next step is to create an epic board that you will use to develop and mainta
 
 To create a new epic board:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -372,7 +372,7 @@ Let's break that down into stories.
 
 To create your first stories:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-left corner, make sure the dropdown list with the current board name shows **Release Planning**.
    If not, from the dropdown list, select that board.
@@ -404,7 +404,7 @@ Next, set up an issue board to serve as your canonical location for managing and
 In your group, create a new issue board titled **Backlog**.
 You will use this board to sequence and schedule your stories into upcoming sprints (iterations):
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -479,7 +479,7 @@ the current sprint.
 Provide all team members the appropriate time to contribute and collaborate.
 
 1. Open the **Backlog** issue board:
-   1. On the left sidebar, select **Search or go to** and find your group.
+   1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Plan** > **Issue boards**.
    1. In the upper-left corner, select the dropdown list with the current board name.
    1. Select **Backlog**.
@@ -531,7 +531,7 @@ Teams can also use iteration analytics for additional visibility through burndow
 
 In your group, create a new issue board titled **Current Sprint**:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -569,6 +569,6 @@ Iteration reports provide progress metrics and burndown and burnup charts.
 
 To view your iteration report:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Plan** > **Iterations** and select an iteration cadence.
 1. Select an iteration.

@@ -33,7 +33,7 @@ The list shows:
 
 To view your repository's commit history:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 
 To view a commit's summary, select the **Toggle commit description** icon ({{< icon name="ellipsis_h">}}).
@@ -45,7 +45,7 @@ Examine the specific changes made in any commit, including file modifications, a
 
 To view a commit's details:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Select the commit to open the commit's details page.
 
@@ -64,7 +64,7 @@ The commit's details page shows:
 To view all repository files and folders at a specific Git revision, such as a commit SHA,
 branch name, or tag:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Choose one of the following options:
    - Filter by Git revision:
@@ -83,7 +83,7 @@ Filter and search the commit history to find specific changes or track work by p
 
 To filter commits by a specific author:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. In the **Author** dropdown list, select or search for the author's name or username.
 
@@ -94,7 +94,7 @@ For example, append `?author=Elliot%20Stevens` to the URL.
 
 To filter commits by Git revision, such as branch, tag, or commit SHA:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. In the dropdown list, select or search for a Git revision.
    For example, branch name, tag, or commit SHA.
@@ -104,7 +104,7 @@ To filter commits by Git revision, such as branch, tag, or commit SHA:
 
 To search for commits by message content:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. In the **Search by message** field, enter your search terms.
 
@@ -121,7 +121,7 @@ Prerequisites:
 
 To cherry-pick a commit:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Select the commit you want to cherry-pick.
 1. In the upper-right corner, select **Options** and then **Cherry-pick**.
@@ -144,7 +144,7 @@ Prerequisites:
 
 To revert a commit:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Select the commit you want to revert.
 1. In the upper-right corner, select **Options** and then **Revert**.
@@ -161,7 +161,7 @@ GitLab prompts you to [create a new merge request](../../merge_requests/_index.m
 
 To download a commit's diff contents:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Select the commit you want to download.
 1. In the upper-right corner, select **Options**.
@@ -178,7 +178,7 @@ For more information, see [signed commits](../signed_commits/_index.md).
 
 To view signature information:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Find a commit with a **Verified** or **Unverified** badge.
 1. Select the badge to view signature details including:
@@ -191,7 +191,7 @@ To view signature information:
 
 The commit list includes a CI/CD pipeline status icon next to each commit. To view the pipeline details:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Code** > **Commits**.
 1. Select the pipeline status icon next to any commit.
 

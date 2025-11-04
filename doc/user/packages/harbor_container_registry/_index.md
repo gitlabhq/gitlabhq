@@ -25,7 +25,7 @@ You can integrate the [Harbor container registry](../../project/integrations/har
 
 You can view the Harbor registry for a project or group.
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Harbor Registry**.
 
 You can search, sort, and filter images on this page. You can share a filtered view by copying the URL from your browser.
@@ -45,7 +45,7 @@ Default settings for the Harbor integration at the project level are inherited f
 To download and run a Harbor image hosted in the GitLab Harbor registry:
 
 1. Copy the link to your container image:
-   1. On the left sidebar, select **Search or go to** and find your project or group.
+   1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
    1. Select **Deploy** > **Harbor Registry** and find the image you want.
    1. Select the **Copy** icon next to the image name.
 
@@ -55,7 +55,7 @@ To download and run a Harbor image hosted in the GitLab Harbor registry:
 
 To view the list of tags associated with a specific artifact:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to **Deploy** > **Harbor Registry**.
 1. Select the image name to view its artifacts.
 1. Select the artifact you want.
@@ -73,7 +73,7 @@ To build and push to the Harbor registry:
 
 To view these commands:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Deploy** > **Harbor Registry**.
 1. Select **CLI Commands**.
 
@@ -81,7 +81,7 @@ To view these commands:
 
 To remove the Harbor registry for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Integrations**.
 1. Select **Harbor** under **Active integrations**.
 1. Under **Enable integration**, clear the **Active** checkbox.

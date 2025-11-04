@@ -146,7 +146,7 @@ to produce a list of objects in a`commit-map` file.
 
 To clean up a repository:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Go to **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Upload the list of objects to remove. For example, the `commit-map` file in the `filter-repo` directory.
@@ -220,7 +220,7 @@ process. New commits pushed during blob removal can cause the operation to fail.
 
 To remove blobs from your repository:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Remove blobs**.
@@ -328,7 +328,7 @@ Prerequisites:
 
 To redact text from your repository:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Redact text**.

@@ -1090,7 +1090,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you want to refer to all
 of the fields at once. For example:
 
-1. In the left sidebar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
