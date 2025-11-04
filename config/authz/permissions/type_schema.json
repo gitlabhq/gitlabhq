@@ -23,6 +23,10 @@
     "resource": {
       "type": "string",
       "description": "Override for the generated resource name"
+    },
+    "available_for_tokens": {
+      "type": "boolean",
+      "description": "If set to `true`, allows the permission to be added to granular scopes for tokens"
     }
   },
   "required": [

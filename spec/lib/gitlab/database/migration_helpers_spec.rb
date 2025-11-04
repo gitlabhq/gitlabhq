@@ -2259,17 +2259,17 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
     context 'when plan does not exist' do
       it 'does not create any plan limits' do
-        expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 10) }
+        expect { model.create_or_update_plan_limit('project_hooks', 'premium', 10) }
           .not_to change { PlanLimits.count }
       end
     end
 
     context 'when plan does exist' do
-      let!(:plan) { Plan.create!(name: 'plan_name') }
+      let!(:plan) { Plan.create!(name: 'premium', plan_name_uid: 5) }
 
       context 'when limit does not exist' do
         it 'inserts a new plan limits' do
-          expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 10) }
+          expect { model.create_or_update_plan_limit('project_hooks', 'premium', 10) }
             .to change { PlanLimits.count }.by(1)
 
           expect(PlanLimits.pluck(:project_hooks)).to contain_exactly(10)
@@ -2280,7 +2280,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         let!(:plan_limit) { PlanLimits.create!(plan_id: plan.id) }
 
         it 'updates an existing plan limits' do
-          expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 999) }
+          expect { model.create_or_update_plan_limit('project_hooks', 'premium', 999) }
             .not_to change { PlanLimits.count }
 
           expect(plan_limit.reload.project_hooks).to eq(999)

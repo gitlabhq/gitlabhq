@@ -3087,26 +3087,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: anti_abuse_trust_score
-  :worker_name: AntiAbuse::TrustScoreWorker
-  :feature_category: :instance_resiliency
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
-- :name: anti_abuse_trust_score_cleanup
-  :worker_name: AntiAbuse::TrustScoreCleanupWorker
-  :feature_category: :instance_resiliency
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
 - :name: approve_blocked_pending_approval_users
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
   :feature_category: :user_profile

@@ -97,7 +97,9 @@ module Gitlab
             end
 
             def project_access_allowed?(user, project)
-              Ability.allowed?(user, :download_code, project)
+              context.logger.instrument(:config_file_project_validate_access_download_code) do
+                Ability.allowed?(user, :download_code, project)
+              end
             end
 
             def sha

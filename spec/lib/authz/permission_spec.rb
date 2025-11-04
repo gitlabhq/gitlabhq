@@ -9,13 +9,15 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
   let(:name) { 'test_permission' }
   let(:action) { nil }
   let(:resource) { nil }
+  let(:available_for_tokens) { true }
   let(:definition) do
     {
       name: name,
       description: 'Test permission description',
       feature_category: 'team_planning',
       action: action,
-      resource: resource
+      resource: resource,
+      available_for_tokens: available_for_tokens
     }
   end
 
@@ -38,6 +40,16 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
 
     it 'returns nil for non-existent permission' do
       expect(described_class.get(:non_existent_permission)).to be_nil
+    end
+  end
+
+  describe '.all_for_tokens' do
+    subject(:all_for_tokens) { described_class.all_for_tokens }
+
+    it 'loads all permission definitions available for tokens' do
+      expect(all_for_tokens).to be_a(Array)
+      expect(all_for_tokens).not_to be_empty
+      expect(all_for_tokens.first.available_for_tokens?).to be(true)
     end
   end
 
@@ -152,6 +164,18 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       it 'is expected use the defined resource' do
         is_expected.to eq('test_permission')
       end
+    end
+  end
+
+  describe '#available_for_tokens?' do
+    subject { permission.available_for_tokens? }
+
+    it { is_expected.to be(true) }
+
+    context 'when available_for_tokens is not defined' do
+      let(:available_for_tokens) { nil }
+
+      it { is_expected.to be(false) }
     end
   end
 end

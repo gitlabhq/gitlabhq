@@ -384,6 +384,82 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'is_self_archived attribute' do
+    describe 'for a project' do
+      let_it_be_with_reload(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, namespace: group) }
+
+      let(:object) { project }
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      context 'when project is archived' do
+        before_all do
+          project.update!(archived: true)
+        end
+
+        it 'returns is_self_archived as true' do
+          expect(json[:is_self_archived]).to be(true)
+        end
+      end
+
+      context 'when project is not archived but parent group is archived' do
+        before_all do
+          group.update!(archived: true)
+        end
+
+        it 'returns is_self_archived as false' do
+          expect(json[:is_self_archived]).to be(false)
+        end
+      end
+
+      context 'when project and parent group are not archived' do
+        it 'returns is_self_archived as false' do
+          expect(json[:is_self_archived]).to be(false)
+        end
+      end
+    end
+
+    describe 'for a group' do
+      let_it_be_with_reload(:parent_group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+
+      let(:object) { group }
+
+      before_all do
+        group.add_owner(user)
+      end
+
+      context 'when group is archived' do
+        before_all do
+          group.update!(archived: true)
+        end
+
+        it 'returns is_self_archived as true' do
+          expect(json[:is_self_archived]).to be(true)
+        end
+      end
+
+      context 'when group is not archived but parent group is archived' do
+        before_all do
+          parent_group.update!(archived: true)
+        end
+
+        it 'returns is_self_archived as false' do
+          expect(json[:is_self_archived]).to be(false)
+        end
+      end
+
+      context 'when group and its ancestors are not archived' do
+        it 'returns is_self_archived as false' do
+          expect(json[:is_self_archived]).to be(false)
+        end
+      end
+    end
+  end
+
   describe 'can_archive attribute' do
     subject { json[:can_archive] }
 

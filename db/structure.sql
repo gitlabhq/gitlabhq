@@ -22894,7 +22894,9 @@ CREATE TABLE plans (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     name character varying,
-    title character varying
+    title character varying,
+    plan_name_uid smallint,
+    CONSTRAINT check_226f07be4f CHECK ((plan_name_uid IS NOT NULL))
 );
 
 CREATE SEQUENCE plans_id_seq
@@ -29762,7 +29764,8 @@ CREATE TABLE zoekt_enabled_namespaces (
     updated_at timestamp with time zone NOT NULL,
     search boolean DEFAULT true NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
-    last_rollout_failed_at timestamp with time zone
+    last_rollout_failed_at timestamp with time zone,
+    number_of_replicas_override integer
 );
 
 CREATE SEQUENCE zoekt_enabled_namespaces_id_seq
@@ -41751,6 +41754,8 @@ CREATE INDEX index_pipl_users_on_initial_email_sent_at ON pipl_users USING btree
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
 
 CREATE UNIQUE INDEX index_plans_on_name ON plans USING btree (name);
+
+CREATE UNIQUE INDEX index_plans_on_plan_name_uid ON plans USING btree (plan_name_uid);
 
 CREATE UNIQUE INDEX index_pm_advisories_on_advisory_xid_and_source_xid ON pm_advisories USING btree (advisory_xid, source_xid);
 

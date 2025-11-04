@@ -2,3 +2,4 @@
 name: create_badge
 description: Grants the ability to create badges
 feature_category: groups_and_projects
+available_for_tokens: true

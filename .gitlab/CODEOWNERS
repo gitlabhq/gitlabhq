@@ -140,8 +140,8 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 [Tooling] @gl-dx/tooling-maintainers
 Dangerfile
 /danger/
-/tooling/
-/spec/tooling/
+/tooling/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend
+/spec/tooling/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend
 /scripts/
 /spec/scripts/
 /scripts/**/*.rb @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend

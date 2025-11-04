@@ -3,6 +3,34 @@
 require 'spec_helper'
 
 RSpec.describe Plan do
+  describe 'validations' do
+    describe 'plan_name_uid' do
+      it 'validates presence on create' do
+        plan = described_class.new(name: 'unknown_plan')
+
+        expect(plan.valid?(:create)).to be_falsey
+        expect(plan.errors[:plan_name_uid]).to include("can't be blank")
+      end
+
+      it 'validates uniqueness on create' do
+        existing = create(:default_plan)
+        duplicate = described_class.new(name: 'default', plan_name_uid: existing.plan_name_uid)
+
+        expect(duplicate.valid?(:create)).to be_falsey
+        expect(duplicate.errors[:plan_name_uid]).to include('has already been taken')
+      end
+    end
+  end
+
+  describe 'plan_name_uid assignment' do
+    it 'is automatically set for known plans' do
+      plan = described_class.new(name: 'default', title: 'Default')
+      plan.save!
+
+      expect(plan.plan_name_uid).to eq('default')
+    end
+  end
+
   describe 'scopes', :aggregate_failures do
     let_it_be(:default_plan) { create(:default_plan) }
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::PlanLimit do
-  let(:plan_limits) { create(:plan_limits) }
+  let(:plan_limits) { create(:plan_limits, :default_plan) }
 
   subject { described_class.new(plan_limits).as_json }
 

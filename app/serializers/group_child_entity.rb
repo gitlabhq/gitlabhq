@@ -59,6 +59,8 @@ class GroupChildEntity < Grape::Entity
 
   expose :self_or_ancestors_archived?, as: :archived
 
+  expose :self_archived?, as: :is_self_archived
+
   # Group only attributes
   expose :children_count, :parent_id, unless: ->(_instance, _options) { project? }
 

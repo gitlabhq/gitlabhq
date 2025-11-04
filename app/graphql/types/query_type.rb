@@ -272,6 +272,13 @@ module Types
       description: 'Check if a feature flag is enabled',
       resolver: Resolvers::FeatureFlagResolver
 
+    field :access_token_permissions,
+      [Types::Authz::AccessTokens::PermissionType],
+      null: false,
+      experiment: { milestone: '18.6' },
+      description: 'List of permissions for fine-grained access tokens',
+      resolver: Resolvers::Authz::AccessTokens::PermissionsResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

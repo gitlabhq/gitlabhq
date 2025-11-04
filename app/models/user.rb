@@ -248,11 +248,6 @@ class User < ApplicationRecord
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
   has_many :abuse_events,             foreign_key: :user_id, class_name: 'AntiAbuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_trust_scores,
-    class_name: 'AntiAbuse::TrustScore',
-    foreign_key: :user_id,
-    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent - required by https://gitlab.com/groups/gitlab-org/-/epics/19085
-
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'

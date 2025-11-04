@@ -15,6 +15,10 @@ module Authz
         all.key?(name.to_sym)
       end
 
+      def all_for_tokens
+        all.values.select(&:available_for_tokens?)
+      end
+
       private
 
       def load_permissions
@@ -71,6 +75,10 @@ module Authz
 
     def feature_category
       definition[:feature_category]
+    end
+
+    def available_for_tokens?
+      definition[:available_for_tokens] || false
     end
   end
 end

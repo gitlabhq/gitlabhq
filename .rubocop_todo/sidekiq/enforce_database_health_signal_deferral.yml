@@ -5,8 +5,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'app/workers/analytics/usage_trends/counter_job_worker.rb'
     - 'app/workers/anti_abuse/ban_duplicate_users_worker.rb'
     - 'app/workers/anti_abuse/spam_abuse_events_worker.rb'
-    - 'app/workers/anti_abuse/trust_score_cleanup_worker.rb'
-    - 'app/workers/anti_abuse/trust_score_worker.rb'
     - 'app/workers/authorized_project_update/enqueue_group_members_refresh_authorized_projects_worker.rb'
     - 'app/workers/authorized_project_update/periodic_recalculate_worker.rb'
     - 'app/workers/authorized_project_update/user_refresh_from_replica_worker.rb'

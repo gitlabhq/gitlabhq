@@ -59,6 +59,17 @@ Returns [`AbuseReport`](#abusereport).
 | ---- | ---- | ----------- |
 | <a id="queryabusereportid"></a>`id` | [`AbuseReportID!`](#abusereportid) | ID of the abuse report. |
 
+### `Query.accessTokenPermissions`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+List of permissions for fine-grained access tokens.
+
+Returns [`[AccessTokenPermission!]!`](#accesstokenpermission).
+
 ### `Query.addOnPurchases`
 
 Retrieve all active add-on purchases. This query can be used in GitLab.com and self-managed environments.
@@ -22728,6 +22739,29 @@ The edge type for [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransi
 | <a id="vulnerabilitystatetransitiontypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="vulnerabilitystatetransitiontypeedgenode"></a>`node` | [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype) | The item at the end of the edge. |
 
+#### `VulnerabilityTriggeredWorkflowConnection`
+
+The connection type for [`VulnerabilityTriggeredWorkflow`](#vulnerabilitytriggeredworkflow).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitytriggeredworkflowconnectionedges"></a>`edges` | [`[VulnerabilityTriggeredWorkflowEdge]`](#vulnerabilitytriggeredworkflowedge) | A list of edges. |
+| <a id="vulnerabilitytriggeredworkflowconnectionnodes"></a>`nodes` | [`[VulnerabilityTriggeredWorkflow]`](#vulnerabilitytriggeredworkflow) | A list of nodes. |
+| <a id="vulnerabilitytriggeredworkflowconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `VulnerabilityTriggeredWorkflowEdge`
+
+The edge type for [`VulnerabilityTriggeredWorkflow`](#vulnerabilitytriggeredworkflow).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitytriggeredworkflowedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="vulnerabilitytriggeredworkflowedgenode"></a>`node` | [`VulnerabilityTriggeredWorkflow`](#vulnerabilitytriggeredworkflow) | The item at the end of the edge. |
+
 #### `WebhookEventConnection`
 
 The connection type for [`WebhookEvent`](#webhookevent).
@@ -23126,6 +23160,19 @@ Representation of a GitLab user.
 | <a id="accessleveluserusername"></a>`username` | [`String!`](#string) | Username of the user. |
 | <a id="accessleveluserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="accessleveluserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
+
+### `AccessTokenPermission`
+
+A permission added to a fine-grained access token.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accesstokenpermissionaction"></a>`action` | [`String!`](#string) | Permission action. |
+| <a id="accesstokenpermissiondescription"></a>`description` | [`String!`](#string) | Permission description. |
+| <a id="accesstokenpermissionname"></a>`name` | [`String!`](#string) | Permission name. |
+| <a id="accesstokenpermissionresource"></a>`resource` | [`String!`](#string) | Permission resource. |
 
 ### `Achievement`
 
@@ -27621,6 +27668,7 @@ Represents a vulnerability. The connection type is countable.
 | ---- | ---- | ----------- |
 | <a id="countablevulnerabilityairesolutionavailable"></a>`aiResolutionAvailable` | [`Boolean`](#boolean) | Indicates whether the type of vulnerability can be resolved with AI. |
 | <a id="countablevulnerabilityairesolutionenabled"></a>`aiResolutionEnabled` | [`Boolean`](#boolean) | Indicates whether the specific vulnerability can be resolved with AI. |
+| <a id="countablevulnerabilityaiworkflows"></a>`aiWorkflows` {{< icon name="warning-solid" >}} | [`VulnerabilityTriggeredWorkflowConnection`](#vulnerabilitytriggeredworkflowconnection) | **Introduced** in GitLab 18.6. **Status**: Experiment. AI workflows triggered for the vulnerability. |
 | <a id="countablevulnerabilityarchivalinformation"></a>`archivalInformation` {{< icon name="warning-solid" >}} | [`VulnerabilityArchivalInformation!`](#vulnerabilityarchivalinformation) | **Introduced** in GitLab 17.11. **Status**: Experiment. Indicates whether the vulnerability is about to be archived in the next month. |
 | <a id="countablevulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
 | <a id="countablevulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
@@ -45692,6 +45740,7 @@ Represents a vulnerability.
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityairesolutionavailable"></a>`aiResolutionAvailable` | [`Boolean`](#boolean) | Indicates whether the type of vulnerability can be resolved with AI. |
 | <a id="vulnerabilityairesolutionenabled"></a>`aiResolutionEnabled` | [`Boolean`](#boolean) | Indicates whether the specific vulnerability can be resolved with AI. |
+| <a id="vulnerabilityaiworkflows"></a>`aiWorkflows` {{< icon name="warning-solid" >}} | [`VulnerabilityTriggeredWorkflowConnection`](#vulnerabilitytriggeredworkflowconnection) | **Introduced** in GitLab 18.6. **Status**: Experiment. AI workflows triggered for the vulnerability. |
 | <a id="vulnerabilityarchivalinformation"></a>`archivalInformation` {{< icon name="warning-solid" >}} | [`VulnerabilityArchivalInformation!`](#vulnerabilityarchivalinformation) | **Introduced** in GitLab 17.11. **Status**: Experiment. Indicates whether the vulnerability is about to be archived in the next month. |
 | <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
@@ -46524,6 +46573,17 @@ Counts for each vulnerability severity in the project.
 | <a id="vulnerabilitystatistictypetotal"></a>`total` | [`Int!`](#int) | Total of all vulnerabilities. |
 | <a id="vulnerabilitystatistictypeunknown"></a>`unknown` | [`Int!`](#int) | Number of vulnerabilities of UNKNOWN severity. |
 | <a id="vulnerabilitystatistictypeupdatedat"></a>`updatedAt` | [`Time`](#time) | Date that data was last updated. |
+
+### `VulnerabilityTriggeredWorkflow`
+
+Represents a triggered workflow for a vulnerability.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitytriggeredworkflowworkflow"></a>`workflow` | [`DuoWorkflow!`](#duoworkflow) | Associated workflow details. |
+| <a id="vulnerabilitytriggeredworkflowworkflowname"></a>`workflowName` | [`VulnerabilityWorkflowName!`](#vulnerabilityworkflowname) | Name of the workflow. |
 
 ### `VulnerableDependency`
 
@@ -51487,7 +51547,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |
 | <a id="usercalloutfeaturenameenumdora_dashboard_migration_group"></a>`DORA_DASHBOARD_MIGRATION_GROUP` | Callout feature name for dora_dashboard_migration_group. |
 | <a id="usercalloutfeaturenameenumdora_dashboard_migration_project"></a>`DORA_DASHBOARD_MIGRATION_PROJECT` | Callout feature name for dora_dashboard_migration_project. |
-| <a id="usercalloutfeaturenameenumduo_agent_platform_requested"></a>`DUO_AGENT_PLATFORM_REQUESTED` | Callout feature name for duo_agent_platform_requested. |
 | <a id="usercalloutfeaturenameenumduo_amazon_q_alert"></a>`DUO_AMAZON_Q_ALERT` | Callout feature name for duo_amazon_q_alert. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
 | <a id="usercalloutfeaturenameenumemail_otp_enrollment_callout"></a>`EMAIL_OTP_ENROLLMENT_CALLOUT` | Callout feature name for email_otp_enrollment_callout. |
@@ -51923,6 +51982,15 @@ The state of the vulnerability.
 | <a id="vulnerabilitystatedetected"></a>`DETECTED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 | <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 | <a id="vulnerabilitystateresolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
+
+### `VulnerabilityWorkflowName`
+
+Workflow name for vulnerability triggered workflows.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityworkflownameresolve_sast_vulnerability"></a>`RESOLVE_SAST_VULNERABILITY` | Workflow name is resolve sast vulnerability. |
+| <a id="vulnerabilityworkflownamesast_fp_detection"></a>`SAST_FP_DETECTION` | Workflow name is sast fp detection. |
 
 ### `WebhookAlertStatus`
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PlanLimits do
   let_it_be(:project) { create(:project) }
-  let_it_be(:plan_limits) { create(:plan_limits) }
+  let_it_be(:plan_limits) { create(:plan_limits, :default_plan) }
 
   let(:project_hooks_count) { 2 }
 
@@ -325,7 +325,7 @@ RSpec.describe PlanLimits do
 
   describe '#format_limits_history', :freeze_time do
     let(:user) { create(:user) }
-    let(:plan_limits) { create(:plan_limits) }
+    let(:plan_limits) { create(:plan_limits, plan: create(:plan, name: 'premium')) }
     let(:current_timestamp) { Time.current.utc.to_i }
 
     it 'formats a single attribute change' do
@@ -406,6 +406,7 @@ RSpec.describe PlanLimits do
       let(:plan_limits) do
         create(
           :plan_limits,
+          plan: create(:plan, name: 'ultimate'),
           limits_history: {
             'enforcement_limit' => [
               {

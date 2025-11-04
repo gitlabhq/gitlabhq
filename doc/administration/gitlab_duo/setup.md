@@ -112,11 +112,3 @@ If you want to host your own language models or AI gateway:
   This option provides full control over your data and security.
 - Use a [hybrid configuration](../../administration/gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration),
   where you host your own AI gateway and models for some features, but configure other features to use the GitLab AI gateway and vendor models.
-
-## Hide sidebar widget that shows GitLab Duo Core availability
-
-On the left sidebar, near the bottom, a widget shows the availability of GitLab Duo
-Core.
-To hide this widget, disable the `duo_agent_platform_widget_self_managed` feature flag.
-
-![A widget that shows the availability of GitLab Duo Core](img/widget_v18_5.png)

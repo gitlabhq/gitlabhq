@@ -31,6 +31,12 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'snippet_repositories.snippet_organization_id',                    # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'snippet_repositories.snippet_project_id',                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'upload_states.upload_id',                                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'container_repository_states.project_id',                          # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'container_repository_states.container_repository_id',             # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'design_management_repository_states.namespace_id',                # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'design_management_repository_states.design_management_repository_id', # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'wiki_repository_states.project_id',                               # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'wiki_repository_states.project_wiki_repository_id',               # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'targeted_message_dismissals.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
       'user_broadcast_message_dismissals.broadcast_message_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/531358
       'targeted_message_namespaces.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
@@ -71,13 +77,13 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
 
     if table_schemas.all? { |schema| Gitlab::Database::GitlabSchema.require_sharding_key?(schema) }
       "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. " \
-      "When a foreign key references another database you must use a Loose Foreign Key instead https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html."
+        "When a foreign key references another database you must use a Loose Foreign Key instead https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html."
     else
       # Any FK that references to / from a non-sharded table (e.g. gitlab_main_clusterwide) is not allowed
       "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. " \
-      "Sharded tables referencing from / to non-sharded tables are not allowed in Cells architecture. " \
-      "Consult https://docs.gitlab.com/development/cells for possible solutions. " \
-      "(gitlab_schemas: #{table_schemas.join(', ')})"
+        "Sharded tables referencing from / to non-sharded tables are not allowed in Cells architecture. " \
+        "Consult https://docs.gitlab.com/development/cells for possible solutions. " \
+        "(gitlab_schemas: #{table_schemas.join(', ')})"
     end
   end
 
@@ -113,7 +119,7 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
 
       expect(fk_entry).to be_present,
         "`#{entry}` is no longer a foreign key. " \
-        "You must remove this entry from the `allowed_cross_database_foreign_keys` list."
+          "You must remove this entry from the `allowed_cross_database_foreign_keys` list."
     end
   end
 end

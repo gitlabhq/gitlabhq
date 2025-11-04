@@ -3,39 +3,39 @@
 require 'spec_helper'
 
 RSpec.describe Admin::PlansFinder do
-  let_it_be(:plan1) { create(:plan, name: 'plan1') }
-  let_it_be(:plan2) { create(:plan, name: 'plan2') }
+  let_it_be(:premium_plan) { create(:plan, name: 'premium') }
+  let_it_be(:ultimate_plan) { create(:plan, name: 'ultimate') }
 
   describe '#execute' do
     context 'with no params' do
       it 'returns all plans' do
         found = described_class.new.execute
 
-        expect(found).to match_array([plan1, plan2])
+        expect(found).to match_array([premium_plan, ultimate_plan])
       end
     end
 
     context 'with missing name in params' do
       before do
-        @params = { title: 'plan2' }
+        @params = { title: 'ultimate_plan' }
       end
 
       it 'returns all plans' do
         found = described_class.new(@params).execute
 
-        expect(found).to match_array([plan1, plan2])
+        expect(found).to match_array([premium_plan, ultimate_plan])
       end
     end
 
     context 'with existing name in params' do
       before do
-        @params = { name: 'plan2' }
+        @params = { name: 'ultimate' }
       end
 
       it 'returns the plan' do
         found = described_class.new(@params).execute
 
-        expect(found).to match(plan2)
+        expect(found).to match(ultimate_plan)
       end
     end
 
