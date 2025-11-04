@@ -40,6 +40,18 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
       end
     end
 
+    context "with legacy FIPS", :fips_mode do
+      before do
+        allow(described_class).to receive(:fips_140_3?).and_return(false)
+      end
+
+      it 'matches PBKDF2+SHA512 hashed secret via fallback' do
+        hashed = Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512.transform_secret(plaintext_secret)
+        application.update_column(:secret, hashed)
+        expect(application.secret_matches?(plaintext_secret)).to be true
+      end
+    end
+
     it 'matches SHA512 hashed secret' do
       hashed = Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(plaintext_secret)
       application.update_column(:secret, hashed)
