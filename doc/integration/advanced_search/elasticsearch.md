@@ -350,7 +350,7 @@ You first install some dependencies and then build and install the indexer itsel
 #### Install dependencies
 
 This project relies on [International Components for Unicode](https://icu.unicode.org/) (ICU) for text encoding,
-therefore we must ensure the development packages for your platform are
+so ensure the development packages for your platform are
 installed before running `make`.
 
 ##### Debian / Ubuntu
@@ -752,12 +752,14 @@ To resume indexing:
 
 ## Zero-downtime reindexing
 
-The idea behind this reindexing method is to leverage the [Elasticsearch reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html)
-and Elasticsearch index alias feature to perform the operation. We set up an index alias which connects to a
-`primary` index which is used by GitLab for reads/writes. When reindexing process starts, we temporarily pause
-the writes to the `primary` index. Then, we create another index and invoke the Reindex API which migrates the
-index data onto the new index. After the reindexing job is complete, we switch to the new index by connecting the
-index alias to it which becomes the new `primary` index. At the end, we resume the writes and typical operation resumes.
+The idea behind this reindexing method is to use the
+[Elasticsearch reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html)
+and Elasticsearch index alias feature to perform the operation. An index alias connects to a
+`primary` index that GitLab uses for reads and writes. When the reindexing process starts,
+writes to the `primary` index are temporarily paused. Then, another index is created and the
+Reindex API is invoked to migrate the index data to the new index. After the reindexing job
+is complete, the index alias switches to the new index, which becomes the new `primary` index.
+Finally, writes resume and typical operation continues.
 
 ### Using zero-downtime reindexing
 
@@ -1310,7 +1312,7 @@ Whenever a change or deletion is made to an indexed GitLab object (a merge reque
 
 Elasticsearch does intelligent merging of segments to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% of wasted space in the index.
 
-In general, we recommend letting Elasticsearch merge and reclaim space automatically, with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene defaults as-is and not fret too much about when deletes are reclaimed."_
+You should generally let Elasticsearch merge and reclaim space automatically with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene defaults as-is and not fret too much about when deletes are reclaimed."_
 
 However, some larger installations may wish to tune the merge policy settings:
 
@@ -1325,7 +1327,7 @@ However, some larger installations may wish to tune the merge policy settings:
        }'
   ```
 
-- You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so we recommend not changing this unless you understand the tradeoffs.
+- You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so you should not change this unless you understand the tradeoffs.
 
   ```shell
   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
@@ -1361,7 +1363,7 @@ another dedicated worker to avoid contention.
 For this purpose, use the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules)
 option that allows Sidekiq to route jobs to a specific queue based on [worker matching query](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query).
 
-To handle this, we generally recommend one of the following two options. You can either:
+You can choose one of the two following options to handle this:
 
 - [Use two queue groups on one single node](#single-node-two-processes).
 - [Use two queue groups, one on each node](#two-nodes-one-process-for-each).

@@ -171,41 +171,44 @@ The eligible Code Owners are:
 - Project A: the members of Group X only, because Project A doesn't belong to Subgroup Y.
 - Project B: the members of both Group X and Subgroup Y.
 
-### Invite subgroups to parent groups
+### Groups shared with parent groups
 
-Inviting Subgroup Y to a parent group of Project A
-[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/288851). To set Subgroup Y as
-Code Owners, [invite this group directly to the project](#invite-subgroups-to-projects-in-parent-groups) itself.
+{{< history >}}
 
-{{< alert type="note" >}}
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203298) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `check_inherited_groups_for_codeowners`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/566627) in GitLab 18.6.
 
-For approval to be required, groups as Code Owners must have a direct membership
-(not inherited membership) in the project. Approval can only be optional for groups
-that inherit membership. Members in the Code Owners group also must be direct members,
-and not inherit membership from any parent groups.
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+When this feature is disabled, only groups directly invited to a project are
+eligible as Code Owners. Groups shared with the project's parent groups are not
+eligible.
 
 {{< /alert >}}
 
-### Invite subgroups to projects in parent groups
+You can share a group with a parent group of a project. Members of the shared
+group become eligible as Code Owners for projects in the parent group.
 
-You can [invite](../members/sharing_projects_groups.md) Subgroup Y to Project A
-so that their members also become eligible Code Owners.
+For example, in this hierarchy:
 
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph LR
-    accTitle: Diagram of subgroup inheritance
-    accDescr: Inviting a subgroup directly to a project affects whether their approvals can be made required.
-    A[Parent group X] -->|owns| B[Project A]
-    A -->|also contains| C[Subgroup Y]
-    C -.->D{Invite Subgroup Y<br/>to Project A?} -.->|yes| E[Members of Subgroup Y<br/>can submit Approvals]
-    D{Invite Subgroup Y<br/>to Project A?} -.->|no| F[Members of Subgroup Y<br />cannot submit Approvals]
-    E -.->|Add Subgroup Y<br/> as Code Owner to Project A| I[Approvals can be<br/>required] -.-> B
-    F -.-> |Add Subgroup Y<br/> as Code Owners to Project A| J[Approvals can only<br/>be optional] -.-> B
+```plaintext
+group-x
+├── engineering-group
+└── product-group
+    └── project-a
 ```
 
-If you do not invite Subgroup Y to Project A, but make them Code Owners, their approval
-of the merge request becomes optional.
+If you share `engineering-group` with `product-group`, members of
+`engineering-group` become eligible as Code Owners for `project-a`.
+You don't need to directly invite `engineering-group` to `project-a`.
+
+The shared group must have at least the Developer role in the parent group.
+Only direct members of the shared group are eligible as Code Owners.
+Members who inherit membership in the shared group are not eligible as Code Owners.
 
 ## Error handling
 

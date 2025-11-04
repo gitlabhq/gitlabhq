@@ -135,7 +135,7 @@ Stickiness (consistent application behavior for the same user) is guaranteed for
 but not anonymous users.
 
 [Percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
-behavior. We recommend using percent rollout because it's more flexible than percent of users
+behavior. You should use percent rollout because it's more flexible than percent of users
 
 {{< alert type="warning" >}}
 
@@ -267,8 +267,8 @@ To get the access credentials that your application needs to communicate with Gi
      For example, if the application runs for a production server, the **Application name**
      could be `production` or similar. This value is used for the environment spec evaluation.
 
-The meaning of these fields might change over time. For example, we're not sure if
-**Instance ID** is a single token or multiple tokens, assigned to the **Environment**. Also,
+The meaning of these fields might change over time. For example, **Instance ID** might be a
+single token or multiple tokens assigned to the **Environment**. Also,
 **Application name** could describe the application version instead of the running environment.
 
 ### Choose a client library

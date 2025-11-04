@@ -137,7 +137,7 @@ To change the location of project dashboards:
 
 1. Either:
    - On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-   - Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**to create the project to store your dashboard files. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+   - Select **Create new** ({{< icon name="plus" >}}) and **New project/repository** to create the project to store your dashboard files. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. On the left sidebar, select **Search or go to** and find the analytics project. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.

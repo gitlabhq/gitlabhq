@@ -242,7 +242,10 @@ the following rules apply:
 - Eligible groups include:
   - The project's group.
   - The project's group's ancestors.
-  - Groups that are invited to the project with at least the Developer role.
+  - Groups invited directly to the project with at least the Developer role.
+  - Groups shared with the project's group or its ancestors.
+    The shared group must have at least the Developer role in the parent group.
+    For more information, see [groups shared with parent groups](advanced.md#groups-shared-with-parent-groups).
 
 ### Role eligibility
 

@@ -45,6 +45,46 @@ To create a merge request from an issue, you must:
 - Have an existing GitLab issue with clear requirements.
 - Have at least the Developer role in the project.
 - Meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
+- Configure push rules to allow the GitLab Duo service account (if push rules are enabled).
+
+### Configure push rules for GitLab Duo
+
+The Issue to Merge Request Flow uses a service account that:
+
+- Creates commits with its own email address.
+- Creates branches with the `workloads/` prefix (for example, `workloads/a1b2c3d4e5f`).
+
+If your project or instance has [push rules](../../project/repository/push_rules.md) enabled,
+you must configure them to allow the GitLab Duo service account to create commits and branches.
+
+To configure push rules for a project:
+
+1. Find the email address associated with the service account:
+   1. On the left sidebar, at the bottom, select **Admin**.
+   1. Select **Overview** > **Users** and search for `duo-developer`.
+   1. Locate the `duo-developer` user and copy the email address.
+
+1. Allow the email address to push to the project:
+   1. On the left sidebar, select **Search or go to** and find your project.
+   1. Select **Settings** > **Repository**.
+   1. Expand **Push rules**.
+   1. In **Commit author's email**, add a regular expression that allows the email address you just copied.
+   1. Select **Save push rules**.
+
+1. Allow the `workloads/` branch prefix:
+   1. In the **Push rules** section, find **Branch name**.
+   1. Add a regular expression that allows branches starting with `workloads/`.
+      For example: `^workloads/.*$`
+   1. Select **Save push rules**.
+
+If you are an administrator, you can create push rules for the instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Push rules**.
+1. Follow the previous steps to allow **Commit author's email** and **Branch name**.
+1. Select **Save push rules**.
+
+For more information about push rules, see the [push rules documentation](../../project/repository/push_rules.md).
 
 ## Use the flow
 

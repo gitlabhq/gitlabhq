@@ -13,8 +13,8 @@ title: Prepare Auto DevOps for deployment
 {{< /details >}}
 
 If you enable Auto DevOps without setting the base domain and deployment
-strategy, GitLab can't deploy your application directly. Therefore, we
-recommend that you prepare them before enabling Auto DevOps.
+strategy, GitLab can't deploy your application directly. Therefore, you
+should prepare the strategies before enabling Auto DevOps.
 
 ## Deployment strategy
 

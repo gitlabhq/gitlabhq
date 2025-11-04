@@ -278,7 +278,7 @@ CspDesignation.new(csp_group_id, backup_filename).public_send(action)
 
 ## Feedback and support
 
-As this is a Beta release, we actively seek feedback from users. Share your experience, suggestions, and any issues through:
+Because this is a Beta release, user feedback is encouraged. Share your experience, suggestions, and any issues through:
 
 - [GitLab Issues](https://gitlab.com/gitlab-org/gitlab/-/issues).
 - Your regular GitLab support channels.

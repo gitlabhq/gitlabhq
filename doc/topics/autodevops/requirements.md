@@ -12,7 +12,7 @@ title: Requirements for Auto DevOps
 
 {{< /details >}}
 
-Before enabling [Auto DevOps](_index.md), we recommend you to prepare it for
+Before enabling [Auto DevOps](_index.md), you should prepare it for
 deployment. If you don't, you can use it to build and test your apps, and
 then configure the deployment later.
 

@@ -214,8 +214,8 @@ Error: error initializing: Looks like "https://kubernetes-charts.storage.googlea
 is not a valid chart repository or cannot be reached
 ```
 
-Some GitLab features had dependencies on the stable chart. To mitigate the impact, we changed them
-to use new official repositories or the [Helm Stable Archive repository maintained by GitLab](https://gitlab.com/gitlab-org/cluster-integration/helm-stable-archive).
+Some GitLab features had dependencies on the stable chart. To mitigate the impact, the dependencies
+use new official repositories or the [Helm Stable Archive repository maintained by GitLab](https://gitlab.com/gitlab-org/cluster-integration/helm-stable-archive).
 Auto Deploy contains [an example fix](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/127).
 
 In Auto Deploy, `v1.0.6+` of `auto-deploy-image` no longer adds the deprecated stable repository to

@@ -332,7 +332,7 @@ go to the [Customers Portal invoices page](https://customers.gitlab.com/invoices
 If your account has a [saved credit card](billing_account.md#change-your-payment-method),
 the card is charged for the invoice amount.
 
-If we are unable to process a payment or the auto-renewal fails for any other reason,
+If a payment cannot be processed or the auto-renewal fails for any other reason,
 you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
 
 ## Expired subscription
@@ -447,7 +447,7 @@ Customers Portal:
 - Instance ID
 - Unique instance ID
 
-Additionally, we also send add-on metrics such as:
+Additionally, you get add-on metrics such as:
 
 - Add-on type
 - Purchased seats
