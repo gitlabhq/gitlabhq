@@ -1656,7 +1656,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     it 'sticks to the primary' do
-      expect(User.sticking).to receive(:find_caught_up_replica).with(:user, user.id)
+      expect(User.sticking).to receive(:find_caught_up_replica).with(:user, user.id, hash_id: false)
 
       post api("/internal/pre_receive"), params: valid_params, headers: gitlab_shell_internal_api_request_header
     end

@@ -7,7 +7,7 @@ module Gitlab
     class CommitStats
       include Gitlab::Git::WrapsGitalyErrors
 
-      attr_reader :id, :additions, :deletions, :total
+      attr_reader :id, :additions, :deletions, :total, :files
 
       # Instantiate a CommitStats object
       #
@@ -15,21 +15,39 @@ module Gitlab
       def initialize(repo, commit)
         @id = commit.id
 
-        additions, deletions = fetch_stats(repo, commit)
+        additions, deletions, files = ensure_stats_format(repo)
 
         @additions = additions.to_i
         @deletions = deletions.to_i
+        @files = files.to_i
         @total = @additions + @deletions
       end
 
-      def fetch_stats(repo, commit)
-        Rails.cache.fetch("commit_stats:#{repo.gl_project_path}:#{@id}") do
+      def ensure_stats_format(repo)
+        cached_stats = fetch_stats(repo)
+
+        if cached_stats.length == 2
+          Rails.cache.delete(cache_key(repo))
+          cached_stats = fetch_stats(repo)
+        end
+
+        cached_stats
+      end
+
+      def fetch_stats(repo)
+        Rails.cache.fetch(cache_key(repo)) do
           stats = wrapped_gitaly_errors do
             repo.gitaly_commit_client.commit_stats(@id)
           end
 
-          [stats.additions, stats.deletions]
+          [stats.additions, stats.deletions, stats.files]
         end
+      end
+
+      private
+
+      def cache_key(repo)
+        "commit_stats:#{repo.gl_project_path}:#{@id}"
       end
     end
   end

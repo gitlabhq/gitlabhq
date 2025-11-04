@@ -50,7 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:preserve_markdown, project)
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?)
+    push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?(current_user))
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_view_for_issues, project&.group)
@@ -478,7 +478,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def redirect_index_to_work_items
-    return unless index_html_request? && project&.work_items_consolidated_list_enabled?
+    return unless index_html_request? && project&.work_items_consolidated_list_enabled?(current_user)
 
     redirect_to project_work_items_path(project, params: work_items_redirect_params(request.query_parameters))
   end

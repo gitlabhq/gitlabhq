@@ -35,7 +35,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       expect(ApplicationRecord.sticking)
-        .to receive(:find_caught_up_replica).with(:user, 42)
+        .to receive(:find_caught_up_replica).with(:user, 42, hash_id: false)
 
       get 'user'
 

@@ -49,8 +49,12 @@ export default {
       default: () => ({}),
     },
   },
+  data() {
+    return {
+      appStatus: EDITOR_APP_STATUS_LOADING,
+    };
+  },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     appStatus: {
       query: getAppStatus,
       update(data) {
@@ -79,9 +83,6 @@ export default {
     currentAppStatusConfig() {
       return this.APP_STATUS_CONFIG[this.appStatus] || {};
     },
-    hasLink() {
-      return this.appStatus !== EDITOR_APP_STATUS_EMPTY;
-    },
     helpPath() {
       return this.currentAppStatusConfig.link || this.ymlHelpPagePath;
     },
@@ -107,20 +108,18 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div v-if="isLoading" class="gl-mx-2 gl-flex gl-items-center">
-      <gl-loading-icon class="gl-mr-4" />
-      {{ $options.i18n.loading }}
-    </div>
-    <span v-else data-testid="validation-segment">
-      <span class="gl-flex gl-max-w-full gl-items-center gl-gap-2" data-testid="validation-message">
-        <gl-icon :name="icon" class="gl-ml-1" />
-        <gl-sprintf :message="message">
-          <template v-if="hasLink" #link="{ content }">
-            <gl-link :href="helpPath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </span>
+  <div v-if="isLoading" class="gl-flex gl-items-center gl-gap-3">
+    <gl-loading-icon class="gl-mx-2" />
+    {{ $options.i18n.loading }}
+  </div>
+  <div v-else class="gl-flex gl-gap-3" data-testid="validation-segment">
+    <gl-icon :name="icon" class="gl-mx-2 gl-mt-1 gl-shrink-0" />
+    <span data-testid="validation-message">
+      <gl-sprintf :message="message">
+        <template #link="{ content }">
+          <gl-link :href="helpPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
     </span>
   </div>
 </template>

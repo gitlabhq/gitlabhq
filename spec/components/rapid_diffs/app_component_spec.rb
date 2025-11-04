@@ -143,6 +143,19 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(vc_test_controller.view_context.content_for?(:startup_js)).not_to be_nil
   end
 
+  it 'adds application stylesheet' do
+    style_added = false
+    allow(component).to receive(:helpers).and_wrap_original do |original_method, *args|
+      helpers = original_method.call(*args)
+      allow(helpers).to receive(:add_page_specific_style).with('page_bundles/rapid_diffs') do
+        style_added = true
+      end
+      helpers
+    end
+    render_component
+    expect(style_added).to be(true)
+  end
+
   context 'when lazy loading' do
     let(:lazy) { true }
 

@@ -105,40 +105,68 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
   end
 
   shared_examples 'sticking' do
-    it 'sticks an entity to the primary', :aggregate_failures do
-      allow(ActiveRecord::Base.load_balancer)
-        .to receive(:primary_only?)
-        .and_return(false)
+    let(:hash_id) { false }
 
-      ids.each do |id|
-        expect(redis)
-          .to receive(:set)
-          .with("database-load-balancing/write-location/#{load_balancer.name}/user/#{id}", 'the-primary-lsn', ex: 30)
+    context 'when replicas are used' do
+      before do
+        allow(ActiveRecord::Base.load_balancer)
+          .to receive(:primary_only?)
+          .and_return(false)
       end
 
-      expect(Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
+      it 'sticks an entity to the primary', :aggregate_failures do
+        ids.each do |id|
+          expect(redis)
+            .to receive(:set)
+            .with("database-load-balancing/write-location/#{load_balancer.name}/user/#{id}", 'the-primary-lsn', ex: 30)
+        end
 
-      subject
+        expect(Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
+
+        subject
+      end
+
+      context 'with hash_id: true' do
+        let(:hash_id) { true }
+
+        it 'sticks a hash instead of the actual id' do
+          ids.each do |id|
+            hashed_id = Digest::SHA2.hexdigest(id.to_s)
+
+            expect(redis)
+              .to receive(:set)
+              .with("database-load-balancing/write-location/#{load_balancer.name}/user/#{hashed_id}",
+                'the-primary-lsn',
+                ex: 30)
+          end
+
+          expect(Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
+
+          subject
+        end
+      end
     end
 
-    it 'does not update the write location when no replicas are used' do
-      expect(sticking).not_to receive(:set_write_location_for)
+    context 'when replicas are not used' do
+      it 'does not update the write location when no replicas are used' do
+        expect(sticking).not_to receive(:set_write_location_for)
 
-      subject
+        subject
+      end
     end
   end
 
   describe '#stick' do
     it_behaves_like 'sticking' do
       let(:ids) { [42] }
-      subject { sticking.stick(:user, ids.first) }
+      subject { sticking.stick(:user, ids.first, hash_id: hash_id) }
     end
   end
 
   describe '#bulk_stick' do
     it_behaves_like 'sticking' do
       let(:ids) { [42, 43] }
-      subject { sticking.bulk_stick(:user, ids) }
+      subject { sticking.bulk_stick(:user, ids, hash_id: hash_id) }
     end
   end
 end

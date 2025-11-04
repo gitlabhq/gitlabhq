@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-COLOR_ERROR="\e[31m"
-COLOR_INFO="\e[32m"
-COLOR_WARN="\e[33m"
-COLOR_RESET="\e[39m"
+INFO_COLOR_SET="\e[1;32m"
+WARN_COLOR_SET="\e[1;33m"
+ERROR_COLOR_SET="\e[1;31m"
+COLOR_RESET="\e[0m"
 
 # shellcheck disable=2059
 if command -v lychee > /dev/null; then
-  printf "${COLOR_INFO}INFO: Lychee found! Checking documentation links...${COLOR_RESET}\n"
+  printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Lychee found! Checking documentation links...\n"
   if lychee --offline --no-progress --include-fragments doc; then
-    printf "${COLOR_INFO}INFO: Documentation link test passed!${COLOR_RESET}\n"
+    printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Documentation link test passed!\n"
   else
-    printf "${COLOR_ERROR}ERROR: Documentation link test failed!${COLOR_RESET}\n"
+    printf "${ERROR_COLOR_SET}ERROR${COLOR_RESET} Documentation link test failed!\n"
     exit 1
   fi
 else
-  printf "${COLOR_WARN}WARN: Lychee not found! For more information, see <https://lychee.cli.rs/installation/>.${COLOR_RESET}\n"
+  printf "${WARN_COLOR_SET}WARN${COLOR_RESET} Lychee not found! For more information, see <https://lychee.cli.rs/installation/>.\n"
 fi

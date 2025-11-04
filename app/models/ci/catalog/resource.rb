@@ -63,7 +63,7 @@ module Ci
       scope :order_by_last_30_day_usage_count_desc, -> { reorder(last_30_day_usage_count: :desc) }
       scope :order_by_last_30_day_usage_count_asc, -> { reorder(last_30_day_usage_count: :asc) }
 
-      delegate :avatar_path, :star_count, :full_path, :archived, to: :project
+      delegate :avatar_path, :star_count, :full_path, to: :project
 
       enum :state, { unpublished: 0, published: 1 }
 
@@ -91,6 +91,10 @@ module Ci
           # There may be orphaned records since this table does not enforce FKs
           event.catalog_resource&.sync_with_project!
         end
+      end
+
+      def archived
+        project.self_or_ancestors_archived?
       end
 
       def to_param

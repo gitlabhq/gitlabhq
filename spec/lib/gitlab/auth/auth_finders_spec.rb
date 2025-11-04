@@ -880,6 +880,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       it 'returns token if valid oauth_access_token' do
         expect(find_oauth_access_token.token).to eq oauth_access_token.token
       end
+
+      it 'calls find_caught_up_replica to ensure a recent replica is used' do
+        expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica)
+
+        find_oauth_access_token
+      end
     end
 
     context 'passed as param' do

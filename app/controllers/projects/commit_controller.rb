@@ -16,8 +16,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars,
-    only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests, :rapid_diffs]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
@@ -167,6 +166,7 @@ class Projects::CommitController < Projects::ApplicationController
   def rapid_diffs
     return render_404 unless ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
 
+    @files_changed_count = @commit.stats.files
     @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
       @commit,
       diff_view,

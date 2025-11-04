@@ -370,6 +370,11 @@ RSpec.configure do |config|
       # AutoFlow is disabled by default to prevent timing-dependent test failures.
       # Enable explicitly in tests that need it.
       stub_feature_flags(autoflow_enabled: false)
+
+      # Short lived feature flag to enable user-based rollout to internal users before main feature flag
+      # `work_item_planning_view` is rolled out. `work_item_planning_view` is disabled for specific specs, so stubbing
+      # out `work_items_consolidated_list_user` is an easy work around.
+      stub_feature_flags(work_items_consolidated_list_user: false)
     else
       unstub_all_feature_flags
     end

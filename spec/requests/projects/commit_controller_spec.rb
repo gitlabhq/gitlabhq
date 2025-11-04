@@ -152,9 +152,13 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     it 'renders rapid_diffs template' do
       send_request
 
-      expect(assigns(:diffs)).to be_a(Gitlab::Diff::FileCollection::Commit)
-      expect(assigns(:environment)).to be_nil
       expect(response).to render_template(:rapid_diffs)
+    end
+
+    it 'assigns files_changed_count' do
+      send_request
+
+      expect(assigns(:files_changed_count)).to eq(commit.stats.files)
     end
   end
 

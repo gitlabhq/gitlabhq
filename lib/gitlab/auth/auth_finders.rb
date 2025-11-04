@@ -35,6 +35,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include ActionController::HttpAuthentication::Basic
       include ActionController::HttpAuthentication::Token
+      include Gitlab::RackLoadBalancingHelpers
 
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
@@ -341,6 +342,14 @@ module Gitlab
       def find_oauth_access_token
         self.current_token = parsed_oauth_token
         return unless current_token
+
+        # Ensure we use correct load balancing logic in case it's a newly created token
+        load_balancer_stick_request(
+          ::OauthAccessToken,
+          :oauth_token,
+          current_token,
+          hash_id: true
+        )
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         oauth_token = OauthAccessToken.by_token(current_token)

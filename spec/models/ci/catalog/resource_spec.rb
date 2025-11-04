@@ -46,7 +46,6 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   it { is_expected.to delegate_method(:avatar_path).to(:project) }
   it { is_expected.to delegate_method(:star_count).to(:project) }
-  it { is_expected.to delegate_method(:archived).to(:project) }
 
   it { is_expected.to define_enum_for(:state).with_values({ unpublished: 0, published: 1 }) }
 
@@ -271,6 +270,34 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
         it 'does not return any resources' do
           expect(resources).to be_empty
         end
+      end
+    end
+  end
+
+  describe '#archived' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be_with_reload(:root_group) { create(:group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: root_group) }
+    let_it_be_with_reload(:project) { create(:project, namespace: subgroup) }
+    let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project) }
+
+    where(:project_archived, :subgroup_archived, :root_group_archived, :expected_result) do
+      false | false | false | false
+      true  | false | false | true
+      false | true  | false | true
+      false | false | true  | true
+    end
+
+    with_them do
+      before do
+        project.update!(archived: project_archived)
+        subgroup.update!(archived: subgroup_archived)
+        root_group.update!(archived: root_group_archived)
+      end
+
+      it 'returns the expected archived status' do
+        expect(resource.archived).to eq(expected_result)
       end
     end
   end

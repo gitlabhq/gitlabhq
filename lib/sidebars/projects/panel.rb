@@ -21,7 +21,7 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::ProjectInformationMenu.new(context))
         add_menu(Sidebars::Projects::Menus::RepositoryMenu.new(context))
 
-        if context.project&.work_items_consolidated_list_enabled?
+        if context.project&.work_items_consolidated_list_enabled?(context.current_user)
           add_menu(Sidebars::Projects::Menus::WorkItemsMenu.new(context))
         else
           add_menu(Sidebars::Projects::Menus::IssuesMenu.new(context))

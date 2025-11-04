@@ -56,7 +56,7 @@ module Nav
         )
       end
 
-      if can?(current_user, :create_work_item, group) && group&.work_items_consolidated_list_enabled?
+      if can?(current_user, :create_work_item, group) && group&.work_items_consolidated_list_enabled?(current_user)
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'new_group_work_item',
@@ -89,7 +89,7 @@ module Nav
       merge_project = merge_request_source_project_for_project(project)
 
       if show_new_issue_link?(project)
-        if project&.work_items_consolidated_list_enabled?
+        if project&.work_items_consolidated_list_enabled?(current_user)
           menu_items.push(
             ::Gitlab::Nav::TopNavMenuItem.build(
               id: 'new_work_item',

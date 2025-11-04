@@ -352,6 +352,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/projects.css"
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/promotions.css"
+    config.assets.precompile << "page_bundles/rapid_diffs.css"
     config.assets.precompile << "page_bundles/releases.css"
     config.assets.precompile << "page_bundles/remote_development.css"
     config.assets.precompile << "page_bundles/reports.css"

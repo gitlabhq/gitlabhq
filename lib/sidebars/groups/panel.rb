@@ -9,7 +9,7 @@ module Sidebars
 
         add_menu(Sidebars::Groups::Menus::GroupInformationMenu.new(context))
 
-        if context.group&.work_items_consolidated_list_enabled?
+        if context.group&.work_items_consolidated_list_enabled?(context.current_user)
           add_menu(Sidebars::Groups::Menus::WorkItemsMenu.new(context))
         else
           add_menu(Sidebars::Groups::Menus::IssuesMenu.new(context))

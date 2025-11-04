@@ -25,7 +25,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
 
       expect(Ci::Build.sticking)
         .to receive(:find_caught_up_replica)
-        .with(:build, build.id)
+        .with(:build, build.id, hash_id: false)
 
       helper.current_job
 
@@ -59,7 +59,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
 
       expect(Ci::Runner.sticking)
         .to receive(:find_caught_up_replica)
-        .with(:runner, runner.token)
+        .with(:runner, runner.token, hash_id: false)
 
       helper.current_runner
 

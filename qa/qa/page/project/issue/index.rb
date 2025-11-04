@@ -52,8 +52,17 @@ module QA
               # When we no longer use tabs for open/closed/all lists
               click_element('clear-icon')
               click_element('filtered-search-token-segment')
-              click_link('State')
-              click_link('Closed')
+
+              if has_button?('State')
+                click_button('State')
+                within('.gl-filtered-search-suggestion-list') do
+                  click_button('Closed')
+                end
+              else
+                click_link('State')
+                click_link('Closed')
+              end
+
               click_element('search-button')
             end
           end

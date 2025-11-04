@@ -1,0 +1,10 @@
+---
+name: work_items_consolidated_list_user
+description: Control the work items consolidated view for internal GitLab users
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11918
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210360
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578857
+milestone: '18.6'
+group: group::product planning
+type: wip
+default_enabled: false
