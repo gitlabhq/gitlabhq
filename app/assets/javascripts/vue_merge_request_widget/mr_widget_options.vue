@@ -1,5 +1,5 @@
 <script>
-import { isEmpty, clamp } from 'lodash';
+import { isEmpty, clamp, throttle } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -94,14 +94,14 @@ export default {
         return this.pollInterval;
       },
       result(response) {
-        // 7 is the value for when the network status is ready
-        if (response.networkStatus !== 7) return;
-
-        this.pollInterval = this.apolloStateQueryPollingInterval;
-
-        if (!this.initialRequest) {
+        if (!this.initialRequest && response.networkStatus === 6) {
           this.checkStatus(undefined, undefined, false);
         }
+
+        // 7 is the value for when the network status is ready
+        if (response.networkStatus !== 7 || response.error) return;
+
+        this.pollInterval = this.apolloStateQueryPollingInterval();
 
         if (response.data?.project) {
           this.mr.setGraphqlData(response.data.project);
@@ -162,22 +162,6 @@ export default {
     };
   },
   computed: {
-    apolloStateQueryMaxPollingInterval() {
-      return this.startingPollInterval + FOUR_MINUTES_IN_MS;
-    },
-    apolloStateQueryPollingInterval() {
-      if (this.startingPollInterval < 0) {
-        return 0;
-      }
-
-      const unboundedInterval = STATE_QUERY_POLLING_INTERVAL_BACKOFF * this.pollInterval;
-
-      return clamp(
-        unboundedInterval,
-        this.startingPollInterval,
-        this.apolloStateQueryMaxPollingInterval,
-      );
-    },
     shouldRenderApprovals() {
       return !['preparing', 'nothingToMerge'].includes(this.mr.state);
     },
@@ -279,7 +263,7 @@ export default {
       },
     },
     pollInterval(newVal) {
-      if (newVal === 0) {
+      if (!newVal) {
         this.stopPolling();
       }
     },
@@ -360,7 +344,7 @@ export default {
     refetchState() {
       this.$apollo.queries.state.refetch();
     },
-    checkStatus(cb, isRebased, refetch = true) {
+    checkStatus: throttle(function checkStatus(cb, isRebased, refetch = true) {
       if (refetch) {
         this.refetchState();
       }
@@ -382,7 +366,7 @@ export default {
             message: __('Something went wrong. Please try again.'),
           }),
         );
-    },
+    }, STATE_QUERY_POLLING_INTERVAL_DEFAULT),
     setFaviconHelper() {
       if (this.mr.faviconOverlayPath) {
         return setFaviconOverlay(this.mr.faviconOverlayPath);
@@ -517,6 +501,27 @@ export default {
     },
     dismissMigrateFromJenkins() {
       this.mr.isDismissedJenkinsMigration = true;
+    },
+    apolloStateQueryMaxPollingInterval() {
+      return (
+        Math.max(this.startingPollInterval, STATE_QUERY_POLLING_INTERVAL_DEFAULT) +
+        FOUR_MINUTES_IN_MS
+      );
+    },
+    apolloStateQueryPollingInterval() {
+      if (!this.startingPollInterval || this.startingPollInterval <= 0) {
+        return null;
+      }
+
+      const unboundedInterval =
+        STATE_QUERY_POLLING_INTERVAL_BACKOFF *
+        Math.max(STATE_QUERY_POLLING_INTERVAL_DEFAULT, this.pollInterval);
+
+      return clamp(
+        unboundedInterval,
+        this.startingPollInterval,
+        this.apolloStateQueryMaxPollingInterval(),
+      );
     },
   },
 };

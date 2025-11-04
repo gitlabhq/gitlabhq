@@ -2674,9 +2674,6 @@ msgstr ""
 msgid "AICatalog|Duplicate this flow with all its settings and configuration."
 msgstr ""
 
-msgid "AICatalog|Edit"
-msgstr ""
-
 msgid "AICatalog|Edit agent"
 msgstr ""
 
@@ -20640,9 +20637,6 @@ msgid "CurrentUser|Switch to GitLab Next"
 msgstr ""
 
 msgid "CurrentUser|Upgrade subscription"
-msgstr ""
-
-msgid "Currently tracked refs"
 msgstr ""
 
 msgid "Currently unable to fetch data for this pipeline."
@@ -58984,9 +58978,6 @@ msgstr ""
 msgid "SecurityConfiguration|Could not fetch tracked refs. Please refresh the page, or try again later."
 msgstr ""
 
-msgid "SecurityConfiguration|Could not remove tracked ref. Please refresh the page, or try again later."
-msgstr ""
-
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
 msgstr ""
 
@@ -61711,6 +61702,12 @@ msgstr ""
 msgid "SecurityTrackedRefs|Are you sure you want to remove tracking from this %{refType}?"
 msgstr ""
 
+msgid "SecurityTrackedRefs|Could not remove tracked ref. Please refresh the page, or try again later."
+msgstr ""
+
+msgid "SecurityTrackedRefs|Currently tracked refs"
+msgstr ""
+
 msgid "SecurityTrackedRefs|If you do not archive associated vulnerabilities, the data for %{count} vulnerability will be permanently deleted."
 msgid_plural "SecurityTrackedRefs|If you do not archive associated vulnerabilities, the data for %{count} vulnerabilities will be permanently deleted."
 msgstr[0] ""
@@ -61726,6 +61723,9 @@ msgid "SecurityTrackedRefs|Remove tracking for %{refType}"
 msgstr ""
 
 msgid "SecurityTrackedRefs|The default ref cannot be removed from being tracked"
+msgstr ""
+
+msgid "SecurityTrackedRefs|Track new ref"
 msgstr ""
 
 msgid "SecurityTrackedRefs|branch"
@@ -69496,9 +69496,6 @@ msgid "Track important events in your group."
 msgstr ""
 
 msgid "Track important events in your project."
-msgstr ""
-
-msgid "Track new ref"
 msgstr ""
 
 msgid "Track time with quick actions"

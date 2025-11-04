@@ -104,20 +104,33 @@ RUN make gitlab-topology-service-setup
 FROM base AS gitlab-http-router
 RUN make gitlab-http-router-setup
 
-# Build duo-next frontend island
+# Build frontend islands
 #
-FROM base AS frontend-duo-next
+FROM base AS frontend-islands
 
-WORKDIR ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next
+WORKDIR ${GDK_DIR}/gitlab/ee/frontend_islands
 
-COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/package.json ./
-COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/yarn.lock ./
+# Copy workspace root files
+COPY --chown=gdk:gdk ee/frontend_islands/package.json ./
+COPY --chown=gdk:gdk ee/frontend_islands/yarn.lock ./
 
+# Copy all apps and packages.
+COPY --chown=gdk:gdk ee/frontend_islands/apps/ ./apps/
+COPY --chown=gdk:gdk ee/frontend_islands/packages/ ./packages/
+
+# Install dependencies for entire workspace
 RUN yarn install --frozen-lockfile
 
-COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/ ./
-
+# Build all apps
 RUN yarn build:prod
+
+# Collect dists using reliable shell commands (using absolute paths)
+RUN mkdir -p ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist && \
+    find apps -name "dist" -type d | while read dist_path; do \
+        app_name=$(echo "$dist_path" | cut -d'/' -f2); \
+        mkdir -p "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name" && \
+        cp -r "$dist_path/"* "${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/$app_name/"; \
+    done
 
 # Compile frontend assets
 #
@@ -135,7 +148,7 @@ ENV SKIP_FRONTEND_ISLANDS_BUILD=true
 WORKDIR ${GDK_DIR}/gitlab
 
 COPY --chown=gdk:gdk ./ ./
-COPY --from=frontend-duo-next --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next/dist ./ee/frontend_islands/apps/duo_next/dist
+COPY --from=frontend-islands --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/ ./gitlab/ee/frontend_islands/apps
 
 RUN --mount=type=bind,target=node_modules,source=${GDK_DIR}/gitlab/node_modules,from=gitlab-node-modules \
     cp config/gitlab.yml.example config/gitlab.yml; \
@@ -162,7 +175,7 @@ COPY --from=workhorse --chown=gdk:gdk ${GDK_DIR}/gitlab/workhorse ./gitlab/workh
 # https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/2802
 COPY --from=gitlab-topology-service --chown=gdk:gdk ${GDK_DIR}/gitlab-topology-service ./gitlab-topology-service
 # Copy compiled frontend assets and island apps
-COPY --from=frontend-assets --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next/dist ./gitlab/ee/frontend_islands/apps/duo_next/dist
+COPY --from=frontend-islands --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/islands_dist/ ./gitlab/ee/frontend_islands/apps
 COPY --from=frontend-assets --chown=gdk:gdk ${GDK_DIR}/gitlab/public/assets ./gitlab/public/assets
 # Copy all mise tools, gems and node_modules for main rails app
 COPY --from=gitlab-node-modules --chown=gdk:gdk ${GDK_DIR}/gitlab/node_modules ./gitlab/node_modules/

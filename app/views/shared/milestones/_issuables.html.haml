@@ -11,7 +11,7 @@
     .gl-ml-3.gl-shrink-0.gl-font-bold.gl-whitespace-nowrap.gl-text-subtle
       - if show_counter
         %span
-          = sprite_icon('issues', css_class: 'gl-align-text-bottom')
+          = sprite_icon('issue-type-issue', css_class: 'gl-align-text-bottom')
           = number_with_delimiter(issuables.length)
       = render_if_exists "shared/milestones/issuables_weight", issuables: issuables
   - c.with_body do

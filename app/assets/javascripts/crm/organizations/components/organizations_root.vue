@@ -229,7 +229,7 @@ export default {
               v-gl-tooltip.hover.bottom="$options.i18n.issuesButtonLabel"
               class="gl-mr-3"
               data-testid="issues-link"
-              icon="issues"
+              icon="issue-type-issue"
               :aria-label="$options.i18n.issuesButtonLabel"
               :href="getIssuesPath(groupIssuesPath, id)"
             />

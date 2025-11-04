@@ -12,6 +12,18 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       const response = await axios.get(url);
       this.discussions = response.data.discussions;
     },
+    toggleDiscussionReplies(discussion) {
+      // eslint-disable-next-line no-param-reassign
+      discussion.repliesCollapsed = !discussion.repliesCollapsed;
+    },
+    expandDiscussionReplies(discussion) {
+      // eslint-disable-next-line no-param-reassign
+      discussion.repliesCollapsed = false;
+    },
+    // eslint-disable-next-line no-unused-vars
+    saveNote(endpoint, data) {
+      return new Promise();
+    },
   },
   getters: {
     getDiscussionById() {

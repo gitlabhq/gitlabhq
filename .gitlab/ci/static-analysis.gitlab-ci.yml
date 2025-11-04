@@ -30,6 +30,7 @@ static-analysis:
     SETUP_DB: "true"
   script:
     - yarn_install_script
+    - scripts/install_frontend_islands
     - fail_on_warnings scripts/static-analysis
 
 static-verification-with-database:

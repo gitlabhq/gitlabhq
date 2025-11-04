@@ -11,6 +11,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
   let(:diffs_stats_endpoint) { '/diffs_stats' }
   let(:diff_files_endpoint) { '/diff_files_metadata' }
   let(:diff_file_endpoint) { '/diff_file' }
+  let(:user_permissions) { { can_create_note: true } }
   let(:diff_view) { :inline }
   let(:should_sort_metadata_files) { false }
   let(:show_whitespace) { true }
@@ -27,6 +28,7 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
       diff_files_endpoint: diff_files_endpoint,
       diff_file_endpoint: diff_file_endpoint,
       should_sort_metadata_files?: should_sort_metadata_files,
+      user_permissions: user_permissions,
       lazy?: lazy
     )
   end
@@ -45,11 +47,12 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
     end
   end
 
-  it "provides discussions_endpoint" do
+  it "provides app data" do
     render_component
     app = page.find('[data-rapid-diffs]')
     data = Gitlab::Json.parse(app['data-app-data'])
     expect(data['discussions_endpoint']).to eq(discussions_endpoint)
+    expect(data['user_permissions']).to eq(user_permissions.stringify_keys)
   end
 
   it 'preloads discussions_endpoint' do

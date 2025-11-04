@@ -115,4 +115,36 @@ RSpec.describe Ci::Inputs::BaseInput, feature_category: :pipeline_composition do
       end
     end
   end
+
+  describe '#rules' do
+    let(:input) { described_class.new(name: :test_input, spec: spec) }
+
+    context 'when rules are present' do
+      let(:spec) do
+        {
+          type: 'string',
+          rules: [
+            { if: '$[[ inputs.env ]] == "prod"', options: %w[opt1 opt2] }
+          ]
+        }
+      end
+
+      it 'returns the rules with indifferent access' do
+        rules = input.rules
+
+        expect(rules).to be_an(Array)
+        expect(rules.size).to eq(1)
+        expect(rules.first[:if]).to eq('$[[ inputs.env ]] == "prod"')
+        expect(rules.first['if']).to eq('$[[ inputs.env ]] == "prod"')
+      end
+    end
+
+    context 'when rules are not present' do
+      let(:spec) { { type: 'string' } }
+
+      it 'returns nil' do
+        expect(input.rules).to be_nil
+      end
+    end
+  end
 end

@@ -1,4 +1,11 @@
-import { GlAlert, GlBadge, GlButton, GlCard, GlSkeletonLoader } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlButton,
+  GlCard,
+  GlSkeletonLoader,
+  GlKeysetPagination,
+} from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -10,7 +17,7 @@ import RefTrackingList, {
 import RefTrackingListItem from '~/security_configuration/components/ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from '~/security_configuration/components/ref_untracking_confirmation.vue';
 import securityTrackedRefsQuery from '~/security_configuration/graphql/security_tracked_refs.query.graphql';
-import { createTrackedRef } from '../mock_data';
+import { createTrackedRef, createMockTrackedRefsResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -44,15 +51,9 @@ const mockTrackedRefs = [
   }),
 ];
 
-const mockTrackedRefsResponse = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/1',
-      __typename: 'Project',
-      securityTrackedRefs: mockTrackedRefs,
-    },
-  },
-};
+const mockTrackedRefsResponse = createMockTrackedRefsResponse({
+  nodes: mockTrackedRefs,
+});
 
 describe('RefTrackingList component', () => {
   let wrapper;
@@ -83,6 +84,7 @@ describe('RefTrackingList component', () => {
   const findSkeletonLoaders = () => wrapper.findAllComponents(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
   const findUntrackConfirmation = () => wrapper.findComponent(RefUntrackingConfirmation);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   const triggerUntrackRefItem = async (refToUntrack) => {
     findRefListItems().at(0).vm.$emit('untrack', refToUntrack);
@@ -104,7 +106,9 @@ describe('RefTrackingList component', () => {
     });
 
     it('renders count badge with current and max values', () => {
-      expect(findCountBadge().text()).toBe(`${mockTrackedRefs.length}/${MAX_TRACKED_REFS}`);
+      expect(findCountBadge().text()).toBe(
+        `${mockTrackedRefsResponse.data.project.securityTrackedRefs.count}/${MAX_TRACKED_REFS}`,
+      );
     });
 
     it('renders Track new ref button', () => {
@@ -134,6 +138,24 @@ describe('RefTrackingList component', () => {
         expect(findRefListItems().at(index).props('trackedRef')).toEqual(trackedRef);
       },
     );
+  });
+
+  describe('data querying', () => {
+    const queryHandler = jest.fn().mockResolvedValue(mockTrackedRefsResponse);
+
+    beforeEach(async () => {
+      createComponent({ queryHandler });
+      await waitForPromises();
+    });
+
+    it('queries the correct data when the component is created', () => {
+      expect(queryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          first: MAX_TRACKED_REFS,
+          fullPath: 'namespace/project',
+        }),
+      );
+    });
   });
 
   describe('loading state', () => {
@@ -239,6 +261,95 @@ describe('RefTrackingList component', () => {
       await nextTick();
 
       expect(findUntrackConfirmation().props('refToUntrack')).toBeNull();
+    });
+  });
+
+  describe('pagination', () => {
+    it('does not show the pagination when there is no next page', async () => {
+      createComponent({
+        queryHandler: jest.fn().mockResolvedValue(
+          createMockTrackedRefsResponse({
+            nodes: mockTrackedRefs,
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+            },
+          }),
+        ),
+      });
+      await waitForPromises();
+
+      expect(findPagination().exists()).toBe(false);
+    });
+
+    describe('when there are more pages', () => {
+      const queryHandler = jest.fn().mockResolvedValue(
+        createMockTrackedRefsResponse({
+          nodes: mockTrackedRefs,
+          hasNextPage: true,
+          hasPreviousPage: true,
+          startCursor: 'start-cursor',
+          endCursor: 'end-cursor',
+        }),
+      );
+
+      beforeEach(async () => {
+        createComponent({ queryHandler });
+        await waitForPromises();
+      });
+
+      it('shows the pagination', () => {
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      it('passes the correct props to the pagination', () => {
+        expect(findPagination().props()).toMatchObject({
+          hasNextPage: true,
+          hasPreviousPage: true,
+          startCursor: 'start-cursor',
+          endCursor: 'end-cursor',
+        });
+      });
+
+      it('queries the next page when the next page button is clicked', async () => {
+        findPagination().vm.$emit('next');
+        await waitForPromises();
+
+        expect(queryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            first: MAX_TRACKED_REFS,
+            after: 'end-cursor',
+            last: null,
+            before: null,
+          }),
+        );
+      });
+
+      it('queries the previous page when the previous page button is clicked', async () => {
+        findPagination().vm.$emit('prev');
+        await waitForPromises();
+
+        expect(queryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            last: MAX_TRACKED_REFS,
+            before: 'start-cursor',
+            first: null,
+            after: null,
+          }),
+        );
+      });
+
+      it.each(['next', 'prev'])(
+        'shows the loading state when the %s page is requested',
+        async (direction) => {
+          findPagination().vm.$emit(direction);
+          await nextTick();
+
+          expect(findSkeletonLoaders()).toHaveLength(4);
+        },
+      );
     });
   });
 });

@@ -6,6 +6,11 @@ module RapidDiffs
 
     presents ::Commit, as: :resource
 
+    def initialize(subject, diff_view, diff_options, request_params = nil, current_user = nil)
+      super(subject, diff_view, diff_options, request_params)
+      @current_user = current_user
+    end
+
     def diffs_stats_endpoint
       diffs_stats_project_commit_path(resource.project, resource.id)
     end
@@ -30,6 +35,12 @@ module RapidDiffs
         offset: offset,
         view: diff_view
       )
+    end
+
+    def user_permissions
+      {
+        can_create_note: can?(@current_user, :create_note, resource.project)
+      }
     end
   end
 end

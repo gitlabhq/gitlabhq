@@ -11,7 +11,7 @@ source "$(dirname "$0")/utils.sh"
 
 function build_frontend_islands() {
   local original_dir=$(pwd)
-  local fe_island_dir="ee/frontend_islands/apps/duo_next"
+  local fe_islands_dir="ee/frontend_islands"
 
   if [[ ! -d "ee/" ]]; then
     echo "Not building the frontend islands in FOSS only mode. Exiting early"
@@ -21,26 +21,20 @@ function build_frontend_islands() {
   section_start "frontend-islands-check" "Checking for frontend islands"
 
   # Check if frontend islands directory exists
-  if [ ! -d "ee/frontend_islands/apps/duo_next" ]; then
-    echoinfo "No frontend islands found at ee/frontend_islands/apps/duo_next, skipping..."
+  if [ ! -d "${fe_islands_dir}/" ]; then
+    echoinfo "No frontend islands found at ${fe_islands_dir}, skipping..."
     section_end "frontend-islands-check"
     return 0
-  fi
-
-  # Check if frontend islands's dependencies are installed
-  # Checking for the integrity file instead of just the folder that can be empty
-  if [ ! -f "ee/frontend_islands/apps/duo_next/node_modules/.yarn-integrity" ]; then
-    echoinfo "Frontend islands dependencies not found, installing..."
-    cd "$fe_island_dir"
-    retry yarn install --frozen-lockfile
-    cd "$original_dir"
   fi
 
   echoinfo "Found frontend islands directory, proceeding with build..."
   section_end "frontend-islands-check"
 
+  # Install dependencies first using the dedicated script
+  "$(dirname "$0")/install_frontend_islands"
+
   # Navigate to the frontend island
-  cd "$fe_island_dir"
+  cd "$fe_islands_dir"
 
   section_start "frontend-islands-build" "Building frontend island"
   # Use direct execution instead of retry to fail fast on build errors
@@ -50,16 +44,6 @@ function build_frontend_islands() {
     return 1
   fi
   section_end "frontend-islands-build"
-
-  # Verify the build output
-  if [ -f "dist/duo_next.js" ]; then
-    local file_size=$(du -h dist/duo_next.js | cut -f1)
-    echosuccess "Frontend island built successfully at: $(pwd)/dist/duo_next.js (${file_size})"
-  else
-    echoerr "Expected build output not found at dist/duo_next.js"
-    cd "$original_dir"
-    return 1
-  fi
 
   # Return to project root
   cd "$original_dir"

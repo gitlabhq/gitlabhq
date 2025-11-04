@@ -30,7 +30,9 @@ module API
             desc: 'The scope of pipeline schedules',
             documentation: { example: 'active' }
         end
+
         # rubocop: disable CodeReuse/ActiveRecord
+        route_setting :authorization, permissions: :read_pipeline_schedule, boundary_type: :project
         get ':id/pipeline_schedules' do
           authorize! :read_pipeline_schedule, user_project
 
@@ -51,6 +53,8 @@ module API
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
+
+        route_setting :authorization, permissions: :read_pipeline_schedule, boundary_type: :project
         get ':id/pipeline_schedules/:pipeline_schedule_id' do
           present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails, user: current_user
         end
@@ -67,6 +71,8 @@ module API
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule ID', documentation: { example: 13 }
         end
+
+        route_setting :authorization, permissions: [:read_pipeline_schedule, :read_pipeline], boundary_type: :project
         get ':id/pipeline_schedules/:pipeline_schedule_id/pipelines' do
           present paginate(pipeline_schedule.pipelines), with: Entities::Ci::PipelineBasic
         end
@@ -91,6 +97,8 @@ module API
             requires :value, types: [String, Array, Numeric, TrueClass, FalseClass], desc: 'The value of the input', documentation: { example: 'blue-green' }
           end
         end
+
+        route_setting :authorization, permissions: :create_pipeline_schedule, boundary_type: :project
         post ':id/pipeline_schedules' do
           authorize! :create_pipeline_schedule, user_project
 
@@ -137,6 +145,8 @@ module API
             end
           end
         end
+
+        route_setting :authorization, permissions: :update_pipeline_schedule, boundary_type: :project
         put ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :update_pipeline_schedule, pipeline_schedule
 
@@ -169,6 +179,8 @@ module API
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
+
+        route_setting :authorization, permissions: :own_pipeline_schedule, boundary_type: :project
         post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
           authorize! :admin_pipeline_schedule, pipeline_schedule
 
@@ -194,6 +206,8 @@ module API
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
+
+        route_setting :authorization, permissions: :delete_pipeline_schedule, boundary_type: :project
         delete ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :admin_pipeline_schedule, pipeline_schedule
 
@@ -212,6 +226,8 @@ module API
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
+
+        route_setting :authorization, permissions: :play_pipeline_schedule, boundary_type: :project
         post ':id/pipeline_schedules/:pipeline_schedule_id/play' do
           authorize! :play_pipeline_schedule, pipeline_schedule
 
@@ -242,6 +258,8 @@ module API
           optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var',
             documentation: { default: 'env_var' }
         end
+
+        route_setting :authorization, permissions: :create_pipeline_schedule_variable, boundary_type: :project
         post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
           authorize! :set_pipeline_variables, user_project
           authorize! :update_pipeline_schedule, pipeline_schedule
@@ -275,6 +293,8 @@ module API
           optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file',
             documentation: { default: 'env_var' }
         end
+
+        route_setting :authorization, permissions: :update_pipeline_schedule_variable, boundary_type: :project
         put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
           authorize! :set_pipeline_variables, user_project
           authorize! :update_pipeline_schedule, pipeline_schedule
@@ -302,6 +322,8 @@ module API
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
           requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
         end
+
+        route_setting :authorization, permissions: :delete_pipeline_schedule_variable, boundary_type: :project
         delete ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
           authorize! :set_pipeline_variables, user_project
           authorize! :admin_pipeline_schedule, pipeline_schedule

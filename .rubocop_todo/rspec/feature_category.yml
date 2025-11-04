@@ -654,7 +654,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/approval_state_spec.rb'
     - 'ee/spec/models/approval_wrapped_any_approver_rule_spec.rb'
     - 'ee/spec/models/approvals/wrapped_rule_set_spec.rb'
-    - 'ee/spec/models/approver_group_spec.rb'
     - 'ee/spec/models/board_assignee_spec.rb'
     - 'ee/spec/models/board_label_spec.rb'
     - 'ee/spec/models/board_spec.rb'

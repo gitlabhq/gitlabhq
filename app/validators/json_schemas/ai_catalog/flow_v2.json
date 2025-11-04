@@ -1,0 +1,537 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Flow Registry v1 Configuration Schema",
+  "description": "JSON Schema for validating Flow Registry v1 YAML configuration files",
+  "type": "object",
+  "required": [
+    "version",
+    "environment",
+    "components",
+    "routers",
+    "flow",
+    "yaml_definition"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v1",
+      "description": "Framework version - must be 'v1' for current stable version"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "ambient"
+      ],
+      "description": "Flow environment declaring expected level of interaction between human and AI agent"
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "description": "List of components that make up the flow",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/AgentComponent"
+          },
+          {
+            "$ref": "#/definitions/DeterministicStepComponent"
+          },
+          {
+            "$ref": "#/definitions/OneOffComponent"
+          }
+        ]
+      }
+    },
+    "routers": {
+      "type": "array",
+      "description": "Define how components connect to each other",
+      "items": {
+        "$ref": "#/definitions/Router"
+      }
+    },
+    "flow": {
+      "type": "object",
+      "description": "Specify the entry point component and other flow options",
+      "properties": {
+        "entry_point": {
+          "type": "string",
+          "description": "Name of first component to run. Examples: 'main_agent', 'initial_step'",
+          "pattern": "^[a-zA-Z0-9_]+$"
+        },
+        "inputs": {
+          "type": "array",
+          "description": "Optional additional context schema definitions that can be passed to the flow (in addition to the 'goal')",
+          "items": {
+            "$ref": "#/definitions/FlowInputCategory"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "prompts": {
+      "type": "array",
+      "description": "List of inline prompt templates for flow components to use",
+      "items": {
+        "$ref": "#/definitions/LocalPrompt"
+      }
+    },
+    "yaml_definition": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "ComponentName": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_]+$",
+      "description": "Component name must use alphanumeric characters or underscore. Must not include characters such as : and . Examples: 'my_agent', 'step1', 'dataProcessor'"
+    },
+    "AgentComponent": {
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "prompt_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/ComponentName"
+        },
+        "type": {
+          "type": "string",
+          "const": "AgentComponent"
+        },
+        "prompt_id": {
+          "type": "string",
+          "description": "ID of the prompt template from either the prompt registry or locally defined prompts"
+        },
+        "prompt_version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[~^]?\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "description": "Semantic version constraint (e.g., '^1.0.0')"
+            },
+            {
+              "type": "null",
+              "description": "Use locally defined prompt from flow YAML"
+            }
+          ]
+        },
+        "inputs": {
+          "type": "array",
+          "description": "List of input data sources",
+          "default": [
+            "context:goal"
+          ],
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Simple input reference"
+              },
+              {
+                "$ref": "#/definitions/InputMapping"
+              }
+            ]
+          }
+        },
+        "toolset": {
+          "type": "array",
+          "description": "List of tools available to the agent. Examples: ['read_file', 'list_dir', 'edit_file']",
+          "items": {
+            "type": "string",
+            "description": "Tool name from tools registry"
+          }
+        },
+        "ui_log_events": {
+          "type": "array",
+          "description": "UI logging configuration",
+          "items": {
+            "type": "string",
+            "enum": [
+              "on_agent_final_answer",
+              "on_tool_execution_success",
+              "on_tool_execution_failed"
+            ]
+          }
+        },
+        "ui_role_as": {
+          "type": "string",
+          "enum": [
+            "agent",
+            "tool"
+          ],
+          "description": "Display role in UI"
+        }
+      }
+    },
+    "DeterministicStepComponent": {
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "tool_name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/ComponentName"
+        },
+        "type": {
+          "type": "string",
+          "const": "DeterministicStepComponent"
+        },
+        "tool_name": {
+          "type": "string",
+          "description": "Name of the single tool to execute"
+        },
+        "toolset": {
+          "type": "array",
+          "description": "Toolset containing the tool to be executed",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "description": "List of input data sources to extract tool parameters",
+          "default": [],
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Simple input reference. Examples: 'context:goal'"
+              },
+              {
+                "$ref": "#/definitions/InputMapping"
+              }
+            ]
+          }
+        },
+        "ui_log_events": {
+          "type": "array",
+          "description": "UI logging configuration for displaying tool execution",
+          "items": {
+            "type": "string",
+            "enum": [
+              "on_tool_execution_success",
+              "on_tool_execution_failed"
+            ]
+          }
+        },
+        "ui_role_as": {
+          "type": "string",
+          "enum": [
+            "agent",
+            "tool"
+          ],
+          "default": "tool",
+          "description": "Display role in UI"
+        }
+      }
+    },
+    "OneOffComponent": {
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "prompt_id",
+        "toolset"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/ComponentName"
+        },
+        "type": {
+          "type": "string",
+          "const": "OneOffComponent"
+        },
+        "prompt_id": {
+          "type": "string",
+          "description": "ID of the prompt template from either the prompt registry or locally defined prompts"
+        },
+        "prompt_version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[~^]?\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "description": "Semantic version constraint. Examples: '1.0.0' (exact), '^1.2.3' (compatible)"
+            },
+            {
+              "type": "null",
+              "description": "Use locally defined prompt from flow YAML"
+            }
+          ]
+        },
+        "toolset": {
+          "type": "array",
+          "minItems": 1,
+          "description": "List of tools available to the component. Examples: ['read_file', 'list_dir', 'edit_file']",
+          "items": {
+            "type": "string",
+            "description": "Tool name from tools registry"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "description": "List of input data sources",
+          "default": [
+            "context:goal"
+          ],
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Simple input reference. Examples: 'context:goal'"
+              },
+              {
+                "$ref": "#/definitions/InputMapping"
+              }
+            ]
+          }
+        },
+        "max_correction_attempts": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 3,
+          "description": "Maximum number of retry attempts for failed tool executions"
+        },
+        "ui_log_events": {
+          "type": "array",
+          "description": "UI logging configuration for displaying tool execution progress",
+          "items": {
+            "type": "string",
+            "enum": [
+              "on_tool_call_input",
+              "on_tool_execution_success",
+              "on_tool_execution_failed"
+            ]
+          }
+        }
+      }
+    },
+    "InputMapping": {
+      "type": "object",
+      "required": [
+        "from",
+        "as"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "Source of the input data. Examples: 'context:goal'"
+        },
+        "as": {
+          "type": "string",
+          "description": "Variable name to use in prompt template. Examples: 'user_goal'"
+        },
+        "literal": {
+          "type": "boolean",
+          "description": "Whether the 'from' value should be treated as a literal value"
+        }
+      }
+    },
+    "Router": {
+      "type": "object",
+      "required": [
+        "from"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "Source component name. Examples: 'main_agent', 'data_processor'"
+        },
+        "to": {
+          "type": "string",
+          "description": "Target component name or 'end'. Examples: 'next_step', 'error_handler', 'end'"
+        },
+        "condition": {
+          "$ref": "#/definitions/RouterCondition"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "to"
+          ]
+        },
+        {
+          "required": [
+            "condition"
+          ]
+        }
+      ]
+    },
+    "RouterCondition": {
+      "type": "object",
+      "required": [
+        "input",
+        "routes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Input to evaluate for routing decision"
+        },
+        "routes": {
+          "type": "object",
+          "description": "Mapping of condition values to target components",
+          "patternProperties": {
+            ".*": {
+              "type": "string",
+              "description": "Target component name or 'end'"
+            }
+          }
+        }
+      }
+    },
+    "LocalPrompt": {
+      "type": "object",
+      "required": [
+        "prompt_id",
+        "name",
+        "model",
+        "prompt_template"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "prompt_id": {
+          "type": "string",
+          "description": "Unique identifier for the local prompt"
+        },
+        "name": {
+          "type": "string",
+          "description": "name for the local prompt"
+        },
+        "model": {
+          "$ref": "#/definitions/ModelConfig"
+        },
+        "prompt_template": {
+          "$ref": "#/definitions/PromptTemplate"
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "timeout": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Timeout in seconds for prompt execution"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "ModelConfig": {
+      "type": "object",
+      "required": [
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "params": {
+          "type": "object",
+          "required": [
+            "model_class_provider"
+          ],
+          "properties": {
+            "model_class_provider": {
+              "type": "string",
+              "description": "Model provider. Examples: 'anthropic'"
+            },
+            "model": {
+              "type": "string",
+              "description": "Specific model name. Examples: 'claude-3-sonnet'"
+            },
+            "max_tokens": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Maximum number of tokens for model response"
+            }
+          },
+          "additionalProperties": false
+        },
+        "unit_primitives": {
+          "type": "array",
+          "description": "Unit primitives configuration",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "PromptTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "type": "string",
+          "description": "System message template"
+        },
+        "user": {
+          "type": "string",
+          "description": "User message template"
+        },
+        "placeholder": {
+          "type": "string",
+          "enum": [
+            "history"
+          ],
+          "description": "Message placeholder for conversation history"
+        }
+      }
+    },
+    "FlowInputCategory": {
+      "type": "object",
+      "required": [
+        "category",
+        "input_schema"
+      ],
+      "additionalProperties": false,
+      "description": "Defines a category of additional context inputs that can be passed to the flow",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Category name for the additional context. Examples: 'merge_request_info', 'pipeline_info'"
+        },
+        "input_schema": {
+          "type": "object",
+          "description": "Schema definition for the inputs in this category",
+          "patternProperties": {
+            ".*": {
+              "$ref": "#/definitions/FlowInputField"
+            }
+          }
+        }
+      }
+    },
+    "FlowInputField": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "description": "Schema definition for a single input field",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "JSON Schema type for the field. Examples: 'string'"
+        },
+        "format": {
+          "type": "string",
+          "description": "Optional JSON Schema format specifier. Examples: 'uri', 'email', 'date-time'"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description of the field's purpose"
+        }
+      }
+    }
+  }
+}

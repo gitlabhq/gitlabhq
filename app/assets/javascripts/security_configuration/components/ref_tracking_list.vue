@@ -1,5 +1,12 @@
 <script>
-import { GlCard, GlButton, GlBadge, GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import {
+  GlCard,
+  GlButton,
+  GlBadge,
+  GlSkeletonLoader,
+  GlAlert,
+  GlKeysetPagination,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { untrackRefsOptimisticResponse, updateUntrackedRefsCache } from '../graphql/cache_utils';
 import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql';
@@ -7,7 +14,7 @@ import untrackSecurityTrackedRefsMutation from '../graphql/untrack_security_trac
 import RefTrackingListItem from './ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from './ref_untracking_confirmation.vue';
 
-export const MAX_TRACKED_REFS = 16;
+export const MAX_TRACKED_REFS = 3;
 
 export default {
   components: {
@@ -16,6 +23,7 @@ export default {
     GlButton,
     GlBadge,
     GlSkeletonLoader,
+    GlKeysetPagination,
     RefTrackingListItem,
     RefUntrackingConfirmation,
   },
@@ -24,12 +32,26 @@ export default {
     trackedRefs: {
       query: securityTrackedRefs,
       variables() {
+        const { after, before } = this.pageCursor;
+
         return {
           fullPath: this.projectFullPath,
+          first: before ? null : MAX_TRACKED_REFS,
+          last: before ? MAX_TRACKED_REFS : null,
+          after,
+          before,
         };
       },
       update(data) {
-        return data.project?.securityTrackedRefs || [];
+        return data.project.securityTrackedRefs.nodes || [];
+      },
+      result({ data }) {
+        if (data) {
+          const { pageInfo, count } = data.project.securityTrackedRefs;
+
+          this.pageInfo = pageInfo;
+          this.totalCount = count;
+        }
       },
       error() {
         this.hasFetchError = true;
@@ -46,14 +68,26 @@ export default {
       refToUntrack: null,
       hasFetchError: false,
       hasUntrackError: false,
+      totalCount: null,
+      pageCursor: {
+        after: null,
+        before: null,
+      },
+      pageInfo: {},
     };
   },
   computed: {
-    currentCount() {
-      return this.trackedRefs.length;
-    },
     isLoading() {
       return this.$apollo.queries.trackedRefs.loading;
+    },
+    hasPreviousPage() {
+      return Boolean(this.pageInfo.hasPreviousPage);
+    },
+    hasNextPage() {
+      return Boolean(this.pageInfo.hasNextPage);
+    },
+    showPagination() {
+      return this.hasPreviousPage || this.hasNextPage;
     },
   },
   methods: {
@@ -81,7 +115,7 @@ export default {
       } catch {
         this.hasUntrackError = true;
         this.errorMessage = s__(
-          'SecurityConfiguration|Could not remove tracked ref. Please refresh the page, or try again later.',
+          'SecurityTrackedRefs|Could not remove tracked ref. Please refresh the page, or try again later.',
         );
       } finally {
         this.closeUntrackConfirmation();
@@ -92,6 +126,14 @@ export default {
     },
     closeUntrackConfirmation() {
       this.refToUntrack = null;
+    },
+    goToNextPage() {
+      this.pageCursor.after = this.pageInfo.endCursor;
+      this.pageCursor.before = null;
+    },
+    goToPreviousPage() {
+      this.pageCursor.before = this.pageInfo.startCursor;
+      this.pageCursor.after = null;
     },
   },
   MAX_TRACKED_REFS,
@@ -104,17 +146,17 @@ export default {
       <div class="gl-flex gl-items-center gl-justify-between" data-testid="tracked-refs-header">
         <div class="gl-flex gl-items-center gl-gap-2">
           <h3 class="gl-my-0 gl-text-base" data-testid="tracked-refs-title">
-            {{ __('Currently tracked refs') }}
+            {{ s__('SecurityTrackedRefs|Currently tracked refs') }}
           </h3>
           <gl-badge variant="neutral"
-            >{{ isLoading || hasFetchError ? '-' : currentCount }}/{{
-              $options.MAX_TRACKED_REFS
-            }}</gl-badge
+            >{{ totalCount === null ? '-' : totalCount }}/{{ $options.MAX_TRACKED_REFS }}</gl-badge
           >
         </div>
         <!-- The functionality to track new refs is handled in a separate issue -->
         <!-- See https://gitlab.com/gitlab-org/gitlab/-/issues/577515 -->
-        <gl-button variant="confirm" size="small">{{ __('Track new ref') }}</gl-button>
+        <gl-button variant="confirm" size="small">{{
+          s__('SecurityTrackedRefs|Track new ref')
+        }}</gl-button>
       </div>
     </template>
 
@@ -144,6 +186,7 @@ export default {
         v-for="ref in trackedRefs"
         :key="ref.id"
         :tracked-ref="ref"
+        class="gl-min-h-[5rem]"
         @untrack="openUntrackConfirmation"
       />
     </ul>
@@ -152,5 +195,18 @@ export default {
       @confirm="untrackRef"
       @cancel="closeUntrackConfirmation"
     />
+
+    <template v-if="showPagination" #footer>
+      <gl-keyset-pagination
+        :has-previous-page="pageInfo.hasPreviousPage"
+        :has-next-page="pageInfo.hasNextPage"
+        :start-cursor="pageInfo.startCursor"
+        :end-cursor="pageInfo.endCursor"
+        class="gl-flex gl-items-center gl-justify-center"
+        data-testid="pagination-controls"
+        @prev="goToPreviousPage"
+        @next="goToNextPage"
+      />
+    </template>
   </gl-card>
 </template>

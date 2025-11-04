@@ -1,5 +1,11 @@
 extend type Project {
-  securityTrackedRefs: [LocalTrackedRef!]
+  securityTrackedRefs(after: String, before: String): LocalTrackedRefConnection
+}
+
+type LocalTrackedRefConnection {
+  nodes: [LocalTrackedRef!]!
+  pageInfo: LocalPageInfo!
+  count: Int!
 }
 
 type LocalTrackedCommit {

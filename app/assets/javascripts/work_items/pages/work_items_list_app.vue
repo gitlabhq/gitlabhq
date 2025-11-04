@@ -624,7 +624,7 @@ export default {
         tokens.push({
           type: TOKEN_TYPE_TYPE,
           title: TOKEN_TITLE_TYPE,
-          icon: 'issues',
+          icon: 'issue-type-issue',
           unique: true,
           token: GlFilteredSearchToken,
           operators: OPERATORS_IS_NOT,

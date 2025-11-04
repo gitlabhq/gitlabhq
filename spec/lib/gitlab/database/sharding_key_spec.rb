@@ -26,11 +26,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       'abuse_trust_scores.user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553436
       *['todos.project_id', 'todos.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562437
-      *[
-        'bulk_import_trackers.organization_id',
-        'bulk_import_trackers.project_id',
-        'bulk_import_trackers.namespace_id'
-      ], # https://gitlab.com/gitlab-org/gitlab/-/issues/560846
       *uploads_and_partitions,
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       *['labels.group_id', 'labels.project_id', 'labels.organization_id'], # NOT NULL constraint NOT VALID

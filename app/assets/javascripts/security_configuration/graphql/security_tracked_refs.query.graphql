@@ -1,20 +1,37 @@
-query getSecurityTrackedRefs($fullPath: ID!) {
+query getSecurityTrackedRefs(
+  $fullPath: ID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
   project(fullPath: $fullPath) {
     id
-    securityTrackedRefs @client {
-      id
-      name
-      refType
-      isDefault
-      isProtected
-      commit {
-        sha
-        shortId
-        title
-        authoredDate
-        webPath
+    securityTrackedRefs(first: $first, last: $last, after: $after, before: $before) @client {
+      count
+      nodes {
+        id
+        name
+        refType
+        isDefault
+        isProtected
+        commit {
+          sha
+          shortId
+          title
+          authoredDate
+          webPath
+        }
+        vulnerabilitiesCount
       }
-      vulnerabilitiesCount
+      # Note: we can't use the shared page info fragment here because we are using @client and mockApolloProvider can't handle the combination
+      # so once we remove the @client directive, we can use the shared page info fragment again
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
     }
   }
 }

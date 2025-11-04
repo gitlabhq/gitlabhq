@@ -43,6 +43,17 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
       end
     end
 
+    context 'ensure that we have unique worker processing each parent table' do
+      it 'has unique worker per parent table' do
+        definitions_by_table = described_class.definitions_by_table
+        definitions_by_table.each do |parent_table, definitions|
+          error = "expected to have the same worker for all definitions for parent table '#{parent_table}'"
+          worker_classes = definitions.map { |definition| definition.options[:worker_class] }.uniq
+          expect(worker_classes).to be_one, error
+        end
+      end
+    end
+
     context 'ensure no partitions are included' do
       let(:all_source_tables) do
         YAML

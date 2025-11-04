@@ -584,7 +584,7 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('Apollo query', () => {
-        const interval = 5;
+        const interval = 5000;
         const data = 'foo';
         const mockCheckStatus = jest.fn().mockResolvedValue({ data });
         const mockSetGraphqlData = jest.fn();

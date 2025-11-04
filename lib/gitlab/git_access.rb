@@ -342,7 +342,7 @@ module Gitlab
         raise ForbiddenError, error_message(:read_only)
       end
 
-      if project&.archived?
+      if project&.self_or_ancestors_archived?
         raise ForbiddenError, error_message(:archived)
       end
 

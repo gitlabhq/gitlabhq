@@ -40,6 +40,17 @@ module Types
         field :regex, GraphQL::Types::String,
           null: true,
           description: 'Regular expression pattern that the input value must match if provided.'
+
+        field :rules, [Types::Ci::Inputs::RuleType],
+          null: true,
+          experiment: { milestone: '18.6' },
+          description: 'Conditional rules for dynamic input options.'
+
+        def rules
+          return unless object.respond_to?(:rules)
+
+          object.rules
+        end
       end
     end
   end

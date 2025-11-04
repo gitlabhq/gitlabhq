@@ -456,11 +456,11 @@
 .fe-island-node-modules-cache: &fe-island-node-modules-cache
   key:
     files:
-      - ee/frontend_islands/apps/duo_next/yarn.lock
-      - ee/frontend_islands/apps/duo_next/package.json
+      - ee/frontend_islands/yarn.lock
+      - ee/frontend_islands/**/package.json
     prefix: fe-island-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
   paths:
-    - ee/frontend_islands/apps/duo_next/node_modules/
+    - ee/frontend_islands/node_modules/
   policy: pull
 
 .assets-cache: &assets-cache
@@ -556,6 +556,7 @@
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
     - *rubocop-cache
+    - *fe-island-node-modules-cache
 
 .rubocop-job-cache:
   cache:

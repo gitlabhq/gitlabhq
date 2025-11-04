@@ -20,6 +20,22 @@ describe('diffDiscussions store', () => {
     });
   });
 
+  describe('toggleDiscussionReplies', () => {
+    it('toggles', () => {
+      useDiffDiscussions().discussions = [{ id: 'abc', repliesCollapsed: false }];
+      useDiffDiscussions().toggleDiscussionReplies(useDiffDiscussions().discussions[0]);
+      expect(useDiffDiscussions().discussions[0].repliesCollapsed).toBe(true);
+    });
+  });
+
+  describe('expandDiscussionReplies', () => {
+    it('expands', () => {
+      useDiffDiscussions().discussions = [{ id: 'abc', repliesCollapsed: true }];
+      useDiffDiscussions().expandDiscussionReplies(useDiffDiscussions().discussions[0]);
+      expect(useDiffDiscussions().discussions[0].repliesCollapsed).toBe(false);
+    });
+  });
+
   describe('getDiscussionById', () => {
     it('returns discussion', () => {
       const targetDiscussion = { id: 'efg' };

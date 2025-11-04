@@ -5,6 +5,8 @@
 /vendor/
 /tmp/
 /sitespeed-result/
+coverage/
+dist/
 
 # ignore stylesheets for now as this clashes with our linter
 *.css

@@ -2660,12 +2660,13 @@ Input type: `AiCatalogFlowCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogflowcreateaddtoprojectwhencreated"></a>`addToProjectWhenCreated` | [`Boolean`](#boolean) | Whether to add to the project upon creation. |
 | <a id="mutationaicatalogflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowcreatedefinition"></a>`definition` | [`String`](#string) | YAML definition for the flow. |
 | <a id="mutationaicatalogflowcreatedescription"></a>`description` | [`String!`](#string) | Description for the flow. |
 | <a id="mutationaicatalogflowcreatename"></a>`name` | [`String!`](#string) | Name for the flow. |
 | <a id="mutationaicatalogflowcreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project for the flow. |
 | <a id="mutationaicatalogflowcreatepublic"></a>`public` | [`Boolean!`](#boolean) | Whether the flow is publicly visible in the catalog. |
 | <a id="mutationaicatalogflowcreaterelease"></a>`release` | [`Boolean`](#boolean) | Whether to release the latest version of the flow. |
-| <a id="mutationaicatalogflowcreatesteps"></a>`steps` | [`[AiCatalogFlowStepsInput!]!`](#aicatalogflowstepsinput) | Steps for the flow. |
+| <a id="mutationaicatalogflowcreatesteps"></a>`steps` | [`[AiCatalogFlowStepsInput!]`](#aicatalogflowstepsinput) | Steps for the flow. |
 
 #### Fields
 
@@ -2739,6 +2740,7 @@ Input type: `AiCatalogFlowUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogflowupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowupdatedefinition"></a>`definition` | [`String`](#string) | YAML definition for the Flow. |
 | <a id="mutationaicatalogflowupdatedescription"></a>`description` | [`String`](#string) | Description for the flow. |
 | <a id="mutationaicatalogflowupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to update. |
 | <a id="mutationaicatalogflowupdatename"></a>`name` | [`String`](#string) | Name for the flow. |
@@ -23887,11 +23889,12 @@ An AI catalog flow version.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogflowversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogflowversiondefinition"></a>`definition` | [`String`](#string) | YAML definition of the flow. |
 | <a id="aicatalogflowversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogflowversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogflowversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogflowversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
-| <a id="aicatalogflowversionsteps"></a>`steps` | [`AiCatalogFlowStepsConnection!`](#aicatalogflowstepsconnection) | Steps of the flow. (see [Connections](#connections)) |
+| <a id="aicatalogflowversionsteps"></a>`steps` | [`AiCatalogFlowStepsConnection`](#aicatalogflowstepsconnection) | Steps of the flow. (see [Connections](#connections)) |
 | <a id="aicatalogflowversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
 | <a id="aicatalogflowversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
 
@@ -25992,6 +25995,19 @@ CI/CD variables for a group.
 | <a id="cigroupvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="cigroupvariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
+### `CiInputsCondition`
+
+Condition node in rule expression tree.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinputsconditionchildren"></a>`children` | [`[CiInputsCondition!]`](#ciinputscondition) | Child conditions for AND/OR nodes. |
+| <a id="ciinputsconditionfield"></a>`field` | [`String`](#string) | Input field name for comparison nodes. |
+| <a id="ciinputsconditionoperator"></a>`operator` | [`String!`](#string) | Operator type: equals, not_equals, AND, OR. |
+| <a id="ciinputsconditionvalue"></a>`value` | [`String`](#string) | Expected value for comparison nodes. |
+
 ### `CiInputsField`
 
 CI input saved for a pipeline schedule.
@@ -26002,6 +26018,19 @@ CI input saved for a pipeline schedule.
 | ---- | ---- | ----------- |
 | <a id="ciinputsfieldname"></a>`name` | [`String!`](#string) | Name of the input. |
 | <a id="ciinputsfieldvalue"></a>`value` | [`CiInputsValue`](#ciinputsvalue) | Value of the input. |
+
+### `CiInputsRule`
+
+Conditional rule for dynamic input options.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinputsruleconditiontree"></a>`conditionTree` | [`CiInputsCondition`](#ciinputscondition) | Parsed condition tree for frontend eval. |
+| <a id="ciinputsruledefault"></a>`default` | [`String`](#string) | Default value when rule matches. |
+| <a id="ciinputsruleif"></a>`if` | [`String`](#string) | Condition expression. |
+| <a id="ciinputsruleoptions"></a>`options` | [`[String!]`](#string) | Available options when rule matches. |
 
 ### `CiInputsSpec`
 
@@ -26017,6 +26046,7 @@ Input for pipeline creation.
 | <a id="ciinputsspecoptions"></a>`options` | [`CiInputsValue`](#ciinputsvalue) | Possible values that the input can take, if provided. |
 | <a id="ciinputsspecregex"></a>`regex` | [`String`](#string) | Regular expression pattern that the input value must match if provided. |
 | <a id="ciinputsspecrequired"></a>`required` | [`Boolean!`](#boolean) | Indicates whether the input is required. |
+| <a id="ciinputsspecrules"></a>`rules` {{< icon name="warning-solid" >}} | [`[CiInputsRule!]`](#ciinputsrule) | **Introduced** in GitLab 18.6. **Status**: Experiment. Conditional rules for dynamic input options. |
 | <a id="ciinputsspectype"></a>`type` | [`CiInputsType!`](#ciinputstype) | Input data type. |
 
 ### `CiInstanceVariable`

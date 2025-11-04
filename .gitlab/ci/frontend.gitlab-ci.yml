@@ -720,3 +720,15 @@ bundle-size-review:
     expire_in: 31d
     paths:
       - bundle-size-review/
+
+untamper-fe-islands-lockfile:
+  extends: untamper-my-lockfile
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+      changes:
+        - ee/frontend_islands/yarn.lock
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - ee/frontend_islands/yarn.lock
+  after_script:
+    - untamper-my-lockfile --lockfile ee/frontend_islands/yarn.lock

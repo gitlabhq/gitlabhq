@@ -237,7 +237,6 @@ create_package
 create_pages
 create_path_lock
 create_pipeline
-create_pipeline_schedule
 create_project
 create_project_secrets
 create_projects
@@ -418,7 +417,6 @@ owner_access
 pages_multiple_versions
 planner_access
 play_job
-play_pipeline_schedule
 project_bot_access
 promote_to_epic
 provide_status_check_response
@@ -620,9 +618,7 @@ read_pages_content
 read_pages_deployments
 read_parent
 read_path_locks
-read_pipeline
 read_pipeline_metadata
-read_pipeline_schedule
 read_pipeline_schedule_variables
 read_pipeline_variable
 read_pod_logs
@@ -830,7 +826,6 @@ update_package
 update_pages
 update_pages_deployments
 update_pipeline
-update_pipeline_schedule
 update_project_member
 update_project_secrets
 update_protected_branch

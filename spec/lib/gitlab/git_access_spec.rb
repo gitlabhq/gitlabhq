@@ -1126,13 +1126,28 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     end
   end
 
-  context 'when the project is archived' do
-    let(:project) { create(:project, :repository, :archived) }
+  context 'when archived' do
+    let(:group) { create(:group, maintainers: user) }
+    let(:project) { create(:project, :repository, group: group) }
 
-    it 'denies push access' do
-      project.add_maintainer(user)
+    context 'when project is archived' do
+      before do
+        project.update!(archived: true)
+      end
 
-      expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:archived])
+      it 'denies push access' do
+        expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:archived])
+      end
+    end
+
+    context 'when group is archived' do
+      before do
+        group.update!(archived: true)
+      end
+
+      it 'denies push access' do
+        expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:archived])
+      end
     end
   end
 

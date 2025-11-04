@@ -204,3 +204,28 @@ export const createTrackedRef = (overrides = {}) => ({
   },
   ...overrides,
 });
+
+export const createMockTrackedRefsResponse = ({
+  nodes = [],
+  hasNextPage = false,
+  hasPreviousPage = false,
+  startCursor = null,
+  endCursor = null,
+} = {}) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      __typename: 'Project',
+      securityTrackedRefs: {
+        nodes,
+        pageInfo: {
+          startCursor,
+          endCursor,
+          hasPreviousPage,
+          hasNextPage,
+        },
+        count: nodes.length,
+      },
+    },
+  },
+});

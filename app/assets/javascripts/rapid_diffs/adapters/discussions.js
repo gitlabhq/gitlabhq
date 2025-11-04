@@ -2,12 +2,19 @@ import Vue from 'vue';
 import { MOUNTED } from '~/rapid_diffs/adapter_events';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { pinia } from '~/pinia/instance';
+import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 
-function mountVueApp(el, id) {
+function mountVueApp(el, id, appData) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
     pinia,
+    provide() {
+      return {
+        userPermissions: appData.userPermissions,
+        endpoints: {},
+      };
+    },
     computed: {
       // this way we ensure reactivity continues to work without rerendering the whole component
       discussion() {
@@ -17,11 +24,7 @@ function mountVueApp(el, id) {
     render(h) {
       if (!this.discussion) return null;
 
-      return h(
-        'div',
-        { attrs: { 'data-discussion-id': this.discussion.id } },
-        `This is a discussion placeholder with an id: ${this.discussion.id}`,
-      );
+      return h(DiffDiscussions, { props: { discussions: [this.discussion] } });
     },
   });
 }
@@ -74,13 +77,13 @@ function addParallelCells(lineRow) {
 }
 
 function createDiscussionMount(createCell) {
-  return ({ diffElement, id, position }) => {
+  return ({ diffElement, id, position, appData }) => {
     if (document.querySelector(`[data-discussion-id="${id}"]`)) return;
 
     const cell = createCell(diffElement, position.old_line, position.new_line);
     const mountTarget = document.createElement('div');
     cell.appendChild(mountTarget);
-    mountVueApp(mountTarget, id);
+    mountVueApp(mountTarget, id, appData);
   };
 }
 
@@ -122,10 +125,10 @@ function createDiscussionsWatcher(oldPath, newPath, callback) {
 
 export const parallelDiscussionsAdapter = {
   [MOUNTED](addCleanup) {
-    const { diffElement } = this;
+    const { diffElement, appData } = this;
     addCleanup(
       createDiscussionsWatcher(this.data.oldPath, this.data.newPath, ({ id, position }) => {
-        mountParallelDiscussion({ diffElement, id, position });
+        mountParallelDiscussion({ diffElement, id, position, appData });
       }),
     );
   },
@@ -133,10 +136,10 @@ export const parallelDiscussionsAdapter = {
 
 export const inlineDiscussionsAdapter = {
   [MOUNTED](addCleanup) {
-    const { diffElement } = this;
+    const { diffElement, appData } = this;
     addCleanup(
       createDiscussionsWatcher(this.data.oldPath, this.data.newPath, ({ id, position }) => {
-        mountInlineDiscussion({ diffElement, id, position });
+        mountInlineDiscussion({ diffElement, id, position, appData });
       }),
     );
   },

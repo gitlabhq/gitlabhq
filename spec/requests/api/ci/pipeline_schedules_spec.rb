@@ -3,15 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integration do
+  let_it_be_with_reload(:project) { create(:project, :repository, public_builds: false) }
+
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:project_owner) { create(:user, owner_of: project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :repository, public_builds: false) }
 
   before do
     project.add_developer(developer)
   end
 
   describe 'GET /projects/:id/pipeline_schedules' do
+    let(:url) { "/projects/#{project.id}/pipeline_schedules" }
+
     context 'authenticated user with valid permissions' do
       let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
 
@@ -31,7 +36,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       end
 
       it 'returns list of pipeline_schedules' do
-        get api("/projects/#{project.id}/pipeline_schedules", developer)
+        get api(url, developer)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -43,13 +48,13 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         create_pipeline_schedules(1)
 
         control = ActiveRecord::QueryRecorder.new do
-          get api("/projects/#{project.id}/pipeline_schedules", developer)
+          get api(url, developer)
         end
 
         create_pipeline_schedules(5)
 
         expect do
-          get api("/projects/#{project.id}/pipeline_schedules", developer)
+          get api(url, developer)
         end.not_to exceed_query_limit(control)
       end
 
@@ -60,7 +65,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           end
 
           it 'returns matched pipeline schedules' do
-            get api("/projects/#{project.id}/pipeline_schedules", developer), params: { scope: target }
+            get api(url, developer), params: { scope: target }
 
             expect(json_response.map { |r| r['active'] }).to all(eq(active?(target)))
           end
@@ -74,7 +79,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'authenticated user with invalid permissions' do
       it 'does not return pipeline_schedules list' do
-        get api("/projects/#{project.id}/pipeline_schedules", user)
+        get api(url, user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -82,15 +87,22 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'does not return pipeline_schedules list' do
-        get api("/projects/#{project.id}/pipeline_schedules")
+        get api(url)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_pipeline_schedule do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api(url, personal_access_token: pat) }
     end
   end
 
   describe 'GET /projects/:id/pipeline_schedules/:pipeline_schedule_id' do
     let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
+    let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}" }
 
     before do
       pipeline_schedule.variables << build(:ci_pipeline_schedule_variable)
@@ -111,7 +123,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
 
         it 'returns pipeline_schedule details' do
-          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          get api(url, user)
 
           expect(response).to return_pipeline_schedule_successfully
           expect(json_response).to have_key('variables')
@@ -122,7 +134,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     shared_examples 'request with schedule ownership' do
       context 'authenticated user with pipeline schedule ownership' do
         it 'returns pipeline_schedule details' do
-          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer)
+          get api(url, developer)
 
           expect(response).to return_pipeline_schedule_successfully
           expect(json_response).to have_key('variables')
@@ -133,7 +145,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     shared_examples 'request with unauthenticated user' do
       context 'with unauthenticated user' do
         it 'does not return pipeline_schedule' do
-          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}")
+          get api(url)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
@@ -156,7 +168,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'authenticated user with no project permissions' do
         it 'does not return pipeline_schedule' do
-          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          get api(url, user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -168,10 +180,16 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
 
         it 'does not return pipeline_schedule' do
-          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          get api(url, user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_pipeline_schedule do
+        let(:user) { maintainer }
+        let(:boundary_object) { project }
+        let(:request) { get api(url, personal_access_token: pat) }
       end
     end
 
@@ -185,7 +203,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'authenticated user with no project permissions' do
         it 'returns pipeline_schedule with no variables' do
-          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          get api(url, user)
 
           expect(response).to return_pipeline_schedule_successfully
           expect(json_response).not_to have_key('variables')
@@ -198,7 +216,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
 
         it 'returns pipeline_schedule with no variables' do
-          get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          get api(url, user)
 
           expect(response).to return_pipeline_schedule_successfully
           expect(json_response).not_to have_key('variables')
@@ -210,7 +228,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         context 'authenticated user with no project permissions' do
           it 'does not return pipeline_schedule' do
-            get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+            get api(url, user)
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -222,7 +240,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           end
 
           it 'returns pipeline_schedule with no variables' do
-            get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+            get api(url, user)
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -314,6 +332,12 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', [:read_pipeline_schedule, :read_pipeline] do
+        let(:boundary_object) { project }
+        let(:user) { maintainer }
+        let(:request) { get api(url, personal_access_token: pat) }
+      end
     end
 
     context 'with public project' do
@@ -348,13 +372,13 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
   describe 'POST /projects/:id/pipeline_schedules' do
     let(:params) { attributes_for(:ci_pipeline_schedule) }
+    let(:url) { "/projects/#{project.id}/pipeline_schedules" }
 
     context 'authenticated user with valid permissions' do
       context 'with required parameters' do
         it 'creates pipeline_schedule' do
           expect do
-            post api("/projects/#{project.id}/pipeline_schedules", developer),
-              params: params
+            post api(url, developer), params: params
           end.to change { project.pipeline_schedules.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
@@ -369,7 +393,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'without required parameters' do
         it 'does not create pipeline_schedule' do
-          post api("/projects/#{project.id}/pipeline_schedules", developer)
+          post api(url, developer)
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -377,7 +401,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when cron has validation error' do
         it 'does not create pipeline_schedule' do
-          post api("/projects/#{project.id}/pipeline_schedules", developer),
+          post api(url, developer),
             params: params.merge('cron' => 'invalid-cron')
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -400,8 +424,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         it 'creates pipeline_schedule with inputs' do
           expect do
-            post api("/projects/#{project.id}/pipeline_schedules", developer),
-              params: input_params
+            post api(url, developer), params: input_params
           end.to change { project.pipeline_schedules.count }.by(1)
              .and change { Ci::PipelineScheduleInput.count }.by(5)
 
@@ -419,7 +442,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when ref has validation error' do
         it 'does not create pipeline_schedule' do
-          post api("/projects/#{project.id}/pipeline_schedules", developer),
+          post api(url, developer),
             params: params.merge('ref' => 'invalid-ref')
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -430,7 +453,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'authenticated user with invalid permissions' do
       it 'does not create pipeline_schedule' do
-        post api("/projects/#{project.id}/pipeline_schedules", user), params: params
+        post api(url, user), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -438,10 +461,16 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'does not create pipeline_schedule' do
-        post api("/projects/#{project.id}/pipeline_schedules"), params: params
+        post api(url), params: params
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_pipeline_schedule do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) { post api(url, personal_access_token: pat), params: params }
     end
   end
 
@@ -450,10 +479,11 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
+    let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}" }
+
     context 'authenticated user with valid permissions' do
       it 'updates cron' do
-        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
-          params: { cron: '1 2 3 4 *' }
+        put api(url, developer), params: { cron: '1 2 3 4 *' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
@@ -470,7 +500,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         it 'adds a new input' do
           expect do
-            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+            put api(url, developer),
               params: { inputs: [{ name: 'NEW_INPUT', value: 'new_value' }] }
           end.to change { pipeline_schedule.inputs.count }.by(1)
 
@@ -480,7 +510,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         it 'updates an existing input' do
           expect do
-            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+            put api(url, developer),
               params: { inputs: [{ name: 'EXISTING_INPUT', value: 'updated_value' }] }
           end.not_to change { pipeline_schedule.inputs.count }
 
@@ -490,7 +520,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         it 'deletes an existing input' do
           expect do
-            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+            put api(url, developer),
               params: { inputs: [{ name: 'EXISTING_INPUT', destroy: true }] }
           end.to change { pipeline_schedule.inputs.count }.by(-1)
 
@@ -500,7 +530,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         it 'performs multiple operations at once' do
           expect do
-            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+            put api(url, developer),
               params: {
                 inputs: [
                   { name: 'EXISTING_INPUT', value: 'updated_value' },
@@ -518,7 +548,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when cron has validation error' do
         it 'does not update pipeline_schedule' do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+          put api(url, developer),
             params: { cron: 'invalid-cron' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -528,7 +558,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when ref has validation error' do
         it 'does not update pipeline_schedule' do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+          put api(url, developer),
             params: { ref: 'invalid-ref' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -544,7 +574,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
 
         it 'does not update pipeline_schedule' do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          put api(url, user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -556,7 +586,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
 
         it 'does not update pipeline_schedule' do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          put api(url, user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -564,7 +594,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'with no special role' do
         it 'does not update pipeline_schedule' do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+          put api(url, user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -573,10 +603,16 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'does not update pipeline_schedule' do
-        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}")
+        put api(url)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_pipeline_schedule do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) { put api(url, personal_access_token: pat), params: { cron: '1 2 3 4 *' } }
     end
   end
 
@@ -585,14 +621,12 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
-    let(:project_maintainer) do
-      create(:user, maintainer_of: project)
-    end
+    let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership" }
 
     context 'as an authenticated user with valid permissions' do
       it 'updates owner' do
-        expect { post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", project_maintainer) }
-          .to change { pipeline_schedule.reload.owner }.from(developer).to(project_maintainer)
+        expect { post api(url, maintainer) }
+          .to change { pipeline_schedule.reload.owner }.from(developer).to(maintainer)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('pipeline_schedule')
@@ -601,7 +635,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'as an authenticated user with invalid permissions' do
       it 'does not update owner' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", user)
+        post api(url, user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -609,7 +643,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'as an unauthenticated user' do
       it 'does not update owner' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership")
+        post api(url)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -618,29 +652,29 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     context 'as the existing owner of the schedule' do
       it 'accepts the request and leaves the schedule unchanged' do
         expect do
-          post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/take_ownership", developer)
+          post api(url, developer)
         end.not_to change { pipeline_schedule.reload.owner }
 
         expect(response).to have_gitlab_http_status(:success)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :own_pipeline_schedule do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) { post api(url, personal_access_token: pat) }
+    end
   end
 
   describe 'DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id' do
-    let(:maintainer) { create(:user) }
+    let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
 
-    let!(:pipeline_schedule) do
-      create(:ci_pipeline_schedule, project: project, owner: developer)
-    end
-
-    before do
-      project.add_maintainer(maintainer)
-    end
+    let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}" }
 
     context 'authenticated user with valid permissions' do
       it 'deletes pipeline_schedule' do
         expect do
-          delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", maintainer)
+          delete api(url, maintainer)
         end.to change { project.pipeline_schedules.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:no_content)
@@ -653,15 +687,15 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", maintainer) }
+        let(:request) { api(url, maintainer) }
       end
     end
 
     context 'authenticated user with invalid permissions' do
-      let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: maintainer) }
+      let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: maintainer) }
 
       it 'does not delete pipeline_schedule' do
-        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer)
+        delete api(url, developer)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -669,49 +703,55 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'does not delete pipeline_schedule' do
-        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}")
+        delete api(url)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_pipeline_schedule do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) { delete api(url, personal_access_token: pat) }
     end
   end
 
   describe 'POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play' do
     let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
-    let(:route) { ->(id) { "/projects/#{project.id}/pipeline_schedules/#{id}/play" } }
+    let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/play" }
 
     context 'authenticated user with `:play_pipeline_schedule` permission' do
       it 'schedules a pipeline worker' do
-        project.add_developer(developer)
-
         expect(RunPipelineScheduleWorker)
           .to receive(:perform_async)
           .with(pipeline_schedule.id, developer.id)
           .and_call_original
-        post api(route[pipeline_schedule.id], developer)
+
+        post api(url, developer)
 
         expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'renders an error if scheduling failed' do
-        project.add_developer(developer)
-
         expect(RunPipelineScheduleWorker)
           .to receive(:perform_async)
           .with(pipeline_schedule.id, developer.id)
           .and_return(nil)
-        post api(route[pipeline_schedule.id], developer)
+
+        post api(url, developer)
 
         expect(response).to have_gitlab_http_status(:internal_server_error)
       end
     end
 
     context 'authenticated user with insufficient access' do
-      it 'responds with not found' do
+      before do
         project.add_guest(user)
+      end
 
-        post api(route[pipeline_schedule.id], user)
+      it 'responds with not found' do
+        post api(url, user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -719,9 +759,17 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'responds with unauthorized' do
-        post api(route[pipeline_schedule.id])
+        post api(url)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with sidekiq inline processing', :sidekiq_might_not_need_inline do
+      it_behaves_like 'authorizing granular token permissions', :play_pipeline_schedule do
+        let(:boundary_object) { project }
+        let(:user) { developer }
+        let(:request) { post api(url, personal_access_token: pat) }
       end
     end
   end
@@ -733,24 +781,18 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
+    let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables" }
+
     context 'authenticated user with valid permissions' do
       context 'with required parameters' do
         let(:pipeline_schedule) do
           create(:ci_pipeline_schedule, project: project, owner: api_user)
         end
 
-        let_it_be(:maintainer) { create(:user) }
-        let_it_be(:project_owner) { create(:user) }
-
-        before do
-          project.add_maintainer(maintainer)
-          project.add_owner(project_owner)
-        end
-
         shared_examples 'creates pipeline_schedule_variables' do
           it do
             expect do
-              post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", api_user),
+              post api(url, api_user),
                 params: params.merge(variable_type: 'file')
             end.to change { pipeline_schedule.variables.count }.by(1)
 
@@ -764,7 +806,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         shared_examples 'fails to create pipeline_schedule_variables' do
           it do
-            post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", api_user),
+            post api(url, api_user),
               params: params.merge(variable_type: 'file')
 
             expect(pipeline_schedule.variables.count).to eq(0)
@@ -823,7 +865,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'without required parameters' do
         it 'does not create pipeline_schedule_variable' do
-          post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer)
+          post api(url, developer)
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
@@ -835,7 +877,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
 
         it 'does not create pipeline_schedule_variable' do
-          post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
+          post api(url, developer),
             params: params.merge('key' => '!?!?')
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -846,7 +888,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'authenticated user with invalid permissions' do
       it 'does not create pipeline_schedule_variable' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", user), params: params
+        post api(url, user), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -854,10 +896,16 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'does not create pipeline_schedule_variable' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables"), params: params
+        post api(url), params: params
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_pipeline_schedule_variable do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) { post api(url, personal_access_token: pat), params: params }
     end
   end
 
@@ -870,23 +918,20 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule)
     end
 
+    let(:url) do
+      "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}"
+    end
+
+    let(:params) { { value: 'updated_value', variable_type: 'file' } }
+
     context 'authenticated user with valid permissions' do
       let(:pipeline_schedule) do
         create(:ci_pipeline_schedule, project: project, owner: api_user)
       end
 
-      let_it_be(:maintainer) { create(:user) }
-      let_it_be(:project_owner) { create(:user) }
-
-      before do
-        project.add_maintainer(maintainer)
-        project.add_owner(project_owner)
-      end
-
       shared_examples 'updates pipeline_schedule_variable' do
         it do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user),
-            params: { value: 'updated_value', variable_type: 'file' }
+          put api(url, api_user), params: params
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('pipeline_schedule_variable')
@@ -897,8 +942,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       shared_examples 'fails to update pipeline_schedule_variable' do
         it do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user),
-            params: { value: 'updated_value', variable_type: 'file' }
+          put api(url, api_user), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -955,7 +999,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'authenticated user with invalid permissions' do
       it 'does not update pipeline_schedule_variable' do
-        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", user)
+        put api(url, user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -963,44 +1007,38 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'does not update pipeline_schedule_variable' do
-        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}")
+        put api(url)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :update_pipeline_schedule_variable do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) { put api(url, personal_access_token: pat), params: params }
+    end
   end
 
   describe 'DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
-    let(:maintainer) { create(:user) }
-
     let_it_be(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
-    let!(:pipeline_schedule_variable) do
+    let_it_be_with_reload(:pipeline_schedule_variable) do
       create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule)
     end
 
-    before do
-      project.add_maintainer(maintainer)
+    let(:url) do
+      "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}"
     end
 
     context 'authenticated user with valid permissions' do
-      let(:pipeline_schedule) do
-        create(:ci_pipeline_schedule, project: project, owner: api_user)
-      end
-
-      let_it_be(:project_owner) { create(:user) }
-
-      before do
-        project.add_owner(project_owner)
-      end
-
       shared_examples 'deletes pipeline_schedule_variable' do
         it do
           expect do
-            delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user)
-          end.to change { Ci::PipelineScheduleVariable.count }.by(-1)
+            delete api(url, api_user)
+          end.to change { pipeline_schedule.variables.count }.by(-1)
 
           expect(response).to have_gitlab_http_status(:accepted)
           expect(response).to match_response_schema('pipeline_schedule_variable')
@@ -1010,8 +1048,8 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       shared_examples 'fails to delete pipeline_schedule_variable' do
         it do
           expect do
-            delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", api_user)
-          end.not_to change { Ci::PipelineScheduleVariable.count }
+            delete api(url, api_user)
+          end.not_to change { pipeline_schedule.variables.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -1077,10 +1115,10 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'authenticated user with invalid permissions' do
-      let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: maintainer) }
+      let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: maintainer) }
 
       it 'does not delete pipeline_schedule_variable' do
-        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer)
+        delete api(url, developer)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -1088,10 +1126,16 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
     context 'unauthenticated user' do
       it 'does not delete pipeline_schedule_variable' do
-        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}")
+        delete api(url)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_pipeline_schedule_variable do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) { delete api(url, personal_access_token: pat) }
     end
   end
 end

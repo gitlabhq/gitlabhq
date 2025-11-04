@@ -9,9 +9,36 @@ import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { pinia } from '~/pinia/instance';
 
+jest.mock('~/rapid_diffs/app/discussions/diff_discussions.vue', () => {
+  return {
+    props: jest.requireActual('~/rapid_diffs/app/discussions/diff_discussions.vue').default.props,
+    inject: ['userPermissions', 'endpoints'],
+    render(h) {
+      if (this.discussions.length === 0) return null;
+      const discussions = this.discussions.map((discussion) => {
+        return h(
+          'div',
+          { attrs: { 'data-discussion-id': discussion.id } },
+          `This is a discussion placeholder with an id: ${discussion.id}`,
+        );
+      });
+      const renderAsDataAttr = (key, value) => {
+        return h('div', { attrs: { [`data-${key}`]: JSON.stringify(value) } });
+      };
+      const injected = [
+        renderAsDataAttr('user-permissions', this.userPermissions),
+        renderAsDataAttr('endpoints', this.endpoints),
+      ];
+      return h('div', undefined, [...discussions, ...injected]);
+    },
+  };
+});
+
 describe('discussions adapters', () => {
   const oldPath = 'old';
   const newPath = 'new';
+  const userPermissions = { can_create_note: true };
+  const endpoints = {};
 
   const getDiffFile = () => document.querySelector('diff-file');
   const getDiscussionRows = () => getDiffFile().querySelectorAll('[data-discussion-row]');
@@ -57,7 +84,10 @@ describe('discussions adapters', () => {
       `);
       getDiffFile().mount({
         adapterConfig: { text_inline: [inlineDiscussionsAdapter] },
-        appData: {},
+        appData: {
+          userPermissions,
+          endpoints,
+        },
         unobserve: jest.fn(),
       });
     });
@@ -81,6 +111,20 @@ describe('discussions adapters', () => {
       expect(discussionRow.querySelector('td').textContent).toBe(
         `This is a discussion placeholder with an id: ${discussionId}`,
       );
+    });
+
+    it('provides app data', async () => {
+      useDiffDiscussions().discussions = [
+        {
+          id: 'abc',
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+        },
+      ];
+      await nextTick();
+      expect(
+        JSON.parse(document.querySelector('[data-user-permissions]').dataset.userPermissions),
+      ).toStrictEqual(userPermissions);
     });
 
     it('does not render discussions for different paths', async () => {

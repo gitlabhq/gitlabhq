@@ -1,0 +1,4 @@
+---
+name: delete_pipeline_schedule_variable
+description: Grants the ability to delete pipeline schedule variables
+feature_category: continuous_integration

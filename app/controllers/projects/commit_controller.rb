@@ -170,7 +170,9 @@ class Projects::CommitController < Projects::ApplicationController
     @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
       @commit,
       diff_view,
-      commit_diff_options
+      commit_diff_options,
+      nil,
+      current_user
     )
 
     show

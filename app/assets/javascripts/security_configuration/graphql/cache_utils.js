@@ -57,14 +57,12 @@ export const updateUntrackedRefsCache =
 
     cache.updateQuery({ query, variables }, (sourceData) =>
       produce(sourceData, (draftData) => {
-        if (!draftData?.project?.securityTrackedRefs) {
-          return;
-        }
+        if (sourceData.project?.securityTrackedRefs) {
+          const connection = draftData.project.securityTrackedRefs;
 
-        // Remove untracked refs from the list
-        draftData.project.securityTrackedRefs = draftData.project.securityTrackedRefs.filter(
-          (ref) => !untrackedRefIds.includes(ref.id),
-        );
+          connection.nodes = connection.nodes.filter((ref) => !untrackedRefIds.includes(ref.id));
+          connection.count = Math.max(0, connection.count - untrackedRefIds.length);
+        }
       }),
     );
   };

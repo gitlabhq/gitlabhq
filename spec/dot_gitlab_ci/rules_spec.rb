@@ -176,6 +176,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.test_license_encryption_key.pub',
         '.vale.ini',
         '.vscode/extensions.json',
+        '.vscode/tasks.json',
         'ee/frontend_islands/apps/duo_next/.vscode/extensions.json',
         'ee/frontend_islands/apps/duo_next/.prettierignore',
         'ee/lib/ee/gitlab/background_migration/.rubocop.yml',
@@ -207,6 +208,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
       Dir.glob('{metrics_server,sidekiq_cluster}/*') +
       Dir.glob('{{,ee/}spec/fixtures,tmp}/**/*', File::FNM_DOTMATCH) +
       Dir.glob('*.md') +
+      Dir.glob('ee/frontend_islands/**/*.md') +
       Dir.glob('public/assets/vite/.vite/**/*') +
       Dir.glob('changelogs/*') +
       Dir.glob('doc/.{markdownlint,vale}/**/*', File::FNM_DOTMATCH) +

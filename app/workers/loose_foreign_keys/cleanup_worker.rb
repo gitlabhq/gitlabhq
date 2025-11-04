@@ -15,7 +15,7 @@ module LooseForeignKeys
       connection_name, base_model = current_connection_name_and_base_model
       modification_tracker, turbo_mode = initialize_modification_tracker_for(connection_name)
 
-      # Add small buffer on MAX_RUNTIME to account for single long running
+      # Add small buffer on MAX_RUNTIME to account for single long-running
       # query or extra worker time after the cleanup.
       lock_ttl = modification_tracker.max_runtime + 10.seconds
 

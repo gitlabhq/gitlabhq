@@ -26,7 +26,8 @@ module Ci
         #   spec:
         #     inputs:
         #       website:
-        @spec = spec || {} # specification from input definition
+        spec_hash = spec || {}
+        @spec = spec_hash.is_a?(Hash) ? spec_hash.with_indifferent_access : spec_hash
       end
 
       def validate_param!(param)
@@ -79,6 +80,12 @@ module Ci
         return unless regex_provided?
 
         spec[:regex]
+      end
+
+      def rules
+        return unless spec.key?(:rules)
+
+        spec[:rules]&.map { |rule| rule.is_a?(Hash) ? rule.with_indifferent_access : rule }
       end
 
       private

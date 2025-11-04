@@ -394,14 +394,15 @@
   - '{go.sum,*/go.sum,*/*/go.sum}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
   # FE island changes
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
   - "config/webpack.config.js"
   - "config/helpers/*.js"
   # FE island changes
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
 
 .frontend-build-patterns: &frontend-build-patterns
   - "{package.json,yarn.lock}"
@@ -415,11 +416,12 @@
   - "{,ee/,jh/}app/assets/**/*"
   - "vendor/assets/**/*"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # This list should match the list in Tasks::Gitlab::Assets.assets_impacting_compilation
 .assets-compilation-patterns: &assets-compilation-patterns
@@ -595,12 +597,12 @@
   - "{.,}*rc"
 
 .code-fe-island-patterns: &code-fe-island-patterns
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*/src/**/*.{js,cjs,mjs,ts,tsx,vue,graphql,css}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
   - "ee/frontend_islands/apps/**/components.json"
-  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs}"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
@@ -633,11 +635,11 @@
   - "doc/_index.md"
   - "doc/api/settings.md"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -678,11 +680,11 @@
   - "scripts/**/*"
   - "{,spec/}tooling/**/*"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -717,11 +719,11 @@
   - ".dockerignore"
   - "{,jh/}qa/**/*"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 .code-rest-api-patterns: &code-rest-api-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}api/**/*"
@@ -773,11 +775,11 @@
   - "doc/_index.md"
   - "doc/api/settings.md"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 # NOTE: `setup-test-env-patterns` intentionally does not include docs files, because this would
@@ -836,11 +838,11 @@
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
   # FE island changes
-  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/apps/**/tsconfig*.json"
-  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
 
 .static-analysis-patterns: &static-analysis-patterns
   - ".{haml-lint,haml-lint_todo}.yml"
