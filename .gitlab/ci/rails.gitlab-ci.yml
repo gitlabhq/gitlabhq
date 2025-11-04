@@ -234,6 +234,8 @@ rspec system pg16 project-studio-enabled:
     GLCI_EXPORT_TEST_METRICS: "false"
   allow_failure: true
   rules:
+    - if: '$CI_MERGE_REQUEST_IID == null'
+      when: never
     - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
       when: never
     - !reference [.rails:rules:ee-only-system, rules]
@@ -1013,6 +1015,8 @@ rspec-ee system pg16 project-studio-enabled:
     GLCI_EXPORT_TEST_METRICS: "false"
   allow_failure: true
   rules:
+    - if: '$CI_MERGE_REQUEST_IID == null'
+      when: never
     - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
       when: never
     - !reference [.rails:rules:ee-only-system, rules]

@@ -26,9 +26,9 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'gems/bundler-checksum', require: fals
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
 
 if next?
-  gem 'rails', '~> 7.2.2.2', feature_category: :shared
+  gem 'rails', '~> 7.2.3', feature_category: :shared
 else
-  gem 'rails', '~> 7.1.5.2', feature_category: :shared
+  gem 'rails', '~> 7.1.6', feature_category: :shared
 end
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab', feature_category: :shared

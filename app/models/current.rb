@@ -18,19 +18,6 @@ class Current < ActiveSupport::CurrentAttributes
   attribute :organization, :organization_assigned
   attribute :token_info
 
-  attribute :cells_claims_leases
-
-  # TODO: After updating to Rails 7.2, move this logic to the attribute default.
-  def cells_claims_leases?
-    if cells_claims_leases.nil?
-      self.cells_claims_leases =
-        Gitlab.config.cell.enabled &&
-        Feature.enabled?(:cells_unique_claims) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- We can't easily tie this to an actor
-    end
-
-    cells_claims_leases
-  end
-
   def organization=(value)
     # We want to explicitly allow only one organization assignment per thread
     # This fits the request/response cycle, but of course for rake tasks/background jobs that use the same thread,

@@ -5,12 +5,6 @@ require 'spec_helper'
 RSpec.describe Organizations::Organization, type: :model, feature_category: :organization do
   let_it_be_with_refind(:organization) { create(:organization) }
 
-  it_behaves_like 'cells claimable model',
-    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
-    subject_key: :id,
-    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
-    claiming_attributes: [:path]
-
   describe 'associations' do
     it { is_expected.to have_one(:organization_detail).inverse_of(:organization).autosave(true) }
 

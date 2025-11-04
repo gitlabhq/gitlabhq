@@ -212,6 +212,32 @@ describe('Observability App Component', () => {
     });
   });
 
+  describe('Snapshots', () => {
+    it('matches snapshot while loading', async () => {
+      await setupComponent();
+
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('matches snapshot on error state', async () => {
+      await setupComponent();
+
+      authCallbacks.onAuthError();
+      await nextTick();
+
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('matches snapshot on authenticated state', async () => {
+      await setupComponent();
+
+      authCallbacks.onAuthSuccess();
+      await nextTick();
+
+      expect(wrapper.element).toMatchSnapshot();
+    });
+  });
+
   describe('Props Validation', () => {
     it('rejects invalid auth token structure', () => {
       const authTokensValidator = App.props.authTokens.validator;

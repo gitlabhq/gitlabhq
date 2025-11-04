@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Observability App Component Snapshots matches snapshot on authenticated state 1`] = `
+<div
+  class="gl-border-1 gl-border-default gl-border-solid gl-grow gl-h-full gl-overflow-hidden gl-rounded-base"
+>
+  <iframe
+    class="gl-h-full gl-w-full"
+    frameborder="0"
+    sandbox="allow-same-origin allow-scripts allow-forms allow-downloads allow-popups"
+    src="https://o11y.gitlab.com/traces-explorer"
+    style=""
+    title="Observability"
+  />
+</div>
+`;
+
+exports[`Observability App Component Snapshots matches snapshot on error state 1`] = `
+<div
+  class="gl-border-1 gl-border-default gl-border-solid gl-grow gl-h-full gl-overflow-hidden gl-rounded-base"
+>
+  <div
+    class="o11y-status"
+    data-testid="o11y-error-status"
+  >
+    Authentication failed. Please refresh the page.
+  </div>
+  <iframe
+    class="gl-h-full gl-w-full"
+    frameborder="0"
+    sandbox="allow-same-origin allow-scripts allow-forms allow-downloads allow-popups"
+    src="https://o11y.gitlab.com/traces-explorer"
+    style="display: none;"
+    title="Observability"
+  />
+</div>
+`;
+
+exports[`Observability App Component Snapshots matches snapshot while loading 1`] = `
+<div
+  class="gl-border-1 gl-border-default gl-border-solid gl-grow gl-h-full gl-overflow-hidden gl-rounded-base"
+>
+  <observability-loading-stub
+    data-testid="o11y-loading-status"
+  />
+  <iframe
+    class="gl-h-full gl-w-full"
+    frameborder="0"
+    sandbox="allow-same-origin allow-scripts allow-forms allow-downloads allow-popups"
+    src="https://o11y.gitlab.com/traces-explorer"
+    style="display: none;"
+    title="Observability"
+  />
+</div>
+`;

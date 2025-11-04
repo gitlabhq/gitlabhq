@@ -45309,7 +45309,7 @@ msgstr ""
 msgid "Observability|Length must be a positive integer"
 msgstr ""
 
-msgid "Observability|Loading metrics..."
+msgid "Observability|Loading..."
 msgstr ""
 
 msgid "Observability|Logs explorer"

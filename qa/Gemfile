@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gem 'gitlab-qa', '~> 15', '>= 15.6.0', require: 'gitlab/qa'
 gem 'gitlab_quality-test_tooling', '~> 2.25.0', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
-gem 'activesupport', '~> 7.1.5.2' # This should stay in sync with the root's Gemfile
+gem 'activesupport', '~> 7.1.6' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.27.0'
 gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
