@@ -400,6 +400,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_issue_board
     enable :admin_issue_board_list
     enable :update_issue
+    enable :destroy_issue
     enable :reopen_issue
     enable :admin_issue
     enable :admin_work_item

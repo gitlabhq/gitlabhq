@@ -578,7 +578,7 @@ Project permissions for [issues](project/issues/_index.md):
 | Reopen [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [Import](project/issues/csv_import.md) issues from a CSV file                     |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | [Export](project/issues/csv_export.md) issues to a CSV file                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete issues                                                                     |       |         |          |           |            |   ✓   |
+| Delete issues                                                                     |       |    ✓    |          |           |            |   ✓   |
 | Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**

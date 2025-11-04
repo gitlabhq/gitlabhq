@@ -528,7 +528,7 @@ class User < ApplicationRecord
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
   delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
   delegate :email_otp, :email_otp=, to: :user_detail, allow_nil: true
-  delegate :email_otp_required_after, :email_otp_required_after=, to: :user_detail, allow_nil: true
+  delegate :email_otp_required_after, :email_otp_required_after=, :email_otp_required_after_was, to: :user_detail, allow_nil: true
   delegate :email_otp_last_sent_at, :email_otp_last_sent_at=, to: :user_detail, allow_nil: true
   delegate :email_otp_last_sent_to, :email_otp_last_sent_to=, to: :user_detail, allow_nil: true
 
@@ -1321,6 +1321,7 @@ class User < ApplicationRecord
       self.disable_webauthn!
       self.disable_two_factor_otp!
       self.reset_backup_codes!
+      self.set_email_otp_required_after_based_on_restrictions(save: true)
     end
   end
 

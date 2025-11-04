@@ -35,6 +35,7 @@ export default {
     ]"
     :button-text-classes="isIconOnly ? 'gl-hidden' : null"
     :icon="icon"
+    :aria-label="text"
     category="tertiary"
     data-testid="super-sidebar-collapse-button"
     @click="emitToggle"

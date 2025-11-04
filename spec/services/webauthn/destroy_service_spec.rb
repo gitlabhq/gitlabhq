@@ -89,6 +89,19 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
           subject
         end
 
+        # This behavior is triggered by the call to
+        # `Users::UpdateService` and `User`'s inclusion of the
+        # `Authn::EmailOtpEnrollment` concern.
+        # This spec is for testing in depth - full behavior is tested
+        # in email_otp_enrollment_spec.rb
+        it 'enrolls the user in email OTP when email OTP is required at minimum', :freeze_time do
+          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+
+          subject
+          user.reload
+          expect(user.email_otp_required_after).to eq(Time.current)
+        end
+
         context 'when there is also OTP enabled' do
           before do
             user.otp_required_for_login = true

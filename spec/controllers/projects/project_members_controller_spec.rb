@@ -206,7 +206,7 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
       let_it_be(:requester) { create(:project_member, :access_request, project: project) }
 
       before do
-        project.add_maintainer(user)
+        project.add_owner(user)
         sign_in(user)
       end
 
@@ -228,6 +228,13 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
         describe 'managing project direct owners' do
           context 'when a Maintainer tries to elevate another user to OWNER' do
+            let(:maintainer_user) { create(:user) }
+
+            before do
+              project.add_maintainer(maintainer_user)
+              sign_in(maintainer_user)
+            end
+
             it 'does not allow the operation' do
               params = {
                 project_member: { access_level: Gitlab::Access::OWNER },

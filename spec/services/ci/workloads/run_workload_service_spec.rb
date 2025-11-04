@@ -19,8 +19,7 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
     definition
   end
 
-  let(:create_branch) { false }
-  let(:source_branch) { nil }
+  let(:ref) { 'workloads/123' }
 
   describe '#execute' do
     subject(:execute) do
@@ -30,10 +29,13 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
           current_user: user,
           source: source,
           workload_definition: workload_definition,
-          create_branch: create_branch,
-          source_branch: source_branch,
+          ref: ref,
           ci_variables_included: %w[A_PROJECT_VARIABLE A_GROUP_VARIABLE A_INSTANCE_VARIABLE]
         ).execute
+    end
+
+    before do
+      project.repository.create_branch('workloads/123', project.default_branch)
     end
 
     context 'when pipeline creation is success' do
@@ -48,7 +50,7 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
 
       it 'starts a pipeline to execute workload' do
         expect_next_instance_of(Ci::CreatePipelineService, project, user,
-          hash_including(ref: project.default_branch_or_main)) do |pipeline_service|
+          hash_including(ref: ref)) do |pipeline_service|
           expect(pipeline_service).to receive(:execute)
                                         .and_call_original
         end
@@ -91,120 +93,12 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
         expect(variable.value).to match(pipeline.ref)
       end
 
-      context 'when create_branch: true' do
-        let(:create_branch) { true }
+      context 'when ref is nil' do
+        let(:ref) { nil }
 
-        it 'creates a new branch with skip_ci and manually runs the pipeline for that branch' do
-          expect(project.repository).to receive(:add_branch)
-            .with(user, match(%r{^workloads/\w+}), project.default_branch_or_main, skip_ci: true)
-            .and_call_original
-
+        it 'uses project default branch' do
           result = execute
           expect(result).to be_success
-
-          workload = result.payload
-          expect(workload.branch_name).to match(%r{workloads/\w+})
-        end
-
-        context 'when source_branch exists' do
-          let(:source_branch) { 'feature-branch' }
-
-          before do
-            project.repository.create_branch(source_branch, project.default_branch)
-          end
-
-          it 'creates a new branch from the specified source_branch' do
-            result = execute
-
-            expect(result).to be_success
-
-            workload = result.payload
-            expect(workload.branch_name).to match(%r{workloads/\w+})
-
-            new_branch = project.repository.find_branch(workload.branch_name)
-            source_commit = project.repository.find_branch(source_branch).dereferenced_target.sha
-
-            expect(new_branch.dereferenced_target.sha).to eq(source_commit)
-          end
-        end
-
-        context 'when source_branch does not exist' do
-          let(:source_branch) { 'non-existent-branch' }
-
-          it 'creates a new branch from the default branch' do
-            expect(project.repository).to receive(:add_branch)
-                                            .with(user, match(%r{^workloads/\w+}),
-                                              project.default_branch_or_main, skip_ci: true)
-                                            .and_call_original
-
-            result = execute
-            expect(result).to be_success
-
-            workload = result.payload
-            expect(workload.branch_name).to match(%r{workloads/\w+})
-          end
-        end
-
-        context 'when source_branch is nil' do
-          it 'creates a new branch from the default branch' do
-            expect(project.repository).to receive(:add_branch)
-              .with(user, match(%r{^workloads/\w+}), project.default_branch_or_main, skip_ci: true)
-              .and_call_original
-
-            result = execute
-            expect(result).to be_success
-          end
-        end
-
-        context 'when branch creation fails' do
-          before do
-            allow(project.repository).to receive(:add_branch).and_return(nil)
-          end
-
-          it 'returns an error response without creating a workload' do
-            result = execute
-
-            expect(result).to be_error
-            expect(result.message).to eq('Error in git branch creation')
-            expect(Ci::Workloads::Workload.count).to eq(0)
-          end
-        end
-
-        context 'when branch name already exists' do
-          before do
-            allow(project.repository).to receive(:branch_exists?)
-                                           .with(match(%r{^workloads/\w+}))
-                                           .and_return(true)
-            allow(project.repository).to receive(:branch_exists?)
-                                           .with(project.default_branch_or_main)
-                                           .and_return(true)
-          end
-
-          it 'returns an error response without creating a workload' do
-            result = execute
-
-            expect(result).to be_error
-            expect(result.message).to eq('Branch already exists')
-            expect(Ci::Workloads::Workload.count).to eq(0)
-          end
-        end
-
-        context 'when git command raises an error' do
-          before do
-            allow(project.repository).to receive(:add_branch)
-                                           .and_raise(Gitlab::Git::CommandError.new('git error'))
-          end
-
-          it 'tracks the exception and returns an error response without creating a workload' do
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                                               .with(instance_of(Gitlab::Git::CommandError))
-
-            result = execute
-
-            expect(result).to be_error
-            expect(result.message).to eq('Failed to create branch')
-            expect(Ci::Workloads::Workload.count).to eq(0)
-          end
         end
       end
     end

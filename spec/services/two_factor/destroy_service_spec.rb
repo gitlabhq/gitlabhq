@@ -91,6 +91,24 @@ RSpec.describe TwoFactor::DestroyService, feature_category: :system_access do
 
           it_behaves_like 'disables two-factor authentication'
         end
+
+        context 'when email OTP is required at minimum', :sidekiq_inline, :freeze_time do
+          let(:current_user) { create(:user, :two_factor) }
+          let(:user) { current_user }
+
+          # This behavior is triggered by the call to
+          # `Users::UpdateService` and `User`'s inclusion of the
+          # `Authn::EmailOtpEnrollment` concern.
+          # This spec is for testing in depth - full behavior is tested
+          # in email_otp_enrollment_spec.rb
+          it 'enrolls the user in email OTP' do
+            stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+
+            subject
+            user.reload
+            expect(user.email_otp_required_after).to eq(Time.current)
+          end
+        end
       end
     end
   end

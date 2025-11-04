@@ -211,7 +211,13 @@ RSpec.describe QA::Support::PageErrorChecker do
         "</div>"
     end
 
-    let(:error_500_str) { '<head><title>Something went wrong (500)</title></head><body><img src="/-/error-illustrations/error-500-lg.svg" alt="500 error"><h1>500: We\'re sorry, something went wrong on our end</h1></body>' }
+    let(:error_500_str) do
+      "<div class=\"error-container\">" \
+        "<img src=\"/-/error-illustrations/error-500-lg.svg\" alt=\"500 error\" />" \
+        "<h1>500: We're sorry, something went wrong on our end</h1>" \
+        "</div>"
+    end
+
     let(:project_name_500_str) { "<head><title>Project</title></head><h1 class=\"home-panel-title gl-mt-3 gl-mb-2\" itemprop=\"name\">qa-test-2022-05-25-12-12-16-d4500c2e79c37289</h1>" }
     let(:backtrace_str) { "<head><title>Error::Backtrace</title></head><body><section class=\"backtrace\">foo</section></body>" }
     let(:no_error_str) { "<head><title>Nothing wrong here</title></head><body>no 404 or 500 or backtrace</body>" }

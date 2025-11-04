@@ -48018,6 +48018,7 @@ Type of AI usage event.
 | <a id="aiusageeventtypeagent_platform_session_created"></a>`AGENT_PLATFORM_SESSION_CREATED` | Agent platform session was created. |
 | <a id="aiusageeventtypeagent_platform_session_dropped"></a>`AGENT_PLATFORM_SESSION_DROPPED` | Agent platform session was dropped. |
 | <a id="aiusageeventtypeagent_platform_session_finished"></a>`AGENT_PLATFORM_SESSION_FINISHED` | Agent platform session was finished. |
+| <a id="aiusageeventtypeagent_platform_session_resumed"></a>`AGENT_PLATFORM_SESSION_RESUMED` | Agent platform session was resumed. |
 | <a id="aiusageeventtypeagent_platform_session_started"></a>`AGENT_PLATFORM_SESSION_STARTED` | Agent platform session was started. |
 | <a id="aiusageeventtypeagent_platform_session_stopped"></a>`AGENT_PLATFORM_SESSION_STOPPED` | Agent platform session was stopped. |
 | <a id="aiusageeventtypecode_suggestions_requested"></a>`CODE_SUGGESTIONS_REQUESTED` | Code Suggestion was requested. Old data only. |

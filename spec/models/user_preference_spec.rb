@@ -70,6 +70,11 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.not_to allow_value(nil).for(:project_studio_enabled) }
     end
 
+    describe 'new_ui_enabled' do
+      it { is_expected.to validate_inclusion_of(:new_ui_enabled).in_array([true, false]) }
+      it { is_expected.to allow_value(nil).for(:new_ui_enabled) }
+    end
+
     describe 'early_access_studio_participant' do
       it { is_expected.to validate_inclusion_of(:early_access_studio_participant).in_array([true, false]) }
       it { is_expected.not_to allow_value(nil).for(:early_access_studio_participant) }

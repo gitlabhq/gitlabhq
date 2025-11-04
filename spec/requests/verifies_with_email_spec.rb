@@ -515,6 +515,41 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
             it_behaves_like 'locks the user and sends verification instructions'
             it_behaves_like 'prompt for email verification'
           end
+
+          it 'calls Authn::EmailOtpEnrollment updater' do
+            expect_next_found_instance_of(User) do |instance|
+              expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                .with(save: true)
+                .at_least(:once)
+            end
+            sign_in
+          end
+
+          # Test an example behaviour of EmailOtpEnrollment for testing
+          # in depth - full behavior is tested in
+          # email_otp_enrollment_spec.rb
+          context 'when email_otp_required_after is unset despite instance requirement', :freeze_time do
+            let(:user) do
+              create(:user,
+                last_sign_in_at: last_sign_in,
+                email_otp_required_after: nil
+              )
+            end
+
+            let(:log_reason) { 'email_otp' }
+
+            before do
+              stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+              perform_enqueued_jobs { sign_in }
+            end
+
+            it 'corrects the state during sign-in' do
+              expect(user.reload.email_otp_required_after).to eq(Time.current)
+            end
+
+            it_behaves_like 'sends verification instructions for email OTP'
+            it_behaves_like 'prompt for email verification'
+          end
         end
       end
     end

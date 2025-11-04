@@ -39,7 +39,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       %i[
         admin_issue admin_work_item admin_issue_board admin_issue_board_list admin_label
         admin_milestone admin_wiki read_confidential_issues update_issue
-        reopen_issue read_internal_note
+        reopen_issue read_internal_note destroy_issue
         download_wiki_code create_wiki export_work_items
       ]
   end

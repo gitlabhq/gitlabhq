@@ -178,7 +178,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
       end
 
       context 'and updating members to PLANNER' do
-        it_behaves_like 'a service updating members' do
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
           let_it_be(:access_level) { Gitlab::Access::PLANNER }
         end
       end

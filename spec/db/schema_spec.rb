@@ -87,18 +87,17 @@ RSpec.describe 'Database schema',
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id trigger_id],
       p_ci_runner_machine_builds: %w[project_id],
-      ci_runner_taggings: %w[runner_id organization_id sharding_key_id], # The organization_id value is meant to populate the partitioned table, no other usage. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650. The runner_id FK exists at the partition level
-      ci_runner_taggings_instance_type: %w[tag_id organization_id sharding_key_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650
-      ci_runner_taggings_group_type: %w[tag_id organization_id sharding_key_id], # tag_id is handled on ci_runner_taggings. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650. These records are indirectly deleted by the FK to group_type_ci_runners
-      ci_runner_taggings_project_type: %w[tag_id organization_id sharding_key_id], # tag_id is handled on ci_runner_taggings. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650. These records are indirectly deleted by the FK to project_type_ci_runners
-      ci_runners: %w[sharding_key_id], # The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
-      instance_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
-      group_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
-      project_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
-      ci_runner_machines: %w[runner_id organization_id sharding_key_id], # The organization_id field is only used in the partitions, and have the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
-      instance_type_ci_runner_machines: %w[organization_id sharding_key_id], # This field is always NULL in this partition. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
-      group_type_ci_runner_machines: %w[organization_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
-      project_type_ci_runner_machines: %w[organization_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      ci_runner_taggings: %w[runner_id organization_id], # The organization_id value is meant to populate the partitioned table, no other usage.
+      ci_runner_taggings_instance_type: %w[tag_id organization_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings.
+      ci_runner_taggings_group_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings.
+      ci_runner_taggings_project_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings.
+      instance_type_ci_runners: %w[creator_id organization_id], # No need for LFKs on partition, already handled on ci_runners routing table.
+      group_type_ci_runners: %w[creator_id organization_id], # No need for LFKs on partition, already handled on ci_runners routing table.
+      project_type_ci_runners: %w[creator_id organization_id], # No need for LFKs on partition, already handled on ci_runners routing table.
+      ci_runner_machines: %w[runner_id organization_id], # The organization_id field is only used in the partitions, and have the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
+      instance_type_ci_runner_machines: %w[organization_id], # This field is always NULL in this partition.
+      group_type_ci_runner_machines: %w[organization_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
+      project_type_ci_runner_machines: %w[organization_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
       ci_runner_projects: %w[runner_id],
       ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
       ci_sources_projects: %w[partition_id],

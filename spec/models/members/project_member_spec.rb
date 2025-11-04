@@ -44,9 +44,9 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when member cannot manage owners' do
+    context 'when member is a maintainer and cannot manage owners' do
       it 'returns Gitlab::Access.options' do
-        expect(described_class.permissible_access_level_roles(maintainer, project)).to eq(Gitlab::Access.options)
+        expect(described_class.permissible_access_level_roles(maintainer, project)).to eq({ "Developer" => 30, "Guest" => 10, "Maintainer" => 40, "Reporter" => 20 })
       end
     end
   end
@@ -181,18 +181,22 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     context 'when member cannot manage owners' do
       let(:user) { maintainer }
 
-      it 'returns Gitlab::Access.options' do
-        expect(access_levels).to eq(Gitlab::Access.options)
+      it 'returns valid Gitlab::Access.options for a maintainer' do
+        expect(access_levels).to eq({
+          "Guest" => 10,
+          "Reporter" => 20,
+          "Developer" => 30,
+          "Maintainer" => 40
+        })
       end
     end
 
     context 'when the user is a developer' do
       let(:user) { developer }
 
-      it 'returns Gitlab::Access.options' do
+      it 'returns valid Gitlab::Access.options for a developer' do
         expect(access_levels).to eq({
           "Guest" => 10,
-          "Planner" => 15,
           "Reporter" => 20,
           "Developer" => 30
         })

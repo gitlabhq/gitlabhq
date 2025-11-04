@@ -145,6 +145,7 @@ export default {
       :class="computedLinkClasses"
       data-testid="menu-section-button"
       :data-qa-section-name="item.title"
+      :aria-label="item.title"
       v-bind="buttonProps"
       @click="handleClick"
       @pointerover="handlePointerover"

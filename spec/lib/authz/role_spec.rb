@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Authz::Role, feature_category: :system_access do
   assignable_roles = {
     owner: [:owner, :maintainer, :planner, :developer, :reporter, :guest],
-    maintainer: [:maintainer, :developer, :reporter, :planner, :guest],
-    developer: [:developer, :reporter, :planner, :guest],
-    reporter: [:reporter, :planner, :guest],
+    maintainer: [:maintainer, :developer, :reporter, :guest],
+    developer: [:developer, :reporter, :guest],
+    reporter: [:reporter, :guest],
     planner: [:planner, :guest],
     guest: [:guest]
   }

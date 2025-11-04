@@ -3078,6 +3078,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user.encrypted_otp_secret).not_to be_nil
       expect(user.otp_backup_codes).not_to be_nil
       expect(user.otp_grace_period_started_at).not_to be_nil
+      expect(user.email_otp_required_after).to be_nil
 
       user.disable_two_factor!
 
@@ -3088,6 +3089,18 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user.otp_backup_codes).to be_nil
       expect(user.otp_grace_period_started_at).to be_nil
       expect(user.otp_secret_expires_at).to be_nil
+      expect(user.email_otp_required_after).to be_nil
+    end
+
+    # Full behavior tests for `set_email_otp_required_after_based_on_restrictions`
+    # are in email_otp_enrollment_spec.rb
+    it 'enrolls the user in email OTP when email OTP is required at minimum', :freeze_time do
+      stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+
+      user = create(:user, :two_factor, email_otp_required_after: nil)
+      user.disable_two_factor!
+      expect(user).not_to be_two_factor_enabled
+      expect(user.email_otp_required_after).to eq(Time.current)
     end
   end
 

@@ -282,6 +282,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_issue_board_list
     enable :admin_issue
     enable :admin_work_item
+    enable :destroy_issue
     enable :update_issue
     enable :read_confidential_issues
     enable :read_crm_organization

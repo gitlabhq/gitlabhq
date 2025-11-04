@@ -697,7 +697,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           expect(subject).to eq(
             {
               'Guest' => 10,
-              'Planner' => 15,
               'Reporter' => 20,
               'Developer' => 30
             }
@@ -746,11 +745,15 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           expect(helper.access_level_roles_user_can_assign(grand_parent, group.access_level_roles)).to be_empty
           expect(helper.access_level_roles_user_can_assign(parent, group.access_level_roles)).to eq({
             'Guest' => ::Gitlab::Access::GUEST,
-            'Planner' => ::Gitlab::Access::PLANNER,
             'Reporter' => ::Gitlab::Access::REPORTER,
             'Developer' => ::Gitlab::Access::DEVELOPER
           })
-          expect(helper.access_level_roles_user_can_assign(child, group.access_level_roles)).to eq(::Gitlab::Access.options)
+          expect(helper.access_level_roles_user_can_assign(child, group.access_level_roles)).to eq({
+            'Guest' => ::Gitlab::Access::GUEST,
+            'Reporter' => ::Gitlab::Access::REPORTER,
+            'Developer' => ::Gitlab::Access::DEVELOPER,
+            'Maintainer' => ::Gitlab::Access::MAINTAINER
+          })
           expect(helper.access_level_roles_user_can_assign(grand_child, group.access_level_roles)).to eq(::Gitlab::Access.options_with_owner)
         end
       end
@@ -763,7 +766,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           other_group.add_owner(user)
         end
 
-        it { is_expected.to eq(::Gitlab::Access.options) }
+        it { is_expected.to eq({ "Developer" => 30, "Guest" => 10, "Maintainer" => 40, "Reporter" => 20 }) }
       end
 
       context 'when user is not provided' do

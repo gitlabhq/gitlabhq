@@ -50,15 +50,12 @@ module QA
         def check_page_for_error_code(page)
           QA::Runtime::Logger.debug "Performing page error check!"
 
-          # Test for 404 img alt
-          error_code = page_html(page).xpath("//img").map { |t| t[:alt] }.first
-          return report!(page, 404) if error_code && error_code.include?('404')
+          # Test for error img alt
+          error_img_alt = page_html(page).xpath("//div[@class='error-container']//img").map { |t| t[:alt] }.first
 
-          # 500 error page in header surrounded by newlines, try to match
-          five_hundred_test = page_html(page).xpath("//h1/text()").map.first
-          five_hundred_title = page_html(page).xpath("//head/title/text()").map.first
-          if five_hundred_test&.text&.include?('500') && five_hundred_title&.text.eql?('Something went wrong (500)')
-            return report!(page, 500)
+          if error_img_alt && error_img_alt.match(/^([0-9]{3})/)
+            error_code = error_img_alt[0, 3].to_i
+            return report!(page, error_code)
           end
 
           # GDK shows backtrace rather than error page
