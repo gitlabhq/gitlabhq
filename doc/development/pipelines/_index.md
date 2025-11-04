@@ -283,7 +283,6 @@ When this label is assigned, the following steps of the CI/CD pipeline are skipp
 
 - The `e2e:test-on-omnibus-ee` job.
 - The `rspec:undercoverage` job.
-- The entire [review apps process](../testing_guide/review_apps.md).
 
 Apply the label to the merge request, and run a new pipeline for the MR.
 
@@ -335,19 +334,6 @@ There might be situations where the developer would need to skip those tests. To
 
 - For an MR, apply the label `pipeline:skip-observability-e2e-tests label`.
 - For a whole project, set the CI variable `SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER`.
-
-### Review app jobs
-
-The [`start-review-app-pipeline`](../testing_guide/review_apps.md) child pipeline deploys a Review App and runs
-end-to-end tests against it automatically depending on changes, and is manual in other cases.
-See `.review:rules:start-review-app-pipeline` in
-[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
-the specific list of rules.
-
-If you want to force a Review App to be deployed regardless of your changes, you can add the
-`pipeline:run-review-app` label to the merge request.
-
-Consult the [review apps](../testing_guide/review_apps.md) dedicated page for more information.
 
 ### As-if-FOSS jobs and cross project downstream pipeline
 

@@ -385,11 +385,6 @@
     - !reference [.default-utils-before_script, before_script]
     - !reference [.buildx-setup, before_script]
 
-.use-kube-context:
-  before_script:
-    - export KUBE_CONTEXT="${CI_PROJECT_NAMESPACE}/gitlab:review-apps"
-    - kubectl config use-context ${KUBE_CONTEXT}
-
 .fast-no-clone-job:
   variables:
     GIT_STRATEGY: none  # We will download the required files for the job from the API

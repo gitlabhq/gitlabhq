@@ -23,7 +23,9 @@ const TEMPLATE = `<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}"
 
 describe('dropzone_input', () => {
   beforeEach(() => {
-    jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue({ width: 663, height: 325 });
+    jest
+      .spyOn(imageUtils, 'getLimitedImageDimensions')
+      .mockResolvedValue({ width: 663, height: 325 });
   });
 
   afterEach(() => {
@@ -130,7 +132,7 @@ describe('dropzone_input', () => {
     });
 
     it('display original file name in comment box', async () => {
-      jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue(null);
+      jest.spyOn(imageUtils, 'getLimitedImageDimensions').mockResolvedValue(null);
       await new Promise((resolve) => {
         const axiosMock = new MockAdapter(axios);
         triggerPasteEvent({
@@ -183,7 +185,7 @@ describe('dropzone_input', () => {
     });
 
     it('preserves undo history', async () => {
-      jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue(null);
+      jest.spyOn(imageUtils, 'getLimitedImageDimensions').mockResolvedValue(null);
       let execCommandMock;
       const fileName = 'undo-file.png';
 
@@ -245,7 +247,9 @@ describe('dropzone_input', () => {
     });
 
     it('applies retina dimensions to dropped retina images', async () => {
-      jest.spyOn(imageUtils, 'getRetinaDimensions').mockResolvedValue({ width: 663, height: 325 });
+      jest
+        .spyOn(imageUtils, 'getLimitedImageDimensions')
+        .mockResolvedValue({ width: 663, height: 325 });
       const mockFile = new File(['foo'], 'retina.png', { type: 'image/png' });
 
       mock.post(TEST_UPLOAD_PATH, {
@@ -263,7 +267,7 @@ describe('dropzone_input', () => {
 
       // run dropzone scheduler
       jest.runAllTimers();
-      // wait for XHR response and getRetinaDimensions to resolve
+      // wait for XHR response and getLimitedImageDimensions to resolve
       await waitForPromises();
 
       expect($(form).find('textarea').val()).toContain('{width=663 height=325}');

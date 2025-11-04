@@ -156,8 +156,6 @@ async function prepareEditor(drawIOEditorState, editorFacade) {
 
     iframe.style.visibility = 'visible';
     iframe.style.cursor = '';
-    // eslint-disable-next-line no-restricted-properties -- pending to migrate to `scrollTo` from `~/lib/utils/scroll_utils.js`.
-    window.scrollTo(0, 0);
   } catch (e) {
     createAlert({
       message: e.message,

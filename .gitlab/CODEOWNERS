@@ -131,7 +131,6 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /.gitlab/ci/qa-common/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/releases.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/delivery
 /.gitlab/ci/reports.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-com/gl-security/appsec
-/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/test-on-gdk/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/release-environments.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/delivery
 /.gitlab/ci/release-environments/ @gl-dx/pipeline-maintainers @gitlab-org/delivery
@@ -150,7 +149,6 @@ Dangerfile
 /scripts/release_environment/ @gl-dx/tooling-maintainers @gitlab-org/delivery
 /spec/scripts/release_environment/ @gl-dx/tooling-maintainers @gitlab-org/delivery
 /scripts/remote_development/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
-/scripts/review_apps/seed-dast-test-data.sh @gl-dx/tooling-maintainers @dappelt @ngeorge1
 /.dockerignore
 /.editorconfig
 /.gitpod.yml

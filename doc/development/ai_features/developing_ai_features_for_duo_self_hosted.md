@@ -19,19 +19,20 @@ The following models are currently available to GitLab team members for developm
 - `Llama 3.3 70b` on AWS Bedrock
 - `Llama 3.1 8b` on AWS Bedrock
 - `Llama 3.1 70b` on AWS Bedrock
-- `Mistral Small` on FireworksAI
-- `Mixtral 8x22b` on FireworksAI
-- `Codestral 22b v0.1` on FireworksAI
-- `Llama 3.1 70b` on FireworksAI
-- `Llama 3.1 8b` on FireworksAI
-- `Llama 3.3 70b` on FireworksAI
+- `Mistral Small` on Fireworks AI
+- `Mixtral 8x22b` on Fireworks AI
+- `Codestral 22b v0.1` on Fireworks AI
+- `Llama 3.1 70b` on Fireworks AI
+- `Llama 3.1 8b` on Fireworks AI
+- `Llama 3.3 70b` on Fireworks AI
 
 Development environments provide access to a limited set of models for cost optimization. The [complete model catalog](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models) is available in production deployments.
 
-### Gaining access to models on FireworksAI
+### Gaining access to models on Fireworks AI
 
-To gain access to FireworksAI, first create an [Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests). See [this example access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37505) if you aren't sure what information to fill in.
-Our FireworksAI account is managed by `Create::Code Creation`. Once access is granted, navigate to `https://fireworks.ai/` to create an API key.
+To gain access to Fireworks AI, first create an [access request in the Lumos App Store](https://handbook.gitlab.com/handbook/security/corporate/systems/lumos/ar/).
+
+Our Fireworks AI account is managed by [Code Creation Group](https://handbook.gitlab.com/handbook/engineering/ai/code-creation/). Once access is granted, navigate to `https://app.fireworks.ai/settings/users/api-keys` to create an API key.
 
 ### Gaining access to models on AWS Bedrock
 

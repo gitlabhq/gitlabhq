@@ -389,27 +389,34 @@ To select a model:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562708) in GitLab 18.4 for the GitLab UI as an [experiment](../../policy/development_stages_support.md#experiment).
+- [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2196) to VS Code and JetBrains IDEs in GitLab 18.5.
 
 {{< /history >}}
 
-When you use Chat in a project in the GitLab UI, you can select a specific agent for Chat to use.
+When you use Chat in a project in the GitLab UI, VS Code, or a JetBrains IDE,
+you can select a specific agent for Chat to use.
 
 Prerequisites:
 
 - You must [enable an agent in your project](../duo_agent_platform/agents/_index.md#enable-an-agent)
   from the AI Catalog.
+- For VS Code, [install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.49.12 or later.
+- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.22.0 or later.
 
 To select an agent:
 
-1. In the GitLab UI, open a new conversation in GitLab Duo Chat.
+1. In the GitLab UI or your IDE, open a new conversation in GitLab Duo Chat.
 1. In the dropdown list, select a custom agent. If you have not set up any custom
    agents, there is no dropdown list, and Chat uses the default GitLab Duo agent.
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
 
 After you create a conversation with a custom agent:
 
-- The conversation remembers the custom agent you selected.
+- The conversation remembers the custom agent you selected. You cannot select a different
+  agent for that conversation.
 - If you use the chat history to go back to the same conversation, it uses the same agent.
+- If you go back to a conversation and the associated agent is no longer available,
+  you cannot continue that conversation.
 
 ## GitLab Duo Chat capabilities
 

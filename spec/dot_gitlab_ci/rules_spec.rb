@@ -29,30 +29,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
     end
   end
 
-  describe '.review:rules:start-review-app-pipeline' do
-    let(:base_rules) { config.dig('.review:rules:start-review-app-pipeline', 'rules') }
-
-    context 'with .review:rules:review-stop' do
-      let(:derived_rules) { config.dig('.review:rules:review-stop', 'rules') }
-
-      it 'has the same rules as the base, but automatic jobs changed to manual' do
-        base_rules.zip(derived_rules).each do |(base, derived)|
-          # .review:rules:review-stop don't set variables
-          base.delete('variables')
-          base_with_manual_and_allowed_to_fail =
-            # base can be an array when we're using !reference
-            if base.is_a?(Array) || base['when'] == 'never'
-              base
-            else
-              base.merge('when' => 'manual', 'allow_failure' => true)
-            end
-
-          expect(derived).to eq(base_with_manual_and_allowed_to_fail)
-        end
-      end
-    end
-  end
-
   shared_examples 'predictive is inverse of non-predictive' do
     context 'with derived rules' do
       it 'has the "when: never" in reverse compared to the base' do
@@ -158,7 +134,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.gitlab_shell_secret',
         '.gitlab_workhorse_secret',
         '.gitlab_suggested_reviewers_secret',
-        '.gitlab/agents/review-apps/config.yaml',
         '.gitlab/changelog_config.yml',
         '.gitlab/CODEOWNERS',
         '.gitlab/lint/unused_methods/excluded_methods.yml',

@@ -85,7 +85,6 @@ class Gitlab::Seeder::TriageOps
     pipeline:run-as-if-jh
     pipeline:run-flaky-tests
     pipeline:run-praefect-with-db
-    pipeline:run-review-app
     pipeline:run-single-db
     pipeline:skip-undercoverage
     pipeline:update-cache

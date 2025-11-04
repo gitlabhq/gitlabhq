@@ -61,10 +61,6 @@ we do about them.
 How GitLab test suite [is run in the CI context](../pipelines/_index.md): setup, caches, artifacts,
 parallelization, monitoring.
 
-## Review apps
-
-How [review apps](review_apps.md) are set up for GitLab CE/EE and how to use them.
-
 ## Testing Rake tasks
 
 Everything you should know about [how to test Rake tasks](testing_rake_tasks.md).

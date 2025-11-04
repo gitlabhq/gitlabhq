@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planning do
+  include ListboxHelpers
+
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:bug)      { create(:label, project: project, title: 'bug') }
@@ -20,6 +22,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   context 'as an allowed user', :js do
@@ -27,17 +30,6 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
       project.add_maintainer(user)
 
       sign_in user
-    end
-
-    context 'sidebar' do
-      it 'is present when bulk edit is enabled' do
-        enable_bulk_update
-        expect(page).to have_css 'aside[aria-label="Bulk update"]'
-      end
-
-      it 'is not present when bulk edit is disabled' do
-        expect(page).not_to have_css 'aside[aria-label="Bulk update"]'
-      end
     end
 
     context 'can bulk assign' do
@@ -49,7 +41,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
         context 'to all issues' do
           before do
             check 'Select all'
-            open_labels_dropdown ['bug']
+            add_labels_with_dropdown ['bug']
             update_issues
           end
 
@@ -65,7 +57,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
           before do
             check issue1.title
             check issue2.title
-            open_labels_dropdown ['bug']
+            add_labels_with_dropdown ['bug']
             update_issues
           end
 
@@ -80,22 +72,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
         context 'to an issue' do
           before do
             check issue1.title
-            open_labels_dropdown ['bug']
-            update_issues
-          end
-
-          it do
-            expect(find(issue_1_selector)).to have_content 'bug'
-            expect(find(issue_1_selector)).to have_content 'frontend'
-            expect(find(issue_2_selector)).not_to have_content 'bug'
-            expect(find(issue_2_selector)).not_to have_content 'frontend'
-          end
-        end
-
-        context 'to an issue by selecting the label first' do
-          before do
-            open_labels_dropdown ['bug']
-            check issue1.title
+            add_labels_with_dropdown ['bug']
             update_issues
           end
 
@@ -112,7 +89,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
         context 'to all issues' do
           before do
             check 'Select all'
-            open_labels_dropdown %w[bug feature]
+            add_labels_with_dropdown %w[bug feature]
             update_issues
           end
 
@@ -127,7 +104,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
         context 'to a issue' do
           before do
             check issue1.title
-            open_labels_dropdown %w[bug feature]
+            add_labels_with_dropdown %w[bug feature]
             update_issues
           end
 
@@ -148,8 +125,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
 
         enable_bulk_update
         check 'Select all'
-
-        open_labels_dropdown ['bug']
+        add_labels_with_dropdown ['bug']
         update_issues
       end
 
@@ -169,7 +145,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
 
           enable_bulk_update
           check 'Select all'
-          unmark_labels_in_dropdown %w[bug feature]
+          remove_labels_with_dropdown %w[bug feature]
           update_issues
         end
 
@@ -187,8 +163,8 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
           issue2.labels << feature
 
           enable_bulk_update
-          check_issue issue1
-          unmark_labels_in_dropdown ['bug']
+          check issue1.title
+          remove_labels_with_dropdown ['bug']
           update_issues
         end
 
@@ -206,9 +182,9 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
           issue2.labels << feature
 
           enable_bulk_update
-          check_issue issue1
-          check_issue issue2
-          unmark_labels_in_dropdown ['bug']
+          check issue1.title
+          check issue2.title
+          remove_labels_with_dropdown ['bug']
           update_issues
         end
 
@@ -258,7 +234,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
 
           check 'Select all'
           open_milestone_dropdown ['First Release']
-          open_labels_dropdown ['feature']
+          add_labels_with_dropdown ['feature']
           update_issues
 
           expect(find(issue_1_selector)).to have_content 'bug'
@@ -286,7 +262,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
           check 'Select all'
 
           open_milestone_dropdown ['First Release']
-          unmark_labels_in_dropdown ['feature']
+          remove_labels_with_dropdown ['feature']
           update_issues
 
           expect(find(issue_1_selector)).to have_content 'bug'
@@ -336,30 +312,13 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
       it do
         expect(find(issue_1_selector)).to have_content 'bug'
 
-        check_issue issue1
-        open_labels_dropdown ['feature']
-        uncheck_issue issue1
-        check_issue issue1
+        check issue1.title
+        add_labels_with_dropdown ['feature']
+        uncheck issue1.title
+        check issue1.title
         update_issues
-        sleep 1 # needed
 
         expect(find(issue_1_selector)).to have_content 'bug'
-        expect(find(issue_1_selector)).to have_content 'feature'
-      end
-    end
-
-    context 'mark previously toggled label' do
-      before do
-        enable_bulk_update
-      end
-
-      it do
-        open_labels_dropdown ['feature']
-
-        check_issue issue1
-
-        update_issues
-
         expect(find(issue_1_selector)).to have_content 'feature'
       end
     end
@@ -376,19 +335,8 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
 
       it 'applies label from filtered results' do
         check 'Select all'
-
-        within('aside[aria-label="Bulk update"]') do
-          click_button 'Select labels'
-          wait_for_requests
-
-          expect(page).to have_link 'bug', class: 'is-active'
-          expect(page).to have_link 'feature', class: 'is-indeterminate'
-
-          click_link 'bug'
-          fill_in 'Search', with: 'wontfix'
-          click_link 'wontfix'
-        end
-
+        remove_labels_with_dropdown ['bug']
+        add_labels_with_dropdown ['wontfix']
         update_issues
 
         first_issue = find(issue_1_selector)
@@ -422,57 +370,37 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
 
   def open_milestone_dropdown(items = [])
     click_button 'Select milestone'
-    wait_for_requests
     items.map do |item|
-      click_button item
+      select_listbox_item(item)
     end
   end
 
-  def open_labels_dropdown(items = [], unmark = false)
-    within('aside[aria-label="Bulk update"]') do
+  def add_labels_with_dropdown(items = [])
+    within_testid('bulk-edit-add-labels') do
       click_button 'Select labels'
-      wait_for_requests
       items.map do |item|
-        click_link item
+        select_listbox_item(item)
       end
-
-      if unmark
-        items.map do |item|
-          # Make sure we are unmarking the item no matter the state it has currently
-          click_link item until find('a', text: item)[:class].include? 'label-item'
-        end
-      end
+      send_keys :escape
     end
   end
 
-  def unmark_labels_in_dropdown(items = [])
-    open_labels_dropdown(items, true)
-  end
-
-  def check_issue(issue, uncheck = false)
-    if uncheck
-      uncheck issue.title
-    else
-      check issue.title
+  def remove_labels_with_dropdown(items = [])
+    within_testid('bulk-edit-remove-labels') do
+      click_button 'Select labels'
+      items.map do |item|
+        select_listbox_item(item)
+      end
+      send_keys :escape
     end
-  end
-
-  def uncheck_issue(issue)
-    check_issue(issue, true)
   end
 
   def update_issues
     click_button 'Update selected'
-    wait_for_requests
   end
 
   def enable_bulk_update
     visit project_issues_path(project)
-    wait_for_requests
     click_button 'Bulk edit'
-  end
-
-  def disable_bulk_update
-    click_button 'Cancel'
   end
 end

@@ -563,6 +563,118 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
             context_sha: sha }
         )
       end
+
+      context 'with additional keys like inputs' do
+        let(:values) do
+          {
+            include: [{ local: 'myfolder/*.yml', inputs: { environment: 'production' } }],
+            image: 'image:1.0'
+          }
+        end
+
+        let(:project_files) do
+          {
+            'myfolder/file1.yml' => <<~YAML,
+            spec:
+              inputs:
+                environment:
+            ---
+            my_build:
+              script: echo Hello from $[[ inputs.environment ]]
+            YAML
+            'myfolder/file2.yml' => <<~YAML
+            spec:
+              inputs:
+                environment:
+            ---
+            my_test:
+              script: echo Testing in $[[ inputs.environment ]]
+            YAML
+          }
+        end
+
+        it 'fetches the matched files' do
+          output = processor.perform
+          expect(output.keys).to match_array([:image, :my_build, :my_test])
+        end
+
+        it 'stores includes with preserved additional keys' do
+          perform
+
+          expect(context.includes).to contain_exactly(
+            { type: :local,
+              location: 'myfolder/file1.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file1.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file1.yml",
+              extra: { inputs: { environment: 'production' } },
+              context_project: project.full_path,
+              context_sha: sha },
+            { type: :local,
+              location: 'myfolder/file2.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file2.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file2.yml",
+              extra: { inputs: { environment: 'production' } },
+              context_project: project.full_path,
+              context_sha: sha }
+          )
+        end
+      end
+
+      context 'with additional keys like inputs and rules' do
+        let(:values) do
+          {
+            include: [{ local: 'myfolder/*.yml', inputs: { environment: 'production' }, rules: [{ when: 'always' }] }],
+            image: 'image:1.0'
+          }
+        end
+
+        let(:project_files) do
+          {
+            'myfolder/file1.yml' => <<~YAML,
+            spec:
+              inputs:
+                environment:
+            ---
+            my_build:
+              script: echo Hello from $[[ inputs.environment ]]
+            YAML
+            'myfolder/file2.yml' => <<~YAML
+            spec:
+              inputs:
+                environment:
+            ---
+            my_test:
+              script: echo Testing in $[[ inputs.environment ]]
+            YAML
+          }
+        end
+
+        it 'fetches the matched files' do
+          output = processor.perform
+          expect(output.keys).to match_array([:image, :my_build, :my_test])
+        end
+
+        it 'stores includes with both inputs and rules preserved' do
+          perform
+
+          expect(context.includes).to contain_exactly(
+            { type: :local,
+              location: 'myfolder/file1.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file1.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file1.yml",
+              extra: { inputs: { environment: 'production' }, rules: [{ when: 'always' }] },
+              context_project: project.full_path,
+              context_sha: sha },
+            { type: :local,
+              location: 'myfolder/file2.yml',
+              blob: "http://localhost/#{project.full_path}/-/blob/#{sha}/myfolder/file2.yml",
+              raw: "http://localhost/#{project.full_path}/-/raw/#{sha}/myfolder/file2.yml",
+              extra: { inputs: { environment: 'production' }, rules: [{ when: 'always' }] },
+              context_project: project.full_path,
+              context_sha: sha }
+          )
+        end
+      end
     end
 
     context 'when rules defined' do

@@ -14,6 +14,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     project.add_maintainer(user)
     sign_in(user)
@@ -51,7 +52,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
       click_button 'Bulk edit'
       check 'Select all'
       click_update_assignee_button
-      click_button user.username
+      select_listbox_item(user.username)
 
       click_update_issues_button
 
@@ -69,7 +70,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
       click_button 'Bulk edit'
       check 'Select all'
       click_update_assignee_button
-      click_button 'Unassigned'
+      select_listbox_item('Unassigned')
       click_update_issues_button
 
       expect(find('.issue:first-of-type')).not_to have_link "Assigned to #{user.name}"
@@ -79,13 +80,13 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
   context 'milestone' do
     let!(:milestone) { create(:milestone, project: project) }
 
-    it 'updates milestone', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553811' do
+    it 'updates milestone' do
       visit project_issues_path(project)
 
       click_button 'Bulk edit'
       check 'Select all'
       click_button 'Select milestone'
-      click_button milestone.title
+      select_listbox_item(milestone.title)
       click_update_issues_button
 
       expect(page.find('.issue')).to have_content milestone.title
@@ -102,7 +103,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
       click_button 'Bulk edit'
       check 'Select all'
       click_button 'Select milestone'
-      click_button 'No milestone'
+      select_listbox_item('No milestone')
       click_update_issues_button
 
       expect(find('.issue:first-of-type')).not_to have_text milestone.title

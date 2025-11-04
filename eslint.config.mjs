@@ -447,6 +447,7 @@ export default [
           groups: ['props', 'data', 'computed', 'methods'],
         },
       ],
+      'vue/require-name-property': 'error',
     },
   },
   {

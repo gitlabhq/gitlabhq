@@ -147,6 +147,7 @@ export const initSharedAccessTokenApp = () => {
     accessTokenDescription,
     accessTokenScopes,
     accessTokenCreate,
+    accessTokenNew,
     accessTokenRevoke,
     accessTokenRotate,
     accessTokenShow,
@@ -164,6 +165,7 @@ export const initSharedAccessTokenApp = () => {
       accessTokenMaxDate,
       accessTokenMinDate,
       accessTokenCreate,
+      accessTokenNew,
       accessTokenRevoke,
       accessTokenRotate,
       accessTokenShow,
@@ -175,6 +177,7 @@ export const initSharedAccessTokenApp = () => {
           tokenName: accessTokenName,
           tokenDescription: accessTokenDescription,
           tokenScopes: accessTokenScopes && JSON.parse(accessTokenScopes),
+          useFineGrainedTokens: gon.features.fineGrainedPersonalAccessTokens,
         },
       });
     },

@@ -2170,7 +2170,6 @@ Style/InlineDisableAnnotation:
     - 'spec/scripts/api/create_merge_request_note_spec.rb'
     - 'spec/scripts/generate_message_to_run_e2e_pipeline_spec.rb'
     - 'spec/scripts/pipeline/average_reports_spec.rb'
-    - 'spec/scripts/review_apps/automated_cleanup_spec.rb'
     - 'spec/scripts/trigger-build_spec.rb'
     - 'spec/serializers/admin/abuse_report_serializer_spec.rb'
     - 'spec/serializers/profile/event_entity_spec.rb'

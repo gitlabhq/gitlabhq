@@ -12,6 +12,7 @@ import AccessTokenForm from './access_token_form.vue';
 import AccessTokenTable from './access_token_table.vue';
 import AccessTokenStatistics from './access_token_statistics.vue';
 import UserAvatar from './user_avatar.vue';
+import PersonalAccessTokensCrud from './personal_access_tokens/tokens_crud.vue';
 
 export default {
   components: {
@@ -25,6 +26,7 @@ export default {
     AccessTokenTable,
     AccessTokenStatistics,
     UserAvatar,
+    PersonalAccessTokensCrud,
   },
   inject: ['accessTokenCreate', 'accessTokenRevoke', 'accessTokenRotate', 'accessTokenShow'],
   props: {
@@ -51,6 +53,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    useFineGrainedTokens: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -179,7 +186,15 @@ export default {
         @sortDirectionChange="handleSortDirectionChange"
       />
     </div>
-    <access-token-table :busy="busy" :tokens="tokens" />
+
+    <personal-access-tokens-crud
+      v-if="useFineGrainedTokens"
+      :tokens="tokens"
+      :loading="busy"
+      class="gl-mb-5"
+    />
+    <access-token-table v-else :busy="busy" :tokens="tokens" />
+
     <gl-pagination
       :value="page"
       :per-page="perPage"

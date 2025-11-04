@@ -26,7 +26,7 @@ module Gitlab
                 location: masked_location,
                 blob: masked_blob,
                 raw: masked_raw,
-                extra: {}
+                extra: extra_params
               )
             end
 
@@ -45,6 +45,10 @@ module Gitlab
             end
 
             private
+
+            def extra_params
+              params.except(:local)
+            end
 
             def fetch_local_content
               BatchLoader.for([context.sha, location])

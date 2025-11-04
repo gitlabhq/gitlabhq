@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issues > User creates issue by email', feature_category: :team_planning do
+  include Spec::Support::Helpers::ModalHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
 
@@ -11,6 +13,7 @@ RSpec.describe 'Issues > User creates issue by email', feature_category: :team_p
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     sign_in(user)
 
@@ -26,11 +29,11 @@ RSpec.describe 'Issues > User creates issue by email', feature_category: :team_p
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
         visit project_issues_path(project)
-        click_button('Email a new issue')
+        click_button('Email a new work item')
       end
 
       it 'click the button to show modal for the new email' do
-        page.within '#issuable-email-modal' do
+        within_modal do
           email = project.new_issuable_address(user, 'issue')
 
           expect(page.find('input[type="text"]').value).to eq email

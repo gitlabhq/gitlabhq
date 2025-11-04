@@ -25,7 +25,7 @@ module Gitlab
               data.transform_values do |values|
                 case values
                 when Array
-                  values.map { |value| expand_variable(value.to_s) }
+                  values.map { |value| value.is_a?(String) ? expand_variable(value) : value }
                 when String
                   expand_variable(values)
                 else

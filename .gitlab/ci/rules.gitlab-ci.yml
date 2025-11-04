@@ -145,9 +145,6 @@
 .if-merge-request-labels-pipeline-single-db-sec-connection: &if-merge-request-labels-pipeline-single-db-sec-connection
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:single-db-sec-connection/'
 
-.if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
-
 .if-merge-request-labels-skip-rspec-fail-fast: &if-merge-request-labels-skip-rspec-fail-fast
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-rspec-fail-fast/'
 
@@ -275,17 +272,6 @@
   - ".gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
 
-.ci-review-patterns: &ci-review-patterns
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/frontend.gitlab-ci.yml"
-  - ".gitlab/ci/build-images.gitlab-ci.yml"
-  - ".gitlab/ci/review.gitlab-ci.yml"
-  - ".gitlab/ci/cng/**/*"
-  - ".gitlab/ci/review-apps/**/*"
-  - "scripts/review_apps/**/*"
-  - "scripts/trigger-build.rb"
-  - "{,ee/,jh/}{bin,config}/**/*.rb"
-
 .ci-templates-patterns: &ci-templates-patterns
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
@@ -296,8 +282,6 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
   - ".gitlab/ci/test-on-omnibus/*.yml"
-  - ".gitlab/ci/review-apps/qa.gitlab-ci.yml"
-  - ".gitlab/ci/review-apps/rules.gitlab-ci.yml"
   - ".gitlab/ci/test-on-gdk/*.yml"
   - ".gitlab/ci/version.yml"
 
@@ -1178,7 +1162,6 @@
   rules:
     - if: '$ENABLE_BUILD_QA_IMAGE == "true"'
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request
       changes: *ruby-version-patterns
     - <<: *if-merge-request
@@ -1454,7 +1437,6 @@
     - <<: *if-rails-next-branch
     - <<: *if-force-ci
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request
       changes: *qa-patterns
     - <<: *if-merge-request
@@ -2953,130 +2935,8 @@
       allow_failure: true
 
 ################
-# Review rules #
+# Danger rules #
 ################
-.review-change-pattern: &review-change-pattern
-  APP_CHANGE_TRIGGER: "true"
-
-# The following rules needs to be the same as the one for .review:rules:review-stop
-# except that:
-# - most rules re automatic here (i.e. no `when: manual`) and not allowed to fail (i.e. no `allow_failure: true`) here
-# - several rules have `variables: *review-change-pattern` here
-.review:rules:start-review-app-pipeline:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-    - if: '$CI_REVIEW_APPS_ENABLED != "true"'
-      when: never
-    - !reference [".prevent-tier-2-and-below", rules]
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-build-patterns
-      variables: *review-change-pattern
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *controllers-patterns
-      variables: *review-change-pattern
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *models-patterns
-      variables: *review-change-pattern
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *lib-gitlab-patterns
-      variables: *review-change-pattern
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
-      allow_failure: true
-
-.review:rules:review-cleanup:
-  rules:
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - "scripts/review_apps/automated_cleanup.rb"
-        - "tooling/lib/tooling/helm3_client.rb"
-        - "tooling/lib/tooling/kubernetes_client.rb"
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      allow_failure: true
-
-.review:rules:review-stop:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-      when: manual
-      allow_failure: true
-    - if: '$CI_REVIEW_APPS_ENABLED != "true"'
-      when: never
-    - !reference [".prevent-tier-2-and-below", rules]
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-build-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *controllers-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *models-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *lib-gitlab-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
-      when: manual
-      allow_failure: true
-
-.review:rules:review-k8s-resources-count-checks:
-  rules:
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - "scripts/review_apps/k8s-resources-count-checks.sh"
-      allow_failure: true
-
-.review:rules:review-gcp-quotas-checks:
-  rules:
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - "scripts/review_apps/gcp-quotas-checks.rb"
-      allow_failure: true
-
 .review:rules:danger:
   rules:
     - <<: *if-merge-request
@@ -3335,7 +3195,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-run-single-db
-    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns

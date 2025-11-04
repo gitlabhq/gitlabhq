@@ -5,6 +5,23 @@ require 'yaml'
 require 'open3'
 require 'rainbow'
 
+# Scans for modifications to deprecated files by comparing local commits against
+# the upstream branch (or "origin/master" as fallback).
+#
+# YAML Configuration Structure (./config/lint/deprecations.yml):
+#
+# files:
+#   - reason: "Migration to new architecture in progress"
+#     feature_issue: https://gitlab.com/groups/gitlab-org/-/epics/54321
+#     removal_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/09876
+#     feature_category: groups_and_projects
+#     paths:
+#       - app/assets/javascripts/legacy_component.js
+#
+# Usage:
+#   Via lefthook (recommended): lefthook run pre-push --command check-deprecated-files
+#   Direct execution: ./scripts/lint/check_deprecated_files.rb
+
 class CheckDeprecatedFiles
   FEEDBACK_ISSUE = "https://gitlab.com/gitlab-org/gitlab/-/issues/575249"
   DEFAULT_DEPRECATION_REGISTRY = "./config/lint/deprecations.yml"
@@ -58,8 +75,8 @@ class CheckDeprecatedFiles
 
   def deprecated_files
     @deprecated_files ||= begin
-      yaml_content = YAML.safe_load_file(deprecation_registry)
-      yaml_content.fetch('files').flat_map { |entry| Array(entry['paths']) }.to_set
+      yaml_content = YAML.safe_load_file(deprecation_registry)&.fetch('files')
+      Array(yaml_content).flat_map { |entry| Array(entry['paths']) }.to_set
     end
   rescue StandardError => e
     terminate "Failed to parse #{deprecation_registry}: #{e.message}"

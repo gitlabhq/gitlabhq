@@ -2262,7 +2262,6 @@ Layout/LineLength:
     - 'scripts/no-dir-check'
     - 'scripts/perf/query_limiting_report.rb'
     - 'scripts/pipeline_test_report_builder.rb'
-    - 'scripts/review_apps/automated_cleanup.rb'
     - 'scripts/security-harness'
     - 'scripts/static-analysis'
     - 'scripts/trigger-build.rb'

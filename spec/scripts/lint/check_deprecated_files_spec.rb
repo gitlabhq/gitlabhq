@@ -9,32 +9,33 @@ require_relative '../../../scripts/lint/check_deprecated_files'
 RSpec.describe CheckDeprecatedFiles, feature_category: :tooling do
   RSpec::Matchers.define_negated_matcher :exclude, :include
 
+  let(:root) { Dir.mktmpdir }
+  let(:registry) { File.join(root, 'deprecations.yml') }
+  let(:registry_content) { '' }
   let(:modified_files) { [] }
 
   subject(:execute) { described_class.new(deprecation_registry: registry).execute!(modified_files) }
 
-  context 'when deprecation registry does not exist' do
-    let(:registry) { '/path/to/non/existent/deprecations.yml' }
+  before do
+    File.write(registry, registry_content)
+  end
 
+  after do
+    FileUtils.rm_rf(root)
+  end
+
+  context 'when deprecation registry does not exist' do
     it 'exits with error message' do
+      FileUtils.rm_rf(root)
+
       expect { execute }.to raise_error(SystemExit)
         .and output(match(/Error: #{registry} not found/)).to_stderr
     end
   end
 
   context 'when deprecation registry is malformed' do
-    let(:root) { Dir.mktmpdir }
-    let(:registry) { File.join(root, 'deprecations.yml') }
-    let(:content) { YAML.dump({ 'invalid' => [] }) }
+    let(:registry_content) { YAML.dump({ 'invalid' => [] }) }
     let(:modified_files) { ['test.rb'] }
-
-    before do
-      File.write(registry, content)
-    end
-
-    after do
-      FileUtils.rm_rf(root)
-    end
 
     it 'exits with error message about parsing failure' do
       expect { execute }.to raise_error(SystemExit)
@@ -43,20 +44,10 @@ RSpec.describe CheckDeprecatedFiles, feature_category: :tooling do
   end
 
   context 'when deprecation registry exists' do
-    let(:root) { Dir.mktmpdir }
-    let(:registry) { File.join(root, 'deprecations.yml') }
     let(:registry_content) do
       YAML.dump({ 'files' => [
         { 'paths' => %w[app/views/admin/groups/_group.html.haml app/assets/javascripts/admin/groups/index.js] }
       ] })
-    end
-
-    before do
-      File.write(registry, registry_content)
-    end
-
-    after do
-      FileUtils.rm_rf(root)
     end
 
     context 'when no deprecated files are modified' do
@@ -88,6 +79,28 @@ RSpec.describe CheckDeprecatedFiles, feature_category: :tooling do
         expect { execute }
           .to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
             .and output(exclude('app/assets/javascripts/admin/groups/index.js')).to_stdout
+      end
+    end
+  end
+
+  context 'when deprecation registry is empty' do
+    let(:registry_content) { '' }
+    let(:modified_files) { ['test.rb'] }
+
+    it 'exits with status 0' do
+      expect { execute }.to raise_error(SystemExit) do |error|
+        expect(error.status).to eq(0)
+      end
+    end
+  end
+
+  context 'when files key is empty' do
+    let(:registry_content) { YAML.dump({ 'files' => [] }) }
+    let(:modified_files) { ['test.rb'] }
+
+    it 'exits with status 0' do
+      expect { execute }.to raise_error(SystemExit) do |error|
+        expect(error.status).to eq(0)
       end
     end
   end

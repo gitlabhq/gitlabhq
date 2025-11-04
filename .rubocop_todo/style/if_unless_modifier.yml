@@ -629,7 +629,6 @@ Style/IfUnlessModifier:
     - 'rubocop/cop/migration/remove_column.rb'
     - 'rubocop/cop/migration/sidekiq_queue_migrate.rb'
     - 'rubocop/routes_under_scope.rb'
-    - 'scripts/review_apps/automated_cleanup.rb'
     - 'scripts/setup/find-jh-branch.rb'
     - 'scripts/static-analysis'
     - 'spec/components/previews/pajamas/alert_component_preview.rb'

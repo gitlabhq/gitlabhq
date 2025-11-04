@@ -11,6 +11,7 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   shared_examples_for 'empty state with filters' do
@@ -47,7 +48,7 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
         visit project_issues_path(project)
 
         expect(page).to have_content('Track bugs, plan features, and organize your work with issues')
-        expect(page).to have_content('Create issue')
+        expect(page).to have_link('New item')
       end
 
       it_behaves_like 'empty state with filters'

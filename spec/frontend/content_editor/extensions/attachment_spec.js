@@ -10,7 +10,7 @@ import Link from '~/content_editor/extensions/link';
 import { VARIANT_DANGER } from '~/alert';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import { getRetinaDimensions } from '~/lib/utils/image_utils';
+import { getLimitedImageDimensions } from '~/lib/utils/image_utils';
 import { createTestEditor, expectDocumentAfterTransaction } from '../test_utils';
 import {
   PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
@@ -68,7 +68,7 @@ describe('content_editor/extensions/attachment', () => {
   const blobUrl = 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b';
 
   beforeEach(() => {
-    getRetinaDimensions.mockResolvedValue(null);
+    getLimitedImageDimensions.mockResolvedValue(null);
     renderMarkdown = jest.fn();
     eventHub = eventHubFactory();
 
@@ -258,7 +258,7 @@ describe('content_editor/extensions/attachment', () => {
         });
 
         it('updates the image with width and height if available', async () => {
-          getRetinaDimensions.mockResolvedValue(retinaImageSize);
+          getLimitedImageDimensions.mockResolvedValue(retinaImageSize);
           const expectedDoc = doc(
             p(
               image({

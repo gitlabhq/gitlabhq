@@ -8,6 +8,7 @@ RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
     # we won't need these tests for issues, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     %w[foobar barbaz].each do |title|
       create(
@@ -34,12 +35,5 @@ RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
 
     expect(page).to have_content 'foobar'
     expect(page).not_to have_content 'barbaz'
-  end
-
-  it 'allows filtering by a specified assignee' do
-    visit project_issues_path(project, assignee_id: user.id)
-
-    expect(page).not_to have_content 'foobar'
-    expect(page).to have_content 'barbaz'
   end
 end

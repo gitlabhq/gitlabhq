@@ -3,7 +3,7 @@ import { VARIANT_DANGER } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import { bytesToMiB } from '~/lib/utils/number_utils';
-import { getRetinaDimensions } from '~/lib/utils/image_utils';
+import { getLimitedImageDimensions } from '~/lib/utils/image_utils';
 import TappablePromise from '~/lib/utils/tappable_promise';
 import { ALERT_EVENT } from '../constants';
 
@@ -156,7 +156,7 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
     attrs: { uploading: fileId, src: objectUrl, alt: file.name },
   };
   let selectionIncrement = 0;
-  getRetinaDimensions(file)
+  getLimitedImageDimensions(file)
     .then(({ width, height } = {}) => {
       if (width && height) {
         chain(editor).updateAttributes(type, { width, height }).run();

@@ -6,6 +6,11 @@ const METER_TO_INCHES = 39.3701;
 const UNIT_METERS = 1;
 const PNG_DEFAULT_PPI = 72;
 
+const baseImageLimits = {
+  width: 900,
+  height: 600,
+};
+
 const stringToUInt32 = (str) => {
   const buffer = str.split('').map((char) => char.charCodeAt(0));
   // eslint-disable-next-line no-bitwise
@@ -45,7 +50,7 @@ const dataToImage = (data) => {
 
 const maybe2xRetina = (name) => name.substring(0, name.lastIndexOf('.')).endsWith('@2x');
 
-const getAppleRetinaPngDimensions = (dataUrl) => {
+const getDetailedPngDimensions = (dataUrl) => {
   const data = atob(dataUrl.split(',')[1]).split('IDAT')[0];
   const pixelsPerInch = getPixelsPerInch(data);
   if (pixelsPerInch.lte(PNG_DEFAULT_PPI, PNG_DEFAULT_PPI)) return null;
@@ -69,7 +74,7 @@ const getAppleRetinaPngDimensions = (dataUrl) => {
     .toSize();
 };
 
-export const getRetinaDimensions = async (file) => {
+export const getImageDimensions = async (file) => {
   if (!file.type.startsWith('image/')) return null;
 
   const data = await readFileAsDataURL(file);
@@ -88,8 +93,33 @@ export const getRetinaDimensions = async (file) => {
   if (file.type !== 'image/png') return fallbackDimensions;
 
   try {
-    return getAppleRetinaPngDimensions(data) || fallbackDimensions;
+    return getDetailedPngDimensions(data) || fallbackDimensions;
   } catch (e) {
     return fallbackDimensions;
   }
+};
+
+const limitDimensions = (dimensions, limits) => {
+  const { width: maxWidth, height: maxHeight } = limits;
+  let { width, height } = dimensions;
+
+  if (width <= 0 || height <= 0) return null;
+
+  if (width > maxWidth) {
+    height *= maxWidth / width;
+    width = maxWidth;
+  }
+
+  if (height > maxHeight) {
+    width *= maxHeight / height;
+    height = maxHeight;
+  }
+
+  return { width: Math.ceil(width), height: Math.ceil(height) };
+};
+
+export const getLimitedImageDimensions = async (file, limits = baseImageLimits) => {
+  const dimensions = await getImageDimensions(file);
+  if (!dimensions) return null;
+  return limitDimensions(dimensions, limits);
 };

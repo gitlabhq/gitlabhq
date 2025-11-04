@@ -315,7 +315,7 @@ class Repository
   def lazy_ref_exists?(ref_name)
     BatchLoader.for(ref_name).batch(key: self) do |ref_names, loader, _args|
       # Make a single Gitaly call to check all refs at once
-      existing_refs = list_refs(ref_names).to_h { |r| [r.name, true] }
+      existing_refs = list_refs(ref_names).to_h { |r| [Gitlab::Git.ref_name(r.name, types: nil), true] }
 
       # Load results for each requested ref
       ref_names.each do |ref|

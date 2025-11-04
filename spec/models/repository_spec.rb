@@ -2020,6 +2020,17 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
+    context 'when the branch name is in Japanise' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:branch) { '日本' }
+
+      before do
+        repository.add_branch(user, branch, 'master')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
     context 'when "ref_existence_check_gitaly" is disabled' do
       before do
         stub_feature_flags(ref_existence_check_gitaly: false)

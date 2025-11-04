@@ -7,6 +7,9 @@ module UserSettings
     feature_category :system_access
 
     before_action :check_personal_access_tokens_enabled
+    before_action only: :index do
+      push_frontend_feature_flag(:fine_grained_personal_access_tokens)
+    end
     prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:ics) }
 
     def index

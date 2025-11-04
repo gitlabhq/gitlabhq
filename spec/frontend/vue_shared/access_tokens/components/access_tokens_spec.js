@@ -9,6 +9,9 @@ import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_FILTER, DEFAULT_SORT } from '~/access_tokens/constants';
+import TokenAccessTable from '~/vue_shared/access_tokens/components/access_token_table.vue';
+import PersonalAccessTokensCrud from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_crud.vue';
+import { stubComponent } from 'helpers/stub_component';
 
 Vue.use(PiniaVuePlugin);
 
@@ -17,6 +20,7 @@ describe('AccessTokens', () => {
 
   const pinia = createTestingPinia();
   const store = useAccessTokens();
+  const tokens = [{ name: 'A' }, { name: 'B' }];
   const $router = {
     push: jest.fn(),
     replace: jest.fn(),
@@ -32,7 +36,13 @@ describe('AccessTokens', () => {
     'http://localhost/api/v4/groups/4/service_accounts/:id/personal_access_token';
   const id = 235;
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({
+    tokenName,
+    tokenDescription,
+    tokenScopes,
+    showAvatar = false,
+    useFineGrainedTokens = true,
+  } = {}) => {
     wrapper = shallowMountExtended(AccessTokens, {
       pinia,
       provide: {
@@ -41,9 +51,11 @@ describe('AccessTokens', () => {
         accessTokenRotate,
         accessTokenShow,
       },
-      propsData: {
-        id,
-        ...props,
+      propsData: { id, tokenName, tokenDescription, tokenScopes, showAvatar, useFineGrainedTokens },
+      stubs: {
+        PersonalAccessTokensCrud: stubComponent(PersonalAccessTokensCrud, {
+          props: ['tokens', 'loading'],
+        }),
       },
       mocks: {
         $router,
@@ -61,6 +73,8 @@ describe('AccessTokens', () => {
   const findPagination = () => wrapper.findComponent(GlPagination);
   const findSorting = () => wrapper.findComponent(GlSorting);
   const findUserAvatar = () => wrapper.findComponent(UserAvatar);
+  const findTokenAccessTable = () => wrapper.findComponent(TokenAccessTable);
+  const findPersonalAccessTokensCrud = () => wrapper.findComponent(PersonalAccessTokensCrud);
 
   it('fetches tokens when it is rendered', () => {
     createComponent();
@@ -186,5 +200,59 @@ describe('AccessTokens', () => {
     expect($router.push).toHaveBeenCalledWith({ query: { page: 1, sort: 'name_asc' } });
     expect(store.setSorting).toHaveBeenCalledWith(expect.objectContaining({ isAsc: false }));
     expect(store.fetchTokens).toHaveBeenCalledTimes(2);
+  });
+
+  describe('on page load', () => {
+    beforeEach(() => {
+      store.tokens = tokens;
+      createComponent();
+    });
+
+    it('shows personal access tokens crud', () => {
+      expect(findPersonalAccessTokensCrud().props()).toEqual({
+        tokens,
+        loading: false,
+      });
+    });
+
+    it('does not show access token table', () => {
+      expect(findTokenAccessTable().exists()).toBe(false);
+    });
+  });
+
+  describe('when fineGrainedPersonalAccessTokens feature flag is disabled', () => {
+    beforeEach(() => {
+      store.tokens = tokens;
+      createComponent({ useFineGrainedTokens: false });
+    });
+
+    it('shows access token table', () => {
+      expect(findTokenAccessTable().props()).toEqual({
+        tokens,
+        busy: false,
+      });
+    });
+
+    it('does not show personal access tokens crud', () => {
+      expect(findPersonalAccessTokensCrud().exists()).toBe(false);
+    });
+  });
+
+  describe('busy state', () => {
+    beforeEach(() => {
+      store.busy = true;
+    });
+
+    it('shows personal access tokens crud as loading', () => {
+      createComponent();
+
+      expect(findPersonalAccessTokensCrud().props('loading')).toBe(true);
+    });
+
+    it('shows access token table as busy', () => {
+      createComponent({ useFineGrainedTokens: false });
+
+      expect(findTokenAccessTable().props('busy')).toBe(true);
+    });
   });
 });

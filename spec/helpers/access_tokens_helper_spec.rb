@@ -97,6 +97,7 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
             description: 'My description',
             scopes: '["api","sudo"]',
             create: 'http://test.host/-/user_settings/personal_access_tokens',
+            new: '/-/user_settings/personal_access_tokens/new',
             revoke: 'http://localhost/api/v4/personal_access_tokens',
             rotate: 'http://localhost/api/v4/personal_access_tokens',
             show: 'http://localhost/api/v4/personal_access_tokens?user_id=:id'

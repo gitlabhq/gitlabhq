@@ -141,8 +141,6 @@ The current stages are:
 - `test`: This stage includes most of the tests, and DB/migration jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
-- `review`: This stage includes jobs that build the CNG images, deploy them, and
-  run end-to-end tests against review apps (see [review apps](../testing_guide/review_apps.md) for details).
   It also includes Docs Review App jobs.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in stage `review`.
@@ -469,20 +467,6 @@ For this scenario, you have to:
 #### Where is this pattern used?
 
 - For now, we use this pattern for the following jobs, and those do not block private repositories:
-  - `review-build-cng-env` for:
-    - `GITALY_SERVER_VERSION`
-    - `GITLAB_ELASTICSEARCH_INDEXER_VERSION`
-    - `GITLAB_KAS_VERSION`
-    - `GITLAB_PAGES_VERSION`
-    - `GITLAB_SHELL_VERSION`
-    - `scripts/trigger-build.rb`
-    - `VERSION`
-  - `review-deploy` for:
-    - `GITALY_SERVER_VERSION`
-    - `GITLAB_SHELL_VERSION`
-    - `scripts/review_apps/review-apps.sh`
-    - `scripts/review_apps/seed-dast-test-data.sh`
-    - `VERSION`
   - `rspec:coverage` for:
     - `config/bundler_setup.rb`
     - `Gemfile`

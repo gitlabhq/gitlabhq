@@ -65,6 +65,27 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::LocationExpander, feature_c
           ]
         )
       end
+
+      context 'when wildcard paths include additional keys' do
+        let(:locations) do
+          [
+            { local: 'config/*.yml', inputs: { workflow: 'debug' }, rules: [{ if: '$VARIABLE' }] }
+          ]
+        end
+
+        let(:project_files) do
+          { 'config/build.yml' => 'a', 'config/test.yml' => 'b' }
+        end
+
+        it 'preserves additional keys like inputs and rules for each expanded file' do
+          is_expected.to eq(
+            [
+              { local: 'config/build.yml', inputs: { workflow: 'debug' }, rules: [{ if: '$VARIABLE' }] },
+              { local: 'config/test.yml', inputs: { workflow: 'debug' }, rules: [{ if: '$VARIABLE' }] }
+            ]
+          )
+        end
+      end
     end
 
     context 'when there are other files' do

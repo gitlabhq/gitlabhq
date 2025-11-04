@@ -3706,6 +3706,9 @@ msgstr ""
 msgid "AccessTokens|At least one scope is required."
 msgstr ""
 
+msgid "AccessTokens|Broad-access token"
+msgstr ""
+
 msgid "AccessTokens|Copy feed token"
 msgstr ""
 
@@ -3787,6 +3790,9 @@ msgstr ""
 msgid "AccessTokens|Fine-grained personal access tokens give you granular control over the specific resources and actions available to the token."
 msgstr ""
 
+msgid "AccessTokens|Fine-grained token"
+msgstr ""
+
 msgid "AccessTokens|For example, the application using the token or the purpose of the token."
 msgstr ""
 
@@ -3800,6 +3806,9 @@ msgid "AccessTokens|Forces new personal, group, project and impersonation tokens
 msgstr ""
 
 msgid "AccessTokens|Generate fine-grained token"
+msgstr ""
+
+msgid "AccessTokens|Generate token"
 msgstr ""
 
 msgid "AccessTokens|How do I use DPoP?"
@@ -3835,6 +3844,9 @@ msgid "AccessTokens|Last used:"
 msgstr ""
 
 msgid "AccessTokens|Lifetime"
+msgstr ""
+
+msgid "AccessTokens|Limit scope to specific groups and projects and fine-grained permissions to resources."
 msgstr ""
 
 msgid "AccessTokens|Make sure you save it - you won't be able to access it again."
@@ -3880,6 +3892,9 @@ msgid "AccessTokens|Rotate"
 msgstr ""
 
 msgid "AccessTokens|Rotate the token '%{tokenName}'?"
+msgstr ""
+
+msgid "AccessTokens|Scoped to all groups and projects with broad permissions to resources."
 msgstr ""
 
 msgid "AccessTokens|Scopes"
@@ -57455,6 +57470,9 @@ msgstr ""
 msgid "ScanResultPolicy|%{listType} according to the %{buttonType}"
 msgstr ""
 
+msgid "ScanResultPolicy|%{operator} %{value} chance of exploration"
+msgstr ""
+
 msgid "ScanResultPolicy|Access Token"
 msgstr ""
 
@@ -57545,6 +57563,12 @@ msgstr ""
 msgid "ScanResultPolicy|Clear all"
 msgstr ""
 
+msgid "ScanResultPolicy|Critical Risk (100%%)"
+msgstr ""
+
+msgid "ScanResultPolicy|Custom Value"
+msgstr ""
+
 msgid "ScanResultPolicy|Customized CI Variables"
 msgstr ""
 
@@ -57566,6 +57590,9 @@ msgstr ""
 msgid "ScanResultPolicy|Duplicates will be removed"
 msgstr ""
 
+msgid "ScanResultPolicy|EPSS has a"
+msgstr ""
+
 msgid "ScanResultPolicy|Edge case settings"
 msgstr ""
 
@@ -57576,6 +57603,9 @@ msgid "ScanResultPolicy|Edit denylist"
 msgstr ""
 
 msgid "ScanResultPolicy|Enable automated systems and bots to bypass policies for approved workflows."
+msgstr ""
+
+msgid "ScanResultPolicy|Epss score"
 msgstr ""
 
 msgid "ScanResultPolicy|Error while fetching"
@@ -57629,6 +57659,9 @@ msgstr ""
 msgid "ScanResultPolicy|Groups"
 msgstr ""
 
+msgid "ScanResultPolicy|High Risk (80%%)"
+msgstr ""
+
 msgid "ScanResultPolicy|If Team frequently needs to push infrastructure configuration changes that trigger policy violations but are pre-approved through your change management process, add specific users to bypass infrastructure policies."
 msgstr ""
 
@@ -57668,6 +57701,9 @@ msgstr ""
 msgid "ScanResultPolicy|KEV status"
 msgstr ""
 
+msgid "ScanResultPolicy|Known exploited"
+msgstr ""
+
 msgid "ScanResultPolicy|License is:"
 msgstr ""
 
@@ -57675,6 +57711,9 @@ msgid "ScanResultPolicy|License status"
 msgstr ""
 
 msgid "ScanResultPolicy|License type"
+msgstr ""
+
+msgid "ScanResultPolicy|Low Risk (10%%)"
 msgstr ""
 
 msgid "ScanResultPolicy|Make approval rules optional using execution policies"
@@ -57693,6 +57732,9 @@ msgid "ScanResultPolicy|Maximum of two status criteria allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Merge request approval settings"
+msgstr ""
+
+msgid "ScanResultPolicy|Moderate Risk (50%%)"
 msgstr ""
 
 msgid "ScanResultPolicy|New age"
@@ -57807,6 +57849,12 @@ msgid "ScanResultPolicy|Select licenses"
 msgstr ""
 
 msgid "ScanResultPolicy|Select list type"
+msgstr ""
+
+msgid "ScanResultPolicy|Select operator"
+msgstr ""
+
+msgid "ScanResultPolicy|Select probability"
 msgstr ""
 
 msgid "ScanResultPolicy|Select role exceptions"
@@ -57935,10 +57983,16 @@ msgstr ""
 msgid "ScanResultPolicy|denylist (%{licenseCount} %{licenses})"
 msgstr ""
 
+msgid "ScanResultPolicy|greater than or equal to"
+msgstr ""
+
 msgid "ScanResultPolicy|input source branch"
 msgstr ""
 
 msgid "ScanResultPolicy|input target branch"
+msgstr ""
+
+msgid "ScanResultPolicy|less than or equal to"
 msgstr ""
 
 msgid "ScanResultPolicy|license status"

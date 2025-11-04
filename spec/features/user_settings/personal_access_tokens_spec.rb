@@ -14,6 +14,7 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
 
   before do
     sign_in(user)
+    stub_feature_flags(fine_grained_personal_access_tokens: false)
   end
 
   describe "token creation" do
