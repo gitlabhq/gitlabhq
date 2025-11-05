@@ -529,6 +529,33 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       expect(user.reload.user_preference.issues_sort).to eq('priority')
     end
+
+    context 'when work_item_planning_view feature flag is enabled' do
+      it 'redirects to work items path with issue type filter' do
+        get :issues, params: { id: group.to_param }
+
+        expect(response).to redirect_to(group_work_items_path(group, params: { 'type[]' => 'issue' }))
+      end
+
+      it 'preserves query parameters except type when redirecting' do
+        get :issues, params: { id: group.to_param, search: 'bug', sort: 'created_desc', type: 'old_type' }
+
+        expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc', 'type[]' => 'issue' }))
+      end
+    end
+
+    context 'when work_item_planning_view feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
+      it 'renders the issues page' do
+        get :issues, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template 'groups/issues'
+      end
+    end
   end
 
   describe 'GET #merge_requests', :sidekiq_might_not_need_inline do
@@ -1568,6 +1595,10 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
     end
 
     describe 'GET #issues' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
       subject { get :issues, params: { id: group.to_param } }
 
       it_behaves_like 'disabled when using an external authorization service'

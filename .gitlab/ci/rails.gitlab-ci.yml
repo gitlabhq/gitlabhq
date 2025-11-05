@@ -657,10 +657,38 @@ rspec:coverage:
       - coverage/index.html
       - coverage/assets/
       - coverage/lcov/
+      - rspec/
+      - crystalball/
     reports:
       coverage_report:
         coverage_format: cobertura
         path: coverage/coverage-*.xml
+
+test-coverage:export:
+  extends:
+    - .coverage-base
+    - .rails:rules:coverage-export
+  stage: post-test
+  needs:
+    - job: rspec:coverage
+      artifacts: true
+    - job: update-tests-metadata
+      artifacts: true
+  variables:
+    CLICKHOUSE_URL: $GLCI_CLICKHOUSE_METRICS_URL
+    CLICKHOUSE_DATABASE: $GLCI_CLICKHOUSE_TEST_COVERAGE_DB
+    CLICKHOUSE_USERNAME: $GLCI_CLICKHOUSE_METRICS_USERNAME
+    CLICKHOUSE_PASSWORD: $GLCI_CLICKHOUSE_METRICS_PASSWORD
+  script:
+    - |
+      if [ -n "${GLCI_CLICKHOUSE_METRICS_URL}" ] && [ -n "${GLCI_CLICKHOUSE_TEST_COVERAGE_DB}" ] && [ -n "${GLCI_CLICKHOUSE_METRICS_USERNAME}" ] && [ -n "${GLCI_CLICKHOUSE_METRICS_PASSWORD}" ]; then
+        bundle exec test-coverage \
+          --rspec-reports 'rspec/rspec-*.json' \
+          --coverage-report 'coverage/lcov/gitlab.lcov' \
+          --test-map 'crystalball/packed-mapping.json.gz' || echo -e "\e[31mCoverage export failed\e[0m"
+      else
+        echo "Skipping coverage export: ClickHouse credentials not configured"
+      fi
 
 rspec:undercoverage:
   extends:

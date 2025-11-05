@@ -277,11 +277,13 @@ class GroupsController < Groups::ApplicationController
   end
 
   def issues
-    return if redirect_if_epic_params
-
     return super unless html_request?
 
     set_sort_order
+
+    return redirect_issues_to_work_items if group&.work_items_consolidated_list_enabled?(current_user)
+
+    return if redirect_if_epic_params
 
     respond_to do |format|
       format.html
@@ -402,6 +404,16 @@ class GroupsController < Groups::ApplicationController
 
   # Overridden in EE
   def redirect_if_epic_params; end
+
+  def redirect_issues_to_work_items
+    params = work_items_redirect_params.except("type", "type[]").merge('type[]' => 'issue')
+
+    redirect_to group_work_items_path(group, params: params)
+  end
+
+  def work_items_redirect_params
+    request.query_parameters
+  end
 end
 
 GroupsController.prepend_mod

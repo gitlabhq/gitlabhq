@@ -745,22 +745,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
-  describe '#root_repository?' do
-    context 'when repository is a root repository' do
-      let(:repository) { create(:container_repository, :root) }
-
-      it 'returns true' do
-        expect(repository).to be_root_repository
-      end
-    end
-
-    context 'when repository is not a root repository' do
-      it 'returns false' do
-        expect(repository).not_to be_root_repository
-      end
-    end
-  end
-
   describe '#start_expiration_policy!' do
     subject { repository.start_expiration_policy! }
 
@@ -1083,12 +1067,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       described_class.build_root_repository(project)
     end
 
-    it 'fabricates a root repository object' do
-      expect(repository).to be_root_repository
-    end
-
-    it 'assignes it to the correct project' do
-      expect(repository.project).to eq project
+    it 'assigns correct attributes' do
+      expect(repository).to have_attributes(project: project, name: '')
     end
 
     it 'does not persist it' do

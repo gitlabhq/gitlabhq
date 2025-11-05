@@ -7,7 +7,7 @@ RSpec.describe 'Creating a new project milestone', :js, feature_category: :team_
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
   before do
-    login_as(user)
+    sign_in(user)
     visit new_project_milestone_path(project)
   end
 

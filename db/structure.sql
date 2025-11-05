@@ -4527,6 +4527,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_f7464057d53e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "users"
+  WHERE "users"."id" = NEW."reporter_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_fac444e0cae6() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9908,6 +9924,7 @@ CREATE TABLE abuse_reports (
     user_id_convert_to_bigint bigint,
     organization_id bigint,
     CONSTRAINT abuse_reports_links_to_spam_length_check CHECK ((cardinality(links_to_spam) <= 20)),
+    CONSTRAINT check_1e642c5f94 CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT check_4b0a5120e0 CHECK ((char_length(screenshot) <= 255)),
     CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512)),
     CONSTRAINT check_f3c0947a2d CHECK ((char_length(mitigation_steps) <= 1000)),
@@ -47929,6 +47946,8 @@ CREATE TRIGGER trigger_ensure_note_diff_files_sharding_key BEFORE INSERT ON note
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 
 CREATE TRIGGER trigger_f6f59d8216b3 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_f6f59d8216b3();
+
+CREATE TRIGGER trigger_f7464057d53e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_f7464057d53e();
 
 CREATE TRIGGER trigger_fac444e0cae6 BEFORE INSERT OR UPDATE ON design_management_designs_versions FOR EACH ROW EXECUTE FUNCTION trigger_fac444e0cae6();
 

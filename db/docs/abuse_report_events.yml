@@ -18,5 +18,4 @@ desired_sharding_key:
         table_primary_key: id
         sharding_key: organization_id
         belongs_to: abuse_report
-    awaiting_backfill_on_parent: true
 table_size: small

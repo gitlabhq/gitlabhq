@@ -219,10 +219,6 @@ class ContainerRepository < ApplicationRecord
   end
   strong_memoize_attr :has_tags?
 
-  def root_repository?
-    name.empty?
-  end
-
   def delete_tags!
     return unless has_tags?
 

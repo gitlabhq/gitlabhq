@@ -200,6 +200,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         personal_access_token_prefix: 'glpat-',
         plantuml_enabled: false,
         project_api_limit: 400,
+        project_members_api_limit: 60,
         project_download_export_limit: 1,
         project_export_enabled: true,
         project_export_limit: 6,

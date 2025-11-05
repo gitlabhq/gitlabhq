@@ -2634,6 +2634,14 @@
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request-labels-run-all-rspec
 
+.rails:rules:coverage-export:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - if: '$GLCI_CLICKHOUSE_METRICS_URL == null || $GLCI_CLICKHOUSE_TEST_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
+      when: never
+    - <<: *if-schedule-maintenance
+
 .rails:rules:rspec-undercoverage:
   rules:
     - <<: *if-not-ee

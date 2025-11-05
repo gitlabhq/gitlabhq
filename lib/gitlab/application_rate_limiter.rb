@@ -70,6 +70,7 @@ module Gitlab
           profile_resend_email_confirmation: { threshold: 5, interval: 1.minute },
           profile_update_username: { threshold: 10, interval: 1.minute },
           project_api: { threshold: -> { application_settings.project_api_limit }, interval: 1.minute },
+          project_members_api: { threshold: -> { application_settings.project_members_api_limit }, interval: 1.minute },
           project_download_export: { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
           project_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_fork_sync: { threshold: 10, interval: 30.minutes },

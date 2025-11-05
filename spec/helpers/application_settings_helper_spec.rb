@@ -88,6 +88,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           group_archive_unarchive_api_limit
           group_invited_groups_api_limit
           project_invited_groups_api_limit
+          project_members_api_limit
           create_organization_api_limit
           top_level_group_creation_enabled
           runner_jobs_request_api_limit

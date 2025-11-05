@@ -79,7 +79,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
         expect(page).to have_checked_field('Complete entry 1')
 
         logout(:user)
-        login_as(user2)
+        sign_in(user2)
         visit current_path
 
         expect(page).to have_checked_field('Complete entry 1', disabled: true)
@@ -136,7 +136,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
         expect(page).to have_checked_field('Complete entry 1')
 
         logout(:user)
-        login_as(user2)
+        sign_in(user2)
         visit current_path
 
         expect(page).to have_checked_field('Complete entry 1', disabled: true)
@@ -207,7 +207,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
         expect(page).to have_selector('li.task-list-item.enabled', count: 6)
 
         logout(:user)
-        login_as(user2)
+        sign_in(user2)
         visit current_path
         wait_for_requests
 

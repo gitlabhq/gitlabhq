@@ -343,8 +343,6 @@ mentioned_groups:
   file: app/models/concerns/user_mention_behaviour.rb
 mentioned_projects:
   file: app/models/concerns/user_mention_behaviour.rb
-root_repository?:
-  file: app/models/container_repository.rb
 knative_services_finder:
   file: app/models/environment.rb
 find_sti_class:
@@ -388,8 +386,6 @@ can_be_closed?:
 short_merge_commit_sha:
   file: app/models/merge_request.rb
 find_assignee:
-  file: app/models/merge_request.rb
-merge_request_assignees_with:
   file: app/models/merge_request.rb
 migrate_files_to_database!:
   file: app/models/merge_request_diff.rb

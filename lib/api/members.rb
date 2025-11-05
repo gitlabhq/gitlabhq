@@ -60,6 +60,8 @@ module API
 
         route_setting :authorization, permissions: :read_member, boundary_type: boundary
         get ":id/members/all", feature_category: feature_category do
+          check_rate_limit_by_user_or_ip!(:project_members_api)
+
           source = find_source(source_type, params[:id])
 
           authorize_read_source_member!(source_type, source)

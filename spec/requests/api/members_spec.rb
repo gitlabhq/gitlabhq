@@ -193,6 +193,20 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       let(:source) { group }
     end
 
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :project_members_api do
+      let_it_be(:user2) { create(:user) }
+
+      let(:current_user) { developer }
+
+      def request
+        get api("/projects/#{nested_project.id}/members/all", current_user)
+      end
+
+      def request_with_second_scope
+        get api("/projects/#{nested_project.id}/members/all", user2)
+      end
+    end
+
     context 'when invited groups have public visibility' do
       it 'finds all project members including inherited members and members shared into ancestor groups' do
         get api("/projects/#{nested_project.id}/members/all", developer)

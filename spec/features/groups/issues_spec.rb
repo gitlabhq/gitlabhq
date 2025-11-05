@@ -15,6 +15,10 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
   context 'with shared examples', :js do
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable") }
 
+    before do
+      stub_feature_flags(work_item_planning_view: false)
+    end
+
     include_examples 'project features apply to issuables', Issue
 
     context 'rss feed' do
@@ -92,6 +96,7 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
     let!(:subgroup_issue) { create(:issue, project: subgroup_project) }
 
     before do
+      stub_feature_flags(work_item_planning_view: false)
       visit issues_group_path(group_with_no_issues)
     end
 
@@ -105,6 +110,7 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
       let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
       before do
+        stub_feature_flags(work_item_planning_view: false)
         [project, project_with_issues_disabled].each { |project| project.add_maintainer(user_in_group) }
         sign_in(user_in_group)
         visit issues_group_path(group)

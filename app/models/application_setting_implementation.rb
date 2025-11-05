@@ -320,6 +320,7 @@ module ApplicationSettingImplementation
         group_projects_api_limit: 600,
         group_shared_groups_api_limit: 60,
         groups_api_limit: 200,
+        project_members_api_limit: 60,
         create_organization_api_limit: 10,
         project_api_limit: 400,
         project_invited_groups_api_limit: 60,

@@ -59,10 +59,6 @@ module ContainerRegistry
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def root_repository?
-      @path == project_path
-    end
-
     def repository_project
       @project ||= Project
         .where_full_path_in(nodes.first(LEVELS_SUPPORTED))
