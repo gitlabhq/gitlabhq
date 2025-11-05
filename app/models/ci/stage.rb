@@ -176,13 +176,14 @@ module Ci
     end
 
     def number_of_warnings
-      BatchLoader.for(id).batch(default_value: 0) do |stage_ids, loader|
-        ::CommitStatus.where(stage_id: stage_ids)
+      BatchLoader.for([id, partition_id]).batch(default_value: 0) do |items, loader|
+        ::CommitStatus
+          .where([:stage_id, :partition_id] => items)
           .latest
           .failed_but_allowed
-          .group(:stage_id)
+          .group(:stage_id, :partition_id)
           .count
-          .each { |id, amount| loader.call(id, amount) }
+          .each { |item, amount| loader.call(item, amount) }
       end
     end
 

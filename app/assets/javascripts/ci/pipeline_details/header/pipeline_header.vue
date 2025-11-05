@@ -12,6 +12,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
+import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
@@ -81,6 +82,9 @@ export default {
         };
       },
       update(data) {
+        const newFavicon = data?.project?.pipeline?.detailedStatus?.favicon;
+        this.setFavicon(newFavicon);
+
         return data.project.pipeline;
       },
       result({ data }) {
@@ -142,6 +146,7 @@ export default {
       isRetrying: false,
       isDeleting: false,
       isSubscribed: false,
+      favicon: null,
     };
   },
   computed: {
@@ -286,7 +291,16 @@ export default {
       ];
     },
   },
+  beforeDestroy() {
+    resetFavicon();
+  },
   methods: {
+    setFavicon(newFavicon) {
+      if (newFavicon && this.favicon !== newFavicon) {
+        setFaviconOverlay(newFavicon);
+        this.favicon = newFavicon;
+      }
+    },
     reportFailure(errorType, errorMessages = []) {
       this.failureType = errorType;
       this.failureMessages = errorMessages;

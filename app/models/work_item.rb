@@ -70,11 +70,7 @@ class WorkItem < Issue
       .merge(::WorkItems::WidgetDefinition.by_enabled_widget_type(type))
   end
 
-  scope :with_group_level_and_project_issues_enabled, ->(include_group_level_items: true, exclude_projects: false) do
-    return none if exclude_projects && !include_group_level_items
-    # Only group-level work items
-    return where(project: nil) if exclude_projects
-
+  scope :with_group_level_and_project_issues_enabled, ->(include_group_level_items: true) do
     # All work_items belonging to groups and projects that have the :issues feature enabled
     scope = left_joins(:project).merge(Project.with_issues_enabled)
     # Exclude epics (project_id: nil) if include_group_level is false

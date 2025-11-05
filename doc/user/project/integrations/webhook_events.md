@@ -505,6 +505,7 @@ Payload example:
   },
   "object_attributes": {
     "id": 1243,
+    "internal": false,
     "note": "This is a commit comment. How does this work?",
     "noteable_type": "Commit",
     "author_id": 1,
@@ -589,6 +590,7 @@ Payload example:
   },
   "object_attributes": {
     "id": 1244,
+    "internal": false,
     "note": "This MR needs work.",
     "noteable_type": "MergeRequest",
     "author_id": 1,
@@ -751,6 +753,7 @@ Payload example:
   },
   "object_attributes": {
     "id": 1241,
+    "internal": false,
     "note": "Hello world",
     "noteable_type": "Issue",
     "author_id": 1,
@@ -858,6 +861,7 @@ Payload example:
   },
   "object_attributes": {
     "id": 1245,
+    "internal": false,
     "note": "Is this snippet doing what it's supposed to be doing?",
     "noteable_type": "Snippet",
     "author_id": 1,

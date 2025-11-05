@@ -17,6 +17,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
         detailsPath
         icon
         text
+        favicon
       }
       errorMessages {
         nodes {

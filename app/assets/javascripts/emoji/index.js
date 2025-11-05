@@ -4,6 +4,7 @@ import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
 import createApolloClient from '~/lib/graphql';
 import { setAttributes } from '~/lib/utils/dom_utils';
+import { htmlEncode } from '~/lib/utils/html';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
@@ -337,3 +338,15 @@ export const getEmojisForCategory = async (category) => {
 
   return Object.values(emojiMap).filter((e) => e.c === category);
 };
+
+/**
+ * Processes title string and converts emoji shortcodes to HTML
+ * @param {string} title - The title containing emoji shortcodes like :rocket:
+ * @returns {string} - HTML string with emoji images
+ */
+export function processEmojiInTitle(title) {
+  if (!title) return '';
+  return htmlEncode(title).replace(/:([a-zA-Z0-9_+-]+):/g, (match, emojiName) => {
+    return glEmojiTag(emojiName);
+  });
+}

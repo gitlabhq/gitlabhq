@@ -1,4 +1,5 @@
 import { identity, isFunction } from 'lodash';
+import { htmlEncode } from '~/lib/utils/html';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
@@ -66,15 +67,6 @@ export function containsParagraphWithOnlyText(node) {
   }
 
   return false;
-}
-
-function htmlEncode(str = '') {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&apos;')
-    .replace(/"/g, '&quot;');
 }
 
 const shouldIgnoreAttr = (tagName, attrKey, attrValue) =>

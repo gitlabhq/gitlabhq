@@ -256,7 +256,7 @@ export const getSortOptions = ({
     });
   }
 
-  if (hasStatusFeature && gon.features?.workItemStatusMvc2) {
+  if (hasStatusFeature) {
     sortOptions.push({
       id: sortOptions.length + 1,
       title: __('Status'),

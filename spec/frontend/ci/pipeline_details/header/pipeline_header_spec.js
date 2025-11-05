@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineHeader from '~/ci/pipeline_details/header/pipeline_header.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '~/ci/pipeline_details/graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
@@ -29,6 +30,8 @@ import {
   mockPipelineStatusUpdatedResponse,
   mockPipelineStatusNullResponse,
 } from '../mock_data';
+
+jest.mock('~/lib/utils/favicon');
 
 Vue.use(VueApollo);
 
@@ -474,6 +477,52 @@ describe('Pipeline header', () => {
 
         expect(subscriptionHandler).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('favicon', () => {
+    beforeEach(() => {
+      setFaviconOverlay.mockClear();
+      resetFavicon.mockClear();
+    });
+
+    it('sets favicon overlay when pipeline has a favicon', async () => {
+      await createComponent();
+
+      const {
+        data: {
+          project: {
+            pipeline: { detailedStatus },
+          },
+        },
+      } = pipelineHeaderSuccess;
+
+      expect(setFaviconOverlay).toHaveBeenCalledWith(detailedStatus.favicon);
+    });
+
+    it('resets favicon when component is destroyed', async () => {
+      await createComponent();
+
+      wrapper.destroy();
+
+      expect(resetFavicon).toHaveBeenCalled();
+    });
+
+    it('updates favicon when pipeline status changes', async () => {
+      await createComponent([
+        [getPipelineDetailsQuery, runningHandler],
+        [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
+      ]);
+
+      const {
+        data: {
+          project: {
+            pipeline: { detailedStatus },
+          },
+        },
+      } = pipelineHeaderRunning;
+
+      expect(setFaviconOverlay).toHaveBeenCalledWith(detailedStatus.favicon);
     });
   });
 });

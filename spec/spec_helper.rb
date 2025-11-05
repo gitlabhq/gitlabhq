@@ -395,6 +395,8 @@ RSpec.configure do |config|
       # `work_item_planning_view` is rolled out. `work_item_planning_view` is disabled for specific specs, so stubbing
       # out `work_items_consolidated_list_user` is an easy work around.
       stub_feature_flags(work_items_consolidated_list_user: false)
+
+      stub_feature_flags(merge_widget_stop_polling: false)
     else
       unstub_all_feature_flags
     end

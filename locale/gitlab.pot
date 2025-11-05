@@ -29550,6 +29550,12 @@ msgstr ""
 msgid "Geo|Checksum"
 msgstr ""
 
+msgid "Geo|Checksum all"
+msgstr ""
+
+msgid "Geo|Checksum all %{type}"
+msgstr ""
+
 msgid "Geo|Checksum status"
 msgstr ""
 
@@ -30000,6 +30006,9 @@ msgstr ""
 msgid "Geo|Scheduled all %{replicableType} with a failed verification status for reverification."
 msgstr ""
 
+msgid "Geo|Scheduled all %{type} for checksum recalculation."
+msgstr ""
+
 msgid "Geo|Secondary"
 msgstr ""
 
@@ -30171,10 +30180,16 @@ msgstr ""
 msgid "Geo|There was an error scheduling all %{replicableType} with a failed verification status for reverification."
 msgstr ""
 
+msgid "Geo|There was an error scheduling all %{type} for checksum recalculation."
+msgstr ""
+
 msgid "Geo|There was an error updating the Geo Settings"
 msgstr ""
 
 msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tier. Geo is only available for users who have at least a Premium subscription."
+msgstr ""
+
+msgid "Geo|This will recalculate checksums for all %{type}. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Geo|This will schedule a future job to retry the secondary verification process for all %{type} that have a failed verification status. It may take some time to complete. Are you sure you want to continue?"
@@ -58112,7 +58127,7 @@ msgstr ""
 msgid "Scroll to bottom"
 msgstr ""
 
-msgid "Scroll to the bottom to load more projects"
+msgid "Scroll to the bottom to load more items"
 msgstr ""
 
 msgid "Scroll to top"
@@ -75145,9 +75160,6 @@ msgstr ""
 msgid "WorkItem|An error occurred while making status default."
 msgstr ""
 
-msgid "WorkItem|An error occurred while removing the status."
-msgstr ""
-
 msgid "WorkItem|An error occurred while reordering statuses."
 msgstr ""
 
@@ -75203,9 +75215,6 @@ msgid "WorkItem|Are you sure you want to close this blocked %{workItemType}?"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
-msgstr ""
-
-msgid "WorkItem|Are you sure you want to remove the %{statusName} status?"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to remove this lifecycle? This action cannot be undone."
@@ -76154,9 +76163,6 @@ msgstr ""
 msgid "WorkItem|This %{workItemType} will be closed when the following is merged."
 msgstr ""
 
-msgid "WorkItem|This action cannot be undone."
-msgstr ""
-
 msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
 msgstr ""
 
@@ -76254,9 +76260,6 @@ msgid "WorkItem|Use for items that have been completed. Applying a done status w
 msgstr ""
 
 msgid "WorkItem|Use for planned work that is not actively being worked on."
-msgstr ""
-
-msgid "WorkItem|Used on types: %{workItemTypes}. Changes affect all items in all subgroups and projects."
 msgstr ""
 
 msgid "WorkItem|View current version"
@@ -79083,7 +79086,9 @@ msgid "greater than or equal to"
 msgstr ""
 
 msgid "group"
-msgstr ""
+msgid_plural "groups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "group access token"
 msgstr ""

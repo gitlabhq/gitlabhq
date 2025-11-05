@@ -1616,7 +1616,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
                         'pipelineStatus' => {
                           'name' => 'SUCCESS',
                           'label' => 'passed',
-                          'favicon' => 'favicon_status_success'
+                          'favicon' => match_asset_path("/assets/ci_favicons/favicon_status_success.png")
                         }
                       )
                     )

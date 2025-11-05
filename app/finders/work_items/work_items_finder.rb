@@ -47,8 +47,7 @@ module WorkItems
 
       items_within_hierarchy = items.within_namespace_hierarchy(ancestor_group)
                                     .with_group_level_and_project_issues_enabled(
-                                      include_group_level_items: include_group_work_items?,
-                                      exclude_projects: exclude_projects?
+                                      include_group_level_items: include_group_work_items?
                                     )
 
       # If the state filter is not present in the params we manually add it to filter all available states

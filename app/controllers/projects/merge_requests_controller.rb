@@ -44,6 +44,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_review_batch_submit, current_user)
   end
 
+  before_action do
+    push_frontend_feature_flag(:merge_widget_stop_polling, current_user)
+  end
+
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
 
   after_action :log_merge_request_show, only: [:show, :diffs, :rapid_diffs]

@@ -175,7 +175,8 @@ describe('IssuesDashboardApp component', () => {
             hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
             hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
             hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
-            hasStatusFeature: defaultProvide.hasStatusFeature,
+            hasStatusFeature:
+              defaultProvide.hasStatusFeature && gon.features?.workItemStatusOnDashboard,
             hasManualSort: false,
           }),
         );
@@ -335,10 +336,6 @@ describe('IssuesDashboardApp component', () => {
     });
 
     describe('sort options', () => {
-      beforeEach(() => {
-        gon.features = { workItemStatusMvc2: true };
-      });
-
       describe('when workItemStatusOnDashboard=true', () => {
         it('includes Status in sort options', () => {
           mountComponent({

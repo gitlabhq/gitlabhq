@@ -168,7 +168,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       project_without_issues.project_feature.update!(issues_access_level: ProjectFeature::DISABLED)
     end
 
-    context 'when include_group_level is true (default) and exclude_projects is false (default)' do
+    context 'when include_group_level is true (default)' do
       it 'returns group-level and work items from projects with issues enabled' do
         result = described_class.with_group_level_and_project_issues_enabled
 
@@ -183,26 +183,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
         expect(result).to contain_exactly(project_with_issues_work_item)
         expect(result).not_to include(group_work_item, project_without_issues_work_item)
-      end
-    end
-
-    context 'when exclude_projects is true' do
-      it 'returns only group level work items' do
-        result = described_class.with_group_level_and_project_issues_enabled(exclude_projects: true)
-
-        expect(result).to contain_exactly(group_work_item)
-        expect(result).not_to include(project_with_issues_work_item, project_without_issues_work_item)
-      end
-    end
-
-    context 'when include_group_level is false and exclude_projects is true' do
-      it 'returns empty result' do
-        result = described_class.with_group_level_and_project_issues_enabled(
-          include_group_level_items: false,
-          exclude_projects: true
-        )
-
-        expect(result).to be_empty
       end
     end
   end

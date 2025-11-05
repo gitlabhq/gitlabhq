@@ -279,7 +279,13 @@ Verify that your SSH key was added correctly.
    Are you sure you want to continue connecting (yes/no)?
    ```
 
-   You should receive a welcome message. If the message doesn't appear, you might need to
+   You should receive a welcome message.
+
+   ```plaintext
+   Welcome to GitLab, <username>!
+   ```
+
+   If the message doesn't appear, you might need to
    [troubleshoot your SSH connection](ssh_troubleshooting.md#general-ssh-troubleshooting).
 
 ## Update your SSH key passphrase

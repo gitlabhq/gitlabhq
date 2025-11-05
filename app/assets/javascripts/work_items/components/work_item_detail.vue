@@ -596,6 +596,11 @@ export default {
     isDuoWorkflowEnabled() {
       return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
     },
+    duoWorkflowDefinition() {
+      return this.glFeatures.duoDeveloperButton
+        ? 'developer/experimental'
+        : 'issue_to_merge_request';
+    },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
     },
@@ -1224,7 +1229,7 @@ export default {
                         :project-path="workItemFullPath"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
-                        workflow-definition="issue_to_merge_request"
+                        :workflow-definition="duoWorkflowDefinition"
                         :agent-privileges="agentPrivileges"
                         size="medium"
                         >{{ __('Generate MR with Duo') }}</duo-workflow-action

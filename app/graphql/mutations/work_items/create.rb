@@ -20,6 +20,10 @@ module Mutations
         super + [:ai_workflows]
       end
 
+      argument :create_source,
+        GraphQL::Types::String,
+        required: false,
+        description: 'Source which triggered the creation of the work item. Used only for tracking purposes.'
       argument :created_at, Types::TimeType,
         required: false,
         description: 'Timestamp when the work item was created. Available only for admins and project owners.'
@@ -94,6 +98,12 @@ module Mutations
 
       def resolve(project_path: nil, namespace_path: nil, **attributes)
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/578961')
+
+        # temporary change to make this optional param a no-op until https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210502
+        # which introduces handling of this param at the service layer.
+        # adding the param in advance for multi version compatibility purposes
+        # implemented to prevent an unknown attribute error
+        attributes.delete(:create_source)
 
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)

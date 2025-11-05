@@ -1220,6 +1220,7 @@ export const mockPipelineStatusUpdatedResponse = {
         id: 'success-1255-1255',
         label: 'passed',
         text: 'Passed',
+        favicon: '/assets/ci_favicons/favicon_status_success.png',
         __typename: 'DetailedStatus',
       },
       status: 'SUCCESS',

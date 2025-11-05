@@ -1,9 +1,11 @@
 <script>
 import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { sortBy, uniqueId } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, queryToObject } from '~/lib/utils/url_utility';
+import { processEmojiInTitle } from '~/emoji';
 import { sprintf, __ } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -36,6 +38,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [boardCardInner],
   inject: [
@@ -198,6 +201,10 @@ export default {
       return Boolean(this.item.status);
     },
   },
+  processEmojiInTitle,
+  safeHtmlConfig: {
+    ADD_TAGS: ['use', 'gl-emoji'],
+  },
   methods: {
     assigneeUrl(assignee) {
       if (!assignee) return '';
@@ -284,8 +291,9 @@ export default {
           aria-hidden="true"
           @mousemove.stop
           @click.exact.prevent
-          >{{ item.title }}</a
         >
+          <span v-safe-html="$options.processEmojiInTitle(item.title)"></span>
+        </a>
       </h3>
       <slot></slot>
     </div>

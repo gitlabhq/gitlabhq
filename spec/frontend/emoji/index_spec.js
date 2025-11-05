@@ -18,6 +18,7 @@ import {
   getEmojiMap,
   emojiFallbackImageSrc,
   loadCustomEmojiWithNames,
+  processEmojiInTitle,
   EMOJI_VERSION,
 } from '~/emoji';
 
@@ -1217,6 +1218,75 @@ describe('emoji', () => {
           names: ['parrot', 'parrot-test'],
         });
       });
+    });
+  });
+
+  describe('processEmojiInTitle', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('returns empty string for null input', () => {
+      expect(processEmojiInTitle(null)).toBe('');
+    });
+
+    it('returns empty string for undefined input', () => {
+      expect(processEmojiInTitle(undefined)).toBe('');
+    });
+
+    it('returns empty string for empty string input', () => {
+      expect(processEmojiInTitle('')).toBe('');
+    });
+
+    it('returns original string when no emoji shortcodes are present', () => {
+      const title = 'This is a regular title';
+      expect(processEmojiInTitle(title)).toBe(title);
+    });
+
+    it('converts single emoji shortcode to HTML', () => {
+      const title = 'Fix bug :bug:';
+      const result = processEmojiInTitle(title);
+
+      expect(result).toContain('<gl-emoji');
+      expect(result).toContain('data-name="bug"');
+      expect(result).toContain('Fix bug');
+    });
+
+    it('converts multiple emoji shortcodes to HTML', () => {
+      const title = 'Deploy :rocket: with :heart: and fix :bug:';
+      const result = processEmojiInTitle(title);
+
+      expect(result).toContain('data-name="rocket"');
+      expect(result).toContain('data-name="heart"');
+      expect(result).toContain('data-name="bug"');
+    });
+
+    it('handles consecutive emoji shortcodes', () => {
+      const title = ':rocket::heart::bug:';
+      const result = processEmojiInTitle(title);
+
+      expect(result).toContain('data-name="rocket"');
+      expect(result).toContain('data-name="heart"');
+      expect(result).toContain('data-name="bug"');
+    });
+
+    it('ignores malformed emoji shortcodes', () => {
+      const title = 'Invalid : emoji: and :emoji :valid:';
+      const result = processEmojiInTitle(title);
+
+      expect(result).toContain('Invalid : emoji: and :emoji');
+      expect(result).toContain('data-name="valid"');
+    });
+
+    it('properly escapes HTML entities to prevent XSS', () => {
+      const title = ':dog: <em>test</em> <script>alert(1)</script>';
+      const result = processEmojiInTitle(title);
+
+      expect(result).toContain('data-name="dog"'); // emoji should render
+      expect(result).toContain('&lt;em&gt;test&lt;/em&gt;'); // HTML should be escaped
+      expect(result).toContain('&lt;script&gt;alert(1)&lt;/script&gt;'); // script should be escaped
+      expect(result).not.toContain('<em>'); // no actual HTML tags
+      expect(result).not.toContain('<script>'); // no actual script tags
     });
   });
 });

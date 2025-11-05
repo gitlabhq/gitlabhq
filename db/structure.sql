@@ -21125,6 +21125,7 @@ CREATE TABLE oauth_applications (
     expire_access_tokens boolean DEFAULT false NOT NULL,
     ropc_enabled boolean DEFAULT true NOT NULL,
     dynamic boolean DEFAULT false NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_75750847b8 CHECK ((char_length(scopes) <= 2048))
 );
 
@@ -38487,6 +38488,8 @@ CREATE INDEX idx_oauth_access_grants_on_organization_id ON oauth_access_grants U
 
 CREATE INDEX idx_oauth_access_tokens_on_organization_id ON oauth_access_tokens USING btree (organization_id);
 
+CREATE INDEX idx_oauth_applications_organization_id ON oauth_applications USING btree (organization_id);
+
 CREATE INDEX idx_oauth_device_grants_on_organization_id ON oauth_device_grants USING btree (organization_id);
 
 CREATE INDEX idx_oauth_openid_requests_on_organization_id ON oauth_openid_requests USING btree (organization_id);
@@ -50304,6 +50307,9 @@ ALTER TABLE ONLY ml_candidate_metrics
 
 ALTER TABLE ONLY web_hooks
     ADD CONSTRAINT fk_e295b26646 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY oauth_applications
+    ADD CONSTRAINT fk_e2fdb31d70 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_merge_request_rules
     ADD CONSTRAINT fk_e33a9aaf67 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

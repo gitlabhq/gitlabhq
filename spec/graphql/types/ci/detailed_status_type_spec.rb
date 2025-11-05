@@ -43,4 +43,13 @@ RSpec.describe Types::Ci::DetailedStatusType do
       expect(resolve_field('action', status, arg_style: :internal)).to eq(expected_status)
     end
   end
+
+  describe 'favicon field' do
+    it 'correctly renders the full favicon path' do
+      status = stage.detailed_status(stage.pipeline.user)
+      favicon_path = resolve_field('favicon', status, arg_style: :internal)
+
+      expect(favicon_path).to match_asset_path("/assets/ci_favicons/favicon_status_skipped.png")
+    end
+  end
 end
