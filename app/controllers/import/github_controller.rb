@@ -48,8 +48,6 @@ class Import::GithubController < Import::BaseController
   end
 
   def status
-    client_repos
-
     respond_to do |format|
       format.json do
         render json: { imported_projects: serialized_imported_projects,
@@ -237,8 +235,11 @@ class Import::GithubController < Import::BaseController
 
   def provider_unauthorized
     session[access_token_key] = nil
-    redirect_to new_import_url,
-      alert: "Wrong credentials"
+    flash[:alert] = s_('Import|Invalid credentials')
+    respond_to do |format|
+      format.json { render json: { error: { redirect: new_import_url } }, status: :not_found }
+      format.html { redirect_to new_import_url }
+    end
   end
 
   def provider_rate_limit(exception)

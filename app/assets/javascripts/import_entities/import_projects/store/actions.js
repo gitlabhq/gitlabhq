@@ -89,13 +89,15 @@ const fetchReposFactory =
   ({ state, commit }) => {
     commit(types.REQUEST_REPOS);
 
-    const { provider, filter } = state;
+    const { provider, filter, ciCdOnly } = state;
+    const ciCdFilter = ciCdOnly ? { ci_cd_only: ciCdOnly } : {};
 
     return axios
       .get(
         pathWithParams({
           path: reposPath,
           ...filter,
+          ...ciCdFilter,
           ...paginationParams({ state }),
         }),
       )
