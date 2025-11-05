@@ -59,7 +59,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         get :callback
 
         expect(controller).to redirect_to(new_import_url)
-        expect(flash[:alert]).to eq('Wrong credentials')
+        expect(flash[:alert]).to eq('Invalid credentials')
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         get :callback, params: { state: "different-state" }
 
         expect(controller).to redirect_to(new_import_url)
-        expect(flash[:alert]).to eq('Wrong credentials')
+        expect(flash[:alert]).to eq('Invalid credentials')
       end
 
       it "updates access token if state param is valid" do
@@ -179,8 +179,8 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         get :status, format: :json
 
         expect(session[:"#{provider}_access_token"]).to be_nil
-        expect(controller).to redirect_to(new_import_url)
-        expect(flash[:alert]).to eq("Wrong credentials")
+        expect(json_response.dig("error", "redirect")).to eq(new_import_url)
+        expect(flash[:alert]).to eq("Invalid credentials")
       end
     end
 

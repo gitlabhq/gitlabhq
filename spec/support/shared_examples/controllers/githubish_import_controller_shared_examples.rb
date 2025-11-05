@@ -112,11 +112,11 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     allow(client).to receive(:repos).and_raise(Octokit::Unauthorized)
     allow(client).to receive(:each_page).and_raise(Octokit::Unauthorized)
 
-    get :status
+    get :status, format: :json
 
     expect(session[:"#{provider}_access_token"]).to be_nil
-    expect(controller).to redirect_to(new_import_url)
-    expect(flash[:alert]).to eq("Wrong credentials")
+    expect(json_response.dig("error", "redirect")).to eq(new_import_url)
+    expect(flash[:alert]).to eq("Invalid credentials")
   end
 
   it "does not produce N+1 database queries" do
@@ -143,8 +143,6 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     let!(:group) { create(:group, developers: user) }
 
     it 'returns 404' do
-      expect(stub_client(repos: [], orgs: [])).to receive(:repos)
-
       get :status, params: { namespace_id: group.id }, format: :html
 
       expect(response).to have_gitlab_http_status(:not_found)
