@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlFriendlyWrap, GlLink, GlModal, GlTooltipDirective } from '@gitlab/ui';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { __, n__, s__, sprintf } from '~/locale';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 
@@ -12,7 +12,7 @@ export default {
     GlFriendlyWrap,
     GlLink,
     GlModal,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -99,10 +99,9 @@ export default {
           {{ testCase.file }}
         </gl-link>
         <span v-else>{{ testCase.file }}</span>
-        <modal-copy-button
+        <simple-copy-button
           :title="$options.text.copyTestName"
           :text="testCase.file"
-          :modal-id="modalId"
           category="tertiary"
           class="gl-ml-1"
         />

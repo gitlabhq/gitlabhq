@@ -1,10 +1,10 @@
 <script>
 import { s__ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 export default {
   components: {
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   props: {
     prompt: {
@@ -21,11 +21,6 @@ export default {
       type: String,
       required: false,
       default: s__('Runners|Copy command'),
-    },
-    modalId: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   computed: {
@@ -50,6 +45,6 @@ export default {
     ><span v-if="prompt" class="gl-select-none">{{ prompt }} </span><template v-for="line in lines">{{ line }}<br class="gl-select-none" /></template></pre>
     <!-- eslint-enable vue/require-v-for-key-->
 
-    <modal-copy-button :text="clipboard" :modal-id="modalId" :title="buttonTitle" />
+    <simple-copy-button :text="clipboard" :title="buttonTitle" />
   </div>
 </template>

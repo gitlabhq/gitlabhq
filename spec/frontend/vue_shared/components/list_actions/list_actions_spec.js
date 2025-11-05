@@ -1,4 +1,8 @@
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
+} from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -95,6 +99,18 @@ describe('ListActions', () => {
         href: '/-/edit',
       },
     ]);
+  });
+
+  describe('when there are no danger actions', () => {
+    it('does not show dropdown group', () => {
+      createComponent({
+        propsData: {
+          availableActions: [ACTION_EDIT],
+        },
+      });
+
+      expect(wrapper.findComponent(GlDisclosureDropdownGroup).exists()).toBe(false);
+    });
   });
 
   it('renders `GlDisclosureDropdown` with expected appearance related props', () => {

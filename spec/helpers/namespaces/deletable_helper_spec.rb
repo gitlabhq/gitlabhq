@@ -334,8 +334,6 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     let(:base_button_data) do
       {
         button_text: 'Delete',
-        restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
-        delayed_deletion_date: '2025-02-09',
         form_path: project_path(project),
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
@@ -343,7 +341,9 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         issues_count: '0',
         merge_requests_count: '0',
         forks_count: '0',
-        stars_count: '0'
+        stars_count: '0',
+        permanent_deletion_date: '2025-02-09',
+        marked_for_deletion: 'false'
       }
     end
 
@@ -358,7 +358,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     end
   end
 
-  describe '#project_delete_immediately_button_data' do
+  describe '#project_delete_immediately_button_data', time_travel_to: '2025-02-02' do
     let(:project) { build(:project) }
     let(:base_button_data) do
       {
@@ -370,11 +370,17 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         issues_count: '0',
         merge_requests_count: '0',
         forks_count: '0',
-        stars_count: '0'
+        stars_count: '0',
+        permanent_deletion_date: '2025-02-09',
+        marked_for_deletion: 'false'
       }
     end
 
     subject(:data) { helper.project_delete_immediately_button_data(project) }
+
+    before do
+      stub_application_setting(deletion_adjourned_period: 7)
+    end
 
     it 'returns expected hash' do
       expect(data).to match(base_button_data)

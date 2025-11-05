@@ -278,12 +278,12 @@ We're early in the process of adding visual testing, but we should have a framew
 
 ### Accessibility testing
 
-In 2023 we determined the tooling for accessibility testing. We opted for axe-core gem used in feature tests, to test the whole views rather then components in isolation. [See documentation on Automated accessibility testing](accessibility/automated_testing.md) to learn when and how to include it. You can check out our progress with [Accessibility scanner](https://gitlab-org.gitlab.io/frontend/playground/accessibility-scanner/) that uses Semgrep to find out if tests are present.
+Since 2023 we've been working on determining the tooling for accessibility testing. We opted for a axe-core based [comprehensive, multi-level approach to ensure accessibility compliance](accessibility/_index.md#how-our-accessibility-tools-work-together). Each tool serves a specific purpose in our development workflow, working together to provide complete coverage from development to production.
 
 **Current Status**
 
-- **As of December 2023**: (Status)
-- **Progress**: (Brief description of progress)
+- **As of November 2025**: In progress (~90%)
+- **Progress**: We've implemented linting, Storybook component tests, monitoring with Sitespeed. We're working on user journey testing with feature tests.
 
 **Responsible Team**
 
@@ -292,7 +292,10 @@ In 2023 we determined the tooling for accessibility testing. We opted for axe-co
 
 **Milestones and Timelines**
 
-- (Key milestones, expected completions)
+- Add axe-core checks to GitLab UI components specs - completed in May 2025
+- Develop and implement a plan for addressing accessibility violations, including evaluation plan/process and tooling - 90% done, expected to be completed by the end of FY26
+- Include accessibility checks in shared view components - 70% done, expected to be completed by the end of FY26
+- Add axe-core checks to crucial user journeys in feature specs - 20% done, expected to be completed in Q1FY27
 
 **Challenges and Dependencies**
 

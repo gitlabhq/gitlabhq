@@ -18,7 +18,7 @@ import {
 } from '~/ci/runner/components/registration/runner_instructions/constants';
 
 import RunnerAwsInstructions from '~/ci/runner/components/registration/runner_instructions/instructions/runner_aws_instructions.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -34,7 +34,7 @@ describe('RunnerAwsInstructions', () => {
   const findEasyButtons = () => wrapper.findAllComponents(GlFormRadio);
   const findEasyButtonAt = (i) => findEasyButtons().at(i);
   const findLink = () => wrapper.findComponent(GlLink);
-  const findModalCopyButton = () => wrapper.findComponent(ModalCopyButton);
+  const findCopyButton = () => wrapper.findComponent(SimpleCopyButton);
   const findOkButton = () =>
     wrapper
       .findAllComponents(GlButton)
@@ -123,14 +123,14 @@ describe('RunnerAwsInstructions', () => {
     expect(token.exists()).toBe(true);
     expect(token.element.tagName).toBe('PRE');
 
-    expect(findModalCopyButton().props('text')).toBe(mockRegistrationToken);
+    expect(findCopyButton().props('text')).toBe(mockRegistrationToken);
   });
 
   it('does not show registration token and copy button when token is not present', () => {
     createComponent({ props: { registrationToken: null } });
 
     expect(wrapper.find('pre').exists()).toBe(false);
-    expect(findModalCopyButton().exists()).toBe(false);
+    expect(findCopyButton().exists()).toBe(false);
   });
 
   it('triggers the modal to close', () => {

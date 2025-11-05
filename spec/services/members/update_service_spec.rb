@@ -263,18 +263,11 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
     context 'when group members expiration date is updated' do
       let_it_be(:params) { { expires_at: 20.days.from_now, source: source } }
-      let(:notification_service) { instance_double(NotificationService) }
-
-      before do
-        allow(NotificationService).to receive(:new).and_return(notification_service)
-      end
 
       it 'emails the users that their group membership expiry has changed' do
-        members.each do |member|
-          expect(notification_service).to receive(:updated_member_expiration).with(member)
-        end
-
-        subject
+        expect do
+          subject
+        end.to have_enqueued_mail(Members::ExpirationDateUpdatedMailer, :email).exactly(members.count).times
       end
     end
 

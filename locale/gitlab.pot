@@ -38655,9 +38655,6 @@ msgstr ""
 msgid "Learn More"
 msgstr ""
 
-msgid "Learn More."
-msgstr ""
-
 msgid "Learn about how your subscription works %{url}"
 msgstr ""
 
@@ -43179,9 +43176,6 @@ msgid "Navigation|Plan"
 msgstr ""
 
 msgid "Navigation|Preferences"
-msgstr ""
-
-msgid "Navigation|Preview"
 msgstr ""
 
 msgid "Navigation|Preview new UI"
@@ -55501,9 +55495,6 @@ msgid "Restore group"
 msgstr ""
 
 msgid "Restore project"
-msgstr ""
-
-msgid "Restoring projects"
 msgstr ""
 
 msgid "Restrict access by IP address"
@@ -67938,9 +67929,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "This process deletes the project repository and all related resources."
-msgstr ""
-
-msgid "This project can be restored until %{date}."
 msgstr ""
 
 msgid "This project can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."

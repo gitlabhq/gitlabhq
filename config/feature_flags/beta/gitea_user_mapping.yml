@@ -1,9 +1,0 @@
----
-name: gitea_user_mapping
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/467084
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167078
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498390
-milestone: '17.6'
-group: group::import and integrate
-type: beta
-default_enabled: true

@@ -115,19 +115,10 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       it { is_expected.to be(expected_enabled) }
     end
 
-    shared_examples 'when :gitea_user_mapping is disabled' do |expected_enabled:|
-      before do
-        Feature.disable(:gitea_user_mapping)
-      end
-
-      it { is_expected.to be(expected_enabled) }
-    end
-
     context 'when the project is a GitHub import' do
       it { is_expected.to be(true) }
 
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: true
     end
 
     context 'when the project is a Gitea import' do
@@ -137,7 +128,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(true) }
 
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: true
     end
 
@@ -148,7 +138,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
     end
 
@@ -159,7 +148,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
     end
   end
@@ -175,14 +163,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     shared_examples 'when :github_user_mapping is disabled' do |expected_enabled:|
       before do
         Feature.disable(:github_user_mapping)
-      end
-
-      it { is_expected.to be(expected_enabled) }
-    end
-
-    shared_examples 'when :gitea_user_mapping is disabled' do |expected_enabled:|
-      before do
-        Feature.disable(:gitea_user_mapping)
       end
 
       it { is_expected.to be(expected_enabled) }
@@ -204,7 +184,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       it { is_expected.to be(true) }
 
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: true
       it_behaves_like 'disabled when project is imported into a group'
     end
 
@@ -215,7 +194,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(true) }
 
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: true
       it_behaves_like 'disabled when project is imported into a group'
     end
@@ -227,7 +205,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'disabled when project is imported into a group'
     end
@@ -239,7 +216,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'disabled when project is imported into a group'
     end

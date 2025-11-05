@@ -240,7 +240,8 @@ RSpec.describe RootController, feature_category: :shared do
               duo_code_review_bot_username: duo_code_review_bot.username,
               merge_requests_review_requested_title: "Review requested",
               merge_requests_your_merge_requests_title: "Your merge requests",
-              last_push_event: nil
+              last_push_event: nil,
+              show_feedback_widget: "true"
             })
           end
         end

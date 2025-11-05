@@ -22,23 +22,6 @@ module Emails
         subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was granted"))
     end
 
-    def member_expiration_date_updated_email(member_source_type, member_id)
-      @member_source_type = member_source_type
-      @member_id = member_id
-
-      return unless member_exists?
-
-      subject = if member.expires?
-                  _('Group membership expiration date changed')
-                else
-                  _('Group membership expiration date removed')
-                end
-
-      email_with_layout(
-        to: member.user.notification_email_for(notification_group),
-        subject: subject(subject))
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def member
       @member ||= Member.find_by(id: @member_id)

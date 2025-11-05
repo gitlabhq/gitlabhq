@@ -2,6 +2,7 @@
 import { GlModal, GlAlert, GlSprintf, GlFormInput } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import { __, s__, sprintf } from '~/locale';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 
 export default {
   i18n: {
@@ -18,7 +19,7 @@ export default {
       'This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:',
     ),
   },
-  components: { GlModal, GlAlert, GlSprintf, GlFormInput },
+  components: { GlModal, GlAlert, GlSprintf, GlFormInput, HelpPageLink },
   model: {
     prop: 'visible',
     event: 'change',
@@ -65,6 +66,14 @@ export default {
       required: false,
       default: null,
     },
+    markedForDeletion: {
+      type: Boolean,
+      required: true,
+    },
+    permanentDeletionDate: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -96,6 +105,9 @@ export default {
       return sprintf(s__('Projects|Delete %{nameWithNamespace}'), {
         nameWithNamespace: this.nameWithNamespace,
       });
+    },
+    showRestoreMessage() {
+      return !this.markedForDeletion;
     },
   },
   watch: {
@@ -174,7 +186,24 @@ export default {
         type="text"
         data-testid="confirm-name-field"
       />
-      <slot name="modal-footer"></slot>
+      <p
+        v-if="showRestoreMessage"
+        class="gl-mb-0 gl-mt-3 gl-text-subtle"
+        data-testid="restore-message"
+      >
+        <gl-sprintf
+          :message="
+            __('This project can be restored until %{date}. %{linkStart}Learn more%{linkEnd}.')
+          "
+        >
+          <template #date>{{ permanentDeletionDate }}</template>
+          <template #link="{ content }">
+            <help-page-link href="user/project/working_with_projects" anchor="restore-a-project">{{
+              content
+            }}</help-page-link>
+          </template>
+        </gl-sprintf>
+      </p>
     </div>
   </gl-modal>
 </template>

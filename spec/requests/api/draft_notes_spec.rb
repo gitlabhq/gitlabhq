@@ -376,6 +376,20 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         expect { publish_draft_note }.to change { Note.count }.by(1)
         expect(DraftNote.exists?(draft_note_by_current_user.id)).to eq(false)
       end
+
+      it "creates a resolvable discussion when draft note has no position" do
+        # Create a draft note without position (not attached to code)
+        draft_without_position = create(:draft_note, merge_request: merge_request, author: user, position: nil)
+
+        put api("#{base_url}/#{draft_without_position.id}/publish", user)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+
+        # The published note should be a DiscussionNote, making it resolvable
+        published_note = merge_request.notes.last
+        expect(published_note.type).to eq('DiscussionNote')
+        expect(published_note.discussion.resolvable?).to eq(true)
+      end
     end
 
     context "when publishing a non-existent draft note" do

@@ -13,7 +13,6 @@ import { archiveProject, unarchiveProject, restoreProject, deleteProject } from 
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
-import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import {
   ACTION_EDIT,
   ACTION_RESTORE,
@@ -70,8 +69,6 @@ describe('ProjectListItemActions', () => {
   const findListActions = () => wrapper.findComponent(ListActions);
   const findListActionsLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
-  const findDelayedDeletionModalFooter = () =>
-    wrapper.findComponent(ProjectListItemDelayedDeletionModalFooter);
   const fireAction = async (action) => {
     findListActions().props('actions')[action].action();
     await nextTick();
@@ -312,12 +309,10 @@ describe('ProjectListItemActions', () => {
         issuesCount: '3',
         forksCount: '4',
         starsCount: '5',
+        markedForDeletion: false,
+        permanentDeletionDate: project.permanentDeletionDate,
         confirmLoading: false,
       });
-    });
-
-    it('renders modal footer', () => {
-      expect(findDelayedDeletionModalFooter().exists()).toBe(true);
     });
 
     describe('when deletion is confirmed', () => {

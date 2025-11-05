@@ -737,7 +737,7 @@ class Member < ApplicationRecord
     end
 
     if saved_change_to_expires_at?
-      run_after_commit { notification_service.updated_member_expiration(self) }
+      run_after_commit { Members::ExpirationDateUpdatedMailer.with(member: self, member_source_type: real_source_type).email.deliver_later }
     end
 
     system_hook_service.execute_hooks_for(self, :update)

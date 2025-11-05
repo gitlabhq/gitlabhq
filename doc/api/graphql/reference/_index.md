@@ -2576,6 +2576,7 @@ Input type: `AiCatalogAgentDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogagentdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentdeleteforceharddelete"></a>`forceHardDelete` | [`Boolean`](#boolean) | When true, the flow will always be hard deleted and never soft deleted. Can only be used by instance admins. |
 | <a id="mutationaicatalogagentdeleteid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Agent to delete. |
 
 #### Fields
@@ -2690,6 +2691,7 @@ Input type: `AiCatalogFlowDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowdeleteforceharddelete"></a>`forceHardDelete` | [`Boolean`](#boolean) | When true, the flow will always be hard deleted and never soft deleted. Can only be used by instance admins. |
 | <a id="mutationaicatalogflowdeleteid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to delete. |
 
 #### Fields
@@ -2880,6 +2882,7 @@ Input type: `AiCatalogThirdPartyFlowDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogthirdpartyflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogthirdpartyflowdeleteforceharddelete"></a>`forceHardDelete` | [`Boolean`](#boolean) | When true, the Third Party Flow will always be hard deleted and never soft deleted. Can only be used by instance admins. |
 | <a id="mutationaicatalogthirdpartyflowdeleteid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Third Party Flow to delete. |
 
 #### Fields
@@ -39683,6 +39686,30 @@ Returns [`AiCatalogItem`](#aicatalogitem).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
+
+##### `Project.aiCatalogItems`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+AI Catalog items of the project. This field can be resolved for only one project in any single request.
+
+Returns [`AiCatalogItemConnection!`](#aicatalogitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaicatalogitemsallavailable"></a>`allAvailable` | [`Boolean`](#boolean) | Include public items from the AI Catalog. |
+| <a id="projectaicatalogitemsenabled"></a>`enabled` | [`Boolean`](#boolean) | Include only items that are enabled or disabled in the project. |
+| <a id="projectaicatalogitemsitemtypes"></a>`itemTypes` | [`[AiCatalogItemType!]`](#aicatalogitemtype) | Types of items to retrieve. |
+| <a id="projectaicatalogitemssearch"></a>`search` | [`String`](#string) | Search items by name and description. |
 
 ##### `Project.aiFlowTriggers`
 

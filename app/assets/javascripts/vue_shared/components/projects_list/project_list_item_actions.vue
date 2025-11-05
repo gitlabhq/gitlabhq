@@ -5,7 +5,6 @@ import { createAlert } from '~/alert';
 import { archiveProject, restoreProject, unarchiveProject, deleteProject } from '~/rest_api';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
-import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import {
   ACTION_ARCHIVE,
   ACTION_DELETE,
@@ -30,7 +29,6 @@ export default {
     GlLoadingIcon,
     ListActions,
     DeleteModal,
-    ProjectListItemDelayedDeletionModalFooter,
   },
   mixins: [InternalEvents.mixin()],
   i18n: {
@@ -200,11 +198,9 @@ export default {
       :issues-count="openIssuesCount"
       :forks-count="forksCount"
       :stars-count="starCount"
+      :marked-for-deletion="project.markedForDeletion"
+      :permanent-deletion-date="project.permanentDeletionDate"
       @primary="onDeleteModalPrimary"
-    >
-      <template #modal-footer>
-        <project-list-item-delayed-deletion-modal-footer :project="project" />
-      </template>
-    </delete-modal>
+    />
   </div>
 </template>

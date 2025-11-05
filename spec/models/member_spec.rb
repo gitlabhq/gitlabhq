@@ -1849,10 +1849,10 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     context 'when expiration is changed' do
-      it 'calls the notification service when membership expiry has changed' do
-        expect(NotificationService).to receive_message_chain(:new, :updated_member_expiration).with(member)
-
-        member.update!(expires_at: 5.days.from_now)
+      it 'enqueues the expiration date updated mailer when membership expiry has changed' do
+        expect { member.update!(expires_at: 5.days.from_now) }
+          .to have_enqueued_mail(Members::ExpirationDateUpdatedMailer, :email)
+          .with(params: { member: member, member_source_type: member.real_source_type }, args: [])
       end
     end
   end

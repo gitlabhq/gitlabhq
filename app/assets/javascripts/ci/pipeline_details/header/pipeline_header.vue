@@ -11,7 +11,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
+import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
@@ -353,12 +353,7 @@ export default {
       }
     },
   },
-  AGENT_PRIVILEGES: [
-    AGENT_PRIVILEGES.READ_WRITE_FILES,
-    AGENT_PRIVILEGES.READ_ONLY_GITLAB,
-    AGENT_PRIVILEGES.READ_WRITE_GITLAB,
-    AGENT_PRIVILEGES.USE_GIT,
-  ],
+  FIX_PIPELINE_AGENT_PRIVILEGES,
 };
 </script>
 
@@ -491,7 +486,7 @@ export default {
           :goal="pipelinePath"
           size="medium"
           :source-branch="sourceBranch"
-          :agent-privileges="$options.AGENT_PRIVILEGES"
+          :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
           :additional-context="getAdditionalContext"
         >
           {{ __('Fix pipeline with Duo') }}

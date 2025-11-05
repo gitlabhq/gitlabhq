@@ -79,7 +79,6 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-group bordered>
-    <template #group-label>{{ s__('Navigation|Preview') }}</template>
     <gl-disclosure-dropdown-item :item="toggleProjectStudioItem">
       <template #list-item>
         <div class="gl-flex gl-items-center gl-gap-3">

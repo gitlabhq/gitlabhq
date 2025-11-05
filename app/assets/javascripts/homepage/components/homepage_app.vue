@@ -68,6 +68,10 @@ export default {
       required: false,
       default: null,
     },
+    showFeedbackWidget: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -249,7 +253,7 @@ export default {
       </section>
       <aside class="gl-flex gl-flex-col gl-gap-6">
         <recently-viewed-widget />
-        <feedback-widget />
+        <feedback-widget v-if="showFeedbackWidget" />
       </aside>
     </div>
   </div>

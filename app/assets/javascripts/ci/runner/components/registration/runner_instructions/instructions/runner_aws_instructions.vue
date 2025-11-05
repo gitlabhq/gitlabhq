@@ -12,7 +12,7 @@ import {
 import Tracking from '~/tracking';
 import { getBaseURL, objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import {
   AWS_README_URL,
   AWS_CF_BASE_URL,
@@ -30,7 +30,7 @@ export default {
     GlFormRadio,
     GlAccordion,
     GlAccordionItem,
-    ModalCopyButton,
+    SimpleCopyButton,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -133,10 +133,10 @@ export default {
       <h5 class="gl-mb-3">{{ $options.i18n.runnerRegistrationToken }}</h5>
       <div class="gl-flex">
         <pre class="gl-bg-gray gl-grow gl-whitespace-pre-line">{{ registrationToken }}</pre>
-        <modal-copy-button
+        <simple-copy-button
           :title="$options.i18n.copyInstructions"
           :text="registrationToken"
-          css-classes="gl-self-start gl-ml-2 gl-mt-2"
+          class="gl-ml-2 gl-mt-2 gl-self-start"
           category="tertiary"
         />
       </div>

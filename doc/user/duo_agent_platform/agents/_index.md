@@ -99,6 +99,8 @@ Prerequisites:
 1. Select **Enable**.
 
 The agent appears on the project's **Agents** page.
+In the project, you can start a new chat with the agent.
+For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
 ## Duplicate an agent
 

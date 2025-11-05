@@ -340,7 +340,9 @@ To create a thread:
 
 {{< /history >}}
 
-You can resolve a thread when you want to finish a conversation.
+When a conversation is complete, you can resolve the thread. Resolved threads are collapsed, but users can still add comments.
+
+Resolved threads can be reopened later by any user who has permission to resolve threads. To reopen a resolved thread, expand the thread and select **Reopen thread**.
 
 Prerequisites:
 
@@ -354,6 +356,8 @@ To resolve a thread:
    - In the upper-right corner of the original comment, select **Resolve thread** ({{< icon name="check-circle" >}}).
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
+
+The same actions can be performed to reopen a thread.
 
 Merge requests provide more flexible [thread management options](../project/merge_requests/_index.md#manage-comment-threads),
 such as:

@@ -76,6 +76,7 @@ describe('HomepageApp', () => {
         authoredWorkItemsPath: MOCK_AUTHORED_WORK_ITEMS_PATH,
         activityPath: MOCK_ACTIVITY_PATH,
         lastPushEvent,
+        showFeedbackWidget: true,
         ...props,
       },
     });
@@ -402,6 +403,14 @@ describe('HomepageApp', () => {
       createWrapper({ lastPushEvent: { show_widget: false, branch_name: 'feature_branch' } });
 
       expect(findPickUpWidget().exists()).toBe(true);
+    });
+  });
+
+  describe('when showFeedbackWidget is false', () => {
+    it('does not show the feedback widget', () => {
+      createWrapper({ showFeedbackWidget: false });
+
+      expect(findFeedbackWidget().exists()).toBe(false);
     });
   });
 });

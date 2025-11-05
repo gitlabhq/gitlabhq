@@ -1053,6 +1053,8 @@
   - 1
 - - security_scan_result_policies_process_pipeline_completion
   - 1
+- - security_scan_result_policies_recreate_project_warn_mode_audit_events
+  - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
 - - security_scan_result_policies_sync_merge_request_approvals

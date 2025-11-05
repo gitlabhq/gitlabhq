@@ -1,0 +1,22 @@
+---
+description: The event tracks how the Dependency Scanner was introduced in the CI pipeline
+internal_events: true
+status: active
+action: collect_ds_analyzer_scan_ci_integration_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  label:
+    description: Source of the DS analyzer ex. template:latest, component:v0
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211211
+tiers:
+- free
+- premium
+- ultimate

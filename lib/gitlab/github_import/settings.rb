@@ -102,7 +102,7 @@ module Gitlab
                        when ::Import::SOURCE_GITHUB
                          Feature.enabled?(:github_user_mapping, creator_user_actor)
                        when ::Import::SOURCE_GITEA
-                         Feature.enabled?(:gitea_user_mapping, creator_user_actor)
+                         true
                        end
 
         !!flag_by_type

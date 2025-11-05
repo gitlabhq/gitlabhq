@@ -8,7 +8,14 @@ export const ACTION_LEAVE = 'leave';
 export const ACTION_DELETE = 'delete';
 export const ACTION_DELETE_IMMEDIATELY = 'delete-immediately';
 
-export const DANGER_ACTIONS = [ACTION_LEAVE, ACTION_DELETE, ACTION_DELETE_IMMEDIATELY];
+// The order the actions are defined in the array is the order they will render.
+export const ORDERED_GENERAL_ACTIONS = [
+  ACTION_EDIT,
+  ACTION_ARCHIVE,
+  ACTION_UNARCHIVE,
+  ACTION_RESTORE,
+];
+export const ORDERED_DANGER_ACTIONS = [ACTION_LEAVE, ACTION_DELETE, ACTION_DELETE_IMMEDIATELY];
 
 /**
  * These are the default action item definitions that are passed to

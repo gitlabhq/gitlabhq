@@ -48,6 +48,14 @@ export default {
       required: false,
       default: __('Delete project'),
     },
+    markedForDeletion: {
+      type: Boolean,
+      required: true,
+    },
+    permanentDeletionDate: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -84,12 +92,10 @@ export default {
       :merge-requests-count="mergeRequestsCount"
       :forks-count="forksCount"
       :stars-count="starsCount"
+      :marked-for-deletion="markedForDeletion"
+      :permanent-deletion-date="permanentDeletionDate"
       @primary="submitForm"
-    >
-      <template #modal-footer>
-        <slot name="modal-footer"></slot>
-      </template>
-    </delete-modal>
+    />
 
     <gl-button
       category="primary"

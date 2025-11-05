@@ -1,0 +1,26 @@
+---
+description: The event tracks Dependency Scanner reachability analysis SBOM failures
+internal_events: true
+status: active
+action: collect_ds_analyzer_scan_sr_sbom_failure_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  label:
+    description: Error message
+  language:
+    description: Language of SBOM
+  input_file_path:
+    description: Path of input (lock) file for SBOM
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211211
+tiers:
+- free
+- premium
+- ultimate

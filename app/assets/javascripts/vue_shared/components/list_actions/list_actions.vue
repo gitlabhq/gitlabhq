@@ -5,7 +5,8 @@ import {
   GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
 import {
-  DANGER_ACTIONS,
+  ORDERED_GENERAL_ACTIONS,
+  ORDERED_DANGER_ACTIONS,
   DEFAULT_ACTION_ITEM_DEFINITIONS,
   ACTION_EDIT,
   ACTION_ARCHIVE,
@@ -41,8 +42,18 @@ export default {
     },
   },
   computed: {
+    generalActions() {
+      return ORDERED_GENERAL_ACTIONS.filter(
+        (action) => this.availableActions.includes(action) && this.actionItem(action),
+      );
+    },
+    dangerActions() {
+      return ORDERED_DANGER_ACTIONS.filter(
+        (action) => this.availableActions.includes(action) && this.actionItem(action),
+      );
+    },
     hasDangerActions() {
-      return this.availableActions.some((action) => DANGER_ACTIONS.includes(action));
+      return this.dangerActions.length;
     },
     customActions() {
       const baseActionKeys = Object.keys(DEFAULT_ACTION_ITEM_DEFINITIONS);
@@ -66,9 +77,6 @@ export default {
         ...this.actions[action],
       };
     },
-    hasAction(action) {
-      return this.availableActions.includes(action) && this.actionItem(action);
-    },
   },
 };
 </script>
@@ -84,23 +92,9 @@ export default {
   >
     <!-- General actions -->
     <gl-disclosure-dropdown-item
-      v-if="hasAction($options.ACTION_EDIT)"
-      :item="actionItem($options.ACTION_EDIT)"
-    />
-
-    <gl-disclosure-dropdown-item
-      v-if="hasAction($options.ACTION_ARCHIVE)"
-      :item="actionItem($options.ACTION_ARCHIVE)"
-    />
-
-    <gl-disclosure-dropdown-item
-      v-if="hasAction($options.ACTION_UNARCHIVE)"
-      :item="actionItem($options.ACTION_UNARCHIVE)"
-    />
-
-    <gl-disclosure-dropdown-item
-      v-if="hasAction($options.ACTION_RESTORE)"
-      :item="actionItem($options.ACTION_RESTORE)"
+      v-for="action in generalActions"
+      :key="action"
+      :item="actionItem(action)"
     />
 
     <gl-disclosure-dropdown-item
@@ -112,18 +106,9 @@ export default {
     <!-- Danger actions -->
     <gl-disclosure-dropdown-group v-if="hasDangerActions" bordered>
       <gl-disclosure-dropdown-item
-        v-if="hasAction($options.ACTION_LEAVE)"
-        :item="actionItem($options.ACTION_LEAVE)"
-      />
-
-      <gl-disclosure-dropdown-item
-        v-if="hasAction($options.ACTION_DELETE)"
-        :item="actionItem($options.ACTION_DELETE)"
-      />
-
-      <gl-disclosure-dropdown-item
-        v-if="hasAction($options.ACTION_DELETE_IMMEDIATELY)"
-        :item="actionItem($options.ACTION_DELETE_IMMEDIATELY)"
+        v-for="action in dangerActions"
+        :key="action"
+        :item="actionItem(action)"
       />
     </gl-disclosure-dropdown-group>
   </gl-disclosure-dropdown>

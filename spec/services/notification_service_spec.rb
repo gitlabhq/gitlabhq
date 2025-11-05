@@ -4017,31 +4017,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
-  describe '#updated_member_expiration' do
-    subject(:updated_member_expiration) { notification.updated_member_expiration(member) }
-
-    context 'for group member' do
-      let_it_be(:member) { create(:group_member) }
-
-      it 'triggers a notification about the expiration change' do
-        updated_member_expiration
-
-        expect_delivery_jobs_count(1)
-        expect_enqueud_email('Group', member.id, mail: 'member_expiration_date_updated_email')
-      end
-    end
-
-    context 'for project member' do
-      let_it_be(:member) { create(:project_member) }
-
-      it 'does not trigger a notification' do
-        updated_member_expiration
-
-        expect_delivery_jobs_count(0)
-      end
-    end
-  end
-
   describe '#updated_member_access_level' do
     let_it_be(:member) { create(:group_member) }
 

@@ -113,8 +113,8 @@ RSpec.describe DraftNote, feature_category: :code_review_workflow do
           draft_note.discussion_id = nil
         end
 
-        it 'returns "Note"' do
-          expect(draft_note.type).to eq('Note')
+        it 'returns "DiscussionNote" to make draft notes resolvable by default' do
+          expect(draft_note.type).to eq('DiscussionNote')
         end
       end
     end

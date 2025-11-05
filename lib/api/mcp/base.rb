@@ -46,7 +46,6 @@ module API
 
       before do
         authenticate!
-        not_found! unless Feature.enabled?(:mcp_server, current_user)
         not_found! unless feature_available?
         forbidden! unless AccessTokenValidationService.new(access_token).include_any_scope?([Gitlab::Auth::MCP_SCOPE])
       end

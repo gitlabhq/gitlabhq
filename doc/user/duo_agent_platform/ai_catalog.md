@@ -49,7 +49,7 @@ Use the AI Catalog to:
 Prerequisites:
 
 - You must meet the [prerequisites](_index.md#prerequisites).
-- To use agents from the AI Catalog, you must have a project that belongs to a group namespace with a Premium or Ultimate subscription.
+- To use agents and flows from the AI Catalog, you must have at least the Maintainer role for a project.
 
 To view the AI Catalog:
 

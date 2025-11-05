@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import { sprintf } from '~/locale';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('lodash/uniqueId', () => () => 'fake-id');
@@ -20,6 +21,8 @@ describe('DeleteModal', () => {
     starsCount: 4,
     confirmLoading: false,
     nameWithNamespace: 'Foo / Bar',
+    markedForDeletion: false,
+    permanentDeletionDate: '2025-11-28',
   };
 
   const createComponent = (propsData) => {
@@ -31,15 +34,13 @@ describe('DeleteModal', () => {
       stubs: {
         GlModal: stubComponent(GlModal),
       },
-      scopedSlots: {
-        'modal-footer': '<div data-testid="modal-footer-slot"></div>',
-      },
     });
   };
 
   const findGlModal = () => wrapper.findComponent(GlModal);
   const alertText = () => wrapper.findComponent(GlAlert).text();
   const findFormInput = () => wrapper.findComponent(GlFormInput);
+  const findRestoreMessage = () => wrapper.findByTestId('restore-message');
 
   it('renders modal with correct props', () => {
     createComponent();
@@ -164,10 +165,31 @@ describe('DeleteModal', () => {
     expect(wrapper.emitted('change')).toEqual([[true]]);
   });
 
-  it('renders `modal-footer` slot', () => {
-    createComponent();
+  describe('when markedForDeletion prop is false', () => {
+    it('renders restore message', () => {
+      createComponent();
 
-    expect(wrapper.findByTestId('modal-footer-slot').exists()).toBe(true);
+      const helpPageLinkComponent = wrapper.findComponent(HelpPageLink);
+
+      expect(findRestoreMessage().text()).toContain(
+        `This project can be restored until ${defaultPropsData.permanentDeletionDate}.`,
+      );
+      expect(helpPageLinkComponent.props()).toEqual({
+        href: 'user/project/working_with_projects',
+        anchor: 'restore-a-project',
+      });
+      expect(helpPageLinkComponent.text()).toBe('Learn more');
+    });
+  });
+
+  describe('when markedForDeletion prop is true', () => {
+    it('does not render restore message', () => {
+      createComponent({
+        markedForDeletion: true,
+      });
+
+      expect(findRestoreMessage().exists()).toBe(false);
+    });
   });
 
   it('renders aria-label', () => {

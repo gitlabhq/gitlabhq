@@ -9,6 +9,7 @@ import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsi
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
@@ -134,9 +135,6 @@ export default {
 
       return pipelines;
     },
-    agentPrivileges() {
-      return [1, 2, 3, 5];
-    },
   },
   methods: {
     displayFailedJobsWidget(item) {
@@ -212,6 +210,7 @@ export default {
   TBODY_TR_ATTR: {
     'data-testid': 'pipeline-table-row',
   },
+  FIX_PIPELINE_AGENT_PRIVILEGES,
 };
 </script>
 <template>
@@ -288,7 +287,7 @@ export default {
               :project-path="getProjectPath(item)"
               :goal="getPipelinePath(item)"
               :hover-message="__('Fix pipeline with Duo')"
-              :agent-privileges="agentPrivileges"
+              :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
               :source-branch="currentBranch(item)"
               :additional-context="getAdditionalContext(item)"
               workflow-definition="fix_pipeline/v1"
