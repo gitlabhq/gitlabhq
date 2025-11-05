@@ -241,6 +241,13 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
 
     wait_for_requests
 
+    # These tests have become flaky because *something* is *sometimes* causing the "Manage" item in the sidebar to
+    # become hovered, popping up its menu, and covering things we want to click with the Manage subitems.
+    # Rather than quarantine the tests forever, let's hover something else that stops this.
+    # "search-icon" seems consistently available, and hovering it doesn't pop anything up, but *does* cause
+    # an existing hover-triggered popup to vanish.
+    find_by_testid('search-icon').hover
+
     issue
   end
 end

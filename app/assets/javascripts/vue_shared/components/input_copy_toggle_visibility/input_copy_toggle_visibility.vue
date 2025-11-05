@@ -148,6 +148,7 @@ export default {
 
       try {
         // user is trying to copy from the password input, set their clipboard for them
+        // eslint-disable-next-line no-restricted-properties
         await navigator.clipboard?.writeText(this.value);
         this.handleCopyButtonClick();
       } catch (e) {

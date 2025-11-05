@@ -542,7 +542,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       it 'disallows all permissions except pipeline when the feature is disabled' do
         builds_permissions = [
-          :create_build, :read_build, :update_build, :cancel_build, :admin_build, :destroy_build,
+          :create_build, :read_build, :update_build, :cancel_build, :admin_build, :destroy_build, :admin_cicd_variables,
           :create_pipeline_schedule, :read_pipeline_schedule_variables, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
           :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
           :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
@@ -575,7 +575,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     let(:repository_permissions) do
       [
         :create_pipeline, :update_pipeline, :cancel_pipeline, :admin_pipeline, :destroy_pipeline,
-        :create_build, :read_build, :cancel_build, :update_build, :admin_build, :destroy_build,
+        :create_build, :read_build, :cancel_build, :update_build, :admin_build, :destroy_build, :admin_cicd_variables,
         :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,

@@ -4,6 +4,8 @@ module Gitlab
   module GrapeOpenapi
     module Converters
       class OperationConverter
+        # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#operation-object
+
         def self.convert(route, schema_registry)
           new(route, schema_registry).convert
         end
@@ -19,6 +21,7 @@ module Gitlab
             operation.operation_id = operation_id
             operation.description = extract_description
             operation.tags = extract_tags
+            operation.parameters = extract_parameters
             operation.responses = ResponseConverter.new(@route, @schema_registry).convert
           end
         end
@@ -26,6 +29,16 @@ module Gitlab
         private
 
         attr_reader :config, :route, :schema_registry
+
+        def extract_parameters
+          return if options[:params].empty?
+
+          # For each parameter, send it to the converter which responds with a Parameter object
+          options[:params].map do |key, options|
+            Converters::ParameterConverter.convert(key, options: options, validations: validations_for(key.to_sym),
+              route_path: route.path)
+          end
+        end
 
         def operation_id
           method = http_method.downcase
@@ -58,10 +71,7 @@ module Gitlab
         end
 
         def extract_tags
-          segments = path_segments
-          return [] if segments.empty?
-
-          [segments.first]
+          @route.settings.dig(:description, :tags)
         end
 
         def path_segments
@@ -98,6 +108,23 @@ module Gitlab
 
         def endpoint
           route.instance_variable_get(:@app)
+        end
+
+        # Get all validations for a single attribute
+        # Looks something like:
+        # [{:attributes=>[:version_prefix],
+        #   :options=>/^[\d+.]+/,
+        #   :required=>false,
+        #   :params_scope=>#<Grape::Validations::ParamsScope:0x000000016dc35820
+        #   :opts=>{:allow_blank=>nil, :fail_fast=>false},
+        #   :validator_class=>Grape::Validations::Validators::RegexpValidator}]
+        def validations_for(attribute)
+          route
+            .app
+            .inheritable_setting
+            .namespace_stackable
+            .new_values[:validations]
+            &.select { |v| v[:attributes].include?(attribute) }
         end
       end
     end

@@ -529,11 +529,6 @@
       top: auto !important;
     }
 
-    // Compare revision: File tree sidebar alignment
-    .rd-app .rd-app-sidebar {
-      top: calc(1rem + -1px) !important;
-    }
-
     // Commits diff file tree header
     .diff-file .file-title-flex-parent {
       @include media-breakpoint-up(md) {

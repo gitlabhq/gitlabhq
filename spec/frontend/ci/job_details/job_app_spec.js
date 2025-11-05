@@ -24,12 +24,15 @@ import { MANUAL_STATUS } from '~/ci/constants';
 import job from 'jest/ci/jobs_mock_data';
 import { mockPendingJobData } from './mock_data';
 
+jest.mock('~/panel_breakpoint_instance');
+
 describe('Job App', () => {
   Vue.use(Vuex);
 
   let store;
   let wrapper;
   let mock;
+  let triggerResize;
 
   const initSettings = {
     jobEndpoint: '/group1/project1/-/jobs/99.json',
@@ -91,6 +94,9 @@ describe('Job App', () => {
   const findStickyFooter = () => wrapper.findByTestId('rca-bar-component');
 
   beforeEach(() => {
+    PanelBreakpointInstance.addResizeListener.mockImplementation((callback) => {
+      triggerResize = callback;
+    });
     mock = new MockAdapter(axios);
     store = createStore();
   });
@@ -122,10 +128,11 @@ describe('Job App', () => {
     });
 
     it('shows sidebar', async () => {
+      jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(true);
       expect(store.dispatch).not.toHaveBeenCalledWith('showSidebar');
 
       store.state.isSidebarOpen = false;
-      window.dispatchEvent(new Event('resize'));
+      triggerResize();
       await waitForPromises();
 
       expect(store.dispatch).toHaveBeenCalledWith('showSidebar');
@@ -137,7 +144,7 @@ describe('Job App', () => {
       jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
       store.state.isSidebarOpen = true;
-      window.dispatchEvent(new Event('resize'));
+      triggerResize();
 
       expect(store.dispatch).toHaveBeenCalledWith('hideSidebar');
     });

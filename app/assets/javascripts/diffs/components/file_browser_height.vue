@@ -32,15 +32,15 @@ export default {
     this.stickyTopOffset = parseInt(styles.getPropertyValue('top'), 10);
     this.minHeight = parseInt(styles.getPropertyValue('--file-tree-min-height'), 10);
     this.bottomPadding = parseInt(styles.getPropertyValue('--file-tree-bottom-padding'), 10);
-    this.handleMediaMatch();
-    PanelBreakpointInstance.addResizeListener(this.handleMediaMatch);
+    this.updateIsNarrowScreen();
+    PanelBreakpointInstance.addBreakpointListener(this.updateIsNarrowScreen);
   },
   beforeDestroy() {
-    PanelBreakpointInstance.removeResizeListener(this.handleMediaMatch);
+    PanelBreakpointInstance.removeBreakpointListener(this.updateIsNarrowScreen);
   },
   methods: {
-    handleMediaMatch() {
-      this.isNarrowScreen = !PanelBreakpointInstance.isDesktop();
+    updateIsNarrowScreen() {
+      this.isNarrowScreen = PanelBreakpointInstance.isBreakpointDown('sm');
     },
   },
 };

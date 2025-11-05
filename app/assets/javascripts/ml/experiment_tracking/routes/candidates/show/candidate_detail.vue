@@ -97,6 +97,7 @@ export default {
   },
   methods: {
     copyMlflowId() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.info.eid);
     },
   },

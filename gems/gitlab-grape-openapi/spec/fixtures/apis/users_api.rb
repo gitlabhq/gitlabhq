@@ -8,6 +8,11 @@ module TestApis
       success TestEntities::UserEntity
       tags %w[users_api]
     end
+    params do
+      optional :active, type: Boolean, desc: 'Filter by active users'
+      optional :username, type: String, desc: 'Find by username'
+      optional :tag, type: String, regexp: /Hello/, desc: "Hello tag"
+    end
     get '/api/:version/users' do
       status 200
       [
@@ -67,7 +72,11 @@ module TestApis
       nil
     end
 
-    desc 'Get available options'
+    desc 'Get available options' do
+      success TestEntities::UserEntity
+      detail 'Gets available options'
+      tags ['users']
+    end
     options '/api/:version/users' do
       status 200
       header 'Allow', 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS'

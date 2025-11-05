@@ -146,7 +146,6 @@ export default {
           :per-page="$options.DEFAULT_PER_PAGE"
           :total-items="totalItems"
           :value="page"
-          :disabled="isLoading"
           @input="loadOverrides"
         />
         <url-sync :query="query" />

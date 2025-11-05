@@ -37,6 +37,18 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'when CI/CD is disabled' do
+      before do
+        project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
+      end
+
+      it 'returns forbidden for maintainer' do
+        get api("/projects/#{project.id}/variables", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'GET /projects/:id/variables/:key' do
@@ -73,6 +85,18 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
           expect(json_response['variable_type']).to eq('env_var')
           expect(json_response['description']).to be_nil
           expect(json_response['hidden']).to eq(false)
+        end
+      end
+
+      context 'when CI/CD is disabled' do
+        before do
+          project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
+        end
+
+        it 'returns forbidden for maintainer' do
+          get api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -262,6 +286,18 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'when CI/CD is disabled' do
+      before do
+        project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
+      end
+
+      it 'returns forbidden for maintainer' do
+        post api("/projects/#{project.id}/variables", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'PUT /projects/:id/variables/:key' do
@@ -373,6 +409,18 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'when CI/CD is disabled' do
+      before do
+        project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
+      end
+
+      it 'returns forbidden for maintainer' do
+        put api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/variables/:key' do
@@ -439,6 +487,18 @@ RSpec.describe API::Ci::Variables, feature_category: :pipeline_composition do
         delete api("/projects/#{project.id}/variables/#{variable.key}")
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when CI/CD is disabled' do
+      before do
+        project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
+      end
+
+      it 'returns forbidden for maintainer' do
+        delete api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

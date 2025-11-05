@@ -23,7 +23,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['users'])
+          expect(operation.tags).to eq(['users_api'])
+        end
+
+        it 'extracts operations' do
+          expect(operation.parameters.size).to eq(3)
         end
       end
 
@@ -41,7 +45,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['users'])
+          expect(operation.tags).to eq(['users_api'])
         end
       end
     end
@@ -96,10 +100,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         it 'generates operation_id with admin prefix' do
           expect(operation.operation_id).to eq('getApiV1AdminUsers')
         end
-
-        it 'extracts correct tags' do
-          expect(operation.tags).to eq(['admin'])
-        end
       end
 
       context 'with /api/:version/projects/:project_id/users route' do
@@ -116,10 +116,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         it 'generates operation_id with all segments' do
           expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdUsers')
         end
-
-        it 'extracts correct tags from first segment' do
-          expect(operation.tags).to eq(['projects'])
-        end
       end
 
       context 'with /api/:version/projects/:project_id/merge_requests route' do
@@ -134,10 +130,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
         it 'generates operation_id with camelized segments' do
           expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdMergeRequests')
-        end
-
-        it 'preserves underscores in tags' do
-          expect(operation.tags).to eq(['projects'])
         end
       end
     end

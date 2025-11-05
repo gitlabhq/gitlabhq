@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     copyInstructions() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.instruction.cmd);
     },
   },

@@ -102,7 +102,7 @@ module RapidDiffs
     end
 
     def render_empty_state
-      response.stream.write render ::RapidDiffs::EmptyStateComponent.new
+      response.stream.write render ::RapidDiffs::EmptyStateComponent.new, layout: false
     end
 
     def sorted?

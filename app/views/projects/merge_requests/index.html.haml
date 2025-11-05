@@ -10,6 +10,7 @@
 %h1.gl-sr-only= page_title
 
 = render 'projects/last_push'
+= render_if_exists 'shared/projects/premium_message_during_trial/mrs'
 
 .js-merge-request-list-root{ data: project_merge_requests_list_data(@project, current_user) }
 - if @can_bulk_update

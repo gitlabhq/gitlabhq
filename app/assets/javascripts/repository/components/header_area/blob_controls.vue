@@ -243,6 +243,7 @@ export default {
       this.trackEvent(BLAME_BUTTON_CLICK);
     },
     onCopy() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
     },
     onShowForkSuggestion() {

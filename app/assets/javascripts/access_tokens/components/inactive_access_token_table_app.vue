@@ -139,7 +139,6 @@ export default {
       :value="page"
       :per-page="perPage"
       :total-items="total"
-      :disabled="busy"
       align="center"
       class="gl-mt-5"
       @input="pageChanged"

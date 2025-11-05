@@ -20,5 +20,6 @@ export async function copyGLQLNodeAsGFM(el) {
     'text/html': new Blob([html], { type: 'text/html' }),
   });
 
+  // eslint-disable-next-line no-restricted-properties -- navigator.clipboard intentionally used here
   navigator.clipboard.write([clipboardItem]);
 }

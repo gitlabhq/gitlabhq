@@ -1,6 +1,7 @@
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
 - pipeline = local_assigns.fetch(:pipeline, nil)
+- is_project_overview = local_assigns.fetch(:is_project_overview, false)
 - repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, @project)
 - @force_fluid_layout = repository_file_tree_browser_enabled
 - unless @skip_logs_tree_loading
@@ -15,7 +16,7 @@
     #js-file-browser
     .gl-w-full.gl-min-w-0.gl-pl-4
       #tree-holder.tree-holder.gl-clearfix.js-per-page.gl-mt-4{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-        = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type
+        = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, is_project_overview: is_project_overview, tree: @tree, ref_type: @ref_type
 - else
   #tree-holder.tree-holder.gl-clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-    = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type
+    = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, is_project_overview: is_project_overview, tree: @tree, ref_type: @ref_type

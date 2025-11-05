@@ -172,6 +172,7 @@ export default {
         ? this.linkCanonicalSrc
         : joinPaths(gon.gitlab_url, this.linkHref);
 
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(fullUrl);
     },
 

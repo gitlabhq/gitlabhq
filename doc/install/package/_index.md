@@ -244,6 +244,14 @@ database, configuration) or remove all of them:
 
 ### Ubuntu 22.04 FIPS
 
+{{< alert type="warning" >}}
+
+Known compatibility issues currently exist between GitLab FIPS mode and Ubuntu 22.04. Administrators should refrain from upgrading their host operating system to Ubuntu 22.04 until further notice.
+
+This advisory will be updated once the issues have been identified and resolved.
+
+{{< /alert >}}
+
 In GitLab 18.4 and later, FIPS builds are available for Ubuntu 22.04.
 
 Before you upgrade:

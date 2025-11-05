@@ -136,6 +136,7 @@ export default {
       this.tiptapEditor.chain().focus().deleteSelection().run();
     },
     copyReferenceURL() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.href);
     },
     applyFormat(value) {

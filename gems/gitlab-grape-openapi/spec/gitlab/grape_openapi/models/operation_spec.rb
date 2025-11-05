@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Gitlab::GrapeOpenapi::Models::Operation do
   subject(:operation) { described_class.new }
 
   describe '#initialize' do
     it 'initializes with empty tags array' do
       expect(operation.tags).to eq([])
+    end
+
+    it 'initializes with an empty parameters array' do
+      expect(operation.parameters).to eq([])
     end
 
     it 'initializes other fields as nil' do

@@ -379,6 +379,7 @@ export default {
       this.forkTarget = target;
     },
     onCopy() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
     },
     handleToggleBlame() {

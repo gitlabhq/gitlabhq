@@ -39,11 +39,15 @@ module StubConfiguration
   end
 
   def stub_config_setting(messages)
-    allow(Gitlab.config.gitlab).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.gitlab)
   end
 
-  def stub_config(messages)
-    allow(Gitlab.config).to receive_messages(to_settings(messages))
+  def stub_config_cell(messages)
+    stub_config(messages, Gitlab.config.cell)
+  end
+
+  def stub_config(messages, config = Gitlab.config)
+    allow(config).to receive_messages(to_settings(messages))
   end
 
   def stub_default_url_options(host: "localhost", protocol: "http", script_name: nil)

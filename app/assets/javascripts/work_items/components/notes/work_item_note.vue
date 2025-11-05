@@ -332,6 +332,7 @@ export default {
     },
     notifyCopyDone() {
       if (this.isModal) {
+        // eslint-disable-next-line no-restricted-properties
         navigator.clipboard.writeText(this.noteUrl);
       }
       toast(__('Link copied to clipboard.'));

@@ -1,18 +1,21 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+import { PanelBreakpointManager } from '~/panel_breakpoint_instance';
 
-describe('PanelBreakpointInstance', () => {
+describe('PanelBreakpointManager', () => {
+  let panelBreakpointManager;
   let panelClientWidth;
   let resizeObserverCallback;
   let mockObserver;
 
-  const setHTMLFixturePanel = (width = 1000) => {
+  const setHTMLFixturePanel = () => {
     setHTMLFixture(`
       <div class="js-static-panel-inner">
-        <main id="content-body"></div>
+        <main id="content-body"></main>
       </div>
     `);
+  };
 
+  const setPanelWidth = (width) => {
     panelClientWidth = width;
     jest
       .spyOn(document.querySelector('#content-body'), 'clientWidth', 'get')
@@ -21,7 +24,7 @@ describe('PanelBreakpointInstance', () => {
 
   const mockResizePanel = (width) => {
     panelClientWidth = width;
-    resizeObserverCallback([{}]);
+    resizeObserverCallback([{ contentRect: { width } }]);
   };
 
   beforeEach(() => {
@@ -46,30 +49,24 @@ describe('PanelBreakpointInstance', () => {
 
   afterEach(() => {
     resetHTMLFixture();
-
     global.ResizeObserver = null;
     jest.clearAllMocks();
   });
 
-  describe('windowWidth', () => {
-    it('returns the window inner width', () => {
-      window.innerWidth = 1024;
-
-      expect(PanelBreakpointInstance.windowWidth()).toBe(1024);
-    });
-  });
-
   describe('availableWidth', () => {
     it('returns the main container width when available', () => {
-      setHTMLFixturePanel(800);
+      setHTMLFixturePanel();
+      setPanelWidth(800);
+      panelBreakpointManager = new PanelBreakpointManager();
 
-      expect(PanelBreakpointInstance.availableWidth()).toBe(800);
+      expect(panelBreakpointManager.availableWidth()).toBe(800);
     });
 
     it('falls back to window width when main container is not available', () => {
       window.innerWidth = 1024;
+      panelBreakpointManager = new PanelBreakpointManager();
 
-      expect(PanelBreakpointInstance.availableWidth()).toBe(1024);
+      expect(panelBreakpointManager.availableWidth()).toBe(1024);
     });
   });
 
@@ -87,98 +84,222 @@ describe('PanelBreakpointInstance', () => {
   ];
 
   describe('getBreakpointSize', () => {
-    describe.each(expectedBreakpoints)('with panel of width $width', ({ width, bp, isDesktop }) => {
+    describe.each(expectedBreakpoints)('with panel of width $width', ({ width, bp }) => {
       beforeEach(() => {
-        setHTMLFixturePanel(width);
+        setHTMLFixturePanel();
+        setPanelWidth(width);
+        panelBreakpointManager = new PanelBreakpointManager();
       });
 
       it(`returns breakpoint ${bp}`, () => {
-        expect(PanelBreakpointInstance.getBreakpointSize()).toBe(bp);
-      });
-
-      it(`returns isDesktop = ${isDesktop}`, () => {
-        expect(PanelBreakpointInstance.isDesktop()).toBe(isDesktop);
+        expect(panelBreakpointManager.getBreakpointSize()).toBe(bp);
       });
     });
 
-    describe.each(expectedBreakpoints)(
-      'with window of width $width',
-      ({ width, bp, isDesktop }) => {
-        beforeEach(() => {
-          window.innerWidth = width;
-        });
+    describe.each(expectedBreakpoints)('with window of width $width', ({ width, bp }) => {
+      beforeEach(() => {
+        window.innerWidth = width;
+        panelBreakpointManager = new PanelBreakpointManager();
+      });
 
-        it(`returns breakpoint ${bp}`, () => {
-          expect(PanelBreakpointInstance.getBreakpointSize()).toBe(bp);
-        });
-
-        it(`returns isDesktop = ${isDesktop}`, () => {
-          expect(PanelBreakpointInstance.isDesktop()).toBe(isDesktop);
-        });
-      },
-    );
+      it(`returns breakpoint ${bp}`, () => {
+        expect(panelBreakpointManager.getBreakpointSize()).toBe(bp);
+      });
+    });
   });
 
-  describe('addResizeListener', () => {
-    it('adds handlers when main container exists', () => {
+  describe('isDesktop', () => {
+    describe.each(expectedBreakpoints)('with panel of width $width', ({ width, isDesktop }) => {
+      beforeEach(() => {
+        setHTMLFixturePanel();
+        setPanelWidth(width);
+        panelBreakpointManager = new PanelBreakpointManager();
+      });
+
+      it(`returns isDesktop = ${isDesktop}`, () => {
+        expect(panelBreakpointManager.isDesktop()).toBe(isDesktop);
+      });
+    });
+  });
+
+  describe('isBreakpointUp', () => {
+    beforeEach(() => {
       setHTMLFixturePanel();
+      setPanelWidth(900); // md breakpoint
+      panelBreakpointManager = new PanelBreakpointManager();
+    });
 
-      const handler1 = jest.fn();
-      const handler2 = jest.fn();
-      PanelBreakpointInstance.addResizeListener(handler1);
-      PanelBreakpointInstance.addResizeListener(handler2);
+    it('returns true when current breakpoint is greater than target', () => {
+      expect(panelBreakpointManager.isBreakpointUp('sm')).toBe(true);
+      expect(panelBreakpointManager.isBreakpointUp('xs')).toBe(true);
+    });
 
-      // Verify ResizeObserver was created and is observing
+    it('returns true when current breakpoint equals target', () => {
+      expect(panelBreakpointManager.isBreakpointUp('md')).toBe(true);
+    });
+
+    it('returns false when current breakpoint is less than target', () => {
+      expect(panelBreakpointManager.isBreakpointUp('lg')).toBe(false);
+      expect(panelBreakpointManager.isBreakpointUp('xl')).toBe(false);
+    });
+  });
+
+  describe('isBreakpointDown', () => {
+    beforeEach(() => {
+      setHTMLFixturePanel();
+      setPanelWidth(900); // md breakpoint
+      panelBreakpointManager = new PanelBreakpointManager();
+    });
+
+    it('returns true when current breakpoint is less than target', () => {
+      expect(panelBreakpointManager.isBreakpointDown('lg')).toBe(true);
+      expect(panelBreakpointManager.isBreakpointDown('xl')).toBe(true);
+    });
+
+    it('returns true when current breakpoint equals target', () => {
+      expect(panelBreakpointManager.isBreakpointDown('md')).toBe(true);
+    });
+
+    it('returns false when current breakpoint is greater than target', () => {
+      expect(panelBreakpointManager.isBreakpointDown('sm')).toBe(false);
+      expect(panelBreakpointManager.isBreakpointDown('xs')).toBe(false);
+    });
+  });
+
+  describe('resize listener', () => {
+    it('calls handler when panel is resized', () => {
+      setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
+
+      const handler = jest.fn();
+      panelBreakpointManager.addResizeListener(handler);
+
       expect(global.ResizeObserver).toHaveBeenCalled();
       expect(mockObserver.observe).toHaveBeenCalled();
 
       mockResizePanel(1100);
 
-      expect(handler1).toHaveBeenCalled();
-      expect(handler2).toHaveBeenCalled();
-
-      PanelBreakpointInstance.removeResizeListener(handler1);
-      PanelBreakpointInstance.removeResizeListener(handler2);
+      expect(handler).toHaveBeenCalledWith(1100, 1000);
     });
 
-    it('adds event listener to window when main container does not exist', () => {
-      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
-      const handler = jest.fn();
-
-      PanelBreakpointInstance.addResizeListener(handler);
-
-      expect(addEventListenerSpy).toHaveBeenCalledWith('resize', handler);
-    });
-  });
-
-  describe('removeResizeListener', () => {
-    it('removes handler from handlers array when main container exists', () => {
-      const handler1 = jest.fn();
+    it('calls multiple handlers on resize', () => {
       setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
 
-      PanelBreakpointInstance.addResizeListener(handler1);
-
-      expect(handler1).toHaveBeenCalledTimes(0);
+      const handler1 = jest.fn();
+      const handler2 = jest.fn();
+      panelBreakpointManager.addResizeListener(handler1);
+      panelBreakpointManager.addResizeListener(handler2);
 
       mockResizePanel(1100);
 
-      expect(handler1).toHaveBeenCalledTimes(1);
+      expect(handler1).toHaveBeenCalledWith(1100, 1000);
+      expect(handler2).toHaveBeenCalledWith(1100, 1000);
+    });
 
-      PanelBreakpointInstance.removeResizeListener(handler1);
+    it('does not call handler if width has not changed', () => {
+      setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
+
+      const handler = jest.fn();
+      panelBreakpointManager.addResizeListener(handler);
+
+      mockResizePanel(1000);
+
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('unsubscribes', () => {
+      setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
+
+      const handler = jest.fn();
+      panelBreakpointManager.addResizeListener(handler);
+
+      mockResizePanel(800);
+
+      panelBreakpointManager.removeResizeListener(handler);
 
       mockResizePanel(1200);
 
-      expect(handler1).toHaveBeenCalledTimes(1);
-      expect(mockObserver.disconnect).toHaveBeenCalled();
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('breakpoint listener', () => {
+    it('calls handler when breakpoint changes', () => {
+      setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
+
+      const handler = jest.fn();
+      panelBreakpointManager.addBreakpointListener(handler);
+
+      expect(global.ResizeObserver).toHaveBeenCalled();
+      expect(mockObserver.observe).toHaveBeenCalled();
+
+      mockResizePanel(1200);
+
+      expect(handler).toHaveBeenCalledWith('xl', 'lg');
     });
 
-    it('removes event listener from window when main container does not exist', () => {
-      const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+    it('calls multiple handlers on resize', () => {
+      setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
+
       const handler = jest.fn();
+      const handler2 = jest.fn();
+      panelBreakpointManager.addBreakpointListener(handler);
+      panelBreakpointManager.addBreakpointListener(handler2);
 
-      PanelBreakpointInstance.removeResizeListener(handler);
+      expect(global.ResizeObserver).toHaveBeenCalled();
+      expect(mockObserver.observe).toHaveBeenCalled();
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', handler);
+      mockResizePanel(1200);
+
+      expect(handler).toHaveBeenCalledWith('xl', 'lg');
+      expect(handler2).toHaveBeenCalledWith('xl', 'lg');
+    });
+
+    it('does not call handler if width has not changed', () => {
+      setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
+
+      const handler = jest.fn();
+      panelBreakpointManager.addBreakpointListener(handler);
+
+      expect(global.ResizeObserver).toHaveBeenCalled();
+      expect(mockObserver.observe).toHaveBeenCalled();
+
+      mockResizePanel(1100);
+
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('unsubscribes', () => {
+      setHTMLFixturePanel();
+      setPanelWidth(1000);
+      panelBreakpointManager = new PanelBreakpointManager();
+
+      const handler = jest.fn();
+      panelBreakpointManager.addBreakpointListener(handler);
+
+      expect(global.ResizeObserver).toHaveBeenCalled();
+      expect(mockObserver.observe).toHaveBeenCalled();
+
+      mockResizePanel(1200);
+
+      panelBreakpointManager.removeBreakpointListener(handler);
+
+      mockResizePanel(1000);
+
+      expect(handler).toHaveBeenCalledTimes(1);
     });
   });
 });

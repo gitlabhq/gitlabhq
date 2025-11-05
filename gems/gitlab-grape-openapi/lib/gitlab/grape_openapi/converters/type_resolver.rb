@@ -17,7 +17,8 @@ module Gitlab
           'Hash' => 'object',
           'hash' => 'object',
           'JSON' => 'object',
-          :hash => 'object'
+          :hash => 'object',
+          'Grape::API::Boolean' => 'boolean'
         }.freeze
 
         FORMAT_MAPPINGS = {

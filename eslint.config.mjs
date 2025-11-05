@@ -296,7 +296,8 @@ export default [
         },
         {
           selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
-          message: 'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
+          message:
+            'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
         },
         {
           selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
@@ -357,6 +358,12 @@ export default [
           property: 'scroll',
           message:
             'Use `scrollTo` in `~/lib/utils/scroll_utils.js` to ensure scrolling inside your scrolling containers or panels.',
+        },
+        {
+          object: 'navigator',
+          property: 'clipboard',
+          message:
+            'Use `copyToClipboard` in `~/lib/utils/copy_to_clipboard.js` to support copying in secure and non-secure environments.',
         },
         {
           object: 'vm',

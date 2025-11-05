@@ -9,7 +9,10 @@
  */
 export const copyToClipboard = (text, container = document.body) => {
   // First, try a simple clipboard.writeText (works on https and localhost)
+
+  // eslint-disable-next-line no-restricted-properties -- navigator.clipboard intentionally used here
   if (navigator.clipboard && window.isSecureContext) {
+    // eslint-disable-next-line no-restricted-properties -- navigator.clipboard intentionally used here
     return navigator.clipboard.writeText(text);
   }
 

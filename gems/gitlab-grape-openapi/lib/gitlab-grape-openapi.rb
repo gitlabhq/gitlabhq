@@ -12,6 +12,7 @@ require_relative "gitlab/grape_openapi/converters/type_resolver"
 require_relative "gitlab/grape_openapi/converters/tag_converter"
 require_relative "gitlab/grape_openapi/converters/operation_converter"
 require_relative "gitlab/grape_openapi/converters/path_converter"
+require_relative "gitlab/grape_openapi/converters/parameter_converter"
 require_relative "gitlab/grape_openapi/converters/response_converter"
 
 # Models
@@ -23,6 +24,7 @@ require_relative "gitlab/grape_openapi/models/path_item"
 require_relative "gitlab/grape_openapi/models/response"
 require_relative "gitlab/grape_openapi/models/security_scheme"
 require_relative "gitlab/grape_openapi/models/info"
+require_relative "gitlab/grape_openapi/models/parameter"
 
 module Gitlab
   module GrapeOpenapi

@@ -9,7 +9,7 @@ module Gitlab
       feature_category :team_planning
 
       def perform
-        ghost_id = User.find_by(user_type: GHOST_USER_TYPE).id
+        ghost_id = Users::Internal.ghost.id
 
         each_sub_batch do |sub_batch|
           first, last = sub_batch.pick(Arel.sql('min(id), max(id)'))

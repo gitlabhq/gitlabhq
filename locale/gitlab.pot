@@ -51339,6 +51339,24 @@ msgstr ""
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
+msgid "ProjectCard|AI across the software development lifecycle. To keep this Premium feature, upgrade before your trial ends."
+msgstr ""
+
+msgid "ProjectCard|Accelerate your workflow with GitLab Duo Core"
+msgstr ""
+
+msgid "ProjectCard|Automatically pull from upstream repositories. To keep this Premium feature, upgrade before your trial ends."
+msgstr ""
+
+msgid "ProjectCard|Control your merge request review process with approval rules"
+msgstr ""
+
+msgid "ProjectCard|Keep your repositories synchronized with pull mirroring"
+msgstr ""
+
+msgid "ProjectCard|Set approval requirements and specific reviewers. To keep this Premium feature, upgrade before your trial ends."
+msgstr ""
+
 msgid "ProjectCreationLevel|Administrators"
 msgstr ""
 
@@ -70581,6 +70599,9 @@ msgid "Updating…"
 msgstr ""
 
 msgid "Upgrade"
+msgstr ""
+
+msgid "Upgrade to Premium"
 msgstr ""
 
 msgid "Upload"

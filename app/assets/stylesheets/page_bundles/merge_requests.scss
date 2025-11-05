@@ -486,13 +486,13 @@ $diff-file-header-top: 11px;
     display: block;
   }
 
-  > .mr-widget-section {
-    &:first-child,
-    .widget-merge-status {
-      border-top-left-radius: $gl-border-radius-lg-inner;
-      border-top-right-radius: $gl-border-radius-lg-inner;
-    }
+  > .mr-widget-section:first-child,
+  > .mr-widget-section:first-child .widget-merge-status {
+    border-top-left-radius: $gl-border-radius-lg-inner;
+    border-top-right-radius: $gl-border-radius-lg-inner;
+  }
 
+  > .mr-widget-section {
     > :last-child,
     .deploy-heading:last-child {
       border-bottom-left-radius: $gl-border-radius-lg-inner;

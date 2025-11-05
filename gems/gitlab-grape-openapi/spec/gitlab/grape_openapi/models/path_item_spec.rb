@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Gitlab::GrapeOpenapi::Models::PathItem do
   subject(:path_item) { described_class.new }
 

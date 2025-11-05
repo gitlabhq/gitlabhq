@@ -5,6 +5,11 @@ import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
+/**
+ * Creates an instance of Clipboard that can works inside modals.
+ *
+ * Consider using `~/vue_shared/components/simple_copy_button.vue` instead.
+ */
 export default {
   components: {
     GlButton,

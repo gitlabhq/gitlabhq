@@ -428,6 +428,7 @@ export default {
   methods: {
     copyToClipboard(text, message) {
       if (this.isModal) {
+        // eslint-disable-next-line no-restricted-properties
         navigator.clipboard.writeText(text);
       }
       toast(message);

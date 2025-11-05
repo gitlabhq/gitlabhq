@@ -122,6 +122,7 @@ export default {
     },
 
     copySource() {
+      // eslint-disable-next-line no-restricted-properties
       navigator.clipboard.writeText(this.wrappedQuery);
     },
 

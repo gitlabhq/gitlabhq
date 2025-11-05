@@ -277,6 +277,26 @@ RSpec.configure do |config|
     ::Ci::ApplicationRecord.reset_open_transactions_baseline
   end
 
+  # Cell is disabled on CI but enabled by default with GDK. This is also
+  # fully dependent on the local `config/gitlab.yml` which is not
+  # version controlled and can be changed by developers manually or
+  # via GDK configuration.
+  #
+  # Tests are mostly written with Cell disabled in mind, so here we're
+  # making sure it's disabled consistently for all tests. For tests that
+  # requiring Cell being enabled, we can do so in each individual tests.
+  config.before(:all) do
+    # We're not using `stub_config_cell` here because in before(:all),
+    # we cannot use stubs. We have to use `before(:all)` because
+    # `let_it_be` family uses `before(:all)` underneath, which runs
+    # before `before`, therefore to ensure `let_it_be` see our values,
+    # we have to do it in `before(:all)`.
+    # This is a partial implementation to freeze `gitlab.yml` for tests:
+    # https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/issues/543#note_2866696304
+    # Tests should not rely on developers' own `gitlab.yml`
+    Gitlab.config.cell.enabled = false
+  end
+
   config.before do |example|
     if example.metadata.fetch(:stub_feature_flags, true)
       # The following can be removed when we remove the staged rollout strategy
