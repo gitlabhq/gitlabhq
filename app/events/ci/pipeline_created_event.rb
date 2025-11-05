@@ -7,7 +7,8 @@ module Ci
         'type' => 'object',
         'required' => ['pipeline_id'],
         'properties' => {
-          'pipeline_id' => { 'type' => 'integer' }
+          'pipeline_id' => { 'type' => 'integer' },
+          'partition_id' => { 'type' => 'integer' }
         }
       }
     end

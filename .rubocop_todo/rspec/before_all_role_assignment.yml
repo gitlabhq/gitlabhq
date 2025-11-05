@@ -34,7 +34,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'
     - 'ee/spec/controllers/groups/todos_controller_spec.rb'
     - 'ee/spec/controllers/projects/analytics/issues_analytics_controller_spec.rb'
-    - 'ee/spec/controllers/projects/analytics/merge_request_analytics_controller_spec.rb'
     - 'ee/spec/controllers/projects/audit_events_controller_spec.rb'
     - 'ee/spec/controllers/projects/incident_management/escalation_policies_controller_spec.rb'
     - 'ee/spec/controllers/projects/incident_management/oncall_schedules_controller_spec.rb'

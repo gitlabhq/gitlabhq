@@ -23,16 +23,18 @@ export const dateFormats = {
 const TODAY = getCurrentUtcDate();
 const SAME_DAY_OFFSET = 1;
 
-const startOfToday = getStartOfDay(new Date(), { utc: true });
-
 export const LAST_30_DAYS = nDaysBefore(TODAY, 30 - SAME_DAY_OFFSET, { utc: true });
 
 const lastXDays = __('Last %{days} days');
 const lastWeek = nWeeksBefore(TODAY, 1, { utc: true });
 const last90Days = nDaysBefore(TODAY, 90 - SAME_DAY_OFFSET, { utc: true });
 const last180Days = nDaysBefore(TODAY, 180 - SAME_DAY_OFFSET, { utc: true });
-const mrThroughputStartDate = nDaysBefore(startOfToday, DATE_RANGE_LIMIT, { utc: true });
+
+const startOfToday = getStartOfDay(new Date(), { utc: true });
 const formatDateParam = (d) => dateFormat(d, dateFormats.isoDate, true);
+const mrStartDate = formatDateParam(nDaysBefore(startOfToday, DATE_RANGE_LIMIT, { utc: true }));
+const mrEndDate = formatDateParam(startOfToday);
+const mrProjectLink = `-/analytics/dashboards/merge_request_analytics?date_range_option=custom&start_date=${mrStartDate}&end_date=${mrEndDate}`;
 
 export const DATE_RANGE_CUSTOM_VALUE = 'custom';
 export const DATE_RANGE_LAST_30_DAYS_VALUE = 'last_30_days';
@@ -292,7 +294,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     unit: UNITS.COUNT,
     description: s__('ValueStreamAnalytics|Total number of deploys to production.'),
     groupLink: '-/analytics/productivity_analytics',
-    projectLink: '-/analytics/merge_request_analytics',
+    projectLink: mrProjectLink,
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
   },
 };
@@ -359,9 +361,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
   [MERGE_REQUEST_METRICS.THROUGHPUT]: {
     description: s__('ValueStreamAnalytics|Number of merge requests merged by month.'),
     groupLink: '-/analytics/productivity_analytics',
-    projectLink: `-/analytics/merge_request_analytics?start_date=${formatDateParam(
-      mrThroughputStartDate,
-    )}&end_date=${formatDateParam(startOfToday)}`,
+    projectLink: mrProjectLink,
     docsLink: helpPagePath('user/analytics/merge_request_analytics', {
       anchor: 'view-the-number-of-merge-requests-in-a-date-range',
     }),
@@ -371,7 +371,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
       'ValueStreamAnalytics|Median time between merge request created and merge request merged.',
     ),
     groupLink: '-/analytics/productivity_analytics',
-    projectLink: '-/analytics/merge_request_analytics',
+    projectLink: mrProjectLink,
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
   },
   [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {

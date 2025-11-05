@@ -122,7 +122,7 @@ module Ci
         new_pipeline.save!
 
         Gitlab::EventStore.publish(
-          Ci::PipelineCreatedEvent.new(data: { pipeline_id: new_pipeline.id })
+          Ci::PipelineCreatedEvent.new(data: { pipeline_id: new_pipeline.id, partition_id: new_pipeline.partition_id })
         )
       end
     end

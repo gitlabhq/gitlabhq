@@ -7,7 +7,7 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'empty-branch') }
+  let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'empty-branch') }
 
   before do
     sign_in(project.first_owner)

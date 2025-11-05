@@ -21,6 +21,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'mergeRequestDashboardListType' => 'ROLE_BASED',
       'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false },
       'projectStudioEnabled' => true,
+      'newUiEnabled' => true,
       'mergeRequestDashboardShowDrafts' => true
     }
   end
@@ -63,6 +64,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         'shouldOpenItemsInSidePanel' => false
       })
       expect(mutation_response['userPreferences']['projectStudioEnabled']).to eq(true)
+      expect(mutation_response['userPreferences']['newUiEnabled']).to eq(true)
 
       expect(current_user.user_preference.persisted?).to eq(true)
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
@@ -74,6 +76,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.merge_request_dashboard_show_drafts).to eq(true)
       expect(current_user.user_preference.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
       expect(current_user.user_preference.project_studio_enabled).to eq(true)
+      expect(current_user.user_preference.new_ui_enabled).to eq(true)
     end
   end
 
@@ -90,6 +93,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         merge_request_dashboard_list_type: 'action_based',
         work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true },
         project_studio_enabled: false,
+        new_ui_enabled: false,
         merge_request_dashboard_show_drafts: false
       }
     end
@@ -113,6 +117,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         'shouldOpenItemsInSidePanel' => false
       })
       expect(mutation_response['userPreferences']['projectStudioEnabled']).to eq(true)
+      expect(mutation_response['userPreferences']['newUiEnabled']).to eq(true)
 
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
@@ -123,6 +128,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         'shouldOpenItemsInSidePanel' => false
       })
       expect(current_user.user_preference.project_studio_enabled).to eq(true)
+      expect(current_user.user_preference.new_ui_enabled).to eq(true)
     end
 
     context 'when input has nil attributes' do
@@ -135,7 +141,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           'organizationGroupsProjectsSort' => nil,
           'visibilityPipelineIdType' => nil,
           'useWorkItemsView' => nil,
-          'projectStudioEnabled' => nil
+          'projectStudioEnabled' => nil,
+          'newUiEnabled' => nil
         }
       end
 
@@ -157,7 +164,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           visibility_pipeline_id_type: init_user_preference[:visibility_pipeline_id_type],
           use_work_items_view: init_user_preference[:use_work_items_view],
           work_items_display_settings: init_user_preference[:work_items_display_settings],
-          project_studio_enabled: init_user_preference[:project_studio_enabled]
+          project_studio_enabled: init_user_preference[:project_studio_enabled],
+          new_ui_enabled: init_user_preference[:new_ui_enabled]
         })
       end
     end
@@ -223,6 +231,90 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response['userPreferences']['projectStudioEnabled']).to eq(false)
         expect(current_user.user_preference.reload.project_studio_enabled).to eq(false)
+      end
+    end
+  end
+
+  describe 'new_ui_enabled specific tests' do
+    context 'when setting new_ui_enabled to true' do
+      let(:input) do
+        {
+          'newUiEnabled' => true
+        }
+      end
+
+      before do
+        current_user.create_user_preference!(new_ui_enabled: false, project_studio_enabled: false)
+      end
+
+      it 'updates the preferences to true' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['userPreferences']['newUiEnabled']).to eq(true)
+        expect(current_user.user_preference.reload.new_ui_enabled).to eq(true)
+        expect(current_user.user_preference.reload.project_studio_enabled).to eq(true)
+      end
+    end
+
+    context 'when setting new_ui_enabled to false' do
+      let(:input) do
+        {
+          'newUiEnabled' => false
+        }
+      end
+
+      before do
+        current_user.create_user_preference!(new_ui_enabled: true, project_studio_enabled: true)
+      end
+
+      it 'updates the preferences to false' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['userPreferences']['newUiEnabled']).to eq(false)
+        expect(current_user.user_preference.reload.new_ui_enabled).to eq(false)
+        expect(current_user.user_preference.reload.project_studio_enabled).to eq(false)
+      end
+    end
+
+    context 'when project studio is unavailable' do
+      let(:input) do
+        {
+          'newUiEnabled' => true
+        }
+      end
+
+      let(:project_studio_available) { false }
+
+      context 'when the setting is pristine' do
+        before do
+          current_user.create_user_preference!(new_ui_enabled: nil, project_studio_enabled: false)
+        end
+
+        it 'does not allow enabling project studio' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['userPreferences']['newUiEnabled']).to eq(nil)
+          expect(current_user.user_preference.reload.new_ui_enabled).to eq(nil)
+          expect(current_user.user_preference.reload.project_studio_enabled).to eq(false)
+        end
+      end
+
+      context 'when the setting was already disabled' do
+        before do
+          current_user.create_user_preference!(new_ui_enabled: false, project_studio_enabled: false)
+        end
+
+        it 'does not allow enabling project studio' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['userPreferences']['newUiEnabled']).to eq(false)
+          expect(current_user.user_preference.reload.new_ui_enabled).to eq(false)
+          expect(current_user.user_preference.reload.project_studio_enabled).to eq(false)
+        end
       end
     end
   end

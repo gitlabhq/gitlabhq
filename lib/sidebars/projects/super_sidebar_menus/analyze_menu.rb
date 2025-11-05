@@ -23,7 +23,6 @@ module Sidebars
             :ci_cd_analytics,
             :repository_analytics,
             :code_review,
-            :merge_request_analytics,
             :issues,
             :insights,
             :model_experiments

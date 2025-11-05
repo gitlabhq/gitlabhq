@@ -375,7 +375,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/controllers/oauth/geo_auth_controller.rb'
     - 'ee/app/controllers/profiles/billings_controller.rb'
     - 'ee/app/controllers/projects/analytics/issues_analytics_controller.rb'
-    - 'ee/app/controllers/projects/analytics/merge_request_analytics_controller.rb'
     - 'ee/app/controllers/projects/audit_events_controller.rb'
     - 'ee/app/controllers/projects/insights_controller.rb'
     - 'ee/app/controllers/projects/iteration_cadences_controller.rb'

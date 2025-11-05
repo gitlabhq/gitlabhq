@@ -12,6 +12,7 @@ module Mutations
         :use_work_items_view,
         :merge_request_dashboard_list_type,
         :project_studio_enabled,
+        :new_ui_enabled,
         :merge_request_dashboard_show_drafts
       ].freeze
 
@@ -62,6 +63,11 @@ module Mutations
         description: 'Whether Project Studio is enabled for the user.',
         experiment: { milestone: '18.4' }
 
+      argument :new_ui_enabled, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Whether the new UI is enabled for the user.',
+        experiment: { milestone: '18.6' }
+
       field :user_preferences,
         Types::UserPreferencesType,
         null: true,
@@ -87,6 +93,10 @@ module Mutations
         if attributes.include?(:project_studio_enabled) && !current_user.can?(:enable_project_studio)
           attributes[:project_studio_enabled] = false
         end
+
+        attributes.delete :new_ui_enabled if attributes[:new_ui_enabled] && !current_user.can?(:enable_project_studio)
+
+        attributes[:project_studio_enabled] = attributes[:new_ui_enabled] if attributes.include?(:new_ui_enabled)
 
         user_preferences.update(attributes)
 

@@ -21,7 +21,6 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu, feature_categ
       :ci_cd_analytics,
       :repository_analytics,
       :code_review,
-      :merge_request_analytics,
       :issues,
       :insights,
       :model_experiments

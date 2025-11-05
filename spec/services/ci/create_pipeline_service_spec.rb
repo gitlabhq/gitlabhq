@@ -1409,7 +1409,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
               pipeline
 
-              expect(MergeRequests::UpdateHeadPipelineWorker).to have_received(:perform_async).with('Ci::PipelineCreatedEvent', { 'pipeline_id' => pipeline.id })
+              expect(MergeRequests::UpdateHeadPipelineWorker).to have_received(:perform_async).with(
+                'Ci::PipelineCreatedEvent', { 'pipeline_id' => pipeline.id, 'partition_id' => pipeline.partition_id })
             end
 
             context 'when target sha is specified' do
