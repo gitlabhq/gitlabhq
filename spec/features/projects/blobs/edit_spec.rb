@@ -50,7 +50,6 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
 
     context 'from MR diff' do
       before do
-        stub_feature_flags(blob_edit_refactor: false)
         visit diffs_project_merge_request_path(project, merge_request)
         edit_and_commit(is_diff: true)
       end

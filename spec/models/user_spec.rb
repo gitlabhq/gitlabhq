@@ -1896,6 +1896,20 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
     end
 
+    describe '.in_organization' do
+      let_it_be(:org1) { create(:organization) }
+      let_it_be(:org2) { create(:organization) }
+      let_it_be(:users) { create_pair(:user, organization: org1) }
+
+      before do
+        create(:user, organization: org2)
+      end
+
+      subject { described_class.in_organization(org1) }
+
+      it { is_expected.to match_array(users) }
+    end
+
     describe '.for_todos' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }

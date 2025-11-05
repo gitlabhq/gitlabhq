@@ -39,7 +39,7 @@ GitLab Duo Core is included automatically if you have:
 - A Premium or Ultimate subscription.
 
 If you are an existing customer from GitLab 17.11 or earlier,
-you must [turn on Web or IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo Core.
+you must [turn on features for GitLab Duo Core](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 
 If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
 

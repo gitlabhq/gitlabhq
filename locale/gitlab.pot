@@ -2479,12 +2479,6 @@ msgstr ""
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr ""
 
-msgid "AICatalog| Agent"
-msgstr ""
-
-msgid "AICatalog| Draft node"
-msgstr ""
-
 msgid "AICatalog|A private %{itemType}:"
 msgstr ""
 
@@ -2531,9 +2525,6 @@ msgid "AICatalog|Agents"
 msgstr ""
 
 msgid "AICatalog|Allows %{itemType} to be enabled in projects."
-msgstr ""
-
-msgid "AICatalog|Always use latest version"
 msgstr ""
 
 msgid "AICatalog|Anyone can see your prompts and settings. Don't include sensitive data or reference internal systems."
@@ -2650,9 +2641,6 @@ msgstr ""
 msgid "AICatalog|Delete flow"
 msgstr ""
 
-msgid "AICatalog|Delete node"
-msgstr ""
-
 msgid "AICatalog|Description"
 msgstr ""
 
@@ -2743,12 +2731,6 @@ msgstr ""
 msgid "AICatalog|Flow is required."
 msgstr ""
 
-msgid "AICatalog|Flow node"
-msgstr ""
-
-msgid "AICatalog|Flow nodes"
-msgstr ""
-
 msgid "AICatalog|Flow not found."
 msgstr ""
 
@@ -2800,9 +2782,6 @@ msgstr ""
 msgid "AICatalog|New flow"
 msgstr ""
 
-msgid "AICatalog|Nodes run sequentially."
-msgstr ""
-
 msgid "AICatalog|Only flows enabled in your group will be shown here."
 msgstr ""
 
@@ -2810,9 +2789,6 @@ msgid "AICatalog|Only members of this project can view this agent. This agent ca
 msgstr ""
 
 msgid "AICatalog|Only members of this project can view this flow. This flow can't be shared with other projects."
-msgstr ""
-
-msgid "AICatalog|Only public agents can be used in public flows."
 msgstr ""
 
 msgid "AICatalog|Open source projects."
@@ -2863,9 +2839,6 @@ msgstr ""
 msgid "AICatalog|Select a project for your AI flow to be associated with."
 msgstr ""
 
-msgid "AICatalog|Select agent"
-msgstr ""
-
 msgid "AICatalog|Select the type of your flow."
 msgstr ""
 
@@ -2879,9 +2852,6 @@ msgid "AICatalog|Shared resources."
 msgstr ""
 
 msgid "AICatalog|Source project"
-msgstr ""
-
-msgid "AICatalog|Steps"
 msgstr ""
 
 msgid "AICatalog|System prompt"
@@ -2900,6 +2870,9 @@ msgid "AICatalog|This %{itemType} is private and can only be enabled in the proj
 msgstr ""
 
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"
+msgstr ""
+
+msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: version, environment, components, routers, flow, prompts."
 msgstr ""
 
 msgid "AICatalog|This agent can be made private if it is not used."
@@ -2936,9 +2909,6 @@ msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer co
 msgstr ""
 
 msgid "AICatalog|Use flows in your %{namespaceType}."
-msgstr ""
-
-msgid "AICatalog|Version"
 msgstr ""
 
 msgid "AICatalog|Visibility"
@@ -6847,10 +6817,10 @@ msgstr ""
 msgid "AiPowered|Turn on GitLab Duo Agent Platform"
 msgstr ""
 
-msgid "AiPowered|Turn on Web and IDE features"
+msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
-msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
+msgid "AiPowered|Turn on features for GitLab Duo Core"
 msgstr ""
 
 msgid "AiPowered|Turn on prompt caching"
@@ -6883,7 +6853,7 @@ msgstr ""
 msgid "AiPowered|When GitLab Duo is not available, prompt caching cannot be turned on."
 msgstr ""
 
-msgid "AiPowered|When turned on, all billable users can access GitLab Duo Chat and Code Suggestions in Web and supported IDEs."
+msgid "AiPowered|When turned on, users can access features included in the GitLab Duo Core add-on. %{linkStart}Which features are included%{linkEnd}?"
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
@@ -30492,6 +30462,9 @@ msgstr ""
 msgid "GitLab Duo Chat with Amazon Q"
 msgstr ""
 
+msgid "GitLab Duo Core"
+msgstr ""
+
 msgid "GitLab Duo Core is on"
 msgstr ""
 
@@ -31006,9 +30979,6 @@ msgid "GithubIntegration|Static status check names (optional)"
 msgstr ""
 
 msgid "GithubIntegration|This requires mirroring your GitHub repository to this project. %{docs_link}"
-msgstr ""
-
-msgid "Gitlab Duo Core"
 msgstr ""
 
 msgid "Gitpod|Enable Ona integration"
@@ -45243,6 +45213,9 @@ msgstr ""
 msgid "Observability|Feature requests"
 msgstr ""
 
+msgid "Observability|Filter by group ID"
+msgstr ""
+
 msgid "Observability|Filter data by month:"
 msgstr ""
 
@@ -53983,6 +53956,9 @@ msgstr ""
 msgid "Raw blob requests"
 msgstr ""
 
+msgid "Re-add to merge train"
+msgstr ""
+
 msgid "Re-authentication period expired or never requested. Please try again"
 msgstr ""
 
@@ -54797,9 +54773,6 @@ msgid "Reopening…"
 msgstr ""
 
 msgid "Reopens this %{quick_action_target}."
-msgstr ""
-
-msgid "Reorder"
 msgstr ""
 
 msgid "Replace"
@@ -70735,7 +70708,7 @@ msgstr ""
 msgid "UsageBilling|GitLab Credits - One-Time Waiver"
 msgstr ""
 
-msgid "UsageBilling|Included used"
+msgid "UsageBilling|Included credits"
 msgstr ""
 
 msgid "UsageBilling|Increase monthly commitment"

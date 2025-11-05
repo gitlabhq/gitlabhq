@@ -154,6 +154,30 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 
+  describe '.search_by_group_id' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:setting1) { create(:observability_group_o11y_setting, group: group1) }
+    let_it_be(:setting2) { create(:observability_group_o11y_setting, group: group2) }
+
+    it 'returns settings for the specified group_id' do
+      result = described_class.search_by_group_id(group1.id)
+      expect(result).to contain_exactly(setting1)
+    end
+
+    it 'returns empty collection when no settings exist for the group_id' do
+      non_existing_group_id = non_existing_record_id
+      result = described_class.search_by_group_id(non_existing_group_id)
+      expect(result).to be_empty
+    end
+
+    it 'can be chained with other scopes' do
+      result = described_class.with_group.search_by_group_id(group1.id)
+      expect(result).to contain_exactly(setting1)
+      expect(result.first.association(:group)).to be_loaded
+    end
+  end
+
   describe '#within_provisioning_window?' do
     let(:setting) { build(:observability_group_o11y_setting, group: group) }
 

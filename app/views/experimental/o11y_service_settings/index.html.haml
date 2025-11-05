@@ -13,6 +13,8 @@
     - c.with_description do
       = s_('Observability|Manage your o11y service connection settings.')
     - c.with_body do
+      #js-o11y-service-settings-search{ data: { view_model: { initialValue: params[:group_id].to_s, searchUrl: experimental_o11y_service_settings_path }.to_json } }
+
       %table.table.gl-table
         %thead
           %tr

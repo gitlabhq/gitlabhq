@@ -18,6 +18,11 @@ module Organizations
       def execute
         return ServiceResponse.error(message: error) unless transfer_allowed?
 
+        # Find or create bot users before transaction to avoid exclusive lease errors.
+        # If the transaction is rolled back, new bots will still exist
+        # but this does not affect data integrity
+        new_organization_bots
+
         Group.transaction do
           transfer_namespaces_and_projects
           transfer_users

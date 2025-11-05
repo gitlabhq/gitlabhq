@@ -94,7 +94,7 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
 When we want to add the check to the Merge When Checks Pass feature, we must:
 
 1. Allow the check to be skipped in the class.
-1. Add the parameter to the list in the method `skipped_mergeable_checks`.
+1. Add the parameter to the list in the method `skipped_auto_merge_checks`.
 
 ## Future work
 

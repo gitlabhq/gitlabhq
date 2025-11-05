@@ -42,7 +42,7 @@ You can also turn GitLab Duo Core (a subset of GitLab Duo features) on or off.
 
 [GitLab Duo Core](feature_summary.md) is included with Premium and Ultimate subscriptions.
 
-- If you are an existing customer from GitLab 17.11 or earlier, you must turn on Web or IDE features to start using GitLab Duo Core.
+- If you are an existing customer from GitLab 17.11 or earlier, you must turn on features for GitLab Duo Core.
 - If you are a new customer in GitLab 18.0 or later, GitLab Core is automatically turned on and no further action is needed.
 
 If you were an existing customer with a Premium or Ultimate subscription before May 15, 2025,
@@ -62,7 +62,7 @@ To change GitLab Duo Core availability:
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on Web and IDE features** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -83,7 +83,7 @@ To change GitLab Duo Core availability:
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this instance**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on Web and IDE features** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.

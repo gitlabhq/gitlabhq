@@ -126,6 +126,39 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
             expect(response).to render_template(:index)
           end
         end
+
+        context 'with group_id search parameter' do
+          it 'filters results by group_id' do
+            get experimental_o11y_service_settings_path, params: { group_id: group1.id }
+
+            aggregate_failures do
+              expect(assigns(:o11y_service_settings)).to include(o11y_setting1)
+              expect(assigns(:o11y_service_settings)).not_to include(o11y_setting2)
+              expect(response).to have_gitlab_http_status(:success)
+              expect(response).to render_template(:index)
+            end
+          end
+
+          it 'returns empty results for non-existent group_id' do
+            get experimental_o11y_service_settings_path, params: { group_id: 999999 }
+
+            aggregate_failures do
+              expect(assigns(:o11y_service_settings)).to be_empty
+              expect(response).to have_gitlab_http_status(:success)
+              expect(response).to render_template(:index)
+            end
+          end
+
+          it 'ignores empty group_id parameter' do
+            get experimental_o11y_service_settings_path, params: { group_id: '' }
+
+            aggregate_failures do
+              expect(assigns(:o11y_service_settings)).to include(o11y_setting1, o11y_setting2)
+              expect(response).to have_gitlab_http_status(:success)
+              expect(response).to render_template(:index)
+            end
+          end
+        end
       end
     end
   end

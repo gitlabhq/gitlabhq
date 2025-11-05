@@ -34,8 +34,6 @@ logging for GitLab Duo Self-Hosted.
 Prerequisites:
 
 - You must be an administrator.
-- You must have a Premium or Ultimate subscription.
-- You must have a GitLab Duo Enterprise add-on.
 
 To enable logging:
 

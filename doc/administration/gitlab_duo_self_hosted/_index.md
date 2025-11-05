@@ -145,8 +145,6 @@ While you deploy your own AI gateway, you can still use cloud-based LLM services
 
 If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you should use this fully self-hosted configuration.
 
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline Enterprise licenses are available for those customers with fully isolated offline environments. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/billing_account.md).
-
 For more information, see:
 
 - [Set up a GitLab Duo Self-Hosted infrastructure](#set-up-a-gitlab-duo-self-hosted-infrastructure)

@@ -3993,7 +3993,7 @@
   :queue_namespace:
 - :name: flush_counter_increments
   :worker_name: FlushCounterIncrementsWorker
-  :feature_category: :continuous_integration
+  :feature_category: :source_code_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

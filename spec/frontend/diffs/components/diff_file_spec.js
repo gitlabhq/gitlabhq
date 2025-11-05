@@ -161,6 +161,23 @@ describe('DiffFile', () => {
       jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
     });
 
+    describe('when reviewed locally', () => {
+      beforeEach(() => {
+        gon.current_user_id = 1;
+      });
+
+      it('sets view effects as processed', () => {
+        createComponent({ props: { reviewed: true } });
+        expect(useLegacyDiffs().setFileViewEffectsProcessed).toHaveBeenCalled();
+      });
+
+      it('skips view effects processing when already processed', () => {
+        useLegacyDiffs().diffFiles[0].viewEffectsProcessed = true;
+        createComponent({ props: { reviewed: true } });
+        expect(useLegacyDiffs().setFileViewEffectsProcessed).not.toHaveBeenCalled();
+      });
+    });
+
     it.each`
       description                                        | fileByFile
       ${'does not prefetch if not in file-by-file mode'} | ${false}

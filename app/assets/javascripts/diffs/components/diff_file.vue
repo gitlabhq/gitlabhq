@@ -321,6 +321,7 @@ export default {
       'saveDiffDiscussion',
       'toggleFileCommentForm',
       'toggleFileDiscussion',
+      'setFileViewEffectsProcessed',
     ]),
     handleFileCommentCancel() {
       this.toggleFileCommentForm(this.file.file_path);
@@ -329,13 +330,13 @@ export default {
     },
     manageViewedEffects() {
       if (
-        !this.idState.hasToggled &&
+        !this.file.viewEffectsProcessed &&
         this.reviewed &&
         !this.isCollapsed &&
         this.showLocalFileReviews
       ) {
         this.handleToggle();
-        this.idState.hasToggled = true;
+        this.setFileViewEffectsProcessed(this.file, true);
       }
     },
     expandAllListener() {

@@ -26,6 +26,7 @@ module Observability
       }
 
     scope :with_group, -> { includes(:group) }
+    scope :search_by_group_id, ->(group_id) { where(group_id: group_id) }
 
     attr_writer :o11y_service_name
 

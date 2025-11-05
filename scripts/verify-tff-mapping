@@ -121,13 +121,13 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    changed_file: 'db/migrate/20240228144013_migrate_custom_permissions.rb',
-    expected: ['spec/migrations/migrate_custom_permissions_spec.rb']
+    changed_file: 'db/migrate/20251020001530_cleanup_duplicate_work_item_type_custom_lifecycles.rb',
+    expected: ['spec/migrations/cleanup_duplicate_work_item_type_custom_lifecycles_spec.rb']
   },
   {
     explanation: 'Migration should map to its timestamped spec',
-    changed_file: 'db/post_migrate/20241118124301_requeue_backfill_security_policies.rb',
-    expected: ['spec/migrations/20241118124301_requeue_backfill_security_policies_spec.rb']
+    changed_file: 'db/post_migrate/20251027104235_queue_backfill_missing_namespace_details.rb',
+    expected: ['spec/migrations/20251027104235_queue_backfill_missing_namespace_details_spec.rb']
   },
   {
     explanation: 'FOSS views should map to respective spec',

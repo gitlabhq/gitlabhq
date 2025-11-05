@@ -14,8 +14,10 @@ class FlushCounterIncrementsWorker
   loggable_arguments 0, 2
   defer_on_database_health_signal :gitlab_main, [:project_daily_statistics], 1.minute
   # The increments in `ProjectStatistics` are owned by several teams depending
-  # on the counter
-  feature_category :continuous_integration
+  # on the counter, but rubocop will not allow shared for workers
+  # Passed model_names updated primarily belong to source_code_management
+  # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211119
+  feature_category :source_code_management
 
   urgency :low
   deduplicate :until_executed, including_scheduled: true, if_deduplicated: :reschedule_once

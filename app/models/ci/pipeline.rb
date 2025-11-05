@@ -191,7 +191,6 @@ module Ci
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
-    after_commit :trigger_status_change_subscriptions, if: :saved_change_to_status?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
@@ -435,6 +434,12 @@ module Ci
           pipeline.all_merge_requests.opened.each do |merge_request|
             GraphqlTriggers.merge_request_merge_status_updated(merge_request)
           end
+        end
+      end
+
+      after_transition any => any do |pipeline|
+        pipeline.run_after_commit do
+          trigger_status_change_subscriptions
         end
       end
     end

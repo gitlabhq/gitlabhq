@@ -714,7 +714,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def skipped_checks
     if auto_merge_requested?
-      @merge_request.skipped_mergeable_checks(
+      @merge_request.skipped_auto_merge_checks(
         auto_merge_strategy: auto_merge_strategy
       )
     else

@@ -36,13 +36,24 @@ This Rake task:
 1. Removes all migrations from the previous version
 1. Updates the schema version references in relevant files
 1. Cleans up finalized batched background migrations
-1. Updates CI configuration for database rollbacks
 
 ### Parameters
 
 | Parameter | Description |
 |-----------|-------------|
 | `[origin/16-10-stable-ee]` | The Git reference to use as a baseline for migration squashing. This should be the stable branch of the previous version. |
+
+## Update CI configuration for database rollbacks
+
+After squashing the migrations, we need to update the migration version used in the CI job that tests migration rollbacks.
+
+To find the first migration version after the `InitSchema` migration, run:
+
+```shell
+bundle exec rake db:migrate:status | grep '^\s*up' | awk 'NR==2 {print $2}'
+```
+
+Update [the CI script](https://gitlab.com/gitlab-org/gitlab/-/blob/6fff0bc1bbe823af4b7bf6dc093c5a131897797b/.gitlab/ci/database.gitlab-ci.yml#L97) with this version.
 
 ## Troubleshooting
 

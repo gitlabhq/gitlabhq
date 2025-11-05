@@ -58,11 +58,11 @@ module Gitlab
         end
 
         def migration_specs
-          Dir.glob(Rails.root.join('spec/migrations/*.rb'))
+          Dir.glob(Rails.root.join('spec/migrations/**/*.rb'))
         end
 
         def ee_migration_specs
-          Dir.glob(Rails.root.join('ee/spec/migrations/*.rb'))
+          Dir.glob(Rails.root.join('ee/spec/migrations/**/*.rb'))
         end
       end
     end

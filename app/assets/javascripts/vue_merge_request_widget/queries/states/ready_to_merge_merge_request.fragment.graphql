@@ -29,5 +29,6 @@ fragment ReadyToMergeMergeRequest on MergeRequest {
     status
     path
     active
+    ref
   }
 }

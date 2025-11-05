@@ -40,9 +40,6 @@ export default {
     },
   },
   computed: {
-    versionCount() {
-      return this.model.versionCount || 0;
-    },
     issuable() {
       return {
         titleHtml: this.model.name,

@@ -78,7 +78,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       it_behaves_like 'a controller that can serve LFS files'
       it_behaves_like 'project cache control headers'
-      include_examples 'limited number of Gitaly request', request_count: 4
+      include_examples 'limited number of Gitaly request', request_count: 6
     end
 
     context 'when the endpoint receives requests above the limit' do

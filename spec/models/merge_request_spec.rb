@@ -4627,8 +4627,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#skipped_mergeable_checks' do
-    subject { build_stubbed(:merge_request).skipped_mergeable_checks(options) }
+  describe '#skipped_auto_merge_checks' do
+    subject { build_stubbed(:merge_request).skipped_auto_merge_checks(options) }
 
     let(:options) { { auto_merge_strategy: auto_merge_strategy } }
 

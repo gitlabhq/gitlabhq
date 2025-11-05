@@ -55,6 +55,16 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
         expect(project.project_namespace.reload.organization_id).to eq(new_organization.id)
         expect(subgroup_project.project_namespace.reload.organization_id).to eq(new_organization.id)
         expect(nested_project.project_namespace.reload.organization_id).to eq(new_organization.id)
+
+        expect(group).to be_valid
+        expect(subgroup).to be_valid
+        expect(nested_subgroup).to be_valid
+        expect(project).to be_valid
+        expect(subgroup_project).to be_valid
+        expect(nested_project).to be_valid
+        expect(project.project_namespace).to be_valid
+        expect(subgroup_project.project_namespace).to be_valid
+        expect(nested_project.project_namespace).to be_valid
       end
 
       describe 'visibility level updates' do
@@ -93,12 +103,16 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
             expect(public_subgroup.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_subgroup.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+            expect(public_subgroup).to be_valid
+            expect(internal_subgroup).to be_valid
           end
 
           it 'does not update visibility for groups with lower or equal visibility' do
             service.execute
 
             expect(private_subgroup.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(private_subgroup).to be_valid
           end
 
           it 'updates visibility for projects with higher visibility than organization' do
@@ -106,6 +120,9 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
             expect(public_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+            expect(public_project).to be_valid
+            expect(internal_project).to be_valid
           end
 
           it 'updates visibility for project namespaces with higher visibility' do
@@ -113,12 +130,16 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
             expect(public_project.project_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_project.project_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+            expect(public_project).to be_valid
+            expect(internal_project).to be_valid
           end
 
           it 'does not update visibility for projects with lower or equal visibility' do
             service.execute
 
             expect(private_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(private_project).to be_valid
           end
         end
 
@@ -145,12 +166,16 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
             expect(private_subgroup.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_subgroup.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+
+            expect(private_subgroup).to be_valid
+            expect(internal_subgroup).to be_valid
           end
 
           it 'does not update visibility for projects with lower visibility' do
             service.execute
 
             expect(private_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(private_project).to be_valid
           end
         end
 
@@ -168,17 +193,21 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
             service.execute
 
             expect(internal_subgroup.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+            expect(internal_subgroup).to be_valid
           end
 
           it 'does not update visibility for projects with equal visibility' do
             service.execute
 
             expect(internal_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+            expect(internal_project).to be_valid
           end
         end
       end
 
       it 'logs successful transfer with correct payload' do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
         expect(Gitlab::AppLogger).to receive(:info).with(
           hash_including(
             message: "Group was transferred to a new organization",
@@ -188,7 +217,7 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
             new_organization_id: new_organization.id,
             error_message: nil
           )
-        )
+        ).and_call_original
 
         service.execute
       end
@@ -197,6 +226,85 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
         service.execute
 
         expect(user.reload.organization_id).to eq(new_organization.id)
+        expect(user).to be_valid
+      end
+
+      context 'with todos authored by bots' do
+        let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:support_bot_old) { Users::Internal.for_organization(old_organization).support_bot }
+        let_it_be_with_refind(:human_author) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:issue) { create(:issue, project: project) }
+
+        let_it_be_with_refind(:human_authored_todo) do
+          create(:todo, user: user1, author: human_author, target: issue, project: project)
+        end
+
+        before_all do
+          group.add_developer(user1)
+          group.add_developer(user2)
+        end
+
+        it 'updates all bot-authored todos to use new organization bots' do
+          # Create todos for all bot types
+          ghost_old = Users::Internal.for_organization(old_organization).ghost
+          alert_bot_old = Users::Internal.for_organization(old_organization).alert_bot
+          migration_bot_old = Users::Internal.for_organization(old_organization).migration_bot
+          security_bot_old = Users::Internal.for_organization(old_organization).security_bot
+          automation_bot_old = Users::Internal.for_organization(old_organization).automation_bot
+          admin_bot_old = Users::Internal.for_organization(old_organization).admin_bot
+          duo_code_review_bot_old = Users::Internal.for_organization(old_organization).duo_code_review_bot
+
+          ghost_todo = create(:todo, user: user1, author: ghost_old, target: issue, project: project)
+          support_bot_todo = create(:todo, user: user1, author: support_bot_old, target: issue, project: project)
+          alert_bot_todo = create(:todo, user: user1, author: alert_bot_old, target: issue, project: project)
+          migration_bot_todo = create(:todo, user: user2, author: migration_bot_old, target: issue, project: project)
+          security_bot_todo = create(:todo, user: user2, author: security_bot_old, target: issue, project: project)
+          automation_bot_todo = create(:todo, user: user1, author: automation_bot_old, target: issue, project: project)
+          admin_bot_todo = create(:todo, user: user1, author: admin_bot_old, target: issue, project: project)
+          duo_code_review_bot_todo =
+            create(:todo, user: user2, author: duo_code_review_bot_old, target: issue, project: project)
+
+          service.execute
+
+          ghost_new = Users::Internal.for_organization(new_organization).ghost
+          support_bot_new = Users::Internal.for_organization(new_organization).support_bot
+          alert_bot_new = Users::Internal.for_organization(new_organization).alert_bot
+          migration_bot_new = Users::Internal.for_organization(new_organization).migration_bot
+          security_bot_new = Users::Internal.for_organization(new_organization).security_bot
+          automation_bot_new = Users::Internal.for_organization(new_organization).automation_bot
+          admin_bot_new = Users::Internal.for_organization(new_organization).admin_bot
+          duo_code_review_bot_new = Users::Internal.for_organization(new_organization).duo_code_review_bot
+
+          expect(ghost_todo.reload.author_id).to eq(ghost_new.id)
+          expect(support_bot_todo.reload.author_id).to eq(support_bot_new.id)
+          expect(alert_bot_todo.reload.author_id).to eq(alert_bot_new.id)
+          expect(migration_bot_todo.reload.author_id).to eq(migration_bot_new.id)
+          expect(security_bot_todo.reload.author_id).to eq(security_bot_new.id)
+          expect(automation_bot_todo.reload.author_id).to eq(automation_bot_new.id)
+          expect(admin_bot_todo.reload.author_id).to eq(admin_bot_new.id)
+          expect(duo_code_review_bot_todo.reload.author_id).to eq(duo_code_review_bot_new.id)
+
+          expect(ghost_todo).to be_valid
+          expect(support_bot_todo).to be_valid
+          expect(alert_bot_todo).to be_valid
+          expect(migration_bot_todo).to be_valid
+          expect(security_bot_todo).to be_valid
+          expect(automation_bot_todo).to be_valid
+          expect(admin_bot_todo).to be_valid
+          expect(duo_code_review_bot_todo).to be_valid
+        end
+
+        it 'does not update human-authored todos' do
+          expect { service.execute }.not_to change { human_authored_todo.reload.author_id }
+        end
+
+        it 'does not update todos for users not in the transferred group' do
+          non_group_user = create(:user, organization: old_organization)
+          non_group_todo = create(:todo, user: non_group_user, author: support_bot_old, target: issue, project: project)
+
+          expect { service.execute }.not_to change { non_group_todo.reload.author_id }
+        end
       end
 
       context 'with user transfers' do
@@ -225,6 +333,10 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
           expect(user1.reload.organization_id).to eq(new_organization.id)
           expect(user2.reload.organization_id).to eq(new_organization.id)
           expect(user3.reload.organization_id).to eq(new_organization.id)
+
+          expect(user1).to be_valid
+          expect(user2).to be_valid
+          expect(user3).to be_valid
         end
 
         it 'updates organization_id for user namespaces' do
@@ -232,6 +344,9 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
           expect(user_namespace1.reload.organization_id).to eq(new_organization.id)
           expect(user_namespace2.reload.organization_id).to eq(new_organization.id)
+
+          expect(user_namespace1).to be_valid
+          expect(user_namespace2).to be_valid
         end
 
         it 'updates organization_id for projects and project namespaces under user namespaces' do
@@ -241,6 +356,11 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
           expect(user_project2.reload.organization_id).to eq(new_organization.id)
           expect(user_project1.project_namespace.reload.organization_id).to eq(new_organization.id)
           expect(user_project2.project_namespace.reload.organization_id).to eq(new_organization.id)
+
+          expect(user_project1).to be_valid
+          expect(user_project2).to be_valid
+          expect(user_project1.project_namespace).to be_valid
+          expect(user_project2.project_namespace).to be_valid
         end
 
         context 'when new organization has lower visibility than some user namespaces/projects' do
@@ -281,12 +401,16 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
             expect(public_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+            expect(public_user_namespace).to be_valid
+            expect(internal_user_namespace).to be_valid
           end
 
           it 'does not update visibility for user namespaces with lower or equal visibility' do
             service.execute
 
             expect(private_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(private_user_namespace).to be_valid
           end
 
           it 'updates visibility for projects under user namespaces with higher visibility than organization' do
@@ -294,6 +418,9 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
             expect(public_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+            expect(public_user_project).to be_valid
+            expect(internal_user_project).to be_valid
           end
 
           it 'updates visibility for project namespaces under user namespaces with higher visibility' do
@@ -303,12 +430,16 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
               .to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_user_project.project_namespace.reload.visibility_level)
               .to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+            expect(public_user_project.project_namespace).to be_valid
+            expect(internal_user_project.project_namespace).to be_valid
           end
 
           it 'does not update visibility for projects under user namespaces with lower or equal visibility' do
             service.execute
 
             expect(private_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(private_user_project).to be_valid
           end
         end
 
@@ -340,12 +471,16 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
 
             expect(private_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             expect(internal_user_namespace.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+
+            expect(private_user_namespace).to be_valid
+            expect(internal_user_namespace).to be_valid
           end
 
           it 'does not update visibility for projects under user namespaces with lower visibility' do
             service.execute
 
             expect(private_user_project.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(private_user_project).to be_valid
           end
         end
       end

@@ -142,7 +142,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (2.25.1)
+    gitlab_quality-test_tooling (2.26.0)
       activesupport (>= 7.0, < 7.3)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -393,7 +393,7 @@ DEPENDENCIES
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.6.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 2.25.1)
+  gitlab_quality-test_tooling (~> 2.26.0)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
   nokogiri (~> 1.18, >= 1.18.9)

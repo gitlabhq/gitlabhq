@@ -124,32 +124,35 @@ To restrict group access by IP address:
 
 ### Security implications
 
-Keep in mind that restricting group access by IP address has the following implications:
+IP access restrictions limit access to groups and projects, but are not a complete firewall.
+While this feature generally limits access to group and project resources, some information
+may still be accessible to restricted users. Keep in mind the following (non-exhaustive)
+list of security implications when accessing GitLab from a disallowed IP address:
 
-- Administrators and group Owners can access group settings from any IP address, regardless of IP restriction. However:
-  - Group Owners can access the subgroups, but not the projects belonging to the group or subgroups, when accessing from a disallowed IP address.
-  - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
-    Access to projects includes cloning code from them.
-  - Users can still see group and project names and hierarchies. Only the following are restricted:
-    - [Groups](../../api/groups.md), including all [group resources](../../api/api_resources.md#group-resources).
-    - [Project](../../api/projects.md), including all [project resources](../../api/api_resources.md#project-resources).
-- When you register a runner, it is not bound by the IP restrictions. When the runner requests a new job or an update to
-  a job's state, it is also not bound by the IP restrictions. But when the running CI/CD job sends Git requests from a
-  restricted IP address, the IP restriction prevents code from being cloned.
-- Users might still see some events from the IP-restricted groups and projects on their dashboard. Activity might include
-  push, merge, issue, or comment events.
-- IP access restrictions do not stop users from using the [reply by email feature](../../administration/reply_by_email.md) to create or edit comments on issues or merge requests.
-- IP access restrictions for Git operations through SSH are supported on GitLab SaaS.
-  IP access restrictions applied to GitLab Self-Managed instances are possible with [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)
-  with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
-- IP restriction is not applicable to shared resources belonging to a group. Any shared resource is accessible to a user even if that user is not able to access the group.
-- While IP restrictions apply to public projects, they aren't a complete firewall and cached files for a project may still be accessible to users not in the IP block
+- Administrators and group Owners can always access group settings.
+- Administrators can always access projects in the group. This includes cloning code.
+- Group Owners can always access subgroups, but not any projects in the group or subgroups.
+- Users can always access shared resources.
+- Users can always view the names and hierarchies of groups and projects.
+- Users can always use the [reply by email feature](../../administration/reply_by_email.md)
+  to create and edit comments on issues or merge requests.
+- Users can sometimes view push, merge, issue, or comment events on their dashboard.
+- IP restrictions always apply to public projects, but cached project files may sometimes be accessible.
+- IP restrictions always apply to Git operations through SSH on GitLab.com and GitLab Dedicated.
+  GitLab Self-Managed instances should use `gitlab-sshd` with
+  [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
+- IP restrictions always apply to Git clone operations performed by CI/CD jobs.
+- IP restrictions do not apply to runner registration or when runners request or update CI/CD jobs.
+- IP restrictions might not apply to forked projects or actions that indirectly interact with issues
+  or artifacts in an IP-restricted group. For example, a merge request that closes an issue in an
+  IP-restricted group by using an issue reference in the merge request description.
 
 ### GitLab.com access restrictions
 
-IP address-based group access restriction doesn't work with [hosted runners for GitLab.com](../../ci/runners/hosted_runners/_index.md).
-These runners operate as ephemeral virtual machines with [dynamic IP addresses](../gitlab_com/_index.md#ip-range) from large
-cloud provider pools (AWS, Google Cloud). To allow these broad IP ranges defeat the purpose of IP address-based access restriction.
+IP address-based group access restriction does not work with [hosted runners for GitLab.com](../../ci/runners/hosted_runners/_index.md).
+These runners operate as ephemeral virtual machines with [dynamic IP addresses](../gitlab_com/_index.md#ip-range)
+from large cloud provider pools (AWS, Google Cloud). Allowing these broad IP ranges defeats the
+purpose of IP address-based access restriction.
 
 ## Restrict group access by domain
 

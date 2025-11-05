@@ -3,13 +3,22 @@ stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Connect and use GitLab Duo in JetBrains IDEs.
-title: GitLab plugin for JetBrains IDEs
+title: GitLab Duo plugin for JetBrains IDEs
 ---
 
 The [GitLab Duo plugin](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) integrates GitLab Duo
 with JetBrains IDEs like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 
 To install and configure the extension, see [Install and set up](setup.md).
+
+## Use with remote development
+
+The GitLab Duo plugin works with JetBrains Remote Development when installed on the host machine (remote server).
+
+For information about installing plugins in remote development environments, see the JetBrains documentation:
+
+- [Install plugins in remote projects](https://www.jetbrains.com/help/idea/work-inside-remote-project.html#plugins).
+- [Add plugins to Dev Containers](https://www.jetbrains.com/help/idea/customizing-devcontainer-json-file.html#add_plugins).
 
 ## Enable experimental or beta features
 

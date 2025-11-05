@@ -4,8 +4,6 @@
 export default {
   files: [
     'app/assets/javascripts/diffs/components/diff_row.vue',
-    'app/assets/javascripts/ml/model_registry/components/model_detail.vue',
-    'app/assets/javascripts/ml/model_registry/components/model_edit.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/delete_modal.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue',

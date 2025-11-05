@@ -1270,3 +1270,7 @@ export function expandAllFiles() {
 export function collapseAllFiles() {
   this[types.SET_COLLAPSED_STATE_FOR_ALL_FILES]({ collapsed: true });
 }
+
+export function setFileViewEffectsProcessed(file, viewEffectsProcessed) {
+  Object.assign(file, { viewEffectsProcessed });
+}

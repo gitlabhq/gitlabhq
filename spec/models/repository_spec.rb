@@ -2193,6 +2193,106 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#tag_names', :clean_gitlab_redis_cache do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:tag_names) { %w[v1.0.0 v1.1.0] }
+
+    it 'bypasses cache and calls the uncached method directly' do
+      expect(repository).not_to receive(:cache_method_output_as_redis_set)
+      allow(repository.raw_repository).to receive(:tag_names).and_return(tag_names)
+
+      result = repository.tag_names
+      expect(result).to match_array(tag_names)
+    end
+
+    it 'does not use caching mechanism' do
+      allow(repository.raw_repository).to receive(:tag_names).and_return(tag_names)
+
+      first_call = repository.tag_names
+      second_call = repository.tag_names
+
+      # Should call raw repository each time (no caching)
+      expect(repository.raw_repository).to have_received(:tag_names).twice
+      expect(first_call).to match_array(tag_names)
+      expect(second_call).to match_array(tag_names)
+    end
+
+    context 'when avoid_tag_names_cache feature flag is disabled' do
+      before do
+        stub_feature_flags(avoid_tag_names_cache: false)
+        repository.expire_tags_cache
+      end
+
+      it 'uses caching mechanism' do
+        expect(repository).to receive(:cache_method_output_as_redis_set).and_call_original
+        allow(repository.raw_repository).to receive(:tag_names).and_return(tag_names)
+
+        repository.tag_names
+      end
+
+      it 'returns cached result on subsequent calls' do
+        allow(repository.raw_repository).to receive(:tag_names).and_return(tag_names)
+
+        first_result = repository.tag_names
+        second_result = repository.tag_names
+
+        expect(first_result).to eq(second_result)
+        # Should only call the raw repository once due to caching
+        expect(repository.raw_repository).to have_received(:tag_names).once
+      end
+    end
+
+    context 'fallback behavior' do
+      it 'returns empty array when no tags exist' do
+        allow(repository.raw_repository).to receive(:tag_names).and_return([])
+
+        result = repository.tag_names
+        expect(result).to eq([])
+      end
+    end
+  end
+
+  context 'tag_names_include? method' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:tag_names) { %w[v1.0.0 v1.1.0] }
+
+    it 'bypasses cache for include check' do
+      allow(repository.raw_repository).to receive(:tag_names).and_return(tag_names)
+
+      expect(repository.tag_names_include?('v1.0.0')).to be(true)
+      expect(repository.tag_names_include?('v2.0.0')).to be(false)
+
+      # Should call tag_names for each include check when cache is bypassed
+      expect(repository.raw_repository).to have_received(:tag_names).at_least(:twice)
+    end
+
+    context 'when avoid_tag_names_cache feature flag is disabled' do
+      before do
+        stub_feature_flags(avoid_tag_names_cache: false)
+        # Stub ref_existence_check_gitaly to ensure consistent test behavior
+        # This prevents the ref existence check from interfering with our cache testing
+        # by forcing include? method to use the tag_names cache path
+        stub_feature_flags(ref_existence_check_gitaly: false)
+      end
+
+      it 'uses caching for include check' do
+        allow(repository.raw_repository).to receive(:tag_names).and_return(tag_names)
+
+        # First call should populate cache
+        repository.tag_names
+
+        # Include check should use cached data
+        expect(repository.tag_names_include?('v1.0.0')).to be(true)
+        expect(repository.tag_names_include?('v2.0.0')).to be(false)
+
+        # Should only call raw repository once due to caching
+        expect(repository.raw_repository).to have_received(:tag_names).once
+      end
+    end
+  end
+
   describe '#empty?' do
     let(:project) { create(:project, :repository) }
     let(:empty_repository) { create(:project_empty_repo).repository }

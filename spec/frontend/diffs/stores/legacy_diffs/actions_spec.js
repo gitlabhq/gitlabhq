@@ -2786,4 +2786,12 @@ describe('legacyDiffs actions', () => {
       return testAction(store.setCurrentFileHash, 'note_filehash', {}, [], []);
     });
   });
+
+  describe('setFileViewEffectsProcessed', () => {
+    it('set viewEffectsProcessed field on the file', () => {
+      store.diffFiles = [{ file_hash: 'foo' }];
+      store.setFileViewEffectsProcessed(store.diffFiles[0], true);
+      expect(store.diffFiles[0].viewEffectsProcessed).toBe(true);
+    });
+  });
 });

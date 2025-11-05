@@ -5,7 +5,13 @@ import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
-import { getParameterByName, visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
+import {
+  getParameterByName,
+  visitUrl,
+  joinPaths,
+  mergeUrlParams,
+  removeParams,
+} from '~/lib/utils/url_utility';
 import { buildApiUrl } from '~/api/api_utils';
 import { VARIANT_INFO } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -247,6 +253,14 @@ export default {
     handleEditBlobSuccess(responseData, formData) {
       const resultingBranch = this.getResultingBranch(responseData, formData);
       const isNewBranch = this.originalBranch !== resultingBranch;
+
+      if (this.fromMergeRequestIid && resultingBranch === this.originalBranch) {
+        const url = new URL(window.location.href);
+        url.pathname = joinPaths(this.projectPath, '/-/merge_requests/', this.fromMergeRequestIid);
+        const cleanUrl = removeParams(['from_merge_request_iid'], url.toString());
+        visitUrl(cleanUrl);
+        return;
+      }
 
       if (formData.create_merge_request && isNewBranch) {
         const mrUrl = mergeUrlParams(

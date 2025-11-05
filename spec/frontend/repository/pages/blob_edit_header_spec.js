@@ -174,18 +174,13 @@ describe('BlobEditHeader', () => {
         );
       });
 
-      it('on submit to same branch, saves shorter success message to localStorage', async () => {
+      it('on submit to the same branch, saves shorter success message to localStorage', async () => {
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
           branch: 'main', // Same as originalBranch
           file_path: 'test.js',
         });
 
-        const formData = new FormData();
-        formData.append('commit_message', 'Test commit');
-        formData.append('branch_name', 'main');
-        formData.append('original_branch', 'main');
-
-        findCommitChangesModal().vm.$emit('submit-form', formData);
+        await submitForm();
         await axios.waitForAll();
 
         expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
@@ -200,6 +195,39 @@ describe('BlobEditHeader', () => {
         expect(visitUrlSpy).toHaveBeenCalledWith(
           'http://test.host/gitlab-org/gitlab/-/blob/main/test.js',
         );
+      });
+
+      it('on submit to the same branch from the existing MR, redirects back to the MR', async () => {
+        // Mock URL with from_merge_request_iid parameter
+        const originalLocation = window.location;
+        delete window.location;
+        window.location = new URL(
+          'http://test.host/gitlab-org/gitlab/-/edit/main/test.js?from_merge_request_iid=19',
+        );
+
+        const removeParamsSpy = jest.spyOn(urlUtility, 'removeParams');
+        removeParamsSpy.mockReturnValue('http://test.host/gitlab-org/gitlab/-/merge_requests/19');
+
+        mock.onPut().replyOnce(HTTP_STATUS_OK, {
+          branch: 'main', // Same as originalBranch
+          file_path: 'test.js',
+        });
+
+        await submitForm();
+        await axios.waitForAll();
+
+        expect(removeParamsSpy).toHaveBeenCalledWith(
+          ['from_merge_request_iid'],
+          'http://test.host/gitlab-org/gitlab/-/merge_requests/19?from_merge_request_iid=19',
+        );
+        expect(visitUrlSpy).toHaveBeenCalledWith(
+          'http://test.host/gitlab-org/gitlab/-/merge_requests/19',
+        );
+        expect(saveAlertToLocalStorage).not.toHaveBeenCalled();
+
+        // Restore original location
+        window.location = originalLocation;
+        removeParamsSpy.mockRestore();
       });
 
       it('on submit to new branch to a fork repo, saves success message with "original project" text', async () => {

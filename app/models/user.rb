@@ -665,6 +665,7 @@ class User < ApplicationRecord
   scope :banned, -> { with_states(:banned) }
   scope :external, -> { where(external: true) }
   scope :non_external, -> { where(external: false) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
   scope :without_active, -> { without_state(:active) }
