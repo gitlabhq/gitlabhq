@@ -8,7 +8,6 @@ RSpec.describe Gitlab::BackgroundMigration::FixNonExistingTimelogUsers, feature_
   let(:organizations_table) { table(:organizations) }
   let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
 
-  let!(:ghost) { users_table.create!(user_type: 5, projects_limit: 0, organization_id: organization.id) }
   let(:user) { users_table.create!(email: generate(:email), projects_limit: 0, organization_id: organization.id) }
   let(:deleted_user) do
     users_table.create!(email: generate(:email), projects_limit: 0, organization_id: organization.id)
@@ -41,8 +40,31 @@ RSpec.describe Gitlab::BackgroundMigration::FixNonExistingTimelogUsers, feature_
         connection: ApplicationRecord.connection
       ).perform
 
-      expect(timelog_invalid.reload.user_id).to eq(ghost.id)
+      expect(timelog_invalid.reload.user_id).to eq(Users::Internal.ghost.id)
       expect(timelog_valid.reload.user_id).to eq(user.id)
+    end
+
+    context 'when ghost user already exists' do
+      let!(:ghost) { users_table.create!(user_type: 5, projects_limit: 0, organization_id: organization.id) }
+
+      it 'migrates the invalid timelog to the existing ghost user' do
+        expect(timelog_invalid.reload.user_id).to eq(deleted_user.id)
+
+        deleted_user.delete
+
+        described_class.new(
+          start_id: start_id,
+          end_id: end_id,
+          batch_table: :timelogs,
+          batch_column: :id,
+          sub_batch_size: 2,
+          pause_ms: 0,
+          connection: ApplicationRecord.connection
+        ).perform
+
+        expect(timelog_invalid.reload.user_id).to eq(ghost.id)
+        expect(timelog_valid.reload.user_id).to eq(user.id)
+      end
     end
   end
 end
