@@ -78,7 +78,7 @@ export const i18n = {
   modalDeleteMessage: s__('CiVariables|Do you want to delete the variable %{key}?'),
   protectedField: s__('CiVariables|Protect variable'),
   protectedDescription: s__(
-    'CiVariables|Export variable to pipelines running on protected branches and tags only.',
+    'CiVariables|Export variable to pipelines running on protected branches and protected tags only.',
   ),
   maskedValueValidationErrorsTitle: s__('CiVariables|Unable to create masked variable because:'),
   maskedValueMinLengthValidationText: s__(

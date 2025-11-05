@@ -68,6 +68,7 @@ To create the webhook in the downstream instance:
    https://gitlab.example.com/api/v4/projects/:id/mirror/pull?private_token=<your_access_token>
    ```
 
+1. [Mask your token](../../integrations/webhooks.md#mask-sensitive-portions-of-webhook-urls).
 1. Select **Push Events**.
 1. Select **Add Webhook**.
 

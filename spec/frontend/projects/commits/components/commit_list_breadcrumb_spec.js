@@ -40,6 +40,7 @@ describe('CommitListBreadcrumb', () => {
       size: 'md',
       showMoreLabel: 'Show more breadcrumbs',
       autoResize: true,
+      clipboardTooltipText: null,
       items: [
         {
           text: 'gitlab',
@@ -50,6 +51,8 @@ describe('CommitListBreadcrumb', () => {
           to: '/main/README.md?ref_type=heads',
         },
       ],
+      pathToCopy: null,
+      showClipboardButton: false,
     });
   });
 

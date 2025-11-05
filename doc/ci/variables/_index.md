@@ -139,7 +139,7 @@ To add or update variables in the project settings:
    - **Environment scope**: Optional. **All (default)** (`*`), a specific [environment](../environments/_index.md),
      or a wildcard environment scope.
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
-     that run on protected branches or tags.
+     that run on protected branches or protected tags.
    - **Visibility**: Select **Visible** (default), **Masked**, or **Masked and hidden**.
    - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
      It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.
@@ -166,7 +166,7 @@ To add a group variable:
      or **Masked and hidden**.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
-     that run on protected branches or tags.
+     that run on protected branches or protected tags.
    - **Visibility**: Select **Visible** (default), **Masked**, **Masked and hidden**.
    - **Expand variable reference**: Optional. If selected, the variable can reference another variable.
      It is not possible to reference another variable if **Visibility** is set to **Masked** or **Masked and hidden**.

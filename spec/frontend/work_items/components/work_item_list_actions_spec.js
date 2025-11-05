@@ -4,6 +4,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
 import WorkItemCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from '~/work_items/components/work_items_csv_import_modal.vue';
+import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
 
 describe('WorkItemsListActions component', () => {
   let wrapper;
@@ -53,6 +54,7 @@ describe('WorkItemsListActions component', () => {
   const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
   const findRssLink = () => wrapper.findByTestId('subscribe-rss');
   const findCalendarLink = () => wrapper.findByTestId('subscribe-calendar');
+  const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
 
   describe('import/export options', () => {
     describe('when projectImportJiraPath is provided and canEdit is true', () => {
@@ -178,6 +180,24 @@ describe('WorkItemsListActions component', () => {
 
     it('does not render the dropdown', () => {
       expect(findDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('WorkItemByEmail component', () => {
+    it('does not render when showWorkItemByEmailButton is false', () => {
+      wrapper = createComponent();
+
+      expect(findWorkItemByEmail().exists()).toBe(false);
+    });
+
+    it('renders when showWorkItemByEmailButton is true, and has correct tracking attributes', () => {
+      wrapper = createComponent({}, { showWorkItemByEmailButton: true });
+
+      expect(findWorkItemByEmail().exists()).toBe(true);
+      expect(findWorkItemByEmail().attributes()).toMatchObject({
+        'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
+        'data-track-label': 'email_work_item_project_work_items_empty_list',
+      });
     });
   });
 });

@@ -7,6 +7,7 @@ import {
   GlSprintf,
   GlLink,
   GlFormInputGroup,
+  GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -15,7 +16,7 @@ import namespaceRegenerateNewWorkItemEmailAddressMutation from '../graphql/names
 export default {
   i18n: {
     sendEmail: s__('WorkItem|Send email'),
-    emailNewWorkItem: s__('WorkItem|Email a new work item to this project'),
+    emailNewWorkItem: { text: s__('WorkItem|Email work item to this project') },
     createNewWorkItemByEmail: s__('WorkItem|Create new work item by email'),
     failedToRegenerateEmail: s__('WorkItem|There was an error when resetting email token.'),
     workItemCreationInstruction: s__(
@@ -36,6 +37,7 @@ export default {
     GlLink,
     GlFormInputGroup,
     ModalCopyButton,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -111,9 +113,11 @@ export default {
 
 <template>
   <div>
-    <gl-button v-gl-modal="$options.modalId" variant="link">
-      {{ $options.i18n.emailNewWorkItem }}
-    </gl-button>
+    <gl-disclosure-dropdown-item
+      v-gl-modal="$options.modalId"
+      :item="$options.i18n.emailNewWorkItem"
+    />
+
     <gl-modal ref="modal" :modal-id="$options.modalId">
       <template #modal-title>
         {{ $options.i18n.createNewWorkItemByEmail }}

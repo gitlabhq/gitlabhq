@@ -83,7 +83,11 @@ export default {
 </script>
 
 <template>
-  <header class="super-topbar gl-grid gl-grid-cols-[1fr_auto_1fr] gl-items-center">
+  <header
+    class="super-topbar gl-grid gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-outline-none"
+    tabindex="1"
+    autofocus
+  >
     <gl-button
       class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
       data-testid="super-topbar-skip-to"

@@ -1,7 +1,7 @@
 import { pinia } from '~/pinia/instance';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
-import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { statuses, useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { StreamingError } from '~/rapid_diffs/web_components/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
@@ -142,6 +142,13 @@ export class RapidDiffsFacade {
     disableBrokenContentVisibility(this.root);
     initHiddenFilesWarning(this.root.querySelector('[data-hidden-files-warning]'));
     this.root.addEventListener(DIFF_FILE_MOUNTED, useDiffsList(pinia).addLoadedFile);
+    const loadingIndicator = this.root.querySelector('[data-list-loading]');
+    useDiffsList(pinia).$subscribe(
+      () => {
+        loadingIndicator.hidden = useDiffsList(pinia).status !== statuses.streaming;
+      },
+      { immediate: true },
+    );
   }
 
   get #lazy() {

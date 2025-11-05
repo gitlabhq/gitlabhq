@@ -1820,6 +1820,34 @@ ee/app/workers/ai/repository_xray/
 [Foundations::Design System] @gitlab-org/foundations/design-system/engineering
 /app/components/pajamas/
 
+# Search framework maintainers
+[Global Search] @gitlab-org/search-team/migration-maintainers
+/ee/lib/gem_extensions/elasticsearch/
+/ee/lib/elastic/
+/ee/lib/search/elastic/
+/ee/lib/search/cluster_health_check/
+/ee/lib/gitlab/elastic/bulk_indexer.rb
+/ee/lib/gitlab/elastic/document_reference.rb
+/ee/lib/gitlab/elastic/client.rb
+/ee/lib/gitlab/elastic/helper.rb
+/ee/lib/gitlab/elastic/indexer.rb
+/ee/app/models/concerns/elastic/
+/ee/app/models/concerns/search/elastic/
+/ee/app/services/elastic/
+/ee/app/services/search/elastic/
+/ee/app/workers/search/elastic/
+/ee/app/workers/search/wiki/
+/ee/app/workers/elastic/
+/ee/app/workers/elastic_association_indexer_worker.rb
+/ee/app/workers/elastic_cluster_reindexing_cron_worker.rb
+/ee/app/workers/elastic_delete_project_worker.rb
+/ee/app/workers/elastic_full_index_worker.rb
+/ee/app/workers/elastic_index_bulk_cron_worker.rb
+/ee/app/workers/elastic_index_initial_bulk_cron_worker.rb
+/ee/app/workers/elastic_namespace_indexer_worker.rb
+/ee/app/workers/elastic_remove_expired_namespace_subscriptions_from_index_cron_worker.rb
+/ee/app/workers/elastic_wiki_indexer_worker.rb
+
 # Necessary for availability, similar to DB migrations
 [Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/elastic/migrate/

@@ -60,8 +60,8 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
-import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
+import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
@@ -146,12 +146,12 @@ describeSkipVue3(skipReason, () => {
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
   const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
-  const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
   const findChildItem1 = () => wrapper.findAllComponents(IssuableItem).at(0);
   const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
   const findSubChildIndicator = (item) =>
     item.find('[data-testid="sub-child-work-item-indicator"]');
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
+  const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
 
   const mountComponent = ({
     provide = {},
@@ -1912,9 +1912,9 @@ describeSkipVue3(skipReason, () => {
     });
   });
 
-  describe('WorkItemByEmail component', () => {
+  describe('showWorkItemByEmail computed property', () => {
     describe.each`
-      canCreateWorkItem | isGroup  | newWorkItemEmailAddress | exists
+      canCreateWorkItem | isGroup  | newWorkItemEmailAddress | expected
       ${false}          | ${true}  | ${null}                 | ${false}
       ${false}          | ${true}  | ${'test@example.com'}   | ${false}
       ${true}           | ${true}  | ${null}                 | ${false}
@@ -1925,8 +1925,8 @@ describeSkipVue3(skipReason, () => {
       ${true}           | ${false} | ${'test@example.com'}   | ${true}
     `(
       'when canCreateWorkItem=$canCreateWorkItem, isGroup=$isGroup, newWorkItemEmailAddress=$newWorkItemEmailAddress',
-      ({ canCreateWorkItem, isGroup, newWorkItemEmailAddress, exists }) => {
-        it(`${exists ? 'renders' : 'does not render'}`, async () => {
+      ({ canCreateWorkItem, isGroup, newWorkItemEmailAddress, expected }) => {
+        it(`${expected ? 'returns true' : 'returns false'}`, async () => {
           mountComponent({
             provide: {
               canCreateWorkItem,
@@ -1936,26 +1936,10 @@ describeSkipVue3(skipReason, () => {
           });
           await waitForPromises();
 
-          expect(findWorkItemByEmail().exists()).toBe(exists);
+          expect(findWorkItemListActions().props('showWorkItemByEmailButton')).toBe(expected);
         });
       },
     );
-
-    it('passes correct tracking attributes when rendered', async () => {
-      mountComponent({
-        provide: {
-          canCreateWorkItem: true,
-          isGroup: false,
-          newWorkItemEmailAddress: 'test@example.com',
-        },
-      });
-      await waitForPromises();
-
-      expect(findWorkItemByEmail().attributes()).toMatchObject({
-        'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
-        'data-track-label': 'email_work_item_project_work_items_empty_list',
-      });
-    });
   });
 
   describe('iid filter search', () => {

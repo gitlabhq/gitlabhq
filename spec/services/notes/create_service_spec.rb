@@ -304,6 +304,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
               expect(note).to be_persisted
               expect(note.note_diff_file).to be_present
+              expect(note.note_diff_file.namespace_id).to eq(project_with_repo.project_namespace_id)
               expect(note.diff_note_positions).to be_present
             end
 

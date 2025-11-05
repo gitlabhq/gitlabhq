@@ -397,6 +397,9 @@ RSpec.configure do |config|
       stub_feature_flags(work_items_consolidated_list_user: false)
 
       stub_feature_flags(merge_widget_stop_polling: false)
+
+      # This feature has global impact and most tests aren't ready for it yet
+      stub_feature_flags(cells_unique_claims: false)
     else
       unstub_all_feature_flags
     end

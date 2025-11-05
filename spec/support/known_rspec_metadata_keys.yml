@@ -29,6 +29,7 @@
 - :counter_attribute
 - :database_replica
 - :db_load_balancing
+- :dedicated
 - :delete
 - :deliver_mails_inline
 - :described_class

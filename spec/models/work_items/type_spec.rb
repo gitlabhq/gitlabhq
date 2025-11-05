@@ -218,24 +218,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
-  describe '#default_issue?' do
-    context 'when work item type is default Issue' do
-      let(:work_item_type) { build(:work_item_type, name: described_class::TYPE_NAMES[:issue]) }
-
-      it 'returns true' do
-        expect(work_item_type.default_issue?).to be(true)
-      end
-    end
-
-    context 'when work item type is not Issue' do
-      let(:work_item_type) { build(:work_item_type, :non_default) }
-
-      it 'returns false' do
-        expect(work_item_type.default_issue?).to be(false)
-      end
-    end
-  end
-
   describe '#allowed_child_types' do
     let_it_be(:epic_type) { described_class.find_by(base_type: :epic) }
     let_it_be(:issue_type) { described_class.find_by(base_type: :issue) }

@@ -349,6 +349,34 @@ describe('CE IssuesListApp component', () => {
 
         expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
       });
+
+      describe('IssuableByEmail component', () => {
+        describe.each`
+          initialEmail | canCreateIssue | exists
+          ${false}     | ${false}       | ${false}
+          ${false}     | ${true}        | ${false}
+          ${true}      | ${false}       | ${false}
+          ${true}      | ${true}        | ${true}
+        `(
+          `when issue creation by email is enabled=$initialEmail`,
+          ({ initialEmail, canCreateIssue, exists }) => {
+            it(`${initialEmail ? 'renders' : 'does not render'}`, () => {
+              wrapper = mountComponent({ provide: { initialEmail, canCreateIssue } });
+
+              expect(findIssuableByEmail().exists()).toBe(exists);
+            });
+          },
+        );
+
+        it('tracks IssuableByEmail', () => {
+          wrapper = mountComponent({ provide: { initialEmail: true, canCreateIssue: true } });
+
+          expect(findIssuableByEmail().attributes()).toMatchObject({
+            'data-track-action': 'click_email_issue_project_issues_empty_list_page',
+            'data-track-label': 'email_issue_project_issues_empty_list',
+          });
+        });
+      });
     });
 
     describe('bulk edit button', () => {
@@ -554,34 +582,6 @@ describe('CE IssuesListApp component', () => {
         });
       },
     );
-  });
-
-  describe('IssuableByEmail component', () => {
-    describe.each`
-      initialEmail | canCreateIssue | exists
-      ${false}     | ${false}       | ${false}
-      ${false}     | ${true}        | ${false}
-      ${true}      | ${false}       | ${false}
-      ${true}      | ${true}        | ${true}
-    `(
-      `when issue creation by email is enabled=$initialEmail`,
-      ({ initialEmail, canCreateIssue, exists }) => {
-        it(`${initialEmail ? 'renders' : 'does not render'}`, () => {
-          wrapper = mountComponent({ provide: { initialEmail, canCreateIssue } });
-
-          expect(findIssuableByEmail().exists()).toBe(exists);
-        });
-      },
-    );
-
-    it('tracks IssuableByEmail', () => {
-      wrapper = mountComponent({ provide: { initialEmail: true, canCreateIssue: true } });
-
-      expect(findIssuableByEmail().attributes()).toMatchObject({
-        'data-track-action': 'click_email_issue_project_issues_empty_list_page',
-        'data-track-label': 'email_issue_project_issues_empty_list',
-      });
-    });
   });
 
   describe('slots', () => {

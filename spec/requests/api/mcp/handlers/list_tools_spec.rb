@@ -53,6 +53,30 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       )
     end
 
+    it 'validates all array parameters have proper JSON Schema structure with items property' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      tools = json_response['result']['tools']
+
+      tools.each do |tool|
+        tool_name = tool['name']
+        properties = tool.dig('inputSchema', 'properties') || {}
+
+        properties.each do |param_name, param_schema|
+          next unless param_schema['type'] == 'array'
+
+          expect(param_schema).to have_key('items'),
+            "Tool '#{tool_name}' has array parameter '#{param_name}' without 'items' property. " \
+              "JSON Schema requires array types to specify what's in the array using the 'items' property. " \
+              "Current schema: #{param_schema.inspect}"
+
+          expect(param_schema['items']).to have_key('type'),
+            "Tool '#{tool_name}' has array parameter '#{param_name}' with 'items' but missing 'type' in items. " \
+              "Current schema: #{param_schema.inspect}"
+        end
+      end
+    end
+
     context 'when a service tool is not available' do
       before do
         # We have to use `allow_any_instance_of` since tools are initialized

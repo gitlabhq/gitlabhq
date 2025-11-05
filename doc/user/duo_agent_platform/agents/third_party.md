@@ -226,15 +226,14 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog**.
-1. Select the **Flows** tab, then select **New flow**.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Automate** > **Flows**.
+1. Select **New flow**.
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
    1. In **Description**, enter a description.
 1. Under **Visibility & access**:
    1. For **Visibility**, select **Private** or **Public**.
-   1. From the **Source project** dropdown list, select a project.
 1. Under **Configuration**, enter your flow configuration.
    You can write your own configuration, or edit one of the templates below.
 1. Select **Create flow**.

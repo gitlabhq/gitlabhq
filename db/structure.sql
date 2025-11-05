@@ -27404,7 +27404,8 @@ CREATE TABLE todos (
     resolved_by_action smallint,
     note_id bigint,
     snoozed_until timestamp with time zone,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_3c13ed1c7a CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1))
 );
 
 CREATE SEQUENCE todos_id_seq
@@ -33618,9 +33619,6 @@ ALTER TABLE vulnerability_scanners
 
 ALTER TABLE push_event_payloads
     ADD CONSTRAINT check_37c617d07d CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE todos
-    ADD CONSTRAINT check_3c13ed1c7a CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
 
 ALTER TABLE diff_note_positions
     ADD CONSTRAINT check_4c86140f48 CHECK ((namespace_id IS NOT NULL)) NOT VALID;

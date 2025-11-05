@@ -102,18 +102,15 @@ module Ci
       end
     end
 
-    # Removes the partition_id filter from the query until we get more data in the
-    # second partition.
     def builds_relation
-      # CTE is used to force the query to use btree index starting with (commit_id, type)
-      # e.g. p_ci_builds_commit_id_type_ref_idx
+      # CTE is used to force the query to use index `p_ci_builds_commit_id_status_type_idx`
       # rubocop: disable CodeReuse/ActiveRecord -- custom CTE query
       cte = Gitlab::SQL::CTE.new(
         :cte_builds,
-        # Do not include partition_id in the select expression of this CTE query!
-        # Because when new partition of p_ci_builds starts to receive writes,
-        # the query plan will flip and choose an unexpected index e.g. primary key index
-        Ci::Build.in_pipelines(pipeline).select(:id)
+        # Two things to ensure:
+        #   - query `commit_id`, `status` and `type` to match the columns of `p_ci_builds_commit_id_status_type_idx`
+        #   - `ORDER BY id` should not be included so that the planner never considers using pkey index
+        pipeline.builds.without_statuses([]).select(:id)
       )
 
       Ci::Build

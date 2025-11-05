@@ -11,8 +11,16 @@ module WithAssociatedNote # rubocop:disable Gitlab/BoundedContexts -- general pu
 
     private
 
+    def skip_namespace_validation?
+      false
+    end
+
     def ensure_namespace_id
       self.namespace_id ||= note_namespace_id
+    end
+
+    def note_namespace_id
+      raise NoMethodError, 'must implement `note_namespace_id` method'
     end
   end
 end

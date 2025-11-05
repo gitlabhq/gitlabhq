@@ -38,6 +38,15 @@ module StubConfiguration
     stub_application_setting(default_branch_protection_defaults: Gitlab::Access::BranchProtection.protection_none)
   end
 
+  def stub_default_url_options(host: "localhost", protocol: "http", script_name: nil)
+    url_options = { host: host, protocol: protocol, script_name: script_name }
+    allow(Rails.application.routes).to receive(:default_url_options).and_return(url_options)
+  end
+
+  def stub_config(messages, config = Gitlab.config)
+    allow(config).to receive_messages(to_settings(messages))
+  end
+
   def stub_config_setting(messages)
     stub_config(messages, Gitlab.config.gitlab)
   end
@@ -46,53 +55,72 @@ module StubConfiguration
     stub_config(messages, Gitlab.config.cell)
   end
 
-  def stub_config(messages, config = Gitlab.config)
-    allow(config).to receive_messages(to_settings(messages))
-  end
-
-  def stub_default_url_options(host: "localhost", protocol: "http", script_name: nil)
-    url_options = { host: host, protocol: protocol, script_name: script_name }
-    allow(Rails.application.routes).to receive(:default_url_options).and_return(url_options)
-  end
-
   def stub_dependency_proxy_setting(messages)
-    allow(Gitlab.config.dependency_proxy).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.dependency_proxy)
   end
 
   def stub_gravatar_setting(messages)
-    allow(Gitlab.config.gravatar).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.gravatar)
   end
 
   def stub_incoming_email_setting(messages)
-    allow(Gitlab.config.incoming_email).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.incoming_email)
   end
 
   def stub_mattermost_setting(messages)
-    allow(Gitlab.config.mattermost).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.mattermost)
   end
 
   def stub_omniauth_setting(messages)
-    allow(Gitlab.config.omniauth).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.omniauth)
   end
 
   def stub_backup_setting(messages)
-    allow(Gitlab.config.backup).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.backup)
   end
 
   def stub_lfs_setting(messages)
-    allow(Gitlab.config.lfs).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.lfs)
   end
 
   def stub_external_diffs_setting(messages)
-    allow(Gitlab.config.external_diffs).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.external_diffs)
   end
 
   def stub_artifacts_setting(messages)
-    allow(Gitlab.config.artifacts).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.artifacts)
   end
 
   def stub_pages_setting(messages)
-    allow(Gitlab.config.pages).to receive_messages(to_settings(messages))
+    stub_config(messages, Gitlab.config.pages)
+  end
+
+  def stub_microsoft_graph_mailer_setting(messages)
+    stub_config(messages, Gitlab.config.microsoft_graph_mailer)
+  end
+
+  def stub_kerberos_setting(messages)
+    stub_config(messages, Gitlab.config.kerberos)
+  end
+
+  def stub_gitlab_shell_setting(messages)
+    stub_config(messages, Gitlab.config.gitlab_shell)
+  end
+
+  def stub_asset_proxy_setting(messages)
+    stub_config(messages, Gitlab.config.asset_proxy)
+  end
+
+  def stub_rack_attack_setting(messages)
+    stub_config({ git_basic_auth: messages }, Gitlab.config.rack_attack)
+  end
+
+  def stub_service_desk_email_setting(messages)
+    stub_config(messages, Gitlab.config.service_desk_email)
+  end
+
+  def stub_packages_setting(messages)
+    stub_config(messages, Gitlab.config.packages)
   end
 
   def stub_storage_settings(messages)
@@ -125,35 +153,6 @@ module StubConfiguration
 
   def clear_sentry_settings
     Sentry.get_current_scope.clear
-  end
-
-  def stub_microsoft_graph_mailer_setting(messages)
-    allow(Gitlab.config.microsoft_graph_mailer).to receive_messages(to_settings(messages))
-  end
-
-  def stub_kerberos_setting(messages)
-    allow(Gitlab.config.kerberos).to receive_messages(to_settings(messages))
-  end
-
-  def stub_gitlab_shell_setting(messages)
-    allow(Gitlab.config.gitlab_shell).to receive_messages(to_settings(messages))
-  end
-
-  def stub_asset_proxy_setting(messages)
-    allow(Gitlab.config.asset_proxy).to receive_messages(to_settings(messages))
-  end
-
-  def stub_rack_attack_setting(messages)
-    allow(Gitlab.config.rack_attack).to receive(:git_basic_auth).and_return(messages)
-    allow(Gitlab.config.rack_attack.git_basic_auth).to receive_messages(to_settings(messages))
-  end
-
-  def stub_service_desk_email_setting(messages)
-    allow(::Gitlab.config.service_desk_email).to receive_messages(to_settings(messages))
-  end
-
-  def stub_packages_setting(messages)
-    allow(::Gitlab.config.packages).to receive_messages(to_settings(messages))
   end
 
   def stub_maintenance_mode_setting(value)

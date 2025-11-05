@@ -7,6 +7,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import WorkItemByEmail from './work_item_by_email.vue';
 import WorkItemCsvExportModal from './work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from './work_items_csv_import_modal.vue';
 
@@ -19,6 +20,7 @@ export default {
     GlDisclosureDropdownGroup,
     WorkItemCsvExportModal,
     WorkItemsCsvImportModal,
+    WorkItemByEmail,
   },
   i18n: {
     exportAsCSV: s__('WorkItem|Export as CSV'),
@@ -69,6 +71,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    showWorkItemByEmailButton: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -125,7 +132,9 @@ export default {
       );
     },
     shouldShowDropdown() {
-      return this.hasImportExportOptions || this.hasSubscriptionOptions;
+      return (
+        this.hasImportExportOptions || this.hasSubscriptionOptions || this.showWorkItemByEmailButton
+      );
     },
   },
   methods: {
@@ -189,6 +198,11 @@ export default {
         :full-path="fullPath"
       />
     </template>
+    <work-item-by-email
+      v-if="showWorkItemByEmailButton"
+      data-track-action="click_email_work_item_project_work_items_empty_list_page"
+      data-track-label="email_work_item_project_work_items_empty_list"
+    />
     <gl-disclosure-dropdown-group
       v-if="hasSubscriptionOptions"
       :bordered="hasImportExportOptions"

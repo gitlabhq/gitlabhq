@@ -584,6 +584,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
               note_diff_file = merge_request_note.note_diff_file
 
               expect(note_diff_file.diff).to eq("@@ -14,3 +14,18 @@\n 1")
+              expect(note_diff_file.namespace_id).to eq(merge_request_note.project.project_namespace.id)
             end
           end
         end

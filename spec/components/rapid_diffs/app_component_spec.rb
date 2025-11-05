@@ -156,12 +156,17 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(style_added).to be(true)
   end
 
-  context 'when lazy loading' do
-    let(:lazy) { true }
+  it 'has loading indicator' do
+    render_component
+    expect(page).to have_css('[data-list-loading]')
+  end
 
-    it 'shows loading icon' do
+  context 'when has no diffs for streaming' do
+    let(:diffs_stream_url) { nil }
+
+    it 'hides loading indicator' do
       render_component
-      expect(page).to have_css('[data-testid="rd-diffs-list-loading"]')
+      expect(page).to have_css('[data-list-loading][hidden]', visible: :hidden)
     end
   end
 

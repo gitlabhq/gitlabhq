@@ -122,10 +122,6 @@ module WorkItems
       widget_classes(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
     end
 
-    def default_issue?
-      name == WorkItems::Type::TYPE_NAMES[:issue]
-    end
-
     def allowed_child_types_by_name
       child_type_ids = WorkItems::SystemDefined::HierarchyRestriction
         .where(parent_type_id: id)

@@ -423,3 +423,12 @@ mapping:
       - '.*\.yaml'
       - '\.devfile/.*\.yaml'
     test: 'spec/dot_gitlab_ci/rules_spec.rb'
+
+  # Cells related specs
+  - source:
+    - 'app/models/cells/transaction_record\.rb'
+    - 'app/models/cells/outstanding_lease\.rb'
+    - 'app/models/concerns/cells/claimable\.rb'
+    - 'config/initializers/active_record_connection_adapters_transaction\.rb'
+    - 'spec/support/shared_examples/cells/claims_shared_examples\.rb'
+    test: 'spec/cells/claims/**/*_spec.rb'

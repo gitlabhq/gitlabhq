@@ -25,7 +25,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     [
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       'abuse_trust_scores.user_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553436
-      *['todos.project_id', 'todos.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562437
       *uploads_and_partitions,
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       *['labels.group_id', 'labels.project_id', 'labels.organization_id'], # NOT NULL constraint NOT VALID
@@ -264,7 +263,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
       "pool_repositories" => "https://gitlab.com/gitlab-org/gitlab/-/issues/490484",
-      'todos' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/562437',
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table
       "admin_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553437",

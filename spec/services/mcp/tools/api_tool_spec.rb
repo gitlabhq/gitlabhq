@@ -277,8 +277,40 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
         expect(schema[:properties]['integer_param'][:type]).to eq('integer')
         expect(schema[:properties]['boolean_param'][:type]).to eq('boolean')
         expect(schema[:properties]['array_int_param'][:type]).to eq('array')
+        expect(schema[:properties]['array_int_param'][:items]).to eq({ type: 'integer' })
         expect(schema[:properties]['array_string_param'][:type]).to eq('string')
         expect(schema[:properties]['complex_array_param'][:type]).to eq('string')
+      end
+    end
+
+    describe 'Array[Type] format parsing' do
+      let(:route_params) do
+        {
+          'assignee_ids' => { required: false, type: 'Array[Integer]', desc: 'Array of user IDs' },
+          'labels' => { required: false, type: 'Array[String]', desc: 'Array of label names' }
+        }
+      end
+
+      let(:mcp_settings) { { params: [:assignee_ids, :labels] } }
+
+      it 'converts Array[Integer] to proper JSON Schema array with integer items' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['assignee_ids']).to eq({
+          type: 'array',
+          items: { type: 'integer' },
+          description: 'Array of user IDs'
+        })
+      end
+
+      it 'converts Array[String] to proper JSON Schema array with string items' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['labels']).to eq({
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Array of label names'
+        })
       end
     end
   end

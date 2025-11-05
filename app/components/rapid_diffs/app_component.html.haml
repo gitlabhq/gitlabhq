@@ -32,10 +32,7 @@
           -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
           .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
           %div{ data: { diffs_list: true } }
-            - if lazy?
-              .rd-app-diffs-loading{ data: { testid: 'rd-diffs-list-loading' } }
-                = helpers.gl_loading_icon(size: 'lg')
-            - else
+            - unless lazy?
               = javascript_tag nonce: content_security_policy_nonce do
                 :plain
                   requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
@@ -53,3 +50,5 @@
                       window.performance.mark('rapid-diffs-list-loaded');
                       window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
                     })
+          .rd-app-diffs-loading{ data: { list_loading: true }, hidden: !diffs_stream_url }
+            = render Pajamas::SpinnerComponent.new(size: :lg)

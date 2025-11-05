@@ -29,7 +29,10 @@ RSpec.describe 'Issues > User creates issue by email', feature_category: :team_p
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
         visit project_issues_path(project)
-        click_button('Email a new work item')
+
+        find_by_testid('work-items-list-more-actions-dropdown').click
+
+        click_button('Email work item to this project')
       end
 
       it 'click the button to show modal for the new email' do

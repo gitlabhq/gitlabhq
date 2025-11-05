@@ -517,7 +517,7 @@
 {"name":"pact-support","version":"1.20.0","platform":"ruby","checksum":"41c343a3124fb379684b9ad9f1a0766c5fa18d3b78d433a52e5552d8b9475871"},
 {"name":"paper_trail","version":"16.0.0","platform":"ruby","checksum":"e9b9f0fb1b8b590c8231cfa931b282ba92f90e066e393930a5e1c61ae4c5019d"},
 {"name":"parallel","version":"1.27.0","platform":"ruby","checksum":"4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130"},
-{"name":"parser","version":"3.3.9.0","platform":"ruby","checksum":"94d6929354b1a6e3e1f89d79d4d302cc8f5aa814431a6c9c7e0623335d7687f2"},
+{"name":"parser","version":"3.3.10.0","platform":"ruby","checksum":"ce3587fa5cc55a88c4ba5b2b37621b3329aadf5728f9eafa36bbd121462aabd6"},
 {"name":"parslet","version":"1.8.2","platform":"ruby","checksum":"08d1ab3721cd3f175bfbee8788b2ddff71f92038f2d69bd65454c22bb9fbd98a"},
 {"name":"pastel","version":"0.8.0","platform":"ruby","checksum":"481da9fb7d2f6e6b1a08faf11fa10363172dc40fd47848f096ae21209f805a75"},
 {"name":"pdf-core","version":"0.10.0","platform":"ruby","checksum":"0a5d101e2063c01e3f941e1ee47cbb97f1adfc1395b58372f4f65f1300f3ce91"},

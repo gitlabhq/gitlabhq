@@ -74,29 +74,55 @@ const getDetailedPngDimensions = (dataUrl) => {
     .toSize();
 };
 
-export const getImageDimensions = async (file) => {
-  if (!file.type.startsWith('image/')) return null;
+const getVideoDimensions = async (file) => {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    let onLoaded;
+    const timeoutId = setTimeout(() => {
+      video.removeEventListener('loadedmetadata', onLoaded);
+      URL.revokeObjectURL(video.src);
+      resolve(null);
+    }, 50);
+    onLoaded = () => {
+      clearTimeout(timeoutId);
+      URL.revokeObjectURL(video.src);
+      resolve({ width: video.videoWidth, height: video.videoHeight });
+    };
+    video.addEventListener('loadedmetadata', onLoaded, { once: true });
+    video.src = URL.createObjectURL(file);
+  });
+};
 
-  const data = await readFileAsDataURL(file);
-  let image;
-  try {
-    image = await dataToImage(data);
-  } catch (error) {
-    return null;
+export const getMediaDimensions = async (file) => {
+  let dimensions = null;
+
+  if (file.type.startsWith('video/')) dimensions = await getVideoDimensions(file);
+
+  if (file.type.startsWith('image/')) {
+    const data = await readFileAsDataURL(file);
+
+    if (file.type === 'image/png') {
+      try {
+        const retinaDimensions = getDetailedPngDimensions(data);
+        if (retinaDimensions) return retinaDimensions;
+      } catch (error) {
+        // noop
+      }
+    }
+
+    try {
+      const image = await dataToImage(data);
+      dimensions = { width: image.width, height: image.height };
+    } catch (error) {
+      // noop
+    }
   }
 
-  if (maybe2xRetina(file.name))
-    return { width: Math.ceil(image.width / 2), height: Math.ceil(image.height / 2) };
+  if (dimensions && maybe2xRetina(file.name))
+    return { width: Math.ceil(dimensions.width / 2), height: Math.ceil(dimensions.height / 2) };
 
-  const fallbackDimensions = { width: image.width, height: image.height };
-
-  if (file.type !== 'image/png') return fallbackDimensions;
-
-  try {
-    return getDetailedPngDimensions(data) || fallbackDimensions;
-  } catch (e) {
-    return fallbackDimensions;
-  }
+  return dimensions;
 };
 
 const limitDimensions = (dimensions, limits) => {
@@ -118,8 +144,8 @@ const limitDimensions = (dimensions, limits) => {
   return { width: Math.ceil(width), height: Math.ceil(height) };
 };
 
-export const getLimitedImageDimensions = async (file, limits = baseImageLimits) => {
-  const dimensions = await getImageDimensions(file);
+export const getLimitedMediaDimensions = async (file, limits = baseImageLimits) => {
+  const dimensions = await getMediaDimensions(file);
   if (!dimensions) return null;
   return limitDimensions(dimensions, limits);
 };

@@ -1087,6 +1087,11 @@ export default {
               :export-csv-path="exportCsvPathWithQuery"
               :issuable-count="currentTabCount"
             />
+            <issuable-by-email
+              v-if="showIssuableByEmail"
+              data-track-action="click_email_issue_project_issues_empty_list_page"
+              data-track-label="email_issue_project_issues_empty_list"
+            />
             <gl-disclosure-dropdown-group
               :bordered="showCsvButtons"
               :group="subscribeDropdownOptions"
@@ -1138,12 +1143,5 @@ export default {
         <slot name="title-icons" v-bind="{ issuable, apiFilterParams }"></slot>
       </template>
     </issuable-list>
-
-    <issuable-by-email
-      v-if="showIssuableByEmail"
-      class="gl-pb-7 gl-pt-5 gl-text-center"
-      data-track-action="click_email_issue_project_issues_empty_list_page"
-      data-track-label="email_issue_project_issues_empty_list"
-    />
   </div>
 </template>

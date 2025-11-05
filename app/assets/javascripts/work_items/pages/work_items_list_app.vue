@@ -122,7 +122,6 @@ import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import WorkItemListActions from '../components/work_item_list_actions.vue';
-import WorkItemByEmail from '../components/work_item_by_email.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
@@ -186,7 +185,6 @@ export default {
     WorkItemListHeading,
     WorkItemUserPreferences,
     WorkItemListActions,
-    WorkItemByEmail,
     GlIcon,
     GlSkeletonLoader,
     NewResourceDropdown,
@@ -788,7 +786,7 @@ export default {
       return this.workItems.length > 0;
     },
     showWorkItemByEmail() {
-      return this.canCreateWorkItem && !this.isGroup && this.newWorkItemEmailAddress;
+      return Boolean(this.canCreateWorkItem && !this.isGroup && this.newWorkItemEmailAddress);
     },
     sortOptions() {
       return getSortOptions({
@@ -1487,6 +1485,7 @@ export default {
             />
             <work-item-list-actions
               :show-import-export-buttons="showImportExportButtons"
+              :show-work-item-by-email-button="showWorkItemByEmail"
               :work-item-count="currentTabCount"
               :query-variables="csvExportQueryVariables"
               :full-path="rootPageFullPath"
@@ -1532,6 +1531,7 @@ export default {
               />
               <work-item-list-actions
                 :show-import-export-buttons="showImportExportButtons"
+                :show-work-item-by-email-button="showWorkItemByEmail"
                 :work-item-count="currentTabCount"
                 :query-variables="csvExportQueryVariables"
                 :full-path="rootPageFullPath"
@@ -1681,21 +1681,9 @@ export default {
         </template>
       </issuable-list>
     </template>
-    <work-item-by-email
-      v-if="showWorkItemByEmail"
-      class="gl-pb-7 gl-pt-5 gl-text-center"
-      data-track-action="click_email_work_item_project_work_items_empty_list_page"
-      data-track-label="email_work_item_project_work_items_empty_list"
-    />
   </div>
 
   <div v-else>
     <slot name="page-empty-state"></slot>
-    <work-item-by-email
-      v-if="showWorkItemByEmail"
-      class="gl-pb-7 gl-pt-5 gl-text-center"
-      data-track-action="click_email_work_item_project_work_items_empty_list_page"
-      data-track-label="email_work_item_project_work_items_empty_list"
-    />
   </div>
 </template>

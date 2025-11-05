@@ -83,14 +83,12 @@ class SentNotificationsController < ApplicationController
 
   def noteable_path(noteable)
     case noteable
-    when Issue
-      issue_path(noteable)
-    when MergeRequest
-      merge_request_path(noteable)
+    when Issue, MergeRequest
+      Gitlab::UrlBuilder.build(noteable, only_path: true)
     else
       root_path
     end
   end
 end
 
-SentNotificationsController.prepend_mod_with('SentNotificationsController')
+SentNotificationsController.prepend_mod

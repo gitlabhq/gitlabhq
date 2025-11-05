@@ -63,15 +63,14 @@ Prerequisites:
 
 To create an agent:
 
-1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog**.
-1. Select the **Agents** tab, then select **New agent**.
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Automate** > **Agents**.
+1. Select **New agent**.
 1. Under **Basic information**:
    1. In **Display name**, enter a name for the agent.
    1. In **Description**, enter a description for the agent.
 1. Under **Visibility & access**:
    1. For **Visibility**, select **Private** or **Public**.
-   1. From the **Source project** dropdown list, select a project for the agent.
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,
@@ -81,24 +80,23 @@ To create an agent:
    For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
 1. Select **Create agent**.
 
-The agent is enabled in the source project, and appears in the AI Catalog.
+The agent appears in the AI Catalog. To use the agent with Chat, enable it in a project.
 
 ## Enable an agent
 
 Enable an agent in a project to use it with Chat.
-By default, an agent is enabled in its source project.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog** and find the agent you want to enable.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Enable in project**.
+1. Select **AI Catalog** and select the agent you want to enable.
+1. In the upper-right corner, select **Enable in project**.
 1. From the **Project** dropdown list, select your project.
 1. Select **Enable**.
 
-The agent appears on the project's **Agents** page.
+The agent appears on the project's **Automate** > **Agents** page.
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
 
@@ -114,8 +112,8 @@ Prerequisites:
 To duplicate an agent:
 
 1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog** and find the agent you want to duplicate.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
+1. Select **AI Catalog** and select the agent you want to duplicate.
+1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
 1. Optional. Edit any fields you want to change.
 1. Select **Create agent**.
 
@@ -128,11 +126,10 @@ Prerequisites:
 - You must be a member of the source project and have at least the Maintainer role.
 
 1. On the left sidebar, select **Search or go to** > **Explore**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **AI Catalog** and find the agent you want to manage.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **AI Catalog** and select the agent you want to manage.
    - To edit an agent:
-     1. Select **Edit**.
+     1. In the upper-right corner, select **Edit**.
      1. Edit any fields you want to change, then select **Save changes**.
    - To delete an agent:
-     1. Select **Delete**.
+     1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
      1. On the confirmation dialog, select **Delete**.

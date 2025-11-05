@@ -109,6 +109,26 @@ validates :group_id, uniqueness: { scope: [:project_id], message: -> (object, da
 
 Messages in the API (`lib/api/` or `app/graphql`) do not need to be externalized.
 
+#### Rails model error messages
+
+When adding error messages in Rails models, avoid adding errors to specific attributes if the error message
+is a complete sentence. Rails automatically humanizes attribute names and prepends them to error messages,
+which creates split sentences that are difficult to translate.
+
+For example, avoid this:
+
+```ruby
+# Bad: Rails prepends "Squash option" to the message
+errors.add(:squash_option, _('cannot be used with wildcard branch rules. Use an exact branch name.'))
+```
+
+Instead, add the error to :base with a complete sentence:
+
+```ruby
+# Good: Complete sentence that translators can work with
+errors.add(:base, _('Squash option cannot be used with wildcard branch rules. Use an exact branch name.'))
+```
+
 ### HAML files
 
 Given the following content in HAML:

@@ -854,6 +854,91 @@ To recreate a pipeline execution policy:
 
 <!-- markdownlint-enable MD044 -->
 
+## Ensuring that security-critical policies execute
+
+When you implement pipeline execution policies for security and compliance purposes, consider the following best practices to ensure your policies cannot be bypassed or compromised.
+
+### Avoid `changes:` rules for security-critical jobs
+
+In security-critical pipeline policies, avoid using the `changes:` rules as they can produce unexpected results on branch pipelines. The `changes:` keyword relies on SHA-based diffs and can be bypassed in certain scenarios, such as when using `git commit --amend` followed by force push.
+
+When using `git commit --amend` followed by a force push, GitLab calculates changed files differently:
+
+1. First push (standard commit):
+   1. GitLab compares the new commit against its parent.
+   1. GitLab detects that the target file was changed.
+   1. The `changes: [filename]` rule triggers correctly.
+
+1. Second push (amended commit with `--force`):
+   1. The amended commit replaces the previous one entirely with a new SHA.
+   1. GitLab calculates changes using `git diff HEAD~`, which compares against the previous commit on the branch.
+   1. Because the previous commit on that branch also had the same file changes, the diff shows **no new changes**.
+   1. The `changes:` rule does not trigger.
+
+Instead, use conditions that cannot be bypassed:
+
+```yaml
+check-critical-files:
+  stage: .pipeline-policy-pre
+  script:
+    - |
+      # Check if critical files differ from the target branch
+      if git diff origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --name-only | grep -q "Makefile\|\.gitlab-ci\.yml"; then
+        echo "Critical files have been modified"
+        exit 1
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+```
+
+Alternatively, run the policy check on every pipeline without the `changes:` condition:
+
+```yaml
+security-check:
+  stage: .pipeline-policy-pre
+  script:
+    - echo "Running security checks"
+    - ./run-security-checks.sh
+  rules:
+    - when: always
+```
+
+For more information about `changes:` behavior, see [jobs or pipelines run unexpectedly when using `changes`](../../../ci/jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
+
+### Use the `.pipeline-policy-pre` stage for critical security checks
+
+Jobs in the `.pipeline-policy-pre` stage are designed for security and compliance use cases. All other pipeline jobs wait until this stage completes before they start.
+
+For improved security, consider enabling the experimental `ensure_pipeline_policy_pre_succeeds` feature to ensure that if the `.pipeline-policy-pre` stage fails, all subsequent jobs are skipped.
+
+### Control variable overrides
+
+Use the [`variables_override`](#variables_override-type) configuration to prevent users from overriding critical security variables by disabling security scans or modifying critical security configurations.
+
+```yaml
+variables_override:
+  allowed: false
+  exceptions:
+    - CS_IMAGE  # Allow customization of container image only
+```
+
+### Secure job naming
+
+Use unique, descriptive job names with prefixes to prevent conflicts and make it clear to users that jobs are security-enforced:
+
+```yaml
+# Good: Clear security policy job name
+security-policy:sast-scan:
+  stage: .pipeline-policy-pre
+  script: ...
+
+# Avoid: Generic name that could conflict
+sast:
+  stage: .pipeline-policy-pre
+  script: ...
+```
+
 ## Behavior with `[skip ci]`
 
 By default, to prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.

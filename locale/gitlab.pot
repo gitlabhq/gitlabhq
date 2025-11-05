@@ -5725,7 +5725,7 @@ msgstr ""
 msgid "AdminSettings|When to delete dormant projects"
 msgstr ""
 
-msgid "AdminSettings|Wildcard domain used to isolate the execution of 3rd-party code in the Web IDE. Restarting the GitLab instance is required after changing this field is updated."
+msgid "AdminSettings|Wildcard domain used by the Web IDE to isolate and test VS Code extensions and third-party code."
 msgstr ""
 
 msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled."
@@ -13967,7 +13967,7 @@ msgstr ""
 msgid "CiVariables|Expanded"
 msgstr ""
 
-msgid "CiVariables|Export variable to pipelines running on protected branches and tags only."
+msgid "CiVariables|Export variable to pipelines running on protected branches and protected tags only."
 msgstr ""
 
 msgid "CiVariables|File"
@@ -25924,13 +25924,13 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
+msgid "Email %{name} to this project"
+msgstr ""
+
 msgid "Email %{number}"
 msgstr ""
 
 msgid "Email Notification"
-msgstr ""
-
-msgid "Email a new %{name} to this project"
 msgstr ""
 
 msgid "Email address copied"
@@ -75436,10 +75436,10 @@ msgstr ""
 msgid "WorkItem|Edit work item"
 msgstr ""
 
-msgid "WorkItem|Email a new work item to this project"
+msgid "WorkItem|Email participants"
 msgstr ""
 
-msgid "WorkItem|Email participants"
+msgid "WorkItem|Email work item to this project"
 msgstr ""
 
 msgid "WorkItem|Emoji reactions"

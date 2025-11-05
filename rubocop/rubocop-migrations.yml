@@ -45,7 +45,6 @@ Migration/UpdateLargeTable:
   - :ci_pipeline_messages
   - :deployment_merge_requests
   - :import_source_user_placeholder_references
-  - :label_links
   - :lfs_objects_projects
   - :namespaces
   - :oauth_access_token_archived_records

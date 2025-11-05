@@ -20,7 +20,9 @@ RSpec.describe 'Work Items > User resets their incoming email token', feature_ca
   end
 
   it 'changes incoming email address token', :js do
-    click_button 'Email a new work item to this project'
+    find_by_testid('work-items-list-more-actions-dropdown').click
+
+    click_button 'Email work item to this project'
 
     page.within '#work-item-email-modal' do
       previous_token = page.find('input[type="text"]').value

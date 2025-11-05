@@ -17,6 +17,7 @@ module Quality
       ],
       unit: %w[
         bin
+        cells
         channels
         components
         config

@@ -481,5 +481,3 @@ can_leave_project?:
   file: app/models/user.rb
 early_access_event_tracking?:
   file: app/models/user_preference.rb
-default_issue?:
-  file: app/models/work_items/type.rb

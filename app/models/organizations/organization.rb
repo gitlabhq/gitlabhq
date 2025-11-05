@@ -8,6 +8,11 @@ module Organizations
     include Gitlab::Routing.url_helpers
     include FeatureGate
     include Organizations::Isolatable
+    include Cells::Claimable
+
+    cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+
+    cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :id
 
     DEFAULT_ORGANIZATION_ID = 1
 

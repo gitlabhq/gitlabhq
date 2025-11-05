@@ -6,7 +6,7 @@ import { spriteIcon, insertText } from '~/lib/utils/common_utils';
 import { getFilename } from '~/lib/utils/file_upload';
 import { truncate } from '~/lib/utils/text_utility';
 import { n__, __ } from '~/locale';
-import { getLimitedImageDimensions } from '~/lib/utils/image_utils';
+import { getLimitedMediaDimensions } from '~/lib/utils/media_utils';
 import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
 import axios from './lib/utils/axios_utils';
 import csrf from './lib/utils/csrf';
@@ -27,7 +27,7 @@ function getErrorMessage(res) {
 }
 
 async function transformImageMarkdown(md, file) {
-  const dimensions = await getLimitedImageDimensions(file);
+  const dimensions = await getLimitedMediaDimensions(file);
   if (!dimensions) return md;
   // eslint-disable-next-line @gitlab/require-i18n-strings
   return `${md}{width=${dimensions.width} height=${dimensions.height}}`;
