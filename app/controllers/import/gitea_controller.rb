@@ -3,7 +3,8 @@
 class Import::GiteaController < Import::GithubController
   extend ::Gitlab::Utils::Override
 
-  before_action -> { check_rate_limit!(:gitea_import, scope: current_user, redirect_back: true) }, only: :status
+  before_action -> { check_rate_limit!(:gitea_import, scope: current_user) },
+    only: :status, if: -> { request.format.json? }
   before_action :verify_blocked_uri, only: :status
 
   def new
@@ -16,10 +17,6 @@ class Import::GiteaController < Import::GithubController
   end
 
   def status
-    # Request repos to display error page if provider token is invalid
-    # Improving in https://gitlab.com/gitlab-org/gitlab/-/issues/25859
-    client_repos
-
     respond_to do |format|
       format.json do
         render json: { imported_projects: serialized_imported_projects,
