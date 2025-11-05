@@ -31,6 +31,9 @@ else
   gem 'rails', '~> 7.1.6', feature_category: :shared
 end
 
+# Pin Zeitwerk until https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9408 is fixed
+gem 'zeitwerk', '= 2.6.18', feature_category: :shared
+
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab', feature_category: :shared
 # This can be dropped after upgrading to Rails 7.2: https://github.com/rails/rails/pull/49674
 gem 'mutex_m', '~> 0.3', feature_category: :shared

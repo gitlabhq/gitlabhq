@@ -50,11 +50,9 @@ module Ci
     end
 
     def find_from_database_token
-      if use_partition_pruning?
-        partition_id = ::Ci::Builds::TokenPrefix.decode_partition(token)
-        job = ::Ci::Build.in_partition(partition_id).find_by_token(token) if partition_id.present?
-        return job if job
-      end
+      partition_id = ::Ci::Builds::TokenPrefix.decode_partition(token)
+      job = ::Ci::Build.in_partition(partition_id).find_by_token(token) if partition_id.present?
+      return job if job
 
       ::Ci::Build.find_by_token(token)
     end
@@ -91,10 +89,6 @@ module Ci
         job_project_id: job.project_id,
         message: "successful job token auth"
       }.merge(Gitlab::ApplicationContext.current))
-    end
-
-    def use_partition_pruning?
-      ::Feature.enabled?(:ci_use_partition_pruning_to_find_jobs_by_token, Feature.current_request)
     end
   end
 end

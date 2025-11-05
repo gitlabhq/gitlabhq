@@ -2275,6 +2275,9 @@ msgstr ""
 msgid "A maximum of %{limit} projects can be searched for at one time."
 msgstr ""
 
+msgid "A maximum of one active RecoveryKey can exist at a time"
+msgstr ""
+
 msgid "A new Auto DevOps pipeline has been created, go to the Pipelines page for details"
 msgstr ""
 

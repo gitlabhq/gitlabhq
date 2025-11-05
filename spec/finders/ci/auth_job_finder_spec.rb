@@ -65,14 +65,6 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
 
         it { is_expected.to eq(job) }
       end
-
-      context 'when the FF is disabled' do
-        before do
-          stub_feature_flags(ci_use_partition_pruning_to_find_jobs_by_token: false)
-        end
-
-        it { is_expected.to eq(job) }
-      end
     end
 
     context 'when job has a `scoped_user_id` tracked' do

@@ -828,5 +828,5 @@
 {"name":"yajl-ruby","version":"1.4.3","platform":"ruby","checksum":"8c974d9c11ae07b0a3b6d26efea8407269b02e4138118fbe3ef0d2ec9724d1d2"},
 {"name":"yard","version":"0.9.37","platform":"ruby","checksum":"a6e910399e78e613f80ba9add9ba7c394b1a935f083cccbef82903a3d2a26992"},
 {"name":"yard-solargraph","version":"0.1.0","platform":"ruby","checksum":"a19a4619c942181a618fb9458970a9d2534cf7fda69fc43949629a7948a5930e"},
-{"name":"zeitwerk","version":"2.7.3","platform":"ruby","checksum":"b2e86b4a9b57d26ba68a15230dcc7fe6f040f06831ce64417b0621ad96ba3e85"}
+{"name":"zeitwerk","version":"2.6.18","platform":"ruby","checksum":"bd2d213996ff7b3b364cd342a585fbee9797dbc1c0c6d868dc4150cc75739781"}
 ]

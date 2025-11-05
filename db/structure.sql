@@ -25857,6 +25857,23 @@ CREATE SEQUENCE secret_rotation_infos_id_seq
 
 ALTER SEQUENCE secret_rotation_infos_id_seq OWNED BY secret_rotation_infos.id;
 
+CREATE TABLE secrets_management_recovery_keys (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    active boolean DEFAULT false NOT NULL,
+    key jsonb NOT NULL
+);
+
+CREATE SEQUENCE secrets_management_recovery_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE secrets_management_recovery_keys_id_seq OWNED BY secrets_management_recovery_keys.id;
+
 CREATE TABLE security_attributes (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -31878,6 +31895,8 @@ ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('s
 
 ALTER TABLE ONLY secret_rotation_infos ALTER COLUMN id SET DEFAULT nextval('secret_rotation_infos_id_seq'::regclass);
 
+ALTER TABLE ONLY secrets_management_recovery_keys ALTER COLUMN id SET DEFAULT nextval('secrets_management_recovery_keys_id_seq'::regclass);
+
 ALTER TABLE ONLY security_attributes ALTER COLUMN id SET DEFAULT nextval('security_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY security_categories ALTER COLUMN id SET DEFAULT nextval('security_categories_id_seq'::regclass);
@@ -35439,6 +35458,9 @@ ALTER TABLE ONLY secret_detection_token_statuses
 ALTER TABLE ONLY secret_rotation_infos
     ADD CONSTRAINT secret_rotation_infos_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY secrets_management_recovery_keys
+    ADD CONSTRAINT secrets_management_recovery_keys_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY security_attributes
     ADD CONSTRAINT security_attributes_pkey PRIMARY KEY (id);
 
@@ -38665,6 +38687,8 @@ CREATE INDEX idx_sec_inv_filters_traversals_unarchived_proj_severities_sort ON s
 CREATE INDEX idx_secret_detect_token_on_project_id ON secret_detection_token_statuses USING btree (project_id);
 
 CREATE UNIQUE INDEX idx_secret_rotation_infos_project_secret ON secret_rotation_infos USING btree (project_id, secret_name, secret_metadata_version);
+
+CREATE UNIQUE INDEX idx_secrets_management_recovery_keys_on_active_true ON secrets_management_recovery_keys USING btree (active) WHERE active;
 
 CREATE INDEX idx_security_finding_token_on_created_at ON security_finding_token_statuses USING btree (created_at);
 
