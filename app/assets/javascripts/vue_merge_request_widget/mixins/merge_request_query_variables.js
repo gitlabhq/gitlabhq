@@ -4,7 +4,6 @@ export default {
       return {
         projectPath: this.mr.targetProjectFullPath,
         iid: `${this.mr.iid}`,
-        targetBranches: [this.mr.targetBranch],
       };
     },
   },
