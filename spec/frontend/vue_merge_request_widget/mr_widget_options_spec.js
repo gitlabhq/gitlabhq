@@ -584,7 +584,7 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('Apollo query', () => {
-        const interval = 5;
+        const interval = 5000;
         const data = 'foo';
         const mockCheckStatus = jest.fn().mockResolvedValue({ data });
         const mockSetGraphqlData = jest.fn();
@@ -626,19 +626,22 @@ describe('MrWidgetOptions', () => {
                   }),
                 }),
               );
-              expect(mockCheckStatus).toHaveBeenCalled();
-              expect(mockSetData).toHaveBeenCalledWith(data, undefined);
               expect(stateQueryHandler).toHaveBeenCalledTimes(1);
             });
           });
 
           describe('external event control', () => {
             describe('enablePolling', () => {
-              it('enables the Apollo query polling using the event hub', () => {
+              it('enables the Apollo query polling using the event hub', async () => {
                 eventHub.$emit('EnablePolling');
 
                 expect(stateQueryHandler).toHaveBeenCalled();
-                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF + 100);
+                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF + 5000);
+
+                await waitForPromises();
+
+                expect(mockCheckStatus).toHaveBeenCalled();
+                expect(mockSetData).toHaveBeenCalledWith(data, undefined);
                 expect(stateQueryHandler).toHaveBeenCalledTimes(2);
               });
             });
