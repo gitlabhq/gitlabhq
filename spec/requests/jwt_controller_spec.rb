@@ -183,7 +183,7 @@ RSpec.describe JwtController, feature_category: :system_access do
         let(:user) { create(:user) }
         let(:headers) { { authorization: credentials(user.username, user.password) } }
 
-        subject! { request }
+        subject! { get '/jwt/auth', params: parameters, headers: headers }
 
         it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters.merge(auth_type: :gitlab_or_ldap)).permit!) }
 
@@ -262,7 +262,7 @@ RSpec.describe JwtController, feature_category: :system_access do
             it 'accepts the authorization attempt' do
               stub_feature_flags(email_based_mfa: false)
 
-              request
+              get '/jwt/auth', params: parameters, headers: headers
 
               expect(response).to have_gitlab_http_status(:ok)
             end
@@ -295,10 +295,6 @@ RSpec.describe JwtController, feature_category: :system_access do
               expect(response).to have_gitlab_http_status(:ok)
             end
           end
-        end
-
-        def request
-          get '/jwt/auth', params: parameters, headers: headers
         end
       end
 

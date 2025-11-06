@@ -241,4 +241,81 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::EntityConverter do
       end
     end
   end
+
+  describe '.register' do
+    let(:schema_registry) { Gitlab::GrapeOpenapi::SchemaRegistry.new }
+
+    context 'with Class entity' do
+      it 'registers Grape::Entity class' do
+        described_class.register(TestEntities::UserEntity, schema_registry)
+
+        expect(schema_registry.schemas.keys).to include('TestEntitiesUserEntity')
+      end
+
+      it 'skips non-Grape::Entity class' do
+        described_class.register(File, schema_registry)
+
+        expect(schema_registry.schemas).to be_empty
+      end
+    end
+
+    context 'with Hash entity' do
+      it 'registers entity from :model key' do
+        described_class.register({ code: 200, model: TestEntities::UserEntity }, schema_registry)
+
+        expect(schema_registry.schemas.keys).to include('TestEntitiesUserEntity')
+      end
+
+      it 'skips hash without :model' do
+        described_class.register({ code: 204 }, schema_registry)
+
+        expect(schema_registry.schemas).to be_empty
+      end
+
+      it 'skips hash with non-Grape::Entity model' do
+        described_class.register({ code: 200, model: File }, schema_registry)
+
+        expect(schema_registry.schemas).to be_empty
+      end
+    end
+
+    context 'with Array entity' do
+      it 'registers entities from array of hashes with :model' do
+        described_class.register(
+          [{ code: 200, model: TestEntities::UserEntity }],
+          schema_registry
+        )
+
+        expect(schema_registry.schemas.keys).to include('TestEntitiesUserEntity')
+      end
+
+      it 'skips array items without :model' do
+        described_class.register([{ code: 204 }], schema_registry)
+
+        expect(schema_registry.schemas).to be_empty
+      end
+
+      it 'skips array items with non-Grape::Entity model' do
+        described_class.register([{ code: 200, model: File }], schema_registry)
+
+        expect(schema_registry.schemas).to be_empty
+      end
+    end
+  end
+
+  describe '.grape_entity?' do
+    it 'returns true for Grape::Entity class' do
+      expect(described_class.grape_entity?(TestEntities::UserEntity)).to be true
+    end
+
+    it 'returns false for non-Grape::Entity class' do
+      expect(described_class.grape_entity?(File)).to be false
+    end
+
+    it 'returns false for non-Class objects' do
+      expect(described_class.grape_entity?('TestEntities::UserEntity')).to be false
+      expect(described_class.grape_entity?({})).to be false
+      expect(described_class.grape_entity?(nil)).to be false
+    end
+  end
 end

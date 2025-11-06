@@ -77,6 +77,8 @@ module Gitlab
         end
 
         def add_regex_validations!(schema)
+          return unless validations
+
           # Only support one Regex validation per attribute
           validation = validations.find { |v| v[:validator_class] == Grape::Validations::Validators::RegexpValidator }
           return unless validation

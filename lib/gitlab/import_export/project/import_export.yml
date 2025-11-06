@@ -162,8 +162,27 @@ included_attributes:
     - :updated_at
   ci_cd_settings:
     - :group_runners_enabled
-    - :runner_token_expiration_interval
+    - :merge_pipelines_enabled
     - :default_git_depth
+    - :forward_deployment_enabled
+    - :merge_trains_enabled
+    - :auto_rollback_enabled
+    - :keep_latest_artifact
+    - :job_token_scope_enabled
+    - :runner_token_expiration_interval
+    - :separated_caches
+    - :allow_fork_pipelines_to_run_in_parent_project
+    - :inbound_job_token_scope_enabled
+    - :forward_deployment_rollback_allowed
+    - :merge_trains_skip_train_allowed
+    - :restrict_pipeline_cancellation_role
+    - :pipeline_variables_minimum_override_role
+    - :push_repository_for_job_token_allowed
+    - :id_token_sub_claim_components
+    - :delete_pipelines_in_seconds
+    - :allow_composite_identities_to_run_pipelines
+    - :display_pipeline_variables
+    - :resource_group_default_process_mode
   project_badges:
     - :created_at
     - :image_url
@@ -758,6 +777,7 @@ included_attributes:
     - :squash_option
     - :merge_commit_template
     - :squash_commit_template
+    - :max_artifacts_size
   resource_milestone_events:
     - :user_id
     - :action
@@ -846,7 +866,6 @@ excluded_attributes:
     - :mirror_last_successful_update_at
     - :emails_disabled
     - :max_pages_size
-    - :max_artifacts_size
     - :marked_for_deletion_at
     - :marked_for_deletion_by_user_id
     - :compliance_framework_settings

@@ -116,18 +116,14 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           statusIconName: 'warning',
+          fetchCollapsedData: jest.fn().mockResolvedValue({}),
         },
       });
 
+      await nextTick();
       expect(wrapper.text()).toContain('Loading');
       await axios.waitForAll();
       expect(wrapper.text()).not.toContain('Loading');
-    });
-
-    it('validates widget name', () => {
-      expect(() => {
-        assertProps(Widget, { widgetName: 'InvalidWidgetName' });
-      }).toThrow();
     });
   });
 
@@ -210,7 +206,34 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(wrapper.findByTestId('widget-extension-top-level-summary').text()).toBe('Hello world');
     });
 
-    it.todo('displays content property when content slot is not provided');
+    it('displays content property when content slot is not provided', async () => {
+      const content = [
+        {
+          id: 'row-1',
+          header: ['Header 1', 'Subheader 1'],
+          text: 'Content text 1',
+        },
+        {
+          id: 'row-2',
+          header: ['Header 2'],
+          text: 'Content text 2',
+        },
+      ];
+
+      await createComponent({
+        mountFn: mountExtended,
+        propsData: {
+          isCollapsible: true,
+          content,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.findByText('Content text 1').exists()).toBe(true);
+      expect(wrapper.findByText('Content text 2').exists()).toBe(true);
+    });
 
     it('displays the summary slot when provided', async () => {
       createComponent({
@@ -572,6 +595,126 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       });
 
       expect(wrapper.findComponent(ReportListItem).exists()).toBe(true);
+    });
+  });
+
+  describe('loading states', () => {
+    it('shows loading icon when loadingState is status_icon', async () => {
+      await createComponent({
+        propsData: {
+          loadingState: 'status_icon',
+        },
+      });
+
+      expect(findStatusIcon().props('isLoading')).toBe(true);
+    });
+
+    it('shows loading text when loadingState is collapsed', async () => {
+      await createComponent({
+        propsData: {
+          loadingState: 'collapsed',
+          loadingText: 'Custom loading text',
+        },
+      });
+
+      expect(wrapper.text()).toContain('Custom loading text');
+    });
+
+    it('emits is-loading event when loading state changes', async () => {
+      const fetchCollapsedData = jest
+        .fn()
+        .mockReturnValue(Promise.resolve({ headers: {}, status: HTTP_STATUS_OK, data: {} }));
+
+      createComponent({ propsData: { fetchCollapsedData } });
+
+      expect(wrapper.emitted('is-loading')).toBeUndefined();
+
+      await waitForPromises();
+      expect(wrapper.emitted('is-loading')).toEqual([[false]]);
+    });
+  });
+
+  describe('error handling', () => {
+    it('displays custom error text when provided', () => {
+      createComponent({
+        propsData: {
+          hasError: true,
+          errorText: 'Custom error message',
+        },
+      });
+
+      expect(wrapper.findByText('Custom error message').exists()).toBe(true);
+    });
+
+    it('shows failed status icon when there is a summary error', async () => {
+      createComponent({
+        propsData: {
+          fetchCollapsedData: jest.fn().mockRejectedValue('Error'),
+        },
+      });
+
+      await waitForPromises();
+      expect(findStatusIcon().props('iconName')).toBe('failed');
+    });
+
+    it('displays content error when expanded data fetch fails', async () => {
+      const fetchExpandedData = jest.fn().mockRejectedValue('Expanded error');
+
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          fetchExpandedData,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.findByText('Failed to load').exists()).toBe(true);
+    });
+  });
+
+  describe('widget name validation', () => {
+    it('accepts valid widget names starting with Widget', () => {
+      expect(() => {
+        assertProps(Widget, { widgetName: 'WidgetSecurity', isCollapsible: false });
+      }).not.toThrow();
+    });
+
+    it('rejects widget names not starting with Widget', () => {
+      expect(() => {
+        assertProps(Widget, { widgetName: 'SecurityWidget' });
+      }).toThrow();
+    });
+  });
+
+  describe('poll management', () => {
+    it('stops polling when component is unmounted', async () => {
+      const fetchCollapsedData = jest
+        .fn()
+        .mockReturnValue(
+          Promise.resolve({ headers: { 'POLL-INTERVAL': 3000 }, status: HTTP_STATUS_OK, data: {} }),
+        );
+
+      createComponent({ propsData: { fetchCollapsedData } });
+
+      // Poll 10 times
+      for (let i = 0; i < 10; i += 1) {
+        expect(fetchCollapsedData).toHaveBeenCalledTimes(i + 1);
+        // eslint-disable-next-line no-await-in-loop
+        await waitForPromises();
+        jest.advanceTimersByTime(3000);
+      }
+
+      fetchCollapsedData.mockClear();
+
+      wrapper.destroy();
+
+      // Wait another round
+      await waitForPromises();
+      jest.advanceTimersByTime(3000);
+
+      expect(fetchCollapsedData).not.toHaveBeenCalled();
     });
   });
 });

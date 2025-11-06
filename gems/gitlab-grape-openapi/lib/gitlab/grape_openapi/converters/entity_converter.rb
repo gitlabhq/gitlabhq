@@ -12,6 +12,29 @@ module Gitlab
         REF_KEY = '$ref'
         SCHEMA_PATH_PREFIX = '#/components/schemas/'
 
+        def self.register(entity, schema_registry)
+          case entity
+          when Class
+            return unless grape_entity?(entity)
+
+            new(entity, schema_registry).convert
+          when Hash
+            return unless entity[:model] && grape_entity?(entity[:model])
+
+            new(entity[:model], schema_registry).convert
+          when Array
+            entity.each do |definition|
+              next unless definition.is_a?(Hash) && definition[:model] && grape_entity?(definition[:model])
+
+              new(definition[:model], schema_registry).convert
+            end
+          end
+        end
+
+        def self.grape_entity?(klass)
+          klass.is_a?(Class) && klass.ancestors.include?(Grape::Entity)
+        end
+
         def initialize(entity_class, schema_registry)
           @entity_class = entity_class
           @schema_registry = schema_registry
@@ -37,9 +60,9 @@ module Gitlab
 
         def build_properties
           root_exposures.each_with_object({}) do |exposure, properties|
-            # rubocop:disable GitLabSecurity/PublicSend - Forced to use private API
+            # rubocop:disable GitlabSecurity/PublicSend - Forced to use private API
             attribute = exposure.send(:options)[:as] || exposure.attribute
-            # rubocop:enable GitLabSecurity/PublicSend
+            # rubocop:enable GitlabSecurity/PublicSend
             properties[attribute] = build_property(exposure)
           end
         end
@@ -173,7 +196,7 @@ module Gitlab
         end
 
         def exposure_options(exposure)
-          exposure.send(:options) || {} # rubocop:disable GitLabSecurity/PublicSend - Forced to use private API
+          exposure.send(:options) || {} # rubocop:disable GitlabSecurity/PublicSend - Forced to use private API
         end
 
         def nested_entity?(exposure)

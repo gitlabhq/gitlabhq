@@ -45,9 +45,7 @@ module Gitlab
 
       def register_explicit_entities
         @entity_classes.each do |entity_class|
-          next unless grape_entity?(entity_class)
-
-          Converters::EntityConverter.new(entity_class, @schema_registry).convert
+          Converters::EntityConverter.register(entity_class, @schema_registry)
         end
       end
 
@@ -58,7 +56,7 @@ module Gitlab
           entity = route.options[:entity]
           next unless entity
 
-          register_entity(entity)
+          Converters::EntityConverter.register(entity, @schema_registry)
         end
       end
 
@@ -68,29 +66,6 @@ module Gitlab
       end
 
       private
-
-      def register_entity(entity)
-        case entity
-        when Class
-          return unless grape_entity?(entity)
-
-          Converters::EntityConverter.new(entity, @schema_registry).convert
-        when Hash
-          return unless entity[:model] && grape_entity?(entity[:model])
-
-          Converters::EntityConverter.new(entity[:model], @schema_registry).convert
-        when Array
-          entity.each do |definition|
-            next unless definition.is_a?(Hash) && definition[:model] && grape_entity?(definition[:model])
-
-            Converters::EntityConverter.new(definition[:model], @schema_registry).convert
-          end
-        end
-      end
-
-      def grape_entity?(klass)
-        klass.is_a?(Class) && klass.ancestors.include?(Grape::Entity)
-      end
 
       def schemas
         @schema_registry.schemas.transform_values(&:to_h)

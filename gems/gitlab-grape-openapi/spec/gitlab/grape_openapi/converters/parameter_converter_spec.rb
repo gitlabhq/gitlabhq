@@ -141,5 +141,45 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         expect(parameter.schema).to eq({ type: 'string', pattern: '^[\d+.]+' })
       end
     end
+
+    describe 'validations' do
+      context 'when a regular expression is defined' do
+        let(:validations) do
+          [
+            { attributes: [:version_prefix],
+              options: /^[\d+.]+/,
+              required: false,
+              validator_class: Grape::Validations::Validators::RegexpValidator }
+          ]
+        end
+
+        it 'returns the correct schema values' do
+          expect(parameter.schema).to eq({ type: 'string', pattern: '^[\d+.]+' })
+        end
+      end
+
+      context 'when validations is nil' do
+        it 'does not raise error' do
+          expect do
+            described_class.convert(:user_id, options: { type: 'Integer' }, route_path: '/api/v1/users',
+              validations: nil)
+          end.not_to raise_error
+        end
+      end
+
+      context 'when validations has no regex validator' do
+        it 'returns parameter without pattern' do
+          result = described_class.convert(
+            :user_id,
+            options: { type: 'Integer' },
+            route_path: '/api/v1/users',
+            validations: [{ attributes: [:user_id],
+                            validator_class: Grape::Validations::Validators::PresenceValidator }]
+          )
+
+          expect(result.schema[:pattern]).to be_nil
+        end
+      end
+    end
   end
 end

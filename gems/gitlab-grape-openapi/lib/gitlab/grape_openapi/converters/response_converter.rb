@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def process_class_entity(entity_class)
-          if grape_entity?(entity_class)
+          if EntityConverter.grape_entity?(entity_class)
             add_response_with_entity(
               status_code: infer_success_code,
               description: http_status_text(infer_success_code),
@@ -49,7 +49,7 @@ module Gitlab
         end
 
         def process_hash_entity(entity_hash)
-          if entity_hash[:model] && grape_entity?(entity_hash[:model])
+          if entity_hash[:model] && EntityConverter.grape_entity?(entity_hash[:model])
             add_response_with_entity(
               status_code: entity_hash[:code] || infer_success_code,
               description: http_status_text(entity_hash[:code] || infer_success_code),
@@ -75,7 +75,7 @@ module Gitlab
         end
 
         def process_array_hash_item(definition)
-          if definition[:model] && grape_entity?(definition[:model])
+          if definition[:model] && EntityConverter.grape_entity?(definition[:model])
             add_response_with_entity(
               status_code: definition[:code] || infer_success_code,
               description: definition[:message] || http_status_text(definition[:code] || infer_success_code),
@@ -146,10 +146,6 @@ module Gitlab
 
         def http_method
           @route.instance_variable_get(:@options)[:method]
-        end
-
-        def grape_entity?(klass)
-          klass.is_a?(Class) && klass.ancestors.include?(Grape::Entity)
         end
       end
     end

@@ -1259,6 +1259,14 @@ class ApplicationSetting < ApplicationRecord
     remember_me_enabled?
   end
 
+  def push_rule
+    if Feature.enabled?(:update_organization_push_rules, Feature.current_request)
+      nil
+    else
+      super
+    end
+  end
+
   private
 
   def parsed_grafana_url

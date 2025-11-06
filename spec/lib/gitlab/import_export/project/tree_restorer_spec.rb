@@ -410,8 +410,31 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(award_emoji.name).to eq(AwardEmoji::THUMBS_UP)
         end
 
-        it 'restores `ci_cd_settings` : `group_runners_enabled` setting' do
-          expect(@project.ci_cd_settings.group_runners_enabled?).to eq(false)
+        it 'restores project ci_cd_settings', :aggregate_failures do
+          settings = @project.ci_cd_settings
+
+          expect(settings.group_runners_enabled?).to eq(false)
+          expect(settings.merge_pipelines_enabled?).to eq(false)
+          expect(settings.default_git_depth).to eq(5)
+          expect(settings.forward_deployment_enabled?).to eq(false)
+          expect(settings.merge_trains_enabled?).to eq(false)
+          expect(settings.auto_rollback_enabled?).to eq(false)
+          expect(settings.keep_latest_artifact?).to eq(true)
+          expect(settings.job_token_scope_enabled?).to eq(true)
+          expect(settings.runner_token_expiration_interval).to eq(1.month.to_i)
+          expect(settings.separated_caches?).to eq(true)
+          expect(settings.allow_fork_pipelines_to_run_in_parent_project?).to eq(false)
+          expect(settings.inbound_job_token_scope_enabled?).to eq(true)
+          expect(settings.forward_deployment_rollback_allowed?).to eq(true)
+          expect(settings.merge_trains_skip_train_allowed?).to eq(false)
+          expect(settings.restrict_pipeline_cancellation_role).to eq('developer').or eq(0)
+          expect(settings.pipeline_variables_minimum_override_role).to eq('developer')
+          expect(settings.push_repository_for_job_token_allowed?).to eq(false)
+          expect(settings.id_token_sub_claim_components).to eq(%w[project_path ref_type ref])
+          expect(settings.delete_pipelines_in_seconds).to eq(1.month.to_i)
+          expect(settings.allow_composite_identities_to_run_pipelines?).to eq(false)
+          expect(settings.display_pipeline_variables?).to eq(false)
+          expect(settings.resource_group_default_process_mode).to eq('unordered')
         end
 
         it 'restores `auto_devops`' do

@@ -16,6 +16,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
@@ -201,6 +202,7 @@ export default {
       summaryError: null,
       contentError: null,
       telemetryHub: null,
+      activePolls: markRaw([]),
     };
   },
   computed: {
@@ -268,7 +270,6 @@ export default {
     }
   },
   async mounted() {
-    this.isLoadingCollapsedContent = true;
     this.telemetryHub?.viewed();
 
     if (this.reportsTabContent) {
@@ -277,13 +278,17 @@ export default {
 
     try {
       if (this.fetchCollapsedData) {
+        this.isLoadingCollapsedContent = true;
         await this.fetch(this.fetchCollapsedData);
       }
     } catch {
       this.summaryError = this.errorText;
+    } finally {
+      this.isLoadingCollapsedContent = false;
     }
-
-    this.isLoadingCollapsedContent = false;
+  },
+  beforeDestroy() {
+    this.activePolls.forEach((poll) => poll.stop());
   },
   methods: {
     onActionClick(action) {
@@ -355,6 +360,7 @@ export default {
           });
 
           poll.makeRequest();
+          this.activePolls.push(poll);
         });
       });
 
