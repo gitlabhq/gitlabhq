@@ -26,7 +26,6 @@
     "InstanceAuditEventStreamingDestination"
   ],
   "BaseDiscussionInterface": [
-    "AbuseReportDiscussion",
     "Discussion"
   ],
   "BaseHeaderInterface": [
@@ -34,7 +33,6 @@
     "AuditEventsStreamingInstanceHeader"
   ],
   "BaseNoteInterface": [
-    "AbuseReportNote",
     "Note"
   ],
   "CiJobInterface": [
@@ -258,8 +256,6 @@
     "UploadRegistry"
   ],
   "ResolvableInterface": [
-    "AbuseReportDiscussion",
-    "AbuseReportNote",
     "Discussion",
     "Note"
   ],

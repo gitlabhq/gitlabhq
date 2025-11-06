@@ -852,7 +852,7 @@ Project permissions for [user management](project/members/_index.md).
 | ---------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | View 2FA status of members                                       |       |         |          |           |     ✓      |   ✓   |
 | Manage [project members](project/members/_index.md) <sup>1</sup> |       |         |          |           |     ✓      |   ✓   |
-| Share (invite) projects with groups <sup>2</sup>                 |       |         |          |           |     ✓      |   ✓   |
+| Share (invite) projects with groups <sup>2</sup>                 |       |         |          |           |            |   ✓   |
 
 **Footnotes**
 

@@ -2,35 +2,35 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Release CI/CD の例
+title: リリースCI/CDの例
 ---
 
-GitLab のリリース機能は柔軟性があり、ワークフローに合わせて Configure できます。このページでは、CI/CD リリースのジョブの例を紹介します。各例では、CI/CD パイプラインでリリースを作成する方法を示します。
+GitLabのリリース機能は柔軟性があり、ワークフローに合わせて設定できます。このページでは、CI/CDリリースのジョブの例を紹介します。各例では、CI/CDパイプラインでリリースを作成する方法を示します。
 
-## Git tag が作成されたときにリリースを作成する
+## Gitタグの作成時にリリースを作成する {#create-a-release-when-a-git-tag-is-created}
 
-この CI/CD の例では、リリースは次のいずれかのイベントによってトリガーされます。
+このCI/CDの例では、リリースは次のいずれかのイベントによってトリガーされます:
 
-- Git tag をリポジトリにプッシュする。
-- UI で Git tag を作成する。
+- Gitタグをリポジトリにプッシュする。
+- UIでGitタグを作成する。
 
-Git tag を手動で作成し、その結果としてリリースを作成する場合、この方法を使用できます。
+Gitタグを手動で作成し、その結果としてリリースを作成する場合、この方法を使用できます。
 
 {{< alert type="note" >}}
 
-UI で Git tag を作成するときに、リリースノートは入力しないでください。リリースノートを入力するとリリースが作成され、パイプラインが失敗します。
+UIでGitタグを作成するときに、リリースノートは入力しないでください。リリースノートを入力するとリリースが作成され、パイプラインが失敗します。
 
 {{< /alert >}}
 
-次の _抜粋_ に示す `.gitlab-ci.yml` ファイルのキーポイント：
+次の抜粋に示す`.gitlab-ci.yml`ファイルの重要なポイント:
 
-- `rules` スタンザは、ジョブをパイプラインに追加するタイミングを定義します。
-- Git tag　は、リリースの名前と説明で使用されます。
+- `rules`スタンザは、ジョブをパイプラインに追加するタイミングを定義します。
+- Gitタグは、リリースの名前と説明で使用されます。
 
 ```yaml
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   rules:
     - if: $CI_COMMIT_TAG                 # Run this job when a tag is created
   script:
@@ -40,19 +40,19 @@ release_job:
     description: '$CI_COMMIT_TAG'
 ```
 
-## コミットがデフォルトブランチにマージされたときにリリースを作成する
+## コミットがデフォルトブランチにマージされる際にリリースを作成する {#create-a-release-when-a-commit-is-merged-to-the-default-branch}
 
-この CI/CD の例では、コミットをデフォルトブランチにマージすると、リリースがトリガーされます。リリースワークフローで tag を手動で作成しない場合は、この方法を使用できます。
+このCI/CDの例では、コミットをデフォルトブランチにマージすると、リリースがトリガーされます。リリースワークフローでタグを手動で作成しない場合は、この方法を使用できます。
 
-次の _抜粋_ に示す `.gitlab-ci.yml` ファイルのキーポイント：
+次の抜粋に示す`.gitlab-ci.yml`ファイルの重要なポイント:
 
-- Git tag 、説明、および参照は、パイプラインで自動的に作成されます。
-- tag を手動で作成した場合、`release_job` ジョブは実行されません。
+- Gitタグ、説明、および参照は、パイプラインで自動的に作成されます。
+- タグを手動で作成した場合、`release_job`ジョブは実行されません。
 
 ```yaml
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   rules:
     - if: $CI_COMMIT_TAG
       when: never                                  # Do not run this job when a tag is created manually
@@ -67,16 +67,16 @@ release_job:
 
 {{< alert type="note" >}}
 
-`before_script` または `script` で設定された環境変数は、同じジョブ内で展開できません。[変数を展開するために利用可能にする可能性](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400)について詳しくはこちらをご覧ください。
+`before_script`または`script`で設定された環境変数は、同じジョブ内で展開できません。[変数を展開するために利用可能にする可能性](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400)について詳しくはこちらをご覧ください。
 
 {{< /alert >}}
 
-## カスタムスクリプトでリリースメタデータを作成する
+## カスタムスクリプトでリリースメタデータを作成する {#create-release-metadata-in-a-custom-script}
 
-この CI/CD の例では、リリースの準備が柔軟性を高めるために個別のジョブに分割されています。
+このCI/CDの例では、リリースの準備が柔軟性を高めるために個別のジョブに分割されています:
 
-- `prepare_job` ジョブは、リリースメタデータを生成します。カスタムイメージを含む、任意のイメージを使用してジョブを実行できます。生成されたメタデータは、変数ファイル `variables.env` に保存されます。このメタデータは、[ダウンストリームジョブに渡されます](../../../ci/variables/_index.md#pass-an-environment-variable-to-another-job)。
-- `release_job` は、変数ファイルの内容を使用してリリースを作成し、変数ファイルで渡されたメタデータを使用します。このジョブには、リリース CLI が含まれているため、`registry.gitlab.com/gitlab-org/release-cli:latest` イメージを使用する必要があります。
+- `prepare_job`ジョブは、リリースメタデータを生成します。カスタムイメージを含む、任意のイメージを使用してジョブを実行できます。生成されたメタデータは、変数ファイル`variables.env`に保存されます。このメタデータは、[ダウンストリームジョブに渡されます](../../../ci/variables/job_scripts.md#pass-an-environment-variable-to-another-job)。
+- `release_job`は、変数ファイルの内容を使用してリリースを作成し、変数ファイルで渡されたメタデータを使用します。このジョブは、`registry.gitlab.com/gitlab-org/cli:latest`イメージを使用する必要があります。これは、このイメージに`glab`CLIが含まれているためです。
 
 ```yaml
 prepare_job:
@@ -94,7 +94,7 @@ prepare_job:
 
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   needs:
     - job: prepare_job
       artifacts: true
@@ -106,7 +106,7 @@ release_job:
     - echo "running release_job for $TAG"
   release:
     name: 'Release $TAG'
-    description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION and the $TAG
+    description: 'Created using the CLI $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION and the $TAG
     tag_name: '$TAG'                                                 # variables must be defined elsewhere
     ref: '$CI_COMMIT_SHA'                                            # in the pipeline. For example, in the
     milestones:                                                      # prepare_job
@@ -124,24 +124,24 @@ release_job:
           link_type: 'other' # optional
 ```
 
-## リリースを作成するときに複数のパイプラインをスキップする
+## リリースを作成するときに複数のパイプラインをスキップする {#skip-multiple-pipelines-when-creating-a-release}
 
-CI/CD ジョブを使用してリリースを作成すると、関連付けられた tag がまだ存在しない場合、複数のパイプラインがトリガーされる可能性があります。これがどのように発生するかを理解するために、次のワークフローを検討してください。
+CI/CDジョブを使用してリリースを作成すると、関連付けられたタグがまだ存在しない場合、複数のパイプラインがトリガーされる可能性があります。これがどのように発生するかを理解するために、次のワークフローを検討してください:
 
-- 最初に tag、次にリリース：
+- 最初にタグ、次にリリース:
 
-  1. tag が UI から作成されるか、プッシュされます。
-  1. tag パイプラインがトリガーされ、`release` ジョブが実行されます。
+  1. タグがUIから作成されるか、プッシュされます。
+  1. タグパイプラインがトリガーされ、`release`ジョブが実行されます。
   1. リリースが作成されます。
 
-- 最初にリリース、次に tag：
+- 最初にリリース、次にタグ:
 
   1. コミットがプッシュまたはデフォルトブランチにマージされると、パイプラインがトリガーされます。パイプラインは`release`ジョブを実行します。
   1. リリースが作成されます。
-  1. tag が作成されます。
-  1. tag パイプラインがトリガーされます。パイプラインは`release`ジョブも実行します。
+  1. タグが作成されます。
+  1. タグパイプラインがトリガーされます。パイプラインは`release`ジョブも実行します。
 
-2 番目のワークフローでは、`release`ジョブは複数のパイプラインで実行されます。これを防ぐには、[`workflow:rules`キーワード](../../../ci/yaml/_index.md#workflowrules)を使用して、リリースのジョブを tag パイプラインで実行するかどうかを判断できます。
+2番目のワークフローでは、`release`ジョブは複数のパイプラインで実行されます。これを防ぐには、[`workflow:rules`キーワード](../../../ci/yaml/_index.md#workflowrules)を使用して、リリースのジョブをタグパイプラインで実行するかどうかを判断できます:
 
 ```yaml
 release_job:

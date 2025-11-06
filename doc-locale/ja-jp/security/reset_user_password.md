@@ -8,32 +8,32 @@ title: ユーザーパスワードをリセットする
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-ユーザーパスワードをリセットするには、UI、Rakeタスク、Railsコンソール、[Users API](../api/users.md#modify-a-user)のいずれかを使用します。
+ユーザーパスワードをリセットするには、UI、Rakeタスク、Railsコンソール、[ユーザーAPI](../api/users.md#modify-a-user)のいずれかを使用します。
 
-## 前提要件
+## 前提要件 {#prerequisites}
 
-- GitLab Self-Managedの管理者である必要があります。
-- 新しいパスワードは、すべての[パスワード要件](../user/profile/user_passwords.md#password-requirements)を満たしている必要があります。
+- インスタンスの管理者である。
+- パスワードは、すべての[パスワード要件](../user/profile/user_passwords.md#password-requirements)を満たしている必要があります。
 
-## UIを使用する
+## UIを使用する {#use-the-ui}
 
-UIでユーザーパスワードをリセットするには、次の手順に従います。
+UIでユーザーパスワードをリセットするには、次の手順に従います:
 
 1. 左側のサイドバーの下部で、**管理者**を選択します。
-1. **概要 > ユーザー**を選択します。
+1. **概要** > **ユーザー**を選択します。
 1. 更新するユーザーアカウントを特定し、**編集**を選択します。
 1. **パスワード**セクションで、新しいパスワードを入力して確認します。
-1. **変更の保存**を選択します。
+1. **変更を保存**を選択します。
 
-確認が表示されます。
+GitLabはユーザーパスワードを更新します。
 
-## Rakeタスクを使用する
+## Rakeタスクを使用する {#use-a-rake-task}
 
-Rakeタスクを使用してユーザーパスワードをリセットするには、次の手順に従います。
+Rakeタスクを使用してユーザーパスワードをリセットするには、次の手順に従います:
 
 {{< tabs >}}
 
@@ -57,7 +57,7 @@ bundle exec rake "gitlab:password:reset"
 
 GitLabは、ユーザー名、パスワード、パスワードの確認を要求します。入力が完了すると、ユーザーパスワードが更新されます。
 
-Rakeタスクは、引数としてユーザー名を受け入れます。たとえば、ユーザー名が`sidneyjones`のユーザーのパスワードをリセットするには、次の手順に従います。
+Rakeタスクは、引数としてユーザー名を受け入れます。たとえば、ユーザー名が`sidneyjones`のユーザーのパスワードをリセットするには、次の手順に従います:
 
 {{< tabs >}}
 
@@ -79,16 +79,16 @@ Rakeタスクは、引数としてユーザー名を受け入れます。たと�
 
 {{< /tabs >}}
 
-## Railsコンソールを使用する
+## Railsコンソールを使用する {#use-a-rails-console}
 
-Railsコンソールを使用してユーザーパスワードをリセットするには、次の手順に従います。
+Railsコンソールを使用してユーザーパスワードをリセットするには、次の手順に従います:
 
 前提要件:
 
 - リセット対象のユーザーに関連付けられているユーザー名、ユーザーID、またはメールアドレスを把握している必要があります。
 
-1. [Railsコンソール](../administration/operations/rails_console.md)を開きます。
-1. 次のいずれかを指定してユーザーを検索します。
+1. [Railsコンソールセッション](../administration/operations/rails_console.md#starting-a-rails-console-session)を開始します。
+1. 次のいずれかの方法でユーザーを見つけます:
 
    - ユーザー名:
 
@@ -108,7 +108,7 @@ Railsコンソールを使用してユーザーパスワードをリセットす
      user = User.find_by(email: 'user@example.com')
      ```
 
-1. `user.password`と`user.password_confirmation`の値を設定して、パスワードをリセットします。たとえば、新しいランダムパスワードを設定する場合:
+1. `user.password`と`user.password_confirmation`の値を設定して、パスワードをリセットします。たとえば、新しいランダムパスワードを設定するには、次のようにします:
 
    ```ruby
    new_password = ::User.random_password
@@ -117,7 +117,7 @@ Railsコンソールを使用してユーザーパスワードをリセットす
    user.password_automatically_set = false
    ```
 
-   新しいパスワードに特定の値を設定する場合:
+   新しいパスワードに特定の値を設定するには、次のようにします:
 
    ```ruby
    new_password = 'examplepassword'
@@ -126,41 +126,41 @@ Railsコンソールを使用してユーザーパスワードをリセットす
    user.password_automatically_set = false
    ```
 
-1. （オプション）管理者がパスワードを変更したことをユーザーに通知します。
+1. オプション。管理者がパスワードを変更したことをユーザーに通知します:
 
    ```ruby
    user.send_only_admin_changed_your_password_notification!
    ```
 
-1. 変更を保存します。
+1. 変更を保存します:
 
    ```ruby
    user.save!
    ```
 
-1. コンソールを終了します。
+1. コンソールを終了します:
 
    ```ruby
    exit
    ```
 
-## rootパスワードをリセットする
+## rootパスワードをリセットする {#reset-the-root-password}
 
-前述の[Rakeタスク](#use-a-rake-task)または[Railsコンソール](#use-a-rails-console)の手順を使用して、rootパスワードをリセットできます。
+前述の[Rakeタスク](#use-a-rake-task)または[Railsコンソール](#use-a-rails-console)の手順で、rootパスワードをリセットできます。
 
 - rootアカウント名が変更されていない場合は、ユーザー名として`root`を使用します。
-- rootアカウント名が変更されており、新しいユーザー名が不明な場合は、ユーザーID `1` でRailsコンソールを使用できる場合があります。ほとんどの場合、最初のユーザーはデフォルトの管理者アカウントです。
+- rootアカウント名が変更されており、新しいユーザー名が不明な場合は、ユーザーID `1`でRailsコンソールを使用できる場合があります。ほとんどの場合、最初のユーザーがデフォルトの管理者アカウントです。
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
 ユーザーパスワードをリセットする際に問題が発生した場合は、次の情報を参考にして対処してください。
 
-### 確認メールの問題
+### メール確認の問題 {#email-confirmation-issues}
 
-新しいパスワードが機能しない場合は、確認メールに原因がある可能性があります。この問題は、Railsコンソールで修正を試みることができます。たとえば、新しい`root`パスワードが機能しない場合:
+新しいパスワードが機能しない場合は、メール確認の問題である可能性があります。この問題は、Railsコンソールで修正を試みることができます。たとえば、新しい`root`パスワードが機能しない場合は、次のようにします:
 
 1. [Railsコンソール](../administration/operations/rails_console.md)を起動します。
-1. ユーザーを検索し、再確認をスキップします。
+1. ユーザーを検索して、再確認をスキップします:
 
    ```ruby
    user = User.find(1)
@@ -169,10 +169,10 @@ Railsコンソールを使用してユーザーパスワードをリセットす
 
 1. もう一度サインインを試みます。
 
-### パスワード要件を満たしていない
+### パスワード要件を満たしていない {#unmet-password-requirements}
 
-パスワードが短すぎる、弱すぎる、または複雑さの要件を満たしていない可能性があります。設定しようとしているパスワードがすべての[パスワード要件](../user/profile/user_passwords.md#password-requirements)を満たしていることを確認してください。
+パスワードが短すぎる、弱すぎる、または複雑さの要件を満たしていない可能性があります。設定しようとしているパスワードが、すべての[パスワード要件](../user/profile/user_passwords.md#password-requirements)を満たしていることを確認してください。
 
-### 有効期限切れのパスワード
+### パスワードの有効期限切れ {#expired-password}
 
-ユーザーパスワードがすでに期限切れになっている場合は、有効期限の更新が必要になることがあります。詳細については、[LDAPユーザーのSSHを使用したGit fetchでのパスワードの有効期限切れエラー](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-with-ssh-for-ldap-user)を参照してください。
+ユーザーパスワードがすでに期限切れになっている場合は、有効期限の更新が必要になることがあります。詳細については、[LDAPユーザーによるSSHを使用したGit fetchでのパスワードの有効期限切れエラー](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-with-ssh-for-ldap-user)を参照してください。

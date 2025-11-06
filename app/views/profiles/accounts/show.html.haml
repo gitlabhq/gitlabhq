@@ -77,6 +77,8 @@
       - data = { initial_username: current_user.username, root_url: root_url, action_url: update_username_profile_path(format: :json) }
       #update-username{ data: data }
 
+= render_if_exists 'profiles/accounts/designated_beneficiaries', designated_account_manager: local_assigns[:designated_account_manager], designated_account_successor: local_assigns[:designated_account_successor]
+
 = render ::Layouts::SettingsSectionComponent.new(s_('Profiles|Scheduled pipelines you own')) do |c|
   - c.with_description do
     = s_("Profiles|View, edit, or transfer ownership of your active scheduled pipelines.")

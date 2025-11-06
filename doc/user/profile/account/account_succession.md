@@ -4,19 +4,23 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Designate an account successor or account manager
 description: Designate an account successor or account manager for your GitLab account.
-ignore_in_report: true
-noindex: true
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com
 
 {{< /details >}}
 
 You can grant individuals permission to access your GitLab account if you are unable to manage it
 yourself. This ensures continuity of your work and projects.
+
+{{< alert type="note" >}}
+
+This feature is not available for enterprise users.
+
+{{< /alert >}}
 
 ## Account manager
 

@@ -8,14 +8,6 @@ description: Store refs cleanup schedules for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46758
 milestone: '13.6'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: merge_request_id
-        table: merge_requests
-        sharding_key: target_project_id
-        belongs_to: merge_request
+sharding_key:
+  project_id: projects
 table_size: medium
-desired_sharding_key_migration_job_name: BackfillMergeRequestCleanupSchedulesProjectId

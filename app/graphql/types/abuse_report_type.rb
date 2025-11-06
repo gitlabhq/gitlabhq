@@ -10,10 +10,5 @@ module Types
 
     field :id, Types::GlobalIDType[::AbuseReport],
       null: false, description: 'Global ID of the abuse report.'
-
-    field :discussions, ::Types::Notes::AbuseReport::DiscussionType.connection_type,
-      null: false, description: "All discussions on the noteable."
-    field :notes, ::Types::Notes::AbuseReport::NoteType.connection_type,
-      null: false, description: "All notes on the noteable."
   end
 end

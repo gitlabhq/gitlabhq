@@ -23890,6 +23890,9 @@ msgstr ""
 msgid "DesignManagement|of %{designs_count}"
 msgstr ""
 
+msgid "Designated account %{type} already exists. You can edit or delete in the legacy contacts section below."
+msgstr ""
+
 msgid "Designs"
 msgstr ""
 
@@ -25922,6 +25925,9 @@ msgid "Email display name"
 msgstr ""
 
 msgid "Email exclusion pattern"
+msgstr ""
+
+msgid "Email is too long (maximum is 255 characters)"
 msgstr ""
 
 msgid "Email must be provided."
@@ -29315,6 +29321,12 @@ msgid "Full"
 msgstr ""
 
 msgid "Full log"
+msgstr ""
+
+msgid "Full name is required"
+msgstr ""
+
+msgid "Full name is too long (maximum is 255 characters)"
 msgstr ""
 
 msgid "Fuzz testing"
@@ -50568,6 +50580,12 @@ msgstr ""
 msgid "Profiles|@username"
 msgstr ""
 
+msgid "Profiles|Account %{type} %{action} successfully. They can %{link_start}contact GitLab%{link_end} to gain access to your account in the event of your %{event}."
+msgstr ""
+
+msgid "Profiles|Account %{type} deleted successfully."
+msgstr ""
+
 msgid "Profiles|Account could not be deleted. GitLab was unable to verify your identity."
 msgstr ""
 
@@ -50583,6 +50601,12 @@ msgstr ""
 msgid "Profiles|Achievements"
 msgstr ""
 
+msgid "Profiles|Add account manager"
+msgstr ""
+
+msgid "Profiles|Add account successor"
+msgstr ""
+
 msgid "Profiles|Add email address"
 msgstr ""
 
@@ -50596,6 +50620,12 @@ msgid "Profiles|Add new mirror repository"
 msgstr ""
 
 msgid "Profiles|An error occurred while updating your username, please try again."
+msgstr ""
+
+msgid "Profiles|Assign an individual who has legal authority to assume ownership of your GitLab account upon your death. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "Profiles|Assign an individual who has legal authority to manage your GitLab account in the event of your incapacity. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Profiles|Avatar cropper"
@@ -50658,7 +50688,28 @@ msgstr ""
 msgid "Profiles|Delete account"
 msgstr ""
 
+msgid "Profiles|Delete account manager"
+msgstr ""
+
+msgid "Profiles|Delete account manager?"
+msgstr ""
+
+msgid "Profiles|Delete account successor"
+msgstr ""
+
+msgid "Profiles|Delete account successor?"
+msgstr ""
+
 msgid "Profiles|Deleting an account has the following effects:"
+msgstr ""
+
+msgid "Profiles|Designated account beneficiary already deleted."
+msgstr ""
+
+msgid "Profiles|Designated account manager"
+msgstr ""
+
+msgid "Profiles|Designated account successor"
 msgstr ""
 
 msgid "Profiles|Disconnect %{provider}"
@@ -50697,6 +50748,12 @@ msgstr ""
 msgid "Profiles|Email address"
 msgstr ""
 
+msgid "Profiles|Email address (optional)"
+msgstr ""
+
+msgid "Profiles|Email address is too long (maximum is 255 characters)."
+msgstr ""
+
 msgid "Profiles|Email addresses"
 msgstr ""
 
@@ -50727,6 +50784,9 @@ msgstr ""
 msgid "Profiles|Expires"
 msgstr ""
 
+msgid "Profiles|Failed to delete designated account beneficiary."
+msgstr ""
+
 msgid "Profiles|Failed to generate new Support PIN."
 msgstr ""
 
@@ -50740,6 +50800,12 @@ msgid "Profiles|For some actions you request, the Support team may ask you to au
 msgstr ""
 
 msgid "Profiles|Full name"
+msgstr ""
+
+msgid "Profiles|Full name is required."
+msgstr ""
+
+msgid "Profiles|Full name is too long (maximum is 255 characters)."
 msgstr ""
 
 msgid "Profiles|Generate New PIN"
@@ -50784,6 +50850,9 @@ msgstr ""
 msgid "Profiles|Last used"
 msgstr ""
 
+msgid "Profiles|Legacy contacts"
+msgstr ""
+
 msgid "Profiles|Linked emails"
 msgstr ""
 
@@ -50803,6 +50872,12 @@ msgid "Profiles|New Support PIN generated successfully."
 msgstr ""
 
 msgid "Profiles|No \"&lt;\" or \"&gt;\" characters, please."
+msgstr ""
+
+msgid "Profiles|No designated account manager assigned."
+msgstr ""
+
+msgid "Profiles|No designated account successor assigned."
 msgstr ""
 
 msgid "Profiles|No file chosen."
@@ -50844,6 +50919,9 @@ msgstr ""
 msgid "Profiles|Pronunciation"
 msgstr ""
 
+msgid "Profiles|Provide a valid email address."
+msgstr ""
+
 msgid "Profiles|Public avatar"
 msgstr ""
 
@@ -50851,6 +50929,18 @@ msgid "Profiles|Public email"
 msgstr ""
 
 msgid "Profiles|Publicly visible private SSH keys can compromise your system."
+msgstr ""
+
+msgid "Profiles|Relationship"
+msgstr ""
+
+msgid "Profiles|Relationship is required."
+msgstr ""
+
+msgid "Profiles|Relationship is too long (maximum is 255 characters)."
+msgstr ""
+
+msgid "Profiles|Relationship with you"
 msgstr ""
 
 msgid "Profiles|Remove avatar"
@@ -50931,6 +51021,9 @@ msgstr ""
 msgid "Profiles|This information will appear on your profile."
 msgstr ""
 
+msgid "Profiles|This will permanently delete the designated account successor."
+msgstr ""
+
 msgid "Profiles|Time settings"
 msgstr ""
 
@@ -50947,6 +51040,12 @@ msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr ""
 
 msgid "Profiles|Unverified secondary email addresses are automatically deleted after three days"
+msgstr ""
+
+msgid "Profiles|Update account manager"
+msgstr ""
+
+msgid "Profiles|Update account successor"
 msgstr ""
 
 msgid "Profiles|Update profile settings"
@@ -51054,7 +51153,13 @@ msgstr ""
 msgid "Profiles|Your organization was automatically set based on your %{provider_label} account"
 msgstr ""
 
+msgid "Profiles|death"
+msgstr ""
+
 msgid "Profiles|https://website.com"
+msgstr ""
+
+msgid "Profiles|incapacitation"
 msgstr ""
 
 msgid "Profiles|must contain only a bluesky did:plc identifier."
@@ -54253,6 +54358,12 @@ msgid "Relation import could not be created: %{errors}"
 msgstr ""
 
 msgid "Relation import tracker cannot be created for project with ongoing import"
+msgstr ""
+
+msgid "Relationship input is too long (maximum is 255 characters)"
+msgstr ""
+
+msgid "Relationship is required"
 msgstr ""
 
 msgid "Release"
@@ -68109,6 +68220,9 @@ msgid "This value is not valid."
 msgstr ""
 
 msgid "This vulnerability was automatically resolved because its vulnerability type was disabled in this project or removed from GitLab's default ruleset. For details about SAST rule changes, see https://docs.gitlab.com/ee/user/application_security/sast/rules#important-rule-changes."
+msgstr ""
+
+msgid "This will permanently delete the designated account manager."
 msgstr ""
 
 msgid "This will rebase all commits from the source branch onto the target branch."

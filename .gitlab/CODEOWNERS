@@ -1933,7 +1933,7 @@ ee/app/workers/ai/repository_xray/
 
 [Geo]
 /doc/**/geo/**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
-geo_**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
+/doc/**/geo_**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 /node_modules/**/geo/ @gitlab-org/geo-team/geo-backend

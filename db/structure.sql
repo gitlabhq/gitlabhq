@@ -19655,7 +19655,8 @@ CREATE TABLE merge_request_cleanup_schedules (
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     failed_count integer DEFAULT 0 NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_8ac5179c82 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_cleanup_schedules_merge_request_id_seq
@@ -33638,9 +33639,6 @@ ALTER TABLE ONLY group_type_ci_runners
 
 ALTER TABLE notes
     ADD CONSTRAINT check_82f260979e CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1)) NOT VALID;
-
-ALTER TABLE merge_request_cleanup_schedules
-    ADD CONSTRAINT check_8ac5179c82 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;

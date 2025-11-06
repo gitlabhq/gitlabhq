@@ -922,6 +922,23 @@ To activate dependency scanning using SBOM, the provided CycloneDX SBOM document
 
 When working with dependency scanning, you might encounter the following issues.
 
+### `403 Forbidden` error when you use a custom `CI_JOB_TOKEN`
+
+The dependency scanning SBOM API might return a `403 Forbidden` error during the scan upload or download phase.
+
+This happens because the dependency scanning SBOM API requires the default `CI_JOB_TOKEN` for authentication.
+If you override the `CI_JOB_TOKEN` variable with a custom token (such as a project access token or personal access token),
+the API cannot authenticate the request properly, even if the custom token has the `api` scope.
+
+To resolve this issue, either:
+
+- Recommended. Remove the `CI_JOB_TOKEN` override. Overriding predefined variables can cause unexpected behavior.
+  See [CI/CD variables](../../../../ci/variables/_index.md#use-pipeline-variables) for more information.
+- Use a different variable name. If you need to use a custom token for other purposes in your pipeline, store it in a different CI/CD variable, like `CUSTOM_ACCESS_TOKEN`,
+  instead of overriding `CI_JOB_TOKEN`.
+
+GitLab does not support [fine-grained job permissions](../../../../ci/jobs/fine_grained_permissions.md) for dependency scanning API endpoints, but [issue 578850](https://gitlab.com/gitlab-org/gitlab/-/issues/578850) proposes to add this feature.
+
 ### Warning: `grep: command not found`
 
 The analyzer image contains minimal dependencies to decrease the image's attack surface.
