@@ -12,8 +12,8 @@ title: Use Auto DevOps to deploy an application to Google Kubernetes Engine
 
 {{< /details >}}
 
-In this tutorial, we'll help you to get started with [Auto DevOps](../_index.md)
-through an example of how to deploy an application to Google Kubernetes Engine (GKE).
+This tutorial gets you started with [Auto DevOps](../_index.md)
+using an example of how to deploy an application to Google Kubernetes Engine (GKE).
 
 You are using the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
@@ -86,9 +86,9 @@ Now you have an application project you are going to deploy to the GKE cluster.
 
 ## Configure the agent
 
-Now we need to configure the GitLab agent for Kubernetes for us to be able to use it to deploy the application project.
+Now, configure the GitLab agent for Kubernetes so you can use it to deploy the application project.
 
-1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
+1. Go to the project [you created to manage the cluster](#create-a-kubernetes-cluster).
 1. Go to the [agent configuration file](../../../user/clusters/agent/install/_index.md#create-an-agent-configuration-file) (`.gitlab/agents/<agent-name>/config.yaml`) and edit it.
 1. Configure `ci_access:projects` attribute. Use application's project path as `id`:
 
@@ -162,7 +162,7 @@ these steps to enable Auto DevOps if it's disabled:
    - template: Auto-DevOps.gitlab-ci.yml
    ```
 
-The commit should trigger a pipeline. In the next section, we explain what each job does in the pipeline.
+The commit should trigger a pipeline. The next section explains what each job does in the pipeline.
 
 ## Deploy the application
 

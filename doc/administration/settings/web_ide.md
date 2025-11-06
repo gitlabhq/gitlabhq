@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Indicate the wildcard domain used by the Web IDE to isolate VS Code extensions and web views 

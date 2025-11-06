@@ -172,7 +172,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo gitlab-ctl reconfigure
    ```
 
-1. Finally, while Gitaly gracefully reloads any other components that have been deployed, we still need a restart:
+1. Finally, while Gitaly gracefully reloads any other components that have been deployed, you still need a restart:
 
    ```shell
    # Get a list of what other components have been deployed beside Gitaly

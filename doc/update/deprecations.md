@@ -142,42 +142,6 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 [GitLab Runner documentation](https://docs.gitlab.com/runner/)
 
 </div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.1</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414236).
-
-</div>
-
-You can use GraphQL to query the amount of storage used by the GitLab Dependency Proxy. However, the `dependencyProxyTotalSizeInBytes` field is limited to about 2 gigabytes, which is not always large enough for the Dependency Proxy. As a result, `dependencyProxyTotalSizeInBytes` is deprecated and will be removed in GitLab 20.0.
-
-Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="20.0">
-
-### Removal of `migrationState` field in `ContainerRepository` GraphQL API
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.6</span>
-- Removal in GitLab <span class="milestone">20.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/459869).
-
-</div>
-
-The `migrationState` field in the `ContainerRepositoryType` of the GitLab GraphQL API will be removed in GitLab 20.0. This deprecation is part of our efforts to streamline and improve our API.
-
-To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ContainerRepositoryType`. Remove any references to the `migrationState` field and adjust your application logic accordingly.
-
-</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="19.0">
@@ -7610,6 +7574,28 @@ GitLab Self-Managed customers can still use the feature [with a feature flag](ht
 
 </div>
 
+<div class="deprecation breaking-change">
+
+### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.1</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414236).
+
+</div>
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+You can use GraphQL to query the amount of storage used by the GitLab Dependency Proxy. However, the `dependencyProxyTotalSizeInBytes` field is limited to about 2 gigabytes, which is not always large enough for the Dependency Proxy. As a result, `dependencyProxyTotalSizeInBytes` is deprecated.
+
+Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
+
+</div>
+
 <div class="deprecation ">
 
 ### Group vulnerability report by OWASP top 10 2017 is deprecated
@@ -7704,6 +7690,28 @@ limit will return an [HTTP 429](https://developer.mozilla.org/en-US/docs/Web/HTT
 
 The default rate limits have been intentionally set fairly high to not disrupt most usage, based on the request rates we see on GitLab.com.
 Instance administrators can set higher or lower limits as needed in the Admin area, similarly to other rate limits already in place.
+
+</div>
+
+<div class="deprecation breaking-change">
+
+### Removal of `migrationState` field in `ContainerRepository` GraphQL API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/459869).
+
+</div>
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+
+The `migrationState` field in the `ContainerRepositoryType` of the GitLab GraphQL API is deprecated. This deprecation is part of our efforts to streamline and improve our API.
+
+To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ContainerRepositoryType`. Remove any references to the `migrationState` field and adjust your application logic accordingly.
 
 </div>
 

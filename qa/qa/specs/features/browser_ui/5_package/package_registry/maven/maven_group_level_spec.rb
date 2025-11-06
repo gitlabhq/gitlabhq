@@ -35,17 +35,17 @@ module QA
             'using a personal access token' => {
               authentication_token_type: :personal_access_token,
               maven_header_name: 'Private-Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347582'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565161'
             },
             'using a project deploy token' => {
               authentication_token_type: :project_deploy_token,
               maven_header_name: 'Deploy-Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347585'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565162'
             },
             'using a ci job token' => {
               authentication_token_type: :ci_job_token,
               maven_header_name: 'Job-Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347579'
+              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565160'
             }
           }
         end
@@ -135,7 +135,7 @@ module QA
           end
 
           it 'prevents users from publishing duplicates',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377491' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565163' do
             create_package(package_project)
             package_project.visit_job('deploy')
             Page::Project::Job::Show.perform do |job|
@@ -153,7 +153,7 @@ module QA
           end
 
           it 'allows users to publish duplicates',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377492' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565164' do
             create_package(package_project)
             package_project.visit_job('deploy')
             Page::Project::Job::Show.perform do |job|

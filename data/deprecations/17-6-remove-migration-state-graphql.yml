@@ -1,6 +1,6 @@
 - title: "Removal of `migrationState` field in `ContainerRepository` GraphQL API"
   announcement_milestone: "17.6"
-  removal_milestone: "20.0"
+  removal_milestone: "Pending"
   breaking_change: true
   reporter: trizzi
   stage: Package
@@ -11,6 +11,6 @@
   manual_task: true
   window: "3"
   body: |
-    The `migrationState` field in the `ContainerRepositoryType` of the GitLab GraphQL API will be removed in GitLab 20.0. This deprecation is part of our efforts to streamline and improve our API.
+    The `migrationState` field in the `ContainerRepositoryType` of the GitLab GraphQL API is deprecated. This deprecation is part of our efforts to streamline and improve our API.
 
     To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ContainerRepositoryType`. Remove any references to the `migrationState` field and adjust your application logic accordingly.

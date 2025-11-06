@@ -138,6 +138,55 @@ RSpec.describe 'Creating a pipeline that includes CI components', feature_catego
           .to include 'mapping values are not allowed'
       end
     end
+
+    context 'when an existing interpolation function is used in the template' do
+      let(:template) do
+        <<~YAML
+              spec:
+                inputs:
+                  stage:
+              ---
+              test-my-job:
+                stage: $[[ inputs.stage ]]
+                script: echo $[[ inputs.stage | posix_quote ]]
+        YAML
+      end
+
+      it 'creates a pipeline using a pipeline component' do
+        response = execute_service
+
+        pipeline = response.payload
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.error_messages).to be_empty
+        expect(pipeline.statuses.count).to eq 2
+        expect(pipeline.statuses.map(&:name)).to match_array %w[test-1 test-my-job]
+      end
+    end
+
+    context 'when an undefined interpolation function is used in the template' do
+      let(:template) do
+        <<~YAML
+              spec:
+                inputs:
+                  stage:
+              ---
+              test-my-job:
+                stage: $[[ inputs.stage ]]
+                script: echo $[[ inputs.stage | gitlab_undefined_function ]]
+        YAML
+      end
+
+      it 'does not create a pipeline' do
+        response = execute_service
+
+        pipeline = response.payload
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.error_messages[0].content)
+          .to include 'no function matching `gitlab_undefined_function`:'
+      end
+    end
   end
 
   def execute_service

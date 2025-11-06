@@ -57,8 +57,8 @@ To learn more, see [GitLab Dedicated architecture](architecture.md).
 | Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [Custom hostname (BYOD)](configure_instance/network_security.md#bring-your-own-domain-byod) | You provide a domain name and configure DNS records. GitLab manages SSL certificates through Let's Encrypt. | Support ticket |
-| [Inbound Private Link](configure_instance/network_security.md#inbound-private-link) | You request secure AWS VPC connections. GitLab configures PrivateLink endpoints in your VPC. | Support ticket |
-| [Outbound Private Link](configure_instance/network_security.md#outbound-private-link) | You create the endpoint service in your AWS account. GitLab establishes connections using your service endpoints. | Switchboard |
+| [Inbound private link](configure_instance/network_security.md#inbound-private-link) | GitLab creates an endpoint service. You create VPC endpoints in your AWS account to connect to your GitLab instance. | Switchboard |
+| [Outbound private link](configure_instance/network_security.md#outbound-private-link) | You create an endpoint service in your AWS account. GitLab creates VPC endpoints to connect to your services. | Switchboard |
 | [Private hosted zones](configure_instance/network_security.md#private-hosted-zones) | You define internal DNS requirements. GitLab configures DNS resolution in your instance network. | Switchboard |
 
 ## Use platform tools

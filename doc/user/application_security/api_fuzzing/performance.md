@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Performance tuning and testing speed
 ---
 
-Security tools that perform API fuzz testing, such as API fuzzing, perform testing by sending requests to an instance of your running application. The requests are mutated by our fuzzing engine to trigger unexpected behavior that might exist in your application. The speed of an API fuzzing test depends on the following:
+Security tools that perform API fuzz testing, such as API fuzzing, perform testing by sending requests to an instance of your running application. The requests are mutated by the fuzzing engine to trigger unexpected behavior that might exist in your application. The speed of an API fuzzing test depends on the following:
 
-- How many requests per second can be sent to your application by our tooling
+- How many requests per second can be sent to your application by GitLab tooling
 - How fast your application responds to requests
 - How many requests must be sent to test the application
   - How many operations your API is comprised of
@@ -17,7 +17,7 @@ If API fuzzing testing job still takes longer than expected after following the 
 
 ## Diagnosing performance issues
 
-The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some common issues we see are:
+The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some commonly reported issues are:
 
 - API fuzzing is running on a low-vCPU runner
 - The application deployed to a slow/single-CPU instance and is not able to keep up with the testing load
@@ -27,7 +27,9 @@ The first step to resolving performance issues is to understand what is contribu
 
 ### The application contains a slow operation that impacts the overall test speed (> 1/2 second)
 
-The API fuzzing job output contains helpful information about how fast we are testing, how fast each operation being tested responds, and summary information. Let's take a look at some sample output to see how it can be used in tracking down performance issues:
+The API fuzzing job output contains helpful information about testing speed, operation
+response times, and summary information. Use the following sample output to track down
+performance issues:
 
 ```shell
 API Fuzzing: Loaded 10 operations from: assets/har-large-response/large_responses.har
@@ -44,9 +46,9 @@ API Fuzzing:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 se
 API Fuzzing:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
 ```
 
-This job console output snippet starts by telling us how many operations were found (10), followed by notifications that testing has started on a specific operation and a summary of the operation has been completed. The summary is the most interesting part of this log output. In the summary, we can see that it took API fuzzing 767 requests to fully test this operation and its related fields. We can also see that the average response time was 2 seconds and the time to complete was 14 minutes for this one operation.
+The job console output snippet starts with how many operations were found (10). Next are notifications that testing has started on a specific operation, and an operation summary has been completed. The summary shows that API fuzzing took 767 requests to fully test this operation and its related fields. The summary also shows that this operation took 14 minutes to complete, with an average response time of 2 seconds.
 
-An average response time of 2 seconds is a good initial indicator that this specific operation takes a long time to test. Further, we can see that the response body size is quite large. The large body size is the culprit here, transferring that much data on each request is what takes the majority of that 2 seconds.
+An average response time of two seconds is an initial indicator that this specific operation takes a long time to test. You can also see that the response body size is large, which is the cause of the long response time. Most of the response time on each request is spent transferring the response body data.
 
 For this issue, the team might decide to:
 
@@ -76,7 +78,7 @@ with API fuzzing. This table shows statistics collected during benchmarking of a
 | `saas-linux-small-amd64` (default) | 255 |
 | `saas-linux-medium-amd64`          | 400 |
 
-As we can see from this table, increasing the size of the runner and vCPU count can have a large impact on testing speed/performance.
+This table shows how increasing the size of the runner and vCPU count can have a large impact on testing speed/performance.
 
 Here is an example job definition for API fuzzing that adds a `tags` section to use the medium SaaS runner on Linux. The job extends the job definition included through the API fuzzing template.
 
@@ -96,7 +98,7 @@ Example log entry:
 
 In the case of one or two slow operations, the team might decide to skip testing the operations. Excluding the operation is done using the `FUZZAPI_EXCLUDE_PATHS` configuration [variable as explained in this section.](configuration/customizing_analyzer_settings.md#exclude-paths)
 
-In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`.
+This example shows an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it, provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion of the operation URL `/api/large_response_json`.
 
 To verify the operation is excluded, run the API fuzzing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
@@ -114,9 +116,9 @@ Excluding operations from testing could allow some vulnerabilities to go undetec
 
 ### Splitting a test into multiple jobs
 
-Splitting a test into multiple jobs is supported by API fuzzing through the use of [`FUZZAPI_EXCLUDE_PATHS`](configuration/customizing_analyzer_settings.md#exclude-paths) and [`FUZZAPI_EXCLUDE_URLS`](configuration/customizing_analyzer_settings.md#exclude-urls). When splitting a test up, a good pattern is to disable the `apifuzzer_fuzz` job and replace it with two jobs with identifying names. In this example we have two jobs, each job is testing a version of the API, so our names reflect that. However, this technique can be applied to any situation, not just with versions of an API.
+Splitting a test into multiple jobs is supported by API fuzzing through the use of [`FUZZAPI_EXCLUDE_PATHS`](configuration/customizing_analyzer_settings.md#exclude-paths) and [`FUZZAPI_EXCLUDE_URLS`](configuration/customizing_analyzer_settings.md#exclude-urls). When splitting a test up, a good pattern is to disable the `apifuzzer_fuzz` job and replace it with two jobs with identifying names. This example shows two jobs. Each job tests a version of the API, as their names reflect. However, this technique can be applied to any situation, not just with versions of an API.
 
-The rules we are using in the `apifuzzer_v1` and `apifuzzer_v2` jobs are copied from the [API fuzzing template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml).
+The rules used in the `apifuzzer_v1` and `apifuzzer_v2` jobs are copied from the [API fuzzing template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml).
 
 ```yaml
 # Disable the main apifuzzer_fuzz job
@@ -164,10 +166,10 @@ apifuzzer_v2:
 
 In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `FUZZAPI_EXCLUDE_PATHS` configuration [variable as explained in this section.](configuration/customizing_analyzer_settings.md#exclude-paths)
 
-In this example, we have an operation that returns a large amount of data. The
-operation is `GET http://target:7777/api/large_response_json`. To exclude it we
+This example shows an operation that returns a large amount of data. The
+operation is `GET http://target:7777/api/large_response_json`. To exclude it,
 provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion
-of our operation URL `/api/large_response_json`. Our configuration disables the
+of the operation URL `/api/large_response_json`. The configuration disables the
 main `apifuzzer_fuzz` job and creates two new jobs `apifuzzer_main` and
 `apifuzzer_branch`. The `apifuzzer_branch` is set up to exclude the long
 operation and only run on non-default branches (for example, feature branches).
@@ -179,7 +181,7 @@ default branch builds, takes longer to run.
 To verify the operation is excluded, run the API fuzzing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
 ```yaml
-# Disable the main job so we can create two jobs with
+# Disable the main job so you can create two jobs with
 # different names
 apifuzzer_fuzz:
   rules:
@@ -205,7 +207,7 @@ apifuzzer_branch:
       when: never
     - if: $CI_COMMIT_BRANCH
 
-# API fuzzing for default branch (main in our case)
+# API fuzzing for default branch (main in this case)
 # Includes the long running operations
 apifuzzer_main:
   extends: apifuzzer_fuzz

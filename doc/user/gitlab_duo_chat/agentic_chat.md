@@ -62,6 +62,8 @@ files for you.
 For larger problems, like understanding a codebase or generating an implementation
 plan, use the [software development flow of the GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
 
+For examples of how you can use Chat, see [Ask GitLab Duo Chat](examples.md).
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->

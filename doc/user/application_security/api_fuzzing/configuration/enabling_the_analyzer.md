@@ -159,7 +159,7 @@ For more details, including how to create a HAR file, see [HTTP archive format](
 {{< alert type="warning" >}}
 
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
-cookies. We recommend that you review the HAR file contents before adding them to a repository.
+cookies. You should review the HAR file contents before adding them to a repository.
 
 {{< /alert >}}
 
@@ -191,7 +191,7 @@ To configure API fuzzing to use a HAR file:
    dynamic environments. To run API fuzzing against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its domain in an `environment_url.txt` file. API fuzzing
    automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   [example of this in the GitLab Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
 Example `.gitlab-ci.yml` file using a HAR file:
 
@@ -256,7 +256,7 @@ To configure API fuzzing to use an GraphQL endpoint URL that provides informatio
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
-   dynamic environments. See the [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions) section of our documentation for more information.
+   dynamic environments. For more information, see [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions).
 
 Complete example configuration of using a GraphQL endpoint URL:
 
@@ -297,7 +297,7 @@ To configure API fuzzing to use a GraphQl schema file that provides information 
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
-   dynamic environments. See the [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions) section of our documentation for more information.
+   dynamic environments. For more information, see [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions).
 
 Complete example configuration of using an GraphQL schema file:
 
@@ -352,7 +352,7 @@ testing.
 {{< alert type="warning" >}}
 
 Postman Collection files may contain sensitive information such as authentication tokens, API keys,
-and session cookies. We recommend that you review the Postman Collection file contents before adding
+and session cookies. You should review the Postman Collection file contents before adding
 them to a repository.
 
 {{< /alert >}}
@@ -386,7 +386,7 @@ To configure API fuzzing to use a Postman Collection file:
    dynamic environments. To run API fuzzing against an app dynamically created during a GitLab CI/CD
    pipeline, have the app persist its domain in an `environment_url.txt` file. API fuzzing
    automatically parses that file to find its scan target. You can see an
-   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+   example of this in the [GitLab Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
 Example `.gitlab-ci.yml` file using a Postman Collection file:
 
@@ -442,7 +442,7 @@ Postman has grown from a basic client tool with a nice UX experience to a more c
 
 Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a global environment scope that is seen by every operation definition and workspace. You can also create a variable in a specific environment scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example in the Postman ecosystem you can create requests in the Postman Client, these requests do not have a local scope, but test scripts do.
 
-Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. We strongly recommend that you read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from Postman documentation before moving forward.
+Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. Read [variable scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from the Postman documentation before moving forward.
 
 As mentioned previously, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
@@ -456,7 +456,7 @@ a local variable named `username`, the local value is used when the request runs
 
 The following is a summary of the variable scopes supported by the Postman Client and API fuzzing:
 
-- **Global environment (global) scope** is a special pre-defined environment that is available throughout a workspace. We can also refer to the global environment scope as the global scope. The Postman Client allows exporting the global environment into a JSON file, which can be used with API fuzzing.
+- **Global environment (global) scope** is a special pre-defined environment that is available throughout a workspace. The global environment scope can also be called the global scope. The Postman Client allows exporting the global environment into a JSON file, which can be used with API fuzzing.
 - **Environment scope** is a named group of variables created by a user in the Postman Client.
   The Postman Client supports a single active environment along with the global environment. The variables defined in an active user-created environment take precedence over variables defined in the global environment. The Postman Client allows exporting your environment into a JSON file, which can be used with API fuzzing.
 - **Collection scope** is a group of variables declared in a given collection. The collection variables are available to the collection where they have been declared and the nested requests or collections. Variables defined in the collection scope take precedence over the global environment scope and also the environment scope.
@@ -467,7 +467,7 @@ The following is a summary of the variable scopes supported by the Postman Clien
   - Define a single row of data from the unsupported _data scope_
 - **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
   API fuzzing does **not** support reading data from a CSV or JSON file.
-- **Local scope** are variables that are defined in Postman scripts. API fuzzing does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or our custom JSON format.
+- **Local scope** are variables that are defined in Postman scripts. API fuzzing does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or the custom JSON format.
 
 Not all scopes are supported by API fuzzing and variables defined in scripts are not supported. The following table is sorted by broadest scope to narrowest scope.
 
@@ -501,7 +501,7 @@ For more details on exporting variables in different supported scopes, see:
 
 #### API fuzzing scope, custom JSON file format
 
-Our custom JSON file format is a JSON object where each object property represents a variable name and the property value represents the variable value. This file can be created using your favorite text editor, or it can be produced by an earlier job in your pipeline.
+The custom JSON file format is a JSON object where each object property represents a variable name and the property value represents the variable value. This file can be created using your favorite text editor, or it can be produced by an earlier job in your pipeline.
 
 This example defines two variables `base_url` and `token` in the API Fuzzing scope:
 
@@ -758,7 +758,7 @@ variables:
   FUZZAPI_TARGET_URL: http://test-deployment/
 ```
 
-The file `api-fuzzing-scope.json` uses our [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+The file `api-fuzzing-scope.json` uses the API fuzzing [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
 ```json
@@ -770,7 +770,7 @@ values. For example:
 
 #### Example: Multiple scopes
 
-In this example, a global scope, environment scope, and collection scope are configured. The first step is to export our various scopes.
+In this example, a global scope, environment scope, and collection scope are configured. The first step is to export the various scopes.
 
 - [Export the global scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the environment scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
@@ -798,8 +798,8 @@ When using exported scopes, it's often the case that the value of a variable mus
 
 The collection scope variables are included in the exported Postman Collection file and provided through the `FUZZAPI_POSTMAN_COLLECTION` configuration variable.
 
-The API fuzzing scope is provided through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable, but first, we must create the file.
-The file `api-fuzzing-scope.json` uses our [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+The API fuzzing scope is provided through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable, but first, you must create the file.
+The file `api-fuzzing-scope.json` uses the API fuzzing [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
 ```json
@@ -808,7 +808,7 @@ values. For example:
 }
 ```
 
-Our CI definition:
+The CI definition:
 
 ```yaml
 stages:
@@ -828,13 +828,13 @@ variables:
 
 When using exported scopes, it's often the case that the value of a variable must be changed for use with API fuzzing. For example, an environment scope might contain a variable named `api_version` with a value of `v2`, while your test needs a value of `v1`. Instead of modifying the exported file to change the value, the API fuzzing scope can be used. This works because the API fuzzing scope takes precedence over all other scopes.
 
-In this example, a global scope, environment scope, collection scope, and API fuzzing scope are configured. The first step is to export and create our various scopes.
+In this example, a global scope, environment scope, collection scope, and API fuzzing scope are configured. The first step is to export and create your various scopes.
 
 - [Export the global scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the environment scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the collection scope as `postman-collection.json`
 
-The API fuzzing scope is used by creating a file `api-fuzzing-scope.json` using our [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
+The API fuzzing scope is used by creating a file `api-fuzzing-scope.json` using the API fuzzing [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
 ```json
@@ -912,9 +912,9 @@ Follow these steps to view details of a fuzzing fault:
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
    | Request             | The HTTP request that caused the fault.                                                 |
-   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like. |
+   | Unmodified Response | Response from an unmodified request. A typical working response looks like an Unmodified Response. |
    | Actual Response     | Response received from fuzzed request.                                                  |
-   | Evidence            | How we determined a fault occurred.                                                     |
+   | Evidence            | How GitLab determined a fault occurred.                                                 |
    | Identifiers         | The fuzzing check used to find this fault.                                              |
    | Severity            | Severity of the finding is always Unknown.                                              |
    | Scanner Type        | Scanner used to perform testing.                                                        |

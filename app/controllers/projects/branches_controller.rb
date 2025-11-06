@@ -34,7 +34,8 @@ class Projects::BranchesController < Projects::ApplicationController
         end
 
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name), include_identical: true)
-        @branch_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, repository, current_user, @branches).execute
+        @branch_pipeline_statuses =
+          Ci::CommitStatusesFinder.new(@project, repository, current_user, @branches, ref_type: :heads).execute
 
         # https://gitlab.com/gitlab-org/gitlab/-/issues/22851
         Gitlab::GitalyClient.allow_n_plus_1_calls do

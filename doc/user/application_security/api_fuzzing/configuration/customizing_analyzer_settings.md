@@ -647,14 +647,15 @@ variables:
   FUZZAPI_EXCLUDE_PATHS: /auth
 ```
 
-To exclude `/auth`, and child resources (`/auth/child`), we use a wildcard.
+To exclude `/auth`, and child resources (`/auth/child`), use a wildcard:
 
 ```yaml
 variables:
   FUZZAPI_EXCLUDE_PATHS: /auth*
 ```
 
-To exclude multiple paths we can use the `;` character. In this example we exclude `/auth*` and `/v1/*`.
+To exclude multiple paths, use the `;` character to separate the paths. This example
+shows how to do so by excluding `/auth*` and `/v1/*`.
 
 ```yaml
 variables:
@@ -766,13 +767,13 @@ The exclude parameters uses `body-json` when the request uses a content type `ap
 
 To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].paswword" ]`.
 
-The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Then, it uses `users` to refer to a property and the characters `[` and `]` to enclose the index in the array you want to use, instead of providing a number as an index you use `*` to specify any index. After the index reference, we find `.` which now refers to any given selected index in the array, preceded by a property name `password`.
+The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Next, it uses `users` to refer to a property. The characters `[` and `]` enclose the array index you want to use. You can use `*` to specify any index instead of providing a specific number. After the index reference, the `.` character refers to any given selected index in the array, followed by a property name `password`.
 
 For instance, the JSON document looks like this:
 
 ```json
 {
-  "body-json": [ "$.users[*].paswword" ]
+  "body-json": [ "$.users[*].password" ]
 }
 ```
 

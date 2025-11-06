@@ -5,8 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Auto DevOps to deploy an application to Amazon Elastic Kubernetes Service (EKS)
 ---
 
-In this tutorial, we'll help you to get started with [Auto DevOps](../_index.md)
-through an example of how to deploy an application to Amazon Elastic Kubernetes Service (EKS).
+This tutorial gets you started with [Auto DevOps](../_index.md)
+using an example of how to deploy an application to Amazon Elastic Kubernetes Service (EKS).
 
 The tutorial uses the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the AWS console.
@@ -58,13 +58,13 @@ Create the application project in the group hierarchy at the same level or below
    [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
 1. Select **Create project**.
 
-Now you have an application project you are going to deploy to the EKS cluster.
+Now you have an application project to deploy to the EKS cluster.
 
 ## Configure the agent
 
-Next, we'll configure the GitLab agent for Kubernetes so we can use it to deploy the application project.
+Next, configure the GitLab agent for Kubernetes so you can use it to deploy the application project.
 
-1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
+1. Go to the project [you created to manage the cluster](#create-a-kubernetes-cluster).
 1. Go to the [agent configuration file](../../../user/clusters/agent/install/_index.md#create-an-agent-configuration-file) (`.gitlab/agents/eks-agent/config.yaml`) and edit it.
 1. Configure `ci_access:projects` attribute. Use the application project path as `id`:
 
@@ -80,7 +80,7 @@ After your cluster is running, you must install NGINX Ingress Controller as a
 load balancer to route traffic from the internet to your application.
 Install the NGINX Ingress Controller
 through the GitLab [Cluster management project template](../../../user/clusters/management_project_template.md),
-or manually via the command line:
+or manually using the command line:
 
 1. Ensure you have `kubectl` and Helm installed on your machine.
 1. Create an IAM role to access the cluster.
@@ -148,7 +148,7 @@ these steps to enable Auto DevOps if it's disabled:
    - template: Auto-DevOps.gitlab-ci.yml
    ```
 
-The commit should trigger a pipeline. In the next section, we explain what each job does in the pipeline.
+The commit should trigger a pipeline. The next section explains what each job does in the pipeline.
 
 ## Deploy the application
 

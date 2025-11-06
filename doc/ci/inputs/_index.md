@@ -496,6 +496,69 @@ $[[ inputs.test | truncate(3,5) ]]
 
 Assuming the value of `inputs.test` is `0123456789`, then the output would be `34567`.
 
+#### `posix_quote`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/568289) in GitLab 18.6.
+
+{{< /history >}}
+
+Use `posix_quote` to escape any POSIX _Bourne shell_ control or meta characters that might be included in input values.
+`posix_quote` escapes the characters by inserting ` \ ` before any problematic characters in the input.
+
+Example:
+
+```yaml
+spec:
+  inputs:
+    test:
+      default: |
+        A string with single ' and double " quotes and   blanks
+---
+
+test-job:
+  script: printf '%s\n' $[[ inputs.test | posix_quote ]]
+```
+
+In this example, `posix_quote` escapes all the characters that could be shell control or metadata characters:
+
+```console
+$ printf '%s\n' A\ string\ with\ single\ \'\ and\ double\ \"\ quotes\ and\ \ \ blanks
+A string with single ' and double " quotes and   blanks
+```
+
+The escaped input preserves all special characters and spacing exactly as provided.
+
+{{< alert type="warning" >}}
+
+Not using `posix_quote` can be a security risk if the input contains untrusted input.
+
+{{< /alert >}}
+
+Input values that do not escape shell control or metadata characters have risks:
+
+- Shell code included in the string might be executed.
+- Single or double quotes might be used to escape any surrounding quoting.
+- Variable references could be used to access protected variables.
+- Input or output redirection might be used to read or write to local files.
+- Unescaped spaces are used by shells to split a string into multiple arguments.
+
+Escaping might be unnecessary if:
+
+- The [`spec:input:type`](../yaml/_index.md#specinputstype) is `number` or `boolean`, which cannot contain problematic characters.
+- The input value is validated with [`spec:input:regex`](../yaml/_index.md#specinputsregex) to prevent problematic input.
+- The input value is from a trusted source.
+
+If you combine `posix_quote` with `expand_vars`, you must set `expand_vars` first.
+Otherwise `posix_quote` would escape the `$` in the variable, preventing expansion.
+For example:
+
+```yaml
+test-job:
+  script: echo $[[ inputs.test | expand_vars | posix_quote ]]
+```
+
 ## Troubleshooting
 
 ### YAML syntax errors when using `inputs`

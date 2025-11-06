@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI-powered
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.

@@ -186,6 +186,8 @@ To edit a squash option:
 1. Select **Edit**.
 1. Select one of the following options:
 
+   - **Default**: Removes the branch-level squash setting and inherits from the project's default settings.
+     This option is not available for the **All branches** rule, which defines the project's default settings.
    - **Do not allow**: Squashing is never allowed and the checkbox is hidden.
    - **Allow**: Checkbox is visible and unselected by default.
    - **Encourage**: Checkbox is visible and selected by default.

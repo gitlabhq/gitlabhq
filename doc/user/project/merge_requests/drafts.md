@@ -25,9 +25,9 @@ You can flag a merge request as a draft in several ways:
 
 - Viewing a merge request: In the upper-right corner of the merge request,
   select **Merge request actions** ({{< icon name="ellipsis_v" >}}), then **Mark as draft**.
-- Creating or editing a merge request: Add `[Draft]`, `Draft:` or `(Draft)` to
-  the beginning of the merge request's title, or select **Mark as draft**
-  below the **Title** field.
+- Creating or editing a merge request: You can do either of the following:
+  - Add `[Draft]`, `Draft:` or `(Draft)` to the beginning of the merge request's title.
+  - Select **Mark as draft** below the **Title** field
 - Commenting in an existing merge request: Add the `/draft`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment. To mark a merge request as ready, use `/ready`.
@@ -41,11 +41,10 @@ You can flag a merge request as a draft in several ways:
 When a merge request is ready to merge, you can remove the `Draft` flag in several ways:
 
 - Viewing a merge request: In the upper-right corner of the merge request, select **Mark as ready**.
-  Users with at least the Developer role
-  can also scroll to the bottom of the merge request description and select **Mark as ready**.
+  Users with at least the Developer role can also scroll to the bottom of the merge request
+  description and select **Mark as ready**.
 - Editing an existing merge request: Remove `[Draft]`, `Draft:` or `(Draft)`
-  from the beginning of the title, or clear **Mark as draft**
-  below the **Title** field.
+  from the beginning of the title, or clear **Mark as draft** below the **Title** field.
 - Commenting in an existing merge request: Add the `/ready`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment in the merge request.

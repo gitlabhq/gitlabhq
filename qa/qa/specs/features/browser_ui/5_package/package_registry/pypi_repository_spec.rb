@@ -54,7 +54,7 @@ module QA
 
       context 'when at the project level' do
         it 'publishes and installs a pypi package',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565069' do
           project.visit_job('run')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)

@@ -49,7 +49,7 @@ module QA
         end
 
         it 'pushes and pulls a maven package via gradle, using a pipeline',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347603' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/562424' do
           gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle',
             'gradle_upload_install_package.yaml.erb')).result(binding)
           build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)
@@ -236,14 +236,14 @@ module QA
 
           let(:token) { project_deploy_token.token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347602'
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/562429'
         end
 
         context 'with a personal access token' do
           let(:maven_header_name) { 'Private-Token' }
           let(:token) { Runtime::User::Store.default_api_client.personal_access_token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347601'
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/562423'
         end
       end
     end

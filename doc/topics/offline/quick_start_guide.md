@@ -64,12 +64,12 @@ sudo dpkg -i <package_name>.deb
 ```
 
 [Use the relevant commands for your operating system to install the package](../../update/package/_index.md#upgrade-with-a-downloaded-package) but make sure to specify an `http`
-URL for the `EXTERNAL_URL` installation step. Once installed, we can manually
-configure the SSL ourselves.
+URL for the `EXTERNAL_URL` installation step. Once installed, you can manually
+configure the SSL yourself.
 
-It is strongly recommended to set up a domain for IP resolution rather than bind
-to the server's IP address. This better ensures a stable target for our certs' CN
-and makes long-term resolution simpler.
+You should set up a domain for IP resolution rather than bind to the server's IP address.
+A domain provides a stable target for the certificate's Common Name (CN) and simplifies the long-term
+resolution.
 
 The following example for Ubuntu specifies the `EXTERNAL_URL` using HTTP and installs the GitLab package:
 
@@ -148,7 +148,7 @@ sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/gitlab-runner/certs/ca.crt
 
 ## Enabling GitLab Runner
 
-[Following a similar process to the steps for installing our GitLab Runner as a Docker service](https://docs.gitlab.com/runner/install/docker.html#install-the-docker-image-and-start-the-container), we must first register our runner:
+[Following a similar process to the steps for installing our GitLab Runner as a Docker service](https://docs.gitlab.com/runner/install/docker.html#install-the-docker-image-and-start-the-container), you must first register your runner:
 
 ```shell
 $ sudo docker run --rm -it -v /etc/gitlab-runner:/etc/gitlab-runner gitlab/gitlab-runner register
@@ -173,14 +173,14 @@ ruby:2.6
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
 
-Now we must add some additional configuration to our runner:
+Next, you must add some additional configuration to your runner.
 
 Make the following changes to `/etc/gitlab-runner/config.toml`:
 
 - Add Docker socket to volumes `volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]`
 - Add `pull_policy = "if-not-present"` to the executor configuration
 
-Now we can start our runner:
+Now you can start your runner:
 
 ```shell
 sudo docker run -d --restart always --name gitlab-runner -v /etc/gitlab-runner:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest

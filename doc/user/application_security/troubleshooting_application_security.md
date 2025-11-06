@@ -194,7 +194,7 @@ involve pinning to the previous template versions, for example:
     remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/12-10-stable-ee/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'
   ```
 
-Additionally, we provide a dedicated project containing the versioned legacy templates.
+In addition, a dedicated project containing the versioned legacy templates is available.
 This can be used for offline setups or for anyone wishing to use [Auto DevOps](../../topics/autodevops/_index.md).
 
 Instructions are available in the [legacy template project](https://gitlab.com/gitlab-org/auto-devops-v12-10).

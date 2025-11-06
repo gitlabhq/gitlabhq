@@ -326,7 +326,7 @@ For more details, see the Git documentation for
    # server. WARNING: this step may be very slow!
    git clone --sparse --filter=sparse:oid=master:shiny-app/.gitfilterspec <url>
 
-   # Optional: observe there are missing objects that we have not fetched
+   # Optional: Check for missing objects that have not been fetched
    git rev-list --all --quiet --objects --missing=print | wc -l
    ```
 

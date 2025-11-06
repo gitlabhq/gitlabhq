@@ -572,7 +572,7 @@ To completely remove all traces of the file, past and present, from your reposit
 git commit -am "bug introduced"
 git revert HEAD
 # New commit created reverting changes
-# Now we want to re apply the reverted commit
+# Next, reapply the reverted commit
 git log # take hash from the revert commit
 git revert <rev commit hash>
 # reverted commit is back (new commit created again)

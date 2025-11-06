@@ -45,17 +45,17 @@ module QA
           'using a personal access token' => {
             authentication_token_type: :personal_access_token,
             maven_header_name: 'Private-Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354351'
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/556461'
           },
           'using a project deploy token' => {
             authentication_token_type: :project_deploy_token,
             maven_header_name: 'Deploy-Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354352'
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/556459'
           },
           'using a ci job token' => {
             authentication_token_type: :ci_job_token,
             maven_header_name: 'Job-Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354353'
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/556460'
           }
         }
       end

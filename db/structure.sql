@@ -26134,6 +26134,7 @@ CREATE TABLE security_policy_dismissals (
     comment text,
     status smallint DEFAULT 0 NOT NULL,
     licenses jsonb DEFAULT '{}'::jsonb NOT NULL,
+    license_occurrence_uuids text[] DEFAULT '{}'::text[] NOT NULL,
     CONSTRAINT check_654ff06528 CHECK ((char_length(comment) <= 255))
 );
 
@@ -35506,6 +35507,9 @@ ALTER TABLE ONLY security_pipeline_execution_project_schedules
 
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT security_policies_pkey PRIMARY KEY (id);
+
+ALTER TABLE security_policy_dismissals
+    ADD CONSTRAINT security_policy_dismissals_license_occurrence_uuids_size CHECK ((cardinality(license_occurrence_uuids) <= 1000)) NOT VALID;
 
 ALTER TABLE ONLY security_policy_dismissals
     ADD CONSTRAINT security_policy_dismissals_pkey PRIMARY KEY (id);

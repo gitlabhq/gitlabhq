@@ -235,27 +235,27 @@ To have the cluster and GitLab Runner well configured, consider the following in
 
 ### Real life applications for the FastAPI fork
 
-For the FastAPI, consider the following information:
+For the FastAPI fork, consider the following information:
 
-- **How many job profiles do I need to cover**? We only have one job profile with the following characteristics: `1 CPU` and `303 Mi` of memory. As explained in [Analyzing the metrics collected](#analyzing-the-metrics-collected) sections, we change those raw values to the following:
+- **How many job profiles do I need to cover**? You have one job profile with the following characteristics: `1 CPU` and `303 Mi` of memory. As explained in [Analyzing the metrics collected](#analyzing-the-metrics-collected) sections, those raw values change to the following:
   - `400 Mi` for the memory limit instead of `303 Mi` to avoid any job failure due to the memory limits.
-  - `0.20` for the CPU instead of `1 CPU`. We don't mind our job taking more time to complete. We prioritize accuracy and quality over speed when completing tasks.
-- **How many GitLab Runner Managers do I need to run**? Only one GitLab Runner Manager is enough for our tests.
-- **What is the expected Workload**? We want to run up to 20 jobs simultaneously at any time.
+  - `0.20` for the CPU instead of `1 CPU`. For this example, you prioritize accuracy and quality over speed when completing tasks.
+- **How many GitLab Runner Managers do I need to run**? Only one GitLab Runner Manager is enough for your tests.
+- **What is the expected Workload**? You want to run up to 20 jobs simultaneously at any time.
 
 Based on these inputs, any GKE Cluster with the following minimum characteristics should be enough:
 
-- Minimum CPU: **(0.20 + helper CPU usage) * number of jobs simultaneously**. In our example, we get **7 vCPU** with the limit for the helper container set to **0.15 CPU**.
-- Minimum Memory: **(400Mi + helper memory usage) * number of jobs simultaneously**. In our example, we get at least **10 Gi** with the limit for the helper set to **100 Mi**.
+- Minimum CPU: **(0.20 + helper CPU usage) * number of jobs simultaneously**. In this example, you get **7 vCPU** with the helper container limit set to **0.15 CPU**.
+- Minimum Memory: **(400Mi + helper memory usage) * number of jobs simultaneously**. In this example, you get at least **10 Gi** with the helper limit set to **100 Mi**.
 
-Other characteristics such as the minimum storage required should also be considered. However, we don't into consideration in the example.
+Other characteristics such as the minimum storage required should also be considered. However, the example does not take this into account.
 
 Possible configurations for our GKE cluster can be (both configuration allows to run more than **20 jobs** simultaneously):
 
 - GKE Cluster with a node pool of `3 e2-standard-4` nodes for a total of `12 vCPU` and `48 GiB` of memory
 - GKE Cluster with a node pool of only on `e2-standard-8` nodes for a total of `8 vCPU` and `32 GiB` of memory
 
-For the sake of our example, we use the first configuration. To prevent the GitLab Runner Manager log processing from impacting the overall log processing, use a dedicated node pool where GitLab Runner is installed.
+The first configuration is used in this example. To prevent the GitLab Runner Manager log processing from impacting the overall log processing, use a dedicated node pool where GitLab Runner is installed.
 
 #### GKE GRIT configuration
 

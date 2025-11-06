@@ -17,7 +17,8 @@ module Gitlab
 
           FUNCTIONS = [
             Functions::Truncate,
-            Functions::ExpandVars
+            Functions::ExpandVars,
+            Functions::PosixQuote
           ].freeze
 
           attr_reader :errors
