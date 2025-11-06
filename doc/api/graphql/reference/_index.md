@@ -38764,7 +38764,7 @@ Represents a Pending Group Membership.
 | <a id="pendinggroupmemberavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending member. |
 | <a id="pendinggroupmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
 | <a id="pendinggroupmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
-| <a id="pendinggroupmemberemail"></a>`email` | [`String`](#string) | Public email of the pending member. |
+| <a id="pendinggroupmemberemail"></a>`email` | [`String`](#string) | Email address of the pending member. |
 | <a id="pendinggroupmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="pendinggroupmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
 | <a id="pendinggroupmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
@@ -38801,7 +38801,7 @@ Represents a Pending Project Membership.
 | <a id="pendingprojectmemberavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending member. |
 | <a id="pendingprojectmembercreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
 | <a id="pendingprojectmembercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
-| <a id="pendingprojectmemberemail"></a>`email` | [`String`](#string) | Public email of the pending member. |
+| <a id="pendingprojectmemberemail"></a>`email` | [`String`](#string) | Email address of the pending member. |
 | <a id="pendingprojectmemberexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="pendingprojectmemberid"></a>`id` | [`ID!`](#id) | ID of the member. |
 | <a id="pendingprojectmemberinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |
@@ -54690,7 +54690,7 @@ Implementations:
 | <a id="pendingmemberinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the pending member. |
 | <a id="pendingmemberinterfacecreatedat"></a>`createdAt` | [`Time`](#time) | Date and time the membership was created. |
 | <a id="pendingmemberinterfacecreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that authorized membership. |
-| <a id="pendingmemberinterfaceemail"></a>`email` | [`String`](#string) | Public email of the pending member. |
+| <a id="pendingmemberinterfaceemail"></a>`email` | [`String`](#string) | Email address of the pending member. |
 | <a id="pendingmemberinterfaceexpiresat"></a>`expiresAt` | [`Time`](#time) | Date and time the membership expires. |
 | <a id="pendingmemberinterfaceid"></a>`id` | [`ID!`](#id) | ID of the member. |
 | <a id="pendingmemberinterfaceinvited"></a>`invited` | [`Boolean`](#boolean) | Whether the pending member has been invited. |

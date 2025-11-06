@@ -96,7 +96,7 @@ RSpec.describe InstanceConfiguration do
       describe '#size_limits' do
         before do
           Gitlab::CurrentSettings.current_application_settings.update!(
-            max_attachment_size: 10,
+            max_attachment_size: 100,
             receive_max_input_size: 20,
             max_import_size: 30,
             max_export_size: 40,
@@ -112,7 +112,7 @@ RSpec.describe InstanceConfiguration do
         it 'returns size limits from application settings' do
           size_limits = subject.settings[:size_limits]
 
-          expect(size_limits[:max_attachment_size]).to eq(10.megabytes)
+          expect(size_limits[:max_attachment_size]).to eq(100.megabytes)
           expect(size_limits[:receive_max_input_size]).to eq(20.megabytes)
           expect(size_limits[:max_import_size]).to eq(30.megabytes)
           expect(size_limits[:max_export_size]).to eq(40.megabytes)

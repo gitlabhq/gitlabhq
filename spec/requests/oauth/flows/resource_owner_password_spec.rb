@@ -63,6 +63,41 @@ RSpec.describe 'Gitlab OAuth2 Resource Owner Password Credentials Flow', feature
           'counts.count_total_oauth_authorizations_using_ropc'
         )
       end
+
+      context 'with 2FA enabled' do
+        let(:user) { create(:user, :two_factor, :with_namespace, organizations: [organization], password: 'High5ive!') }
+
+        it 'returns an error' do
+          token_response = fetch_access_token(token_params)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(token_response['error']).to eq('invalid_grant')
+        end
+      end
+
+      context 'with email-based OTP enabled' do
+        let(:user) { create(:user, email_otp_required_after: 1.second.ago) }
+
+        it 'returns an error' do
+          token_response = fetch_access_token(token_params)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(token_response['error']).to eq('invalid_grant')
+        end
+
+        context 'when :email_based_mfa feature flag disabled' do
+          before do
+            stub_feature_flags(email_based_mfa: false)
+          end
+
+          it 'returns an access token' do
+            token_response = fetch_access_token(token_params)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(token_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
+          end
+        end
+      end
     end
 
     context 'without client credentials' do

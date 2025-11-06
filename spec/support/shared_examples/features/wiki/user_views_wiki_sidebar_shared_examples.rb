@@ -20,7 +20,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
     context 'when there is no custom sidebar' do
       before do
         visit wiki_path(wiki)
-        click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
       end
 
       it 'renders a default sidebar' do
@@ -36,7 +35,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
         fill_in :wiki_content, with: 'My custom sidebar'
         click_on 'Create custom sidebar'
 
-        click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
         within('.wiki-sidebar') do
           expect(page).to have_content('My custom sidebar')
           expect(page).not_to have_content('another')
@@ -49,7 +47,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
         create(:wiki_page, wiki: wiki, title: '_sidebar', content: 'My custom sidebar')
 
         visit wiki_path(wiki)
-        click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
       end
 
       it 'renders both the custom sidebar and the default one' do
@@ -74,7 +71,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
         fill_in :wiki_content, with: 'My other custom sidebar'
         click_on 'Save changes'
-        click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
 
         within('.wiki-sidebar') do
           expect(page).to have_content('My other custom sidebar')
@@ -93,7 +89,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows all pages in the sidebar' do
       visit wiki_path(wiki)
-      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
 
       (1..15).each { |i| expect(page).to have_content("my page #{i}") }
       expect(page).to have_link('View all pages')
@@ -101,7 +96,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows all collapse buttons in the sidebar' do
       visit wiki_path(wiki)
-      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
 
       within('.wiki-sidebar') do
         expect(page.all("[data-testid='wiki-sidebar-entry-collapser']").size).to eq(3)
@@ -110,7 +104,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'collapses/expands children when click collapse/expand button in the sidebar', :js do
       visit wiki_path(wiki)
-      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
 
       within('.wiki-sidebar') do
         first("[data-testid='wiki-sidebar-entry-collapser']").click
@@ -127,7 +120,6 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows create child page button when hover to the page title in the sidebar', :js do
       visit wiki_path(wiki)
-      click_button('Toggle sidebar') if Users::ProjectStudio.enabled_for_user?(user)
 
       within('.wiki-sidebar') do
         first_wiki_list = first("[data-testid='wiki-list']")

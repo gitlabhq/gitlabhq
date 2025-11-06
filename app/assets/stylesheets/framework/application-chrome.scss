@@ -76,6 +76,14 @@
     }
   }
 
+  .header-message + .super-topbar {
+    @apply gl-mt-5;
+  }
+
+  &.page-with-panels:has(.footer-message) .layout-page {
+    @apply gl-mb-5;
+  }
+
   // Quick search overlay
   #super-sidebar-search-modal {
     @apply gl-pt-0;

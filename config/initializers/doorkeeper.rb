@@ -29,7 +29,7 @@ Doorkeeper.configure do
     next unless user
 
     next if user.password_automatically_set? && !user.password_based_omniauth_user?
-    next if user.two_factor_enabled? || Gitlab::Auth::TwoFactorAuthVerifier.new(user).two_factor_authentication_enforced?
+    next if user.two_factor_enabled? || Gitlab::Auth::TwoFactorAuthVerifier.new(user, treat_email_otp_as_2fa: true).two_factor_authentication_enforced?
 
     Gitlab::Auth.find_with_user_password(params[:username], params[:password], increment_failed_attempts: true, request: request)
   end
