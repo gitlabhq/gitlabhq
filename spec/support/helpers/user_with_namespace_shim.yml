@@ -346,13 +346,12 @@
 - spec/features/incidents/user_views_incident_spec.rb
 - spec/features/issuables/issuable_templates_spec.rb
 - spec/features/issuables/markdown_references/jira_spec.rb
-- spec/features/issuables/shortcuts_issuable_spec.rb
+- spec/features/issuables/shortcuts_merge_request_spec.rb
 - spec/features/issuables/task_lists_spec.rb
 - spec/features/issuables/user_sees_sidebar_spec.rb
 - spec/features/issues/confidential_notes_spec.rb
 - spec/features/issues/create_issue_for_discussions_in_merge_request_spec.rb
 - spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb
-- spec/features/issues/design_management/user_links_to_designs_in_issue_spec.rb
 - spec/features/issues/design_management/user_views_design_spec.rb
 - spec/features/issues/discussion_lock_spec.rb
 - spec/features/issues/email_participants_spec.rb

@@ -6,23 +6,29 @@ module Types
     class LinkedItemType < BaseObject
       graphql_name 'LinkedWorkItemType'
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       field :link_created_at, ::Types::TimeType,
         description: 'Timestamp the link was created.', null: false,
         method: :issue_link_created_at
 
       field :work_item_state, ::Types::WorkItemStateEnum,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'State of the linked work item.', null: false, method: :state
 
       field :link_id, ::Types::GlobalIDType[::WorkItems::RelatedWorkItemLink],
         description: 'Global ID of the link.', null: false,
         method: :issue_link_id
       field :link_type, GraphQL::Types::String,
-        description: 'Type of link.', null: false,
+        description: 'Type of link.', null: false, scopes: [:api, :read_api, :ai_workflows],
         method: :issue_link_type
       field :link_updated_at, ::Types::TimeType,
         description: 'Timestamp the link was updated.', null: false,
         method: :issue_link_updated_at
       field :work_item, ::Types::WorkItemType,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'Linked work item.', null: true
 
       def work_item

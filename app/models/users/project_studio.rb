@@ -17,9 +17,13 @@ module Users
 
       return enabled_for_unsigned_in_user? if user.nil?
 
-      # Project Studio is only enabled for the user if it's available,
-      # regardless of their preference
-      available? && user.project_studio_enabled
+      return false unless available?
+
+      return true if user.project_studio_enabled # allow us to control those already in vs everyone else below
+
+      return true if Feature.enabled?(:new_ui_dot_com_rollout, user) && user.new_ui_enabled.nil? && Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- We need this check to enable the new UI by default for all users on .com only
+
+      !!user.new_ui_enabled
     end
 
     def available?

@@ -13910,7 +13910,7 @@ CREATE TABLE ci_instance_variables (
     description text,
     CONSTRAINT check_07a45a5bcb CHECK ((char_length(encrypted_value_iv) <= 255)),
     CONSTRAINT check_5aede12208 CHECK ((char_length(key) <= 255)),
-    CONSTRAINT check_956afd70f1 CHECK ((char_length(encrypted_value) <= 13579)),
+    CONSTRAINT check_956afd70f2 CHECK ((((variable_type = 2) AND (char_length(encrypted_value) <= 67800)) OR (char_length(encrypted_value) <= 13579))),
     CONSTRAINT check_a0a9762afa CHECK ((char_length(description) <= 255))
 );
 

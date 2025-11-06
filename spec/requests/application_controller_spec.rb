@@ -62,6 +62,58 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
     end
   end
 
+  describe 'logged out studio cookie' do
+    let(:dot_com) { true }
+
+    before do
+      allow(Gitlab).to receive(:com?).and_return(dot_com)
+    end
+
+    context 'when user is not logged in' do
+      context 'when studio cookie does not exist' do
+        it 'sets the studio cookie' do
+          get root_path
+
+          expect(response.cookies['studio']).to eq('true')
+        end
+      end
+
+      context 'when studio cookie already exists' do
+        before do
+          cookies['studio'] = 'false'
+        end
+
+        it 'does not attempt to set the studio cookie' do
+          get root_path
+
+          expect(response.cookies['studio']).not_to be_present
+        end
+      end
+
+      context 'when not on Gitlab.com' do
+        let(:dot_com) { false }
+
+        it 'does not attempt to set the studio cookie' do
+          get root_path
+
+          expect(response.cookies['studio']).not_to be_present
+        end
+      end
+    end
+
+    context 'when user is logged in' do
+      before do
+        sign_in(user)
+
+        get root_path
+      end
+
+      it 'does not set the studio cookie' do
+        expect(response.cookies['studio']).not_to be_present
+      end
+    end
+  end
+
   describe 'User-Agent header' do
     before do
       sign_in(user)

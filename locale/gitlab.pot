@@ -11653,9 +11653,6 @@ msgstr ""
 msgid "BranchRules|No data to display"
 msgstr ""
 
-msgid "BranchRules|No default set until defined by user"
-msgstr ""
-
 msgid "BranchRules|No matching results"
 msgstr ""
 
@@ -64299,10 +64296,16 @@ msgstr ""
 msgid "SquashSettings|Checkbox is visible and unselected by default."
 msgstr ""
 
+msgid "SquashSettings|Default"
+msgstr ""
+
 msgid "SquashSettings|Do not allow"
 msgstr ""
 
 msgid "SquashSettings|Encourage"
+msgstr ""
+
+msgid "SquashSettings|No explicit squash settings. Inherits project squash settings when available."
 msgstr ""
 
 msgid "SquashSettings|Require"
@@ -68141,6 +68144,9 @@ msgstr ""
 msgid "TierBadgePopover|Explore paid plans"
 msgstr ""
 
+msgid "TierBadgePopover|Get advanced features like GitLab Duo, merge approvals, epics, and code review analytics."
+msgstr ""
+
 msgid "TierBadgePopover|Start a free trial"
 msgstr ""
 
@@ -68148,6 +68154,12 @@ msgid "TierBadgePopover|This group and all its related projects use the %{tier} 
 msgstr ""
 
 msgid "TierBadgePopover|This project uses the %{tier} GitLab tier. %{copyEnd}"
+msgstr ""
+
+msgid "TierBadgePopover|Unlock advanced features"
+msgstr ""
+
+msgid "TierBadgePopover|Upgrade to unlock"
 msgstr ""
 
 msgid "TierBadgePopover|Want to enhance team productivity and access advanced features like Merge Approvals, Push rules, Epics, Code Review Analytics, and Container Scanning? Try all GitLab has to offer for free for %{duration} days. No credit card required."

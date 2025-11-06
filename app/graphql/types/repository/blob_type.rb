@@ -61,7 +61,7 @@ module Types
         calls_gitaly: true,
         complexity: 25
 
-      field :raw_text_blob, GraphQL::Types::String, null: true, method: :text_only_data,
+      field :raw_text_blob, GraphQL::Types::String, null: true, method: :raw_plain_data,
         description: 'Raw content of the blob, if the blob is text data.',
         calls_gitaly: true,
         complexity: 25
@@ -156,10 +156,6 @@ module Types
 
       field :project_blob_path_root, GraphQL::Types::String, null: true,
         description: 'Web path for the root of the blob.'
-
-      def raw_text_blob
-        object.data unless object.binary?
-      end
 
       def lfs_oid
         Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(object.repository, object.id).find

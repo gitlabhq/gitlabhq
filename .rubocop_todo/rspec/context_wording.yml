@@ -955,7 +955,6 @@ RSpec/ContextWording:
     - 'spec/features/issuables/user_sees_sidebar_spec.rb'
     - 'spec/features/issues/create_issue_for_discussions_in_merge_request_spec.rb'
     - 'spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'
-    - 'spec/features/issues/design_management/user_links_to_designs_in_issue_spec.rb'
     - 'spec/features/issues/design_management/user_views_designs_spec.rb'
     - 'spec/features/issues/gfm_autocomplete_spec.rb'
     - 'spec/features/issues/issue_detail_spec.rb'

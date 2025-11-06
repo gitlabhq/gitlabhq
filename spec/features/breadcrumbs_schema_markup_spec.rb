@@ -17,6 +17,7 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   it 'generates the breadcrumb schema for user projects' do
@@ -82,18 +83,15 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
 
     item_list = get_schema_content
 
-    expect(item_list.size).to eq 4
+    expect(item_list.size).to eq 3
     expect(item_list[0]['name']).to eq project.namespace.name
     expect(item_list[0]['item']).to eq user_url(project.first_owner)
 
     expect(item_list[1]['name']).to eq project.name
     expect(item_list[1]['item']).to eq project_url(project)
 
-    expect(item_list[2]['name']).to eq 'Issues'
-    expect(item_list[2]['item']).to eq project_issues_url(project)
-
-    expect(item_list[3]['name']).to eq issue.to_reference
-    expect(item_list[3]['item']).to eq project_issue_url(project, issue)
+    expect(item_list[2]['name']).to eq issue.to_reference
+    expect(item_list[2]['item']).to eq project_issue_url(project, issue)
   end
 
   it 'generates the breadcrumb schema for wiki pages' do

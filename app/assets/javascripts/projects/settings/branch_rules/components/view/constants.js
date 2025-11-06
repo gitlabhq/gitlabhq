@@ -37,7 +37,10 @@ export const I18N = {
   squashSettingHelpText: s__(
     'BranchRules|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests. %{linkStart}What is squashing?%{linkEnd}',
   ),
-  squashSettingEmptyState: s__('BranchRules|No default set until defined by user'),
+  squashDefaultLabel: s__('SquashSettings|Default'),
+  squashDefaultDescription: s__(
+    'SquashSettings|No explicit squash settings. Inherits project squash settings when available.',
+  ),
   allowForcePushLabel: s__('BranchRules|Allow force push'),
   allowForcePushTitle: s__('BranchRules|Allows force push'),
   doesNotAllowForcePushTitle: s__('BranchRules|Does not allow force push'),
@@ -109,6 +112,7 @@ export const accessLevelsConfig = {
   },
 };
 
+export const SQUASH_SETTING_DEFAULT = 'DEFAULT';
 export const SQUASH_SETTING_DO_NOT_ALLOW = 'NEVER';
 export const SQUASH_SETTING_ALLOW = 'ALLOWED';
 export const SQUASH_SETTING_ENCOURAGE = 'ENCOURAGED';

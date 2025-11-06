@@ -5,10 +5,12 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { findSelectedOptionValueByLabel } from './utils';
 import {
+  SQUASH_SETTING_DEFAULT,
   SQUASH_SETTING_DO_NOT_ALLOW,
   SQUASH_SETTING_ALLOW,
   SQUASH_SETTING_ENCOURAGE,
   SQUASH_SETTING_REQUIRE,
+  I18N,
 } from './constants';
 
 export default {
@@ -57,10 +59,15 @@ export default {
       required: false,
       default: null,
     },
+    isAllBranchesRule: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      selected: findSelectedOptionValueByLabel(this.$options.OPTIONS, this.selectedOption),
+      selected: null,
     };
   },
   computed: {
@@ -68,14 +75,35 @@ export default {
       return getContentWrapperHeight();
     },
     selectedOptionValue() {
-      return findSelectedOptionValueByLabel(this.$options.OPTIONS, this.selectedOption);
+      return findSelectedOptionValueByLabel(this.squashOptions, this.selectedOption);
     },
     hasChanged() {
       return !this.selectedOption || this.selected !== this.selectedOptionValue;
     },
+    squashOptions() {
+      return [
+        ...(!this.isAllBranchesRule
+          ? [
+              {
+                value: SQUASH_SETTING_DEFAULT,
+                label: I18N.squashDefaultLabel,
+                description: I18N.squashDefaultDescription,
+              },
+            ]
+          : []),
+        ...this.$options.OPTIONS,
+      ];
+    },
+  },
+  mounted() {
+    this.selected = findSelectedOptionValueByLabel(this.squashOptions, this.selectedOption);
   },
   methods: {
     submit() {
+      if (this.selected === SQUASH_SETTING_DEFAULT && !this.selectedOption) {
+        this.$emit('close');
+        return;
+      }
       this.$emit('submit', this.selected);
     },
   },
@@ -96,7 +124,7 @@ export default {
 
     <template #default>
       <gl-form-radio-group v-model="selected" class="gl-border-none !gl-pb-0">
-        <gl-form-radio v-for="option in $options.OPTIONS" :key="option.value" :value="option.value">
+        <gl-form-radio v-for="option in squashOptions" :key="option.value" :value="option.value">
           {{ option.label }}
           <template #help>{{ option.description }}</template>
         </gl-form-radio>

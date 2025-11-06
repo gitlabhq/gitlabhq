@@ -56,7 +56,6 @@ const DapWidgetStub = {
 const UserBarStub = {
   template: `<div><a href="#">link</a></div>`,
 };
-
 const peekClass = 'super-sidebar-peek';
 const hasPeekedClass = 'super-sidebar-has-peeked';
 const peekHintClass = 'super-sidebar-peek-hint';
@@ -585,6 +584,14 @@ describe('SuperSidebar component', () => {
         createWrapper();
         expect(findAdminLink().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('showTierBadge computed property', () => {
+    it('returns false when tier_badge_href is omitted', () => {
+      createWrapper({ sidebarData: mockSidebarData });
+
+      expect(wrapper.vm.showTierBadge).toBe(false);
     });
   });
 

@@ -10,6 +10,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
   let_it_be(:design) { create(:design, :with_file, issue: issue) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     enable_design_management
   end
 
@@ -20,16 +21,6 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
 
     it 'fetches list of designs' do
       expect(page).to have_selector('.js-design-list-item', count: 1)
-    end
-  end
-
-  context 'navigates directly to the design collection view' do
-    before do
-      visit designs_project_issue_path(project, issue)
-    end
-
-    it 'expands the sidebar' do
-      expect(page).to have_selector('.layout-page.right-sidebar-expanded')
     end
   end
 

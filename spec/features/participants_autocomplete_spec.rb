@@ -13,6 +13,7 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
   let(:noteable) { create(:issue, author: author, project: project) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     note # actually create the note
     sign_in(user)
   end
@@ -21,6 +22,8 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
     before do
       if resource_name == 'commit'
         fill_in 'note[note]', with: '@'
+      elsif resource_name == 'issue'
+        fill_in 'Add a reply', with: '@'
       else
         fill_in 'Comment', with: '@'
       end
@@ -46,7 +49,7 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
 
     it 'suggests member of private group' do
       visit project_issue_path(project, noteable)
-      fill_in 'Comment', with: '@priv'
+      fill_in 'Add a reply', with: '@priv'
 
       expect(find_autocomplete_menu).to have_text(private_group_member.username)
     end
@@ -108,7 +111,7 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
       expect(admin_bot.username).not_to eq(organization_user_detail.username)
 
       visit project_issue_path(project, noteable)
-      fill_in 'Comment', with: "#{User.reference_prefix}#{admin_bot.username[0..2]}"
+      fill_in 'Add a reply', with: "#{User.reference_prefix}#{admin_bot.username[0..2]}"
 
       expect(find_autocomplete_menu).to have_text(organization_user_detail.username)
       expect(find_autocomplete_menu).not_to have_text(admin_bot.username)

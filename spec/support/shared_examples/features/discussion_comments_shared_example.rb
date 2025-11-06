@@ -149,7 +149,7 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
   end
 end
 
-RSpec.shared_examples 'thread comments for issue, epic and merge request' do |resource_name|
+RSpec.shared_examples 'thread comments for merge request' do
   let(:form_selector) { '.js-main-target-form' }
   let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
   let(:toggle_selector) { "#{dropdown_selector} .gl-new-dropdown-toggle" }
@@ -175,23 +175,6 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
     expect(new_comment).not_to have_selector '.discussion'
   end
 
-  if resource_name == 'issue'
-    it "clicking 'Comment & close #{resource_name}' will post a comment and close the #{resource_name}" do
-      find("#{form_selector} .note-textarea").send_keys(comment)
-
-      click_button 'Comment & close issue'
-
-      wait_for_all_requests
-
-      expect(page).to have_content(comment)
-      expect(page).to have_content "#{user.name} closed"
-
-      new_comment = all(comments_selector).last
-
-      expect(new_comment).not_to have_selector '.discussion'
-    end
-  end
-
   describe 'when the toggle is clicked' do
     before do
       find("#{form_selector} .note-textarea").send_keys(comment)
@@ -208,10 +191,10 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
       expect(page).to have_selector("#{dropdown_selector}[data-track-label='comment_button']")
 
       expect(items.first).to have_content 'Comment'
-      expect(items.first).to have_content "Add a general comment to this #{resource_name}."
+      expect(items.first).to have_content 'Add a general comment to this merge request.'
 
       expect(items.last).to have_content 'Start thread'
-      expect(items.last).to have_content "Discuss a specific suggestion or question#{' that needs to be resolved' if resource_name == 'merge request'}."
+      expect(items.last).to have_content 'Discuss a specific suggestion or question that needs to be resolved.'
     end
 
     it 'closes the menu when clicking the toggle or body' do
@@ -232,6 +215,9 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
       end
 
       describe 'creating a thread' do
+        let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
+        let(:reply_id) { all("#{comments_selector} [data-note-id]")[1]['data-note-id'] }
+
         before do
           find(submit_selector).click
           wait_for_requests
@@ -257,61 +243,43 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           expect(new_comment).to have_css('.discussion-with-resolve-btn')
         end
 
-        if /(issue|merge request)/.match?(resource_name)
-          it 'can be replied to' do
-            submit_reply('some text')
+        it 'can be replied to' do
+          submit_reply('some text')
 
-            expect(page).to have_css('.discussion-notes .note', count: 2)
-            expect(page).to have_content 'Collapse replies'
-          end
-
-          it 'can be collapsed' do
-            submit_reply('another text')
-
-            click_button s_('Notes|Collapse replies'), match: :first
-            expect(page).to have_css('.discussion-notes .note', count: 1)
-            expect(page).to have_content '1 reply'
-          end
-
-          let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
-          let(:reply_id) { all("#{comments_selector} [data-note-id]")[1]['data-note-id'] }
-
-          it 'can be replied to after resolving' do
-            find('button[data-testid="resolve-discussion-button"]').click
-            wait_for_requests
-
-            refresh
-            wait_for_requests
-
-            submit_reply('to reply or not reply')
-          end
-
-          it 'shows resolved thread when toggled' do
-            submit_reply('a')
-
-            find('button[data-testid="resolve-discussion-button"]').click
-            wait_for_requests
-
-            expect(page).to have_selector(".note-row-#{note_id}", visible: true)
-
-            refresh
-            click_button "1 reply"
-
-            expect(page).to have_selector(".note-row-#{reply_id}", visible: true)
-          end
+          expect(page).to have_css('.discussion-notes .note', count: 2)
+          expect(page).to have_content 'Collapse replies'
         end
-      end
 
-      if resource_name == 'issue'
-        it "clicking 'Start thread & close #{resource_name}' will post a thread and close the #{resource_name}" do
-          click_button 'Start thread & close issue'
+        it 'can be collapsed' do
+          submit_reply('another text')
 
-          expect(page).to have_content(comment)
-          expect(page).to have_content "#{user.name} closed"
+          click_button s_('Notes|Collapse replies'), match: :first
+          expect(page).to have_css('.discussion-notes .note', count: 1)
+          expect(page).to have_content '1 reply'
+        end
 
-          new_discussion = all(comments_selector)[-1]
+        it 'can be replied to after resolving' do
+          find('button[data-testid="resolve-discussion-button"]').click
+          wait_for_requests
 
-          expect(new_discussion).to have_selector '.discussion'
+          refresh
+          wait_for_requests
+
+          submit_reply('to reply or not reply')
+        end
+
+        it 'shows resolved thread when toggled' do
+          submit_reply('a')
+
+          find('button[data-testid="resolve-discussion-button"]').click
+          wait_for_requests
+
+          expect(page).to have_selector(".note-row-#{note_id}", visible: true)
+
+          refresh
+          click_button "1 reply"
+
+          expect(page).to have_selector(".note-row-#{reply_id}", visible: true)
         end
       end
 
@@ -344,16 +312,14 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
             expect(page).not_to have_selector menu_selector
           end
 
-          if /(issue|merge request)/.match?(resource_name)
-            it 'updates the close button text' do
-              expect(find(close_selector)).to have_content "Comment & close #{resource_name}"
-            end
+          it 'updates the close button text' do
+            expect(find(close_selector)).to have_content 'Comment & close merge request'
+          end
 
-            it 'typing does not change the close button text' do
-              find("#{form_selector} .note-textarea").send_keys('b')
+          it 'typing does not change the close button text' do
+            find("#{form_selector} .note-textarea").send_keys('b')
 
-              expect(find(close_selector)).to have_content "Comment & close #{resource_name}"
-            end
+            expect(find(close_selector)).to have_content 'Comment & close merge request'
           end
 
           it 'has "Comment" selected when opening the menu' do
@@ -373,27 +339,25 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
     end
   end
 
-  if /(issue|merge request)/.match?(resource_name)
-    describe "on a closed #{resource_name}" do
-      before do
-        find("#{form_selector} .js-note-target-close").click
-        wait_for_requests
+  describe 'on a closed merge request' do
+    before do
+      find("#{form_selector} .js-note-target-close").click
+      wait_for_requests
 
-        find("#{form_selector} .note-textarea").send_keys('a')
-      end
+      find("#{form_selector} .note-textarea").send_keys('a')
+    end
 
-      it "shows a 'Comment & reopen #{resource_name}' button" do
-        expect(find("#{form_selector} .js-note-target-reopen")).to have_content "Comment & reopen #{resource_name}"
-      end
+    it "shows a 'Comment & reopen merge request' button" do
+      expect(find("#{form_selector} .js-note-target-reopen")).to have_content 'Comment & reopen merge request'
+    end
 
-      it "shows a 'Start thread & reopen #{resource_name}' button when 'Start thread' is selected" do
-        find(toggle_selector).click
+    it "shows a 'Start thread & reopen merge request' button when 'Start thread' is selected" do
+      find(toggle_selector).click
 
-        find("#{menu_selector} li", match: :first)
-        all("#{menu_selector} li").last.click
+      find("#{menu_selector} li", match: :first)
+      all("#{menu_selector} li").last.click
 
-        expect(find("#{form_selector} .js-note-target-reopen")).to have_content "Start thread & reopen #{resource_name}"
-      end
+      expect(find("#{form_selector} .js-note-target-reopen")).to have_content 'Start thread & reopen merge request'
     end
   end
 end

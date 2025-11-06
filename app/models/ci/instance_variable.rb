@@ -21,7 +21,14 @@ module Ci
       too_long: ->(object, data) do
         _('The value of the provided variable exceeds the %{count} character limit')
       end
-    }
+    }, if: :env_var?
+
+    validates :value, length: {
+      maximum: 50_000,
+      too_long: ->(object, data) do
+        _('The value of the provided variable exceeds the %{count} character limit')
+      end
+    }, if: :file?
 
     scope :unprotected, -> { where(protected: false) }
 

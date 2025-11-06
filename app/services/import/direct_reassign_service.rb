@@ -28,6 +28,7 @@ module Import
   class DirectReassignService
     REASSIGN_BATCH_LIMIT = 100
     BATCH_SLEEP = 3
+    MAX_RUNTIME = 5.minutes
 
     MODEL_LIST = {
       "Approval" => ["user_id"],
@@ -69,7 +70,7 @@ module Import
     def initialize(import_source_user, sleep_time: BATCH_SLEEP)
       @import_source_user = import_source_user
       @reassigned_by_user = import_source_user.reassigned_by_user
-      @execution_tracker = Gitlab::Utils::ExecutionTracker.new
+      @execution_tracker = Gitlab::Utils::ExecutionTracker.new(MAX_RUNTIME)
       @sleep_time = sleep_time
     end
 

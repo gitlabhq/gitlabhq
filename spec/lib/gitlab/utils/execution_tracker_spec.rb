@@ -20,5 +20,21 @@ RSpec.describe Gitlab::Utils::ExecutionTracker do
     it 'is false when max runtime is not exceeded' do
       expect(tracker).not_to be_over_limit
     end
+
+    context 'with custom max runtime' do
+      let(:max_runtime) { 10 }
+
+      subject(:tracker) { described_class.new(max_runtime) }
+
+      it 'is true when custom max runtime is exceeded' do
+        monotonic_time_before = 1
+        monotonic_time_after = max_runtime.to_i + 1
+
+        allow(Gitlab::Metrics::System).to receive(:monotonic_time)
+          .and_return(monotonic_time_before, monotonic_time_after)
+
+        expect(tracker).to be_over_limit
+      end
+    end
   end
 end
