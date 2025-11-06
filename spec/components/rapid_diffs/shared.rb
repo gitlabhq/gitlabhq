@@ -52,7 +52,6 @@ RSpec.shared_context "with diff file component tests" do
         expect(file_data['viewer']).to eq('no_preview')
         expect(web_component).to have_css("[data-virtual='no_preview']")
         expect(web_component).to have_css("[style*='--virtual-paragraphs-count: 2']")
-        expect(web_component).to have_css("[style*='--virtual-action-buttons-present: 1']")
       end
     end
 
@@ -102,7 +101,6 @@ RSpec.shared_context "with diff file component tests" do
       expect(file_data['viewer']).to eq('no_preview')
       expect(web_component).to have_css("[data-virtual='no_preview']")
       expect(web_component).to have_css("[style*='--virtual-paragraphs-count: 2']")
-      expect(web_component).to have_css("[style*='--virtual-action-buttons-present: 1']")
     end
   end
 

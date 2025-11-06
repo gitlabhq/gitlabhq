@@ -9,7 +9,7 @@ $no-preview-action-margin-top: $gl-spacing-scale-3;
   --rd-body-intrinsic-height: calc(
     (#{$no-preview-padding} * 2) +
     (var(--virtual-paragraphs-count) * (#{$root-line-height} + #{$no-preview-paragraph-margin-bottom})) +
-    (var(--virtual-action-buttons-present) * (#{$gl-button-medium-size} + #{$no-preview-action-margin-top}))
+    (#{$gl-button-medium-size} + #{$no-preview-action-margin-top})
   );
 }
 

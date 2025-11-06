@@ -14,12 +14,6 @@ title: GitLab Duo model selection
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/18818) in GitLab 18.4.
-
-{{< /history >}}
-
 Every GitLab Duo feature has a pre-selected default large language model (LLM), chosen by GitLab.
 
 GitLab can update this default LLM to optimize feature performance. Therefore, a feature's LLM might change without you taking any action.
@@ -29,8 +23,6 @@ If you do not want to use the default LLM for each feature, or have specific req
 If you select a specific LLM for a feature, the feature uses that LLM until you select another.
 
 ## Select an LLM for a feature
-
-### On GitLab.com
 
 {{< history >}}
 
@@ -81,7 +73,7 @@ To select a different LLM for a feature:
 
 {{< /alert >}}
 
-#### Assign a default GitLab Duo namespace
+### Assign a default GitLab Duo namespace
 
 {{< history >}}
 

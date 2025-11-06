@@ -10470,6 +10470,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#owner_entity' do
+    let(:project) { build_stubbed(:project) }
+
+    it 'returns itself' do
+      expect(project.owner_entity).to be(project)
+    end
+  end
+
+  describe '#owner_entity_name' do
+    let(:project) { build_stubbed(:project) }
+
+    it 'returns :project' do
+      expect(project.owner_entity_name).to be(:project)
+    end
+  end
+
   describe 'export duplication guard' do
     let_it_be(:user)    { create(:user) }
     let_it_be(:project) { create(:project) }

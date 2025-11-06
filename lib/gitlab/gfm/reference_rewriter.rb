@@ -117,12 +117,10 @@ module Gitlab
 
       def source_parent_param
         case @source_parent
-        when Project
-          { project: @source_parent }
+        when Project, Namespaces::ProjectNamespace
+          { project: @source_parent.owner_entity }
         when Group
           { group: @source_parent, project: nil }
-        when Namespaces::ProjectNamespace
-          { project: @source_parent.project }
         end
       end
       strong_memoize_attr :source_parent_param

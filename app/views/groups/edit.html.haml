@@ -61,5 +61,5 @@
       = render 'groups/settings/advanced'
 
 - elsif can?(current_user, :remove_group, @group)
-  = render 'groups/settings/delete'
   = render 'shared/groups_projects/settings/restore', context: @group
+  = render 'groups/settings/delete'

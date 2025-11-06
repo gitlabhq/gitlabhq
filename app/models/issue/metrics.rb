@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Issue::Metrics < ApplicationRecord
+  ignore_column :id_convert_to_bigint, remove_with: '18.9', remove_after: '2026-02-22'
+  ignore_column :issue_id_convert_to_bigint, remove_with: '18.9', remove_after: '2026-02-22'
+
   belongs_to :issue
 
   scope :for_issues, ->(issues) { where(issue: issues) }

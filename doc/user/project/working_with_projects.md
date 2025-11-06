@@ -582,7 +582,7 @@ Administrators can also transfer projects from the [Admin area](../../administra
 When you transfer a project from a namespace licensed for GitLab.com Premium or Ultimate to GitLab Free:
 
 - [Project access tokens](settings/project_access_tokens.md) are revoked.
-- [Pipeline subscriptions](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
+- [Pipeline subscriptions](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
   and [test cases](../../ci/test_cases/_index.md) are deleted.
 
 ## Manage projects with the Actions menu

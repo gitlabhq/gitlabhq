@@ -175,16 +175,11 @@ module Namespaces
 
     def restore_namespace_scheduled_for_deletion_message(namespace)
       messages = {
-        group: _("This group has been scheduled for deletion on %{date}. " \
-          "To cancel the scheduled deletion, you can restore this group, including all its resources."),
-        project: _("This project has been scheduled for deletion on %{date}. " \
-          "To cancel the scheduled deletion, you can restore this project, including all its resources.")
+        group: _("This group will be restored from scheduled deletion."),
+        project: _("This project will be restored from scheduled deletion.")
       }
 
-      safe_format(
-        message_for_namespace(namespace, messages),
-        date: tag.strong(permanent_deletion_date_formatted(namespace))
-      )
+      message_for_namespace(namespace, messages)
     end
 
     def _permanently_delete_group_message(group)

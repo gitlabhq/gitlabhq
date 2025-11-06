@@ -337,9 +337,7 @@ Review how access to protected variables and runners work in the
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
-<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
-
-## Trigger a pipeline when an upstream project is rebuilt (deprecated)
+## Trigger a pipeline when an upstream project is rebuilt
 
 {{< details >}}
 
@@ -348,17 +346,13 @@ page for additional security recommendations for securing your pipelines.
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501460) in GitLab 17.6
-and is planned for removal in 19.0. Use [CI/CD jobs with pipeline trigger tokens](../triggers/_index.md#use-a-cicd-job) instead.
-This is a breaking change.
-
-{{< /alert >}}
-
 You can set up your project to automatically trigger a pipeline based on tags in a different project.
 When a new tag pipeline in the subscribed project finishes, it triggers a pipeline on your project's default branch,
 regardless of the tag pipeline's success, failure, or cancellation.
+
+As an alternative, you can use [CI/CD jobs with pipeline trigger tokens](../triggers/_index.md#use-a-cicd-job)
+to trigger pipelines when another pipeline runs. This method is more reliable and flexible
+than pipeline subscriptions and is the recommended approach.
 
 Prerequisites:
 
@@ -378,8 +372,6 @@ To trigger the pipeline when the upstream project is rebuilt:
 The maximum number of upstream pipeline subscriptions is 2 by default, for both the upstream and
 downstream projects. On GitLab Self-Managed, an administrator can change this
 [limit](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project).
-
-<!--- end_remove -->
 
 ## How pipeline duration is calculated
 
@@ -574,16 +566,12 @@ and [merge trains](merge_trains.md) that might run pipelines after branch deleti
 
 ## Troubleshooting
 
-<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
-
 ### Pipeline subscriptions continue after user deletion
 
 When a user [deletes their GitLab.com account](../../user/profile/account/delete_account.md#delete-your-own-account),
-the deletion does not occur for seven days. During this period, any [pipeline subscriptions created by that user](#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
+the deletion does not occur for seven days. During this period, any pipeline subscriptions created by that user
 continue to run with the user's original permissions. To prevent unauthorized pipeline executions,
 immediately update pipeline subscription settings for the deleted user.
-
-<!--- end_remove -->
 
 ### Pre-filled variables do not show up in **New Pipeline** page
 

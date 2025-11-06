@@ -104,7 +104,7 @@ On the left side we have the events that can trigger a pipeline based on various
 - When a [merge request is created or updated](../../ci/pipelines/merge_request_pipelines.md).
 - When an MR is added to a [Merge Train](../../ci/pipelines/merge_trains.md).
 - A [scheduled pipeline](../../ci/pipelines/schedules.md).
-- When project is [subscribed to an upstream project](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated).
+- When project is [subscribed to an upstream project](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt).
 - When [Auto DevOps](../../topics/autodevops/_index.md) is enabled.
 - When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests).
 - When an upstream pipeline contains a [bridge job](../../ci/yaml/_index.md#trigger) which triggers a downstream pipeline.

@@ -1329,6 +1329,14 @@ class Project < ApplicationRecord
     super
   end
 
+  def owner_entity
+    self
+  end
+
+  def owner_entity_name
+    :project
+  end
+
   # Remove along with ProjectFeaturesCompatibility module
   def set_project_feature_defaults
     self.class.project_features_defaults.each do |attr, value|

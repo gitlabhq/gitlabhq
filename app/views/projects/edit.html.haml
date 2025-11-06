@@ -116,7 +116,7 @@
 
         = render 'remove_fork', project: @project
 
-        = render_if_exists 'shared/groups_projects/settings/restore', context: @project
+        = render 'shared/groups_projects/settings/restore', context: @project
         = render 'delete'
 - else
   = render 'projects/settings/archive', project: @project

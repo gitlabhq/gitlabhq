@@ -12,18 +12,22 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :parent, ::Types::WorkItemType,
-          null: true, complexity: 5,
+          null: true, complexity: 5, scopes: [:api, :read_api, :ai_workflows],
           description: 'Parent work item.'
 
         field :children, ::Types::WorkItemType.connection_type,
-          null: true, complexity: 5,
+          null: true, complexity: 5, scopes: [:api, :read_api, :ai_workflows],
           description: 'Child work items.',
           resolver: Resolvers::WorkItems::ChildrenResolver,
           skip_type_authorization: [:read_work_item]
 
         field :ancestors, ::Types::WorkItemType.connection_type,
-          null: true, complexity: 5,
+          null: true, complexity: 5, scopes: [:api, :read_api, :ai_workflows],
           description: 'Ancestors (parents) of the work item.',
           extras: [:lookahead],
           resolver: Resolvers::WorkItems::AncestorsResolver,

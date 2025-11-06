@@ -9,6 +9,8 @@ module Gitlab
 
         self.table_name = :background_operation_workers_cell_local
 
+        ignore_column :next_min_cursor, remove_with: '18.8', remove_after: '2026-01-15'
+
         has_many :jobs,
           ->(worker) { where(worker_partition: worker.partition) },
           class_name: 'Gitlab::Database::BackgroundOperation::JobCellLocal',

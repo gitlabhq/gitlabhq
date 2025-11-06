@@ -1852,9 +1852,7 @@ Returns [`GitlabSubscriptionUsage`](#gitlabsubscriptionusage).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querysubscriptionusageenddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | Filter usage ending on or before the date. |
 | <a id="querysubscriptionusagenamespacepath"></a>`namespacePath` | [`ID`](#id) | Path of the top-level namespace. Leave it blank if querying the instance subscription. |
-| <a id="querysubscriptionusagestartdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Filter usage starting on or after the date. |
 
 ### `Query.syntheticNote`
 
@@ -4392,7 +4390,7 @@ Input type: `BulkUpdateSecurityAttributesInput`
 | <a id="mutationbulkupdatesecurityattributesattributes"></a>`attributes` | [`[SecurityAttributeID!]!`](#securityattributeid) | Global IDs of security attributes to apply. |
 | <a id="mutationbulkupdatesecurityattributesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationbulkupdatesecurityattributesitems"></a>`items` | [`[ID!]!`](#id) | Global IDs of groups and projects to update. |
-| <a id="mutationbulkupdatesecurityattributesmode"></a>`mode` | [`SecurityAttributeBulkUpdateMode!`](#securityattributebulkupdatemode) | Update mode: add or remove attributes. |
+| <a id="mutationbulkupdatesecurityattributesmode"></a>`mode` | [`SecurityAttributeBulkUpdateMode!`](#securityattributebulkupdatemode) | Update mode: add, remove, or replace attributes. |
 
 #### Fields
 
@@ -51267,6 +51265,7 @@ Mode for bulk updating security attributes.
 | ----- | ----------- |
 | <a id="securityattributebulkupdatemodeadd"></a>`ADD` | Add attributes to projects (keeps existing attributes). |
 | <a id="securityattributebulkupdatemoderemove"></a>`REMOVE` | Remove attributes from projects. |
+| <a id="securityattributebulkupdatemodereplace"></a>`REPLACE` | Replace all existing attributes with the specified attributes. |
 
 ### `SecurityCategoryEditableState`
 

@@ -447,8 +447,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       let(:namespace) { build_stubbed(:group) }
 
       specify do
-        expect(message).to eq "This group has been scheduled for deletion on <strong>2025-02-09</strong>. " \
-          "To cancel the scheduled deletion, you can restore this group, including all its resources."
+        expect(message).to eq "This group will be restored from scheduled deletion."
       end
     end
 
@@ -457,8 +456,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         let(:namespace) { build_stubbed(entity) }
 
         specify do
-          expect(message).to eq "This project has been scheduled for deletion on <strong>2025-02-09</strong>. " \
-            "To cancel the scheduled deletion, you can restore this project, including all its resources."
+          expect(message).to eq "This project will be restored from scheduled deletion."
         end
       end
     end

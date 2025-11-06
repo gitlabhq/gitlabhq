@@ -664,6 +664,20 @@ class Namespace < ApplicationRecord
     aggregation_schedule.present?
   end
 
+  # To help with polymorphism between Namespaces and Project
+  # both models answers to `owner_entity`, where
+  # -`Namespaces::ProjectNamespace` returns the `#project`
+  # -`Namespaces::UserNamespace` returns the `#owner`
+  def owner_entity
+    self
+  end
+
+  # To help with polymorphism between Namespaces and Project
+  # both models answers to `owner_entity_name`
+  def owner_entity_name
+    self.class.sti_name.underscore.to_sym
+  end
+
   def container_repositories_size_cache_key
     "namespaces:#{id}:container_repositories_size"
   end

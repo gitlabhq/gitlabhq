@@ -67638,9 +67638,6 @@ msgstr ""
 msgid "This group does not have any group runners yet."
 msgstr ""
 
-msgid "This group has been scheduled for deletion on %{date}. To cancel the scheduled deletion, you can restore this group, including all its resources."
-msgstr ""
-
 msgid "This group has no active access tokens."
 msgstr ""
 
@@ -67666,6 +67663,9 @@ msgid "This group requires additional authentication. Please sign in with your O
 msgstr ""
 
 msgid "This group will be deleted on %{date} because its parent group is scheduled for deletion."
+msgstr ""
+
+msgid "This group will be restored from scheduled deletion."
 msgstr ""
 
 msgid "This incident is already escalated with '%{escalation_policy_name}'."
@@ -67970,9 +67970,6 @@ msgstr ""
 msgid "This project does not include diff previews in email notifications."
 msgstr ""
 
-msgid "This project has been scheduled for deletion on %{date}. To cancel the scheduled deletion, you can restore this project, including all its resources."
-msgstr ""
-
 msgid "This project has no active access tokens."
 msgstr ""
 
@@ -68022,6 +68019,9 @@ msgid "This project was scheduled for deletion, but failed with the following me
 msgstr ""
 
 msgid "This project will be deleted on %{date} because its parent group is scheduled for deletion."
+msgstr ""
+
+msgid "This project will be restored from scheduled deletion."
 msgstr ""
 
 msgid "This release was created with a date in the past. Evidence collection at the moment of the release is unavailable."

@@ -3244,4 +3244,32 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
   end
+
+  context 'about owner entity methods' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user_namespace) { user.namespace }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:project_namespace) { project.project_namespace }
+
+    where(:namespace, :owner_entity, :owner_entity_name) do
+      ref(:group) | ref(:group) | :group
+      ref(:project_namespace) | ref(:project) | :project
+      ref(:user_namespace) | ref(:user) | :user
+    end
+
+    with_them do
+      describe '#owner_entity' do
+        it 'returns itself' do
+          expect(namespace.owner_entity).to be(owner_entity)
+        end
+      end
+
+      describe '#owner_entity_name' do
+        it 'returns :namespace' do
+          expect(namespace.owner_entity_name).to be(owner_entity_name)
+        end
+      end
+    end
+  end
 end

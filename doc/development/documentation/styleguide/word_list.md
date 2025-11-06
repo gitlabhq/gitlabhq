@@ -1263,6 +1263,13 @@ Always use **GitLab Duo Enterprise** for the add-on. Do not use **Duo Enterprise
 You can use **the GitLab Duo Enterprise add-on** (with this capitalization) but you are not required to use **add-on**
 and should leave it off when you can.
 
+## GitLab Duo plugin for JetBrains IDEs
+
+Use **GitLab Duo plugin for JetBrains IDEs** to refer to the extension. You can also use **Plugins for JetBrains IDEs**
+or **Plugins for JetBrains**.
+
+Do not use **GitLab plugin**. Ensure you include **Duo** in the name.
+
 ## GitLab Duo Pro
 
 Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless approved by legal.
@@ -1373,7 +1380,7 @@ Use **GitLab.com** to refer to the URL or product offering. GitLab.com is the in
 Use **GitLab Workflow extension for VS Code** to refer to the extension.
 You can also use **GitLab Workflow for VS Code** or **GitLab Workflow**.
 
-For terms in VS Code, see [VS Code user interface](#vs-code-user-interface)
+For terms in VS Code, see [VS Code user interface](#vs-code-user-interface).
 
 ## GraphiQL
 
