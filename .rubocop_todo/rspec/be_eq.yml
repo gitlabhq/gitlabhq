@@ -220,7 +220,6 @@ RSpec/BeEq:
     - 'ee/spec/models/ee/resource_state_event_spec.rb'
     - 'ee/spec/models/ee/user_spec.rb'
     - 'ee/spec/models/environment_spec.rb'
-    - 'ee/spec/models/geo_node_status_spec.rb'
     - 'ee/spec/models/gitlab/seat_link_data_spec.rb'
     - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/add_on_purchase_spec.rb'

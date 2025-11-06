@@ -40,16 +40,11 @@ module ConcurrencyLimit
     end
 
     def schedule_worker(worker)
-      _, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(worker.get_sidekiq_options['store'])
-      Sidekiq::Client.via(pool) do
-        queue = ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker)
+      Gitlab::SidekiqSharding::Router.route(worker) do
         # Schedules ResumeWorker job to the respective queue of the `worker` we're resuming.
         # This is because `worker_limit` requires reading environment variables unique each sidekiq shard,
         # whereas ResumeWorker (cronjob) always runs in the default queue.
-        #
-        # rubocop: disable Cop/SidekiqApiUsage -- valid usage of scheduling to other queue
-        Sidekiq::Client.push('class' => self.class, 'args' => [worker.name], 'queue' => queue)
-        # rubocop: enable Cop/SidekiqApiUsage
+        Sidekiq::Client.push('class' => self.class, 'args' => [worker.name], 'queue' => queue_for_worker(worker))
       end
     end
 
@@ -73,7 +68,12 @@ module ConcurrencyLimit
       resumed_jobs_num = resume_processing!(worker)
       cleanup_stale_trackers(worker)
 
-      self.class.perform_in(RESCHEDULE_DELAY, worker_name) if queue_size(worker) > 0
+      if queue_size(worker) > 0
+        Gitlab::SidekiqSharding::Router.route(worker) do
+          Sidekiq::Client.enqueue_to_in(queue_for_worker(worker), RESCHEDULE_DELAY, self.class, worker.name)
+        end
+      end
+
       log_extra_metadata_on_done(:resumed_jobs, resumed_jobs_num)
     end
 
@@ -103,6 +103,10 @@ module ConcurrencyLimit
 
     def workers
       Gitlab::SidekiqConfig.workers_without_default.map(&:klass)
+    end
+
+    def queue_for_worker(worker)
+      ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker)
     end
   end
 end

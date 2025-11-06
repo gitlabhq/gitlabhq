@@ -241,9 +241,10 @@ For more details, see [CI/CD job token](../jobs/ci_job_token.md#control-job-toke
 
 To define which option should be used, the runner process reads the configuration in this order:
 
+- A `config.json` file in the `/root/.docker` directory.
 - A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/_index.md).
 - A `DOCKER_AUTH_CONFIG` environment variable set in the runner's `config.toml` file.
-- A `config.json` file in `$HOME/.docker` directory of the user running the process.
+- A `config.json` file in the `$HOME/.docker` directory of the user who runs the process.
   If the `--user` flag is provided to run the child processes as unprivileged user,
   the home directory of the main runner process user is used.
 

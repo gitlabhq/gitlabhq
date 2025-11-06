@@ -58,7 +58,7 @@ describe('Commits List', () => {
         </div>
       `);
 
-      const data = `
+      const html = `
         <li class="commit-header" data-day="2016-09-20">
           <span class="day">20 Sep, 2016</span>
           <span class="commits-count">1 commit</span>
@@ -68,7 +68,9 @@ describe('Commits List', () => {
 
       // The last commit header should be removed
       // since the previous one has the same data-day value.
-      expect(commitsList.processCommits(data).find('li.commit-header')).toHaveLength(0);
+      expect(
+        $(commitsList.processCommits({ html, count: 1 })).find('li.commit-header'),
+      ).toHaveLength(0);
     });
   });
 

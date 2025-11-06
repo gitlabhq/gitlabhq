@@ -1265,6 +1265,7 @@ Cop/SidekiqApiUsage:
     - 'lib/gitlab/redis/queues.rb'
     - 'app/workers/concerns/application_worker.rb'
     - 'config/initializers/active_job_shard_support.rb'
+    - 'app/workers/concurrency_limit/resume_worker.rb'
 
 Cop/FeatureFlagUsage:
   Include:

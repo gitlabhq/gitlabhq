@@ -49,7 +49,8 @@ export default class CommitsList {
             signal,
           })
           .then(({ data }) => {
-            return this.processCommits(data);
+            const html = this.processCommits(data);
+            return { count: data.count, html };
           })
           .catch((error) => {
             if (axios.isCancel(error)) return null;
@@ -141,8 +142,8 @@ export default class CommitsList {
 
   // Prepare loaded data.
   processCommits(data) {
-    let processedData = data;
-    const $processedData = $(processedData);
+    let { html } = data;
+    const $processedData = $(data);
     const $commitsHeadersLast = this.$contentList.find('li.js-commit-header').last();
     const lastShownDay = $commitsHeadersLast.data('day');
     const $loadedCommitsHeadersFirst = $processedData.filter('li.js-commit-header').first();
@@ -155,8 +156,11 @@ export default class CommitsList {
       // Last shown commits count under the last commits header.
       commitsCount = $commitsHeadersLast.nextUntil('li.js-commit-header').find('li.commit').length;
 
+      const processedData = $processedData.not(
+        `li.js-commit-header[data-day='${loadedShownDayFirst}']`,
+      );
       // Remove duplicate of commits header.
-      processedData = $processedData.not(`li.js-commit-header[data-day='${loadedShownDayFirst}']`);
+      html = processedData.html();
 
       // Update commits count in the previous commits header.
       commitsCount += Number(
@@ -170,6 +174,6 @@ export default class CommitsList {
 
     localTimeAgo($processedData.find('.js-timeago').get());
 
-    return processedData;
+    return html;
   }
 }

@@ -391,7 +391,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/geo/container_repository_registry_spec.rb'
     - 'ee/spec/models/geo/secondary_usage_data_spec.rb'
     - 'ee/spec/models/geo_node_spec.rb'
-    - 'ee/spec/models/geo_node_status_spec.rb'
     - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/group_wiki_repository_spec.rb'
     - 'ee/spec/models/incident_management/escalation_rule_spec.rb'

@@ -278,5 +278,57 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         execute_service
       end
     end
+
+    describe 'duration logging' do
+      before do
+        # Mock all the other calls
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+      end
+
+      it 'logs duration statistics with proper format' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          hash_including(
+            event: 'merge_requests_after_create_service',
+            ensure_merge_request_diff_duration_s: be_a(Float),
+            prepare_for_mergeability_duration_s: be_a(Float),
+            prepare_merge_request_duration_s: be_a(Float),
+            mark_merge_request_as_prepared_duration_s: be_a(Float),
+            execute_hooks_duration_s: be_a(Float),
+            after_create_service_total_duration_s: be_a(Float)
+          )
+        ).and_call_original
+
+        execute_service
+      end
+
+      it 'calculates total duration correctly' do
+        # Mock monotonic time to return predictable values
+        time_sequence = (0..20).map { |i| i * 0.1 }
+        allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(*time_sequence)
+
+        expect(Gitlab::AppJsonLogger).to receive(:info) do |log_data|
+          expect(log_data[:after_create_service_total_duration_s]).to be > 0
+          expect(log_data[:after_create_service_total_duration_s]).to eq(
+            log_data.except(:event, :after_create_service_total_duration_s).values.sum
+          )
+        end.and_call_original
+
+        execute_service
+      end
+
+      context 'when log_merge_request_after_create_duration feature flag is disabled' do
+        before do
+          stub_feature_flags(log_merge_request_after_create_duration: false)
+        end
+
+        it 'does not measure durations' do
+          expect(Gitlab::AppJsonLogger)
+            .not_to receive(:info)
+            .with(hash_including(event: 'merge_requests_after_create_service'))
+
+          execute_service
+        end
+      end
+    end
   end
 end
