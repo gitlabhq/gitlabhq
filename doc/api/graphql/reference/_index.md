@@ -31099,17 +31099,16 @@ Describes the usage of GitLab Credits for the subscription's monthly commitment.
 | <a id="gitlabsubscriptionmonthlycommitmentdailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of the subscription's monthly commitment. |
 | <a id="gitlabsubscriptionmonthlycommitmenttotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated as a subscription's monthly commitment. |
 
-### `GitlabSubscriptionOneTimeCredits`
+### `GitlabSubscriptionMonthlyWaiver`
 
-Describes the usage of one time credits for the subscription.
+GitLab Credits used from the Monthly Waiver allocation.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="gitlabsubscriptiononetimecreditscreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used from the one time credits allocation. |
-| <a id="gitlabsubscriptiononetimecreditstotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated as one time credits. |
-| <a id="gitlabsubscriptiononetimecreditstotalcreditsremaining"></a>`totalCreditsRemaining` | [`Float`](#float) | Total of GitLab Credits remaining from the one time credits allocation. |
+| <a id="gitlabsubscriptionmonthlywaivercreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used from the Monthly Waiver allocation. |
+| <a id="gitlabsubscriptionmonthlywaivertotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated as Monthly Waiver. |
 
 ### `GitlabSubscriptionOverage`
 
@@ -31133,8 +31132,8 @@ Describes the usage of consumables under the subscription.
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageenddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusagelasteventtransactionat"></a>`lastEventTransactionAt` | [`ISO8601DateTime`](#iso8601datetime) | Date and time when the last usage event resulted in a wallet transaction. |
-| <a id="gitlabsubscriptionusagemonthlycommitment"></a>`monthlyCommitment` | [`GitlabSubscriptionMonthlyCommitment`](#gitlabsubscriptionmonthlycommitment) | Consumption usage for the subscription monthly commitment. |
-| <a id="gitlabsubscriptionusageonetimecredits"></a>`oneTimeCredits` | [`GitlabSubscriptionOneTimeCredits`](#gitlabsubscriptiononetimecredits) | One time credits usage for the subscription. |
+| <a id="gitlabsubscriptionusagemonthlycommitment"></a>`monthlyCommitment` | [`GitlabSubscriptionMonthlyCommitment`](#gitlabsubscriptionmonthlycommitment) | Monthly commitment usage for the subscription. |
+| <a id="gitlabsubscriptionusagemonthlywaiver"></a>`monthlyWaiver` | [`GitlabSubscriptionMonthlyWaiver`](#gitlabsubscriptionmonthlywaiver) | Monthly waiver usage for the subscription. |
 | <a id="gitlabsubscriptionusageoverage"></a>`overage` | [`GitlabSubscriptionOverage`](#gitlabsubscriptionoverage) | Overage statistics. |
 | <a id="gitlabsubscriptionusagepurchasecreditspath"></a>`purchaseCreditsPath` | [`String`](#string) | URL to purchase GitLab Credits. |
 | <a id="gitlabsubscriptionusagestartdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the period covered by the usage data. |
@@ -31177,8 +31176,8 @@ Describes the usage of consumables for a user under the subscription.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageuserusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits used by the user. |
-| <a id="gitlabsubscriptionusageuserusagemonthlycommitmentcreditsused"></a>`monthlyCommitmentCreditsUsed` | [`Float`](#float) | GitLab Credits from the subscription monthly commitment used by the user. |
-| <a id="gitlabsubscriptionusageuserusageonetimecreditsused"></a>`oneTimeCreditsUsed` | [`Float`](#float) | One Time GitLab Credits used by the user. |
+| <a id="gitlabsubscriptionusageuserusagemonthlycommitmentcreditsused"></a>`monthlyCommitmentCreditsUsed` | [`Float`](#float) | Monthly Commitment GitLab Credits used by the user. |
+| <a id="gitlabsubscriptionusageuserusagemonthlywaivercreditsused"></a>`monthlyWaiverCreditsUsed` | [`Float`](#float) | Monthly Waiver GitLab Credits used by the user. |
 | <a id="gitlabsubscriptionusageuserusageoveragecreditsused"></a>`overageCreditsUsed` | [`Float`](#float) | Overage GitLab Credits used by the user. |
 | <a id="gitlabsubscriptionusageuserusagetotalcredits"></a>`totalCredits` | [`Float`](#float) | Total GitLab Credits available for the user. |
 

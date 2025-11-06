@@ -3,15 +3,28 @@
 module Gitlab
   module Auth
     class TwoFactorAuthVerifier
-      attr_reader :current_user, :request
+      attr_reader :current_user, :request, :treat_email_otp_as_2fa
 
-      def initialize(current_user, request = nil)
+      # ==== Parameters
+      # +current_user+: User
+      #   The current user
+      # +request+: Default: nil
+      # +treat_email_otp_as_2fa+: Boolean. Default: false
+      #   If a user is enrolled in email-based OTP and this attribute is true, we
+      #   treat Email-based OTP like 2FA. This is useful when we want to block
+      #   things like password-authenticatable endpoints. Fails secure.
+      #   Conversely when the attribute is false, Email-OTP does not  count.
+      #   This is useful when we want high assurance, like  Instance / Group 2FA
+      #   enforcement settings.
+      def initialize(current_user, request = nil, treat_email_otp_as_2fa: false)
         @current_user = current_user
         @request = request
+        @treat_email_otp_as_2fa = treat_email_otp_as_2fa
       end
 
       def two_factor_authentication_enforced?
-        two_factor_authentication_required? && two_factor_grace_period_expired?
+        (two_factor_authentication_required? && two_factor_grace_period_expired?) ||
+          (treat_email_otp_as_2fa && current_user&.email_based_otp_required?)
       end
 
       # -- Admin mode does not matter in the context of verifying for two factor statuses

@@ -872,6 +872,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
       end
 
+      context 'when email-based OTP is enabled personally' do
+        let(:user) do
+          create(:user, email_otp_required_after: 1.second.ago)
+        end
+
+        it 'fails' do
+          expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
+            .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+        end
+
+        context 'when :email_based_mfa feature flag disabled' do
+          before do
+            stub_feature_flags(email_based_mfa: false)
+          end
+
+          it 'goes through' do
+            expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request))
+              .to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+          end
+        end
+      end
+
       it 'goes through lfs authentication' do
         user = create(
           :user,

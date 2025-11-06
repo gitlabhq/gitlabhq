@@ -30,7 +30,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/graphql/types/vulnerability_location/generic_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_location/sast_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_location/secret_detection_type_spec.rb'
-    - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/labels_helper_spec.rb'
     - 'ee/spec/helpers/ee/packages_helper_spec.rb'
     - 'ee/spec/helpers/ee/profiles_helper_spec.rb'

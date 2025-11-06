@@ -227,7 +227,6 @@ RSpec/ContextWording:
     - 'ee/spec/graphql/types/vulnerability_request_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_response_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_type_spec.rb'
-    - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/application_helper_spec.rb'
     - 'ee/spec/helpers/ee/auth_helper_spec.rb'
     - 'ee/spec/helpers/ee/boards_helper_spec.rb'

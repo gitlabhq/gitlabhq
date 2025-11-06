@@ -625,7 +625,6 @@
 - './ee/spec/helpers/audit_events_helper_spec.rb'
 - './ee/spec/helpers/billing_plans_helper_spec.rb'
 - './ee/spec/helpers/ee/boards_helper_spec.rb'
-- './ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
 - './ee/spec/helpers/credentials_inventory_helper_spec.rb'
 - './ee/spec/helpers/ee/container_registry/container_registry_helper_spec.rb'
 - './ee/spec/helpers/ee/access_tokens_helper_spec.rb'

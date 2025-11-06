@@ -3270,6 +3270,40 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe 'email_based_otp_required?', :freeze_time do
+    subject { user.email_based_otp_required? }
+
+    let_it_be_with_reload(:user) { create(:user) }
+
+    it 'returns false when email_otp_required_after is missing' do
+      user.email_otp_required_after = nil
+
+      is_expected.to eq(false)
+    end
+
+    it 'returns false when email_otp_required_after is in the future' do
+      user.email_otp_required_after = 1.second.since
+
+      is_expected.to eq(false)
+    end
+
+    it 'returns true when email_otp_required_after is in the past' do
+      user.email_otp_required_after = 1.second.ago
+
+      is_expected.to eq(true)
+    end
+
+    context 'when :email_based_mfa feature flag is disabled' do
+      it 'returns false' do
+        stub_feature_flags(email_based_mfa: false)
+
+        user.email_otp_required_after = 1.second.ago
+
+        is_expected.to eq(false)
+      end
+    end
+  end
+
   describe 'update_otp_secret!', :freeze_time do
     let_it_be_with_refind(:user) { create(:user) }
 

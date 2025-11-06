@@ -343,6 +343,79 @@ All of that are problems that may be temporary and mostly are not expected to ha
 We definitely don't want to drop jobs immediately when one of these conditions is happening.
 Dropping a job only because a runner is at capacity or because there is a temporary unavailability/configuration mistake would be very harmful to users.
 
+## Job Trace Chunk Architecture
+
+On GitLab.com, when traces are sent from a runner the content is stored in a `redis_trace_chunks` Redis cluster with a key containing the job ID and index.
+A `Ci::BuildTraceChunk` record is also created to keep track of each chunk. This record indicates the current data store for the chunk. Admins of a GitLab
+installation can configure which data stores are used. On non-GitLab.com instances, this behavior also occurs when `ci_job_live_trace_enabled?` is enabled.
+
+### Lifecycle
+
+1. Trace Append Phase
+   - Runner → `PATCH /api/v4/jobs/1/trace` (sends trace contents)
+   - `Ci::AppendBuildTraceService` stores chunk data in the live store (Redis trace chunks cluster for .com)
+   - Creates `Ci::BuildTraceChunk` record in PostgreSQL with `data_store: redis_trace_chunks`
+   - Creates `Ci::BuildTraceMetadata` record to track trace metadata
+   - Returns 200 OK to Runner
+   - `build.trace_chunks` will contain records with `redis_trace_chunks` or another live store as the `data_store`
+1. Job Update Phase
+   - Runner → `PUT /api/v4/jobs/1` (job update)
+   - This endpoint also runs `Ci::BuildTraceChunkFlushWorker`
+   - `Ci::BuildTraceChunkFlushWorker` retrieves chunk data from Redis trace chunks cluster
+   - Copies chunk to object storage (each chunk gets its own file)
+   - Deletes live chunk from live data store (`redis_trace_chunks` cluster on .com)
+   - Updates `Ci::BuildTraceChunk` record in PostgreSQL with `data_store: fog`
+   - Returns 200 OK to runner
+   - `build.trace_chunks` will contain records with `fog` or another persisted store as the `data_store`
+1. Job Completion & Archive Phase
+   - Runner → `PUT /api/v4/jobs/1` (job completion)
+   - Triggers `Ci::BuildFinishedWorker`
+   - `Ci::ArchiveTraceWorker` retrieves all fog chunks from object storage
+   - Creates single consolidated archive file as a `JobArtifact` of `type: :trace`
+   - Deletes individual chunks from object storage
+   - Deletes `Ci::BuildTraceChunk` records from PostgreSQL
+      - `Ci::Build::Trace` changes from the `live` to `archived` state
+   - Returns 200 OK to runner
+   - `build.trace_chunks` will be an empty array
+
+```mermaid
+sequenceDiagram
+    participant Runner
+    participant API
+    participant Redis as Redis Trace Chunks
+    participant ObjectStorage as Object Storage
+    participant PostgreSQL
+    participant Archive as Archive Storage
+
+    Note over Runner, Archive: 1. Trace Append Phase
+    Runner->>API: PATCH /api/v4/jobs/1/trace<br/>(trace contents)
+    API->>Redis: Ci::AppendBuildTraceService<br/>stores chunk data
+    API->>PostgreSQL: Create Ci::BuildTraceChunk<br/>(data_store: redis_trace_chunks)
+    API->>Runner: 200 OK
+
+    Note over Runner, Archive: 2. Job Update Phase
+    Runner->>API: PUT /api/v4/jobs/1<br/>(job update)
+    API->>Redis: Ci::BuildTraceChunkFlushWorker<br/>retrieves chunk data
+    API->>ObjectStorage: Copy chunk to storage<br/>(each chunk = own file)
+    API->>Redis: Delete chunk in redis
+    API->>PostgreSQL: Update Ci::BuildTraceChunk<br/>(data_store: fog)
+    API->>Runner: 200 OK
+
+    Note over Runner, Archive: 3. Job Completion & Archive Phase
+    Runner->>API: PUT /api/v4/jobs/1<br/>(job completion)
+    API->>API: Trigger Ci::BuildFinishedWorker
+    API->>ObjectStorage: Ci::ArchiveTraceWorker<br/>retrieves all fog chunks
+    API->>Archive: Create single archive file
+    API->>ObjectStorage: Delete individual chunks
+    API->>PostgreSQL: Update Ci::Build::Trace<br/>(live → archived)
+    API->>Runner: 200 OK
+```
+
+### Monitoring Resources
+
+- **Dashboard**: [Redis TraceChunks Overview](https://dashboards.gitlab.net/d/redis-tracechunks-main/redis-tracechunks3a-overview?orgId=1&var-PROMETHEUS_DS=mimir-gitlab-gprd&var-environment=gprd)
+- **Runbook**: [Redis TraceChunks Operations](https://gitlab.com/gitlab-com/runbooks/-/tree/83dd199cd9398f4fb5935e9ba8891ee54673f1fe/docs/redis-tracechunks)
+
 ## The definition of "Job" in GitLab CI/CD
 
 "Job" in GitLab CI context refers a task to drive Continuous Integration, Delivery and Deployment.

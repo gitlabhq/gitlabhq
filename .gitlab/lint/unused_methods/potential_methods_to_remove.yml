@@ -5,8 +5,6 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-compliance_frameworks_list_data:
-  file: ee/app/helpers/compliance_management/compliance_framework/group_settings_helper.rb
 project_vulnerability_path:
   file: ee/app/helpers/ee/gitlab_routing_helper.rb
 user_group_saml_omniauth_metadata_path:

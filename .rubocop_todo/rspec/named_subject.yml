@@ -164,7 +164,6 @@ RSpec/NamedSubject:
     - 'ee/spec/graphql/types/vulnerability_type_spec.rb'
     - 'ee/spec/helpers/admin/emails_helper_spec.rb'
     - 'ee/spec/helpers/billing_plans_helper_spec.rb'
-    - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/auth_helper_spec.rb'
     - 'ee/spec/helpers/ee/branches_helper_spec.rb'
     - 'ee/spec/helpers/ee/ci/runners_helper_spec.rb'

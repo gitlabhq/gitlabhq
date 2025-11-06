@@ -9,5 +9,5 @@ description: Stores uploads fro UserPermissionExportUpload model
 introduced_by_url:
 milestone: '17.11'
 table_size: small
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553474
+gitlab_schema: gitlab_main_user
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199

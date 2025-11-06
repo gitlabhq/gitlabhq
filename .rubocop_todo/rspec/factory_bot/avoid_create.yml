@@ -10,7 +10,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/components/namespaces/storage/namespace_limit/subgroup_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/namespace_limit/user_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/helpers/billing_plans_helper_spec.rb'
-    - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/admin/identities_helper_spec.rb'
     - 'ee/spec/helpers/ee/application_helper_spec.rb'
     - 'ee/spec/helpers/ee/blob_helper_spec.rb'

@@ -820,6 +820,39 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
               end
 
+              context 'when user has email OTP enabled' do
+                let(:user) { create(:user, email_otp_required_after: 1.second.ago) }
+                let(:access_token) { create(:personal_access_token, user: user) }
+                let(:path) { "#{project.full_path}.git" }
+
+                before do
+                  project.add_maintainer(user)
+                end
+
+                context 'when username and password are provided' do
+                  it_behaves_like 'pulls are disallowed'
+                  it_behaves_like 'pushes are disallowed'
+                end
+
+                context 'when username and personal access token are provided' do
+                  let(:env) { { user: user.username, password: access_token.token } }
+
+                  it_behaves_like 'pulls are allowed'
+                  it_behaves_like 'pushes are allowed'
+                end
+
+                context 'when :email_based_mfa feature flag disabled' do
+                  before do
+                    stub_feature_flags(email_based_mfa: false)
+                  end
+
+                  context 'when username and password are provided' do
+                    it_behaves_like 'pulls are allowed'
+                    it_behaves_like 'pushes are allowed'
+                  end
+                end
+              end
+
               context 'when password authentication is disabled for Web, but enabled for Git' do
                 before do
                   stub_application_setting(password_authentication_enabled_for_web: false)

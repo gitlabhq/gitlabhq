@@ -4,7 +4,6 @@ Style/BlockDelimiters:
   Exclude:
     - 'ee/spec/finders/security/related_pipelines_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_reads_finder_spec.rb'
-    - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/labels_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/security/api_fuzzing_configuration_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/security/dast_configuration_helper_spec.rb'

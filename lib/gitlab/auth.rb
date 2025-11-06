@@ -269,7 +269,7 @@ module Gitlab
           )
         end
 
-        verifier = TwoFactorAuthVerifier.new(user)
+        verifier = TwoFactorAuthVerifier.new(user, treat_email_otp_as_2fa: true)
 
         if user.two_factor_enabled? || verifier.two_factor_authentication_enforced?
           raise Gitlab::Auth::MissingPersonalAccessTokenError

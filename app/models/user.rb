@@ -1375,6 +1375,11 @@ class User < ApplicationRecord
     otp_secret_expires_at.past?
   end
 
+  def email_based_otp_required?
+    Feature.enabled?(:email_based_mfa, self) &&
+      !!email_otp_required_after&.past?
+  end
+
   def update_otp_secret!
     self.otp_secret = User.generate_otp_secret(OTP_SECRET_LENGTH)
     self.otp_secret_expires_at = Time.current + OTP_SECRET_TTL

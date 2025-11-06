@@ -1061,7 +1061,6 @@ Layout/LineLength:
     - 'ee/spec/helpers/admin/emails_helper_spec.rb'
     - 'ee/spec/helpers/analytics/code_review_helper_spec.rb'
     - 'ee/spec/helpers/billing_plans_helper_spec.rb'
-    - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/application_helper_spec.rb'
     - 'ee/spec/helpers/ee/branches_helper_spec.rb'
     - 'ee/spec/helpers/ee/feature_flags_helper_spec.rb'

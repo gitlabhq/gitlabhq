@@ -18086,6 +18086,9 @@ msgstr ""
 msgid "ComplianceViolation|Dismissed"
 msgstr ""
 
+msgid "ComplianceViolation|Failed to toggle emoji reaction."
+msgstr ""
+
 msgid "ComplianceViolation|Fix suggestion generated for this failed control"
 msgstr ""
 
@@ -70711,13 +70714,13 @@ msgstr ""
 msgid "UsageBilling|Date/Time"
 msgstr ""
 
+msgid "UsageBilling|GitLab Credits - Monthly Waiver"
+msgstr ""
+
 msgid "UsageBilling|GitLab Credits - Monthly committed pool"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits - On Demand"
-msgstr ""
-
-msgid "UsageBilling|GitLab Credits - One-Time Waiver"
 msgstr ""
 
 msgid "UsageBilling|Included credits"
@@ -70744,16 +70747,16 @@ msgstr ""
 msgid "UsageBilling|Location"
 msgstr ""
 
+msgid "UsageBilling|Monthly Waiver credits remaining"
+msgstr ""
+
+msgid "UsageBilling|Monthly Waiver credits used this period"
+msgstr ""
+
 msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Share GitLab Credits across your namespace for flexibility and predictable monthly costs. Learn more about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|No user data available"
-msgstr ""
-
-msgid "UsageBilling|One-Time Waiver credits remaining"
-msgstr ""
-
-msgid "UsageBilling|One-Time Waiver credits used this period"
 msgstr ""
 
 msgid "UsageBilling|Purchase monthly commitment"
