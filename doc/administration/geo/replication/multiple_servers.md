@@ -2,7 +2,8 @@
 stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Geo for multiple nodes
+title: Set up Geo for multiple nodes
+description: "Configure Geo in a multi-node environment, covering primary and secondary site setup, database replication, tracking database configuration, and load balancer integration."
 ---
 
 {{< details >}}

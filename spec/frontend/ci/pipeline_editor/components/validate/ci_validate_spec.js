@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { GlAlert, GlEmptyState, GlLoadingIcon, GlPopover } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 
+import mockCiLintMutationResponse from 'test_fixtures/graphql/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql.json';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -18,7 +19,6 @@ import getCurrentBranch from '~/ci/pipeline_editor/graphql/queries/client/curren
 import { pipelineEditorTrackingOptions } from '~/ci/pipeline_editor/constants';
 import {
   mockBlobContentQueryResponse,
-  mockCiLintMutationResponse,
   ciLintErrorResponse,
   mockCiLintPath,
   mockCiYml,

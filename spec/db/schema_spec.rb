@@ -20,7 +20,6 @@ RSpec.describe 'Database schema',
   let(:removed_fks_map) do
     {
       # example_table: %w[example_column]
-      alert_management_alerts: %w[prometheus_alert_id],
       search_namespace_index_assignments: [%w[search_index_id index_type]]
     }.with_indifferent_access.freeze
   end
@@ -43,7 +42,7 @@ RSpec.describe 'Database schema',
       approver_groups: %w[target_id],
       approvers: %w[target_id user_id],
       analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id
-        last_incremental_issues_id last_full_run_issues_id last_full_run_merge_requests_id
+        last_incremental_issues_id
         last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id
         last_consistency_check_issues_issuable_id last_consistency_check_merge_requests_stage_event_hash_id
         last_consistency_check_merge_requests_issuable_id],
@@ -64,7 +63,6 @@ RSpec.describe 'Database schema',
       award_emoji: %w[awardable_id user_id],
       aws_roles: %w[role_external_id],
       boards: %w[milestone_id iteration_id],
-      broadcast_messages: %w[namespace_id],
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
       chat_names: %w[chat_id team_id],
       chat_teams: %w[team_id],
@@ -104,7 +102,7 @@ RSpec.describe 'Database schema',
       ci_job_artifact_states: %w[partition_id project_id],
       cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
       cluster_providers_gcp: %w[gcp_project_id operation_id],
-      compliance_management_frameworks: %w[group_id source_id],
+      compliance_management_frameworks: %w[source_id],
       commit_user_mentions: %w[commit_id],
       dast_site_profiles_builds: %w[project_id],
       dast_scanner_profiles_builds: %w[project_id],
@@ -150,7 +148,7 @@ RSpec.describe 'Database schema',
       merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
       namespaces: %w[owner_id parent_id],
       namespace_descendants: %w[namespace_id],
-      notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id],
+      notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
       notes_archived: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id organization_id],
       label_links_archived: %w[label_id target_id namespace_id],
       notification_settings: %w[source_id],
@@ -185,7 +183,7 @@ RSpec.describe 'Database schema',
       project_data_transfers: %w[project_id namespace_id],
       project_error_tracking_settings: %w[sentry_project_id],
       project_statistics: %w[namespace_id],
-      projects: %w[ci_id mirror_user_id],
+      projects: %w[mirror_user_id],
       push_event_payloads: %w[project_id],
       redirect_routes: %w[source_id],
       repository_languages: %w[programming_language_id],
@@ -256,7 +254,6 @@ RSpec.describe 'Database schema',
       backup_finding_remediations: %w[finding_id], # having a FK on this table prevents partitions from being detached
       backup_finding_signatures: %w[finding_id], # having a FK on this table prevents partitions from being detached
       backup_findings: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
-      backup_vulnerabilities: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_external_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_merge_request_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
@@ -264,18 +261,16 @@ RSpec.describe 'Database schema',
       backup_vulnerability_severity_overrides: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_state_transitions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_user_mentions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
-      vulnerability_reads: %w[cluster_agent_id namespace_id security_project_tracked_context_id vulnerability_occurrence_id], # namespace_id is a denormalization of `project.namespace`. tracked_contexts cannot be a foreign key yet. vulnerability_occurrence_id foreign key will be added at a later date
+      vulnerability_reads: %w[cluster_agent_id security_project_tracked_context_id vulnerability_occurrence_id], # tracked_contexts cannot be a foreign key yet. vulnerability_occurrence_id foreign key will be added at a later date
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
       web_hook_logs_daily: %w[web_hook_id],
-      webauthn_registrations: %w[u2f_registration_id], # this column will be dropped
       ml_candidates: %w[internal_id],
       value_stream_dashboard_counts: %w[namespace_id],
       vulnerability_export_parts: %w[start_id end_id],
       zoekt_indices: %w[namespace_id], # needed for cells sharding key
-      zoekt_repositories: %w[namespace_id project_identifier], # needed for cells sharding key
-      zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
+      zoekt_tasks: %w[partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
       p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
       approval_group_rules: %w[approval_policy_rule_id],
@@ -410,8 +405,16 @@ RSpec.describe 'Database schema',
               )
             end
 
+            specify 'ignored columns exist' do
+              expect(column_names).to include(*ignored_columns) if ignored_columns.present?
+            end
+
             it 'do have the foreign keys' do
               expect(column_names_with_id - ignored_columns).to be_a_foreign_key_column_of(foreign_keys_columns)
+            end
+
+            it 'does not contain additional columns (not ending with _id) in the ignore list' do
+              expect(ignored_columns - column_names_with_id).to be_empty
             end
 
             it 'and having foreign key are not in the ignore list' do

@@ -3,6 +3,7 @@ stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting common Geo errors
+description: Diagnose and resolve common Geo issues, covering health checks, database replication problems, site connectivity, and error resolution procedures.
 ---
 
 {{< details >}}

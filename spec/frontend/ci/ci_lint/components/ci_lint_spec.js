@@ -2,13 +2,13 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import mockCiLintMutationResponse from 'test_fixtures/graphql/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import CiLint from '~/ci/ci_lint/components/ci_lint.vue';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
 import ciLintMutation from '~/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
-import { mockCiLintMutationResponse } from '../../pipeline_editor/mock_data';
 
 Vue.use(VueApollo);
 

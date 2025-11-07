@@ -185,6 +185,7 @@ class ApplicationController < BaseActionController
       try(:authenticated_user)
     end
   end
+
   strong_memoize_attr :auth_user
 
   def log_exception(exception)
@@ -557,11 +558,19 @@ class ApplicationController < BaseActionController
 
     return if current_user.present?
 
-    return if cookies[:studio].present?
+    # NOTE: Change this to "true" to make project studio default enabled for anonymous users
+    default_value_for_anonymous_users = 'false'
+
+    cookie_value =
+      if cookies[:force_studio_true_for_anonymous] == 'true'
+        'true'
+      else
+        default_value_for_anonymous_users
+      end
 
     set_secure_cookie(
       :studio,
-      'true',
+      cookie_value,
       httponly: true,
       expires: 30.days.from_now
     )

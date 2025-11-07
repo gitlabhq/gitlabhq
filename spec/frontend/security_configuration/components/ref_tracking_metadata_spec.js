@@ -8,10 +8,11 @@ import { createTrackedRef } from '../mock_data';
 describe('RefTrackingMetadata component', () => {
   let wrapper;
 
-  const createComponent = ({ trackedRef = createTrackedRef() } = {}) => {
+  const createComponent = ({ trackedRef = createTrackedRef(), disableCommitLink = false } = {}) => {
     wrapper = shallowMountExtended(RefTrackingMetadata, {
       propsData: {
         trackedRef,
+        disableCommitLink,
       },
     });
   };
@@ -21,8 +22,10 @@ describe('RefTrackingMetadata component', () => {
   const findProtectedBadge = () => wrapper.findComponent(ProtectedBadge);
   const findRefTypeIcon = () => wrapper.findByTestId('ref-type').findComponent(GlIcon);
   const findRefTypeText = () => wrapper.findByTestId('ref-type').find('span');
-  const findCommitIcon = () => wrapper.findByTestId('commit-link').findComponent(GlIcon);
-  const findCommitLink = () => wrapper.findByTestId('commit-link').findComponent(GlLink);
+  const findCommitShortId = () => wrapper.findByTestId('commit-short-id');
+  const findCommitIcon = () => findCommitShortId().findComponent(GlIcon);
+  const findCommitLink = () => findCommitShortId().findComponent(GlLink);
+  const findCommitText = () => findCommitShortId().find('span');
   const findCommitTitle = () => wrapper.findByTestId('commit-title');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
@@ -107,6 +110,22 @@ describe('RefTrackingMetadata component', () => {
       createComponent();
 
       expect(findTimeAgoTooltip().props('time')).toBe(createTrackedRef().commit.authoredDate);
+    });
+  });
+
+  describe('commit link behavior', () => {
+    it('renders commit as a link by default', () => {
+      createComponent();
+
+      expect(findCommitLink().attributes('href')).toBe(createTrackedRef().commit.webPath);
+      expect(findCommitLink().text()).toBe(createTrackedRef().commit.shortId);
+    });
+
+    it('renders commit as plain text when disableCommitLink is true', () => {
+      createComponent({ disableCommitLink: true });
+
+      expect(findCommitText().text()).toBe(createTrackedRef().commit.shortId);
+      expect(findCommitLink().exists()).toBe(false);
     });
   });
 });

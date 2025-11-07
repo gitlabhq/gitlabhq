@@ -4,6 +4,7 @@
 module Mcp
   module Tools
     class CustomService < BaseService
+      include ::Mcp::Tools::Concerns::ResourceFinder
       extend ::Gitlab::Utils::Override
 
       class << self
@@ -102,24 +103,6 @@ module Mcp
       def auth_target(_params)
         raise NoMethodError, "#{self.class.name}#auth_target should be implemented in a subclass"
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord -- no need to redefine a scope for the built-in method
-      def find_project(project_id)
-        raise ArgumentError, "Validation error: project_id must be a string" unless project_id.is_a?(String)
-
-        projects = ::Project.without_deleted.not_hidden
-        project =
-          if ::API::Helpers::INTEGER_ID_REGEX.match?(project_id)
-            projects.find_by(id: project_id)
-          elsif project_id.include?('/')
-            projects.find_by_full_path(project_id, follow_redirects: true)
-          end
-
-        raise StandardError, "Project '#{project_id}' not found or inaccessible" unless project
-
-        project
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       protected
 

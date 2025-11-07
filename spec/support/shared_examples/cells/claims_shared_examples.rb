@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'creating new claims' do |factory_name:|
-  let!(:instance) { build(factory_name) }
+  subject! { build(factory_name) }
+
   let(:claim_service) { Gitlab::TopologyServiceClient::ClaimService.instance }
   let(:deadline) { 10.seconds.from_now.to_i }
   let(:lease_uuid) { SecureRandom.uuid }
   let(:fake_error) { Class.new(RuntimeError) }
-  let(:claims_records) { claims_records_for(instance) }
+  let(:claims_records) { claims_records_for(subject) }
   let(:create_records) { [] }
   let(:destroy_records) { [] }
 
@@ -15,12 +16,12 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
       value = only[attribute]
 
       if only.empty? || value # rubocop:disable Style/IfUnlessModifier -- I think this is easier to read
-        claims_records_attribute_for(attribute, config, value)
+        claims_records_attribute_for(instance, attribute, config, value)
       end
     end
   end
 
-  def claims_records_attribute_for(attribute, config, value)
+  def claims_records_attribute_for(instance, attribute, config, value)
     instance.__send__(
       :cells_claims_metadata_for,
       config[:type],
@@ -28,7 +29,7 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
   end
 
   before do
-    allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
+    stub_config_cell(enabled: true)
     allow(Current).to receive(:cells_claims_leases?).and_return(true)
 
     allow(GRPC::Core::TimeConsts).to receive(:from_relative_time)
@@ -42,7 +43,7 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
       expect_begin_update(:save)
       expect_commit_update
 
-      expect(instance.save).to be(true)
+      expect(subject.save).to be(true)
       expect(Cells::OutstandingLease.count).to eq(0)
     end
 
@@ -50,8 +51,8 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
       it 'does not save anything' do
         expect_begin_update(:save, success: false)
 
-        expect { instance.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(instance.class.count).to eq(0)
+        expect { subject.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.class.count).to eq(0)
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
@@ -62,34 +63,35 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
         expect_abort_commit
         expect_rollback_update
 
-        expect { instance.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(instance.class.count).to eq(0)
+        expect { subject.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.class.count).to eq(0)
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
 
     context 'when commit_update fails' do
-      it 'saves instance but leaves the outstanding lease' do
+      it 'saves subject but leaves the outstanding lease' do
         expect_begin_update(:save)
         expect_commit_update(success: false)
 
-        expect { instance.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(instance.class.count).to eq(1)
+        expect { subject.save }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.class.count).to eq(1)
         expect(Cells::OutstandingLease.count).to eq(1)
       end
     end
   end
 
   context 'when deleting the record' do
-    let!(:instance) { create(factory_name) } # rubocop:disable Rails/SaveBang -- This is a factory, there's no bang equivalent
+    subject! { create(factory_name) } # rubocop:disable Rails/SaveBang -- This is a factory, there's no bang equivalent
+
     let(:destroy_records) { claims_records }
 
     it 'deletes the claimed attributes cleanly when created' do
       expect_begin_update(:destroy)
       expect_commit_update
 
-      instance.destroy!
-      expect(instance.destroyed?).to be(true)
+      subject.destroy!
+      expect(subject.destroyed?).to be(true)
       expect(Cells::OutstandingLease.count).to eq(0)
     end
 
@@ -97,9 +99,9 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
       it 'does not delete anything' do
         expect_begin_update(:destroy, success: false)
 
-        expect { instance.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(instance.destroyed?).to be(false)
-        expect(instance.class.count).to eq(1)
+        expect { subject.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.destroyed?).to be(false)
+        expect(subject.class.count).to eq(1)
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
@@ -110,9 +112,9 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
         expect_abort_commit
         expect_rollback_update
 
-        expect { instance.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(instance.destroyed?).to be(false)
-        expect(instance.class.count).to eq(1)
+        expect { subject.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.destroyed?).to be(false)
+        expect(subject.class.count).to eq(1)
         expect(Cells::OutstandingLease.count).to eq(0)
       end
     end
@@ -122,27 +124,27 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
         expect_begin_update(:destroy)
         expect_commit_update(success: false)
 
-        expect { instance.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
-        expect(instance.class.count).to eq(0)
+        expect { subject.destroy }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect(subject.class.count).to eq(0)
         expect(Cells::OutstandingLease.count).to eq(1)
       end
     end
   end
 
   context 'when updating the record' do
-    let!(:instance) { create(factory_name) } # rubocop:disable Rails/SaveBang -- This is a factory, there's no bang equivalent
+    subject! { create(factory_name) } # rubocop:disable Rails/SaveBang -- This is a factory, there's no bang equivalent
 
     let!(:destroy_records) do
-      claims_records_for(instance, only: original_attributes)
+      claims_records_for(subject, only: original_attributes)
     end
 
     let!(:create_records) do
-      claims_records_for(instance, only: transform_attributes)
+      claims_records_for(subject, only: transform_attributes)
     end
 
     let(:original_attributes) do
       transform_attributes.each_key.index_with do |key|
-        instance.public_send(key)
+        subject.public_send(key)
       end
     end
 
@@ -150,7 +152,7 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
       expect_begin_update(:save)
       expect_commit_update
 
-      expect(instance.update!(transform_attributes)).to be(true)
+      expect(subject.update!(transform_attributes)).to be(true)
       expect(Cells::OutstandingLease.count).to eq(0)
     end
 
@@ -158,11 +160,11 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
       it 'does not save anything' do
         expect_begin_update(:save, success: false)
 
-        expect { instance.update(transform_attributes) }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect { subject.update(transform_attributes) }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
 
-        instance.reload
+        subject.reload
         original_attributes.each do |key, value|
-          expect(instance.public_send(key)).to eq(value)
+          expect(subject.public_send(key)).to eq(value)
         end
 
         expect(Cells::OutstandingLease.count).to eq(0)
@@ -175,11 +177,11 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
         expect_abort_commit
         expect_rollback_update
 
-        expect { instance.update(transform_attributes) }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect { subject.update(transform_attributes) }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
 
-        instance.reload
+        subject.reload
         original_attributes.each do |key, value|
-          expect(instance.public_send(key)).to eq(value)
+          expect(subject.public_send(key)).to eq(value)
         end
 
         expect(Cells::OutstandingLease.count).to eq(0)
@@ -191,11 +193,11 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
         expect_begin_update(:save)
         expect_commit_update(success: false)
 
-        expect { instance.update(transform_attributes) }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
+        expect { subject.update(transform_attributes) }.to raise_error(fake_error) # rubocop:disable Rails/SaveBang -- We're checking exceptions already
 
-        instance.reload
+        subject.reload
         transform_attributes.each do |key, value|
-          expect(instance.public_send(key)).to eq(value)
+          expect(subject.public_send(key)).to eq(value)
         end
 
         expect(Cells::OutstandingLease.count).to eq(1)
@@ -204,7 +206,7 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
   end
 
   def expect_begin_update(type, success: true)
-    allow(instance).to receive(:"cells_claims_#{type}_changes")
+    allow(subject).to receive(:"cells_claims_#{type}_changes")
       .and_wrap_original do |original, *args|
         # We delay defining this mock because only after saving we have
         # the id we can use for the metadata.

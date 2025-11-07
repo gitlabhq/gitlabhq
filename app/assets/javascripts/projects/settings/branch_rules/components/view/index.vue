@@ -302,15 +302,17 @@ export default {
               return createAlert({
                 message: error.message,
                 captureError: true,
+                error,
               });
             }
             visitUrl(this.branchRulesPath);
           },
         )
-        .catch(() => {
+        .catch((error) => {
           return createAlert({
-            message: s__('BranchRules|Something went wrong while deleting branch rule.'),
+            message: this.$options.i18n.deleteBranchRuleError,
             captureError: true,
+            error,
           });
         });
     },
@@ -394,13 +396,32 @@ export default {
             ? data.branchRuleSquashOptionDelete
             : data.branchRuleSquashOptionUpdate;
           if (result?.errors.length) {
-            createAlert({ message: this.$options.i18n.updateBranchRuleError });
+            const errorMessage = isDelete
+              ? this.$options.i18n.deleteBranchRuleError
+              : this.$options.i18n.updateBranchRuleError;
+            createAlert({ message: errorMessage });
+            return;
+          }
+
+          if (result?.errors.length) {
+            const [error] = result.errors;
+            createAlert({
+              message: error,
+              captureError: true,
+              error,
+            });
             return;
           }
 
           this.$apollo.queries.squashOption.refetch();
         })
-        .catch(() => createAlert({ message: this.$options.i18n.updateBranchRuleError }))
+        .catch((error) =>
+          createAlert({
+            message: this.$options.i18n.updateBranchRuleError,
+            captureError: true,
+            error,
+          }),
+        )
         .finally(() => {
           this.isSquashSettingsDrawerOpen = false;
           this.isRuleUpdating = false;
@@ -435,7 +456,8 @@ export default {
         })
         .then(({ data: { branchRuleUpdate } }) => {
           if (branchRuleUpdate.errors.length) {
-            createAlert({ message: this.$options.i18n.updateBranchRuleError });
+            const [error] = branchRuleUpdate.errors;
+            createAlert({ message: error, captureError: true, error });
             return;
           }
 
@@ -453,8 +475,12 @@ export default {
             this.$toast.show(toastMessage);
           }
         })
-        .catch(() => {
-          createAlert({ message: this.$options.i18n.updateBranchRuleError });
+        .catch((error) => {
+          createAlert({
+            message: this.$options.i18n.updateBranchRuleError,
+            captureError: true,
+            error,
+          });
         })
         .finally(() => {
           this.isRuleUpdating = false;

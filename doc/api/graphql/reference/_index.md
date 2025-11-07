@@ -1201,7 +1201,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 Find a Maven upstream registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
 
-Returns [`MavenUpstream`](#mavenupstream).
+Returns [`MavenUpstreamDetails`](#mavenupstreamdetails).
 
 #### Arguments
 
@@ -1218,7 +1218,7 @@ Returns [`MavenUpstream`](#mavenupstream).
 
 Find a Maven virtual registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
 
-Returns [`MavenRegistry`](#mavenregistry).
+Returns [`MavenRegistryDetails`](#mavenregistrydetails).
 
 #### Arguments
 
@@ -9017,7 +9017,7 @@ Input type: `MavenUpstreamCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmavenupstreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmavenupstreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationmavenupstreamcreateupstream"></a>`upstream` | [`MavenUpstream`](#mavenupstream) | Maven upstream after the mutation. |
+| <a id="mutationmavenupstreamcreateupstream"></a>`upstream` | [`MavenUpstreamDetails`](#mavenupstreamdetails) | Maven upstream after the mutation. |
 
 ### `Mutation.memberRoleAdminCreate`
 
@@ -31044,6 +31044,7 @@ Describes the usage of consumables under the subscription.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageenddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | End date of the period covered by the usage data. |
+| <a id="gitlabsubscriptionusageisoutdatedclient"></a>`isOutdatedClient` | [`Boolean`](#boolean) | Indicates if the GitLab instance has an outdated API contract with the Customer Portal. |
 | <a id="gitlabsubscriptionusagelasteventtransactionat"></a>`lastEventTransactionAt` | [`ISO8601DateTime`](#iso8601datetime) | Date and time when the last usage event resulted in a wallet transaction. |
 | <a id="gitlabsubscriptionusagemonthlycommitment"></a>`monthlyCommitment` | [`GitlabSubscriptionMonthlyCommitment`](#gitlabsubscriptionmonthlycommitment) | Monthly commitment usage for the subscription. |
 | <a id="gitlabsubscriptionusagemonthlywaiver"></a>`monthlyWaiver` | [`GitlabSubscriptionMonthlyWaiver`](#gitlabsubscriptionmonthlywaiver) | Monthly waiver usage for the subscription. |
@@ -34781,7 +34782,20 @@ Represents a Maven virtual registry.
 | <a id="mavenregistryid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
 | <a id="mavenregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
 | <a id="mavenregistryupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
-| <a id="mavenregistryupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstream!]`](#mavenupstream) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
+
+### `MavenRegistryDetails`
+
+Represents Maven virtual registry details.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenregistrydetailsdescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="mavenregistrydetailsid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
+| <a id="mavenregistrydetailsname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
+| <a id="mavenregistrydetailsupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the virtual registry was updated. |
+| <a id="mavenregistrydetailsupstreams"></a>`upstreams` {{< icon name="warning-solid" >}} | [`[MavenUpstreamDetails!]`](#mavenupstreamdetails) | **Introduced** in GitLab 18.1. **Status**: Experiment. List of upstream registries for the Maven virtual registry. |
 
 ### `MavenRegistryUpstream`
 
@@ -34793,6 +34807,7 @@ Represents the upstream registries of a Maven virtual registry.
 | ---- | ---- | ----------- |
 | <a id="mavenregistryupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.2. **Status**: Experiment. ID of the registry upstream. |
 | <a id="mavenregistryupstreamposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.2. **Status**: Experiment. Position of the upstream registry in an ordered list. |
+| <a id="mavenregistryupstreamregistry"></a>`registry` {{< icon name="warning-solid" >}} | [`MavenRegistry!`](#mavenregistry) | **Introduced** in GitLab 18.6. **Status**: Experiment. Maven registry associated with the registry upstream. |
 
 ### `MavenUpstream`
 
@@ -34807,11 +34822,28 @@ Represents a Maven upstream registry.
 | <a id="mavenupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
 | <a id="mavenupstreammetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
 | <a id="mavenupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
-| <a id="mavenupstreamregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection!`](#mavenregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
 | <a id="mavenupstreamregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
-| <a id="mavenupstreamregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
 | <a id="mavenupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
+
+### `MavenUpstreamDetails`
+
+Represents Maven upstream registry details.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenupstreamdetailscachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.1. **Status**: Experiment. Time before the cache expires for the upstream registry. |
+| <a id="mavenupstreamdetailsdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Description of the upstream registry. |
+| <a id="mavenupstreamdetailsid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
+| <a id="mavenupstreamdetailsmetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
+| <a id="mavenupstreamdetailsname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
+| <a id="mavenupstreamdetailsregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenRegistryConnection!`](#mavenregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
+| <a id="mavenupstreamdetailsregistriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
+| <a id="mavenupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
+| <a id="mavenupstreamdetailsurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
+| <a id="mavenupstreamdetailsusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 
 ### `MemberApproval`
 
@@ -44796,7 +44828,7 @@ Representing a to-do entry.
 | <a id="todoproject"></a>`project` | [`Project`](#project) | Project the to-do item is associated with. |
 | <a id="todosnoozeduntil"></a>`snoozedUntil` | [`Time`](#time) | Time until when the todo is snoozed. |
 | <a id="todostate"></a>`state` | [`TodoStateEnum!`](#todostateenum) | State of the to-do item. |
-| <a id="todotarget"></a>`target` {{< icon name="warning-solid" >}} | [`Todoable!`](#todoable) | **Deprecated** in GitLab 17.4. Use `target_entity` field. |
+| <a id="todotarget"></a>`target` {{< icon name="warning-solid" >}} | [`Todoable!`](#todoable) | **Deprecated** in GitLab 17.4. Under certain circumstances, the `target` field on a to-do item can be `null`. The GraphQL schema currently declares `target` field as non-nullable. Use the new `target_entity` field instead. |
 | <a id="todotargetentity"></a>`targetEntity` | [`Todoable`](#todoable) | Target of the to-do item. |
 | <a id="todotargettype"></a>`targetType` | [`TodoTargetEnum!`](#todotargetenum) | Target type of the to-do item. |
 | <a id="todotargeturl"></a>`targetUrl` | [`String`](#string) | URL of the to-do item target. |

@@ -489,24 +489,4 @@ RSpec.describe Mcp::Tools::CustomService, :aggregate_failures, feature_category:
       end
     end
   end
-
-  describe '#find_project' do
-    let_it_be(:namespace) { create(:group) }
-    let_it_be(:project) { create(:project, :public, namespace: namespace) }
-    let(:service) { test_service_class.new(name: service_name) }
-
-    context 'with project ID' do
-      it 'finds the project' do
-        found = service.find_project(project.id.to_s)
-        expect(found).to eq(project)
-      end
-    end
-
-    context 'with project full path' do
-      it 'finds the project' do
-        found = service.find_project(project.full_path.to_s)
-        expect(found).to eq(project)
-      end
-    end
-  end
 end

@@ -213,6 +213,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
 
         expect(host).not_to be_online
       end
+
+      it 'returns false when the pool is discarded' do
+        pool = double(:pool, discarded?: true)
+        allow(host).to receive(:pool).and_return(pool)
+
+        expect(host).not_to be_online
+      end
     end
   end
 

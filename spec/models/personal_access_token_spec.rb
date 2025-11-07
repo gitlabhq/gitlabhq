@@ -349,9 +349,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe 'PolicyActor methods' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: user) }
     let_it_be(:boundary) { Authz::Boundary.for(project) }
-    let_it_be(:pat) { create(:granular_pat, namespace: boundary.namespace, permissions: :create_issue) }
+    let_it_be(:pat) { create(:granular_pat, user: user, namespace: boundary.namespace, permissions: :create_issue) }
 
     let(:methods) { PolicyActor.instance_methods }
 

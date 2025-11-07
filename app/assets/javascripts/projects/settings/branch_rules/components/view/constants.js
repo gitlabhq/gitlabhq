@@ -72,6 +72,7 @@ export const I18N = {
     'BranchRules|Are you sure you want to delete this branch rule? This action cannot be undone.',
   ),
   deleteRuleModalDeleteText: s__('BranchRules|Delete branch rule'),
+  deleteBranchRuleError: s__('BranchRules|Something went wrong while deleting branch rule.'),
   updateTargetRule: s__('BranchRules|Update target branch'),
   update: s__('BranchRules|Update'),
   edit: s__('BranchRules|Edit'),

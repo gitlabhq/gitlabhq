@@ -2578,6 +2578,9 @@ msgstr ""
 msgid "AICatalog|Choose who can view and interact with this flow."
 msgstr ""
 
+msgid "AICatalog|Clear editor"
+msgstr ""
+
 msgid "AICatalog|Community contributions."
 msgstr ""
 
@@ -2590,7 +2593,7 @@ msgstr ""
 msgid "AICatalog|Connect an agent to automate complex tasks"
 msgstr ""
 
-msgid "AICatalog|Copy YAML configuration"
+msgid "AICatalog|Copy configuration"
 msgstr ""
 
 msgid "AICatalog|Copy of"
@@ -2672,6 +2675,9 @@ msgid "AICatalog|Edit flow"
 msgstr ""
 
 msgid "AICatalog|Enable %{itemType} in a %{targetType}"
+msgstr ""
+
+msgid "AICatalog|Enable flow from group"
 msgstr ""
 
 msgid "AICatalog|Enable flow in project"
@@ -2797,9 +2803,6 @@ msgstr ""
 msgid "AICatalog|Private %{itemTypePlural} are best for:"
 msgstr ""
 
-msgid "AICatalog|Project"
-msgstr ""
-
 msgid "AICatalog|Project is required."
 msgstr ""
 
@@ -2866,7 +2869,7 @@ msgstr ""
 msgid "AICatalog|Third-party flow"
 msgstr ""
 
-msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in. Duplicate the agent to use the same configuration in other projects."
+msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in or its top-level group. Duplicate the agent to use the same configuration in other projects."
 msgstr ""
 
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"
@@ -6580,7 +6583,7 @@ msgstr ""
 msgid "AiPowered|Amazon Q Setup"
 msgstr ""
 
-msgid "AiPowered|Are you sure you want to turn off GitLab Duo Agent Platform?"
+msgid "AiPowered|Are you sure you want to turn off composite identity for GitLab Duo Agent Platform?"
 msgstr ""
 
 msgid "AiPowered|Assign models to AI-native features."
@@ -6608,6 +6611,15 @@ msgid "AiPowered|Capture detailed information about AI-related activities and re
 msgstr ""
 
 msgid "AiPowered|Change configuration"
+msgstr ""
+
+msgid "AiPowered|Composite identity for GitLab Duo Agent Platform has successfully been turned off."
+msgstr ""
+
+msgid "AiPowered|Composite identity for GitLab Duo Agent Platform is now on for the instance and the service account (%{accountId}) was created. To use Agent Platform in your groups, you must turn on AI features for specific groups."
+msgstr ""
+
+msgid "AiPowered|Composite identity for GitLab Duo Agent Platform is now on for the instance. To use Agent Platform in your groups, you must turn on AI features for specific groups."
 msgstr ""
 
 msgid "AiPowered|Configuration"
@@ -6682,13 +6694,13 @@ msgstr ""
 msgid "AiPowered|Explore GitLab Duo Core"
 msgstr ""
 
-msgid "AiPowered|Failed to disable GitLab Duo Agent Platform."
-msgstr ""
-
-msgid "AiPowered|Failed to enable GitLab Duo Agent Platform."
+msgid "AiPowered|Failed to disable composite identity for GitLab Duo Agent Platform."
 msgstr ""
 
 msgid "AiPowered|Failed to enable GitLab Duo Core."
+msgstr ""
+
+msgid "AiPowered|Failed to enable composite identity for GitLab Duo Agent Platform."
 msgstr ""
 
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
@@ -6706,19 +6718,10 @@ msgstr ""
 msgid "AiPowered|GitLab Credit usage analytics"
 msgstr ""
 
-msgid "AiPowered|GitLab Duo Agent Platform"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Agent Platform has successfully been turned off."
+msgid "AiPowered|GitLab Duo Agent Platform composite identity"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Agent Platform is an AI-native coding agent."
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Agent Platform is now on for the instance and the service account (%{accountId}) was created. To use Agent Platform in your groups, you must turn on AI features for specific groups."
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Agent Platform is now on for the instance. To use Agent Platform in your groups, you must turn on AI features for specific groups."
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
@@ -6817,10 +6820,13 @@ msgstr ""
 msgid "AiPowered|Track credit consumption across your users and monitor usage trends. View breakdowns by user to understand how your team utilizes GitLab Duo."
 msgstr ""
 
-msgid "AiPowered|Turn off GitLab Duo Agent Platform"
+msgid "AiPowered|Turn off composite identity"
 msgstr ""
 
-msgid "AiPowered|Turn on GitLab Duo Agent Platform"
+msgid "AiPowered|Turn off composite identity for GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "AiPowered|Turn on composite identity for GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
@@ -6850,7 +6856,7 @@ msgstr ""
 msgid "AiPowered|View usage dashboard"
 msgstr ""
 
-msgid "AiPowered|What is the Duo Agent Platform service account?"
+msgid "AiPowered|What is the Duo Agent Platform composite identity?"
 msgstr ""
 
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
@@ -6865,10 +6871,10 @@ msgstr ""
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
 msgstr ""
 
-msgid "AiPowered|When you turn off GitLab Duo Agent Platform, users can no longer use it to solve coding tasks. Are you sure?"
+msgid "AiPowered|When you turn off composite identity for the Agent Platform, actions will be attributed to the user's account instead of the GitLab Duo service account. Are you sure you want to proceed?"
 msgstr ""
 
-msgid "AiPowered|When you turn on GitLab Duo Agent Platform, a service account is created."
+msgid "AiPowered|When you turn on composite identity for GitLab Duo Agent Platform, a service account is created."
 msgstr ""
 
 msgid "AiPowered|You now have access to GitLab Duo Chat and Code Suggestions in supported IDEs. To start using these features, %{link1Start}install the GitLab extension in your IDE%{link1End}. If you already have this extension installed, %{link2Start}explore what you can do with GitLab Duo Core%{link2End}."
@@ -61508,6 +61514,9 @@ msgstr ""
 msgid "SecurityReports|GitLab Duo (AI)"
 msgstr ""
 
+msgid "SecurityReports|Go to Policies"
+msgstr ""
+
 msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
 msgstr ""
 
@@ -61640,6 +61649,9 @@ msgstr ""
 msgid "SecurityReports|Operational vulnerabilities"
 msgstr ""
 
+msgid "SecurityReports|Panels that categorize vulnerabilities as open include those with Needs triage or Confirmed status. To interact with a link in a chart popover, click to pin the popover first. To unstick it, click outside the popover. %{learnMoreStart}Learn more%{learnMoreEnd}"
+msgstr ""
+
 msgid "SecurityReports|Parsing errors and warnings in pipeline"
 msgstr ""
 
@@ -61671,6 +61683,9 @@ msgid "SecurityReports|Reachability"
 msgstr ""
 
 msgid "SecurityReports|Reachable:"
+msgstr ""
+
+msgid "SecurityReports|Recommendation: Auto-resolve when no longer detected"
 msgstr ""
 
 msgid "SecurityReports|Remove project from dashboard"
@@ -61801,9 +61816,6 @@ msgstr ""
 msgid "SecurityReports|There was an error while generating the report."
 msgstr ""
 
-msgid "SecurityReports|This dashboard provides an overview of your security vulnerabilities."
-msgstr ""
-
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain and some of the vulnerabilities couldn't be ingested."
 msgstr ""
 
@@ -61817,6 +61829,9 @@ msgid "SecurityReports|This selection is required."
 msgstr ""
 
 msgid "SecurityReports|Time period"
+msgstr ""
+
+msgid "SecurityReports|To ensure that open vulnerabilities only include vulnerabilities that are still detected, we recommend enabling the policy to auto-resolve vulnerabilities when no longer detected."
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"
@@ -61896,10 +61911,19 @@ msgstr ""
 msgid "SecurityTrackedRefs|Remove tracking for %{refType}"
 msgstr ""
 
+msgid "SecurityTrackedRefs|Search branches and tags"
+msgstr ""
+
 msgid "SecurityTrackedRefs|The default ref cannot be removed from being tracked"
 msgstr ""
 
 msgid "SecurityTrackedRefs|Track new ref"
+msgstr ""
+
+msgid "SecurityTrackedRefs|Track new ref(s)"
+msgstr ""
+
+msgid "SecurityTrackedRefs|Track ref(s)"
 msgstr ""
 
 msgid "SecurityTrackedRefs|branch"
@@ -70891,6 +70915,9 @@ msgstr ""
 msgid "UsageBilling|These are credits consumed beyond your users included credits, charged at standard on-demand rates."
 msgstr ""
 
+msgid "UsageBilling|This dashboard may not display all current subscription data. For complete visibility, please upgrade to the latest version of GitLab or visit the %{linkStart}Customer Portal%{linkEnd}."
+msgstr ""
+
 msgid "UsageBilling|Total credits used"
 msgstr ""
 
@@ -78510,6 +78537,9 @@ msgstr ""
 msgid "cannot be used for user namespace"
 msgstr ""
 
+msgid "cannot be used with wildcard branch rules. Use an exact branch name."
+msgstr ""
+
 msgid "cannot belong to both an organization and a project"
 msgstr ""
 
@@ -80030,6 +80060,9 @@ msgid "must belong to either a project or an organization"
 msgstr ""
 
 msgid "must belong to either an organization or a project"
+msgstr ""
+
+msgid "must belong to project"
 msgstr ""
 
 msgid "must belong to same project of its requirement object."

@@ -331,23 +331,6 @@ You can set this variable in your project, group, or policy now to prevent Advan
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### GraphQL `target` field for to-do items replaced with `targetEntity`
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.4</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/484987).
-
-</div>
-
-Under certain circumstances, the `target` field on a to-do item can be null. The GraphQL schema currently declares this field as non-nullable. The new `targetEntity` field is nullable and replaces the non-nullable `target` field.
-Update any GraphQL queries that use the `currentUser.todos.target` field to use the new `currentUser.todos.targetEntity` field instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`
 
 <div class="deprecation-notes">

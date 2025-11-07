@@ -287,7 +287,7 @@ Prerequisites:
    [local Docker container registry](../../packages/container_registry/_index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/kics:5
+   registry.gitlab.com/security-products/kics:6
    ```
 
    The IaC analyzer's image is [periodically updated](../detect/vulnerability_scanner_maintenance.md)

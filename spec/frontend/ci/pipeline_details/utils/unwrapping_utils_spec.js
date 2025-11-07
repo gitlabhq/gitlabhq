@@ -2,6 +2,7 @@ import {
   unwrapGroups,
   unwrapNodesWithName,
   unwrapJobWithNeeds,
+  unwrapStagesFromMutation,
 } from '~/ci/pipeline_details/utils/unwrapping_utils';
 import {
   NEEDS_PROPERTY,
@@ -112,6 +113,34 @@ describe('Shared pipeline unwrapping utils', () => {
         unwrapNodesWithName(jobArrayWithElephant, 'needs', 'elephant')[0][NEEDS_PROPERTY],
       ).toEqual([elephantArray[0].elephant]);
     });
+
+    it('works with .nodes format (query response)', () => {
+      const jobsWithNodesFormat = [
+        {
+          ...baseJobs,
+          [NEEDS_PROPERTY]: {
+            nodes: [{ name: 'build_a' }, { name: 'build_b' }],
+          },
+        },
+      ];
+
+      const result = unwrapNodesWithName(jobsWithNodesFormat, NEEDS_PROPERTY);
+
+      expect(result[0][NEEDS_PROPERTY]).toEqual(['build_a', 'build_b']);
+    });
+
+    it('works with direct array format (mutation response)', () => {
+      const jobsWithDirectArrayFormat = [
+        {
+          ...baseJobs,
+          [NEEDS_PROPERTY]: [{ name: 'build_a' }, { name: 'build_b' }],
+        },
+      ];
+
+      const result = unwrapNodesWithName(jobsWithDirectArrayFormat, NEEDS_PROPERTY);
+
+      expect(result[0][NEEDS_PROPERTY]).toEqual(['build_a', 'build_b']);
+    });
   });
 
   describe('unwrapJobWithNeeds', () => {
@@ -191,6 +220,142 @@ describe('Shared pipeline unwrapping utils', () => {
         expect(result[1].name).toBe('second_job');
         expect(result[2].name).toBe('third_job');
       });
+    });
+  });
+
+  describe('unwrapStagesFromMutation', () => {
+    it('transforms valid stages/groups/jobs structure from mutation format', () => {
+      const mutationStages = [
+        {
+          name: 'build',
+          groups: [
+            {
+              name: 'build_job',
+              size: 1,
+              jobs: [
+                {
+                  name: 'build_job',
+                  script: ['echo "build"'],
+                  [NEEDS_PROPERTY]: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          name: 'test',
+          groups: [
+            {
+              name: 'test_job',
+              size: 1,
+              jobs: [
+                {
+                  name: 'test_job',
+                  script: ['echo "test"'],
+                  [NEEDS_PROPERTY]: [{ name: 'build_job' }],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      const result = unwrapStagesFromMutation(mutationStages);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].name).toBe('build');
+      expect(result[1].name).toBe('test');
+      expect(result[0].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual([]);
+      expect(result[1].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual(['build_job']);
+    });
+
+    it('correctly unwraps needs from [{ name: "job" }] to ["job"]', () => {
+      const stagesWithObjectNeeds = [
+        {
+          name: 'deploy',
+          groups: [
+            {
+              name: 'deploy_job',
+              size: 1,
+              jobs: [
+                {
+                  name: 'deploy_job',
+                  [NEEDS_PROPERTY]: [
+                    { name: 'build_job', __typename: 'CiConfigNeed' },
+                    { name: 'test_job', __typename: 'CiConfigNeed' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      const result = unwrapStagesFromMutation(stagesWithObjectNeeds);
+
+      expect(result[0].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual(['build_job', 'test_job']);
+    });
+
+    it('handles empty stages array', () => {
+      const emptyStages = [];
+
+      const result = unwrapStagesFromMutation(emptyStages);
+
+      expect(result).toEqual([]);
+    });
+
+    it('handles stages with missing/undefined groups', () => {
+      const stagesWithoutGroups = [
+        {
+          name: 'build',
+        },
+        {
+          name: 'test',
+          groups: undefined,
+        },
+        {
+          name: 'deploy',
+          groups: null,
+        },
+      ];
+
+      const result = unwrapStagesFromMutation(stagesWithoutGroups);
+
+      expect(result).toHaveLength(3);
+      expect(result[0].groups).toEqual([]);
+      expect(result[1].groups).toEqual([]);
+      expect(result[2].groups).toEqual([]);
+    });
+
+    it('handles groups with missing/undefined jobs', () => {
+      const stagesWithoutJobs = [
+        {
+          name: 'build',
+          groups: [
+            {
+              name: 'build_group',
+              size: 1,
+            },
+            {
+              name: 'test_group',
+              size: 1,
+              jobs: undefined,
+            },
+            {
+              name: 'deploy_group',
+              size: 1,
+              jobs: null,
+            },
+          ],
+        },
+      ];
+
+      const result = unwrapStagesFromMutation(stagesWithoutJobs);
+
+      expect(result[0].groups).toHaveLength(3);
+      expect(result[0].groups[0].jobs).toEqual([]);
+      expect(result[0].groups[1].jobs).toEqual([]);
+      expect(result[0].groups[2].jobs).toEqual([]);
     });
   });
 });

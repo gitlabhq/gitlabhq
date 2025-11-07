@@ -16,6 +16,7 @@ import RefTrackingList, {
 } from '~/security_configuration/components/ref_tracking_list.vue';
 import RefTrackingListItem from '~/security_configuration/components/ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from '~/security_configuration/components/ref_untracking_confirmation.vue';
+import RefTrackingSelection from '~/security_configuration/components/ref_tracking_selection.vue';
 import securityTrackedRefsQuery from '~/security_configuration/graphql/security_tracked_refs.query.graphql';
 import { createTrackedRef, createMockTrackedRefsResponse } from '../mock_data';
 
@@ -85,6 +86,7 @@ describe('RefTrackingList component', () => {
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
   const findUntrackConfirmation = () => wrapper.findComponent(RefUntrackingConfirmation);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findTrackingSelection = () => wrapper.findComponent(RefTrackingSelection);
 
   const triggerUntrackRefItem = async (refToUntrack) => {
     findRefListItems().at(0).vm.$emit('untrack', refToUntrack);
@@ -112,7 +114,7 @@ describe('RefTrackingList component', () => {
     });
 
     it('renders Track new ref button', () => {
-      expect(findTrackNewRefButton().text()).toBe('Track new ref');
+      expect(findTrackNewRefButton().text()).toBe('Track new ref(s)');
     });
 
     it('renders unordered list for refs', () => {
@@ -350,6 +352,38 @@ describe('RefTrackingList component', () => {
           expect(findSkeletonLoaders()).toHaveLength(4);
         },
       );
+    });
+  });
+
+  describe('track functionality', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('modal is initially hidden', () => {
+      expect(findTrackingSelection().props('isVisible')).toBe(false);
+    });
+
+    it('opens the tracking selection modal when "Track new ref" button is clicked', async () => {
+      expect(findTrackingSelection().props('isVisible')).toBe(false);
+
+      findTrackNewRefButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findTrackingSelection().props('isVisible')).toBe(true);
+    });
+
+    it('closes the tracking selection modal when the modal emits the "cancel" event', async () => {
+      findTrackNewRefButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findTrackingSelection().props('isVisible')).toBe(true);
+
+      findTrackingSelection().vm.$emit('cancel');
+      await nextTick();
+
+      expect(findTrackingSelection().props('isVisible')).toBe(false);
     });
   });
 });

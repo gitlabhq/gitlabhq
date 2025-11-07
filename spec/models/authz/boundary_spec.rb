@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe ::Authz::Boundary, feature_category: :permissions do
-  let_it_be(:group) { build(:group) }
-  let_it_be(:project) { build(:project) }
-  let_it_be(:user) { build(:user, :with_namespace) }
-  let_it_be(:instance) { nil }
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be(:user) { create(:user, :with_namespace) }
+  let_it_be(:group) { create(:group, developers: user) }
+  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:standalone) { nil }
 
   describe '.declarative_policy_class' do
     subject { described_class::Base.declarative_policy_class }
@@ -35,8 +37,8 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
       it { is_expected.to eq(user.namespace) }
     end
 
-    context 'when boundary is instance' do
-      let(:boundary) { instance }
+    context 'when boundary is standalone' do
+      let(:boundary) { standalone }
 
       it { is_expected.to be_nil }
     end
@@ -63,10 +65,31 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
       it { is_expected.to eq(user.namespace.full_path) }
     end
 
-    context 'when boundary is instance' do
-      let(:boundary) { instance }
+    context 'when boundary is standalone' do
+      let(:boundary) { standalone }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#member?' do
+    let_it_be(:other_user) { create(:user) }
+
+    subject { described_class.for(boundary).member?(member_user) }
+
+    where(:boundary, :member_user, :result) do
+      ref(:group)      | ref(:user)       | true
+      ref(:group)      | ref(:other_user) | false
+      ref(:project)    | ref(:user)       | true
+      ref(:project)    | ref(:other_user) | false
+      ref(:user)       | ref(:user)       | true
+      ref(:user)       | ref(:other_user) | false
+      ref(:standalone) | ref(:user)       | true
+      ref(:standalone) | ref(:other_user) | true
+    end
+
+    with_them do
+      it { is_expected.to be(result) }
     end
   end
 end

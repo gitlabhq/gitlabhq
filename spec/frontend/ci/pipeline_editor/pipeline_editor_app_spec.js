@@ -2,6 +2,8 @@ import Vue from 'vue';
 import { GlAlert, GlButton, GlLoadingIcon, GlSprintf, GlToast } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+
+import mockCiLintMutationResponse from 'test_fixtures/graphql/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -35,7 +37,6 @@ import PipelineEditorHome from '~/ci/pipeline_editor/pipeline_editor_home.vue';
 
 import {
   mockCiConfigPath,
-  mockCiLintMutationResponse,
   mockBlobContentQueryResponse,
   mockBlobContentQueryResponseNoCiFile,
   mockCiYml,
@@ -261,6 +262,25 @@ describe('Pipeline editor app component', () => {
 
       it('calls once and does not start poll for the commit sha', () => {
         expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(1);
+      });
+
+      describe('when ciLint mutation succeeds', () => {
+        it('transforms mutation response data before storing in ciConfigData', () => {
+          const ciConfigData = findEditorHome().props('ciConfigData');
+
+          expect(ciConfigData.stages).toBeDefined();
+
+          const jobsWithNeeds = ciConfigData.stages
+            .flatMap((stage) => stage.groups)
+            .flatMap((group) => group.jobs)
+            .filter((job) => job.needs && job.needs.length > 0);
+
+          jobsWithNeeds.forEach((job) => {
+            job.needs.forEach((need) => {
+              expect(typeof need).toBe('string');
+            });
+          });
+        });
       });
     });
 

@@ -1,0 +1,8 @@
+---
+migration_job_name: ReindexProjectElasticZoektData
+description: Reindex Zoekt and Elastic data for project and its related indices
+feature_category: global_search
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211447
+milestone: '18.6'
+queued_migration_version: 20251105164813
+finalized_by: # version of the migration that finalized this BBM

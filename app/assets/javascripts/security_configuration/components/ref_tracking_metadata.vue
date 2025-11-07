@@ -18,6 +18,11 @@ export default {
       type: Object,
       required: true,
     },
+    disableCommitLink: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     refIcon() {
@@ -60,12 +65,16 @@ export default {
 
       <span
         class="gl-inline-flex gl-items-center gl-gap-1 gl-rounded-base gl-bg-strong gl-px-2"
-        data-testid="commit-link"
+        data-testid="commit-short-id"
       >
         <gl-icon name="commit" :size="12" />
-        <gl-link :href="trackedRef.commit.webPath" class="gl-text-subtle">{{
-          trackedRef.commit.shortId
-        }}</gl-link>
+        <gl-link
+          v-if="!disableCommitLink"
+          :href="trackedRef.commit.webPath"
+          class="gl-text-subtle"
+          >{{ trackedRef.commit.shortId }}</gl-link
+        >
+        <span v-else class="gl-text-subtle">{{ trackedRef.commit.shortId }}</span>
       </span>
 
       <span aria-hidden="true">·</span>

@@ -1184,11 +1184,11 @@ images from `registry.gitlab.com` into your
 [local Docker container registry](../../packages/container_registry/_index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/gitlab-advanced-sast:1
-registry.gitlab.com/security-products/kubesec:5
-registry.gitlab.com/security-products/pmd-apex:5
-registry.gitlab.com/security-products/semgrep:5
-registry.gitlab.com/security-products/sobelow:5
+registry.gitlab.com/security-products/gitlab-advanced-sast:2
+registry.gitlab.com/security-products/kubesec:6
+registry.gitlab.com/security-products/pmd-apex:6
+registry.gitlab.com/security-products/semgrep:6
+registry.gitlab.com/security-products/sobelow:6
 registry.gitlab.com/security-products/spotbugs:5
 ```
 

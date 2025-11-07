@@ -17566,6 +17566,7 @@ CREATE TABLE granular_scopes (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     permissions jsonb DEFAULT '[]'::jsonb NOT NULL,
+    all_membership_namespaces boolean DEFAULT false NOT NULL,
     CONSTRAINT check_permissions_is_array CHECK ((jsonb_typeof(permissions) = 'array'::text))
 );
 
@@ -20930,7 +20931,8 @@ CREATE TABLE notes (
     namespace_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
     organization_id bigint,
-    CONSTRAINT check_1244cbd7d0 CHECK ((noteable_type IS NOT NULL))
+    CONSTRAINT check_1244cbd7d0 CHECK ((noteable_type IS NOT NULL)),
+    CONSTRAINT check_82f260979e CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1))
 );
 
 CREATE SEQUENCE notes_id_seq
@@ -33635,9 +33637,6 @@ ALTER TABLE note_metadata
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
-ALTER TABLE notes
-    ADD CONSTRAINT check_82f260979e CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1)) NOT VALID;
-
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -43409,6 +43408,8 @@ CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_r
 CREATE INDEX index_virtual_reg_pkgs_maven_upstreams_on_group_id ON virtual_registries_packages_maven_upstreams USING btree (group_id);
 
 CREATE UNIQUE INDEX index_virtual_registries_cleanup_policies_on_group_id ON virtual_registries_cleanup_policies USING btree (group_id);
+
+CREATE INDEX index_virtual_registries_packages_maven_upstreams_on_url ON virtual_registries_packages_maven_upstreams USING btree (url);
 
 CREATE UNIQUE INDEX index_virtual_registries_settings_on_group_id ON virtual_registries_settings USING btree (group_id);
 

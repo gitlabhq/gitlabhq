@@ -13,6 +13,7 @@ import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql'
 import untrackSecurityTrackedRefsMutation from '../graphql/untrack_security_tracked_refs.mutation.graphql';
 import RefTrackingListItem from './ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from './ref_untracking_confirmation.vue';
+import RefTrackingSelection from './ref_tracking_selection.vue';
 
 export const MAX_TRACKED_REFS = 3;
 
@@ -26,6 +27,7 @@ export default {
     GlKeysetPagination,
     RefTrackingListItem,
     RefUntrackingConfirmation,
+    RefTrackingSelection,
   },
   inject: ['projectFullPath'],
   apollo: {
@@ -74,6 +76,7 @@ export default {
         before: null,
       },
       pageInfo: {},
+      showTrackingModal: false,
     };
   },
   computed: {
@@ -152,10 +155,8 @@ export default {
             >{{ totalCount === null ? '-' : totalCount }}/{{ $options.MAX_TRACKED_REFS }}</gl-badge
           >
         </div>
-        <!-- The functionality to track new refs is handled in a separate issue -->
-        <!-- See https://gitlab.com/gitlab-org/gitlab/-/issues/577515 -->
-        <gl-button variant="confirm" size="small">{{
-          s__('SecurityTrackedRefs|Track new ref')
+        <gl-button variant="confirm" size="small" @click="showTrackingModal = true">{{
+          s__('SecurityTrackedRefs|Track new ref(s)')
         }}</gl-button>
       </div>
     </template>
@@ -208,5 +209,7 @@ export default {
         @next="goToNextPage"
       />
     </template>
+
+    <ref-tracking-selection :is-visible="showTrackingModal" @cancel="showTrackingModal = false" />
   </gl-card>
 </template>

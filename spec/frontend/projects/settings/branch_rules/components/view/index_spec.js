@@ -261,7 +261,9 @@ describe('View branch rules', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
         message: 'Something went wrong while updating branch rule.',
+        error: expect.any(Error),
       });
     });
 
@@ -299,7 +301,7 @@ describe('View branch rules', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
-        message: 'Something went wrong while updating branch rule.',
+        message: 'Something went wrong while deleting branch rule.',
       });
     });
 
@@ -532,7 +534,14 @@ describe('View branch rules', () => {
     });
 
     it('shows an alert if response contains an error', async () => {
-      const mockResponse = { branchRuleUpdate: { errors: ['some error'], branchRule: null } };
+      const mockResponse = {
+        branchRuleUpdate: {
+          errors: [
+            'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+          ],
+          branchRule: null,
+        },
+      };
       const editMutationHandler = jest
         .fn()
         .mockResolvedValue({ ...editBranchRuleMockResponse, data: mockResponse });
@@ -548,7 +557,31 @@ describe('View branch rules', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+        captureError: true,
+        error: 'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+      });
+    });
+
+    it('shows fallback error message when update mutation fails with network error', async () => {
+      const networkError = new Error('Network error');
+      const editMutationHandler = jest.fn().mockRejectedValue(networkError);
+
+      await createComponent({
+        glFeatures: { editBranchRules: true },
+        branchRulesQueryHandler: branchRulesMockRequestHandler,
+        editMutationHandler,
+      });
+
+      findBranchRuleModal().vm.$emit('primary', 'main');
+      await nextTick();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Something went wrong while updating branch rule.',
+        captureError: true,
+        error: networkError,
       });
     });
   });
@@ -627,6 +660,7 @@ describe('View branch rules', () => {
       expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
         message: 'Something went wrong while deleting branch rule.',
+        error: expect.any(Error),
       });
     });
   });

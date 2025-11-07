@@ -188,6 +188,7 @@ GitLab documentation uses the following shortcodes:
 - [Cards](#cards)
 - [Maintained versions](#maintained-versions)
 - [Collapsible panels](#collapsible-panels)
+- [Guide](#guide)
 
 ## Language
 
@@ -761,6 +762,61 @@ You can nest lists in other lists.
   1. Nested ordered list item two.
 - Unordered list item three.
 ```
+
+## Guide
+
+Use the guide shortcode to create a stylized ordered list of steps.
+You can nest other shortcodes (like alerts) in guides.
+However, do this sparingly as the rendered styling can make the content difficult to scan.
+
+Do not use a guide in a guide.
+
+To create a guide, follow this example:
+
+```markdown
+{{</* guide */>}}
+
+1. Guide item with text
+
+   An item with text only.
+
+1. Guide item with alert
+
+   This is an item with an alert.
+
+   {{</* alert type="note" */>}}
+
+   This is a note.
+
+   {{</* /alert */>}}
+
+{{</* /guide */>}}
+```
+
+This code renders on the GitLab documentation site as:
+
+{{< guide >}}
+
+1. Guide item with text
+
+   An item with text only.
+
+1. Guide item with alert
+
+   An item with an alert.
+
+   {{< alert type="note" >}}
+
+   This is a note.
+
+   {{< /alert >}}
+
+{{< /guide >}}
+
+Guide styling renders only on the GitLab documentation site (`https://docs.gitlab.com`).
+In the GitLab product help, a guide appears as a regular ordered list of items.
+
+Use guides for tutorials only. For most tasks, use an ordered list.
 
 ## Tables
 
