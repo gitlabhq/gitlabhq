@@ -27,7 +27,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				MaxConsecutiveFailures: 1,
 				MinSuccessfulProbes:    1,
 				ReadinessProbeURL:      "http://localhost:8080/-/readiness",
-				RailsSkipInterval:      TomlDuration{Duration: 20 * time.Second},
+				RailsSkipInterval:      TomlDuration{Duration: 0},
 			},
 		},
 		{
@@ -46,7 +46,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				MaxConsecutiveFailures: 1,
 				MinSuccessfulProbes:    1,
 				ReadinessProbeURL:      "http://example.com:3000/-/readiness",
-				RailsSkipInterval:      TomlDuration{Duration: 20 * time.Second},
+				RailsSkipInterval:      TomlDuration{Duration: 0},
 			},
 		},
 		{
@@ -88,7 +88,7 @@ func TestApplyHealthCheckDefaults(t *testing.T) {
 				MaxConsecutiveFailures: 1,                                        // default
 				MinSuccessfulProbes:    4,                                        // preserved
 				ReadinessProbeURL:      "http://custom.com/-/readiness",          // preserved
-				RailsSkipInterval:      TomlDuration{Duration: 20 * time.Second}, // default
+				RailsSkipInterval:      TomlDuration{Duration: 0},                // default
 			},
 		},
 	}
@@ -135,7 +135,7 @@ func TestApplyHealthCheckDefaults_WithBackendURL(t *testing.T) {
 	cfg.ApplyHealthCheckDefaults()
 
 	assert.Equal(t, "https://gitlab.example.com:8080/-/readiness", cfg.HealthCheckListener.ReadinessProbeURL)
-	assert.Equal(t, TomlDuration{Duration: 1 * time.Second}, cfg.HealthCheckListener.CheckInterval)      // Preserved
-	assert.Equal(t, TomlDuration{Duration: 5 * time.Second}, cfg.HealthCheckListener.Timeout)            // Default applied
-	assert.Equal(t, TomlDuration{Duration: 20 * time.Second}, cfg.HealthCheckListener.RailsSkipInterval) // Default applied
+	assert.Equal(t, TomlDuration{Duration: 1 * time.Second}, cfg.HealthCheckListener.CheckInterval) // Preserved
+	assert.Equal(t, TomlDuration{Duration: 5 * time.Second}, cfg.HealthCheckListener.Timeout)       // Default applied
+	assert.Equal(t, TomlDuration{Duration: 0}, cfg.HealthCheckListener.RailsSkipInterval)           // Default applied
 }

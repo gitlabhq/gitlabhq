@@ -43,7 +43,7 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
 
       context 'and is waiting for runner ack' do
         before do
-          allow(build).to receive(:waiting_for_runner_ack?).and_return(true)
+          allow(build).to receive(:runner_ack_wait_status).and_return(:waiting)
         end
 
         context 'when runner is still actively heartbeating' do
@@ -128,7 +128,7 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
 
       context 'and is not waiting for runner ack' do
         before do
-          allow(build).to receive(:waiting_for_runner_ack?).and_return(false)
+          allow(build).to receive(:runner_ack_wait_status).and_return(:not_waiting)
 
           allow_next_instance_of(Ci::RetryWaitingJobService, build) do |service|
             allow(service).to receive(:execute).and_return(ServiceResponse.success)
@@ -201,7 +201,7 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
 
     context 'when runner is still actively heartbeating' do
       before do
-        allow(build).to receive(:waiting_for_runner_ack?).and_return(true)
+        allow(build).to receive(:runner_ack_wait_status).and_return(:waiting)
       end
 
       it 'drops build and does not retry it' do
@@ -217,7 +217,7 @@ RSpec.describe Ci::RetryStuckWaitingJobWorker, :clean_gitlab_redis_shared_state,
 
     context 'when runner is not actively heartbeating' do
       before do
-        allow(build).to receive(:waiting_for_runner_ack?).and_return(false)
+        allow(build).to receive(:runner_ack_wait_status).and_return(:wait_expired)
       end
 
       it 'drops and retries build' do

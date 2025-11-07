@@ -1247,8 +1247,11 @@ module Ci
     #
     # Support for two-phase runner job acceptance acknowledgement
     #
-    def waiting_for_runner_ack?
-      pending? && runner_id.present? && runner_manager_id_waiting_for_ack.present?
+    def runner_ack_wait_status
+      return :not_waiting unless pending? && runner_id.present?
+      return :waiting if runner_manager_id_waiting_for_ack.present?
+
+      :wait_expired
     end
 
     protected

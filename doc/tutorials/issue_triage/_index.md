@@ -77,7 +77,7 @@ For inspiration, see how we define these at GitLab:
 
 ## Document your criteria
 
-After you agree on all the criteria, write it all down somewhere your team mates can always access.
+After you agree on all the criteria, write it all down somewhere your teammates can always access.
 
 For example, add it to a [wiki](../../user/project/wiki/_index.md) in your project, or your company
 handbook published with [GitLab Pages](../../user/project/pages/_index.md).

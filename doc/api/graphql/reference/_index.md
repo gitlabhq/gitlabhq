@@ -23863,6 +23863,7 @@ An AI catalog item configuration.
 | <a id="aicatalogitemconsumerorganization"></a>`organization` | [`Organization`](#organization) | Organization in which the catalog item is configured. |
 | <a id="aicatalogitemconsumerpinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch item is pinned to. |
 | <a id="aicatalogitemconsumerproject"></a>`project` | [`Project`](#project) | Project in which the catalog item is configured. |
+| <a id="aicatalogitemconsumerserviceaccount"></a>`serviceAccount` | [`UserCore`](#usercore) | Service account associated with the item consumer. |
 
 ### `AiCatalogItemPermissions`
 
@@ -23874,6 +23875,7 @@ Check permissions for the current user on an AI catalog item.
 | ---- | ---- | ----------- |
 | <a id="aicatalogitempermissionsadminaicatalogitem"></a>`adminAiCatalogItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_ai_catalog_item` on this resource. |
 | <a id="aicatalogitempermissionsreadaicatalogitem"></a>`readAiCatalogItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_ai_catalog_item` on this resource. |
+| <a id="aicatalogitempermissionsreportaicatalogitem"></a>`reportAiCatalogItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `report_ai_catalog_item` on this resource. |
 
 ### `AiCatalogThirdPartyFlow`
 

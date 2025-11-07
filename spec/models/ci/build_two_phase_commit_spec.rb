@@ -12,31 +12,31 @@ RSpec.describe Ci::Build, 'two_phase_job_commit runner feature support', :clean_
   let(:build) { create(:ci_build, :waiting_for_runner_ack, pipeline: pipeline) }
   let(:runner_ack_queue) { build.send(:runner_ack_queue) }
 
-  describe '#waiting_for_runner_ack?' do
-    subject { build.waiting_for_runner_ack? }
+  describe '#runner_ack_wait_status' do
+    subject { build.runner_ack_wait_status }
 
     context 'when build is not pending' do
       let(:build) { create(:ci_build, :running, pipeline: pipeline, runner: runner) }
 
-      it { is_expected.to be false }
+      it { is_expected.to eq :not_waiting }
     end
 
     context 'when build is pending but has no runner' do
       let(:build) { create(:ci_build, :pending, pipeline: pipeline) }
 
-      it { is_expected.to be false }
+      it { is_expected.to eq :not_waiting }
     end
 
     context 'when build is pending with runner but no runner manager waiting for ack' do
       let(:build) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
-      it { is_expected.to be false }
+      it { is_expected.to eq :wait_expired }
     end
 
     context 'when build is pending with runner and runner manager waiting for ack' do
       let(:build) { create(:ci_build, :waiting_for_runner_ack, pipeline: pipeline, runner: runner) }
 
-      it { is_expected.to be true }
+      it { is_expected.to eq :waiting }
     end
 
     context 'when build is in different states' do
@@ -48,7 +48,7 @@ RSpec.describe Ci::Build, 'two_phase_job_commit runner feature support', :clean_
             build.set_waiting_for_runner_ack(runner_manager.id)
           end
 
-          it { is_expected.to be false }
+          it { is_expected.to eq :not_waiting }
         end
       end
     end
@@ -62,14 +62,14 @@ RSpec.describe Ci::Build, 'two_phase_job_commit runner feature support', :clean_
         let(:build) { create(:ci_build, :waiting_for_runner_ack, pipeline: pipeline, runner: runner) }
 
         it 'returns true because Redis entry exists (edge case fix)' do
-          is_expected.to be true
+          is_expected.to eq :waiting
         end
       end
 
       context 'when build is pending with runner but no runner manager waiting for ack' do
         let(:build) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
-        it { is_expected.to be false }
+        it { is_expected.to eq :wait_expired }
       end
     end
   end

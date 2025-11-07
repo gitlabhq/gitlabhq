@@ -8,7 +8,6 @@ module Gitlab
 
         include PartitionedTable
         include FromUnion
-        include ::Gitlab::Utils::StrongMemoize
 
         MINIMUM_PAUSE_MS = 100
         PARTITION_DURATION = 14.days
@@ -16,6 +15,9 @@ module Gitlab
         BATCH_CLASS_MODULE = 'Gitlab::Database::Batch::Strategies'
         MINIMUM_JOBS_FOR_FAILURE_CHECK = 50
         MAXIMUM_FAILURE_RATIO = 0.5
+        DEFAULT_NUMBER_OF_JOBS = 20
+        DEFAULT_EMA_ALPHA = 0.4
+        RETRY_DELAY = 10.minutes
 
         REQUIRED_COLUMNS = %i[
           batch_size
@@ -30,6 +32,8 @@ module Gitlab
         ].freeze
 
         included do |worker_class|
+          include ::Gitlab::Utils::StrongMemoize
+
           # Partition should not be changed once the record is created
           attr_readonly :partition
 
@@ -97,6 +101,21 @@ module Gitlab
             event :failure do
               transition [:failed, :finalizing, :active] => :failed
             end
+
+            event :hold do
+              transition any => :paused
+            end
+
+            before_transition any => [:paused] do |worker|
+              worker.on_hold_until = RETRY_DELAY.from_now
+
+              Gitlab::AppLogger.info(
+                message: "#{self} put on hold until #{RETRY_DELAY.from_now}",
+                worker_id: worker.id,
+                job_class_name: worker.job_class_name,
+                duration_s: RETRY_DELAY.to_i
+              )
+            end
           end
 
           def job_class
@@ -133,6 +152,44 @@ module Gitlab
             last_job&.max_cursor || min_cursor
           end
 
+          def health_context
+            Gitlab::Database::HealthStatus::Context.new(
+              self,
+              connection,
+              [table_name]
+            )
+          end
+          strong_memoize_attr :health_context
+
+          def on_hold?
+            return false unless on_hold_until
+
+            on_hold_until.future?
+          end
+
+          def optimize!
+            return false unless batch_optimizer.should_optimize?
+
+            new_batch_size = batch_optimizer.optimized_batch_size
+            return false if new_batch_size == batch_size
+
+            update!(batch_size: new_batch_size)
+          end
+
+          def smoothed_time_efficiency(number_of_jobs: 10, alpha: 0.2)
+            job_records = jobs.successful_in_execution_order.reverse_order.limit(number_of_jobs).with_preloads
+
+            return if job_records.size < number_of_jobs
+
+            efficiencies = extract_valid_efficiencies(job_records)
+            return if efficiencies.empty?
+
+            dividend, divisor = calculate_weighted_sums(efficiencies, alpha)
+            return if divisor == 0
+
+            (dividend / divisor).round(2)
+          end
+
           private
 
           def sufficient_jobs_for_failure_check?
@@ -148,6 +205,31 @@ module Gitlab
           def total_jobs_since(date)
             strong_memoize_with(:total_jobs_since, date) do
               jobs.created_since(started_at).count
+            end
+          end
+
+          def batch_optimizer
+            time_efficiency = smoothed_time_efficiency(
+              number_of_jobs: DEFAULT_NUMBER_OF_JOBS,
+              alpha: DEFAULT_EMA_ALPHA
+            )
+
+            Gitlab::Database::Batch::Optimizer.new(
+              current_batch_size: batch_size,
+              max_batch_size: max_batch_size,
+              time_efficiency: time_efficiency
+            )
+          end
+
+          def extract_valid_efficiencies(jobs)
+            jobs.map(&:time_efficiency).reject(&:nil?).each_with_index
+          end
+
+          def calculate_weighted_sums(efficiencies, alpha)
+            efficiencies.each_with_object([0, 0]) do |(_job_eff, i), (_dividend, divisor)|
+              weight = (1 - alpha)**i
+
+              divisor + weight
             end
           end
         end

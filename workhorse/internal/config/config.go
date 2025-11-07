@@ -357,9 +357,6 @@ func (c *Config) ApplyHealthCheckDefaults() {
 		}
 		c.HealthCheckListener.ReadinessProbeURL = readinessProbeURL
 	}
-	if c.HealthCheckListener.RailsSkipInterval.Duration == 0 {
-		c.HealthCheckListener.RailsSkipInterval = TomlDuration{Duration: 20 * time.Second}
-	}
 }
 
 func (creds *AzureCredentials) getURLOpener() *azureblob.URLOpener {

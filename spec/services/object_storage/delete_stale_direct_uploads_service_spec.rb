@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::DeleteStaleDirectUploadsService, :direct_uploads, :clean_gitlab_redis_shared_state, feature_category: :shared do
+RSpec.describe ObjectStorage::DeleteStaleDirectUploadsService, :direct_uploads, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   let(:service) { described_class.new }
 
   describe '#execute', :aggregate_failures do

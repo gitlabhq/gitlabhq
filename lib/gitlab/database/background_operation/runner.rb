@@ -85,8 +85,15 @@ module Gitlab
           (cursor1 <=> cursor2) <= 0 ? cursor1 : cursor2
         end
 
-        # TODO: Implement in a follow up
-        def adjust_operation(worker); end
+        def adjust_operation(worker)
+          signals = Gitlab::Database::HealthStatus.evaluate(worker.health_context)
+
+          if signals.any?(&:stop?)
+            worker.hold!
+          else
+            worker.optimize!
+          end
+        end
       end
     end
   end

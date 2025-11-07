@@ -36,10 +36,14 @@ describe('scrollToTargetOnResize', () => {
     jest.spyOn(document.documentElement, 'scrollHeight', 'get').mockReturnValue(1000);
 
     setHTMLFixture(
-      `<div id="content-body">
-        <div id="target-element">Target content</div>
-        <div id="other-content">Other content</div>
-      </div>`,
+      `<div>
+        <header class="js-super-topbar"></header>
+        <div id="content-body">
+          <div id="target-element">Target content</div>
+          <div id="other-content">Other content</div>
+        </div>
+      </div>
+      `,
     );
   });
 
@@ -141,6 +145,23 @@ describe('scrollToTargetOnResize', () => {
       resizeObserverCallback([{ target: document.querySelector('#content-body') }]);
 
       expect(document.scrollingElement.scrollTo).not.toHaveBeenCalled();
+    });
+
+    it('does scroll when the super topbar is focused', () => {
+      const otherElement = document.querySelector('.js-super-topbar');
+      jest.spyOn(document, 'activeElement', 'get').mockReturnValue(otherElement);
+
+      cleanup = scrollToTargetOnResize({
+        targetId: 'target-element',
+        container: '#content-body',
+      });
+
+      resizeObserverCallback([{ target: document.querySelector('#content-body') }]);
+
+      expect(document.scrollingElement.scrollTo).toHaveBeenCalledWith({
+        top: 200 - 0 - mockHeaderSize,
+        behavior: 'instant',
+      });
     });
 
     it('does nothing if target element does not exist', () => {

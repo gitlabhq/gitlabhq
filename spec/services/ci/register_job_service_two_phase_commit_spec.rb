@@ -41,7 +41,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
 
       it 'does not set waiting for runner ack' do
         expect(execute).to be_valid
-        expect(build.reload).not_to be_waiting_for_runner_ack
+        expect(build.reload.runner_ack_wait_status).to eq :not_waiting
       end
 
       context 'when logger is enabled' do
@@ -184,7 +184,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
               .to not_change { build.reload.queuing_entry }.from(an_instance_of(Ci::PendingBuild))
               .and not_change { build.reload.runner_id }.from(nil)
               .and not_change { build.reload.status }.from('pending')
-              .and not_change { build.reload.waiting_for_runner_ack? }.from(false)
+              .and not_change { build.reload.runner_ack_wait_status }.from(:not_waiting)
               .and not_change { redis_ack_pending_key_count }.from(0)
           end
         end
@@ -204,7 +204,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
               .to not_change { build.reload.queuing_entry }.from(an_instance_of(Ci::PendingBuild))
               .and not_change { build.reload.runner_id }.from(nil)
               .and not_change { build.reload.status }.from('pending')
-              .and not_change { build.reload.waiting_for_runner_ack? }.from(false)
+              .and not_change { build.reload.runner_ack_wait_status }.from(:not_waiting)
               .and not_change { redis_ack_pending_key_count }.from(0)
           end
         end
@@ -336,7 +336,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         expect(result.build).to eq(pending_job)
         expect(pending_job.reload).to be_pending
         expect(pending_job.queuing_entry).to be_nil
-        expect(pending_job).to be_waiting_for_runner_ack
+        expect(pending_job.runner_ack_wait_status).to eq(:waiting)
         expect(pending_job.runner_manager_id_waiting_for_ack).to eq(runner_manager.id)
       end
 
@@ -360,7 +360,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
           expect(result).to be_valid
           expect(result.build).to eq(pending_job)
           expect(pending_job.reload).to be_running
-          expect(pending_job).not_to be_waiting_for_runner_ack
+          expect(pending_job.runner_ack_wait_status).to eq(:not_waiting)
           expect(pending_job.runner_manager).to eq(runner_manager)
         end
 
@@ -392,7 +392,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         expect(result).to be_valid
         expect(result.build).to eq(pending_job)
         expect(pending_job.reload).to be_running
-        expect(pending_job).not_to be_waiting_for_runner_ack
+        expect(pending_job.runner_ack_wait_status).to eq(:not_waiting)
         expect(pending_job.runner_manager).to eq(runner_manager)
       end
 
@@ -415,7 +415,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         expect(result).to be_valid
         expect(result.build).to eq(pending_job)
         expect(pending_job.reload).to be_running
-        expect(pending_job).not_to be_waiting_for_runner_ack
+        expect(pending_job.runner_ack_wait_status).to eq(:not_waiting)
         expect(pending_job.runner_manager).to eq(runner_manager)
       end
     end

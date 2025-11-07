@@ -30,7 +30,7 @@ internal/ai_assist/duoworkflow/actions.go:102:24: G115: integer overflow convers
 internal/ai_assist/duoworkflow/client.go:59:73: G402: TLS MinVersion too low. (gosec)
 internal/api/channel_settings.go:57:28: G402: TLS MinVersion too low. (gosec)
 internal/config/config.go:293:18: G204: Subprocess launched with variable (gosec)
-internal/config/config.go:418:8: G101: Potential hardcoded credentials (gosec)
+internal/config/config.go:415:8: G101: Potential hardcoded credentials (gosec)
 internal/imageresizer/image_resizer.go:184:35: G115: integer overflow conversion uint -> int (gosec)
 internal/imageresizer/image_resizer.go:266:28: G115: integer overflow conversion uint64 -> int64 (gosec)
 internal/imageresizer/image_resizer.go:274:41: G115: integer overflow conversion uint32 -> int32 (gosec)

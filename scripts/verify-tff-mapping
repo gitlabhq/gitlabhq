@@ -9,6 +9,16 @@ require 'test_file_finder'
 # so they would fail if one of the test files mentioned here is deleted.
 # To minimize the chance of this test failing due to unrelated changes,
 # the test files are chosen to be critical files that are unlikely to be deleted in a typical merge request
+
+specs_for_cells_claims_models = %w[
+  spec/cells/claims/organizations/organization_spec.rb
+].freeze
+
+specs_for_all_models = %w[
+  spec/models/every_model_spec.rb
+  spec/lib/gitlab/import_export/model_configuration_spec.rb
+].freeze
+
 tests = [
   {
     explanation: 'EE code should map to respective spec',
@@ -208,19 +218,13 @@ tests = [
   {
     explanation: 'Spec for FOSS model',
     changed_file: 'app/models/uploads/base.rb',
-    expected: %w[
-      spec/models/every_model_spec.rb
-      spec/lib/gitlab/import_export/model_configuration_spec.rb
-    ]
+    expected: specs_for_all_models
   },
 
   {
     explanation: 'Spec for EE model',
     changed_file: 'ee/app/models/geo/base_registry.rb',
-    expected: %w[
-      spec/models/every_model_spec.rb
-      spec/lib/gitlab/import_export/model_configuration_spec.rb
-    ]
+    expected: specs_for_all_models
   },
 
   {
@@ -800,6 +804,33 @@ tests = [
     explanation: 'Map any yaml file changes in project root',
     changed_file: '.devfile.yaml',
     expected: ['spec/dot_gitlab_ci/rules_spec.rb']
+  },
+  {
+    explanation: 'Changing claimable should run all claiming tests',
+    changed_file: 'app/models/concerns/cells/claimable.rb',
+    expected: specs_for_cells_claims_models + specs_for_all_models + [
+      'spec/models/concerns/cells/claimable_spec.rb'
+    ]
+  },
+  {
+    explanation: 'Changing cells lease should run all claiming tests',
+    changed_file: 'app/models/cells/outstanding_lease.rb',
+    expected: specs_for_cells_claims_models + specs_for_all_models + [
+      'spec/models/cells/outstanding_lease_spec.rb'
+    ]
+  },
+  {
+    explanation: 'Changing cells claims shared examples should run all claiming tests',
+    changed_file: 'spec/support/shared_examples/cells/claims_shared_examples.rb',
+    expected: specs_for_cells_claims_models
+  },
+  {
+    explanation: 'Changing a model that is claimable should run corresponding claims test',
+    changed_file: 'app/models/organizations/organization.rb',
+    expected: specs_for_all_models + %w[
+      spec/models/organizations/organization_spec.rb
+      spec/cells/claims/organizations/organization_spec.rb
+    ]
   }
 ]
 

@@ -20,7 +20,7 @@ module Ci
 
     def execute
       # Handle two-phase commit workflow for jobs waiting for runner acknowledgment
-      if build.waiting_for_runner_ack?
+      if build.runner_ack_wait_status == :waiting
         result = handle_runner_ack_workflow
         return result unless result.nil? # Continue processing if nil returned
       end

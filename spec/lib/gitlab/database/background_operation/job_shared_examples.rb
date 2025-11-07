@@ -50,13 +50,13 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
     end
 
     describe '.running' do
-      it 'returns jobs with only with running status' do
+      it 'returns jobs only with running status' do
         expect(described_class.running).to contain_exactly(job_2)
       end
     end
 
     describe '.failed' do
-      it 'returns jobs with only with failed status' do
+      it 'returns jobs only with failed status' do
         expect(described_class.failed).to contain_exactly(job_3)
       end
     end
@@ -87,6 +87,29 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
 
       it 'returns jobs that are retriable' do
         expect(described_class.retriable).to contain_exactly(job_3)
+      end
+    end
+
+    describe '.succeeded' do
+      it 'returns jobs only with succeeded status' do
+        expect(described_class.succeeded).to contain_exactly(job_4)
+      end
+    end
+
+    describe '.finished' do
+      let_it_be(:job_6) { create(job_factory, :failed, finished_at: 2.hours.ago) }
+
+      it 'returns jobs with non-nil finished_at' do
+        expect(described_class.finished).to contain_exactly(job_4, job_6)
+      end
+    end
+
+    describe '.successful_in_execution_order' do
+      let_it_be(:job_7) { create(job_factory, :succeeded, finished_at: 1.hour.ago) }
+      let_it_be(:job_8) { create(job_factory, :succeeded, finished_at: 3.hours.ago) }
+
+      it 'returns finished succeeded jobs ordered by finished_at' do
+        expect(described_class.successful_in_execution_order).to match_array([job_8, job_4, job_7])
       end
     end
   end

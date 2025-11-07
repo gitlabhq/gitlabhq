@@ -7772,6 +7772,9 @@ msgstr ""
 msgid "An administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
 msgstr ""
 
+msgid "An administrator has turned off GitLab Duo for this %{reason}."
+msgstr ""
+
 msgid "An alert has been resolved in %{project_path}."
 msgstr ""
 

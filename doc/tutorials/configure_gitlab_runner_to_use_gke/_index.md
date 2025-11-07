@@ -108,7 +108,7 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
         config:
         env:
            - name: CERTIFICATE_NAMESPACE
-           value: cert_namespace_desired_value
+             value: cert_namespace_desired_value
            - name: CERTIFICATE_NAME
            value: cert_name_desired_value
         EOF

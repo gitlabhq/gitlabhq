@@ -75,8 +75,10 @@ export function scrollToTargetOnResize({
   }
 
   function keepTargetAtTop() {
+    const superTopbar = document.querySelector('.js-super-topbar');
+
     // once the user has selected or focused on an element, skip auto-scrolling for them
-    if (document.activeElement !== document.body) return;
+    if (![document.body, superTopbar].includes(document.activeElement)) return;
 
     targetElement = document.getElementById(targetId);
 

@@ -70,7 +70,7 @@ For this tutorial, suppose you've decided on the following status workflow:
 
 ## Document your criteria
 
-After you agree on the status workflow, write it all down somewhere your team mates can always access.
+After you agree on the status workflow, write it all down somewhere your teammates can always access.
 
 For example, add it to a [wiki](../../user/project/wiki/_index.md) in your project, or your company
 handbook published with [GitLab Pages](../../user/project/pages/_index.md).
@@ -158,7 +158,7 @@ To invite your stakeholders:
 
 1. On the left sidebar, select **Manage** > **Members**
 1. Select **Invite members**
-1. Type your stakeholders email address.
+1. Type your stakeholders email addresses.
 1. Select **Reporter** role.
 
 Your stakeholders can now access your project to create new ideas:

@@ -24,64 +24,110 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
         expect(executor).not_to receive(:perform)
 
         expect do
-          runner.run_operation_job(operation)
+          runner.run_operation_job(worker)
         end.not_to change { Gitlab::Database::BackgroundOperation::Job.count }
       end
 
       it 'marks the operation as finished' do
-        runner.run_operation_job(operation)
+        runner.run_operation_job(worker)
 
-        expect(operation.reload).to be_finished
+        expect(worker.reload).to be_finished
       end
     end
 
     context 'when the operation has no previous jobs' do
-      let(:operation) { create(:background_operation_worker, :active, batch_size: 2, sub_batch_size: 2) }
+      let(:worker) { create(:background_operation_worker, :active, batch_size: 2, sub_batch_size: 2) }
 
       let(:operation_jobs) do
-        Gitlab::Database::BackgroundOperation::Job.where(worker_id: operation.id)
+        Gitlab::Database::BackgroundOperation::Job.where(worker_id: worker.id)
       end
 
       context 'when the operation has batches to process' do
-        let!(:event1) { create(:event) }
-        let!(:event2) { create(:event) }
-        let!(:event3) { create(:event) }
+        let_it_be(:event1) { create(:event) }
+        let_it_be(:event2) { create(:event) }
+        let_it_be(:event3) { create(:event) }
 
         it 'runs the job for the first batch' do
-          operation.update!(min_cursor: [0], max_cursor: [event2.id])
+          worker.update!(min_cursor: [0], max_cursor: [event2.id])
 
           expect(executor).to receive(:perform) do |job_record|
             expect(job_record).to eq(operation_jobs.first)
           end
 
-          expect { runner.run_operation_job(operation) }.to change { operation_jobs.count }.by(1)
+          expect { runner.run_operation_job(worker) }.to change { operation_jobs.count }.by(1)
 
           expect(operation_jobs.first).to have_attributes(
             min_cursor: [event1.id],
             max_cursor: [event2.id],
-            batch_size: operation.batch_size,
-            sub_batch_size: operation.sub_batch_size
+            batch_size: worker.batch_size,
+            sub_batch_size: worker.sub_batch_size
           )
+        end
+
+        context 'with operation health signals' do
+          let(:health_status) { Gitlab::Database::HealthStatus }
+          let(:stop_signal) { health_status::Signals::Stop.new(:indicator, reason: 'Take a break') }
+          let(:normal_signal) { health_status::Signals::Normal.new(:indicator, reason: 'All good') }
+          let(:not_available_signal) do
+            health_status::Signals::NotAvailable.new(:indicator, reason: 'Indicator is disabled')
+          end
+
+          let(:unknown_signal) { health_status::Signals::Unknown.new(:indicator, reason: 'Something went wrong') }
+
+          before do
+            worker.update!(min_cursor: [event1.id], max_cursor: [event2.id])
+          end
+
+          it 'puts operation on hold on stop signal' do
+            expect(executor).to receive(:perform)
+            expect(health_status).to receive(:evaluate).and_return([stop_signal])
+
+            expect { runner.run_operation_job(worker) }.to change { worker.on_hold? }.from(false).to(true)
+          end
+
+          it 'optimizes operation on normal signal' do
+            expect(executor).to receive(:perform)
+            expect(health_status).to receive(:evaluate).and_return([normal_signal])
+            expect(worker).to receive(:optimize!)
+
+            expect { runner.run_operation_job(worker) }.not_to change { worker.on_hold? }
+          end
+
+          it 'optimizes operation on no signal' do
+            expect(executor).to receive(:perform)
+            expect(health_status).to receive(:evaluate).and_return([not_available_signal])
+            expect(worker).to receive(:optimize!)
+
+            expect { runner.run_operation_job(worker) }.not_to change { worker.on_hold? }
+          end
+
+          it 'optimizes operation on unknown signal' do
+            expect(executor).to receive(:perform)
+            expect(health_status).to receive(:evaluate).and_return([unknown_signal])
+            expect(worker).to receive(:optimize!)
+
+            expect { runner.run_operation_job(worker) }.not_to change { worker.on_hold? }
+          end
         end
       end
 
       context 'when the batch maximum exceeds the operation maximum' do
-        let!(:events) { create_list(:event, 3) }
+        let_it_be(:events) { create_list(:event, 3) }
         let(:event1) { events[0] }
         let(:event2) { events[1] }
 
         it 'clamps the batch maximum to the operation maximum' do
-          operation.update!(min_cursor: [0], max_cursor: [event2.id], batch_size: 5, sub_batch_size: 5)
+          worker.update!(min_cursor: [0], max_cursor: [event2.id], batch_size: 5, sub_batch_size: 5)
 
           expect(executor).to receive(:perform)
 
-          expect { runner.run_operation_job(operation) }.to change { operation_jobs.count }.by(1)
+          expect { runner.run_operation_job(worker) }.to change { operation_jobs.count }.by(1)
 
           expect(operation_jobs.first).to have_attributes(
             min_cursor: [event1.id],
             max_cursor: [event2.id],
-            batch_size: operation.batch_size,
-            sub_batch_size: operation.sub_batch_size
+            batch_size: worker.batch_size,
+            sub_batch_size: worker.sub_batch_size
           )
         end
       end
@@ -92,34 +138,34 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
     end
 
     context 'when the operation should stop' do
-      let(:operation) { create(:background_operation_worker, :active, batch_size: 2, sub_batch_size: 2) }
-      let!(:job) { create(:background_operation_job, :failed, worker: operation) }
+      let(:worker) { create(:background_operation_worker, :active, batch_size: 2, sub_batch_size: 2) }
+      let!(:job) { create(:background_operation_job, :failed, worker: worker) }
 
       it 'changes the status to failure' do
-        expect(operation).to receive(:should_stop?).and_return(true)
+        expect(worker).to receive(:should_stop?).and_return(true)
         expect(executor).to receive(:perform).and_return(job)
 
-        expect { runner.run_operation_job(operation) }.to change { operation.status_name }.from(:active).to(:failed)
+        expect { runner.run_operation_job(worker) }.to change { worker.status_name }.from(:active).to(:failed)
       end
     end
 
     context 'when the operation has previous jobs' do
-      let!(:event1) { create(:event) }
-      let!(:event2) { create(:event) }
-      let!(:event3) { create(:event) }
+      let_it_be(:event1) { create(:event) }
+      let_it_be(:event2) { create(:event) }
+      let_it_be(:event3) { create(:event) }
 
-      let!(:operation) do
+      let!(:worker) do
         create(:background_operation_worker, :active, batch_size: 2, sub_batch_size: 2, min_cursor: [0],
           max_cursor: [event2.id])
       end
 
       let!(:previous_job) do
-        create(:background_operation_job, :succeeded, worker: operation, min_cursor: [0], max_cursor: [event2.id],
+        create(:background_operation_job, :succeeded, worker: worker, min_cursor: [0], max_cursor: [event2.id],
           batch_size: 2, sub_batch_size: 1)
       end
 
       let(:operation_jobs) do
-        Gitlab::Database::BackgroundOperation::Job.where(worker_id: operation.id)
+        Gitlab::Database::BackgroundOperation::Job.where(worker_id: worker.id)
       end
 
       context 'when the operation has no batches remaining' do
@@ -128,7 +174,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
 
       context 'when the operation has batches to process' do
         before do
-          operation.update!(max_cursor: [event3.id])
+          worker.update!(max_cursor: [event3.id])
         end
 
         it 'runs the operation job for the next batch' do
@@ -139,18 +185,18 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
             expect(job_record).to eq(new_job)
           end
 
-          expect { runner.run_operation_job(operation) }.to change { operation_jobs.count }.by(1)
+          expect { runner.run_operation_job(worker) }.to change { operation_jobs.count }.by(1)
 
           expect(new_job).to have_attributes(
             min_cursor: [event3.id],
             max_cursor: [event3.id],
-            batch_size: operation.batch_size,
-            sub_batch_size: operation.sub_batch_size)
+            batch_size: worker.batch_size,
+            sub_batch_size: worker.sub_batch_size)
         end
 
         context 'when the batch minimum exceeds the operation maximum' do
           before do
-            operation.update!(batch_size: 5, max_cursor: [event2.id])
+            worker.update!(batch_size: 5, max_cursor: [event2.id])
           end
 
           it_behaves_like 'it has completed the operation'
@@ -167,7 +213,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
             expect(job_record).to eq(previous_job)
           end
 
-          expect { runner.run_operation_job(operation) }.not_to change { operation_jobs.count }
+          expect { runner.run_operation_job(worker) }.not_to change { operation_jobs.count }
         end
 
         context 'when failed job has reached the maximum number of attempts' do
@@ -178,16 +224,16 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
           it 'marks the operation as failed' do
             expect(executor).not_to receive(:perform)
 
-            expect { runner.run_operation_job(operation) }.not_to change { operation_jobs.count }
+            expect { runner.run_operation_job(worker) }.not_to change { operation_jobs.count }
 
-            expect(operation).to be_failed
+            expect(worker).to be_failed
           end
         end
       end
 
       context 'when the operation has batches to process and failed jobs' do
         before do
-          operation.update!(max_cursor: [event3.id])
+          worker.update!(max_cursor: [event3.id])
           previous_job.failure!
         end
 
@@ -200,13 +246,13 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
             job_record.succeed!
           end
 
-          expect { runner.run_operation_job(operation) }.to change { operation_jobs.count }.by(1)
+          expect { runner.run_operation_job(worker) }.to change { operation_jobs.count }.by(1)
 
           expect(executor).to receive(:perform) do |job_record|
             expect(job_record).to eq(previous_job)
           end
 
-          expect { runner.run_operation_job(operation.reload) }.not_to change { operation_jobs.count }
+          expect { runner.run_operation_job(worker.reload) }.not_to change { operation_jobs.count }
         end
       end
     end

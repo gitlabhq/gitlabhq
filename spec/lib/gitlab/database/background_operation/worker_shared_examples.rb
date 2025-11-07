@@ -246,4 +246,75 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
       it { expect(should_stop?).to be_falsey }
     end
   end
+
+  describe '#on_hold?', :freeze_time do
+    let_it_be(:worker) { create(worker_factory, :queued) }
+
+    subject(:on_hold) { worker.on_hold? }
+
+    context 'when on_hold_until is nil' do
+      it { expect(on_hold).to be_falsey }
+    end
+
+    context 'when on_hold_until is set' do
+      before do
+        worker.update!(on_hold_until: on_hold_until)
+      end
+
+      context 'when the hold duration is in the past' do
+        let(:on_hold_until) { 1.minute.ago }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the hold duration is in the future' do
+        let(:on_hold_until) { 1.minute.from_now }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '.hold!', :freeze_time do
+    subject(:worker) { create(worker_factory, :queued) }
+
+    it 'defaults to 10 minutes' do
+      expect { worker.hold! }.to change { worker.on_hold_until }.from(nil).to(10.minutes.from_now)
+    end
+  end
+
+  describe '#optimize!' do
+    subject(:optimize) { worker.optimize! }
+
+    let(:batch_size) { 10_000 }
+    let(:worker) { create(worker_factory, batch_size: batch_size) }
+
+    it 'does not update batch_size when efficiency is nil' do
+      expect { optimize }.not_to change { worker.reload.batch_size }
+    end
+
+    context 'when efficiency is low' do
+      before do
+        allow(worker).to receive(:smoothed_time_efficiency).and_return(0.7)
+      end
+
+      it 'updates batch_size' do
+        # With efficiency 0.7: multiplier = 0.95/0.7 = 1.357, capped at 1.2
+        # New size = 10,000 * 1.2 = 12,000
+        expect { optimize }.to change { worker.reload.batch_size }.from(batch_size).to(12_000)
+      end
+    end
+
+    context 'when efficiency is high' do
+      before do
+        allow(worker).to receive(:smoothed_time_efficiency).and_return(1.5)
+      end
+
+      it 'updates batch_size' do
+        # With efficiency 1.5: multiplier = 0.95/1.5 = 0.633
+        # New size = 10,000 * 0.633 = 6,333
+        expect { optimize }.to change { worker.reload.batch_size }.from(batch_size).to(6_333)
+      end
+    end
+  end
 end

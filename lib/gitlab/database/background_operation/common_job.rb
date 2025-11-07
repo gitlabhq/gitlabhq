@@ -41,9 +41,14 @@ module Gitlab
           scope :executable, -> { with_statuses(:pending, :running) }
           scope :failed, -> { with_status(:failed) }
           scope :running, -> { with_status(:running) }
+          scope :succeeded, -> { with_status(:succeeded) }
+          scope :finished, -> { where.not(finished_at: nil) }
           scope :created_since, ->(date) { where(arel_table[:created_at].gteq(date)) }
           scope :below_max_attempts, -> { where(arel_table[:attempts].lt(MAX_ATTEMPTS)) }
           scope :retriable, -> { failed.below_max_attempts }
+          scope :successful_in_execution_order, -> { finished.succeeded.order_by_finished_at }
+          scope :with_preloads, -> { preload(:jobs) }
+          scope :order_by_finished_at, -> { order(:finished_at) }
 
           # Partition should not be changed once the record is created
           attr_readonly :partition
@@ -82,6 +87,10 @@ module Gitlab
 
             event :failure do
               transition any => :failed
+            end
+
+            before_transition any => [:failed, :succeeded] do |job|
+              job.finished_at = Time.current
             end
           end
 

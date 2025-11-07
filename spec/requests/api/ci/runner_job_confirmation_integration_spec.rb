@@ -26,7 +26,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         # Verify job transitioned directly to running (feature flag disabled)
         job = Ci::Build.find(job_id)
         expect(job).to be_running
-        expect(job).not_to be_waiting_for_runner_ack
+        expect(job.runner_ack_wait_status).to eq(:not_waiting)
         expect(job.runner_id).to eq(runner.id)
         expect(job.runner_manager).to eq(runner_manager)
         expect(job.started_at).to be_present
@@ -105,7 +105,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         # Verify job is assigned to runner but still pending
         job = Ci::Build.find(job_id)
         expect(job).to be_pending
-        expect(job).to be_waiting_for_runner_ack
+        expect(job.runner_ack_wait_status).to eq(:waiting)
         expect(job.runner_id).to eq(runner.id)
         expect(job.runner_manager).to be_nil
         expect(job.runner_manager_id_waiting_for_ack).to eq(runner_manager.id)
@@ -144,7 +144,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
         # Verify job transitioned to running
         job.reload
         expect(job).to be_running
-        expect(job).not_to be_waiting_for_runner_ack
+        expect(job.runner_ack_wait_status).to eq(:not_waiting)
         expect(job.started_at).to be_present
         expect(job.started_at - job.queued_at).to eq 6.seconds
         expect(job.runner_manager_id_waiting_for_ack).to be_nil
@@ -219,7 +219,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
           # Verify job is in waiting state
           build.reload
           expect(build).to be_pending
-          expect(build).to be_waiting_for_runner_ack
+          expect(build.runner_ack_wait_status).to eq(:waiting)
 
           # Step 2: Disable feature flag mid-flight
           stub_feature_flags(allow_runner_job_acknowledgement: false)
