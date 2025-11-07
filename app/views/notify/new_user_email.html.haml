@@ -11,7 +11,7 @@
 
 - if @user.created_by_id
   %p
-    = link_to s_('Notify|Click here to set your password'), edit_password_url(@user, reset_password_token: @token)
+    = link_to s_('Notify|Click here to set your password'), edit_organization_user_password_url(@user.organization, reset_password_token: @token)
   %p
     = s_('Notify|This link is valid for %{password_reset_token_valid_time}.') % {password_reset_token_valid_time: password_reset_token_valid_time}
     - a_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % {url: new_user_password_url(user_email: @user.email)}

@@ -339,6 +339,18 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
       end
     end
 
+    context 'when pipeline_schedule filter is specified' do
+      let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, pipeline_schedule: schedule) }
+      let_it_be(:_) { create(:ci_pipeline, project: project) }
+
+      let(:params) { { pipeline_schedules: [schedule] } }
+
+      it 'returns pipeline created by schedule' do
+        is_expected.to match_array([pipeline])
+      end
+    end
+
     context 'when sha is specified' do
       let!(:pipeline) { create(:ci_pipeline, project: project, sha: '97de212e80737a608d939f648d959671fb0a0142') }
 

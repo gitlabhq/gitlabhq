@@ -220,8 +220,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         end
       end
 
-      # Quarantined with Chrome 138
-      it 'pressing enter should submit the form', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/569358' do
+      it 'pressing enter should submit the form' do
         within_testid('work-item-relationships') do
           click_button 'Add'
           fill_in 'Search existing items', with: issue_b.title

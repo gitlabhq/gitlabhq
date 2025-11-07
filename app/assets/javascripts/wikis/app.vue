@@ -22,6 +22,7 @@ export default {
     wikiUrl: { default: null },
     historyUrl: { default: null },
     error: { default: null },
+    pagePersisted: { default: false },
   },
   i18n: {
     alertText: s__('WikiHistoricalPage|This is an old version of this page.'),
@@ -79,6 +80,6 @@ export default {
     <wiki-header v-if="!isEditing" @is-editing="setEditingMode" />
     <wiki-edit-form v-if="isEditingPath || isEditing" @is-editing="setEditingMode" />
     <wiki-content v-else :is-editing="isEditing" />
-    <wiki-notes-app />
+    <wiki-notes-app v-if="pagePersisted" />
   </div>
 </template>

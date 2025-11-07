@@ -475,6 +475,7 @@ module Ci
     end
     scope :for_branch, ->(branch) { for_ref(branch).where(tag: false) }
     scope :for_iid, ->(iid) { where(iid: iid) }
+    scope :for_pipeline_schedule, ->(pipeline_schedule) { where(pipeline_schedule: pipeline_schedule) }
     scope :for_project, ->(project_id) { where(project_id: project_id) }
     scope :for_name, ->(name) do
       name_column = Ci::PipelineMetadata.arel_table[:name]

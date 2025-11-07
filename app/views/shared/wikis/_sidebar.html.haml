@@ -6,15 +6,15 @@
   .js-wiki-sidebar-resizer
   .sidebar-container
     .blocks-container
-      .gl-flex.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
+      .gl-flex.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'wiki-list collapsed' : '') }
         .toggle-close.block.gl-block.gl-flex-none.gl-mr-3{ class: '!gl-pt-0' }
           = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'chevron-double-lg-left', button_options: { class: 'gutter-toggle js-sidebar-wiki-toggle-close' })
 
-        .gl-flex.gl-items-center.gl-overflow-hidden
+        .gl-flex.gl-items-center.gl-overflow-hidden{ class: (@sidebar_page ? 'js-wiki-expand-pages-list' : '') }
+          %h2.gl-text-lg.gl-my-0.gl-mr-3.gl-whitespace-nowrap= s_('Wiki|Wiki Pages')
           - if @sidebar_page
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: "js-wiki-list-expand-button wiki-list-expand-button gl-mr-2", data: { testid: 'expand-pages-list' } })
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: "js-wiki-list-collapse-button wiki-list-collapse-button gl-mr-2", data: { testid: 'expand-pages-list' } })
-          %h2.gl-text-lg.gl-my-0.gl-mr-3.gl-whitespace-nowrap= s_('Wiki|Wiki Pages')
 
         .gl-flex-1
 

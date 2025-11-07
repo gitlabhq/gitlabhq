@@ -12922,6 +12922,22 @@ paths:
         type: string
         required: true
         example: 18
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
       - in: path
         name: pipeline_schedule_id
         description: The pipeline schedule ID
@@ -12929,6 +12945,80 @@ paths:
         format: int32
         required: true
         example: 13
+      - in: query
+        name: scope
+        description: The scope of pipelines
+        type: string
+        enum:
+        - running
+        - pending
+        - finished
+        - branches
+        - tags
+        required: false
+        example: pending
+      - in: query
+        name: status
+        description: The status of pipelines
+        type: string
+        enum:
+        - created
+        - waiting_for_resource
+        - preparing
+        - waiting_for_callback
+        - pending
+        - running
+        - success
+        - failed
+        - canceling
+        - canceled
+        - skipped
+        - manual
+        - scheduled
+        required: false
+        example: pending
+      - in: query
+        name: updated_before
+        description: 'Return pipelines updated before the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: updated_after
+        description: 'Return pipelines updated after the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_before
+        description: 'Return pipelines created before the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_after
+        description: 'Return pipelines created after the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: sort
+        description: Sort pipelines
+        type: string
+        default: asc
+        enum:
+        - asc
+        - desc
+        required: false
+        example: desc
       responses:
         '200':
           description: Get all pipelines triggered from a pipeline schedule

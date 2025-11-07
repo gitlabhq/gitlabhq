@@ -1,4 +1,4 @@
-- @content_class = "limit-container-width" unless fluid_layout
+- @no_container = true
 - breadcrumb_title(@page.template? ? s_("Wiki|New template") : s_("Wiki|New page")) unless @page.persisted?
 - wiki_page_title @page, @page.persisted? ? _('Edit') : _('New')
 - add_page_specific_style 'page_bundles/wiki'
@@ -8,7 +8,7 @@
 
 = form_errors(@page, truncate: :title)
 
-.wiki-overview{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-xl limit-container-width" : nil }
+.wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
   = render 'shared/wikis/sidebar', editing: true
   .wiki-page-details
     #js-vue-wiki-edit-app{ data: {

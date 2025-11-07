@@ -252,10 +252,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
   describe 'GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines' do
     let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
     let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/pipelines" }
-
-    before do
-      create_list(:ci_pipeline, 2, project: project, pipeline_schedule: pipeline_schedule, source: :schedule)
-    end
+    let!(:pipelines) { create_list(:ci_pipeline, 2, project: project, pipeline_schedule: pipeline_schedule, source: :schedule) }
 
     matcher :return_pipeline_schedule_pipelines_successfully do
       match_unless_raises do |response|
@@ -275,6 +272,20 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           get api(url, user)
 
           expect(response).to return_pipeline_schedule_pipelines_successfully
+        end
+
+        context 'when sorting' do
+          it 'allows to sort pipelines ascending' do
+            get api("#{url}?sort=asc", user)
+
+            expect(response.parsed_body.map { |schedule| schedule['id'] }).to eq([pipelines.first.id, pipelines.last.id])
+          end
+
+          it 'allows to sort pipelines descending' do
+            get api("#{url}?sort=desc", user)
+
+            expect(response.parsed_body.map { |schedule| schedule['id'] }).to eq([pipelines.last.id, pipelines.first.id])
+          end
         end
       end
     end

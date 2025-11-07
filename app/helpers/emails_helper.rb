@@ -72,6 +72,17 @@ module EmailsHelper
     pluralize(valid_length, unit)
   end
 
+  def confirmation_link_for(resource, token)
+    case resource
+    when Email
+      organization_email_confirmation_url(resource.organization, confirmation_token: token)
+    when User
+      organization_user_confirmation_url(resource.organization, confirmation_token: token)
+    else
+      raise ArgumentError, "Resource not confirmable: #{resource}"
+    end
+  end
+
   def header_logo
     if current_appearance&.header_logo? && !current_appearance.header_logo.filename.ends_with?('.svg')
       image_tag(

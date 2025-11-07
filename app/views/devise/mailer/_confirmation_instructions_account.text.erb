@@ -12,4 +12,4 @@
 
 <%= render_if_exists 'devise/shared/delete_unconfirmed_users_text' %>
 
-<%= confirmation_url(@resource, confirmation_token: @token) %>
+<%= confirmation_link_for(@resource, @token) %>

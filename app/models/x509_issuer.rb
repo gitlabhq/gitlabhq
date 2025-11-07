@@ -9,6 +9,7 @@ class X509Issuer < ApplicationRecord
   # rfc 5280 - 4.2.1.13  CRL Distribution Points
   # cRLDistributionPoints extension using URI:http
   validates :crl_url, allow_nil: true, public_url: true
+  belongs_to :project
 
   def self.safe_create!(attributes)
     create_with(attributes)

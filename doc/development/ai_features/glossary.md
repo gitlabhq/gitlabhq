@@ -17,7 +17,17 @@ A variation on Fine Tuning. Instead of opening the model and adjusting the layer
 
 ### AI Catalog
 
-The [Workflow Catalog Group](https://handbook.gitlab.com/handbook/engineering/ai/workflow-catalog/) is focused on developing AI Catalog, a catalog of agents, tools, and flows that can be created, curated, and shared across organizations, groups, and projects.
+A central registry of available agents and flows in the Duo Agent Platform.
+Shared across the instance. The Catalog functions as both a marketplace and
+control plane, enabling safe, observable, and scalable AI deployment across
+GitLab.
+
+It provides:
+
+- **Discovery**: Users can browse, search, and understand what AI capabilities exist.
+- **Governance**: Admins can manage access, usage policies, and audit logs.
+- **Extensibility**: Developers can register new agents or flows with metadata, inputs/outputs, and
+  performance metrics.
 
 ### AI gateway
 
@@ -33,7 +43,7 @@ A component responsible for maintaining a list of AI gateway Prompts available t
 
 ### air-gapped model
 
-A hosted model that is internal to an organisations intranet only. In the context of GitLab AI features, this could be connected to an air-gapped GitLab instance.
+A hosted model that is internal to an organization's intranet only. In the context of GitLab AI features, this could be connected to an air-gapped GitLab instance.
 
 ### Bring Your Own Model (BYOM)
 
@@ -47,35 +57,35 @@ Automated mechanism for determining the helpfulness and accuracy of GitLab Duo C
 
 Cloud Connector is a way to access services common to multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the set of technical solutions and APIs used to make such services available to all GitLab customers. For more information, see the [Cloud Connector architecture](../cloud_connector/architecture.md).
 
-### closed source model
+### Closed source model
 
 A private model fine-tuned or built from scratch by an organisation. These may be hosted as cloud services, for example ChatGPT.
 
-### consensus filtering
+### Consensus filtering
 
 Consensus filtering is a method of LLM evaluation. An LLM judge is asked to rate and compare the output of multiple LLMs to sets of prompts. This is the method of evaluation being used for the Chat Evaluation MVC. [Issue from Model Validation team](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library/-/issues/91#metric-2-consensus-filtering-with-llm-based-evaluation).
 
-### context
+### Context
 
 Relevant information that surrounds a data point, an event, or a piece of information, which helps to clarify its meaning and implications. For GitLab Duo Chat, context is the attributes of the Issue or Epic being referenced in a user question.
 
-### custom model
+### Custom model
 
 Any implementation of a GitLab Duo feature using a self-hosted model, BYOM, fine-tuned model, RAG-enhanced model, or adapter-based model.
 
-### embeddings
+### Embeddings
 
 In the context of machine learning and large language models, embeddings refer to a technique used to represent words, phrases, or even entire documents as dense numerical vectors in a continuous vector space. At GitLab, [we use Vertex AI's Embeddings API](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129930) to create a vector representation of GitLab documentation. These embeddings are stored in the `vertex_gitlab_docs` database table in the `embeddings` database. The embeddings search is done in Postgres using the `vector` extension. The vertex embeddings database is updated based on the latest version of GitLab documentation on a daily basis by running `Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker` as a cronjob.
 
-### fine-tuning
+### Fine-tuning
 
 Altering an existing model using a supervised learning process that utilizes a dataset of labeled examples to update the weights of the LLM, improving its output for specific tasks such as code completion or Chat.
 
-### foundational model
+### Foundational model
 
 A general purpose LLM trained using a generic objective, typically next token prediction. These models are capable and flexible, and can be adjusted to solved many domain-specific tasks (through finetuning or prompt engineering). This means that these general purpose models are ideal to serve as the foundation of many downstream models. Examples of foundational models are: GPT-4o, Claude 3.7 Sonnet.
 
-### frozen model
+### Frozen model
 
 A LLM which cannot be fine-tuned (also Frozen LLM).
 
@@ -87,15 +97,15 @@ AI-assisted features across the GitLab DevSecOps platform. These features aim to
 
 A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242) are hosted externally and accessed through the AI gateway. GitLab-owned API keys are used to access the models.
 
-### golden questions
+### Golden questions
 
 A small subset of the types of questions we think a user should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation. [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/epics/10550#what-the-user-can-ask).
 
-### ground truth
+### Ground truth
 
 Data that is determined to be the true output for a given input, representing the reality that the AI model aims to learn and predict. Ground truth data are often human-annotated, but may also be produced from a trusted source such as an LLM that has known good output for a given use case.
 
-### local model
+### Local model
 
 A LLM running on a user's workstation. [More information](https://gitlab.com/groups/gitlab-org/-/epics/12907).
 
@@ -103,11 +113,11 @@ A LLM running on a user's workstation. [More information](https://gitlab.com/gro
 
 A Large Language Model, or LLM, is a very large-scale neural network trained to understand and generate human-like text. For [GitLab Duo features](../../user/gitlab_duo/_index.md), GitLab is currently working with frozen models hosted at [Google and Anthropic](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242)
 
-### offline model
+### Offline model
 
 A model that runs without internet or intranet connection (for example, you are running a model on your laptop on a plane).
 
-### open-source model
+### Open-source model
 
 Models that are published with their source code and weights and are available for modifications and re-distribution. Examples: Llama / Llama 2, BLOOM, Falcon, Mistral, Gemma.
 
@@ -115,11 +125,11 @@ Models that are published with their source code and weights and are available f
 
 The ["Centralized Evaluation Framework"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for evaluating GitLab AI features. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
 
-### prompt registry
+### Prompt registry
 
 Stored, versioned prompts used to interact with third-party AI Services. [Design document proposal MR (closed)](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135872).
 
-### prompt
+### Prompt
 
 Natural language instructions sent to an LLM to perform certain tasks. [Prompt guidelines](ai_feature_development_playbook.md).
 
@@ -131,27 +141,27 @@ RAG provide contextual data to an LLM as part of a query to personalise results.
 
 A mechanism used to take an input (such as a user question) into a system, retrieve any relevant data for that input, augment the input with additional context, and then synthesize the information to generate a coherent, contextualy-relevant answer. This design pattern is helpful in open-domain question answering with LLMs, which is why we use this design pattern for answering questions to GitLab Duo Chat.
 
-### self-hosted model
+### Self-hosted model
 
 A LLM hosted externally to GitLab by an organisation and interacting with GitLab AI features. See also the [style guide reference](../documentation/styleguide/word_list.md#self-hosted-model).
 
-### similarity score
+### Similarity score
 
 A mathematical method to determine the likeness between answers produced by an LLM and the reference ground truth answers. See also the [Model Validation direction page](https://about.gitlab.com/direction/ai-powered/ai_model_validation/ai_evaluation/metrics/#similarity-scores)
 
-### tool
+### Tool
 
 Logic that performs a specific LLM-related task; each tool has a description and its own prompt. [How to add a new tool](duo_chat.md#adding-a-new-tool).
 
-### unit primitive
+### Unit primitive
 
 GitLab-specific term that refers to the fundamental logical feature that a permission or access scope can control. Examples: [`duo_chat`](../../user/gitlab_duo_chat/_index.md) and [`code_suggestions`](../../api/code_suggestions.md). These features are both currently part of the GitLab Duo Pro license but we are building the concept of a Unit Primitive around each Duo feature so that Duo features are easily composable into different groupings to accommodate potential future product packaging needs.
 
-### word-level metrics
+### Word-level metrics
 
 Method for LLM evaluation that compares aspects of text at the granularity of individual words. [Issue from Model Validation team](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library/-/issues/98#metric-3-word-level-metrics).
 
-### zero-shot agent
+### Zero-shot agent
 
 In the general world of AI, a learning model or system that can perform tasks without having seen any
 examples of that task during training. At GitLab, we use this term to refer specifically to a piece of our code that serves
@@ -166,83 +176,124 @@ sufficient or if an additional tool must be used to answer the question.
 
 [Zero-shot agent in action](https://gitlab.com/gitlab-org/gitlab/-/issues/427979).
 
-## GitLab Duo Agent Platform terminology
-
-## Core layer concepts (GitLab-specific)
+## GitLab Duo Agent Platform
 
 ### Flow
 
-A **goal-oriented, structured graph** that orchestrates agents and tools to deliver a single, economically-valuable outcome (e.g., *create a code-review MR*, *triage issues*).
+A predefined, structured sequence of steps that orchestrates a team of agents to execute actions
+(either agentic or deterministic) to complete a task. Flows are initiated by triggers or manually.
+Inputs can be natural language or predefined key-values (for example, project name, feature flag to
+remove).
 
-- **Structure** - Explicit phases: planning → execution → completion
-- **Nodes** - Each node is an *Agent* (decision-maker) or *Deterministic step*: CRUD, Boolean decision
-- **Trigger & Terminator** - Every flow has one or many defined start trigger(s) and a defined end state
-- **Input** - Each Flow must have an input. Inputs set the context for the Flow session and will differentiate different flows in outcomes. Inputs can be: Free text, Entities (GitLab or from 3rd party)
-- **Session** - One execution of an flow; sessions carry user-specific goals and data
+Example: "Generate test cases → Update CI pipeline file → Commit changes → Notify user in MR."
 
-{{< alert type="note" >}}
+#### Flow types
 
-**Analogy:** *competency / job description* - the "what & when" of getting work done.
+- **Foundational**: Defined in the Duo Workflow Service, shipped and maintained by GitLab (for example, issue-to-MR flow).
+- **Custom**: Built by users through the AI Catalog.
 
-{{< /alert >}}
+#### Flow execution
+
+- **Runner job**: Sometimes called "remote execution." Asynchronous execution in
+  the platform using GitLab Runner.
+- **Local (IDE or CLI)**: Synchronous execution. Can interact directly with the file system
+  (for example, Software Development Flow).
+
+#### When to use flows
+
+Flows are best used for repeatable, multi-step automations that need to run reliably and
+consistently across projects. Flows are ideal when a task follows a predictable pattern, such as
+fixing failing pipelines, updating dependencies, or applying policy checks. Flows can be
+executed without continuous human input.
 
 ### Agent
 
-A **specialized, LLM-powered decision-maker** that owns a single node inside an flow. Can be defined independently and reused across multiple flows as a reusable component.
+An Agent is an autonomous, persona-like software component powered by an AI
+model. Agents perform a specific task or set of tasks on behalf of the user or
+system in the GitLab ecosystem
 
-- **Prompt (System)** - Sets the overall behavior, guardrails and persona for the agents
-- **Prompt (Goal)** - Receives the session-specific objective from the flow
-- **Tools** - May call only the tools granted by the flow node definition and the user/company definition of available tools
-- **Agents / Flows** - Agents can invoke other agents or Flows to achieve their goal if these were made available
-- **Reasoning** - Uses an LLM to decompose its goal into dynamic subtasks
-- **Context awareness** - Gains project / repo / issue data through tool calls
+#### Agent types
 
-GitLab agents are **specialists**, not generalists, to maximize reliability and UX.
+- **Foundational**: A GitLab-maintained, platform-native agent that provides general or cross-workflow intelligence.
+  - Purpose: Serves as a baseline capability accessible across the product,
+    ensuring consistent quality, safety, and governance.
+  - How to invoke: Foundational Agents can be invoked in Duo Chat only
+  - Example: Duo Security Analyst Chat Agent for answering questions about
+    vulnerabilities in chat.
+- **Custom**: Built by users through the AI Catalog.
+  - Purpose: Enables teams to leverage proprietary knowledge, tools, and decision logic in GitLab guardrails.
+  - How to invoke: Custom Agents can be invoked in Duo Chat only
+  - Example: An agent created specifically answering a questions about a codebase
+- **External**: Also known as "Third-Party Flows" or "CLI Agents." An externally developed agent integrated into the Duo Agent Platform
+  - Purpose: Expands platform capability by allowing external vendors to operate
+    in the GitLab workflow orchestration and policy layer.
+  - How to invoke: External Agents are invoked through `@` mentions in comments OR through
+    assignment to issues, epics, or merge requests. They cannot be invoked through Duo
+    Chat.
+  - Example: Amazon Q or Claude integrated for code generation or review.
+
+#### Agent Execution
+
+Custom and foundational agents can be executed in the Duo Chat interface.
+
+External agents can be configured with triggers.
+
+#### When to use agents
+
+Agents are best used for on-demand, interactive, or context-specific tasks that benefit from
+reasoning and natural-language interaction, such as explaining code, summarizing issues, generating
+content, or providing recommendations. They are ideal when the task requires flexibility and
+human-in-the-loop decision-making rather than a predefined, repeatable workflow.
+
+### Session
+
+The contextual runtime state of an agent or flow that begins after an agent or
+flow is triggered. During a session, agents perform actions to complete tasks.
+Agents reason over evolving context and maintain continuity across interactions.
+For example, remembering prior steps in a refactor sequence or the rationale
+behind a code fix.
+
+In the GitLab UI, sessions capture:
+
+- Status (for example: running, complete, waiting for input, etc.)
+- Conversation history
+- System state (e.g., project metadata, MR content)
 
 ### Tool
 
-A **discrete, deterministic capability** an agent (or flow step) invokes to perform read/write actions. Tools can be used to perform these in GitLab or in 3rd party applications via MCP or other protocols.
+A **discrete, deterministic capability** an agent (or flow step) invokes to perform read or write
+actions. Tools can be used to perform these in GitLab or in third-party applications through MCP
+or other protocols.
 
-*Examples:* read GitLab issues, clone a repository, commit & push changes, call a REST API.
+*Examples:* read GitLab issues, clone a repository, commit and push changes, call a REST API.
 Tools expose data or side-effects; they themselves perform **no reasoning**.
 
-### Third-party flow
+### Trigger
 
-A flow defined as YAML that executes arbitrary steps in a container, similar to how our CI/CD works.
-Can be triggered by various actions like `@` mentioning users or assigning reviewers.
-Typically used to communicate with third-party AI tools or agents such as Claude Code.
+An event that starts a Flow or activates an External Agent. Triggers are created
+for each External Agent or Flow on a per-project basis. To run a flow,
+there must be a trigger configured for that External Agent or Flow in that project.
 
-## Flow types
+Events include:
 
-### Current implementation
+- System events (for example, new merge request opened, CI job failed)
+- User prompts or actions (for example, `@` mention on an issue, issue assignment “)
+- Time-based (for example, daily at 18:00, every Monday) (planned)
 
-- **Sequence** - The Flow is executing agents that handover their output to the next agent in a pre set manner
+Many Triggers can be created to start Flows, however, there are only two available
+Triggers (`@` mention and issue assignment) for External Agents.
 
-### Future implementations
-
-- **Single Agent** - A single agent is executing the entire flow to completion, suitable for small defined tasks with latency considerations
-- **Multi Agent** - A pool of agents are working to complete a task in a manner where each agent is getting a chance to solve it, and/or a supervisor chooses the final solution. Can support different graph topologies
-
-## Supporting Terminology
+### Supporting terminology
 
 | Term | Definition |
 | ---- | ---------- |
 | **Node (Flow node)** | A single step in the flow graph. GitLab currently supports *Agent*, *Tool Executor*, *Agent Handover*, *Supervisor*, and *Terminator* nodes. |
-| **Session** | One instantiation of an flow with concrete user input and data context. |
 | **Task** | A formal object representing a unit of work inside a run. At present only the *Executor* agent persists tasks, but the concept is extensible. |
-| **Trigger** | An event that starts an flow run (e.g., slash command, schedule, issue label). |
 | **Agent handover** | Node type that packages context from one agent and passes it to another. |
 | **Supervisor agent** | An agent node that monitors other agents' progress and enforces run-level constraints (timeout, max tokens, etc.). |
 | **Subagent** | Shorthand for an agent that operates under a Supervisor within the same run. |
 | **Autonomous agent** | Historical term for an agent that can loop without human approval. In GitLab, autonomy level is governed by flow design, not by a separate agent type. |
 | **Framework** | A platform for building multi-agent systems. GitLab Duo Agent Platform uses **LangGraph**, an extension to LangChain that natively models agent graphs. |
-
-## Execution
-
-Flows are executed in the following ways:
-
-- **Local** - The Flow is executed in relation to a project or a folder (future)
-- **Remote** - The Flow is executed by CI/CD runners in relation to a project, group (future), namespace (future)
 
 ## Quick Reference Matrix
 
@@ -252,9 +303,9 @@ Flows are executed in the following ways:
 | **Agent** | Skill / Specialist | "How do I use my tools to reach my goal?" |
 | **Flow** | Competency / Job | "When and in what order should skills be applied to deliver value?" |
 
-## AI Context Terminology
+## AI context terminology
 
-### Advanced Context Resolver
+### Advanced context resolver
 
 Advanced context is a comprehensive set of code-related information extending
 beyond a single file, including open file tabs, imports, dependencies,
@@ -265,7 +316,7 @@ By providing advanced context, the resolver providers the LLM with a more
 holistic understanding of the project structure, enabling more accurate and
 context-aware code suggestions and generation.
 
-### AI Context Abstraction Layer
+### AI context abstraction layer
 
 A [Ruby gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-active-context) that provides a unified interface for Retrieval Augmented Generation (RAG) across multiple vector databases in GitLab. The system abstracts away the differences between Elasticsearch, OpenSearch, and PostgreSQL with pgvector, enabling AI features to work regardless of the underlying storage solution.
 
@@ -273,14 +324,14 @@ Key components include collections that define data schemas and reference classe
 
 This [architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_abstraction_layer/) prevents vendor lock-in and enables GitLab customers without Elasticsearch to access RAG-powered features through pgvector.
 
-### AI Context Policies
+### AI context policies
 
 A user-defined and user-managed mechanism allowing precise control over the
 content that can be sent to LLMs as contextual information.
 GitLab has an [architecture document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_management/)
 that proposes a format for AI Context Policies.
 
-### Codebase as Chat Context
+### Codebase as chat context
 
 This refers to a repository that the user explicitly provides using the `/include` command. The user may narrow the scope by choosing a directory within a repository.
 This feature allows the user to ask questions about an entire repository, or a subset of that repository by selecting specific directories.
@@ -294,7 +345,7 @@ Codebase as Chat Context enhanced by semantic search over Code Embeddings.
 
 In the future, the repository or directory context may also be enhanced by a [Knowledge Graph](#knowledge-graph) search.
 
-### Code Embeddings
+### Code embeddings
 
 The [Code Embeddings initiative](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/codebase_as_chat_context/code_embeddings/)
 aims to build vector embeddings representation of files in a repository. The file contents are chunked into logical segments, then embeddings are generated
@@ -313,17 +364,17 @@ The system is designed to handle enterprise-scale deployments, with GitLab.com s
 
 Most likely, this distributed database system will be used to power [Knowledge Graph](#knowledge-graph). Also, we might leverage Exact Code Search to provide additional context and/or tools for GitLab Duo.
 
-### Knowledge Graph
+### Knowledge graph
 
 The [Knowledge Graph](https://gitlab.com/gitlab-org/rust/knowledge-graph) project aims to create a structured, queryable graph database from code repositories to power AI features and enhance developer productivity within GitLab.
 
 Think of it like creating a detailed blueprint that shows which functions call other functions, how classes relate to each other, and where variables are used throughout the codebase. Instead of GitLab Duo having to read through thousands of files every time you ask it something, it can quickly navigate this pre-built map to give you better code suggestions, find related code snippets, or help debug issues. It gives Duo a much smarter way to understand your codebase so it can assist you more effectively with things like code reviews, refactoring, or finding where to make changes when you're working on a feature.
 
-### One Parser (GitLab Code Parser)
+### One parser (GitLab Code Parser)
 
 The [GitLab Code Parser](https://gitlab.com/gitlab-org/code-creation/gitlab-code-parser#) establishes a single, efficient, and reliable static code analysis library. This library will serve as the foundation for diverse code intelligence features across GitLab, from server-side indexing (Knowledge Graph, Embeddings) to client-side analysis (Language Server, Web IDE). Initially scoped to AI and Editor Features.
 
-### Supplementary User Context
+### Supplementary user context
 
 Information, such as open tabs in their IDE, files, and folders,
 that the user provides from their local environment to extend the default AI
@@ -342,7 +393,7 @@ Additional features or services that can be purchased and added to a GitLab subs
 
 ### User add-on assignment
 
-The process of assigning add-on features to individual users. For most add-ons like Duo Pro and Duo Enterprise, this creates a direct user-to-add-on relationship. 
+The process of assigning add-on features to individual users. For most add-ons like Duo Pro and Duo Enterprise, this creates a direct user-to-add-on relationship.
 
 However, Duo Core is an exception as it's assigned at the namespace level. On GitLab.com, Duo Core user access is determined by checking if the user has membership in any namespace with the Duo Core [turned on](../../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off). On other instances, Duo Core user access is determined by checking if the instance has Duo Core turned on.
 

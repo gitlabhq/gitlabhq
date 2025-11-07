@@ -90,6 +90,8 @@ RSpec.shared_examples 'User creates wiki page' do
         expect(page).to have_content("New page")
       end
 
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+
       click_link("Home")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
@@ -105,6 +107,8 @@ RSpec.shared_examples 'User creates wiki page' do
       page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("New page")
       end
+
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       click_link("Home")
 

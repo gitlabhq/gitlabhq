@@ -53,17 +53,8 @@
   }
 
   .wiki-sidebar .sidebar-container {
-    @apply gl-pr-4;
-    @apply gl-pt-2;
+    @apply gl-pt-3;
     position: sticky;
-  }
-
-  .wiki-sidebar .toggle-close {
-    @apply gl-hidden;
-  }
-
-  .layout-limited-width .wiki-sidebar {
-    @apply gl-border-none;
   }
 }
 
@@ -77,8 +68,26 @@
   left: 0;
   z-index: 2;
 
+  &.transition-enabled {
+    @apply gl-transition-all;
+    @apply gl-duration-fast;
+    @apply motion-reduce:gl-transition-none;
+
+    &.sidebar-collapsed {
+      /* This transition delay ensures both the width transition
+      and the faster border color transition end at the same time */
+      transition-delay: calc($gl-transition-duration-medium - $gl-transition-duration-fast);
+    }
+
+    .sidebar-container {
+      @apply gl-transition-all;
+      @apply gl-duration-medium;
+      @apply motion-reduce:gl-transition-none;
+    }
+  }
+
   &.sidebar-collapsed {
-    @apply gl-border-none;
+    @apply gl-border-transparent;
 
     .sidebar-container {
       width: 0 !important;
@@ -88,10 +97,7 @@
   }
 
   .sidebar-container {
-    @apply gl-px-3;
     @apply gl-pt-5;
-    @apply gl-transition-all;
-    @apply motion-reduce:gl-transition-none;
     top: $calc-application-header-height;
     bottom: $calc-application-footer-height;
     z-index: 3;
@@ -107,6 +113,11 @@
       @apply gl-flex-col;
       @apply gl-overflow-hidden;
       @apply gl-grow;
+    }
+
+    .blocks-container > * {
+      @apply gl-px-3;
+      min-width: 200px;
     }
 
     .wiki-pages-list-container, .wiki-sidebar-custom-content  {
@@ -193,11 +204,12 @@
 
 .wiki-page-details {
   @apply gl-w-full;
+  @apply gl-mx-auto;
   max-width: $wiki-content-default-width;
   overflow-x: auto;
 }
 
-.layout-fluid .wiki-overview {
+.wiki-overview {
   @apply gl-justify-stretch;
 }
 
@@ -333,5 +345,11 @@ ul.wiki-pages-list.content-list {
 html:not(.page-with-panels) {
   @include media-breakpoint-up(lg) {
     @include wiki-screen-lg;
+  }
+
+  .wiki-sidebar {
+    .sidebar-container {
+      height: $calc-application-viewport-height;
+    }
   }
 }

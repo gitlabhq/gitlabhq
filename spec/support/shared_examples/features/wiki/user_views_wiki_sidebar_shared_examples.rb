@@ -20,6 +20,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
     context 'when there is no custom sidebar' do
       before do
         visit wiki_path(wiki)
+        click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
       end
 
       it 'renders a default sidebar' do
@@ -34,6 +35,8 @@ RSpec.shared_examples 'User views wiki sidebar' do
         click_on 'Add custom sidebar'
         fill_in :wiki_content, with: 'My custom sidebar'
         click_on 'Create custom sidebar'
+
+        click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
         within('.wiki-sidebar') do
           expect(page).to have_content('My custom sidebar')
@@ -71,6 +74,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
         fill_in :wiki_content, with: 'My other custom sidebar'
         click_on 'Save changes'
+        click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
         within('.wiki-sidebar') do
           expect(page).to have_content('My other custom sidebar')

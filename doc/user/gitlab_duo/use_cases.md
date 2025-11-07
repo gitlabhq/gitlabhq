@@ -492,49 +492,49 @@ experiment with different output formats:
    ```
 
 1. Repeat the steps with prompts for different export formats,
-or use Code Suggestions auto-complete. For example:
+   or use Code Suggestions auto-complete. For example:
 
-```powershell
-# Collect the files in a directory and print their size
+   ```powershell
+   # Collect the files in a directory and print their size
 
-$directory = Read-Host -Prompt "Enter the directory path to get file sizes"
-$files = Get-ChildItem -Path $directory -File
-foreach ($file in $files) {
-    $fileSize = [Math]::Round(($file.Length / 1KB), 2)
-    Write-Host "$($file.Name) - $fileSize KB"
-}
+   $directory = Read-Host -Prompt "Enter the directory path to get file sizes"
+   $files = Get-ChildItem -Path $directory -File
+   foreach ($file in $files) {
+       $fileSize = [Math]::Round(($file.Length / 1KB), 2)
+       Write-Host "$($file.Name) - $fileSize KB"
+   }
 
-# Repeat the code above but store the results in a CSV file
-$csvFile = "$directory\file-sizes.csv"
-$fileData = foreach ($file in $files) {
-    [PSCustomObject]@{
-        FileName = $file.Name
-        FileSize = [Math]::Round(($file.Length / 1KB), 2)
-    }
-}
-$fileData | Export-Csv -Path $csvFile -NoTypeInformation
-Write-Host "File sizes saved to $csvFile"
+   # Repeat the code above but store the results in a CSV file
+   $csvFile = "$directory\file-sizes.csv"
+   $fileData = foreach ($file in $files) {
+       [PSCustomObject]@{
+           FileName = $file.Name
+           FileSize = [Math]::Round(($file.Length / 1KB), 2)
+       }
+   }
+   $fileData | Export-Csv -Path $csvFile -NoTypeInformation
+   Write-Host "File sizes saved to $csvFile"
 
-# Repeat the code above but store the results in a JSON file
-$jsonFile = "$directory\file-sizes.json"
-$fileData | ConvertTo-Json | Out-File -FilePath $jsonFile
-Write-Host "File sizes saved to $jsonFile"
+   # Repeat the code above but store the results in a JSON file
+   $jsonFile = "$directory\file-sizes.json"
+   $fileData | ConvertTo-Json | Out-File -FilePath $jsonFile
+   Write-Host "File sizes saved to $jsonFile"
 
-# Repeat the code above but store the results in a XML file
-$xmlFile = "$directory\file-sizes.xml"
-$fileData | ConvertTo-Xml -NoTypeInformation | Out-File -FilePath $xmlFile
-Write-Host "File sizes saved to $xmlFile"
+   # Repeat the code above but store the results in a XML file
+   $xmlFile = "$directory\file-sizes.xml"
+   $fileData | ConvertTo-Xml -NoTypeInformation | Out-File -FilePath $xmlFile
+   Write-Host "File sizes saved to $xmlFile"
 
-# Repeat the code above but store the results in a HTML file
-$htmlFile = "$directory\file-sizes.html"
-$fileData | ConvertTo-Html -Property FileName, FileSize | Out-File -FilePath $htmlFile
-Write-Host "File sizes saved to $htmlFile"
+   # Repeat the code above but store the results in a HTML file
+   $htmlFile = "$directory\file-sizes.html"
+   $fileData | ConvertTo-Html -Property FileName, FileSize | Out-File -FilePath $htmlFile
+   Write-Host "File sizes saved to $htmlFile"
 
-# Repeat the code above but store the results in a TXT file
-$txtFile = "$directory\file-sizes.txt"
-$fileData | Out-File -FilePath $txtFile
-Write-Host "File sizes saved to $txtFile"
-```
+   # Repeat the code above but store the results in a TXT file
+   $txtFile = "$directory\file-sizes.txt"
+   $fileData | Out-File -FilePath $txtFile
+   Write-Host "File sizes saved to $txtFile"
+   ```
 
 ## Explain and resolve vulnerabilities
 

@@ -69,12 +69,36 @@ module API
           is_array true
         end
         params do
+          use :pagination
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule ID', documentation: { example: 13 }
+          optional :scope, type: String, values: ::Ci::PipelinesFinder::ALLOWED_SCOPES.values,
+            desc: 'The scope of pipelines',
+            documentation: { example: 'pending' }
+          optional :status, type: String, values: ::Ci::HasStatus::AVAILABLE_STATUSES,
+            desc: 'The status of pipelines',
+            documentation: { example: 'pending' }
+          optional :updated_before, type: DateTime, desc: 'Return pipelines updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :created_before, type: DateTime, desc: 'Return pipelines created before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :created_after, type: DateTime, desc: 'Return pipelines created after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :sort, type: String, values: %w[asc desc], default: 'asc',
+            desc: 'Sort pipelines',
+            documentation: { example: 'desc' }
         end
 
         route_setting :authorization, permissions: [:read_pipeline_schedule, :read_pipeline], boundary_type: :project
         get ':id/pipeline_schedules/:pipeline_schedule_id/pipelines' do
-          present paginate(pipeline_schedule.pipelines), with: Entities::Ci::PipelineBasic
+          pipelines = ::Ci::PipelinesFinder.new(
+            pipeline_schedule.project,
+            current_user,
+            declared_params.except(:pipeline_schedule_id).merge(pipeline_schedules: [pipeline_schedule])
+          ).execute
+
+          present paginate(pipelines), with: Entities::Ci::PipelineBasic
         end
 
         desc 'Create a new pipeline schedule' do

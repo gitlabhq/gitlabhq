@@ -3,6 +3,7 @@
 - page_history = @page&.persisted? ? wiki_page_path(@wiki, @page, action: :history) : ''
 - @gfm_form = true
 - @noteable_type = 'Wiki'
+- @no_container = true
 - templates = @templates.map { |t| wiki_page_basic_info(t) }
 - page_version = @page.historical? ? @page.version.commit : @page.last_version
 

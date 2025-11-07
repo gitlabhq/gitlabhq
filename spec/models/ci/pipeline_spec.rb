@@ -590,6 +590,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.for_pipeline_schedule' do
+    subject { described_class.for_pipeline_schedule(pipeline_schedule) }
+
+    let(:pipeline_schedule) { create(:ci_pipeline_schedule) }
+    let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
+    let!(:_) { create(:ci_pipeline) }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+  end
+
   describe '.for_name' do
     subject { described_class.for_name(name) }
 

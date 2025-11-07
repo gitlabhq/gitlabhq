@@ -36,7 +36,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     it 'includes a link for user to set password' do
       params = "reset_password_token=#{token}"
       is_expected.to have_body_text(
-        %r{http://#{Gitlab.config.gitlab.host}(:\d+)?/users/password/edit\?#{params}}
+        %r{http://#{Gitlab.config.gitlab.host}(:\d+)?/o/#{new_user.organization.path}/user/password/edit\?#{params}}
       )
     end
 

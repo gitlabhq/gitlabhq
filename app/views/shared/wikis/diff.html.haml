@@ -1,14 +1,14 @@
-- @content_class = "limit-container-width" unless fluid_layout
 - @gfm_form = true
 - @noteable_type = 'Wiki'
+- @no_container = true
 - wiki_page_title @page, _('Changes')
 - add_page_specific_style 'page_bundles/wiki'
 - commit = @diffs.diffable
 - add_page_specific_style 'page_bundles/commit_description'
 
-.wiki-overview{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-xl limit-container-width" : nil }
+.wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
   = render 'shared/wikis/sidebar', editing: true
-  %div
+  .wiki-page-details
     .wiki-page-header
       = render ::Layouts::PageHeadingComponent.new('') do |c|
         - c.with_heading do

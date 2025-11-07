@@ -3,7 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab release and maintenance policy
-description: Version support, release cadence, and backporting polices.
+description: Version support, release cadence, and backporting policies.
 ---
 
 The Delivery Group are the owners of the maintenance policy and must approve any requested updates. This follows our DRI model and is in place to ensure predictability for customers.
@@ -150,8 +150,7 @@ the current stable release, and two previous monthly releases. In rare cases a r
 For instance, if we release `13.2.1` with a fix for a severe bug introduced in
 `13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.
 
-Severity 3 and lower
-requests are automatically turned down.
+Severity 3 and lower requests are automatically turned down.
 
 To request backporting to more than one stable release for consideration, raise an issue in the
 [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.

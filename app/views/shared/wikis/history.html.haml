@@ -1,12 +1,12 @@
-- @content_class = "limit-container-width" unless fluid_layout
+- @no_container = true
 - @gfm_form = true
 - @noteable_type = 'Wiki'
 - wiki_page_title @page, _('History')
 - add_page_specific_style 'page_bundles/wiki'
 
-.wiki-overview{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-xl limit-container-width" : nil }
+.wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
   = render 'shared/wikis/sidebar'
-  %div
+  .wiki-page-details
     .wiki-page-header
       = wiki_sidebar_toggle_button
       = render ::Layouts::PageHeadingComponent.new(_('History')) do |c|

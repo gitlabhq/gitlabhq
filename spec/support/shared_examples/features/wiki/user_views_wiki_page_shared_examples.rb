@@ -61,6 +61,8 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'shows an old version of a page', :js do
       expect(page).to have_current_path(%r{one/two/three-test})
 
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+
       expect(find('.wiki-pages')).to have_content('three')
 
       first(:link, text: 'three').click
