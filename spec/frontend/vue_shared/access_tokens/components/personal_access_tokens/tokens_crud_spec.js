@@ -2,6 +2,7 @@ import { GlBadge, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import TokensCrud from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_crud.vue';
+import TokensTable from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_table.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 describe('Personal access tokens crud component', () => {
@@ -23,6 +24,7 @@ describe('Personal access tokens crud component', () => {
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findNewTokenDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findTokensTable = () => wrapper.findComponent(TokensTable);
 
   describe('on page load', () => {
     beforeEach(() => createWrapper());
@@ -37,6 +39,10 @@ describe('Personal access tokens crud component', () => {
         placement: 'bottom-end',
         fluidWidth: true,
       });
+    });
+
+    it('shows personal access tokens table', () => {
+      expect(findTokensTable().props()).toMatchObject({ tokens, loading: false });
     });
 
     describe('fine-grained token dropdown option', () => {

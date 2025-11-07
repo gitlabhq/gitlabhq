@@ -11,7 +11,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_FILTER, DEFAULT_SORT } from '~/access_tokens/constants';
 import TokenAccessTable from '~/vue_shared/access_tokens/components/access_token_table.vue';
 import PersonalAccessTokensCrud from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_crud.vue';
-import { stubComponent } from 'helpers/stub_component';
 
 Vue.use(PiniaVuePlugin);
 
@@ -52,11 +51,6 @@ describe('AccessTokens', () => {
         accessTokenShow,
       },
       propsData: { id, tokenName, tokenDescription, tokenScopes, showAvatar, useFineGrainedTokens },
-      stubs: {
-        PersonalAccessTokensCrud: stubComponent(PersonalAccessTokensCrud, {
-          props: ['tokens', 'loading'],
-        }),
-      },
       mocks: {
         $router,
       },

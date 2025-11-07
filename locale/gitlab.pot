@@ -3733,6 +3733,9 @@ msgstr ""
 msgid "AccessTokens|Expires"
 msgstr ""
 
+msgid "AccessTokens|Expires: %{date}"
+msgstr ""
+
 msgid "AccessTokens|Expiring"
 msgstr ""
 
@@ -3814,6 +3817,9 @@ msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity 
 msgstr ""
 
 msgid "AccessTokens|Last used:"
+msgstr ""
+
+msgid "AccessTokens|Last used: %{date}"
 msgstr ""
 
 msgid "AccessTokens|Lifetime"
