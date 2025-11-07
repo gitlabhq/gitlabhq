@@ -10,9 +10,14 @@ module Types
 
     authorize :read_label
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     field :id, Types::GlobalIDType[::Label],
       null: false,
-      description: 'Global ID of the label.'
+      description: 'Global ID of the label.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :archived, GraphQL::Types::Boolean, null: false, description: 'Indicates the label is archived.'
 
@@ -20,6 +25,6 @@ module Types
       description: 'Indicates this label is locked for merge requests ' \
         'that have been merged.'
 
-    markdown_field :description_html, null: true
+    markdown_field :description_html, null: true, scopes: [:api, :read_api, :ai_workflows]
   end
 end

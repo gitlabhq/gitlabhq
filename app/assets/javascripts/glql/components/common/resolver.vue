@@ -38,6 +38,9 @@ export default {
     };
   },
   computed: {
+    hasDisplayType() {
+      return Boolean(this.config?.display);
+    },
     hasNextPage() {
       return Boolean(this.data?.count && this.data.nodes?.length < this.data.count);
     },
@@ -157,7 +160,7 @@ export default {
 <template>
   <div>
     <data-presenter
-      v-if="data"
+      v-if="hasDisplayType"
       :data="data"
       :fields="fields"
       :aggregate="aggregate"

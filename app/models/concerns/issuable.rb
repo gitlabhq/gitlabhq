@@ -658,7 +658,7 @@ module Issuable
   end
 
   def assignee_username_list
-    assignees.map(&:username).to_sentence
+    assignees.map(&:username).join(',')
   end
 
   def notes_for_participants

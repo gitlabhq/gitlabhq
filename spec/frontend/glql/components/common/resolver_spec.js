@@ -98,6 +98,10 @@ describe('Resolver', () => {
     it('does not emit any changes', () => {
       expect(wrapper.emitted('change')).toBeUndefined();
     });
+
+    it('does not render the presenter', () => {
+      expect(findPresenter().exists()).toBe(false);
+    });
   });
 
   describe.each(['parse', 'execute', 'transform'])('when %s throws an error', (errorUtil) => {

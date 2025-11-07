@@ -12,7 +12,10 @@ support ticket. For more details, see the [GitLab Support](https://about.gitlab.
 
 ## When something goes wrong
 
-When something goes wrong with a DAST scan, if you have a particular error message then check [known problems](#known-problems).
+When something goes wrong with a DAST scan:
+
+- If you're setting up DAST for the first time, check [setting up DAST](#setting-up-dast).
+- If you have a particular error message, check [known problems](#known-problems).
 
 Otherwise, try to discover the problem by answering the following questions:
 
@@ -21,6 +24,115 @@ Otherwise, try to discover the problem by answering the following questions:
 - [Any reason why DAST would not work?](#any-reason-why-dast-would-not-work)
 - [How does your application work?](#how-does-your-application-work)
 - [What is DAST doing?](#what-is-dast-doing)
+
+### Setting up DAST
+
+You might encounter the following issues when you set up DAST for the first time.
+
+#### Configuration validation failed: required field URL was not set
+
+When you include the DAST template without defining the target URL, the pipeline fails during configuration validation with the following error:
+
+```plaintext
+ERR MAIN  configuration validation failed error="the required field URL was not set"
+```
+
+This error indicates that DAST doesn't know which URL to scan. To fix this issue, define the target URL with one of these methods:
+
+- Set the `DAST_TARGET_URL` CI/CD variable in your `.gitlab-ci.yml` file:
+
+  ```yaml
+  stages:
+    - dast
+
+  include:
+    - template: Security/DAST.gitlab-ci.yml
+
+  dast:
+    variables:
+      DAST_TARGET_URL: "https://example.com"
+  ```
+
+- Create an `environment_url.txt` file in the project's root and add the target URL. Use this method to test applications in dynamic environments.
+
+#### Runner cannot connect to target application
+
+When your runner can't reach your target application, the DAST scan fails with connection errors. This commonly happens due to network configuration or firewall issues.
+
+DAST needs to connect to your application using the URL you specified:
+
+- If your `DAST_TARGET_URL` or `DAST_AUTH_URL` includes a port number, ensure your runner can access that specific port.
+- If no port is specified in the URL, DAST uses standard ports:
+  - Port `80` for HTTP URLs (for example, `http://example.com`).
+  - Port `443` for HTTPS URLs (for example, `https://example.com`).
+
+Common causes of connectivity issues include:
+
+- Mixed HTTP and HTTPS content. Your application may use both HTTP and HTTPS. For example, if your target URL is `http://example.com` but the site loads resources from `https://example.com`, ensure your runner can access both ports.
+- Custom ports. If your application runs on a non-standard port, include it in your `DAST_TARGET_URL`. For example, `https://example.com:8443`.
+- Firewall rules. If your application is behind a firewall, configure rules to allow traffic from your runner's IP address.
+- Internal and external networks. Ensure your runner is on a network that can reach your application. For example, if you test on a staging environment on an internal network, use a runner on the same network.
+
+#### Target connection issues
+
+Before DAST begins a scan, it checks if the target URL is reachable. If the target URL cannot be reached, DAST produces detailed error messages to help diagnose the issue. By default, DAST retries a connection every two seconds, up to 60 seconds. You can configure when DAST retries a connection with `DAST_TARGET_CHECK_TIMEOUT`.
+
+If you experience connectivity issues:
+
+1. Verify your `DAST_TARGET_URL` configuration.
+   - Check for typos in the hostname, port, or protocol.
+   - Ensure the URL includes the protocol (`http://` or `https://`).
+   - Verify the port number matches where your application is running.
+
+1. Test connectivity from the runner.
+   - Test the connection: `curl --verbose "http://your-target-url:port"`
+   - Check DNS resolution: `nslookup your-hostname.com`
+   - Verify the port is open: `nc -zv your-hostname.com port`
+
+1. Verify your application is running.
+   - Check that your application has started successfully.
+   - Review application logs for startup errors.
+   - Ensure all dependencies, including databases and APIs, are available.
+
+1. Check network and firewall configuration.
+   - Ensure firewall rules allow traffic on the required ports.
+   - For internal applications, ensure the runner can access internal DNS servers.
+
+1. If your application takes a long time to start or become healthy, increase the timeout:
+
+   ```yaml
+      variables:
+        DAST_TARGET_CHECK_TIMEOUT: "5m"  # Wait up to 5 minutes
+   ```
+
+#### DNS lookup failed
+
+You might see an error like `DNS lookup failed`.
+This happens when DAST can't find the server address for the hostname you provided because:
+
+- The hostname in `DAST_TARGET_URL` is misspelled or incorrect.
+- The domain hasn't been registered or doesn't exist.
+- There are DNS resolution issues in your network or runner environment.
+
+#### Connection refused
+
+You might see an error that says `connection refused`.
+This usually happens when the server exists, but:
+
+- The application hasn't finished starting up yet.
+- The application is running on a different port than specified.
+- A firewall is blocking the connection between the runner and your application.
+- The application crashed or failed to start.
+
+#### Target responded with HTTP 5xx error
+
+You might see the target application respond with an `HTTP 5xx` error. This happens when the application is reachable, but is responding with server errors like  `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, or `504 Gateway Timeout`.
+
+You might see server errors when:
+
+- The application is starting up and not fully ready.
+- The application has a configuration error.
+- Required dependencies, like databases and APIs, aren't available.
 
 ### What is the expected outcome?
 

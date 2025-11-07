@@ -12,9 +12,14 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :labels, ::Types::LabelType.connection_type,
           null: true,
           description: 'Labels assigned to the work item.',
+          scopes: [:api, :read_api, :ai_workflows],
           skip_type_authorization: [:read_label],
           resolver: Resolvers::BulkLabelsResolver
 

@@ -24,6 +24,7 @@ import {
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
 import NavigationControls from './components/nav_controls.vue';
@@ -74,6 +75,7 @@ export default {
     NoCiEmptyState,
     PipelinesTable,
     PipelinesFilteredSearch,
+    ExternalConfigEmptyState,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
@@ -87,6 +89,9 @@ export default {
     },
     resetCachePath: {
       default: '',
+    },
+    usesExternalConfig: {
+      default: false,
     },
   },
   props: {
@@ -291,6 +296,9 @@ export default {
           (option) => this.visibilityPipelineIdType === option.value,
         ) || this.$options.pipelineKeyOptions[0]
       );
+    },
+    showExternalConfigEmptyState() {
+      return this.usesExternalConfig && this.showEmptyState;
     },
   },
   methods: {
@@ -537,6 +545,11 @@ export default {
       />
 
       <!-- Empty states -->
+      <external-config-empty-state
+        v-else-if="showExternalConfigEmptyState"
+        :new-pipeline-path="newPipelinePath"
+      />
+
       <no-ci-empty-state
         v-else-if="showEmptyState"
         :empty-state-svg-path="$options.noPipelinesSvgPath"

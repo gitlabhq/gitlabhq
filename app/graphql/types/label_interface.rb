@@ -11,11 +11,13 @@ module Types
     field :description,
       GraphQL::Types::String,
       null: true,
-      description: 'Description of the label (Markdown rendered as HTML for caching).'
+      description: 'Description of the label (Markdown rendered as HTML for caching).',
+      scopes: [:api, :read_api, :ai_workflows]
     field :text_color, GraphQL::Types::String, null: false,
       description: 'Text color of the label.'
     field :title, GraphQL::Types::String, null: false,
-      description: 'Content of the label.'
+      description: 'Content of the label.',
+      scopes: [:api, :read_api, :ai_workflows]
     field :updated_at, Types::TimeType, null: false,
       description: 'When the label was last updated.'
   end

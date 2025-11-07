@@ -126,7 +126,7 @@ GitLab Dedicated instance is deployed.
 When you create a private link, you specify IAM principals that control access.
 Only the IAM principals you specify can create VPC endpoints to connect to your instance.
 
-The endpoint service is available in two availability zones that are either chosen 
+The endpoint service is available in two availability zones that are either chosen
 during onboarding or randomly selected.
 
 Prerequisites:
@@ -140,22 +140,22 @@ To create an inbound private link:
 1. Expand **Inbound private link**.
 1. Select **Add endpoint service**. This button is not available if all your available regions already have private links.
 1. Select a region.
-1. Add IAM principals for the AWS users or roles in your AWS organization that are establishing 
-   the VPC endpoints. The IAM principals must be 
-   [IAM role principals](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-roles) 
+1. Add IAM principals for the AWS users or roles in your AWS organization that are establishing
+   the VPC endpoints. The IAM principals must be
+   [IAM role principals](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-roles)
    or [IAM user principals](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-users).
 1. Select **Save**.
-1. GitLab creates the endpoint service and handles domain verification for private DNS. 
+1. GitLab creates the endpoint service and handles domain verification for private DNS.
    The service endpoint name becomes available on the **Configuration** page.
-1. In your AWS account, create an 
+1. In your AWS account, create an
    [endpoint interface](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html) in your VPC.
 1. Configure the endpoint interface with these settings:
 
    - **Service endpoint name**: Use the name from the **Configuration** page in Switchboard.
    - **Private DNS names enabled**: Select **Yes**.
    - **Subnets**: Select all matching subnets.
- 
-1. Use the instance URL provided during onboarding to connect to your GitLab Dedicated 
+
+1. Use the instance URL provided during onboarding to connect to your GitLab Dedicated
    instance from your VPC.
 
 #### Enable KAS and registry for Inbound Private Link
@@ -198,6 +198,19 @@ To enable KAS and registry through your private network:
    All commands should resolve to private IP addresses within your VPC.
 
 This configuration is robust to IP address changes because it uses the VPC endpoint interface rather than specific IP addresses.
+
+##### Enable Pages for Inbound Private Link
+
+Access GitLab Pages through your private network by creating additional DNS
+configuration in your VPC, similar to the KAS and registry configuration.
+
+To enable Pages through your private network:
+
+1. In your AWS console, create a private hosted zone for `<your_instance_name>.gitlab-pages.site`
+   and associate it with the VPC that contains your private link connection.
+1. After you create the private hosted zone, add the following DNS records:
+   1. Create an apex `A` alias record for the VPC endpoint.
+   1. Create a wildcard `CNAME` for `*.<your_instance_name>.gitlab-pages.site` that points to `<your_instance_name>.gitlab-pages.site`.
 
 #### Troubleshooting
 

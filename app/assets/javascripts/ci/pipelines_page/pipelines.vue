@@ -1,5 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+/*
+  Important: This component is considered the legacy component,
+  and will be removed soon. If you add code to this one, please be sure
+  to mirror that functionality in `ci/pipelines_page/pipelines_graphql.vue`
+  https://gitlab.com/groups/gitlab-org/-/epics/16394
+*/
 import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlCollapsibleListbox, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';

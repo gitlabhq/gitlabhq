@@ -10807,6 +10807,9 @@ msgstr ""
 msgid "Billings|Team Project Management"
 msgstr ""
 
+msgid "Billings|To view subscription details and manage billing, select a group."
+msgstr ""
+
 msgid "Billings|Unlimited licensed users"
 msgstr ""
 
@@ -61133,6 +61136,9 @@ msgid "SecurityOrchestration|except for:"
 msgstr ""
 
 msgid "SecurityOrchestration|except groups"
+msgstr ""
+
+msgid "SecurityOrchestration|except personal projects"
 msgstr ""
 
 msgid "SecurityOrchestration|except projects"

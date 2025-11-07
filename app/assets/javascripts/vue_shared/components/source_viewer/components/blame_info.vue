@@ -128,6 +128,7 @@ export default {
           :ref="`indicator-${index}`"
           class="blame-commit-wrapper"
           :style="processedBlame.style"
+          aria-hidden="true"
         ></span>
       </template>
 

@@ -120,6 +120,13 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
     params,
     projectId,
     defaultBranchName,
+    pipelineSchedulesPath,
+    suggestedCiTemplates,
+    canCreatePipeline,
+    showJenkinsCiPrompt,
+    usesExternalConfig,
+    emptyStateIllustrationPath,
+    pipelineEditorPath,
   } = el.dataset;
 
   return new Vue({
@@ -137,6 +144,19 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
       projectId,
       defaultBranchName,
       manualActionsLimit: 50,
+      pipelineSchedulesPath,
+      suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
+      canCreatePipeline: parseBoolean(canCreatePipeline),
+      showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
+      usesExternalConfig: parseBoolean(usesExternalConfig),
+      emptyStateIllustrationPath,
+      pipelineEditorPath,
+    },
+    created() {
+      if (doesHashExistInUrl('delete_success')) {
+        this.$toast.show(__('The pipeline has been deleted'));
+        historyReplaceState(buildUrlWithCurrentLocation());
+      }
     },
     render(createElement) {
       return createElement(PipelinesGraphql, {

@@ -55,95 +55,27 @@ To add the analyzer to your CI/CD pipeline, see [enabling the analyzer](configur
 
 ## Getting started
 
-If you're new to DAST, get started by enabling it for a project.
+If you're new to DAST, follow this guide to set up your first scan.
 
 Prerequisites:
 
-- You have a [GitLab Runner](../../../../ci/runners/_index.md) with the
-  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
-- You have a deployed target application. For more details, see the [deployment options](application_deployment_options.md).
-- The `dast` stage is added to the CI/CD pipeline definition, after the `deploy` stage. For example:
+- A [GitLab Runner](../../../../ci/runners/_index.md) with the [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
+- A deployed target application. See [deployment options](application_deployment_options.md).
+- Network connectivity between your GitLab Runner and the target application.
 
-  ```yaml
-  stages:
-    - build
-    - test
-    - deploy
-    - dast
-  ```
+To get started with DAST:
 
-- You have a network connection between the runner and your target application.
+1. Enable the analyzer. [Create a DAST CI/CD job](configuration/enabling_the_analyzer.md) in your pipeline to run the scanner.
+1. Configure authentication. If your application requires login, [set up authentication](configuration/authentication.md) so DAST can scan authenticated pages.
+1. Troubleshoot configuration issues. If you encounter problems during setup, see the [troubleshooting documentation](troubleshooting.md#setting-up-dast).
 
-  How you connect depends on your DAST configuration:
-  - If `DAST_TARGET_URL` and `DAST_AUTH_URL` specify port numbers, use those ports.
-  - If ports are not specified, use the standard port numbers for HTTP and HTTPS.
+### Next steps
 
-  You might need to open both an HTTP and HTTPS port. For example, if the target URL uses HTTP, but the application links to resources using HTTPS. Always test your connection when you configure a scan.
+After completing your first scan:
 
-To enable DAST in a project:
-
-- [Add a DAST job to your CI/CD configuration](configuration/enabling_the_analyzer.md#create-a-dast-cicd-job).
-
-### Target connection issues
-
-Before DAST begins a scan, it checks if the target URL is reachable. If the target URL cannot be reached, DAST produces detailed error messages to help diagnose the issue. By default, DAST retries a connection every two seconds, up to 60 seconds. You can configure when DAST retries a connection with `DAST_TARGET_CHECK_TIMEOUT`.
-
-If you experience connectivity issues:
-
-1. Verify your `DAST_TARGET_URL` configuration.
-   - Check for typos in the hostname, port, or protocol.
-   - Ensure the URL includes the protocol (`http://` or `https://`).
-   - Verify the port number matches where your application is running.
-
-1. Test connectivity from the runner.
-   - Test the connection: `curl --verbose "http://your-target-url:port"`
-   - Check DNS resolution: `nslookup your-hostname.com`
-   - Verify the port is open: `nc -zv your-hostname.com port`
-
-1. Verify your application is running.
-   - Check that your application has started successfully.
-   - Review application logs for startup errors.
-   - Ensure all dependencies, including databases and APIs, are available.
-
-1. Check network and firewall configuration.
-   - Ensure firewall rules allow traffic on the required ports.
-   - For internal applications, ensure the runner can access internal DNS servers.
-
-1. If your application takes a long time to start or become healthy, increase the timeout:
-
-   ```yaml
-      variables:
-        DAST_TARGET_CHECK_TIMEOUT: "5m"  # Wait up to 5 minutes
-   ```
-
-#### DNS lookup failed
-
-You might see an error like `DNS lookup failed`.
-This happens when DAST can't find the server address for the hostname you provided because:
-
-- The hostname in `DAST_TARGET_URL` is misspelled or incorrect.
-- The domain hasn't been registered or doesn't exist.
-- There are DNS resolution issues in your network or runner environment.
-
-#### Connection refused
-
-You might see an error that says `connection refused`.
-This usually happens when the server exists, but:
-
-- The application hasn't finished starting up yet.
-- The application is running on a different port than specified.
-- A firewall is blocking the connection between the runner and your application.
-- The application crashed or failed to start.
-
-#### Target responded with HTTP 5xx error
-
-You might see the target application respond with an `HTTP 5xx` error. This happens when the application is reachable, but is responding with server errors like  `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`, or `504 Gateway Timeout`.
-
-You might see server errors when:
-
-- The application is starting up and not fully ready.
-- The application has a configuration error.
-- Required dependencies, like databases and APIs, aren't available.
+- Review [understanding the results](#understanding-the-results) to learn how to interpret scan findings.
+- Explore [configuration options](configuration/_index.md) to customize your scans.
+- Learn more about [how DAST scans an application](#how-dast-scans-an-application).
 
 ## Understanding the results
 

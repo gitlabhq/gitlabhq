@@ -8,6 +8,7 @@ import PipelinesManualActions from './pipelines_manual_actions.vue';
 import PipelineStopModal from './pipeline_stop_modal.vue';
 
 export default {
+  name: 'PipelineOperations',
   BUTTON_TOOLTIP_RETRY,
   BUTTON_TOOLTIP_CANCEL,
   directives: {
@@ -122,7 +123,8 @@ export default {
 
       <gl-button
         v-if="isRetryable"
-        v-gl-tooltip.hover
+        :key="`retry-${isRetrying}`"
+        v-gl-tooltip
         :aria-label="$options.BUTTON_TOOLTIP_RETRY"
         :title="$options.BUTTON_TOOLTIP_RETRY"
         :disabled="isRetrying"
@@ -137,7 +139,8 @@ export default {
 
       <gl-button
         v-if="isCancelable"
-        v-gl-tooltip.hover
+        :key="`cancel-${isCanceling}`"
+        v-gl-tooltip
         :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
         :title="$options.BUTTON_TOOLTIP_CANCEL"
         :loading="isCanceling"

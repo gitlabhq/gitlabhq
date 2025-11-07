@@ -31,11 +31,6 @@ module Members
 
     def validate_access!(access_requester)
       raise Gitlab::Access::AccessDeniedError unless can_approve_access_requester?(access_requester)
-
-      if approving_member_with_owner_access_level?(access_requester) &&
-          cannot_assign_owner_responsibilities_to_member_in_project?(access_requester)
-        raise Gitlab::Access::AccessDeniedError
-      end
     end
 
     def limit_to_guest_if_billable_promotion_restricted(access_requester)
@@ -44,17 +39,7 @@ module Members
 
     def can_approve_access_requester?(access_requester)
       can?(current_user, :admin_member_access_request, access_requester.source) &&
-        !role_too_high?(access_requester)
-    end
-
-    def role_too_high?(access_requester)
-      access_requester.prevent_role_assignement?(current_user, params)
-    end
-
-    def approving_member_with_owner_access_level?(access_requester)
-      access_level_value = params[:access_level] || access_requester.access_level
-
-      access_level_value == Gitlab::Access::OWNER
+        !access_requester.prevent_role_assignement?(current_user, params)
     end
   end
 end

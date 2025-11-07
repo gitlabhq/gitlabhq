@@ -65,6 +65,13 @@ describe('BlameInfo component', () => {
       );
     });
 
+    it('hides blame indicators from screen readers', () => {
+      const wrappers = findBlameWrappers();
+      for (let i = 0; i < wrappers.length; i += 1) {
+        expect(wrappers.at(i).attributes('aria-hidden')).toBe('true');
+      }
+    });
+
     describe('when blameInfo changes', () => {
       const extendedBlameData = [
         ...BLAME_DATA_MOCK,

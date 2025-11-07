@@ -335,6 +335,7 @@ jest:
     paths:
       - coverage-frontend/
       - junit_jest.xml
+      - jest-reports/
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
@@ -394,6 +395,7 @@ jest vue3 mr:
     when: always
     paths:
       - junit_jest.xml
+      - jest-reports/
   parallel: 6
   script:
     - scripts/frontend/jest_ci.js --vue3
@@ -414,6 +416,7 @@ jest-with-fixtures vue3 mr:
     when: always
     paths:
       - junit_jest.xml
+      - jest-reports/
   parallel: 1
   script:
     - scripts/frontend/jest_ci.js --vue3 --fixtures
@@ -611,6 +614,7 @@ coverage-frontend:
     expire_in: 31d
     paths:
       - coverage-frontend/
+      - jest-reports/
     reports:
       coverage_report:
         coverage_format: cobertura

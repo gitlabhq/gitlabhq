@@ -7,7 +7,7 @@ title: Third-party agents
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
@@ -66,28 +66,14 @@ For a click-through demo, see [DAP with Amazon Q](https://gitlab.navattic.com/da
 ## Prerequisites
 
 Before you can create an agent and integrate it with a third-party AI model
-provider, you must:
+provider, you must meet the [prerequisites](../_index.md#prerequisites).
 
-### Configure your GitLab environment
-
-- [Turn on beta and experimental features](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-- [Turn on GitLab Duo](../../gitlab_duo/turn_on_off.md).
-- Have GitLab Duo Enterprise with an [assigned seat](../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
-- Have a project that belongs to a [group namespace](../../namespace/_index.md) with an Ultimate subscription.
-
-### Set up CI/CD
-
-When completing your task, the third-party agent runs a CI/CD pipeline.
-
-If you are on GitLab Self-Managed or GitLab Dedicated, you must
-[create and register a GitLab Runner](../../../tutorials/create_register_first_runner/_index.md).
-
-### AI model provider credentials
+## AI model provider credentials
 
 To integrate your agent with a third-party AI model provider, you must have access credentials.
 You can use either an API key for that model provider or GitLab-managed credentials.
 
-#### API keys
+### API keys
 
 To integrate your agent with a third-party AI model provider,
 you can use an API key for that model provider:
@@ -95,7 +81,7 @@ you can use an API key for that model provider:
 - For Anthropic Claude and Opencode, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
 - For OpenAI Codex, use an [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication).
 
-#### GitLab-managed credentials
+### GitLab-managed credentials
 
 {{< history >}}
 
@@ -254,62 +240,6 @@ To create a flow configuration file:
 1. In your project, create a YAML file, for example: `.gitlab/duo/flows/claude.yaml`
 1. Populate the file by using [one of the flow configuration file examples](flow_examples.md).
 
-## Create a flow trigger
-
-{{< history >}}
-
-- **Assign** and **Assign reviewer** event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567787) in GitLab 18.5.
-
-{{< /history >}}
-
-The flow trigger links the service account, the flow configuration file, and the
-action that the user takes to trigger the third-party agent.
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the project.
-
-To create a flow trigger:
-
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Automate** > **Flow triggers**.
-1. Select **New flow trigger**.
-1. In **Description**, enter a description for the flow trigger.
-1. From the **Event types** dropdown list, select one or more event types:
-   - **Mention**: When the service account user is mentioned
-     in a comment on an issue or merge request.
-   - **Assign**: When the service account user is assigned
-     to an issue or merge request.
-   - **Assign reviewer**: When the service account user is assigned
-     as a reviewer to a merge request.
-1. From the **Service account user** dropdown list,
-   select the service account user.
-1. For **Configuration source**, select one of the following:
-   - **AI Catalog**: From the flows configured for this project,
-     select a flow for the trigger to execute.
-   - **Configuration path**: Enter the path to the flow configuration file
-     (for example, `.gitlab/duo/flows/claude.yaml`).
-1. Select **Create flow trigger**.
-
-The flow trigger now appears in **Automate** > **Flow triggers**.
-
-You can now mention the third-party agent by its service account username in a comment to accomplish
-a task. The third-party agent then tries to accomplish that task, using the flow trigger defined by the user.
-
-### Edit a flow trigger
-
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Automate** > **Flow triggers**.
-1. For the flow trigger you want to change, select **Edit flow trigger** ({{< icon name="pencil" >}}).
-1. Make the changes and select **Save changes**.
-
-### Delete a flow trigger
-
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
-1. Select **Automate** > **Flow triggers**.
-1. For the flow trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
-1. On the confirmation dialog, select **OK**.
-
 ## Enable a third-party agent
 
 If you created a third-party agent from the AI Catalog, you must enable it in a project to use it.
@@ -329,6 +259,13 @@ To enable a third-party agent in a project:
 1. Select **Enable**.
 
 The third-party agent appears in the project's **Flows** list.
+
+## Create a trigger
+
+You must now [create a trigger](../triggers/_index.md), which determines when the third-party agent runs.
+
+For example, you can specify the agent to be triggered when you mention a service account
+in a discussion, or when you assign the service account as a reviewer.
 
 ## Use a third-party agent
 

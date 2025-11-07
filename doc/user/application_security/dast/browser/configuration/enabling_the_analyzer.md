@@ -77,3 +77,41 @@ dast:
     DAST_AUTH_USERNAME_FIELD: "name:user[login]"
     DAST_AUTH_PASSWORD_FIELD: "name:user[password]"
 ```
+
+You must define `DAST_TARGET_URL` or create an `environment_url.txt` file for the DAST job to run successfully.
+
+### Network connectivity
+
+Your runner must be able to connect to the target application URL. If your application uses a non-standard port, include it in the URL.
+
+## After you enable the analyzer
+
+When your pipeline runs, the DAST job:
+
+1. Connects to your application.
+1. Launches a Chromium browser to crawl the site.
+1. Performs security checks on discovered pages.
+
+### Configure authentication
+
+If your application requires users to log in, configure DAST to authenticate before scanning. Without authentication, DAST can only scan publicly accessible pages.
+
+To configure authentication, see [authentication](authentication.md).
+
+### Verify crawl coverage
+
+After your first scan completes, verify that DAST is discovering your application pages correctly.
+
+To visualize the crawl results:
+
+- Enable the crawl graph using the `DAST_CRAWL_GRAPH` [variable](variables.md).
+- Review the graph to identify any missing pages or navigation paths.
+- If pages are missing, adjust your [scan scope](customize_settings.md#managing-scope).
+
+### Troubleshooting
+
+If you encounter issues:
+
+- For setup problems, see [setting up DAST](../troubleshooting.md#setting-up-dast).
+- For detailed diagnostic information, see [diagnostic logs](../troubleshooting.md#diagnostic-logs).
+- For connection troubleshooting, see [runner cannot connect to target application](../troubleshooting.md#runner-cannot-connect-to-target-application).

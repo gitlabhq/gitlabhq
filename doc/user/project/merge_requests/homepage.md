@@ -111,6 +111,12 @@ into three tabs:
 
 ### Set your display preferences
 
+{{< history >}}
+
+- **Show your drafts** preference [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/551475) in GitLab 18.6.
+
+{{< /history >}}
+
 In the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
 
 - Toggle **Show labels** to show or hide labels for each merge request.
@@ -118,6 +124,7 @@ In the upper right of your merge request homepage, select **Display preferences*
   - **Workflow** groups merge requests by their status. GitLab shows the merge requests
     needing your attention first, regardless of whether you are the author or the reviewer.
   - **Role** groups merge requests by whether you are the reviewer or the author.
+- Toggle **Show your drafts** to show or hide draft merge requests from the **Your merge requests** list.
 
 Active merge requests count toward the total shown on the left sidebar. GitLab excludes **Inactive**
 merge requests from your review count.

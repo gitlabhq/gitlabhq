@@ -13,6 +13,7 @@ import Pipelines from '~/ci/pipelines_page/pipelines_graphql.vue';
 import NavigationControls from '~/ci/pipelines_page/components/nav_controls.vue';
 import NoCiEmptyState from '~/ci/pipelines_page/components/empty_state/no_ci_empty_state.vue';
 import PipelinesFilteredSearch from '~/ci/pipelines_page/components/pipelines_filtered_search.vue';
+import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
 import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
@@ -93,7 +94,7 @@ describe('Pipelines app', () => {
     params: {},
   };
 
-  const createComponent = (props = {}, requestHandlers) => {
+  const createComponent = (props = {}, requestHandlers, provide = {}) => {
     wrapper = shallowMountExtended(Pipelines, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
@@ -102,6 +103,8 @@ describe('Pipelines app', () => {
         pipelinesAnalyticsPath: '/-/pipelines/charts',
         identityVerificationRequired: false,
         identityVerificationPath: '#',
+        usesExternalConfig: false,
+        ...provide,
       },
       stubs: {
         PipelinesTable,
@@ -120,6 +123,7 @@ describe('Pipelines app', () => {
   const findFilteredSearch = () => wrapper.findComponent(PipelinesFilteredSearch);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findPipelineKeyCollapsibleBox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findExternalConfigEmptyState = () => wrapper.findComponent(ExternalConfigEmptyState);
 
   const triggerNextPage = async () => {
     findPagination().vm.$emit('next');
@@ -206,6 +210,27 @@ describe('Pipelines app', () => {
 
       expect(findNoCiEmptyState().exists()).toBe(true);
       expect(findTable().exists()).toBe(false);
+    });
+
+    it('does not render external config empty state', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findExternalConfigEmptyState().exists()).toBe(false);
+    });
+
+    it('does render external config empty state', async () => {
+      createComponent(defaultProps, [[getPipelinesQuery, emptyHandler]], {
+        usesExternalConfig: true,
+      });
+
+      await waitForPromises();
+
+      expect(findExternalConfigEmptyState().exists()).toBe(true);
+      expect(findExternalConfigEmptyState().props('newPipelinePath')).toBe(
+        '/gitlab-org/gitlab/-/pipelines/new',
+      );
     });
   });
 

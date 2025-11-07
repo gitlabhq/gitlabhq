@@ -67,7 +67,8 @@ The support team will help you regain access to your account.
 
 ## Email notifications
 
-You receive email notifications about instance incidents, maintenance, performance issues, and security updates.
+GitLab sends email notifications about instance incidents, maintenance, performance issues, 
+and security updates.
 
 Notifications are sent to:
 
@@ -83,7 +84,9 @@ Operational contacts receive customer notifications, even if recipients:
 
 ### Manage email addresses for operational contacts
 
-To add, edit, or remove email addresses for operational contacts:
+Add multiple email addresses or a distribution list as operational contacts.
+
+To manage operational contact addresses:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
