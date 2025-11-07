@@ -114,10 +114,11 @@ end
 RSpec.shared_examples 'a reference which does not unescape its content in data-original' do
   it 'does not remove a layer of escaping in data-original' do
     # We assert the expected resource.title so calling `it_behaves_like` blocks can better describe
-    # the known behaviour around the resource.  Some classes process their title in ways that are
-    # particularly relevant to XSS; the big example is Labels, which unescape HTML entities in
-    # their input.  It's helpful to call out when this happens (and when this doesn't) so the rest
-    # of the behaviours are clear.
+    # the known behaviour around the resource.
+    #
+    # Some classes, like Label and Milestone, used to process their title in ways particularly relevant
+    # to XSS; they no longer do, but we want to assert they haven't regressed in this manner.
+    # If they did, these specs would fail in very opaque ways, as their preconditions would no longer hold.
     expect(resource.title).to eq(expected_resource_title)
 
     result = reference_filter("See #{reference}", context)

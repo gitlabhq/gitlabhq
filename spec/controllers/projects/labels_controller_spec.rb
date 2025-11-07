@@ -222,11 +222,12 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
       end
 
       it 'renders label name without parsing it as HTML' do
-        label_1.update!(name: 'CCC&lt;img src=x onerror=alert(document.domain)&gt;')
+        name = 'CCC<img src=x onerror=alert(document.domain)>'
+        label_1.update!(name: name)
 
         post :promote, params: { namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param }
 
-        expect(flash[:notice]).to eq("CCC&lt;img src=x onerror=alert(document.domain)&gt; promoted to <a href=\"#{group_labels_path(project.group)}\"><u>group label</u></a>.")
+        expect(flash[:notice]).to eq("#{CGI.escapeHTML(name)} promoted to <a href=\"#{group_labels_path(project.group)}\"><u>group label</u></a>.")
       end
 
       context 'service raising InvalidRecord' do

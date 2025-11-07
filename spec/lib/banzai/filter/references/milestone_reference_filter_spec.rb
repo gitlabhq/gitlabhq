@@ -316,7 +316,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
   shared_examples 'references with HTML entities' do
     before do
-      milestone.update!(title: '&lt;html&gt;')
+      milestone.update!(title: '<html>')
     end
 
     it 'links to a valid reference' do
@@ -629,17 +629,15 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   end
 
   it_behaves_like 'a reference which does not unescape its content in data-original' do
-    let(:context)         { { project: project } }
-    let(:milestone_title) { "x&lt;script&gt;alert('xss');&lt;/script&gt;" }
-    let(:resource)        { create(:milestone, title: milestone_title, project: project) }
-    let(:reference)       { %(#{resource.class.reference_prefix}"#{milestone_title}") }
+    let(:context)                 { { project: project } }
+    let(:milestone_title)         { "x<script>alert('xss');</script>" }
+    let(:milestone_title_escaped) { "x&lt;script&gt;alert('xss');&lt;/script&gt;" }
+    let(:resource)                { create(:milestone, title: milestone_title, project: project) }
+    let(:reference)               { %(#{resource.class.reference_prefix}"#{milestone_title_escaped}") }
 
-    # This is probably bad (why are we unescaping entities in the input title like this?),
-    # but it is the case today, and we need to be safe in spite of this.
-    let(:expected_resource_title) { "x<script>alert('xss');</script>" }
-
+    let(:expected_resource_title)   { milestone_title }
     let(:expected_href)             { urls.milestone_url(resource) }
-    let(:expected_replacement_text) { %(#{resource.class.reference_prefix}#{expected_resource_title}) }
+    let(:expected_replacement_text) { %(#{resource.class.reference_prefix}#{milestone_title}) }
   end
 
   it_behaves_like 'ReferenceFilter#references_in' do

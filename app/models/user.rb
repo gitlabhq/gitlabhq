@@ -315,7 +315,6 @@ class User < ApplicationRecord
   has_many :revoked_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'revoked_by_user_id', inverse_of: :revoked_by_user
   has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
   has_many :vscode_settings, class_name: 'VsCode::Settings::VsCodeSetting', inverse_of: :user
-  has_many :designated_beneficiaries, class_name: 'Users::DesignatedBeneficiary', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- fk cascade delete is also implemented
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 

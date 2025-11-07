@@ -126,10 +126,9 @@ module Timebox
     self.class.reference_prefix + self.title
   end
 
-  def title=(value)
-    write_attribute(:title, sanitize_title(value)) if value.present?
+  def name=(value)
+    self.title = value
   end
-  alias_method :name=, :title=
 
   def timebox_name
     model_name.singular
@@ -171,9 +170,5 @@ module Timebox
     if due_date && due_date > Date.new(9999, 12, 31)
       errors.add(:due_date, _("date must not be after 9999-12-31"))
     end
-  end
-
-  def sanitize_title(value)
-    CGI.unescape_html(Sanitize.clean(value.to_s))
   end
 end

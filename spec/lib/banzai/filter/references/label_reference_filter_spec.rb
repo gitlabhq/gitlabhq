@@ -277,7 +277,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   context 'References with html entities' do
-    let!(:label) { create(:label, title: '&lt;html&gt;', project: project) }
+    let!(:label) { create(:label, title: '<html>', project: project) }
 
     it 'links to a valid reference' do
       doc = reference_filter('See ~"&lt;html&gt;"')
@@ -925,17 +925,15 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   it_behaves_like 'a reference which does not unescape its content in data-original' do
-    let(:context)     { { project: project } }
-    let(:label_title) { "x&lt;script&gt;alert('xss');&lt;/script&gt;" }
-    let(:resource)    { create(:label, title: label_title, project: project) }
-    let(:reference)   { %(#{resource.class.reference_prefix}"#{label_title}") }
+    let(:context)             { { project: project } }
+    let(:label_title)         { "x<script>alert('xss');</script>" }
+    let(:label_title_escaped) { "x&lt;script&gt;alert('xss');&lt;/script&gt;" }
+    let(:resource)            { create(:label, title: label_title, project: project) }
+    let(:reference)           { %(#{resource.class.reference_prefix}"#{label_title_escaped}") }
 
-    # This is probably bad (why are we unescaping entities in the input title like this?),
-    # but it is the case today, and we need to be safe in spite of this.
-    let(:expected_resource_title) { "x<script>alert('xss');</script>" }
-
-    let(:expected_href)             { urls.project_issues_url(project, label_name: expected_resource_title) }
-    let(:expected_replacement_text) { expected_resource_title }
+    let(:expected_resource_title)   { label_title }
+    let(:expected_href)             { urls.project_issues_url(project, label_name: label_title) }
+    let(:expected_replacement_text) { label_title }
   end
 
   it_behaves_like 'ReferenceFilter#references_in' do

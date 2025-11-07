@@ -4,7 +4,7 @@ class CreateDesignatedBeneficiariesTable < Gitlab::Database::Migration[2.3]
   milestone '18.5'
 
   def up
-    create_table :designated_beneficiaries do |t| # rubocop:disable Migration/EnsureFactoryForTable -- False positive
+    create_table :designated_beneficiaries do |t|
       t.references :user, null: false, index: true, foreign_key: { on_delete: :cascade }
       t.datetime_with_timezone :created_at, null: false, default: -> { 'CURRENT_TIMESTAMP' }
       t.datetime_with_timezone :updated_at, null: false, default: -> { 'CURRENT_TIMESTAMP' }
