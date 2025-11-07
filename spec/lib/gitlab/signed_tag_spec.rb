@@ -42,7 +42,8 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
     it 'batches rpc calls and creates a new tag signature' do
       expect(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(
         project.repository,
-        git_tags.map(&:object_name)
+        git_tags.map(&:object_name),
+        timeout: Gitlab::GitalyClient.fast_timeout
       ).and_return({
         gpg_git_tag.id => [
           GpgHelpers::User1.signed_commit_signature,
@@ -75,7 +76,8 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
       it 'batches insert' do
         expect(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(
           project.repository,
-          git_tags.map(&:object_name)
+          git_tags.map(&:object_name),
+          timeout: Gitlab::GitalyClient.fast_timeout
         ).and_return({
           gpg_git_tag.id => [
             GpgHelpers::User1.signed_commit_signature,
@@ -117,7 +119,8 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
         it 'updates the cache with the missing tags' do
           expect(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(
             project.repository,
-            [gpg_git_tag2.id, ssh_git_tag2.id]
+            [gpg_git_tag2.id, ssh_git_tag2.id],
+            timeout: Gitlab::GitalyClient.fast_timeout
           ).and_return({
             gpg_git_tag2.id => [
               GpgHelpers::User3.signed_commit_signature,

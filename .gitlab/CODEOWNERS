@@ -684,7 +684,7 @@ lib/gitlab/checks/
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
 /doc/administration/settings/deprecated_api_rate_limits.md @brendan777
-/doc/administration/settings/editor_extensions.md @scawood
+/doc/administration/settings/editor_extensions.md @sselhorn
 /doc/administration/settings/email.md @msedlakjakubowski
 /doc/administration/settings/external_authorization.md @idurham
 /doc/administration/settings/files_api_rate_limits.md @brendan777
@@ -715,6 +715,7 @@ lib/gitlab/checks/
 /doc/administration/settings/slack_app.md @msedlakjakubowski
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
+/doc/administration/settings/web_ide.md @sselhorn
 /doc/administration/sidekiq/ @axil
 /doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil @eread
@@ -736,7 +737,7 @@ lib/gitlab/checks/
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @ashrafkhamis
 /doc/api/chat.md @jglassman1
-/doc/api/code_suggestions.md @scawood
+/doc/api/code_suggestions.md @sselhorn
 /doc/api/commits.md @brendan777
 /doc/api/compliance_policy_settings.md @rlehmann1
 /doc/api/container_registry.md @z_painter
@@ -952,7 +953,7 @@ lib/gitlab/checks/
 /doc/development/database/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/distribution/ @gitlab-org/distribution
-/doc/development/documentation/ @fneill @sselhorn
+/doc/development/documentation/ @fneill @kpaizee
 /doc/development/exact_code_search.md @gitlab-org/search-team/migration-maintainers
 /doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/growth
@@ -984,7 +985,7 @@ lib/gitlab/checks/
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/drawers/ @ashrafkhamis
-/doc/editor_extensions/ @scawood
+/doc/editor_extensions/ @sselhorn
 /doc/editor_extensions/gitlab_cli/ @brendan777
 /doc/install/ @axil @eread
 /doc/install/install_ai_gateway.md @sselhorn
@@ -1143,6 +1144,7 @@ lib/gitlab/checks/
 /doc/user/project/import/jira_migration_options.md @msedlakjakubowski
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @msedlakjakubowski
+/doc/user/project/integrations/aws_codepipeline.md @jfullam @Darwinjs @sbrightwell
 /doc/user/project/integrations/bamboo.md @lyspin
 /doc/user/project/integrations/beyond_identity.md @brendan777
 /doc/user/project/integrations/confluence.md @brendan777
@@ -1165,7 +1167,7 @@ lib/gitlab/checks/
 /doc/user/project/labels.md @msedlakjakubowski
 /doc/user/project/members/ @z_painter
 /doc/user/project/merge_requests/ @brendan777
-/doc/user/project/merge_requests/duo_in_merge_requests.md @scawood
+/doc/user/project/merge_requests/duo_in_merge_requests.md @sselhorn
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/organize_work_with_projects.md @z_painter
@@ -1174,9 +1176,9 @@ lib/gitlab/checks/
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
 /doc/user/project/repository/ @brendan777
-/doc/user/project/repository/code_explain.md @scawood
-/doc/user/project/repository/code_suggestions/ @scawood
-/doc/user/project/repository/knowledge_graph/ @scawood
+/doc/user/project/repository/code_explain.md @sselhorn
+/doc/user/project/repository/code_suggestions/ @sselhorn
+/doc/user/project/repository/knowledge_graph/ @sselhorn
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski

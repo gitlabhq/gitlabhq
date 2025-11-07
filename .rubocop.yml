@@ -575,6 +575,13 @@ Gitlab/AvoidCurrentOrganization:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/AvoidUserOrganization:
+  Enabled: true
+  Exclude:
+    - 'lib/gitlab/current/organization.rb'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
 Gitlab/DisallowCurrentOrganizationIdSafeNavigation:
   Description: 'Use `Current.organization.id` instead of `Current.organization&.id`. `Current.organization` is expected to be assigned.'
   Enabled: true
@@ -1298,6 +1305,9 @@ Search/NamespacedClass:
     - 'lib/gitlab/sidekiq_middleware/pause_control/strategies/zoekt.rb'
     - 'lib/tasks/**/*.rake'
     - 'ee/lib/tasks/**/*.rake'
+    - 'app/services/mcp/tools/**/*.rb'
+    - 'ee/app/services/mcp/tools/**/*.rb'
+    - 'ee/app/services/ee/mcp/tools/**/*.rb'
     - 'ee/app/finders/security/*.rb'
 
 SidekiqLoadBalancing/WorkerDataConsistency:

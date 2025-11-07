@@ -985,4 +985,50 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
   end
+
+  describe '#token_prefix' do
+    subject(:token_prefix) { described_class.token_prefix }
+
+    context 'without any custom configuration' do
+      it 'starts with default value' do
+        expect(token_prefix).to start_with('glpat-')
+      end
+    end
+
+    context 'with custom personal access token prefix' do
+      let_it_be(:personal_access_token_prefix) { 'custom-pat-prefix-' }
+
+      before do
+        stub_application_setting(personal_access_token_prefix: personal_access_token_prefix)
+      end
+
+      it 'starts with custom personal access token prefix' do
+        expect(token_prefix).to start_with(personal_access_token_prefix)
+      end
+
+      context 'with instance wide token prefix' do
+        let(:instance_prefix) { 'instanceprefix' }
+
+        before do
+          stub_application_setting(instance_token_prefix: instance_prefix)
+        end
+
+        it 'starts with instance prefix and ignore custom prefix' do
+          expect(token_prefix).to start_with("#{instance_prefix}-glpat-")
+        end
+      end
+    end
+
+    context 'with instance wide token prefix' do
+      let(:instance_prefix) { 'instanceprefix' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'starts with instance prefix' do
+        expect(token_prefix).to start_with("#{instance_prefix}-glpat-")
+      end
+    end
+  end
 end

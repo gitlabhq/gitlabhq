@@ -6,7 +6,10 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
+  let_it_be(:project, reload: true) do
+    create(:project, :wiki_repo, :public, name: 'awesome project', group: group)
+  end
+
   let_it_be(:repo_project) { create(:project, :public, :repository, group: group) }
 
   before do
@@ -69,7 +72,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
   shared_examples 'merge_requests orderable by created_at' do
     before do
-      create_list(:merge_request, 3, :unique_branches, title: 'sortable item', target_project: repo_project, source_project: repo_project)
+      create_list(:merge_request, 3, :unique_branches, title: 'sortable item', target_project: repo_project,
+        source_project: repo_project)
     end
 
     it_behaves_like 'orderable by created_at', scope: :merge_requests
@@ -121,6 +125,38 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
   end
 
+  shared_examples 'mcp allowed endpoint' do |tool_name|
+    let_it_be(:mcp_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
+    let(:scope) { 'issues' }
+
+    subject(:call_api) do
+      get api(endpoint, oauth_access_token: mcp_token), params: { scope: scope, search: 'awesome' }
+    end
+
+    include_examples 'an endpoint with mcp route setting', tool_name
+
+    context 'with GET requests' do
+      it 'allows access' do
+        create(:issue, project: project, title: 'awesome issue')
+
+        call_api
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to be_empty
+      end
+    end
+
+    context 'without mcp scope' do
+      let_it_be(:mcp_token) { create(:oauth_access_token, user: user, scopes: [:read_user]) }
+
+      it 'denies access' do
+        call_api
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe 'GET /search' do
     let(:endpoint) { '/search' }
 
@@ -166,12 +202,11 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     context 'when there is a search error' do
-      let(:results) { instance_double('Gitlab::SearchResults', failed?: true, error: 'failed to parse query') }
+      let(:results) { instance_double(Gitlab::SearchResults, failed?: true, error: 'failed to parse query') }
 
       before do
         allow_next_instance_of(SearchService) do |service|
-          allow(service).to receive(:search_objects).and_return([])
-          allow(service).to receive(:search_results).and_return(results)
+          allow(service).to receive_messages(search_objects: [], search_results: results)
         end
       end
 
@@ -224,8 +259,6 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
           it_behaves_like 'issues orderable by created_at'
 
-          include_examples 'an endpoint with mcp route setting', :gitlab_search
-
           describe 'pagination' do
             before do
               create(:issue, project: project, title: 'another issue')
@@ -235,38 +268,38 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           end
         end
 
-        context 'filter by state' do
+        context 'when filtering by state' do
           before do
             create(:issue, project: project, title: 'awesome opened issue')
             create(:issue, :closed, project: project, title: 'awesome closed issue')
           end
 
-          context 'state: opened' do
+          context 'for state: opened' do
             let(:state) { 'opened' }
 
             include_examples 'filter by state', scope: :issues, search: 'awesome'
           end
 
-          context 'state: closed' do
+          context 'for state: closed' do
             let(:state) { 'closed' }
 
             include_examples 'filter by state', scope: :issues, search: 'awesome'
           end
         end
 
-        context 'filter by confidentiality' do
+        context 'when filtering by confidentiality' do
           before do
             create(:issue, project: project, author: user, title: 'awesome non-confidential issue')
             create(:issue, :confidential, project: project, author: user, title: 'awesome confidential issue')
           end
 
-          context 'confidential: true' do
+          context 'for confidential: true' do
             let(:confidential) { true }
 
             include_examples 'filter by confidentiality', scope: :issues, search: 'awesome'
           end
 
-          context 'confidential: false' do
+          context 'for confidential: false' do
             let(:confidential) { false }
 
             include_examples 'filter by confidentiality', scope: :issues, search: 'awesome'
@@ -297,19 +330,19 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           end
         end
 
-        context 'filter by state' do
+        context 'when filtering by state' do
           before do
             create(:merge_request, source_project: project, title: 'awesome opened mr')
             create(:merge_request, :closed, project: project, title: 'awesome closed mr')
           end
 
-          context 'state: opened' do
+          context 'for state: opened' do
             let(:state) { 'opened' }
 
             include_examples 'filter by state', scope: :merge_requests, search: 'awesome'
           end
 
-          context 'state: closed' do
+          context 'for state: closed' do
             let(:state) { 'closed' }
 
             include_examples 'filter by state', scope: :merge_requests, search: 'awesome'
@@ -400,32 +433,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
 
-      context 'for mcp scope' do
-        let(:mcp_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
-
-        context 'with GET requests' do
-          it 'allows access to issues scope' do
-            create(:issue, project: project, title: 'awesome issue')
-
-            get api(endpoint, oauth_access_token: mcp_token), params: { scope: 'issues', search: 'awesome' }
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).not_to be_empty
-          end
-        end
-
-        context 'without mcp scope' do
-          let(:limited_token) { create(:oauth_access_token, user: user, scopes: [:read_user]) }
-
-          it 'denies access' do
-            get api(endpoint, oauth_access_token: limited_token), params: { scope: 'issues', search: 'awesome' }
-
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
-        end
-      end
-
-      context 'global search is disabled for the given scope' do
+      context 'when global search is disabled for the given scope' do
         it 'returns forbidden response' do
           allow_next_instance_of(SearchService) do |instance|
             allow(instance).to receive(:global_search_enabled_for_scope?).and_return false
@@ -435,7 +443,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
 
-      context 'global search is enabled for the given scope' do
+      context 'when global search is enabled for the given scope' do
         it 'returns forbidden response' do
           allow_next_instance_of(SearchService) do |instance|
             allow(instance).to receive(:global_search_enabled_for_scope?).and_return true
@@ -445,7 +453,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
 
-      context 'global snippet search is disabled' do
+      context 'when global snippet search is disabled' do
         it 'returns forbidden response' do
           stub_application_setting(global_search_snippet_titles_enabled: false)
           get api(endpoint, user), params: { search: 'awesome', scope: 'snippet_titles' }
@@ -453,7 +461,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
 
-      context 'global snippet search is enabled' do
+      context 'when global snippet search is enabled' do
         it 'returns ok response' do
           stub_application_setting(global_search_snippet_titles_enabled: true)
           get api(endpoint, user), params: { search: 'awesome', scope: 'snippet_titles' }
@@ -499,6 +507,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
       end
     end
 
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_instance
+
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
       let(:current_user) { user }
 
@@ -529,6 +539,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
   describe "GET /groups/:id/search" do
     let(:endpoint) { "/groups/#{group.id}/-/search" }
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_group
 
     context 'when user is not authenticated' do
       it 'returns 401 error' do
@@ -655,7 +667,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           create(:milestone, project: project, title: 'awesome milestone')
           create(:milestone, project: another_project, title: 'awesome milestone other project')
 
-          get api("/groups/#{CGI.escape(group.full_path)}/search", user), params: { scope: 'milestones', search: 'awesome' }
+          get api("/groups/#{CGI.escape(group.full_path)}/search", user),
+            params: { scope: 'milestones', search: 'awesome' }
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
@@ -724,6 +737,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
   describe "GET /projects/:id/search" do
     let(:endpoint) { "/projects/#{project.id}/search" }
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_project
 
     context 'when user is not authenticated' do
       it 'returns 401 error' do
@@ -978,23 +993,23 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
               create(:project, :public, :repository, public_builds: false, group: group)
             end
 
-            context 'user is project member with reporter role or above' do
-              before do
+            context 'when user is project member with reporter role or above' do
+              before_all do
                 repo_project.add_reporter(user)
               end
 
               it_behaves_like 'pipeline information visible'
             end
 
-            context 'user is project member with guest role' do
-              before do
+            context 'when user is project member with guest role' do
+              before_all do
                 repo_project.add_guest(user)
               end
 
               it_behaves_like 'pipeline information not visible'
             end
 
-            context 'user is not project member' do
+            context 'when user is not project member' do
               let_it_be(:user) { create(:user) }
 
               it_behaves_like 'pipeline information not visible'
@@ -1006,29 +1021,29 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
               create(:project, :public, :repository, public_builds: true, group: group)
             end
 
-            context 'user is project member with reporter role or above' do
-              before do
+            context 'when user is project member with reporter role or above' do
+              before_all do
                 repo_project.add_reporter(user)
               end
 
               it_behaves_like 'pipeline information visible'
             end
 
-            context 'user is project member with guest role' do
-              before do
+            context 'when user is project member with guest role' do
+              before_all do
                 repo_project.add_guest(user)
               end
 
               it_behaves_like 'pipeline information visible'
             end
 
-            context 'user is not project member' do
+            context 'when user is not project member' do
               let_it_be(:user) { create(:user) }
 
               it_behaves_like 'pipeline information visible'
 
               context 'when CI/CD is set to only project members' do
-                before do
+                before_all do
                   repo_project.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
                 end
 
@@ -1041,7 +1056,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
       context 'for commits scope with project path as id' do
         before do
-          get api("/projects/#{CGI.escape(repo_project.full_path)}/search", user), params: { scope: 'commits', search: '498214de67004b1da3d820901307bed2a68a8ef6' }
+          get api("/projects/#{CGI.escape(repo_project.full_path)}/search", user),
+            params: { scope: 'commits', search: '498214de67004b1da3d820901307bed2a68a8ef6' }
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/commits_details'
@@ -1062,7 +1078,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         it_behaves_like 'apdex recorded', scope: 'blobs', level: 'project'
 
-        context 'filters' do
+        describe 'filters' do
           it 'by filename' do
             get api(endpoint, user), params: { scope: 'blobs', search: 'mon filename:PROCESS.md' }
 
@@ -1087,7 +1103,9 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           end
 
           it 'by ref' do
-            get api(endpoint, user), params: { scope: 'blobs', search: 'This file is used in tests for ci_environments_status', ref: 'pages-deploy' }
+            get api(endpoint, user),
+              params: { scope: 'blobs', search: 'This file is used in tests for ci_environments_status',
+                        ref: 'pages-deploy' }
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.size).to eq(1)

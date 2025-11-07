@@ -3,6 +3,7 @@ import { GlModal, GlAlert, GlSprintf, GlFormInput } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import { __, s__, sprintf } from '~/locale';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 
 export default {
   i18n: {
@@ -47,22 +48,22 @@ export default {
       default: false,
     },
     issuesCount: {
-      type: [Number, String],
+      type: Number,
       required: false,
       default: null,
     },
     mergeRequestsCount: {
-      type: [Number, String],
+      type: Number,
       required: false,
       default: null,
     },
     forksCount: {
-      type: [Number, String],
+      type: Number,
       required: false,
       default: null,
     },
     starsCount: {
-      type: [Number, String],
+      type: Number,
       required: false,
       default: null,
     },
@@ -109,6 +110,14 @@ export default {
     showRestoreMessage() {
       return !this.markedForDeletion;
     },
+    hasStats() {
+      return (
+        this.issuesCount !== null ||
+        this.mergeRequestsCount !== null ||
+        this.forksCount !== null ||
+        this.starsCount !== null
+      );
+    },
   },
   watch: {
     confirmLoading(isLoading, wasLoading) {
@@ -118,6 +127,9 @@ export default {
         this.$emit('change', false);
       }
     },
+  },
+  methods: {
+    numberToMetricPrefix,
   },
 };
 </script>
@@ -143,27 +155,29 @@ export default {
         <h4 v-else class="gl-alert-title">
           {{ $options.i18n.isNotForkAlertTitle }}
         </h4>
-        <ul>
+        <ul v-if="hasStats" data-testid="project-delete-modal-stats">
           <li v-if="issuesCount !== null">
-            <gl-sprintf :message="n__('%d issue', '%d issues', issuesCount)">
-              <template #issuesCount>{{ issuesCount }}</template>
+            <gl-sprintf :message="n__('%{count} issue', '%{count} issues', issuesCount)">
+              <template #count>{{ numberToMetricPrefix(issuesCount) }}</template>
             </gl-sprintf>
           </li>
           <li v-if="mergeRequestsCount !== null">
             <gl-sprintf
-              :message="n__('%d merge requests', '%d merge requests', mergeRequestsCount)"
+              :message="
+                n__('%{count} merge request', '%{count} merge requests', mergeRequestsCount)
+              "
             >
-              <template #mergeRequestsCount>{{ mergeRequestsCount }}</template>
+              <template #count>{{ numberToMetricPrefix(mergeRequestsCount) }}</template>
             </gl-sprintf>
           </li>
           <li v-if="forksCount !== null">
-            <gl-sprintf :message="n__('%d fork', '%d forks', forksCount)">
-              <template #forksCount>{{ forksCount }}</template>
+            <gl-sprintf :message="n__('%{count} fork', '%{count} forks', forksCount)">
+              <template #count>{{ numberToMetricPrefix(forksCount) }}</template>
             </gl-sprintf>
           </li>
           <li v-if="starsCount !== null">
-            <gl-sprintf :message="n__('%d star', '%d stars', starsCount)">
-              <template #starsCount>{{ starsCount }}</template>
+            <gl-sprintf :message="n__('%{count} star', '%{count} stars', starsCount)">
+              <template #count>{{ numberToMetricPrefix(starsCount) }}</template>
             </gl-sprintf>
           </li>
         </ul>

@@ -149,24 +149,24 @@ export default {
     hasStarData() {
       return Number.isInteger(this.project.starCount);
     },
-    starCount() {
+    starCountWithMetricPrefix() {
       return this.hasStarData ? numberToMetricPrefix(this.project.starCount) : undefined;
     },
-    openMergeRequestsCount() {
+    openMergeRequestsCountWithMetricPrefix() {
       if (!this.isMergeRequestsEnabled) {
         return null;
       }
 
       return numberToMetricPrefix(this.project.openMergeRequestsCount);
     },
-    forksCount() {
+    forksCountWithMetricPrefix() {
       if (!this.isForkingEnabled) {
         return null;
       }
 
       return numberToMetricPrefix(this.project.forksCount);
     },
-    openIssuesCount() {
+    openIssuesCountWithMetricPrefix() {
       if (!this.isIssuesEnabled) {
         return null;
       }
@@ -183,43 +183,51 @@ export default {
       return `projects-list-item-${this.project.id}`;
     },
     starA11yText() {
+      if (!this.hasStarData) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} star',
           '%{project} has %{number} stars',
           this.project.starCount,
         ),
-        { project: this.project.avatarLabel, number: this.starCount },
+        { project: this.project.avatarLabel, number: this.starCountWithMetricPrefix },
       );
     },
     forkA11yText() {
+      if (!this.isForkingEnabled) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} fork',
           '%{project} has %{number} forks',
           this.project.forksCount,
         ),
-        { project: this.project.avatarLabel, number: this.forksCount },
+        { project: this.project.avatarLabel, number: this.forksCountWithMetricPrefix },
       );
     },
     mrA11yText() {
+      if (!this.isMergeRequestsEnabled) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} open merge request',
           '%{project} has %{number} open merge requests',
           this.project.openMergeRequestsCount,
         ),
-        { project: this.project.avatarLabel, number: this.openMergeRequestsCount },
+        { project: this.project.avatarLabel, number: this.openMergeRequestsCountWithMetricPrefix },
       );
     },
     openIssueA11yText() {
+      if (!this.isIssuesEnabled) return '';
+
       return sprintf(
         n__(
           '%{project} has %{number} open issue',
           '%{project} has %{number} open issues',
           this.project.openIssuesCount,
         ),
-        { project: this.project.avatarLabel, number: this.openIssuesCount },
+        { project: this.project.avatarLabel, number: this.openIssuesCountWithMetricPrefix },
       );
     },
   },
@@ -284,7 +292,7 @@ export default {
         :tooltip-text="$options.i18n.stars"
         :a11y-text="starA11yText"
         icon-name="star-o"
-        :stat="starCount"
+        :stat="starCountWithMetricPrefix"
         data-testid="stars-btn"
         @hover="$emit('hover-stat', 'stars-count')"
         @click="$emit('click-stat', 'stars-count')"
@@ -295,7 +303,7 @@ export default {
         :tooltip-text="$options.i18n.forks"
         :a11y-text="forkA11yText"
         icon-name="fork"
-        :stat="forksCount"
+        :stat="forksCountWithMetricPrefix"
         data-testid="forks-btn"
         @hover="$emit('hover-stat', 'forks-count')"
         @click="$emit('click-stat', 'forks-count')"
@@ -306,7 +314,7 @@ export default {
         :tooltip-text="$options.i18n.mergeRequests"
         :a11y-text="mrA11yText"
         icon-name="merge-request"
-        :stat="openMergeRequestsCount"
+        :stat="openMergeRequestsCountWithMetricPrefix"
         data-testid="mrs-btn"
         @hover="$emit('hover-stat', 'mrs-count')"
         @click="$emit('click-stat', 'mrs-count')"
@@ -317,7 +325,7 @@ export default {
         :tooltip-text="$options.i18n.issues"
         :a11y-text="openIssueA11yText"
         icon-name="issues"
-        :stat="openIssuesCount"
+        :stat="openIssuesCountWithMetricPrefix"
         data-testid="issues-btn"
         @hover="$emit('hover-stat', 'issues-count')"
         @click="$emit('click-stat', 'issues-count')"
@@ -325,14 +333,7 @@ export default {
     </template>
 
     <template v-if="hasActions" #actions>
-      <project-list-item-actions
-        :project="project"
-        :open-merge-requests-count="openMergeRequestsCount"
-        :open-issues-count="openIssuesCount"
-        :forks-count="forksCount"
-        :star-count="starCount"
-        @refetch="$emit('refetch')"
-      />
+      <project-list-item-actions :project="project" @refetch="$emit('refetch')" />
     </template>
   </list-item>
 </template>

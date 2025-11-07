@@ -66,6 +66,29 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
           expect(json_response.last['certificate_expiration']['expired']).to be true
           expect(json_response.first).not_to have_key('certificate_expiration')
         end
+
+        context 'when the domain parameter is present' do
+          it 'returns filtered pages domains', :aggregate_failures do
+            get api('/pages/domains', admin, admin_mode: true), params: { domain: pages_domain.domain }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('public_api/v4/pages_domain_basics')
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(1)
+            expect(json_response.first).to have_key('domain')
+            expect(json_response.first).to have_key('project_id')
+            expect(json_response.first).to have_key('auto_ssl_enabled')
+            expect(json_response.first).not_to have_key('certificate_expiration')
+          end
+
+          context 'when the domain does not exist' do
+            it 'returns 404' do
+              get api('/pages/domains', admin, admin_mode: true), params: { domain: "non-existent-domain.com" }
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+        end
       end
 
       context 'when authenticated as a non-member' do

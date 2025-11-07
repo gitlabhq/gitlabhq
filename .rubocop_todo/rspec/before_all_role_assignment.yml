@@ -1084,7 +1084,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/remote_mirrors_spec.rb'
     - 'spec/requests/api/rpm_project_packages_spec.rb'
     - 'spec/requests/api/rubygem_packages_spec.rb'
-    - 'spec/requests/api/search_spec.rb'
     - 'spec/requests/api/wikis_spec.rb'
     - 'spec/requests/groups/deploy_tokens_controller_spec.rb'
     - 'spec/requests/groups/settings/access_tokens_controller_spec.rb'

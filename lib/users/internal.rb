@@ -236,7 +236,7 @@ module Users
 
       user.assign_personal_namespace(user_organization)
       user.organizations << user_organization
-      user.organization ||= user_organization
+      user.organization ||= user_organization # rubocop:disable Gitlab/AvoidUserOrganization -- Setting for new user
 
       uniquify = Gitlab::Utils::Uniquify.new
       organization_username = uniquify.string(username) { |s| Namespace.in_organization(user_organization).by_path(s) }

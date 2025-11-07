@@ -59,6 +59,10 @@ export default {
 
       return this.pipeline.id;
     },
+    pipelineIid() {
+      // GraphQL returns a string, pipeline manual actions expects a number
+      return Number(this.pipeline.iid);
+    },
   },
   watch: {
     pipeline() {
@@ -111,14 +115,14 @@ export default {
       <slot name="duo-workflow-action"></slot>
       <pipelines-manual-actions
         v-if="hasActions"
-        :iid="pipeline.iid"
+        :iid="pipelineIid"
         :full-path="fullPath"
         @refresh-pipeline-table="$emit('refresh-pipelines-table')"
       />
 
       <gl-button
         v-if="isRetryable"
-        v-gl-tooltip
+        v-gl-tooltip.hover
         :aria-label="$options.BUTTON_TOOLTIP_RETRY"
         :title="$options.BUTTON_TOOLTIP_RETRY"
         :disabled="isRetrying"
@@ -133,7 +137,7 @@ export default {
 
       <gl-button
         v-if="isCancelable"
-        v-gl-tooltip
+        v-gl-tooltip.hover
         :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
         :title="$options.BUTTON_TOOLTIP_CANCEL"
         :loading="isCanceling"

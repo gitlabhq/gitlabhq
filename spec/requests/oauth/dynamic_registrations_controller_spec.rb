@@ -474,22 +474,5 @@ RSpec.describe Oauth::DynamicRegistrationsController, feature_category: :system_
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      let(:request_body) { valid_request_body }
-
-      before do
-        stub_feature_flags(oauth_dynamic_client_registration: false)
-      end
-
-      it 'returns 404' do
-        create_registration
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'does not create application' do
-        expect { create_registration }.not_to change { Authn::OauthApplication.count }
-      end
-    end
   end
 end

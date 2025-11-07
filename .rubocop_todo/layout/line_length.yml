@@ -3465,7 +3465,6 @@ Layout/LineLength:
     - 'spec/requests/api/releases_spec.rb'
     - 'spec/requests/api/repositories_spec.rb'
     - 'spec/requests/api/rubygem_packages_spec.rb'
-    - 'spec/requests/api/search_spec.rb'
     - 'spec/requests/api/settings_spec.rb'
     - 'spec/requests/api/snippets_spec.rb'
     - 'spec/requests/api/terraform/modules/v1/namespace_packages_spec.rb'

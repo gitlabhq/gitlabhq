@@ -39,26 +39,6 @@ export default {
       type: Object,
       required: true,
     },
-    openMergeRequestsCount: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    openIssuesCount: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    forksCount: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    starCount: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -194,10 +174,10 @@ export default {
       :name-with-namespace="project.nameWithNamespace"
       :is-fork="project.isForked"
       :confirm-loading="isDeleteLoading"
-      :merge-requests-count="openMergeRequestsCount"
-      :issues-count="openIssuesCount"
-      :forks-count="forksCount"
-      :stars-count="starCount"
+      :merge-requests-count="project.openMergeRequestsCount"
+      :issues-count="project.openIssuesCount"
+      :forks-count="project.forksCount"
+      :stars-count="project.starCount"
       :marked-for-deletion="project.markedForDeletion"
       :permanent-deletion-date="project.permanentDeletionDate"
       @primary="onDeleteModalPrimary"

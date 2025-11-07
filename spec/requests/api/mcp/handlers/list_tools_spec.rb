@@ -102,7 +102,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         fields_property = gitlab_search_tool['inputSchema']['properties']['fields']
 
         expect(fields_property).to be_present
-        expect(fields_property['type']).to eq('string')
+        expect(fields_property['type']).to eq('array')
       end
     end
 

@@ -58,7 +58,7 @@ the following sections and tables provide an alternative.
 | `policy_scope` | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify. |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
 | `skip_ci` | `object` of [`skip_ci`](pipeline_execution_policies.md#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped. |
-| `variables_override` | `object` of [`variables_override`](pipeline_execution_policies.md#variables_override-type) | false | Controls whether users can override the behavior of policy variables. By default, the policy variables are enforced with the highest precedence and users cannot override them. |
+| `variables_override` | `object` of [`variables_override`](pipeline_execution_policies.md#variables_override-type) | false | Controls whether users can override the behavior of policy variables in the jobs created by the policy. By default, the policy variables are enforced with the highest precedence and users cannot override them. |
 
 Note the following:
 
@@ -762,8 +762,9 @@ in a Git repository.
 
 {{< /alert >}}
 
-Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
-and cannot be overwritten from the outside, unless permitted by the [`variables_override` type](#variables_override-type).
+Pipeline execution policy variables cannot be overridden from the outside. Pipeline execution jobs are executed in isolation, so variables defined in another policy or in the project's `.gitlab-ci.yml` file are never available to the pipeline execution policy.
+
+The [`variables_override` type](#variables_override-type) only allows you to configure user-defined variables to override the policy variables. This includes variables that users specify in the CI/CD settings or when running a new pipeline.
 
 Variables can be shared with pipeline execution policies using group or project settings, which follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence) rules. However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
 

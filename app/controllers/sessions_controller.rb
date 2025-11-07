@@ -305,7 +305,7 @@ class SessionsController < Devise::SessionsController
       target: user,
       message: "Signed in with #{options[:with]} authentication",
       authentication_event: true,
-      organization: user.organization, # Current.organization is not available on this context
+      organization: user.organization, # rubocop:disable Gitlab/AvoidUserOrganization -- Current.organization is not available on this context
       authentication_provider: options[:with],
       additional_details: {
         with: options[:with]

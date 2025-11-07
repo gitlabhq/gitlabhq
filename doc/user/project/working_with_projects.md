@@ -607,7 +607,7 @@ depending on the state of your project:
 |----------|-------------------------|
 | Active   | **Edit**, **Archive**, **Transfer**, **Leave project**, **Delete** |
 | Archived | **Unarchive**, **Leave project**, **Delete** |
-| Pending deletion | **Restore**, **Leave project** |
+| Pending deletion | **Restore**, **Leave project**, **Delete immediately** |
 
 ## Add a compliance framework to a project
 

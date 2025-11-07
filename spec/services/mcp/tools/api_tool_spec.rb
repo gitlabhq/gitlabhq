@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
   let(:app) { instance_double(Grape::Endpoint) }
-  let(:mcp_settings) { { params: [:param1, :param2] } }
+  let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool' } }
   let(:route_params) do
     {
       'param1' => { required: true, type: 'String', desc: 'First parameter' },

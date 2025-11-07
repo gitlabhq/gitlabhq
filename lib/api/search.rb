@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable API/DescriptionSuccessResponse -- search api responds with multiple entity types
 module API
   class Search < ::API::Base
     include PaginationParams
@@ -164,6 +165,7 @@ module API
     resource :search do
       desc 'Search on GitLab' do
         detail 'This feature was introduced in GitLab 10.5.'
+        tags ['search']
       end
       params do
         requires :search, type: String, desc: 'The expression it should be searched for'
@@ -176,7 +178,8 @@ module API
         use :search_params_ee
         use :pagination
       end
-      route_setting :mcp, tool_name: :gitlab_search, params: Helpers::SearchHelpers.gitlab_search_mcp_params
+      route_setting :mcp, tool_name: :gitlab_search_in_instance,
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::GitlabSearchService]
       get do
         verify_search_scope!
 
@@ -187,11 +190,12 @@ module API
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Search on GitLab' do
+      desc 'Search on GitLab within a group' do
         detail 'This feature was introduced in GitLab 10.5.'
+        tags %w[search groups]
       end
       params do
-        requires :id, type: String, desc: 'The ID of a group'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
         requires :search, type: String, desc: 'The expression it should be searched for'
         requires :scope,
           type: String,
@@ -202,6 +206,8 @@ module API
         use :search_params_ee
         use :pagination
       end
+      route_setting :mcp, tool_name: :gitlab_search_in_group,
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::GitlabSearchService]
       get ':id/(-/)search' do
         verify_search_scope!(group_id: user_group.id)
         set_headers
@@ -211,8 +217,9 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Search on GitLab' do
+      desc 'Search on GitLab within a project' do
         detail 'This feature was introduced in GitLab 10.5.'
+        tags %w[search projects]
       end
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
@@ -228,6 +235,8 @@ module API
         use :search_params_ee
         use :pagination
       end
+      route_setting :mcp, tool_name: :gitlab_search_in_project,
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::GitlabSearchService]
       get ':id/(-/)search' do
         set_headers
 
@@ -237,3 +246,4 @@ module API
     end
   end
 end
+# rubocop:enable API/DescriptionSuccessResponse

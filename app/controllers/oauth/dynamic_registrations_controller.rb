@@ -7,7 +7,6 @@ module Oauth
     skip_before_action :authenticate_user!, only: [:create]
     skip_before_action :verify_authenticity_token, only: [:create]
     before_action :check_rate_limit, only: [:create]
-    before_action :check_feature_flag!
 
     # POST /oauth/register
     def create
@@ -70,10 +69,6 @@ module Oauth
         error: "invalid_client_metadata",
         error_description: "client_name is too long"
       }
-    end
-
-    def check_feature_flag!
-      render_404 unless Feature.enabled?(:oauth_dynamic_client_registration, :instance)
     end
 
     def check_rate_limit

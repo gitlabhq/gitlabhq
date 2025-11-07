@@ -24,6 +24,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
   before_action :push_pipelines_graphql_ff, only: [:index]
+  before_action :push_pipeline_statuses_updated_ff, only: [:index]
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -364,6 +365,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def push_pipelines_graphql_ff
     push_frontend_feature_flag(:pipelines_page_graphql, @project)
+  end
+
+  def push_pipeline_statuses_updated_ff
+    push_frontend_feature_flag(:ci_pipeline_statuses_updated_subscription, @project)
   end
 end
 

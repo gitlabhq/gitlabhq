@@ -27,30 +27,6 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#permissible_access_level_roles' do
-    let_it_be(:owner) { create(:user) }
-    let_it_be(:maintainer) { create(:user) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
-
-    before do
-      project.add_owner(owner)
-      project.add_maintainer(maintainer)
-    end
-
-    context 'when member can manage owners' do
-      it 'returns Gitlab::Access.options_with_owner' do
-        expect(described_class.permissible_access_level_roles(owner, project)).to eq(Gitlab::Access.options_with_owner)
-      end
-    end
-
-    context 'when member is a maintainer and cannot manage owners' do
-      it 'returns Gitlab::Access.options' do
-        expect(described_class.permissible_access_level_roles(maintainer, project)).to eq({ "Developer" => 30, "Guest" => 10, "Maintainer" => 40, "Reporter" => 20 })
-      end
-    end
-  end
-
   describe '#prevent_role_assignement?' do
     let_it_be(:project) { create(:project) }
     let_it_be_with_reload(:current_user) { create(:user) }
@@ -130,7 +106,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
     end
   end
 
-  describe '.permissible_access_level_roles_for_project_access_token' do
+  describe '.permissible_access_level_roles' do
     let_it_be(:owner) { create(:user) }
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:developer) { create(:user) }
@@ -144,7 +120,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       project.add_developer(developer)
     end
 
-    subject(:access_levels) { described_class.permissible_access_level_roles_for_project_access_token(user, project) }
+    subject(:access_levels) { described_class.permissible_access_level_roles(user, project) }
 
     context 'when member can manage owners' do
       let(:user) { owner }
@@ -178,7 +154,7 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when member cannot manage owners' do
+    context 'when the user is a maintainer' do
       let(:user) { maintainer }
 
       it 'returns valid Gitlab::Access.options for a maintainer' do

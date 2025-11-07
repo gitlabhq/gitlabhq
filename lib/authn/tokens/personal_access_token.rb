@@ -6,6 +6,7 @@ module Authn
       def self.prefix?(plaintext)
         token_prefixes = [
           ::PersonalAccessToken.token_prefix,
+          Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix,
           ApplicationSetting.defaults[:personal_access_token_prefix]
         ].uniq.compact.reject(&:empty?)
 

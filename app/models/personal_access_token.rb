@@ -18,6 +18,8 @@ class PersonalAccessToken < ApplicationRecord
     sixty_days: 31..60
   }.freeze
 
+  PERSONAL_TOKEN_PREFIX = 'glpat-'
+
   add_authentication_token_field :token,
     digest: true,
     format_with_prefix: :prefix_from_application_current_settings,
@@ -129,7 +131,13 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   def self.token_prefix
-    Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+    # Instance wide token prefixes take precedence over the personal_access_token_prefix
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/388379#note_2477892999
+    if ::Authn::TokenField::PrefixHelper.instance_prefix.blank?
+      Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+    else
+      ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(PERSONAL_TOKEN_PREFIX)
+    end
   end
 
   def self.search(query)

@@ -27,7 +27,7 @@ module API
       end
 
       def self.gitlab_search_mcp_params
-        search_param_keys
+        search_param_keys + [:id]
       end
     end
   end

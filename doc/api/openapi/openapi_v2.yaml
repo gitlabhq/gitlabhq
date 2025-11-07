@@ -41,6 +41,8 @@ tags:
   description: Operations about members
 - name: personal_access_tokens
   description: Operations about personal_access_tokens
+- name: search
+  description: Operations about searches
 - name: wikis
   description: Operations about wikis
 - name: alert_management
@@ -99,8 +101,6 @@ tags:
   description: Operations about namespaces
 - name: organizations
   description: Operations about organizations
-- name: search
-  description: Operations about searches
 - name: snippets
   description: Operations about snippets
 - name: hooks
@@ -8943,14 +8943,14 @@ paths:
       operationId: postApiV4GroupsIdAccessTokensSelfRotate
   "/api/v4/groups/{id}/(-/)search":
     get:
-      summary: Search on GitLab
+      summary: Search on GitLab within a group
       description: This feature was introduced in GitLab 10.5.
       produces:
       - application/json
       parameters:
       - in: path
         name: id
-        description: The ID of a group
+        description: The ID or URL-encoded path of the group
         type: string
         required: true
       - in: query
@@ -9015,8 +9015,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Search on GitLab
+          description: Search on GitLab within a group
       tags:
+      - search
       - groups
       operationId: getApiV4GroupsId(-)search
   "/api/v4/groups/{id}/wikis":
@@ -38164,7 +38165,7 @@ paths:
       operationId: getApiV4ProjectsIdPackagesRubygemsApiV1Dependencies
   "/api/v4/projects/{id}/(-/)search":
     get:
-      summary: Search on GitLab
+      summary: Search on GitLab within a project
       description: This feature was introduced in GitLab 10.5.
       produces:
       - application/json
@@ -38241,8 +38242,9 @@ paths:
         example: 20
       responses:
         '200':
-          description: Search on GitLab
+          description: Search on GitLab within a project
       tags:
+      - search
       - projects
       operationId: getApiV4ProjectsId(-)search
   "/api/v4/projects/{id}/repository/submodules/{submodule}":
@@ -44900,6 +44902,11 @@ paths:
       produces:
       - application/json
       parameters:
+      - in: query
+        name: domain
+        description: The domain of the GitLab Pages site to filter on.
+        type: string
+        required: false
       - in: query
         name: page
         description: Current page number

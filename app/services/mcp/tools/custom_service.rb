@@ -4,69 +4,13 @@
 module Mcp
   module Tools
     class CustomService < BaseService
+      include Mcp::Tools::Concerns::Versionable
       include ::Mcp::Tools::Concerns::ResourceFinder
       extend ::Gitlab::Utils::Override
 
-      class << self
-        # Register a new version with specific metadata
-        def register_version(version, metadata = {})
-          @versions = {} unless defined?(@versions)
-          @versions[version] = metadata.freeze
-        end
-
-        # Get the latest registered version
-        def latest_version
-          return unless @versions
-
-          @versions.keys.max_by { |v| Gem::Version.new(v) }
-        end
-
-        # Get all available versions
-        def available_versions
-          return [] unless @versions
-
-          @versions.keys.sort_by { |v| Gem::Version.new(v) }
-        end
-
-        # Check if a version exists
-        def version_exists?(version)
-          return false unless @versions
-
-          @versions.key?(version)
-        end
-
-        # Get version metadata
-        def version_metadata(version)
-          return {} unless @versions
-
-          @versions[version] || {}
-        end
-      end
-
-      attr_reader :requested_version
-
       def initialize(name:, version: nil)
         super(name: name)
-        @requested_version = version || self.class.latest_version
-
-        raise ArgumentError, "No versions registered for #{self.class.name}" if self.class.available_versions.empty?
-
-        return if self.class.version_exists?(@requested_version)
-
-        raise ArgumentError, "Version #{@requested_version} not found. " \
-          "Available: #{self.class.available_versions.join(', ')}"
-      end
-
-      def version
-        @requested_version
-      end
-
-      def description
-        version_metadata.fetch(:description) { raise NoMethodError, "Description not defined for version #{version}" }
-      end
-
-      def input_schema
-        version_metadata.fetch(:input_schema) { raise NoMethodError, "Input schema not defined for version #{version}" }
+        initialize_version(version)
       end
 
       override :set_cred
@@ -121,16 +65,6 @@ module Mcp
       # Default implementation - can be overridden in subclasses
       def perform_default(_arguments = {})
         raise NoMethodError, "No implementation found for version #{version}"
-      end
-
-      private
-
-      def version_metadata
-        self.class.version_metadata(version)
-      end
-
-      def version_method_suffix
-        version.tr('.', '_')
       end
     end
   end

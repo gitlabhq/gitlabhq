@@ -214,7 +214,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
         described_class.extract_signature_lazily(other_repository, tag_ids.first)
 
         expect(described_class).to receive(:batch_signature_extraction)
-          .with(repository, tag_ids)
+          .with(repository, tag_ids, timeout: Gitlab::GitalyClient.fast_timeout)
           .once
           .and_return({})
 

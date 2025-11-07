@@ -136,6 +136,7 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
       identityVerificationPath,
       projectId,
       defaultBranchName,
+      manualActionsLimit: 50,
     },
     render(createElement) {
       return createElement(PipelinesGraphql, {

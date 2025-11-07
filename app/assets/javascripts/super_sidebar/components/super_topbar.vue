@@ -85,7 +85,7 @@ export default {
 <template>
   <header
     class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-outline-none"
-    tabindex="1"
+    tabindex="0"
     autofocus
   >
     <gl-button

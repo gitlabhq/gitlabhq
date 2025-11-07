@@ -538,7 +538,7 @@ describe('ProjectsListItem', () => {
     });
 
     it('displays actions dropdown', () => {
-      expect(findListActions().exists()).toBe(true);
+      expect(findListActions().props('project')).toBe(projectWithActions);
     });
   });
 

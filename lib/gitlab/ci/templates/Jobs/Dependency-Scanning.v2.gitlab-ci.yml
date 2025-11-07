@@ -44,7 +44,7 @@ spec:
       description: "Defines how many directory levels analyzer should search for supported files. A value of -1 means the analyzer will search all directories regardless of depth."
     excluded_paths:
       type: string
-      default: "**/spec,**/test,**/tests,**/tmp"
+      default: "**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"
       description: "A comma-separated list of paths (globs supported) to exclude from the scan."
     include_dev_dependencies:
       type: boolean

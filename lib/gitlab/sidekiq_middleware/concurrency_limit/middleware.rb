@@ -8,8 +8,15 @@ module Gitlab
           @worker = worker
           @job = job
 
-          worker_class = worker.is_a?(Class) ? worker : worker.class
-          @worker_name = worker_class.name
+          @worker_class = if worker.is_a?(Class)
+                            worker
+                          elsif worker.is_a?(String)
+                            worker.safe_constantize
+                          else
+                            worker.class
+                          end
+
+          @worker_name = worker_class ? worker_class.name : nil
         end
 
         # This will continue the middleware chain if the job should be scheduled
@@ -42,10 +49,9 @@ module Gitlab
 
         private
 
-        attr_reader :job, :worker, :worker_name
+        attr_reader :job, :worker, :worker_name, :worker_class
 
         def should_defer_schedule?
-          return false if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
           return false if disabled_for_worker?
           return false if job['at'] # scheduled jobs can be later assessed on enqueue
           return false if resumed?
@@ -55,7 +61,6 @@ module Gitlab
         end
 
         def should_defer_perform?
-          return false if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
           return false if disabled_for_worker?
           return false if resumed?
           return true if has_jobs_in_queue?
@@ -63,7 +68,7 @@ module Gitlab
           if Feature.enabled?(:concurrency_limit_current_limit_from_redis, Feature.current_request)
             concurrency_service.over_the_limit?(worker_name)
           else
-            ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.over_the_limit?(worker: worker)
+            over_the_limit?
           end
         end
 
@@ -90,7 +95,7 @@ module Gitlab
         end
 
         def worker_limit
-          @worker_limit ||= ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
+          worker_class.respond_to?(:get_concurrency_limit) ? worker_class.get_concurrency_limit : 0
         end
 
         def resumed?
@@ -99,6 +104,20 @@ module Gitlab
 
         def has_jobs_in_queue?
           concurrency_service.has_jobs_in_queue?(worker_name)
+        end
+
+        def over_the_limit?
+          limit = worker_limit
+          return false if limit == 0
+          return true if limit < 0
+
+          current = current_count
+
+          current >= limit
+        end
+
+        def current_count
+          ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.concurrent_worker_count(worker_name)
         end
 
         def defer_job!

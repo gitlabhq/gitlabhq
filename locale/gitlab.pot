@@ -311,11 +311,6 @@ msgid_plural "%d findings"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d fork"
-msgid_plural "%d forks"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d group"
 msgid_plural "%d groups"
 msgstr[0] ""
@@ -388,11 +383,6 @@ msgstr[1] ""
 
 msgid "%d merge request that you don't have access to."
 msgid_plural "%d merge requests that you don't have access to."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d merge requests"
-msgid_plural "%d merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -498,11 +488,6 @@ msgstr[1] ""
 
 msgid "%d stage"
 msgid_plural "%d stages"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d star"
-msgid_plural "%d stars"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -782,6 +767,11 @@ msgstr[1] ""
 msgid "%{count} files touched"
 msgstr ""
 
+msgid "%{count} fork"
+msgid_plural "%{count} forks"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} group"
 msgid_plural "%{count} groups"
 msgstr[0] ""
@@ -846,6 +836,11 @@ msgstr ""
 
 msgid "%{count} selected"
 msgstr ""
+
+msgid "%{count} star"
+msgid_plural "%{count} stars"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{count} subgroup"
 msgid_plural "%{count} subgroups"
@@ -6497,6 +6492,9 @@ msgid "AiAgents|Create your own AI Agents"
 msgstr ""
 
 msgid "AiAnalytics|the ClickHouse data store is not available"
+msgstr ""
+
+msgid "AiCommitMessage|An unexpected error has occurred. Please try again."
 msgstr ""
 
 msgid "AiFlowTriggers|✅ Agent has started. You can view the progress %{link_start}here%{link_end}."
@@ -25010,10 +25008,10 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Flow"
+msgid "DuoAgentsPlatform|Fix pipeline"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Flow Name"
+msgid "DuoAgentsPlatform|Flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Flow trigger created successfully."
@@ -25041,6 +25039,9 @@ msgid "DuoAgentsPlatform|Get issue"
 msgstr ""
 
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Issue to merge request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|List comments"
@@ -25118,7 +25119,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Sessions"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Software Development"
+msgid "DuoAgentsPlatform|Software development"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
@@ -32598,6 +32599,9 @@ msgstr ""
 msgid "GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}"
 msgstr ""
 
+msgid "GroupSettings|By default, webhooks for group access token expiration trigger 7 days before a token expires. Enable this setting to also trigger these webhooks 60 and 30 days before a token expires."
+msgstr ""
+
 msgid "GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their container registry. Please remove the images from your projects first and try again."
 msgstr ""
 
@@ -32725,9 +32729,6 @@ msgid "GroupSettings|If enabled, enterprise users cannot use SSH Keys. %{learn_m
 msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise users cannot use personal access tokens. %{learn_more_link}."
-msgstr ""
-
-msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires."
 msgstr ""
 
 msgid "GroupSettings|If enabled, hides email addresses on public profile pages for enterprise users."
@@ -51906,7 +51907,7 @@ msgstr ""
 msgid "ProjectSettings|A default branch cannot be chosen for an empty project."
 msgstr ""
 
-msgid "ProjectSettings|Add additional webhook triggers for project access token expiry."
+msgid "ProjectSettings|Add additional webhook triggers for project access token expiration."
 msgstr ""
 
 msgid "ProjectSettings|Add badges to display information about this project."
@@ -51961,6 +51962,9 @@ msgid "ProjectSettings|Branches created from issues follow this pattern."
 msgstr ""
 
 msgid "ProjectSettings|Build, test, and deploy your changes. Does not apply to project integrations."
+msgstr ""
+
+msgid "ProjectSettings|By default, webhooks for project access token expiration trigger 7 days before a token expires. Enable this setting to also trigger these webhooks 60 and 30 days before a token expires."
 msgstr ""
 
 msgid "ProjectSettings|Change the location of dashboards?"
@@ -52123,9 +52127,6 @@ msgid "ProjectSettings|How do they differ?"
 msgstr ""
 
 msgid "ProjectSettings|If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{link_start}Learn more about data retention policy%{link_end}."
-msgstr ""
-
-msgid "ProjectSettings|If enabled, project access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."

@@ -280,14 +280,6 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             expect(response).to have_gitlab_http_status(:unauthorized)
             expect(json_response['message']).to include('This endpoint requires an API authentication')
           end
-
-          context 'when the FF ci_require_api_token_for_ci_lint is disabled' do
-            before do
-              stub_feature_flags(ci_require_api_token_for_ci_lint: false)
-            end
-
-            it_behaves_like 'valid config without warnings'
-          end
         end
       end
 
@@ -633,14 +625,6 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
           let_it_be(:api_user) { nil }
 
           it_behaves_like 'passing validation'
-
-          context 'when the FF ci_require_api_token_for_ci_lint is disabled' do
-            before do
-              stub_feature_flags(ci_require_api_token_for_ci_lint: false)
-            end
-
-            it_behaves_like 'passing validation'
-          end
         end
 
         context 'when authenticated as project developer' do
@@ -651,14 +635,6 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
           end
 
           it_behaves_like 'passing validation'
-
-          context 'when the FF ci_require_api_token_for_ci_lint is disabled' do
-            before do
-              stub_feature_flags(ci_require_api_token_for_ci_lint: false)
-            end
-
-            it_behaves_like 'passing validation'
-          end
         end
       end
     end

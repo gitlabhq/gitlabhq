@@ -76,9 +76,9 @@ const formatSubgroupsAndProjects = (item) => {
     exploreCatalogPath: '',
     isPublished: false,
     pipeline: null,
-    forksCount: 0,
-    openMergeRequestsCount: 0,
-    openIssuesCount: 0,
+    forksCount: null,
+    openMergeRequestsCount: null,
+    openIssuesCount: null,
     mergeRequestsAccessLevel: {
       stringValue: FEATURABLE_DISABLED,
     },

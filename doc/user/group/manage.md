@@ -302,9 +302,11 @@ For more information, see:
 
 {{< /history >}}
 
-GitLab sends multiple [expiry emails](settings/group_access_tokens.md#group-access-token-expiry-emails) and triggers a related [webhook](../project/integrations/webhook_events.md#project-and-group-access-token-events) before a group token expires. By default, GitLab only triggers these webhooks 7 days before the token expires. When this feature is enabled, GitLab also can trigger these webhooks 60 days and 30 days before the token expires.
+GitLab sends multiple [expiry emails](settings/group_access_tokens.md#group-access-token-expiry-emails)
+and triggers a related [webhook](../project/integrations/webhook_events.md#project-and-group-access-token-events)
+before a group token expires. By default, these webhooks trigger 7 days before a token expires.
 
-To enable additional triggers for these webhooks:
+To configure these webhooks to also trigger 60 days and 30 days before a token expires:
 
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **General**.

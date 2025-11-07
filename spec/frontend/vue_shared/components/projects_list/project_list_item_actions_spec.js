@@ -54,10 +54,6 @@ describe('ProjectListItemActions', () => {
 
   const defaultProps = {
     project: projectWithActions,
-    openMergeRequestsCount: '2',
-    openIssuesCount: '3',
-    forksCount: '4',
-    starCount: '5',
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -305,13 +301,12 @@ describe('ProjectListItemActions', () => {
         confirmPhrase: project.fullPath,
         nameWithNamespace: project.nameWithNamespace,
         isFork: false,
-        mergeRequestsCount: '2',
-        issuesCount: '3',
-        forksCount: '4',
-        starsCount: '5',
+        mergeRequestsCount: 0,
+        issuesCount: 0,
+        forksCount: 0,
+        starsCount: 0,
         markedForDeletion: false,
         permanentDeletionDate: project.permanentDeletionDate,
-        confirmLoading: false,
       });
     });
 

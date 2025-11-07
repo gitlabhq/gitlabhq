@@ -6,7 +6,7 @@ module Mcp
       include VersionHelper
 
       class ToolNotFoundError < StandardError
-        attr_reader :tool_name
+        attr_reader :tool_name, :args
 
         def initialize(tool_name)
           @tool_name = tool_name
@@ -57,6 +57,8 @@ module Mcp
 
         return get_api_tool(name, version) if discover_api_tools.key?(name)
 
+        return get_aggregated_api_tool(name, version) if discover_aggregated_api_tools.key?(name)
+
         raise ToolNotFoundError, name
       end
 
@@ -83,6 +85,16 @@ module Mcp
         tool
       end
 
+      def get_aggregated_api_tool(name, version)
+        aggregated_api_tools = discover_aggregated_api_tools
+        tool = aggregated_api_tools[name]
+        tool_version = tool.version
+
+        raise VersionNotFoundError.new(name, version, [tool_version]) if version && version != tool_version
+
+        tool
+      end
+
       def build_tools
         tools = {}
 
@@ -97,22 +109,56 @@ module Mcp
           tools[name] = tool
         end
 
+        # Include aggregated API tools (discovered from route_setting :mcp with aggregators specified)
+        aggregated_api_tools = discover_aggregated_api_tools
+        aggregated_api_tools.each do |name, tool|
+          tools[name] = tool
+        end
+
         tools
       end
 
       def discover_api_tools
         @api_tools ||= begin
           api_tools = {}
+
+          ::API::API.routes.each do |route|
+            settings = route.app.route_setting(:mcp)
+            next if settings.blank?
+            next if settings[:aggregators].present?
+
+            name = settings[:tool_name].to_s
+            tool = Mcp::Tools::ApiTool.new(name: name, route: route)
+            api_tools[name] = tool
+          end
+
+          api_tools.freeze
+        end
+      end
+
+      def discover_aggregated_api_tools
+        @aggregated_api_tools ||= begin
+          aggregated_api_tools = {}
+
           ::API::API.routes.each do |route|
             settings = route.app.route_setting(:mcp)
             next if settings.blank?
 
             name = settings[:tool_name].to_s
+            aggregators = settings[:aggregators]
+            next if aggregators.blank?
 
-            api_tools[name] = Mcp::Tools::ApiTool.new(name: name, route: route)
+            tool = Mcp::Tools::ApiTool.new(name: name, route: route)
+
+            aggregators.each do |aggregator|
+              aggregated_api_tools[aggregator] ||= []
+              aggregated_api_tools[aggregator] << tool
+            end
           end
 
-          api_tools.freeze
+          aggregated_api_tools.to_h do |klass, tools|
+            [klass.tool_name, klass.new(tools: tools)]
+          end.freeze
         end
       end
     end

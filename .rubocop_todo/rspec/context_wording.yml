@@ -2130,7 +2130,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/repositories_spec.rb'
     - 'spec/requests/api/resource_access_tokens_spec.rb'
     - 'spec/requests/api/rubygem_packages_spec.rb'
-    - 'spec/requests/api/search_spec.rb'
     - 'spec/requests/api/settings_spec.rb'
     - 'spec/requests/api/snippets_spec.rb'
     - 'spec/requests/api/tags_spec.rb'

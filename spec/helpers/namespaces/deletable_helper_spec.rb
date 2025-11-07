@@ -338,10 +338,10 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
         is_fork: 'false',
-        issues_count: '0',
-        merge_requests_count: '0',
-        forks_count: '0',
-        stars_count: '0',
+        issues_count: 0,
+        merge_requests_count: 0,
+        forks_count: 0,
+        stars_count: 0,
         permanent_deletion_date: '2025-02-09',
         marked_for_deletion: 'false'
       }
@@ -367,10 +367,10 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
         is_fork: 'false',
-        issues_count: '0',
-        merge_requests_count: '0',
-        forks_count: '0',
-        stars_count: '0',
+        issues_count: 0,
+        merge_requests_count: 0,
+        forks_count: 0,
+        stars_count: 0,
         permanent_deletion_date: '2025-02-09',
         marked_for_deletion: 'false'
       }

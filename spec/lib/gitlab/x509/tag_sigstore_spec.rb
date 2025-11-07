@@ -15,7 +15,8 @@ RSpec.describe Gitlab::X509::Tag, feature_category: :source_code_management do
       allow(tag).to receive(:has_signature?).and_return(true)
       allow(tag).to receive(:user_email).and_return(user.email)
       allow(tag).to receive(:date).and_return(X509Helpers::User2.signed_tag_time)
-      allow(Gitlab::Git::Tag).to receive(:extract_signature_lazily).with(project.repository, tag_id)
+      allow(Gitlab::Git::Tag).to receive(:extract_signature_lazily).with(project.repository, tag_id,
+        timeout: Gitlab::GitalyClient.fast_timeout)
         .and_return([X509Helpers::User2.signed_tag_signature, X509Helpers::User2.signed_tag_base_data])
     end
 

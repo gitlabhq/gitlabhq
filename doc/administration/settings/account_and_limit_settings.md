@@ -417,6 +417,7 @@ Custom token prefixes apply only to the following tokens:
 - [Feed tokens](../../security/tokens/_index.md#feed-token)
 - [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)
 - [OAuth application secrets](../../integration/oauth_provider.md)
+- [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Pipeline trigger tokens](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 - [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens)
 

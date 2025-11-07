@@ -53,12 +53,6 @@ class ProjectMember < Member
       end
     end
 
-    # TODO: Remove this method and call permissible_access_level_roles directly
-    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/550264
-    def permissible_access_level_roles_for_project_access_token(current_user, project)
-      permissible_access_level_roles(current_user, project)
-    end
-
     def access_level_roles
       Gitlab::Access.options
     end

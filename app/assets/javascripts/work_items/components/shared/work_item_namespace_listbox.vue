@@ -1,7 +1,7 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { debounce } from 'lodash';
+import { debounce, unionBy } from 'lodash';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { __, s__ } from '~/locale';
 import { STORAGE_KEY } from '~/super_sidebar/constants';
@@ -45,7 +45,7 @@ export default {
       group: {},
       frequentItems: [],
       searchKey: '',
-      selectedNamespace: null,
+      namespaceCache: [],
     };
   },
   apollo: {
@@ -61,9 +61,6 @@ export default {
       },
       update(data) {
         return data.namespace?.projects?.nodes;
-      },
-      result() {
-        this.selectedNamespace = this.findSelectedProject(this.selectedNamespacePath);
       },
       error() {
         this.$emit('error', __('There was a problem fetching projects.'));
@@ -85,6 +82,11 @@ export default {
     },
   },
   computed: {
+    selectedNamespace() {
+      return this.namespaceCache.find(
+        (namespace) => namespace.fullPath === this.selectedNamespacePath,
+      );
+    },
     rootPath() {
       return this.fullPath.split('/')[0];
     },
@@ -98,18 +100,16 @@ export default {
     },
     dropdownToggleText() {
       if (this.selectedNamespace) {
-        const selectedProject = this.findSelectedProject(this.selectedNamespace);
-        if (selectedProject) {
-          /** When selectedProject is fetched from localStorage
-           * name_with_namespace doesn't exist. Therefore we rely on
-           * namespace directly.
-           * */
-          return selectedProject.nameWithNamespace || selectedProject.namespace;
-        }
-        return this.listItems.find((item) => item.value === this.selectedNamespace)?.text;
+        return (
+          this.selectedNamespace.nameWithNamespace ||
+          this.selectedNamespace.namespace ||
+          this.selectedNamespace.name
+        );
       }
       return this.fullPath
-        ? this.defaultNamespace?.text || this.defaultNamespace?.nameWithNamespace
+        ? this.defaultNamespace?.name ||
+            this.defaultNamespace?.text ||
+            this.defaultNamespace?.nameWithNamespace
         : s__('WorkItem|Select a namespace');
     },
     filteredGroups() {
@@ -209,10 +209,17 @@ export default {
       return [...this.recentlyUsedItems, ...this.allGroupsAndProjects];
     },
     defaultNamespace() {
-      if (!this.isGroup) return this.findSelectedProject(this.fullPath);
-      return this.listItems
-        .flatMap((item) => item.options ?? [item])
-        .find((item) => item.value === this.fullPath);
+      return this.namespaceCache.find((namespace) => namespace.fullPath === this.fullPath);
+    },
+  },
+  watch: {
+    projects(projectsList) {
+      this.namespaceCache = unionBy(this.namespaceCache, projectsList, 'id');
+    },
+    group(groupData) {
+      const descendents = groupData.descendantGroups?.nodes || [];
+      const groupList = [groupData, ...descendents];
+      this.namespaceCache = unionBy(this.namespaceCache, groupList, 'id');
     },
   },
   created() {
@@ -227,17 +234,7 @@ export default {
       this.setFrequentItems(keyword);
     },
     handleSelect(namespacePath) {
-      this.selectedNamespace = namespacePath;
       this.$emit('selectNamespace', namespacePath);
-    },
-    findSelectedProject(namespacePath) {
-      const project = this.projects.find((proj) => proj.fullPath === namespacePath);
-      if (project) {
-        return project;
-      }
-      return this.projects.find((proj) => {
-        return `/${proj.fullPath}` === namespacePath;
-      });
     },
     async handleDropdownShow() {
       this.searchKey = '';

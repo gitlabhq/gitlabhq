@@ -38,9 +38,7 @@ module API
 
         not_found! 'Repository' if user_project.empty_repo?
 
-        if Feature.enabled?(:ci_require_api_token_for_ci_lint, user_project) && current_user && !::Current.token_info
-          unauthorized!("This endpoint requires an API authentication")
-        end
+        unauthorized!("This endpoint requires an API authentication") if current_user && !::Current.token_info
 
         content_ref = params[:content_ref] || params[:sha] || user_project.repository.root_ref_sha
         dry_run_ref = params[:dry_run_ref] || params[:ref] || user_project.default_branch

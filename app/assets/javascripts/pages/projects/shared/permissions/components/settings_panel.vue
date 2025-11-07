@@ -28,7 +28,6 @@ import {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   pipelineExecutionPoliciesHelpPath,
-  extendedPratExpiryWebhooksExecuteHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
@@ -95,10 +94,10 @@ export default {
     confirmButtonText: __('Save changes'),
     emailsLabel: s__('ProjectSettings|Email notifications'),
     extendedPratExpiryWebhooksExecuteLabel: s__(
-      'ProjectSettings|Add additional webhook triggers for project access token expiry.',
+      'ProjectSettings|Add additional webhook triggers for project access token expiration.',
     ),
     extendedPratExpiryWebhooksExecuteHelpText: s__(
-      'ProjectSettings|If enabled, project access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires. %{linkStart}Learn more%{linkEnd}',
+      'ProjectSettings|By default, webhooks for project access token expiration trigger 7 days before a token expires. Enable this setting to also trigger these webhooks 60 and 30 days before a token expires.',
     ),
     showDiffPreviewLabel: s__('ProjectSettings|Include diff previews'),
     showDiffPreviewHelpText: s__(
@@ -118,7 +117,6 @@ export default {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   pipelineExecutionPoliciesHelpPath,
-  extendedPratExpiryWebhooksExecuteHelpPath,
   components: {
     CiCatalogSettings,
     ProjectFeatureSetting,
@@ -1085,7 +1083,7 @@ export default {
           <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
         </gl-form-checkbox>
       </project-setting-row>
-      <project-setting-row v-if="glFeatures.extendedExpiryWebhookExecutionSetting">
+      <project-setting-row>
         <input
           :value="extendedPratExpiryWebhooksExecute"
           type="hidden"
@@ -1096,17 +1094,7 @@ export default {
           name="project[project_setting_attributes][extended_prat_expiry_webhooks_execute]"
         >
           {{ $options.i18n.extendedPratExpiryWebhooksExecuteLabel }}
-          <template #help>
-            <gl-sprintf :message="$options.i18n.extendedPratExpiryWebhooksExecuteHelpText">
-              <template #link="{ content }">
-                <gl-link
-                  :href="$options.extendedPratExpiryWebhooksExecuteHelpPath"
-                  target="_blank"
-                  >{{ content }}</gl-link
-                >
-              </template>
-            </gl-sprintf>
-          </template>
+          <template #help>{{ $options.i18n.extendedPratExpiryWebhooksExecuteHelpText }}</template>
         </gl-form-checkbox>
       </project-setting-row>
       <ci-catalog-settings v-if="canAddCatalogResource" :full-path="confirmationPhrase" />

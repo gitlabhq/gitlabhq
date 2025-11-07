@@ -287,6 +287,9 @@ export default {
   },
   apollo: {
     displaySettings: {
+      context: {
+        featureCategory: 'portfolio_management',
+      },
       query: getUserWorkItemsPreferences,
       variables() {
         return {
@@ -326,6 +329,9 @@ export default {
       },
     },
     workItemsFull: {
+      context: {
+        featureCategory: 'portfolio_management',
+      },
       query() {
         return getWorkItemsQuery;
       },
@@ -350,6 +356,9 @@ export default {
       },
     },
     workItemsSlim: {
+      context: {
+        featureCategory: 'portfolio_management',
+      },
       query() {
         return getWorkItemsSlimQuery;
       },

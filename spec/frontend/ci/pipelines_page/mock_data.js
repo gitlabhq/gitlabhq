@@ -294,9 +294,6 @@ export const mockRetryPipelineMutationResponse = {
   data: {
     pipelineRetry: {
       __typename: 'PipelineRetryPayload',
-      pipeline: {
-        id: 'gid://gitlab/Ci::Pipeline/701',
-      },
       errors: [],
     },
   },
@@ -306,9 +303,6 @@ export const mockRetryFailedPipelineMutationResponse = {
   data: {
     pipelineRetry: {
       __typename: 'PipelineRetryPayload',
-      pipeline: {
-        id: '',
-      },
       errors: ['Something went wrong'],
     },
   },
@@ -357,3 +351,80 @@ export const mockPipelinesFilteredSearch = [
     id: 'token-24',
   },
 ];
+
+export const mockPipelines = [...mockPipelinesData.data.project.pipelines.nodes];
+
+export const mockPipelineUpdateResponse = {
+  data: {
+    ciPipelineStatusesUpdated: {
+      id: 'gid://gitlab/Ci::Pipeline/701',
+      iid: '63',
+      detailedStatus: {
+        id: 'running-701-701',
+        icon: 'status_running',
+        text: 'Running',
+        detailsPath: '/root/ci-project/-/pipelines/701',
+        __typename: 'DetailedStatus',
+        name: 'RUNNING',
+      },
+      finishedAt: '2025-09-25T16:24:02Z',
+      duration: 17,
+      retryable: true,
+      cancelable: false,
+      stuck: false,
+      yamlErrors: false,
+      failureReason: null,
+      stages: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Ci::Stage/429',
+            name: 'build',
+            detailedStatus: {
+              id: 'success-429-429',
+              icon: 'status_success',
+              text: 'Passed',
+              detailsPath: '/root/ci-project/-/pipelines/701#build',
+              __typename: 'DetailedStatus',
+              tooltip: 'passed',
+            },
+            __typename: 'CiStage',
+          },
+          {
+            id: 'gid://gitlab/Ci::Stage/431',
+            name: 'test',
+            detailedStatus: {
+              id: 'success-431-431',
+              icon: 'status_warning',
+              text: 'Warning',
+              detailsPath: '/root/ci-project/-/pipelines/701#test',
+              __typename: 'DetailedStatus',
+              tooltip: 'passed with warnings',
+            },
+            __typename: 'CiStage',
+          },
+          {
+            id: 'gid://gitlab/Ci::Stage/434',
+            name: 'deploy',
+            detailedStatus: {
+              id: 'success-434-434',
+              icon: 'status_success',
+              text: 'Passed',
+              detailsPath: '/root/ci-project/-/pipelines/701#deploy',
+              __typename: 'DetailedStatus',
+              tooltip: 'passed',
+            },
+            __typename: 'CiStage',
+          },
+        ],
+        __typename: 'CiStageConnection',
+      },
+      __typename: 'Pipeline',
+    },
+  },
+};
+
+export const mockPipelineUpdateResponseEmpty = {
+  data: {
+    ciPipelineStatusesUpdated: null,
+  },
+};

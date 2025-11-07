@@ -18,16 +18,9 @@ title: Troubleshooting the GitLab MCP server
 
 - Introduced in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) feature flag `mcp_server` in GitLab 18.6.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) feature flag `oauth_dynamic_client_registration` in GitLab 18.6.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by feature flags.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 {{< alert type="warning" >}}
 

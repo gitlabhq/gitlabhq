@@ -32,7 +32,9 @@ import getAllPipelinesCountQuery from './graphql/queries/get_all_pipelines_count
 import clearRunnerCacheMutation from './graphql/mutations/clear_runner_cache.mutation.graphql';
 import retryPipelineMutation from './graphql/mutations/retry_pipeline.mutation.graphql';
 import cancelPipelineMutation from './graphql/mutations/cancel_pipeline.mutation.graphql';
+import ciPipelineStatusesUpdatedSubscription from './graphql/subscriptions/ci_pipeline_statuses_updated.subscription.graphql';
 import { PIPELINES_PER_PAGE, ANY_TRIGGER_AUTHOR } from './constants';
+import { updatePipelineNodes } from './utils';
 
 const DEFAULT_PAGINATION = {
   first: PIPELINES_PER_PAGE,
@@ -138,6 +140,44 @@ export default {
         createAlert({
           message: s__('Pipelines|An error occurred while loading pipelines'),
         });
+      },
+      subscribeToMore: {
+        document: ciPipelineStatusesUpdatedSubscription,
+        variables() {
+          return {
+            projectId: this.pipelines?.projectId,
+          };
+        },
+        skip() {
+          return !this.pipelines?.projectId || this.pipelines?.list?.length === 0;
+        },
+        updateQuery(
+          previousData,
+          {
+            subscriptionData: {
+              data: { ciPipelineStatusesUpdated },
+            },
+          },
+        ) {
+          if (ciPipelineStatusesUpdated) {
+            const previousPipelines = previousData?.project?.pipelines?.nodes || [];
+            const updatedPipeline = ciPipelineStatusesUpdated;
+
+            const updatedNodes = updatePipelineNodes(previousPipelines, updatedPipeline);
+
+            return {
+              ...previousData,
+              project: {
+                ...previousData.project,
+                pipelines: {
+                  ...previousData.project.pipelines,
+                  nodes: updatedNodes,
+                },
+              },
+            };
+          }
+          return previousData;
+        },
       },
     },
     pipelinesCount: {

@@ -28,6 +28,12 @@ Get a list of all Pages domains.
 GET /pages/domains
 ```
 
+Supported attributes:
+
+| Attribute | Type           | Required | Description                                       |
+| --------- | -------------- | -------- | ------------------------------------------------- |
+| `domain`  | string         | no       | The domain of the GitLab Pages site to filter on. |
+
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 

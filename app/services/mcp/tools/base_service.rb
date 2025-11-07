@@ -11,6 +11,14 @@ module Mcp
         raise NoMethodError
       end
 
+      def description
+        raise NoMethodError
+      end
+
+      def input_schema
+        raise NoMethodError
+      end
+
       def execute(request: nil, params: nil) # rubocop: disable Lint/UnusedMethodArgument -- request param to match Mcp::Tools::ApiTool
         args = params[:arguments]
         validate_arguments!(args)
@@ -77,14 +85,6 @@ module Mcp
             minimum: 1
           }
         }
-      end
-
-      def description
-        raise NoMethodError
-      end
-
-      def input_schema
-        raise NoMethodError
       end
 
       def version

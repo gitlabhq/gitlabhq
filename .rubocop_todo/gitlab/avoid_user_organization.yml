@@ -1,0 +1,14 @@
+---
+Gitlab/AvoidUserOrganization:
+  Details: grace period
+  Exclude:
+    - 'app/helpers/admin/users_helper.rb'
+    - 'app/models/todo.rb'
+    - 'app/services/audit_event_service.rb'
+    - 'app/services/keys/create_service.rb'
+    - 'app/workers/anti_abuse/spam_abuse_events_worker.rb'
+    - 'app/workers/gitlab/github_gists_import/import_gist_worker.rb'
+    - 'ee/app/models/ai/conversation/thread.rb'
+    - 'ee/lib/tasks/gitlab/nav/dump_structure.rb'
+    - 'lib/gitlab/github_gists_import/importer/gist_importer.rb'
+    - 'lib/gitlab/seeders/ci/runner/runner_fleet_seeder.rb'

@@ -28,10 +28,10 @@ module Gitlab
           repository.gitaly_ref_client.get_tag_messages(tag_ids)
         end
 
-        def extract_signature_lazily(repository, tag_id)
+        def extract_signature_lazily(repository, tag_id, timeout: GitalyClient.fast_timeout)
           # Return the default empty signature data in case of timeouts
           BatchLoader.for(tag_id).batch(key: repository, default_value: [+''.b, +''.b]) do |tag_ids, loader, args|
-            batch_signature_extraction(args[:key], tag_ids).each do |tag_id, signature_data|
+            batch_signature_extraction(args[:key], tag_ids, timeout: timeout).each do |tag_id, signature_data|
               loader.call(tag_id, signature_data)
             end
           rescue GRPC::DeadlineExceeded => e
@@ -39,8 +39,8 @@ module Gitlab
           end
         end
 
-        def batch_signature_extraction(repository, tag_ids)
-          repository.gitaly_ref_client.get_tag_signatures(tag_ids)
+        def batch_signature_extraction(repository, tag_ids, timeout: nil)
+          repository.gitaly_ref_client.get_tag_signatures(tag_ids, timeout: timeout)
         end
       end
 
