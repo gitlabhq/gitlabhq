@@ -47,7 +47,7 @@ func TestInstrumentGeoProxyRoute(t *testing.T) {
 			handleRouteWithMatchers(u, local),
 			handleRouteWithMatchers(u, main),
 		}
-	}, nil, nil, nil)
+	}, nil, nil, nil, nil)
 	ts := httptest.NewServer(u)
 	defer ts.Close()
 

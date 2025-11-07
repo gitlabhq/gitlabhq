@@ -65,6 +65,8 @@ import WorkItemListActions from '~/work_items/components/work_item_list_actions.
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
+import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
@@ -92,6 +94,7 @@ import {
   userPreferenceQueryResponse,
   workItemUserPreferenceUpdateMutationResponse,
   workItemUserPreferenceUpdateMutationResponseWithErrors,
+  workItemCountsOnlyResponse,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -108,6 +111,17 @@ const skipReason = new SkipReason({
 });
 
 const RELEASES_ENDPOINT = '/test/project/-/releases.json';
+
+const hasWorkItemsData = {
+  data: {
+    namespace: {
+      id: 'namespace',
+      workItems: {
+        nodes: [{ id: 'thing' }],
+      },
+    },
+  },
+};
 
 describeSkipVue3(skipReason, () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
@@ -133,6 +147,8 @@ describeSkipVue3(skipReason, () => {
     },
   });
   const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
+  const defaultHasWorkItemsHandler = jest.fn().mockResolvedValue(hasWorkItemsData);
+  const defaultCountsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
@@ -158,6 +174,8 @@ describeSkipVue3(skipReason, () => {
     queryHandler = defaultQueryHandler,
     slimQueryHandler = defaultSlimQueryHandler,
     countsQueryHandler = defaultCountsQueryHandler,
+    hasWorkItemsHandler = defaultHasWorkItemsHandler,
+    countsOnlyHandler = defaultCountsOnlyHandler,
     mockPreferencesHandler = mockPreferencesQueryHandler,
     userPreferenceMutationResponse = userPreferenceMutationHandler,
     workItemsToggleEnabled = true,
@@ -186,6 +204,8 @@ describeSkipVue3(skipReason, () => {
         [getUserWorkItemsPreferences, mockPreferencesHandler],
         [namespaceWorkItemTypesQuery, namespaceQueryHandler],
         [updateWorkItemListUserPreference, userPreferenceMutationResponse],
+        [hasWorkItemsQuery, hasWorkItemsHandler],
+        [getWorkItemsCountOnlyQuery, countsOnlyHandler],
         ...additionalHandlers,
       ]),
       provide: {
@@ -1440,15 +1460,28 @@ describeSkipVue3(skipReason, () => {
       closed: 0,
       opened: 0,
     };
+
+    const emptyHasWorkItemsResponse = {
+      data: {
+        namespace: {
+          id: 'namespace',
+          workItems: {
+            nodes: [],
+          },
+        },
+      },
+    };
     const getEmptyQueryHandler = ({
       emptyWorkItems = emptyWorkItemsResponse,
       emptyWorkItemsSlim = emptyWorkItemsSlimResponse,
       emptyCounts = emptyCountsResponse,
+      emptyHasWorkItems = emptyHasWorkItemsResponse,
     } = {}) => {
       return {
         queryHandler: jest.fn().mockResolvedValue(emptyWorkItems),
         slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlim),
         countsQueryHandler: jest.fn().mockResolvedValue(emptyCounts),
+        hasWorkItemsHandler: jest.fn().mockResolvedValue(emptyHasWorkItems),
       };
     };
 
@@ -1559,7 +1592,10 @@ describeSkipVue3(skipReason, () => {
           opened: 0,
         };
         const emptyStateConfig = {
-          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+          ...getEmptyQueryHandler({
+            emptyCounts: emptyCountsWithIssueResponse,
+            emptyHasWorkItems: hasWorkItemsData,
+          }),
         };
 
         it('renders the with issues empty state and the new resource dropdown', async () => {
@@ -1589,7 +1625,10 @@ describeSkipVue3(skipReason, () => {
           },
         };
         const emptyStateConfig = {
-          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+          ...getEmptyQueryHandler({
+            emptyCounts: emptyCountsWithIssueResponse,
+            emptyHasWorkItems: hasWorkItemsData,
+          }),
         };
 
         it('renders the with issues empty state and the CreateWorkItemModal', async () => {
@@ -1847,17 +1886,6 @@ describeSkipVue3(skipReason, () => {
       await waitForPromises();
 
       expect(wrapper.text()).toContain('3 items');
-    });
-
-    it('includes closed/opened in tab counts', async () => {
-      mountComponent({ workItemPlanningView: true });
-      await waitForPromises();
-
-      const tabCounts = findIssuableList().props('tabCounts');
-
-      expect(tabCounts.all).toBe(3);
-      expect(tabCounts.closed).toBeDefined();
-      expect(tabCounts.opened).toBeDefined();
     });
   });
 

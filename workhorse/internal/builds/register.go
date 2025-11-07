@@ -118,12 +118,20 @@ func watchForRunnerChange(ctx context.Context, watchHandler WatchKeyHandler, tok
 }
 
 // RegisterHandler with key watch logic if polling is enabled.
-func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDuration time.Duration) http.Handler {
+func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDuration time.Duration, shutdownChan <-chan struct{}) http.Handler {
 	if pollingDuration == 0 {
 		return h
 	}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// If we've shutdown, always return a 204 No Content so the runner will retry.
+		select {
+		case <-shutdownChan:
+			w.WriteHeader(http.StatusNoContent)
+			return
+		default:
+		}
+
 		w.Header().Set(runnerBuildQueueHeaderKey, runnerBuildQueueHeaderValue)
 
 		requestBody, err := readRunnerBody(w, r)

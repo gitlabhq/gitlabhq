@@ -504,6 +504,7 @@ The following table describes the rate limits for GitLab.com:
 | Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute     |
 | Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 2,000 requests each minute     |
 | Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute       |
+| List all project members in a project                              | 60 requests each minute        |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

@@ -9,14 +9,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12
 milestone: '9.5'
 gitlab_schema: gitlab_main_org
 table_size: over_limit
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: event_id
-        table: events
-        table_primary_key: id
-        sharding_key: project_id
-        belongs_to: event
-desired_sharding_key_migration_job_name: BackfillPushEventPayloadsProjectId
+sharding_key:
+  project_id: projects

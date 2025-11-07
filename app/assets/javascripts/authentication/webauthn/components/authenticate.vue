@@ -1,10 +1,8 @@
 <script>
-import { GlButton, GlForm, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlForm } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
-import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
 import EmailVerification from '~/sessions/new/components/email_verification.vue';
-import { helpPagePath } from '~/helpers/help_page_helper';
+import EmailOtpFallbackFooter from '~/sessions/new/components/email_otp_fallback_footer.vue';
 import { supported, convertGetParams, convertGetResponse } from '../util';
 import { WEBAUTHN_AUTHENTICATE } from '../constants';
 import WebAuthnError from '../error';
@@ -14,9 +12,8 @@ export default {
   components: {
     GlForm,
     GlButton,
-    GlLink,
-    GlSprintf,
     EmailVerification,
+    EmailOtpFallbackFooter,
   },
   props: {
     webauthnParams: {
@@ -61,17 +58,11 @@ export default {
       deviceResponse: '',
       fallbackMode: false,
       showEmailVerification: false,
-      isSendingEmailOtp: false,
     };
   },
   computed: {
     showFooter() {
-      return this.errorMessage && this.sendEmailOtpPath;
-    },
-    recoveryCodeLinkPath() {
-      return helpPagePath('user/profile/account/two_factor_authentication', {
-        anchor: 'recovery-codes',
-      });
+      return this.errorMessage && Boolean(this.sendEmailOtpPath) && !this.showEmailVerification;
     },
   },
   mounted() {
@@ -100,29 +91,6 @@ export default {
     formSubmit() {
       this.$refs.loginToken2faForm.$el.submit();
     },
-    async sendEmailOtp() {
-      this.abortController.abort();
-
-      try {
-        this.isSendingEmailOtp = true;
-        await axios.post(this.sendEmailOtpPath, {
-          user: { login: this.username },
-        });
-        // Hide the 2FA form
-        document.querySelector('.js-2fa-form').classList.add('hidden');
-        // Show email verification component
-        this.showEmailVerification = true;
-        // Hide WebAuthn UI
-        this.fallbackMode = true;
-      } catch (error) {
-        this.errorMessage = __(
-          'Failed to send email OTP. Please try again. If the problem persists, please refresh your page or sign in again.',
-        );
-        this.errorName = error.message;
-      } finally {
-        this.isSendingEmailOtp = false;
-      }
-    },
     async authenticate() {
       this.inProgress = true;
       try {
@@ -144,6 +112,16 @@ export default {
       } finally {
         this.inProgress = false;
       }
+    },
+    sendEmailOTPError({ message, name }) {
+      this.abortController.abort();
+      this.errorMessage = message;
+      this.errorName = name;
+    },
+    sendEmailOTPSuccess() {
+      this.abortController.abort();
+      this.showEmailVerification = true;
+      this.fallbackMode = true;
     },
   },
   csrf,
@@ -206,35 +184,16 @@ export default {
       >
         {{ __('Sign in via 2FA code') }}
       </gl-button>
-
-      <div v-if="showFooter" class="gl-mt-4 gl-text-subtle">
-        <gl-sprintf
-          :message="
-            __(
-              'Having trouble signing in? %{recoveryCodeLinkStart}Enter recovery code%{recoveryCodeLinkEnd} or %{sendCodeLinkStart}send code to email address%{sendCodeLinkEnd}.',
-            )
-          "
-        >
-          <template #recoveryCodeLink>
-            <gl-link :href="recoveryCodeLinkPath" target="_blank">
-              {{ __('Enter recovery code') }}
-            </gl-link>
-          </template>
-          <template #sendCodeLink="{ content }">
-            <gl-button
-              variant="link"
-              :loading="isSendingEmailOtp"
-              :disabled="isSendingEmailOtp"
-              category="tertiary"
-              data-testid="send-email-otp-link"
-              @click="sendEmailOtp"
-            >
-              {{ content }}
-            </gl-button>
-          </template>
-        </gl-sprintf>
-      </div>
     </div>
+
+    <!-- This component stays visible even when TOTP/recovery-code form appears as fallback for Webauthn -->
+    <email-otp-fallback-footer
+      v-if="showFooter"
+      :send-email-otp-path="sendEmailOtpPath"
+      :username="username"
+      @success="sendEmailOTPSuccess"
+      @error="sendEmailOTPError"
+    />
 
     <email-verification
       v-if="showEmailVerification && emailVerificationData"

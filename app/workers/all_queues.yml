@@ -2280,6 +2280,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :mail_scheduler
+- :name: namespaces:namespaces_unlink_project_forks
+  :worker_name: Namespaces::UnlinkProjectForksWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :namespaces
 - :name: object_pool:object_pool_create
   :worker_name: ObjectPool::CreateWorker
   :feature_category: :gitaly

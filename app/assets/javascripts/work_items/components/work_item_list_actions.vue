@@ -6,12 +6,15 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import WorkItemByEmail from './work_item_by_email.vue';
 import WorkItemCsvExportModal from './work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from './work_items_csv_import_modal.vue';
 
 export default {
+  name: 'WorkItemListActions',
   exportModalId: 'work-item-export-modal',
   importModalId: 'work-item-import-modal',
   components: {
@@ -26,6 +29,9 @@ export default {
     exportAsCSV: s__('WorkItem|Export as CSV'),
     importFromJira: s__('WorkItem|Import from Jira'),
     importCsv: s__('WorkItem|Import CSV'),
+    rssLinkUpdateError: s__(
+      'WorkItem|An error occurred updating the RSS link. Please refresh the page to try again.',
+    ),
   },
   directives: {
     GlModal: GlModalDirective,
@@ -77,6 +83,11 @@ export default {
       required: false,
       default: false,
     },
+    urlParams: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -103,12 +114,26 @@ export default {
     dropdownTooltip() {
       return !this.showTooltip ? __('Actions') : '';
     },
+    filteredRssPath() {
+      if (!this.rssPath) return null;
+
+      if (isEmpty(this.urlParams)) return this.rssPath;
+
+      try {
+        return mergeUrlParams(this.urlParams, this.rssPath);
+      } catch (error) {
+        this.$emit('error', this.$options.i18n.rssLinkUpdateError);
+
+        // Fall back to the original path if URL construction fails
+        return this.rssPath;
+      }
+    },
     subscribeDropdownOptions() {
       return {
         items: [
           {
             text: __('Subscribe to RSS feed'),
-            href: this.rssPath,
+            href: this.filteredRssPath,
             extraAttrs: { 'data-testid': 'subscribe-rss' },
           },
           {
@@ -120,7 +145,7 @@ export default {
       };
     },
     hasSubscriptionOptions() {
-      return this.rssPath || this.calendarPath;
+      return this.filteredRssPath || this.calendarPath;
     },
     isJiraImportVisible() {
       return Boolean(this.projectImportJiraPath) && this.canEdit;

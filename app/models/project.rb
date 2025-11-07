@@ -992,6 +992,15 @@ class Project < ApplicationRecord
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
   }
 
+  scope :in_fork_network, -> {
+    joins(:fork_network_member)
+  }
+
+  # This prevents N+1 queries since the UnlinkForkService service accesses these associations for each project.
+  scope :with_fork_network_associations, -> {
+    includes(:fork_network, :forked_from_project, :fork_network_member)
+  }
+
   scope :last_repository_check_failed, -> { where(last_repository_check_failed: true) }
   scope :last_repository_check_not_failed, -> { where(last_repository_check_failed: [false, nil]) }
 

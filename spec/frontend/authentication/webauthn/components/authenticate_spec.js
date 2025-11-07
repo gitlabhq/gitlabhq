@@ -282,7 +282,7 @@ describe('WebAuthnAuthenticate', () => {
           expect(wrapper.vm.fallbackMode).toBe(false);
           expect(findMessage().exists()).toBe(true);
           expect(findMessage().text()).toContain(
-            'Failed to send email OTP. Please try again. If the problem persists, please refresh your page or sign in again.',
+            'Failed to send email OTP. Please try again. If the problem persists, refresh your page or sign in again.',
           );
         });
       });
@@ -318,23 +318,6 @@ describe('WebAuthnAuthenticate', () => {
           skipPath: null,
         },
       });
-    });
-
-    it('aborts authentication when sendEmailOtp is called', async () => {
-      const abortSpy = jest.spyOn(wrapper.vm.abortController, 'abort');
-      axios.post = jest.fn().mockResolvedValue({ data: { success: true } });
-
-      await wrapper.vm.sendEmailOtp();
-
-      expect(abortSpy).toHaveBeenCalled();
-    });
-
-    it('aborts authentication when component is destroyed', () => {
-      const abortSpy = jest.spyOn(wrapper.vm.abortController, 'abort');
-
-      wrapper.destroy();
-
-      expect(abortSpy).toHaveBeenCalled();
     });
   });
 });

@@ -16,5 +16,9 @@
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'verify-code-button' } }) do
     = _("Verify code")
 
+- if fallback_to_email_otp_permitted?(@user) && !@user.two_factor_webauthn_enabled?
+  - verification_data_hash = verification_data_for_js(@user)
+  #js-2fa-email-verification-data{ data: { send_email_otp_path: users_fallback_to_email_otp_path, username: @user.username, email_verification_data: verification_data_hash.to_json } }
+
 - if @user.two_factor_webauthn_enabled?
   #js-authentication-webauthn{ data: webauthn_authentication_data(user: @user, params: params, admin_mode: admin_mode) }

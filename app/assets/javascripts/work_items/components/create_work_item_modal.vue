@@ -147,7 +147,10 @@ export default {
       if (this.relatedItem) {
         query += previousQueryParam ? '&' : '?';
         query += `${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}`;
+        previousQueryParam = true;
       }
+      query += previousQueryParam ? '&' : '?';
+      query += `initialCreationContext=${this.creationContext}`;
       return query;
     },
     newWorkItemPath() {
@@ -169,7 +172,7 @@ export default {
       });
     },
     workItemCreatedText() {
-      return sprintf(s__('WorkItem|%{workItemType} created'), {
+      return sprintf(s__('WorkItem|%{workItemType} created.'), {
         workItemType: NAME_TO_TEXT_MAP[this.selectedWorkItemTypeName],
       });
     },
@@ -278,6 +281,7 @@ export default {
           query: {
             [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id,
             type: NAME_TO_ENUM_MAP[this.selectedWorkItemTypeName],
+            initialCreationContext: this.creationContext,
           },
         });
       } else {

@@ -133,7 +133,7 @@ describe('CreateWorkItemModal', () => {
     });
 
     expect(showToast).toHaveBeenCalledWith(
-      'Epic created',
+      'Epic created.',
       expect.objectContaining({
         action: {
           text: 'View details',
@@ -242,13 +242,13 @@ describe('CreateWorkItemModal', () => {
     ${WORK_ITEM_TYPE_NAME_TEST_CASE}    | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
     ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
   `(
-    `has link to new work item page in modal header for $workItemType`,
+    `has link to new work item page in modal header for $workItemType and it appends initialCreationContext params to the url`,
     async ({ workItemType, routeParamName }) => {
       createComponent({ preselectedWorkItemType: workItemType });
       await waitForPromises();
 
       expect(findOpenInFullPageButton().attributes().href).toBe(
-        `/full-path/-/${routeParamName}/new`,
+        `/full-path/-/${routeParamName}/new?initialCreationContext=${CREATION_CONTEXT_LIST_ROUTE}`,
       );
     },
   );
@@ -267,9 +267,9 @@ describe('CreateWorkItemModal', () => {
       await nextTick();
     });
 
-    it('appends the related item id to the full page button href', () => {
+    it('appends the related item id and initialCreationContext params to the full page button href', () => {
       expect(findOpenInFullPageButton().attributes('href')).toBe(
-        '/full-path/-/epics/new?related_item_id=gid://gitlab/WorkItem/843',
+        `/full-path/-/epics/new?related_item_id=gid://gitlab/WorkItem/843&initialCreationContext=${CREATION_CONTEXT_LIST_ROUTE}`,
       );
     });
   });
@@ -286,7 +286,7 @@ describe('CreateWorkItemModal', () => {
 
       expect(wrapper.find('h2').text()).toBe('New key result');
       expect(findTrigger().text()).toBe('New key result');
-      expect(showToast).toHaveBeenCalledWith('Key result created', expect.any(Object));
+      expect(showToast).toHaveBeenCalledWith('Key result created.', expect.any(Object));
     });
   });
 

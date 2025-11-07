@@ -37,8 +37,6 @@ trim!:
   file: ee/app/models/cloud_connector/keys.rb
 truncated_pem:
   file: ee/app/models/cloud_connector/keys.rb
-delete_compliance_requirements_controls:
-  file: ee/app/models/compliance_management/compliance_framework/compliance_requirement.rb
 notification_sent!:
   file: ee/app/models/compliance_management/pipl_user.rb
 blocked_issuables_for_collection:
@@ -403,8 +401,6 @@ saved_change_to_parent?:
   file: app/models/namespace.rb
 saved_change_to_path_or_parent?:
   file: app/models/namespace.rb
-normal_select:
-  file: app/models/namespaces/traversal/linear_scopes.rb
 user_admin?:
   file: app/models/personal_access_token.rb
 import_scheduled?:

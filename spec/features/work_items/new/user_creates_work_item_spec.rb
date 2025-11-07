@@ -42,13 +42,13 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
       visit project_work_items_path(project)
     end
 
-    context 'when creating an work item' do
+    context 'when creating a work item' do
       let_it_be(:label) { create(:label, title: 'Label 1', project: project) }
       let_it_be(:milestone) { create(:milestone, project: project, title: 'Milestone') }
       let(:issuable_container) { '[data-testid="issuable-container"]' }
 
       before do
-        click_link 'New item'
+        first(:link, 'New item').click
       end
 
       it_behaves_like 'creates work item with widgets from a modal', 'issue', %w[

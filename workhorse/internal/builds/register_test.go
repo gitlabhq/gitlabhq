@@ -26,7 +26,8 @@ func echoRequest(rw http.ResponseWriter, req *http.Request) {
 var echoRequestFunc = http.HandlerFunc(echoRequest)
 
 func expectHandlerWithWatcher(t *testing.T, watchHandler WatchKeyHandler, data string, contentType string, expectedHTTPStatus int, msgAndArgs ...interface{}) {
-	h := RegisterHandler(echoRequestFunc, watchHandler, time.Second)
+	shutdownChan := make(chan struct{})
+	h := RegisterHandler(echoRequestFunc, watchHandler, time.Second, shutdownChan)
 
 	rw := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "/", bytes.NewBufferString(data))
@@ -153,4 +154,20 @@ func TestCloneRequestWithBody(t *testing.T) {
 	var buffer bytes.Buffer
 	io.Copy(&buffer, newReq.Body)
 	require.Equal(t, newInput, buffer.Bytes())
+}
+
+func TestRegisterHandlerShutdown(t *testing.T) {
+	shutdownChan := make(chan struct{})
+	h := RegisterHandler(echoRequestFunc, nil, time.Second, shutdownChan)
+
+	// Close the shutdown channel to signal shutdown
+	close(shutdownChan)
+
+	rw := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/", bytes.NewBufferString(`{"token":"token","last_update":"last_update"}`))
+	req.Header.Set("Content-Type", "application/json")
+
+	h.ServeHTTP(rw, req)
+
+	require.Equal(t, http.StatusNoContent, rw.Code, "should return 204 No Content when shutdown")
 }

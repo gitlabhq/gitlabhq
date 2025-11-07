@@ -219,14 +219,18 @@ The pipeline status badge is based on specific Git revisions (branches). Ensure 
 
 ## Customize badges
 
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180832) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `custom_project_badges`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/574344) in GitLab 18.6.
 
 {{< /history >}}
-
-Custom badges is in beta. Track the development of badges improvements in [epic 9904](https://gitlab.com/groups/gitlab-org/-/epics/9904).
 
 You can customize how badges appear in your project:
 

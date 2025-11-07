@@ -24996,7 +24996,8 @@ CREATE TABLE push_event_payloads (
     commit_title character varying(70),
     ref_count integer,
     event_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_37c617d07d CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE push_rules (
@@ -33618,9 +33619,6 @@ ALTER TABLE labels
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE push_event_payloads
-    ADD CONSTRAINT check_37c617d07d CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE diff_note_positions
     ADD CONSTRAINT check_4c86140f48 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
@@ -48905,6 +48903,9 @@ ALTER TABLE ONLY path_locks
 
 ALTER TABLE ONLY jira_connect_installations
     ADD CONSTRAINT fk_5326fc7be6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY identities
+    ADD CONSTRAINT fk_5373344100 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY agent_user_access_group_authorizations
     ADD CONSTRAINT fk_53fd98ccbf FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

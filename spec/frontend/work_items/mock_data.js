@@ -9448,3 +9448,16 @@ export const workItemUserPreferenceUpdateMutationResponseWithErrors = {
     },
   },
 };
+
+export const workItemCountsOnlyResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
+      name: 'Test',
+      workItems: {
+        count: 3,
+      },
+    },
+  },
+};

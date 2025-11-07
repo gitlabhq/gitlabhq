@@ -451,23 +451,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
                   .to increment(:user_authenticated_counter)
                   .and increment(:user_session_override_counter)
 
-                perform_enqueued_jobs do
-                  click_button 'send code to email address'
-                  expect(page).to have_content('Verification code')
-
-                  # WebAuthn UI should be hidden
-                  expect(page).not_to have_content('Trying to communicate with your device')
-
-                  mail = wait_for('mail found for user') { find_email_for(user) }
-                  mail_to = mail&.to
-                  expect(mail_to).to match_array([user.email])
-                  expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
-
-                  code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
-                  fill_in s_('IdentityVerification|Verification code'), with: code
-
-                  expect { click_button s_('IdentityVerification|Verify code') }.to change { user.reload.sign_in_count }
-                end
+                verify_email_otp_fallback_workflow(user)
               end
             end
           end
@@ -888,6 +872,84 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
         end
       end
     end
+
+    context 'Fallback to email OTP from TOTP', :js do
+      let(:user) { create(:user, :two_factor, email_otp_required_after: 1.day.ago) }
+
+      before do
+        ActionMailer::Base.deliveries.clear
+        gitlab_sign_in(user)
+        expect(page).to have_content('Enter verification code')
+      end
+
+      it 'sends email OTP and shows verification form when button clicked' do
+        expect(page).to have_link('Enter recovery code')
+        expect(page).to have_button('send code to email address')
+
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+
+        verify_email_otp_fallback_workflow(user)
+      end
+
+      context 'when email_based_mfa ff is disabled' do
+        before do
+          stub_feature_flags(email_based_mfa: false)
+        end
+
+        it 'does not show email OTP fallback when feature is disabled' do
+          visit new_user_session_path
+          gitlab_sign_in(user)
+          expect(page).not_to have_button('send code to email address')
+        end
+      end
+    end
+
+    context 'user with both WebAuthn and TOTP enabled', :js do
+      let(:user) do
+        create(:user,
+          :two_factor,
+          :two_factor_via_webauthn,
+          email_otp_required_after: 1.day.ago
+        )
+      end
+
+      before do
+        ActionMailer::Base.deliveries.clear
+        visit new_user_session_path
+        gitlab_sign_in(user)
+        click_button 'Sign in via 2FA code'
+      end
+
+      it 'allows switching to TOTP and using email OTP fallback' do
+        expect(page).to have_content('Enter verification code')
+
+        # Email OTP fallback should be available
+        expect(page).to have_link('Enter recovery code')
+        expect(page).to have_button('send code to email address')
+
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+
+        verify_email_otp_fallback_workflow(user)
+      end
+
+      it 'can still use TOTP code after switching from WebAuthn' do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_two_factor_authenticated_counter)
+
+        # Enter TOTP code
+        fill_in 'user_otp_attempt', with: user.current_otp
+        click_button 'Verify code'
+
+        expect(page).to have_content('Welcome to GitLab')
+        wait_for_requests
+        expect(page).to have_current_path root_path, ignore_query: true
+      end
+    end
   end
 
   describe 'UI tabs and panes' do
@@ -1290,6 +1352,32 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           expect(user.identities).to be_empty
         end
       end
+    end
+  end
+
+  def verify_email_otp_fallback_workflow(user)
+    perform_enqueued_jobs do
+      click_button 'send code to email address'
+
+      expect(page).to have_content('Verification code')
+
+      # WebAuthn UI should be hidden
+      expect(page).not_to have_content('Trying to communicate with your device')
+
+      # TOTP form should be hidden
+      expect(page).not_to have_content('Enter verification code')
+
+      mail = wait_for('mail found for user') { find_email_for(user) }
+      expect(mail.to).to match_array([user.email])
+      expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
+
+      code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+      fill_in s_('IdentityVerification|Verification code'), with: code
+
+      expect { click_button s_('IdentityVerification|Verify code') }
+        .to change { user.reload.sign_in_count }
+
+      expect(page).to have_content('Welcome to GitLab')
     end
   end
 end

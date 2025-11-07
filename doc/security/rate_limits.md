@@ -173,6 +173,25 @@ There is a rate limit for [removing project or group members using the API endpo
 
 The rate limit is 60 deletions per minute.
 
+### List project members using the API
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578527) in GitLab 18.6.
+
+{{< /history >}}
+
+Sets a rate limit for listing all project members in a group or project. Defaults
+to 60 requests per minute on the following endpoints:
+
+```plaintext
+GET /groups/:id/members/all
+GET /projects/:id/members/all
+```
+
+Administrators can [configure the rate limit](../administration/settings/rate_limit_on_members_api.md) 
+for the projects endpoint.
+
 ### Repository blob and file access
 
 {{< history >}}

@@ -338,7 +338,7 @@ export default {
           const defaultSelectedWorkItemType =
             this.findWorkItemType(WORK_ITEM_TYPE_NAME_ISSUE) || this.workItemTypes?.at(0);
           this.selectedWorkItemTypeId = defaultSelectedWorkItemType?.id;
-          this.$emit('changeType', defaultSelectedWorkItemType);
+          this.$emit('changeType', defaultSelectedWorkItemType?.name);
         }
       },
       error() {

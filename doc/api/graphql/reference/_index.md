@@ -20418,6 +20418,43 @@ The edge type for [`PackageTag`](#packagetag).
 | <a id="packagetagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="packagetagedgenode"></a>`node` | [`PackageTag`](#packagetag) | The item at the end of the edge. |
 
+#### `PackagesNugetSymbolRegistryConnection`
+
+The connection type for [`PackagesNugetSymbolRegistry`](#packagesnugetsymbolregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagesnugetsymbolregistryconnectionedges"></a>`edges` | [`[PackagesNugetSymbolRegistryEdge]`](#packagesnugetsymbolregistryedge) | A list of edges. |
+| <a id="packagesnugetsymbolregistryconnectionnodes"></a>`nodes` | [`[PackagesNugetSymbolRegistry]`](#packagesnugetsymbolregistry) | A list of nodes. |
+| <a id="packagesnugetsymbolregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PackagesNugetSymbolRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagesnugetsymbolregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `PackagesNugetSymbolRegistryEdge`
+
+The edge type for [`PackagesNugetSymbolRegistry`](#packagesnugetsymbolregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagesnugetsymbolregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="packagesnugetsymbolregistryedgenode"></a>`node` | [`PackagesNugetSymbolRegistry`](#packagesnugetsymbolregistry) | The item at the end of the edge. |
+
 #### `PackagesProtectionRuleConnection`
 
 The connection type for [`PackagesProtectionRule`](#packagesprotectionrule).
@@ -30822,6 +30859,31 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="geonodepackagefileregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
 | <a id="geonodepackagefileregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
+##### `GeoNode.packagesNugetSymbolRegistries`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Find Packages::Nuget::Symbols registries on this Geo node. Ignored if `geo_packages_nuget_symbol_replication` feature flag is disabled.
+
+Returns [`PackagesNugetSymbolRegistryConnection`](#packagesnugetsymbolregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodepackagesnugetsymbolregistriesids"></a>`ids` | [`[GeoPackagesNugetSymbolRegistryID!]`](#geopackagesnugetsymbolregistryid) | Filters registries by their ID. |
+| <a id="geonodepackagesnugetsymbolregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
+| <a id="geonodepackagesnugetsymbolregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonodepackagesnugetsymbolregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
+| <a id="geonodepackagesnugetsymbolregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
 ##### `GeoNode.pagesDeploymentRegistries`
 
 Find Pages Deployment registries on this Geo node.
@@ -38596,6 +38658,35 @@ A packages cleanup policy designed to keep only packages and packages assets tha
 | ---- | ---- | ----------- |
 | <a id="packagescleanuppolicykeepnduplicatedpackagefiles"></a>`keepNDuplicatedPackageFiles` | [`PackagesCleanupKeepDuplicatedPackageFilesEnum!`](#packagescleanupkeepduplicatedpackagefilesenum) | Number of duplicated package files to retain. |
 | <a id="packagescleanuppolicynextrunat"></a>`nextRunAt` | [`Time`](#time) | Next time that the packages cleanup policy will be executed. |
+
+### `PackagesNugetSymbolRegistry`
+
+Represents the Geo replication and verification state of a packages_nuget_symbol.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagesnugetsymbolregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PackagesNugetSymbolRegistry do not match on the primary and secondary. |
+| <a id="packagesnugetsymbolregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PackagesNugetSymbolRegistry was created. |
+| <a id="packagesnugetsymbolregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
+| <a id="packagesnugetsymbolregistryid"></a>`id` | [`ID!`](#id) | ID of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the PackagesNugetSymbolRegistry is missing on primary. |
+| <a id="packagesnugetsymbolregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the PackagesNugetSymbolRegistry's model record. |
+| <a id="packagesnugetsymbolregistrypackagesnugetsymbolid"></a>`packagesNugetSymbolId` | [`ID!`](#id) | ID of the Packages::Nuget::Symbol. |
+| <a id="packagesnugetsymbolregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PackagesNugetSymbolRegistry is resynced. |
+| <a id="packagesnugetsymbolregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the PackagesNugetSymbolRegistry in case of mismatch. |
+| <a id="packagesnugetsymbolregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PackagesNugetSymbolRegistry is reverified. |
+| <a id="packagesnugetsymbolregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of PackagesNugetSymbolRegistry started. |
+| <a id="packagesnugetsymbolregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PackagesNugetSymbolRegistry. |
+| <a id="packagesnugetsymbolregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PackagesNugetSymbolRegistry. |
 
 ### `PackagesProtectionRule`
 
@@ -52909,6 +53000,12 @@ A `GeoPackageFileRegistryID` is a global ID. It is encoded as a string.
 
 An example `GeoPackageFileRegistryID` is: `"gid://gitlab/Geo::PackageFileRegistry/1"`.
 
+### `GeoPackagesNugetSymbolRegistryID`
+
+A `GeoPackagesNugetSymbolRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoPackagesNugetSymbolRegistryID` is: `"gid://gitlab/Geo::PackagesNugetSymbolRegistry/1"`.
+
 ### `GeoPagesDeploymentRegistryID`
 
 A `GeoPagesDeploymentRegistryID` is a global ID. It is encoded as a string.
@@ -53813,6 +53910,7 @@ One of:
 - [`LfsObjectRegistry`](#lfsobjectregistry)
 - [`MergeRequestDiffRegistry`](#mergerequestdiffregistry)
 - [`PackageFileRegistry`](#packagefileregistry)
+- [`PackagesNugetSymbolRegistry`](#packagesnugetsymbolregistry)
 - [`PagesDeploymentRegistry`](#pagesdeploymentregistry)
 - [`PipelineArtifactRegistry`](#pipelineartifactregistry)
 - [`ProjectRepositoryRegistry`](#projectrepositoryregistry)

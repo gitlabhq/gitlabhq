@@ -123,3 +123,10 @@ instructions:
       6. For complex object types, represent sub-attributes with dots, like 'project.name' or 'projects[].name' for arrays.
       7. For curl commands, use long option names ('--header' instead of '-H'), declare URLs with the '--url' parameter in double quotes, and use line breaks with '\' for readability.
       8. Along with the previous instructions, API documentation should follow the GitLab "Documenting REST API resources" guidelines.
+
+  - name: Localization template files
+    fileFilters:
+      - "locale/gitlab.pot"
+    instructions: |
+      1. Flag any msgid entry that starts with a lowercase letter - this indicates a split sentence that will be hard to translate
+ 

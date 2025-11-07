@@ -82,6 +82,36 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
                                           root_namespace_id: group.root_ancestor.id
                                         )
       end
+
+      context 'when destroy_fork_network_on_group_archive feature flag is enabled' do
+        let_it_be(:project1) { create(:project, namespace: group) }
+        let_it_be(:project2) { create(:project, namespace: group) }
+
+        before do
+          stub_feature_flags(destroy_fork_network_on_group_archive: true)
+        end
+
+        it 'enqueues UnlinkProjectForksWorker' do
+          expect(Namespaces::UnlinkProjectForksWorker)
+            .to receive(:perform_async).with(group.id, user.id)
+
+          service_response
+        end
+      end
+
+      context 'when destroy_fork_network_on_group_archive feature flag is disabled' do
+        let_it_be(:project) { create(:project, namespace: group) }
+
+        before do
+          stub_feature_flags(destroy_fork_network_on_group_archive: false)
+        end
+
+        it 'does not enqueue UnlinkProjectForksWorker' do
+          expect(Namespaces::UnlinkProjectForksWorker).not_to receive(:perform_async)
+
+          service_response
+        end
+      end
     end
 
     context 'when archiving fails' do

@@ -115,7 +115,9 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
 import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
+import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
@@ -279,6 +281,8 @@ export default {
       displaySettings: {},
       workItemTypes: [],
       isSortKeyInitialized: !this.isSignedIn,
+      hasWorkItems: null,
+      workItemsCount: null,
     };
   },
   apollo: {
@@ -368,6 +372,24 @@ export default {
         Sentry.captureException(error);
       },
     },
+    workItemsCount: {
+      query() {
+        return getWorkItemsCountOnlyQuery;
+      },
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data?.namespace.workItems.count || 0;
+      },
+      skip() {
+        return isEmpty(this.pageParams) || this.metadataLoading || !this.isPlanningViewsEnabled;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+    // TODO: remove entirely once consolidated list is GA
     workItemStateCounts: {
       query: getWorkItemStateCountsQuery,
       variables() {
@@ -377,20 +399,35 @@ export default {
         return data?.[this.namespace].workItemStateCounts ?? {};
       },
       skip() {
-        return isEmpty(this.pageParams);
+        return this.isPlanningViewsEnabled || isEmpty(this.pageParams) || this.metadataLoading;
       },
-      result({ data }) {
-        const { all } = data?.[this.namespace].workItemStateCounts ?? {};
-
-        if (!this.isInitialLoadComplete) {
-          this.hasAnyIssues = Boolean(all);
-          this.isInitialLoadComplete = true;
-          this.initialLoadWasFiltered = this.filterTokens.length > 0;
-        }
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+    hasWorkItems: {
+      query: hasWorkItemsQuery,
+      variables() {
+        const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
+        return {
+          fullPath: this.rootPageFullPath,
+          types: singleWorkItemType || this.defaultWorkItemTypes,
+        };
+      },
+      update(data) {
+        return data?.namespace.workItems.nodes.length > 0 || false;
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
+      },
+      result({ data }) {
+        const count = data?.namespace.workItems.nodes.length || 0;
+        if (!this.isInitialLoadComplete) {
+          this.hasAnyIssues = Boolean(count);
+          this.isInitialLoadComplete = true;
+          this.initialLoadWasFiltered = this.filterTokens.length > 0;
+        }
       },
     },
     workItemTypes: {
@@ -418,6 +455,7 @@ export default {
     },
     shouldShowList() {
       return (
+        this.hasWorkItems === true ||
         this.hasAnyIssues ||
         this.error ||
         this.initialLoadWasFiltered ||
@@ -883,18 +921,10 @@ export default {
       return this.isGroupIssuesList && this.hasProjects;
     },
     workItemTotalStateCount() {
-      const stateToken = this.filterTokens?.find((token) => token.type === TOKEN_TYPE_STATE);
-      const stateValue = stateToken?.value?.data;
-
-      let count = this.workItemStateCounts?.all || 0;
-
-      if (stateValue === STATUS_OPEN) {
-        count = this.workItemStateCounts?.opened || 0;
-      } else if (stateValue === STATUS_CLOSED) {
-        count = this.workItemStateCounts?.closed || 0;
+      if (this.workItemsCount === null) {
+        return '';
       }
-
-      return n__('WorkItem|%d item', 'WorkItem|%d items', count);
+      return n__('WorkItem|%d item', 'WorkItem|%d items', this.workItemsCount);
     },
     workItemTypeId() {
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
@@ -913,6 +943,8 @@ export default {
       this.$apollo.queries.workItemStateCounts.refetch();
       this.$apollo.queries.workItemsFull.refetch();
       this.$apollo.queries.workItemsSlim.refetch();
+      this.$apollo.queries.hasWorkItems.refetch();
+      this.$apollo.queries.workItemsCount.refetch();
     },
     $route(newValue, oldValue) {
       if (newValue.fullPath !== oldValue.fullPath) {
@@ -964,7 +996,6 @@ export default {
         document.title = this.calculateDocumentTitle(listData);
       }
       if (!this.withTabs) {
-        this.hasAnyIssues = Boolean(listData?.namespace.workItems.nodes);
         this.isInitialLoadComplete = true;
       }
       this.checkDrawerParams();
@@ -1428,6 +1459,7 @@ export default {
         :prevent-redirect="workItemDrawerEnabled"
         :detail-loading="detailLoading"
         :hidden-metadata-keys="hiddenMetadataKeys"
+        :always-allow-custom-empty-state="isPlanningViewsEnabled"
         @click-tab="handleClickTab"
         @dismiss-alert="error = undefined"
         @filter="handleFilter"
@@ -1489,6 +1521,7 @@ export default {
               :work-item-count="currentTabCount"
               :query-variables="csvExportQueryVariables"
               :full-path="rootPageFullPath"
+              :url-params="urlParams"
             />
           </div>
         </template>
@@ -1535,12 +1568,13 @@ export default {
                 :work-item-count="currentTabCount"
                 :query-variables="csvExportQueryVariables"
                 :full-path="rootPageFullPath"
+                :url-params="urlParams"
               />
             </div>
           </work-item-list-heading>
         </template>
 
-        <template v-if="isPlanningViewsEnabled && workItems.length" #before-list-items>
+        <template v-if="isPlanningViewsEnabled" #before-list-items>
           <!-- state-count -->
           <div class="gl-border-b gl-py-3">
             {{ workItemTotalStateCount }}

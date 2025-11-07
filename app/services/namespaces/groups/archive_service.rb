@@ -39,6 +39,11 @@ module Namespaces
       def after_archive
         system_hook_service.execute_hooks_for(group, :update)
         publish_events
+        unlink_project_forks if Feature.enabled?(:destroy_fork_network_on_group_archive, group)
+      end
+
+      def unlink_project_forks
+        Namespaces::UnlinkProjectForksWorker.perform_async(group.id, current_user.id)
       end
 
       def error_response(message)

@@ -5,6 +5,7 @@ import WorkItemListActions from '~/work_items/components/work_item_list_actions.
 import WorkItemCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from '~/work_items/components/work_items_csv_import_modal.vue';
 import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
+import * as urlUtility from '~/lib/utils/url_utility';
 
 describe('WorkItemsListActions component', () => {
   let wrapper;
@@ -170,6 +171,62 @@ describe('WorkItemsListActions component', () => {
     it('renders the Calendar link with the correct href', () => {
       expect(findCalendarLink().exists()).toBe(true);
       expect(findCalendarLink().attributes('href')).toBe(calendarPath);
+    });
+  });
+
+  describe('RSS dynamic update', () => {
+    const baseRssPath = '/gitlab-org/gitlab/-/work_items.atom?feed_token=abc123';
+
+    it('uses filtered RSS path in subscription dropdown', () => {
+      const urlParams = {
+        assignee_username: 'john-doe',
+        state: 'opened',
+      };
+
+      wrapper = createComponent({ rssPath: baseRssPath }, { urlParams });
+
+      const rssLink = findRssLink();
+      expect(rssLink.attributes('href')).toContain('assignee_username=john-doe');
+      expect(rssLink.attributes('href')).toContain('state=opened');
+      expect(rssLink.attributes('href')).toContain(
+        '/gitlab-org/gitlab/-/work_items.atom?feed_token=abc123',
+      );
+    });
+
+    it('returns the original RSS path when urlParams is empty', () => {
+      wrapper = createComponent({ rssPath: baseRssPath }, { urlParams: {} });
+
+      const rssLink = findRssLink();
+      expect(rssLink.attributes('href')).toBe(baseRssPath);
+    });
+
+    it('returns null when rssPath is not provided', () => {
+      wrapper = createComponent({ rssPath: null }, { urlParams: { state: 'opened' } });
+
+      expect(findRssLink().exists()).toBe(false);
+    });
+
+    describe('error handling', () => {
+      it('emits error event and falls back to original path when URL construction fails', () => {
+        jest.spyOn(urlUtility, 'mergeUrlParams').mockImplementation(() => {
+          throw new Error('Invalid URL');
+        });
+
+        const urlParams = {
+          assignee_username: 'john-doe',
+        };
+
+        wrapper = createComponent({ rssPath: baseRssPath }, { urlParams });
+
+        const rssLink = findRssLink();
+        expect(rssLink.exists()).toBe(true);
+        expect(rssLink.attributes('href')).toBe(baseRssPath);
+
+        expect(wrapper.emitted('error')).toBeDefined();
+        expect(wrapper.emitted('error')[0]).toEqual([
+          'An error occurred updating the RSS link. Please refresh the page to try again.',
+        ]);
+      });
     });
   });
 

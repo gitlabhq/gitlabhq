@@ -247,6 +247,7 @@
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
     "PackageFileRegistry",
+    "PackagesNugetSymbolRegistry",
     "PagesDeploymentRegistry",
     "PipelineArtifactRegistry",
     "ProjectRepositoryRegistry",

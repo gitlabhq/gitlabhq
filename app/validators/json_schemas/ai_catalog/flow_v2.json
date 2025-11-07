@@ -425,6 +425,13 @@
             }
           },
           "additionalProperties": false
+        },
+        "unit_primitives": {
+          "type": "array",
+          "description": "Unit primitives configuration",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -456,13 +463,6 @@
             }
           },
           "additionalProperties": false
-        },
-        "unit_primitives": {
-          "type": "array",
-          "description": "Unit primitives configuration",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },

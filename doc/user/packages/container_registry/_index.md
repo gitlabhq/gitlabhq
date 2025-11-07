@@ -107,13 +107,18 @@ registry.example.com/mynamespace/myproject/my/image:rc1
 
 ## Move or rename container registry repositories
 
+{{< history >}}
+
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429734) in GitLab 16.7.
+
+{{< /history >}}
 The path of a container repository always matches the related project's repository path,
 so renaming or moving only the container registry is not possible. Instead, you can either:
 
 - [Rename the project's repository](../../project/working_with_projects.md#rename-a-repository).
 - [Transfer the project](../../project/working_with_projects.md#transfer-a-project).
 
-Renaming projects with populated container repositories is only supported on GitLab.com.
+For performance reasons, renaming projects with populated container repositories is limited to projects with up to 1,000 container repositories.
 
 On a GitLab Self-Managed instance, you can delete all container images before moving or renaming
 a group or project. Alternatively, [issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround)

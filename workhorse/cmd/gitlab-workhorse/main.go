@@ -292,7 +292,8 @@ func run(boot bootConfig, cfg config.Config) error {
 		defer healthCancel()
 	}
 
-	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb, healthCheckServer))
+	shutdown := make(chan struct{})
+	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb, healthCheckServer, shutdown))
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
@@ -328,6 +329,11 @@ func run(boot bootConfig, cfg config.Config) error {
 		var gracefulShutdownDelay time.Duration
 		if healthCheckServer != nil {
 			healthCheckServer.InitiateShutdown()
+			// Signal upstream to stop accepting long polling requests because
+			// requests can arrive during the graceful shutdown time.
+			close(shutdown)
+			// Kick out any long poll requests
+			redisKeyWatcher.Shutdown()
 			gracefulShutdownDelay = healthCheckServer.GetGracefulShutdownDelay()
 		}
 
@@ -340,7 +346,9 @@ func run(boot bootConfig, cfg config.Config) error {
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
 		defer cancel()
 
-		redisKeyWatcher.Shutdown()
+		if healthCheckServer == nil {
+			redisKeyWatcher.Shutdown()
+		}
 
 		return srv.Shutdown(ctx)
 	}

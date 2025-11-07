@@ -25,7 +25,11 @@ describe('DatetimePicker', () => {
   });
 
   it('renders the Date in the datepicker and timepicker inputs', () => {
-    expect(findDatepicker().props().value).toEqual(toDate(testDay, testTime));
+    expect(findDatepicker().props()).toMatchObject({
+      value: toDate(testDay, testTime),
+      container: 'body',
+      target: null,
+    });
     expect(findTimepicker().element.value).toEqual(testTime);
   });
 

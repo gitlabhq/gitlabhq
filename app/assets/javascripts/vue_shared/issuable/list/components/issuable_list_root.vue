@@ -230,6 +230,11 @@ export default {
       required: false,
       default: () => [],
     },
+    alwaysAllowCustomEmptyState: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -457,7 +462,7 @@ export default {
           </template>
         </issuable-item>
       </component>
-      <empty-result v-else-if="initialFilterValue.length > 0" />
+      <empty-result v-else-if="!alwaysAllowCustomEmptyState && initialFilterValue.length > 0" />
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 

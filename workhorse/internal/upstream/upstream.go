@@ -63,14 +63,15 @@ type upstream struct {
 	watchKeyHandler       builds.WatchKeyHandler
 	rdb                   *redis.Client
 	healthCheckServer     *healthcheck.Server // Can be nil
+	shutdownChan          <-chan struct{}
 }
 
 // NewUpstream creates a new HTTP handler for handling upstream requests based on the provided configuration.
-func NewUpstream(cfg config.Config, accessLogger *logrus.Logger, watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server) http.Handler {
-	return newUpstream(cfg, accessLogger, configureRoutes, watchKeyHandler, rdb, healthCheckServer)
+func NewUpstream(cfg config.Config, accessLogger *logrus.Logger, watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server, shutdownChan <-chan struct{}) http.Handler {
+	return newUpstream(cfg, accessLogger, configureRoutes, watchKeyHandler, rdb, healthCheckServer, shutdownChan)
 }
 
-func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback func(*upstream), watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server) http.Handler {
+func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback func(*upstream), watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server, shutdownChan <-chan struct{}) http.Handler {
 	up := upstream{
 		Config:       cfg,
 		accessLogger: accessLogger,
@@ -80,6 +81,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 		watchKeyHandler:       watchKeyHandler,
 		rdb:                   rdb,
 		healthCheckServer:     healthCheckServer,
+		shutdownChan:          shutdownChan,
 	}
 	if up.geoProxyPollSleep == nil {
 		up.geoProxyPollSleep = time.Sleep

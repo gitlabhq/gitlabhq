@@ -142,6 +142,18 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         end
       end
 
+      context 'when user is locked' do
+        let(:user) do
+          # rubocop:disable RSpec/FactoryBot/AvoidCreate -- We need to create the user to access db and lock it
+          create(:user, :locked, email_otp_required_after: Time.zone.today - 1.day)
+          # rubocop:enable RSpec/FactoryBot/AvoidCreate
+        end
+
+        it 'returns false' do
+          expect(helper.fallback_to_email_otp_permitted?(user)).to be false
+        end
+      end
+
       context 'when user has email_otp_required_after set to today' do
         let(:user) { build_stubbed(:user, email_otp_required_after: Time.zone.today) }
 

@@ -73,6 +73,11 @@ export const config = {
       Namespace: {
         fields: {
           merge: true,
+          workItems: {
+            merge(existing = {}, incoming = {}) {
+              return { ...existing, ...incoming };
+            },
+          },
         },
       },
       WorkItemWidgetDescription: {
