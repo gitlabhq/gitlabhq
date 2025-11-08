@@ -846,6 +846,22 @@ describe('Create work item component', () => {
       expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
     });
 
+    it('is checked when parameter vulnerability_id exists', async () => {
+      setWindowLocation('?vulnerability_id=123');
+      createComponent();
+      await waitForPromises();
+
+      expect(findConfidentialCheckbox().attributes('checked')).toBe('true');
+    });
+
+    it('is not checked when parameter vulnerability_id does not exist', async () => {
+      setWindowLocation('?vulnerability_id_is_not_here=123');
+      createComponent();
+      await waitForPromises();
+
+      expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
+    });
+
     it('renders confidentiality checkbox for a group', async () => {
       createComponent({
         props: {

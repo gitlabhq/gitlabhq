@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues csv', :js, feature_category: :team_planning do
+RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/579444' do
   include FilteredSearchHelpers
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }

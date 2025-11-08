@@ -5,9 +5,10 @@ classes:
 - Authn::OauthApplication
 feature_categories:
 - system_access
-description: TODO
+description: OAuth applications for GitLab as an OAuth provider. Used as sharding key for Cells architecture.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e41dadcb33fda44ee274daa673bd933e13aa90eb
 milestone: '7.7'
 gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553465

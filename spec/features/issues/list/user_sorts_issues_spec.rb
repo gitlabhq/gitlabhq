@@ -21,6 +21,7 @@ RSpec.describe "User sorts issues", feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     create_list(:award_emoji, 2, :upvote, awardable: issue1)
     create_list(:award_emoji, 2, :downvote, awardable: issue2)
@@ -148,7 +149,7 @@ RSpec.describe "User sorts issues", feature_category: :team_planning do
     end
 
     it 'sorts with a filter applied' do
-      visit project_issues_path(project, sort: sort_value_created_date, assignee_id: user2.id)
+      visit project_issues_path(project, sort: sort_value_created_date, 'assignee_username[]': user2.username)
 
       expect(first_issue).to include('foo')
       expect(last_issue).to include('bar')

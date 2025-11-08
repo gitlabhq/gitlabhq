@@ -232,7 +232,9 @@ export default {
   data() {
     return {
       isTitleValid: true,
-      isConfidential: parseBoolean(getParameterByName('issue[confidential]')),
+      isConfidential:
+        Boolean(getParameterByName('vulnerability_id')) ||
+        parseBoolean(getParameterByName('issue[confidential]')),
       isRelatedToItem: true,
       localTitle: this.title || '',
       error: null,
