@@ -9,8 +9,8 @@ title: Instance-wide compliance and security policy management
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
-- Status: Beta
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
 {{< /details >}}
 
 {{< history >}}
@@ -31,7 +31,6 @@ To apply security policies and compliance frameworks across multiple groups and 
 
 ## Prerequisites
 
-- GitLab Self-Managed.
 - GitLab 18.2 or later.
 - You must be instance administrator.
 - You must have an existing top-level group to serve as the compliance and security policy group.

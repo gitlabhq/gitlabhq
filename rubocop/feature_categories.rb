@@ -24,12 +24,21 @@ module RuboCop
       test_platform
     ].to_set.freeze
 
+    RSPEC_CATEGORIES = %w[
+      tooling
+      test_platform
+    ].to_set.freeze
+
     def self.available
       @available ||= YAML.load_file(CONFIG_PATH).to_set
     end
 
     def self.available_with_custom
       @available_with_custom ||= available.union(CUSTOM_CATEGORIES)
+    end
+
+    def self.available_for_rspec
+      @available_rspec ||= available.union(RSPEC_CATEGORIES)
     end
 
     # Used by RuboCop to invalidate its cache if the contents of

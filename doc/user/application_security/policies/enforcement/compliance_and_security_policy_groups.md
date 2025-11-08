@@ -9,8 +9,8 @@ title: Compliance and security policy groups
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
-- Status: Beta
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
 {{< /details >}}
 
 {{< history >}}

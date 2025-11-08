@@ -15,7 +15,6 @@ module ResourceAccessTokens
       return error("User does not have permission to create #{resource_type} access token") unless has_permission_to_create?
 
       access_level = params[:access_level] || Gitlab::Access::MAINTAINER
-      return error("Could not provision owner access to project access token") if do_not_allow_owner_access_level_for_project_bot?(access_level)
 
       return error("Access level of the token contains permissions not held by the creating user") unless validate_access_level(access_level)
 
@@ -147,24 +146,13 @@ module ResourceAccessTokens
 
     def validate_access_level(access_level)
       return true if current_user.bot?
-      return true if current_user.can?(:owner_access, resource)
 
-      user_access_level = if resource_type == 'group'
-                            resource.max_member_access_for_user(current_user)
-                          else
-                            resource.team.max_member_access(current_user.id)
-                          end
+      user_access_level = resource.max_member_access_for_user(current_user)
 
       Authz::Role.access_level_encompasses?(
         current_access_level: user_access_level,
         level_to_assign: access_level.to_i
       )
-    end
-
-    def do_not_allow_owner_access_level_for_project_bot?(access_level)
-      resource.is_a?(Project) &&
-        access_level.to_i == Gitlab::Access::OWNER &&
-        !current_user.can?(:manage_owners, resource)
     end
   end
 end
