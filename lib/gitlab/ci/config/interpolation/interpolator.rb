@@ -8,12 +8,13 @@ module Gitlab
         # Performs CI config file interpolation, and surfaces all possible interpolation errors.
         #
         class Interpolator
-          attr_reader :config, :args, :yaml_context, :errors
+          attr_reader :config, :args, :yaml_context, :external_context, :errors
 
-          def initialize(config, args, yaml_context)
+          def initialize(config, args, yaml_context, external_context: nil)
             @config = config
             @args = args.nil? ? {} : args
             @yaml_context = yaml_context
+            @external_context = external_context
             @errors = []
             @interpolated = false
           end
@@ -49,6 +50,8 @@ module Gitlab
 
             return @errors.concat(header.errors) unless header.valid?
             return @errors.concat(inputs.errors) unless inputs.valid?
+
+            return if @errors.any?
             return @errors.concat(context.errors) unless context.valid?
             return @errors.concat(template.errors) unless template.valid?
 
@@ -68,7 +71,7 @@ module Gitlab
           end
 
           def header
-            @entry ||= Header::Root.new(config.header).tap do |header|
+            @entry ||= Header::Root.new(config.header || {}).tap do |header|
               header.key = 'header'
 
               header.compose!
@@ -80,7 +83,19 @@ module Gitlab
           end
 
           def spec
-            @spec ||= header.spec_inputs_value
+            @spec ||= begin
+              full_spec = header.spec_entry.value || {}
+              if full_spec[:include].present? && external_context
+                processor = External::Header::Processor.new(full_spec, external_context)
+                processed_spec = processor.perform
+                processed_spec[:inputs] || {}
+              else
+                full_spec[:inputs] || {}
+              end
+            end
+          rescue External::Header::Processor::IncludeError => e
+            @errors.push(e.message)
+            {}
           end
 
           def inputs

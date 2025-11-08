@@ -289,4 +289,95 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
       end
     end
   end
+
+  describe '#inputs_only!' do
+    let(:location) { 'some/file/config.yml' }
+
+    it 'sets the inputs_only flag' do
+      expect(file.inputs_only?).to be_falsy
+
+      file.inputs_only!
+
+      expect(file.inputs_only?).to be_truthy
+    end
+
+    it 'returns self for chaining' do
+      expect(file.inputs_only!).to eq(file)
+    end
+  end
+
+  describe '#inputs_only?' do
+    let(:location) { 'some/file/config.yml' }
+
+    it 'returns false by default' do
+      expect(file.inputs_only?).to be_falsy
+    end
+
+    it 'returns true after calling inputs_only!' do
+      file.inputs_only!
+      expect(file.inputs_only?).to be_truthy
+    end
+  end
+
+  describe '#validate_content_keys!' do
+    let(:location) { 'some/file/inputs.yml' }
+
+    before do
+      file.inputs_only!
+    end
+
+    context 'when content has only inputs key' do
+      let(:content) do
+        <<~YAML
+          inputs:
+            environment:
+              default: 'production'
+        YAML
+      end
+
+      it 'does not add errors' do
+        file.load_and_validate_expanded_hash!
+        expect(file.errors).to be_empty
+      end
+    end
+
+    context 'when content has unknown keys' do
+      let(:content) do
+        <<~YAML
+          inputs:
+            environment:
+              default: 'production'
+          image: 'ruby:3.0'
+          script:
+            - echo "test"
+        YAML
+      end
+
+      it 'adds an error for unknown keys' do
+        file.load_and_validate_expanded_hash!
+        expect(file.errors).to include(
+          match(/Header include file .* contains unknown keys: .*image.*script/)
+        )
+      end
+    end
+
+    context 'when not in inputs_only mode' do
+      let(:content) do
+        <<~YAML
+          image: 'ruby:3.0'
+          script:
+            - echo "test"
+        YAML
+      end
+
+      before do
+        allow(file).to receive(:inputs_only?).and_return(false)
+      end
+
+      it 'does not validate content keys' do
+        file.load_and_validate_expanded_hash!
+        expect(file.errors).to be_empty
+      end
+    end
+  end
 end

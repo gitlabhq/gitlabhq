@@ -194,6 +194,150 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           expect(result.message).to eq(s_('Pipelines|Inputs not supported for this CI config source'))
         end
       end
+
+      context 'when spec contains header includes' do
+        let(:config_yaml) do
+          <<~YAML
+          spec:
+            include:
+              - local: /inputs.yml
+            inputs:
+              inline_input:
+                default: inline_value
+          ---
+          job:
+            script: echo $[[ inputs.inline_input ]]
+          YAML
+        end
+
+        let(:external_inputs_yaml) do
+          <<~YAML
+          inputs:
+            external_input:
+              default: external_value
+          YAML
+        end
+
+        before do
+          project.repository.create_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            config_yaml,
+            message: 'Add CI with header includes',
+            branch_name: 'master')
+
+          project.repository.create_file(
+            project.creator,
+            'inputs.yml',
+            external_inputs_yaml,
+            message: 'Add external inputs',
+            branch_name: 'master')
+        end
+
+        it 'processes header includes and merges external inputs' do
+          result = service.execute
+
+          expect(result).to be_success
+
+          spec_inputs = result.payload.fetch(:inputs)
+          expect(spec_inputs.errors).to be_empty
+
+          input_names = spec_inputs.all_inputs.map(&:name)
+          expect(input_names).to include(:external_input, :inline_input)
+        end
+
+        it 'gives precedence to inline inputs over external inputs' do
+          result = service.execute
+
+          expect(result).to be_success
+
+          spec_inputs = result.payload.fetch(:inputs)
+          inline_input = spec_inputs.all_inputs.find { |i| i.name == :inline_input }
+          expect(inline_input.default).to eq('inline_value')
+        end
+
+        context 'when ci_file_inputs feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_file_inputs: false)
+          end
+
+          it 'does not process header includes and only uses inline inputs' do
+            result = service.execute
+
+            expect(result).to be_success
+
+            spec_inputs = result.payload.fetch(:inputs)
+            expect(spec_inputs.errors).to be_empty
+
+            input_names = spec_inputs.all_inputs.map(&:name)
+            expect(input_names).to include(:inline_input)
+            expect(input_names).not_to include(:external_input)
+          end
+        end
+      end
+
+      context 'when header include processing fails' do
+        let(:config_yaml) do
+          <<~YAML
+          spec:
+            include:
+              - local: /non-existent-inputs.yml
+          ---
+          job:
+            script: echo test
+          YAML
+        end
+
+        before do
+          project.repository.create_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            config_yaml,
+            message: 'Add CI with invalid header include',
+            branch_name: 'master')
+        end
+
+        it 'returns error response with include error message' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to match(/Local file .* does not exist/)
+        end
+      end
+
+      context 'when spec does not contain header includes' do
+        let(:config_yaml) do
+          <<~YAML
+          spec:
+            inputs:
+              environment:
+                default: production
+          ---
+          job:
+            script: echo $[[ inputs.environment ]]
+          YAML
+        end
+
+        before do
+          project.repository.create_file(
+            project.creator,
+            '.gitlab-ci.yml',
+            config_yaml,
+            message: 'Add CI without header includes',
+            branch_name: 'master')
+        end
+
+        it 'processes inputs without header include processing' do
+          result = service.execute
+
+          expect(result).to be_success
+
+          spec_inputs = result.payload.fetch(:inputs)
+          expect(spec_inputs.errors).to be_empty
+          expect(spec_inputs.all_inputs.first.name).to eq(:environment)
+          expect(spec_inputs.all_inputs.first.default).to eq('production')
+        end
+      end
     end
   end
 end

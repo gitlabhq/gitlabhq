@@ -282,4 +282,153 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
       end
     end
   end
+
+  describe 'external context and header includes' do
+    let(:external_context) do
+      Gitlab::Ci::Config::External::Context.new(project: project, sha: 'HEAD', user: create(:user))
+    end
+
+    subject do
+      described_class.new(result, arguments, yaml_context, external_context: external_context)
+    end
+
+    before do
+      allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+        allow(instance).to receive(:check_execution_time!)
+      end
+
+      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+        .with(:ci_file_inputs)
+        .and_return(true)
+    end
+
+    context 'when spec includes external input files' do
+      let(:header) do
+        {
+          spec: {
+            include: [{ local: '/inputs.yml' }],
+            inputs: {
+              inline_input: { default: 'inline_value' }
+            }
+          }
+        }
+      end
+
+      let(:content) do
+        { test: 'deploy $[[ inputs.inline_input ]] $[[ inputs.external_input ]]' }
+      end
+
+      let(:arguments) do
+        { inline_input: 'inline', external_input: 'external' }
+      end
+
+      let(:external_inputs) do
+        { inputs: { external_input: { default: 'external_value' } } }
+      end
+
+      before do
+        allow_next_instance_of(Gitlab::Ci::Config::External::Header::Processor) do |processor|
+          allow(processor).to receive(:perform).and_return(
+            inputs: {
+              inline_input: { default: 'inline_value' },
+              external_input: { default: 'external_value' }
+            }
+          )
+        end
+      end
+
+      it 'processes header includes and merges external inputs' do
+        subject.interpolate!
+
+        expect(subject).to be_interpolated
+        expect(subject).to be_valid
+        expect(subject.to_hash).to eq({ test: 'deploy inline external' })
+      end
+    end
+
+    context 'when spec has includes but no external_context is provided' do
+      let(:header) do
+        {
+          spec: {
+            include: [{ local: '/inputs.yml' }],
+            inputs: {
+              website: { default: 'gitlab.com' }
+            }
+          }
+        }
+      end
+
+      let(:content) do
+        { test: 'deploy $[[ inputs.website ]]' }
+      end
+
+      let(:arguments) do
+        { website: 'example.com' }
+      end
+
+      subject do
+        described_class.new(result, arguments, yaml_context, external_context: nil)
+      end
+
+      it 'uses inline inputs without processing includes' do
+        subject.interpolate!
+
+        expect(subject).to be_interpolated
+        expect(subject).to be_valid
+        expect(subject.to_hash).to eq({ test: 'deploy example.com' })
+      end
+    end
+
+    context 'when header include processing fails' do
+      let(:header) do
+        {
+          spec: {
+            include: [{ local: '/non-existent.yml' }],
+            inputs: {
+              website: nil
+            }
+          }
+        }
+      end
+
+      let(:content) do
+        { test: 'deploy $[[ inputs.website ]]' }
+      end
+
+      let(:arguments) do
+        { website: 'gitlab.com' }
+      end
+
+      before do
+        allow_next_instance_of(Gitlab::Ci::Config::External::Header::Processor) do |processor|
+          allow(processor).to receive(:perform).and_raise(
+            Gitlab::Ci::Config::External::Header::Processor::IncludeError.new('Local file does not exist')
+          )
+        end
+      end
+
+      it 'captures the error and marks interpolation as invalid' do
+        subject.interpolate!
+
+        expect(subject).not_to be_valid
+        expect(subject.errors).to include('Local file does not exist')
+      end
+    end
+
+    context 'when header is nil and external_context is provided' do
+      let(:result) do
+        ::Gitlab::Ci::Config::Yaml::Result.new(config: content)
+      end
+
+      let(:content) { { test: 'deploy production' } }
+      let(:arguments) { nil }
+
+      it 'handles nil header gracefully' do
+        subject.interpolate!
+
+        expect(subject).to be_valid
+        expect(subject.to_hash).to eq({ test: 'deploy production' })
+      end
+    end
+  end
 end

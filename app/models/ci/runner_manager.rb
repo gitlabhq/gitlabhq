@@ -182,6 +182,15 @@ module Ci
       end
     end
 
+    # While using update_columns may be useful from performance perspective, we still want
+    # the `updated_at` column to be updated. As most updates to the Ci::RunnerManager entity
+    # happen through the `heartbeat` method, when receiving some new/updated details from the
+    # runner side and without this change, `updated_at` may equal to `created_at` even months
+    # later, while the record did get multiple changes in that time.
+    def update_columns(attrs = {})
+      super(attrs.reverse_merge(updated_at: Time.current))
+    end
+
     def supports_after_script_on_cancel?
       !!runtime_features['cancel_gracefully']
     end

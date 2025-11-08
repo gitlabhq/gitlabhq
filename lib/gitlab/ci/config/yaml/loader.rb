@@ -10,10 +10,11 @@ module Gitlab
           AVAILABLE_TAGS = [Config::Yaml::Tags::Reference].freeze
           MAX_DOCUMENTS = 2
 
-          def initialize(content, inputs: {}, context: Config::Yaml::Context.new)
+          def initialize(content, inputs: {}, context: Config::Yaml::Context.new, external_context: nil)
             @content = content
             @inputs = inputs
             @context = context
+            @external_context = external_context
           end
 
           def load
@@ -21,7 +22,8 @@ module Gitlab
 
             return yaml_result unless yaml_result.valid?
 
-            interpolator = Interpolation::Interpolator.new(yaml_result, inputs, context)
+            interpolator = Interpolation::Interpolator.new(yaml_result, inputs, context,
+              external_context: external_context)
 
             interpolator.interpolate!
 
@@ -42,7 +44,7 @@ module Gitlab
 
           private
 
-          attr_reader :content, :inputs, :context
+          attr_reader :content, :inputs, :context, :external_context
 
           def load_yaml!
             ensure_custom_tags

@@ -11,7 +11,8 @@ module Gitlab
 
           def initialize(values, context)
             @values = values
-            @external_files = External::Mapper.new(values, context).process
+            @context = context
+            @external_files = mapper.process
             @content = {}
             @logger = context.logger
           rescue External::Mapper::Error,
@@ -29,6 +30,10 @@ module Gitlab
           end
 
           private
+
+          def mapper
+            External::Mapper.new(@values, @context)
+          end
 
           def validate_external_files!
             @external_files.each do |file|

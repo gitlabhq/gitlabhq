@@ -92,6 +92,12 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
       project.add_developer(user)
     end
 
+    before do
+      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
+        .with(:ci_file_inputs)
+        .and_return(true)
+    end
+
     context 'when inputs exist' do
       let(:ref) { 'master' }
 

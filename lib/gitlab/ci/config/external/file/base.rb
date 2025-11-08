@@ -16,6 +16,16 @@ module Gitlab
               @params = params
               @context = context
               @errors = []
+              @inputs_only = false
+            end
+
+            def inputs_only!
+              @inputs_only = true
+              self
+            end
+
+            def inputs_only?
+              @inputs_only
             end
 
             def matching?
@@ -102,6 +112,18 @@ module Gitlab
               end
 
               validate_hash!
+              validate_content_keys! if inputs_only?
+            end
+
+            def validate_content_keys!
+              return unless expanded_content_hash
+
+              allowed_keys = %i[inputs]
+              unknown_keys = expanded_content_hash.keys - allowed_keys
+
+              return unless unknown_keys.any?
+
+              errors.push("Header include file `#{masked_location}` contains unknown keys: #{unknown_keys}")
             end
 
             def load_uninterpolated_yaml
@@ -117,7 +139,7 @@ module Gitlab
             def content_result
               context.logger.instrument(:config_file_fetch_content_hash) do
                 ::Gitlab::Ci::Config::Yaml::Loader.new(
-                  content, inputs: content_inputs, context: yaml_context
+                  content, inputs: content_inputs, context: yaml_context, external_context: context
                 ).load
               end
             end
@@ -149,6 +171,8 @@ module Gitlab
             end
 
             def expand_includes(hash)
+              return hash if inputs_only?
+
               External::Processor.new(hash, context.mutate(expand_context_attrs)).perform
             end
 

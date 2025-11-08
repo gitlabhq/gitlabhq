@@ -14,20 +14,24 @@ module Gitlab
             def process_without_instrumentation(locations)
               locations.map do |location|
                 matching = file_classes.map do |file_class|
-                  file_class.new(location, context)
+                  new_file_class(file_class, location)
                 end.select(&:matching?)
 
                 if matching.one?
                   matching.first
                 elsif matching.empty?
                   raise Mapper::AmbigiousSpecificationError,
-                    "`#{masked_location(location.to_json)}` does not have a valid subkey for include. " \
+                    "`#{masked_location(location.to_json)}` does not have a valid subkey for #{include_type}. " \
                     "Valid subkeys are: `#{file_subkeys.join('`, `')}`"
                 else
                   raise Mapper::AmbigiousSpecificationError,
                     "Each include must use only one of: `#{file_subkeys.join('`, `')}`"
                 end
               end
+            end
+
+            def new_file_class(file_class, location)
+              file_class.new(location, context)
             end
 
             def masked_location(location)
@@ -38,6 +42,10 @@ module Gitlab
               file_classes.map { |f| f.name.demodulize.downcase }.freeze
             end
             strong_memoize_attr :file_subkeys
+
+            def include_type
+              'include'
+            end
 
             def file_classes
               [

@@ -174,8 +174,10 @@ module Gitlab
 
       def build_config(config, inputs)
         initial_config = logger.instrument(:config_yaml_load, once: true) do
-          yaml_context = Config::Yaml::Context.new(variables: @context.variables)
-          Config::Yaml.load!(config, yaml_context, inputs)
+          yaml_context = Config::Yaml::Context.new(
+            variables: @context.variables
+          )
+          Config::Yaml.load!(config, yaml_context, inputs, @context)
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do

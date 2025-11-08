@@ -603,7 +603,7 @@ export default {
       category="tertiary"
       :auto-close="false"
       no-caret
-      right
+      placement="bottom-end"
       @shown="showDropdown"
       @hidden="hideDropdown"
     >

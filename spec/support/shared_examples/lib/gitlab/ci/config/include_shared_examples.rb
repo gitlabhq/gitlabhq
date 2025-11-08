@@ -42,12 +42,6 @@ RSpec.shared_examples 'basic include validations' do
         it { is_expected.to be_valid }
       end
 
-      context 'when using "component"' do
-        let(:config) { { component: 'path/to/component@1.0' } }
-
-        it { is_expected.to be_valid }
-      end
-
       context 'when using "project"' do
         context 'and specifying "file"' do
           let(:config) { { project: 'my-group/my-project', file: 'test.yml' } }
