@@ -8831,9 +8831,6 @@ msgstr ""
 msgid "ApprovalRule|Add approvers"
 msgstr ""
 
-msgid "ApprovalRule|Any"
-msgstr ""
-
 msgid "ApprovalRule|Approval rules"
 msgstr ""
 
@@ -8855,9 +8852,6 @@ msgstr ""
 msgid "ApprovalRule|Examples: QA, Security."
 msgstr ""
 
-msgid "ApprovalRule|Greater than"
-msgstr ""
-
 msgid "ApprovalRule|Improve your organization's code review with required approvals."
 msgstr ""
 
@@ -8865,12 +8859,6 @@ msgid "ApprovalRule|Increase quality and maintain standards."
 msgstr ""
 
 msgid "ApprovalRule|Learn more about merge request approval rules"
-msgstr ""
-
-msgid "ApprovalRule|Less than"
-msgstr ""
-
-msgid "ApprovalRule|More than"
 msgstr ""
 
 msgid "ApprovalRule|Need triage"
@@ -8918,10 +8906,22 @@ msgstr ""
 msgid "ApprovalRule|Try for free"
 msgstr ""
 
+msgid "ApprovalRule|any"
+msgstr ""
+
 msgid "ApprovalRule|day(s)"
 msgstr ""
 
+msgid "ApprovalRule|greater than"
+msgstr ""
+
+msgid "ApprovalRule|less than"
+msgstr ""
+
 msgid "ApprovalRule|month(s)"
+msgstr ""
+
+msgid "ApprovalRule|more than"
 msgstr ""
 
 msgid "ApprovalRule|week(s)"
@@ -57885,6 +57885,9 @@ msgstr ""
 msgid "ScanResultPolicy|No tokens available"
 msgstr ""
 
+msgid "ScanResultPolicy|On %{scanType} when %{commitType} that targets %{branches} %{branchExceptions}"
+msgstr ""
+
 msgid "ScanResultPolicy|Only 1 age criteria is allowed"
 msgstr ""
 
@@ -58047,16 +58050,13 @@ msgstr ""
 msgid "ScanResultPolicy|Users"
 msgstr ""
 
-msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
+msgid "ScanResultPolicy|When %{scanType} runs in an open merge request that targets %{branches} %{branchExceptions} and finds licenses match all of the following criteria:"
 msgstr ""
 
-msgid "ScanResultPolicy|When %{scanType} in an open merge request targeting %{branches} %{branchExceptions} and the licenses match all of the following criteria:"
+msgid "ScanResultPolicy|When %{scanners} finds scanner-specific conditions in an open merge request that targets %{branches} %{branchExceptions} and matches %{boldDescription} the following criteria"
 msgstr ""
 
-msgid "ScanResultPolicy|When %{scanType} that targets %{branches} %{branchExceptions} with %{commitType}"
-msgstr ""
-
-msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
+msgid "ScanResultPolicy|When a %{scanType} with %{scanners} runs against %{branches} %{branchExceptions} and finds %{vulnerabilitiesNumber} %{boldDescription} all the following criteria:"
 msgstr ""
 
 msgid "ScanResultPolicy|When a security policy fails for an unspecified reason."
@@ -58149,10 +58149,10 @@ msgstr ""
 msgid "ScanResultPolicy|vulnerabilities allowed"
 msgstr ""
 
-msgid "ScanResultPolicy|vulnerabilities that match all"
+msgid "ScanResultPolicy|vulnerability states"
 msgstr ""
 
-msgid "ScanResultPolicy|vulnerability states"
+msgid "ScanResultPolicy|vulnerability type that matches"
 msgstr ""
 
 msgid "Scanner"
@@ -59828,9 +59828,6 @@ msgstr ""
 msgid "SecurityOrchestration|And scans to be performed:"
 msgstr ""
 
-msgid "SecurityOrchestration|Any merge request"
-msgstr ""
-
 msgid "SecurityOrchestration|Applies policy evaluations to all projects in this instance."
 msgstr ""
 
@@ -59910,9 +59907,6 @@ msgid "SecurityOrchestration|Choose an action"
 msgstr ""
 
 msgid "SecurityOrchestration|Choose approver type"
-msgstr ""
-
-msgid "SecurityOrchestration|Choose exception branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Choose from the options below based on how you would like to proceed."
@@ -60101,9 +60095,6 @@ msgstr ""
 msgid "SecurityOrchestration|Exception branches"
 msgstr ""
 
-msgid "SecurityOrchestration|Exceptions"
-msgstr ""
-
 msgid "SecurityOrchestration|Excluded projects"
 msgstr ""
 
@@ -60228,9 +60219,6 @@ msgid "SecurityOrchestration|Key"
 msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
-msgstr ""
-
-msgid "SecurityOrchestration|License Scan"
 msgstr ""
 
 msgid "SecurityOrchestration|Linked groups"
@@ -60586,9 +60574,6 @@ msgstr ""
 msgid "SecurityOrchestration|Security Approvals"
 msgstr ""
 
-msgid "SecurityOrchestration|Security Scan"
-msgstr ""
-
 msgid "SecurityOrchestration|Security job template"
 msgstr ""
 
@@ -60650,9 +60635,6 @@ msgid "SecurityOrchestration|Select policies to bypass"
 msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
-msgstr ""
-
-msgid "SecurityOrchestration|Select scan type"
 msgstr ""
 
 msgid "SecurityOrchestration|Select security policy project"
@@ -61096,6 +61078,9 @@ msgstr ""
 msgid "SecurityOrchestration|any default branch"
 msgstr ""
 
+msgid "SecurityOrchestration|any merge request"
+msgstr ""
+
 msgid "SecurityOrchestration|any protected branch"
 msgstr ""
 
@@ -61123,6 +61108,9 @@ msgstr ""
 msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}%{timeWindowInfo}%{branchExceptionsString}"
 msgstr ""
 
+msgid "SecurityOrchestration|choose exception branches"
+msgstr ""
+
 msgid "SecurityOrchestration|compliance frameworks"
 msgstr ""
 
@@ -61142,6 +61130,9 @@ msgid "SecurityOrchestration|except personal projects"
 msgstr ""
 
 msgid "SecurityOrchestration|except projects"
+msgstr ""
+
+msgid "SecurityOrchestration|exceptions"
 msgstr ""
 
 msgid "SecurityOrchestration|exceptions: %{exceptions}"
@@ -61171,7 +61162,13 @@ msgstr ""
 msgid "SecurityOrchestration|latest"
 msgstr ""
 
+msgid "SecurityOrchestration|license scan"
+msgstr ""
+
 msgid "SecurityOrchestration|more than %{allowed}"
+msgstr ""
+
+msgid "SecurityOrchestration|no exceptions"
 msgstr ""
 
 msgid "SecurityOrchestration|on %{dayText} %{days} of each month"
@@ -61193,6 +61190,12 @@ msgid "SecurityOrchestration|scanner finds"
 msgstr ""
 
 msgid "SecurityOrchestration|scanners find"
+msgstr ""
+
+msgid "SecurityOrchestration|security scan"
+msgstr ""
+
+msgid "SecurityOrchestration|select scan type"
 msgstr ""
 
 msgid "SecurityOrchestration|specific projects"

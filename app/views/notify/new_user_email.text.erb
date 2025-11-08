@@ -10,7 +10,7 @@ login.................. <%= @user.email %>
 
 <% if @user.created_by_id %>
 Click here to set your password:
-<%= edit_organization_user_password_url(@user.organization, reset_password_token: @token) %>
+<%= edit_password_url(@user, :reset_password_token => @token) %>
 
 This link is valid for <%= password_reset_token_valid_time %>. After it expires, you can request a new one here:
 <%= new_user_password_url(user_email: @user.email) %>

@@ -29,18 +29,6 @@ scope(
 
     root to: "dashboard/projects#index"
   end
-
-  scope :emails, path: 'emails', as: :email do
-    resource :confirmation, only: %i[new show create]
-  end
-
-  devise_scope :user do
-    scope :user, path: 'users', as: :user do
-      resource :confirmation, only: %i[new show create]
-      resource :password, only: %i[new edit update create]
-      resource :unlock, only: %i[new show create], controller: 'devise/unlocks'
-    end
-  end
 end
 
 scope path: '-' do

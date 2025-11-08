@@ -2,6 +2,6 @@
 
 <%= _("Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now.") % { duration: distance_of_time_in_words(Devise.unlock_in) } %>
 
-<%= organization_user_unlock_url(@resource.organization, unlock_token: @token) %>
+<%= unlock_url(@resource, unlock_token: @token) %>
 
 <%= _('If you did not initiate these sign-in attempts, please reach out to your administrator or enable two-factor authentication (2FA) on your account.') %>

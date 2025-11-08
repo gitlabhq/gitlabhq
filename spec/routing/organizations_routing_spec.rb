@@ -73,33 +73,4 @@ RSpec.describe 'Organization routes', feature_category: :organization do
       end
     end
   end
-
-  describe 'Devise routes' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:route, :destination) do
-      get('/o/my-org/emails/confirmation/new') | 'confirmations#new'
-      get('/o/my-org/emails/confirmation')     | 'confirmations#show'
-      post('/o/my-org/emails/confirmation')    | 'confirmations#create'
-
-      get('/o/my-org/user/confirmation/new')   | 'confirmations#new'
-      get('/o/my-org/user/confirmation')       | 'confirmations#show'
-      post('/o/my-org/user/confirmation')      | 'confirmations#create'
-
-      get('/o/my-org/user/password/new')       | 'passwords#new'
-      get('/o/my-org/user/password/edit')      | 'passwords#edit'
-      put('/o/my-org/user/password')           | 'passwords#update'
-      post('/o/my-org/user/password')          | 'passwords#create'
-
-      get('/o/my-org/user/unlock/new')         | 'devise/unlocks#new'
-      get('/o/my-org/user/unlock')             | 'devise/unlocks#show'
-      post('/o/my-org/user/unlock')            | 'devise/unlocks#create'
-    end
-
-    with_them do
-      specify do
-        expect(route).to route_to(destination, organization_path: 'my-org')
-      end
-    end
-  end
 end

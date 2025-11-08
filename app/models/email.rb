@@ -33,7 +33,7 @@ class Email < ApplicationRecord
 
   self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 
-  delegate :username, :can?, :pending_invitations, :accept_pending_invitations!, :organization, to: :user
+  delegate :username, :can?, :pending_invitations, :accept_pending_invitations!, to: :user
 
   def email=(value)
     write_attribute(:email, value.downcase.strip)

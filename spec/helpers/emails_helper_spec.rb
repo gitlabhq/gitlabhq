@@ -278,34 +278,6 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     end
   end
 
-  describe 'confirmation_link_for' do
-    let_it_be(:user) { create(:user) }
-
-    let(:resource) { user }
-
-    subject(:confirmation_link_for) { helper.confirmation_link_for(resource, 'faketoken') }
-
-    it 'generates a user confirmation link' do
-      is_expected.to eq(organization_user_confirmation_url(resource.organization, confirmation_token: 'faketoken'))
-    end
-
-    context 'for an Email' do
-      let(:resource) { create(:email, user: user) }
-
-      it 'generates an email confirmation link' do
-        is_expected.to eq(organization_email_confirmation_url(resource.organization, confirmation_token: 'faketoken'))
-      end
-    end
-
-    context 'for an unknown object type' do
-      let(:resource) { Users::Anonymous.new }
-
-      it 'generates a legacy link' do
-        expect { confirmation_link_for }.to raise_error(ArgumentError)
-      end
-    end
-  end
-
   describe '#header_logo' do
     context 'there is a brand item with a logo' do
       let_it_be(:appearance) { create(:appearance) }
