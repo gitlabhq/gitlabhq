@@ -5,8 +5,6 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-project_vulnerability_path:
-  file: ee/app/helpers/ee/gitlab_routing_helper.rb
 user_group_saml_omniauth_metadata_path:
   file: ee/app/helpers/ee/gitlab_routing_helper.rb
 saas_user_caps_i18n_string:
