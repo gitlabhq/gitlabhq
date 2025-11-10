@@ -1,13 +1,15 @@
 import { GlBadge, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import TokensCrud from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_crud.vue';
 import TokensTable from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_table.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import DetailsDrawer from '~/vue_shared/access_tokens/components/personal_access_tokens/details_drawer.vue';
 
 describe('Personal access tokens crud component', () => {
   let wrapper;
-  const tokens = [{}];
+  const tokens = [{}, {}];
   const createWrapper = () => {
     wrapper = shallowMountExtended(TokensCrud, {
       propsData: { tokens, loading: false },
@@ -25,6 +27,7 @@ describe('Personal access tokens crud component', () => {
   const findNewTokenDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findTokensTable = () => wrapper.findComponent(TokensTable);
+  const findDetailsDrawer = () => wrapper.findComponent(DetailsDrawer);
 
   describe('on page load', () => {
     beforeEach(() => createWrapper());
@@ -41,8 +44,27 @@ describe('Personal access tokens crud component', () => {
       });
     });
 
-    it('shows personal access tokens table', () => {
+    it('shows tokens table', () => {
       expect(findTokensTable().props()).toMatchObject({ tokens, loading: false });
+    });
+
+    it('shows details drawer', () => {
+      expect(findDetailsDrawer().props('token')).toBe(null);
+    });
+
+    describe('when table selects a token', () => {
+      beforeEach(() => findTokensTable().vm.$emit('select', tokens[1]));
+
+      it('passes selected token to drawer', () => {
+        expect(findDetailsDrawer().props('token')).toBe(tokens[1]);
+      });
+
+      it('clears selected token when drawer closes', async () => {
+        findDetailsDrawer().vm.$emit('close');
+        await nextTick();
+
+        expect(findDetailsDrawer().props('token')).toBe(null);
+      });
     });
 
     describe('fine-grained token dropdown option', () => {

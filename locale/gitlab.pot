@@ -3704,6 +3704,9 @@ msgstr ""
 msgid "AccessTokens|Description is too long (maximum is 255 characters)."
 msgstr ""
 
+msgid "AccessTokens|Details for '%{name}'"
+msgstr ""
+
 msgid "AccessTokens|Disable access tokens"
 msgstr ""
 
@@ -3785,6 +3788,9 @@ msgstr ""
 msgid "AccessTokens|How do I use DPoP?"
 msgstr ""
 
+msgid "AccessTokens|IP Usage"
+msgstr ""
+
 msgid "AccessTokens|IP: %{ips}"
 msgid_plural "AccessTokens|IPs: %{ips}"
 msgstr[0] ""
@@ -3811,10 +3817,16 @@ msgstr ""
 msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
 msgstr ""
 
+msgid "AccessTokens|Last used"
+msgstr ""
+
 msgid "AccessTokens|Last used:"
 msgstr ""
 
 msgid "AccessTokens|Last used: %{date}"
+msgstr ""
+
+msgid "AccessTokens|Legacy token"
 msgstr ""
 
 msgid "AccessTokens|Lifetime"
@@ -3833,6 +3845,9 @@ msgid "AccessTokens|Never until revoked"
 msgstr ""
 
 msgid "AccessTokens|No access tokens"
+msgstr ""
+
+msgid "AccessTokens|No description provided."
 msgstr ""
 
 msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by the user"
@@ -3910,6 +3925,15 @@ msgstr ""
 msgid "AccessTokens|The token was revoked successfully."
 msgstr ""
 
+msgid "AccessTokens|This token expires soon. If still needed, generate a new token with the same settings."
+msgstr ""
+
+msgid "AccessTokens|This token has expired."
+msgstr ""
+
+msgid "AccessTokens|This token was revoked."
+msgstr ""
+
 msgid "AccessTokens|Token already revoked"
 msgstr ""
 
@@ -3923,6 +3947,9 @@ msgid "AccessTokens|Token name"
 msgstr ""
 
 msgid "AccessTokens|Token name is required."
+msgstr ""
+
+msgid "AccessTokens|Token scope"
 msgstr ""
 
 msgid "AccessTokens|Tokens expiring in 2 weeks"

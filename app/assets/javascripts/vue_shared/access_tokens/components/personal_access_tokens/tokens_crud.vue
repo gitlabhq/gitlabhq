@@ -3,6 +3,7 @@ import { GlDisclosureDropdown, GlBadge } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, s__ } from '~/locale';
 import TokensTable from './tokens_table.vue';
+import DetailsDrawer from './details_drawer.vue';
 
 export default {
   name: 'TokenCard',
@@ -11,6 +12,7 @@ export default {
     GlDisclosureDropdown,
     GlBadge,
     TokensTable,
+    DetailsDrawer,
   },
   inject: ['accessTokenNew'],
   props: {
@@ -22,6 +24,11 @@ export default {
       type: Boolean,
       required: true,
     },
+  },
+  data() {
+    return {
+      selectedToken: null,
+    };
   },
   computed: {
     newTokenDropdownItems() {
@@ -70,6 +77,7 @@ export default {
       </gl-disclosure-dropdown>
     </template>
 
-    <tokens-table :tokens="tokens" :loading="loading" />
+    <tokens-table :tokens="tokens" :loading="loading" @select="selectedToken = $event" />
+    <details-drawer :token="selectedToken" @close="selectedToken = null" />
   </crud-component>
 </template>

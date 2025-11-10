@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlIcon, GlBadge } from '@gitlab/ui';
 import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
-import { fifteenDaysFromNow } from '~/vue_shared/access_tokens/utils';
+import { isWithin2Weeks } from '~/vue_shared/access_tokens/utils';
 
 export default {
   name: 'DateWithTooltip',
@@ -43,7 +43,7 @@ export default {
       return !this.token.active && !this.token.revoked;
     },
     isTokenExpiringSoon() {
-      return this.token.active && this.token.expiresAt < fifteenDaysFromNow();
+      return this.token.active && isWithin2Weeks(this.token.expiresAt);
     },
   },
 };

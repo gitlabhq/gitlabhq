@@ -5,6 +5,7 @@ import {
   GlDisclosureDropdown,
   GlTooltipDirective,
   GlSprintf,
+  GlButton,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import DateWithTooltip from './date_with_tooltip.vue';
@@ -40,6 +41,7 @@ export default {
     GlDisclosureDropdown,
     GlSprintf,
     DateWithTooltip,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -90,8 +92,14 @@ export default {
       <gl-loading-icon size="md" />
     </template>
 
-    <template #cell(name)="{ value }">
-      <span class="gl-line-clamp-2 gl-wrap-anywhere">{{ value }}</span>
+    <template #cell(name)="{ item, value }">
+      <gl-button
+        button-text-classes="gl-line-clamp-2 !gl-whitespace-normal gl-wrap-anywhere gl-text-left"
+        variant="link"
+        @click="$emit('select', item)"
+      >
+        {{ value }}
+      </gl-button>
     </template>
 
     <template #cell(description)="{ value }">
@@ -131,6 +139,8 @@ export default {
         icon="ellipsis_v"
         no-caret
         placement="bottom-end"
+        :toggle-text="__('Actions')"
+        text-sr-only
       />
     </template>
   </gl-table>

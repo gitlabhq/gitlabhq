@@ -9,6 +9,7 @@ title: Troubleshooting the GitLab MCP server
 {{< details >}}
 
 - Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 

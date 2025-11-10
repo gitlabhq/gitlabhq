@@ -1,4 +1,10 @@
-import { GlTable, GlLoadingIcon, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import {
+  GlTable,
+  GlLoadingIcon,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlButton,
+} from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TokensTable from '~/vue_shared/access_tokens/components/personal_access_tokens/tokens_table.vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -61,6 +67,7 @@ describe('Personal access tokens table component', () => {
   const findHeaderCells = () => wrapper.findAll('thead th');
   const findRows = () => wrapper.findAll('tbody tr');
   const findCell = ({ row, column }) => findRows().at(row).findAll('td').at(column);
+  const findNameButton = (row) => findCell({ row, column: 0 }).findComponent(GlButton);
   const findExpiration = (row) =>
     findCell({ row, column: 2 }).findAllComponents(DateWithTooltip).at(0);
   const findLastUsed = (row) =>
@@ -123,8 +130,18 @@ describe('Personal access tokens table component', () => {
 
     beforeEach(() => createWrapper());
 
-    it('shows token name', () => {
-      expect(findCell({ row, column: 0 }).text()).toBe(token.name);
+    describe('token name', () => {
+      it('shows button', () => {
+        expect(findNameButton(row).props('variant')).toBe('link');
+        expect(findNameButton(row).text()).toBe(token.name);
+      });
+
+      it('emits select event when clicked', () => {
+        findNameButton(row).vm.$emit('click');
+
+        expect(wrapper.emitted('select')).toHaveLength(1);
+        expect(wrapper.emitted('select')[0][0]).toBe(token);
+      });
     });
 
     it('shows token description', () => {

@@ -20,7 +20,7 @@ For a step-by-step guide for first-time contributors, see [Tutorial: Make a GitL
 1. [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
 1. [Choose or create an issue to work on](#choose-or-create-an-issue).
 1. [Choose a development environment](#choose-a-development-environment).
-1. Make changes and open a merge request.
+1. [Make changes and open a merge request](#make-changes-and-open-a-merge-request)
 1. Your merge request is triaged, reviewed, and can then be incorporated into the product.
 
 {{< alert type="note" >}}
@@ -90,29 +90,16 @@ Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-bo
 
   To install GDK and its dependencies, follow the steps in [Install the GDK development environment](first_contribution/configure-dev-env-gdk.md).
 
-## Open a merge request
+## Make changes and open a merge request
 
-1. Go to [the community fork on GitLab.com](https://gitlab.com/gitlab-community/gitlab).
+- Make your code changes on a branch in [the community fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab).
+- Create a merge request targeting the master branch of the canonical repository.
+- Follow the link posted by `@gitlab-bot` to add labels or request a review from the GitLab team.
 
-   If you don't see this message, on the left sidebar, select **Code > Merge requests > New merge request**.
+For complete step-by-step instructions on opening and submitting your merge request, see the [merge request tutorial](first_contribution/mr-review.md).
 
-1. Take a look at the branch names. You should be merging from your branch
-   in the community fork to the `master` branch in the GitLab repository.
-
-1. Fill out the information and then select **Save changes**.
-   Don't worry if your merge request is not complete.
-
-   If you don't want anyone from GitLab to review it, you can select the **Mark as draft** checkbox.
-   If you're not happy with the merge request after you create it, you can close it, no harm done.
-
-1. If you're happy with this merge request and want to start the review process, type
-   `@gitlab-bot ready` in a comment and then select **Comment**.
-
-   Someone from GitLab will look at your request and let you know what the next steps are.
-   For details, see the [merge request workflow](merge_request_workflow.md).
-
-   Have questions?
-   Use `@gitlab-bot help` to ping a GitLab Merge Request coach. For more information on MR coaches, visit [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md).
+Have questions?
+Use `@gitlab-bot help` to ping a GitLab Merge Request coach. For more information on MR coaches, visit [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md).
 
 ### How community merge requests are triaged
 

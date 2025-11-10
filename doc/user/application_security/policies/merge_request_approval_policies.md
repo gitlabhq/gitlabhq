@@ -205,7 +205,9 @@ the following sections and tables provide an alternative.
 {{< history >}}
 
 - The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags/_index.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
-- The `enforcement_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202746) in GitLab 18.4 [with flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`
+- The `enforcement_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202746) in GitLab 18.4 [with flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`.
+- The `enforcement_type` field was [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
+
 {{< /history >}}
 
 {{< alert type="flag" >}}
@@ -439,6 +441,7 @@ the bot message is sent as long as at least one of those policies has the `send_
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15552) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`. Disabled by default
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
 
 {{< /history >}}
 

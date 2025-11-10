@@ -84,3 +84,10 @@ export function resetCreatedTime(isoDateTimeString) {
 export function utcExpiredDate(isoDateString) {
   return setUTCTime(isoDateString);
 }
+
+/**
+ * Whether the timestamp is within 2 weeks from the current date.
+ * @param {string} timestamp
+ */
+export const isWithin2Weeks = (timestamp) =>
+  setUTCTime(timestamp) <= setUTCTime(nDaysAfter(new Date(), 14));
