@@ -39,5 +39,13 @@ RSpec.describe Members::Groups::CreatorService, feature_category: :groups_and_pr
         end
       end
     end
+
+    context 'with immediately_sync_authorizations: true' do
+      it 'does nothing for groups' do
+        expect(ProjectAuthorization).not_to receive(:find_or_create_authorization_for)
+
+        described_class.add_member(source, user, :maintainer, immediately_sync_authorizations: true)
+      end
+    end
   end
 end

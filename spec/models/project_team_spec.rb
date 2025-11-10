@@ -355,6 +355,19 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
 
       expect(project.team.reporter?(user)).to be(true)
     end
+
+    it 'can pass through immediately_sync_authorizations' do
+      expect(::Members::Projects::CreatorService)
+        .to receive(:add_member)
+        .with(
+          project, user, :reporter,
+          current_user: anything,
+          expires_at: nil,
+          immediately_sync_authorizations: true
+        )
+
+      project.add_member(user, :reporter, immediately_sync_authorizations: true)
+    end
   end
 
   describe '#has_user?' do

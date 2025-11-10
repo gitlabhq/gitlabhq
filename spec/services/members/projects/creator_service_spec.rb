@@ -38,5 +38,17 @@ RSpec.describe Members::Projects::CreatorService, feature_category: :groups_and_
         end
       end
     end
+
+    context 'with immediately_sync_authorizations: true' do
+      it 'immediate creates a ProjectAuthorization' do
+        described_class.add_member(source, user, :maintainer, immediately_sync_authorizations: true)
+
+        expect(
+          ProjectAuthorization.where(
+            user: user, project: source,
+            access_level: Gitlab::Access::MAINTAINER)
+        ).to exist
+      end
+    end
   end
 end

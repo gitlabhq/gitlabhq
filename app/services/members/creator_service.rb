@@ -79,8 +79,25 @@ module Members
         members
       end
 
+      # NOTE: `immediately_sync_authorizations` can be expensive to run in the foreground. This should only be used in
+      # rare cases where asynchronous authorization does not work (e.g. user is created and used immediately in the same
+      # request).
       def add_member(source, invitee, access_level, **args)
-        add_members(source, [invitee], access_level, **args).first
+        # We delete the immediately_sync_authorizations option as we don't want to support that for adding multiple
+        # members
+        sync_immediately = args.delete(:immediately_sync_authorizations)
+
+        result = add_members(source, [invitee], access_level, **args).first
+
+        # Some code paths really need the member to exist straight away as the user will be used straight away. Async
+        # refresh will almost always lead to bugs for these cases.
+        if sync_immediately && source.is_a?(Project)
+          ::AuthorizedProjectUpdate::ProjectRecalculatePerUserService
+            .new(source, invitee)
+            .execute
+        end
+
+        result
       end
 
       private
