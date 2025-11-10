@@ -68,7 +68,7 @@ For more information, see the history.
 
 GitLab shows your total **Active** merge requests on the left sidebar on all pages:
 
-![The upper-left area of the GitLab interface showing totals.](img/homepage_totals_v18_3.png)
+![Upper area of the GitLab left sidebar displaying user activity summary: 9 open issues, 1 active merge request, and 1 to-do item.](img/homepage_totals_v18_3.png)
 
 This user has:
 
