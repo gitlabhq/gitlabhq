@@ -21,7 +21,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/controllers/sessions_controller.rb'
     - 'app/controllers/whats_new_controller.rb'
     - 'app/finders/autocomplete/users_finder.rb'
-    - 'app/finders/ci/commit_statuses_finder.rb'
     - 'app/finders/ci/pipelines_for_merge_request_finder.rb'
     - 'app/finders/cluster_ancestors_finder.rb'
     - 'app/finders/concerns/finder_with_group_hierarchy.rb'

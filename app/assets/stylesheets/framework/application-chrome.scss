@@ -335,7 +335,7 @@
   // Contextual panel
   .paneled-view.contextual-panel {
     @apply gl-overflow-y-auto gl-flex-1 gl-rounded-lg gl-bg-default empty:gl-hidden gl-h-full;
-    @apply gl-z-[252] gl-w-8/10 gl-right-0;
+    @apply gl-z-[252] gl-w-full sm:gl-w-8/10 gl-right-0;
     display: flex;
     flex-direction: column;
   }
@@ -657,6 +657,10 @@
 
   .paneled-view:has(.fullscreen) {
     @apply gl-grow;
+  }
+
+  .gl-drawer {
+    width: min(calc(100% - #{$gl-spacing-scale-6}), 400px);
   }
 
 }

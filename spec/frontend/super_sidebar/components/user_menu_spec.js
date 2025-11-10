@@ -4,9 +4,11 @@ import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import UserMenuProfileItem from '~/super_sidebar/components/user_menu_profile_item.vue';
 import SetStatusModal from '~/set_status_modal/set_status_modal_wrapper.vue';
+import DapWelcomeModal from '~/dap_welcome_modal/dap_welcome_modal.vue';
 import { mockTracking } from 'helpers/tracking_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -26,6 +28,7 @@ describe('UserMenu component', () => {
   const GlEmoji = { template: '<img/>' };
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findSetStatusModal = () => wrapper.findComponent(SetStatusModal);
+  const findDapWelcomeModal = () => wrapper.findComponent(DapWelcomeModal);
   const showDropdown = () => findDropdown().vm.$emit('shown');
   const findStopImpersonationButton = () => wrapper.findByTestId('stop-impersonation-btn');
 
@@ -519,6 +522,39 @@ describe('UserMenu component', () => {
         'data-track-action': 'click_link',
         'data-track-label': 'user_preferences',
       });
+    });
+  });
+
+  describe('DAP welcome modal', () => {
+    useLocalStorageSpy();
+
+    it.each`
+      description                          | showDapWelcomeModal | modalVisibility
+      ${'shows DAP welcome modal'}         | ${'true'}           | ${true}
+      ${'does not show DAP welcome modal'} | ${'false'}          | ${false}
+    `(
+      '$description when showDapWelcomeModal localStorageKey is set to $showDapWelcomeModal',
+      async ({ showDapWelcomeModal, modalVisibility }) => {
+        localStorage.setItem('showDapWelcomeModal', showDapWelcomeModal);
+
+        createWrapper();
+
+        await nextTick();
+
+        expect(findDapWelcomeModal().exists()).toBe(modalVisibility);
+      },
+    );
+
+    it('closing DAP welcome modal causes showDapWelcomeModal localStorage key set to `false`', async () => {
+      localStorage.setItem('showDapWelcomeModal', 'true');
+
+      createWrapper();
+
+      await nextTick();
+
+      findDapWelcomeModal().vm.$emit('close');
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('showDapWelcomeModal', 'false');
     });
   });
 

@@ -410,10 +410,6 @@ the Linux package:
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
-   redis_exporter['flags'] = {
-         'redis.addr' => 'redis://0.0.0.0:6379',
-         'redis.password' => 'SECRET_PASSWORD_HERE',
-   }
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false

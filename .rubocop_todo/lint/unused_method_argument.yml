@@ -345,7 +345,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/diff/file_collection/merge_request_diff_base.rb'
     - 'lib/gitlab/diff/line.rb'
     - 'lib/gitlab/fogbugz_import/importer.rb'
-    - 'lib/gitlab/git/commit_stats.rb'
     - 'lib/gitlab/git/conflict/parser.rb'
     - 'lib/gitlab/git/cross_repo.rb'
     - 'lib/gitlab/git/ref.rb'

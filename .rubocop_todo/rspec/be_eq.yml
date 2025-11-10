@@ -10,7 +10,6 @@ RSpec/BeEq:
     - 'ee/spec/controllers/ee/ldap/omniauth_callbacks_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/blob_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/imports_controller_spec.rb'
-    - 'ee/spec/controllers/ee/projects/issues_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/jobs_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/merge_requests_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/mirrors_controller_spec.rb'

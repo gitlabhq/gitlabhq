@@ -20,7 +20,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/lib/gitlab/auth/ldap/access_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/daemon_spec.rb'
     - 'ee/spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'
-    - 'ee/spec/models/geo_node_status_spec.rb'
     - 'ee/spec/models/merge_request_spec.rb'
     - 'ee/spec/models/project_import_state_spec.rb'
     - 'ee/spec/models/push_rule_spec.rb'

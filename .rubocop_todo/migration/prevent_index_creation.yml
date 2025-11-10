@@ -58,4 +58,3 @@ Migration/PreventIndexCreation:
     - 'db/post_migrate/20250627213929_add_index_to_resource_state_events_namespace_id.rb'
     - 'db/post_migrate/20250807135739_prepare_async_index_project_daily_statistics_date_and_id.rb'
     - 'db/post_migrate/20250811051534_add_index_project_daily_statistics_date_and_id.rb'
-    - 'db/post_migrate/20250902201700_add_label_links_namespace_id_index.rb'

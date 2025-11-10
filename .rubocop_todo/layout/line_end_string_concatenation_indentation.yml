@@ -467,7 +467,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/lib/gitlab/database/migration_helpers/automatic_lock_writes_on_tables_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migrations/batched_background_migration_helpers_spec.rb'
-    - 'spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb'
     - 'spec/lib/gitlab/database/no_overrides_for_through_associations_spec.rb'
     - 'spec/lib/gitlab/diff/char_diff_spec.rb'
     - 'spec/lib/gitlab/git_access_spec.rb'

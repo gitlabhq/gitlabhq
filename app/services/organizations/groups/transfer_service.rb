@@ -15,6 +15,22 @@ module Organizations
         @current_user = current_user
       end
 
+      def async_execute
+        return ServiceResponse.error(message: error) unless transfer_allowed?
+
+        Organizations::Groups::TransferWorker.perform_async(
+          {
+            'group_id' => group.id,
+            'organization_id' => new_organization.id,
+            'current_user_id' => current_user.id
+          }
+        )
+
+        ServiceResponse.success(
+          message: s_("TransferOrganization|Group transfer to organization initiated")
+        )
+      end
+
       def execute
         return ServiceResponse.error(message: error) unless transfer_allowed?
 

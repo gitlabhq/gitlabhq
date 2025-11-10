@@ -959,10 +959,6 @@ a node and change its status from primary to replica (and vice versa).
    # Set the network addresses that the exporters will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
-   redis_exporter['flags'] = {
-        'redis.addr' => 'redis://10.6.0.51:6379',
-        'redis.password' => 'redis-password-goes-here',
-   }
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1031,10 +1027,6 @@ a node and change its status from primary to replica (and vice versa).
    # Set the network addresses that the exporters will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
-   redis_exporter['flags'] = {
-        'redis.addr' => 'redis://10.6.0.52:6379',
-        'redis.password' => 'redis-password-goes-here',
-   }
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1179,10 +1171,6 @@ a node and change its status from primary to replica (and vice versa).
    # Set the network addresses that the exporters will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
-   redis_exporter['flags'] = {
-        'redis.addr' => 'redis://10.6.0.62:6379',
-        'redis.password' => 'redis-password-goes-here',
-   }
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false

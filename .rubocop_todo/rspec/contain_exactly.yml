@@ -48,7 +48,6 @@ RSpec/ContainExactly:
     - 'ee/spec/models/iteration_spec.rb'
     - 'ee/spec/models/merge_trains/train_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'
-    - 'ee/spec/models/work_items/type_spec.rb'
     - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
     - 'ee/spec/requests/api/graphql/epics/epics_spec.rb'
     - 'ee/spec/requests/api/graphql/group/labels_query_spec.rb'

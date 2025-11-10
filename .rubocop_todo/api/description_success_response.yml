@@ -60,7 +60,6 @@ API/DescriptionSuccessResponse:
     - 'lib/api/releases.rb'
     - 'lib/api/rpm_project_packages.rb'
     - 'lib/api/rubygem_packages.rb'
-    - 'lib/api/search.rb'
     - 'lib/api/snippets.rb'
     - 'lib/api/supply_chain/attestations.rb'
     - 'lib/api/topics.rb'

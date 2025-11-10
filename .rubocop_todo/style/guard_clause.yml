@@ -293,7 +293,6 @@ Style/GuardClause:
     - 'ee/lib/gitlab/insights/serializers/chartjs/multi_series_serializer.rb'
     - 'ee/lib/gitlab/insights/validators/params_validator.rb'
     - 'ee/lib/omni_auth/strategies/group_saml.rb'
-    - 'ee/spec/features/billings/billing_plans_spec.rb'
     - 'ee/spec/support/ci/minutes_helpers.rb'
     - 'lib/api/commits.rb'
     - 'lib/api/feature_flags.rb'

@@ -127,7 +127,6 @@ API/DescriptionTags:
     - 'lib/api/repositories.rb'
     - 'lib/api/resource_label_events.rb'
     - 'lib/api/resource_state_events.rb'
-    - 'lib/api/search.rb'
     - 'lib/api/settings.rb'
     - 'lib/api/snippet_repository_storage_moves.rb'
     - 'lib/api/statistics.rb'

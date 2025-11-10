@@ -637,4 +637,46 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
       end
     end
   end
+
+  describe '#async_execute' do
+    context 'when transfer is allowed' do
+      it 'enqueues the transfer worker' do
+        expect(Organizations::Groups::TransferWorker).to receive(:perform_async).with(
+          {
+            'group_id' => group.id,
+            'organization_id' => new_organization.id,
+            'current_user_id' => user.id
+          }
+        )
+
+        result = service.async_execute
+
+        expect(result).to be_success
+        expect(result.message).to include('initiated')
+      end
+    end
+
+    context 'when transfer validation fails' do
+      let(:validator_error) { "Transfer not allowed" }
+
+      before do
+        allow_next_instance_of(Organizations::Groups::TransferValidator) do |validator|
+          allow(validator).to receive_messages(can_transfer?: false, error_message: validator_error)
+        end
+      end
+
+      it 'returns error ServiceResponse' do
+        result = service.async_execute
+
+        expect(result).to be_error
+        expect(result.message).to eq("Group organization transfer failed: #{validator_error}")
+      end
+
+      it 'does not enqueue the worker' do
+        expect(Organizations::Groups::TransferWorker).not_to receive(:perform_async)
+
+        service.async_execute
+      end
+    end
+  end
 end

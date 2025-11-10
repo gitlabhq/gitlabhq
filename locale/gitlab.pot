@@ -923,9 +923,6 @@ msgstr ""
 msgid "%{emailPrefix}@company.com"
 msgstr ""
 
-msgid "%{errorMessage}, defaulting to 365 days."
-msgstr ""
-
 msgid "%{extra} more downstream pipelines"
 msgstr ""
 
@@ -22318,9 +22315,6 @@ msgstr ""
 msgid "Date range must be shorter than %{max_range} days."
 msgstr ""
 
-msgid "Date range too large"
-msgstr ""
-
 msgid "Date updated"
 msgstr ""
 
@@ -35836,9 +35830,6 @@ msgstr ""
 msgid "Invalid date format. Please use UTC format as YYYY-MM-DD"
 msgstr ""
 
-msgid "Invalid dates set"
-msgstr ""
-
 msgid "Invalid feature"
 msgstr ""
 
@@ -41075,9 +41066,6 @@ msgstr ""
 msgid "Merge request actions"
 msgstr ""
 
-msgid "Merge request analytics"
-msgstr ""
-
 msgid "Merge request approvals"
 msgstr ""
 
@@ -41238,33 +41226,6 @@ msgid "MergeConflict|conflict"
 msgstr ""
 
 msgid "MergeConflict|conflicts"
-msgstr ""
-
-msgid "MergeRequestAnalytics|Assignees"
-msgstr ""
-
-msgid "MergeRequestAnalytics|Date Merged"
-msgstr ""
-
-msgid "MergeRequestAnalytics|Line changes"
-msgstr ""
-
-msgid "MergeRequestAnalytics|Merge Request"
-msgstr ""
-
-msgid "MergeRequestAnalytics|Merge request analytics is moving"
-msgstr ""
-
-msgid "MergeRequestAnalytics|Milestone"
-msgstr ""
-
-msgid "MergeRequestAnalytics|Pipelines"
-msgstr ""
-
-msgid "MergeRequestAnalytics|This page will move to %{dashboardsListLinkStart}Analytics dashboards%{dashboardsListLinkEnd} &gt; %{mrDashboardLinkStart}Merge request analytics%{mrDashboardLinkEnd} in GitLab 18.6."
-msgstr ""
-
-msgid "MergeRequestAnalytics|Time to merge"
 msgstr ""
 
 msgid "MergeRequestApprovals|Define approval rules and settings to ensure %{link_start}separation of duties%{link_end} for new merge requests."
@@ -66905,9 +66866,6 @@ msgstr ""
 msgid "The number of documents waiting for updates to existing indexed content. These represent changes to previously indexed files, commits, or metadata."
 msgstr ""
 
-msgid "The number of merge requests merged by month."
-msgstr ""
-
 msgid "The number of projects that have no repository data indexed. A value of 0 means all projects have had repository data indexed at least once, though some may need updates. This metric tracks only projects completely missing repository data from the index, not those needing incremental updates."
 msgstr ""
 
@@ -67243,9 +67201,6 @@ msgstr ""
 msgid "There is already a to-do item for this design."
 msgstr ""
 
-msgid "There is no chart data available."
-msgstr ""
-
 msgid "There is no data available."
 msgstr ""
 
@@ -67253,9 +67208,6 @@ msgid "There is no data available. Please change your selection."
 msgstr ""
 
 msgid "There is no job log to troubleshoot."
-msgstr ""
-
-msgid "There is no table data available."
 msgstr ""
 
 msgid "There is too much data to calculate. Please change your selection."
@@ -67481,12 +67433,6 @@ msgid "There was an error when subscribing to this label."
 msgstr ""
 
 msgid "There was an error when unsubscribing from this label."
-msgstr ""
-
-msgid "There was an error while fetching the chart data. Please refresh the page to try again."
-msgstr ""
-
-msgid "There was an error while fetching the table data. Please refresh the page to try again."
 msgstr ""
 
 msgid "There was an error while fetching value stream analytics data."
@@ -68284,9 +68230,6 @@ msgid "Threshold in bytes at which to compress Sidekiq job arguments."
 msgstr ""
 
 msgid "Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs."
-msgstr ""
-
-msgid "Throughput"
 msgstr ""
 
 msgid "Thu"
@@ -69785,6 +69728,9 @@ msgid "TransferOrganization|Group is already in the target organization."
 msgstr ""
 
 msgid "TransferOrganization|Group organization transfer failed: %{error_message}"
+msgstr ""
+
+msgid "TransferOrganization|Group transfer to organization initiated"
 msgstr ""
 
 msgid "TransferOrganization|Only root groups can be transferred to a different organization."

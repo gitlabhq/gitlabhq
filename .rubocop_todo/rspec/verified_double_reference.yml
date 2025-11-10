@@ -174,7 +174,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/models/project_authorizations/changes_spec.rb'
     - 'spec/requests/api/graphql/mutations/ci/pipeline_schedule/play_spec.rb'
     - 'spec/requests/api/project_job_token_scope_spec.rb'
-    - 'spec/requests/api/search_spec.rb'
     - 'spec/scripts/cells/ci_ensure_application_settings_have_definition_file_spec.rb'
     - 'spec/scripts/pipeline_test_report_builder_spec.rb'
     - 'spec/serializers/pipeline_serializer_spec.rb'

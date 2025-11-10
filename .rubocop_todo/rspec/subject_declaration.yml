@@ -28,7 +28,6 @@ RSpec/SubjectDeclaration:
     - 'spec/controllers/admin/clusters_controller_spec.rb'
     - 'spec/controllers/groups/clusters_controller_spec.rb'
     - 'spec/controllers/projects/clusters_controller_spec.rb'
-    - 'spec/finders/ci/commit_statuses_finder_spec.rb'
     - 'spec/finders/data_transfer/group_data_transfer_finder_spec.rb'
     - 'spec/finders/data_transfer/project_data_transfer_finder_spec.rb'
     - 'spec/finders/labels_finder_spec.rb'

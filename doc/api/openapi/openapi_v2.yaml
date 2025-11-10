@@ -2100,6 +2100,42 @@ paths:
       tags:
       - groups
       operationId: postApiV4GroupsIdTransfer
+  "/api/v4/groups/{id}/transfer_to_organization":
+    post:
+      description: Transfer a group to an organization
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      - name: postApiV4GroupsIdTransferToOrganization
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4GroupsIdTransferToOrganization"
+      responses:
+        '201':
+          description: Transfer a group to an organization
+          schema:
+            "$ref": "#/definitions/API_Entities_GroupDetail"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Group or Organization not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdTransferToOrganization
   "/api/v4/groups/{id}/share":
     post:
       description: Share a group with a group
@@ -48890,6 +48926,16 @@ definitions:
           to.If not provided, the source group will be promoted to a top-level group.
     description: Transfer a group to a new parent group or promote a subgroup to a
       top-level group
+  postApiV4GroupsIdTransferToOrganization:
+    type: object
+    properties:
+      organization_id:
+        type: integer
+        format: int32
+        description: The ID of the organization to transfer the group to
+    required:
+    - organization_id
+    description: Transfer a group to an organization
   postApiV4GroupsIdShare:
     type: object
     properties:

@@ -267,7 +267,6 @@ Layout/ClassStructure:
     - 'lib/gitlab/ci/config/entry/job.rb'
     - 'lib/gitlab/ci/config/entry/jobs.rb'
     - 'lib/gitlab/ci/config/entry/pages.rb'
-    - 'lib/gitlab/ci/config/external/context.rb'
     - 'lib/gitlab/ci/config/external/rules.rb'
     - 'lib/gitlab/ci/config/interpolation/config.rb'
     - 'lib/gitlab/ci/config/interpolation/context.rb'

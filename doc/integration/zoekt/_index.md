@@ -9,24 +9,24 @@ title: Zoekt
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
+- Status: Limited availability
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/17918) from beta to limited availability in GitLab 18.6.
 
 {{< /history >}}
 
 {{< alert type="warning" >}}
 
-This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
+This feature is in [limited availability](../../policy/development_stages_support.md#limited-availability).
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
-To provide feedback on this feature, leave a comment on
-[issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
+Provide feedback in [issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
 
 {{< /alert >}}
 

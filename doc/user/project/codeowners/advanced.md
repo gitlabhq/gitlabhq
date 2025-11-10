@@ -6,6 +6,13 @@ description: Use Code Owners to define experts for your codebase, and set review
 title: Advanced `CODEOWNERS` configuration
 ---
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 The `CODEOWNERS` file helps you define who is responsible for specific files and directories.
 You can use pattern matching, sections, and inheritance rules to assign reviewers to merge requests
 and require their approval before merging.
@@ -172,6 +179,12 @@ The eligible Code Owners are:
 - Project B: the members of both Group X and Subgroup Y.
 
 ### Groups shared with parent groups
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
 
 {{< history >}}
 

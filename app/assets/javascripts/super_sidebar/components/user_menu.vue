@@ -260,7 +260,7 @@ export default {
       this.$refs.userDropdown.close();
     },
     closeDapWelcomeModal() {
-      localStorage.removeItem('showDapWelcomeModal');
+      localStorage.setItem('showDapWelcomeModal', 'false');
     },
     initBuyCIMinsCallout() {
       const el = this.$refs?.buyPipelineMinutesNotificationCallout?.$el;

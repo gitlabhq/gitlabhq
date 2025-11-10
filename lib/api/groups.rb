@@ -655,6 +655,45 @@ module API
         end
       end
 
+      desc 'Transfer a group to an organization' do
+        success Entities::GroupDetail
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Group or Organization not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags %w[groups]
+      end
+      params do
+        requires :organization_id, type: Integer, desc: 'The ID of the organization to transfer the group to'
+      end
+      post ':id/transfer_to_organization', feature_category: :groups_and_projects do
+        group = find_group!(params[:id])
+
+        organization = ::Organizations::Organization.find_by_id(params[:organization_id])
+
+        not_found!('Organization') unless organization
+
+        authorize! :admin_group, group
+
+        service = ::Organizations::Groups::TransferService.new(
+          group: group,
+          new_organization: organization,
+          current_user: current_user
+        )
+
+        result = service.async_execute
+
+        if result[:status] == :success
+          status 202
+          present group, with: Entities::GroupDetail, current_user: current_user
+        else
+          render_api_error!(result[:message], result[:http_status] || 400)
+        end
+      end
+
       desc 'Share a group with a group' do
         success Entities::GroupDetail
         tags %w[groups]

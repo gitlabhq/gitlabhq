@@ -374,7 +374,6 @@ RSpec/ReceiveMessages:
     - 'spec/requests/api/group_import_spec.rb'
     - 'spec/requests/api/helpers_spec.rb'
     - 'spec/requests/api/maven_packages_spec.rb'
-    - 'spec/requests/api/search_spec.rb'
     - 'spec/requests/projects/google_cloud/databases_controller_spec.rb'
     - 'spec/requests/projects/google_cloud/service_accounts_controller_spec.rb'
     - 'spec/requests/projects/redirect_controller_spec.rb'
