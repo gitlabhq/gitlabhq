@@ -9,4 +9,4 @@ vocab: false
 level: error
 scope: raw
 raw:
-  - '\[[^\]]+\]\(https?:\/\/docs\.gitlab\.com\/(?!runner|archives|omnibus|charts|operator|\))[^\)]*\)'
+  - '\[[^\]]+\]\(https?:\/\/docs\.gitlab\.com\/(?!runner|archives|omnibus|charts|operator|cli|\))[^\)]*\)'

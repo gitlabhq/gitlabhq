@@ -53,7 +53,7 @@ RSpec.describe KeysetHelper, type: :controller do
 
           expect(response.body).to have_css('.gl-pagination')
           expect(response.body).to have_css('a.disabled', text: 'First')
-          expect(response.body).to have_css('a.disabled', text: 'Prev')
+          expect(response.body).to have_css('a.disabled', text: 'Previous')
           expect(response.body).to have_css('a:not(disabled)', text: 'Next')
           expect(response.body).to have_css('a:not(disabled)', text: 'Last')
         end
@@ -66,7 +66,7 @@ RSpec.describe KeysetHelper, type: :controller do
           get :index, params: { cursor: cursor }
 
           expect(response.body).to have_css('a:not(disabled)', text: 'First')
-          expect(response.body).to have_css('a:not(disabled)', text: 'Prev')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Previous')
           expect(response.body).to have_css('a.disabled', text: 'Next')
           expect(response.body).to have_css('a.disabled', text: 'Last')
         end
@@ -79,7 +79,7 @@ RSpec.describe KeysetHelper, type: :controller do
           get :index, params: { cursor: cursor }
 
           expect(response.body).to have_css('a:not(disabled)', text: 'First')
-          expect(response.body).to have_css('a:not(disabled)', text: 'Prev')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Previous')
           expect(response.body).to have_css('a:not(disabled)', text: 'Next')
           expect(response.body).to have_css('a:not(disabled)', text: 'Last')
         end

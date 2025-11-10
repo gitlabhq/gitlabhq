@@ -58,30 +58,63 @@ RSpec.configure do |config|
     config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
 
     if QA::Runtime::Env.running_in_ci? && QA::Runtime::Env.export_metrics?
-      GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |config|
-        config.run_type = QA::Runtime::Env.run_type
-        config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
-        config.logger = QA::Runtime::Logger.logger
+      clickhouse_url = ENV["GLCI_CLICKHOUSE_METRICS_URL"]
+      clickhouse_username = ENV["GLCI_CLICKHOUSE_METRICS_USERNAME"]
+      clickhouse_password = ENV["GLCI_CLICKHOUSE_METRICS_PASSWORD"]
 
-        config.custom_metrics_proc = ->(_example) {
+      owners_table = GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable.new(
+        database: ENV["GLCI_CLICKHOUSE_TEST_COVERAGE_DB"],
+        url: clickhouse_url,
+        username: clickhouse_username,
+        password: clickhouse_password
+      )
+
+      GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |exporter_config|
+        exporter_config.run_type = QA::Runtime::Env.run_type
+        exporter_config.test_retried_proc = ->(_example) { QA::Runtime::Env.rspec_retried? }
+        exporter_config.logger = QA::Runtime::Logger.logger
+
+        exporter_config.custom_metrics_proc = ->(example) {
           default_branch = ENV["CI_COMMIT_REF_NAME"] == ENV["CI_DEFAULT_BRANCH"]
+          feature_category = example.metadata[:feature_category]
+
+          owners = begin
+            feature_category ? owners_table.owners(feature_category.to_s) : {}
+          rescue GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable::MissingMappingError
+            QA::Runtime::Logger.logger.error(
+              "Example '#{example.location}' contains unknown feature_category '#{feature_category}'"
+            )
+            {}
+          rescue StandardError => e
+            QA::Runtime::Logger.logger.error("Failed to fetch owners for feature category '#{feature_category}'")
+            QA::Runtime::Logger.logger.error(e.message)
+            {}
+          end
+
           {
             default_branch_pipeline: default_branch,
             default_branch_scheduled_pipeline: default_branch && ENV["SCHEDULE_TYPE"].present?,
-            merge_request_pipeline: ENV["CI_MERGE_REQUEST_IID"].present?
+            merge_request_pipeline: ENV["CI_MERGE_REQUEST_IID"].present?,
+            **owners
           }
         }
 
-        config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
+        exporter_config.clickhouse_config = GitlabQuality::TestTooling::TestMetricsExporter::Config::ClickHouse.new(
           database: ENV["GLCI_CLICKHOUSE_METRICS_DB"],
           table_name: ENV["GLCI_CLICKHOUSE_METRICS_TABLE"],
-          url: ENV["GLCI_CLICKHOUSE_METRICS_URL"],
-          username: ENV["GLCI_CLICKHOUSE_METRICS_USERNAME"],
-          password: ENV["GLCI_CLICKHOUSE_METRICS_PASSWORD"]
+          url: clickhouse_url,
+          username: clickhouse_username,
+          password: clickhouse_password
         )
-      end
 
-      config.add_formatter GitlabQuality::TestTooling::TestMetricsExporter::Formatter
+        if clickhouse_url && clickhouse_username && clickhouse_password
+          config.add_formatter GitlabQuality::TestTooling::TestMetricsExporter::Formatter
+        else
+          QA::Runtime::Logger.logger.warn(
+            "Test metrics export is enabled but clickhouse environment variables are not set!"
+          )
+        end
+      end
     end
   end
 

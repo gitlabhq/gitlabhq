@@ -286,13 +286,7 @@ export default {
     </gl-table>
 
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        :prev-text="__('Prev')"
-        :next-text="__('Next')"
-        @prev="onPrevPage"
-        @next="onNextPage"
-      />
+      <gl-keyset-pagination v-bind="pageInfo" @prev="onPrevPage" @next="onNextPage" />
     </div>
   </div>
 </template>

@@ -49,8 +49,6 @@ class ProjectsController < Projects::ApplicationController
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)
     end
-
-    push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
   end
 
   layout :determine_layout

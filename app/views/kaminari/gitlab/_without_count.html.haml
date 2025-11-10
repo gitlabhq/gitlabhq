@@ -6,7 +6,7 @@
     %ul.gl-justify-center
       = render prev_view, testid: 'kaminari-pagination-prev', rel: 'prev', url: previous_path, data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'prev') do
         = sprite_icon('chevron-left')
-        = s_('Pagination|Prev')
+        = s_('Pagination|Previous')
       = render next_view, testid: 'kaminari-pagination-next', rel: 'next', url: next_path, data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'next') do
         = s_('Pagination|Next')
         = sprite_icon('chevron-right')

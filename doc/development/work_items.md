@@ -70,15 +70,6 @@ Some terms have been used in the past but have since become confusing and are no
 | ---               | ---         | ---               | ---       |
 | issue type        | A former way to refer to classes of work item | _Tasks are an **issue type**_ | _Tasks are a **work item type**_ |
 
-## Work items development
-
-During development, we can use `work_items_alpha` for internal team testing ([`gitlab-org/plan-stage`](https://gitlab.com/gitlab-org/plan-stage)).
-
-_Other groups may be included. For the latest information, query the feature flags within [chatops](feature_flags/controls.md)._
-
-For more information about this feature flag, see
-[Work Items Architecture Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/#feature-flags).
-
 ## Migration strategy
 
 WI model will be built on top of the existing `Issue` model and we'll gradually migrate `Issue`

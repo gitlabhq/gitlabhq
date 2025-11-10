@@ -372,9 +372,6 @@ export default {
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
-    workItemsAlphaEnabled() {
-      return this.glFeatures.workItemsAlpha;
-    },
     newTodoAndNotificationsEnabled() {
       return this.glFeatures.notificationsTodosButtons;
     },
@@ -483,7 +480,6 @@ export default {
       return {
         '@sm/panel:!gl-block': !this.shouldShowAncestors,
         'gl-hidden @sm/panel:!gl-block !gl-mt-3': this.shouldShowAncestors,
-        'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
     shouldShowEditButton() {
@@ -542,7 +538,7 @@ export default {
       return this.workItem?.namespace?.fullName || '';
     },
     contextualViewEnabled() {
-      return this.workItemsAlphaEnabled || this.glFeatures?.workItemViewForIssues;
+      return this.glFeatures?.workItemViewForIssues;
     },
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;

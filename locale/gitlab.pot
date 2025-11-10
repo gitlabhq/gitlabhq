@@ -47658,9 +47658,6 @@ msgstr ""
 msgid "Pagination|Pagination"
 msgstr ""
 
-msgid "Pagination|Prev"
-msgstr ""
-
 msgid "Pagination|Previous"
 msgstr ""
 
@@ -50095,9 +50092,6 @@ msgstr ""
 msgid "Preparing the report for the scan."
 msgstr ""
 
-msgid "Prev"
-msgstr ""
-
 msgid "Prevent auto-stopping"
 msgstr ""
 
@@ -50141,6 +50135,9 @@ msgid "Preview size limit exceeded, changes collapsed."
 msgstr ""
 
 msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
+msgstr ""
+
+msgid "Previous"
 msgstr ""
 
 msgid "Previous card"

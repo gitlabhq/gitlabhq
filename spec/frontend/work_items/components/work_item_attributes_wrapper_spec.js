@@ -73,7 +73,6 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
-    workItemsAlpha = false,
     shouldShowCallout = true,
     groupPath = '',
     workItemParticipantsQueryHandler = workItemParticipantsQuerySuccessHandler,
@@ -93,9 +92,6 @@ describe('WorkItemAttributesWrapper component', () => {
       provide: {
         hasSubepicsFeature: true,
         newTrialPath,
-        glFeatures: {
-          workItemsAlpha,
-        },
       },
       stubs: {
         UserCalloutDismisser: makeMockUserCalloutDismisser({
@@ -264,7 +260,7 @@ describe('WorkItemAttributesWrapper component', () => {
       ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
     `('$description', ({ crmContactsWidgetPresent, exists }) => {
       const response = workItemResponseFactory({ crmContactsWidgetPresent });
-      createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
+      createComponent({ workItem: response.data.workItem });
 
       expect(findWorkItemCrmContacts().exists()).toBe(exists);
     });

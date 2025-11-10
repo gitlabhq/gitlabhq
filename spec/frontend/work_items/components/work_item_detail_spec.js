@@ -166,7 +166,6 @@ describe('WorkItemDetail component', () => {
     handler = successHandler,
     workItemByIdHandler = workItemByIdQueryHandler,
     mutationHandler,
-    workItemsAlphaEnabled = false,
     router = true,
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
@@ -201,14 +200,14 @@ describe('WorkItemDetail component', () => {
         };
       },
       provide: {
-        glFeatures: {
-          workItemsAlpha: workItemsAlphaEnabled,
-        },
         groupPath: 'group',
         hasDesignManagementFeature: true,
         hasLinkedItemsEpicsFeature: true,
         hasSubepicsFeature: true,
         isGroup: false,
+        glFeatures: {
+          workItemViewForIssues: true,
+        },
         ...provide,
       },
       stubs: {
@@ -592,7 +591,6 @@ describe('WorkItemDetail component', () => {
         createComponent({
           props: { isModal: true },
           handler: jest.fn().mockRejectedValue('Oops, problemo'),
-          workItemsAlphaEnabled: true,
         });
 
         await waitForPromises();
@@ -710,7 +708,7 @@ describe('WorkItemDetail component', () => {
       );
 
       it('opens the drawer with the child when `show-modal` is emitted', async () => {
-        createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
+        createComponent({ handler: objectiveHandler });
         await waitForPromises();
 
         const event = {
@@ -728,7 +726,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('closes the drawer when `close-drawer` is emitted from the selected work item', async () => {
-        createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
+        createComponent({ handler: objectiveHandler });
         await waitForPromises();
 
         const event = {
@@ -752,7 +750,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('closes the drawer when `show-modal` is emitted with `null`', async () => {
-        createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
+        createComponent({ handler: objectiveHandler });
         await waitForPromises();
         const event = {
           preventDefault: jest.fn(),
@@ -780,7 +778,6 @@ describe('WorkItemDetail component', () => {
           createComponent({
             props: { isModal: true },
             handler: objectiveHandler,
-            workItemsAlphaEnabled: true,
           });
 
           await waitForPromises();
@@ -846,7 +843,6 @@ describe('WorkItemDetail component', () => {
       it('opens the modal with the linked item when `showModal` is emitted', async () => {
         createComponent({
           handler,
-          workItemsAlphaEnabled: true,
         });
         await waitForPromises();
 
@@ -869,7 +865,6 @@ describe('WorkItemDetail component', () => {
           createComponent({
             props: { isModal: true },
             handler,
-            workItemsAlphaEnabled: true,
           });
 
           await waitForPromises();

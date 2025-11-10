@@ -33,10 +33,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
-  before_action only: :issues do
-    push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
-  end
-
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy
   # When loading show as an atom feed, we render events that could leak cross
   # project information

@@ -124,7 +124,7 @@ export default {
               :title="__('You\'re at the first commit')"
             ></span>
             <gl-icon name="chevron-left" />
-            {{ __('Prev') }}
+            {{ __('Previous') }}
           </gl-button>
           <gl-button
             v-gl-tooltip.html="nextCommitTooltip"

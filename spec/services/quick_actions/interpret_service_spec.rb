@@ -2816,18 +2816,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
           expect(explanations).not_to be_empty
         end
-
-        context 'when feature flag disabled' do
-          before do
-            stub_feature_flags(work_items_alpha: false)
-          end
-
-          it 'is not available' do
-            _, explanations = service.explain(command, work_item)
-
-            expect(explanations).to be_empty
-          end
-        end
       end
 
       context 'when group work item' do

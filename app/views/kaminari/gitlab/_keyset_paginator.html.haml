@@ -11,7 +11,7 @@
     %li
       - previous_page = url_for(page_params.merge(cursor: paginator.cursor_for_previous_page))
       = render Pajamas::ButtonComponent.new(category: :tertiary, disabled: !paginator.has_previous_page?, href: previous_page, icon: 'chevron-left', button_options: { rel: 'prev', class: 'gl-pagination-item' } ) do
-        = s_('Pagination|Prev')
+        = s_('Pagination|Previous')
 
     %li
       - next_page = url_for(page_params.merge(cursor: paginator.cursor_for_next_page))

@@ -74,7 +74,7 @@ Prerequisites:
 To integrate GitLab for JetBrains with the 1Password CLI:
 
 1. Authenticate with GitLab. Either:
-   - [Install the `glab`](../gitlab_cli/_index.md#install-the-cli) CLI and
+   - [Install the `glab`](https://docs.gitlab.com/cli/#install-the-cli) CLI and
      configure the [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/).
    - Follow the GitLab for JetBrains
      [steps](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup).
