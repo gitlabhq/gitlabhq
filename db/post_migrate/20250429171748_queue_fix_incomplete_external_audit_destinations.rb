@@ -5,21 +5,12 @@ class QueueFixIncompleteExternalAuditDestinations < Gitlab::Database::Migration[
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
-  MIGRATION = "FixIncompleteExternalAuditDestinations"
-  BATCH_SIZE = 100
-  SUB_BATCH_SIZE = 10
-
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :audit_events_external_audit_event_destinations,
-      :id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # No-op: Superseded by QueueFixIncompleteGroupExternalAuditDestinationsV2
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210375
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :audit_events_external_audit_event_destinations, :id, [])
+    # No-op
   end
 end
