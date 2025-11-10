@@ -82,11 +82,11 @@ To create a new application for a group:
 
 To create an application for your GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Applications**.
 1. Select **New application**.
 
-When creating application in the **Admin area** , mark it as **trusted**.
+When creating application in the **Admin** area, mark it as **trusted**.
 The user authorization step is automatically skipped for this application.
 
 ## View all authorized applications

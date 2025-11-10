@@ -13,7 +13,7 @@
       "markdownDescription": "Specification for pipeline configuration. Must be declared at the top of a configuration file, in a header section separated from the rest of the configuration with `---`. [Learn More](https://docs.gitlab.com/ci/yaml/#spec).",
       "properties": {
         "inputs": {
-          "$ref": "#/definitions/inputParameters"
+          "$ref": "#/definitions/configInputs"
         }
       },
       "additionalProperties": false
@@ -403,75 +403,184 @@
         }
       ]
     },
-    "inputParameters": {
+    "baseInput": {
       "type": "object",
-      "markdownDescription": "Define parameters that can be populated in reusable CI/CD configuration files when added to a pipeline. [Learn More](https://docs.gitlab.com/ci/inputs/).",
+      "properties": {
+        "type": {
+          "type": "string",
+          "markdownDescription": "Input type. Defaults to 'string' when not specified.",
+          "enum": [
+            "array",
+            "boolean",
+            "number",
+            "string"
+          ],
+          "default": "string"
+        },
+        "description": {
+          "type": "string",
+          "markdownDescription": "Human-readable explanation of the parameter.",
+          "maxLength": 1024
+        },
+        "options": {
+          "type": "array",
+          "markdownDescription": "List of allowed values for this input.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        "regex": {
+          "type": "string",
+          "markdownDescription": "Regular expression that string values must match."
+        },
+        "default": {
+          "markdownDescription": "Default value for this input."
+        }
+      },
+      "additionalProperties": false
+    },
+    "configInputs": {
+      "type": "object",
+      "markdownDescription": "Define input parameters for reusable CI/CD configuration. Config inputs can optionally specify defaults. [Learn More](https://docs.gitlab.com/ci/inputs/).",
       "patternProperties": {
         ".*": {
-          "markdownDescription": "**Input Configuration**\n\nAvailable properties:\n- `type`: string (default), array, boolean, or number\n- `description`: Human-readable explanation of the parameter (supports Markdown)\n- `options`: List of allowed values\n- `default`: Value to use when not specified (makes input optional)\n- `regex`: Pattern that string values must match",
           "oneOf": [
             {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "markdownDescription": "Force a specific input type. Defaults to 'string' when not specified. [Learn More](https://docs.gitlab.com/ci/inputs/#input-types).",
-                  "enum": [
-                    "array",
-                    "boolean",
-                    "number",
-                    "string"
-                  ],
-                  "default": "string"
+              "allOf": [
+                {
+                  "$ref": "#/definitions/baseInput"
                 },
-                "description": {
-                  "type": "string",
-                  "markdownDescription": "Give a description to a specific input. The description does not affect the input, but can help people understand the input details or expected values. Supports markdown.",
-                  "maxLength": 1024
-                },
-                "options": {
-                  "type": "array",
-                  "markdownDescription": "Specify a list of allowed values for an input.",
-                  "items": {
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "type": "boolean"
+                {
+                  "properties": {
+                    "rules": {
+                      "type": "array",
+                      "markdownDescription": "Conditional rules for this input.",
+                      "items": {
+                        "type": "object"
                       }
-                    ]
+                    }
                   }
                 },
-                "regex": {
-                  "type": "string",
-                  "markdownDescription": "Specify a regular expression that the input must match. Only impacts inputs with a `type` of `string`."
-                },
-                "default": {
-                  "markdownDescription": "Define default values for inputs when not specified. When you specify a default, the inputs are no longer mandatory."
+                {
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "enum": ["string"]
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "default": {
+                            "type": ["string", "null"]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "enum": ["number"]
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "default": {
+                            "type": ["number", "null"]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "enum": ["boolean"]
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "default": {
+                            "type": ["boolean", "null"]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "enum": ["array"]
+                          }
+                        }
+                      },
+                      "then": {
+                        "properties": {
+                          "default": {
+                            "oneOf": [
+                              {
+                                "type": "array"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
-              },
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "jobInputs": {
+      "type": "object",
+      "markdownDescription": "Define input parameters for a job. Job inputs must always include a `default` value. [Learn More](https://docs.gitlab.com/ci/yaml/#inputs).",
+      "patternProperties": {
+        ".*": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/baseInput"
+            },
+            {
+              "required": ["default"]
+            },
+            {
               "allOf": [
                 {
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": [
-                          "string"
-                        ]
+                        "enum": ["string"]
                       }
                     }
                   },
                   "then": {
                     "properties": {
                       "default": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": "string"
                       }
                     }
                   }
@@ -480,19 +589,14 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": [
-                          "number"
-                        ]
+                        "enum": ["number"]
                       }
                     }
                   },
                   "then": {
                     "properties": {
                       "default": {
-                        "type": [
-                          "number",
-                          "null"
-                        ]
+                        "type": "number"
                       }
                     }
                   }
@@ -501,19 +605,14 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": [
-                          "boolean"
-                        ]
+                        "enum": ["boolean"]
                       }
                     }
                   },
                   "then": {
                     "properties": {
                       "default": {
-                        "type": [
-                          "boolean",
-                          "null"
-                        ]
+                        "type": "boolean"
                       }
                     }
                   }
@@ -522,32 +621,19 @@
                   "if": {
                     "properties": {
                       "type": {
-                        "enum": [
-                          "array"
-                        ]
+                        "enum": ["array"]
                       }
                     }
                   },
                   "then": {
                     "properties": {
                       "default": {
-                        "oneOf": [
-                          {
-                            "type": "array"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
+                        "type": "array"
                       }
                     }
                   }
                 }
-              ],
-              "additionalProperties": false
-            },
-            {
-              "type": "null"
+              ]
             }
           ]
         }
@@ -2088,6 +2174,9 @@
         },
         "identity": {
           "$ref": "#/definitions/identity"
+        },
+        "inputs": {
+          "$ref": "#/definitions/jobInputs"
         },
         "secrets": {
           "$ref": "#/definitions/secrets"

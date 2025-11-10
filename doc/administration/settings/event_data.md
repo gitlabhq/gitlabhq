@@ -57,7 +57,7 @@ If Snowplow tracking is enabled, it will be automatically disabled when you enab
 To enable or disable event-level data collection:
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Metrics and Profiling**.
 1. Expand **Event tracking**.
 1. To enable the setting, select the checkbox **Enable event tracking**. To disable the setting, clear the checkbox.

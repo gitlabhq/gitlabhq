@@ -80,7 +80,7 @@ If you are not concerned about these issues, there is nothing to do here.
 You must have administrator access to use any of the following methods:
 
 - Through the **Admin** area:
-  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
   1. Select **Settings** > **Runners**.
   1. Identify the runners you would like to pause.
   1. Select the `pause` button next to each runner you would like to pause.

@@ -26,6 +26,18 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_remove_group!, only: [:destroy, :restore]
   before_action :authorize_create_group!, only: [:new]
 
+  # Skip :index, :new, :create because the before_action :group has not been executed for these
+  # actions, so @group is not available. Enforcement requires a loaded group instance.
+  # TODO: For :new and :create actions, enforce step-up auth by checking the parent group
+  # (via params[:parent_id]) to check if parent group has step-up auth required.
+  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/579212
+  before_action :enforce_step_up_auth_for_namespace, except: [:index, :new, :create]
+
+  # Skip for :edit and :update when user is a group admin/owner to enable self-service recovery
+  # from misconfiguration. Without this, owners could lock themselves out, requiring instance
+  # admin intervention for every affected group. Non-admin users still require step-up auth.
+  skip_before_action :enforce_step_up_auth_for_namespace, if: :skip_step_up_auth_for_owner_on_edit_and_update?
+
   before_action :group_projects, only: [:activity, :merge_requests]
   before_action :event_filter, only: [:activity]
 
@@ -409,6 +421,10 @@ class GroupsController < Groups::ApplicationController
 
   def work_items_redirect_params
     request.query_parameters
+  end
+
+  def skip_step_up_auth_for_owner_on_edit_and_update?
+    [:edit, :update].include?(action_name.to_sym) && can?(current_user, :admin_group, group)
   end
 end
 

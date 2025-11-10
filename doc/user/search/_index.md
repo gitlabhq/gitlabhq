@@ -94,7 +94,7 @@ To restrict `/search` to authenticated users only, do one of the following:
   for the project or group.
 - Restrict access in the **Admin** area:
 
-  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
   1. Select **Settings** > **Search**.
   1. Expand **Advanced search**.
   1. Clear the **Allow unauthenticated users to use search** checkbox.
@@ -102,7 +102,7 @@ To restrict `/search` to authenticated users only, do one of the following:
 
 To restrict global search to authenticated users only:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**
 1. Select the **Restrict global search to authenticated users only** checkbox.
@@ -133,7 +133,7 @@ All global search scopes are enabled by default on GitLab Self-Managed instances
 
 To disable one or more global search scopes:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**.
 1. Clear the checkboxes for the scopes you want to disable.

@@ -34,7 +34,7 @@ You can configure the per minute rate limit per IP address and per user for requ
 
 To change the rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Users API rate limit**.
 1. Set values for any available rate limit. The rate limits are per minute, per user for authenticated requests and per IP address for unauthenticated requests. Enter `0` to disable a rate limit.

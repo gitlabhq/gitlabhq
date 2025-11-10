@@ -54,7 +54,7 @@ Prerequisites:
 
 To view the runner fleet dashboard:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Runners**.
 1. Select **Fleet dashboard**.
 
@@ -74,7 +74,7 @@ CSV file shows the runner type and job status for each project. The CSV is sent 
 
 To export compute minutes used by instance runners:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Runners**.
 1. Select **Fleet dashboard**.
 1. Select **Export CSV**.

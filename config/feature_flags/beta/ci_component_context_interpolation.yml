@@ -7,4 +7,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/571986
 milestone: '18.5'
 group: group::pipeline authoring
 type: beta
-default_enabled: false
+default_enabled: true

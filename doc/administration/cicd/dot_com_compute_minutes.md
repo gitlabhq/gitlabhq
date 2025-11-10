@@ -24,7 +24,7 @@ Prerequisites:
 
 To set cost factors for a runner:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **CI/CD > Runners**.
 1. For the runner you want to update, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Public projects compute cost factor** text box, enter the public cost factor.

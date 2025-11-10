@@ -75,6 +75,22 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'GET #index' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let(:expected_success_status) { :found }
+
+      subject(:make_request) { get groups_path }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'does not enforce step-up authentication'
+    end
+  end
+
   describe 'GET #show' do
     context 'when group path contains format extensions' do
       where(:extension) { %w[.html .json] }
@@ -107,6 +123,76 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
+    end
+
+    context 'step-up authentication enforcement' do
+      let(:expected_success_status) { :ok }
+
+      subject(:make_request) { get group_path(group) }
+
+      context 'for private group' do
+        let_it_be(:group, reload: true) { create(:group, :private) }
+        let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+
+        context 'when user authenticated' do
+          before do
+            sign_in(user)
+          end
+
+          it_behaves_like 'enforces step-up authentication'
+        end
+      end
+
+      context 'for public group' do
+        let_it_be(:group, reload: true) { create(:group) }
+        let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+
+        context 'when user authenticated' do
+          before do
+            sign_in(user)
+          end
+
+          it_behaves_like 'enforces step-up authentication'
+        end
+
+        context 'when user unauthenticated' do
+          it_behaves_like 'does not enforce step-up authentication'
+        end
+      end
+    end
+  end
+
+  describe 'GET #new' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let(:expected_success_status) { :ok }
+
+      subject(:make_request) { get new_group_path }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'does not enforce step-up authentication'
+    end
+  end
+
+  describe 'POST #create' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let(:expected_success_status) { :found }
+
+      subject(:make_request) do
+        post groups_path, params: { group: { name: 'New Group', path: 'new-group' } }
+      end
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'does not enforce step-up authentication'
     end
   end
 
@@ -179,6 +265,165 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+    end
+
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+
+      subject(:make_request) { get edit_group_path(group) }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when user is owner' do
+        let_it_be_with_reload(:user) { create(:user, owner_of: group) }
+
+        let(:expected_success_status) { :ok }
+
+        it_behaves_like 'does not enforce step-up authentication'
+      end
+
+      context 'when user is maintainer' do
+        let_it_be_with_reload(:user) { create(:user, maintainer_of: group) }
+
+        let(:expected_success_status) { :not_found }
+
+        it_behaves_like 'does not enforce step-up authentication'
+      end
+    end
+  end
+
+  describe 'GET #activity' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let(:expected_success_status) { :ok }
+
+      subject(:make_request) { get activity_group_path(group) }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'enforces step-up authentication'
+    end
+  end
+
+  describe 'GET #issues' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+
+      let(:expected_success_status) { :redirect }
+
+      subject(:make_request) { get issues_group_path(group) }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'enforces step-up authentication'
+    end
+  end
+
+  describe 'GET #merge_requests' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let(:expected_success_status) { :ok }
+
+      subject(:make_request) { get merge_requests_group_path(group) }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'enforces step-up authentication'
+    end
+  end
+
+  describe 'PATCH #update' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+
+      subject(:make_request) { patch group_path(group), params: { group: { name: 'Updated Name' } } }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when user is owner' do
+        let_it_be_with_reload(:user) { create(:user, owner_of: group) }
+
+        let(:expected_success_status) { :found }
+
+        it_behaves_like 'does not enforce step-up authentication'
+      end
+
+      context 'when user is maintainer' do
+        let_it_be_with_reload(:user) { create(:user, maintainer_of: group) }
+
+        let(:expected_success_status) { :not_found }
+
+        it 'responds with 404 before step-up authentication is triggered because user is not authorized' do
+          make_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let(:expected_success_status) { :found }
+
+      subject(:make_request) { delete group_path(group) }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'enforces step-up authentication'
+    end
+  end
+
+  describe 'PUT #transfer' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let_it_be(:parent_group, freeze: true) { create(:group) }
+      let(:expected_success_status) { :found }
+
+      subject(:make_request) do
+        put transfer_group_path(group), params: { new_parent_group_id: parent_group.id }
+      end
+
+      before do
+        sign_in(user)
+        parent_group.add_owner(user)
+      end
+
+      it_behaves_like 'enforces step-up authentication'
+    end
+  end
+
+  describe 'POST #export' do
+    context 'step-up authentication enforcement' do
+      let_it_be(:group, reload: true) { create(:group) }
+      let_it_be(:user, reload: true) { create(:user, owner_of: group) }
+      let(:expected_success_status) { :found }
+
+      subject(:make_request) { post export_group_path(group) }
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'enforces step-up authentication'
     end
   end
 end

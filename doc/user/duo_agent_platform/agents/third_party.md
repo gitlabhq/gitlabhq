@@ -116,9 +116,8 @@ Prerequisites:
   - The Owner role for a top-level group and
     [permission to create service accounts](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
-Each project that mentions a third-party agent must have a unique
-[group service account](../../../user/profile/service_accounts.md). Mention the service account
-username when you assign tasks to the third-party agent.
+Each project that mentions a third-party agent must have a unique [group service account](../../../user/profile/service_accounts.md).
+Mention the service account username when you assign tasks to the third-party agent.
 
 {{< alert type="warning" >}}
 
@@ -290,7 +289,6 @@ Prerequisites:
 
 {{< alert type="note" >}}
 
-You might need to create [branch rules](../../project/repository/branches/branch_rules.md)
-that allow the agent to push to `workloads/*`
+To allow the agent to push to `workloads/*`, you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
 
 {{< /alert >}}

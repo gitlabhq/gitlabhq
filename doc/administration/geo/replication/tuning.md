@@ -20,7 +20,7 @@ in the background.
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Select **Edit** of the secondary site you want to tune.
 1. Under **Tuning settings**, there are several variables that can be tuned to
@@ -45,7 +45,7 @@ To avoid excessive load when setting up new Geo sites, starting with GitLab 18.0
 Geo's concurrency settings are set to low defaults for most environments.
 To increase these settings:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Geo** > **Sites**.
 1. Decide which data types are progressing too slowly.
 1. Watch load metrics of the primary and secondary sites.

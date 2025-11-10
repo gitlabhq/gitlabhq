@@ -114,9 +114,8 @@ of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
 ### Old method of user contribution mapping
 
-Before GitLab 18.6, you could disable the `gitea_user_mapping` feature flag to use the legacy
+In GitLab 18.5 and earlier, you can disable the `gitea_user_mapping` feature flag to use the legacy
 user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
-This flag was removed in GitLab 18.6.
 
 For imports to GitLab.com, you must
 use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.

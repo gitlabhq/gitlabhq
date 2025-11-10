@@ -36,7 +36,7 @@ Requests that exceed the limit are logged in the `application_json.log` file.
 
 To limit the number of pipeline requests:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Pipelines Rate Limits**.
 1. Under **Max requests per minute**, enter a value greater than `0`.

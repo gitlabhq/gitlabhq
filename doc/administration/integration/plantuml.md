@@ -461,7 +461,7 @@ This configuration prevents potentially malicious diagram code from executing in
 After configuring your local PlantUML server, you're ready to enable the PlantUML integration:
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. On the left sidebar, go to **Settings** > **General** and expand the **PlantUML** section.
 1. Select the **Enable PlantUML** checkbox.
 1. Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`,

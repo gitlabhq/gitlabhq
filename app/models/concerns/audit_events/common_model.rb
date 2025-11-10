@@ -50,7 +50,7 @@ module AuditEvents
 
     class_methods do
       def supported_keyset_orderings
-        { id: [:desc] }
+        { id: [:desc], created_at: [:desc] }
       end
 
       def order_by(method, use_created_at: false)

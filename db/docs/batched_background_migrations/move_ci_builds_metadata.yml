@@ -1,0 +1,8 @@
+---
+migration_job_name: MoveCiBuildsMetadata
+description: Copies the data from p_ci_builds_metadata into the deduplicated tables
+feature_category: continuous_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208674
+milestone: '18.6'
+queued_migration_version: 20251029151940
+finalized_by: # version of the migration that finalized this BBM

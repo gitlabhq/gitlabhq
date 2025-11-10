@@ -32,7 +32,7 @@ You can send email notifications once every 10 minutes.
 
 To send an email:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. In the upper-right corner, select **Send email to users** ({{< icon name="mail" >}}).
 1. Complete the fields. The email body supports only plain text and does not support HTML, Markdown, or other rich text formats.

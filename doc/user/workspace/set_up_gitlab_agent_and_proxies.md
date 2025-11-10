@@ -337,7 +337,7 @@ To install the Helm chart for the GitLab workspaces proxy:
 
    helm upgrade --install gitlab-workspaces-proxy \
      gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-     --version=0.1.23 \
+     --version=0.1.25 \
      --namespace="gitlab-workspaces" \
      --set="ingress.enabled=true" \
      --set="ingress.hosts[0].host=${GITLAB_WORKSPACES_PROXY_DOMAIN}" \

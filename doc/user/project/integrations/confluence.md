@@ -67,7 +67,7 @@ Prerequisites:
 
 To set up the integration for your instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Integrations**.
 1. Next to **Confluence Workspace**, select **Configure**.
 1. Under **Enable integration**, select the **Active** checkbox.

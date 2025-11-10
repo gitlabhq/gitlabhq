@@ -2,20 +2,16 @@
 
 class Groups::ApplicationController < ApplicationController
   include RoutableActions
+  include EnforcesStepUpAuthenticationForNamespace
   include ControllerWithCrossProjectAccessCheck
   include SortingHelper
   include SortingPreference
-
-  # TODO: Include EnforcesStepUpAuthenticationForNamespace when finalizing the implementation
-  # of step-up authentication for groups. This is necessary in order to enforce additional
-  # OAuth-based authentication for sensitive group resources based on namespace configuration.
-  # See app/controllers/concerns/enforces_step_up_authentication_for_namespace.rb
-  # Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207665#note_2825918460
 
   layout 'group'
 
   skip_before_action :authenticate_user!
   before_action :group
+  before_action :enforce_step_up_auth_for_namespace
   before_action :set_sorting
   requires_cross_project_access
 
@@ -107,6 +103,12 @@ class Groups::ApplicationController < ApplicationController
     else
       super
     end
+  end
+
+  def enforce_step_up_auth_for_namespace
+    # Use @group instance variable instead of calling group method
+    # to avoid triggering find_routable! when the :group before_action was skipped
+    enforce_step_up_auth_for(@group)
   end
 end
 

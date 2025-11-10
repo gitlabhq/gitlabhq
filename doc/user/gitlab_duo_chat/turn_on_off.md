@@ -48,7 +48,7 @@ In GitLab 16.11 and later, GitLab Duo Chat is:
 
 In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in beta. To enable GitLab Duo Chat for GitLab Self-Managed, an administrator must enable experiment and beta features:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **AI-native features** and select **Enable Experiment and Beta AI-native features**.
 1. Select **Save changes**.

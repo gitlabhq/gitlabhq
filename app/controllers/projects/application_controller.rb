@@ -5,16 +5,17 @@ class Projects::ApplicationController < ApplicationController
   include CookiesHelper
   include RoutableActions
   include SafeFormatHelper
-
-  # TODO: Include EnforcesStepUpAuthenticationForNamespace when finalizing the implementation
-  # of step-up authentication for projects. This is necessary in order to enforce additional
-  # OAuth-based authentication for sensitive project resources based on namespace configuration.
-  # See app/controllers/concerns/enforces_step_up_authentication_for_namespace.rb
-  # Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207665#note_2825918460
+  include EnforcesStepUpAuthenticationForNamespace
 
   skip_before_action :authenticate_user!
   before_action :project
   before_action :repository
+
+  # This before_action must execute AFTER the :project before_action.
+  # The enforce_step_up_auth_for_namespace method depends on @project being loaded first.
+  # By placing it after `before_action :project`, we guarantee the correct execution order.
+  before_action :enforce_step_up_auth_for_namespace
+
   layout 'project'
 
   before_action do
@@ -118,6 +119,16 @@ class Projects::ApplicationController < ApplicationController
       flash[:alert] = result[:message]
       @project.reset
       render 'edit'
+    end
+  end
+
+  def enforce_step_up_auth_for_namespace
+    # Use @project instance variable instead of calling project method
+    # to avoid triggering find_routable! when the :project before_action was skipped
+    if @project&.namespace.present?
+      enforce_step_up_auth_for(@project.namespace)
+    elsif params[:namespace_id].present?
+      enforce_step_up_auth_for_namespace_id(params[:namespace_id])
     end
   end
 end

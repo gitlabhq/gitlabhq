@@ -8,6 +8,12 @@ class Projects::UploadsController < Projects::ApplicationController
   skip_before_action :project, :repository,
     if: -> { bypass_auth_checks_on_uploads? }
 
+  # TODO: Remove this skip and implement step-up auth enforcement for uploads
+  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/578693
+  # This skip_before_action is temporary to avoid breaking uploads while we add
+  # comprehensive test coverage and proper enforcement in a follow-up MR.
+  skip_before_action :enforce_step_up_auth_for_namespace
+
   before_action :authorize_upload_file!, only: [:create, :authorize]
   before_action :verify_workhorse_api!, only: [:authorize]
   before_action :disallow_new_uploads!, only: :show

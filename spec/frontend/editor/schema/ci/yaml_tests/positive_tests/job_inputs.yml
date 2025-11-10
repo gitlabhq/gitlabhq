@@ -1,0 +1,22 @@
+test-job:
+  inputs:
+    environment:
+      type: string
+      default: "staging"
+      description: "Deployment environment"
+      options: ["staging", "production"]
+      regex: "^(staging|production)$"
+    timeout:
+      type: number
+      default: 30
+      description: "Timeout in seconds"
+    debug:
+      type: boolean
+      default: false
+    tags:
+      type: array
+      default: ["linux", "docker"]
+    api_key:
+      default: "default-key"
+  script:
+    - echo "Testing ${{ inputs.environment }}"

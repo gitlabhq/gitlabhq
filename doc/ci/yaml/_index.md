@@ -1214,7 +1214,7 @@ title: The pipeline configuration would follow...
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438275) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) [with a flag](../../administration/feature_flags/_index.md) named `ci_component_context_interpolation`. Enabled by default.
 
 {{< /history >}}
 

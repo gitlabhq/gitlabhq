@@ -37,7 +37,7 @@ The following are also affected by rules for the entire instance:
 
 To do this:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Push rules**.
 1. Expand **Merge request approvals**.
 1. Select the checkbox for any of the approval rules.

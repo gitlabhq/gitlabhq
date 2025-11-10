@@ -5,6 +5,7 @@ module Groups
     include InternalRedirect
 
     before_action :require_user!
+    skip_before_action :enforce_step_up_auth_for_namespace
 
     feature_category :system_access
 

@@ -3,11 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe DiffNotePosition, type: :model, feature_category: :code_review_workflow do
+  let(:diff_position) { build(:diff_position) }
+  let(:line_code) { 'bd4b7bfff3a247ccf6e3371c41ec018a55230bcc_534_521' }
+
+  describe 'associations' do
+    it { is_expected.to belong_to(:note) }
+  end
+
+  it_behaves_like 'model with associated note' do
+    let_it_be(:note) { create(:diff_note_on_merge_request) }
+    let(:record_attrs) do
+      { diff_type: :head, line_code: line_code, position: diff_position, note_id: note.id }
+    end
+  end
+
   describe '.create_or_update_by' do
     context 'when a diff note' do
       let(:note) { create(:diff_note_on_merge_request) }
-      let(:diff_position) { build(:diff_position) }
-      let(:line_code) { 'bd4b7bfff3a247ccf6e3371c41ec018a55230bcc_534_521' }
       let(:diff_note_position) { note.diff_note_positions.first }
       let(:params) { { diff_type: :head, line_code: line_code, position: diff_position } }
 

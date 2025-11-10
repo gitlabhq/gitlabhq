@@ -32,6 +32,16 @@ class ProjectsController < Projects::ApplicationController
   before_action :authorize_archive_project!, only: [:archive, :unarchive]
   before_action :event_filter, only: [:show, :activity]
 
+  # Step-up authentication enforcement
+  # IMPORTANT: These before_actions are placed AFTER authorization checks to ensure that
+  # unauthorized users receive a 404/403 response immediately without being prompted for
+  # step-up authentication. This follows the same pattern as GroupsController.
+  # The enforce_step_up_auth_for_namespace method depends on @project being loaded first.
+  # For :new action, the parent's enforcement is sufficient as it checks params[:namespace_id].
+  before_action :enforce_step_up_auth_for_namespace, except: [:index, :create]
+  skip_before_action :enforce_step_up_auth_for_namespace, only: [:create]
+  before_action :enforce_step_up_auth_for_namespace_on_create, only: [:create]
+
   # Project Export Rate Limit
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
@@ -643,6 +653,11 @@ class ProjectsController < Projects::ApplicationController
 
   def render_edit
     render 'edit'
+  end
+
+  def enforce_step_up_auth_for_namespace_on_create
+    namespace_id = params.dig(:project, :namespace_id)
+    enforce_step_up_auth_for_namespace_id(namespace_id)
   end
 end
 

@@ -20,7 +20,7 @@ storage such as a content delivery network (CDN).
 
 To configure external storage for static objects:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Repository**.
 1. Expand **External storage for repository static objects**.
 1. Enter the base URL and an arbitrary token. When you [set up external storage](#set-up-external-storage),

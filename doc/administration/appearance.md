@@ -18,7 +18,7 @@ You can update your settings to change the look and feel of your instance.
 
 To open the **Appearance** settings:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 
 ## Customize your homepage button
@@ -33,7 +33,7 @@ Replace the default GitLab logo {{< icon name="tanuki" >}} with any image.
 
 To customize your homepage icon image:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Under **Navigation bar**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
@@ -46,7 +46,7 @@ Customize the appearance of the favicon. A favicon is the icon for a website tha
 
 To change the favicon:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Under **Favicon**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
@@ -66,7 +66,7 @@ Add a small header message, a small footer message, or both, to the interface of
 
 To add a system header, footer message, or both:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **System header and footer** section.
 1. Complete the fields.
@@ -83,7 +83,7 @@ Customize the title, description, and logo on the sign-in and register page. By 
 
 To customize your sign-in and register page titles or descriptions:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **Sign in/Sign up pages** section.
 1. Complete the fields. You can format the page **Title** and **Description** with Markdown.
@@ -94,7 +94,7 @@ To customize the logo on your sign-in and register pages:
 - The file should be less than 1 MB.
 - The image should be 128 pixels high. Images more than 128 px high will be resized.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **Sign in/Sign up pages** section.
 1. Under **Logo**, select **Choose file**.
@@ -137,7 +137,7 @@ Customize the icon, display name, short name, and description for your Progressi
 
 To add a Progressive Web App name and short name:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **Progressive Web App (PWA)** section.
 1. Complete the fields.
@@ -147,7 +147,7 @@ To add a Progressive Web App name and short name:
 
 To add a Progressive Web App description:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **Progressive Web App (PWA)** section.
 1. Complete the fields. You can format the **Description** with Markdown.
@@ -155,7 +155,7 @@ To add a Progressive Web App description:
 
 To customize your Progressive Web App icon:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **Progressive Web App (PWA)** section.
 1. Under **Icon**, select **Choose file**.
@@ -182,7 +182,7 @@ Add a guideline message to the **New project page**. You can format your message
 
 To add a guideline message to the **New project page**:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **New project pages** section.
 1. Complete the fields. You can format your guidelines with Markdown.
@@ -191,7 +191,7 @@ To add a guideline message to the **New project page**:
 
 Add guidelines for profile images.
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Appearance**.
 1. Go to the **Profile image guideline** section.
 1. Complete the fields. You can format your text with Markdown.

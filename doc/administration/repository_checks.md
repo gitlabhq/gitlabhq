@@ -31,7 +31,7 @@ repository consistency checks, some disabled checks, and how to configure consis
 
 To check a project's repository using GitLab UI:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Projects**.
 1. Select the project to check.
 1. In the **Repository check** section, select **Trigger repository check**.
@@ -43,7 +43,7 @@ project page in the **Admin** area. If the checks fail, see [what to do](#what-t
 
 Instead of checking repositories manually, GitLab can be configured to run the checks periodically:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Enable **Enable repository checks**.
@@ -109,7 +109,7 @@ If a repository check fails, locate the error in the [`repocheck.log` file](logs
 
 If periodic repository checks cause false alarms, you can clear all repository check states:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Clear all repository checks**.

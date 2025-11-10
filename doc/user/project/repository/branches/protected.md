@@ -81,7 +81,7 @@ to **Allowed to merge** and **Allowed to push and merge**.
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -255,6 +255,13 @@ You can allow everyone with write access to push directly to the protected branc
 1. Select **Save changes**.
 
 ### With group permissions
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To set the members of a group or subgroup as **Allowed to merge** or **Allowed to push and merge**
 to a protected branch:

@@ -33,9 +33,13 @@ RSpec::Matchers.define :have_scheduled_batched_migration do |gitlab_schema: nil,
   end
 
   define_method :does_not_match? do |migration|
-    batched_migrations =
-      Gitlab::Database::BackgroundMigration::BatchedMigration
-        .where(job_class_name: migration)
+    batched_migrations = if [gitlab_schema, table_name, column_name, job_arguments].all?(&:present?)
+                           Gitlab::Database::BackgroundMigration::BatchedMigration
+                             .for_configuration(gitlab_schema, migration, table_name, column_name, job_arguments)
+                         else
+                           Gitlab::Database::BackgroundMigration::BatchedMigration
+                             .where(job_class_name: migration)
+                         end
 
     expect(batched_migrations.count).to(
       be(0),

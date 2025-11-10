@@ -17,7 +17,7 @@ Otherwise, add your license in the Admin area.
 ## Add license in the Admin area
 
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
@@ -63,7 +63,7 @@ If you have a license, you can also import it when you install GitLab.
 {{< alert type="warning" >}}
 
 These methods only add a license at the time of installation. To renew or upgrade
-a license, add the license in the **Admin area** in the web user interface.
+a license, add the license in the **Admin** area in the web user interface.
 
 {{< /alert >}}
 
@@ -108,7 +108,7 @@ To go back to Free features, [delete all expired licenses](#remove-a-license).
 
 To remove a license from a GitLab Self-Managed instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 1. Select **Remove license**.
 
@@ -118,7 +118,7 @@ Repeat these steps to remove all licenses, including those applied in the past.
 
 To view your license details:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Subscription**.
 
 You can add and view more than one license, but only the latest license in

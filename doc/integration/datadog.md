@@ -28,7 +28,7 @@ or for a specific project or group:
 1. *For integrations for a specific project or group:* In GitLab, go to your project or group.
 1. *For integrations for the entire instance:*
    1. Sign in to GitLab as a user with administrator access.
-   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+   1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Integrations**.
 1. Scroll to **Add an integration**, and select **Datadog**.
 1. Select **Active** to enable the integration.

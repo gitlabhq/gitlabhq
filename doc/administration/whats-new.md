@@ -27,7 +27,7 @@ example, `13.10.1`.
 
 You can configure **What's new** to display features based on the tier, or you can hide it. To configure it:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **What's new**, and choose the required option.
 1. Select **Save changes**.

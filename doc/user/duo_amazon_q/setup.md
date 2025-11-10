@@ -81,7 +81,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -227,7 +227,7 @@ Prerequisites:
 To finish setting up GitLab Duo with Amazon Q:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
@@ -330,7 +330,7 @@ Prerequisites:
 To turn off GitLab Duo with Amazon Q for the instance:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.

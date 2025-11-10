@@ -32,7 +32,7 @@ GitLab team members can view more information in this confidential epic:
 
 ## Configure Git abuse rate limiting
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Reporting**.
 1. Expand **Git abuse rate limit**.
 1. Update the Git abuse rate limit settings:
@@ -51,7 +51,7 @@ If automatic banning is enabled, an email notification is sent when a user is ab
 
 ## Unban a user
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Select the **Banned** tab and search for the account you want to unban.
 1. From the **User administration** dropdown list select **Unban user**.

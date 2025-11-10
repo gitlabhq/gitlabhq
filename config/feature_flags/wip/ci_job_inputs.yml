@@ -1,0 +1,10 @@
+---
+name: ci_job_inputs
+description: This flag guards the job inputs feature until it is ready for production use
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547440
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210490
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/578838
+milestone: '18.6'
+group: group::pipeline authoring
+type: wip
+default_enabled: false

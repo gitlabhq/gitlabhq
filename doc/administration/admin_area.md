@@ -17,7 +17,7 @@ The **Admin** area provides a web UI to manage and configure features of a
 GitLab Self-Managed instance. If you are an administrator, to access the **Admin** area:
 
 - In GitLab 18.5 and later, if you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off):
-  - In the upper-right corner, select your avatar and then select **Admin**.
+  - In the upper-right corner, select **Admin**.
   - On the top bar, select **Search or go to**, then select **Admin area**.
 - In GitLab 17.3 and later: on the left sidebar, at the bottom, select **Admin**.
 - In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin area**.
@@ -46,7 +46,7 @@ On GitLab.com, the **Admin** area feature is not available.
 
 To administer all projects in the GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Projects**. The page shows each project's:
 
    - Name
@@ -87,7 +87,7 @@ To administer all projects in the GitLab instance:
 
 To edit a project's name or description from the **Admin** area's Projects page:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Projects**.
 1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
 1. Edit the **Project name** or **Project description**.
@@ -97,7 +97,7 @@ To edit a project's name or description from the **Admin** area's Projects page:
 
 To delete a project:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Projects**.
 1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. On the confirmation dialog, select **Yes, delete project**.
@@ -121,7 +121,7 @@ The **Admin** area's Users page shows this information for each user:
 
 To administer all users from the **Admin** area's Users page:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Optional. To change the sort order, which defaults to user name:
 
@@ -144,7 +144,7 @@ To edit a user, find the user's row and select **Edit**.
 
 To delete the user, or delete the user and their contributions, from the **Admin** area's Users page:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Find the user you want to delete. In the row, select **User administration**
    ({{< icon name="ellipsis_v">}}), then select the desired option.
@@ -157,7 +157,7 @@ This enables you to see what the user sees in GitLab, and take actions on behalf
 To impersonate a user:
 
 - Through the UI:
-  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+  1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
   1. On the left sidebar, select **Overview** > **Users**.
   1. From the list of users, select a user.
   1. In the upper right, select **Impersonate**.
@@ -188,7 +188,7 @@ SCIM-related issues and confirm the identities being used for an account.
 
 To do this:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. From the list of users, select a user.
 1. Select **Identities**.
@@ -216,7 +216,7 @@ in groups and projects. It includes this data, and is limited to the first 100,0
 
 To export user permissions for all active users in your GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. In the upper right, select **Export permissions as CSV** ({{< icon name="export" >}}).
 
@@ -235,7 +235,7 @@ GitLab billing is based on the number of [billable users](../subscriptions/manag
 
 To add email addresses to user accounts manually:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
@@ -254,7 +254,7 @@ create subgroups and collaborate in existing organizational structures.
 
 To prevent a user from creating top-level groups:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
@@ -286,7 +286,7 @@ For more information, see the history.
 
 To administer all groups in the GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Groups**. The page shows each group's:
 
    - Name
@@ -319,7 +319,7 @@ To administer all groups in the GitLab instance:
 
 To edit a group's name or description from the **Admin** area's Groups page:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Groups**.
 1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
 1. Edit the **Group name** or **Group description**.
@@ -329,7 +329,7 @@ To edit a group's name or description from the **Admin** area's Groups page:
 
 To delete a group:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Groups**.
 1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. On the confirmation dialog, select **Confirm**.
@@ -348,14 +348,14 @@ Categorize and find similar projects with [topics](../user/project/project_topic
 
 To view all topics in the GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Topics**.
 
 For each topic, the page displays its name and the number of projects labeled with the topic.
 
 ### Search for topics
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Topics**.
 1. In the search box, enter your search criteria.
    The topic search is case-insensitive and applies partial matching.
@@ -364,7 +364,7 @@ For each topic, the page displays its name and the number of projects labeled wi
 
 To create a topic:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Topics**.
 1. Select **New topic**.
 1. Enter the **Topic slug (name)** and **Topic title**.
@@ -382,7 +382,7 @@ Do not include sensitive information in the name of a topic.
 You can edit a topic's name, title, description, and avatar at any time.
 To edit a topic:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Topics**.
 1. Select **Edit** in that topic's row.
 1. Edit the topic slug (name), title, description, or avatar.
@@ -393,7 +393,7 @@ To edit a topic:
 If you no longer need a topic, you can permanently remove it.
 To remove a topic:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Topics**.
 1. To remove a topic, select **Remove** in that topic's row.
 
@@ -405,7 +405,7 @@ After a merged topic is deleted, you cannot restore it.
 
 To merge topics:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Topics**.
 1. Select **Merge topics**.
 1. From the **Source topic** dropdown list, select the topic you want to merge and remove.
@@ -419,7 +419,7 @@ page. For more details, see [Gitaly](gitaly/_index.md).
 
 To access the **Gitaly servers** page:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Gitaly servers**.
 
 The page includes this information about each Gitaly server:
@@ -459,7 +459,7 @@ they were last updated. Each project shows:
 
 To administer all organizations in the GitLab instance from this page:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Organizations**.
 
 ## CI/CD section
@@ -474,7 +474,7 @@ To administer all organizations in the GitLab instance from this page:
 
 To administer all runners in the GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **CI/CD** > **Runners**.
 
 This information is shown for each runner:
@@ -519,7 +519,7 @@ To filter runners by status, type, and tag:
 
 To delete multiple runners at the same time:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **Overview** > **Runners**.
 1. To the left of the runner you want to delete, select the checkbox.
    To select all runners on the page, select the checkbox above
@@ -536,7 +536,7 @@ To delete multiple runners at the same time:
 
 To administer all jobs in the GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select your avatar and then select **Admin**.
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
 1. Select **CI/CD** > **Jobs**. All jobs are listed, in descending order of job ID.
 1. Select the **All** tab to list all jobs. Select the **Pending**, **Running**, or **Finished**
    tab to list only jobs of that status.
