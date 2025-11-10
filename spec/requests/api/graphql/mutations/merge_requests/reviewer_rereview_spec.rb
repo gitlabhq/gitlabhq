@@ -69,7 +69,7 @@ RSpec.describe 'Setting assignees of a merge request', feature_category: :code_r
         allow_next_instance_of(::MergeRequests::RequestReviewService) do |service|
           allow(service).to receive(:execute).with(merge_request, user).and_return(
             {
-              message: "Your account doesn't have GitLab Duo access.",
+              message: "You don't have access to GitLab Duo Code Review.",
               status: :error
             }
           )
@@ -80,7 +80,7 @@ RSpec.describe 'Setting assignees of a merge request', feature_category: :code_r
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_errors[0]).to include("Your account doesn't have GitLab Duo access.")
+        expect(mutation_errors[0]).to include("You don't have access to GitLab Duo Code Review.")
       end
     end
   end

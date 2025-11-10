@@ -1,11 +1,11 @@
 ---
-redirect_to: 'agents/third_party.md'
+redirect_to: 'agents/external.md'
 remove_date: '2026-02-01'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](agents/third_party.md).
+This document was moved to [another location](agents/external.md).
 
 <!-- This redirect file can be deleted after <2026-02-01>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

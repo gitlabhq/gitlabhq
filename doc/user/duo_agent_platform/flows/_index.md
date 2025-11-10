@@ -41,6 +41,8 @@ Flows are available in IDEs and the GitLab UI.
 - In the UI, they run directly in GitLab CI/CD, helping you automate common development tasks without the need to leave your browser.
 - In IDEs, flows are available in VS Code, Visual Studio, and JetBrains.
 
+For more information about flows executing in CI/CD, see [the flow execution documentation](execution.md).
+
 For more focused pieces of work, like understanding selected code,
 use [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md).
 

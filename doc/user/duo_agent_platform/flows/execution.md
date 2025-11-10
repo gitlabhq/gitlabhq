@@ -16,6 +16,14 @@ Flows use agents to execute tasks.
 - Flows executed from the GitLab UI use CI/CD.
 - Flows executed in an IDE run locally.
 
+You can configure the environment where flows use CI/CD to execute.
+
+{{< alert type="note" >}}
+
+You cannot use predefined CI/CD variables when executing jobs with CI/CD.
+
+{{< /alert >}}
+
 ## Configure CI/CD execution
 
 You can customize how flows are executed in CI/CD by creating an agent configuration file in your project.

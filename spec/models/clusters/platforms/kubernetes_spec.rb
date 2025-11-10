@@ -87,7 +87,7 @@ RSpec.describe Clusters::Platforms::Kubernetes, feature_category: :deployment_ma
     end
 
     context 'when validates api_url' do
-      let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
+      let(:kubernetes) { create(:cluster_platform_kubernetes, :configured) }
 
       before do
         kubernetes.api_url = api_url

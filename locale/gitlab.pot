@@ -25257,6 +25257,9 @@ msgstr ""
 msgid "DuoCodeReview|GitLab Duo Code Review"
 msgstr ""
 
+msgid "DuoCodeReview|GitLab Duo Code Review was not automatically added because your account requires GitLab Duo Enterprise. Contact your administrator to upgrade your account."
+msgstr ""
+
 msgid "DuoCodeReview|I encountered some problems while responding to your query. Please try again later."
 msgstr ""
 
@@ -25272,7 +25275,7 @@ msgstr ""
 msgid "DuoCodeReview|When enabled, GitLab Duo will automatically review new merge requests. Draft merge requests and merge requests without changes are skipped."
 msgstr ""
 
-msgid "DuoCodeReview|Your account doesn't have GitLab Duo access. Please contact your system administrator for access."
+msgid "DuoCodeReview|You don't have access to GitLab Duo Code Review. This feature requires GitLab Duo Enterprise. Contact your administrator to upgrade your account."
 msgstr ""
 
 msgid "DuoCodeReview|is reviewing your merge request and will let you know when it's finished"

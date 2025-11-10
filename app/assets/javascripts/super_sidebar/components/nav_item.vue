@@ -172,7 +172,7 @@ export default {
     },
   },
   mounted() {
-    if (this.item.is_active) {
+    if (this.item.is_active && !this.isFlyout) {
       this.$el.scrollIntoView({
         behavior: 'instant',
         block: 'center',

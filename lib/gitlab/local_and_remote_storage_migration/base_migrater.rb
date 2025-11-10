@@ -31,6 +31,8 @@ module Gitlab
         items.find_each(batch_size: batch_size) do |item| # rubocop:disable CodeReuse/ActiveRecord
           item.file.migrate!(store)
 
+          yield(item) if block_given?
+
           log_success(item, store)
         rescue StandardError => e
           log_error(e, item)

@@ -7,4 +7,14 @@ module StubProjectStudio
 
     user.project_studio_enabled = true
   end
+
+  def dismiss_welcome_banner_if_present(page)
+    modal_dismiss_button_selector = '#dap_welcome_modal header button[aria-label="Close"]'
+
+    return unless page
+
+    return unless page.has_selector?(modal_dismiss_button_selector, wait: 0)
+
+    page.find(modal_dismiss_button_selector).click
+  end
 end

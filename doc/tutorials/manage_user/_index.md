@@ -15,10 +15,11 @@ description: Setup, configuration, onboarding, and organization structure.
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
-In GitLab, you set up and manage your company's GitLab organization by:
+This tutorial will teach you how to set up and manage your company's
+GitLab organization by:
 
-- Creating groups, subgroups, and projects.
-- Assigning group members different roles in these groups and projects.
+- Creating groups, subgroups, and projects
+- Assigning different roles to group members in these groups, subgroups, and projects
 
 In this tutorial, you are the IT administrator of a small software company. This
 company uses GitLab and is divided into marketing, sales, and development divisions.
@@ -30,19 +31,18 @@ following permanent employees:
 - One IT administrator: You.
 - One product manager: Alex Smith.
 - One engineering manager: Blake Wang.
-- Three software developers: Charlie Devi, Devon Ivanov, Evan Kim.
+- Three software developers: Charlie Devi, Devon Ivanov, and Evan Kim.
 - One UX designer: Frankie Ali.
 - One technical writer: Grayson Garcia.
-
-The organization also has a contractor content strategist, Hunter Silva.
+- One contractor content strategist: Hunter Silva.
 
 You're going to create:
 
-1. The software development organization.
-1. Groups, subgroups, and projects to manage work.
-1. Users to add to the groups and projects and assign roles to those users.
-1. A project in the organization for a specific piece of work, and add users to
-   that project.
+- The software development organization.
+- Groups, subgroups, and projects to manage work.
+- Users to add to the groups and projects and assign roles to those users.
+- A project in the organization for a specific piece of work, and add users to
+that project.
 
 ## Before you begin
 
@@ -50,70 +50,79 @@ You're going to create:
 
 ## Create the organization parent group and subgroups
 
-You first create a group, Development, to serve as the parent group for the whole
+First, you'll create a group called Development. The Development group will serve
+as the parent group for the whole
 software development organization.
+
+To create the Development group:
 
 1. Open GitLab Self-Managed.
 1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
 1. Select **Create group**.
 1. In **Group name**, enter `Development`.
-1. Enter `development-group` for the group in **Group URL**. You see a message
+1. Under **Group URL**, enter `development-group`. You'll see a message
    saying "Group path is available". The group URL is used for the namespace.
-1. For visibility level, make the group **Private**. This means any subgroups of
+   A namespace provides a place to organize your related projects.
+1. Under **Visibility level**, select **Private**. This way, any subgroups of
    this group must be private as well.
-1. Personalize your GitLab experience by answering the following questions:
-   - For **Role**, select **Development Team Lead**.
-     This role is different to the roles that affect member permissions.
-   - For **Who will be using this group?**, select **My company or team**.
-   - For **What will you use this group for?**, select **I want to store my code**.
+1. Under **Who will be using this group?**, select **My company or team**.
+1. In the **What will you use this group for?** dropdown list, select **I want to store my code**.
 1. Do not invite any GitLab members or other users to join the group yet.
 1. Select **Create group**.
 
-In GitLab, a namespace provides a place to organize your related projects.
-
-You have created the parent group for your organization. Next you will create subgroups.
+You have created the parent group for your organization. Next, you will create subgroups.
 
 ## Create the organization subgroups
 
 For this tutorial, we assume that Development is organized into the following
 working areas:
 
-- Product Management.
-- Engineering.
-- User Experience.
-  - UX Design.
-  - Technical Writing.
+- Product Management
+- Engineering
+- User Experience
+  - UX Design
+  - Technical Writing
 
-You will now create subgroups to reflect this organization structure.
+Now, you will create subgroups to reflect this organization structure.
 
 Subgroups and projects must have visibility settings that are at least as restrictive as the visibility setting of their parent group.
 For example, you cannot have a private parent group and a public subgroup.
+
+To create your organization subgroups:
 
 1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **View all my groups**.
 1. Select **Development**. You should see an **Owner** label next to the group
    name as you have the Owner role.
-1. On the parent group's overview page, in the upper-right corner, select **New subgroup**.
+1. On the parent group's overview page, select **Create subgroup**.
 1. In **Subgroup name**, enter `Product Management`.
 1. The **Subgroup slug** is automatically completed with **product-management**.
    Do not change this field.
 1. For **Visibility level**, you can only select **Private** because the parent
    group, Development, is also private.
 1. Select **Create subgroup**.
-1. Repeat for the following subgroups:
-   - `Engineering`.
-   - `User Experience`.
-     - `UX Design`.
-     - `Technical Writing`.
+1. Repeat these steps for the following subgroups:
+   - `Engineering`
+   - `User Experience`
 
-UX Design and Technical Writing are subgroups nested in the User Experience subgroup.
+Next, create UX Design and Technical Writing subgroups. These subgroups will be nested
+under the User Experience subgroup:
 
-You have now created the subgroups for your organization. Next you will create users
+1. On the left sidebar, select **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **View all my groups**.
+1. Select **Development**.
+1. Under the **Subgroups and projects** tab, select **User Experience**.
+1. On the **User Experience** overview page, select **Create subgroup**.
+1. In **Subgroup name**, enter `UX Design`.
+1. Select **Create subgroup**.
+1. Repeat these steps for the Technical Writing subgroup.
+
+You have now created the subgroups for your organization. Next, you will create users
 for the organization.
 
 ## Create the users for your organization
 
-You will now manually create the users for your organization. These are test
+You will now manually create the users for your organization. These users are test
 users. To create the first test user, Alex Smith:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
@@ -132,12 +141,17 @@ a fake email, you must set the user's password without using the email confirmat
 
 ### Set the test user's password
 
-1. Select the user.
+After you create the user, you will be directed to
+the user's overview page. Alternatively, in the left sidebar,
+you can select **Users** and search for the user.
+
+After you select the user:
+
 1. Select **Edit**.
-1. Complete the password and password confirmation fields.
+1. Complete the **Password** and **Password confirmation** fields.
 1. Select **Save changes**.
 
-You have created the first test user. Now repeat this for the other users:
+You have created the first test user. Now, repeat these steps for the other users:
 
 | Name             | Username        | Email |
 |------------------|-----------------|-------|
@@ -149,7 +163,7 @@ You have created the first test user. Now repeat this for the other users:
 | `Grayson Garcia` | `graysongarcia` | `graysongarcia@example.com` |
 | `Hunter Silva`   | `huntersilva`   | `huntersilva@example.com` |
 
-You have created the users for your organization. Next you will add these users
+You have created the users for your organization. Next, you will add these users
 to the different groups and subgroups.
 
 ## Add users to the group and subgroups
@@ -161,10 +175,9 @@ First, you will add all the users to the parent group, Development.
 1. On the left sidebar, select **Search or go to** and find the **Development** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
-1. Complete the fields for the product manager, Alex Smith.
-   - Give Alex the **Owner** role. The role applies to all subgroups projects
-     in the group.
-   - Leave **Access expiration date** blank.
+1. In the **Username, name or email address** dropdown list, select `Alex Smith`.
+1. In the **Select maximum role** dropdown list, select **Owner**.
+1. Leave **Access expiration date** blank.
 1. Select **Invite**.
 1. Repeat this process for the following users:
 
@@ -188,8 +201,8 @@ the membership of these groups.
 
 - The **Source** is the origin of the user's membership of this group. The added members are direct members because
   you added them directly to the group.
-- The **Max role** is the added members' highest level of access they are allowed to have in this group.
-  You can use the dropdown list in this column to change the added members' roles in this group.
+- The **Role** is the added members' highest level of access they are allowed to have in this group.
+  You can select the role to change the added members' roles in this group.
 
 All the users you have added as parent group members are also members of all the
 subgroups with the same role.
@@ -201,12 +214,13 @@ and which members have inherited membership of that subgroup from the parent gro
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the **User Experience** subgroup.
-1. On the left sidebar, select **Subgroup information** > **Members**.
+1. On the left sidebar, select **Manage** > **Members**.
 1. On the **Members** page, select the **Filter members** field.
-1. Select **Membership**, then select **Inherited**, and press <kbd>Return</kbd>.
+1. Select **Membership**, then select **Indirect**, and press <kbd>Return</kbd>.
 
 You now only see the User Experience subgroup members that have inherited membership
-of that subgroup.
+of that subgroup. You can verify inherited members by looking at the **Source** column
+of each member. It should say: `Inherited from Development`.
 
 You want each user to only be a member of the subgroup that is associated with
 their role in your organization. You decide to remove the users from the groups
@@ -223,14 +237,14 @@ Go back to the parent group and remove everyone except Alex Smith:
 1. Select **Manage** > **Members**.
 1. On the member row you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
    and then select **Remove member**.
-1. In the **Remove member** confirmation box, select the
+1. In the **Remove member** confirmation dialogue, select the
    **Also remove direct user membership from subgroups and projects** checkbox.
 1. Select **Remove member**.
 
 You now have one member only in the parent group and subgroups, and that member
 has the Owner role.
 
-Next you will add users directly to the subgroups.
+Next, you will add users directly to the subgroups.
 
 ## Add users to the subgroups
 
@@ -240,7 +254,7 @@ You will now add users directly to the different subgroups.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the **Product Management** subgroup.
-1. On the left sidebar, select **Subgroup information** > **Members**.
+1. On the left sidebar, select **Manage** > **Members**.
 
 Excluding you, Alex is the only member of this subgroup and is a direct member,
 which is correct. However, you believe they should have the Maintainer role
@@ -275,7 +289,7 @@ as they have an inherited membership from the parent group.
 You decide to keep Alex as an Owner in this subgroup as it is appropriate given
 their role for the organization. Select **Cancel** to cancel this invite.
 
-The Product Management subgroup has the correct members and roles. Next you will
+The Product Management subgroup has the correct members and roles. Next, you will
 add users to the Engineering subgroup.
 
 ### Add users to the Engineering subgroup
@@ -284,8 +298,8 @@ You are now going to invite some users to the Engineering subgroup.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the **Engineering** subgroup.
-1. On the left sidebar, select **Subgroup information** > **Members**. The only
-   members are you and Alex, both with the Owner role. These are inherited roles.
+1. On the left sidebar, select **Manage** > **Members**. The only
+   members are you and Alex. Both members have the Owner role, which are inherited roles.
 1. Select **Invite members**.
 1. Complete the fields for the following members:
 
@@ -299,10 +313,10 @@ You are now going to invite some users to the Engineering subgroup.
 1. Select **Invite**.
 
    Blake Wang has the Maintainer role in this subgroup, in line with their responsibilities as
-   engineering manager. The three developers all have the Developer role. These are
+   engineering manager. The three developers all have the Developer role, which are
    direct roles.
 
-1. You can change their roles directly on this subgroup's member page. Change Blake Wang
+1. You can change their roles directly on this subgroup's member page. Under **Role**, select `Maintainer` to change Blake Wang's role
    to an Owner for this subgroup.
 1. Go back to the Development group's member page. You see that the members of the Engineering
    subgroup are not members of the parent group.
@@ -315,8 +329,8 @@ access to different groups and projects in a more precise way.
 
 The User Experience subgroup has two further nested subgroups:
 
-- UX Design.
-- Technical Writing.
+- UX Design
+- Technical Writing
 
 In terms of users, UX Design should only include Frankie Ali and Hunter Silva,
 and Technical Writing should only include Grayson Garcia.
@@ -329,8 +343,8 @@ rather than to the User Experience subgroup.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select the **User Experience** subgroup, and then the **UX Design** subgroup.
-1. On the left sidebar, select **Subgroup information** > **Members**. You and Alex
-   Smith are currently the only members. These are inherited roles.
+1. On the left sidebar, select **Manage** > **Members**. You and Alex
+   Smith are the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Complete the fields and select **Invite** for the following members:
 
@@ -354,13 +368,14 @@ You can add Grayson to the **User Experience** subgroup as a specific role, whil
 keeping their role for the **Technical Writing** subgroup the same.
 
 1. Go to the **User Experience** subgroup.
-1. On the left sidebar, select **Subgroup information** > **Members**. You and Alex
-   Smith are currently the only members. These are inherited roles.
+1. On the left sidebar, select **Manage** > **Members**. You and Alex
+   Smith are the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Invite Grayson Garcia as a Developer, a role with a lower level of permissions
    than their Maintainer role for the **Technical Writing** subgroup.
 
-This means that Grayson Garcia does not have an unnecessarily high level of permissions
+Giving Grayson the Developer role means that they do not have an
+unnecessarily high level of permissions
 in the User Experience subgroup.
 
 However, due to inherited permissions, adding Grayson Garcia to the User Experience
@@ -368,8 +383,10 @@ subgroup also adds them to the UX Design nested subgroup as a Developer.
 
 {{< alert type="note" >}}
 
-Be mindful of inherited permissions for groups and subgroups. Add users to a minimum number of groups and subgroups
-to minimize the chance of inadvertently adding a user to a group they do not need to be a member of.
+Be mindful of inherited permissions for groups and subgroups.
+Add users to a minimum number of groups and subgroups.
+This approach minimizes the chance of inadvertently adding a
+user to a group they do not need to be a member of.
 
 {{< /alert >}}
 
@@ -380,14 +397,14 @@ to minimize the chance of inadvertently adding a user to a group they do not nee
 Frankie Ali and Hunter Silva are now members of the Technical Writing subgroup
 due to inherited permissions.
 
-You have successfully set up your organization with groups, subgroups and members.
+You have successfully set up your organization with groups, subgroups, and members.
 
-Next you will create a project in one of the groups for members to work on.
+Next, you will create a project in one of the groups for members to work on.
 
 ## Create a project
 
 Now, let's assume that you have a piece of work that certain members of your organization
-need to work on, and that piece of work is for the whole organization. To organize
+need to work on. That piece of work is for the whole organization. To organize
 that work, you are going to create a project in the Development parent group, and
 add different users to that project.
 
@@ -405,7 +422,7 @@ add different users to that project.
      checkbox.
    - To analyze the source code in the project for known security vulnerabilities,
      select the **Enable Static Application Security Testing (SAST)** checkbox.
-   - To analyze the source code for secrets and credentials to prevent unauthorized access select the **Enable Secret Detection** checkbox.
+   - To analyze the source code for secrets and credentials to prevent unauthorized access, select the **Enable Secret Detection** checkbox.
 1. Select **Create project**.
 
 You have now created a project in the parent group.
@@ -413,10 +430,10 @@ You have now created a project in the parent group.
 In this project, go to **Manage** > **Members**.
 
 The existing members of the parent group (you and Alex) are already members of
-this project because when your project belongs to a group, project members inherit
+this project. When your project belongs to a group, project members inherit
 their role from the group.
 
-There are other users that need to be part of this project. You will now add users
+Other users need to be part of this project. You will now add users
 directly to the project.
 
 ## Add users to the project and parent group
@@ -443,5 +460,5 @@ directly to the project.
    still 2 Maintainers and 1 Developer.
 
 You have successfully added three users who are members of subgroups to a project
-in the parent group, and given those users specific roles in the project and
+in the parent group, and you gave those users specific roles in the project and
 parent group.

@@ -15055,7 +15055,8 @@ CREATE TABLE clusters (
     helm_major_version integer DEFAULT 3 NOT NULL,
     project_id bigint,
     group_id bigint,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_1a12345d3a CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1))
 );
 
 CREATE SEQUENCE clusters_id_seq

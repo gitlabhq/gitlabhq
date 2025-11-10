@@ -291,7 +291,7 @@ describe('UncollapsedReviewerList component', () => {
     it('shows an alert when requestReviewComplete receives an error message', async () => {
       await findAllRerequestButtons().at(0).vm.$emit('click');
 
-      const errorMessage = "Your account doesn't have GitLab Duo access.";
+      const errorMessage = "You don't have access to GitLab Duo Code Review.";
       wrapper.vm.requestReviewComplete(user.id, false, errorMessage);
 
       expect(createAlert).toHaveBeenCalledWith({

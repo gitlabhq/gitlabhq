@@ -16,12 +16,20 @@ title: Sessions
 
 Sessions show the status of the agents and flows you've run in GitLab.
 
+## Which actions create sessions
+
+In the Agent Platform, sessions are created when you:
+
+- Run an agent or flow in the GitLab UI. This includes:
+  - Flows like the [Fix your CI/CD Pipeline Flow](../flows/convert_to_gitlab_ci.md).
+  - Any flow invoked with a trigger.
+
+Sessions are not created when:
+
+- You use Agentic Duo Chat in VS Code or the GitLab UI.
+- You invoke a custom flow from the GitLab Duo Chat UI.
+
 ## View the sessions for your project
-
-You can view all the sessions for a project. This list includes
-all agents and flows triggered in the GitLab UI and in IDEs.
-
-The list does not include agents and flows triggered from GitLab Duo Chat.
 
 Prerequisites:
 

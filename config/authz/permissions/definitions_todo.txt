@@ -374,7 +374,6 @@ import_work_items
 invite_group_members
 invite_member
 invite_project_members
-jailbreak
 keep_job_artifacts
 link
 link_forked_project

@@ -32,6 +32,7 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
           sign_in(user)
 
           visit project_work_items_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 
@@ -62,6 +63,7 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
           sign_in(user)
 
           visit project_issues_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 
@@ -102,6 +104,7 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
           sign_in(user)
 
           visit project_work_items_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 
@@ -132,6 +135,7 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
           sign_in(user)
 
           visit project_issues_path(project)
+          dismiss_welcome_banner_if_present(page)
 
           first_card.click
 

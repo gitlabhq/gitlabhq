@@ -324,6 +324,8 @@ To migrate artifacts back to local storage:
 1. [Selectively disable the artifacts' storage](../object_storage.md#disable-object-storage-for-specific-features) in `gitlab.rb`.
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
+Before GitLab 18.6, a migration from remote to local storage could result in [artifacts being copied with incorrect filenames](job_artifacts_troubleshooting.md#job-artifacts-can-have-wrong-filenames).
+
 ## Expiring artifacts
 
 If [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in) is used to set

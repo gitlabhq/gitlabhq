@@ -910,7 +910,7 @@ RSpec.describe ProjectPresenter do
         end
 
         context 'and there is already a cluster associated to this project' do
-          let(:project) { create(:project, clusters: [build(:cluster, :providing_by_gcp)]) }
+          let(:project) { create(:project, clusters: [create(:cluster)]) }
 
           it { is_expected.to be_falsey }
         end

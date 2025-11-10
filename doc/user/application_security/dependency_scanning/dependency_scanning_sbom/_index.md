@@ -21,7 +21,7 @@ title: Dependency scanning by using SBOM
 - Released [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lockfile-based dependency scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
 - [Enabled by default with the latest dependency scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
 - Feature flag `dependency_scanning_using_sbom_reports` removed in GitLab 17.10.
-- Released as Limited Availability on GitLab.com only with a new [V2 CI/CD dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/) in GitLab 18.5. Using the dependency scanning SBOM API behind feature flag `dependency_scanning_sbom_scan_api` disabled by default. 
+- Released as Limited Availability on GitLab.com only with a new [V2 CI/CD dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/) in GitLab 18.5. Using the dependency scanning SBOM API behind feature flag `dependency_scanning_sbom_scan_api` disabled by default.
 
 {{< /history >}}
 
@@ -382,7 +382,7 @@ build:
 ## Understanding the results
 
 The dependency scanning analyzer produces a CycloneDX Software Bill of Materials (SBOM) for each supported
-lock file or dependency graph export detected. 
+lock file or dependency graph export detected.
 It also generates a single dependency scanning report for all scanned SBOM documents.
 
 ### CycloneDX Software Bill of Materials
@@ -462,7 +462,7 @@ merge cyclonedx sboms:
       - gl-sbom-all.cdx.json
 ```
 
-### Dependency scanning report 
+### Dependency scanning report
 
 The dependency scanning analyzer outputs a single dependency scanning report containing vulnerabilities
 for all lock files scanned.
@@ -472,7 +472,7 @@ The dependency scanning report is:
 - Named `gl-dependency-scanning-report.json`.
 - Available as a job artifact of the dependency scanning job
 - Uploaded as a `dependency_scanning` report.
-- Saved in the root directory of the project. 
+- Saved in the root directory of the project.
 
 ## Optimization
 
@@ -484,6 +484,15 @@ To optimize dependency scanning with SBOM according to your requirements you can
 ### Exclude files and directories from the scan
 
 To exclude files or directories from being targeted by the scan use `excluded_paths` spec input or `DS_EXCLUDED_PATHS` with a comma-separated list of patterns in your `.gitlab-ci.yml`.
+
+#### Exclusion patterns
+
+Exclusion patterns follow these rules:
+
+- Patterns without slashes match file or directory names at any depth in the project (example: `test` matches `./test`, `src/test`).
+- Patterns with slashes use parent directory matching - they match paths that start with the pattern (example: `a/b` matches `a/b` and `a/b/c`, but not `c/a/b`).
+- Standard glob wildcards are supported (example: `a/**/b` matches `a/b`, `a/x/b`, `a/x/y/b`).
+- Leading and trailing slashes are ignored (example: `/build` and `build/` work the same as `build`).
 
 ### Define the max depth to look for files
 
@@ -585,7 +594,7 @@ positives.
 
 #### Available spec inputs
 
-The following spec inputs can be used in combination with the `Dependency-Scanning.v2.gitlab-ci.yml` template. 
+The following spec inputs can be used in combination with the `Dependency-Scanning.v2.gitlab-ci.yml` template.
 
 | Spec Input | Type | Default | Description |
 |------------|------|---------|-------------|
@@ -613,7 +622,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
 | `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from dependency scanning. |
-| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"spec, test, tests, tmp"`. |
+| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [Exclusion patterns](#exclusion-patterns) for matching rules. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `DS_INCLUDE_DEV_DEPENDENCIES` | When set to `"false"`, development dependencies are not reported. Only projects using Composer, Conda, Gradle, Maven, npm, pnpm, Pipenv, Poetry, or uv are supported. Default: `"true"` |
 | `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN`   | Defines which requirement files to process using glob pattern matching (for example, `requirements*.txt` or `*-requirements.txt`). The pattern should match filenames only, not directory paths. See [glob pattern documentation](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns) for syntax details. |
@@ -628,13 +637,13 @@ These variables can replace spec inputs and are also compatible with the beta `l
 
 ## How it scans an application
 
-The dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. 
+The dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning.
 
 This separation of concerns and the modularity of this architecture allows to better support customers through expansion
 of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard
 report types.
 
-The overall flow of dependency scanning is illustrated below 
+The overall flow of dependency scanning is illustrated below
 
 ```mermaid
 flowchart TD
@@ -667,25 +676,25 @@ flowchart TD
     REPORT --> END
 ```
 
-In the dependency detection phase the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document. 
+In the dependency detection phase the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document.
 
 In the static reachability phase he analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
 This allows users to prioritize vulnerabilities based on whether the vulnerable component is reachable.
 For more information, see the [static reachability page](../static_reachability.md).
 
 The SBOM documents are temporarily uploaded to the GitLab instance via the dependency scanning SBOM API.
-The GitLab SBOM vulnerability scanner engine matches the SBOM components against advisories to generate a list of findings which is returned to the analyzer for inclusion in the dependency scanning report. 
+The GitLab SBOM vulnerability scanner engine matches the SBOM components against advisories to generate a list of findings which is returned to the analyzer for inclusion in the dependency scanning report.
 
 The API makes use of the default `CI_JOB_TOKEN` for authentication. Overriding the `CI_JOB_TOKEN` value with a different token might lead to 403 - forbidden responses from the API.
 
-Users can configure the analyzer client that communicates with the dependency scanning SBOM API by using: 
+Users can configure the analyzer client that communicates with the dependency scanning SBOM API by using:
 
 - `vulnerability_scan_api_timeout` or `DS_API_TIMEOUT`
 - `vulnerability_scan_api_download_delay` or `DS_API_SCAN_DOWNLOAD_DELAY`
 
 For more information see [available spec inputs](#available-spec-inputs) and [available CI/CD variables](#available-cicd-variables).
 
-The generated reports are uploaded to the GitLab instance when the CI job completes and usually processed after pipeline completion. 
+The generated reports are uploaded to the GitLab instance when the CI job completes and usually processed after pipeline completion.
 
 The SBOM reports are used to support other SBOM based features like the [Dependency List](../../dependency_list/_index.md), [License Scanning](../../../compliance/license_scanning_of_cyclonedx_files/_index.md) or [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
 
@@ -707,7 +716,7 @@ and can be seen in the [security tab of the pipeline view](../../detect/security
 
 For instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, you need to make some adjustments to run dependency scanning jobs successfully.
-For more information, see [offline environments](../../offline_deployments/_index.md). 
+For more information, see [offline environments](../../offline_deployments/_index.md).
 
 ### Requirements
 
@@ -839,10 +848,10 @@ For more details on implementing pipeline execution policies for different build
 
 ## Other ways of enabling the new dependency scanning feature
 
-We strongly suggest you enable the dependency scanning feature using the `v2` template. 
-In case this is not possible you can choose one of the following ways: 
+We strongly suggest you enable the dependency scanning feature using the `v2` template.
+In case this is not possible you can choose one of the following ways:
 
-### Using the `latest` template 
+### Using the `latest` template
 
 {{< alert type="warning" >}}
 
@@ -866,7 +875,7 @@ Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.
 
 Alternatively you can enable the feature using the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 
-Please make sure you follow the [language-specific instructions](#language-specific-instructions). 
+Please make sure you follow the [language-specific instructions](#language-specific-instructions).
 If you wish to customize the analyzer behavior use the [available CI/CD variables](#available-cicd-variables)
 
 #### Trigger files for the `latest` template
@@ -881,13 +890,13 @@ Your project can be supported if you use a trigger file to [build](#language-spe
 | Java | `pom.xml` |
 | Java/Kotlin | `build.gradle`, `build.gradle.kts` |
 | Python | `requirements.pip`, `Pipfile`, `requires.txt`, `setup.py` |
-| Scala | `build.sbt` |  
+| Scala | `build.sbt` |
 
 ### Using the Dependency Scanning CI/CD component
 
 {{< alert type="warning" >}}
 
-The [dependency scanning CI/CD component] is in Beta and subject to change. 
+The [dependency scanning CI/CD component] is in Beta and subject to change.
 
 {{< /alert >}}
 
@@ -902,7 +911,7 @@ Please make sure you follow the [language-specific instructions](#language-speci
 
 When using the dependency scanning CI/CD component, the analyzer can be customized by configuring the [inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
 
-### Bringing your own SBOM 
+### Bringing your own SBOM
 
 {{< alert type="warning" >}}
 

@@ -10,7 +10,7 @@ module QA
       let(:expected_job_log) { "Runner was registered successfully" }
 
       before do
-        Runtime::Feature.disable(:vue_project_runners_settings)
+        Runtime::Feature.disable(:vue_project_runners_settings, project: runner.project)
       end
 
       after do

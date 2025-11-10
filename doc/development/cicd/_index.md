@@ -94,7 +94,6 @@ The following is a simplified diagram of the CI architecture. Some details are l
 the main components.
 
 ![CI software architecture](img/ci_architecture_v13_0.png)
-<!-- Editable diagram available at https://app.diagrams.net/#G1LFl-KW4fgpBPzz8VIH9rsOlAH4t0xwKj -->
 
 On the left side we have the events that can trigger a pipeline based on various events (triggered by a user or automation):
 
@@ -126,14 +125,11 @@ until either one of the following:
 - All expected jobs have been executed.
 - Failures interrupt the pipeline execution.
 
-The component that processes a pipeline is [`ProcessPipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/process_pipeline_service.rb),
-which is responsible for moving all the pipeline's jobs to a completed state. When a pipeline is created, all its
-jobs are initially in `created` state. This services looks at what jobs in `created` stage are eligible
-to be processed based on the pipeline structure. Then it moves them into the `pending` state, which means
-they can now [be picked up by a runner](#job-scheduling). After a job has been executed it can complete
-successfully or fail. Each status transition for job within a pipeline triggers this service again, which
-looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService`
-updates the status of jobs, stages and the overall pipeline.
+The component that processes a pipeline is [`ProcessPipelineService`](#pipeline-processing) which handles:
+
+1. Setting jobs to their initial states of `pending` if they're ready to run or `created` if they're waiting on dependent jobs
+1. Updating jobs to `pending` based on recently completed dependent jobs
+1. Updating pipelines and stages to match the overall status of the collection of jobs
 
 On the right side of the diagram we have a list of [runners](../../ci/runners/_index.md)
 connected to the GitLab instance. These can be instance runners, group runners, or project runners.
@@ -173,6 +169,30 @@ from the `CreatePipelineService` every time a downstream pipeline is triggered.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 You can watch a walkthrough of the architecture in [CI Backend Architectural Walkthrough](https://www.youtube.com/watch?v=ew4BwohS5OY).
+
+### Pipeline processing
+
+When a pipeline is created, the `ProcessPipelineService` runs automatically via `Ci::InitialPipelineProcessWorker`. 
+This service is also triggered via `PipelineProcessWorker` [whenever a job changes statuses.](https://gitlab.com/gitlab-org/gitlab/-/blob/12da0553647706202c2113e84d92dff0ef12d668/app/models/commit_status.rb#L230)
+
+This service is responsible for moving all the pipeline's jobs to a completed state by setting them to either:
+
+- `pending` status if their requirements are met and they're ready to run and can be picked [up by a runner](#job-scheduling)
+- `created` status if they need to wait, with `processed` marked as `true`
+
+After a job has been executed it can complete successfully or fail. Each status transition for a job within a pipeline triggers this service again, which looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService` updates the status of jobs, stages and the overall pipeline. If any jobs require further processing, the service will reschedule itself.
+
+The `processed` flag acts as a "needs processing" indicator that gets [reset to `false` before each status transition](https://gitlab.com/gitlab-org/gitlab/-/blob/12da0553647706202c2113e84d92dff0ef12d668/app/models/commit_status.rb#L131). This ensures that whenever a job's status changes, those changes are propagated to the stage and pipeline levels, and later builds and next builds in the DAG can be marked as `pending`. The job won't be marked as `processed` until the state is also propagated to the pipeline and stage.
+
+### Retry behavior and self-healing
+
+The `PipelineProcessWorker` uses an exponential backoff that provides self-healing capabilities for pipelines when encountering intermittent errors.
+
+If processing fails due to temporary issues (such as database timeouts, Redis errors, or out-of-memory conditions), the worker retries with increasing delays.
+
+Since the worker is idempotent and checks that jobs and pipelines `need_processing?`, it can safely execute multiple
+times. This retry mechanism can fix pipelines where all jobs are completed but the pipeline was not marked as completed
+due to a temporary error during processing.
 
 ## Job scheduling
 
