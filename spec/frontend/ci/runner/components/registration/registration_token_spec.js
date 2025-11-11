@@ -58,25 +58,6 @@ describe('RegistrationToken', () => {
     expect(wrapper.find('input').classes()).toContain('input-copy-show-disc');
   });
 
-  describe('When the copy to clipboard button is clicked', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('shows a copied message', () => {
-      findInputCopyToggleVisibility().vm.$emit('copy');
-
-      expect(showToastMock).toHaveBeenCalledTimes(1);
-      expect(showToastMock).toHaveBeenCalledWith('Registration token copied!');
-    });
-
-    it('emits a copy event', () => {
-      findInputCopyToggleVisibility().vm.$emit('copy');
-
-      expect(wrapper.emitted('copy')).toHaveLength(1);
-    });
-  });
-
   describe('When slots are used', () => {
     const slotName = 'label-description';
     const slotContent = 'Label Description';

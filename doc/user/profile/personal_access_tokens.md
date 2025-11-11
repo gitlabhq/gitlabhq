@@ -475,7 +475,7 @@ The DPoP header you generated in the CLI can be used:
 - With the REST API:
 
   ```shell
-  curl --header "Private-Token: <your_access_token>" \
+  curl --header "PRIVATE-TOKEN: <your_access_token>" \
     --header "DPoP: <dpop-from-glab>" \
     "https://gitlab.example.com/api/v4/projects"
   ```
@@ -485,7 +485,7 @@ The DPoP header you generated in the CLI can be used:
   ```shell
    curl --request POST \
    --header "Content-Type: application/json" \
-   --header "Private-Token: <your_access_token>" \
+   --header "PRIVATE-TOKEN: <your_access_token>" \
    --header "DPoP: <dpop-from-glab>" \
    --data '{
    "query": "query { currentUser { id } }"

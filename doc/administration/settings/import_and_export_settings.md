@@ -102,8 +102,6 @@ To enable silent admin project and group file exports:
 
 {{< /history >}}
 
-Allow mapping of imported user contributions to administrators.
-
 To allow mapping of imported user contributions to administrators:
 
 1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.

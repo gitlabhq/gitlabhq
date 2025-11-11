@@ -49,7 +49,7 @@ To move all projects by using the API:
    using the API. For example:
 
    ```shell
-   curl --request POST --header "Private-Token: <your_access_token>" \
+   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
         --header "Content-Type: application/json" \
         --data '{"source_storage_name":"<original_storage_name>","destination_storage_name":"<cluster_storage_name>"}' \
         "https://gitlab.example.com/api/v4/project_repository_storage_moves"
@@ -66,7 +66,7 @@ To move all projects by using the API:
    old storage. For example:
 
    ```shell
-   curl --header "Private-Token: <your_access_token>" --header "Content-Type: application/json" \
+   curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
    "https://gitlab.example.com/api/v4/projects?repository_storage=<original_storage_name>"
    ```
 

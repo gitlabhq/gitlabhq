@@ -59,7 +59,7 @@ Example request:
 
 ```shell
 curl \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents"
 ```
 
@@ -140,7 +140,7 @@ Example request:
 
 ```shell
 curl \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/1"
 ```
 
@@ -204,7 +204,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents" \
   --data '{"name":"some-agent"}'
@@ -251,7 +251,7 @@ Example request:
 
 ```shell
 curl --request DELETE \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/1"
 ```
 
@@ -296,7 +296,7 @@ Example request:
 
 ```shell
 curl \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens"
 ```
 
@@ -376,7 +376,7 @@ Example request:
 
 ```shell
 curl \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/token/1"
 ```
 
@@ -450,7 +450,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens" \
   --data '{"name":"some-token"}'
@@ -500,7 +500,7 @@ Example request:
 
 ```shell
 curl --request DELETE \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens/1"
 ```
 
@@ -557,7 +557,7 @@ Example request:
 
 ```shell
 curl \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations"
 ```
 
@@ -616,7 +616,7 @@ Example request:
 
 ```shell
 curl \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations/1"
 ```
 
@@ -679,7 +679,7 @@ Example request to create a URL configuration with a JWT token:
 
 ```shell
 curl --request POST \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
   --data '{"url":"grpcs://agent.example.com:4242"}'
@@ -700,7 +700,7 @@ Example request to create a URL configuration using mTLS with a client certifica
 
 ```shell
 curl --request POST \
-  --header "Private-Token: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
   --data '{"url":"grpcs://agent.example.com:4242", \
@@ -746,5 +746,5 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations/1
 ```

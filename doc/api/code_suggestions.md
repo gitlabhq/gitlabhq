@@ -141,7 +141,7 @@ Example request:
 ```shell
 curl --request POST \
   --url "https://gitlab.example.com/api/v4/code_suggestions/enabled"
-  --header "Private-Token: <YOUR_ACCESS_TOKEN>" \
+  --header "PRIVATE-TOKEN: <YOUR_ACCESS_TOKEN>" \
   --header "Content-Type: application/json" \
   --data '{
       "project_path": "group/project_name"

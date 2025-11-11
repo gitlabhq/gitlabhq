@@ -43,14 +43,14 @@ GET packages/maven/*path/:file_name
 | `file_name`  | string | yes | The name of the Maven package file. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/packages/maven/foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar"
 ```
 
 To write the output to file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/packages/maven/foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar" >> mypkg-1.0-SNAPSHOT.jar
 ```
 
@@ -70,14 +70,14 @@ GET groups/:id/-/packages/maven/*path/:file_name
 | `file_name`  | string | yes | The name of the Maven package file. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/-/packages/maven/foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar"
 ```
 
 To write the output to file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/-/packages/maven/foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar" >> mypkg-1.0-SNAPSHOT.jar
 ```
 
@@ -97,14 +97,14 @@ GET projects/:id/packages/maven/*path/:file_name
 | `file_name`  | string | yes | The name of the Maven package file. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/maven/foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar"
 ```
 
 To write the output to file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/maven/foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar" >> mypkg-1.0-SNAPSHOT.jar
 ```
 
@@ -126,6 +126,6 @@ PUT projects/:id/packages/maven/*path/:file_name
 ```shell
 curl --request PUT \
      --upload-file path/to/mypkg-1.0-SNAPSHOT.pom \
-     --header "Private-Token: <personal_access_token>" \
+     --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/maven/foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.pom"
 ```

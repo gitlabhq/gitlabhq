@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserPolicy do
+RSpec.describe UserPolicy, feature_category: :permissions do
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:regular_user) { create(:user) }
   let_it_be(:subject_user) { create(:user) }
@@ -187,6 +187,26 @@ RSpec.describe UserPolicy do
 
       context 'when the executor is not an admin' do
         it { is_expected.not_to be_allowed(:disable_two_factor) }
+      end
+    end
+  end
+
+  describe 'disabling a passkey' do
+    context 'disabling their own passkey' do
+      let(:user) { current_user }
+
+      it { is_expected.to be_allowed(:disable_passkey) }
+    end
+
+    context 'disabling the passkey of another user' do
+      context 'when the executor is an admin', :enable_admin_mode do
+        let(:current_user) { admin }
+
+        it { is_expected.to be_allowed(:disable_passkey) }
+      end
+
+      context 'when the executor is not an admin' do
+        it { is_expected.not_to be_allowed(:disable_passkey) }
       end
     end
   end

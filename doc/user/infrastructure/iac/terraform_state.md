@@ -393,7 +393,7 @@ glab opentofu state download <your_state_name> <version_serial_number>
 {{< tab title="Manually with curl" >}}
 
 ```shell
-curl --header "Private-Token: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 
@@ -416,7 +416,7 @@ glab opentofu state delete <your_state_name> <version_serial_number>
 {{< tab title="Manually with curl" >}}
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" \
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 
@@ -443,7 +443,7 @@ glab opentofu state delete <your_state_name>
 {{< tab title="Manually with curl" >}}
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" \
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```
 
@@ -493,11 +493,11 @@ glab opentofu state unlock <your_state_name>
 
 ```shell
 # Lock a state file
-curl --request POST --header "Private-Token: <your_access_token>" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/lock"
 
 # Unlock a state file
-curl --request DELETE --header "Private-Token: <your_access_token>" \
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/lock"
 ```
 
@@ -538,11 +538,11 @@ glab opentofu state download <your_state_name> <your_serial>
 
 ```shell
 # Download the latest state
-curl --header "Private-Token: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 
 # Download a specific version (serial) of a state
-curl --header "Private-Token: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 

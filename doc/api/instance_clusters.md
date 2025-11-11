@@ -35,7 +35,7 @@ GET /admin/clusters
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/admin/clusters"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/clusters"
 ```
 
 Example response:
@@ -121,7 +121,7 @@ GET /admin/clusters/:cluster_id
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/admin/clusters/9"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/clusters/9"
 ```
 
 Example response:
@@ -184,7 +184,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "Private-Token:<your_access_token>" "http://gitlab.example.com/api/v4/admin/clusters/add" \
+curl --header "PRIVATE-TOKEN:<your_access_token>" "http://gitlab.example.com/api/v4/admin/clusters/add" \
 -H "Accept:application/json" \
 -H "Content-Type:application/json" \
 -X POST --data '{"name":"cluster-3", "environment_scope":"production", "platform_kubernetes_attributes":{"api_url":"https://example.com", "token":"12345",  "ca_cert":"-----BEGIN CERTIFICATE-----qpoeiXXZafCM0ZDJkZjM...-----END CERTIFICATE-----"}}'
@@ -258,7 +258,7 @@ through the [Add existing instance cluster](#add-existing-instance-cluster) endp
 Example request:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "http://gitlab.example.com/api/v4/admin/clusters/9" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" "http://gitlab.example.com/api/v4/admin/clusters/9" \
 -H "Content-Type:application/json" \
 -X PUT --data '{"name":"update-cluster-name", "platform_kubernetes_attributes":{"api_url":"https://new-example.com","token":"new-token"}}'
 ```
@@ -314,5 +314,5 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/admin/clusters/11"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/admin/clusters/11"
 ```

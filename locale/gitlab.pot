@@ -1476,6 +1476,11 @@ msgstr[1] ""
 msgid "%{strongStart}%{firstSelected}%{strongEnd} +%{length} more"
 msgstr ""
 
+msgid "%{strongStart}%{selectedCount}%{strongEnd} item selected"
+msgid_plural "%{strongStart}%{selectedCount}%{strongEnd} items selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{strongStart}Merge reports (%{reportsCount}):%{strongEnd} %{summaryText}"
 msgstr ""
 
@@ -4289,6 +4294,9 @@ msgid "Add another link"
 msgstr ""
 
 msgid "Add approval rule"
+msgstr ""
+
+msgid "Add attributes"
 msgstr ""
 
 msgid "Add branch target"
@@ -8782,6 +8790,9 @@ msgstr ""
 msgid "Apply a template"
 msgstr ""
 
+msgid "Apply selected attributes to projects (keeps existing attributes)"
+msgstr ""
+
 msgid "Apply suggestion"
 msgstr ""
 
@@ -9556,6 +9567,9 @@ msgid "Attribute 'container-overrides' is not yet supported"
 msgstr ""
 
 msgid "Attribute 'pod-overrides' is not yet supported"
+msgstr ""
+
+msgid "Attributes"
 msgstr ""
 
 msgid "Attributes you add will appear here."
@@ -12173,6 +12187,9 @@ msgstr ""
 msgid "Bulk update"
 msgstr ""
 
+msgid "Bulk update behavior"
+msgstr ""
+
 msgid "BulkImports|The date must be in the future."
 msgstr ""
 
@@ -13580,6 +13597,9 @@ msgid "Choose emoji"
 msgstr ""
 
 msgid "Choose file…"
+msgstr ""
+
+msgid "Choose how to apply the selected attributes to your projects."
 msgstr ""
 
 msgid "Choose protected branch"
@@ -28035,6 +28055,9 @@ msgid "Failed to assign the framework to the project"
 msgstr ""
 
 msgid "Failed to assign you issues related to the merge request."
+msgstr ""
+
+msgid "Failed to authenticate passkey. Log in with your username and passwordto add a passkey for your account. Learn more about setting up passkeys."
 msgstr ""
 
 msgid "Failed to cancel auto stop because failed to update the environment."
@@ -47667,10 +47690,19 @@ msgstr ""
 msgid "Passed on"
 msgstr ""
 
+msgid "Passkey added successfully! Next time you sign in, select the sign-in with passkey option."
+msgstr ""
+
 msgid "Passkey deleted"
 msgstr ""
 
+msgid "Passkey has been deleted!"
+msgstr ""
+
 msgid "Passkey registered"
+msgstr ""
+
+msgid "Passkey successfully authenticated."
 msgstr ""
 
 msgid "Password"
@@ -54567,6 +54599,9 @@ msgstr ""
 msgid "Remove alert"
 msgstr ""
 
+msgid "Remove all existing attributes and apply only the selected ones"
+msgstr ""
+
 msgid "Remove all or specific assignees"
 msgstr ""
 
@@ -54589,6 +54624,9 @@ msgid "Remove asset link"
 msgstr ""
 
 msgid "Remove assignee"
+msgstr ""
+
+msgid "Remove attributes"
 msgstr ""
 
 msgid "Remove avatar"
@@ -54715,6 +54753,9 @@ msgid "Remove search filter"
 msgstr ""
 
 msgid "Remove secondary email"
+msgstr ""
+
+msgid "Remove selected attributes from projects"
 msgstr ""
 
 msgid "Remove spent time"
@@ -54891,6 +54932,9 @@ msgid "Replace"
 msgstr ""
 
 msgid "Replace %{name}"
+msgstr ""
+
+msgid "Replace all attributes"
 msgstr ""
 
 msgid "Replace all labels"
@@ -56667,7 +56711,7 @@ msgstr ""
 msgid "Runners|Registration token"
 msgstr ""
 
-msgid "Runners|Registration token copied!"
+msgid "Runners|Registration token copied to clipboard."
 msgstr ""
 
 msgid "Runners|Remove Node Pool"
@@ -58911,6 +58955,9 @@ msgstr ""
 msgid "SecurityAttributes|An error has occurred while applying security attributes."
 msgstr ""
 
+msgid "SecurityAttributes|An error has occurred while bulk editing security attributes."
+msgstr ""
+
 msgid "SecurityAttributes|An error has occurred while deleting the security attribute."
 msgstr ""
 
@@ -59016,6 +59063,14 @@ msgstr ""
 msgid "SecurityAttributes|Edit security attribute"
 msgstr ""
 
+msgid "SecurityAttributes|Edit security attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Edit security attributes for %d item"
+msgid_plural "SecurityAttributes|Edit security attributes for %d items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityAttributes|Limited edits allowed"
 msgstr ""
 
@@ -59065,6 +59120,9 @@ msgid "SecurityAttributes|Successfully added %{addedCount} and removed %{removed
 msgstr ""
 
 msgid "SecurityAttributes|Successfully added %{addedCount} security attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Successfully applied security attributes"
 msgstr ""
 
 msgid "SecurityAttributes|Successfully removed \"%{name}\" security attribute from this project"
@@ -62074,6 +62132,9 @@ msgid "Select action"
 msgstr ""
 
 msgid "Select all"
+msgstr ""
+
+msgid "Select all items"
 msgstr ""
 
 msgid "Select all vulnerabilities on current page"
@@ -70629,6 +70690,9 @@ msgstr ""
 msgid "Update it"
 msgstr ""
 
+msgid "Update method"
+msgstr ""
+
 msgid "Update now"
 msgstr ""
 
@@ -77093,6 +77157,9 @@ msgstr ""
 msgid "You can create new ones at your personal access tokens settings %{pat_link}"
 msgstr ""
 
+msgid "You can edit up to %{maximumCount} items at once"
+msgstr ""
+
 msgid "You can enable group access token creation in %{link_start}group settings%{link_end}."
 msgstr ""
 
@@ -77810,6 +77877,9 @@ msgid "Your GitLab version"
 msgstr ""
 
 msgid "Your Groups"
+msgstr ""
+
+msgid "Your Passkey did not send a valid JSON response."
 msgstr ""
 
 msgid "Your Personal Access Token was revoked"

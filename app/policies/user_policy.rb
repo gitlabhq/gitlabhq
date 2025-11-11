@@ -37,9 +37,13 @@ class UserPolicy < BasePolicy
     enable :read_user_preference
   end
 
+  rule { user_is_self | admin }.policy do
+    enable :disable_two_factor
+    enable :disable_passkey
+  end
+
   rule { default }.enable :read_user_profile
   rule { (private_profile | blocked_user | unconfirmed_user) & ~(user_is_self | admin) }.prevent :read_user_profile
-  rule { user_is_self | admin }.enable :disable_two_factor
   rule { (user_is_self | admin) & ~blocked }.enable :create_user_personal_access_token
   rule { (user_is_self | admin) & ~blocked }.enable :manage_user_personal_access_token
   rule { (user_is_self | admin) & ~blocked }.enable :get_user_associations_count

@@ -103,14 +103,14 @@ GET projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:packa
 | `file_name`       | string | yes      | The filename. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb" \
      --remote-name
 ```
@@ -160,14 +160,14 @@ GET <route-prefix>/dists/*distribution/Release
 | `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/Release"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/Release" \
      --remote-name
 ```
@@ -187,14 +187,14 @@ GET <route-prefix>/dists/*distribution/InRelease
 | `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/InRelease"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/InRelease" \
      --remote-name
 ```
@@ -214,14 +214,14 @@ GET <route-prefix>/dists/*distribution/Release.gpg
 | `distribution`    | string | yes      | The codename or suite of the Debian distribution. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/Release.gpg"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/Release.gpg" \
      --remote-name
 ```
@@ -243,14 +243,14 @@ GET <route-prefix>/dists/*distribution/:component/binary-:architecture/Packages
 | `architecture`    | string | yes      | The distribution architecture type. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/binary-amd64/Packages"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/binary-amd64/Packages" \
      --remote-name
 ```
@@ -273,14 +273,14 @@ GET <route-prefix>/dists/*distribution/:component/binary-:architecture/by-hash/S
 | `architecture`    | string | yes      | The distribution architecture type. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18" \
      --remote-name
 ```
@@ -302,14 +302,14 @@ GET <route-prefix>/dists/*distribution/:component/debian-installer/binary-:archi
 | `architecture`    | string | yes      | The distribution architecture type. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/debian-installer/binary-amd64/Packages"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/debian-installer/binary-amd64/Packages" \
      --remote-name
 ```
@@ -331,14 +331,14 @@ GET <route-prefix>/dists/*distribution/:component/debian-installer/binary-:archi
 | `architecture`    | string | yes      | The distribution architecture type. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/debian-installer/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/debian-installer/binary-amd64/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18" \
      --remote-name
 ```
@@ -359,14 +359,14 @@ GET <route-prefix>/dists/*distribution/:component/source/Sources
 | `component`       | string | yes      | The distribution component name. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/source/Sources"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/source/Sources" \
      --remote-name
 ```
@@ -387,14 +387,14 @@ GET <route-prefix>/dists/*distribution/:component/source/by-hash/SHA256/:file_sh
 | `component`       | string | yes      | The distribution component name. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/source/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" \
+curl --header "PRIVATE-TOKEN: <personal_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/1/packages/debian/dists/my-distro/main/source/by-hash/SHA256/66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18" \
      --remote-name
 ```

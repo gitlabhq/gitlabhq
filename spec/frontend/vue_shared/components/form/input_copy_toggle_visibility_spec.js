@@ -2,10 +2,13 @@ import { nextTick } from 'vue';
 import { GlFormInputGroup } from '@gitlab/ui';
 
 import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { MOUSETRAP_COPY_KEYBOARD_SHORTCUT } from '~/lib/mousetrap';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
 
 describe('InputCopyToggleVisibility', () => {
   let wrapper;
@@ -29,13 +32,7 @@ describe('InputCopyToggleVisibility', () => {
     wrapper.findByRole('button', {
       name: InputCopyToggleVisibility.i18n.toggleVisibilityLabelHide,
     });
-  const findCopyButton = () => wrapper.findComponent(ClipboardButton);
-  const createCopyEvent = () => {
-    const event = new Event('copy', { cancelable: true });
-    Object.assign(event, { preventDefault: jest.fn(), clipboardData: { setData: jest.fn() } });
-
-    return event;
-  };
+  const findCopyButton = () => wrapper.findComponent(SimpleCopyButton);
   const triggerCopyShortcut = () => {
     wrapper.vm.mousetrap.trigger(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
   };
@@ -48,17 +45,6 @@ describe('InputCopyToggleVisibility', () => {
     expect(findFormInput().classes()).not.toContain('input-copy-show-disc');
     expect(findFormInput().element.value).toBe(valueProp);
   }
-
-  const itDoesNotModifyCopyEvent = () => {
-    it('does not modify copy event', () => {
-      const event = createCopyEvent();
-
-      findFormInput().element.dispatchEvent(event);
-
-      expect(event.clipboardData.setData).not.toHaveBeenCalled();
-      expect(event.preventDefault).not.toHaveBeenCalled();
-    });
-  };
 
   describe('when `value` prop is passed', () => {
     beforeEach(() => {
@@ -73,16 +59,12 @@ describe('InputCopyToggleVisibility', () => {
       expectInputToBeMasked();
     });
 
-    it('emits `copy` event and sets clipboard when copying token via keyboard shortcut', async () => {
-      const writeTextSpy = jest.spyOn(global.navigator.clipboard, 'writeText');
-
-      expect(wrapper.emitted('copy')).toBeUndefined();
+    it('sets clipboard when copying token via keyboard shortcut', () => {
+      expect(copyToClipboard).not.toHaveBeenCalled();
 
       triggerCopyShortcut();
-      await nextTick();
 
-      expect(wrapper.emitted('copy')[0]).toEqual([]);
-      expect(writeTextSpy).toHaveBeenCalledWith(valueProp);
+      expect(copyToClipboard).toHaveBeenCalledTimes(1);
     });
 
     describe('copy button', () => {
@@ -90,18 +72,6 @@ describe('InputCopyToggleVisibility', () => {
         expect(findCopyButton().props()).toMatchObject({
           text: valueProp,
           title: 'Copy',
-        });
-      });
-
-      describe('when clicked', () => {
-        beforeEach(async () => {
-          await findCopyButton().trigger('click');
-        });
-
-        it('emits `copy` event', () => {
-          expect(wrapper.emitted()).toHaveProperty('copy');
-          expect(wrapper.emitted('copy')).toHaveLength(1);
-          expect(wrapper.emitted('copy')[0]).toEqual([]);
         });
       });
     });
@@ -184,8 +154,6 @@ describe('InputCopyToggleVisibility', () => {
       it('displays value', () => {
         expectInputToBeRevealed();
       });
-
-      itDoesNotModifyCopyEvent();
 
       describe('when input is clicked', () => {
         it('selects input value', async () => {
@@ -294,23 +262,17 @@ describe('InputCopyToggleVisibility', () => {
         });
 
         it('copies updated value to clipboard after editing', async () => {
-          const writeTextSpy = jest.spyOn(global.navigator.clipboard, 'writeText');
-
           triggerCopyShortcut();
-          await nextTick();
 
-          expect(wrapper.emitted('copy')).toHaveLength(1);
-          expect(writeTextSpy).toHaveBeenCalledWith(valueProp);
+          expect(copyToClipboard).toHaveBeenLastCalledWith(valueProp);
 
           const updatedValue = 'wow amazing';
           wrapper.setProps({ value: updatedValue });
           await nextTick();
 
           triggerCopyShortcut();
-          await nextTick();
 
-          expect(wrapper.emitted('copy')).toHaveLength(2);
-          expect(writeTextSpy).toHaveBeenCalledWith(updatedValue);
+          expect(copyToClipboard).toHaveBeenLastCalledWith(updatedValue);
         });
 
         describe('when input is clicked', () => {
@@ -376,8 +338,6 @@ describe('InputCopyToggleVisibility', () => {
     it('displays value', () => {
       expectInputToBeRevealed();
     });
-
-    itDoesNotModifyCopyEvent();
   });
 
   describe('when `showCopyButton` is `false`', () => {
@@ -438,10 +398,12 @@ describe('InputCopyToggleVisibility', () => {
     createComponent({
       props: {
         copyButtonTitle: 'Copy token',
+        copyButtonToastMessage: 'Token copied to clipboard.',
       },
     });
 
     expect(findCopyButton().props('title')).toBe('Copy token');
+    expect(findCopyButton().props('toastMessage')).toBe('Token copied to clipboard.');
   });
 
   it('renders slots in `gl-form-group`', () => {

@@ -390,6 +390,8 @@ On the destination instance, users with the Owner role for a top-level group can
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 ### Bypass confirmation when reassigning placeholder users
 
@@ -463,6 +465,8 @@ are mapped automatically to the user who previously accepted reassignments for t
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 #### Completing the reassignment
 
@@ -526,6 +530,8 @@ Before a user accepts the reassignment, you can [cancel the request](#cancel-rea
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 #### Request reassignment by using a CSV file
 
@@ -580,6 +586,8 @@ You can [cancel the reassignment request](#cancel-reassignment-request) before t
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+To reassign contributions and memberships to administrators, see
+[allow contribution mapping to administrators](../../../administration/settings/import_and_export_settings.md#allow-contribution-mapping-to-administrators).
 
 After you reassign contributions, GitLab sends you an email with the number of:
 
