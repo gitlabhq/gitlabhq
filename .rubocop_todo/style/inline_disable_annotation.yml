@@ -1138,7 +1138,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/models/ai/ai_resource/epic.rb'
     - 'ee/app/models/ai/ai_resource/issue.rb'
     - 'ee/app/models/approval_project_rules_user.rb'
-    - 'ee/app/models/approver_group.rb'
     - 'ee/app/models/ci/minutes/namespace_monthly_usage.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
     - 'ee/app/models/concerns/epics/metadata_cache_update.rb'

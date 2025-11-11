@@ -217,8 +217,6 @@ telesign_score:
   file: app/models/anti_abuse/user_trust_score.rb
 deleted_from_database?:
   file: app/models/application_record.rb
-kroki_url_absolute?:
-  file: app/models/application_setting.rb
 max_login_attempts_column_exists?:
   file: app/models/application_setting.rb
 failed_login_attempts_unlock_period_in_minutes_column_exists?:

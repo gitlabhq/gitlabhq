@@ -841,8 +841,8 @@ end
 def project_params_attributes_ee
   %i[
     approvals_before_merge
-    approver_group_ids
-    approver_ids
+    issues_template
+    merge_requests_template
     ...
   ]
 end

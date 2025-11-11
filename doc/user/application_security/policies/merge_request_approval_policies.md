@@ -441,7 +441,7 @@ the bot message is sent as long as at least one of those policies has the `send_
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15552) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_approval_warn_mode`. Disabled by default
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505352) in GitLab 18.6.
 
 {{< /history >}}
 

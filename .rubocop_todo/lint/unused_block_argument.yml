@@ -102,7 +102,6 @@ Lint/UnusedBlockArgument:
     - 'ee/lib/tasks/contracts/merge_requests.rake'
     - 'ee/lib/tasks/gitlab/indexer.rake'
     - 'ee/lib/tasks/gitlab/seed/insights.rake'
-    - 'ee/spec/factories/approvers.rb'
     - 'ee/spec/factories/ci/pipelines.rb'
     - 'ee/spec/factories/ci/reports/license_scanning/report.rb'
     - 'ee/spec/factories/group_saml_identities.rb'

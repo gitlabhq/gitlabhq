@@ -1370,6 +1370,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querynamespacesecurityprojectsattributefilters"></a>`attributeFilters` | [`[AttributeFilterInput!]`](#attributefilterinput) | Filter projects by security attributes. Up to 20 items. |
 | <a id="querynamespacesecurityprojectsincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include also subgroup projects. |
 | <a id="querynamespacesecurityprojectsnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace. |
 | <a id="querynamespacesecurityprojectssearch"></a>`search` | [`String`](#string) | Search projects by name. |
@@ -43550,7 +43551,7 @@ Total risk score information.
 | <a id="riskscorefactors"></a>`factors` {{< icon name="warning-solid" >}} | [`RiskFactors`](#riskfactors) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk factors contributing to the score. |
 | <a id="riskscoreprojectcount"></a>`projectCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 18.5. **Status**: Experiment. Total number of projects with risk scores. |
 | <a id="riskscorerating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating!`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk rating. |
-| <a id="riskscorescore"></a>`score` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk score. |
+| <a id="riskscorescore"></a>`score` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk score. |
 
 ### `RiskScoreByProject`
 
@@ -48355,6 +48356,15 @@ Assignee ID wildcard values.
 | ----- | ----------- |
 | <a id="assigneewildcardidany"></a>`ANY` | An assignee is assigned. |
 | <a id="assigneewildcardidnone"></a>`NONE` | No assignee is assigned. |
+
+### `AttributeFilterOperator`
+
+Operators for filtering by security attributes.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="attributefilteroperatoris_not_one_of"></a>`IS_NOT_ONE_OF` | Project does not have any of the specified attributes. |
+| <a id="attributefilteroperatoris_one_of"></a>`IS_ONE_OF` | Project has one or more of the specified attributes. |
 
 ### `AutoStopSetting`
 
@@ -55615,6 +55625,17 @@ Input type for filtering projects by analyzer type and status.
 | ---- | ---- | ----------- |
 | <a id="analyzerfilterinputanalyzertype"></a>`analyzerType` | [`AnalyzerTypeEnum!`](#analyzertypeenum) | Type of analyzer to filter by. |
 | <a id="analyzerfilterinputstatus"></a>`status` | [`AnalyzerStatusEnum!`](#analyzerstatusenum) | Status of the analyzer to filter by. |
+
+### `AttributeFilterInput`
+
+Input type for filtering projects by security attributes.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="attributefilterinputattributes"></a>`attributes` | [`[SecurityAttributeID!]!`](#securityattributeid) | Global IDs of the security attributes to filter by. Up to 20 values. |
+| <a id="attributefilterinputoperator"></a>`operator` | [`AttributeFilterOperator!`](#attributefilteroperator) | Operator to apply for the attribute filter. |
 
 ### `BoardIssueInput`
 

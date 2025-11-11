@@ -217,7 +217,6 @@ describe('DependencyProxyApp', () => {
               describe('while loading', () => {
                 it('does not render loading component & sets loading prop', () => {
                   expect(findLoader().exists()).toBe(false);
-                  expect(findManifestList().props('loading')).toBe(true);
                 });
 
                 it('renders form group with label', () => {
@@ -245,7 +244,6 @@ describe('DependencyProxyApp', () => {
               describe('while loading', () => {
                 it('does not render loading component & sets loading prop', () => {
                   expect(findLoader().exists()).toBe(false);
-                  expect(findManifestList().props('loading')).toBe(true);
                 });
 
                 it('renders form group with label', () => {
@@ -362,6 +360,14 @@ describe('DependencyProxyApp', () => {
               after: '1234',
               fullPath: provideDefaults.groupPath,
             });
+          });
+
+          it('renders loading state for a manifest list when route changes', async () => {
+            createComponent();
+            await waitForPromises();
+            await router.push('?after=1234');
+            expect(findLoader().exists()).toBe(false);
+            expect(findManifestList().props('loading')).toBe(true);
           });
         });
       });

@@ -1088,10 +1088,6 @@ class ApplicationSetting < ApplicationRecord
     validate_url(parsed_kroki_url, :kroki_url, KROKI_URL_ERROR_MESSAGE)
   end
 
-  def kroki_url_absolute?
-    parsed_kroki_url&.absolute?
-  end
-
   def sourcegraph_url_is_com?
     !!(sourcegraph_url =~ %r{\Ahttps://(www\.)?sourcegraph\.com})
   end
