@@ -55,7 +55,7 @@ module Gitlab
             end
           end
 
-          def predefined_commit_variables # rubocop:disable Metrics/AbcSize -- this should be fixed once the feature flag is removed
+          def predefined_commit_variables
             Gitlab::Ci::Variables::Collection.new.tap do |variables|
               next variables unless pipeline.sha.present?
 
@@ -65,18 +65,10 @@ module Gitlab
               variables.append(key: 'CI_COMMIT_REF_NAME', value: pipeline.source_ref)
               variables.append(key: 'CI_COMMIT_REF_SLUG', value: pipeline.source_ref_slug)
               variables.append(key: 'CI_COMMIT_BRANCH', value: pipeline.ref) if pipeline.branch?
-
-              if ::Feature.enabled?(:truncate_ci_commit_message, pipeline.project)
-                variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message_truncated)
-                variables.append(key: 'CI_COMMIT_MESSAGE_IS_TRUNCATED', value: git_commit_message_truncated?.to_s)
-                variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_title_truncated)
-                variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description_truncated)
-              else
-                variables.append(key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message.to_s)
-                variables.append(key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_full_title.to_s)
-                variables.append(key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description.to_s)
-              end
-
+              variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message_truncated)
+              variables.append(key: 'CI_COMMIT_MESSAGE_IS_TRUNCATED', value: git_commit_message_truncated?.to_s)
+              variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_title_truncated)
+              variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description_truncated)
               variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s)
               variables.append(key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp.to_s)
               variables.append(key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text.to_s)

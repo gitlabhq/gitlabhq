@@ -16,10 +16,10 @@ it "tests experiments nicely", :experiment do
 end
 ```
 
-### Stub helpers
+### Stub helper
 
-You can stub experiments using `stub_experiments`. Pass it a hash using experiment
-names as the keys, and the variants you want each to resolve to, as the values:
+You can stub experiments using `stub_experiments`, which is available without the `:experiment` type.
+Pass it a hash using experiment names as the keys, and the variants you want each to resolve to, as the values:
 
 ```ruby
 # Ensures the experiments named `:example` & `:example2` are both "enabled" and

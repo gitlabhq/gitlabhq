@@ -6,6 +6,8 @@ module Gitlab
       class RefsFinder
         UnknownRefTypeError = Class.new(StandardError)
 
+        ALLOWED_SORT_OPTIONS = %w[name_asc name_desc updated_asc updated_desc].freeze
+
         # @param repository [Gitlab::Git::Repository] The Git repository to search in
         # @param ref_type [Symbol] The type of references to find (:branches or :tags)
         # @param search [String, nil] Search pattern to filter refs by name (supports wildcards)
@@ -30,6 +32,8 @@ module Gitlab
           @per_page = per_page
           @page_token = page_token
           @ref_names = Array(ref_names)
+
+          validate_sort_by!
         end
 
         def execute
@@ -48,6 +52,13 @@ module Gitlab
         private
 
         attr_reader :repository, :search, :ref_type, :sort_by, :page_token, :ref_names
+
+        def validate_sort_by!
+          return if sort_by.blank?
+          return if ALLOWED_SORT_OPTIONS.include?(sort_by)
+
+          raise ArgumentError, "Invalid sort_by option: #{sort_by}. Allowed values: #{ALLOWED_SORT_OPTIONS.join(', ')}"
+        end
 
         def patterns
           exact_match_pattern || search_pattern

@@ -82,6 +82,44 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
           .and change { sync_event.reload.processed }.to(true)
       end
     end
+
+    context 'when one of the finished pipelines has invalid attributes' do
+      let_it_be(:group2) { create(:group) }
+      let_it_be(:project3) { create(:project, group: group2) }
+
+      # Create a pipeline with a project that has no namespace traversal path
+      # This will cause the pipeline to be considered invalid and be skipped
+      let!(:pipeline_with_invalid_mirror) do
+        create(:ci_pipeline, :failed, project: project3, finished_at: 1.minute.ago)
+      end
+
+      before_all do
+        group2.ci_namespace_mirror.destroy!
+      end
+
+      before do
+        create_sync_events(pipeline_with_invalid_mirror)
+      end
+
+      specify { expect(group2.reload.ci_namespace_mirror).to be_nil }
+
+      it 'skips the invalid pipeline and does not mark the sync event as processed' do
+        expect(Gitlab::AppJsonLogger).to receive(:warn).with(
+          message: 'A problematic pipeline sync event has been encountered',
+          reason: 'Missing namespace traversal path',
+          pipeline_id: pipeline_with_invalid_mirror.id
+        )
+
+        expect { execute }
+          .to change { ci_finished_pipelines_row_count }.by(5)
+          .and change { Ci::FinishedPipelineChSyncEvent.pending.count }.to(1)
+
+        # Verify the invalid pipeline was not inserted
+        records = ci_finished_pipelines
+        expect(records.count).to eq 5
+        expect(records.pluck(:id)).not_to include(pipeline_with_invalid_mirror.id)
+      end
+    end
   end
 
   context 'when multiple batches are required' do

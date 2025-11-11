@@ -12,12 +12,30 @@
   $file-header-height: calc($header-padding + $gl-button-small-size);
   --rd-diff-file-header-height: #{$file-header-height};
   --rd-diff-file-border-radius: #{$gl-border-radius-base};
+  container: diff-file / normal;
 }
 
 .rd-diff-file-details > summary {
   display: none;
 }
 
+/*
+  Rapid Diffs have 2 levels of rendering optimization using content-visibility:
+    1. Coarse: the whole file is virtualized, skipping all of the rendering work.
+       This is controlled through the --rd-content-visibility-auto property.
+       --virtual-... configuration props allow to fine-tune the virtual dimensions of a diff file,
+       which is done on a best effort approach.
+    2. Fine-grained: each diff line is virtualized.
+       This creates more layers on the GPU but still allows for performance gains.
+
+  By default the Coarse method is used but Fine-grained can by applied when:
+    1. The diff file is too large,
+       then the Fine-grained mode is activated to improve page responsiveness for interactions with that file.
+    1. Coarse mode is disabled and Fine-grained mode is activated to reduce the performance penalty.
+       This can happen when we open a dropdown or add a diff discussion, which affects diff file dimensions.
+       We need to disable content-visibility with opened dropdowns because it applies paint containment,
+       which clips dropdowns content.
+ */
 .rd-diff-file[data-virtual],
 .rd-diff-file[data-collapsed] {
   content-visibility: var(--rd-content-visibility-auto, auto);
@@ -39,7 +57,10 @@
 
 // content-visibility: auto; applies paint containment, which means you can not draw outside a diff file
 // we need to disable this when we show dropdowns and other elements which extend past a diff file
-.rd-diff-file[data-virtual]:has([data-options-toggle] button[aria-expanded='true']) {
+.rd-diff-file[data-virtual]:has(button[aria-controls*='base-dropdown'][aria-expanded='true']),
+// discussions change the dimensions of a diff file, virtual dimensions are no longer relevant,
+// switch into Fine-grained mode
+.rd-diff-file[data-virtual]:has([data-discussion-row]) {
   --rd-content-visibility-auto: visible;
 }
 

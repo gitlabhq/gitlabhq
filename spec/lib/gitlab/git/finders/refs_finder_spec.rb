@@ -153,6 +153,42 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           expect(refs.map(&:name)).to eq(['v1.1.1', 'v1.1.0', 'v1.0.0'])
         end
       end
+
+      context 'when sort_by is invalid' do
+        context 'with invalid sort option' do
+          let(:params) do
+            { ref_type: :tags, sort_by: 'invalid_option' }
+          end
+
+          it 'raises ArgumentError with clear message' do
+            expect { subject }.to raise_error(ArgumentError, /Invalid sort_by option.*Allowed values/)
+          end
+        end
+
+        context 'with nil sort_by' do
+          let(:params) do
+            { ref_type: :tags, sort_by: nil }
+          end
+
+          it 'does not raise error' do
+            expect { subject }.not_to raise_error
+          end
+        end
+
+        context 'with valid sort options' do
+          %w[name_asc name_desc updated_asc updated_desc].each do |sort_option|
+            context "with #{sort_option}" do
+              let(:params) do
+                { ref_type: :tags, sort_by: sort_option }
+              end
+
+              it 'does not raise error' do
+                expect { subject }.not_to raise_error
+              end
+            end
+          end
+        end
+      end
     end
 
     describe 'Pagination' do

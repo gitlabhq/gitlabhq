@@ -26221,6 +26221,28 @@ CREATE SEQUENCE security_project_tracked_contexts_id_seq
 
 ALTER SEQUENCE security_project_tracked_contexts_id_seq OWNED BY security_project_tracked_contexts.id;
 
+CREATE TABLE security_scan_profiles (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    scan_type smallint NOT NULL,
+    gitlab_recommended boolean DEFAULT false NOT NULL,
+    name text NOT NULL,
+    description text,
+    CONSTRAINT check_58c7066495 CHECK ((char_length(description) <= 2047)),
+    CONSTRAINT check_f1e9f004bb CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE security_scan_profiles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_scan_profiles_id_seq OWNED BY security_scan_profiles.id;
+
 CREATE TABLE security_scans (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -31951,6 +31973,8 @@ ALTER TABLE ONLY security_policy_settings ALTER COLUMN id SET DEFAULT nextval('s
 
 ALTER TABLE ONLY security_project_tracked_contexts ALTER COLUMN id SET DEFAULT nextval('security_project_tracked_contexts_id_seq'::regclass);
 
+ALTER TABLE ONLY security_scan_profiles ALTER COLUMN id SET DEFAULT nextval('security_scan_profiles_id_seq'::regclass);
+
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
 ALTER TABLE ONLY security_training_providers ALTER COLUMN id SET DEFAULT nextval('security_training_providers_id_seq'::regclass);
@@ -35525,6 +35549,9 @@ ALTER TABLE ONLY security_policy_settings
 
 ALTER TABLE ONLY security_project_tracked_contexts
     ADD CONSTRAINT security_project_tracked_contexts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_scan_profiles
+    ADD CONSTRAINT security_scan_profiles_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
@@ -40484,6 +40511,8 @@ CREATE INDEX index_gin_ci_namespace_mirrors_on_traversal_ids ON ci_namespace_mir
 
 CREATE INDEX index_gin_ci_pending_builds_on_namespace_traversal_ids ON ci_pending_builds USING gin (namespace_traversal_ids);
 
+CREATE INDEX index_gitlab_subscription_histories_on_end_date ON gitlab_subscription_histories USING btree (end_date);
+
 CREATE INDEX index_gitlab_subscription_histories_on_gitlab_subscription_id ON gitlab_subscription_histories USING btree (gitlab_subscription_id);
 
 CREATE INDEX index_gitlab_subscriptions_on_end_date_and_namespace_id ON gitlab_subscriptions USING btree (end_date, namespace_id);
@@ -42819,6 +42848,8 @@ CREATE INDEX index_security_policy_settings_on_csp_namespace_id ON security_poli
 CREATE UNIQUE INDEX index_security_policy_settings_on_organization_id ON security_policy_settings USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_security_project_tracked_contexts_on_project_context ON security_project_tracked_contexts USING btree (project_id, context_name, context_type);
+
+CREATE UNIQUE INDEX index_security_scan_profiles_namespace_scan_type_name ON security_scan_profiles USING btree (namespace_id, scan_type, lower(name));
 
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 

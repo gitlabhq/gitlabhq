@@ -47,8 +47,16 @@
 .rd-hunk-header,
 .rd-hunk-lines {
   display: grid;
+  // this property is set in the DiffFileComponent from virtual_rendering_params
   content-visibility: var(--virtual-rows-visibility);
   contain-intrinsic-size: 0 var(--rd-row-intrinsic-height);
+
+  // switch file into a Fine-grained content-visibility when Coarse content-visibility can not be applied
+  // Coarse and Fine-grained modes are explained in app/assets/stylesheets/components/rapid_diffs/diff_file_component.scss
+  // this query is ALLOWED to be unsupported in browsers because it's non-critical
+  @container diff-file (style(--rd-content-visibility-auto: visible)) {
+    --virtual-rows-visibility: auto;
+  }
 }
 
 .rd-text-view-content > tr:last-child {

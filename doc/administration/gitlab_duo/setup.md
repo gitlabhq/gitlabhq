@@ -39,17 +39,26 @@ and [must be turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-ex
 
 ## Allow inbound connections from clients to the GitLab instance
 
-- GitLab instances must allow inbound connections from Duo clients ([IDEs](../../editor_extensions/_index.md),
-  Code Editors, and GitLab Web Frontend) on port 443 with `https://` and `wss://`.
-- Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
-  uses both REST and WebSockets.
-- Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.example.com/-/cable` and other `.com` domains.
-  Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
-  services. Consider policy updates to allow these services.
-- If you use reverse proxies, such as Apache, you might see GitLab Duo Chat connection issues in your
+Your GitLab instance must allow inbound connections from IDE clients.
+
+1. Allow WebSocket Protocol upgrade requests with headers:
+   - `Connection: upgrade`
+   - `Upgrade: websocket`
+   - `HTTP/2` protocol support
+   - Standard WebSocket security headers: `Sec-WebSocket-*`
+1. Enable `wss://` (WebSocket Secure) protocol support.
+1. Add specific endpoints to allow:
+   - Primary endpoint: `wss://<customer-instance>/-/cable`
+   - Ensure `HTTP/2` protocol is not downgraded to `HTTP/1.1`.
+   - Port: `443` (HTTPS/WSS)
+
+If you have issues:
+
+- Check for restrictions on WebSocket traffic to `wss://gitlab.example.com/-/cable` and other `.com` domains.
+- If you use reverse proxies like Apache, you might see GitLab Duo Chat connection issues in your
   logs, like **WebSocket connection to .... failures**.
 
-To resolve this problem, try editing your Apache proxy settings:
+To resolve this issue, edit your proxy settings:
 
 ```apache
 # Enable WebSocket reverse Proxy

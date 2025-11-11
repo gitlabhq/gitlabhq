@@ -41,35 +41,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
       end
     end
 
-    context 'when truncate_ci_commit_message feature flag is disabled' do
-      before do
-        stub_feature_flags(truncate_ci_commit_message: false)
-      end
-
-      it 'includes all predefined variables except CI_COMMIT_MESSAGE_IS_TRUNCATED' do
-        keys = subject.pluck(:key)
-
-        expect(keys).to contain_exactly(*%w[
-          CI_PIPELINE_IID
-          CI_PIPELINE_SOURCE
-          CI_PIPELINE_CREATED_AT
-          CI_PIPELINE_NAME
-          CI_COMMIT_SHA
-          CI_COMMIT_SHORT_SHA
-          CI_COMMIT_BEFORE_SHA
-          CI_COMMIT_REF_NAME
-          CI_COMMIT_REF_SLUG
-          CI_COMMIT_BRANCH
-          CI_COMMIT_MESSAGE
-          CI_COMMIT_TITLE
-          CI_COMMIT_DESCRIPTION
-          CI_COMMIT_REF_PROTECTED
-          CI_COMMIT_TIMESTAMP
-          CI_COMMIT_AUTHOR
-        ])
-      end
-    end
-
     context 'when the commit message has title and body' do
       context 'when the commit message is under the limit' do
         let(:commit_title) { 'This is a commit title' }

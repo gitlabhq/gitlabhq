@@ -943,6 +943,8 @@
   - 1
 - - search_zoekt_task_failed_event
   - 1
+- - search_zoekt_too_many_replicas_event
+  - 1
 - - search_zoekt_update_index_used_storage_bytes_event
   - 1
 - - secrets_management_deprovision_project_secrets_manager

@@ -24095,6 +24095,7 @@ Requires ClickHouse. Premium and Ultimate with GitLab Duo Pro and Enterprise onl
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aimetricscodecontributorscount"></a>`codeContributorsCount` | [`Int`](#int) | Number of code contributors. |
+| <a id="aimetricscodereview"></a>`codeReview` | [`codeReviewMetrics`](#codereviewmetrics) | Code review metrics. |
 | <a id="aimetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.0. moved to codeSuggestions field. |
 | <a id="aimetricscodesuggestionscontributorscount"></a>`codeSuggestionsContributorsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.0. moved to codeSuggestions field. |
 | <a id="aimetricscodesuggestionsshowncount"></a>`codeSuggestionsShownCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.0. moved to codeSuggestions field. |
@@ -39769,7 +39770,7 @@ Returns [`AiAgent`](#aiagent).
 **Status**: Experiment.
 {{< /details >}}
 
-AI Catalog item of the project. This field can only be resolved for one project in any single request.
+AI Catalog item of the project.
 
 Returns [`AiCatalogItem`](#aicatalogitem).
 
@@ -39778,6 +39779,7 @@ Returns [`AiCatalogItem`](#aicatalogitem).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
+| <a id="projectaicatalogitemshowsoftdeleted"></a>`showSoftDeleted` | [`Boolean`](#boolean) | Whether to show the item if it has been soft-deleted. Defaults to `false`. |
 
 ##### `Project.aiCatalogItems`
 
@@ -46688,6 +46690,8 @@ Represents a count of vulnerabilities for a specific severity level.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityseveritycountcount"></a>`count` | [`Int!`](#int) | Number of vulnerabilities. |
+| <a id="vulnerabilityseveritycountmeanage"></a>`meanAge` | [`Float`](#float) | Average age in days of vulnerabilities since detection. |
+| <a id="vulnerabilityseveritycountmedianage"></a>`medianAge` | [`Float`](#float) | Median age in days of vulnerabilities since detection. |
 | <a id="vulnerabilityseveritycountseverity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | Severity level. |
 
 ### `VulnerabilityStateTransitionType`
@@ -47899,6 +47903,24 @@ X.509 signature for a signed commit.
 | <a id="x509signatureuser"></a>`user` | [`UserCore`](#usercore) | User associated with the key. |
 | <a id="x509signatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
 | <a id="x509signaturex509certificate"></a>`x509Certificate` | [`X509Certificate`](#x509certificate) | Certificate used for the signature. |
+
+### `codeReviewMetrics`
+
+Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codereviewmetricsencounterduocodereviewerrorduringrevieweventcount"></a>`encounterDuoCodeReviewErrorDuringReviewEventCount` | [`Int`](#int) | Total count of `encounter_duo_code_review_error_during_review` event. |
+| <a id="codereviewmetricsexcludedfilesfromduocoderevieweventcount"></a>`excludedFilesFromDuoCodeReviewEventCount` | [`Int`](#int) | Total count of `excluded_files_from_duo_code_review` event. |
+| <a id="codereviewmetricsfindnoissuesduocodereviewafterrevieweventcount"></a>`findNoIssuesDuoCodeReviewAfterReviewEventCount` | [`Int`](#int) | Total count of `find_no_issues_duo_code_review_after_review` event. |
+| <a id="codereviewmetricsfindnothingtoreviewduocodereviewonmreventcount"></a>`findNothingToReviewDuoCodeReviewOnMrEventCount` | [`Int`](#int) | Total count of `find_nothing_to_review_duo_code_review_on_mr` event. |
+| <a id="codereviewmetricspostcommentduocodereviewondiffeventcount"></a>`postCommentDuoCodeReviewOnDiffEventCount` | [`Int`](#int) | Total count of `post_comment_duo_code_review_on_diff` event. |
+| <a id="codereviewmetricsreactthumbsdownonduocodereviewcommenteventcount"></a>`reactThumbsDownOnDuoCodeReviewCommentEventCount` | [`Int`](#int) | Total count of `react_thumbs_down_on_duo_code_review_comment` event. |
+| <a id="codereviewmetricsreactthumbsuponduocodereviewcommenteventcount"></a>`reactThumbsUpOnDuoCodeReviewCommentEventCount` | [`Int`](#int) | Total count of `react_thumbs_up_on_duo_code_review_comment` event. |
+| <a id="codereviewmetricsrequestreviewduocodereviewonmrbyauthoreventcount"></a>`requestReviewDuoCodeReviewOnMrByAuthorEventCount` | [`Int`](#int) | Total count of `request_review_duo_code_review_on_mr_by_author` event. |
+| <a id="codereviewmetricsrequestreviewduocodereviewonmrbynonauthoreventcount"></a>`requestReviewDuoCodeReviewOnMrByNonAuthorEventCount` | [`Int`](#int) | Total count of `request_review_duo_code_review_on_mr_by_non_author` event. |
 
 ### `codeSuggestionMetrics`
 

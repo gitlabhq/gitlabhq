@@ -21,7 +21,7 @@ module TwCodeowners
     # CodeOwnerRule.new('Activation', ''),
     # CodeOwnerRule.new('Acquisition', ''),
     CodeOwnerRule.new('Agent Foundations', '@sselhorn'),
-    CodeOwnerRule.new('AI Framework', '@sselhorn'),
+    CodeOwnerRule.new('AI Framework', '@ashrafkhamis'),
     # CodeOwnerRule.new('Analytics Instrumentation', ''),
     CodeOwnerRule.new('Authentication', '@idurham'),
     CodeOwnerRule.new('Authorization', '@idurham'),

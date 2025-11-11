@@ -63,6 +63,9 @@ VS Code and JetBrains IDEs:
   1. On the left sidebar, select **Tools** > **GitLab Duo**.
   1. In the **GitLab Duo Agent Platform** > **Connection Type** section, select `WebSocket`.
 
+If you are seeing `HTTP/1.1` responses from Duo rather than `/-/cable` WebSocket endpoints in your logs, your WebSocket connections may be blocked.
+Ensure you allow [WebSocket connections](../../administration/gitlab_duo/setup.md) through your proxy.
+
 ## View debugging logs in VS Code
 
 In VS Code, you can troubleshoot some issues by viewing debugging logs.

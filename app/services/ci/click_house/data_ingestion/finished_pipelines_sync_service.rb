@@ -37,10 +37,11 @@ module Ci
           ::Gitlab::ClickHouse.configured?
         end
 
-        def initialize(worker_index: 0, total_workers: 1)
+        def initialize(worker_index: 0, total_workers: 1, logger: Gitlab::AppJsonLogger)
           @runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
           @worker_index = worker_index
           @total_workers = total_workers
+          @logger = logger
         end
 
         def execute
@@ -66,6 +67,8 @@ module Ci
         end
 
         private
+
+        attr_reader :logger
 
         def continue?
           !@reached_end_of_table && !@runtime_limiter.over_time?
@@ -147,14 +150,34 @@ module Ci
             .left_outer_joins(project_mirror: :namespace_mirror, pipeline_metadata: [])
             .select(:finished_at, *finished_pipeline_projections)
             .each do |pipeline|
-              records_yielder << pipeline.attributes.symbolize_keys.tap do |record|
-                # add the project namespace ID segment to the path selected in the query
-                record[:path] += "#{project_namespace_ids[record[:id]]}/"
-                record[:duration] = 0 if record[:duration].nil? || record[:duration] < 0
+              pipeline_attrs = pipeline.attributes.symbolize_keys
+              err_reason = pipeline_attrs_error(pipeline_attrs)
+              if err_reason.present?
+                log_pipeline_problem(pipeline, err_reason)
+                pipeline_ids -= [pipeline.id]
+                next
               end
+
+              # append the project namespace ID segment to the path selected in the query
+              pipeline_attrs[:path] += "#{project_namespace_ids[pipeline_attrs[:id]]}/"
+              pipeline_attrs[:duration] = 0 if pipeline_attrs[:duration].nil? || pipeline_attrs[:duration] < 0
+
+              records_yielder << pipeline_attrs
             end
 
           @processed_record_ids += pipeline_ids
+        end
+
+        def pipeline_attrs_error(pipeline_attrs)
+          'Missing namespace traversal path' unless pipeline_attrs[:path].present?
+        end
+
+        def log_pipeline_problem(pipeline, reason)
+          logger.warn(
+            message: 'A problematic pipeline sync event has been encountered',
+            reason: reason,
+            pipeline_id: pipeline.id
+          )
         end
 
         def finished_pipeline_projections

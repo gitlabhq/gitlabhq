@@ -624,7 +624,7 @@ lib/gitlab/checks/
 /doc/administration/get_started.md @gl-docsteam
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
-/doc/administration/gitlab_duo/ @sselhorn
+/doc/administration/gitlab_duo/ @ashrafkhamis
 /doc/administration/gitlab_duo/model_selection.md @fneill
 /doc/administration/gitlab_duo_self_hosted/ @fneill
 /doc/administration/guest_users.md @idurham
@@ -988,7 +988,7 @@ lib/gitlab/checks/
 /doc/editor_extensions/ @sselhorn
 /doc/editor_extensions/gitlab_cli/ @brendan777
 /doc/install/ @axil @eread
-/doc/install/install_ai_gateway.md @sselhorn
+/doc/install/install_ai_gateway.md @ashrafkhamis
 /doc/integration/ @idurham
 /doc/integration/advanced_search/ @ashrafkhamis
 /doc/integration/diffblue_cover.md @lyspin
@@ -1080,7 +1080,7 @@ lib/gitlab/checks/
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @brendan777
 /doc/user/duo_agent_platform/ @sselhorn
-/doc/user/duo_amazon_q/ @sselhorn
+/doc/user/duo_amazon_q/ @ashrafkhamis
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @idurham
 /doc/user/free_user_limit.md @lciutacu
@@ -1088,8 +1088,8 @@ lib/gitlab/checks/
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @z_painter
 /doc/user/get_started/get_started_runner.md @rsarangadharan
-/doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
-/doc/user/gitlab_duo/ @sselhorn
+/doc/user/get_started/getting_started_gitlab_duo.md @ashrafkhamis
+/doc/user/gitlab_duo/ @ashrafkhamis
 /doc/user/gitlab_duo/model_selection.md @fneill
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
