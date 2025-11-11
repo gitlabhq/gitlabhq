@@ -5,5 +5,16 @@
 #   Also remove any remaining Integrations::Prometheus records from the database.
 module Integrations
   class Prometheus < Integration
+    def self.title
+      'Prometheus'
+    end
+
+    def self.description
+      s_('PrometheusService|Monitor application health with Prometheus metrics and dashboards')
+    end
+
+    def self.to_param
+      'prometheus'
+    end
   end
 end

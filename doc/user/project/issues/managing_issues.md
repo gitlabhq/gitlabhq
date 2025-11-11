@@ -830,7 +830,8 @@ To open the issue in full view:
   - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the issue.
 - From the drawer, in the upper-left corner, select **Open in full view**.
 
-![Issue opened in a drawer.](img/issue_drawer_v17_4.png)
+If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off),
+the issue opens in a details panel.
 
 ## Copy issue reference
 

@@ -137,12 +137,19 @@ module API
         end
       end
 
-      def present_package_file!(package_file, supports_direct_download: true, content_disposition: nil)
+      def present_package_file!(
+        package_file,
+        supports_direct_download: true,
+        content_disposition: nil,
+        extra_response_headers: {}
+      )
         package_file.package.touch_last_downloaded_at
+
         present_carrierwave_file!(
           package_file.file,
           supports_direct_download: supports_direct_download,
           content_disposition: content_disposition,
+          extra_response_headers: extra_response_headers,
           extra_send_url_params: ::Packages::SsrfProtection.params_for(package_file.package)
         )
       end

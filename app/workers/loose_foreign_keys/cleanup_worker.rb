@@ -47,13 +47,13 @@ module LooseForeignKeys
 
     def initialize_modification_tracker_for(connection_name)
       turbo_mode = turbo_mode?(connection_name)
-      modification_tracker ||= turbo_mode ? TurboModificationTracker.new : ModificationTracker.new
+      modification_tracker = turbo_mode ? TurboModificationTracker.new : ModificationTracker.new
       [modification_tracker, turbo_mode]
     end
 
     def turbo_mode?(connection_name)
       %w[main ci sec].include?(connection_name) &&
-        Feature.enabled?(:"loose_foreign_keys_turbo_mode_#{connection_name}", type: :ops)
+        Feature.enabled?(:"loose_foreign_keys_turbo_mode_#{connection_name}", :instance, type: :ops)
     end
   end
 end

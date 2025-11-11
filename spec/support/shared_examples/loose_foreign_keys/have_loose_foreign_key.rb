@@ -89,7 +89,7 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
     debug_print_outstanding_lfk_records
 
     start_process_loose_foreign_key_deletions = Time.now
-    process_loose_foreign_key_deletions(record: parent)
+    process_loose_foreign_key_deletions(record: parent, worker_class: foreign_key_definition.options[:worker_class])
     puts("## LFK's processed for parent in #{Time.now - start_process_loose_foreign_key_deletions} seconds##")
 
     debug_print_outstanding_lfk_records

@@ -170,7 +170,11 @@ To resolve this issue, increase the value or upgrade Elasticsearch 8.1 or later.
 
 ## Error: `disk usage exceeded flood-stage watermark, index has read-only-allow-delete block`
 
-This error indicates that your Elasticsearch cluster has at least one node that is critically low on disk space. Once a cluster exceeds the default watermark threshold of 95%, it enforces a read-only block that prevents all further write operations. This can cause new index operations to fail and result in outdated search results. 
+This error occurs when your Elasticsearch cluster has
+at least one node that is critically low on disk space.
+A cluster that exceeds the default watermark threshold of 95%
+enforces a read-only block that prevents all further write operations.
+This block might cause new index operations to fail and result in outdated search results.
 
 You can check if the cluster is in read-only mode with the following Rake task:
 
@@ -178,15 +182,16 @@ You can check if the cluster is in read-only mode with the following Rake task:
 sudo gitlab-rake gitlab:elastic:info
 ```
 
-Look for output that indicates that `blocks.write` is `true`, or `blocks.read_only_allow_delete` is `true`
+Look for output that indicates that `blocks.write` or `blocks.read_only_allow_delete` is `true`.
 
-To check the disk usage on your Elasticsearch cluster, use the following curl request:
+To check disk usage on your Elasticsearch cluster, run the following command:
 
 ```shell
 curl --request GET '<your_ES_cluster>:9200/_cat/allocation?v&pretty'
 ```
 
-To resolve this error, you need to increase your disk volume on the full nodes. You can estimate the cluster size with the following Rake task:
+To resolve this issue, increase your disk volume on full nodes.
+You can estimate cluster size with the following Rake task:
 
 ```shell
 sudo gitlab-rake gitlab:elastic:estimate_cluster_size

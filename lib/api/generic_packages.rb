@@ -9,6 +9,8 @@ module API
 
     ALLOWED_STATUSES = %w[default hidden].freeze
 
+    SHA256_CHECKSUM_HEADER = 'X-Checksum-SHA256'
+
     feature_category :package_registry
     urgency :low
 
@@ -149,7 +151,10 @@ module API
 
             track_package_event('pull_package', :generic, project: project, namespace: project.namespace)
 
-            present_package_file!(package_file, content_disposition: :attachment)
+            # Prepare extra response headers including checksum
+            extra_response_headers = { SHA256_CHECKSUM_HEADER => package_file.file_sha256 }.compact_blank
+
+            present_package_file!(package_file, content_disposition: :attachment, extra_response_headers: extra_response_headers)
           end
         end
       end

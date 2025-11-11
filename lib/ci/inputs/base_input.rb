@@ -30,17 +30,22 @@ module Ci
         @spec = spec_hash.is_a?(Hash) ? spec_hash.with_indifferent_access : spec_hash
       end
 
-      def validate_param!(param)
+      def validate_param!(param, all_params = {})
         error('required value has not been provided') if required? && param.nil?
         return if errors.present?
 
-        run_validations(default, default: true) unless required?
-        run_validations(param) unless param.nil?
+        run_validations(default, all_params, default: true) unless required?
+        run_validations(param, all_params) unless param.nil?
       end
 
-      def actual_value(param)
+      def actual_value(param, all_params = {})
         # nil check is to support boolean values.
-        param.nil? ? coerced_value(default) : coerced_value(param)
+        if param.nil?
+          default_value = rules ? resolved_default(all_params) : default
+          coerced_value(default_value)
+        else
+          coerced_value(param)
+        end
       end
 
       def type
@@ -90,6 +95,24 @@ module Ci
 
       private
 
+      def resolved_options(current_inputs = {})
+        return options unless rules
+
+        rules_evaluator(current_inputs).resolved_options || options
+      end
+
+      def resolved_default(current_inputs = {})
+        return default unless rules
+
+        rules_evaluator(current_inputs).resolved_default || default
+      end
+
+      def rules_evaluator(current_inputs)
+        strong_memoize_with(:rules_evaluator, current_inputs) do
+          RulesEvaluator.new(rules, current_inputs)
+        end
+      end
+
       def has_default_through_rules?
         return false unless spec.key?(:rules) && spec[:rules].is_a?(Array)
 
@@ -100,11 +123,11 @@ module Ci
         end
       end
 
-      def run_validations(value, default: false)
+      def run_validations(value, all_params = {}, default: false)
         value = coerced_value(value)
 
         validate_type(value, default)
-        validate_options(value)
+        validate_options(value, all_params)
         validate_regex(value, default)
       end
 
@@ -114,7 +137,7 @@ module Ci
       end
 
       # Options can be either StringInput or NumberInput and are validated accordingly.
-      def validate_options(_value)
+      def validate_options(_value, _all_params = {})
         return unless options
 
         error('Options can only be used with string and number inputs')

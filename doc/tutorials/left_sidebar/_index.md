@@ -37,6 +37,11 @@ If you have hidden the left sidebar, you can display it temporarily by hovering 
 
 {{< /alert >}}
 
+If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off),
+the shortcuts to create new items, and view your profile, issues, merge requests, and to-do items are in the upper-right corner.
+
+![Shortcuts in new navigation.](img/top_nav_v18_6.png)
+
 The next area of the left sidebar changes based on the information you're viewing. For example,
 you might be viewing a project, exploring projects or groups, or viewing your profile.
 To switch to other areas of the left sidebar, use **Search or go to**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
@@ -95,6 +100,10 @@ Then, on the left sidebar, **Your work** is displayed.
 The **Admin** area is also available on the left sidebar at the bottom:
 
 ![The Admin area button.](img/admin_area_v18_3.png)
+
+If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), the **Admin** area is available in the upper-right corner:
+
+![The Admin area button in the new navigation.](img/admin_area_v18_6.png)
 
 ## Access What's new
 

@@ -37,14 +37,17 @@ module Ci
       end
 
       def validate_input_params!(params)
-        all_inputs.each do |input|
-          input.validate_param!(params[input.name])
+        all_inputs.each_with_object({}) do |input, resolved_inputs|
+          context = resolved_inputs.merge(params)
+          input.validate_param!(params[input.name], context)
+          resolved_inputs[input.name] = input.actual_value(params[input.name], context)
         end
       end
 
       def to_params(params)
-        all_inputs.inject({}) do |hash, input|
-          hash.merge(input.name => input.actual_value(params[input.name]))
+        all_inputs.each_with_object({}) do |input, resolved_inputs|
+          context = resolved_inputs.merge(params)
+          resolved_inputs[input.name] = input.actual_value(params[input.name], context)
         end
       end
 

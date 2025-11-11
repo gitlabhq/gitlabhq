@@ -5,6 +5,7 @@ module Gitlab
     module LooseForeignKeys
       ALLOWED_WORKER_CLASSES = [
         'LooseForeignKeys::CleanupWorker',
+        'LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker',
         'LooseForeignKeys::MergeRequestDiffCommitCleanupWorker'
       ].freeze
 

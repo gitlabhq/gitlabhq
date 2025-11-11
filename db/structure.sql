@@ -28706,6 +28706,17 @@ CREATE SEQUENCE vulnerability_flags_id_seq
 
 ALTER SEQUENCE vulnerability_flags_id_seq OWNED BY vulnerability_flags.id;
 
+CREATE TABLE vulnerability_flip_guards (
+    vulnerability_finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    first_automatic_transition_at timestamp with time zone NOT NULL,
+    automated_transition_count smallint DEFAULT 1,
+    is_guarded boolean DEFAULT false NOT NULL,
+    last_automatic_transition_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE vulnerability_historical_statistics (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -35922,6 +35933,9 @@ ALTER TABLE ONLY vulnerability_findings_remediations
 ALTER TABLE ONLY vulnerability_flags
     ADD CONSTRAINT vulnerability_flags_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY vulnerability_flip_guards
+    ADD CONSTRAINT vulnerability_flip_guards_pkey PRIMARY KEY (vulnerability_finding_id);
+
 ALTER TABLE ONLY vulnerability_historical_statistics
     ADD CONSTRAINT vulnerability_historical_statistics_pkey PRIMARY KEY (id);
 
@@ -38814,6 +38828,8 @@ CREATE UNIQUE INDEX idx_user_member_roles_on_user_id_unique ON user_member_roles
 CREATE INDEX idx_vr_cleanup_policies_on_next_run_at_when_runnable ON virtual_registries_cleanup_policies USING btree (next_run_at) WHERE ((enabled = true) AND (status = ANY (ARRAY[0, 2])));
 
 CREATE INDEX idx_vreg_container_reg_upst_on_group ON virtual_registries_container_registry_upstreams USING btree (group_id);
+
+CREATE INDEX idx_vuln_flip_guards_on_project_and_finding_id ON vulnerability_flip_guards USING btree (project_id, vulnerability_finding_id);
 
 CREATE INDEX idx_vuln_reads_for_filtering ON vulnerability_reads USING btree (project_id, state, dismissal_reason, severity DESC, vulnerability_id DESC NULLS LAST);
 
@@ -48218,6 +48234,9 @@ ALTER TABLE ONLY subscription_seat_assignments
 
 ALTER TABLE ONLY approval_group_rules_protected_branches
     ADD CONSTRAINT fk_0b85e6c388 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_flip_guards
+    ADD CONSTRAINT fk_0bbe7b420c FOREIGN KEY (vulnerability_finding_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_amazon_s3_configurations
     ADD CONSTRAINT fk_0bcc22194d FOREIGN KEY (stream_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE SET NULL;

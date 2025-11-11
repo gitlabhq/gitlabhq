@@ -56,13 +56,13 @@ still giving you access to other recent work:
 - **Merged**: These merge requests merged in the last 14 days, and you were an assignee or a reviewer.
 - **Search**: Search all merge requests, and filter them as needed.
 
-GitLab shows the total number of **Active** merge requests on the left sidebar on all pages. For example, this user has:
+GitLab shows the total number of **Active** merge requests in the left sidebar on all pages. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), this information is in the upper-right corner. For example, this user has:
 
-![The upper-left area of the sidebar showing the number of active merge requests.](img/homepage_totals_v18_3.png)
+![The upper-right corner showing the number of active merge requests.](img/homepage_totals_v18_6.png)
 
-- 9 open issues ({{< icon name="issue-type-issue" >}})
-- 1 active merge request ({{< icon name="merge-request-open" >}})
-- 1 to-do item ({{< icon name="todo-done" >}})
+- 15 open issues ({{< icon name="issue-type-issue" >}})
+- 5 active merge requests ({{< icon name="merge-request-open" >}})
+- 3 to-do items ({{< icon name="todo-done" >}})
 
 Each table row groups related information about a merge request together into columns:
 

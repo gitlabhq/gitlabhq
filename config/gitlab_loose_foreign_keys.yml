@@ -21,6 +21,7 @@ analyzer_project_statuses:
   - table: p_ci_builds
     column: build_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 application_settings:
   - table: push_rules
     column: push_rule_id
@@ -314,6 +315,7 @@ clusters_managed_resources:
   - table: p_ci_builds
     column: build_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 country_access_logs:
   - table: users
     column: user_id
@@ -326,6 +328,7 @@ dast_pre_scan_verifications:
   - table: p_ci_pipelines
     column: ci_pipeline_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -344,6 +347,7 @@ dast_profiles_pipelines:
   - table: p_ci_pipelines
     column: ci_pipeline_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 dast_profiles_tags:
   - table: tags
     column: tag_id
@@ -359,6 +363,7 @@ dast_scanner_profiles_builds:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 dast_site_profile_secret_variables:
   - table: projects
     column: project_id
@@ -371,6 +376,7 @@ dast_site_profiles_builds:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -394,6 +400,7 @@ dependency_list_exports:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: users
     column: user_id
     on_delete: async_delete
@@ -410,6 +417,7 @@ deployment_approvals:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 deployment_clusters:
   - table: clusters
     column: cluster_id
@@ -465,9 +473,11 @@ job_environments:
   - table: p_ci_builds
     column: ci_job_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: p_ci_pipelines
     column: ci_pipeline_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 lfs_object_states:
   - table: lfs_objects
     column: lfs_object_id
@@ -495,6 +505,7 @@ merge_request_metrics:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 merge_request_requested_changes:
   - table: merge_requests
     column: merge_request_id
@@ -509,14 +520,17 @@ merge_requests:
   - table: p_ci_pipelines
     column: head_pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 merge_trains:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 ml_candidates:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 namespace_details:
   - table: users
     column: creator_id
@@ -667,6 +681,7 @@ packages_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 packages_helm_metadata_caches:
   - table: projects
     column: project_id
@@ -687,6 +702,7 @@ packages_package_file_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 packages_package_file_states:
   - table: packages_package_files
     column: package_file_id
@@ -695,6 +711,7 @@ pages_deployments:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 pool_repositories:
   - table: projects
     column: source_project_id
@@ -760,6 +777,7 @@ requirements_management_test_reports:
   - table: p_ci_builds
     column: build_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 sbom_component_versions:
   - table: organizations
     column: organization_id
@@ -776,6 +794,7 @@ sbom_occurrence_refs:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -783,6 +802,7 @@ sbom_occurrences:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -826,6 +846,7 @@ security_scans:
   - table: p_ci_builds
     column: build_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -837,6 +858,7 @@ slsa_attestations:
   - table: p_ci_builds
     column: build_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 snippets:
   - table: organizations
     column: organization_id
@@ -852,6 +874,7 @@ terraform_state_versions:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 user_details:
   - table: namespaces
     column: provisioned_by_group_id
@@ -930,6 +953,7 @@ vulnerability_feedback:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: merge_requests
     column: merge_request_id
     on_delete: async_nullify
@@ -968,6 +992,10 @@ vulnerability_flags:
   - table: duo_workflows_workflows
     column: workflow_id
     on_delete: async_nullify
+vulnerability_flip_guards:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_historical_statistics:
   - table: projects
     column: project_id
@@ -1002,9 +1030,11 @@ vulnerability_occurrences:
   - table: p_ci_pipelines
     column: initial_pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: p_ci_pipelines
     column: latest_pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -1015,6 +1045,7 @@ vulnerability_partial_scans:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
 vulnerability_reads:
   - table: cluster_agents
     column: casted_cluster_agent_id
@@ -1052,6 +1083,7 @@ vulnerability_statistics:
   - table: p_ci_pipelines
     column: latest_pipeline_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete

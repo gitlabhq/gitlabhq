@@ -727,7 +727,7 @@ In the [next step for the partitioned table](#create-the-index-synchronously-for
 1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
    `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
    the post-deploy migration has been executed in the production database. For more information, see
-   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
+   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 1. In the case of an [index created asynchronously](#schedule-the-index-to-be-created), wait
    until the next week so that the index can be created over a weekend.
 1. Use [Database Lab](database_lab.md) to check [if creation was successful](database_lab.md#checking-indexes).
@@ -858,7 +858,7 @@ Include the output of the test in the merge request description.
 1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
    `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
    the post-deploy migration has been executed in the production database. For more information, see
-   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
+   [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/database-migrations/post-deploy-migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 1. In the case of an [index removed asynchronously](#schedule-the-index-to-be-removed), wait
    until the next week so that the index can be removed over a weekend.
 1. Use Database Lab [to check if removal was successful](database_lab.md#checking-indexes).

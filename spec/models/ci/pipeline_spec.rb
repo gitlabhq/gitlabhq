@@ -6536,6 +6536,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   it_behaves_like 'it has loose foreign keys' do
+    let(:worker_class) { LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker }
     let(:factory_name) { :ci_pipeline }
   end
 

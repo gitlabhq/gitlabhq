@@ -1129,6 +1129,39 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    context 'for checksum headers' do
+      let(:expected_checksum) { Digest::SHA256.hexdigest('test content') }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when package file has a checksum' do
+        before do
+          package_file.update_column(:file_sha256, expected_checksum)
+          package_file.reload
+        end
+
+        it 'includes X-Checksum-SHA256 header in response' do
+          download_file(personal_access_token_header)
+
+          expect(response.headers['X-Checksum-SHA256']).to eq(expected_checksum)
+        end
+      end
+
+      context 'when package file has no checksum' do
+        before do
+          package_file.update_column(:file_sha256, nil)
+        end
+
+        it 'does not include X-Checksum-SHA256 header' do
+          download_file(personal_access_token_header)
+
+          expect(response.headers).not_to have_key('X-Checksum-SHA256')
+        end
+      end
+    end
+
     context 'when object storage is enabled' do
       let(:package_file) { create(:package_file, :generic, :object_storage, package: package) }
 
@@ -1165,7 +1198,8 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             allow_localhost: true,
             allowed_endpoints: [],
             response_headers: {
-              'Content-Disposition' => disposition_header
+              'Content-Disposition' => disposition_header,
+              'X-Checksum-SHA256' => package_file.file_sha256
             },
             ssrf_filter: true
           }
@@ -1175,7 +1209,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           stub_package_file_object_storage(proxy_download: true)
         end
 
-        it 'sends a file with response-content-disposition and filename' do
+        it 'sends a file with response-content-disposition, filename, and X-Checksum-SHA256 header' do
           expect(::Gitlab::Workhorse).to receive(:send_url)
             .with(instance_of(String), expected_headers)
             .and_call_original

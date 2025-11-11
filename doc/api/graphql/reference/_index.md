@@ -2775,7 +2775,7 @@ Input type: `AiCatalogItemConsumerCreateInput`
 | <a id="mutationaicatalogitemconsumercreateitemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Item to configure. |
 | <a id="mutationaicatalogitemconsumercreateparentitemconsumerid"></a>`parentItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | Parent item consumer belonging to the top-level group. |
 | <a id="mutationaicatalogitemconsumercreatepinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch to pin the item to. |
-| <a id="mutationaicatalogitemconsumercreatetarget"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target in which the catalog item is configured. |
+| <a id="mutationaicatalogitemconsumercreatetarget"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target project or top-level group in which the catalog item is configured. |
 | <a id="mutationaicatalogitemconsumercreatetriggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create flow triggers for (values can be mention, assign or assign_reviewer). |
 
 #### Fields

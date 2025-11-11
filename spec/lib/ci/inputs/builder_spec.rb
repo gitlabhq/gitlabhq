@@ -181,6 +181,75 @@ RSpec.describe Ci::Inputs::Builder, feature_category: :pipeline_composition do
         expect(spec_inputs.errors).to contain_exactly(/provided value is not a number/)
       end
     end
+
+    context 'with rules-based options validation' do
+      let(:specs) do
+        {
+          'cloud_provider' => {
+            type: 'string',
+            options: %w[aws gcp],
+            default: 'aws'
+          },
+          'instance_type' => {
+            type: 'string',
+            rules: [
+              {
+                if: '$[[ inputs.cloud_provider ]] == "aws"',
+                options: ['t3.micro', 't3.small']
+              },
+              {
+                if: '$[[ inputs.cloud_provider ]] == "gcp"',
+                options: %w[e2-small e2-medium]
+              }
+            ]
+          }
+        }
+      end
+
+      context 'when value matches resolved options' do
+        let(:params) do
+          {
+            'cloud_provider' => 'aws',
+            'instance_type' => 't3.micro'
+          }
+        end
+
+        it 'does not add validation errors' do
+          validate
+          expect(spec_inputs.errors).to be_empty
+        end
+      end
+
+      context 'when value does not match resolved options' do
+        let(:params) do
+          {
+            'cloud_provider' => 'aws',
+            'instance_type' => 'e2-small'
+          }
+        end
+
+        it 'adds validation error for invalid option' do
+          validate
+          expect(spec_inputs.errors).to include(
+            a_string_matching(/e2-small.*cannot be used.*not in the list of allowed options/)
+          )
+        end
+      end
+
+      context 'when dependent value changes the allowed options' do
+        let(:params) do
+          {
+            'cloud_provider' => 'gcp',
+            'instance_type' => 'e2-small'
+          }
+        end
+
+        it 'validates against the correct resolved options' do
+          validate
+          expect(spec_inputs.errors).to be_empty
+        end
+      end
+    end
   end
 
   describe '#to_params' do
@@ -219,6 +288,83 @@ RSpec.describe Ci::Inputs::Builder, feature_category: :pipeline_composition do
           'string_param' => 'test',
           'number_param' => 100
         )
+      end
+    end
+
+    context 'with rules-based defaults' do
+      let(:specs) do
+        {
+          'cloud_provider' => {
+            type: 'string',
+            options: %w[aws gcp],
+            default: 'aws'
+          },
+          'instance_type' => {
+            type: 'string',
+            rules: [
+              {
+                if: '$[[ inputs.cloud_provider ]] == "aws"',
+                options: ['t3.micro', 't3.small'],
+                default: 't3.micro'
+              },
+              {
+                if: '$[[ inputs.cloud_provider ]] == "gcp"',
+                options: %w[e2-small e2-medium],
+                default: 'e2-small'
+              }
+            ]
+          }
+        }
+      end
+
+      context 'when using default values' do
+        let(:params) { {} }
+
+        it 'returns resolved defaults based on dependencies' do
+          expect(spec_inputs.to_params(params)).to eq(
+            'cloud_provider' => 'aws',
+            'instance_type' => 't3.micro'
+          )
+        end
+      end
+
+      context 'when changing dependent input' do
+        let(:params) { { 'cloud_provider' => 'gcp' } }
+
+        it 'returns resolved default for the new value' do
+          expect(spec_inputs.to_params(params)).to eq(
+            'cloud_provider' => 'gcp',
+            'instance_type' => 'e2-small'
+          )
+        end
+      end
+
+      context 'with chained dependencies' do
+        let(:specs) do
+          {
+            'env' => { type: 'string', default: 'prod' },
+            'region' => {
+              type: 'string',
+              rules: [
+                { if: '$[[ inputs.env ]] == "prod"', default: 'us-east-1' }
+              ]
+            },
+            'az' => {
+              type: 'string',
+              rules: [
+                { if: '$[[ inputs.region ]] == "us-east-1"', default: 'us-east-1a' }
+              ]
+            }
+          }
+        end
+
+        it 'resolves chain of dependencies' do
+          expect(spec_inputs.to_params({})).to eq(
+            'env' => 'prod',
+            'region' => 'us-east-1',
+            'az' => 'us-east-1a'
+          )
+        end
       end
     end
   end

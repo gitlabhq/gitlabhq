@@ -1310,6 +1310,7 @@ vulnerability_finding:
   - cve_identifiers
   - cve_enrichments
   - triggered_workflows
+  - flip_guard
 scanner:
   - findings
   - security_findings
@@ -1325,3 +1326,4 @@ vulnerability_read:
   - vulnerability
   - scanner
   - vulnerability_occurrence
+

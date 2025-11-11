@@ -133,6 +133,7 @@
 - :skip_disconnect
 - :skip_freeze_time
 - :skip_html_escaped_tags_check
+- :skip_openbao_setup
 - :snowplow
 - :snowplow_micro
 - :stackprof

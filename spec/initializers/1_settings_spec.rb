@@ -255,6 +255,7 @@ RSpec.describe '1_settings', feature_category: :shared do
         issue_due_scheduler_worker
         issues_reschedule_stuck_issue_rebalances
         jira_import_stuck_jira_import_jobs
+        loose_foreign_keys_ci_pipelines_builds_cleanup_worker
         loose_foreign_keys_cleanup_worker
         loose_foreign_keys_merge_request_diff_commit_cleanup_worker
         manage_evidence_worker

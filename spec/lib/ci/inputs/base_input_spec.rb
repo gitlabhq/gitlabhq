@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require_relative Rails.root.join('lib/ci/inputs/base_input.rb')
+require_relative Rails.root.join('lib/ci/inputs/rules_evaluator.rb')
 
 RSpec.describe Ci::Inputs::BaseInput, feature_category: :pipeline_composition do
   describe '.matches?' do
