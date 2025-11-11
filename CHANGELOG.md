@@ -2,6 +2,40 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.5.2 (2025-11-11)
+
+### Fixed (10 changes)
+
+- [Fix test failure by adjusting dates to match partition range](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7a43d4b3eed4e6730269fc18e78459ec711c913a)
+- [Fix background migration when Ghost user is missing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2d51659333e0ba46b24ba208f7e1ea6e31817ea1)
+- [Downgrade Zeitwerk to 2.6.18](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b620e65bb65b810fe62d962ada488ec924ffe271)
+- [Allow Legacy FIPS instances to Upgrade Oauth secerets](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1baa80bb05b379a516b2a3971f34e1ad9078fae7)
+- [Call CommitIndexerWorker when an empty project is created](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38160fe77749b90d33d0cd484e8c788ea0a8b5dd) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207806)) **GitLab Enterprise Edition**
+- [Fix the zoekt filters caching](https://gitlab.com/gitlab-org/security/gitlab/-/commit/63be8de02b236411b9d18176f37dc5c68a009251) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209798)) **GitLab Enterprise Edition**
+- [Web Agentic Chat: fix calling workflowGoal on undefined](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ebfa262932b64f78b31e7282e1f62db0cb9d7936) **GitLab Enterprise Edition**
+- [Add deleted Geo migration back](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf8c43b60180ab370b6c42a22eeea643daf8a97d) **GitLab Enterprise Edition**
+- [Fix password validation exception for FIPS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/463c5aec8f33c3e9094fc5f47e831b3a97436741)
+- [Fix admin_project_member policy SAML projects user namespaces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/38414b0e0222f9d4cc58f090668121cd1409b383) **GitLab Enterprise Edition**
+
+### Security (8 changes)
+
+- [Security fix package api pipeline details](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68646fa1ebff4180ee1fcc438f12a151bbf766c0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5424))
+- [Group enforced pages access control should restrict non-members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8264a0d7c6a1b401aeee164e99727e446c3f2a2b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5440))
+- [Update to gitlab-glfm-markdown 0.0.38](https://gitlab.com/gitlab-org/security/gitlab/-/commit/81de1960f41aecfd105644c11ab3c969a88ed8ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5461))
+- [Encode protected branch names in API requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1aeb7601fe42c19b10c8d2a9408bf9ae88814935) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5456))
+- [Prevent GraphQL subscriptions from blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/42843be77904596c58dd3168f408929432e0a3ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5430))
+- [Prevent Duo Chat from reading confidential resources](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e2a92aab1af9f57cf37175728888779bd0cab419) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5437))
+- [Hide related branches when repository is private](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7957c6aaa3dda67c4ce7b236f0de1c19c34f8b47) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5434))
+- [Fix unauth workflow deletion by service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0892bf9d036c9a0fb6cc9e8d7579a8988741233) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5422))
+
+### Performance (1 change)
+
+- [Reduce cached SQL queries in `/api/v4/internal/pages` endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80df8f741cc94ad7900893fb6a129c772f6c8a56)
+
+### Other (1 change)
+
+- [Fix instance bbm for mishandled nil verification token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/927b92e009d39b4e31ad75f3a94818f04a00d4a1) **GitLab Enterprise Edition**
+
 ## 18.5.1 (2025-10-21)
 
 ### Fixed (2 changes)
