@@ -223,10 +223,6 @@ module WorkerAttributes
       limit = get_class_attribute(:concurrency_limit)&.call
       return limit.to_i unless limit.nil?
 
-      unless Feature.enabled?(:use_max_concurrency_limit_percentage_as_default_limit, Feature.current_request)
-        return limit.to_i # limit must be nil now, so cast it to 0
-      end
-
       calculate_default_limit_from_max_percentage
     end
 

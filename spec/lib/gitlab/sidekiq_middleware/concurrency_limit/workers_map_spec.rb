@@ -153,16 +153,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap, feature_
           expect(described_class.limit_for(worker: worker_class)).to eq(0)
         end
       end
-
-      context 'when use_max_concurrency_limit_percentage_as_default_limit FF is disabled' do
-        before do
-          stub_feature_flags(use_max_concurrency_limit_percentage_as_default_limit: false)
-        end
-
-        it 'returns 0' do
-          expect(described_class.limit_for(worker: worker_class)).to eq(0)
-        end
-      end
     end
   end
 

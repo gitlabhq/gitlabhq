@@ -22,7 +22,7 @@ Shared across the instance. The Catalog functions as both a marketplace and
 control plane, enabling safe, observable, and scalable AI deployment across
 GitLab.
 
-It provides:
+The vision is for the AI Catalog to provide:
 
 - **Discovery**: Users can browse, search, and understand what AI capabilities exist.
 - **Governance**: Admins can manage access, usage policies, and audit logs.
