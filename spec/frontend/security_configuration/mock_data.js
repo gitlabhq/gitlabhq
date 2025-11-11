@@ -229,3 +229,14 @@ export const createMockTrackedRefsResponse = ({
     },
   },
 });
+
+export const createMockRestApiRef = (overrides = {}) => ({
+  name: 'main',
+  protected: true,
+  commit: {
+    id: 'abc123',
+    committed_date: '2024-11-05T10:00:00Z',
+    ...overrides.commit,
+  },
+  ...overrides,
+});

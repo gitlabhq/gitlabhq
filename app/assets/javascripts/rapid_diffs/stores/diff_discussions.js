@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from '~/lib/utils/axios_utils';
+import { merge } from 'lodash';
 
 export const useDiffDiscussions = defineStore('diffDiscussions', {
   state() {
@@ -8,26 +8,43 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     };
   },
   actions: {
-    async fetchDiscussions(url) {
-      const response = await axios.get(url);
-      this.discussions = response.data.discussions;
+    // Pinia objects are fine to mutate if they have the properties defined initially
+    /* eslint-disable no-param-reassign */
+    setInitialDiscussions(discussions) {
+      this.discussions = discussions.map((discussion) => {
+        // add dynamic properties so that they're reactively tracked
+        return Object.assign(discussion, { repliesExpanded: true });
+      });
     },
     toggleDiscussionReplies(discussion) {
-      // eslint-disable-next-line no-param-reassign
-      discussion.repliesCollapsed = !discussion.repliesCollapsed;
+      discussion.repliesExpanded = !discussion.repliesExpanded;
     },
     expandDiscussionReplies(discussion) {
-      // eslint-disable-next-line no-param-reassign
-      discussion.repliesCollapsed = false;
+      discussion.repliesExpanded = true;
     },
-    // eslint-disable-next-line no-unused-vars
-    saveNote(endpoint, data) {
-      return new Promise();
+    addNote(note) {
+      const { notes } = this.getDiscussionById(note.discussion_id);
+      if (notes.some((existingNote) => existingNote.id === note.id)) return;
+      notes.push(note);
     },
+    updateNote(note) {
+      merge(this.allNotesById[note.id], note);
+    },
+    deleteNote(note) {
+      const { notes } = this.getDiscussionById(note.discussion_id);
+      notes.splice(notes.indexOf(note), 1);
+    },
+    /* eslint-enable no-param-reassign */
   },
   getters: {
     getDiscussionById() {
       return (id) => this.discussions.find((discussion) => discussion.id === id);
+    },
+    allNotesById() {
+      return this.discussions.reduce((acc, discussion) => {
+        discussion.notes.forEach((note) => Object.assign(acc, { [note.id]: note }));
+        return acc;
+      }, {});
     },
   },
 });

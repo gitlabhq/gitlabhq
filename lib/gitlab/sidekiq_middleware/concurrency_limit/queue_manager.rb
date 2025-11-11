@@ -77,10 +77,6 @@ module Gitlab
         end
 
         def worker_limit
-          if Feature.disabled?(:concurrency_limit_current_limit_from_redis, Feature.current_request)
-            return worker_klass.get_concurrency_limit
-          end
-
           Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.current_limit(worker_name)
         end
 

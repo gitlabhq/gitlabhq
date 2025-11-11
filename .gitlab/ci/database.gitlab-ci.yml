@@ -94,7 +94,7 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20240205170838 # First migration after InitSchema based on db:migrate:status
+    - bundle exec rake db:migrate VERSION=20240708182825 # First migration after InitSchema based on db:migrate:status
     - bundle exec rake db:migrate
 
 db:rollback single-db:

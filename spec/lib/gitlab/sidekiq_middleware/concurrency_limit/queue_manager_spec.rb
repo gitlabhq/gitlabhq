@@ -208,14 +208,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
     end
 
-    context 'when concurrency_limit_current_limit_from_redis FF is disabled' do
-      before do
-        stub_feature_flags(concurrency_limit_current_limit_from_redis: false)
-      end
-
-      it_behaves_like 'resumes jobs respecting concurrency limit'
-    end
-
     context 'when worker limit is 0' do
       before do
         worker_class.concurrency_limit -> { 0 }

@@ -450,6 +450,39 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect(json_response.pluck("id")).to match_array([running_job.id, job.id, canceling_job.id])
       end
 
+      context 'with jobs across many commits', :skip_before_request do
+        let_it_be(:branch) { project.default_branch }
+        let_it_be(:commit_count) do
+          project.repository.list_commits(ref: branch).reduce(0) do |count, commit|
+            create(:ci_pipeline, :with_job, project: project, sha: commit.id, ref: branch)
+            count + 1
+          end
+        end
+
+        specify do
+          # sanity check for the essential test setup pre-condition
+          expect(commit_count).to be > Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS
+        end
+
+        it 'does not have a gitaly N+1' do
+          get(api("/projects/#{project.id}/jobs", api_user), params: { per_page: commit_count })
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'when feature flag fix_jobs_api_gitaly_n_plus_1 is disabled' do
+          before do
+            stub_feature_flags(fix_jobs_api_gitaly_n_plus_1: false)
+          end
+
+          it 'there is a gitaly N+1' do
+            get(api("/projects/#{project.id}/jobs", api_user), params: { per_page: commit_count })
+
+            expect(response).to have_gitlab_http_status(:internal_server_error)
+          end
+        end
+      end
+
       it 'returns correct values' do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id

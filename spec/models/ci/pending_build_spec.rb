@@ -78,9 +78,11 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
   end
 
   describe '.upsert_from_build!' do
+    subject(:upsert_from_build) { described_class.upsert_from_build!(build) }
+
     context 'another pending entry does not exist' do
       it 'creates a new pending entry' do
-        result = described_class.upsert_from_build!(build)
+        result = upsert_from_build
 
         expect(result.rows.dig(0, 0)).to eq build.id
         expect(build.reload.queuing_entry).to be_present
@@ -93,9 +95,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
       end
 
       it 'returns a build id as a result' do
-        result = described_class.upsert_from_build!(build)
-
-        expect(result.rows.dig(0, 0)).to eq build.id
+        expect(upsert_from_build.rows.dig(0, 0)).to eq build.id
       end
     end
 
@@ -105,7 +105,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
       end
 
       it 'sets instance_runners_enabled to false' do
-        described_class.upsert_from_build!(build)
+        upsert_from_build
 
         expect(described_class.last.instance_runners_enabled).to be_falsey
       end
@@ -119,7 +119,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
       end
 
       it 'sets instance_runners_enabled to true' do
-        described_class.upsert_from_build!(build)
+        upsert_from_build
 
         expect(described_class.last.instance_runners_enabled).to be_truthy
       end
@@ -130,7 +130,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
         end
 
         it 'sets instance_runners_enabled to false' do
-          described_class.upsert_from_build!(build)
+          upsert_from_build
 
           expect(described_class.last.instance_runners_enabled).to be_falsey
         end
@@ -142,7 +142,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
         end
 
         it 'sets instance_runners_enabled to false' do
-          described_class.upsert_from_build!(build)
+          upsert_from_build
 
           expect(described_class.last.instance_runners_enabled).to be_falsey
         end
@@ -154,10 +154,66 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
 
       subject(:ci_pending_build) { described_class.last }
 
-      it 'sets tag_ids' do
-        described_class.upsert_from_build!(build)
+      it 'sets tag_ids from job_definition.config[:tag_list]' do
+        upsert_from_build
 
-        expect(ci_pending_build.tag_ids).to eq(build.tags_ids)
+        expected_tag_ids = Ci::Tag.named(build.job_definition.config[:tag_list]).ids
+        expect(ci_pending_build.tag_ids).to match_array(expected_tag_ids)
+      end
+
+      context 'and tags are not present in tags table' do
+        let(:build_tags) { Ci::BuildTag.joins(:tag).where(build_id: build.id, partition_id: build.partition_id) }
+
+        before do
+          Ci::Tag.named(build.tag_list).delete_all
+        end
+
+        it 'upserts tags from job_definition.config[:tag_list] without new taggings' do
+          expect { upsert_from_build }
+            .to change { Ci::Tag.all.pluck(:name) }.from([]).to(%w[docker ruby])
+            .and not_change { build_tags.reload.count }.from(0)
+        end
+
+        context 'when ci_build_uses_job_definition_tag_list feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
+          end
+
+          it 'does not upsert tags from job_definition.config[:tag_list]' do
+            expect { upsert_from_build }
+              .to not_change { Ci::Tag.all.pluck(:name) }.from([])
+              .and not_change { build_tags.reload.count }.from(0)
+          end
+        end
+      end
+
+      context 'when ci_build_uses_job_definition_tag_list feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_build_uses_job_definition_tag_list: false)
+        end
+
+        it 'falls back to build.tags_ids' do
+          upsert_from_build
+
+          expect(ci_pending_build.tag_ids).to eq(build.tags_ids)
+        end
+      end
+
+      context 'when build has job definition without tag_list' do
+        let!(:build) { create(:ci_build, options: { script: ['echo hello'] }) }
+
+        before do
+          stub_feature_flags(ci_build_uses_job_definition_tag_list: true)
+
+          # Manually add tags to the build via the legacy tables
+          create(:ci_build_tag, tag: create(:ci_tag, name: 'legacy_tag'), build: build, project_id: build.project.id)
+        end
+
+        it 'uses empty tag_list from job_definition config' do
+          upsert_from_build
+
+          expect(ci_pending_build.tag_ids).to eq([])
+        end
       end
     end
 
@@ -176,7 +232,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
         end
 
         it 'denormalizes namespace traversal ids' do
-          described_class.upsert_from_build!(build)
+          upsert_from_build
 
           expect(latest_pending_build.namespace_traversal_ids).not_to be_empty
           expect(latest_pending_build.namespace_traversal_ids).to eq [group.id, project.namespace.id]
@@ -189,7 +245,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
         end
 
         it 'creates an empty namespace traversal ids array' do
-          described_class.upsert_from_build!(build)
+          upsert_from_build
 
           expect(latest_pending_build.namespace_traversal_ids).to be_empty
         end

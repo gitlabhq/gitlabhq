@@ -461,6 +461,9 @@ When using the drawer:
 - You can edit the epic directly in the drawer.
 - To close the drawer, select the close icon ({{< icon name="close" >}}) or press **Escape**.
 
+If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off),
+the epic opens in a details panel.
+
 #### Open an epic in full page view
 
 To open an epic in the full page view:

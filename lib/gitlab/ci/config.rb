@@ -133,7 +133,9 @@ module Gitlab
       end
 
       def normalized_jobs
-        @normalized_jobs ||= normalizer.normalize_jobs
+        @normalized_jobs ||= Gitlab::Ci::Config::FeatureFlags.with_actor(@project) do
+          normalizer.normalize_jobs
+        end
       end
 
       def normalizer_errors

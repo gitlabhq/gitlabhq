@@ -16,7 +16,9 @@ export default {
   },
   methods: {
     ...mapActions(useDiffDiscussions, [
-      'saveNote',
+      'addNote',
+      'updateNote',
+      'deleteNote',
       'expandDiscussionReplies',
       'toggleDiscussionReplies',
     ]),
@@ -34,9 +36,11 @@ export default {
       <ul class="notes">
         <noteable-discussion
           :discussion="discussion"
-          :save-note="saveNote"
           @showReplyForm="expandDiscussionReplies(discussion)"
           @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
+          @replyAdded="addNote"
+          @noteUpdated="updateNote"
+          @noteDeleted="deleteNote"
         />
       </ul>
     </div>

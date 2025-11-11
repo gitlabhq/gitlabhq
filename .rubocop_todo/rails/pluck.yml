@@ -23,7 +23,6 @@ Rails/Pluck:
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
     - 'ee/lib/banzai/filter/references/iteration_reference_filter.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/person.rb'
-    - 'ee/lib/ee/gitlab/background_migration/delete_invalid_epic_issues.rb'
     - 'ee/spec/controllers/countries_controller_spec.rb'
     - 'ee/spec/controllers/ee/autocomplete_controller_spec.rb'
     - 'ee/spec/controllers/groups/audit_events_controller_spec.rb'

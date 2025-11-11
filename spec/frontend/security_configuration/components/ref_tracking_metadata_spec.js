@@ -111,6 +111,16 @@ describe('RefTrackingMetadata component', () => {
 
       expect(findTimeAgoTooltip().props('time')).toBe(createTrackedRef().commit.authoredDate);
     });
+
+    it('does not display TimeAgoTooltip when authoredDate is invalid', () => {
+      createComponent({
+        trackedRef: createTrackedRef({
+          commit: { ...createTrackedRef().commit, authoredDate: 'invalid' },
+        }),
+      });
+
+      expect(findTimeAgoTooltip().exists()).toBe(false);
+    });
   });
 
   describe('commit link behavior', () => {

@@ -15,16 +15,29 @@ module Gitlab
           return {} unless @jobs_config
           return @jobs_config if parallelized_jobs.empty?
 
-          expand_parallelize_jobs do |job_name, config|
-            if config[:dependencies]
-              config[:dependencies] = expand_names(config[:dependencies])
+          if FeatureFlags.enabled?(:ci_refactor_normalizer)
+            @jobs_config.each_with_object({}) do |(job_name, config), normalized_jobs|
+              if parallelized_jobs.key?(job_name)
+                parallelized_jobs[job_name].each do |job|
+                  expanded_config = config.deep_merge(job.attributes)
+                  normalized_jobs[job.name.to_sym] = normalize_job(job_name, expanded_config)
+                end
+              else
+                normalized_jobs[job_name] = normalize_job(job_name, config)
+              end
             end
+          else
+            expand_parallelize_jobs do |job_name, config|
+              if config[:dependencies]
+                config[:dependencies] = expand_parallelized_job_names(config[:dependencies])
+              end
 
-            if job_needs = config.dig(:needs, :job)
-              config[:needs][:job] = expand_needs(job_needs)
+              if job_needs = config.dig(:needs, :job)
+                config[:needs][:job] = expand_parallelized_needs(job_needs)
+              end
+
+              config
             end
-
-            config
           end
         end
 
@@ -38,22 +51,54 @@ module Gitlab
 
         attr_reader :project
 
-        def expand_names(job_names)
-          return unless job_names
+        def normalize_job(job_name, config)
+          if interpolated_needs = apply_matrix_interpolation(job_name, config)
+            config[:needs] = interpolated_needs
+          end
+
+          config[:dependencies] = expand_parallelized_job_names(config[:dependencies]) if config[:dependencies]
+
+          if job_needs = config.dig(:needs, :job)
+            config[:needs][:job] = expand_parallelized_needs(job_needs)
+          end
+
+          config
+        end
+
+        def apply_matrix_interpolation(job_name, config)
+          return unless config[:job_variables] && config[:needs]
+
+          interpolator = Interpolation::MatrixInterpolator.new(config[:job_variables])
+          interpolated_needs = interpolator.interpolate(config[:needs])
+
+          if interpolator.errors.empty?
+            interpolated_needs
+          else
+            job_errors = interpolator.errors.map { |error| "#{job_name} job: #{error}" }
+
+            @errors.concat(job_errors)
+
+            nil
+          end
+        end
+
+        def expand_parallelized_job_names(job_names)
+          return unless job_names # Remove this guard when removing ci_refactor_normalizer feature flag
 
           job_names.flat_map do |job_name|
             parallelized_jobs[job_name.to_sym]&.map(&:name) || job_name
           end
         end
 
-        def expand_needs(job_needs)
-          return unless job_needs
+        def expand_parallelized_needs(job_needs)
+          return unless job_needs # Remove this guard when removing ci_refactor_normalizer feature flag
 
           job_needs.flat_map do |job_need|
             job_need_name = job_need[:name].to_sym
 
             if all_jobs = parallelized_jobs[job_need_name]
               if job_need.key?(:parallel)
+                # Change to job_need[:parallel] + job_need.except(:parallel) when removing feature flag
                 all_jobs = parallelize_job_config(job_need_name, job_need.delete(:parallel))
               end
 
@@ -74,6 +119,7 @@ module Gitlab
           end
         end
 
+        # Remove this method when ci_refactor_normalizer feature flag is removed
         def expand_parallelize_jobs
           @jobs_config.each_with_object({}) do |(job_name, config), hash|
             if parallelized_jobs.key?(job_name)

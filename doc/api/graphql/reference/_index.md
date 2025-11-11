@@ -17101,6 +17101,7 @@ The connection type for [`ComplianceFramework`](#complianceframework).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="complianceframeworkconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="complianceframeworkconnectionedges"></a>`edges` | [`[ComplianceFrameworkEdge]`](#complianceframeworkedge) | A list of edges. |
 | <a id="complianceframeworkconnectionnodes"></a>`nodes` | [`[ComplianceFramework]`](#complianceframework) | A list of nodes. |
 | <a id="complianceframeworkconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

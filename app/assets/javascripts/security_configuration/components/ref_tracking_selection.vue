@@ -1,8 +1,26 @@
 <script>
-import { GlModal, GlFormCheckboxGroup, GlFormCheckbox, GlSearchBoxByType } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import {
+  GlModal,
+  GlFormCheckboxGroup,
+  GlFormCheckbox,
+  GlSearchBoxByType,
+  GlSkeletonLoader,
+  GlAlert,
+  GlEmptyState,
+} from '@gitlab/ui';
+import { debounce } from 'lodash';
+import { __, s__, sprintf } from '~/locale';
 import { toggleArrayItem } from '~/lib/utils/array_utility';
+import {
+  fetchRefs,
+  fetchMostRecentlyUpdated,
+  createRefId,
+} from '../security_attributes/api/refs_api';
 import RefTrackingMetadata from './ref_tracking_metadata.vue';
+
+const SEARCH_DEBOUNCE_DELAY = 300;
+const SEARCH_TERM_MIN_LENGTH = 3;
+const MAX_DISPLAYED_REFS = 6;
 
 export default {
   name: 'RefTrackingSelection',
@@ -11,108 +29,80 @@ export default {
     GlFormCheckboxGroup,
     GlFormCheckbox,
     GlSearchBoxByType,
+    GlSkeletonLoader,
+    GlAlert,
+    GlEmptyState,
     RefTrackingMetadata,
   },
+  inject: ['projectFullPath'],
   props: {
-    isVisible: {
-      type: Boolean,
+    trackedRefs: {
+      type: Array,
       required: false,
-      default: false,
+      default: () => [],
     },
   },
   data() {
     return {
       searchTerm: '',
-      selectedRefs: [],
-      // Hardcoded data for first iteration - will be replaced with GraphQL data
-      availableRefs: [
-        {
-          id: 'ref-1',
-          name: 'rhendricksen/update_service_settings',
-          refType: 'BRANCH',
-          isProtected: false,
-          commit: {
-            shortId: '544ffe4a',
-            // eslint-disable-next-line @gitlab/require-i18n-strings
-            title: 'Update how the settings form works',
-            authoredDate: '2024-11-03T10:45:00Z',
-            webPath: '#',
-          },
-        },
-        {
-          id: 'ref-2',
-          name: 'rails-next',
-          refType: 'BRANCH',
-          isProtected: true,
-          commit: {
-            shortId: '4809jop2',
-            // eslint-disable-next-line @gitlab/require-i18n-strings
-            title: "Merge branch webhook-extension into 'main'",
-            authoredDate: '2024-11-03T10:42:00Z',
-            webPath: '#',
-          },
-        },
-        {
-          id: 'ref-3',
-          name: '17-12-stable-ee',
-          refType: 'BRANCH',
-          isProtected: false,
-          commit: {
-            shortId: '233rue8n',
-            // eslint-disable-next-line @gitlab/require-i18n-strings
-            title: 'Allow for editing of service account email address via UI',
-            authoredDate: '2024-11-03T10:29:00Z',
-            webPath: '#',
-          },
-        },
-        {
-          id: 'ref-4',
-          name: '17-12-stable-ee',
-          refType: 'TAG',
-          isProtected: false,
-          commit: {
-            shortId: '5900yyr8',
-            // eslint-disable-next-line @gitlab/require-i18n-strings
-            title: 'Update VERSION files',
-            authoredDate: '2024-11-03T09:00:00Z',
-            webPath: '#',
-          },
-        },
-        {
-          id: 'ref-5',
-          name: 'main',
-          refType: 'BRANCH',
-          isProtected: true,
-          commit: {
-            shortId: 'a1b2c3d4',
-            // eslint-disable-next-line @gitlab/require-i18n-strings
-            title: 'Latest main branch commit',
-            authoredDate: '2024-11-03T08:30:00Z',
-            webPath: '#',
-          },
-        },
-      ],
+      selectedRefIds: [],
+      mostRecentlyUpdatedRefs: [],
+      searchResults: [],
+      errorMessage: '',
+      isSearching: false,
+      isLoading: false,
     };
   },
   computed: {
-    filteredRefs() {
-      // Note: This search functionality is only temporary and will be replaced with GraphQL search functionality
-      if (!this.searchTerm) {
-        return this.availableRefs;
-      }
-      return this.availableRefs.filter((ref) =>
-        ref.name.toLowerCase().includes(this.searchTerm.toLowerCase()),
+    searchTermHasMinLength() {
+      return this.searchTerm.length >= SEARCH_TERM_MIN_LENGTH;
+    },
+    normalizedTrackedRefIds() {
+      // `trackedRefs` is coming via GraphQL, so we need to extract the same ids as the REST results
+      return this.trackedRefs.map((ref) => createRefId(ref.refType, ref.name));
+    },
+    displayedRefs() {
+      const refsList = this.searchTermHasMinLength
+        ? this.searchResults
+        : this.mostRecentlyUpdatedRefs;
+
+      return (
+        refsList
+          .filter((ref) => !this.normalizedTrackedRefIds.includes(ref.id))
+          // Because we over-fetch (to balance the filtered out tracked refs) we need to make sure that we don't render too many
+          .slice(0, MAX_DISPLAYED_REFS)
       );
     },
+    showLoadingState() {
+      return this.isLoading || this.isSearching;
+    },
+    showEmptyState() {
+      return !this.showLoadingState && this.displayedRefs.length === 0;
+    },
+    searchResultsHeading() {
+      return sprintf(s__('SecurityTrackedRefs|Search results for "%{searchTerm}"'), {
+        searchTerm: this.searchTerm,
+      });
+    },
+    emptyStateContent() {
+      const title = this.searchTermHasMinLength
+        ? __('No results found')
+        : s__('SecurityTrackedRefs|No refs available');
+      const description = this.searchTermHasMinLength
+        ? __('Edit your search and try again.')
+        : s__('SecurityTrackedRefs|There are no refs available to track.');
+
+      return { title, description };
+    },
     modalTitle() {
-      return s__('SecurityTrackedRefs|Track new ref');
+      return s__('SecurityTrackedRefs|Track ref(s)');
     },
     actionPrimaryProps() {
       return {
         text: s__('SecurityTrackedRefs|Track ref(s)'),
         attributes: {
           variant: 'confirm',
-          disabled: !this.selectedRefs.length,
+          disabled: !this.selectedRefIds.length,
         },
       };
     },
@@ -122,13 +112,65 @@ export default {
       };
     },
   },
+  watch: {
+    searchTerm: {
+      handler(value) {
+        this.isSearching = this.searchTermHasMinLength;
+        this.debouncedSearch(value);
+      },
+    },
+  },
+  created() {
+    this.debouncedSearch = debounce(this.search, SEARCH_DEBOUNCE_DELAY);
+    this.fetchMostRecentlyUpdatedRefs();
+  },
+  beforeDestroy() {
+    this.debouncedSearch?.cancel();
+  },
   methods: {
+    async fetchMostRecentlyUpdatedRefs() {
+      this.isLoading = true;
+
+      try {
+        this.mostRecentlyUpdatedRefs = await fetchMostRecentlyUpdated(this.projectFullPath, {
+          // Fetch more than needed to ensure we have enough results after filtering out tracked refs
+          limit: MAX_DISPLAYED_REFS + this.trackedRefs.length,
+        });
+      } catch {
+        this.errorMessage = s__(
+          'SecurityTrackedRefs|Could not fetch available refs. Please try again later.',
+        );
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async search(term) {
+      if (!this.searchTermHasMinLength) {
+        this.searchResults = [];
+        this.isSearching = false;
+        return;
+      }
+
+      this.errorMessage = '';
+
+      try {
+        this.searchResults = await fetchRefs(this.projectFullPath, {
+          search: term,
+          limit: MAX_DISPLAYED_REFS,
+        });
+      } catch {
+        this.errorMessage = s__(
+          'SecurityTrackedRefs|Could not search refs. Please try again later.',
+        );
+      } finally {
+        this.isSearching = false;
+      }
+    },
     toggleRef(refId) {
-      this.selectedRefs = toggleArrayItem(this.selectedRefs, refId);
+      this.selectedRefIds = toggleArrayItem(this.selectedRefIds, refId);
     },
     handleHidden() {
-      this.selectedRefs = [];
-      this.searchTerm = '';
+      this.debouncedSearch?.cancel();
       this.$emit('cancel');
     },
   },
@@ -137,7 +179,7 @@ export default {
 
 <template>
   <gl-modal
-    :visible="isVisible"
+    visible
     :title="modalTitle"
     hide-header
     hide-header-close
@@ -152,27 +194,67 @@ export default {
   >
     <gl-search-box-by-type
       v-model="searchTerm"
-      :placeholder="s__('SecurityTrackedRefs|Search branches and tags')"
+      autocomplete="off"
+      :placeholder="__('Search branches and tags (min. 3 characters)')"
       class="gl-mb-4 gl-mt-3"
       data-testid="ref-search-input"
     />
 
-    <gl-form-checkbox-group v-model="selectedRefs">
-      <ul class="gl-m-0 gl-list-none gl-p-0">
-        <li
-          v-for="ref in filteredRefs"
-          :key="ref.id"
-          class="gl-border-b gl-cursor-pointer gl-p-4 last:gl-border-b-0 hover:gl-bg-gray-50"
-          @click="toggleRef(ref.id)"
-        >
-          <!-- We use the `@click` handler within the `li` so the whole item is clickable, not just the checkbox, therefor we need to disable pointer events on the checkbox -->
-          <gl-form-checkbox :value="ref.id" class="gl-pointer-events-none gl-grid gl-items-start">
-            <div class="gl-ml-2">
-              <ref-tracking-metadata :tracked-ref="ref" :disable-commit-link="true" />
-            </div>
-          </gl-form-checkbox>
-        </li>
-      </ul>
-    </gl-form-checkbox-group>
+    <gl-alert
+      v-if="errorMessage"
+      variant="danger"
+      class="gl-mb-4"
+      :dismissible="false"
+      data-testid="fetch-error-alert"
+    >
+      {{ errorMessage }}
+    </gl-alert>
+
+    <div v-if="showLoadingState" class="gl-py-4" data-testid="loading-skeleton">
+      <gl-skeleton-loader v-for="i in 5" :key="i" :width="600" :height="60">
+        <rect width="150" height="12" x="0" y="0" rx="4" />
+        <rect width="80" height="10" x="0" y="20" rx="4" />
+        <rect width="450" height="10" x="0" y="38" rx="4" />
+      </gl-skeleton-loader>
+    </div>
+
+    <template v-if="!showLoadingState && !errorMessage">
+      <h3
+        v-if="!showEmptyState"
+        class="gl-mb-4 gl-text-base gl-font-semibold"
+        data-testid="list-header"
+      >
+        {{
+          searchTermHasMinLength
+            ? searchResultsHeading
+            : s__('SecurityTrackedRefs|Most recently updated')
+        }}
+      </h3>
+      <gl-empty-state
+        v-if="showEmptyState"
+        :title="emptyStateContent.title"
+        :description="emptyStateContent.description"
+        svg-path=""
+        :svg-height="150"
+        data-testid="empty-state"
+      />
+      <gl-form-checkbox-group v-else v-model="selectedRefIds">
+        <ul class="gl-m-0 gl-list-none gl-p-0">
+          <li
+            v-for="ref in displayedRefs"
+            :key="ref.id"
+            class="gl-border-b gl-cursor-pointer gl-p-4 last:gl-border-b-0 hover:gl-bg-gray-50"
+            @click="toggleRef(ref.id)"
+          >
+            <!-- We use the `@click` handler within the `li` so the whole item is clickable, not just the checkbox, therefor we need to disable pointer events on the checkbox -->
+            <gl-form-checkbox :value="ref.id" class="gl-pointer-events-none gl-grid gl-items-start">
+              <div class="gl-ml-2">
+                <ref-tracking-metadata :tracked-ref="ref" :disable-commit-link="true" />
+              </div>
+            </gl-form-checkbox>
+          </li>
+        </ul>
+      </gl-form-checkbox-group>
+    </template>
   </gl-modal>
 </template>

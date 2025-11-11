@@ -182,7 +182,7 @@ module Ci
     scope :with_artifacts, ->(artifact_scope) { with_existing_job_artifacts(artifact_scope).eager_load_job_artifacts }
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
-    scope :eager_load_tags, -> { includes(:tags) }
+    scope :eager_load_tags, -> { includes(:job_definition, :tags) }
     scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
     scope :eager_load_for_api, -> do
       preload(
@@ -425,19 +425,57 @@ module Ci
     end
 
     def self.build_matchers(project)
+      return legacy_build_matchers(project) if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
+
+      new_build_matchers(project)
+    end
+
+    def self.new_build_matchers(project)
+      unique_params = [
+        :protected,
+        Arel.sql(tag_names_array_query)
+      ]
+
+      pluck_params = [
+        "array_agg(#{quoted_table_name}.id) as ids",
+        *unique_params
+      ]
+
+      joins(:job_definition).group(*unique_params).pluck(*pluck_params).map do |values|
+        Gitlab::Ci::Matching::BuildMatcher.new(
+          build_ids: values[0],
+          protected: values[1],
+          tag_list: values[2],
+          project: project
+        )
+      end
+    end
+
+    def self.legacy_build_matchers(project)
       unique_params = [
         :protected,
         Arel.sql("(#{arel_tag_names_array.to_sql})")
       ]
 
       group(*unique_params).pluck('array_agg(id)', *unique_params).map do |values|
-        Gitlab::Ci::Matching::BuildMatcher.new({
+        Gitlab::Ci::Matching::BuildMatcher.new(
           build_ids: values[0],
           protected: values[1],
           tag_list: values[2],
           project: project
-        })
+        )
       end
+    end
+
+    def self.tag_names_array_query
+      <<~SQL.squish
+        (
+          SELECT COALESCE(array_agg(tag_name ORDER BY tag_name), '{}')
+            FROM jsonb_array_elements_text(
+              #{Ci::JobDefinition.quoted_table_name}.config->'tag_list'
+            ) AS tag_name
+        )
+      SQL
     end
 
     def self.ids_in_merge_request(merge_request_id)
@@ -817,6 +855,16 @@ module Ci
     def has_tags?
       tag_list.any?
     end
+
+    override :tag_list
+    def tag_list
+      # Check job_definition first to avoid loading project if not needed
+      return super if job_definition.nil?
+      return super if Feature.disabled?(:ci_build_uses_job_definition_tag_list, project)
+
+      Gitlab::Ci::Tags::TagList.new(job_definition.config.fetch(:tag_list, []))
+    end
+    strong_memoize_attr :tag_list
 
     def any_runners_online?
       cache_for_online_runners do

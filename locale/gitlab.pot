@@ -2675,13 +2675,10 @@ msgstr ""
 msgid "AICatalog|Enable flow in project"
 msgstr ""
 
-msgid "AICatalog|Enable in"
+msgid "AICatalog|Enable in group"
 msgstr ""
 
 msgid "AICatalog|Enable in project"
-msgstr ""
-
-msgid "AICatalog|Enable in project or group"
 msgstr ""
 
 msgid "AICatalog|Explore AI Catalog agents"
@@ -53997,6 +53994,9 @@ msgstr ""
 msgid "RapidDiffs|Failed to load changes, please try again."
 msgstr ""
 
+msgid "RapidDiffs|Failed to load discussions. Try to reload the page."
+msgstr ""
+
 msgid "RapidDiffs|File browser"
 msgstr ""
 
@@ -58257,6 +58257,9 @@ msgstr ""
 msgid "Search branches and tags"
 msgstr ""
 
+msgid "Search branches and tags (min. 3 characters)"
+msgstr ""
+
 msgid "Search branches, tags, and commits"
 msgstr ""
 
@@ -61892,7 +61895,13 @@ msgstr ""
 msgid "SecurityTrackedRefs|Are you sure you want to remove tracking from this %{refType}?"
 msgstr ""
 
+msgid "SecurityTrackedRefs|Could not fetch available refs. Please try again later."
+msgstr ""
+
 msgid "SecurityTrackedRefs|Could not remove tracked ref. Please refresh the page, or try again later."
+msgstr ""
+
+msgid "SecurityTrackedRefs|Could not search refs. Please try again later."
 msgstr ""
 
 msgid "SecurityTrackedRefs|Currently tracked refs"
@@ -61903,6 +61912,12 @@ msgid_plural "SecurityTrackedRefs|If you do not archive associated vulnerabiliti
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityTrackedRefs|Most recently updated"
+msgstr ""
+
+msgid "SecurityTrackedRefs|No refs available"
+msgstr ""
+
 msgid "SecurityTrackedRefs|Remove ref tracking"
 msgstr ""
 
@@ -61912,13 +61927,13 @@ msgstr ""
 msgid "SecurityTrackedRefs|Remove tracking for %{refType}"
 msgstr ""
 
-msgid "SecurityTrackedRefs|Search branches and tags"
+msgid "SecurityTrackedRefs|Search results for \"%{searchTerm}\""
 msgstr ""
 
 msgid "SecurityTrackedRefs|The default ref cannot be removed from being tracked"
 msgstr ""
 
-msgid "SecurityTrackedRefs|Track new ref"
+msgid "SecurityTrackedRefs|There are no refs available to track."
 msgstr ""
 
 msgid "SecurityTrackedRefs|Track new ref(s)"

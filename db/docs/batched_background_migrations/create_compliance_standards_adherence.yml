@@ -1,9 +1,0 @@
----
-migration_job_name: CreateComplianceStandardsAdherence
-description: This migration creates 'project_compliance_standards_adherence' table
-  for existing projects
-feature_category: compliance_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129941
-queued_migration_version: 20230818142801
-milestone: '16.4'
-finalized_by: '20240707231815'

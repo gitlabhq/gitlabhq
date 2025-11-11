@@ -210,6 +210,10 @@ export default {
       />
     </template>
 
-    <ref-tracking-selection :is-visible="showTrackingModal" @cancel="showTrackingModal = false" />
+    <ref-tracking-selection
+      v-if="showTrackingModal"
+      :tracked-refs="trackedRefs"
+      @cancel="showTrackingModal = false"
+    />
   </gl-card>
 </template>

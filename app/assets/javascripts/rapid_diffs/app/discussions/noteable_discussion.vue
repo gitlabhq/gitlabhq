@@ -1,4 +1,5 @@
 <script>
+import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -9,9 +10,9 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { createNoteErrorMessages } from '~/notes/utils';
-import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
+import DiscussionNotes from './discussion_notes.vue';
 
 export default {
   name: 'NoteableDiscussion',
@@ -33,10 +34,6 @@ export default {
   props: {
     discussion: {
       type: Object,
-      required: true,
-    },
-    saveNote: {
-      type: Function,
       required: true,
     },
   },
@@ -121,7 +118,10 @@ export default {
 
       try {
         // TODO: fix after we support adding discussions
-        await this.saveNote(this.endpoints.createNote, postData);
+        const {
+          data: { note },
+        } = await axios.post(this.endpoints.createNote, postData);
+        this.$emit('replyAdded', note);
       } catch (error) {
         if (error.response) {
           const errorMessage = createNoteErrorMessages(
@@ -153,16 +153,19 @@ export default {
         <div class="discussion-body">
           <div class="card discussion-wrapper">
             <discussion-notes
-              :discussion="discussion"
+              :notes="discussion.notes"
+              :expanded="discussion.repliesExpanded"
               @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
               @startReplying="showReplyForm"
+              @noteUpdated="$emit('noteUpdated', $event)"
+              @noteDeleted="$emit('noteDeleted', $event)"
             >
               <template #avatar-badge>
                 <slot name="avatar-badge"></slot>
               </template>
-              <template #footer="{ showReplies }">
+              <template #footer="{ repliesVisible }">
                 <li
-                  v-if="showReplies"
+                  v-if="repliesVisible"
                   data-testid="reply-wrapper"
                   class="discussion-reply-holder gl-bg-subtle gl-clearfix"
                   :class="discussionHolderClass"

@@ -334,8 +334,6 @@ RSpec/ReceiveMessages:
     - 'spec/lib/sidebars/panel_spec.rb'
     - 'spec/lib/sidebars/projects/super_sidebar_panel_spec.rb'
     - 'spec/mailers/emails/service_desk_spec.rb'
-    - 'spec/migrations/20240510113339_finalize_backfill_epic_basic_fields_to_work_item_record_spec.rb'
-    - 'spec/migrations/20240618093306_queue_fix_synced_epic_work_item_parent_links_spec.rb'
     - 'spec/models/badges/project_badge_spec.rb'
     - 'spec/models/ci/processable_spec.rb'
     - 'spec/models/commit_collection_spec.rb'

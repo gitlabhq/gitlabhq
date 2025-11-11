@@ -2,15 +2,7 @@
 Migration/PreventForeignKeyCreation:
   Details: grace period
   Exclude:
-    - 'db/migrate/20240304190228_add_fk_from_p_ci_build_names_to_p_ci_builds_on_partition_id_and_build_id.rb'
-    - 'db/migrate/20240604042804_create_ci_build_sources.rb'
     - 'db/migrate/20240829210003_add_ci_job_artifact_reports_upstream_fk.rb'
-    - 'db/post_migrate/20240318011341_validate_foreign_key_for_commit_id_between_p_ci_builds_and_ci_pipelines.rb'
-    - 'db/post_migrate/20240322124043_add_partitioned_fk_between_ci_builds_and_ci_stages.rb'
-    - 'db/post_migrate/20240513060540_add_foreign_key_to_ci_builds_to_execution_configs.rb'
-    - 'db/post_migrate/20240628105816_fk_to_ci_pipelines_from_p_ci_builds_on_partition_id_and_commit_id.rb'
-    - 'db/post_migrate/20240628105903_fk_to_ci_pipelines_from_p_ci_builds_on_auto_canceled_by_partition_id.rb'
-    - 'db/post_migrate/20240703094839_add_fk_from_p_ci_build_tags_to_p_ci_builds.rb'
     - 'db/post_migrate/20240717124747_partitioned_fk_to_ci_pipelines_from_p_ci_builds_on_commit_id.rb'
     - 'db/post_migrate/20240717124817_partitioned_fk_to_ci_pipelines_from_p_ci_builds_on_auto_canceled_by_id.rb'
     - 'db/post_migrate/20240806065239_add_async_fk_upstream_pipeline_id_for_p_ci_builds.rb'

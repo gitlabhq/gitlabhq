@@ -65,11 +65,7 @@ module Gitlab
           return false if resumed?
           return true if has_jobs_in_queue?
 
-          if Feature.enabled?(:concurrency_limit_current_limit_from_redis, Feature.current_request)
-            concurrency_service.over_the_limit?(worker_name)
-          else
-            over_the_limit?
-          end
+          concurrency_service.over_the_limit?(worker_name)
         end
 
         def concurrency_service
@@ -104,16 +100,6 @@ module Gitlab
 
         def has_jobs_in_queue?
           concurrency_service.has_jobs_in_queue?(worker_name)
-        end
-
-        def over_the_limit?
-          limit = worker_limit
-          return false if limit == 0
-          return true if limit < 0
-
-          current = current_count
-
-          current >= limit
         end
 
         def current_count

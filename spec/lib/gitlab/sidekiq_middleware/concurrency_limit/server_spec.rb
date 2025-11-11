@@ -216,74 +216,20 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         end
       end
 
-      context 'when concurrency_limit_current_limit_from_redis FF is disabled' do
-        before do
-          stub_feature_flags(concurrency_limit_current_limit_from_redis: false)
+      context 'with worker class without concurrency limit' do
+        let(:worker_klass) { TestWithoutConcurrencyLimitWorker }
+        let(:over_the_limit) { false }
 
-          if over_the_limit
-            allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
-              .to receive(:concurrent_worker_count)
-                    .with(TestConcurrencyLimitWorker.name)
-                    .and_return(TestConcurrencyLimitWorker.get_concurrency_limit)
-          end
+        it 'executes the job' do
+          expect(worker_klass).to receive(:work)
+          expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).not_to receive(:deferred_log)
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+
+          worker_klass.perform_async('foo')
         end
 
-        context 'when under the limit' do
-          let(:over_the_limit) { false }
-
-          it 'executes the job' do
-            expect(TestConcurrencyLimitWorker).to receive(:work)
-            expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).not_to receive(:deferred_log)
-            expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
-              .not_to receive(:add_to_queue!)
-
-            TestConcurrencyLimitWorker.perform_async('foo')
-          end
-
-          it_behaves_like 'track execution'
-
-          context 'when limit is set to zero' do
-            before do
-              allow_next_instance_of(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Middleware) do |instance|
-                allow(instance).to receive(:limit_for).and_return(0)
-              end
-            end
-
-            it_behaves_like 'track execution'
-          end
-
-          context 'when limit is not defined' do
-            it_behaves_like 'track execution'
-          end
-        end
-
-        context 'when over the limit' do
-          let(:over_the_limit) { true }
-
-          it 'defers the job' do
-            expect(TestConcurrencyLimitWorker).not_to receive(:work)
-            expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).to receive(:deferred_log)
-                                                                                 .and_call_original
-            expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:add_to_queue!)
-
-            TestConcurrencyLimitWorker.perform_async('foo')
-          end
-        end
+        it_behaves_like 'track execution'
       end
-    end
-
-    context 'with worker class without concurrency limit' do
-      let(:worker_klass) { TestWithoutConcurrencyLimitWorker }
-
-      it 'executes the job' do
-        expect(worker_klass).to receive(:work)
-        expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).not_to receive(:deferred_log)
-        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
-
-        worker_klass.perform_async('foo')
-      end
-
-      it_behaves_like 'track execution'
     end
   end
 end

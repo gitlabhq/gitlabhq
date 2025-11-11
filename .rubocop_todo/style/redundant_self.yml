@@ -171,7 +171,6 @@ Style/RedundantSelf:
     - 'ee/lib/ee/gitlab/auth/ldap/sync/groups.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/proxy.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/users.rb'
-    - 'ee/lib/ee/gitlab/background_migration/delete_invalid_epic_issues.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/indexing/instance_methods.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/base_time.rb'
     - 'ee/lib/gitlab/auth/group_saml/response_check.rb'

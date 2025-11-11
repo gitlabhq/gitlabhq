@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillOnboardingStatusStepUrl
-description: Moves data from user_details.onboarding_step_url to the new jsonb column.
-feature_category: onboarding
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145041
-milestone: '16.10'
-queued_migration_version: 20240226174509
-finalized_by: 20240318150930

@@ -1,7 +1,4 @@
-import AxiosMockAdapter from 'axios-mock-adapter';
 import { createPinia, setActivePinia } from 'pinia';
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 
 describe('diffDiscussions store', () => {
@@ -9,30 +6,66 @@ describe('diffDiscussions store', () => {
     setActivePinia(createPinia());
   });
 
-  describe('fetchDiscussions', () => {
-    it('fetches', async () => {
-      const url = '/discussions';
-      const discussions = [{ id: 'abc' }];
-      const adapter = new AxiosMockAdapter(axios);
-      adapter.onGet(url).reply(HTTP_STATUS_OK, { discussions });
-      await useDiffDiscussions().fetchDiscussions(url);
-      expect(useDiffDiscussions().discussions).toStrictEqual(discussions);
+  describe('setInitialDiscussions', () => {
+    it('sets transformed initial discussions', () => {
+      const discussions = [{ id: 'abc', notes: [{ id: 'bcd' }] }];
+      useDiffDiscussions().setInitialDiscussions(discussions);
+      expect(useDiffDiscussions().discussions[0].repliesExpanded).toBe(true);
     });
   });
 
   describe('toggleDiscussionReplies', () => {
     it('toggles', () => {
-      useDiffDiscussions().discussions = [{ id: 'abc', repliesCollapsed: false }];
+      useDiffDiscussions().discussions = [{ id: 'abc', repliesExpanded: true }];
       useDiffDiscussions().toggleDiscussionReplies(useDiffDiscussions().discussions[0]);
-      expect(useDiffDiscussions().discussions[0].repliesCollapsed).toBe(true);
+      expect(useDiffDiscussions().discussions[0].repliesExpanded).toBe(false);
     });
   });
 
   describe('expandDiscussionReplies', () => {
     it('expands', () => {
-      useDiffDiscussions().discussions = [{ id: 'abc', repliesCollapsed: true }];
+      useDiffDiscussions().discussions = [{ id: 'abc', repliesExpanded: false }];
       useDiffDiscussions().expandDiscussionReplies(useDiffDiscussions().discussions[0]);
-      expect(useDiffDiscussions().discussions[0].repliesCollapsed).toBe(false);
+      expect(useDiffDiscussions().discussions[0].repliesExpanded).toBe(true);
+    });
+  });
+
+  describe('addNote', () => {
+    it('adds a note', () => {
+      const note = { id: 'bar', discussion_id: 'abc' };
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [{ id: 'foo', discussion_id: 'abc' }] },
+      ];
+      useDiffDiscussions().addNote(note);
+      expect(useDiffDiscussions().discussions[0].notes[1]).toStrictEqual(note);
+    });
+
+    it('does not add a note when it exists', () => {
+      const note = { id: 'foo', discussion_id: 'abc' };
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [{ id: 'foo', discussion_id: 'abc' }] },
+      ];
+      useDiffDiscussions().addNote(note);
+      expect(useDiffDiscussions().discussions[0].notes[1]).toBe(undefined);
+    });
+  });
+
+  describe('updateNote', () => {
+    it('updates existing note', () => {
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [{ id: 'foo', discussion_id: 'abc', note: 'Hello!' }] },
+      ];
+      useDiffDiscussions().updateNote({ id: 'foo', discussion_id: 'abc', note: 'Hello world!' });
+      expect(useDiffDiscussions().discussions[0].notes[0].note).toBe('Hello world!');
+    });
+  });
+
+  describe('deleteNote', () => {
+    it('deletes existing note', () => {
+      const notes = { id: 'foo', discussion_id: 'abc', note: 'Hello!' };
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [notes] }];
+      useDiffDiscussions().deleteNote(notes);
+      expect(useDiffDiscussions().discussions[0].notes).toHaveLength(0);
     });
   });
 
@@ -43,6 +76,21 @@ describe('diffDiscussions store', () => {
       expect(useDiffDiscussions().getDiscussionById(targetDiscussion.id)).toStrictEqual(
         targetDiscussion,
       );
+    });
+  });
+
+  describe('allNotesById', () => {
+    it('returns all notes by id', () => {
+      const note1 = { id: 'foo' };
+      const note2 = { id: 'bar' };
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [note1] },
+        { id: 'bcd', notes: [note2] },
+      ];
+      expect(useDiffDiscussions().allNotesById).toStrictEqual({
+        [note1.id]: note1,
+        [note2.id]: note2,
+      });
     });
   });
 });

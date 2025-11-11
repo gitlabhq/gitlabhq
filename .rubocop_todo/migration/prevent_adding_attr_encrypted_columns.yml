@@ -1,8 +1,6 @@
 ---
 Migration/PreventAddingAttrEncryptedColumns:
   Exclude:
-    - 'db/migrate/20240305201830_add_custom_headers_to_web_hook.rb'
-    - 'db/migrate/20240419082037_create_ai_self_hosted_models.rb'
     - 'db/migrate/20240717140800_add_encrypted_shared_secret_to_external_status_checks.rb'
     - 'db/migrate/20240829143538_create_system_access_instance_microsoft_applications.rb'
     - 'db/migrate/20240829143654_create_system_access_instance_microsoft_graph_access_tokens.rb'

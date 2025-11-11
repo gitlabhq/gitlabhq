@@ -252,8 +252,7 @@ To enable an external agent in a project:
 1. On the left sidebar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**.
 1. Select the **Flows** tab.
-1. Select your external agent, then select **Enable in project or group**.
-1. Under **Enable in**, select **Project**.
+1. Select your external agent, then select **Enable in project**.
 1. From the dropdown list, select the project you want to enable the external agent in.
 1. Select **Enable**.
 

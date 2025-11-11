@@ -38,6 +38,16 @@ module API
             job.project.ci_outbound_job_token_scope_enabled?
           end
         end
+
+        def presented
+          if object && ::Feature.enabled?(:fix_jobs_api_gitaly_n_plus_1, object.project)
+            # Prevents gitaly N+1 by triggering the Commit.lazy batch loader for
+            # each job before any of them is serialized.
+            object.commit
+          end
+
+          super
+        end
       end
     end
   end

@@ -50,14 +50,14 @@ You can tell that you're using the older navigation if your user avatar is on th
 
 To turn on the new navigation style:
 
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. On the left sidebar, select your avatar.
 1. Turn on the **New UI** toggle.
 
 The page refreshes, and you can start exploring the new GitLab UI!
 
 To turn off the new navigation style:
 
-1. In the upper-right corner, select your avatar. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
+1. In the upper-right corner, select your avatar.
 1. Turn off the **New UI** toggle.
 
 ## What's new
@@ -110,7 +110,7 @@ On smaller screens, the detail panel covers the list or board panel.
 By default, work items like issues or epics open in the details panel.
 If you prefer to turn it off:
 
-1. On the top sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Issues** or **Epics**.
 1. At the top of the Issues or Epics page, select **Display options** ({{< icon name="preferences" >}})
    and turn off the **Open items in side panel** toggle.

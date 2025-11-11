@@ -2,6 +2,7 @@
 import { GlBadge, GlIcon, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
+import { isValidDate, newDate } from '~/lib/utils/datetime_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -35,6 +36,9 @@ export default {
     },
     refType() {
       return this.trackedRef.refType.toLowerCase() === 'tag' ? 'tag' : 'branch';
+    },
+    hasValidAuthoredDate() {
+      return isValidDate(newDate(this.trackedRef.commit.authoredDate));
     },
   },
 };
@@ -81,9 +85,10 @@ export default {
 
       <span class="gl-line-clamp-1" data-testid="commit-title">{{ trackedRef.commit.title }}</span>
 
-      <span aria-hidden="true">·</span>
-
-      <time-ago-tooltip :time="trackedRef.commit.authoredDate" />
+      <template v-if="hasValidAuthoredDate">
+        <span aria-hidden="true">·</span>
+        <time-ago-tooltip :time="trackedRef.commit.authoredDate" />
+      </template>
     </div>
   </div>
 </template>

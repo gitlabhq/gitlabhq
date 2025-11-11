@@ -31,7 +31,6 @@ Style/HashEachMethods:
     - 'app/services/security/merge_reports_service.rb'
     - 'config/initializers/6_validations.rb'
     - 'config/initializers/8_gitaly.rb'
-    - 'db/post_migrate/20240422070036_swap_ci_pipelines_pk_with_bigint_p_ci_builds_p_ci_stages.rb'
     - 'ee/app/graphql/types/compliance_management/merge_requests/compliance_violation_reason_enum.rb'
     - 'ee/app/graphql/types/compliance_management/merge_requests/compliance_violation_severity_enum.rb'
     - 'ee/app/graphql/types/health_status_enum.rb'

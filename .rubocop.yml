@@ -627,24 +627,16 @@ Gitlab/RSpec/AvoidSetup:
 Gitlab/RSpec/MisplacedEeSpecFile:
   Enabled: true
   Include:
-    - 'ee/spec/lib/**/*_spec.rb'
-    - 'ee/spec/components/**/*_spec.rb'
-    - 'ee/spec/controllers/**/*_spec.rb'
-    - 'ee/spec/experiments/**/*_spec.rb'
-    - 'ee/spec/finders/**/*_spec.rb'
-    - 'ee/spec/graphql/**/*_spec.rb'
-    - 'ee/spec/helpers/**/*_spec.rb'
-    - 'ee/spec/mailers/**/*_spec.rb'
-    - 'ee/spec/models/**/*_spec.rb'
-    - 'ee/spec/policies/**/*_spec.rb'
-    - 'ee/spec/presenters/**/*_spec.rb'
-    - 'ee/spec/serializers/**/*_spec.rb'
-    - 'ee/spec/services/**/*_spec.rb'
-    - 'ee/spec/validators/**/*_spec.rb'
-    - 'ee/spec/workers/**/*_spec.rb'
+    - 'spec/**/*_spec.rb'
   Exclude:
     - 'ee/spec/**/ee/**/*_spec.rb'
     - 'ee/spec/lib/remote_development/**/*_spec.rb'
+
+# Detects CE specs testing EE-only classes
+Gitlab/RSpec/MisplacedEeSpecFileInCe:
+  Enabled: true
+  Include:
+    - 'spec/**/*_spec.rb'
 
 RSpec/DuplicateSpecLocation:
   Enabled: true

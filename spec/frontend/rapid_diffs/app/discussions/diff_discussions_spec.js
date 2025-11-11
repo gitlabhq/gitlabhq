@@ -43,4 +43,25 @@ describe('DiffDiscussions', () => {
     wrapper.findComponent(NoteableDiscussion).vm.$emit('toggleDiscussionReplies');
     expect(useDiffDiscussions().toggleDiscussionReplies).toHaveBeenCalledWith(discussion);
   });
+
+  it('handles replyAdded event', () => {
+    const note = { id: '1' };
+    createComponent({ discussions: [{ id: '1' }] });
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('replyAdded', note);
+    expect(useDiffDiscussions().addNote).toHaveBeenCalledWith(note);
+  });
+
+  it('handles noteUpdated event', () => {
+    const note = { id: '1' };
+    createComponent({ discussions: [{ id: '1' }] });
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('noteUpdated', note);
+    expect(useDiffDiscussions().updateNote).toHaveBeenCalledWith(note);
+  });
+
+  it('handles noteDeleted event', () => {
+    const note = { id: '1' };
+    createComponent({ discussions: [{ id: '1' }] });
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('noteDeleted', note);
+    expect(useDiffDiscussions().deleteNote).toHaveBeenCalledWith(note);
+  });
 });

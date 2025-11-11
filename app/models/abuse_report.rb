@@ -24,7 +24,7 @@ class AbuseReport < ApplicationRecord
 
   belongs_to :reporter, class_name: 'User', inverse_of: :reported_abuse_reports
   belongs_to :user, inverse_of: :abuse_reports
-  belongs_to :organization, class_name: 'Organizations::Organization'
+  belongs_to :organization, class_name: 'Organizations::Organization', optional: false
   belongs_to :resolved_by, class_name: 'User', inverse_of: :resolved_abuse_reports
 
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
@@ -38,7 +38,6 @@ class AbuseReport < ApplicationRecord
 
   validates :reporter, presence: true
   validates :user, presence: true, on: :create
-  validates :organization_id, presence: true, on: :create
   validates :message, presence: true
   validates :category, presence: true
   validates :user_id,

@@ -361,29 +361,38 @@ describe('RefTrackingList component', () => {
       await waitForPromises();
     });
 
+    const openModal = async () => {
+      findTrackNewRefButton().vm.$emit('click');
+      await nextTick();
+    };
+
     it('modal is initially hidden', () => {
-      expect(findTrackingSelection().props('isVisible')).toBe(false);
+      expect(findTrackingSelection().exists()).toBe(false);
     });
 
     it('opens the tracking selection modal when "Track new ref" button is clicked', async () => {
-      expect(findTrackingSelection().props('isVisible')).toBe(false);
+      expect(findTrackingSelection().exists()).toBe(false);
 
-      findTrackNewRefButton().vm.$emit('click');
-      await nextTick();
+      await openModal();
 
-      expect(findTrackingSelection().props('isVisible')).toBe(true);
+      expect(findTrackingSelection().exists()).toBe(true);
     });
 
     it('closes the tracking selection modal when the modal emits the "cancel" event', async () => {
-      findTrackNewRefButton().vm.$emit('click');
-      await nextTick();
+      await openModal();
 
-      expect(findTrackingSelection().props('isVisible')).toBe(true);
+      expect(findTrackingSelection().exists()).toBe(true);
 
       findTrackingSelection().vm.$emit('cancel');
       await nextTick();
 
-      expect(findTrackingSelection().props('isVisible')).toBe(false);
+      expect(findTrackingSelection().exists()).toBe(false);
+    });
+
+    it('passes tracked refs to the tracking selection modal', async () => {
+      await openModal();
+
+      expect(findTrackingSelection().props('trackedRefs')).toEqual(mockTrackedRefs);
     });
   });
 });

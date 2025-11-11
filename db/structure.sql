@@ -27006,51 +27006,6 @@ CREATE SEQUENCE system_access_group_microsoft_graph_access_tokens_id_seq
 
 ALTER SEQUENCE system_access_group_microsoft_graph_access_tokens_id_seq OWNED BY system_access_group_microsoft_graph_access_tokens.id;
 
-CREATE TABLE system_access_instance_microsoft_applications (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    enabled boolean DEFAULT false NOT NULL,
-    tenant_xid text NOT NULL,
-    client_xid text NOT NULL,
-    login_endpoint text DEFAULT 'https://login.microsoftonline.com'::text NOT NULL,
-    graph_endpoint text DEFAULT 'https://graph.microsoft.com'::text NOT NULL,
-    encrypted_client_secret bytea NOT NULL,
-    encrypted_client_secret_iv bytea NOT NULL,
-    CONSTRAINT check_75bf46c253 CHECK ((char_length(login_endpoint) <= 255)),
-    CONSTRAINT check_80a40c5b74 CHECK ((char_length(client_xid) <= 255)),
-    CONSTRAINT check_e00a5d3a61 CHECK ((char_length(graph_endpoint) <= 255)),
-    CONSTRAINT check_e63bb275fa CHECK ((char_length(tenant_xid) <= 255))
-);
-
-CREATE SEQUENCE system_access_instance_microsoft_applications_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE system_access_instance_microsoft_applications_id_seq OWNED BY system_access_instance_microsoft_applications.id;
-
-CREATE TABLE system_access_instance_microsoft_graph_access_tokens (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    system_access_instance_microsoft_application_id bigint,
-    expires_in integer NOT NULL,
-    encrypted_token bytea NOT NULL,
-    encrypted_token_iv bytea NOT NULL
-);
-
-CREATE SEQUENCE system_access_instance_microsoft_graph_access_tokens_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE system_access_instance_microsoft_graph_access_tokens_id_seq OWNED BY system_access_instance_microsoft_graph_access_tokens.id;
-
 CREATE TABLE system_access_microsoft_applications (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -32050,10 +32005,6 @@ ALTER TABLE ONLY system_access_group_microsoft_applications ALTER COLUMN id SET 
 
 ALTER TABLE ONLY system_access_group_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_group_microsoft_graph_access_tokens_id_seq'::regclass);
 
-ALTER TABLE ONLY system_access_instance_microsoft_applications ALTER COLUMN id SET DEFAULT nextval('system_access_instance_microsoft_applications_id_seq'::regclass);
-
-ALTER TABLE ONLY system_access_instance_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_instance_microsoft_graph_access_tokens_id_seq'::regclass);
-
 ALTER TABLE ONLY system_access_microsoft_applications ALTER COLUMN id SET DEFAULT nextval('system_access_microsoft_applications_id_seq'::regclass);
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_microsoft_graph_access_tokens_id_seq'::regclass);
@@ -35683,12 +35634,6 @@ ALTER TABLE ONLY system_access_group_microsoft_applications
 
 ALTER TABLE ONLY system_access_group_microsoft_graph_access_tokens
     ADD CONSTRAINT system_access_group_microsoft_graph_access_tokens_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY system_access_instance_microsoft_applications
-    ADD CONSTRAINT system_access_instance_microsoft_applications_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY system_access_instance_microsoft_graph_access_tokens
-    ADD CONSTRAINT system_access_instance_microsoft_graph_access_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY system_access_microsoft_applications
     ADD CONSTRAINT system_access_microsoft_applications_pkey PRIMARY KEY (id);
@@ -44393,8 +44338,6 @@ CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_sett
 
 CREATE UNIQUE INDEX unique_index_group_ms_access_tokens_on_ms_app_id ON system_access_group_microsoft_graph_access_tokens USING btree (system_access_group_microsoft_application_id);
 
-CREATE UNIQUE INDEX unique_index_instance_ms_access_tokens_on_ms_app_id ON system_access_instance_microsoft_graph_access_tokens USING btree (system_access_instance_microsoft_application_id);
-
 CREATE UNIQUE INDEX unique_index_ml_model_metadata_name ON ml_model_metadata USING btree (model_id, name);
 
 CREATE UNIQUE INDEX unique_index_ml_model_version_metadata_name ON ml_model_version_metadata USING btree (model_version_id, name);
@@ -51753,9 +51696,6 @@ ALTER TABLE ONLY packages_debian_publications
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_rails_76c4e9732d FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY system_access_instance_microsoft_graph_access_tokens
-    ADD CONSTRAINT fk_rails_76e46ea251 FOREIGN KEY (system_access_instance_microsoft_application_id) REFERENCES system_access_instance_microsoft_applications(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_group_distribution_keys
     ADD CONSTRAINT fk_rails_779438f163 FOREIGN KEY (distribution_id) REFERENCES packages_debian_group_distributions(id) ON DELETE CASCADE;

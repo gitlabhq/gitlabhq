@@ -611,6 +611,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     let_it_be(:pipeline) { create(:ci_pipeline) }
     let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:build_with_aa_tag) { create(:ci_build, pipeline: pipeline, tag_list: ['aa']) }
+    let_it_be(:build_with_bb_tag) { create(:ci_build, pipeline: pipeline, tag_list: ['bb']) }
     let_it_be(:runner_project) { build.project }
     let_it_be_with_refind(:runner) { create(:ci_runner, :project, projects: [runner_project]) }
 
@@ -627,10 +629,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     context 'when runner does not have tags' do
       it { is_expected.to be_truthy }
 
-      it 'cannot handle build with tags' do
-        build.tag_list = ['aa']
+      context 'and build has tags' do
+        let(:build) { build_with_aa_tag }
 
-        is_expected.to be_falsey
+        it 'cannot handle build with tags' do
+          is_expected.to be_falsey
+        end
       end
     end
 
@@ -638,16 +642,20 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:tag_list) { %w[bb cc] }
 
       shared_examples 'tagged build picker' do
-        it 'can handle build with matching tags' do
-          build.tag_list = ['bb']
+        context 'and build has tags' do
+          let(:build) { build_with_bb_tag }
 
-          is_expected.to be_truthy
+          it 'can handle build with matching tags' do
+            is_expected.to be_truthy
+          end
         end
 
-        it 'cannot handle build without matching tags' do
-          build.tag_list = ['aa']
+        context 'and build has non-matching tags' do
+          let(:build) { build_with_aa_tag }
 
-          is_expected.to be_falsey
+          it 'cannot handle build' do
+            is_expected.to be_falsey
+          end
         end
       end
 
@@ -761,10 +769,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       with_them do
         let(:tag_list) { runner_tags }
-
-        before do
-          build.tag_list = build_tags
-        end
+        let!(:build) { create(:ci_build, pipeline: pipeline, tag_list: build_tags) }
 
         it { is_expected.to eq(result) }
       end
@@ -1205,9 +1210,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'runner cannot pick the build' do
-      before do
-        build.tag_list = [:docker]
-      end
+      let(:build) { FactoryBot.build(:ci_build, tag_list: [:docker]) }
 
       it 'does not call #tick_runner_queue' do
         expect(runner).not_to receive(:tick_runner_queue)

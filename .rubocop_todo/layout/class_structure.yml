@@ -258,7 +258,6 @@ Layout/ClassStructure:
     - 'lib/gitlab/auth/activity.rb'
     - 'lib/gitlab/auth/ldap/dn.rb'
     - 'lib/gitlab/auth/result.rb'
-    - 'lib/gitlab/background_migration/backfill_default_branch_protection_namespace_setting.rb'
     - 'lib/gitlab/background_task.rb'
     - 'lib/gitlab/checks/container_moved.rb'
     - 'lib/gitlab/checks/post_push_message.rb'

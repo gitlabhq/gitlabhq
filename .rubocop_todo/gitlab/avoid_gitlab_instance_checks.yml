@@ -54,7 +54,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/config/initializers/gitlab_suggested_reviewers_secret.rb'
     - 'ee/lib/api/code_suggestions.rb'
     - 'ee/lib/api/scim/instance_scim.rb'
-    - 'ee/lib/ee/gitlab/background_migration/create_compliance_standards_adherence.rb'
     - 'ee/lib/ee/gitlab/gon_helper.rb'
     - 'ee/lib/ee/gitlab/personal_access_tokens/service_account_token_validator.rb'
     - 'ee/lib/ee/gitlab/snippet_search_results.rb'

@@ -16,6 +16,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to belong_to(:reporter).class_name('User').inverse_of(:reported_abuse_reports) }
     it { is_expected.to belong_to(:resolved_by).class_name('User').inverse_of(:resolved_abuse_reports) }
     it { is_expected.to belong_to(:user).inverse_of(:abuse_reports) }
+    it { is_expected.to belong_to(:organization).required }
     it { is_expected.to have_many(:events).class_name('ResourceEvents::AbuseReportEvent').inverse_of(:abuse_report) }
     it { is_expected.to have_many(:notes) }
     it { is_expected.to have_many(:user_mentions).class_name('AntiAbuse::Reports::UserMention') }
@@ -35,7 +36,6 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to validate_presence_of(:user).on(:create) }
     it { is_expected.to validate_presence_of(:message) }
     it { is_expected.to validate_presence_of(:category) }
-    it { is_expected.to validate_presence_of(:organization_id).on(:create) }
 
     it do
       is_expected.to validate_uniqueness_of(:user_id)

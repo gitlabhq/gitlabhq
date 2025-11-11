@@ -14,7 +14,6 @@ Rails/Date:
     - 'app/services/members/invitation_reminder_email_service.rb'
     - 'app/services/projects/fetch_statistics_increment_service.rb'
     - 'app/services/users/activity_service.rb'
-    - 'db/post_migrate/20240527083319_create_partitions_for_audit_event_tables.rb'
     - 'ee/app/controllers/ee/groups/usage_quotas_controller.rb'
     - 'ee/app/controllers/groups/analytics/tasks_by_type_controller.rb'
     - 'ee/app/finders/iterations_finder.rb'

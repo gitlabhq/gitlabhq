@@ -183,6 +183,9 @@ if the host domain name changes for some reason. Also, the values are predefined
 by you, meaning that if the host keys suddenly change, the CI/CD job doesn't fail,
 so there's something wrong with the server or the network.
 
+Do not run `ssh-keyscan` directly in a CI/CD job, as it is a security risk vulnerable
+to machine-in-the-middle attacks.
+
 {{< /alert >}}
 
 Now that the `SSH_KNOWN_HOSTS` variable is created, in addition to the
@@ -196,23 +199,6 @@ before_script:
   ##
   - cp "$SSH_KNOWN_HOSTS" ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
-
-  ##
-  ## Alternatively, use ssh-keyscan to scan the keys of your private server.
-  ## Replace example.com with your private server's domain name. Repeat that
-  ## command if you have more than one server to connect to. Include the -t
-  ## flag to specify the key type.
-  ##
-  # - ssh-keyscan -t rsa,ed25519 example.com >> ~/.ssh/known_hosts
-  # - chmod 644 ~/.ssh/known_hosts
-
-  ##
-  ## You can optionally disable host key checking. Be aware that by adding that
-  ## you are susceptible to man-in-the-middle attacks.
-  ## WARNING: Use this only with the Docker executor, if you use it with shell
-  ## you will overwrite your user's SSH config.
-  ##
-  # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" >> ~/.ssh/config'
 ```
 
 ## Use SSH key without a file type CI/CD variable

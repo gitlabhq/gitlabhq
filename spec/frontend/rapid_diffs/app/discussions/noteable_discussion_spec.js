@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { merge } from 'lodash';
 import { stubComponent } from 'helpers/stub_component';
@@ -8,11 +9,13 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
-import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 import NoteableDiscussion from '~/rapid_diffs/app/discussions/noteable_discussion.vue';
+import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
@@ -21,7 +24,7 @@ jest.mock('~/lib/utils/common_utils');
 
 describe('NoteableDiscussion', () => {
   let wrapper;
-  let defaultProps;
+  let axiosMock;
 
   const createDiscussion = () => ({
     id: 'discussion-1',
@@ -35,10 +38,9 @@ describe('NoteableDiscussion', () => {
     endpoints: { createNote: '/api/notes' },
   };
 
-  const createComponent = ({ props = {}, provide = {}, showReplies = true } = {}) => {
+  const createComponent = ({ props = {}, provide = {}, repliesVisible = true } = {}) => {
     wrapper = shallowMount(NoteableDiscussion, {
       propsData: {
-        ...defaultProps,
         discussion: createDiscussion(),
         ...props,
       },
@@ -46,9 +48,9 @@ describe('NoteableDiscussion', () => {
       stubs: {
         DiscussionNotes: stubComponent(DiscussionNotes, {
           data() {
-            return { showReplies };
+            return { repliesVisible };
           },
-          template: `<ul><slot name="footer" :showReplies="showReplies"></slot></ul>`,
+          template: `<ul><slot name="footer" :repliesVisible="repliesVisible"></slot></ul>`,
         }),
       },
     });
@@ -56,9 +58,7 @@ describe('NoteableDiscussion', () => {
 
   beforeEach(() => {
     isLoggedIn.mockReturnValue(true);
-    defaultProps = {
-      saveNote: jest.fn().mockResolvedValue(),
-    };
+    axiosMock = new AxiosMockAdapter(axios);
   });
 
   it('renders timeline entry item', () => {
@@ -68,8 +68,8 @@ describe('NoteableDiscussion', () => {
 
   it('renders discussion notes', () => {
     createComponent();
-    expect(wrapper.findComponent(DiscussionNotes).props('discussion')).toStrictEqual(
-      createDiscussion(),
+    expect(wrapper.findComponent(DiscussionNotes).props('notes')).toStrictEqual(
+      createDiscussion().notes,
     );
   });
 
@@ -138,6 +138,20 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(false);
   });
 
+  it('propagates noteUpdated event', () => {
+    const note = {};
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('noteUpdated', note);
+    expect(wrapper.emitted('noteUpdated')).toStrictEqual([[note]]);
+  });
+
+  it('propagates noteDeleted event', () => {
+    const note = {};
+    createComponent();
+    wrapper.findComponent(DiscussionNotes).vm.$emit('noteDeleted', note);
+    expect(wrapper.emitted('noteDeleted')).toStrictEqual([[note]]);
+  });
+
   // TODO: enable when supports saving replies
   // eslint-disable-next-line jest/no-disabled-tests
   describe.skip('when saving reply', () => {
@@ -145,16 +159,14 @@ describe('NoteableDiscussion', () => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(true);
     });
 
-    it('saves note successfully', async () => {
+    it('adds reply', async () => {
+      const note = {};
+      axiosMock.onGet(defaultProvide.createNote).reply(HTTP_STATUS_OK, { note });
       createComponent();
       await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
       await nextTick();
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(defaultProps.saveNote).toHaveBeenCalledWith(defaultProvide.endpoints.createNote, {
-        in_reply_to_discussion_id: 'reply-1',
-        target_type: undefined,
-        note: { note: 'test note' },
-      });
+      expect(wrapper.emitted('replyAdded')).toStrictEqual([[note]]);
     });
 
     it('hides note form after successful save', async () => {
@@ -166,29 +178,13 @@ describe('NoteableDiscussion', () => {
       expect(wrapper.findComponent(NoteForm).exists()).toBe(false);
     });
 
-    it('includes note_project_id for commit discussions', async () => {
-      const commitDiscussion = {
-        ...createDiscussion(),
-        for_commit: true,
-        project_id: 'project-123',
-      };
-      createComponent({ discussion: commitDiscussion });
-      await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
-      await nextTick();
-      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(defaultProps.saveNote).toHaveBeenCalledWith(defaultProvide.endpoints.createNote, {
-        in_reply_to_discussion_id: 'reply-1',
-        note: { note: 'test note' },
-      });
-    });
-
     it('does not save when sensitive token detection is declined', async () => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(false);
       createComponent();
       await wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
       await nextTick();
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(defaultProps.saveNote).not.toHaveBeenCalled();
+      expect(wrapper.emitted('replyAdded')).toBe(undefined);
     });
 
     it('shows alert when save fails', async () => {
@@ -207,6 +203,7 @@ describe('NoteableDiscussion', () => {
         expect(error).toEqual(errorResponse);
       }
       expect(createAlert).toHaveBeenCalled();
+      expect(wrapper.emitted('replyAdded')).toBe(undefined);
     });
   });
 
