@@ -224,6 +224,63 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       it_behaves_like 'with versionless packages'
       it_behaves_like 'with status param'
       it_behaves_like 'does not cause n^2 queries'
+
+      context 'with build info' do
+        let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
+        let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+
+        before do
+          project.add_reporter(user)
+        end
+
+        context 'when repository access is enabled' do
+          context 'with user auth' do
+            it 'includes pipeline information' do
+              get api(package_url, user)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('public_api/v4/packages/package_with_build')
+            end
+          end
+
+          context 'with job token auth' do
+            it 'includes pipeline information' do
+              get api(package_url, job_token: job.token)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('public_api/v4/packages/package_with_build')
+            end
+          end
+        end
+
+        context 'when repository access is disabled' do
+          before do
+            project.project_feature.update!(
+              repository_access_level: ProjectFeature::DISABLED,
+              merge_requests_access_level: ProjectFeature::DISABLED,
+              builds_access_level: ProjectFeature::DISABLED
+            )
+          end
+
+          context 'with user auth' do
+            it 'does not include pipeline information' do
+              get api(package_url, user)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).not_to include('pipeline', 'pipelines')
+            end
+          end
+
+          context 'with job token auth' do
+            it 'does not include pipeline information' do
+              get api(package_url, job_token: job.token)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).not_to include('pipeline', 'pipelines')
+            end
+          end
+        end
+      end
     end
   end
 
@@ -264,11 +321,64 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
       context 'with build info' do
         let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
+        let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+
+        before do
+          project.add_reporter(user)
+        end
 
         it 'returns an empty array for the pipelines attribute' do
           subject
 
           expect(json_response['pipelines']).to be_empty
+        end
+
+        context 'when repository access is enabled' do
+          context 'with user auth' do
+            it 'includes pipeline information' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('public_api/v4/packages/package_with_build')
+            end
+          end
+
+          context 'with job token auth' do
+            it 'includes pipeline information' do
+              get api(package_url, job_token: job.token)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('public_api/v4/packages/package_with_build')
+            end
+          end
+        end
+
+        context 'when repository access is disabled' do
+          before do
+            project.project_feature.update!(
+              repository_access_level: ProjectFeature::DISABLED,
+              merge_requests_access_level: ProjectFeature::DISABLED,
+              builds_access_level: ProjectFeature::DISABLED
+            )
+          end
+
+          context 'with user auth' do
+            it 'does not include pipeline information' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).not_to include('pipeline', 'pipelines')
+            end
+          end
+
+          context 'with job token auth' do
+            it 'does not include pipeline information' do
+              get api(package_url, job_token: job.token)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).not_to include('pipeline', 'pipelines')
+            end
+          end
         end
       end
 
@@ -379,6 +489,24 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('public_api/v4/packages/package_with_build')
+          end
+
+          context 'when repository access is disabled' do
+            before do
+              project.project_feature.update!(
+                repository_access_level: ProjectFeature::DISABLED,
+                merge_requests_access_level: ProjectFeature::DISABLED,
+                builds_access_level: ProjectFeature::DISABLED
+              )
+              project.add_reporter(user)
+            end
+
+            it 'does not return pipeline info' do
+              get api(package_url, user)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).not_to include('pipeline', 'pipelines')
+            end
           end
         end
       end
@@ -629,6 +757,70 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
                 expect(json_response.pluck('id')).to contain_exactly(pipeline3.id, pipeline2.id)
               end
             end
+          end
+        end
+      end
+    end
+
+    context 'with repository access' do
+      let!(:pipelines) do
+        create_list(:ci_pipeline, 3, user: user, project: project).each do |pipeline|
+          create(:package_build_info, package: package1, pipeline: pipeline)
+        end
+      end
+
+      let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+
+      before do
+        project.add_reporter(user)
+      end
+
+      context 'when access is disabled' do
+        before do
+          project.project_feature.update!(
+            repository_access_level: ProjectFeature::DISABLED,
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED
+          )
+        end
+
+        context 'with user auth' do
+          it 'returns forbidden' do
+            get api(package_pipelines_url, user)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'with job token auth' do
+          it 'returns the pipelines' do
+            get api(package_pipelines_url, job_token: job.token)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to match_response_schema('public_api/v4/packages/pipelines')
+            expect(json_response.length).to eq(3)
+          end
+        end
+      end
+
+      context 'when access is enabled' do
+        context 'with user auth' do
+          it 'returns package pipelines' do
+            get api(package_pipelines_url, user)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to match_response_schema('public_api/v4/packages/pipelines')
+            expect(json_response.length).to eq(3)
+          end
+        end
+
+        context 'with job token auth' do
+          it 'returns package pipelines' do
+            get api(package_pipelines_url, job_token: job.token)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to match_response_schema('public_api/v4/packages/pipelines')
+            expect(json_response.length).to eq(3)
           end
         end
       end
