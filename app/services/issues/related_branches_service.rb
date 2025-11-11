@@ -5,6 +5,8 @@
 module Issues
   class RelatedBranchesService < Issues::BaseService
     def execute(issue)
+      return [] unless can?(current_user, :read_code, project)
+
       branch_names_with_mrs = branches_with_merge_request_for(issue)
       branches = branches_with_iid_of(issue).reject { |b| branch_names_with_mrs.include?(b[:name]) }
 
