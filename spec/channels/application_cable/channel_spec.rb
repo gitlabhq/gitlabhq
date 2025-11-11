@@ -3,20 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe ApplicationCable::Channel, feature_category: :shared do
-  let(:user) { create(:user) }
-  let(:token) { create(:personal_access_token, user: user, scopes: [:api, :read_api]) }
+  let_it_be(:user) { create(:user) }
+
   let(:channel) { described_class.new(connection, {}) }
 
-  before do
-    stub_connection current_user: user
-  end
+  describe '#validate_user_authorization' do
+    before do
+      stub_action_cable_connection current_user: user
+    end
 
-  describe '#validate_token_scope' do
-    it 'validates the token scope' do
+    it 'validates the token scope and access_api permissions' do
+      expect(Ability).to receive(:allowed?)
+        .with(user, :access_api)
+        .and_return(true)
+
       expect(channel).to receive(:validate_and_save_access_token!)
         .with(scopes: [:api, :read_api], reset_token: true)
 
-      channel.validate_token_scope
+      channel.validate_user_authorization
     end
 
     context 'when an authentication error occurs' do
@@ -28,7 +32,7 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
       it 'handles the authentication error' do
         expect(channel).to receive(:handle_authentication_error)
 
-        channel.validate_token_scope
+        channel.validate_user_authorization
       end
 
       context 'when client is subscribed' do
@@ -39,7 +43,7 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
         it 'unsubscribes from the channel' do
           expect(channel).to receive(:unsubscribe_from_channel)
 
-          channel.validate_token_scope
+          channel.validate_user_authorization
         end
       end
 
@@ -51,8 +55,40 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
         it 'rejects the subscription' do
           expect(channel).to receive(:reject)
 
-          channel.validate_token_scope
+          channel.validate_user_authorization
         end
+      end
+    end
+  end
+
+  describe '#subscribe' do
+    before do
+      stub_action_cable_connection current_user: current_user
+
+      subscribe
+    end
+
+    context 'when not logged in' do
+      let(:current_user) { nil }
+
+      it 'allows the subscription' do
+        expect(subscription).to be_confirmed
+      end
+    end
+
+    context 'when user is active' do
+      let(:current_user) { user }
+
+      it 'allows the subscription' do
+        expect(subscription).to be_confirmed
+      end
+    end
+
+    context 'when user is blocked' do
+      let(:current_user) { create(:user, :blocked) }
+
+      it 'rejects the subscription' do
+        expect(subscription).not_to be_confirmed
       end
     end
   end
