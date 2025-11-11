@@ -1303,6 +1303,38 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#composite_identity_enforced?' do
+    context 'when @composite_identity_enforced_override instance variable is not defined' do
+      it 'returns false when database attribute is nil' do
+        user = build(:user)
+        user[:composite_identity_enforced] = nil
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+
+      it 'returns false when database attribute is false' do
+        user = build(:user)
+        user[:composite_identity_enforced] = false
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+    end
+
+    context 'with different user types' do
+      it 'returns correct value for regular user' do
+        user = create(:user, composite_identity_enforced: false)
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+
+      it 'returns correct value for service account' do
+        user = create(:user, :service_account, composite_identity_enforced: true)
+
+        expect(user.composite_identity_enforced?).to be true
+      end
+    end
+  end
+
   describe 'scopes' do
     describe '.ordered_by_name_asc_id_desc' do
       it 'returns users ordered by name ASC, id DESC' do
