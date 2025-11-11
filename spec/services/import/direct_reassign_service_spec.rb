@@ -54,7 +54,7 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
     end
   end
 
-  describe '#reassign' do
+  describe '#execute' do
     let_it_be_with_reload(:other_source_user) do
       create(:import_source_user, :with_reassigned_by_user, :reassignment_in_progress)
     end
@@ -110,7 +110,11 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
     # Ci::Builds - schema is gitlab_ci
     let_it_be_with_reload(:ci_build) { create(:ci_build, user_id: placeholder_user_id) }
 
-    subject(:direct_reassign) { described_class.new(import_source_user, sleep_time: 0) }
+    let(:reassignment_throttling) { Import::ReassignPlaceholderThrottling.new(import_source_user) }
+
+    subject(:direct_reassign) do
+      described_class.new(import_source_user, reassignment_throttling: reassignment_throttling, sleep_time: 0)
+    end
 
     context 'when user_mapping_direct_reassignment feature is disabled' do
       before do
@@ -188,6 +192,40 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
       end
 
       expect { direct_reassign.execute }.to raise_error(Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError)
+    end
+
+    context 'when database is unhealthy' do
+      before do
+        allow_next_instance_of(Import::ReassignPlaceholderThrottling) do |throttling|
+          allow(throttling).to receive(:db_health_check!)
+            .and_raise(Import::ReassignPlaceholderThrottling::DatabaseHealthError, 'Database unhealthy')
+        end
+      end
+
+      it 'returns early without processing and raises DatabaseHealthError' do
+        expect(direct_reassign).not_to receive(:direct_reassign_model_user_references)
+
+        expect { direct_reassign.execute }
+          .to raise_error Import::ReassignPlaceholderThrottling::DatabaseHealthError, 'Database unhealthy'
+      end
+    end
+
+    context 'when tables were not available' do
+      before do
+        allow(described_class).to receive(:model_list)
+          .and_return({ "Issue" => ['author_id'], "MergeRequest" => ['author_id'] })
+
+        allow_next_instance_of(Import::ReassignPlaceholderThrottling) do |throttling|
+          allow(throttling).to receive(:db_health_check!)
+          allow(throttling).to receive(:db_table_unavailable?).with(MergeRequest).and_return(true)
+          allow(throttling).to receive(:db_table_unavailable?).with(Issue).and_return(false)
+        end
+      end
+
+      it 'does not reassign unavailable tables' do
+        expect { direct_reassign.execute }.to not_change { merge_requests[0].reload.author_id }
+          .and change { issue.reload.author_id }.from(placeholder_user_id).to(reassign_to_user_id)
+      end
     end
   end
 end

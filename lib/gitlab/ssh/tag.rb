@@ -18,7 +18,7 @@ module Gitlab
           key_fingerprint_sha256: signature.key_fingerprint,
           verification_status: signature.verification_status,
           project: @repository.container,
-          object_name: @tag.id
+          object_name: object_name
         }
       end
 
@@ -29,7 +29,7 @@ module Gitlab
       private
 
       def tag_commit
-        Struct.new(:committer_email, :project).new(@tag.user_email, @repository.container)
+        Struct.new(:committer_email, :project).new(context[:user_email], @repository.container)
       end
     end
   end

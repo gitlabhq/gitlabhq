@@ -256,14 +256,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
-  describe '.allowed_group_level_types' do
-    let_it_be(:group) { create(:group) }
-
-    subject { described_class.allowed_group_level_types(group) }
-
-    it { is_expected.to be_empty }
-  end
-
   describe '#supported_conversion_types' do
     let_it_be(:developer_user) { create(:user) }
     let_it_be(:resource_parent) { create(:project) }

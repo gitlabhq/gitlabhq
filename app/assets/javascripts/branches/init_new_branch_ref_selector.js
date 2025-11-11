@@ -19,6 +19,7 @@ export default function initNewBranchRefSelector() {
           name: hiddenInputName,
           queryParams: { sort: 'updated_desc' },
           projectId,
+          useSymbolicRefNames: true,
         },
       });
     },

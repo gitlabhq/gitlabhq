@@ -53,7 +53,8 @@ To use the Agent Platform:
 
 - [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
 - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md).
+- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md)
+  and the composite identity turned on.
 - For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md),
   you must [install and run the AI gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).
 

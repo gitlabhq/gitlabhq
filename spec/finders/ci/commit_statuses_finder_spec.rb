@@ -101,6 +101,23 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute', feature_category: :source_c
         expect(pipeline_for_v1_1_0_status).to eq(heads_v1_1_0_pipeline)
         expect(pipeline_for_v1_0_0_status).to eq(tags_v1_0_0_pipeline_2)
       end
+
+      context 'when tag does not point to a commit' do
+        let(:tags) do
+          [Gitlab::Git::Tag.new(project.repository, { name: 'v1.0.0', target: 'commit_sha', target_commit: nil })]
+        end
+
+        let(:refs) { tags + branches }
+
+        it 'skips pipelines for invalid tags' do
+          expect(execute.keys).to match_array(['wip', 'master', 'v1.1.0'])
+
+          expect(pipeline_for_wip_status).to eq(heads_wip_pipeline)
+          expect(pipeline_for_master_status).to eq(heads_master_pipeline_2)
+          expect(pipeline_for_v1_1_0_status).to eq(heads_v1_1_0_pipeline)
+          expect(pipeline_for_v1_0_0_status).to be_nil
+        end
+      end
     end
 
     context 'when ref_type is :tags' do

@@ -8,7 +8,7 @@ module Gitlab
       def signature
         super
 
-        Gpg::Signature.new(signature_text, signed_text, nil, @tag.user_email)
+        Gpg::Signature.new(signature_text, signed_text, nil, context[:user_email])
       end
       strong_memoize_attr :signature
 
@@ -18,11 +18,11 @@ module Gitlab
         {
           gpg_key: signature.gpg_key,
           gpg_key_user_name: signature.user_infos[:name],
-          gpg_key_user_email: signature.user_infos[:email] || @tag.user_email,
+          gpg_key_user_email: signature.user_infos[:email] || context[:user_email],
           gpg_key_primary_keyid: signature.gpg_key_primary_keyid,
           verification_status: signature.verification_status,
           project: @repository.container,
-          object_name: @tag.id
+          object_name: object_name
         }
       end
 

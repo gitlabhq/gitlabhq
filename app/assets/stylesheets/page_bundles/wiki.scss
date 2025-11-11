@@ -58,6 +58,10 @@
   }
 }
 
+.wiki-sidebar.sidebar-expanded + * .wiki-sidebar-header-toggle {
+  @apply gl-hidden;
+}
+
 .wiki-sidebar {
   @apply gl-border-r;
   @apply gl-bg-default;

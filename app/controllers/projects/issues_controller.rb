@@ -439,7 +439,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def clean_params(all_params)
     issue_type = all_params[:issue_type].to_s
-    all_params.delete(:issue_type) unless WorkItems::Type.allowed_types_for_issues.include?(issue_type)
+    all_params.delete(:issue_type) unless ::WorkItems::TypesFilter.allowed_types_for_issues.include?(issue_type)
 
     all_params
   end

@@ -4111,22 +4111,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#short_merge_commit_sha' do
-    let(:merge_request) { build_stubbed(:merge_request) }
-
-    it 'returns short id when there is a merge_commit_sha' do
-      merge_request.merge_commit_sha = 'f7ce827c314c9340b075657fd61c789fb01cf74d'
-
-      expect(merge_request.short_merge_commit_sha).to eq('f7ce827c')
-    end
-
-    it 'returns nil when there is no merge_commit_sha' do
-      merge_request.merge_commit_sha = nil
-
-      expect(merge_request.short_merge_commit_sha).to be_nil
-    end
-  end
-
   describe '#merged_commit_sha' do
     it 'returns nil when not merged' do
       expect(subject.merged_commit_sha).to be_nil

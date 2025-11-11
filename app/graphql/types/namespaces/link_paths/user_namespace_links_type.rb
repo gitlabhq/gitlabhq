@@ -10,6 +10,8 @@ module Types
         # Do not expose the export email for user namespaces, since exporting work items on this namespace type is not
         # supported
         def user_export_email; end
+
+        def new_trial_path; end
       end
     end
   end

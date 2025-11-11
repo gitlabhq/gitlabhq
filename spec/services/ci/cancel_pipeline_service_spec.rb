@@ -24,6 +24,10 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
   shared_examples 'force_execute' do
     context 'when pipeline is not cancelable' do
+      before do
+        pipeline.update!(status: 'success')
+      end
+
       it 'returns an error' do
         expect(response).to be_error
         expect(response.reason).to eq(:pipeline_not_cancelable)

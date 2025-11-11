@@ -45,18 +45,14 @@ applies to that feature for all child groups and projects.
 
 Prerequisites:
 
-- The group that you want to select LLMs for must:
-  - Be a top-level group or namespace on GitLab.com.
-  - Have GitLab Duo Core, Pro, or Enterprise enabled.
-- You must have the Owner role for the group or namespace.
+- You must have the Owner role for the group.
+- The group that you want to select LLMs for must be a top-level group.
 - In GitLab 18.3 or later, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace) if you belong to multiple GitLab Duo namespaces.
 
 To select a different LLM for a feature:
 
 1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
 1. Select **Settings** > **GitLab Duo**.
-
-   If **GitLab Duo** is not visible, ensure you have GitLab Duo Core, Pro, or Enterprise turned on for the group.
 1. Select **Configure features**.
 1. For the feature you want to configure, select an LLM from the dropdown list.
 

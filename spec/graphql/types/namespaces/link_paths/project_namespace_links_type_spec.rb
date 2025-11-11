@@ -11,7 +11,9 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
   subject(:type) { described_class.resolve_type(namespace, {}) }
 
   it_behaves_like "expose all link paths fields for the namespace" do
-    let(:type_specific_fields) { %i[newWorkItemEmailAddress releasesPath projectImportJiraPath] }
+    let(:type_specific_fields) do
+      %i[newWorkItemEmailAddress releasesPath projectImportJiraPath exportCsvPath newIssuePath]
+    end
   end
 
   shared_examples "project namespace link paths values" do
@@ -32,12 +34,31 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
           "#{user.incoming_email_token}-issue@localhost.com"
       end
       :user_export_email | lazy { user.notification_email_or_default }
-      :releases_path | lazy { "/#{namespace.full_path}/-/releases" }
+      :releases_path | lazy { "/#{namespace.full_path}/-/releases.json" }
       :project_import_jira_path | lazy { "/#{namespace.full_path}/-/import/jira" }
+      :namespace_full_path | lazy { project.namespace.full_path }
+      :export_csv_path | lazy { "/#{namespace.full_path}/-/issues/export_csv" }
+      :new_issue_path | lazy { "/#{namespace.full_path}/-/issues/new" }
+      :group_path | lazy { project.namespace.full_path }
+      :issues_list_path | lazy { "/#{namespace.full_path}/-/issues" }
     end
 
     with_them do
       it { expect(resolve_field(field, namespace, current_user: user)).to eq(value) }
+    end
+
+    it 'returns rss_path with feed token' do
+      path = resolve_field(:rss_path, namespace, current_user: user)
+      expect(path).to match(
+        %r{^/#{Regexp.escape(namespace.full_path)}/-/work_items\.atom\?feed_token=glft-.+-#{user.id}$}
+      )
+    end
+
+    it 'returns calendar_path with feed token' do
+      path = resolve_field(:calendar_path, namespace, current_user: user)
+      expect(path).to match(
+        %r{^/#{Regexp.escape(namespace.full_path)}/-/work_items\.ics\?feed_token=glft-.+-#{user.id}$}
+      )
     end
   end
 

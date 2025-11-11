@@ -4341,16 +4341,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#supports_group_work_items?' do
-    let(:group) { build(:group) }
-
-    subject { group.supports_group_work_items? }
-
-    it 'returns false' do
-      expect(subject).to be false
-    end
-  end
-
   describe '#has_active_hooks?' do
     let(:group) { build(:group) }
 

@@ -2540,6 +2540,9 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to remove flow %{name}?"
 msgstr ""
 
+msgid "AICatalog|Are you sure you want to remove flow %{name}? The flow will also be removed from any projects in this group."
+msgstr ""
+
 msgid "AICatalog|Available tools"
 msgstr ""
 
@@ -12545,12 +12548,6 @@ msgstr ""
 msgid "CICDAnalytics|All time"
 msgstr ""
 
-msgid "CICDAnalytics|Change failure rate"
-msgstr ""
-
-msgid "CICDAnalytics|Deployment frequency"
-msgstr ""
-
 msgid "CICDAnalytics|Failure rate"
 msgstr ""
 
@@ -12558,9 +12555,6 @@ msgid "CICDAnalytics|Instance runner duration is the total runtime of all jobs t
 msgstr ""
 
 msgid "CICDAnalytics|Instance runner pipeline minute duration by month"
-msgstr ""
-
-msgid "CICDAnalytics|Lead time"
 msgstr ""
 
 msgid "CICDAnalytics|Median duration"
@@ -12596,9 +12590,6 @@ msgid "CICDAnalytics|The percentage of pipelines that failed."
 msgstr ""
 
 msgid "CICDAnalytics|The total number of pipelines that have run in the selected time period."
-msgstr ""
-
-msgid "CICDAnalytics|Time to restore service"
 msgstr ""
 
 msgid "CICDAnalytics|Total pipeline runs"

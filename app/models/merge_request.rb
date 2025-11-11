@@ -2280,10 +2280,6 @@ class MergeRequest < ApplicationRecord
     @squash_commit ||= project.commit(squash_commit_sha) if squash_commit_sha
   end
 
-  def short_merge_commit_sha
-    Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
-  end
-
   def merged_commit_sha
     return unless merged?
 

@@ -1,50 +1,45 @@
 - wiki_page_title @page
-- add_page_specific_style 'page_bundles/wiki'
 - page_history = @page&.persisted? ? wiki_page_path(@wiki, @page, action: :history) : ''
-- @gfm_form = true
 - @noteable_type = 'Wiki'
 - @no_container = true
 - templates = @templates.map { |t| wiki_page_basic_info(t) }
 - page_version = @page.historical? ? @page.version.commit : @page.last_version
 
-= form_errors(@page, truncate: :title)
+= render 'shared/wikis/layout' do
+  = form_errors(@page, truncate: :title)
 
-.wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
-  = render 'shared/wikis/sidebar'
-  .wiki-page-details
-    %div
-      #js-vue-wiki-app{ data: {
-        testid: 'wiki-app',
-        container_id: @wiki.container.id,
-        container_type: @wiki.container.is_a?(Project) ? 'project' : 'group',
-        container_name: @wiki.container.name,
-        page_heading: @page.human_title,
-        content_api: wiki_page_render_api_endpoint(@page),
-        show_edit_button: (can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding).to_s,
-        page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
-        is_page_template: @page.template?.to_s,
-        is_page_historical: @page.historical?.to_s,
-        last_version: @page.last_version,
-        page_version: page_version.to_json,
-        wiki_path: @wiki.path,
-        clone_ssh_url: ssh_clone_url_to_repo(@wiki),
-        clone_http_url: http_clone_url_to_repo(@wiki),
-        page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
-        wiki_url: wiki_page_path(@wiki, @page),
-        edit_button_url: wiki_page_path(@wiki, @page, action: :edit),
-        new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
-        author_url: wiki_page_version_author_url(@page.historical? ? @page.version.commit : @page.last_version),
-        history_url: page_history,
-        templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-        format_options: wiki_markup_hash_by_name_id.to_json,
-        templates: templates.to_json,
-        current_user_data: UserSerializer.new.represent(current_user, {only_path: false}, CurrentUserEntity).to_json,
-        register_path: new_user_registration_path(redirect_to_referer: 'yes'),
-        sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
-        markdown_preview_path: preview_markdown_path(@wiki.container),
-        noteable_type: @noteable_type,
-        is_container_archived: @wiki.container.self_or_ancestors_archived?.to_s,
-        notes_filters: UserPreference.notes_filters.to_json,
-        report_abuse_path: add_category_abuse_reports_path,
-        page_author_email: page_version.author_email,
-      } }
+  #js-vue-wiki-app{ data: {
+      testid: 'wiki-app',
+      container_id: @wiki.container.id,
+      container_type: @wiki.container.is_a?(Project) ? 'project' : 'group',
+      container_name: @wiki.container.name,
+      page_heading: @page.human_title,
+      content_api: wiki_page_render_api_endpoint(@page),
+      show_edit_button: (can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding).to_s,
+      page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
+      is_page_template: @page.template?.to_s,
+      is_page_historical: @page.historical?.to_s,
+      last_version: @page.last_version,
+      page_version: page_version.to_json,
+      wiki_path: @wiki.path,
+      clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+      clone_http_url: http_clone_url_to_repo(@wiki),
+      page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+      wiki_url: wiki_page_path(@wiki, @page),
+      edit_button_url: wiki_page_path(@wiki, @page, action: :edit),
+      new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
+      author_url: wiki_page_version_author_url(@page.historical? ? @page.version.commit : @page.last_version),
+      history_url: page_history,
+      templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+      format_options: wiki_markup_hash_by_name_id.to_json,
+      templates: templates.to_json,
+      current_user_data: UserSerializer.new.represent(current_user, {only_path: false}, CurrentUserEntity).to_json,
+      register_path: new_user_registration_path(redirect_to_referer: 'yes'),
+      sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
+      markdown_preview_path: preview_markdown_path(@wiki.container),
+      noteable_type: @noteable_type,
+      is_container_archived: @wiki.container.self_or_ancestors_archived?.to_s,
+      notes_filters: UserPreference.notes_filters.to_json,
+      report_abuse_path: add_category_abuse_reports_path,
+      page_author_email: page_version.author_email,
+    } }

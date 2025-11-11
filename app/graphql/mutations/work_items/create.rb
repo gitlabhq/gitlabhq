@@ -142,7 +142,7 @@ module Mutations
             _('Only project level work items can be created to resolve noteable discussions')
         end
 
-        return if ::WorkItems::Type.allowed_group_level_types(container).include?(type.base_type)
+        return if ::WorkItems::TypesFilter.allowed?(container: container, type: type.base_type)
 
         raise_resource_not_available_error!
       end

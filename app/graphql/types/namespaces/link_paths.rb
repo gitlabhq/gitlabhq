@@ -11,18 +11,25 @@ module Types
       class UrlHelpers
         include GitlabRoutingHelper
         include Gitlab::Routing
-
-        # required for the new_comment_template_paths
         include ::IssuablesHelper
-
-        # required for the new_comment_template_paths
-        public :new_comment_template_paths
-
-        attr_reader :current_user
+        include FeedTokenHelper
+        include LicenseHelper
 
         def initialize(current_user)
           @current_user = current_user
         end
+
+        # required for the new_comment_template_paths
+        public :new_comment_template_paths
+
+        # Generates feed URL options with HMAC-signed token
+        def feed_url_options(type, path)
+          { format: type, feed_token: generate_feed_token_with_path(type, path) }
+        end
+
+        private
+
+        attr_reader :current_user
       end
       private_constant :UrlHelpers
       # rubocop: enable Graphql/AuthorizeTypes, GraphQL/GraphqlName
@@ -115,6 +122,48 @@ module Types
         fallback_value: nil,
         experiment: { milestone: '18.4' }
 
+      field :autocomplete_award_emojis_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Path for autocomplete award emojis.',
+        fallback_value: nil,
+        experiment: { milestone: '18.6' }
+
+      field :new_trial_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'New trial path for the namespace.',
+        fallback_value: nil,
+        experiment: { milestone: '18.6' }
+
+      field :namespace_full_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Full path of the namespace (project.namespace.full_path or group full_path).',
+        fallback_value: nil,
+        experiment: { milestone: '18.6' }
+
+      field :new_issue_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Path to create a new issue.',
+        fallback_value: nil,
+        experiment: { milestone: '18.6' }
+
+      field :group_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Full path of the group.',
+        fallback_value: nil,
+        experiment: { milestone: '18.6' }
+
+      field :issues_list_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Path to the issues list for the namespace.',
+        fallback_value: nil,
+        experiment: { milestone: '18.6' }
+
       def self.type_mappings
         TYPE_MAPPINGS
       end
@@ -153,10 +202,23 @@ module Types
         current_user&.notification_email_or_default
       end
 
+      def autocomplete_award_emojis_path
+        url_helpers.autocomplete_award_emojis_path
+      end
+
+      # override in EE
+      def new_trial_path
+        url_helpers.self_managed_new_trial_url
+      end
+
       private
 
       def url_helpers
         @url_helpers ||= UrlHelpers.new(current_user)
+      end
+
+      def group
+        object.is_a?(Group) ? object : object&.group
       end
     end
   end

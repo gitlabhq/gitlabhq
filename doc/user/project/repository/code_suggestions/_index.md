@@ -50,12 +50,7 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 ## Prerequisites
 
-To use Code Suggestions, you need:
-
-- A GitLab Duo Core, Pro, or Enterprise add-on.
-- A Premium or Ultimate subscription.
-- If you have GitLab Duo Pro or Enterprise, an assigned seat.
-- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+To use Code Suggestions, if you have the GitLab Duo Core add-on, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 
 {{< alert type="note" >}}
 

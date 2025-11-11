@@ -160,6 +160,8 @@ how to write the phrase for each role.
 
 `Prerequisites` must always be plural, even if the list includes only one item.
 
+Do not list subscriptions or add-ons in the prerequisites. These should only be included in the [product availability details](../styleguide/availability_details.md).
+
 ## Related topics
 
 - [How to write task steps](../styleguide/_index.md#navigation)

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
   let(:manager) { instance_double(Mcp::Tools::Manager) }
   let(:request) { instance_double(Rack::Request) }
-  let(:current_user) { instance_double(User) }
+  let_it_be(:current_user) { create(:user) }
 
   subject(:handler) { described_class.new(manager) }
 
@@ -13,6 +13,10 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
     let(:tool_name) { 'test_tool' }
     let(:params) { { name: tool_name, arguments: { param: 'value' } } }
     let(:tool) { instance_double(Mcp::Tools::BaseService) }
+
+    before do
+      allow(request).to receive(:[]).with(:id).and_return('1')
+    end
 
     context 'when tool is found and version matches' do
       before do
@@ -30,7 +34,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       end
     end
 
-    context 'when tool is a CustomService' do
+    context 'when tool is a custom service' do
       let(:custom_tool) { instance_double(Mcp::Tools::CustomService) }
 
       before do

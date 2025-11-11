@@ -829,7 +829,7 @@ module Ci
     end
 
     def cancelable?
-      cancelable_statuses.any? && internal_pipeline?
+      CANCELABLE_STATUSES.include?(self.status) && internal_pipeline?
     end
 
     def auto_canceled?

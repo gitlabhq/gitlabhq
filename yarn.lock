@@ -1389,10 +1389,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^13.7.0":
-  version "13.7.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-13.7.0.tgz#c27afe6fdf40c342ed8276d1215a571f75c70a71"
-  integrity sha512-1W8xvdFqmUUAeu/S3IqMzrgjzbb0Kc9fQlGwgP2qInKPbhyNkU5Ks+hIxopv5mY10c3XsUP/yZBHKuqHSj0zZA==
+"@gitlab/duo-ui@^13.10.2":
+  version "13.10.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-13.10.2.tgz#0888e18e9fd9a388d65f4c326bdf70b4b21bfd3d"
+  integrity sha512-ixiZDuI7q1Udz13H+6A2hB/eYCQxIE1a0juA9msz5JIF89PTdsFlaaKJxWMwhAC4GpOHQmqBLWv8SAqWWn7m2Q==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     diff "^8.0.2"

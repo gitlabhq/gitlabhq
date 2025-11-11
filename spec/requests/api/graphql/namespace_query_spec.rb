@@ -262,27 +262,33 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
 
           link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
 
-          expect(link_paths).to include(
-            'releasesPath' => ::Gitlab::Routing.url_helpers.project_releases_path(test_project),
-            'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project),
-            'rssPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :atom),
-            'calendarPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :ics)
+          expect(link_paths['releasesPath']).to eq(
+            ::Gitlab::Routing.url_helpers.project_releases_path(test_project, format: :json)
+          )
+          expect(link_paths['projectImportJiraPath']).to eq(
+            ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project)
+          )
+          expect(link_paths['rssPath']).to match(
+            %r{^/#{Regexp.escape(test_project.full_path)}/-/work_items\.atom\?feed_token=glft-.+-#{user.id}$}
+          )
+          expect(link_paths['calendarPath']).to match(
+            %r{^/#{Regexp.escape(test_project.full_path)}/-/work_items\.ics\?feed_token=glft-.+-#{user.id}$}
           )
         end
 
         context 'when user is anonymous' do
           let(:current_user) { nil }
 
-          it 'still returns the project link paths' do
+          it 'returns paths without feed tokens' do
             post_graphql(query_string, current_user: current_user)
 
             link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
 
-            expect(link_paths).to include(
-              'releasesPath' => ::Gitlab::Routing.url_helpers.project_releases_path(test_project),
-              'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project),
-              'rssPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :atom),
-              'calendarPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :ics)
+            expect(link_paths['rssPath']).to eq(
+              ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :atom)
+            )
+            expect(link_paths['calendarPath']).to eq(
+              ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :ics)
             )
           end
         end
@@ -305,28 +311,32 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
 
         let(:query_string) { graphql_query_for(:namespace, { 'fullPath' => test_group.full_path }, query_fields) }
 
-        it 'returns the group link paths' do
+        it 'returns the group link paths with feed tokens' do
           post_graphql(query_string, current_user: current_user)
 
           link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
 
-          expect(link_paths).to include(
-            'rssPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :atom),
-            'calendarPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :ics)
+          expect(link_paths['rssPath']).to match(
+            %r{^/groups/#{Regexp.escape(test_group.full_path)}/-/work_items\.atom\?feed_token=glft-.+-#{user.id}$}
+          )
+          expect(link_paths['calendarPath']).to match(
+            %r{^/groups/#{Regexp.escape(test_group.full_path)}/-/work_items\.ics\?feed_token=glft-.+-#{user.id}$}
           )
         end
 
         context 'when user is anonymous' do
           let(:current_user) { nil }
 
-          it 'still returns the group link paths' do
+          it 'returns paths without feed tokens' do
             post_graphql(query_string, current_user: current_user)
 
             link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
 
-            expect(link_paths).to include(
-              'rssPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :atom),
-              'calendarPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :ics)
+            expect(link_paths['rssPath']).to eq(
+              ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :atom)
+            )
+            expect(link_paths['calendarPath']).to eq(
+              ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :ics)
             )
           end
         end

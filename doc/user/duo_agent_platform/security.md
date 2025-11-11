@@ -8,7 +8,7 @@ title: GitLab Duo Agent Platform authentication and authorization
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro or Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
@@ -27,26 +27,21 @@ For more information, see the history.
 
 {{< /alert >}}
 
-GitLab Duo Agent Platform uses a service account `@duo-developer` to perform actions on behalf of a user.
+GitLab Duo Agent Platform uses a service account, `@duo-developer`, to perform actions on behalf of a user.
 This service account, when combined with the user account, is called a *composite identity*.
 A composite identity helps you limit the access given to a user, because those privileges are given to the service account instead.
 
-Composite identity is supported for the following flows:
+Composite identity is used for the following flows:
 
 - [Fix CI/CD Pipeline](flows/fix_pipeline.md)
 - [Convert to GitLab CI/CD](flows/convert_to_gitlab_ci.md)
 - [Issue to Merge Request](flows/issue_to_mr.md)
 - Any flow started through the endpoint `api/v4/ai/duo_workflows/workflows`
 
-## Turn on composite identity
+You must [turn on composite identity](../../administration/gitlab_duo/setup.md#turn-on-composite-identity)
+to use the GitLab Duo Agent Platform.
 
-For GitLab Self-Managed, you must turn on composite identity.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo**.
-1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.
-
-## Composite Identity tokens
+## Composite identity token
 
 The token that authenticates requests is a composite of two identities:
 

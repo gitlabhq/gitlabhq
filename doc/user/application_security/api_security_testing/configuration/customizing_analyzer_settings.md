@@ -16,7 +16,7 @@ provide a script that performs an authentication flow or calculates the token.
 is an authentication method built into the HTTP protocol and used in conjunction with
 [transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
 
-We recommended that you [create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project)
+Create a [CI/CD variable](../../../../ci/variables/_index.md#for-a-project)
 for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
 variables from the GitLab project's page at **Settings** > **CI/CD**, in the **Variables** section.
 Because of the [limitations on masked variables](../../../../ci/variables/_index.md#mask-a-cicd-variable),
@@ -447,7 +447,7 @@ It is also possible to write messages from your script to a log file that is col
 
 Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during standard running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
-Following our example, we provided `renew_token.py` in the environment variable `APISEC_OVERRIDES_CMD`. Notice two things in the script:
+The example provides `renew_token.py` in the environment variable `APISEC_OVERRIDES_CMD`. Notice two things in the script:
 
 - Log file is saved in the location indicated by the environmental variable `CI_PROJECT_DIR`.
 - Log filename should match `gl-*.log`.
@@ -491,7 +491,7 @@ def get_auth_response():
         auth=(os.environ.get('AUTH_USER'), os.environ.get('AUTH_PWD'))
     )
 
-# In our example, access token is retrieved from a given endpoint
+# In the example, access token is retrieved from a given endpoint
 try:
 
     # Performs a http request, response sample:
@@ -540,7 +540,7 @@ try:
     if os.path.exists(overrides_file_path):
         os.unlink(overrides_file_path)
 
-    # overwrites the file with our updated dictionary
+    # overwrites the file with the updated dictionary
     with open(overrides_file_path, "wb+") as fd:
         fd.write(json.dumps(overrides_data).encode('utf-8'))
 except Exception as e:
@@ -573,7 +573,7 @@ echo "**** python dependencies installed ****"
 # end
 ```
 
-You have to update your configuration to set the `APISEC_PRE_SCRIPT` to our new `user-pre-scan-set-up.sh` script. For example:
+You have to update your configuration to set the `APISEC_PRE_SCRIPT` to the new `user-pre-scan-set-up.sh` script. For example:
 
 ```yaml
 stages:
@@ -592,7 +592,9 @@ variables:
   APISEC_OVERRIDES_INTERVAL: 300
 ```
 
-In the previous sample, you could use the script `user-pre-scan-set-up.sh` to also install new runtimes or applications that later on you could use in our overrides command.
+In the previous sample, you can use the script `user-pre-scan-set-up.sh` to install new
+runtimes or applications. Then use those runtimes or applications in the overrides
+command.
 
 ## Request Headers
 
@@ -677,27 +679,31 @@ variables:
   APISEC_EXCLUDE_PATHS: /auth
 ```
 
-To exclude `/auth`, and child resources (`/auth/child`), we use a wildcard.
+To exclude `/auth`, and child resources (`/auth/child`), use a wildcard.
 
 ```yaml
 variables:
   APISEC_EXCLUDE_PATHS: /auth*
 ```
 
-To exclude multiple paths we use the `;` character. In this example we exclude `/auth*` and `/v1/*`.
+To exclude multiple paths, use the `;` character. The following example
+excludes `/auth*` and `/v1/*`.
 
 ```yaml
 variables:
   APISEC_EXCLUDE_PATHS: /auth*;/v1/*
 ```
 
-To exclude one or more nested levels within a path we use `**`. In this example we are testing API endpoints. We are testing `/api/v1/` and `/api/v2/` of a data query requesting `mass`, `brightness` and `coordinates` data for `planet`, `moon`, `star`, and `satellite` objects. Example paths that could be scanned include, but are not limited to:
+To exclude one or more nested levels within a path, use `**`. The following example tests
+`/api/v1/` and `/api/v2/` API endpoints with a data query requesting `mass`,
+`brightness`, and `coordinates` data for `planet`, `moon`, `star`, and `satellite`
+objects. Example paths that could be scanned include:
 
 - `/api/v2/planet/coordinates`
 - `/api/v1/star/mass`
 - `/api/v2/satellite/brightness`
 
-In this example we test the `brightness` endpoint only:
+This example tests the `brightness` endpoint only:
 
 ```yaml
 variables:
@@ -794,7 +800,7 @@ The exclude parameters uses `body-form` when the request uses a content type `ap
 
 To exclude the `schema` property in the root object, set the `body-json` property's value to an array with the JSON Path expression `[ "$.schema" ]`.
 
-The JSON Path expression uses special syntax to identify JSON nodes: `$` refers to the root of the JSON document, `.` refers to the current object (in our case the root object), and the text `schema` refers to a property name. Thus, the JSON path expression `$.schema` refers to a property `schema` in the root object.
+The JSON Path expression uses special syntax to identify JSON nodes: `$` refers to the root of the JSON document, `.` refers to the current object (in this case the root object), and the text `schema` refers to a property name. Thus, the JSON path expression `$.schema` refers to a property `schema` in the root object.
 For instance, the JSON document looks like this:
 
 ```json
@@ -809,7 +815,7 @@ The exclude parameters uses `body-json` when the request uses a content type `ap
 
 To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].password" ]`.
 
-The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Then, it uses `users` to refer to a property and the characters `[` and `]` to enclose the index in the array you want to use, instead of providing a number as an index you use `*` to specify any index. After the index reference, we find `.` which now refers to any given selected index in the array, preceded by a property name `password`.
+The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Then, it uses `users` to refer to a property and the characters `[` and `]` to enclose the index in the array you want to use, instead of providing a number as an index you use `*` to specify any index. After the index reference, the character `.` refers to any given selected index in the array, followed by a property name `password`.
 
 For instance, the JSON document looks like this:
 
@@ -991,7 +997,7 @@ variables:
 
 ##### Excluding two URLs and their child resources
 
-To exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
+To exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs, use the `,` character as follows:
 
 ```yaml
 stages:
@@ -1008,7 +1014,11 @@ variables:
 
 ##### Excluding URL using regular expressions
 
-To exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
+To exclude exactly `https://target/api/v1/user/create` and
+`https://target/api/v2/user/create` or any other version (`v3`, `v4`, and so on), use
+`https://target/api/v.*/user/create$`. In the regular expression, `.` indicates any
+character and `*` indicates zero or more times. The `$` indicates that the URL should
+end there.
 
 ```yaml
 stages:

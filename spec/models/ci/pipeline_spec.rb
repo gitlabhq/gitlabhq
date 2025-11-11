@@ -3928,6 +3928,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context "when there is a build #{status}" do
         before do
           create(:ci_build, status, pipeline: pipeline)
+          pipeline.update!(status: status)
         end
 
         it 'is not cancelable' do
@@ -3943,6 +3944,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'is not cancelable' do
           expect(pipeline.cancelable?).to be_falsey
         end
+      end
+    end
+
+    context "when pipeline is finished with a manual job" do
+      before do
+        create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_build, :manual, pipeline: pipeline)
+        pipeline.update!(status: 'success')
+      end
+
+      it 'is not cancelable' do
+        expect(pipeline.cancelable?).to be_falsey
       end
     end
   end

@@ -1169,10 +1169,10 @@ class Group < Namespace
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
 
-  # overriden in EE
   def supports_group_work_items?
-    false
+    ::WorkItems::TypesFilter.new(container: self).allowed_types.present?
   end
+  strong_memoize_attr :supports_group_work_items?
 
   # overriden in EE
   def has_active_hooks?(hooks_scope = :push_hooks)

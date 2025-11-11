@@ -67,9 +67,10 @@ module Import
       MODEL_LIST
     end
 
-    def initialize(import_source_user, sleep_time: BATCH_SLEEP)
+    def initialize(import_source_user, reassignment_throttling:, sleep_time: BATCH_SLEEP)
       @import_source_user = import_source_user
       @reassigned_by_user = import_source_user.reassigned_by_user
+      @reassignment_throttling = reassignment_throttling
       @execution_tracker = Gitlab::Utils::ExecutionTracker.new(MAX_RUNTIME)
       @sleep_time = sleep_time
     end
@@ -79,6 +80,10 @@ module Import
       return unless import_source_user.placeholder_user.placeholder?
 
       self.class.model_list.each do |model, columns|
+        reassignment_throttling.db_health_check!
+
+        next if reassignment_throttling.db_table_unavailable?(model.constantize)
+
         columns.each do |column|
           direct_reassign_model_user_references(model, column)
         end
@@ -87,7 +92,7 @@ module Import
 
     private
 
-    attr_accessor :import_source_user, :reassigned_by_user, :sleep_time, :execution_tracker
+    attr_accessor :import_source_user, :reassigned_by_user, :sleep_time, :execution_tracker, :reassignment_throttling
 
     # @param model [String]
     # @param column [String]

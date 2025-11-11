@@ -38,6 +38,7 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
 
   it 'returns a error if the pipline cannot be be canceled' do
     build = create(:ci_build, :success, pipeline: pipeline)
+    pipeline.update!(status: 'success')
 
     post_graphql_mutation(mutation, current_user: user)
 

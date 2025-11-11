@@ -167,6 +167,20 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags, [`duo_workflow` and `duo_workflow_in_ci`](../../administration/feature_flags/_index.md), are enabled.
 
+## Sessions stuck in created state
+
+If a session for your flow does not start:
+
+- Ensure you're not [preventing members from being added to projects]( ../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group).
+
+Flows that use a [composite identity](security.md) need to add the `@duo-developer`
+service account to your project. If your group is restricted, you cannot add users directly to projects,
+and your flows will not run. 
+
+Turn off the setting prior to running a flow in your project.
+This step only needs to be done one time, for the first flow to run.
+After that, you can turn the setting back on.
+
 ## IDE commands fail or run indefinitely
 
 When using GitLab Duo Chat (Agentic) or the Software Development flow in your IDE,

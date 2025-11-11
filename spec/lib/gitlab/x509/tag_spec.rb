@@ -7,7 +7,7 @@ RSpec.describe Gitlab::X509::Tag, feature_category: :source_code_management do
     let(:tag) { instance_double('Gitlab::Git::Tag') }
     let_it_be(:user) { create(:user, email: X509Helpers::User1.tag_email) }
     let_it_be(:project) { create(:project, path: X509Helpers::User1.path, creator: user) }
-    let(:signature) { described_class.new(project.repository, tag).signature }
+    let(:signature) { described_class.new(project.repository, described_class.context_from_tag(tag)).signature }
 
     before do
       allow(tag).to receive(:id).and_return(tag_id)

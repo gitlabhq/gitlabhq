@@ -36,5 +36,44 @@ RSpec.describe Types::Namespaces::LinkPaths, feature_category: :shared do
       .to raise_error("Unknown GraphQL type for namespace type #{namespace.class}")
   end
 
+  describe '#group' do
+    context 'when object is a Group' do
+      let_it_be(:group) { create(:group) }
+
+      it 'returns the group itself' do
+        resolver = Class.new do
+          include Types::Namespaces::LinkPaths
+
+          attr_reader :object
+
+          def initialize(obj)
+            @object = obj
+          end
+        end.new(group)
+
+        expect(resolver.send(:group)).to eq(group)
+      end
+    end
+
+    context 'when object is a ProjectNamespace' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:namespace) { project.project_namespace }
+
+      it 'returns the associated group' do
+        resolver = Class.new do
+          include Types::Namespaces::LinkPaths
+
+          attr_reader :object
+
+          def initialize(obj)
+            @object = obj
+          end
+        end.new(namespace)
+
+        expect(resolver.send(:group)).to eq(project.group)
+      end
+    end
+  end
+
   it_behaves_like "expose all link paths fields for the namespace"
 end

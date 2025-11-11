@@ -80,7 +80,7 @@ Prerequisites:
 - By default, only group, subgroup, or project Owners have the [permissions](../../permissions.md#application-security)
   required to create or assign a security policy project. Alternatively, you can create a custom role with the permission to [manage security policy links](../../custom_roles/abilities.md#security-policy-management).
 
-When you create your first scan execution policies, we provide you with templates to get started quickly with some of the most common use cases:
+When you create your first scan execution policies, templates help you to get started with some of the most common use cases:
 
 - Merge Request Security Template
 

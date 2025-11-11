@@ -5,6 +5,30 @@ module Gitlab
     include Gitlab::Utils::StrongMemoize
 
     class << self
+      def from_repository_tag(repository, tag)
+        klass = class_for_signature_type(tag.signature_type)
+        klass&.new(repository, klass.context_from_tag(tag))
+      end
+
+      def class_for_signature_type(signature_type)
+        case signature_type
+        when :PGP
+          Gitlab::Gpg::Tag
+        when :X509
+          Gitlab::X509::Tag
+        when :SSH
+          Gitlab::Ssh::Tag
+        end
+      end
+
+      def context_from_tag(tag)
+        {
+          user_email: tag.user_email,
+          id: tag.id,
+          has_signature: tag.has_signature?
+        }
+      end
+
       def batch_read_cached_signatures(project, signed_tags)
         signed_tags.group_by(&:signature_class).flat_map do |klass, signed_tags|
           next [] unless klass
@@ -23,13 +47,15 @@ module Gitlab
       end
     end
 
-    def initialize(repository, tag)
+    def initialize(repository, context)
       @repository = repository
-      @tag = tag
+      @context = context
     end
 
+    attr_reader :context, :repository
+
     def object_name
-      @tag.id
+      @context[:id]
     end
 
     def signature_data(timeout: GitalyClient.fast_timeout)
@@ -40,7 +66,7 @@ module Gitlab
     end
 
     def signature
-      return unless @tag.has_signature?
+      return unless context[:has_signature]
     end
 
     def lazy_cached_signature(timeout: GitalyClient.fast_timeout)

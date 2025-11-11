@@ -188,8 +188,6 @@ When features are configured to use GitLab AI vendor models:
 
 {{< /alert >}}
 
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). Offline licenses are not supported to use this configuration. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/billing_account.md).
-
 For more information, see:
 
 - [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model)

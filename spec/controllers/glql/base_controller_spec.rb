@@ -5,6 +5,63 @@ require 'spec_helper'
 RSpec.describe Glql::BaseController, feature_category: :integrations do
   let(:query) { 'query GLQL { __typename }' }
   let(:query_sha) { Digest::SHA256.hexdigest(query) }
+  let(:rate_limit_message) do
+    'Query temporarily blocked due to repeated timeouts. Please try again later or narrow your search scope.'
+  end
+
+  # Shared helper to mock QueryService with different response scenarios
+  def mock_query_service(response_type = :success, custom_options = {})
+    default_responses = {
+      success: {
+        data: { '__typename' => 'Query' },
+        errors: nil,
+        complexity_score: 1,
+        duration_s: 0.1,
+        timeout_occurred: false,
+        rate_limited: false
+      },
+      timeout: {
+        data: nil,
+        errors: [{ message: 'Query timed out' }],
+        complexity_score: nil,
+        duration_s: 0.1,
+        timeout_occurred: true,
+        rate_limited: false
+      },
+      rate_limited: {
+        data: nil,
+        errors: [{ message: rate_limit_message }],
+        complexity_score: nil,
+        duration_s: 0.1,
+        timeout_occurred: false,
+        rate_limited: true
+      },
+      exception: {
+        data: nil,
+        errors: [{ message: 'Test error' }],
+        complexity_score: nil,
+        duration_s: 0.1,
+        timeout_occurred: false,
+        rate_limited: false,
+        exception: StandardError.new('Test error')
+      },
+      failed: {
+        data: nil,
+        errors: [{ message: 'Query failed' }],
+        complexity_score: nil,
+        duration_s: 0.1,
+        timeout_occurred: false,
+        rate_limited: false,
+        exception: StandardError.new('Query failed')
+      }
+    }
+
+    response = default_responses[response_type].merge(custom_options)
+
+    allow_next_instance_of(::Integrations::Glql::QueryService) do |instance|
+      allow(instance).to receive(:execute).and_return(response)
+    end
+  end
 
   describe 'POST #execute' do
     let(:user) { create(:user, last_activity_on: 2.days.ago.to_date) }
@@ -29,28 +86,16 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
 
     context 'when a GLQL query executes successfully' do
+      before do
+        mock_query_service(:success)
+      end
+
       it 'returns successful response and does not trigger rate limiter' do
         execute_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({ 'data' => { '__typename' => 'Query' } })
-
-        expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
-        expect(current_rate_limit_value(query_sha)).to be_nil
-      end
-
-      it 'tracks SLI metrics for each successful glql query' do
-        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_apdex).with({
-          labels: qlql_sli_labels.merge(error_type: nil),
-          success: true
-        })
-
-        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
-          labels: qlql_sli_labels.merge(error_type: nil),
-          error: false
-        })
-
-        execute_request
+        # Rate limiting is handled by QueryService, not tested here
       end
 
       it 'does not fail when SLIs were initialized' do
@@ -62,113 +107,59 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
 
     context 'when a single ActiveRecord::QueryAborted error occurs' do
       before do
-        allow(controller)
-          .to receive(:execute_query)
-          .once
-          .and_raise(ActiveRecord::QueryCanceled)
+        mock_query_service(:timeout)
       end
 
-      it 're-raises ActiveRecord::QueryAborted but does not yet trigger rate limiter' do
+      it 're-raises ActiveRecord::QueryAborted and returns service unavailable' do
         execute_request
 
         expect(response).to have_gitlab_http_status(:service_unavailable)
-        expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
-        expect(current_rate_limit_value(query_sha)).to eq "1"
-      end
-
-      it 'does not track apdex for failed queries' do
-        expect(Gitlab::Metrics::GlqlSlis).not_to receive(:record_apdex)
-
-        execute_request
-      end
-
-      it 'tracks SLI metrics for failed glql query' do
-        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
-          labels: qlql_sli_labels.merge(error_type: :query_aborted),
-          error: true
-        })
-
-        execute_request
+        expect(json_response['errors']).to include(a_hash_including('message' => 'Query timed out'))
+        # Rate limiting is handled by QueryService, not tested here
       end
     end
 
-    context 'when 2 consecutive ActiveRecord::QueryAborted errors occur' do
-      it 're-raises ActiveRecord::QueryAborted and triggers rate limiter' do
-        expect(controller)
-          .to receive(:execute_query)
-          .twice
-          .and_raise(ActiveRecord::QueryCanceled)
+    context 'when rate limiting is triggered' do
+      before do
+        mock_query_service(:rate_limited)
+      end
 
-        # Tracks SLIs for each occurrence of ActiveRecord::QueryAborted
-        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
-          labels: qlql_sli_labels.merge(error_type: :query_aborted),
-          error: true
-        }).twice
-
-        # 1st ActiveRecord::QueryAborted raised, error counter 1
-        execute_request
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-        expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
-        expect(current_rate_limit_value(query_sha)).to eq "1"
-
-        # 2nd ActiveRecord::QueryAborted raised, error counter 2
-        execute_request
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-        expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_truthy
-        expect(current_rate_limit_value(query_sha)).to eq "2"
-
-        # 3rd request returns GlqlQueryLockedError right away, error counter remains the same
+      it 'handles GlqlQueryLockedError and returns forbidden status' do
         execute_request
 
         expect(response).to have_gitlab_http_status(:forbidden)
-        expect(current_rate_limit_value(query_sha)).to eq "2"
+        expect(json_response['errors']).to include(a_hash_including('message' => rate_limit_message))
+        # Rate limiting is handled by QueryService, not tested here
       end
     end
 
     context 'when an error other than ActiveRecord::QueryAborted is raised' do
       before do
-        allow(controller).to receive(:execute_query).and_raise(StandardError)
+        mock_query_service(:exception)
       end
 
-      it 'handles the error but does not trigger rate limiter' do
+      it 'handles the error and returns internal server error' do
         execute_request
 
-        expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
-        expect(current_rate_limit_value(query_sha)).to be_nil
-      end
-
-      it 'tracks errors for other than :query_aborted type' do
-        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
-          labels: qlql_sli_labels.merge(error_type: :other),
-          error: true
-        })
-
-        execute_request
-      end
-    end
-
-    context 'when 2 consecutive errors other than ActiveRecord::QueryAborted are raised' do
-      it 'handles the error but does not trigger rate limiter' do
-        expect(controller).to receive(:execute_query).twice.and_raise(StandardError)
-
-        execute_request
-
-        expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
-        expect(current_rate_limit_value(query_sha)).to be_nil
-
-        execute_request
-
-        expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
-        expect(current_rate_limit_value(query_sha)).to be_nil
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(json_response['errors']).to include(a_hash_including('message' => 'Internal server error: Test error'))
+        # Rate limiting is handled by QueryService, not tested here
       end
     end
 
     context 'when load balancing enabled', :db_load_balancing do
-      it 'uses the replica' do
-        expect(Gitlab::Database::LoadBalancing::SessionMap)
-          .to receive(:with_sessions).with(Gitlab::Database::LoadBalancing.base_models).and_call_original
+      before do
+        mock_query_service(:success)
+      end
+
+      it 'uses QueryService which handles load balancing' do
+        expect_next_instance_of(::Integrations::Glql::QueryService) do |instance|
+          expect(instance).to receive(:execute).with(
+            query: query,
+            variables: {},
+            context: { is_sessionless_user: false }
+          )
+        end
 
         execute_request
       end
@@ -205,11 +196,40 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
         ]
       end
 
+      before do
+        # Mock the GraphQL logs that would be created by the QueryService
+        RequestStore.store[:graphql_logs] = [
+          {
+            operation_name: 'GLQL',
+            complexity: 1,
+            depth: 1,
+            used_deprecated_arguments: [],
+            used_deprecated_fields: [],
+            used_fields: ['Query.__typename'],
+            variables: '{}',
+            glql_referer: 'path',
+            glql_query_sha: query_sha
+          }
+        ]
+      end
+
       it 'appends glql-related metadata for logging' do
         execute_request
 
         expect(controller).to have_received(:append_info_to_payload)
-        expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_logs)
+        expect(log_payload.dig(:metadata, :graphql)).to include(
+          hash_including(
+            operation_name: 'GLQL',
+            complexity: 1,
+            depth: 1,
+            used_deprecated_arguments: [],
+            used_deprecated_fields: [],
+            used_fields: ['Query.__typename'],
+            variables: '{}',
+            glql_referer: 'path',
+            glql_query_sha: query_sha
+          )
+        )
       end
     end
 
@@ -223,10 +243,18 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
         ]
       end
 
+      before do
+        # Mock the GraphQL logs that would be created by the QueryService for failed queries
+        RequestStore.store[:graphql_logs] = [
+          {
+            glql_referer: 'path',
+            glql_query_sha: query_sha
+          }
+        ]
+      end
+
       it 'still appends glql-related metadata for logging' do
-        allow(controller).to receive(:execute) do
-          raise ActiveRecord::QueryAborted
-        end
+        mock_query_service(:failed)
 
         execute_request
 
@@ -242,11 +270,9 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
 
     it 'handles GlqlQueryLockedError' do
-      allow(controller).to receive(:execute) do
-        raise Glql::BaseController::GlqlQueryLockedError, error_message
-      end
+      mock_query_service(:rate_limited)
 
-      post :execute
+      execute_request
 
       expect(json_response).to include(
         'errors' => include(a_hash_including('message' => error_message))
@@ -255,6 +281,10 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
   end
 
   describe 'set_namespace_context' do
+    before do
+      mock_query_service(:success)
+    end
+
     context 'when the `project` param is provided' do
       let_it_be(:project) { create(:project) }
 
@@ -293,20 +323,41 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
   end
 
-  def execute_request(extra_params = {})
-    post :execute, params: { query: query, operationName: 'GLQL' }.merge(extra_params)
-  end
+  describe 'QueryService integration' do
+    let(:user) { create(:user, last_activity_on: 2.days.ago.to_date) }
 
-  def current_rate_limit_value(sha)
-    # The value is nil if the key does not yet exist in Redis
-    value = nil
-
-    Gitlab::Redis::RateLimiting.with do |redis|
-      redis.scan_each(match: "application_rate_limiter:glql:#{sha}*") do |key|
-        value = redis.get(key)
-      end
+    before do
+      sign_in(user)
+      Current.organization = create(:organization)
     end
 
-    value
+    it 'creates QueryService with correct parameters' do
+      expect(::Integrations::Glql::QueryService).to receive(:new) do |args|
+        expect(args[:current_user]).to eq(user)
+        expect(args[:original_query]).to eq(query)
+        expect(args[:request]).to eq(request)
+        expect(args[:current_organization]).to eq(Current.organization)
+      end.and_call_original
+
+      mock_query_service(:success)
+
+      execute_request
+    end
+
+    it 'calls QueryService#execute with correct parameters' do
+      expect_next_instance_of(::Integrations::Glql::QueryService) do |instance|
+        expect(instance).to receive(:execute).with(
+          query: query,
+          variables: {},
+          context: { is_sessionless_user: false }
+        )
+      end
+
+      execute_request
+    end
+  end
+
+  def execute_request(extra_params = {})
+    post :execute, params: { query: query, operationName: 'GLQL' }.merge(extra_params)
   end
 end

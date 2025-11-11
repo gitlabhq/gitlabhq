@@ -110,19 +110,9 @@ module Gitlab
 
       def signed_tag
         return unless has_signature?
+        return unless signature_type == :X509 || can_use_lazy_cached_signature?
 
-        case signature_type
-        when :PGP
-          return unless render_gpg?
-
-          Gpg::Tag.new(@repository, self)
-        when :X509
-          X509::Tag.new(@repository, self)
-        when :SSH
-          return unless render_ssh?
-
-          Ssh::Tag.new(@repository, self)
-        end
+        SignedTag.from_repository_tag(repository, self)
       end
       strong_memoize_attr :signed_tag
 

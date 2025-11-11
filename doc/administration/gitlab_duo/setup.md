@@ -15,14 +15,25 @@ gitlab_dedicated: no
 
 To ensure GitLab Duo is configured properly and can connect to GitLab:
 
-- You must ensure both outbound and inbound connectivity exists. Network firewalls can cause lag or delay.
+- Ensure both outbound and inbound connectivity exists. Network firewalls can cause lag or delay.
 - [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
-- You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
+- [Activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
   You cannot use an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license) or a legacy license.
-- You should use GitLab 17.2 and later for the best results. Earlier versions might continue to work, however the experience may be degraded.
+- Turn on composite identity, to help ensure actions are secure.
+- Use GitLab 17.2 and later for the best results. Earlier versions might continue to work, however the experience may be degraded.
 
 GitLab Duo features that are experimental or beta are turned off by default
 and [must be turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+
+## Turn on composite identity
+
+You must turn on [composite identity](../../user/duo_agent_platform/security.md),
+so that the `@duo-developer` service account can perform actions
+on behalf of users.
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../user/interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **GitLab Duo**.
+1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.
 
 ## Allow outbound connections from the GitLab instance
 

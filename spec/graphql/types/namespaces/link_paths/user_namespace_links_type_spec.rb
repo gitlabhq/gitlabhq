@@ -16,6 +16,7 @@ RSpec.describe Types::Namespaces::LinkPaths::UserNamespaceLinksType, feature_cat
 
     where(:field, :value) do
       :user_export_email | nil
+      :new_trial_path | nil
     end
 
     with_them do

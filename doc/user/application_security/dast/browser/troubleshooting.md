@@ -322,7 +322,7 @@ dast:
     DAST_LOG_CONFIG: "crawl:debug"
 ```
 
-For example, the following output shows that four anchor links we discovered during the crawl of the page at `https://example.com`.
+For example, the following output shows that four anchor links discovered during the crawl of the page at `https://example.com`.
 
 ```plaintext
 2022-11-17T11:18:05.578 DBG CRAWL executing step nav_id=6ec647d8255c729160dd31cb124e6f89 path="LoadURL [https://example.com]" step=1

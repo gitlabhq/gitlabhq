@@ -54,7 +54,9 @@ module QA
           end
 
           Page::Project::Wiki::List.perform do |list|
-            list.click_page_link random_page
+            within('.wiki-page-details') do
+              list.click_page_link random_page
+            end
           end
 
           Page::Project::Wiki::Show.perform do |wiki|

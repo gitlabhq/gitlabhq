@@ -1,25 +1,18 @@
-- @no_container = true
 - breadcrumb_title(@page.template? ? s_("Wiki|New template") : s_("Wiki|New page")) unless @page.persisted?
 - wiki_page_title @page, @page.persisted? ? _('Edit') : _('New')
-- add_page_specific_style 'page_bundles/wiki'
-- @gfm_form = true
-- @noteable_type = 'Wiki'
 - templates = @templates.map { |t| wiki_page_basic_info(t) }
 
-= form_errors(@page, truncate: :title)
-
-.wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
-  = render 'shared/wikis/sidebar', editing: true
-  .wiki-page-details
-    #js-vue-wiki-edit-app{ data: {
-      testid: 'wiki-page-edit-app',
-      error: @error,
-      page_heading: @page.title,
-      page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
-      is_page_template: @page.template?.to_s,
-      page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
-      wiki_url: wiki_page_path(@wiki, @page),
-      format_options: wiki_markup_hash_by_name_id.to_json,
-      templates: templates.to_json,
-      templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-    } }
+= render 'shared/wikis/layout' do
+  = form_errors(@page, truncate: :title)
+  #js-vue-wiki-edit-app{ data: {
+    testid: 'wiki-page-edit-app',
+    error: @error,
+    page_heading: @page.title,
+    page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
+    is_page_template: @page.template?.to_s,
+    page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+    wiki_url: wiki_page_path(@wiki, @page),
+    format_options: wiki_markup_hash_by_name_id.to_json,
+    templates: templates.to_json,
+    templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+  } }

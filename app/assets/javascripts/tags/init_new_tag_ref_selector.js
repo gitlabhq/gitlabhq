@@ -16,6 +16,7 @@ export default function initNewTagRefSelector() {
             name: hiddenInputName,
             queryParams: { sort: 'updated_desc' },
             projectId,
+            useSymbolicRefNames: true,
           },
         });
       },

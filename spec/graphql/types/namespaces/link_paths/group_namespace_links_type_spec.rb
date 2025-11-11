@@ -19,12 +19,29 @@ RSpec.describe Types::Namespaces::LinkPaths::GroupNamespaceLinksType, feature_ca
       :new_project | lazy { "/projects/new?namespace_id=#{namespace.id}" }
       :new_comment_template | [{ href: "/-/profile/comment_templates", text: "Your comment templates" }]
       :user_export_email | lazy { user.notification_email_or_default }
+      :namespace_full_path | lazy { namespace.full_path }
+      :group_path | lazy { namespace.full_path }
+      :issues_list_path | lazy { "/groups/#{namespace.full_path}/-/issues" }
     end
 
     with_them do
       it "expects to return the right value" do
         expect(resolve_field(field, namespace, current_user: user)).to eq(value)
       end
+    end
+
+    it 'returns rss_path with feed token' do
+      path = resolve_field(:rss_path, namespace, current_user: user)
+      expect(path).to match(
+        %r{^/groups/#{Regexp.escape(namespace.full_path)}/-/work_items\.atom\?feed_token=glft-.+-#{user.id}$}
+      )
+    end
+
+    it 'returns calendar_path with feed token' do
+      path = resolve_field(:calendar_path, namespace, current_user: user)
+      expect(path).to match(
+        %r{^/groups/#{Regexp.escape(namespace.full_path)}/-/work_items\.ics\?feed_token=glft-.+-#{user.id}$}
+      )
     end
   end
 

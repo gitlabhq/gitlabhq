@@ -1,8 +1,4 @@
 - page_title _("Wiki")
-- @right_sidebar = true
-- @gfm_form = true
-- @noteable_type = 'Wiki'
-- add_page_specific_style 'page_bundles/wiki'
 - messages = wiki_404_messages
 - hide_create = @error.present?
 
@@ -12,27 +8,26 @@
 - primary_button_text = nil
 - primary_button_link = nil
 
-- if @error.present?
-  = render Pajamas::AlertComponent.new(alert_options: { id: 'error_explanation', class: 'gl-mb-3'},
-    dismissible: false,
-    variant: :danger) do |c|
-    - c.with_body do
-      %ul.gl-pl-4
-        = @error
+= render 'shared/wikis/layout' do
+  - if @error.present?
+    = render Pajamas::AlertComponent.new(alert_options: { id: 'error_explanation', class: 'gl-mb-3'},
+      dismissible: false,
+      variant: :danger) do |c|
+      - c.with_body do
+        %ul.gl-pl-4
+          = @error
 
-- if !hide_create && can?(current_user, :create_wiki, @wiki.container)
-  - title = messages.dig(:writable, :title)
-  - primary_button_text = s_('WikiEmpty|Create this page…')
-  - primary_button_link = wiki_page_path(@wiki, params[:id], view: 'create')
-  - description = messages.dig(:writable, :body)
+  - if !hide_create && can?(current_user, :create_wiki, @wiki.container)
+    - title = messages.dig(:writable, :title)
+    - primary_button_text = s_('WikiEmpty|Create this page…')
+    - primary_button_link = wiki_page_path(@wiki, params[:id], view: 'create')
+    - description = messages.dig(:writable, :body)
 
-= render 'shared/wikis/sidebar'
+  = render Pajamas::EmptyStateComponent.new(svg_path: illustration,
+    title: title,
+    primary_button_text: primary_button_text,
+    primary_button_link: primary_button_link,
+    empty_state_options: { data: { testid: 'wiki-404' } }) do |c|
 
-= render Pajamas::EmptyStateComponent.new(svg_path: illustration,
-  title: title,
-  primary_button_text: primary_button_text,
-  primary_button_link: primary_button_link,
-  empty_state_options: { data: { testid: 'wiki-404' } }) do |c|
-
-  - c.with_description do
-    = description
+    - c.with_description do
+      = description

@@ -220,6 +220,7 @@ commands:
       --config 'model_providers.gitlab.env_key="OPENAI_API_KEY"' \
       --config 'model_providers.gitlab.wire_api="responses"' \
       --config "model_providers.gitlab.http_headers=${header_str}" \
+      --config shell_environment_policy.ignore_default_excludes=true \
       --dangerously-bypass-approvals-and-sandbox "
     You are an AI assistant helping with GitLab operations.
 

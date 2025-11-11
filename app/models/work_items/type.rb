@@ -48,7 +48,7 @@ module WorkItems
     # where it's possible to switch between issue and incident.
     CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
 
-    EE_BASE_TYPES = %w[objective epic key_result requirement].freeze
+    EE_BASE_TYPES = %w[epic key_result objective requirement].freeze
 
     ignore_column :correct_id, remove_with: '18.1', remove_after: '2025-05-15'
 
@@ -94,15 +94,6 @@ module WorkItems
 
     def self.default_issue_type
       default_by_type(:issue)
-    end
-
-    def self.allowed_types_for_issues
-      base_types.keys.excluding('objective', 'key_result', 'epic')
-    end
-
-    # method overridden in EE to perform the corresponding checks for the Epic type
-    def self.allowed_group_level_types(_resource_parent)
-      []
     end
 
     # resource_parent is used in EE

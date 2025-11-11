@@ -75,8 +75,6 @@ GitLab Duo Vulnerability Explanation can help you with a vulnerability by using 
 
 Prerequisites:
 
-- You must have the GitLab Ultimate subscription tier.
-- Have a paid GitLab Duo Enterprise seat.
 - [GitLab Duo](../../gitlab_duo/turn_on_off.md) must be enabled for the group or instance.
 - You must be a member of the project.
 - The vulnerability must be from a SAST scanner.

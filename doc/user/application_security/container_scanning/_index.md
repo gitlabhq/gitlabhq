@@ -30,14 +30,14 @@ you wrote yourself.
 
 GitLab offers both container scanning and dependency scanning
 to ensure coverage for all these dependency types. To cover as much of your risk area as
-possible, we encourage you to use all the security scanners. For a comparison of these features, see
+possible, use all the security scanners. For a comparison of these features, see
 [Dependency scanning compared to container scanning](../comparison_dependency_and_container_scanning.md).
 
 GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) security scanner to perform vulnerability static analysis in containers.
 
 {{< alert type="warning" >}}
 
-The Grype analyzer is no longer maintained, except for limited fixes as explained in our
+The Grype analyzer is no longer maintained, except for limited fixes as explained in the GitLab
 [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
 The existing current major version for the Grype analyzer image will continue to be updated with the
 latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
@@ -576,9 +576,9 @@ To use container scanning in an offline environment, you need:
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images. However, we
-recommend keeping the pull policy setting to `always` if not in an offline environment, as this
-enables the use of updated scanners in your CI/CD pipelines.
+in an offline environment if you prefer using only locally available Docker images. However,
+keep the pull policy setting to `always` if not in an offline environment to
+enable the use of updated scanners in your CI/CD pipelines.
 
 ##### Support for Custom Certificate Authorities
 
@@ -634,7 +634,7 @@ The methods described here apply to `container_scanning` jobs that are defined i
 
 #### Automating container scanning vulnerability database updates with a pipeline
 
-We recommend that you set up a [scheduled pipeline](../../../ci/pipelines/schedules.md)
+Set up a [scheduled pipeline](../../../ci/pipelines/schedules.md)
 to fetch the latest vulnerabilities database on a preset schedule.
 Automating this with a pipeline means you do not have to do it manually each time. You can use the
 following `.gitlab-ci.yml` example as a template.

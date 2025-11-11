@@ -33,7 +33,7 @@ module Ci
     end
 
     def latest_pipeline_per_ref(pipelines)
-      ref_sha_pairs = refs.map { |ref| [ref.name, ref.dereferenced_target.sha] }
+      ref_sha_pairs = refs.filter_map { |ref| [ref.name, ref.dereferenced_target.sha] if ref.dereferenced_target }
       pipelines.latest_pipeline_per_ref(ref_sha_pairs)
     end
 

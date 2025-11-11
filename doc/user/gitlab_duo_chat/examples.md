@@ -704,7 +704,6 @@ Provide feedback on this feature in [epic 13872](https://gitlab.com/groups/gitla
 Prerequisites:
 
 - You must have permission to view the CI/CD job.
-- You must have a paid GitLab Duo Enterprise seat.
 
 ### From a merge request
 
