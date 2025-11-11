@@ -11,7 +11,15 @@ module API
       expose :file_md5, documentation: { type: 'string', example: '58e6a45a629910c6ff99145a688971ac' }
       expose :file_sha1, documentation: { type: 'string', example: 'ebd193463d3915d7e22219f52740056dfd26cbfe' }
       expose :file_sha256, documentation: { type: 'string', example: 'a903393463d3915d7e22219f52740056dfd26cbfeff321b' }
-      expose :pipelines, if: ->(package_file) { package_file.pipelines.present? }, using: Package::Pipeline
+      expose :pipelines, if: ->(package_file, opts) {
+        package_file.pipelines.present? && can_read_pipeline?(package_file, opts)
+      }, using: Package::Pipeline
+
+      private
+
+      def can_read_pipeline?(package_file, opts)
+        Ability.allowed?(opts[:user], :read_pipeline, package_file.package.project)
+      end
     end
   end
 end

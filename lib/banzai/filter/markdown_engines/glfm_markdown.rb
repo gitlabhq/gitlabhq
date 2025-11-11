@@ -45,7 +45,8 @@ module Banzai
           autolink: true,
           hardbreaks: false,
           strikethrough: true,
-          unsafe: false
+          unsafe: false,
+          relaxed_autolinks: true
         }.freeze
 
         def render(text)

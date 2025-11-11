@@ -5,10 +5,12 @@ module ApplicationCable
     include Logging
     include Gitlab::Auth::AuthFinders
 
-    before_subscribe :validate_token_scope
-    periodically :validate_token_scope, every: 10.minutes
+    before_subscribe :validate_user_authorization
+    periodically :validate_user_authorization, every: 10.minutes
 
-    def validate_token_scope
+    def validate_user_authorization
+      raise Gitlab::Auth::AuthenticationError unless Ability.allowed?(current_user, :access_api)
+
       validate_and_save_access_token!(scopes: authorization_scopes, reset_token: true)
     rescue Gitlab::Auth::AuthenticationError
       handle_authentication_error

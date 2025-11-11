@@ -45,8 +45,13 @@ module API
       end
       expose :tags
 
-      expose :pipeline, if: ->(package) { package.last_build_info }, using: Package::Pipeline
-      expose :pipelines, if: ->(package) { package.pipelines.present? }, using: Package::Pipeline do |_|
+      expose :pipeline, if: ->(package, opts) {
+        package.last_build_info && can_read_pipeline?(package, opts)
+      }, using: Package::Pipeline
+
+      expose :pipelines, if: ->(package, opts) {
+        package.pipelines.present? && can_read_pipeline?(package, opts)
+      }, using: Package::Pipeline do |_|
         EMPTY_PIPELINES
       end
 
@@ -56,6 +61,10 @@ module API
 
       def project_path
         object.project.full_path
+      end
+
+      def can_read_pipeline?(package, opts)
+        Ability.allowed?(opts[:user], :read_pipeline, package.project)
       end
     end
   end
