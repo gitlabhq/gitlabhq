@@ -78,7 +78,7 @@ module Gitlab
             state :succeeded, value: 3
 
             event :run do
-              transition pending: :running
+              transition any => :running
             end
 
             event :succeed do
@@ -92,6 +92,13 @@ module Gitlab
             before_transition any => [:failed, :succeeded] do |job|
               job.finished_at = Time.current
             end
+
+            before_transition any => :running do |job|
+              job.attempts += 1
+              job.started_at = Time.current
+              job.finished_at = nil
+              job.metrics = {}
+            end
           end
 
           def first
@@ -100,6 +107,18 @@ module Gitlab
 
           def last
             order(created_at: :desc).first
+          end
+
+          def worker_attributes
+            {
+              batch_table: worker_table_name,
+              batch_column: worker_column_name,
+              sub_batch_size: sub_batch_size,
+              pause_ms: pause_ms,
+              job_arguments: worker_job_arguments,
+              min_cursor: min_cursor,
+              max_cursor: max_cursor
+            }
           end
         end
       end

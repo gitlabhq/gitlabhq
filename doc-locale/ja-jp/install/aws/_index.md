@@ -21,7 +21,7 @@ title: Amazon Web Services（AWS）でGitLab POCをインストールする
 
 {{< /alert >}}
 
-## 本番環境グレードのGitLabを使用する
+## 本番環境グレードのGitLabを使用する {#getting-started-for-production-grade-gitlab}
 
 {{< alert type="note" >}}
 
@@ -33,23 +33,23 @@ title: Amazon Web Services（AWS）でGitLab POCをインストールする
 
 GitLabは、2つのメインタイプのリファレンスアーキテクチャを維持およびテストしています。**Linuxパッケージアーキテクチャ**はインスタンスコンピューティング上に実装され、**クラウドネイティブハイブリッドアーキテクチャ**はKubernetesクラスターの使用を最大化します。クラウドネイティブハイブリッドリファレンスアーキテクチャの仕様は、Linuxパッケージアーキテクチャの説明から始まるリファレンスアーキテクチャのサイズページへの覚書セクションです。たとえば、60 RPSまたは3,000ユーザーのクラウドネイティブリファレンスアーキテクチャは、60 RPSまたは3,000ユーザーのリファレンスアーキテクチャページの[Helm Chartを使用したクラウドネイティブハイブリッドリファレンスアーキテクチャ（代替）](../../administration/reference_architectures/3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)というサブセクションにあります。
 
-### 本番環境グレードのLinuxパッケージインストールを使用する
+### 本番環境グレードのLinuxパッケージインストールを使用する {#getting-started-for-production-grade-linux-package-installations}
 
 Infrastructure as Codeツールである[GitLab Environment Tool (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/tree/main)は、AWS上のLinuxパッケージを使用して構築を開始するのに最適な場所であり、特にHAセットアップをターゲットにしている場合はそうです。すべてを自動化するわけではありませんが、Gitaly Clusterのような複雑なセットアップを完了します。GETはオープンソースであるため、誰でもその上に構築し、改善に貢献できます。
 
-### 本番環境グレードのクラウドネイティブハイブリッドGitLabを使用する
+### 本番環境グレードのクラウドネイティブハイブリッドGitLabを使用する {#getting-started-for-production-grade-cloud-native-hybrid-gitlab}
 
 [GitLab Environment Toolkit（GET）](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md)は、一連の確立されたTerraformおよびAnsibleスクリプトです。これらのスクリプトは、選択したクラウドプロバイダーへのLinuxパッケージまたはクラウドネイティブハイブリッド環境のデプロイに役立ち、GitLab開発者が[GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md)などに使用します。
 
-GitLab Environment Toolkitを使用して、AWSにクラウドネイティブハイブリッド環境をデプロイできます。ただし、必須ではないため、すべての有効な順列がサポートされない場合があります。とはいえ、スクリプトは現状のまま提供されており、それに応じて調整できます。
+GitLab Environment Toolkitを使用して、AWS上にクラウドネイティブハイブリッド環境をデプロイできます。ただし必須ではなく、すべての有効な組み合わせをサポートしているとは限りません。なお、スクリプトは現状のまま提供されており、必要に応じて調整できます。
 
-## はじめに
+## はじめに {#introduction}
 
 セットアップでは主にLinuxパッケージを使用しますが、ネイティブAWSサービスも活用します。Linuxパッケージに同梱されているPostgreSQLおよびRedisを使用する代わりに、Amazon RDSおよびElastiCacheを使用します。
 
 このガイドでは、マルチノードセットアップについて説明します。まず、Virtual Private Cloudとサブネットを設定し、データベースサーバー用のRDSやRedisクラスターとしてのElastiCacheなどのサービスを後で統合し、最後にカスタムスケーリングポリシーを使用して自動スケーリンググループで管理します。
 
-## 要件
+## 要件 {#requirements}
 
 [AWS](https://docs.aws.amazon.com/)および[Amazon EC2](https://docs.aws.amazon.com/ec2/)の基本的な知識に加えて、次のものが必要です。
 
@@ -60,19 +60,19 @@ GitLab Environment Toolkitを使用して、AWSにクラウドネイティブハ
 
 {{< alert type="note" >}}
 
-ACM経由でプロビジョニングされた証明書の検証には数時間かかる場合があります。遅延を避けるために、できるだけ早く証明書をリクエストしてください。
+ACM経由でプロビジョニングした証明書の検証には、数時間かかる場合があります。後の作業を遅らせないために、できるだけ早く証明書をリクエストしてください。
 
 {{< /alert >}}
 
-## アーキテクチャ
+## アーキテクチャ {#architecture}
 
 以下は、推奨されるアーキテクチャの図です。
 
 ![縮小された2可用性ゾーンを持つ非HAのAWSアーキテクチャ](img/aws_ha_architecture_diagram_v17_0.png)
 
-## AWSのコスト
+## AWSのコスト {#aws-costs}
 
-GitLabは次のAWSサービスを使用しており、料金情報へのリンクがあります。
+GitLabは次のAWSサービスを使用しています。各サービスの価格情報はリンク先を参照してください。
 
 - **EC2**: GitLabは共有ハードウェアにデプロイされ、[オンデマンド料金](https://aws.amazon.com/ec2/pricing/on-demand/)が適用されます。専用または予約インスタンスでGitLabを実行する場合は、そのコストについて[EC2の料金ページ](https://aws.amazon.com/ec2/pricing/)を参照してください。
 - **S3**: GitLabはS3（[料金ページ](https://aws.amazon.com/s3/pricing/)）を使用して、バックアップ、アーティファクト、およびLFSオブジェクトを保存します。
@@ -80,11 +80,11 @@ GitLabは次のAWSサービスを使用しており、料金情報へのリン�
 - **RDS**: PostgreSQLを使用するAmazon Relational Database Service（[料金ページ](https://aws.amazon.com/rds/postgresql/pricing/)）
 - **ElastiCache**: Redis設定を提供するために使用されるインメモリキャッシュ環境（[料金ページ](https://aws.amazon.com/elasticache/pricing/)）
 
-## IAM EC2インスタンスのロールとプロファイルを作成する
+## IAM EC2インスタンスのロールとプロファイルを作成する {#create-an-iam-ec2-instance-role-and-profile}
 
 [Amazon S3オブジェクトストレージ](#amazon-s3-object-storage)を使用しているため、EC2インスタンスにはS3バケットに対する読み取り、書き込み、リストの権限が必要です。GitLab設定にAWSキーを埋め込むことを避けるために、[IAMロール](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html)を使用して、このアクセス権を持つGitLabインスタンスを許可します。IAMロールにアタッチするIAMポリシーを作成する必要があります。
 
-### IAMポリシーを作成する
+### IAMポリシーを作成する {#create-an-iam-policy}
 
 1. IAMダッシュボードに移動し、左側のメニューで**Policies(ポリシー)**を選択します。
 1. **Create policy(ポリシーの作成)**を選択し、`JSON`タブを選択して、ポリシーを追加します。[セキュリティのベストプラクティスに従い、_最小の権限_を付与する](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege)ことで、必要なアクションを実行するために必要な権限のみをロールに付与します。
@@ -119,7 +119,7 @@ GitLabは次のAWSサービスを使用しており、料金情報へのリン�
 
 1. **Next(次へ)**を選択して、ポリシーを確認します。ポリシーに名前を付け（`gl-s3-policy`を使用）、**Create policy(ポリシーの作成)**を選択します。
 
-### IAMロールを作成する
+### IAMロールを作成する {#create-an-iam-role}
 
 1. 引き続きIAMダッシュボードで、左側のメニューの**Roles(ロール)**を選択し、**Create role(ロールの作成)**を選択します。
 1. **Trusted entity type(信頼できるエンティティタイプ)**で、`AWS service`を選択します。**Use cases(ユースケース)** で、ドロップダウンリストとラジオボタンの両方で`EC2`を選択し、**Next(次へ)**を選択します。
@@ -128,47 +128,47 @@ GitLabは次のAWSサービスを使用しており、料金情報へのリン�
 
 このロールは、後で[起動テンプレートを作成する](#create-a-launch-template)ときに使用します。
 
-## ネットワークを設定する
+## ネットワークを設定する {#configuring-the-network}
 
-まず、GitLabクラウドインフラストラクチャのVPCを作成します。次に、少なくとも2つの[可用性ゾーン (AZ)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)にパブリックインスタンスとプライベートインスタンスを配置するためのサブネットを作成できます。パブリックサブネットには、ルートテーブルの保持と、関連付けられたインターネットゲートウェイが必要です。
+まず、GitLabクラウドインフラストラクチャ用のVPCを作成します。次に、少なくとも2つの[アベイラビリティーゾーン（AZ）](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)にパブリックインスタンスとプライベートインスタンスを配置するためのサブネットを作成します。パブリックサブネットには、ルートテーブルの設定と関連付けられたインターネットゲートウェイが必要です。
 
-### Virtual Private Cloud (VPC)の作成
+### Virtual Private Cloud（VPC）を作成する {#creating-the-virtual-private-cloud-vpc}
 
-ここで、VPCを作成します。これは、ユーザーが制御する仮想ネットワーク環境です。
+ここで、ユーザーが制御する仮想ネットワーキング環境であるVPCを作成します。
 
 1. [Amazon Web Services](https://console.aws.amazon.com/vpc/home)にサインインします。
-1. 左側のメニューから**VPC**を選択し、**Create VPC(VPCの作成)**を選択します。「Name tag(名前タグ)」に`gitlab-vpc`を入力し、「IPv4 CIDR block(IPv4 CIDRブロック)」に`10.0.0.0/16`を入力します。専用ハードウェアが必要ない場合は、「Tenancy(テナンシー)」をデフォルトのままにできます。準備ができたら、**Create VPC(VPCの作成)**を選択します。
+1. 左側のメニューから**Your VPCs**を選択し、**Create VPC**を選択します。「Name tag」に`gitlab-vpc`と入力し、「IPv4 CIDR block」に`10.0.0.0/16`と入力します。専用ハードウェアが不要な場合、「Tenancy」はデフォルトのままでかまいません。準備ができたら、**Create VPC**を選択します。
 
-   ![GitLabクラウドインフラストラクチャのVPCを作成する](img/create_vpc_v17_0.png)
+   ![GitLabクラウドインフラストラクチャ用のVPCを作成します。](img/create_vpc_v17_0.png)
 
 1. VPCを選択し、**Actions(アクション)**、**Edit VPC Settings(VPC設定の編集)**の順に選択し、**Enable DNS resolution(DNS解決を有効にする)**をオンにします。完了したら**Save(保存)**を選択します。
 
-### サブネット
+### サブネット {#subnets}
 
 次に、さまざまな可用性ゾーンにサブネットをいくつか作成しましょう。各サブネットが、作成したVPCに関連付けられ、CIDRブロックが重複していないことを確認してください。これにより、冗長性のためにマルチAZを有効にできます。
 
-ロードバランサーとRDSインスタンスに一致するように、プライベートサブネットとパブリックサブネットも作成します。
+ロードバランサーとRDSインスタンスに対応するように、プライベートサブネットとパブリックサブネットも作成します。
 
 1. 左側のメニューから **Subnet(サブネット)**を選択します。
 1. **Create subnet(サブネットの作成)**を選択します。IPに基づくわかりやすい名前タグを付けます（例: `gitlab-public-10.0.0.0`）。先ほど作成したVPCを選択し、可用性ゾーンを選択します（ここでは`us-west-2a`を使用します）。IPv4 CIDRブロックでは、24サブネット`10.0.0.0/24`を指定します。
 
    ![サブネットの作成](img/create_subnet_v17_0.png)
 
-1. 次の手順に従って、すべてのサブネットを作成します。
+1. 同様の手順に従って、次のすべてのサブネットを作成します。
 
-   | 名前タグ                  | タイプ    | 可用性ゾーン | CIDRブロック    |
+   | 名前タグ                  | タイプ    | アベイラビリティーゾーン | CIDRブロック    |
    | ------------------------- | ------- | ----------------- | ------------- |
-   | `gitlab-public-10.0.0.0`  | パブリック  | `us-west-2a`      | `10.0.0.0/24` |
-   | `gitlab-private-10.0.1.0` | プライベート | `us-west-2a`      | `10.0.1.0/24` |
-   | `gitlab-public-10.0.2.0`  | パブリック  | `us-west-2b`      | `10.0.2.0/24` |
-   | `gitlab-private-10.0.3.0` | プライベート | `us-west-2b`      | `10.0.3.0/24` |
+   | `gitlab-public-10.0.0.0`  | public  | `us-west-2a`      | `10.0.0.0/24` |
+   | `gitlab-private-10.0.1.0` | private | `us-west-2a`      | `10.0.1.0/24` |
+   | `gitlab-public-10.0.2.0`  | public  | `us-west-2b`      | `10.0.2.0/24` |
+   | `gitlab-private-10.0.3.0` | private | `us-west-2b`      | `10.0.3.0/24` |
 
 1. すべてのサブネットが作成されたら、2つのパブリックサブネットに対して**Auto-assign IPv4(IPv4の自動割り当て)**を有効にします。
    1. 各パブリックサブネットを順番に選択し、**Action(アクション)**、**Edit subet setting(サブネット設定の編集)** の順に選択します。**Enable auto-assign public IPv4 address(パブリックIPv4アドレスの自動割り当てを有効にする)**オプションをオンにして、保存します。
 
-### インターネットゲートウェイ
+### インターネットゲートウェイ {#internet-gateway}
 
-次に、同じダッシュボードで、インターネットゲートウェイに移動して、新しいゲートウェイを作成します。
+次に、同じダッシュボードで、Internet Gatewaysに移動して、新しいゲートウェイを作成します。
 
 1. 左側のメニューから**Internet Gateways(インターネットゲートウェイ)**を選択します。
 1. **Create internet gateway(インターネットゲートウェイの作成)**を選択し、`gitlab-gateway`という名前を付けて、**Create(作成)**を選択します。
@@ -178,7 +178,7 @@ GitLabは次のAWSサービスを使用しており、料金情報へのリン�
 
 1. リストから`gitlab-vpc`を選択し、**Attach(アタッチ)**をクリックします。
 
-### NATゲートウェイを作成する
+### NATゲートウェイを作成する {#create-nat-gateways}
 
 プライベートサブネットにデプロイされたインスタンスは、アップデートのためにインターネットに接続する必要がありますが、パブリックインターネットからアクセスできないように設定します。そうするには、各パブリックサブネットにデプロイされた[NATゲートウェイ](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)を使用します。
 
@@ -191,20 +191,20 @@ GitLabは次のAWSサービスを使用しており、料金情報へのリン�
 
 2番目のNATゲートウェイを作成しますが、今回は2番目のパブリックサブネット`gitlab-public-10.0.2.0`に配置します。
 
-### ルートテーブル
+### ルートテーブル {#route-tables}
 
-#### パブリックルートテーブル
+#### パブリックルートテーブル {#public-route-table}
 
-パブリックサブネットが前のステップで作成したインターネットゲートウェイを介してインターネットにアクセスできるように、ルートテーブルを作成する必要があります。
+前の手順で作成したインターネットゲートウェイ経由でパブリックサブネットがインターネットにアクセスできるように、ルートテーブルを作成する必要があります。
 
-VPCダッシュボードで:
+VPCダッシュボードで、次の手順に従います。
 
 1. 左側のメニューから**Route Tables(ルートテーブル)**を選択します。
 1. **Create Route Table(ルートテーブルの作成)**を選択します。
 1. 「Name tag(名前タグ)」に`gitlab-public`を入力し、「VPC」で`gitlab-vpc`を選択します。
 1. **Create(作成)**を選択します。
 
-次に、インターネットゲートウェイを新しいターゲットとして追加し、すべての宛先からトラフィックを受信するようにする必要があります。
+次に、インターネットゲートウェイを新しいターゲットとして追加し、すべての宛先からトラフィックを受信するように設定する必要があります。
 
 1. 左側のメニューから**Route Tables(ルートテーブル)**を選択し、`gitlab-public`ルートを選択して、下部のオプションを表示します。
 1. **Routes(ルート)**タブを選択し、**Edit routes(ルートの編集) > Add route(ルートの追加)**を選択して、宛先として`0.0.0.0/0`を設定します。ターゲット列で、**Internet Gateway(インターネットゲートウェイ)**を選択し、先ほど作成した`gitlab-gateway`を選択します。完了したら**Save Changes(変更を保存)**を選択します。
@@ -214,9 +214,9 @@ VPCダッシュボードで:
 1. **Subnet Associations(サブネットの関連付け)**タブを選択し、**Edit subnet associations(サブネットの関連付けの編集)**を選択します。
 1. パブリックサブネットのみをオンにし、**Save associations(関連付けの保存)**を選択します。
 
-#### プライベートルートテーブル
+#### プライベートルートテーブル {#private-route-tables}
 
-各プライベートサブネット内のインスタンスが、同じ可用性ゾーン内の対応するパブリックサブネット内のNATゲートウェイを介してインターネットにアクセスできるように、2つのプライベートルートテーブルを作成する必要があります。
+各プライベートサブネット内のインスタンスが、同じアベイラビリティーゾーン内の対応するパブリックサブネットにあるNATゲートウェイ経由でインターネットにアクセスできるように、2つのプライベートルートテーブルを作成する必要があります。
 
 1. 上記と同じ手順に従って、2つのプライベートルートテーブルを作成します。それらに`gitlab-private-a`と`gitlab-private-b`という名前を付けます。
 1. 次に、宛先が`0.0.0.0/0`で、ターゲットが先ほど作成したNATゲートウェイのいずれかである新しいルートを各プライベートルートテーブルに追加します。
@@ -226,9 +226,9 @@ VPCダッシュボードで:
    1. `gitlab-private-10.0.1.0`を`gitlab-private-a`に関連付けます。
    1. `gitlab-private-10.0.3.0`を`gitlab-private-b`に関連付けます。
 
-## ロードバランサー
+## ロードバランサー {#load-balancer}
 
-ロードバランサーを作成して、GitLabアプリケーションサーバー全体で`80`と`443`のポート上の受信トラフィックを均等に分散させます。後で作成する[スケーリングポリシー](#create-an-auto-scaling-group)に基づいて、必要に応じてインスタンスがロードバランサーに追加または削除されます。さらに、ロードバランサーはインスタンスでヘルスチェックを実行します。SSL/TLSを環境で処理するには[さまざまな方法](../../administration/load_balancer.md#ssl)がありますが、このPOCでは、バックエンドSSLを使用せずにロードバランサーでSSLの終端を実行します。
+ロードバランサーを作成し、GitLabアプリケーションサーバー間でポート`80`および`443`に対する受信トラフィックを均等に分散させます。後ほど作成する[スケーリングポリシー](#create-an-auto-scaling-group)に基づいて、必要に応じてインスタンスがロードバランサーに追加または削除されます。さらに、ロードバランサーはインスタンスに対してヘルスチェックを実行します。SSL/TLSを環境内で処理するには[さまざまな方法](../../administration/load_balancer.md#ssl)がありますが、このPOCではバックエンドでSSLを使用せず、ロードバランサーでSSLの終端を行います。
 
 EC2ダッシュボードで、左側のナビゲーションバーの**Load Balancers(ロードバランサー)**を探します。
 
@@ -257,22 +257,22 @@ EC2ダッシュボードで、左側のナビゲーションバーの**Load Bala
    1. 各リスナーに適切な`Target group name`を選択します。
       - `gitlab-loadbalancer-http-target` - ポート80のTCPプロトコル
       - `gitlab-loadbalancer-ssh-target` - ポート22のTCPプロトコル
-   1. IPアドレスタイプとして**IPv4**を選択します。
+   1. IP address typeには**IPv4**を選択します。
    1. VPCドロップダウンリストから`gitlab-vpc`を選択します。
-   1. `gitlab-loadbalancer-http-target`のヘルスチェックでは、[準備完了チェックエンドポイントを使用](../../administration/load_balancer.md#readiness-check)する必要があります。[ヘルスチェックエンドポイント](../../administration/monitoring/health_check.md)の[IP許可リスト](../../administration/monitoring/ip_allowlist.md)に[VPC IPアドレス範囲(CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html)を追加する必要があります
+   1. `gitlab-loadbalancer-http-target`のヘルスチェックでは、[準備状況チェックエンドポイントを使用](../../administration/load_balancer.md#readiness-check)する必要があります。[ヘルスチェックエンドポイント](../../administration/monitoring/health_check.md)の[IP許可リスト](../../administration/monitoring/ip_allowlist.md)に、[VPC IPアドレス範囲（CIDR）](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html)を追加する必要があります。
    1. `gitlab-loadbalancer-ssh-target`のヘルスチェックでは、**TCP**を選択します。
       - ポート80と443の両方のリスナーに`gitlab-loadbalancer-http-target`を割り当てます。
       - ポート22のリスナーに`gitlab-loadbalancer-ssh-target`を割り当てます。
-   1. 一部の属性は、ターゲットグループがすでに作成された後にのみ設定できます。要件に基づいて設定できる機能の例を次に示します。
-      - ターゲットグループでは、[クライアントIPの保持](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation)がデフォルトで有効になっています。これにより、ロードバランサーで接続されたクライアントのIPがGitLabアプリケーションで保持されます。要件に基づいて、これを有効/無効にできます。
+   1. 一部の属性は、ターゲットグループの作成後にのみ設定できます。要件に応じて設定できる機能の例を次に示します。
+      - [Client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation)は、ターゲットグループではデフォルトで有効になっています。これにより、ロードバランサーに接続しているクライアントのIPがGitLabアプリケーションで保持されます。要件に応じて、有効/無効を切り替えることができます。
 
       - ターゲットグループでは、[プロキシプロトコル](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#proxy-protocol)がデフォルトで無効になっています。この機能により、ロードバランサーはプロキシプロトコルヘッダーに追加情報を送信できます。これを有効にする場合は、内部ロードバランサー、NGINXなどの他の環境コンポーネントも同様に構成されていることを確認してください。このPOCでは、[後でGitLabノード](#proxy-protocol)で有効にするだけで済みます。
 
 1. **Create Load Balancer(ロードバランサーの作成)**を選択します。
 
-ロードバランサーが起動して実行された後、セキュリティグループを再検討して、NLB経由および必要なその他の要件でのみアクセスを絞り込むことができます。
+ロードバランサーが起動して稼働したら、Security Groupsに戻り、NLB経由のアクセスのみに制限するなど、必要に応じてアクセス設定を調整します。
 
-### ロードバランサーのDNSを設定する
+### ロードバランサーのDNSを設定する {#configure-dns-for-load-balancer}
 
 Route 53ダッシュボードで、左側のナビゲーションバーの**Hosted zones(ホストゾーン)**を選択します。
 
@@ -291,13 +291,13 @@ Route 53ダッシュボードで、左側のナビゲーションバーの**Host
    1. **Hosted zones(ホストゾーン)**を選択し、上記で追加したドメインを選択します。
    1. `NS`レコードのリストが表示されます。ドメインレジストラの管理者パネルから、それぞれをドメインのDNSレコードに`NS`レコードとして追加します。これらの手順は、ドメインレジストラによって異なる場合があります。行き詰まった場合は、**「レジストラの名前」DNSレコードの追加**をGoogleで検索すると、ドメインレジストラに固有のヘルプ記事が見つかります。
 
-これを実行する手順は、使用するレジストラによって異なり、このガイドのスコープ外です。
+具体的な手順は使用するレジストラによって異なり、このガイドの範囲外です。
 
-## RDSでのPostgreSQL
+## PostgreSQLとRDS {#postgresql-with-rds}
 
-データベースサーバーには、冗長性のためにMulti AZを提供するAmazon RDS for PostgreSQLを使用します([Auroraはサポートされて**いません**](https://gitlab.com/gitlab-partners-public/aws/aws-known-issues/-/issues/10))。まず、セキュリティグループとサブネットグループを作成し、次に実際のRDSインスタンスを作成します。
+データベースサーバーには、冗長性を確保するためにマルチAZを提供するAmazon RDS for PostgreSQLを使用します（[Auroraはサポートして**いません**](https://gitlab.com/gitlab-partners-public/aws/aws-known-issues/-/issues/10)）。まず、セキュリティグループとサブネットグループを作成し、次に実際のRDSインスタンスを作成します。
 
-### RDSセキュリティグループ
+### RDSセキュリティグループ {#rds-security-group}
 
 データベースのセキュリティグループを作成することで、後で`gitlab-loadbalancer-sec-group`にデプロイするインスタンスからのインバウンドトラフィックを許可します。
 
@@ -310,7 +310,7 @@ Route 53ダッシュボードで、左側のナビゲーションバーの**Host
    1. **Source(ソース):** 先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
 1. 完了したら、**Create security group(セキュリティグループを作成)**を選択します。
 
-### RDSサブネットグループ
+### RDSサブネットグループ {#rds-subnet-group}
 
 1. RDSダッシュボードに移動し、左側のメニューから**Subnet Groups(サブネットグループ)**を選択します。
 1. **Create DB Subnet Group(DBサブネットグループを作成)**を選択します。
@@ -319,11 +319,11 @@ Route 53ダッシュボードで、左側のナビゲーションバーの**Host
 1. **Subnets(サブネット)**ドロップダウンリストから、[サブネットセクション](#subnets)で定義した2つのプライベートサブネット（`10.0.1.0/24`と`10.0.3.0/24`）を選択します。
 1. 準備ができたら**Create(作成)**を選択します。
 
-### データベースを作成する
+### データベースを作成する {#create-the-database}
 
 {{< alert type="warning" >}}
 
-データベースには、バースト可能なインスタンス（tクラスのインスタンス）を使用しないでください。これにより、高負荷が続く際にCPUクレジットが不足し、パフォーマンスの問題が発生する可能性があります。
+データベースには、バースト可能インスタンス（tクラスインスタンス）を使用しないでください。高負荷状態が長時間続くとCPUクレジットが枯渇し、パフォーマンスの問題が発生する可能性があります。
 
 {{< /alert >}}
 
@@ -339,7 +339,7 @@ Route 53ダッシュボードで、左側のナビゲーションバーの**Host
    - マスターユーザー名の`gitlab`
    - 非常に安全なマスターパスワード
 
-   これらは後で必要になるため、メモしておきます。
+   これらの情報は後で必要になるため、メモしておきます。
 
 1. DBインスタンスのサイズについては、**Standard classes(標準クラス)**を選択し、ドロップダウンリストから要件を満たすインスタンスサイズを選択します。ここでは`db.m5.large`インスタンスを使用します。
 1. **Storage(ストレージ)**で、次を設定します。
@@ -360,13 +360,13 @@ Route 53ダッシュボードで、左側のナビゲーションバーの**Host
    1. 他のすべての設定はそのままにするか、必要に応じて微調整します。
    1. 問題なければ、**Create database(データベースを作成)**を選択します。
 
-データベースが作成されたので、ElastiCacheでRedisをセットアップしましょう。
+これで、データベースが作成されました。次に、ElastiCacheを使用してRedisをセットアップします。
 
-## ElastiCacheでRedisを使用する
+## ElastiCacheを使用したRedis {#redis-with-elasticache}
 
-ElastiCacheは、インメモリでホストされるキャッシュソリューションです。Redisは独自の永続性を維持し、セッションデータ、一時キャッシュ情報、GitLabアプリケーションのバックグラウンドジョブキューの保存に使用されます。
+ElastiCacheは、ホストされるインメモリキャッシュ型のソリューションです。Redisは独自の永続性を保持し、GitLabアプリケーションのセッションデータ、一時的なキャッシュ情報、バックグラウンドジョブキューの保存に使用されます。
 
-### Redisセキュリティグループを作成する
+### Redisセキュリティグループを作成する {#create-a-redis-security-group}
 
 1. EC2ダッシュボードに移動します。
 1. 左側のメニューから**Security Groups(セキュリティグループ)**を選択します。
@@ -374,7 +374,7 @@ ElastiCacheは、インメモリでホストされるキャッシュソリュー
 1. **Inbound rules(インバウンドルール)**セクションで、**Add rule(ルールを追加)**を選択し、**Custom TCP(カスタムTCP)**ルールを追加して、ポート`6379`を設定し、「カスタム」ソースを先ほど作成した`gitlab-loadbalancer-sec-group`として設定します。
 1. 完了したら、**Create security group(セキュリティグループを作成)**を選択します。
 
-### Redisサブネットグループ
+### Redisサブネットグループ {#redis-subnet-group}
 
 1. AWSコンソールからElastiCacheダッシュボードに移動します。
 1. 左側のメニューの**Subnet Groups(サブネットグループ)**に移動し、新しいサブネットグループを作成します(ここでは`gitlab-redis-group`という名前を付けます)。先ほど作成したVPC(`gitlab-vpc`)を選択し、選択したサブネットテーブルに[プライベートサブネット](#subnets)のみが含まれていることを確認します。
@@ -382,42 +382,43 @@ ElastiCacheは、インメモリでホストされるキャッシュソリュー
 
    ![サブネットグループを作成](img/ec_subnet_v17_0.png)
 
-### Redis Clusterを作成する
+### Redis Clusterを作成する {#create-the-redis-cluster}
 
 1. ElastiCacheダッシュボードに戻ります。
-1. 左側のメニューで**Redis caches(Redisキャッシュ)**を選択し、**Create Redis cache(Redisキャッシュを作成)**を選択して、新しいRedisクラスターを作成します。
-1. **Deployment option(デプロイオプション)** で、**Design your own cache(独自のキャッシュをデザインする)**を選択します。
-1. **Creation method(作成方法)** で、**Cluster cache(クラスターキャッシュ)**を選択します。
-1. **Cluster mode(クラスターモード)**は[サポートされていない](../../administration/redis/replication_and_failover_external.md#requirements)ため、**Disabled(無効)**を選択します。クラスターモードをオフにしても、複数の可用性ゾーンにRedisをデプロイする機会があります。
-1. **Cluster info(クラスター情報)**で、クラスター名(`gitlab-redis`)と説明を入力します。
-1. **Location(ロケーション)**で、**AWS Cloud(AWSクラウド)**を選択し、**Multi-AZ(マルチAZ)**オプションを有効にします。
-1. クラスター設定セクション:
-   1. エンジンバージョンについては、[Redis要件](../requirements.md#redis)でご利用のGitLabバージョンに定義されているRedisバージョンを選択します。
-   1. 上記のRedisセキュリティグループで使用したポートであるため、ポートは`6379`のままにします。
-   1. ノードタイプ(少なくとも`cache.t3.medium`、必要に応じて調整)とレプリカの数を選択します。
-1. 接続設定セクション:
-   1. **Network type(ネットワークタイプ):** IPv4
-   1. **Subnet groups(サブネットグループ):** **Choose existing subnet group(既存のサブネットグループを選択)**を選択し、先ほど作成した`gitlab-redis-group`を選択します。
-1. 可用性ゾーンの配置セクション:
-   1. 優先する可用性ゾーンを手動で選択し、「レプリカ2」で他の2つとは異なるゾーンを選択します。
+1. 左側のメニューで**Redis caches**を選択し、**Create Redis cache**を選択して、新しいRedisクラスターを作成します。
+1. **Deployment option**で、**Design your own cache**を選択します。
+1. **Creation method**で、**Cluster cache**を選択します。
+1. **Cluster mode**は[サポートされていない](../../administration/redis/replication_and_failover_external.md#requirements)ため、**Disabled**を選択します。クラスターモードを無効にしても、複数のアベイラビリティーゾーンにRedisをデプロイすることは可能です。
+1. **Cluster info**で、クラスター名（`gitlab-redis`）と説明を入力します。
+1. **Location**で、**AWS Cloud**を選択し、**Multi-AZ**オプションを有効にします。
+1. Cluster settingsセクション:
+   1. Engine versionでは、[Redis要件](../requirements.md#redis)に記載されている、ご利用のGitLabバージョンに対応するRedisバージョンを選択します。
+   1. ポートは`6379`のままにします。これは先ほどRedisセキュリティグループで使用した値です。
+   1. ノードタイプ（少なくとも`cache.t3.medium`、必要に応じて調整）とレプリカの数を選択します。
+1. Connectivity settingsセクション:
+   1. **Network type**: IPv4
+   1. **Subnet groups**: **Choose existing subnet group**を選択し、先ほど作成した`gitlab-redis-group`を選択します。
+1. Availability Zone placementsセクション:
+   1. 優先するアベイラビリティーゾーンを手動で選択し、「Replica 2」で他の2つとは異なるゾーンを選択します。
 
-      ![Redis可用性ゾーン](img/ec_az_v17_0.png)
-1. **Next(次へ)**を選択します。
-1. セキュリティ設定で、セキュリティグループを編集し、先ほど作成した`gitlab-redis-sec-group`を選択します。**Next(次へ)**を選択します。
-1. 残りの設定はデフォルト値のままにするか、好みに合わせて編集します。
-1. 完了したら**Create(作成)**を選択します。
+      ![Redisグループに使用するアベイラビリティーゾーンを選択します。](img/ec_az_v17_0.png)
 
-## 踏み台サーバーのセットアップ
+1. **Next**を選択します。
+1. セキュリティ設定で、セキュリティグループを編集し、先ほど作成した`gitlab-redis-sec-group`を選択します。**Next**を選択します。
+1. 残りの設定はデフォルト値のままにするか、必要に応じて編集します。
+1. 完了したら**Create**を選択します。
 
-GitLabインスタンスはプライベートサブネットにあるため、構成の変更やアップグレードなどの実行するには、SSHを使用してこれらのインスタンスに接続する方法が必要です。これを行う方法のひとつは、[踏み台サーバー](https://en.wikipedia.org/wiki/Bastion_host)を使用することです。ジャンプボックスとも呼ばれます。
+## 踏み台ホストを設定する {#setting-up-bastion-hosts}
+
+GitLabインスタンスはプライベートサブネット内にあるため、設定変更やアップグレードなどを行う際に、SSHを使用してこれらのインスタンスに接続する方法が必要です。その手段の1つが、[踏み台ホスト](https://en.wikipedia.org/wiki/Bastion_host)を使用することです。ジャンプボックスとも呼ばれます。
 
 {{< alert type="note" >}}
 
-踏み台サーバーを使いたくない場合は、インスタンスへのアクセスに[AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html)をセットアップできます。この内容は、このドキュメントのスコープ外です。
+踏み台ホストを管理したくない場合は、インスタンスへのアクセスに[AWS Systems ManagerのSession Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html)を使用するよう設定できます。この設定は、このドキュメントの範囲外です。
 
 {{< /alert >}}
 
-### 踏み台サーバーAを作成する
+### 踏み台サーバーAを作成する {#create-bastion-host-a}
 
 1. EC2ダッシュボードに移動し、**Launch instance(インスタンスを起動)**を選択します。
 1. **Name and tags(名前とタグ)**セクションで、**Name(名前)**を`Bastion Host A`に設定します。
@@ -434,31 +435,31 @@ GitLabインスタンスはプライベートサブネットにあるため、�
 1. ストレージについては、すべてをデフォルトのままにし、8 GBのルートボリュームのみを追加します。このインスタンスには何も保存しません。
 1. すべての設定を確認し、問題なければ、**Launch Instance(インスタンスを起動)**を選択します。
 
-#### 踏み台サーバーAにElastic IPを割り当てる
+#### 踏み台サーバーAにElastic IPを割り当てる {#assign-elastic-ip-to-the-bastion-host-a}
 
-1. EC2ダッシュボードに移動し、**Network & Security(ネットワークとセキュリティ)**を選択します。
+1. EC2ダッシュボードに移動し、**Network & Security**を選択します。
 1. **Elastic IPs**を選択し、`Network border group`を`us-west-2`に設定します。
-1. **Allocate(割り当て)**を選択します。
+1. **Allocate**を選択します。
 1. 作成されたElastic IPアドレスを選択します。
-1. **Actions(アクション)**を選択し、**Associate Elastic IP address(Elastic IPアドレスを関連付ける)**を選択します。
-1. **Resource Type(リソースタイプ)**で、**Instance(インスタンス)**を選択し、**Instance(インスタンス)**ドロップダウンリストから`Bastion Host A`サーバーを選択します。
-1. **Associate(関連付け)**を選択します。
+1. **Actions**、**Associate Elastic IP address**の順に選択します。
+1. **Resource Type**で**Instance**を選択し、**Instance**ドロップダウンリストから`Bastion Host A`ホストを選択します。
+1. **Associate**を選択します。
 
-#### インスタンスにSSH接続できることを確認する
+#### インスタンスにSSHで接続できることを確認する {#confirm-that-you-can-ssh-into-the-instance}
 
-1. EC2ダッシュボードで、左側のメニューにある**Instances(インスタンス)**を選択します。
-1. インスタンスのリストから**Bastion Host A(踏み台サーバーA)**を選択します。
-1. **Connect(接続)**を選択し、接続手順に従います。
-1. 正常に接続できた場合は、冗長性のために2番目の踏み台サーバーのセットアップに進みましょう。
+1. EC2ダッシュボードで、左側のメニューから**Instances**を選択します。
+1. インスタンスの一覧から**Bastion Host A**を選択します。
+1. **Connect**を選択し、表示される接続手順に従います。
+1. 正常に接続できたら、冗長性を確保するために2つ目の踏み台ホストの設定に進みます。
 
-### 踏み台サーバーBを作成する
+### 踏み台サーバーBを作成する {#create-bastion-host-b}
 
 1. 上記と同じ手順に従ってEC2インスタンスを作成しますが、次の変更を加えます。
    1. **Subnet(サブネット)** では、先ほど作成した2番目のパブリックサブネット(`gitlab-public-10.0.2.0`)を選択します。
    1. **Add Tags(タグの追加)**セクションで、2つのインスタンスを簡単に識別できるように、`Key: Name`と`Value: Bastion Host B`を設定します。
    1. セキュリティグループは、上記で作成した既存の`bastion-sec-group`を選択します。
 
-### SSHエージェント転送を使用する
+### SSHエージェント転送を使用する {#use-ssh-agent-forwarding}
 
 Linuxを実行しているEC2インスタンスでは、SSH認証にプライベートキーファイルを使用します。SSHクライアントとクライアントに保存されているプライベートキーファイルを使用して、踏み台サーバーに接続します。プライベートキーファイルが踏み台サーバーに存在しないため、プライベートサブネット内のインスタンスに接続することはできません。
 
@@ -470,15 +471,15 @@ Linuxを実行しているEC2インスタンスでは、SSH認証にプライベ
 ssh –A user@<bastion-public-IP-address>
 ```
 
-他のクライアントでSSHエージェント転送を使用する方法については、[プライベートAmazon VPCで実行されているLinuxインスタンスに安全に接続する](https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/)を参照してください。
+他のクライアントでSSHエージェント転送を使用する手順については、[Securely Connect to Linux Instances Running in a Private Amazon VPC](https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/)を参照してください。
 
-## GitLabをインストールし、カスタムAMIを作成する
+## GitLabをインストールしてカスタムAMIを作成する {#install-gitlab-and-create-custom-ami}
 
-後で起動時の設定で使用するために、事前構成済みのカスタムGitLab AMIが必要です。開始点として、公式GitLab AMIを使用してGitLabインスタンスを作成します。次に、PostgreSQL、Redis、およびGitalyのカスタム構成を追加します。必要に応じて、公式のGitLab AMIを使用する代わりに、任意のEC2インスタンスを起動して[GitLabを手動でインストール](https://about.gitlab.com/install/)することもできます。
+後で起動設定に使用するため、設定済みのカスタムGitLab AMIが必要です。まず公式のGitLab AMIを使用してGitLabインスタンスを作成します。次に、PostgreSQL、Redis、Gitaly向けのカスタム設定を追加します。必要に応じて、公式のGitLab AMIを使用せず、独自に選択したEC2インスタンスを起動し、[GitLabを手動でインストール](https://about.gitlab.com/install/)することもできます。
 
-### GitLabをインストールする
+### GitLabをインストールする {#install-gitlab}
 
-EC2ダッシュボードから:
+EC2ダッシュボードで、次の手順に従います。
 
 1. 以下の「[AWSで公式GitLab作成AMI IDを見つける](#find-official-gitlab-created-ami-ids-on-aws)」というタイトルのセクションを使用して、正しいAMIを見つけ、**Launch(起動)**を選択します。
 1. **Name and tags(名前とタグ)**セクションで、**Name(名前)**を`GitLab`に設定します。
@@ -493,11 +494,11 @@ EC2ダッシュボードから:
 1. ストレージの場合、ルートボリュームはデフォルトで8 GiBであり、そこにデータを保存しないことを考えると十分なはずです。
 1. すべての設定を確認し、問題なければ、**Launch Instance(インスタンスを起動)**を選択します。
 
-### カスタム構成を追加する
+### カスタム構成を追加する {#add-custom-configuration}
 
 [SSHエージェント転送](#use-ssh-agent-forwarding)を使用して、**踏み台サーバーA**経由でGitLabインスタンスに接続します。接続したら、次のカスタム構成を追加します。
 
-#### Let's Encryptを無効にする
+#### Let's Encryptを無効にする {#disable-lets-encrypt}
 
 ロードバランサーでSSL証明書を追加するため、GitLab組み込みのLet's Encryptのサポートは必要ありません。`https`ドメインを使用する場合、 Let's Encrypt[はデフォルトで有効](https://docs.gitlab.com/omnibus/settings/ssl/#enable-the-lets-encrypt-integration)になっているため、明示的に無効にする必要があります。
 
@@ -507,15 +508,15 @@ EC2ダッシュボードから:
    letsencrypt['enable'] = false
    ```
 
-1. ファイルを保存し、再構成して変更を有効にします。
+1. ファイルを保存し、変更を有効にするために再設定します。
 
    ```shell
    sudo gitlab-ctl reconfigure
    ```
 
-#### PostgreSQLに必要な拡張機能をインストールする
+#### PostgreSQLに必要な拡張機能をインストールする {#install-the-required-extensions-for-postgresql}
 
-GitLabインスタンスからRDSインスタンスに接続し、アクセスを確認して、必要な`pg_trgm`および`btree_gist`拡張機能をインストールします。
+GitLabインスタンスからRDSインスタンスに接続し、アクセスを確認して、必要な拡張機能`pg_trgm`および`btree_gist`をインストールします。
 
 ホストまたはエンドポイントを見つけるには、**Amazon RDS > Database(データベース)**に移動し、先ほど作成したデータベースを選択します。**Connectivity & security(接続とセキュリティ)**タブのエンドポイントを探します。
 
@@ -525,7 +526,7 @@ GitLabインスタンスからRDSインスタンスに接続し、アクセス�
 sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
 ```
 
-`psql`プロンプトで、拡張機能を作成してからセッションを終了します。
+`psql`プロンプトで拡張機能を作成します。完了したらセッションを終了します。
 
 ```shell
 psql (10.9)
@@ -536,7 +537,7 @@ gitlab=# CREATE EXTENSION btree_gist;
 gitlab=# \q
 ```
 
-#### PostgreSQLおよびRedisに接続するようにGitLabを設定する
+#### PostgreSQLおよびRedisに接続するようにGitLabを設定する {#configure-gitlab-to-connect-to-postgresql-and-redis}
 
 1. `/etc/gitlab/gitlab.rb`を編集し、`external_url 'http://<domain>'`オプションを見つけて、使用している`https`ドメインに変更します。
 
@@ -555,7 +556,7 @@ gitlab=# \q
    gitlab_rails['db_host'] = "<rds-endpoint>"
    ```
 
-1. 次に、ホストを追加し、ポートのコメントアウトを解除してRedisセクションを設定する必要があります。
+1. 次に、Redisセクションを設定し、ホストを追加してポートのコメントアウトを解除する必要があります。
 
    ```ruby
    # Disable the built-in Redis
@@ -566,7 +567,7 @@ gitlab=# \q
    gitlab_rails['redis_port'] = 6379
    ```
 
-1. 最後に、変更を有効にするためにGitLabを再構成します。
+1. 最後に、変更を有効にするためにGitLabを再設定します。
 
    ```shell
    sudo gitlab-ctl reconfigure
@@ -579,7 +580,7 @@ gitlab=# \q
    sudo gitlab-ctl status
    ```
 
-#### Gitalyを設定する
+#### Gitalyを設定する {#set-up-gitaly}
 
 {{< alert type="warning" >}}
 
@@ -589,46 +590,66 @@ gitlab=# \q
 
 Gitalyは、Gitリポジトリへの高レベルのRPCアクセスを提供するサービスです。以前に構成した[プライベートサブネット](#subnets)のいずれかにある個別のEC2インスタンス上で、Gitalyを有効にして構成する必要があります。
 
-GitalyをインストールするEC2インスタンスを作成しましょう。
+GitalyをインストールするEC2インスタンスを作成します。
 
-1. EC2ダッシュボードから、**Launch instance(インスタンスを起動)**を選択します。
-1. **Name and tags(名前とタグ)**セクションで、**Name(名前)**を`Gitaly`に設定します。
-1. AMIを選択します。この例では、最新の**Ubuntu Server LTS (HVM), SSD Volume Type(Ubuntu Server LTS（HVM）、SSDボリュームタイプ)**を選択します。[サポートされるOSバージョンの最新情報](../../administration/package_information/supported_os.md)については、GitLabドキュメントを確認してください。
+1. EC2ダッシュボードで**Launch instance**を選択します。
+1. **Name and tags**セクションで、**Name**に`Gitaly`と指定します。
+1. AMIを選択します。この例では、最新の**Ubuntu Server LTS (HVM), SSD Volume Type**を選択します。[サポート対象の最新のOSバージョン](../../install/package/_index.md)については、GitLabドキュメントを確認してください。
 1. インスタンスタイプを選択します。`m5.xlarge`を選択します。
-1. **Key pair(キーペア)**セクションで、**Create new key pair(新しいキーペアを作成)**を選択します。
-   1. キーペアに名前(ここでは`gitaly`を使用)を付け、後で使用するために`gitaly.pem`ファイルを保存します。
-1. ネットワーク設定セクションで:
+1. **Key pair**セクションで、**Create new key pair**を選択します。
+   1. キーペアに名前（この例では`gitaly`）を付け、後で使用するために`gitaly.pem`ファイルを保存します。
+1. Network settingsセクション:
    1. **VPC**で、ドロップダウンリストから`gitlab-vpc`を選択します。
-   1. **Subnet(サブネット)**で、先ほど作成したプライベートサブネット(`gitlab-private-10.0.1.0`)を選択します。
-   1. **Auto-assign Public IP(パブリックIPの自動割り当て)**で、**Disabled(無効)**が選択されていることを確認します。
-   1. **Firewall(ファイアウォール)**で **Create security group(セキュリティグループを作成)**を選択し、**Security group name(セキュリティグループ名)**(ここでは`gitlab-gitaly-sec-group`を使用)を入力して、説明を追加します。
-      1. **Cusstom TCP(カスタムTCP)**ルールを作成し、ポート`8075`を**Port Range(ポート範囲)**に追加します。**Source(ソース)**には、`gitlab-loadbalancer-sec-group`を選択します。
-      1. また、`bastion-sec-group`からのSSHの受信ルールを追加して、踏み台サーバーから[SSHエージェント転送](#use-ssh-agent-forwarding)を使用して接続できるようにします。
-1. ルートボリュームサイズを`20 GiB`に増やし、**Volume Type(ボリュームタイプ)**を`Provisioned IOPS SSD (io1)`に変更します。（ボリュームサイズは任意の値です。リポジトリのストレージ要件を満たすのに十分な大きさのボリュームを作成します）。
-   1. **IOPS**には、`1000`（20 GiB x 50 IOPS）を設定します。GiBあたり最大50 IOPSをプロビジョニングできます。より大きなボリュームを選択する場合は、それに応じてIOPSを増やしてください。`git`のように、シリアル化された方法で多くの小さなファイルが書き込まれるワークロードには、パフォーマンスの高いストレージが必要なため、`Provisioned IOPS SSD (io1)`を選択します。
-1. すべての設定を確認し、問題なければ、**Launch Instance(インスタンスを起動)**を選択します。
+   1. **Subnet**で、先ほど作成したプライベートサブネット（`gitlab-private-10.0.1.0`）を選択します。
+   1. **Auto-assign Public IP**で、**Disable**が選択されていることを確認します。
+   1. **Firewall**で、**Create security group**を選択し、**Security group name**（この例では`gitlab-gitaly-sec-group`）を入力し、説明を追加します。
+      1. **Custom TCP**ルールを作成し、ポート`8075`を**Port Range**に追加します。**Source**には`gitlab-loadbalancer-sec-group`を選択します。
+      1. さらに、踏み台ホストから[SSHエージェント転送](#use-ssh-agent-forwarding)を使用して接続できるように、`bastion-sec-group`からのSSH接続を許可するインバウンドルールを追加します。
+1. Root volume sizeを`20 GiB`に増やし、**Volume Type**を`Provisioned IOPS SSD (io1)`に変更します。（ボリュームサイズには任意の値を設定できます。リポジトリストレージ要件を満たす十分な容量を確保してください。）
+   1. **IOPS**には`1000`（20 GiB x 50 IOPS）を設定します。1 GiBあたり最大50 IOPSまでプロビジョニングできます。より大きなボリュームを選択する場合は、それに応じてIOPSを増やします。`git`のように、多数の小さなファイルを直列的に書き込むワークロードでは、高性能ストレージが必要となるため、`Provisioned IOPS SSD (io1)`を選択します。
+1. すべての設定を確認し、問題がなければ、**Launch Instance**を選択します。
 
 {{< alert type="note" >}}
 
-設定_および_リポジトリデータをルートボリュームに保存する代わりに、リポジトリストレージ用の追加EBSボリュームを追加することもできます。上記と同じガイダンスに従ってください。[Amazon EBSの料金](https://aws.amazon.com/ebs/pricing/)を参照してください。EFSを使用すると、GitLabのパフォーマンスに悪影響を与える可能性があるため、おすすめしません。詳細については、[関連ドキュメント](../../administration/nfs.md#avoid-using-cloud-based-file-systems)を確認してください。
+設定やリポジトリデータをルートボリュームに保存する代わりに、リポジトリストレージとして追加のEBSボリュームを割り当てることもできます。前述のガイダンスと同様の手順に従ってください。[Amazon EBSの料金ページ](https://aws.amazon.com/ebs/pricing/)を参照してください。
 
 {{< /alert >}}
 
-EC2インスタンスの準備ができたので、[GitLabをインストールし、Gitalyを専用サーバーに設定するドキュメント](../../administration/gitaly/configure_gitaly.md#run-gitaly-on-its-own-server)に従います。上記で[作成したGitLabインスタンス](#install-gitlab)で、そのドキュメントのクライアントセットアップ手順を実行します。
+EC2インスタンスの準備が整ったので、[ドキュメントに従ってGitLabをインストールし、Gitalyを専用サーバー上にセットアップ](../../administration/gitaly/configure_gitaly.md#run-gitaly-on-its-own-server)します。先ほど[作成したGitLabインスタンス](#install-gitlab)で、前述のドキュメントに記載されたクライアント側のセットアップ手順を実行します。
 
-#### プロキシされたSSLのサポートを追加する
+##### Elastic File System（EFS） {#elastic-file-system-efs}
 
-[ロードバランサー](#load-balancer)でSSLの終端を実行するため、`/etc/gitlab/gitlab.rb`でこれを設定するには、[プロキシされたSSLのサポート](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination)の手順に従います。
+{{< alert type="warning" >}}
 
-`gitlab.rb`ファイルへの変更を保存した後、`sudo gitlab-ctl reconfigure`を実行することを忘れないでください。
+GitLabのパフォーマンスに悪影響を与える可能性があるため、EFSの使用は推奨されません。詳細については、[クラウドベースのファイルシステムの回避に関するドキュメント](../../administration/nfs.md#avoid-using-cloud-based-file-systems)を参照してください。
 
-#### 認証されたSSH鍵の高速検索
+{{< /alert >}}
 
-GitLabへのアクセスを許可されたユーザーの公開SSH鍵は、`/var/opt/gitlab/.ssh/authorized_keys`に格納されます。通常、ユーザーがSSH経由でGitアクションを実行するときに、すべてのインスタンスがこのファイルにアクセスできるように、共有ストレージを使用します。セットアップに共有ストレージがないため、GitLabデータベースでのインデックス付き検索を介してSSHユーザーを認証するように構成を更新します。
+それでもEFSを使用する場合は、[PosixUser](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-efs-accesspoint.html#cfn-efs-accesspoint-posixuser)属性を省略するか、Gitalyがインストールされているシステム上の`git`ユーザーの固有識別子（UID）とグループID（GID）を正しく指定してください。UIDとGIDは、次のコマンドで取得できます。
 
-[SSH鍵の高速検索の設定](../../administration/operations/fast_ssh_key_lookup.md#set-up-fast-lookup)の手順に従って、`authorized_keys`ファイルからデータベースの使用に切り替えます。
+```shell
+# UID
+$ id -u git
 
-高速検索を構成しない場合、SSH経由のGitアクションの結果は次のエラーを返します。
+# GID
+$ id -g git
+```
+
+また、複数の[アクセスポイント](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html)を設定しないでください。特に、異なる認証情報を指定している場合は避ける必要があります。Gitaly以外のアプリケーションが、Gitalyストレージディレクトリに対する権限を操作し、Gitalyが正常に動作しなくなるおそれがあります。この問題の具体例については、[`omnibus-gitlab`イシュー8893](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8893)を参照してください。
+
+#### プロキシ経由のSSLのサポートを追加する {#add-support-for-proxied-ssl}
+
+[ロードバランサー](#load-balancer)でSSLを終端しているため、`/etc/gitlab/gitlab.rb`でこの設定を行うには、[プロキシ経由のSSLをサポートする](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination)手順に従います。
+
+`gitlab.rb`ファイルへの変更を保存した後、必ず`sudo gitlab-ctl reconfigure`を実行してください。
+
+#### 承認されたSSHキーの高速検索 {#fast-lookup-of-authorized-ssh-keys}
+
+GitLabへのアクセスを許可されたユーザーの公開SSHキーは、`/var/opt/gitlab/.ssh/authorized_keys`に保存されています。通常は共有ストレージを使用し、ユーザーがSSH経由でGitアクションを実行する際に、すべてのインスタンスがこのファイルにアクセスできるようにします。しかし、今回のセットアップでは共有ストレージを使用していないため、GitLabデータベース内のインデックス検索を使用してSSHユーザーを認証するように設定を更新します。
+
+[SSHキーの高速検索の設定](../../administration/operations/fast_ssh_key_lookup.md#set-up-fast-lookup)手順に従って、`authorized_keys`ファイルの使用からデータベースに切り替えてください。
+
+高速検索を設定しない場合、SSH経由でGitアクションを実行すると次のエラーが返されます。
 
 ```shell
 Permission denied (publickey).
@@ -638,20 +659,20 @@ Please make sure you have the correct access rights
 and the repository exists.
 ```
 
-#### ホストキーの設定
+#### ホストキーを設定する {#configure-host-keys}
 
-通常、プライマリアプリケーションサーバー上の`/etc/ssh/`のコンテンツ（プライマリキーと公開キー）を、すべてのセカンダリサーバー上の`/etc/ssh`に手動でコピーします。これにより、ロードバランサーの背後にあるクラスター内のサーバーにアクセスする際に、不正な中間者攻撃のアラートが発生するのを防ぎます。
+通常は、プライマリアプリケーションサーバー上の`/etc/ssh/`の内容（プライマリキーと公開キー）を、すべてのセカンダリサーバー上の`/etc/ssh`に手動でコピーします。これにより、ロードバランサーの背後にあるクラスター内のサーバーにアクセスする際に、誤った中間者攻撃のアラートが発生するのを防ぐことができます。
 
 カスタムAMIの一部として静的ホストキーを作成することで、これを自動化します。これらのホストキーもEC2インスタンスが起動するたびにローテーションされるため、カスタムAMIに「ハードコーディング」することは回避策となります。
 
-GitLabインスタンスで、次を実行します。
+GitLabインスタンスで、次のコマンドを実行します。
 
 ```shell
 sudo mkdir /etc/ssh_static
 sudo cp -R /etc/ssh/* /etc/ssh_static
 ```
 
-`/etc/ssh/sshd_config`で、次を更新します。
+`/etc/ssh/sshd_config`で、次の内容を更新します。
 
 ```shell
 # HostKeys for protocol version 2
@@ -661,7 +682,7 @@ HostKey /etc/ssh_static/ssh_host_ecdsa_key
 HostKey /etc/ssh_static/ssh_host_ed25519_key
 ```
 
-#### Amazon S3オブジェクトストレージ
+#### Amazon S3オブジェクトストレージ {#amazon-s3-object-storage}
 
 共有ストレージにNFSを使用しないため、バックアップ、アーティファクト、LFSオブジェクト、アップロード、マージリクエストの差分、コンテナレジストリのイメージなどを保存するために[Amazon S3](https://aws.amazon.com/s3/)バケットを使用します。ドキュメントには、これらの各データ型に対する [オブジェクトストレージの設定方法](../../administration/object_storage.md)、およびGitLabでのオブジェクトストレージの使用に関するその他の情報が含まれています。
 
@@ -671,15 +692,15 @@ HostKey /etc/ssh_static/ssh_host_ed25519_key
 
 {{< /alert >}}
 
-`gitlab.rb`ファイルへの変更を保存した後、`sudo gitlab-ctl reconfigure`を実行することを忘れないでください。
+`gitlab.rb`ファイルへの変更を保存した後、必ず`sudo gitlab-ctl reconfigure`を実行してください。
 
 ---
 
 これで、GitLabインスタンスの構成変更は完了です。次に、このインスタンスに基づいてカスタムAMIを作成し、起動構成と自動スケーリンググループに使用します。
 
-### IP許可リスト
+### IP許可リスト {#ip-allowlist}
 
-先ほど作成した`gitlab-vpc`の[VPC IPアドレス範囲（CIDR）](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html)を、[ヘルスチェックのエンドポイント](../../administration/monitoring/health_check.md)の[IP許可リスト](../../administration/monitoring/ip_allowlist.md)に追加する必要があります。
+先ほど作成した`gitlab-vpc`の[VPC IPアドレス範囲（CIDR）](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html)を、[ヘルスチェックエンドポイント](../../administration/monitoring/health_check.md)の[IP許可リスト](../../administration/monitoring/ip_allowlist.md)に追加する必要があります。
 
 1. `/etc/gitlab/gitlab.rb`を編集します。
 
@@ -693,9 +714,9 @@ HostKey /etc/ssh_static/ssh_host_ed25519_key
    sudo gitlab-ctl reconfigure
    ```
 
-### プロキシプロトコル
+### プロキシプロトコル {#proxy-protocol}
 
-先ほど作成した[ロードバランサー](#load-balancer)でプロキシプロトコルが有効になっている場合は、`gitlab.rb`ファイルでも[有効](https://docs.gitlab.com/omnibus/settings/nginx.html#configuring-the-proxy-protocol)にする必要があります。
+先ほど作成した[ロードバランサー](#load-balancer)でプロキシプロトコルが有効になっている場合は、`gitlab.rb`ファイルでもこれを[有効](https://docs.gitlab.com/omnibus/settings/nginx.html#configuring-the-proxy-protocol)にする必要があります。
 
 1. `/etc/gitlab/gitlab.rb`を編集します。
 
@@ -710,54 +731,54 @@ HostKey /etc/ssh_static/ssh_host_ed25519_key
    sudo gitlab-ctl reconfigure
    ```
 
-### 初めてサインインする
+### 初めてサインインする {#sign-in-for-the-first-time}
 
 [ロードバランサーのDNS](#configure-dns-for-load-balancer)を設定したときに使用したドメイン名を使用すると、ブラウザでGitLabにアクセスできるようになります。
 
-GitLabのインストール方法、およびその他の方法でパスワードを変更していない場合、デフォルトのパスワードは次のいずれかになります。
+GitLabのインストール方法や、他の手段でパスワードを変更したかどうかに応じて、デフォルトのパスワードは次のいずれかになります。
 
 - 公式のGitLab AMIを使用した場合のインスタンスID
 - `/etc/gitlab/initial_root_password`に24時間保存されるランダムに生成されたパスワード
 
-デフォルトのパスワードを変更するには、デフォルトのパスワードを使用して`root`ユーザーとしてサインインし、[ユーザープロファイルで変更](../../user/profile/user_passwords.md#change-your-password)します。
+デフォルトのパスワードを変更するには、`root`ユーザーとしてデフォルトのパスワードでサインインし、[ユーザープロファイルで変更](../../user/profile/user_passwords.md#change-your-password)します。
 
 [自動スケーリンググループ](#create-an-auto-scaling-group)が新しいインスタンスを起動すると、ユーザー名`root`と新しく作成されたパスワードでサインインできます。
 
-### カスタムAMIを作成する
+### カスタムAMIを作成する {#create-custom-ami}
 
-EC2ダッシュボードで:
+EC2ダッシュボードで、次の手順に従います。
 
 1. [先ほど作成](#install-gitlab)した`GitLab`インスタンスを選択します。
-1. **Action(アクション)**を選択し、**Image and templates(イメージとテンプレート)**までスクロールダウンして**Create image(イメージを作成)**を選択します。
-1. イメージに名前と説明を付けます（ここでは両方に`GitLab-Source`を使用します）。
-1. その他はすべてデフォルトのままにして、**Create Image(イメージを作成)**を選択します。
+1. **Actions**を選択し、**Image and templates**までスクロールダウンして**Create image**を選択します。
+1. イメージの名前と説明を入力します（この例ではどちらにも`GitLab-Source`を使用します）。
+1. それ以外の設定はすべてデフォルトのままにして、**Create Image**を選択します。
 
-これで、次のステップである起動構成の作成に使用するカスタムAMIが作成されました。
+これで、次のステップで起動設定を作成するために使用するカスタムAMIが作成されました。
 
-## 自動スケーリンググループ内でGitLabをデプロイする
+## オートスケールグループ内にGitLabをデプロイする {#deploy-gitlab-inside-an-auto-scaling-group}
 
-### 起動テンプレートを作成する
+### 起動テンプレートを作成する {#create-a-launch-template}
 
-EC2ダッシュボードから:
+EC2ダッシュボードで、次の手順に従います。
 
-1. 左側のメニューから**Launch Templates(起動テンプレート)**を選択し、**Create launch template(起動テンプレートを作成)**を選択します。
-1. 起動テンプレートの名前を入力します（ここでは`gitlab-launch-template`を使用します）。
-1. **Launch template contents(起動テンプレートコンテンツ)**を選択し、**My AMI**タブを選択します。
-1. **Owned by me(自分が所有)**を選択し、上で作成した`GitLab-Source`カスタムAMIを選択します。
+1. 左側のメニューから**Launch Templates**を選択し、**create launch template**を選択します。
+1. 起動テンプレートの名前を入力します（この例では`gitlab-launch-template`）。
+1. **Launch template contents**を選択し、**My AMIs**タブを選択します。
+1. **Owned by me**を選択し、先ほど作成したカスタムAMIである`GitLab-Source`を選択します。
 1. ニーズに最適なインスタンスタイプを選択します（少なくとも`c5.2xlarge`）。
-1. **Key pair(キーペア)**セクションで、**Create new key pair(新しいキーペアを作成)**を選択します。
-   1. キーペアに名前(ここでは`gitlab-launch-template`を使用)を付け、後で使用するために`gitlab-launch-template.pem`ファイルを保存します。
-1. ルートボリュームはデフォルトで8 GiBで、データはそこに保存しないため十分です。**Configure Security Group(セキュリティグループの設定)**を選択します。
-1. **Select existing security group(既存のセキュリティグループを選択)**にチェックマークを入れ、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
-1. **Network settings(ネットワーク設定)**セクションで:
-   1. **Firewall(ファイアウォール):** Select existing security group(既存のセキュリティグループを選択)**を選択し、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
-1. **Advanced details(詳細設定)**セクションで:
-   1. **IAM instance profile(IAMインスタンスプロファイル):** [先ほど作成](#create-an-iam-role)した`GitLabS3Access`ロールを選択します。
-1. すべての設定を確認し、問題がなければ**Create launch template(起動テンプレートを作成)**を選択します。
+1. **Key pair**セクションで、**Create new key pair**を選択します。
+   1. キーペアに名前（この例では`gitlab-launch-template`）を付け、後で使用するために`gitlab-launch-template.pem`ファイルを保存します。
+1. ルートボリュームはデフォルトで8 GiBに設定されています。ここにはデータを保存しないため、この容量で十分です。**Configure Security Group**を選択します。
+1. **Select and existing security group**チェックボックスをオンにして、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
+1. **Network settings**セクション:
+   1. **Firewall**: **Select existing security group**を選択し、先ほど作成した`gitlab-loadbalancer-sec-group`を選択します。
+1. **Advanced details**セクション:
+   1. **IAM instance profile**: [先ほど作成](#create-an-iam-role)した`GitLabS3Access`ロールを選択します。
+1. すべての設定を確認し、問題がなければ**Create launch template**を選択します。
 
-### 自動スケーリンググループを作成する
+### オートスケールグループを作成する {#create-an-auto-scaling-group}
 
-EC2ダッシュボードから:
+EC2ダッシュボードで、次の手順に従います。
 
 1. 左側のメニューから**Auto scaling groups(自動スケーリンググループ)**を選択し、**Create Auto Scaling group(自動スケーリンググループを作成)**を選択します。
 1. **Group name(グループ名)**を入力します（`gitlab-auto-scaling-group`を使用します）。
@@ -792,25 +813,25 @@ EC2ダッシュボードから:
 
    ![スケールダウンポリシー](img/scale_down_policy_v17_0.png)
 
-   1. 先ほど作成した自動スケーリンググループに、新しい動的スケーリングポリシーを割り当てます。
+   1. 先ほど作成したオートスケールグループに、新しい動的スケーリングポリシーを割り当てます。
 
-自動スケーリンググループが作成されると、EC2ダッシュボードに新しいインスタンスが起動していることが表示されます。ロードバランサーに新しいインスタンスが追加されたことも表示されます。インスタンスがヘルスチェックに合格すると、ロードバランサーからトラフィックを受信する準備が整います。
+オートスケールグループが作成されると、EC2ダッシュボード上で新しいインスタンスが起動していることを確認できます。また、ロードバランサーに新しいインスタンスが追加されていることも確認できます。インスタンスがヘルスチェックに合格すると、ロードバランサーからトラフィックを受信する準備が整います。
 
 インスタンスは自動スケーリンググループによって作成されるため、インスタンスに戻り、[上記で手動で作成したインスタンス](#install-gitlab)を終了します。このインスタンスは、カスタムAMIの作成にのみ必要です。
 
-## Prometheusによるヘルスチェックとモニタリング
+## Prometheusによるヘルスチェックとモニタリング {#health-check-and-monitoring-with-prometheus}
 
-さまざまなサービスで有効にできるAmazon CloudWatchとは別に、GitLabはPrometheusに基づく独自の統合モニタリングソリューションを提供します。設定方法の詳細については、[GitLab Prometheus](../../administration/monitoring/prometheus/_index.md)を参照してください。
+さまざまなサービスで有効化できるAmazon CloudWatchとは別に、GitLabはPrometheusに基づく独自の統合モニタリングソリューションを提供しています。設定方法の詳細については、[GitLab Prometheus](../../administration/monitoring/prometheus/_index.md)を参照してください。
 
-GitLabには、[ヘルスチェックのエンドポイント](../../administration/monitoring/health_check.md)がいくつかあり、それらをpingしてレポートを取得できます。
+GitLabにはさまざまな[ヘルスチェックエンドポイント](../../administration/monitoring/health_check.md)が用意されており、pingしてレポートを取得できます。
 
-## GitLab Runner
+## GitLab Runner {#gitlab-runner}
 
-[GitLab CI/CD](../../ci/_index.md)を利用する場合は、少なくとも1つの[Runner](https://docs.gitlab.com/runner/)を設定する必要があります。
+[GitLab CI/CD](../../ci/_index.md)を活用するには、少なくとも1つの[Runner](https://docs.gitlab.com/runner/)を設定する必要があります。
 
 [AWSでGitLab Runnerの自動スケール](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/)を設定する方法について詳しくはこちらをご覧ください。
 
-## バックアップと復元
+## バックアップと復元 {#backup-and-restore}
 
 GitLabには、Gitデータ、データベース、添付ファイル、LFSオブジェクトなどを[バックアップ](../../administration/backup_restore/_index.md)および復元するためのツールが用意されています。
 
@@ -820,26 +841,26 @@ GitLabには、Gitデータ、データベース、添付ファイル、LFSオ�
 - デフォルトでは、バックアップファイルはローカルに保存されますが、[S3を使用してGitLabをバックアップ](../../administration/backup_restore/backup_gitlab.md#using-amazon-s3)できます。
 - [バックアップから特定のディレクトリを除外](../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup)できます。
 
-### GitLabをバックアップする
+### GitLabをバックアップする {#backing-up-gitlab}
 
-GitLabをバックアップするには:
+GitLabをバックアップするには、次の手順に従います。
 
-1. インスタンスにSSH接続します。
+1. インスタンスにSSHで接続します。
 1. バックアップを作成します。
 
    ```shell
    sudo gitlab-backup create
    ```
 
-### バックアップからGitLabを復元する
+### バックアップからGitLabを復元する {#restoring-gitlab-from-a-backup}
 
 GitLabを復元するには、まず[復元ドキュメント](../../administration/backup_restore/_index.md#restore-gitlab)、特に復元の前提条件を確認してください。次に、[Linuxパッケージのインストール](../../administration/backup_restore/restore_gitlab.md#restore-for-linux-package-installations)セクションの手順に従ってください。
 
-## GitLabを更新する
+## GitLabを更新する {#updating-gitlab}
 
-GitLabでは、[リリース日](https://about.gitlab.com/releases/)に毎月新しいバージョンをリリースします。新しいバージョンがリリースされるたびに、GitLabインスタンスを更新できます。
+GitLabでは、毎月[リリース日](https://about.gitlab.com/releases/)に新しいバージョンをリリースしています。新しいバージョンがリリースされたら、GitLabインスタンスを更新できます。
 
-1. インスタンスにSSH接続します。
+1. インスタンスにSSHで接続します。
 1. バックアップを作成します。
 
    ```shell
@@ -853,19 +874,19 @@ GitLabでは、[リリース日](https://about.gitlab.com/releases/)に毎月新
    sudo apt install gitlab-ee
    ```
 
-数分後、新しいバージョンが起動して実行されます。
+数分後には、新しいバージョンが起動して稼働を開始します。
 
-## GitLabが作成した公式AMI IDをAWSで検索する
+## AWS上でGitLabが提供する公式AMI IDを見つける {#find-official-gitlab-created-ami-ids-on-aws}
 
-[AMIとしてのGitLabリリース](../../solutions/cloud/aws/gitlab_single_box_on_aws.md#official-gitlab-releases-as-amis)の使用方法について詳しくはこちらをご覧ください。
+[GitLabがリリースしているAMI](../../solutions/cloud/aws/gitlab_single_box_on_aws.md#official-gitlab-releases-as-amis)の使用方法については、リンク先をご覧ください。
 
-## まとめ
+## まとめ {#conclusion}
 
-このガイドでは、主にスケーリングといくつかの冗長化オプションについて説明しました。お客様に必要な作業は状況により異なります。
+このガイドでは、主にスケーリングといくつかの冗長化オプションについて説明しましたが、必要な作業内容は環境によって異なります。
 
-すべてのソリューションには、コスト/複雑さとアップタイムの間でバランスを見極める必要があります。必要な稼働時間が長いほど、ソリューションは複雑になります。そして、ソリューションが複雑になるほど、セットアップとメンテナンスに必要な作業が増えます。
+すべてのソリューションは、コストと複雑さ、そしてアップタイムの間でバランスを取る必要があります。必要とするアップタイムが長くなるほど、ソリューションは複雑になります。そしてソリューションが複雑になるほど、セットアップやメンテナンスに必要な作業も増えます。
 
-これらの他のリソースをよくお読みになり、追加の資料が必要であれば[イシューを開く](https://gitlab.com/gitlab-org/gitlab/-/issues/new)ことをおすすめします。
+以下のその他のリソースもぜひご覧ください。追加の資料をご希望の場合は、[イシューを開いて](https://gitlab.com/gitlab-org/gitlab/-/issues/new)リクエストしてください。
 
 - [GitLabのスケーリング](../../administration/reference_architectures/_index.md): GitLabは、いくつかのタイプのクラスタリングをサポートしています。
 - [Geoレプリケーション](../../administration/geo/_index.md): Geoは、広範な分散型開発チーム向けのソリューションです。
@@ -873,19 +894,19 @@ GitLabでは、[リリース日](https://about.gitlab.com/releases/)に毎月新
 - [ライセンスを追加](../../administration/license.md): ライセンスを使用して、すべてのGitLab Enterpriseエディションの機能を有効にします。
 - [価格](https://about.gitlab.com/pricing/): さまざまなプランの料金。
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
-### インスタンスがヘルスチェックに失敗する
+### インスタンスがヘルスチェックに失敗する {#instances-are-failing-health-checks}
 
-インスタンスがロードバランサーのヘルスチェックに失敗する場合は、以前に設定したヘルスチェックエンドポイントからステータス`200`が返されていることを確認してください。ステータス`302`などのリダイレクトを含むその他のステータスは、ヘルスチェックの失敗の原因となります。
+インスタンスがロードバランサーのヘルスチェックに失敗する場合は、以前に設定したヘルスチェックエンドポイントからステータス`200`が返されていることを確認してください。ステータス`302`などのリダイレクトを含む、その他のステータスが返されるとヘルスチェックは失敗します。
 
-ヘルスチェックが合格する前に、サインインエンドポイントでの自動リダイレクトを防ぐために、`root`ユーザーへのパスワードの設定が必要な場合があります。
+ヘルスチェックに合格するために、`root`ユーザーにパスワードを設定し、サインインエンドポイントでの自動リダイレクトを防ぐ必要がある場合があります。
 
-### 「要求された変更は拒否されました（422）」
+### 「要求された変更は拒否されました（422）」  {#the-change-you-requested-was-rejected-422}
 
-ウェブインターフェイスを介してパスワードを設定しようとしたときにこのページが表示される場合は、`gitlab.rb`内の`external_url`が要求元のドメインと一致することを確認し、変更を加えた後で`sudo gitlab-ctl reconfigure`を実行します。
+Webインターフェースでパスワードを設定しようとした際にこのページが表示される場合は、`gitlab.rb`内の`external_url`がリクエスト元のドメインと一致していることを確認してください。ファイルに変更を加えた場合は、`sudo gitlab-ctl reconfigure`を実行します。
 
-### 一部のジョブログがオブジェクトストレージにアップロードされない
+### 一部のジョブログがオブジェクトストレージにアップロードされない {#some-job-logs-are-not-uploaded-to-object-storage}
 
 GitLabデプロイが複数のノードにスケールアップされると、一部のジョブログが[オブジェクトストレージ](../../administration/object_storage.md)に正常にアップロードされない場合があります。CIでオブジェクトストレージを使用するには、[増分ログの生成が必要です](../../administration/object_storage.md#alternatives-to-file-system-storage)。
 

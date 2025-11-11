@@ -7,27 +7,27 @@ module Types
       class PermissionType < BaseObject
         graphql_name 'AccessTokenPermission'
 
-        description 'A permission added to a fine-grained access token'
+        description 'Permission that belongs to a granular scope.'
 
         field :name,
           GraphQL::Types::String,
           null: false,
-          description: 'Permission name.'
+          description: 'Name of the permission.'
 
         field :description,
           GraphQL::Types::String,
           null: false,
-          description: 'Permission description.'
+          description: 'Description of the permission.'
 
         field :action,
           GraphQL::Types::String,
           null: false,
-          description: 'Permission action.'
+          description: 'Action of the permission.'
 
         field :resource,
           GraphQL::Types::String,
           null: false,
-          description: 'Permission resource.'
+          description: 'Resource of the permission.'
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

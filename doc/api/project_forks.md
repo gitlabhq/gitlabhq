@@ -43,6 +43,14 @@ POST /projects/:id/fork
 | `path`                   | string            | No       | The path assigned to the resultant project after forking. |
 | `visibility`             | string            | No       | The [visibility level](projects.md#project-visibility-level) assigned to the resultant project after forking. |
 
+{{< alert type="note" >}}
+
+When using a service account to fork a project, you must provide either `namespace_id` or `namespace_path`.
+Service accounts cannot fork projects to their personal namespace. For more information, see
+[service account access to groups and projects](../user/profile/service_accounts.md#service-account-access-to-groups-and-projects).
+
+{{< /alert >}}
+
 ## List forks of a project
 
 List the projects accessible to you that have an established forked relationship with the specified project.

@@ -20586,6 +20586,29 @@ The edge type for [`PendingMemberInterface`](#pendingmemberinterface).
 | <a id="pendingmemberinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pendingmemberinterfaceedgenode"></a>`node` | [`PendingMemberInterface`](#pendingmemberinterface) | The item at the end of the edge. |
 
+#### `PersonalAccessTokenConnection`
+
+The connection type for [`PersonalAccessToken`](#personalaccesstoken).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="personalaccesstokenconnectionedges"></a>`edges` | [`[PersonalAccessTokenEdge]`](#personalaccesstokenedge) | A list of edges. |
+| <a id="personalaccesstokenconnectionnodes"></a>`nodes` | [`[PersonalAccessToken]`](#personalaccesstoken) | A list of nodes. |
+| <a id="personalaccesstokenconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PersonalAccessTokenEdge`
+
+The edge type for [`PersonalAccessToken`](#personalaccesstoken).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="personalaccesstokenedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="personalaccesstokenedgenode"></a>`node` | [`PersonalAccessToken`](#personalaccesstoken) | The item at the end of the edge. |
+
 #### `PipelineArtifactRegistryConnection`
 
 The connection type for [`PipelineArtifactRegistry`](#pipelineartifactregistry).
@@ -23117,18 +23140,40 @@ Representation of a GitLab user.
 | <a id="accessleveluserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="accessleveluserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
 
-### `AccessTokenPermission`
+### `AccessTokenGranularScope`
 
-A permission added to a fine-grained access token.
+Granular scope applied to an access token.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="accesstokenpermissionaction"></a>`action` | [`String!`](#string) | Permission action. |
-| <a id="accesstokenpermissiondescription"></a>`description` | [`String!`](#string) | Permission description. |
-| <a id="accesstokenpermissionname"></a>`name` | [`String!`](#string) | Permission name. |
-| <a id="accesstokenpermissionresource"></a>`resource` | [`String!`](#string) | Permission resource. |
+| <a id="accesstokengranularscopeaccess"></a>`access` | [`AccessTokenGranularScopeAccess!`](#accesstokengranularscopeaccess) | Access configured on a granular scope. |
+| <a id="accesstokengranularscopenamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace of the granular scope. |
+| <a id="accesstokengranularscopepermissions"></a>`permissions` | [`[AccessTokenPermission!]`](#accesstokenpermission) | List of permissions of a granular scope. |
+
+### `AccessTokenLegacyScope`
+
+Legacy scope applied to an access token.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accesstokenlegacyscopevalue"></a>`value` | [`String!`](#string) | Value of the scope. |
+
+### `AccessTokenPermission`
+
+Permission that belongs to a granular scope.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accesstokenpermissionaction"></a>`action` | [`String!`](#string) | Action of the permission. |
+| <a id="accesstokenpermissiondescription"></a>`description` | [`String!`](#string) | Description of the permission. |
+| <a id="accesstokenpermissionname"></a>`name` | [`String!`](#string) | Name of the permission. |
+| <a id="accesstokenpermissionresource"></a>`resource` | [`String!`](#string) | Resource of the permission. |
 
 ### `Achievement`
 
@@ -23413,6 +23458,32 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="addonuserorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="addonuserorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+
+##### `AddOnUser.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="addonuserpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="addonuserpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="addonuserpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="addonuserpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="addonuserpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="addonuserpersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
 
 ##### `AddOnUser.reviewRequestedMergeRequests`
 
@@ -24934,6 +25005,32 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="autocompleteduserorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="autocompleteduserorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+
+##### `AutocompletedUser.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="autocompleteduserpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="autocompleteduserpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="autocompleteduserpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="autocompleteduserpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="autocompleteduserpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="autocompleteduserpersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
 
 ##### `AutocompletedUser.reviewRequestedMergeRequests`
 
@@ -28158,6 +28255,32 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="currentuserorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="currentuserorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+
+##### `CurrentUser.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="currentuserpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="currentuserpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="currentuserpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="currentuserpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="currentuserpersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
 
 ##### `CurrentUser.reviewRequestedMergeRequests`
 
@@ -35431,6 +35554,32 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestassigneeorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
+##### `MergeRequestAssignee.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestassigneepersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestassigneepersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="mergerequestassigneepersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestassigneepersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="mergerequestassigneepersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="mergerequestassigneepersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
+
 ##### `MergeRequestAssignee.reviewRequestedMergeRequests`
 
 Merge requests assigned to the user for review.
@@ -35859,6 +36008,32 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthororganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestauthororganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+
+##### `MergeRequestAuthor.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestauthorpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestauthorpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="mergerequestauthorpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestauthorpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="mergerequestauthorpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="mergerequestauthorpersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
 
 ##### `MergeRequestAuthor.reviewRequestedMergeRequests`
 
@@ -36340,6 +36515,32 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestparticipantorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
+##### `MergeRequestParticipant.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestparticipantpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestparticipantpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="mergerequestparticipantpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestparticipantpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="mergerequestparticipantpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="mergerequestparticipantpersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
+
 ##### `MergeRequestParticipant.reviewRequestedMergeRequests`
 
 Merge requests assigned to the user for review.
@@ -36787,6 +36988,32 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="mergerequestreviewerorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+
+##### `MergeRequestReviewer.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewerpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="mergerequestreviewerpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="mergerequestreviewerpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="mergerequestreviewerpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="mergerequestreviewerpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="mergerequestreviewerpersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
 
 ##### `MergeRequestReviewer.reviewRequestedMergeRequests`
 
@@ -38864,6 +39091,25 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pendingprojectmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
+
+### `PersonalAccessToken`
+
+Personal access token.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="personalaccesstokenactive"></a>`active` | [`Boolean!`](#boolean) | Whether the personal access token is active. |
+| <a id="personalaccesstokencreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the personal access token was created. |
+| <a id="personalaccesstokendescription"></a>`description` | [`String`](#string) | Description of the personal access token. |
+| <a id="personalaccesstokenexpiresat"></a>`expiresAt` | [`Date`](#date) | Date of when the personal access token expires. |
+| <a id="personalaccesstokengranular"></a>`granular` | [`Boolean!`](#boolean) | Whether the personal access token is granular. |
+| <a id="personalaccesstokenid"></a>`id` | [`ID!`](#id) | ID of the personal access token. |
+| <a id="personalaccesstokenlastusedat"></a>`lastUsedAt` | [`Time`](#time) | Timestamp of when the personal access token was last used. |
+| <a id="personalaccesstokenname"></a>`name` | [`String!`](#string) | Name of the personal access token. |
+| <a id="personalaccesstokenrevoked"></a>`revoked` | [`Boolean!`](#boolean) | Whether the personal access token has been revoked. |
+| <a id="personalaccesstokenscopes"></a>`scopes` | [`[PersonalAccessTokenScope!]!`](#personalaccesstokenscope) | List of scopes applied to a personal access token. |
 
 ### `Pipeline`
 
@@ -45308,6 +45554,32 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="usercoreorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
 
+##### `UserCore.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercorepersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="usercorepersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="usercorepersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="usercorepersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="usercorepersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="usercorepersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
+
 ##### `UserCore.reviewRequestedMergeRequests`
 
 Merge requests assigned to the user for review.
@@ -47974,6 +48246,46 @@ Access level to a resource.
 | <a id="accesslevelenumowner"></a>`OWNER` | Owner access. |
 | <a id="accesslevelenumplanner"></a>`PLANNER` | Planner access. |
 | <a id="accesslevelenumreporter"></a>`REPORTER` | Reporter access. |
+
+### `AccessTokenGranularScopeAccess`
+
+Access configured on a granular scope.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="accesstokengranularscopeaccessall_memberships"></a>`ALL_MEMBERSHIPS` | Grants access to resources belonging to all groups and projects the user is a member of. |
+| <a id="accesstokengranularscopeaccessinstance"></a>`INSTANCE` | Grants access to standalone instance-level resources. |
+| <a id="accesstokengranularscopeaccesspersonal_projects"></a>`PERSONAL_PROJECTS` | Grants access to resources belonging to all personal projects of a user. |
+| <a id="accesstokengranularscopeaccessselected_memberships"></a>`SELECTED_MEMBERSHIPS` | Grants access to resources belonging to selected groups and projects the user is a member of. |
+| <a id="accesstokengranularscopeaccessuser"></a>`USER` | Grants access to standalone user-level resources. |
+
+### `AccessTokenSort`
+
+Values for sorting access tokens.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="accesstokensortcreated_asc"></a>`CREATED_ASC` | Sort by created_at in ascending order. |
+| <a id="accesstokensortcreated_desc"></a>`CREATED_DESC` | Sort by created_at in descending order. |
+| <a id="accesstokensortexpires_asc"></a>`EXPIRES_ASC` | Sort by expires_at in ascending order. |
+| <a id="accesstokensortexpires_desc"></a>`EXPIRES_DESC` | Sort by expires_at in descending order. |
+| <a id="accesstokensortid_asc"></a>`ID_ASC` | Sort by ID in ascending order. |
+| <a id="accesstokensortid_desc"></a>`ID_DESC` | Sort by ID in descending order. |
+| <a id="accesstokensortlast_used_asc"></a>`LAST_USED_ASC` | Sort by last_used_at in ascending order. |
+| <a id="accesstokensortlast_used_desc"></a>`LAST_USED_DESC` | Sort by last_used_at in descending order. |
+| <a id="accesstokensortname_asc"></a>`NAME_ASC` | Sort by name in ascending order. |
+| <a id="accesstokensortname_desc"></a>`NAME_DESC` | Sort by name in descending order. |
+| <a id="accesstokensortupdated_asc"></a>`UPDATED_ASC` | Sort by updated_at in ascending order. |
+| <a id="accesstokensortupdated_desc"></a>`UPDATED_DESC` | Sort by updated_at in descending order. |
+
+### `AccessTokenState`
+
+State of an access token.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="accesstokenstateactive"></a>`ACTIVE` | Token is active. |
+| <a id="accesstokenstateinactive"></a>`INACTIVE` | Token is inactive. |
 
 ### `AgentTokenStatus`
 
@@ -53910,6 +54222,15 @@ One of:
 - [`PypiMetadata`](#pypimetadata)
 - [`TerraformModuleMetadata`](#terraformmodulemetadata)
 
+#### `PersonalAccessTokenScope`
+
+Scope applied to a personal access token.
+
+One of:
+
+- [`AccessTokenGranularScope`](#accesstokengranularscope)
+- [`AccessTokenLegacyScope`](#accesstokenlegacyscope)
+
 #### `PolicyAttributesUnion`
 
 Represents specific policy types. Its fields depend on the policy type.
@@ -55186,6 +55507,32 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="userorganizationssearch"></a>`search` | [`String`](#string) | Search query, which can be for the organization name or a path. |
 | <a id="userorganizationssoloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only organizations solely owned by the user. |
+
+###### `User.personalAccessTokens`
+
+{{< details >}}
+**Introduced** in GitLab 18.6.
+**Status**: Experiment.
+{{< /details >}}
+
+Personal access tokens of the user.
+
+Returns [`PersonalAccessTokenConnection`](#personalaccesstokenconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="userpersonalaccesstokenscreatedafter"></a>`createdAfter` | [`Time`](#time) | Filter personal access tokens created after the timestamp. |
+| <a id="userpersonalaccesstokensexpiresafter"></a>`expiresAfter` | [`Date`](#date) | Filter personal access tokens that expire after the timestamp. |
+| <a id="userpersonalaccesstokenslastusedafter"></a>`lastUsedAfter` | [`Time`](#time) | Filter personal access tokens last used after the timestamp. |
+| <a id="userpersonalaccesstokensrevoked"></a>`revoked` | [`Boolean`](#boolean) | Filter personal access tokens by their revoked status. Default is `false`. |
+| <a id="userpersonalaccesstokenssort"></a>`sort` | [`AccessTokenSort`](#accesstokensort) | Sort personal access tokens by the given criteria. Default is `expires_at_asc`. |
+| <a id="userpersonalaccesstokensstate"></a>`state` | [`AccessTokenState`](#accesstokenstate) | Filter personal access tokens by state. Default is `active`. |
 
 ###### `User.reviewRequestedMergeRequests`
 

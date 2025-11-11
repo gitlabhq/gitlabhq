@@ -118,19 +118,17 @@ module Banzai
         end
 
         def object_link_text(object, matches)
-          label_suffix = ''
+          reference = nil
           parent = project || group
 
           if matches[:absolute_path].blank? && (project || full_path_ref?(matches))
             project_path    = reference_cache.full_project_path(matches[:namespace], matches[:project], matches)
             parent_from_ref = from_ref_cached(project_path)
             reference       = parent_from_ref.to_human_reference(parent)
-
-            label_suffix = " <i>in #{ERB::Util.html_escape(reference)}</i>" if reference.present?
           end
 
           presenter = object.present(issuable_subject: parent)
-          LabelsHelper.render_colored_label(presenter, suffix: label_suffix)
+          LabelsHelper.render_colored_label(presenter, in_reference: reference)
         end
 
         def wrap_link(link, label)
@@ -146,6 +144,7 @@ module Banzai
           super + ' gl-link gl-label-link'
         end
 
+        # Returns a String containing text.
         def object_link_title(object, matches)
           presenter = object.present(issuable_subject: project || group)
           LabelsHelper.label_tooltip_title(presenter)

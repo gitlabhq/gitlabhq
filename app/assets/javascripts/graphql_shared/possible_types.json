@@ -216,6 +216,10 @@
     "PendingGroupMember",
     "PendingProjectMember"
   ],
+  "PersonalAccessTokenScope": [
+    "AccessTokenGranularScope",
+    "AccessTokenLegacyScope"
+  ],
   "PipelineInterface": [
     "Pipeline",
     "PipelineMinimalAccess"

@@ -439,11 +439,21 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'has valid color' do
-      expect(result.css('a span').first.attr('style')).to match(/background-color: #00ff00/)
+      expect(result.css('a span').first.attr('style')).to match('background-color: #00ff00')
     end
 
     it 'has valid link text' do
       expect(result.css('a').first.text).to eq "#{label.name} in #{project2.full_name}"
+    end
+
+    it 'has correct HTML content' do
+      frag = Nokogiri::HTML.fragment("<span>")
+      span = frag.children.first
+      span.content = "#{label.name} "
+      span << i = frag.document.create_element("i")
+      i.content = "in #{project2.full_name}"
+
+      expect(result.css('a').first.to_html).to include_html(span.inner_html)
     end
 
     it 'has valid text' do

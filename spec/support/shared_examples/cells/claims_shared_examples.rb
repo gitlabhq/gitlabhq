@@ -7,9 +7,12 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
   let(:deadline) { 10.seconds.from_now.to_i }
   let(:lease_uuid) { SecureRandom.uuid }
   let(:fake_error) { Class.new(RuntimeError) }
-  let(:claims_records) { claims_records_for(subject) }
   let(:create_records) { [] }
   let(:destroy_records) { [] }
+
+  def claims_records(only: {})
+    claims_records_for(subject, only: only)
+  end
 
   def claims_records_for(instance, only: {})
     instance.class.cells_claims_attributes.filter_map do |attribute, config|
@@ -82,7 +85,7 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
   end
 
   context 'when deleting the record' do
-    subject! { create(factory_name) } # rubocop:disable Rails/SaveBang -- This is a factory, there's no bang equivalent
+    subject! { super().tap(&:save!) }
 
     let(:destroy_records) { claims_records }
 
@@ -132,15 +135,10 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
   end
 
   context 'when updating the record' do
-    subject! { create(factory_name) } # rubocop:disable Rails/SaveBang -- This is a factory, there's no bang equivalent
+    subject! { super().tap(&:save!) }
 
-    let!(:destroy_records) do
-      claims_records_for(subject, only: original_attributes)
-    end
-
-    let!(:create_records) do
-      claims_records_for(subject, only: transform_attributes)
-    end
+    let!(:destroy_records) { claims_records(only: original_attributes) }
+    let!(:create_records) { claims_records(only: transform_attributes) }
 
     let(:original_attributes) do
       transform_attributes.each_key.index_with do |key|
@@ -206,14 +204,26 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
   end
 
   def expect_begin_update(type, success: true)
+    allow(Cells::OutstandingLease).to receive(:create_from_request!)
+      .and_wrap_original do |original, *args|
+        actual_create_records = args.dig(0, :create_records)
+        actual_destroy_records = args.dig(0, :destroy_records)
+        # This way we ignore the orders for the records
+        original.call(
+          create_records: sort_records(actual_create_records),
+          destroy_records: sort_records(actual_destroy_records),
+          deadline: args.dig(0, :deadline)
+        )
+      end
+
     allow(subject).to receive(:"cells_claims_#{type}_changes")
       .and_wrap_original do |original, *args|
         # We delay defining this mock because only after saving we have
         # the id we can use for the metadata.
         mock = expect(claim_service).to receive(:begin_update).with(
           Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
-            create_records: create_records,
-            destroy_records: destroy_records,
+            create_records: sort_records(create_records),
+            destroy_records: sort_records(destroy_records),
             cell_id: claim_service.cell_id
           ),
           deadline: deadline
@@ -262,5 +272,14 @@ RSpec.shared_examples 'creating new claims' do |factory_name:|
           raise fake_error, 'Abort commit'
         end
     end
+  end
+
+  def sort_records(records)
+    # We don't care about the actual order, but need a consistent order
+    # within this test run, so that when we compare two arrays we're only
+    # checking that they contain the same records regardless of order.
+    # This is reliable unless we hit hash collisions, which could cause
+    # test flakiness.
+    records.sort_by(&:hash)
   end
 end

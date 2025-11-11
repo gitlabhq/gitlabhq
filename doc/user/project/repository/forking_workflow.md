@@ -244,3 +244,15 @@ p = Project.find_by_full_path('<project_path>')
 u = User.find_by_username('<username>')
 Projects::UnlinkForkService.new(p, u).execute
 ```
+
+### Error: `User is not allowed to import projects`
+
+When forking a project using a service account, you might receive an error that states:
+
+```plaintext
+{"message":["Namespace is not valid","User is not allowed to import projects"]}
+```
+
+This issue occurs because service accounts are bot users and cannot fork projects to their personal namespace, even if their project limit has been increased.
+
+When using a service account to fork a project, the workaround is to specify a target group namespace using either `namespace_id` or `namespace_path` in the [Project forks API](../../../api/project_forks.md). The service account must be a member of the target group with at least the Developer role.

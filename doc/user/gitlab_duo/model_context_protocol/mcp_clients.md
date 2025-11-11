@@ -255,6 +255,9 @@ you must review that tool unless you've approved it for the entire session:
    - For Chat, if you deny the tool, the **Provide Rejection Reason** dialog appears.
      Enter a rejection reason, then select **Submit Rejection**.
 
+     Chat might take action based on the reason you provide, such as
+     suggesting a new approach, or creating an issue.
+
 ## Related topics
 
 - [Get started with the Model Context Protocol](https://modelcontextprotocol.io/introduction)

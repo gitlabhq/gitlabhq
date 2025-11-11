@@ -260,6 +260,13 @@ module Types
       description: 'Type of the user.',
       method: :user_type
 
+    field :personal_access_tokens,
+      Types::Authz::PersonalAccessTokens::PersonalAccessTokenType.connection_type,
+      null: true,
+      resolver: Resolvers::Users::PersonalAccessTokensResolver,
+      description: 'Personal access tokens of the user.',
+      experiment: { milestone: '18.6' }
+
     definition_methods do
       def resolve_type(object, context)
         # in the absence of other information, we cannot tell - just default to

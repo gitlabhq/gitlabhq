@@ -338,6 +338,14 @@ Conversations that existed before you created any custom rules do not follow tho
 
 For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
 
+#### Update custom rules
+
+To update your custom rules, edit and save the custom rules file.
+
+You cannot use Chat to edit your custom rules file directly.
+
+To manage who must approve any changes to custom rules, use [Code Owners](../project/codeowners/_index.md).
+
 ### Select a model
 
 {{< details >}}

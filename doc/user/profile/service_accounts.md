@@ -154,6 +154,29 @@ or the
 [global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock)
 is enabled.
 
+## Fork projects with a service account
+
+Service accounts can fork projects through the [Project forks API](../../api/project_forks.md), but
+cannot fork to their personal namespace. When forking with a service account, you must specify
+a target group namespace.
+
+Prerequisites:
+
+- The service account must be added as a member to the target group with at least the Developer role.
+- The service account must have the `api` scope enabled on its personal access token.
+
+To fork a project using a service account:
+
+1. Identify the target group where the fork is created.
+1. Ensure the service account is a member of that group with appropriate permissions.
+1. Use the [fork project API](../../api/project_forks.md) with either `namespace_id` or `namespace_path`:
+
+   ```shell
+    curl --request POST --header "PRIVATE-TOKEN: <service_account_token>" \
+      --data "namespace_path=target-group" \
+      "https://gitlab.example.com/api/v4/projects/<project_id>/fork"
+   ```
+
 ### Delete a service account
 
 When you delete a service account, any contributions made by the account are retained and ownership
