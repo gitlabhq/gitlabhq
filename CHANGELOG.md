@@ -2,6 +2,42 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.4.4 (2025-11-11)
+
+### Fixed (8 changes)
+
+- [Fix redirect loop in Gitea rate limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5f35b80394c0087045e107b1f869e2233bd79c58)
+- [Call CommitIndexerWorker when an empty project is created](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0820ebf2dd78fbf7c8a1ee6b8823420efa7fc513) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210754)) **GitLab Enterprise Edition**
+- [Fix the zoekt filters caching](https://gitlab.com/gitlab-org/security/gitlab/-/commit/937c58de0a4f255b7c24718554d767ee9995ada9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210729)) **GitLab Enterprise Edition**
+- [Add deleted Geo migration back](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cc4e0ba0cfff0b77cdf9299ddf22cab4826e3d60) **GitLab Enterprise Edition**
+- [Fix password validation exception for FIPS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cbf2e95b1bacbe065468056005eb57dc344e90e9)
+- [Fix admin_project_member policy SAML projects user namespace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9941d04d25f7e84c803eb8536f2917380255ec86) **GitLab Enterprise Edition**
+- [Update dependency openssl to v3.3.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/32f12a05c36c7ff3da988c09b788dc5d2db0d4cf)
+- [Update rexml to v3.4.4](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6cb67ca08413958b919e33b8f75e45cbb9869f66)
+
+### Changed (1 change)
+
+- [Remove OAuth SHA512 feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7ee2fa60ce2450f0197d58b66ea4dbacb82d48b3)
+
+### Security (8 changes)
+
+- [Security fix package api pipeline details](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5006e3cfe6e484106b37d2446a545dd80d8a1491) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5425))
+- [Group enforced pages access control should restrict non-members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46dc5208a53e3436e6ccd74658951e02121c3de2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5441))
+- [Update to gitlab-glfm-markdown 0.0.38](https://gitlab.com/gitlab-org/security/gitlab/-/commit/445a597d1c4bc0b7a4b59e07892f8988a690101e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5462))
+- [Encode protected branch names in API requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/559a768974e47805a90222f8ca2aaa17b13276a7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5457))
+- [Prevent GraphQL subscriptions from blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/159f8ee5fd2f5d49debee461b39e3c93dbcbb3b1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5431))
+- [Prevent Duo Chat from reading confidential resources](https://gitlab.com/gitlab-org/security/gitlab/-/commit/be737dee7e06fcca930e4eb34cabcbca903b316c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5379))
+- [Hide related branches when repository is private](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba92c18d0200a5f7423a61f151b604d2a46497bb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5435))
+- [Fix unauth workflow deletion by service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/31a7406caa596bf1f13271372f683f21b70c3293) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5421))
+
+### Performance (1 change)
+
+- [Reduce cached SQL queries in `/api/v4/internal/pages` endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/54969f5503e0ebdf4cbe275e9f884cd44bbd44e3)
+
+### Other (1 change)
+
+- [Fix instance bbm for mishandled nil verification token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8059aa66884fabdb4d37657361dc7f6c9ee38023) **GitLab Enterprise Edition**
+
 ## 18.4.3 (2025-10-21)
 
 ### Fixed (5 changes)

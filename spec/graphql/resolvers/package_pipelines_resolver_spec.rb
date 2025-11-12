@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::PackagePipelinesResolver do
+RSpec.describe Resolvers::PackagePipelinesResolver, feature_category: :package_registry do
   include GraphqlHelpers
 
   let_it_be_with_reload(:package) { create(:generic_package) }
@@ -91,6 +91,20 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
       let_it_be(:user) { create(:user) }
 
       it 'returns nothing' do
+        expect(returned_pipelines).to be_nil
+      end
+    end
+
+    context 'when repository is disabled' do
+      before do
+        package.project.project_feature.update!(
+          repository_access_level: ProjectFeature::DISABLED,
+          merge_requests_access_level: ProjectFeature::DISABLED,
+          builds_access_level: ProjectFeature::DISABLED
+        )
+      end
+
+      it 'returns no pipeline information' do
         expect(returned_pipelines).to be_nil
       end
     end
