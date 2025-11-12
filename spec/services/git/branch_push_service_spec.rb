@@ -146,7 +146,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
     it "when pushing a new branch for the first time" do
       expect(UpdateMergeRequestsWorker)
         .to receive(:perform_async)
-        .with(project.id, user.id, blankrev, newrev, ref, { 'push_options' => nil })
+        .with(project.id, user.id, blankrev, newrev, ref, { 'push_options' => nil, 'gitaly_context' => nil })
         .ordered
 
       subject
