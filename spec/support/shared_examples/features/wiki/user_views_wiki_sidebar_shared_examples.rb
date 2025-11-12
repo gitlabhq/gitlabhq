@@ -50,6 +50,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         create(:wiki_page, wiki: wiki, title: '_sidebar', content: 'My custom sidebar')
 
         visit wiki_path(wiki)
+        click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
       end
 
       it 'renders both the custom sidebar and the default one' do
@@ -93,6 +94,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows all pages in the sidebar' do
       visit wiki_path(wiki)
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       (1..15).each { |i| expect(page).to have_content("my page #{i}") }
       expect(page).to have_link('View all pages')
@@ -100,6 +102,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows all collapse buttons in the sidebar' do
       visit wiki_path(wiki)
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       within('.wiki-sidebar') do
         expect(page.all("[data-testid='wiki-sidebar-entry-collapser']").size).to eq(3)
@@ -108,6 +111,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'collapses/expands children when click collapse/expand button in the sidebar', :js do
       visit wiki_path(wiki)
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       within('.wiki-sidebar') do
         first("[data-testid='wiki-sidebar-entry-collapser']").click
@@ -124,6 +128,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows create child page button when hover to the page title in the sidebar', :js do
       visit wiki_path(wiki)
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       within('.wiki-sidebar') do
         first_wiki_list = first("[data-testid='wiki-list']")

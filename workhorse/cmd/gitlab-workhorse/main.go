@@ -20,6 +20,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/shutdown"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/listener"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
@@ -292,9 +293,6 @@ func run(boot bootConfig, cfg config.Config) error {
 		defer healthCancel()
 	}
 
-	shutdown := make(chan struct{})
-	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb, healthCheckServer, shutdown))
-
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
 
@@ -313,7 +311,18 @@ func run(boot bootConfig, cfg config.Config) error {
 	}
 	syscall.Umask(oldUmask)
 
-	srv := &http.Server{Handler: up}
+	shutdownCh := make(chan struct{})
+	upgradedConnsManager := &upstream.UpgradedConnsManager{}
+	up := upstream.NewUpstream(
+		cfg,
+		accessLogger,
+		watchKeyFn,
+		rdb,
+		healthCheckServer,
+		shutdownCh,
+		upgradedConnsManager,
+	)
+	srv := &http.Server{Handler: wrapRaven(up)}
 
 	for _, l := range listeners {
 		go func(l net.Listener) { finalErrors <- srv.Serve(l) }(l)
@@ -331,7 +340,7 @@ func run(boot bootConfig, cfg config.Config) error {
 			healthCheckServer.InitiateShutdown()
 			// Signal upstream to stop accepting long polling requests because
 			// requests can arrive during the graceful shutdown time.
-			close(shutdown)
+			close(shutdownCh)
 			// Kick out any long poll requests
 			redisKeyWatcher.Shutdown()
 			gracefulShutdownDelay = healthCheckServer.GetGracefulShutdownDelay()
@@ -343,13 +352,13 @@ func run(boot bootConfig, cfg config.Config) error {
 			time.Sleep(gracefulShutdownDelay)
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
-		defer cancel()
-
 		if healthCheckServer == nil {
 			redisKeyWatcher.Shutdown()
 		}
 
-		return srv.Shutdown(ctx)
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
+		defer cancel()
+
+		return shutdown.ShutdownAll(ctx, srv, upgradedConnsManager)
 	}
 }

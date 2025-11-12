@@ -121,7 +121,7 @@ cache:assets-hash:
 #=================================
 # FE Island
 #=================================
-cache:fe-island-hash:
+cache:fe-islands-hash:
   extends:
     - .cache-pull-push-base
     - .with-alpine-ruby-image
@@ -134,13 +134,10 @@ cache:fe-island-hash:
       dotenv: build.env
   allow_failure: false
 
-cache:fe-island-node-modules:
+cache:fe-islands-node-modules:
   extends:
     - .cache-pull-push-base
     - .with-ci-node-image
-    - .fe-island-yarn-pull-push-cache
-  before_script:
-    - source scripts/utils.sh
+    - .fe-islands-yarn-pull-push-cache
   script:
-    - cd ee/frontend_islands/apps/duo_next
-    - yarn_install_script
+    - scripts/install_frontend_islands

@@ -95,6 +95,10 @@ mapping:
   - source: 'ee/spec/(?<directory>.*/)ee/(?<rest>.+\.rb)'
     test: 'spec/%{directory}%{rest}'
 
+  # Map spec support to corresponding support specs
+  - source: '(?<prefix>ee/)?spec/support/(?<rest>.+)\.rb'
+    test: '%{prefix}spec/support_specs/%{rest}_spec.rb'
+
   # FOSS+EE factories map to FOSS/EE model specs
   - source:
       - '(?<prefix>ee/)?spec/factories/(?<model>.+)\.rb'

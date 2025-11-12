@@ -81,6 +81,10 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       wait_for_requests
 
+      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        find('.milestone-sidebar .js-sidebar-expand').click
+      end
+
       within_testid('noTrackingPane') do
         expect(page).to have_content 'No estimate or time spent'
       end
@@ -98,6 +102,10 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
       visit project_milestone_path(project, milestone)
 
       wait_for_requests
+
+      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+        find('.milestone-sidebar .js-sidebar-expand').click
+      end
 
       within_testid('spentOnlyPane') do
         expect(page).to have_content 'Spent: 3h'

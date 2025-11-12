@@ -397,11 +397,10 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
       end
 
       it 'moves sequences back to the original table' do
-        expect { revert_conversion }.to change { converter.send(:sequences_owned_by, table_name).count }
+        expect { revert_conversion }.to change { Gitlab::Database::PostgresSequence.by_table_name(table_name).count }
                                           .from(0)
                                           .and change {
-                                            converter.send(
-                                              :sequences_owned_by, parent_table_name).count
+                                            Gitlab::Database::PostgresSequence.by_table_name(parent_table_name).count
                                           }.to(0)
       end
 

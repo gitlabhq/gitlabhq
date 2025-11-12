@@ -1160,6 +1160,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           # page is shown.
           wait_for_requests
 
+          dismiss_welcome_banner_if_present(page)
           click_button _('Register authenticator')
           otp_secret = page.find('.two-factor-secret').text.gsub('Key:', '').delete(' ')
           current_otp = ROTP::TOTP.new(otp_secret).now
@@ -1245,6 +1246,8 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
         # Wait until the form has been initialized
         has_testid?('form-ready')
+
+        dismiss_welcome_banner_if_present(page)
 
         fill_in 'Email', with: 'hello@world.com'
 

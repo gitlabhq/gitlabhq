@@ -448,12 +448,12 @@
     - node_modules/
   policy: pull
 
-.fe-island-node-modules-cache: &fe-island-node-modules-cache
+.fe-islands-node-modules-cache: &fe-islands-node-modules-cache
   key:
     files:
       - ee/frontend_islands/yarn.lock
       - ee/frontend_islands/**/package.json
-    prefix: fe-island-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
+    prefix: fe-islands-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
   paths:
     - ee/frontend_islands/node_modules/
   policy: pull
@@ -466,10 +466,10 @@
     - ${GLCI_GITLAB_ASSETS_HASH_FILE}
   policy: pull-push
 
-.fe-island-dist-cache: &fe-island-dist-cache
-  key: fe-island-dist-${BUILD_OS}-${OS_VERSION}-node-${NODE_VERSION}-${GLCI_FE_ISLAND_HASH}
+.fe-islands-dist-cache: &fe-islands-dist-cache
+  key: fe-islands-dist-${BUILD_OS}-${OS_VERSION}-node-${NODE_VERSION}-${GLCI_FE_ISLAND_HASH}
   paths:
-    - ee/frontend_islands/apps/duo_next/dist/duo_next.js
+    - ee/frontend_islands/apps/**/dist/main.js
   policy: pull-push
 
 # unlike rubocop, webpack cache does not have built in cleanup so it's not safe to use in pull-push configuration
@@ -551,7 +551,7 @@
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
     - *rubocop-cache
-    - *fe-island-node-modules-cache
+    - *fe-islands-node-modules-cache
 
 .rubocop-job-cache:
   cache:
@@ -600,18 +600,18 @@
     - <<: *assets-cache
       policy: pull
 
-.fe-island-compile-cache:
+.fe-islands-compile-cache:
   cache:
-    - *fe-island-node-modules-cache
-    - *fe-island-dist-cache
+    - *fe-islands-node-modules-cache
+    - *fe-islands-dist-cache
 
-.fe-island-yarn-cache:
+.fe-islands-yarn-cache:
   cache:
-    - <<: *fe-island-node-modules-cache
+    - <<: *fe-islands-node-modules-cache
 
-.fe-island-yarn-pull-push-cache:
+.fe-islands-yarn-pull-push-cache:
   cache:
-    - <<: *fe-island-node-modules-cache
+    - <<: *fe-islands-node-modules-cache
       policy: pull-push
 
 .storybook-yarn-cache:

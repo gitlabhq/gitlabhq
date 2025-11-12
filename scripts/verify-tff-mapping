@@ -33,6 +33,12 @@ tests = [
   },
 
   {
+    explanation: 'Map spec support to corresponding support specs',
+    changed_file: 'spec/support/database/prevent_cross_joins.rb',
+    expected: 'spec/support_specs/database/prevent_cross_joins_spec.rb'
+  },
+
+  {
     explanation: 'EE extension should map to its EE extension spec and its FOSS class spec',
     changed_file: 'ee/app/finders/ee/projects_finder.rb',
     expected: %w[

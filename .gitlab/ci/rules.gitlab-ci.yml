@@ -569,6 +569,9 @@
   - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
   - "ee/frontend_islands/apps/**/*"
 
+.frontend-fe-predictive-patterns: &frontend-fe-predictive-patterns
+  - "ee/frontend_islands/apps/**/*"
+
 .frontend-code-patterns: &frontend-code-patterns
   - "**/{package.json,yarn.lock}"
   - "**/*.{js,cjs,mjs,ts,tsx,vue,graphql}"
@@ -580,7 +583,7 @@
   # match the .rc config files like .browserslistrc, .stylelintrc etc.,
   - "{.,}*rc"
 
-.code-fe-island-patterns: &code-fe-island-patterns
+.code-fe-islands-patterns: &code-fe-islands-patterns
   - "ee/frontend_islands/{apps,packages}/**/package.json"
   - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
   - "ee/frontend_islands/apps/**/*/src/**/*.{js,cjs,mjs,ts,tsx,vue,graphql,css}"
@@ -1602,7 +1605,7 @@
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
 
-.frontend:rules:fe-island:test:
+.frontend:rules:fe-islands:test:
   rules:
     - <<: *if-not-ee
       when: never
@@ -1611,18 +1614,18 @@
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-automated-merge-request
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-security-merge-request
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-merge-request
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
     - <<: *if-merge-request
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-default-refs
-      changes: *code-fe-island-patterns
+      changes: *code-fe-islands-patterns
 
 .frontend:rules:jest:
   rules:
@@ -1646,6 +1649,14 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+.frontend:rules:fe-islands:predictive:
+  rules:
+    - if: '$ENABLE_JEST_PREDICTIVE == "true"'
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-fe-predictive-patterns
 
 .frontend:rules:jest:predictive:
   rules:
@@ -1761,7 +1772,7 @@
     - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
       changes: *code-backstage-patterns
 
-.frontend:rules:update-fe-island:
+.frontend:rules:update-fe-islands:
   rules:
     - <<: *if-not-ee
       when: never

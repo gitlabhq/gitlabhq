@@ -13,7 +13,7 @@ module Webauthn
     def execute
       return error(_('You are not authorized to perform this action')) unless authorized?
 
-      result = destroy_webauthn_device
+      result = destroy_second_factor_webauthn_device
 
       if result[:status] == :success
         notify_on_success(user, webauthn_registration.name)
@@ -33,9 +33,9 @@ module Webauthn
       current_user.can?(:disable_two_factor, user)
     end
 
-    def destroy_webauthn_device
+    def destroy_second_factor_webauthn_device
       ::Users::UpdateService.new(current_user, user: user).execute do |user|
-        user.destroy_webauthn_device(webauthn_registration.id)
+        user.destroy_second_factor_webauthn_device(webauthn_registration.id)
       end
     end
 

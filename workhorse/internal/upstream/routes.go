@@ -293,6 +293,11 @@ func configureRoutes(u *upstream) {
 	api := u.APIClient
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude, API: u.APIClient}
 	dependencyProxyInjector := dependencyproxy.NewInjector()
+	dwHandler := duoworkflow.NewHandler(api)
+
+	if u.upgradedConnsManager != nil {
+		u.upgradedConnsManager.Register(dwHandler)
+	}
 
 	// Build proxy with optional success tracking
 	var proxyOpts []ProxyOption
@@ -382,7 +387,7 @@ func configureRoutes(u *upstream) {
 		// Duo Workflow websocket
 		u.wsRoute(
 			newRoute(apiPattern+`v4/ai/duo_workflows/ws\z`, "duo_workflow_ws", railsBackend),
-			duoworkflow.Handler(api)),
+			dwHandler.Build()),
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("",

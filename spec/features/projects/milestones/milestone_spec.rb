@@ -27,6 +27,10 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
   context 'when project has enabled issues' do
     before do
       visit project_milestone_path(project, milestone)
+
+      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
+        find('.milestone-sidebar .js-sidebar-expand').click
+      end
     end
 
     it 'shows work items tab' do
@@ -135,6 +139,10 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
   context 'when the milestone is not associated with a release' do
     before do
       visit project_milestone_path(project, milestone)
+
+      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
+        find('.milestone-sidebar .js-sidebar-expand').click
+      end
     end
 
     it 'shows "None" in the "Releases" section' do
@@ -161,6 +169,10 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
       create(:release, project: project, name: 'Version 5', milestones: [milestone])
 
       visit project_milestone_path(project, milestone)
+
+      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
+        find('.milestone-sidebar .js-sidebar-expand').click
+      end
     end
 
     it 'shows "Version 5" in the "Release" section' do
@@ -190,6 +202,10 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
       end
 
       visit project_milestone_path(project, milestone)
+
+      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
+        find('.milestone-sidebar .js-sidebar-expand').click
+      end
     end
 
     it 'shows a shortened list of releases in the "Releases" section' do

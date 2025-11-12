@@ -94,41 +94,21 @@ func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.Duo
 func (r *runner) Execute(ctx context.Context) error {
 	errCh := make(chan error, 2)
 
-	go r.handleWebSocketMessages(ctx, errCh)
+	go r.handleWebSocketMessages(errCh)
 	go r.handleAgentMessages(ctx, errCh)
 
 	return <-errCh
 }
 
-func (r *runner) handleWebSocketMessages(ctx context.Context, errCh chan<- error) {
+func (r *runner) handleWebSocketMessages(errCh chan<- error) {
 	for {
 		_, message, err := r.conn.ReadMessage()
 		if err != nil {
 			if e, ok := err.(*websocket.CloseError); ok && slices.Contains(normalClosureErrCodes, e.Code) {
-				log.WithRequest(r.originalReq).WithFields(log.Fields{
-					"close_error": err.Error(),
-				}).Info("handleWebSocketMessages: Sending stop workflow request...")
-
-				stopRequest := &pb.ClientEvent{
-					Response: &pb.ClientEvent_StopWorkflow{
-						StopWorkflow: &pb.StopWorkflowRequest{
-							Reason: fmt.Sprintf("WORKHORSE_WEBSOCKET_CLOSE_%d", e.Code),
-						},
-					},
-				}
-
-				if err = r.threadSafeSend(stopRequest); err != nil {
-					errCh <- fmt.Errorf("handleWebSocketMessages: failed to gracefully stop a workflow: %v", err)
-				}
-
-				select {
-				case <-ctx.Done():
-					errCh <- nil
-					return
-				case <-time.After(wsStopWorkflowTimeout):
-					errCh <- fmt.Errorf("handleWebSocketMessages: workflow didn't stop on time")
-					return
-				}
+				reason := fmt.Sprintf("WORKHORSE_WEBSOCKET_CLOSE_%d", e.Code)
+				stopErr := r.stopWorkflow(reason, err)
+				errCh <- fmt.Errorf("handleWebSocketMessages: %v", stopErr)
+				return
 			}
 
 			errCh <- fmt.Errorf("handleWebSocketMessages: failed to read a WS message: %v", err)
@@ -307,4 +287,56 @@ func (r *runner) threadSafeSend(event *pb.ClientEvent) error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 	return r.wf.Send(event)
+}
+
+func (r *runner) stopWorkflow(reason string, closeErr error) error {
+	log.WithRequest(r.originalReq).WithFields(log.Fields{
+		"close_error": closeErr.Error(),
+	}).Info("stopWorkflow: sending stop workflow request...")
+
+	stopRequest := &pb.ClientEvent{
+		Response: &pb.ClientEvent_StopWorkflow{
+			StopWorkflow: &pb.StopWorkflowRequest{
+				Reason: reason,
+			},
+		},
+	}
+
+	if err := r.threadSafeSend(stopRequest); err != nil {
+		return fmt.Errorf("failed to send stop request: %v", err)
+	}
+
+	select {
+	case <-r.originalReq.Context().Done():
+		return nil
+	case <-time.After(wsStopWorkflowTimeout):
+		return fmt.Errorf("workflow didn't stop on time")
+	}
+}
+
+// Shutdown gracefully stops the workflow runner during server shutdown.
+// It sends a stop workflow request to the agent platform and waits for acknowledgment.
+// If the original request context is already canceled, it returns immediately.
+// Errors during shutdown are logged but not returned to allow other runners to proceed.
+func (r *runner) Shutdown(ctx context.Context) error {
+	select {
+	case <-r.originalReq.Context().Done():
+		return nil
+	case <-ctx.Done():
+		err := r.stopWorkflow(
+			"WORKHORSE_SERVER_SHUTDOWN",
+			fmt.Errorf("duoworkflow: stopping workflow due to server shutdown"),
+		)
+		if err == nil {
+			log.WithRequest(r.originalReq).WithError(
+				fmt.Errorf("duoworkflow: stopped gracefully due to server shutdown"),
+			).Error()
+		} else {
+			log.WithRequest(r.originalReq).WithError(
+				fmt.Errorf("duoworkflow: failed to gracefully stop a workflow: %v", err),
+			).Error()
+		}
+
+		return err
+	}
 }

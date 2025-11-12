@@ -1319,7 +1319,7 @@ class User < ApplicationRecord
 
   def disable_two_factor!
     transaction do
-      self.disable_webauthn!
+      self.disable_second_factor_webauthn!
       self.disable_two_factor_otp!
       self.reset_backup_codes!
       self.set_email_otp_required_after_based_on_restrictions(save: true)
@@ -1337,11 +1337,11 @@ class User < ApplicationRecord
     )
   end
 
-  def disable_webauthn!
+  def disable_second_factor_webauthn!
     self.second_factor_webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
   end
 
-  def destroy_webauthn_device(device_id)
+  def destroy_second_factor_webauthn_device(device_id)
     self.second_factor_webauthn_registrations.find(device_id).destroy
   end
 

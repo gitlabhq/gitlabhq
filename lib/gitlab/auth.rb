@@ -286,9 +286,9 @@ module Gitlab
             identity = ::Gitlab::Auth::Identity.link_from_oauth_token(token)
             return if identity && !identity.valid?
 
-            resource_owner_id = identity&.composite? ? identity.scoped_user.id : token.resource_owner_id
-            user = User.id_in(resource_owner_id).first
-            return unless user && user.can_log_in_with_non_expired_password?
+            user = User.id_in(token.resource_owner_id).first
+
+            return unless user && (user.can_log_in_with_non_expired_password? || valid_composite_identity?(user))
 
             Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))
           end
@@ -582,6 +582,10 @@ module Gitlab
         return user.unlock_access! if success
 
         user.increment_failed_attempts!
+      end
+
+      def valid_composite_identity?(user)
+        user.composite_identity_enforced? && user.service_account?
       end
 
       def log_authentication(message, user, authenticator, request: nil)

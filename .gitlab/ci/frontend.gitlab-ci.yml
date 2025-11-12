@@ -24,11 +24,16 @@
   stage: prepare
   needs:
     - cache:assets-hash
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
   script:
     - scripts/compile_assets
     - scripts/build_assets_image
+
+.fe-islands-parallel:
+  parallel:
+    matrix:
+      - FE_APP_DIR: ["duo_next"]
 
 compile-production-assets:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-docker-${DOCKER_VERSION}
@@ -107,13 +112,13 @@ build-vite-prod:
     paths:
       - public/assets/vite/
 
-compile-fe-island:
+compile-fe-islands:
   extends:
     - .default-retry
     - .with-ci-node-image
-    - .fe-island-compile-cache
-    - .frontend:rules:update-fe-island
-  needs: ["cache:fe-island-hash"]
+    - .fe-islands-compile-cache
+    - .frontend:rules:update-fe-islands
+  needs: ["cache:fe-islands-hash"]
   stage: prepare
   variables:
     USE_BUNDLE_INSTALL: "false"
@@ -121,7 +126,7 @@ compile-fe-island:
     - scripts/build_frontend_islands
   artifacts:
     paths:
-      - ee/frontend_islands/apps/duo_next/dist/duo_next.js
+      - ee/frontend_islands/apps/*/dist/main.js
 
 .frontend-fixtures-base:
   extends:
@@ -256,7 +261,7 @@ upload-graphql-schema-dump:
   cache:
     - !reference [.yarn-cache, cache]
   needs:
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
 
 jest-build-cache:
@@ -286,23 +291,27 @@ jest-build-cache:
     NODE_OPTIONS: --max-old-space-size=7680
   allow_failure: true
 
-test-fe-island:
+test-fe-islands:
   stage: test-frontend
   extends:
     - .frontend-test-base
-    - .frontend:rules:fe-island:test
+    - .frontend:rules:fe-islands:test
+    - .fe-islands-parallel
+  needs:
+    - job: validate-fe-islands-ci
+      optional: true
   script:
-    - cd ee/frontend_islands/apps/duo_next && yarn run test
+    - cd ee/frontend_islands/apps/${FE_APP_DIR} && yarn run test
   cache:
     - !reference [.frontend-test-base, cache]
-    - !reference [.fe-island-yarn-cache, cache]
+    - !reference [.fe-islands-yarn-cache, cache]
   artifacts:
     name: coverage-frontend
     expire_in: 31d
     when: always
     paths:
-      - ee/frontend_islands/apps/duo_next/coverage/
-      - ee/frontend_islands/apps/duo_next/junit_jest.xml
+      - ee/frontend_islands/apps/${FE_APP_DIR}/coverage/
+      - ee/frontend_islands/apps/${FE_APP_DIR}/junit_jest.xml
     reports:
       junit: junit_jest.xml
 
@@ -326,7 +335,7 @@ jest:
   needs:
     - job: jest-build-cache
       optional: true
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
   artifacts:
     name: coverage-frontend
@@ -386,7 +395,7 @@ jest vue3 mr:
     - .frontend:rules:jest
     - .vue3
   needs:
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
   artifacts:
@@ -534,7 +543,7 @@ jest-integration:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
 
 jest-snapshot-vue3:
@@ -546,7 +555,7 @@ jest-snapshot-vue3:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
   variables:
     VUE_VERSION: 3
@@ -653,7 +662,7 @@ compile-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
   artifacts:
     name: storybook
@@ -677,7 +686,7 @@ test-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
   allow_failure: true
   timeout: 30m
@@ -706,7 +715,7 @@ bundle-size-review:
     - .frontend:rules:bundle-size-review
   stage: test-frontend
   needs:
-    - job: compile-fe-island
+    - job: compile-fe-islands
       optional: true
     - job: compile-production-assets
       optional: true
@@ -717,7 +726,7 @@ bundle-size-review:
     - scripts/bundle_size_review
   cache:
     - !reference [.yarn-cache, cache]
-    - !reference [.fe-island-yarn-cache, cache]
+    - !reference [.fe-islands-yarn-cache, cache]
   artifacts:
     when: always
     name: bundle-size-review

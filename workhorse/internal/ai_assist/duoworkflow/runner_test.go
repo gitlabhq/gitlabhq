@@ -363,7 +363,12 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 				blockCh:   blockCh,
 			}
 
-			r := &runner{conn: mockConn, wf: mockWf}
+			req := httptest.NewRequest("GET", "/duo", nil)
+			r := &runner{
+				conn:        mockConn,
+				wf:          mockWf,
+				originalReq: req,
+			}
 
 			errCh := make(chan error, 1)
 			go func() { errCh <- r.Execute(context.Background()) }()
@@ -830,4 +835,62 @@ func TestRunner_sendActionToWs(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRunner_Shutdown(t *testing.T) {
+	t.Run("shutdown with canceled request context", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+
+		req := httptest.NewRequest("GET", "/duo", nil)
+		req = req.WithContext(ctx)
+
+		r := &runner{
+			originalReq: req,
+		}
+
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 1*time.Second)
+		defer shutdownCancel()
+
+		err := r.Shutdown(shutdownCtx)
+		require.NoError(t, err)
+	})
+
+	t.Run("shutdown sends stop workflow", func(t *testing.T) {
+		mockWf := &mockWorkflowStream{}
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		req := httptest.NewRequest("GET", "/duo", nil)
+		req = req.WithContext(ctx)
+
+		r := &runner{
+			originalReq: req,
+			wf:          mockWf,
+		}
+
+		shutdownCtx, shutdownCancel := context.WithCancel(context.Background())
+		defer shutdownCancel()
+
+		shutdownDone := make(chan error, 1)
+		go func() {
+			shutdownDone <- r.Shutdown(shutdownCtx)
+		}()
+
+		shutdownCancel()
+
+		require.Eventually(t, func() bool {
+			return len(mockWf.getSendEvents()) > 0
+		}, 100*time.Millisecond, 10*time.Millisecond)
+
+		cancel()
+
+		err := <-shutdownDone
+		require.NoError(t, err)
+
+		sendEvents := mockWf.getSendEvents()
+		require.Len(t, sendEvents, 1)
+		stopEvent := sendEvents[0].GetStopWorkflow()
+		require.NotNil(t, stopEvent)
+		require.Equal(t, "WORKHORSE_SERVER_SHUTDOWN", stopEvent.Reason)
+	})
 }

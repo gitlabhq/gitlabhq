@@ -64,14 +64,41 @@ type upstream struct {
 	rdb                   *redis.Client
 	healthCheckServer     *healthcheck.Server // Can be nil
 	shutdownChan          <-chan struct{}
+	upgradedConnsManager  *UpgradedConnsManager
 }
 
 // NewUpstream creates a new HTTP handler for handling upstream requests based on the provided configuration.
-func NewUpstream(cfg config.Config, accessLogger *logrus.Logger, watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server, shutdownChan <-chan struct{}) http.Handler {
-	return newUpstream(cfg, accessLogger, configureRoutes, watchKeyHandler, rdb, healthCheckServer, shutdownChan)
+func NewUpstream(
+	cfg config.Config,
+	accessLogger *logrus.Logger,
+	watchKeyHandler builds.WatchKeyHandler,
+	rdb *redis.Client,
+	healthCheckServer *healthcheck.Server,
+	shutdownChan <-chan struct{},
+	upgradedConnsManager *UpgradedConnsManager,
+) http.Handler {
+	return newUpstream(
+		cfg,
+		accessLogger,
+		configureRoutes,
+		watchKeyHandler,
+		rdb,
+		healthCheckServer,
+		shutdownChan,
+		upgradedConnsManager,
+	)
 }
 
-func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback func(*upstream), watchKeyHandler builds.WatchKeyHandler, rdb *redis.Client, healthCheckServer *healthcheck.Server, shutdownChan <-chan struct{}) http.Handler {
+func newUpstream(
+	cfg config.Config,
+	accessLogger *logrus.Logger,
+	routesCallback func(*upstream),
+	watchKeyHandler builds.WatchKeyHandler,
+	rdb *redis.Client,
+	healthCheckServer *healthcheck.Server,
+	shutdownChan <-chan struct{},
+	upgradedConnsManager *UpgradedConnsManager,
+) http.Handler {
 	up := upstream{
 		Config:       cfg,
 		accessLogger: accessLogger,
@@ -82,6 +109,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 		rdb:                   rdb,
 		healthCheckServer:     healthCheckServer,
 		shutdownChan:          shutdownChan,
+		upgradedConnsManager:  upgradedConnsManager,
 	}
 	if up.geoProxyPollSleep == nil {
 		up.geoProxyPollSleep = time.Sleep

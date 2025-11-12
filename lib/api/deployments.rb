@@ -119,14 +119,17 @@ module API
       params do
         requires :environment,
           type: String,
+          allow_blank: false,
           desc: 'The name of the environment to create the deployment for'
 
         requires :sha,
           type: String,
+          allow_blank: false,
           desc: 'The SHA of the commit that is deployed'
 
         requires :ref,
           type: String,
+          allow_blank: false,
           desc: 'The name of the branch or tag that is deployed'
 
         requires :tag,
@@ -144,6 +147,7 @@ module API
         authorize!(:create_deployment, user_project)
         authorize!(:create_environment, user_project)
 
+        render_api_error!({ sha: ["The commit does not exist"] }, 400) unless user_project.commit(declared_params[:sha])
         render_api_error!({ ref: ["The branch or tag does not exist"] }, 400) unless user_project.commit(declared_params[:ref])
 
         environment = user_project

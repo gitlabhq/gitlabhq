@@ -95,6 +95,8 @@ RSpec.shared_examples 'User views a wiki page' do
   context 'when a page does not have history' do
     before do
       visit(wiki_page_path(wiki, wiki_page))
+
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
     end
 
     it 'shows all the pages' do
@@ -223,6 +225,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
     it 'preserves the special characters' do
       visit(wiki_page_path(wiki, wiki_page))
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       expect(page).to have_css('[data-testid="page-heading"]', text: title)
       expect(page).to have_css('.wiki-pages li', text: title)
@@ -263,6 +266,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
     it 'displays the table of contents for the page' do
       visit(wiki_page_path(wiki, wiki_page))
+      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
 
       within '.js-wiki-toc' do
         expect(page).to have_content('On this page')

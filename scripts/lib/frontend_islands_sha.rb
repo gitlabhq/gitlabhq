@@ -3,39 +3,38 @@
 require "digest"
 
 module FrontendIslandsSha
-  # Frontend islands source directories to monitor
-  FRONTEND_ISLANDS_FOLDERS = %w[
-    ee/frontend_islands/apps/duo_next/src
-  ].freeze
-
   # Configuration and dependency files that impact build
   FRONTEND_ISLANDS_FILES = %w[
-    ee/frontend_islands/apps/duo_next/package.json
-    ee/frontend_islands/apps/duo_next/yarn.lock
-    ee/frontend_islands/apps/duo_next/vite.config.ts
-    ee/frontend_islands/apps/duo_next/tsconfig.json
-    ee/frontend_islands/apps/duo_next/tsconfig.app.json
-    ee/frontend_islands/apps/duo_next/tsconfig.node.json
-    ee/frontend_islands/apps/duo_next/components.json
-    ee/frontend_islands/apps/duo_next/.prettierrc
-    ee/frontend_islands/apps/duo_next/eslint.config.js
-    ee/frontend_islands/apps/duo_next/postcss.config.cjs
-    ee/frontend_islands/apps/duo_next/vitest.config.ts
+    ee/frontend_islands/apps/**/package.json
+    ee/frontend_islands/apps/**/vite.config.ts
+    ee/frontend_islands/apps/**/tsconfig.json
+    ee/frontend_islands/apps/**/tsconfig.app.json
+    ee/frontend_islands/apps/**/tsconfig.node.json
+    ee/frontend_islands/apps/**/components.json
+    ee/frontend_islands/apps/**/.prettierrc
+    ee/frontend_islands/apps/**/eslint.config.js
+    ee/frontend_islands/apps/**/postcss.config.cjs
+    ee/frontend_islands/apps/**/vitest.config.ts
+    ee/frontend_islands/packages/configs/**/package.json
+    ee/frontend_islands/packages/configs/**/index.{js,json}
+    ee/frontend_islands/packages/configs/**/tsconfig.{,app,node}json
   ].freeze
 
   # Source file patterns to include
   SOURCE_FILE_PATTERNS = %w[
-    ee/frontend_islands/apps/duo_next/src/**/*.{vue,ts,js,css,json}
+    ee/frontend_islands/apps/**/src/**/*.{vue,ts,js,css,json}
   ].freeze
 
   # Files and directories to exclude from hash calculation
   EXCLUDE_PATTERNS = %w[
-    ee/frontend_islands/apps/duo_next/dist/**/*
-    ee/frontend_islands/apps/duo_next/node_modules/**/*
-    ee/frontend_islands/apps/duo_next/.vscode/**/*
-    ee/frontend_islands/apps/duo_next/**/*.log
-    ee/frontend_islands/apps/duo_next/**/.DS_Store
-    ee/frontend_islands/apps/duo_next/.prettierignore
+    ee/frontend_islands/**/dist/**/*
+    ee/frontend_islands/**/node_modules/**/*
+    ee/frontend_islands/**/.vscode/**/*
+    ee/frontend_islands/**/**/*.log
+    ee/frontend_islands/**/**/.DS_Store
+    ee/frontend_islands/**/.prettierignore
+    ee/frontend_islands/**/*.md
+    ee/frontend_islands/**/*.md
   ].freeze
 
   class << self

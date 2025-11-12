@@ -40,7 +40,9 @@ RSpec.describe Webauthn::DestroyService, feature_category: :system_access do
           end
         end
 
-        context 'for an admin' do
+        context 'for an admin', :enable_admin_mode do
+          let(:current_user) { create(:admin) }
+
           it 'destroys the webauthn registration' do
             expect { subject }.to change { user.second_factor_webauthn_registrations.count }.by(-1)
           end
