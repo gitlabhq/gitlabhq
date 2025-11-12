@@ -4,9 +4,7 @@ import issuableEventHub from '~/issues/list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import {
   mountAssigneesDropdown,
-  mountConfidentialityDropdown,
   mountMilestoneDropdown,
-  mountMoveIssuesButton,
   mountStatusDropdown,
   mountSubscriptionsDropdown,
 } from '~/sidebar/mount_sidebar';
@@ -62,32 +60,9 @@ export default class IssuableBulkUpdateSidebar {
   initDropdowns() {
     new LabelsSelect();
     mountMilestoneDropdown();
-    mountMoveIssuesButton();
     mountStatusDropdown();
     mountSubscriptionsDropdown();
     mountAssigneesDropdown();
-    mountConfidentialityDropdown();
-
-    // Checking IS_EE and using ee_else_ce is odd, but we do it here to satisfy
-    // the import/no-unresolved lint rule when FOSS_ONLY=1, even though at
-    // runtime this block won't execute.
-    if (IS_EE) {
-      import('ee_else_ce/sidebar/mount_sidebar')
-        .then(
-          ({
-            mountEpicDropdown,
-            mountHealthStatusDropdown,
-            mountIterationDropdown,
-            mountSidebarCustomStatusWidget,
-          }) => {
-            mountEpicDropdown();
-            mountHealthStatusDropdown();
-            mountIterationDropdown();
-            mountSidebarCustomStatusWidget();
-          },
-        )
-        .catch(() => {});
-    }
   }
 
   setupBulkUpdateActions() {

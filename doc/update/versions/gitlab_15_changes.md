@@ -424,7 +424,7 @@ if you can't upgrade to 15.11.12 and later.
     Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
     ```
 
-    A workaround exists to [complete the data change and the upgrade manually](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+    A workaround exists to [complete the data change and the upgrade manually](../package/package_troubleshooting.md#error-command-timed-out-after-3600s).
 - The default Sidekiq `max_concurrency` has been changed to 20. This is now
   consistent in our documentation and product defaults.
 

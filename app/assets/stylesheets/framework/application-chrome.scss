@@ -499,7 +499,7 @@
 
     // Legacy merge request sticky header (Firefox)
     .issue-sticky-header.merge-request-sticky-header .issue-sticky-header-text {
-      @apply gl-px-6 @xl/panel:gl-px-4;
+      @apply gl-px-3;
     }
 
     // Issue boards height
@@ -724,6 +724,7 @@
         radial-gradient(farthest-side at 50% 0%, var(--_shade-2), transparent 70vw),
         linear-gradient(-10deg, var(--_shade-4), transparent 70%),
         var(--gl-background-color-default);
+      background-color: var(--super-sidebar-bg);
     }
 
     .ai-panels,
@@ -795,6 +796,7 @@
         radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 65vw),
         linear-gradient(-10deg, var(--_shade-5), transparent),
         var(--_shade-2);
+      background-color: var(--super-sidebar-bg);
     }
 
     .ai-panels,

@@ -302,7 +302,7 @@ or restarted.
 ### Merge request dropped from the merge train
 
 If a merge request becomes unmergeable while a merge train pipeline is running,
-the merge train drops your merge request automatically. For example, this could be caused by:
+the merge train drops your merge request automatically. Common causes include:
 
 - Changing the merge request to a [draft](../../user/project/merge_requests/drafts.md).
 - A merge conflict.

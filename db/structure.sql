@@ -27578,7 +27578,8 @@ CREATE TABLE user_agent_details (
     subject_type character varying NOT NULL,
     submitted boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    organization_id bigint
 );
 
 CREATE SEQUENCE user_agent_details_id_seq
@@ -43278,6 +43279,8 @@ CREATE INDEX index_user_achievements_on_user_id_revoked_by_is_null ON user_achie
 
 CREATE INDEX index_user_admin_roles_on_admin_role_id ON user_admin_roles USING btree (admin_role_id);
 
+CREATE INDEX index_user_agent_details_on_organization_id ON user_agent_details USING btree (organization_id);
+
 CREATE INDEX index_user_agent_details_on_subject_id_and_subject_type ON user_agent_details USING btree (subject_id, subject_type);
 
 CREATE INDEX index_user_broadcast_message_dismissals_on_broadcast_message_id ON user_broadcast_message_dismissals USING btree (broadcast_message_id);
@@ -49247,6 +49250,9 @@ ALTER TABLE ONLY admin_roles
 
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT fk_74b2492545 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_agent_details
+    ADD CONSTRAINT fk_74db0b7cc2 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_report_notes
     ADD CONSTRAINT fk_74e1990397 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;

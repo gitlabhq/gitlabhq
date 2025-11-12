@@ -18,8 +18,7 @@ title: GitLab MCP server
 {{< history >}}
 
 - Introduced in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) feature flag `mcp_server` in GitLab 18.6.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) feature flag `oauth_dynamic_client_registration` in GitLab 18.6.
+- Feature flags [`mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/issues/556448) and [`oauth_dynamic_client_registration`](https://gitlab.com/gitlab-org/gitlab/-/issues/555942) removed in GitLab 18.6.
 
 {{< /history >}}
 
@@ -278,16 +277,16 @@ What version of the GitLab MCP server am I connected to?
 
 Creates a new issue in a GitLab project.
 
-| Parameter      | Type    | Required | Description |
-|----------------|---------|----------|-------------|
-| `id`           | string  | Yes      | ID or URL-encoded path of the project. |
-| `title`        | string  | Yes      | Title of the issue. |
-| `description`  | string  | No       | Description of the issue. |
-| `assignee_ids` | array   | No       | IDs of assigned users. |
-| `milestone_id` | integer | No       | ID of the milestone. |
-| `labels`       | string  | No       | Comma-separated list of label names. |
-| `confidential` | boolean | No       | Sets the issue to confidential. Default is `false`. |
-| `epic_id`      | integer | No       | ID of the linked epic. |
+| Parameter      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | string            | Yes      | ID or URL-encoded path of the project. |
+| `title`        | string            | Yes      | Title of the issue. |
+| `description`  | string            | No       | Description of the issue. |
+| `assignee_ids` | array of integers | No       | Array of IDs of assigned users. |
+| `milestone_id` | integer           | No       | ID of the milestone. |
+| `labels`       | array of strings  | No       | Array of label names. |
+| `confidential` | boolean           | No       | Sets the issue to confidential. Default is `false`. |
+| `epic_id`      | integer           | No       | ID of the linked epic. |
 
 Example:
 
@@ -422,24 +421,27 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566143) in GitLab 18.4.
+- Searching groups and projects and ordering and sorting results [added](https://gitlab.com/gitlab-org/gitlab/-/issues/571132) in GitLab 18.6.
 
 {{< /history >}}
 
 Searches for a term across the entire GitLab instance with the search API.
-This tool is available only for global, group and project search. Available scopes
-differ depending on the [search types available](../../search/_index.md).
+This tool is available for global, group, and project search.
+Available scopes depend on the [search type](../../search/_index.md).
 
-| Parameter      | Type    | Required | Description                                                            |
-|----------------|---------|----------|------------------------------------------------------------------------|
-| `scope`        | string  | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
-| `search`       | string  | Yes      | Search term.                                                           |
-| `group_id`     | string  | No       | Group to search in.                                                    |
-| `project_id`   | string  | No       | Project to search in.                                                  |
-| `state`        | string  | No       | State of search results.                                               |
-| `confidential` | boolean | No       | Filters results by confidentiality. Default is `false`.                |
-| `per_page`     | integer | No       | Number of results per page.                                            |
-| `page`         | integer | No       | Current page number.                                                   |
-| `fields`       | string  | No       | Comma-separated list of fields you want to search.                     |
+| Parameter      | Type             | Required | Description |
+|----------------|------------------|----------|-------------|
+| `scope`        | string           | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
+| `search`       | string           | Yes      | Search term. |
+| `group_id`     | string           | No       | ID or URL-encoded path of the group you want to search. |
+| `project_id`   | string           | No       | ID or URL-encoded path of the project you want to search. |
+| `state`        | string           | No       | State of search results (for `issues` and `merge_requests`). |
+| `confidential` | boolean          | No       | Filters results by confidentiality (for `issues`). Default is `false`. |
+| `fields`       | array of strings | No       | Array of fields you want to search (for `issues` and `merge_requests`). |
+| `order_by`     | string           | No       | Attribute to order results by. Default is `created_at` for basic search and relevance for advanced search. |
+| `sort`         | string           | No       | Sort direction for results. Default is `desc`. |
+| `per_page`     | integer          | No       | Number of results per page. Default is `20`. |
+| `page`         | integer          | No       | Current page number. Default is `1`. |
 
 Example:
 
@@ -452,7 +454,7 @@ Search issues for "flaky test" across GitLab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
-- Support for project path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/575234) in GitLab 18.6.
+- Search by project path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/575234) in GitLab 18.6.
 
 {{< /history >}}
 

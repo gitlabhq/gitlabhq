@@ -1,6 +1,4 @@
 - type = local_assigns.fetch(:type)
-- is_issue = type == :issues
-- move_data = { projects_fetch_path: autocomplete_projects_path(project_id: @project.id), project_full_path: @project.full_path }
 
 %aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? }, 'aria-label': _('Bulk update') }
   .issuable-sidebar.hidden
@@ -15,16 +13,12 @@
         .title
           = _('State')
         .js-status-dropdown
-      - if is_issue
-        = render_if_exists 'shared/issuable/status_dropdown', parent: @project.group
       .block
         .title
           = _('Assignee')
         .filter-item
           %input.js-assignee-ids-input{ type: "hidden", name: "update[assignee_ids][]" }
           .js-assignee-dropdown{ data: { full_path: @project.full_path } }
-      - if is_issue
-        = render_if_exists 'shared/issuable/epic_dropdown', parent: @project.group
       .block
         .title
           = _('Labels')
@@ -35,21 +29,10 @@
           = _('Milestone')
         .filter-item
           .js-milestone-dropdown-root{ data: { full_path: @project.full_path, workspace_type: Namespaces::ProjectNamespace.sti_name.downcase } }
-      - if is_issue
-        = render_if_exists 'shared/issuable/iterations_dropdown', parent: @project.group
-      - if is_issue
-        = render_if_exists 'shared/issuable/health_status_dropdown', parent: @project
       .block
         .title
           = _('Subscriptions')
         .js-subscriptions-dropdown
-      - if is_issue
-        .block
-          .title
-            = _('Confidentiality')
-          .js-confidentiality-dropdown
-        .block
-          .js-move-issues{ data: move_data }
 
       = hidden_field_tag "update[issuable_ids]", []
       = hidden_field_tag :state_event, params[:state_event]

@@ -14,4 +14,4 @@
 
 .js-merge-request-list-root{ data: project_merge_requests_list_data(@project, current_user) }
 - if @can_bulk_update
-  = render 'shared/issuable/bulk_update_sidebar', type: :merge_requests
+  = render 'bulk_update_sidebar', type: :merge_requests

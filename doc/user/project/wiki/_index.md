@@ -313,6 +313,38 @@ Prerequisites:
    indicating that the existing content will be overridden.
 1. Select **Apply template**.
 
+### Restore a page template to a previous version
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383833) in GitLab 18.6.
+
+{{< /history >}}
+
+You can restore a wiki page template to any previous version from its history.
+This creates a new version with the restored content while preserving the full version history.
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To restore a wiki page template to a previous version:
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
+1. Select a template.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Template history**.
+1. Select the version you want to restore.
+1. In the upper right, select **Restore this version**.
+1. In the commit dialog, add a **Commit message** to describe why you're restoring this version.
+1. Select **Restore**.
+
+The page template is restored to the selected version. All previous versions remain in the page history.
+
+You can also restore wiki pages using the same process. For more information, see
+[Restore a wiki page to a previous version](#restore-a-wiki-page-to-a-previous-version).
+
 ## Wiki page subscriptions
 
 The wiki page subscriptions feature allows you to receive notifications when changes are made to wiki pages you're interested in.
@@ -369,6 +401,37 @@ You can see the changes made in a version of a wiki page, similar to versioned d
 1. Go to the wiki page you're interested in.
 1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history** to see all page versions.
 1. Select the commit message in the **Diff** column for the version you're interested in.
+
+### Restore a wiki page to a previous version
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383833) in GitLab 18.6.
+
+{{< /history >}}
+
+You can restore a wiki page to any previous version from its history.
+This creates a new version with the restored content while preserving the full version history.
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To restore a wiki page to a previous version:
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Go to the page you want to restore.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history**.
+1. Select the version you want to restore.
+1. In the upper right, select **Restore this version**.
+1. In the commit dialog, add a **Commit message** to describe why you're restoring this version.
+1. Select **Restore**.
+
+The page is restored to the selected version. All previous versions remain in the page history.
+
+You can also restore wiki page templates using the same process. For more information, see
+[Restore a page template to a previous version](#restore-a-page-template-to-a-previous-version).
 
 ## Sidebar
 

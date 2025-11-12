@@ -586,11 +586,13 @@ export default {
               type="hidden"
               name="project[project_setting_attributes][enforce_auth_checks_on_uploads]"
             />
-            <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
-            {{ s__('ProjectSettings|Require authentication to view media files') }}
-            <span class="-gl-mt-3 gl-ml-5 gl-block gl-text-subtle">{{
-              s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
-            }}</span>
+
+            <gl-form-checkbox v-model="enforceAuthChecksOnUploads">
+              {{ s__('ProjectSettings|Require authentication to view media files') }}
+              <template #help>{{
+                s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
+              }}</template>
+            </gl-form-checkbox>
           </label>
         </div>
       </project-setting-row>

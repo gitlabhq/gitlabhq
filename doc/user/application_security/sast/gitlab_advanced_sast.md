@@ -153,14 +153,9 @@ When analyzing PHP code, GitLab Advanced SAST has the following limitations:
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16790) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `vulnerability_partial_scans`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.6. Feature flag `vulnerability_partial_scans` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 Diff-based scanning analyzes only the files modified in a merge request, along with their dependent files. This targeted approach reduces scan times and delivers faster feedback during development.
 
@@ -169,7 +164,7 @@ To ensure complete coverage, a full scan runs on the default branch after the me
 When diff-based scanning is enabled:
 
 - Only files that were modified or added in the merge request, along with their dependent files, are scanned in merge request pipelines.
-- If enabled, you’ll see the job log print: `Running differential scan`
+- If enabled, you'll see the job log print: `Running differential scan`
   If disabled, it prints: `Running full scan`
 - In the **merge request security widget**, a dedicated **Diff-based** tab shows relevant scan findings.
 - In the **Pipeline Security** tab, an alert labeled **Partial SAST report** indicates that only partial findings are included.

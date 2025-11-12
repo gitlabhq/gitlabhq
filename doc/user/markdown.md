@@ -2153,6 +2153,7 @@ When rendered, footnotes look similar to:
 > This reference tag is a mix of letters and numbers.[^footnote-42]
 >
 > [^1]: This text is inside a footnote.
+>
 > [^footnote-42]: This text is another footnote.
 
 {{< alert type="note" >}}

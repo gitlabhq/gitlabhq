@@ -13284,9 +13284,6 @@ msgstr ""
 msgid "Change branches"
 msgstr ""
 
-msgid "Change confidentiality"
-msgstr ""
-
 msgid "Change display preferences"
 msgstr ""
 
@@ -25259,6 +25256,9 @@ msgstr ""
 msgid "DuoCodeReview|Can't access the merge request. When SAML single sign-on is enabled on a group or its parent, Duo Code Reviews can't be requested from the API. Request a review from the GitLab UI instead."
 msgstr ""
 
+msgid "DuoCodeReview|Can't create the progress note. This can happen if the Duo Code Review bot does not have permission to create notes on the merge request."
+msgstr ""
+
 msgid "DuoCodeReview|Control whether GitLab Duo automatically reviews merge requests across all groups and projects. This setting cascades to subgroups and projects but can be overridden."
 msgstr ""
 
@@ -36580,25 +36580,10 @@ msgstr ""
 msgid "Issues|An error occurred while importing issues."
 msgstr ""
 
-msgid "Issues|Move selected"
-msgstr ""
-
 msgid "Issues|No closed issues"
 msgstr ""
 
 msgid "Issues|No open issues"
-msgstr ""
-
-msgid "Issues|Tasks and test cases can not be moved."
-msgstr ""
-
-msgid "Issues|Tasks can not be moved."
-msgstr ""
-
-msgid "Issues|Test cases can not be moved."
-msgstr ""
-
-msgid "Issues|There was an error while moving the issues."
 msgstr ""
 
 msgid "Issues|Track bugs, plan features, and organize your work with issues"
@@ -61687,6 +61672,11 @@ msgstr ""
 msgid "SecurityReports|Maximum selected projects limit reached"
 msgstr ""
 
+msgid "SecurityReports|Median: %{days} day"
+msgid_plural "SecurityReports|Median: %{days} days"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityReports|Medium"
 msgstr ""
 
@@ -61941,7 +61931,10 @@ msgstr ""
 msgid "SecurityReports|Tool"
 msgstr ""
 
-msgid "SecurityReports|Total count of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
+msgid "SecurityReports|Total number of %{boldStart}open%{boldEnd} %{severity} vulnerabilities and their median amount of time open. Select the number to see the open vulnerabilities in the vulnerability report."
+msgstr ""
+
+msgid "SecurityReports|Total number of %{boldStart}open%{boldEnd} %{severity} vulnerabilities. Select the number to see the open vulnerabilities in the vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
@@ -72745,9 +72738,6 @@ msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly 
 msgstr ""
 
 msgid "Versions"
-msgstr ""
-
-msgid "View"
 msgstr ""
 
 msgid "View %{project} project"

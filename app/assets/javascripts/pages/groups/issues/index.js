@@ -1,17 +1,4 @@
 import { WORKSPACE_GROUP } from '~/issues/constants';
+import { initWorkItemsRoot } from '~/work_items';
 
-const isWorkItemsEnabled = Boolean(
-  document.querySelector('#js-work-items')?.dataset?.isGroupIssuesList,
-);
-
-async function initializeApp() {
-  if (isWorkItemsEnabled) {
-    const { initWorkItemsRoot } = await import('~/work_items');
-    initWorkItemsRoot({ workspaceType: WORKSPACE_GROUP });
-  } else {
-    const { mountIssuesListApp } = await import('~/issues/list');
-    await mountIssuesListApp();
-  }
-}
-
-initializeApp();
+initWorkItemsRoot({ workspaceType: WORKSPACE_GROUP });

@@ -340,6 +340,7 @@ InitializerConnections.raise_if_new_database_connection do
 
     Gitlab.ee do
       get '/sitemap' => 'sitemap#show', format: :xml
+      draw :virtual_registries_container
     end
 
     # Creates shorthand helper methods for project resources.

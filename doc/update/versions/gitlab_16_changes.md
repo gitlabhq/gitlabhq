@@ -46,7 +46,7 @@ For additional information for Helm chart installations, see
   - The instance generates 500 errors until all the database changes are finished, after which
     Puma and Sidekiq must restarted.
   - For Linux package installations, a timeout occurs and a
-    [manual workaround to complete the migrations](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
+    [manual workaround to complete the migrations](../package/package_troubleshooting.md#error-command-timed-out-after-3600s)
     is necessary.
 
 - GitLab 16.0 introduced changes around enforcing limits on project sizes. On self-managed, if you use
@@ -1733,7 +1733,7 @@ FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
 Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
 ```
 
-[There is a fix-forward workaround for this issue](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+[There is a fix-forward workaround for this issue](../package/package_troubleshooting.md#error-command-timed-out-after-3600s).
 
 While the workaround is completing the database changes, GitLab is likely to be in
 an unusable state, generating `500` errors. The errors are caused by Sidekiq and Puma running

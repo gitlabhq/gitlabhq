@@ -183,8 +183,10 @@ export default {
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      class="issue-sticky-header merge-request-sticky-header gl-border-b gl-fixed gl-hidden gl-flex-col gl-justify-end gl-bg-default @md/panel:gl-flex"
-      :class="{ 'gl-invisible': !isStickyHeaderVisible }"
+      class="issue-sticky-header merge-request-sticky-header gl-border-b gl-fixed gl-hidden gl-flex-col gl-justify-end gl-bg-default !gl-pr-0 @md/panel:gl-flex"
+      :class="{
+        'gl-invisible': !isStickyHeaderVisible,
+      }"
     >
       <div
         class="issue-sticky-header-text gl-mx-auto gl-flex gl-w-full gl-flex-col gl-items-center"
@@ -200,7 +202,7 @@ export default {
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default @lg/panel:gl-block"
+            class="gl-my-0 gl-ml-1 gl-mr-2 gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default"
           ></a>
           <div class="gl-flex gl-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target} %{targetCopyButton}')">
@@ -277,7 +279,7 @@ export default {
               </gl-link>
             </li>
           </ul>
-          <div class="gl-hidden gl-items-center gl-gap-3 @lg/panel:gl-flex">
+          <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
             <discussion-counter
               :blocks-merge="blocksMerge"
               :can-resolve-discussion="canResolveDiscussion"

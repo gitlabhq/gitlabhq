@@ -71,7 +71,7 @@ curl --fail --silent --show-error \
 apt-get update
 ```
 
-## `Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails] [..] Command timed out after 3600s`
+## Error: `Command timed out after 3600s`
 
 If database schema and data changes (database migrations) must take more than one hour to run,
 upgrades fail with a `timed out` error:

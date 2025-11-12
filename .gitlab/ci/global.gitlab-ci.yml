@@ -61,14 +61,14 @@
 
 .db-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}-pgvector-0.4.1
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=256"]
       alias: postgres
     - !reference [.redis-services, services]
 
 .db-services-with-auto-explain:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}-pgvector-0.4.1
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}
       command:
         - postgres
         - -c

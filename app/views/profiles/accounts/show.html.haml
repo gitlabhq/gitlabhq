@@ -89,6 +89,7 @@
         %p.gl-font-bold= _('Scheduled pipelines')
         %ul
           - schedules.each do |schedule|
+            - next unless schedule.project
             %li= link_to "#{schedule.project.full_path} - #{schedule.description}", project_pipeline_schedules_path(schedule.project), target: '_blank', rel: 'noopener noreferrer'
       - else
         %p

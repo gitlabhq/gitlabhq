@@ -61,6 +61,8 @@ To revoke all sessions for all users:
 
    ```ruby
    ActiveSession.list(User.all)
+   ```
+
 1. Revoke all sessions with the following command:
 
    ```ruby
