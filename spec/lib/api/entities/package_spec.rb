@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Package do
+RSpec.describe API::Entities::Package, feature_category: :package_registry do
   let(:package) { create(:generic_package) }
 
   subject { described_class.new(package).as_json(namespace: package.project.namespace) }
@@ -60,8 +60,9 @@ RSpec.describe API::Entities::Package do
     end
   end
 
-  context 'with build info' do
-    let_it_be(:project) { create(:project) }
+  context 'with build info', :aggregate_failures do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:user) { create(:user, reporter_of: project) }
     let_it_be(:package) { create(:npm_package, :with_build, project: project) }
     let_it_be(:pipeline) { package.pipeline }
     let(:expected_data) do
@@ -76,12 +77,34 @@ RSpec.describe API::Entities::Package do
       }
     end
 
+    subject(:entity) { described_class.new(package).as_json(namespace: package.project.namespace, user: user) }
+
     it 'returns the pipeline' do
-      expect(subject[:pipeline]).to match(a_hash_including(expected_data))
+      expect(entity[:pipeline]).to match(a_hash_including(expected_data))
     end
 
     it 'returns an empty array for pipelines' do
-      expect(subject[:pipelines]).to eq([])
+      expect(entity[:pipelines]).to eq([])
+    end
+
+    context 'when repository access is disabled' do
+      before do
+        project.project_feature.update!(
+          repository_access_level: ProjectFeature::DISABLED,
+          merge_requests_access_level: ProjectFeature::DISABLED,
+          builds_access_level: ProjectFeature::DISABLED
+        )
+      end
+
+      it 'does not expose pipeline attributes' do
+        expect(entity).not_to include(:pipeline, :pipelines)
+      end
+    end
+
+    context 'without a user' do
+      let(:user) { nil }
+
+      it { is_expected.not_to include(:pipeline, :pipelines) }
     end
   end
 end

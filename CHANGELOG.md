@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.3.6 (2025-11-11)
+
+### Fixed (3 changes)
+
+- [Fix redirect loop in Gitea rate limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd7b910e82630cf34e076d259898300063ca20b3)
+- [Update dependency openssl to v3.3.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/600ca97b8bcb50f826f7e5412535f31c2f6d2496)
+- [Update rexml to v3.4.4](https://gitlab.com/gitlab-org/security/gitlab/-/commit/50b5a85fa48b062f5162f46ef30a351982cb73bb)
+
+### Security (8 changes)
+
+- [Security fix package api pipeline details](https://gitlab.com/gitlab-org/security/gitlab/-/commit/64c2516e6106fc3d9b5a4adc8888891b56a05476) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5426))
+- [Group enforced pages access control should restrict non-members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af0f99c9f71f16648a4cdcbb2fac78697efc20a8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5442))
+- [Update to gitlab-glfm-markdown 0.0.38](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71f73bd9e5df05fbcbdcd14dc29f7dea0b923902) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5463))
+- [Encode protected branch names in API requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3cec6a99eceb5ae142612de4fc91c0df7d9b5691) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5458))
+- [Prevent GraphQL subscriptions from blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b70790900eada6b2fd02c84691d0fc9de78b808c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5432))
+- [Prevent Duo Chat from reading confidential resources](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7a5abb5be4705ebabdc87074bf7193d839cd02bd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5380))
+- [Hide related branches when repository is private](https://gitlab.com/gitlab-org/security/gitlab/-/commit/472346b8db8ebc75c6ae3e26063ec0565e4bbe2a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5436))
+- [Fix unauth workflow deletion by service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8d86f81230f96b8a031793ebbd0a5e12e3c0766f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5423))
+
+### Performance (1 change)
+
+- [Reduce cached SQL queries in `/api/v4/internal/pages` endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e6a23475339be5edb58e8886f23bc10f2de56e1e)
+
 ## 18.3.5 (2025-10-21)
 
 ### Fixed (3 changes)

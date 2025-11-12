@@ -2640,6 +2640,10 @@ class User < ApplicationRecord
     admin?
   end
 
+  def composite_identity_enforced?
+    !!composite_identity_enforced
+  end
+
   protected
 
   # override, from Devise::Validatable

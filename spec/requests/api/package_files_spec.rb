@@ -28,6 +28,67 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       let(:request) { get api(url), params: { job_token: target_job.token } }
     end
 
+    context 'with build info' do
+      let_it_be(:package_file) { create(:package_file, package: package) }
+      let_it_be(:package_file_build_info) do
+        create(:package_file_build_info, :with_pipeline, package_file: package_file)
+      end
+
+      let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+
+      context 'when repository access is disabled' do
+        before do
+          project.project_feature.update!(
+            repository_access_level: ProjectFeature::DISABLED,
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED
+          )
+        end
+
+        context 'with user auth' do
+          it 'does not include pipeline information' do
+            get api(url, user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to all(not_include('pipelines'))
+          end
+        end
+
+        context 'with job token auth' do
+          it 'does not include pipeline information' do
+            get api(url, job_token: job.token)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to all(not_include('pipelines'))
+          end
+        end
+      end
+
+      context 'when repository access is enabled' do
+        context 'with user auth' do
+          it 'includes pipeline information' do
+            get api(url, user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to include(
+              hash_including('pipelines' => be_present)
+            )
+          end
+        end
+
+        context 'with job token auth' do
+          it 'includes pipeline information' do
+            get api(url, job_token: job.token)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to include(
+              hash_including('pipelines' => be_present)
+            )
+          end
+        end
+      end
+    end
+
     context 'without the need for a license' do
       context 'when project is public' do
         it 'returns 200' do
