@@ -31,8 +31,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Component, feature_category: :dependen
       end
 
       context "with license information" do
-        let(:license_name) { "card-verifier" }
-        let(:license_info) { { "licenses" => ["license" => { "name" => license_name }] } }
+        let(:license_info) { { "licenses" => ["license" => { "id" => "card-verifier" }] } }
 
         before do
           data.merge!(license_info)
@@ -40,18 +39,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Component, feature_category: :dependen
 
         it "sets the license information" do
           is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::Component)
-          expect(component.licenses.count).to eq(1)
-          expect(component.licenses.first.name).to eq(license_name)
-        end
-
-        context "when the license is defined by an expression" do
-          let(:license_info) do
-            { "licenses" => [{ "expression" => "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0" }] }
-          end
-
-          it "ignores the license" do
-            expect(component.licenses).to be_empty
-          end
+          expect(component.licenses).to match_array([have_attributes(spdx_identifier: "card-verifier")])
         end
       end
     end
