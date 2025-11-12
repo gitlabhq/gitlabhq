@@ -178,10 +178,9 @@ export default {
           </template>
           <template v-if="hasMore">
             <tr>
-              <td align="center" colspan="3" class="!gl-p-0">
+              <td align="center" colspan="3">
                 <gl-button
-                  variant="link"
-                  class="gl-flex gl-w-full !gl-py-4"
+                  size="small"
                   :loading="isProcessingShowMore || isLoading"
                   @click="showMore"
                 >

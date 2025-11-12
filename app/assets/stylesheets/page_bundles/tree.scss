@@ -158,7 +158,6 @@ $file-tree-browser-z-index: 500;
     }
 
     tbody tr {
-      @apply gl-border-b;
       @apply gl-border-b-section;
 
       td,
@@ -169,7 +168,9 @@ $file-tree-browser-z-index: 500;
       td, th {
         @apply gl-border-section;
       }
+    }
 
+    tbody tr.tree-item {
       &:hover:not(.tree-truncated-warning) {
         td, th {
           @apply gl-bg-blue-50;
