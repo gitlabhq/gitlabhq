@@ -62,7 +62,7 @@ module API
                                .preload_pipelines
                                .order_by(params[:order_by], params[:sort])
 
-        present paginate(package_files), with: ::API::Entities::PackageFile
+        present paginate(package_files), with: ::API::Entities::PackageFile, user: current_user
       end
 
       desc 'Delete a package file' do

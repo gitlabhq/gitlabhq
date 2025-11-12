@@ -111,6 +111,8 @@ module API
       get ':id/packages/:package_id/pipelines' do
         not_found!('Package not found') unless package.detailed_info?
 
+        authorize! :read_pipeline, user_project unless current_user&.from_ci_job_token?
+
         params[:pagination] = 'keyset' # keyset is the only available pagination
         pipelines = paginate_with_strategies(
           package.build_infos.without_empty_pipelines,

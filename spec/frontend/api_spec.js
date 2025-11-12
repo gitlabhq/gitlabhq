@@ -1795,7 +1795,7 @@ describe('Api', () => {
   describe('projectProtectedBranch', () => {
     const branchName = 'new-branch-name';
     const dummyProjectId = 5;
-    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${dummyProjectId}/protected_branches/${branchName}`;
+    let expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${dummyProjectId}/protected_branches/${branchName}`;
 
     it('returns 404 for non-existing branch', () => {
       jest.spyOn(axios, 'get');
@@ -1818,6 +1818,23 @@ describe('Api', () => {
       mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, expectedObj);
 
       return Api.projectProtectedBranch(dummyProjectId, branchName).then((data) => {
+        expect(data).toEqual(expectedObj);
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+
+    it('encodes special characters in branch name', () => {
+      const newBranchName = 'feature/xyz';
+      const encodedBranch = 'feature%2Fxyz';
+      const expectedObj = { name: newBranchName };
+
+      expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${dummyProjectId}/protected_branches/${encodedBranch}`;
+
+      jest.spyOn(axios, 'get');
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, expectedObj);
+
+      return Api.projectProtectedBranch(dummyProjectId, newBranchName).then((data) => {
         expect(data).toEqual(expectedObj);
         expect(axios.get).toHaveBeenCalledWith(expectedUrl);
       });
