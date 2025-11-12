@@ -42,6 +42,10 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
     create(:group_member, :access_request, source: create(:group, :private))
   end
 
+  before do
+    stub_application_setting(abuse_notification_email: 'admin@example.com')
+  end
+
   subject { preview.call(email) }
 
   where(:preview, :email) do

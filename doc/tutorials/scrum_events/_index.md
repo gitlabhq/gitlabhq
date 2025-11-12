@@ -427,8 +427,8 @@ Mark them for refinement:
 
 1. [Select each issue's card](../../user/project/issue_board.md#edit-an-issue) in the board and apply the `status::refine` label:
    1. In the **Labels** section of the sidebar, select **Edit**.
-   1. From the **Assign labels** list, select the `status::refine` label.
-   1. Select **X** next to **Assign labels** or select any area outside the label section.
+   1. From the **Select labels** list, select the `status::refine` label.
+   1. Select any area outside the label section.
 1. Drag the three stories into the desired upcoming sprint to assign the stories to the corresponding sprint timebox.
 
 By this point in the tutorial, your **Backlog** board should look like this:
@@ -461,8 +461,8 @@ While discussing each issue:
   apply the `status::ready` label to the issue:
 
   1. In the **Labels** section of the sidebar, select **Edit**.
-  1. From the **Assign labels** list, select the `status::ready` label.
-  1. Select **X** next to **Assign labels** or select any area outside the label section.
+  1. From the **Select labels** list, select the `status::ready` label.
+  1. Select any area outside the label section.
 
 After you've cycled through all the issues in the upcoming iteration, you're done with sprint planning!
 
@@ -483,7 +483,7 @@ Provide all team members the appropriate time to contribute and collaborate.
    1. Select **Plan** > **Issue boards**.
    1. In the upper-left corner, select the dropdown list with the current board name.
    1. Select **Backlog**.
-1. In the list for the upcoming sprint, select **Create new issue** ({{< icon name="plus-square" >}}).
+1. In the list for the upcoming sprint, select **Create new issue** ({{< icon name="plus" >}}).
 1. Enter the issue's title: `Release Planning`.
 1. Select **Create issue**.
 1. Open the issue and create a discussion thread for each story assigned to the upcoming sprint.

@@ -7,6 +7,8 @@ module Gitlab
         # This is a wrapper for Gitlab::Database::AsyncIndexes::IndexCreator, used to control the STATEMENT_TIMEOUT
         # and creating async indexes synchronously
         class IndexCreator < Gitlab::Database::AsyncIndexes::IndexCreator
+          TIMEOUT = 30.seconds
+
           TIMEOUT_EXCEPTIONS = [ActiveRecord::StatementTimeout, ActiveRecord::AdapterTimeout,
             ActiveRecord::LockWaitTimeout, ActiveRecord::QueryCanceled].freeze
 
@@ -23,7 +25,7 @@ module Gitlab
           private
 
           def execute_action
-            connection.execute(format("SET statement_timeout TO '%ds'", 3.minutes))
+            connection.execute(format("SET statement_timeout TO '%ds'", TIMEOUT))
             connection.execute(async_index.definition.gsub('CONCURRENTLY ', ''))
             connection.execute('RESET statement_timeout')
           end

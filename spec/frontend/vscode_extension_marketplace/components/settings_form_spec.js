@@ -60,6 +60,7 @@ describe('~/vscode_extension_marketplace/components/settings_form.vue', () => {
       expect(findFormFields().props()).toEqual({
         formId: TEST_FORM_ID,
         serverValidations: {},
+        validateOnBlur: true,
         fields: {
           useOpenVsx: {
             label: 'Use Open VSX extension registry',

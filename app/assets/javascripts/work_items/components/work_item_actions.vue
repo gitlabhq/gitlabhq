@@ -314,13 +314,6 @@ export default {
         ),
       };
     },
-    newRelatedItemLabel() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
-        ? sprintf(s__('WorkItem|New related %{workItemType}'), {
-            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
-          })
-        : s__('WorkItem|New related item');
-    },
     areYouSureDeleteMessage() {
       const message = this.hasChildren
         ? s__(
@@ -655,7 +648,7 @@ export default {
       >
         <template #list-item>
           <gl-icon name="plus" class="gl-mr-2" variant="subtle" />
-          {{ newRelatedItemLabel }}
+          {{ s__('WorkItem|New related item') }}
         </template>
       </gl-disclosure-dropdown-item>
 

@@ -313,14 +313,14 @@ describe('WorkItemActions component', () => {
     ]);
   });
 
-  it('renders "New related epic" instead of the default "New related item" when type is Epic', () => {
+  it('renders "New related item" as action item for all work items', () => {
     createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
 
     expect(findDropdownItemsActual()).toEqual(
       expect.arrayContaining([
         {
           testId: 'new-related-work-item',
-          text: 'New related epic',
+          text: 'New related item',
         },
       ]),
     );

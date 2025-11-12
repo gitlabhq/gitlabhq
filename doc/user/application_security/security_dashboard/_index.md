@@ -111,7 +111,7 @@ To view group security dashboard:
 1. Select **Security > Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
-   - To view aggregated data beyond a 90-day time frame, use the [VulnerabilitiesCountByDay GraphQL API](../../../api/graphql/reference/_index.md#vulnerabilitiescountbyday). GitLab retains the data for 365 days.
+   - To view aggregated data beyond a 90-day time frame, use the [`VulnerabilitiesCountByDay` GraphQL API](../../../api/graphql/reference/_index.md#vulnerabilitiescountbyday). GitLab retains the data for 365 days.
 
 1. Select the arrows under the **Project security status** section to see the what projects fall under a particular letter-grade rating:
    - You can see how many vulnerabilities of a particular severity are found in a project

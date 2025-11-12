@@ -825,11 +825,41 @@ This issue will guide you through the whole release process. In general, you hav
 
 #### Dependency updates
 
-All dependencies and upstream scanners (if any) used in the analyzer source are updated on a monthly cadence which primarily includes security fixes and non-breaking changes.
+Dependencies and upstream scanners (if any) used in analyzer source code are updated using different approaches depending on the analyzer type:
 
-##### SAST and Secret Detection
+- SAST analyzers receive automatic dependency updates through the [Renovate GitLab Bot](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot) as soon as updates become available. See [SAST Automated Dependency Updates with Renovate](#sast-automated-dependency-updates-with-renovate).
+- Secret Detection analyzers receive dependency updates on a monthly cadence through [SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation). See [Secret Detection Automated Dependency Updates with SastBot](#secret-detection-automated-dependency-updates-with-sastbot).
 
-SAST and Secret Detection teams use an internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of SAST and Pipeline-based Secret Detection analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among team members to take them forward for review. For details on the process, see [Dependency Update Automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
+##### SAST automated dependency updates with Renovate
+
+SAST uses the [Renovate GitLab Bot](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot) to automatically create merge requests and changelog entries for dependency updates.
+
+To enable automatic dependency updates for a new analyzer with the Renovate GitLab Bot, add the analyzer by submitting a merge request following the pattern shown in [Add SAST analyzers](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot/-/merge_requests/1256).
+
+###### Automated changelog updates
+
+Changelog entries in merge requests with dependency updates are automatically generated as follows:
+
+1. Before creating the merge request, the Renovate GitLab Bot executes the commands listed in the [`postUpgradeTasks`](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot/-/blob/50089827829d62f9960c9b41d1349d945f95f717/renovate/security-products/sast-shared.js#L86-96).
+
+   1. The `postUpgradeTasks` runs the [`changelogParserCommand`](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot/-/blob/50089827829d62f9960c9b41d1349d945f95f717/renovate/security-products/sast-shared.js#L49), which executes the [`changelog-parser`](https://gitlab.com/adamcohen/changelog-parser) command line tool.
+
+      The `changelog-parser` command line tool automatically inserts a new minor changelog entry that contains the `{{MERGE_REQUEST_ID}}` placeholder text. For example:
+
+      ```markdown
+      ## v1.1.0
+      - Update `report` module from `1.2.3` to `1.2.4` (!{{MERGE_REQUEST_ID}})
+      ```
+
+   1. The Renovate GitLab Bot creates a new merge request with the dependency updates and changelog entry.
+
+1. A new pipeline is triggered in the merge request, which executes the [update changelog mrid](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/update-changelog.yml) job, included by the [`analyzer.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/master/includes-dev/analyzer.yml).
+
+   The `update changelog mrid` job creates a commit to replace the `{{MERGE_REQUEST_ID}}` placeholder text with the actual merge request ID.
+
+##### Secret Detection Automated Dependency Updates with SastBot
+
+The Secret Detection team uses an internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of Pipeline-based Secret Detection analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among team members to take them forward for review. For details on the process, see [Dependency Update Automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
 
 SastBot requires different access tokens for each job. It uses the `DEP_GITLAB_TOKEN` environment variable to retrieve the token when running scheduled pipeline jobs.
 

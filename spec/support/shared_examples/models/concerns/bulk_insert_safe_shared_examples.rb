@@ -34,18 +34,39 @@ RSpec.shared_examples 'a BulkInsertSafe model' do |klass|
 
   describe '.bulk_insert!' do
     context 'when all items are valid' do
+      # This is necessary for tests including sec tables to ensure that the
+      # turn_off_vulnerability_read_create_db_trigger_function ff is being set
+      # in the transaction for the DB trigger to use.
+      def sec_application_record_only_transaction
+        if target_class.ancestors.include?(SecApplicationRecord)
+          SecApplicationRecord.feature_flagged_transaction_for(nil) do
+            yield
+          end
+        else
+          yield
+        end
+      end
+
       it 'inserts them all' do
         items = valid_items_for_bulk_insertion
 
         expect(items).not_to be_empty
-        expect { target_class.bulk_insert!(items) }.to change { target_class.count }.by(items.size)
+        expect do
+          sec_application_record_only_transaction do
+            target_class.bulk_insert!(items)
+          end
+        end.to change { target_class.count }.by(items.size)
       end
 
       it 'returns an empty array' do
         items = valid_items_for_bulk_insertion
 
         expect(items).not_to be_empty
-        expect(target_class.bulk_insert!(items)).to eq([])
+        expect(
+          sec_application_record_only_transaction do
+            target_class.bulk_insert!(items)
+          end
+        ).to eq([])
       end
     end
 

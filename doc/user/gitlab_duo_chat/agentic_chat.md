@@ -535,29 +535,9 @@ For more information about these security capabilities, see [epic 19639](https:/
 
 ## Troubleshooting
 
-When working with GitLab Duo Chat, you might encounter the following issues.
+When working with GitLab Duo Chat, you might encounter issues.
 
-### Trouble connecting or viewing
-
-To ensure you are connected properly and can view Chat, see [Troubleshooting](../duo_agent_platform/troubleshooting.md).
-
-### Slow response times
-
-Chat has significant latency when processing requests.
-
-This issue occurs because Chat makes multiple API calls to gather information,
-so responses often take much longer compared to Chat.
-
-### Limited permissions
-
-Chat can access the same resources that your GitLab user has permission to
-access.
-
-### Search limitations
-
-Chat uses keyword-based search instead of semantic search. This means that
-Chat might miss relevant content that does not contain the exact keywords
-used in the search.
+For information on resolving these issues, see [Troubleshooting](troubleshooting.md).
 
 ## Feedback
 

@@ -254,6 +254,27 @@ To resolve this, you can do either of the following:
 - [Assign a default GitLab Duo namespace](../gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
 - To opt out of this requirement whilst the model selection feature is in beta, ask [GitLab Support](https://about.gitlab.com/support/) to disable the `ai_user_default_duo_namespace` feature flag.
 
+## Agentic Chat-specific issues
+
+### Slow response times
+
+Agentic Chat can be slower than Classic Chat in processing and responding to requests.
+
+This issue occurs because Agentic Chat makes multiple API calls to gather information,
+so responses can take much longer.
+
+### Limited permissions
+
+Agentic Chat can access the same resources that your GitLab user has permission to
+access. If you find that Agentic Chat cannot access the resources needed to answer
+your request, check your [user permissions](../permissions.md).
+
+### Search limitations
+
+Agentic Chat uses keyword-based search instead of semantic search.
+Agentic Chat might miss relevant content that does not contain the exact keywords
+used in the search.
+
 ## Header mismatch issue
 
 You might get an error that states `I'm sorry, I can't generate a response. Please try again`, without a specific error code.

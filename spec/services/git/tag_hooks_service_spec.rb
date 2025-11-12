@@ -48,10 +48,38 @@ RSpec.describe Git::TagHooksService, :service, feature_category: :source_code_ma
       project.add_developer(user)
     end
 
-    it "creates a new pipeline", :sidekiq_inline do
-      expect { service.execute }.to change { Ci::Pipeline.count }.by(1)
+    context 'when the tag references a commit' do
+      it "creates a new pipeline", :sidekiq_inline do
+        expect { service.execute }.to change { Ci::Pipeline.count }.by(1)
 
-      expect(Ci::Pipeline.last).to be_push
+        expect(Ci::Pipeline.last).to be_push
+      end
+    end
+
+    context 'when the tag references a blob' do
+      let(:tag_name) { 'blob' }
+
+      before do
+        blob_id = project.repository.readme.id
+        project.repository.add_tag(user, tag_name, blob_id)
+      end
+
+      it "does not create a pipeline", :sidekiq_inline do
+        expect { service.execute }.not_to change { Ci::Pipeline.count }
+      end
+    end
+
+    context 'when the tag references a tree' do
+      let(:tag_name) { 'tree' }
+
+      before do
+        tree_id = project.repository.tree.trees.first.id
+        project.repository.add_tag(user, tag_name, tree_id)
+      end
+
+      it "does not create a pipeline", :sidekiq_inline do
+        expect { service.execute }.not_to change { Ci::Pipeline.count }
+      end
     end
   end
 

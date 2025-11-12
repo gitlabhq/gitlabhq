@@ -395,6 +395,64 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
     end
   end
 
+  describe 'active' do
+    let_it_be(:archived_project) { create(:project, :archived, :public, name: 'archived') }
+    let_it_be(:pending_delete_project) { create(:project, :public, name: 'pending_delete', pending_delete: true) }
+
+    before_all do
+      archived_project.add_developer(user)
+      pending_delete_project.add_developer(user)
+      travel_to(5.hours.from_now) { create(:push_event, project: archived_project, author: user) }
+      travel_to(6.hours.from_now) { create(:push_event, project: pending_delete_project, author: user) }
+    end
+
+    context 'when active is not provided' do
+      it 'returns all contributed projects including archived but not pending delete' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(*path))
+          .to contain_exactly(
+            a_graphql_entity_for(private_project),
+            a_graphql_entity_for(internal_project),
+            a_graphql_entity_for(public_project),
+            a_graphql_entity_for(archived_project)
+          )
+      end
+    end
+
+    context 'when active is true' do
+      let(:query_with_active) do
+        graphql_query_for(:user, user_params, 'contributedProjects(active: true) { nodes { id } }')
+      end
+
+      it 'returns only active projects (not archived and not pending delete)' do
+        post_graphql(query_with_active, current_user: current_user)
+
+        expect(graphql_data_at(*path))
+          .to contain_exactly(
+            a_graphql_entity_for(private_project),
+            a_graphql_entity_for(internal_project),
+            a_graphql_entity_for(public_project)
+          )
+      end
+    end
+
+    context 'when active is false' do
+      let(:query_with_active_false) do
+        graphql_query_for(:user, user_params, 'contributedProjects(active: false) { nodes { id } }')
+      end
+
+      it 'returns only inactive projects (archived or aimed for deletion)' do
+        post_graphql(query_with_active_false, current_user: current_user)
+
+        expect(graphql_data_at(*path))
+          .to contain_exactly(
+            a_graphql_entity_for(archived_project)
+          )
+      end
+    end
+  end
+
   describe 'accessible' do
     context 'when user profile is public' do
       context 'when a logged in user with membership in the private project' do

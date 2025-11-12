@@ -1,3 +1,5 @@
+import createMockApollo from 'helpers/mock_apollo_helper';
+import diffStatsQuery from '../queries/diff_stats.query.graphql';
 import { createMockMergeRequest } from '../../../../../spec/frontend/merge_request_dashboard/mock_data';
 import MergeRequest from './merge_request.vue';
 
@@ -84,9 +86,28 @@ const mockMergeRequest = createMockMergeRequest({
   updatedAt: '2024-04-19T14:34:42Z',
 });
 
+const defaultApolloProvider = createMockApollo([
+  [
+    diffStatsQuery,
+    () => ({
+      data: {
+        mergeRequest: {
+          id: 1,
+          diffStatsSummary: {
+            fileCount: 1,
+            additions: 100,
+            deletions: 50,
+          },
+        },
+      },
+    }),
+  ],
+]);
+
 const Template = (_, { argTypes }) => {
   return {
     components: { MergeRequest },
+    apolloProvider: defaultApolloProvider,
     props: Object.keys(argTypes),
     template: '<merge-request v-bind="$props" />',
   };
@@ -100,6 +121,7 @@ export default {
 export const Default = Template.bind({});
 Default.args = {
   mergeRequest: mockMergeRequest,
+  listId: 'list_id',
 };
 
 export const WithApprovalNeeded = Template.bind({});
@@ -120,4 +142,5 @@ WithApprovalNeeded.args = {
       ],
     },
   },
+  listId: 'list_id',
 };

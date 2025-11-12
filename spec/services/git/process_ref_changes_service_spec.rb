@@ -19,14 +19,6 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
       end
     end
 
-    let(:changes) do
-      [
-        { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create" },
-        { index: 1, oldrev: '123456', newrev: '789012', ref: "#{ref_prefix}/update" },
-        { index: 2, oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/delete" }
-      ]
-    end
-
     before do
       allow(git_changes).to receive(changes_method).and_return(changes)
     end
@@ -145,7 +137,10 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
             subject.execute
 
             # We don't run a pipeline for a deletion
-            expect(Ci::Pipeline.pluck(:ref)).to contain_exactly('create', 'update')
+            refs = changes.filter_map do |change|
+              Gitlab::Git.ref_name(change[:ref]) unless change[:newrev] == Gitlab::Git::SHA1_BLANK_SHA
+            end
+            expect(Ci::Pipeline.pluck(:ref)).to match_array(refs)
           end
 
           it "calls Gitlab::AppJsonLogger when a Git push is made" do
@@ -244,10 +239,17 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
   end
 
   context 'branch changes' do
-    let(:changes_method) { :branch_changes }
-    let(:ref_prefix) { 'refs/heads' }
-
-    it_behaves_like 'service for processing ref changes', Git::BranchPushService
+    it_behaves_like 'service for processing ref changes', Git::BranchPushService do
+      let(:ref_prefix) { 'refs/heads' }
+      let(:changes_method) { :branch_changes }
+      let(:changes) do
+        [
+          { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "refs/heads/create" },
+          { index: 1, oldrev: '123456', newrev: '789012', ref: "refs/heads/update" },
+          { index: 2, oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "refs/heads/delete" }
+        ]
+      end
+    end
 
     context 'when there are merge requests associated with branches' do
       let(:tag_changes) do
@@ -258,13 +260,13 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
 
       let(:branch_changes) do
         [
-          { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create1" },
-          { index: 1, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789013', ref: "#{ref_prefix}/create2" },
-          { index: 2, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789014', ref: "#{ref_prefix}/create3" },
-          { index: 3, oldrev: '789015', newrev: '789016', ref: "#{ref_prefix}/changed1" },
-          { index: 4, oldrev: '789017', newrev: '789018', ref: "#{ref_prefix}/changed2" },
-          { index: 5, oldrev: '789019', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/removed1" },
-          { index: 6, oldrev: '789020', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/removed2" }
+          { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "refs/heads/create1" },
+          { index: 1, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789013', ref: "refs/heads/create2" },
+          { index: 2, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789014', ref: "refs/heads/create3" },
+          { index: 3, oldrev: '789015', newrev: '789016', ref: "refs/heads/changed1" },
+          { index: 4, oldrev: '789017', newrev: '789018', ref: "refs/heads/changed2" },
+          { index: 5, oldrev: '789019', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "refs/heads/removed1" },
+          { index: 6, oldrev: '789020', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "refs/heads/removed2" }
         ]
       end
 
@@ -286,7 +288,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           user.id,
           Gitlab::Git::SHA1_BLANK_SHA,
           '789012',
-          "#{ref_prefix}/create1",
+          "refs/heads/create1",
           { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
@@ -294,7 +296,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           user.id,
           Gitlab::Git::SHA1_BLANK_SHA,
           '789013',
-          "#{ref_prefix}/create2",
+          "refs/heads/create2",
           { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
@@ -302,7 +304,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           user.id,
           '789015',
           '789016',
-          "#{ref_prefix}/changed1",
+          "refs/heads/changed1",
           { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
@@ -310,7 +312,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           user.id,
           '789020',
           Gitlab::Git::SHA1_BLANK_SHA,
-          "#{ref_prefix}/removed2",
+          "refs/heads/removed2",
           { 'gitaly_context' => nil, 'push_options' => nil }).ordered
 
         subject.execute
@@ -325,7 +327,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
               message: "Some pipelines may not have been created because ref count exceeded limit",
               ref_limit: Gitlab::CurrentSettings.git_push_pipeline_limit,
               total_ref_count: branch_changes.count + tag_changes.count,
-              possible_omitted_refs: ["#{ref_prefix}/changed2", "refs/tags/v10.0.0"],
+              possible_omitted_refs: ["refs/heads/changed2", "refs/tags/v10.0.0"],
               possible_omitted_ref_count: 2
             )
           )
@@ -337,9 +339,19 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
   end
 
   context 'tag changes' do
-    let(:changes_method) { :tag_changes }
-    let(:ref_prefix) { 'refs/tags' }
-
-    it_behaves_like 'service for processing ref changes', Git::TagPushService
+    it_behaves_like 'service for processing ref changes', Git::TagPushService do
+      let(:changes_method) { :tag_changes }
+      let(:ref_prefix) { 'refs/tags' }
+      let(:changes) do
+        tags = project.repository.tags
+        tag_1 = tags.first
+        tag_2 = tags.second
+        [
+          { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: tag_1.target, ref: "refs/tags/#{tag_1.name}" },
+          { index: 1, oldrev: '123456', newrev: tag_2.target, ref: "refs/tags/#{tag_2.name}" },
+          { index: 2, oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "refs/tags/delete" }
+        ]
+      end
+    end
   end
 end

@@ -8,6 +8,30 @@ import logoWithBlackText from '../static/_logo_with_black_text.svg';
 import logoWithWhiteText from '../static/_logo_with_white_text.svg';
 import { initializeGitLabAPIAccess } from './addons/gitlab_api_access/preview';
 
+// Filter out invalid language tags from navigator.languages to prevent Intl API errors
+// This is particularly important in CI environments where invalid tags like 'en-US@posix' may be present
+if (typeof navigator !== 'undefined' && navigator.languages) {
+  const validLanguages = navigator.languages.filter((lang) => {
+    try {
+      Intl.getCanonicalLocales(lang);
+      return true;
+    } catch {
+      // Invalid language tag, filter it out
+      return false;
+    }
+  });
+
+  // Only override if we filtered out any invalid languages
+  if (validLanguages.length !== navigator.languages.length) {
+    Object.defineProperty(navigator, 'languages', {
+      value: validLanguages.length > 0 ? validLanguages : ['en-US'],
+      writable: false,
+      enumerable: true,
+      configurable: true,
+    });
+  }
+}
+
 const stylesheetsRequireCtx = require.context(
   '../../app/assets/stylesheets',
   true,

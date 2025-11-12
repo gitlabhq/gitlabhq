@@ -65,6 +65,7 @@ When using the Maven virtual registry, remember the following restrictions:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15090) in GitLab 18.5 [with a flag](../../../../administration/feature_flags/_index.md) named `ui_for_virtual_registries`. Enabled by default.
+- Feature flag `ui_for_virtual_registries` removed. [Updated](https://gitlab.com/groups/gitlab-org/-/epics/15090) in GitLab 18.6 [to a flag](../../../../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
 
 {{< /history >}}
 

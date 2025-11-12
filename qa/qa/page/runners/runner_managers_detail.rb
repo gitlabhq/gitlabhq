@@ -20,7 +20,7 @@ module QA
         def has_online_runner?
           expand_runners
           within_element("td-status") do
-            has_element?("status-active-icon")
+            has_element?('runner-status-badge', status: 'ONLINE')
           end
         end
       end

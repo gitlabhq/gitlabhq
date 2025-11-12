@@ -70,6 +70,12 @@ Users are created when they:
 
 ## Create a user through the Rails console
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 {{< alert type="warning" >}}
 
 Commands that change data can cause damage if not run correctly or under the right conditions.

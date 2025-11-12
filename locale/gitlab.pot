@@ -3259,6 +3259,9 @@ msgstr ""
 msgid "APIFuzzing|folder/openapi.json"
 msgstr ""
 
+msgid "ATTENTION: %{name} flagged"
+msgstr ""
+
 msgid "AWS"
 msgstr ""
 
@@ -6745,7 +6748,7 @@ msgstr ""
 msgid "AiPowered|Get started with GitLab Duo"
 msgstr ""
 
-msgid "AiPowered|GitLab Credit usage analytics"
+msgid "AiPowered|GitLab Credits dashboard"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Agent Platform composite identity"
@@ -13237,6 +13240,9 @@ msgid "CascadingSettings|cannot be changed because it is locked by an ancestor"
 msgstr ""
 
 msgid "CascadingSettings|cannot be nil when locking the attribute"
+msgstr ""
+
+msgid "Catalog item:"
 msgstr ""
 
 msgid "Category"
@@ -29276,6 +29282,24 @@ msgstr ""
 msgid "ForksDivergence|View merge request"
 msgstr ""
 
+msgid "FoundationalAgents|Control availability of %{linkStart}GitLab Duo Foundational agents%{linkEnd}"
+msgstr ""
+
+msgid "FoundationalAgents|Foundational agents"
+msgstr ""
+
+msgid "FoundationalAgents|Foundational agents are disabled by default."
+msgstr ""
+
+msgid "FoundationalAgents|New foundational agents are automatically enabled for projects in this group."
+msgstr ""
+
+msgid "FoundationalAgents|Off by default"
+msgstr ""
+
+msgid "FoundationalAgents|On by default"
+msgstr ""
+
 msgid "Framework id(s) %{missing_ids} are invalid."
 msgstr ""
 
@@ -30667,6 +30691,9 @@ msgid "GitLab project export"
 msgstr ""
 
 msgid "GitLab single sign-on URL"
+msgstr ""
+
+msgid "GitLab user %{username} flagged the AI Catalog item %{item_name} for review."
 msgstr ""
 
 msgid "GitLab username"
@@ -33439,6 +33466,9 @@ msgstr ""
 msgid "Hello %{name},"
 msgstr ""
 
+msgid "Hello Admin,"
+msgstr ""
+
 msgid "Hello, %{name}!"
 msgstr ""
 
@@ -33530,6 +33560,9 @@ msgid "Hide Live Preview"
 msgstr ""
 
 msgid "Hide all comments"
+msgstr ""
+
+msgid "Hide an item from the AI Catalog. The item is not deleted and can still be used:"
 msgstr ""
 
 msgid "Hide archived projects"
@@ -34261,6 +34294,9 @@ msgid "If enabled, all branches will be mirrored."
 msgstr ""
 
 msgid "If enabled, only protected branches will be mirrored."
+msgstr ""
+
+msgid "If everything looks okay, you can ignore this message."
 msgstr ""
 
 msgid "If selected, successful pipelines do not trigger a notification event."
@@ -54154,6 +54190,9 @@ msgstr ""
 msgid "Ready to merge!"
 msgstr ""
 
+msgid "Reason:"
+msgstr ""
+
 msgid "Reauthenticating with SAML provider."
 msgstr ""
 
@@ -54203,6 +54242,9 @@ msgid "Recently used"
 msgstr ""
 
 msgid "Recently viewed"
+msgstr ""
+
+msgid "Recommended. Permanently delete an item:"
 msgstr ""
 
 msgid "Reconfigure"
@@ -55033,6 +55075,9 @@ msgid "ReportAbuse|Why are you reporting this user?"
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
+msgstr ""
+
+msgid "Reported by: %{username} at %{time}"
 msgstr ""
 
 msgid "Reporter"
@@ -67904,6 +67949,9 @@ msgstr ""
 msgid "This is a security log of authentication events involving your account."
 msgstr ""
 
+msgid "This is an automated message. Please don't reply to this message."
+msgstr ""
+
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr ""
 
@@ -70929,6 +70977,9 @@ msgstr ""
 msgid "UsageBilling|GitLab Credits - On Demand"
 msgstr ""
 
+msgid "UsageBilling|GitLab Credits dashboard"
+msgstr ""
+
 msgid "UsageBilling|Included credits"
 msgstr ""
 
@@ -70975,9 +71026,6 @@ msgid "UsageBilling|Total credits used"
 msgstr ""
 
 msgid "UsageBilling|Unlock more discounts for your GitLab usage. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs. %{linkStart}GitLab Credit pricing%{linkEnd}."
-msgstr ""
-
-msgid "UsageBilling|Usage Billing"
 msgstr ""
 
 msgid "UsageBilling|Used in this billing period"
@@ -75922,9 +75970,6 @@ msgstr ""
 msgid "WorkItem|New item"
 msgstr ""
 
-msgid "WorkItem|New related %{workItemType}"
-msgstr ""
-
 msgid "WorkItem|New related item"
 msgstr ""
 
@@ -77245,6 +77290,9 @@ msgid "You can still use and manage existing tokens. %{link_start}Learn more.%{l
 msgstr ""
 
 msgid "You can unsubscribe from further updates to this ticket. To receive updates in the future, you will have to be added again as a participant."
+msgstr ""
+
+msgid "You can use our GraphQL API to remove an item:"
 msgstr ""
 
 msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."

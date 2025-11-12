@@ -689,7 +689,7 @@ test-storybook:
     - job: compile-fe-islands
       optional: true
   allow_failure: true
-  timeout: 30m
+  timeout: 60m
   artifacts:
     name: storybook-test-results
     access: developer
