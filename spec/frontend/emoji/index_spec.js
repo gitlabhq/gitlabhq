@@ -1261,13 +1261,19 @@ describe('emoji', () => {
       expect(result).toContain('data-name="bug"');
     });
 
-    it('handles consecutive emoji shortcodes', () => {
-      const title = ':rocket::heart::bug:';
+    it('converts emojis inside brackets', () => {
+      const title = 'Deploy [:rocket:] with (:heart:) (and fix :bug:)';
       const result = processEmojiInTitle(title);
 
       expect(result).toContain('data-name="rocket"');
       expect(result).toContain('data-name="heart"');
       expect(result).toContain('data-name="bug"');
+    });
+
+    it('ignores emojis embedded in strings', () => {
+      const title = 'service::heart::utils';
+
+      expect(processEmojiInTitle(title)).toBe(title);
     });
 
     it('ignores malformed emoji shortcodes', () => {

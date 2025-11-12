@@ -340,13 +340,33 @@ export const getEmojisForCategory = async (category) => {
 };
 
 /**
+ * Regex pattern to match emoji shortcodes that are properly delimited.
+ *
+ * Matches :emoji_name: only when:
+ * - Preceded by start of string (^), whitespace (\s), parenthesis (()), or bracket ([])
+ * - Followed by whitespace (\s), end of string ($), parenthesis (()), or bracket ([])
+ *
+ * This prevents rendering emojis embedded in code/class names like:
+ * - service::heart::utils (no match)
+ * - namespace::rocket::method (no match)
+ *
+ * But allows:
+ * - "Fix :bug: in code" (matches)
+ * - ":rocket: Deploy" (matches)
+ * - "Done (:tada:)" (matches)
+ *
+ * @type {RegExp}
+ */
+const EMOJI_SHORTCODE_PATTERN = /(^|\s|[[(]):([a-zA-Z0-9_+-]+):(?=\s|$|[\])])/g;
+
+/**
  * Processes title string and converts emoji shortcodes to HTML
  * @param {string} title - The title containing emoji shortcodes like :rocket:
  * @returns {string} - HTML string with emoji images
  */
 export function processEmojiInTitle(title) {
   if (!title) return '';
-  return htmlEncode(title).replace(/:([a-zA-Z0-9_+-]+):/g, (match, emojiName) => {
-    return glEmojiTag(emojiName);
+  return htmlEncode(title).replace(EMOJI_SHORTCODE_PATTERN, (match, prefix, emojiName) => {
+    return prefix + glEmojiTag(emojiName);
   });
 }
