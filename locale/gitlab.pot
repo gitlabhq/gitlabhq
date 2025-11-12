@@ -55662,6 +55662,9 @@ msgstr ""
 msgid "Restore project"
 msgstr ""
 
+msgid "Restore this version"
+msgstr ""
+
 msgid "Restrict access by IP address"
 msgstr ""
 
@@ -74978,6 +74981,9 @@ msgstr ""
 msgid "Wiki|Add custom sidebar"
 msgstr ""
 
+msgid "Wiki|Commit message"
+msgstr ""
+
 msgid "Wiki|Could not access the Wiki Repository at this time."
 msgstr ""
 
@@ -74991,6 +74997,9 @@ msgid "Wiki|Edit page"
 msgstr ""
 
 msgid "Wiki|Edit template"
+msgstr ""
+
+msgid "Wiki|Enter commit message"
 msgstr ""
 
 msgid "Wiki|Home"
@@ -75015,6 +75024,15 @@ msgid "Wiki|Page history"
 msgstr ""
 
 msgid "Wiki|Pages"
+msgstr ""
+
+msgid "Wiki|Restore this version"
+msgstr ""
+
+msgid "Wiki|Restore version modal"
+msgstr ""
+
+msgid "Wiki|Restored from %{from}"
 msgstr ""
 
 msgid "Wiki|Search pages"
@@ -75069,6 +75087,12 @@ msgid "Wiki|Wiki templates"
 msgstr ""
 
 msgid "Wiki|WikiPage::Meta should belong to either project or namespace."
+msgstr ""
+
+msgid "Wiki|old version"
+msgstr ""
+
+msgid "Wiki|v%{version}"
 msgstr ""
 
 msgid "Will be created"

@@ -47892,6 +47892,9 @@ definitions:
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
+          foundational_agents_default_enabled:
+            type: boolean
+            description: Whether new foundational agents are enabled by default
     required:
     - name
     - path
@@ -48092,6 +48095,9 @@ definitions:
           duo_workflow_mcp_enabled:
             type: boolean
             description: Enable MCP support for Duo Agent Platform
+          foundational_agents_default_enabled:
+            type: boolean
+            description: Whether new foundational agents are enabled by default
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups

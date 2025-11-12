@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLink,
+  GlSprintf,
+  GlTooltipDirective,
+  GlIcon,
+  GlModalDirective,
+} from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
@@ -7,6 +14,7 @@ import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import wikiPageSubscribeMutation from '~/wikis/graphql/wiki_page_subscribe.mutation.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WikiMoreDropdown from './wiki_more_dropdown.vue';
+import RestoreVersionModal from './restore_version_modal.vue';
 
 export default {
   components: {
@@ -17,14 +25,17 @@ export default {
     WikiMoreDropdown,
     TimeAgo,
     PageHeading,
+    RestoreVersionModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
   },
   inject: {
     pageHeading: { default: null },
     showEditButton: { default: null },
     isPageTemplate: { default: null },
+    isPageHistorical: { default: null },
     editButtonUrl: { default: null },
     lastVersion: { default: null },
     pageVersion: { default: null },
@@ -155,6 +166,8 @@ export default {
   },
   i18n: {
     edit: __('Edit'),
+    restoreText: __('Restore this version'),
+    cancelText: __('Cancel'),
     newPage: s__('Wiki|New page'),
     editPage: s__('Wiki|Edit page'),
     newTemplate: s__('Wiki|New template'),
@@ -162,6 +175,9 @@ export default {
     newSidebar: s__('Wiki|New custom sidebar'),
     editSidebar: s__('Wiki|Edit custom sidebar'),
     lastEdited: s__('Wiki|Last edited by %{author} %{timeago}'),
+  },
+  modal: {
+    restoreVersionModalId: 'wiki-restore-version-modal',
   },
 };
 </script>
@@ -185,6 +201,16 @@ export default {
         </span>
       </template>
       <template v-if="!isEditingPath" #actions>
+        <gl-button
+          v-if="isPageHistorical"
+          v-gl-modal="$options.modal.restoreVersionModalId"
+          data-testid="wiki-restore-version-button"
+        >
+          {{ $options.i18n.restoreText }}
+        </gl-button>
+
+        <restore-version-modal :modal-id="$options.modal.restoreVersionModalId" />
+
         <gl-button
           v-if="showEditButton"
           v-gl-tooltip.html

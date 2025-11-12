@@ -1,0 +1,4 @@
+---
+name: configure_group_secrets_manager
+description: Grants the ability to configure secrets manager for a group.
+feature_category: secrets_management

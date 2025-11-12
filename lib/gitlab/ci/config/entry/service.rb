@@ -14,7 +14,6 @@ module Gitlab
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS + IMAGEABLE_ALLOWED_KEYS
-            validates :command, array_of_strings: true, allow_nil: true
             validates :alias, type: String, allow_nil: true
             validates :alias, type: String, presence: true, unless: ->(record) { record.ports.blank? }
           end
@@ -25,18 +24,22 @@ module Gitlab
 
           attributes :variables
 
+          entry :command, Entry::Commands,
+            description: 'Commands that will be executed in the service.',
+            inherit: false
+
           def alias
             value[:alias]
           end
 
           def command
-            value[:command]
+            command_value if command_defined?
           end
 
           def value
             if hash?
               super.merge(
-                command: @config[:command],
+                command: (command_value if command_defined?),
                 alias: @config[:alias],
                 variables: (variables_value if variables_defined?)
               ).compact

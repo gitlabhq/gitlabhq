@@ -977,12 +977,8 @@
                 ]
               },
               "command": {
-                "type": "array",
                 "markdownDescription": "Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to Dockerfile's CMD directive, where each shell token is a separate string in the array. [Learn More](https://docs.gitlab.com/ci/services/#available-settings-for-services)",
-                "minItems": 1,
-                "items": {
-                  "type": "string"
-                }
+                "$ref": "#/definitions/script"
               },
               "alias": {
                 "type": "string",

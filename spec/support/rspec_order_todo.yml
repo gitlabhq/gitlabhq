@@ -1957,7 +1957,6 @@
 - './ee/spec/services/ee/emails/destroy_service_spec.rb'
 - './ee/spec/services/epic_issues/update_service_spec.rb'
 - './ee/spec/services/epics/descendant_count_service_spec.rb'
-- './ee/spec/services/epics/epic_links/destroy_service_spec.rb'
 - './ee/spec/services/epics/epic_links/update_service_spec.rb'
 - './ee/spec/services/epics/transfer_service_spec.rb'
 - './ee/spec/services/epics/update_dates_service_spec.rb'

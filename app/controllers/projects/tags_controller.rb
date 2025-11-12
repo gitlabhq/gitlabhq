@@ -29,7 +29,8 @@ class Projects::TagsController < Projects::ApplicationController
       tag_names = @tags.map(&:name)
 
       @releases = ReleasesFinder.new(project, current_user, tag: tag_names).execute
-      @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
+      @tag_pipeline_statuses =
+        Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags, ref_type: :tags).execute
     rescue Gitlab::Git::CommandError => e
       @tags = []
       @releases = []

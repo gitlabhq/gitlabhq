@@ -8,7 +8,6 @@ import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/con
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
@@ -50,7 +49,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
+  mixins: [Tracking.mixin()],
   inject: {
     useFailedJobsWidget: {
       default: false,
@@ -106,13 +105,13 @@ export default {
           key: 'stages',
           label: s__('Pipeline|Stages'),
           tdClass: this.tdClasses,
-          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-4/20' : 'gl-w-5/20',
+          columnClass: this.mergeRequestPath ? 'gl-w-4/20' : 'gl-w-5/20',
           thAttr: { 'data-testid': 'stages-th' },
         },
         {
           key: 'actions',
           tdClass: this.tdClasses,
-          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-5/20' : 'gl-w-4/20',
+          columnClass: this.mergeRequestPath ? 'gl-w-5/20' : 'gl-w-4/20',
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];
@@ -183,12 +182,7 @@ export default {
       return item.merge_request?.source_branch || item.ref?.name || null;
     },
     showDuoWorkflowAction(item) {
-      return (
-        this.isFailed(item) &&
-        this.mergeRequestPath &&
-        this.currentBranch(item) &&
-        this.glFeatures.aiDuoAgentFixPipelineButton
-      );
+      return this.isFailed(item) && this.mergeRequestPath && this.currentBranch(item);
     },
     getAdditionalContext(item) {
       return [

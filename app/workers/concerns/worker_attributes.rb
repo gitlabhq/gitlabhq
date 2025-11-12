@@ -207,10 +207,6 @@ module WorkerAttributes
       raise ArgumentError, 'max_jobs must be a Proc instance' if max_jobs && !max_jobs.is_a?(Proc)
 
       set_class_attribute(:concurrency_limit, max_jobs)
-      ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.set_limit_for(
-        worker: self,
-        max_jobs: max_jobs
-      )
     end
 
     # Returns an integer value where:

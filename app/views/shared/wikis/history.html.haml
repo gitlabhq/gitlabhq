@@ -34,7 +34,7 @@
             - @commits.each_with_index do |commit, i|
               %tr
                 %td{ data: { label: _('Version') } }
-                  = link_to wiki_page_path(@wiki, @page, version_id: commit.id) do
+                  = link_to wiki_page_path(@wiki, @page, version_id: commit.id, version_number: @commits_count - i) do
                     v#{@commits_count - i}
                 %td{ data: { label: _('Author') } }
                   = commit.author_name

@@ -372,4 +372,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
       expect(entry).to be_valid
     end
   end
+
+  context 'when service command use the reference keyword' do
+    let(:config) do
+      { name: 'postgresql:9.5',
+        alias: 'db',
+        command: %w[!reference [.service-command] script] }
+    end
+
+    it 'is valid' do
+      expect(entry).to be_valid
+    end
+
+    it 'returns valid hash' do
+      expect(entry.value).to eq(config)
+    end
+  end
 end

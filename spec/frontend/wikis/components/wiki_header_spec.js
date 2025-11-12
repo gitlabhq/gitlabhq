@@ -14,6 +14,8 @@ Vue.use(VueApollo);
 describe('wikis/components/wiki_header', () => {
   let wrapper;
   let fakeApollo;
+  const glModalDirective = jest.fn();
+  const restoreVersionModalId = 'wiki-restore-version-modal';
 
   const mockToastShow = jest.fn();
 
@@ -31,6 +33,13 @@ describe('wikis/components/wiki_header', () => {
     ]);
 
     wrapper = shallowMountExtended(WikiHeader, {
+      directives: {
+        glModal: {
+          bind(_, { value }) {
+            glModalDirective(value);
+          },
+        },
+      },
       apolloProvider: fakeApollo,
       provide: {
         pageHeading: 'Wiki page heading',
@@ -58,6 +67,11 @@ describe('wikis/components/wiki_header', () => {
         $toast: {
           show: mockToastShow,
         },
+        $options: {
+          modal: {
+            restoreVersionModalId,
+          },
+        },
       },
     });
   }
@@ -67,6 +81,30 @@ describe('wikis/components/wiki_header', () => {
   const findSubscribeButton = () => wrapper.findByTestId('wiki-subscribe-button');
   const findLastVersion = () => wrapper.findByTestId('wiki-page-last-version');
   const findSidebarToggle = () => wrapper.findByTestId('wiki-sidebar-toggle');
+  const findRestoreVersionButton = () => wrapper.findByTestId('wiki-restore-version-button');
+
+  describe('restore version functionality', () => {
+    it('renders restore version button if it is a historical page', () => {
+      buildWrapper({ isPageHistorical: true });
+
+      expect(findRestoreVersionButton().exists()).toBe(true);
+    });
+
+    it('does not render restore version button if it is not a historical page', () => {
+      buildWrapper({ isPageHistorical: false });
+
+      expect(findRestoreVersionButton().exists()).toBe(false);
+    });
+
+    it('renders the restoreVersionModal with valid modalId and calls glModalDirective correctly', () => {
+      buildWrapper({ isPageHistorical: true });
+
+      const restoreVersionModal = wrapper.findComponent({ name: 'RestoreVersionModal' });
+
+      expect(restoreVersionModal.props('modalId')).toBe(restoreVersionModalId);
+      expect(glModalDirective).toHaveBeenCalledWith(restoreVersionModalId);
+    });
+  });
 
   describe('renders', () => {
     beforeEach(() => {

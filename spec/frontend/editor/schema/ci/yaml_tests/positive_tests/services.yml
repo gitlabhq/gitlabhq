@@ -11,6 +11,13 @@ valid_services_object:
       entrypoint: ["/usr/local/bin/db-postgres"]
       command: ["start"]
 
+valid_services_woth_reference:
+  services:
+    - name: my-postgres:11.7
+      alias: db-postgres
+      entrypoint: ["/usr/local/bin/db-postgres"]
+      command: "!reference [.source, command]"
+
 services_with_variables:
   services:
     - name: bitnami/nginx
