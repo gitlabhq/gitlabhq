@@ -1,0 +1,23 @@
+---
+description: New note has been created on design for work item
+internal_events: true
+status: active
+action: work_item_design_note_create
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: work item type
+  property:
+    description: user role
+product_group: project_management
+product_categories:
+- team_planning
+milestone: '18.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211316
+tiers:
+- free
+- premium
+- ultimate

@@ -41,7 +41,6 @@
 ## Localization files that do not need `*` rule approval,
 ## but still require an approval from a Localization team DRI for each file.
 /doc-locale/ @gitlab-com/localization/maintainers
-/doc/development/i18n/proofreader.md @gitlab-com/localization/maintainers
 /argo_translation.yml @gitlab-com/localization/maintainers
 /doc-locale/.markdownlint/ @gitlab-com/localization/maintainers
 
@@ -986,7 +985,6 @@ lib/gitlab/checks/
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @sselhorn
-/doc/editor_extensions/gitlab_cli/ @brendan777
 /doc/install/ @axil @eread
 /doc/install/install_ai_gateway.md @ashrafkhamis
 /doc/integration/ @idurham
@@ -1212,7 +1210,7 @@ lib/gitlab/checks/
 # i18n Docs
 [Localization Team] @gitlab-com/localization/maintainers
 /doc-locale/
-/doc/development/i18n/proofreader.md
+/doc/development/i18n/
 /argo_translation.yml
 
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers

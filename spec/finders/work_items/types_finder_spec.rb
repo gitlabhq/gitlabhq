@@ -30,11 +30,11 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
 
       context 'and filtering by available' do
         subject(:types_list) do
-          finder.execute(name: %w[issue key_result], only_available: true).map(&:base_type)
+          finder.execute(name: %w[issue ticket], only_available: true).map(&:base_type)
         end
 
         it 'returns only the available types from the given names' do
-          expect(types_list).to eq(%w[issue key_result])
+          expect(types_list).to eq(%w[issue ticket])
         end
       end
     end

@@ -26141,7 +26141,8 @@ CREATE TABLE security_policy_dismissals (
     status smallint DEFAULT 0 NOT NULL,
     licenses jsonb DEFAULT '{}'::jsonb NOT NULL,
     license_occurrence_uuids text[] DEFAULT '{}'::text[] NOT NULL,
-    CONSTRAINT check_654ff06528 CHECK ((char_length(comment) <= 255))
+    CONSTRAINT check_654ff06528 CHECK ((char_length(comment) <= 255)),
+    CONSTRAINT check_88beed9dc9 CHECK ((security_findings_uuids IS NOT NULL))
 );
 
 CREATE SEQUENCE security_policy_dismissals_id_seq
