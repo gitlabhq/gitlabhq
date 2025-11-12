@@ -913,6 +913,55 @@ Jobs in the `.pipeline-policy-pre` stage are designed for security and complianc
 
 For improved security, consider enabling the experimental `ensure_pipeline_policy_pre_succeeds` feature to ensure that if the `.pipeline-policy-pre` stage fails, all subsequent jobs are skipped.
 
+#### Detect duplicate security configurations
+
+You can use `.pipeline-policy-pre` to create custom validation jobs that check for existing
+security configurations and provide guidance. For example, when you enforce security scans across an organization with pipeline execution policies, but some projects already have their own security scanning implementations, you can use `.pipeline-policy-pre` to identify duplicated scans. 
+
+Example policy CI/CD configuration:
+
+```yaml
+# policy-ci.yml
+check-duplicate-scans:
+  stage: .pipeline-policy-pre
+  script:
+    - |
+      echo "Checking for duplicate security scan configurations..."
+      if [ -f ".gitlab-ci.yml" ]; then
+        if grep -q "secret_detection:" .gitlab-ci.yml || \
+           grep -q "sast:" .gitlab-ci.yml || \
+           grep -q "dependency_scanning:" .gitlab-ci.yml || \
+           grep -q "container_scanning:" .gitlab-ci.yml; then
+          echo "WARNING: Duplicate security scans detected."
+          echo ""
+          echo "This project has security scans defined in .gitlab-ci.yml"
+          echo "that might duplicate the scans enforced by pipeline execution policies."
+          echo ""
+          echo "To avoid redundant scans and reduce pipeline time:"
+          echo "1. Review your .gitlab-ci.yml for security scanning jobs."
+          echo "2. Remove duplicate jobs (secret_detection, sast, dependency_scanning, and so on)."
+          echo "3. The pipeline execution policy ensures these scans still run."
+          echo ""
+          echo "For questions, contact your security team."
+        else
+          echo "No duplicate security scans detected."
+        fi
+      fi
+  allow_failure: true
+  rules:
+    - when: always
+```
+
+This configuration:
+
+- Detects potential duplicate configurations without blocking pipelines.
+- Provides actionable guidance to development teams.
+- Maintains visibility into which projects need cleanup.
+- Avoids the complexity of automatically removing jobs, which could have unintended consequences.
+
+You can extend this example to check for other configuration issues or to generate reports
+for security teams to track compliance across projects.
+
 ### Control variable overrides
 
 Use the [`variables_override`](#variables_override-type) configuration to prevent users from overriding critical security variables by disabling security scans or modifying critical security configurations.

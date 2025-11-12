@@ -102,6 +102,55 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         expect { execute }.not_to change { Ci::RunningBuild.count }
       end
 
+      context 'when another runner requests job' do
+        let_it_be(:other_runner) { create(:ci_runner, :project, :with_runner_manager, projects: [project]) }
+        let(:other_service) { described_class.new(other_runner, other_runner.runner_managers.sole) }
+
+        it 'prevents other runners from picking up assigned job' do
+          setup_parallel_request_from_other_runner # Step 2 is set up from stubs in this method
+
+          # Step 1: First runner requests a job
+          expect(execute).to be_valid
+          expect(execute.build).not_to be_nil
+          expect(execute.build.id).to eq(build.id)
+
+          # Verify job is assigned and removed from queue
+          job = Ci::Build.find(execute.build.id)
+          expect(job).to be_pending
+          expect(job.runner_id).to eq(runner.id)
+          expect(Ci::PendingBuild.where(build: job)).to be_empty
+        end
+
+        private
+
+        def perform_other_runner_request
+          @other_runner_result ||= other_service.execute(runner_params)
+        end
+
+        # Step 2: If either Ci::Build#set_waiting_for_runner_ack or
+        # Ci::RetryStuckWaitingJobWorker#perform_in get called, let's interject a job request from a second runner
+        def setup_parallel_request_from_other_runner
+          allow_next_found_instance_of(::Ci::Build) do |job|
+            allow(job).to receive(:set_waiting_for_runner_ack).and_call_original
+            allow(job).to receive(:set_waiting_for_runner_ack)
+              .with(runner_manager.id).and_wrap_original do |method, *args|
+              method.call(*args).tap do
+                # Step 2: Second runner tries to request a job
+                expect(perform_other_runner_request).not_to be_valid
+                expect(perform_other_runner_request.build).to be_nil
+              end
+            end
+          end
+          expect(Ci::RetryStuckWaitingJobWorker).to receive(:perform_in).and_wrap_original do |method, *args|
+            method.call(*args).tap do
+              # Step 2: Second runner tries to request a job
+              expect(perform_other_runner_request).not_to be_valid
+              expect(perform_other_runner_request.build).to be_nil
+            end
+          end
+        end
+      end
+
       context 'when logger is enabled' do
         before do
           stub_const('Ci::RegisterJobService::Logger::MAX_DURATION', 0)
@@ -167,17 +216,20 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         end
 
         context 'when build save fails' do
-          before do
+          it 'rolls back runner assignment and Redis state' do
             allow_next_found_instance_of(Ci::Build) do |build|
-              allow(build).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
-            end
-          end
+              allow(build).to receive(:save!).and_wrap_original do
+                expect(build).to receive(:cancel_wait_for_runner_ack).and_call_original
 
-          it 'rolls back runner assignment and Redis state' do
+                raise ActiveRecord::StaleObjectError
+              end
+            end
+
             expect(Ci::RetryStuckWaitingJobWorker).not_to receive(:perform_in)
             allow_next_instance_of(Gitlab::Ci::Queue::Metrics) do |metrics|
               allow(metrics).to receive(:increment_queue_operation)
               expect(metrics).not_to receive(:increment_queue_operation).with(:runner_assigned_waiting)
+              expect(metrics).to receive(:increment_queue_operation).with(:build_conflict_lock)
             end
 
             expect { execute }
@@ -186,26 +238,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
               .and not_change { build.reload.status }.from('pending')
               .and not_change { build.reload.runner_ack_wait_status }.from(:not_waiting)
               .and not_change { redis_ack_pending_key_count }.from(0)
-          end
-        end
-
-        context 'when queue removal fails' do
-          it 'rolls back runner assignment and Redis state' do
-            expect(Ci::RetryStuckWaitingJobWorker).not_to receive(:perform_in)
-            allow_next_instance_of(Gitlab::Ci::Queue::Metrics) do |metrics|
-              allow(metrics).to receive(:increment_queue_operation)
-              expect(metrics).not_to receive(:increment_queue_operation).with(:runner_assigned_waiting)
-            end
-            allow_next_instance_of(Ci::UpdateBuildQueueService) do |service|
-              expect(service).to receive(:remove!).with(build).and_raise(ActiveRecord::StatementInvalid)
-            end
-
-            expect { execute }
-              .to not_change { build.reload.queuing_entry }.from(an_instance_of(Ci::PendingBuild))
-              .and not_change { build.reload.runner_id }.from(nil)
-              .and not_change { build.reload.status }.from('pending')
-              .and not_change { build.reload.runner_ack_wait_status }.from(:not_waiting)
-              .and not_change { redis_ack_pending_key_count }.from(0)
+            expect(execute).not_to be_valid
           end
         end
       end

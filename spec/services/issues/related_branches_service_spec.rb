@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Issues::RelatedBranchesService, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+  let_it_be(:project) { create(:project, :repository, :public, :repository_private, public_builds: false) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:issue) { create(:issue, project: project) }
 
@@ -45,12 +45,20 @@ RSpec.describe Issues::RelatedBranchesService, feature_category: :team_planning 
       end
 
       context 'when user does not have access to pipelines' do
-        let(:user) { create(:user) }
+        let(:user) { create(:user, guest_of: project) }
 
         it 'returns branches without pipeline status' do
           expect(branch_info).to contain_exactly(
             { name: issue.to_branch_name, pipeline_status: nil, compare_path: branch_compare_path }
           )
+        end
+      end
+
+      context 'when user does not have access to project repository' do
+        let(:user) { create(:user) }
+
+        it 'does not return any branches' do
+          expect(branch_info).to be_empty
         end
       end
 

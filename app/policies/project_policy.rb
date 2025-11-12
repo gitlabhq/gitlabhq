@@ -177,6 +177,16 @@ class ProjectPolicy < BasePolicy
     project.public? || project.internal?
   end
 
+  desc "If the pages is public"
+  condition(:public_pages) do
+    project.public_pages?
+  end
+
+  desc "If the pages is internal"
+  condition(:internal_pages) do
+    project.project_feature.pages_access_level == ProjectFeature::ENABLED
+  end
+
   with_scope :subject
   condition(:forking_allowed) do
     @subject.feature_available?(:forking, @user)
@@ -318,7 +328,11 @@ class ProjectPolicy < BasePolicy
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
-  rule { guest | admin | organization_owner }.enable :read_project_for_iids
+  rule { guest | admin | organization_owner }.policy do
+    enable :read_project_for_iids
+    # We cannot use `guest_access` because that includes non-members on public projects
+    enable :read_pages_content
+  end
 
   rule { admin }.policy do
     enable :update_max_artifacts_size
@@ -388,11 +402,18 @@ class ProjectPolicy < BasePolicy
     enable :upload_file
     enable :read_cycle_analytics
     enable :award_emoji
-    enable :read_pages_content
     enable :read_release
     enable :read_analytics
     enable :read_insights
     enable :read_upload
+  end
+
+  rule { internal_pages & ~anonymous & ~external_user }.policy do
+    enable :read_pages_content
+  end
+
+  rule { public_pages }.policy do
+    enable :read_pages_content
   end
 
   rule { can?(:planner_access) }.policy do
@@ -1010,7 +1031,6 @@ class ProjectPolicy < BasePolicy
     enable :read_release
     enable :download_wiki_code
     enable :read_cycle_analytics
-    enable :read_pages_content
     enable :read_analytics
     enable :read_insights
     enable :read_upload

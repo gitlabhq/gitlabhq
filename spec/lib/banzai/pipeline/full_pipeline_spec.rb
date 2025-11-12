@@ -364,4 +364,21 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
       end
     end
   end
+
+  describe 'pathological input' do
+    it 'does not crash on deeply nested emphasis when run in a thread' do
+      thread = Thread.start do
+        n = 5000
+        markdown = ("*a **a " * n) + (" a** a*" * n)
+
+        rendered = described_class.to_html(markdown, project: nil)
+
+        # Nokogiri (libxml2) by default will limit parse depth to 256; we get
+        # the outer <p> tag, and then 127 each of the alternating <em> and <strong>.
+        expect(rendered).to include("<em").exactly(127).times
+        expect(rendered).to include("<strong").exactly(127).times
+      end
+      thread.join
+    end
+  end
 end

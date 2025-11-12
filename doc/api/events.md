@@ -38,8 +38,8 @@ Parameters:
 | ------------- | --------------- | -------- | ----------- |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
 | `target_type` | string          | no       | If defined, returns events with the specified [target type](#target-type). |
-| `before`      | date (ISO 8601) | no       | If defined, returns tokens created before the specified date. |
-| `after`       | date (ISO 8601) | no       | If defined, returns tokens created after the specified date. |
+| `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
+| `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `scope`       | string          | no       | Include all events across a user's projects. |
 | `sort`        | string          | no       | Direction to sort the results by creation date. Possible values: `asc`, `desc`. Default: `desc`. |
 
@@ -123,8 +123,8 @@ Parameters:
 | `id`          | integer         | yes      | ID or Username of a user. |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
 | `target_type` | string          | no       | If defined, returns events with the specified [target type](#target-type). |
-| `before`      | date (ISO 8601) | no       | If defined, returns tokens created before the specified date. |
-| `after`       | date (ISO 8601) | no       | If defined, returns tokens created after the specified date. |
+| `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
+| `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `sort`        | string          | no       | Direction to sort the results by creation date. Possible values: `asc`, `desc`. Default: `desc`. |
 | `page`        | integer         | no       | Returns the specified results page. Default: `1`. |
 | `per_page`    | integer         | no       | Number of results per page. Default: `20`. |
@@ -272,8 +272,8 @@ Parameters:
 | `project_id`  | integer or string  | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
 | `target_type` | string          | no       | If defined, returns events with the specified [target type](#target-type). |
-| `before`      | date (ISO 8601) | no       | If defined, returns tokens created before the specified date. |
-| `after`       | date (ISO 8601) | no       | If defined, returns tokens created after the specified date. |
+| `before`      | date (ISO 8601) | no       | If defined, returns events created before the specified date. |
+| `after`       | date (ISO 8601) | no       | If defined, returns events created after the specified date. |
 | `sort`        | string          | no       | Direction to sort the results by creation date. Possible values: `asc`, `desc`. Default: `desc`. |
 
 Example request:

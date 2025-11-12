@@ -422,7 +422,7 @@ const Api = {
   projectProtectedBranch(id, branchName) {
     const url = Api.buildUrl(Api.projectProtectedBranchesNamePath)
       .replace(':id', encodeURIComponent(id))
-      .replace(':name', branchName);
+      .replace(':name', encodeURIComponent(branchName));
 
     return axios.get(url).then(({ data }) => data);
   },

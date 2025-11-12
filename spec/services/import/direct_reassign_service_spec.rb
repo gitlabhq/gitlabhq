@@ -227,24 +227,5 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
           .and change { issue.reload.author_id }.from(placeholder_user_id).to(reassign_to_user_id)
       end
     end
-
-    context 'when reassigning Vulnerability model' do
-      let_it_be_with_reload(:vulnerability) do
-        create(:vulnerability, author_id: placeholder_user_id)
-      end
-
-      context 'and the single reassignment fallback is necessary' do
-        # Triggering this context would require complex error mocking for a temporary test.
-        # It's easier to just test the fallback behaviour directly with send
-        it 'uses feature_flagged_transaction_for with project_id from single vulnerability' do
-          expect(Vulnerability).to receive(:feature_flagged_transaction_for)
-            .with([vulnerability.project]).and_call_original
-
-          direct_reassign.send(:reassign_single_contribution, Vulnerability, vulnerability, 'author_id')
-
-          expect(vulnerability.reload.author_id).to eq(reassign_to_user_id)
-        end
-      end
-    end
   end
 end

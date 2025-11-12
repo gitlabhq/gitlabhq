@@ -1292,9 +1292,16 @@ module Ci
       super
     end
 
+    # Returns the current status of the runner acknowledgement wait process for two-phase job acceptance.
     #
-    # Support for two-phase runner job acceptance acknowledgement
-    #
+    # @return [Symbol] One of:
+    #   - `:waiting` - Pending job has been assigned to a runner and is actively waiting for the runner to acknowledge
+    #                  that it has picked up the job. The runner manager ID is present in Redis.
+    #   - `:not_waiting` - Job is not in a waiting state. This occurs when either the job is not in pending
+    #                      status, or the job has not been assigned to a runner yet (no `runner_id``).
+    #   - `:wait_expired` - Job was previously assigned to a runner and was waiting for acknowledgement,
+    #                       but the wait period has expired. The runner manager ID is no longer present in Redis,
+    #                       indicating the runner failed to acknowledge within the expected timeframe.
     def runner_ack_wait_status
       return :not_waiting unless pending? && runner_id.present?
       return :waiting if runner_manager_id_waiting_for_ack.present?

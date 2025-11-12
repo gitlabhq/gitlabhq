@@ -428,3 +428,68 @@ export const mockPipelineUpdateResponseEmpty = {
     ciPipelineStatusesUpdated: null,
   },
 };
+
+export const mockNewPipeline = {
+  id: 'gid://gitlab/Ci::Pipeline/793',
+  iid: '110',
+  detailedStatus: {
+    id: 'running-793-793',
+    icon: 'status_running',
+    text: 'Running',
+    detailsPath: '/root/ci-project/-/pipelines/793',
+    __typename: 'DetailedStatus',
+    name: 'RUNNING',
+  },
+  finishedAt: null,
+  duration: null,
+  retryable: false,
+  cancelable: true,
+  stuck: false,
+  yamlErrors: false,
+  failureReason: null,
+  stages: {
+    nodes: [
+      {
+        id: 'gid://gitlab/Ci::Stage/670',
+        name: 'build',
+        detailedStatus: {
+          id: 'running-670-670',
+          icon: 'status_running',
+          text: 'Running',
+          detailsPath: '/root/ci-project/-/pipelines/793#build',
+          __typename: 'DetailedStatus',
+          tooltip: 'running',
+        },
+        __typename: 'CiStage',
+      },
+      {
+        id: 'gid://gitlab/Ci::Stage/671',
+        name: 'test',
+        detailedStatus: {
+          id: 'created-671-671',
+          icon: 'status_created',
+          text: 'Created',
+          detailsPath: '/root/ci-project/-/pipelines/793#test',
+          __typename: 'DetailedStatus',
+          tooltip: 'created',
+        },
+        __typename: 'CiStage',
+      },
+      {
+        id: 'gid://gitlab/Ci::Stage/672',
+        name: 'deploy',
+        detailedStatus: {
+          id: 'created-672-672',
+          icon: 'status_created',
+          text: 'Created',
+          detailsPath: '/root/ci-project/-/pipelines/793#deploy',
+          __typename: 'DetailedStatus',
+          tooltip: 'created',
+        },
+        __typename: 'CiStage',
+      },
+    ],
+    __typename: 'CiStageConnection',
+  },
+  __typename: 'Pipeline',
+};

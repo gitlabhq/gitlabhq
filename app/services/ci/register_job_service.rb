@@ -13,14 +13,25 @@ module Ci
     Result = Struct.new(:build, :build_json, :build_presented, :valid?)
 
     class ResultFactory
+      # Returns a successful result with a build assigned to the runner.
+      # This stops the queue processing loop and returns the build to the runner.
       def self.success(build, build_json, build_presented)
         Result.new(build: build, build_json: build_json, build_presented: build_presented, valid?: true)
       end
 
+      # Returns a conflict result without a build.
+      # When returned from process_build:
+      # - Continues the queue processing loop to try the next build
+      # - Marks the queue as invalid (valid: false) if there was a conflict
+      # - If all builds are exhausted, returns HTTP 409 Conflict to the runner
       def self.conflict(valid:)
         Result.new(build: nil, build_json: nil, build_presented: nil, valid?: valid)
       end
 
+      # Returns an invalid result (conflict with valid: false).
+      # Use this when a build cannot be assigned due to a conflict (e.g., StaleObjectError,
+      # InvalidTransition) to signal that the runner should retry the request.
+      # The loop continues to try other builds, but if all builds fail, returns HTTP 409.
       def self.invalid
         conflict(valid: false)
       end
@@ -178,19 +189,20 @@ module Ci
         present_build_with_instrumentation!(build, queue_size: queue_size, queue_depth: queue_depth)
       end
     rescue ActiveRecord::StaleObjectError
-      # We are looping to find another build that is not conflicting
-      # It also indicates that this build can be picked and passed to runner.
-      # If we don't do it, basically a bunch of runners would be competing for a build
-      # and thus we will generate a lot of 409. This will increase
-      # the number of generated requests, also will reduce significantly
-      # how many builds can be picked by runner in a unit of time.
-      # In case we hit the concurrency-access lock,
-      # we still have to return 409 in the end,
-      # to make sure that this is properly handled by runner.
+      # StaleObjectError indicates another runner is concurrently processing this build.
+      # By returning ResultFactory.invalid, we:
+      # 1. Continue the loop to try the next build in the queue
+      # 2. Mark the queue as invalid (valid: false)
+      # 3. Return HTTP 409 Conflict if all builds are exhausted, signaling the runner to retry
+      #
+      # This approach reduces conflicts by allowing runners to try other builds instead of
+      # immediately failing, which improves build assignment throughput.
       @metrics.increment_queue_operation(:build_conflict_lock)
 
       ResultFactory.invalid
     rescue StateMachines::InvalidTransition
+      # InvalidTransition indicates the build's state changed unexpectedly (e.g., already running).
+      # Similar to StaleObjectError, we continue the loop to find another build.
       @metrics.increment_queue_operation(:build_conflict_transition)
 
       ResultFactory.invalid
@@ -376,8 +388,8 @@ module Ci
       # In the meantime, the build/runner manager association will live in Redis.
       success = false
       @logger.instrument(:assign_runner_waiting) do
-        # Add pending job to Redis
-        build.set_waiting_for_runner_ack(runner_manager.id)
+        # Add pending job to Redis, bailing out if it is already assigned to a runner manager
+        break unless build.set_waiting_for_runner_ack(runner_manager.id)
 
         # Save job and remove pending job from db queue
         Ci::Build.transaction do
@@ -392,8 +404,10 @@ module Ci
 
         success = true
       rescue ActiveRecord::ActiveRecordError
-        # If we didn't manage to remove pending job, let's roll back the Redis change
+        # If we didn't manage to save the pending job, let's roll back the Redis change
         build.cancel_wait_for_runner_ack
+
+        raise
       rescue Redis::BaseError
         break
       end

@@ -30,7 +30,7 @@ The header for each file in the diff contains:
 - **Hide file contents** ({{< icon name="chevron-down" >}}) to hide all changes to this file.
 - **Path**: The full path to this file. To copy this path, select
   **Copy file path** ({{< icon name="copy-to-clipboard" >}}).
-- **Lines changed**: The number of lines added and deleted in this file, in the format `+2 -2`.
+- **Lines changed**: The number of lines added and removed in this file, in the format `+2 -2`.
 - **Viewed**: Select this checkbox to [mark the file as viewed](#mark-files-as-viewed)
   until it changes again.
 - **Comment on this file** ({{< icon name="comment" >}}) to leave a general comment on the file, without

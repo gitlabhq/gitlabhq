@@ -3739,30 +3739,35 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     using RSpec::Parameterized::TableSyntax
 
     where(:ability, :current_user, :access_level, :allowed) do
+      :admin_pages | ref(:owner)      | Featurable::ENABLED  | true
       :admin_pages | ref(:maintainer) | Featurable::ENABLED  | true
       :admin_pages | ref(:reporter)   | Featurable::ENABLED  | false
       :admin_pages | ref(:planner)    | Featurable::ENABLED  | false
       :admin_pages | ref(:guest)      | Featurable::ENABLED  | false
       :admin_pages | ref(:non_member) | Featurable::ENABLED  | false
 
+      :update_pages | ref(:owner)      | Featurable::ENABLED  | true
       :update_pages | ref(:maintainer) | Featurable::ENABLED  | true
       :update_pages | ref(:reporter)   | Featurable::ENABLED  | false
       :update_pages | ref(:planner)    | Featurable::ENABLED  | false
       :update_pages | ref(:guest)      | Featurable::ENABLED  | false
       :update_pages | ref(:non_member) | Featurable::ENABLED  | false
 
+      :remove_pages | ref(:owner)      | Featurable::ENABLED  | true
       :remove_pages | ref(:maintainer) | Featurable::ENABLED  | true
       :remove_pages | ref(:reporter)   | Featurable::ENABLED  | false
       :remove_pages | ref(:planner)    | Featurable::ENABLED  | false
       :remove_pages | ref(:guest)      | Featurable::ENABLED  | false
       :remove_pages | ref(:non_member) | Featurable::ENABLED  | false
 
+      :read_pages | ref(:owner)      | Featurable::ENABLED  | true
       :read_pages | ref(:maintainer) | Featurable::ENABLED  | true
       :read_pages | ref(:reporter)   | Featurable::ENABLED  | false
       :read_pages | ref(:planner)    | Featurable::ENABLED  | false
       :read_pages | ref(:guest)      | Featurable::ENABLED  | false
       :read_pages | ref(:non_member) | Featurable::ENABLED  | false
 
+      :read_pages_content | ref(:owner)      | Featurable::ENABLED  | true
       :read_pages_content | ref(:maintainer) | Featurable::ENABLED  | true
       :read_pages_content | ref(:reporter)   | Featurable::ENABLED  | true
       :read_pages_content | ref(:reporter)   | Featurable::PRIVATE  | true
@@ -3773,6 +3778,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       :read_pages_content | ref(:guest)      | Featurable::ENABLED  | true
       :read_pages_content | ref(:guest)      | Featurable::PRIVATE  | true
       :read_pages_content | ref(:guest)      | Featurable::DISABLED | false
+      :read_pages_content | ref(:non_member) | Featurable::PUBLIC   | true
       :read_pages_content | ref(:non_member) | Featurable::ENABLED  | true
       :read_pages_content | ref(:non_member) | Featurable::PRIVATE  | false
       :read_pages_content | ref(:non_member) | Featurable::DISABLED | false
@@ -3780,6 +3786,48 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     with_them do
       before do
         project.project_feature.update!(pages_access_level: access_level)
+      end
+
+      if params[:allowed]
+        it { expect_allowed(ability) }
+      else
+        it { expect_disallowed(ability) }
+      end
+    end
+  end
+
+  describe 'pages with ancestor access control enabled' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ability, :current_user, :access_level, :allowed) do
+      :read_pages_content | ref(:owner)      | Featurable::ENABLED  | true
+      :read_pages_content | ref(:maintainer) | Featurable::ENABLED  | true
+      :read_pages_content | ref(:reporter)   | Featurable::PUBLIC   | true
+      :read_pages_content | ref(:reporter)   | Featurable::ENABLED  | true
+      :read_pages_content | ref(:reporter)   | Featurable::PRIVATE  | true
+      :read_pages_content | ref(:reporter)   | Featurable::DISABLED | false
+      :read_pages_content | ref(:planner)    | Featurable::PUBLIC   | true
+      :read_pages_content | ref(:planner)    | Featurable::ENABLED  | true
+      :read_pages_content | ref(:planner)    | Featurable::PRIVATE  | true
+      :read_pages_content | ref(:planner)    | Featurable::DISABLED | false
+      :read_pages_content | ref(:developer)  | Featurable::PUBLIC   | true
+      :read_pages_content | ref(:developer)  | Featurable::ENABLED  | true
+      :read_pages_content | ref(:developer)  | Featurable::PRIVATE  | true
+      :read_pages_content | ref(:developer)  | Featurable::DISABLED | false
+      :read_pages_content | ref(:guest)      | Featurable::PUBLIC   | true
+      :read_pages_content | ref(:guest)      | Featurable::ENABLED  | true
+      :read_pages_content | ref(:guest)      | Featurable::PRIVATE  | true
+      :read_pages_content | ref(:guest)      | Featurable::DISABLED | false
+      :read_pages_content | ref(:non_member) | Featurable::PUBLIC   | true
+      :read_pages_content | ref(:non_member) | Featurable::ENABLED  | true
+      :read_pages_content | ref(:non_member) | Featurable::PRIVATE  | false
+      :read_pages_content | ref(:non_member) | Featurable::DISABLED | false
+    end
+
+    with_them do
+      before do
+        project.project_feature.update!(pages_access_level: access_level)
+        allow(project).to receive(:pages_access_control_forced_by_ancestor?).and_return(true)
       end
 
       if params[:allowed]

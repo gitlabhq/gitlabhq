@@ -83,13 +83,13 @@ export default {
     statsAriaLabel() {
       if (!this.diffStats) return null;
 
-      const fileAdditions = n__('%d file addition', '%d file additions', this.diffStats.additions);
-      const fileDeletions = n__('%d file deletion', '%d file deletions', this.diffStats.deletions);
+      const lineAdditions = n__('%d line added', '%d lines added', this.diffStats.additions);
+      const lineDeletions = n__('%d line removed', '%d lines removed', this.diffStats.deletions);
 
-      return sprintf(__('%{filesChanged}, %{fileAdditions}, %{fileDeletions}'), {
+      return sprintf(__('%{filesChanged}, %{lineAdditions}, %{lineDeletions}'), {
         filesChanged: n__('%d file', '%d files', this.diffStats.fileCount),
-        fileAdditions,
-        fileDeletions,
+        lineAdditions,
+        lineDeletions,
       });
     },
     isMergeRequestBroken() {

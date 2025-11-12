@@ -45,6 +45,7 @@ const DEFAULT_PAGINATION = {
 };
 
 export default {
+  name: 'PipelinesList',
   errorStateSvgPath: ERROR_STATE_SVG,
   noPipelinesSvgPath: NO_PIPELINES_SVG,
   scopes: {

@@ -291,16 +291,6 @@ msgid_plural "%d files"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d file addition"
-msgid_plural "%d file additions"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d file deletion"
-msgid_plural "%d file deletions"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d finding must be resolved"
 msgid_plural "%d findings must be resolved"
 msgstr[0] ""
@@ -935,7 +925,7 @@ msgstr ""
 msgid "%{filePath} deleted"
 msgstr ""
 
-msgid "%{filesChanged}, %{fileAdditions}, %{fileDeletions}"
+msgid "%{filesChanged}, %{lineAdditions}, %{lineDeletions}"
 msgstr ""
 
 msgid "%{firstLabel} +%{labelCount} more"

@@ -94,29 +94,6 @@ module Import
 
     attr_accessor :import_source_user, :reassigned_by_user, :sleep_time, :execution_tracker, :reassignment_throttling
 
-    # Vulnerabilty class currently enforced a DB trigger feature flag. This handling will be removed
-    # with the feature flag turn_off_vulnerability_read_create_db_trigger_function
-    #
-    # There is no need to do anything else as the columns being reassigned are not denormalized
-    # to vulnerabilty_reads
-    def transaction(model_class, contributions)
-      if model_class == Vulnerability
-        projects = if contributions.is_a?(Vulnerability)
-                     [contributions.project]
-                   else
-                     Project.by_ids(contributions.pluck_distinct_project_ids)
-                   end
-
-        model_class.feature_flagged_transaction_for(projects) do
-          yield
-        end
-      else
-        model_class.transaction do
-          yield
-        end
-      end
-    end
-
     # @param model [String]
     # @param column [String]
     def direct_reassign_model_user_references(model, column)
@@ -127,7 +104,7 @@ module Import
 
         begin
           # First, try to update user references in batches
-          update_count = transaction(model_class, contributions) do
+          update_count = model_class.transaction do
             contributions.update_all(column => import_source_user.reassign_to_user_id)
           end
 
@@ -157,7 +134,7 @@ module Import
     # rubocop:enable CodeReuse/ActiveRecord
 
     def reassign_single_contribution(model_class, contribution, column)
-      transaction(model_class, contribution) do
+      model_class.transaction do
         contribution.update_column(column, import_source_user.reassign_to_user_id)
       end
     rescue ActiveRecord::RecordNotUnique
