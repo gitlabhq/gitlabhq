@@ -6,6 +6,7 @@ import {
   GlEmptyState,
 } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import RefTrackingSelection from '~/security_configuration/components/ref_tracking_selection.vue';
@@ -120,7 +121,7 @@ describe('RefTrackingSelection component', () => {
 
     it('renders the search box with a correct placeholder', () => {
       expect(findSearchBox().attributes('placeholder')).toBe(
-        'Search branches and tags (min. 3 characters)',
+        'Search branches and tags (enter at least 3 characters)',
       );
     });
 
@@ -234,10 +235,16 @@ describe('RefTrackingSelection component', () => {
     it('triggers a search when more than "3" characters are entered', async () => {
       await enterSearchTerm('main');
 
-      expect(fetchRefsSpy).toHaveBeenCalledWith('gitlab-org/gitlab', {
-        search: 'main',
-        limit: 6,
-      });
+      expect(fetchRefsSpy).toHaveBeenCalledWith(
+        'gitlab-org/gitlab',
+        {
+          search: 'main',
+          limit: 6,
+        },
+        expect.objectContaining({
+          aborted: expect.any(Boolean),
+        }),
+      );
       expect(fetchMostRecentlyUpdatedSpy).toHaveBeenCalledTimes(1); // Only initial fetch
     });
 
@@ -343,5 +350,85 @@ describe('RefTrackingSelection component', () => {
       expect(displayedCheckboxes).toHaveLength(1);
       expect(displayedCheckboxes.at(0).attributes('value')).toBe(untrackedRef.id);
     });
+  });
+
+  describe('request cancellation', () => {
+    let abortSpy;
+
+    beforeEach(() => {
+      abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+      createComponent();
+    });
+
+    const mockInFlightRequest = () => {
+      let resolver;
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      return { promise, resolve: resolver };
+    };
+
+    it('passes AbortSignal to fetchRefs', async () => {
+      await enterSearchTerm('main');
+
+      expect(fetchRefsSpy).toHaveBeenCalledWith(
+        'gitlab-org/gitlab',
+        { search: 'main', limit: 6 },
+        expect.objectContaining({
+          aborted: expect.any(Boolean),
+        }),
+      );
+    });
+
+    it.each`
+      description                        | initialSearchTerm | subsequentSearchTerm
+      ${'new search is initiated'}       | ${'main'}         | ${'testing'}
+      ${'search term becomes too short'} | ${'main'}         | ${'te'}
+    `(
+      'aborts in-flight search when $description',
+      async ({ initialSearchTerm, subsequentSearchTerm }) => {
+        const { promise: searchPromise, resolve: resolveSearch } = mockInFlightRequest();
+        fetchRefsSpy.mockReturnValueOnce(searchPromise);
+
+        await enterSearchTerm(initialSearchTerm);
+        expect(abortSpy).not.toHaveBeenCalled();
+
+        await enterSearchTerm(subsequentSearchTerm);
+
+        expect(abortSpy).toHaveBeenCalledTimes(1);
+
+        resolveSearch(mockRefs);
+      },
+    );
+
+    it('aborts in-flight search when the component is destroyed', async () => {
+      const { promise: searchPromise, resolve: resolveSearch } = mockInFlightRequest();
+      fetchRefsSpy.mockReturnValueOnce(searchPromise);
+
+      await enterSearchTerm('main');
+      expect(abortSpy).not.toHaveBeenCalled();
+
+      wrapper.destroy();
+
+      expect(abortSpy).toHaveBeenCalledTimes(1);
+
+      resolveSearch(mockRefs);
+    });
+
+    it.each`
+      description                    | isCancelled | shouldShowError
+      ${'the error is canceled'}     | ${true}     | ${false}
+      ${'the error is not canceled'} | ${false}    | ${true}
+    `(
+      'when $description, does display the error message: $shouldShowError',
+      async ({ isCancelled, shouldShowError }) => {
+        fetchRefsSpy.mockRejectedValueOnce(new Error());
+        axios.isCancel = jest.fn().mockReturnValueOnce(isCancelled);
+
+        await enterSearchTerm('main');
+
+        expect(findErrorAlert().exists()).toBe(shouldShowError);
+      },
+    );
   });
 });

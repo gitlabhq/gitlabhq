@@ -77,6 +77,7 @@ module.exports = (path, options = {}) => {
     ]);
 
     reporters.push(['<rootDir>/scripts/frontend/jest_json_reporter.js', {}]);
+    reporters.push(['<rootDir>/scripts/frontend/jest_test_map_reporter.js', {}]);
   }
 
   const glob = `${path}/**/*@([._])spec.js`;

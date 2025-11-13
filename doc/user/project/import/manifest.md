@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Import multiple repositories by uploading a manifest file
+title: Migrate through a manifest file
 description: "Import multiple repositories to GitLab with manifest files."
 ---
 

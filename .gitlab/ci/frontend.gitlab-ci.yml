@@ -345,6 +345,7 @@ jest:
       - coverage-frontend/
       - junit_jest.xml
       - jest-reports/
+      - jest-test-mapping/
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml

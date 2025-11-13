@@ -44,6 +44,19 @@ class JestJsonReporter {
     );
   }
 
+  getOutputPath() {
+    if (this.options.outputPath) {
+      return this.options.outputPath;
+    }
+
+    const ciJobName = (process.env.CI_JOB_NAME || 'jest').replace(/\s+/g, '-');
+    const ciNodeIndex = process.env.CI_NODE_INDEX || '1';
+    const outputDir = 'jest-reports';
+    const fileName = `${ciJobName}-${ciNodeIndex}.json`;
+
+    return path.join(outputDir, fileName);
+  }
+
   static formatTestCase(testResult, testCaseResult) {
     const formattedTest = {
       id: JestJsonReporter.generateId(testResult, testCaseResult),
@@ -82,19 +95,6 @@ class JestJsonReporter {
     const cwd = process.cwd();
     const relative = path.relative(cwd, absolutePath);
     return relative.startsWith('./') ? relative.slice(2) : relative;
-  }
-
-  getOutputPath() {
-    if (this.options.outputPath) {
-      return this.options.outputPath;
-    }
-
-    const ciJobName = (process.env.CI_JOB_NAME || 'jest').replace(/\s+/g, '-');
-    const ciNodeIndex = process.env.CI_NODE_INDEX || '1';
-    const outputDir = 'jest-reports';
-    const fileName = `${ciJobName}-${ciNodeIndex}.json`;
-
-    return path.join(outputDir, fileName);
   }
 
   static writeOutput(outputPath, data) {

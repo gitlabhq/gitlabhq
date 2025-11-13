@@ -65,9 +65,14 @@ const sortRefsByMostRecent = (refs) => {
  * @param {Object} options - Query options
  * @param {String} options.search - Search term to filter refs
  * @param {Number} options.limit - Total number of results to return (combined from both branches and tags)
+ * @param {AbortSignal} signal - Optional AbortSignal to cancel the request
  * @returns {Promise<Array>} Promise with array of transformed refs
  */
-export async function fetchRefs(projectPath, { search = '', limit = 10, sortFn = null } = {}) {
+export async function fetchRefs(
+  projectPath,
+  { search = '', limit = 10, sortFn = null } = {},
+  abortSignal = null,
+) {
   // Fetch more than needed from each source to ensure we have enough results after combining
   const perSource = Math.ceil(limit * 1.5);
 
@@ -81,6 +86,7 @@ export async function fetchRefs(projectPath, { search = '', limit = 10, sortFn =
         sort: 'updated_desc',
         per_page: perSource,
       },
+      signal: abortSignal,
     }),
     axios.get(tagsUrl, {
       params: {
@@ -89,6 +95,7 @@ export async function fetchRefs(projectPath, { search = '', limit = 10, sortFn =
         sort: 'desc',
         per_page: perSource,
       },
+      signal: abortSignal,
     }),
   ]);
 

@@ -209,4 +209,20 @@ describe('Refs API', () => {
       await expect(fetchMostRecentlyUpdated(PROJECT_PATH)).rejects.toThrow();
     });
   });
+
+  it('passes a given abort signal to axios requests', async () => {
+    const projectPath = 'gitlab-org/gitlab';
+    const abortController = new AbortController();
+
+    mock.onGet(/\/repository\/branches/).reply(HTTP_STATUS_OK, []);
+    mock.onGet(/\/repository\/tags/).reply(HTTP_STATUS_OK, []);
+
+    await fetchRefs(projectPath, { limit: 10 }, abortController.signal);
+
+    const branchRequest = mock.history.get.find((req) => req.url.includes('branches'));
+    const tagRequest = mock.history.get.find((req) => req.url.includes('tags'));
+
+    expect(branchRequest.signal).toBe(abortController.signal);
+    expect(tagRequest.signal).toBe(abortController.signal);
+  });
 });

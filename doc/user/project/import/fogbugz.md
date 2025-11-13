@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Import your project from FogBugz to GitLab
+title: Migrate from FogBugz
 description: "Import projects from FogBugz to GitLab."
 ---
 

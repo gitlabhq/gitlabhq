@@ -451,6 +451,12 @@ Search issues for "flaky test" across GitLab
 
 ### `semantic_code_search`
 
+{{< details >}}
+
+Offering: GitLab.com
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
@@ -467,6 +473,14 @@ This feature is available for testing, but not ready for production use.
 {{< /alert >}}
 
 Searches for relevant code snippets in a project.
+
+This tool is available only for projects with
+[GitLab Duo turned on](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+Project files must be indexed into vector embeddings.
+
+If this tool is invoked for a project without vector embeddings,
+indexing is triggered ad-hoc and the agent uses a different tool.
+This tool then becomes available after a few minutes.
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|

@@ -9,6 +9,7 @@ import {
   GlEmptyState,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 import { __, s__, sprintf } from '~/locale';
 import { toggleArrayItem } from '~/lib/utils/array_utility';
 import {
@@ -51,6 +52,7 @@ export default {
       errorMessage: '',
       isSearching: false,
       isLoading: false,
+      searchAbortController: null,
     };
   },
   computed: {
@@ -115,8 +117,15 @@ export default {
   watch: {
     searchTerm: {
       handler(value) {
-        this.isSearching = this.searchTermHasMinLength;
-        this.debouncedSearch(value);
+        if (this.searchTermHasMinLength) {
+          this.isSearching = true;
+          this.debouncedSearch(value);
+        } else {
+          this.searchAbortController?.abort();
+          this.debouncedSearch?.cancel();
+          this.searchResults = [];
+          this.isSearching = false;
+        }
       },
     },
   },
@@ -126,6 +135,7 @@ export default {
   },
   beforeDestroy() {
     this.debouncedSearch?.cancel();
+    this.searchAbortController?.abort();
   },
   methods: {
     async fetchMostRecentlyUpdatedRefs() {
@@ -145,24 +155,30 @@ export default {
       }
     },
     async search(term) {
-      if (!this.searchTermHasMinLength) {
-        this.searchResults = [];
-        this.isSearching = false;
-        return;
-      }
+      this.searchAbortController?.abort();
 
+      this.searchAbortController = new AbortController();
       this.errorMessage = '';
 
       try {
-        this.searchResults = await fetchRefs(this.projectFullPath, {
-          search: term,
-          limit: MAX_DISPLAYED_REFS,
-        });
-      } catch {
-        this.errorMessage = s__(
-          'SecurityTrackedRefs|Could not search refs. Please try again later.',
+        this.searchResults = await fetchRefs(
+          this.projectFullPath,
+          {
+            search: term,
+            limit: MAX_DISPLAYED_REFS,
+          },
+          this.searchAbortController.signal,
         );
+      } catch (error) {
+        const requestCancelled = axios.isCancel(error);
+
+        if (!requestCancelled) {
+          this.errorMessage = s__(
+            'SecurityTrackedRefs|Could not search refs. Please try again later.',
+          );
+        }
       } finally {
+        this.searchAbortController = null;
         this.isSearching = false;
       }
     },
@@ -170,7 +186,6 @@ export default {
       this.selectedRefIds = toggleArrayItem(this.selectedRefIds, refId);
     },
     handleHidden() {
-      this.debouncedSearch?.cancel();
       this.$emit('cancel');
     },
   },
@@ -195,7 +210,9 @@ export default {
     <gl-search-box-by-type
       v-model="searchTerm"
       autocomplete="off"
-      :placeholder="__('Search branches and tags (min. 3 characters)')"
+      :placeholder="
+        s__('SecurityTrackedRefs|Search branches and tags (enter at least 3 characters)')
+      "
       class="gl-mb-4 gl-mt-3"
       data-testid="ref-search-input"
     />

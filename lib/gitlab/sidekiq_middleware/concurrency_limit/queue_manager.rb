@@ -37,18 +37,20 @@ module Gitlab
         def resume_processing!
           try_obtain_lease do
             with_redis do |redis|
-              deadline = MAX_PROCESSING_TIME.from_now
-              resumed_jobs = 0
-              while deadline.future?
-                jobs = next_batch_from_queue(redis, limit: num_jobs_to_resume)
-                break if jobs.empty?
-
-                bulk_send_to_processing_queue(jobs)
-                remove_processed_jobs(redis, limit: jobs.length)
-
-                resumed_jobs += jobs.length
+              unless Feature.enabled?(:concurrency_limit_eager_resume_processing, :instance, type: :ops)
+                resumed_jobs_count = resume_processing_once!(redis)
+                break resumed_jobs_count
               end
-              resumed_jobs
+
+              deadline = MAX_PROCESSING_TIME.from_now
+              total_resumed_jobs = 0
+              while deadline.future?
+                resumed_jobs_count = resume_processing_once!(redis)
+                break if resumed_jobs_count == 0
+
+                total_resumed_jobs += resumed_jobs_count
+              end
+              total_resumed_jobs
             end
           end
         end
@@ -65,6 +67,16 @@ module Gitlab
 
         def lease_taken_log_level
           :info
+        end
+
+        def resume_processing_once!(redis)
+          jobs = next_batch_from_queue(redis, limit: num_jobs_to_resume)
+          return 0 if jobs.empty?
+
+          bulk_send_to_processing_queue(jobs)
+          remove_processed_jobs(redis, limit: jobs.length)
+
+          jobs.length
         end
 
         def num_jobs_to_resume
