@@ -25051,9 +25051,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Flow trigger updated successfully."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Flow triggers"
-msgstr ""
-
 msgid "DuoAgentsPlatform|From the flows configured for this project, select the flow that this trigger will execute."
 msgstr ""
 
@@ -25163,6 +25160,9 @@ msgid "DuoAgentsPlatform|This session has no activity"
 msgstr ""
 
 msgid "DuoAgentsPlatform|To learn more about this session, view the %{boldStart}Details%{boldEnd} tab."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Triggers"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"
@@ -46323,6 +46323,9 @@ msgid "Organization"
 msgstr ""
 
 msgid "Organization ID cannot be nil"
+msgstr ""
+
+msgid "Organization parameter must be specified"
 msgstr ""
 
 msgid "Organizations"

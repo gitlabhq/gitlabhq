@@ -389,16 +389,9 @@ To select a model:
 
 ### Select an agent
 
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562708) in GitLab 18.4 for the GitLab UI as an [experiment](../../policy/development_stages_support.md#experiment).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562708) in GitLab 18.4.
 - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2196) to VS Code and JetBrains IDEs in GitLab 18.5.
 
 {{< /history >}}
@@ -416,13 +409,13 @@ Prerequisites:
 To select an agent:
 
 1. In the GitLab UI or your IDE, open a new conversation in GitLab Duo Chat.
-1. In the dropdown list, select a custom agent. If you have not set up any custom
+1. In the dropdown list, select an agent. If you have not set up any
    agents, there is no dropdown list, and Chat uses the default GitLab Duo agent.
 1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
 
-After you create a conversation with a custom agent:
+After you create a conversation with an agent:
 
-- The conversation remembers the custom agent you selected. You cannot select a different
+- The conversation remembers the agent you selected. You cannot select a different
   agent for that conversation.
 - If you use the chat history to go back to the same conversation, it uses the same agent.
 - If you go back to a conversation and the associated agent is no longer available,

@@ -4079,6 +4079,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_ca93521f3a6d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "abuse_reports"
+  WHERE "abuse_reports"."id" = NEW."abuse_report_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_cac7c0698291() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9772,7 +9788,8 @@ CREATE TABLE abuse_events (
     source smallint NOT NULL,
     category smallint,
     metadata jsonb,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_9b41e64a86 CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE abuse_events_id_seq
@@ -47902,6 +47919,8 @@ CREATE TRIGGER trigger_c6728503decb BEFORE INSERT OR UPDATE ON design_user_menti
 CREATE TRIGGER trigger_c8bc8646bce9 BEFORE INSERT OR UPDATE ON vulnerability_state_transitions FOR EACH ROW EXECUTE FUNCTION trigger_c8bc8646bce9();
 
 CREATE TRIGGER trigger_c9090feed334 BEFORE INSERT OR UPDATE ON boards_epic_lists FOR EACH ROW EXECUTE FUNCTION trigger_c9090feed334();
+
+CREATE TRIGGER trigger_ca93521f3a6d BEFORE INSERT OR UPDATE ON abuse_events FOR EACH ROW EXECUTE FUNCTION trigger_ca93521f3a6d();
 
 CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EACH ROW EXECUTE FUNCTION trigger_cac7c0698291();
 

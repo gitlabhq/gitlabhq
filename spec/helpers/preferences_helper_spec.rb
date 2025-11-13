@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PreferencesHelper, feature_category: :shared do
+RSpec.describe PreferencesHelper, feature_category: :settings do
   let_it_be(:user) { build(:user) }
 
   before do

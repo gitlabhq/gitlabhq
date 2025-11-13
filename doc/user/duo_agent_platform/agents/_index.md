@@ -55,6 +55,19 @@ When you create an agent, you associate it with a source project and choose whet
   Private agents cannot be enabled in projects other than the source project.
   You cannot make a private agent public if the agent is currently enabled.
 
+## View the agents for your project
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To view a list of agents enabled in your project:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Automate** > **Agents**.
+
+Select an agent to view its details.
+
 ## Create an agent
 
 Prerequisites:
@@ -69,8 +82,7 @@ To create an agent:
 1. Under **Basic information**:
    1. In **Display name**, enter a name for the agent.
    1. In **Description**, enter a description for the agent.
-1. Under **Visibility & access**:
-   1. For **Visibility**, select **Private** or **Public**.
+1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,
@@ -99,6 +111,21 @@ Prerequisites:
 The agent appears on the project's **Automate** > **Agents** page.
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
+
+### Remove an agent from a project
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To remove an agent:
+
+1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Automate** > **Agents**.
+1. Find the agent you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Remove**.
+1. On the confirmation dialog, select **Remove**.
+
+The agent no longer appears in the project, and is not available in Chat.
 
 ## Duplicate an agent
 

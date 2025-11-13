@@ -983,6 +983,12 @@ Output example:
 
 `Progress` represents the percentage of the background migration that has been completed.
 
+{{< alert type="note" >}}
+
+Progress percentage may not be reported correctly if the migration employs a cursor.
+
+{{< /alert >}}
+
 Definitions of the batched background migration states:
 
 - **Active**: Either:

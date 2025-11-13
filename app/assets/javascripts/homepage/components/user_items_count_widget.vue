@@ -76,7 +76,7 @@ export default {
 
 <template>
   <gl-link
-    class="focus: gl-flex-1 gl-cursor-pointer gl-rounded-[1rem] gl-bg-strong gl-p-2 !gl-no-underline hover:gl-bg-alpha-dark-16 dark:hover:gl-bg-alpha-light-24"
+    class="focus: gl-flex-1 gl-cursor-pointer gl-rounded-[1rem] gl-bg-strong gl-p-2 !gl-no-underline forced-colors:gl-border hover:gl-bg-alpha-dark-16 dark:hover:gl-bg-alpha-light-24"
     :href="path"
     :aria-label="fullAriaLabel"
     variant="meta"
