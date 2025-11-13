@@ -184,9 +184,9 @@ export default {
     />
 
     <gl-collapse
-      v-if="!isIconOnly"
       :id="itemId"
       v-model="isExpanded"
+      :class="{ 'gl-invisible gl-absolute': isIconOnly }"
       class="gl-m-0 gl-list-none gl-p-0 gl-duration-medium gl-ease-ease"
       data-testid="menu-section"
       :data-qa-section-name="item.title"

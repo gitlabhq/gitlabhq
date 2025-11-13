@@ -11441,6 +11441,11 @@ paths:
         type: integer
         format: int32
         required: true
+      - name: postApiV4ProjectsIdJobsJobIdRetry
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdJobsJobIdRetry"
       responses:
         '201':
           description: Retry a specific job of a project
@@ -53847,6 +53852,15 @@ definitions:
         description: Force cancellation for a job with a state of `canceling`
         example: true
     description: Cancel a specific job of a project
+  postApiV4ProjectsIdJobsJobIdRetry:
+    type: object
+    properties:
+      inputs:
+        type: object
+        description: Input values for the job
+        example:
+          environment: production
+    description: Retry a specific job of a project
   postApiV4ProjectsIdJobsJobIdPlay:
     type: object
     properties:

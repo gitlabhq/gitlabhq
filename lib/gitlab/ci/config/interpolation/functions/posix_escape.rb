@@ -5,13 +5,13 @@ module Gitlab
     class Config
       module Interpolation
         module Functions
-          class PosixQuote < Base
+          class PosixEscape < Base
             def self.function_expression_pattern
               /^#{name}$/
             end
 
             def self.name
-              'posix_quote'
+              'posix_escape'
             end
 
             def execute(input_value)

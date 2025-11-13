@@ -464,7 +464,7 @@
 {"name":"omniauth-auth0","version":"3.1.1","platform":"ruby","checksum":"3d9e83377b37394db077cf27082d29ccff93158f072d92fc59f1e88798c6c2b2"},
 {"name":"omniauth-azure-activedirectory-v2","version":"2.0.0","platform":"ruby","checksum":"c484cedd52cd233e3c216c4b3ed667ec07d20e51c550a613b65a0f90fe8ad072"},
 {"name":"omniauth-github","version":"2.0.1","platform":"ruby","checksum":"8ff8e70ac6d6db9d52485eef52cfa894938c941496e66b52b5e2773ade3ccad4"},
-{"name":"omniauth-google-oauth2","version":"1.1.1","platform":"ruby","checksum":"4496f126e84eaf760f9c6a5c69e5e7511f98092d7f25ad79fd2c0ae5e09b5039"},
+{"name":"omniauth-google-oauth2","version":"1.2.1","platform":"ruby","checksum":"c81c50b680fc3372d0c18147cdaf9764a67ace9e7e4e6afe7b869a01fa1aaedd"},
 {"name":"omniauth-oauth2","version":"1.8.0","platform":"ruby","checksum":"b2f8e9559cc7e2d4efba57607691d6d2b634b879fc5b5b6ccfefa3da85089e78"},
 {"name":"omniauth-oauth2-generic","version":"0.2.8","platform":"ruby","checksum":"ce6e8539019d5ebf2f48867072b9f248f148bb4cbe7166dee655865abfae7613"},
 {"name":"omniauth-saml","version":"2.2.4","platform":"ruby","checksum":"5acc45aee728ecc5c8f9f02b56c424cb359b62d9a25fb8039f15432c1a61f6eb"},

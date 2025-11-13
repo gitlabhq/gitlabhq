@@ -7,7 +7,6 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
 import { clearDraft, updateDraft } from '~/lib/utils/autosave';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
@@ -48,7 +47,6 @@ import {
   namespaceWorkItemTypesQueryResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
-jest.mock('~/alert');
 jest.mock('~/work_items/graphql/cache_utils', () => ({
   setNewWorkItemCache: jest.fn(),
 }));
@@ -77,7 +75,6 @@ describe('Create work item component', () => {
 
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const mutationErrorHandler = jest.fn().mockResolvedValue(createWorkItemMutationErrorResponse);
-  const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
   const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
   const namespaceWorkItemTypes =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
@@ -689,8 +686,8 @@ describe('Create work item component', () => {
       expect(wrapper.emitted('workItemCreated')).toBeUndefined();
     });
 
-    it('shows an alert on mutation error', async () => {
-      createComponent({ mutationHandler: errorHandler });
+    it('shows an alert on mutation top-level error', async () => {
+      createComponent({ mutationHandler: jest.fn().mockRejectedValue() });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -699,18 +696,14 @@ describe('Create work item component', () => {
       expect(findAlert().text()).toBe('Something went wrong when creating epic. Please try again.');
     });
 
-    it('shows a page alert on user-facing mutation error', async () => {
+    it('shows an alert on mutation error', async () => {
       createComponent({ mutationHandler: mutationErrorHandler });
       await waitForPromises();
 
       await updateWorkItemTitle();
       await submitCreateForm();
 
-      expect(createAlert).toHaveBeenCalledWith({
-        captureError: true,
-        error: ['an error'],
-        message: 'an error',
-      });
+      expect(findAlert().text()).toBe('an error');
     });
   });
 

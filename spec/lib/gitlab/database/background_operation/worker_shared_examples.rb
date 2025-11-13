@@ -288,14 +288,15 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
     let(:batch_size) { 10_000 }
     let(:worker) { create(worker_factory, batch_size: batch_size) }
+    let(:optimizer) { instance_double(Gitlab::Database::Batch::EfficiencyCalculator) }
 
-    it 'does not update batch_size when efficiency is nil' do
-      expect { optimize }.not_to change { worker.reload.batch_size }
+    before do
+      allow(worker).to receive(:optimizer).and_return(optimizer)
     end
 
     context 'when efficiency is low' do
       before do
-        allow(worker).to receive(:smoothed_time_efficiency).and_return(0.7)
+        allow(optimizer).to receive_messages(should_optimize?: true, optimized_batch_size: 12_000)
       end
 
       it 'updates batch_size' do
@@ -307,7 +308,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
     context 'when efficiency is high' do
       before do
-        allow(worker).to receive(:smoothed_time_efficiency).and_return(1.5)
+        allow(optimizer).to receive_messages(should_optimize?: true, optimized_batch_size: 6_333)
       end
 
       it 'updates batch_size' do

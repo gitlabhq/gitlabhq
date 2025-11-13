@@ -132,7 +132,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
   shared_examples_for 'does not retry the job' do
     it 'returns :not_retryable and :unprocessable_entity' do
-      expect(subject.message).to be('Job cannot be retried')
+      expect(subject.message).to be('Job is not retryable')
       expect(subject.payload[:reason]).to eq(:not_retryable)
       expect(subject.payload[:job]).to eq(job)
     end
@@ -628,6 +628,88 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
         end
 
         it_behaves_like 'checks enqueue_immediately?'
+      end
+    end
+
+    context 'when given job inputs' do
+      let(:inputs_spec) do
+        {
+          'environment' => { 'type' => 'string', 'default' => 'staging', 'options' => %w[staging production] },
+          'debug' => { 'type' => 'boolean', 'default' => false }
+        }
+      end
+
+      let!(:job) do
+        create(:ci_build, :success, pipeline: pipeline, ci_stage: stage, options: { inputs: inputs_spec })
+      end
+
+      subject { service.execute(job, inputs: { environment: 'production', debug: true }) }
+
+      it 'applies the inputs to the retried job' do
+        expect(subject).to be_success
+        expect(new_job.inputs.count).to eq(2)
+
+        environment_input = new_job.inputs.find_by(name: 'environment')
+        expect(environment_input.value).to eq('production')
+        expect(environment_input.project_id).to eq(project.id)
+
+        debug_input = new_job.inputs.find_by(name: 'debug')
+        expect(debug_input.value).to be(true)
+        expect(debug_input.project_id).to eq(project.id)
+      end
+
+      context 'when some inputs match their default values' do
+        subject { service.execute(job, inputs: { environment: 'staging', debug: true }) }
+
+        it 'only saves inputs that differ from defaults' do
+          expect(subject).to be_success
+          expect(new_job.inputs.count).to eq(1)
+
+          debug_input = new_job.inputs.find_by(name: 'debug')
+          expect(debug_input.value).to be(true)
+          expect(debug_input.project_id).to eq(project.id)
+
+          expect(new_job.inputs.find_by(name: 'environment')).to be_nil
+        end
+      end
+
+      context 'when all inputs match their default values' do
+        subject { service.execute(job, inputs: { environment: 'staging', debug: false }) }
+
+        it 'does not save any inputs' do
+          expect(subject).to be_success
+          expect(new_job.inputs.count).to eq(0)
+        end
+      end
+
+      context 'when inputs are invalid' do
+        it 'returns a validation error' do
+          result = service.execute(job, inputs: { environment: 'development' })
+
+          expect(result).to be_error
+          expect(result.message).to eq(
+            '`environment` input: `development` cannot be used because it is not in the list of allowed options'
+          )
+        end
+
+        it 'does not create a new job' do
+          expect { service.execute(job, inputs: { environment: 'development' }) }
+            .not_to change { Ci::Build.count }
+        end
+      end
+
+      context 'when unknown inputs are provided' do
+        it 'returns an error' do
+          result = service.execute(job, inputs: { environment: 'production', unknown_input: 'value' })
+
+          expect(result).to be_error
+          expect(result.message).to eq('Unknown input: unknown_input')
+        end
+
+        it 'does not create a new job' do
+          expect { service.execute(job, inputs: { environment: 'production', unknown_input: 'value' }) }
+            .not_to change { Ci::Build.count }
+        end
       end
     end
   end

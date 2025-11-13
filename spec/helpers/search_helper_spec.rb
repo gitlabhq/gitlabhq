@@ -1059,7 +1059,8 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         before do
           allow(project).to receive(:feature_available?).and_call_original
           allow(project).to receive(:feature_available?).with(:issues, current_user).and_return(feature_available)
-          allow(project).to receive(:feature_available?).with(:merge_requests, current_user).and_return(feature_available)
+          allow(project).to receive(:feature_available?).with(:merge_requests,
+            current_user).and_return(feature_available)
         end
 
         it 'adds the :project and :project-metadata without mr_path' do
@@ -1433,6 +1434,113 @@ RSpec.describe SearchHelper, feature_category: :global_search do
   describe '#blob_data_oversize_message' do
     it 'returns the correct message for empty files' do
       expect(helper.blob_data_oversize_message).to eq('The file could not be displayed because it is empty.')
+    end
+  end
+
+  describe '#search_scope' do
+    let(:user) { build_stubbed(:user) }
+
+    before do
+      allow(helper).to receive_messages(current_user: user, current_controller?: false)
+    end
+
+    context 'when custom default search scope is set' do
+      before do
+        stub_application_setting(default_search_scope: 'issues')
+      end
+
+      it 'returns nil' do
+        expect(helper.search_scope).to be_nil
+      end
+    end
+
+    context 'when custom default search scope is not set' do
+      before do
+        stub_application_setting(default_search_scope: ::ApplicationSetting::SEARCH_SCOPE_SYSTEM_DEFAULT)
+      end
+
+      context 'when on issues controller' do
+        it 'returns issues' do
+          allow(helper).to receive(:current_controller?).with(:issues).and_return(true)
+
+          expect(helper.search_scope).to eq('issues')
+        end
+      end
+
+      context 'when on merge_requests controller' do
+        it 'returns merge_requests' do
+          allow(helper).to receive(:current_controller?).with(:merge_requests).and_return(true)
+
+          expect(helper.search_scope).to eq('merge_requests')
+        end
+      end
+
+      context 'when on wikis controller' do
+        it 'returns wiki_blobs' do
+          allow(helper).to receive(:current_controller?).with(:wikis).and_return(true)
+
+          expect(helper.search_scope).to eq('wiki_blobs')
+        end
+      end
+
+      context 'when on commits controller' do
+        it 'returns commits' do
+          allow(helper).to receive(:current_controller?).with(:commits).and_return(true)
+
+          expect(helper.search_scope).to eq('commits')
+        end
+      end
+
+      context 'when on groups controller' do
+        let(:controller_double) { instance_double(GroupsController) }
+
+        before do
+          allow(helper).to receive(:current_controller?).with(:groups).and_return(true)
+          allow(helper).to receive(:controller).and_return(controller_double)
+        end
+
+        context 'when action is issues' do
+          it 'returns issues' do
+            allow(controller_double).to receive(:action_name).and_return('issues')
+
+            expect(helper.search_scope).to eq('issues')
+          end
+        end
+
+        context 'when action is merge_requests' do
+          it 'returns merge_requests' do
+            allow(controller_double).to receive(:action_name).and_return('merge_requests')
+
+            expect(helper.search_scope).to eq('merge_requests')
+          end
+        end
+
+        context 'when action is show' do
+          it 'returns nil' do
+            allow(controller_double).to receive(:action_name).and_return('show')
+
+            expect(helper.search_scope).to be_nil
+          end
+        end
+
+        context 'when action is edit' do
+          it 'returns nil' do
+            allow(controller_double).to receive(:action_name).and_return('edit')
+
+            expect(helper.search_scope).to be_nil
+          end
+        end
+      end
+
+      context 'when on other controllers' do
+        before do
+          allow(helper).to receive(:current_controller?).and_return(false)
+        end
+
+        it 'returns nil' do
+          expect(helper.search_scope).to be_nil
+        end
+      end
     end
   end
 end

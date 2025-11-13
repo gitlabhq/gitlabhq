@@ -235,8 +235,6 @@ rspec system pg16 project-studio-enabled:
   rules:
     - if: '$CI_MERGE_REQUEST_IID == null'
       when: never
-    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
-      when: never
     - !reference [.rails:rules:ee-only-system, rules]
 
 rspec system pg16 vue3:
@@ -1042,8 +1040,6 @@ rspec-ee system pg16 project-studio-enabled:
     GLCI_EXPORT_TEST_METRICS: "false"
   rules:
     - if: '$CI_MERGE_REQUEST_IID == null'
-      when: never
-    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /Project Studio/'
       when: never
     - !reference [.rails:rules:ee-only-system, rules]
 

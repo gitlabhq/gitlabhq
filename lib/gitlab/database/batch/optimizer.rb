@@ -35,6 +35,8 @@ module Gitlab
         end
 
         def optimized_batch_size
+          return current_batch_size if invalid_time_efficiency?
+
           multiplier = calculate_multiplier
           new_size = (current_batch_size * multiplier).to_i
 
@@ -42,7 +44,7 @@ module Gitlab
         end
 
         def should_optimize?
-          return false if time_efficiency.nil? || time_efficiency == 0
+          return false if invalid_time_efficiency?
 
           TARGET_EFFICIENCY.exclude?(time_efficiency)
         end
@@ -59,6 +61,10 @@ module Gitlab
           min_limit = [max_limit, MIN_BATCH_SIZE].min
 
           new_size.clamp(min_limit, max_limit)
+        end
+
+        def invalid_time_efficiency?
+          time_efficiency.nil? || time_efficiency == 0
         end
       end
     end

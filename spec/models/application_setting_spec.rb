@@ -34,7 +34,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         allow_project_creation_for_guest_and_below: true,
         allow_runner_registration_token: true,
         anonymous_searches_allowed: true,
-        default_search_scope: 'system default',
+        default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT,
         asset_proxy_enabled: false,
         asciidoc_max_includes: 32,
         authorized_keys_enabled: true,
@@ -789,7 +789,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
 
       it 'allows system default' do
-        setting.default_search_scope = 'system default'
+        setting.default_search_scope = described_class::SEARCH_SCOPE_SYSTEM_DEFAULT
 
         expect(setting).to be_valid
       end
@@ -2700,5 +2700,31 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   describe '#ci_delete_pipelines_in_seconds_limit_human_readable_long' do
     it { expect(setting.ci_delete_pipelines_in_seconds_limit_human_readable_long).to eq('1 year') }
+  end
+
+  describe '#custom_default_search_scope_set?' do
+    context 'when it is set to empty string' do
+      it 'returns false' do
+        setting.update!(default_search_scope: '')
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+    end
+
+    context 'when no default is set' do
+      it 'returns false' do
+        setting.update!(default_search_scope: described_class::SEARCH_SCOPE_SYSTEM_DEFAULT)
+
+        expect(setting.custom_default_search_scope_set?).to be(false)
+      end
+    end
+
+    context 'when a default is set' do
+      it 'returns true' do
+        setting.update!(default_search_scope: 'users')
+
+        expect(setting.custom_default_search_scope_set?).to be(true)
+      end
+    end
   end
 end

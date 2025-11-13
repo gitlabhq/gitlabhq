@@ -39038,6 +39038,9 @@ msgstr ""
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
 msgstr ""
 
+msgid "Let's create your first group and project"
+msgstr ""
+
 msgid "License"
 msgstr ""
 
@@ -52696,6 +52699,9 @@ msgstr[1] ""
 msgid "ProjectsNew|(optional)"
 msgstr ""
 
+msgid "ProjectsNew|Add a Getting Started README"
+msgstr ""
+
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr ""
 
@@ -52786,6 +52792,9 @@ msgstr ""
 msgid "ProjectsNew|Group name"
 msgstr ""
 
+msgid "ProjectsNew|Groups organize your team members and projects."
+msgstr ""
+
 msgid "ProjectsNew|Import"
 msgstr ""
 
@@ -52816,6 +52825,9 @@ msgstr ""
 msgid "ProjectsNew|Initialize repository with a README"
 msgstr ""
 
+msgid "ProjectsNew|Learn more about %{groups_and_projects_link_start}setting up your organization%{groups_and_projects_link_end} with groups and projects."
+msgstr ""
+
 msgid "ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm."
 msgstr ""
 
@@ -52823,6 +52835,9 @@ msgid "ProjectsNew|Migrate your data from an external source like GitHub, Bitbuc
 msgstr ""
 
 msgid "ProjectsNew|Migrate your data from another GitLab instance."
+msgstr ""
+
+msgid "ProjectsNew|Mobile apps - "
 msgstr ""
 
 msgid "ProjectsNew|More templates are available after sign-up."
@@ -52838,6 +52853,9 @@ msgid "ProjectsNew|New project"
 msgstr ""
 
 msgid "ProjectsNew|No import options available"
+msgstr ""
+
+msgid "ProjectsNew|One group can contain multiple projects, for example:"
 msgstr ""
 
 msgid "ProjectsNew|Password/Personal access token"
@@ -52903,6 +52921,9 @@ msgstr ""
 msgid "ProjectsNew|Projects are organized into groups"
 msgstr ""
 
+msgid "ProjectsNew|Projects contain your repository and management tools."
+msgstr ""
+
 msgid "ProjectsNew|Recommended if you're new to GitLab"
 msgstr ""
 
@@ -52922,6 +52943,9 @@ msgid "ProjectsNew|To move or copy an entire GitLab project from another GitLab 
 msgstr ""
 
 msgid "ProjectsNew|Unable to suggest a path. Please refresh and try again."
+msgstr ""
+
+msgid "ProjectsNew|Understanding groups and projects"
 msgstr ""
 
 msgid "ProjectsNew|Use SHA-256 for repository hashing algorithm"
@@ -52945,10 +52969,19 @@ msgstr ""
 msgid "ProjectsNew|Your project will be created at:"
 msgstr ""
 
+msgid "ProjectsNew|api-backend - "
+msgstr ""
+
 msgid "ProjectsNew|https://mycompany.fogbugz.com"
 msgstr ""
 
+msgid "ProjectsNew|mobile-ios - "
+msgstr ""
+
 msgid "ProjectsNew|my-awesome-project"
+msgstr ""
+
+msgid "ProjectsNew|ui-frontend - "
 msgstr ""
 
 msgid "Projects|An error occurred archiving the project. Please refresh the page to try again."

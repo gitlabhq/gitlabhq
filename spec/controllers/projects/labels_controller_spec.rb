@@ -221,6 +221,18 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
         expect(GroupLabel.find_by(title: promoted_label_name)).not_to be_nil
       end
 
+      it 'redirects to the same page after promoting when format is html' do
+        post :promote, params: { namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param, page: 2 }, format: :html
+
+        expect(response).to redirect_to(project_labels_path(project, page: 2))
+      end
+
+      it 'returns the url with right page param when format is json' do
+        post :promote, params: { namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param, page: 2 }, format: :json
+
+        expect(json_response).to eq({ 'url' => project_labels_path(project, page: 2) })
+      end
+
       it 'renders label name without parsing it as HTML' do
         name = 'CCC<img src=x onerror=alert(document.domain)>'
         label_1.update!(name: name)

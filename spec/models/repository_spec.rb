@@ -1453,6 +1453,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
+    context 'when specifying a wildcard path with **/ that should match root level files' do
+      let(:path) { '**/*.md' }
+
+      it 'returns all matched files including those at root level' do
+        expect(result).to include(
+          'README.md',
+          'CONTRIBUTING.md',
+          'files/markdown/ruby-style-guide.md'
+        )
+      end
+    end
+
     context 'when specifying a wildcard path to one level of subfolders' do
       let(:path) { '*/*.rb' }
 

@@ -115,7 +115,9 @@ if sections_with_no_tw_review["doc/solutions"].any?
   message(SOLUTIONS_MESSAGE)
 end
 
-message(LOCALIZATION_MESSAGE) if sections_with_no_tw_review["doc-locale"].any?
+if sections_with_no_tw_review["doc-locale"].any?
+  message(LOCALIZATION_MESSAGE, file: sections_with_no_tw_review["doc-locale"].first, line: 1)
+end
 
 message(DOCS_LONG_PIPELINE_MESSAGE) if sections_with_tier3_review.values.flatten.any?
 

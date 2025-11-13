@@ -41,6 +41,8 @@ class ApplicationSetting < ApplicationRecord
   DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
   DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD = 3600
 
+  SEARCH_SCOPE_SYSTEM_DEFAULT = 'system default'
+
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
 
@@ -752,12 +754,12 @@ class ApplicationSetting < ApplicationRecord
     global_search_users_enabled: [:boolean, { default: true }],
     global_search_block_anonymous_searches_enabled: [:boolean, { default: false }],
     anonymous_searches_allowed: [:boolean, { default: true }],
-    default_search_scope: [:string, { default: 'system default' }]
+    default_search_scope: [:string, { default: SEARCH_SCOPE_SYSTEM_DEFAULT }]
 
   validates :search, json_schema: { filename: 'application_setting_search' }
   validates :default_search_scope,
     inclusion: {
-      in: Gitlab::Search::AbuseDetection::ALLOWED_SCOPES + ['system default'],
+      in: Gitlab::Search::AbuseDetection::ALLOWED_SCOPES + [SEARCH_SCOPE_SYSTEM_DEFAULT],
       message: 'invalid scope selected'
     },
     allow_blank: true
@@ -1261,6 +1263,10 @@ class ApplicationSetting < ApplicationRecord
     else
       super
     end
+  end
+
+  def custom_default_search_scope_set?
+    ::Gitlab::Search::AbuseDetection::ALLOWED_SCOPES.include?(default_search_scope)
   end
 
   private

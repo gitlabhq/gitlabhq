@@ -22,8 +22,18 @@ With advanced search:
 - Find discussions buried in issues, merge requests, or comments.
 - Discover existing solutions instead of reinventing functionality that already exists.
 
-Advanced search works in projects, issues, merge requests, milestones,
-users, epics, code, comments, commits, and wikis.
+Advanced search works in:
+
+- Code
+- Comments
+- Commits
+- Epics
+- Issues
+- Merge requests
+- Milestones
+- Projects
+- Users
+- Wikis
 
 ## Use advanced search
 
@@ -44,21 +54,37 @@ You can also use advanced search in a project or group.
 
 ## Available scopes
 
+{{< history >}}
+
+- Searching comments on issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513146) in GitLab 18.0 [with a flag](../../administration/feature_flags/_index.md) named `search_work_item_queries_notes`. Disabled by default.
+- Searching comments on issues [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/536912) in GitLab 18.1.
+- Searching comments on issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191369) in GitLab 18.6. Feature flag `search_work_item_queries_notes` removed.
+- Searching comments on merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572590) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `search_merge_request_queries_notes`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 Scopes describe the type of data you're searching.
 The following scopes are available for advanced search:
 
-| Scope          | Global <sup>1</sup> <sup>2</sup>            | Group                                       | Project |
-|----------------|:-------------------------------------------:|:-------------------------------------------:|:-------:|
-| Code           | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Comments       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Commits        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Epics          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Issues         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Merge requests | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Milestones     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Projects       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Users          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Wikis          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Scope                       | Global <sup>1</sup> <sup>2</sup>            | Group                                       | Project |
+|-----------------------------|---------------------------------------------|---------------------------------------------|---------|
+| Code                        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Comments                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Commits                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Epics                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| Issues <sup>3</sup>         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Merge requests <sup>3</sup> | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Milestones                  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Projects                    | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| Users                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Wikis                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 
 **Footnotes**:
 
@@ -66,6 +92,8 @@ The following scopes are available for advanced search:
    On GitLab Self-Managed, global search is not available when limited indexing is enabled by default.
    An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces).
 1. On GitLab.com, global search is not enabled for code, commits, and wikis.
+1. When you search issues and merge requests, results
+   include comments that match your search term.
 
 ## Syntax
 

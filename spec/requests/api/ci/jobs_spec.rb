@@ -947,13 +947,18 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
   describe 'POST /projects/:id/jobs/:job_id/retry' do
     let!(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+    let(:retry_inputs) { {} }
+    let(:ci_job_inputs_flag) { true }
 
     def call_retry_job
-      post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
+      post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user),
+        headers: { 'Content-Type' => 'application/json' },
+        params: { inputs: retry_inputs }.to_json
     end
 
     before do
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+      stub_feature_flags(ci_job_inputs: ci_job_inputs_flag)
       call_retry_job
     end
 
@@ -1037,6 +1042,53 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
 
     it_behaves_like 'job retry API call handler'
+
+    context 'when given job inputs' do
+      let_it_be(:job) do
+        create(:ci_build, :canceled, pipeline: pipeline, options: {
+          inputs: {
+            'environment' => { 'type' => 'string', 'default' => 'staging', 'options' => %w[staging production] },
+            'debug' => { 'type' => 'boolean', 'default' => false }
+          }
+        })
+      end
+
+      let(:retry_inputs) { { 'environment' => 'production', 'debug' => true } }
+
+      it 'applies them to the retried job' do
+        expect(response).to have_gitlab_http_status(:created)
+
+        new_job = Ci::Build.find(json_response['id'])
+        expect(new_job.inputs.count).to be(2)
+
+        environment_input = new_job.inputs.find_by(name: 'environment')
+        expect(environment_input.value).to eq('production')
+        expect(environment_input.project_id).to eq(project.id)
+
+        debug_input = new_job.inputs.find_by(name: 'debug')
+        expect(debug_input.value).to be true
+        expect(debug_input.project_id).to eq(project.id)
+      end
+
+      context 'when inputs are invalid' do
+        let(:retry_inputs) { { 'environment' => 'development' } }
+
+        it 'returns validation errors' do
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('400 Bad request - `environment` input: `development` cannot be used because it is not in the list of allowed options')
+        end
+      end
+
+      context 'when the ci_job_inputs feature flag is disabled' do
+        let(:ci_job_inputs_flag) { false }
+        let(:retry_inputs) { { 'environment' => 'production', 'debug' => true } }
+
+        it 'returns an error when inputs are provided' do
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - The inputs parameter is not available')
+        end
+      end
+    end
 
     context "when executed on SaaS", :saas, if: Gitlab.ee? do
       let_it_be(:free_plan) { create(:free_plan) }

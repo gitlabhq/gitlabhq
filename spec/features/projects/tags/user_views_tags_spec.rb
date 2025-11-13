@@ -118,4 +118,23 @@ RSpec.describe 'User views tags', :feature, feature_category: :source_code_manag
       end
     end
   end
+
+  context 'when a tag does not reference a commit' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { project.owner }
+    let_it_be(:tag_name) { 'v123.45.678' }
+
+    before do
+      project.repository.add_tag(user, tag_name, project.repository.readme.id)
+      sign_in(user)
+      visit project_tags_path(project)
+    end
+
+    it 'does not link to a commit' do
+      within('[data-testid="tag-row"]:last-child') do
+        expect(page).to have_text(tag_name)
+        expect(page).to have_text("Can't find HEAD commit for this tag")
+      end
+    end
+  end
 end

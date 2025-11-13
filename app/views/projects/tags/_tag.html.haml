@@ -1,4 +1,4 @@
-- commit = @repository.commit(tag.dereferenced_target)
+- commit = @repository.commit(tag.dereferenced_target) if tag.dereferenced_target.present?
 - release = @releases.find { |release| release.tag == tag.name }
 - commit_status = @tag_pipeline_statuses[tag.name] if @tag_pipeline_statuses
 - pipeline = commit_status&.subject

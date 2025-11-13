@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlEmptyState,
+  GlLoadingIcon,
+  GlModal,
+  GlLink,
+  GlSprintf,
+  GlKeysetPagination,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import Api from '~/api';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
@@ -12,12 +20,14 @@ import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
+import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
 import { formatPipelinesGraphQLDataToREST } from '../utils';
 
 export default {
   components: {
     GlButton,
     GlEmptyState,
+    GlKeysetPagination,
     GlLink,
     GlLoadingIcon,
     GlModal,
@@ -53,10 +63,15 @@ export default {
   data() {
     return {
       hasError: false,
-      isInitialLoading: true,
       isRunningMergeRequestPipeline: false,
       pageInfo: {},
       pipelines: [],
+      pagination: {
+        first: PIPELINES_PER_PAGE,
+        last: null,
+        after: '',
+        before: '',
+      },
     };
   },
   apollo: {
@@ -70,6 +85,10 @@ export default {
         return {
           fullPath: this.targetProjectFullPath,
           mergeRequestIid: String(this.mergeRequestId),
+          first: this.pagination.first,
+          last: this.pagination.last,
+          after: this.pagination.after,
+          before: this.pagination.before,
         };
       },
       update(data) {
@@ -79,7 +98,6 @@ export default {
       },
       result({ data }) {
         const pipelineCount = data?.project?.mergeRequest?.pipelines?.count;
-        this.isInitialLoading = false;
         this.pageInfo = data?.project?.mergeRequest?.pipelines?.pageInfo || {};
 
         if (pipelineCount) {
@@ -96,7 +114,7 @@ export default {
       return this.pipelines.length > 0;
     },
     isLoading() {
-      return this.isInitialLoading && this.$apollo.queries.pipelines.loading;
+      return this.$apollo.queries.pipelines.loading;
     },
     latestPipeline() {
       return this.pipelines[0];
@@ -146,6 +164,13 @@ export default {
           this.latestPipeline?.flags?.merge_request_pipeline,
       );
     },
+    showPagination() {
+      return (
+        !this.isLoading &&
+        !this.hasError &&
+        (this.pageInfo?.hasNextPage || this.pageInfo?.hasPreviousPage)
+      );
+    },
   },
   methods: {
     cancelPipeline(pipeline) {
@@ -168,6 +193,12 @@ export default {
       }
     },
     refreshPipelineTable() {
+      this.pagination = {
+        first: PIPELINES_PER_PAGE,
+        last: null,
+        after: '',
+        before: '',
+      };
       this.$apollo.queries.pipelines.refetch();
     },
     /**
@@ -226,6 +257,23 @@ export default {
       if (this.$el?.parentElement) {
         this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
       }
+    },
+    nextPage() {
+      this.pagination = {
+        after: this.pageInfo?.endCursor || '',
+        before: '',
+        first: PIPELINES_PER_PAGE,
+        last: null,
+      };
+    },
+
+    prevPage() {
+      this.pagination = {
+        after: '',
+        before: this.pageInfo?.startCursor || '',
+        first: null,
+        last: PIPELINES_PER_PAGE,
+      };
     },
   },
   modal: {
@@ -363,6 +411,14 @@ export default {
           </div>
         </template>
       </pipelines-table>
+      <div class="gl-mt-5 gl-flex gl-justify-center">
+        <gl-keyset-pagination
+          v-if="showPagination"
+          v-bind="pageInfo"
+          @prev="prevPage"
+          @next="nextPage"
+        />
+      </div>
     </div>
 
     <gl-modal

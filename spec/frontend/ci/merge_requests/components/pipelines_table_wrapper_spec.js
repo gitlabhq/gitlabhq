@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlKeysetPagination } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -49,6 +49,18 @@ const defaultProps = {
   emptyStateSvgPath: 'empty-svg',
 };
 
+const createResponseWithPageInfo = ({ hasNextPage, hasPreviousPage }) => {
+  const response = generateMRPipelinesResponse({ count: 1 });
+  response.data.project.mergeRequest.pipelines.pageInfo = {
+    hasNextPage,
+    hasPreviousPage,
+    startCursor: hasPreviousPage ? 'eyJpZCI6IjcwMSJ9' : null,
+    endCursor: hasPreviousPage ? 'eyJpZCI6IjY3NSJ9' : null,
+    __typename: 'PageInfo',
+  };
+  return response;
+};
+
 const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
   const handlers = [
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
@@ -91,6 +103,7 @@ const findRunPipelineBtn = () => wrapper.findByTestId('run_pipeline_button');
 const findRunPipelineBtnMobile = () => wrapper.findByTestId('run_pipeline_button_mobile');
 const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
 const findUserPermissionsDocsLink = () => wrapper.findByTestId('user-permissions-docs-link');
+const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
 beforeEach(() => {
   mergeRequestPipelinesRequest = jest.fn();
@@ -120,6 +133,10 @@ describe('PipelinesTableWrapper component', () => {
     it('does not render the pipeline list', () => {
       expect(findPipelinesList().exists()).toBe(false);
     });
+
+    it('does not render pagination', () => {
+      expect(findPagination().exists()).toBe(false);
+    });
   });
 
   describe('When there is an error fetching pipelines', () => {
@@ -132,6 +149,10 @@ describe('PipelinesTableWrapper component', () => {
       expect(findErrorEmptyState().text()).toBe(
         'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
       );
+    });
+
+    it('does not render pagination', () => {
+      expect(findPagination().exists()).toBe(false);
     });
   });
 
@@ -150,6 +171,10 @@ describe('PipelinesTableWrapper component', () => {
       it('renders a pipeline list', () => {
         expect(findPipelinesList().exists()).toBe(true);
         expect(findPipelinesList().props().pipelines).toHaveLength(1);
+      });
+
+      it('renders pagination', () => {
+        expect(findPagination().exists()).toBe(true);
       });
     });
 
@@ -175,6 +200,10 @@ describe('PipelinesTableWrapper component', () => {
         );
 
         expect(findEmptyState().text()).toContain('To run a merge request pipeline');
+      });
+
+      it('does not render pagination', () => {
+        expect(findPagination().exists()).toBe(false);
       });
     });
 
@@ -410,6 +439,77 @@ describe('PipelinesTableWrapper component', () => {
           await waitForPromises();
 
           expect(mergeRequestPipelinesRequest.mock.calls).toHaveLength(2);
+        });
+      });
+    });
+  });
+
+  describe('pagination', () => {
+    it.each`
+      scenario                                                                 | hasNextPage | hasPreviousPage
+      ${'does not render pagination when there are no next or previous pages'} | ${false}    | ${false}
+      ${'renders pagination when hasNextPage is true'}                         | ${true}     | ${false}
+      ${'renders pagination when hasPreviousPage is true'}                     | ${false}    | ${true}
+    `('$scenario', async ({ hasNextPage, hasPreviousPage }) => {
+      const response = createResponseWithPageInfo({ hasNextPage, hasPreviousPage });
+      mergeRequestPipelinesRequest.mockResolvedValue(response);
+
+      await createComponent();
+
+      expect(findPagination().exists()).toBe(hasNextPage || hasPreviousPage);
+    });
+
+    it('passes correct pageInfo props to pagination', async () => {
+      await createComponent();
+
+      expect(findPagination().props()).toMatchObject({
+        startCursor: 'eyJpZCI6IjcwMSJ9',
+        endCursor: 'eyJpZCI6IjY3NSJ9',
+        hasNextPage: true,
+        hasPreviousPage: false,
+      });
+    });
+
+    describe('next page', () => {
+      it('updates query variables with correct pagination params when clicking next', async () => {
+        await createComponent();
+
+        findPagination().vm.$emit('next');
+
+        await waitForPromises();
+
+        expect(mergeRequestPipelinesRequest).toHaveBeenCalledWith({
+          first: 15,
+          last: null,
+          after: 'eyJpZCI6IjY3NSJ9',
+          before: '',
+          fullPath: '/group/project',
+          mergeRequestIid: '1',
+        });
+      });
+    });
+
+    describe('previous page', () => {
+      it('updates query variables with correct pagination params when clicking prev', async () => {
+        const responseWithPreviousPage = createResponseWithPageInfo({
+          hasNextPage: false,
+          hasPreviousPage: true,
+        });
+        mergeRequestPipelinesRequest.mockResolvedValue(responseWithPreviousPage);
+
+        await createComponent();
+
+        findPagination().vm.$emit('prev');
+
+        await waitForPromises();
+
+        expect(mergeRequestPipelinesRequest).toHaveBeenCalledWith({
+          first: null,
+          last: 15,
+          after: '',
+          before: 'eyJpZCI6IjcwMSJ9',
+          fullPath: '/group/project',
+          mergeRequestIid: '1',
         });
       });
     });

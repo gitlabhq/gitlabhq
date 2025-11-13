@@ -153,6 +153,7 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
+          optional :inputs, type: Hash, desc: 'Input values for the job', documentation: { example: { 'environment' => 'production' } }
         end
         # This endpoint can be used for retrying both builds and bridges.
         post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
@@ -161,12 +162,20 @@ module API
           job = find_job!(params[:job_id])
           authorize!(:retry_job, job)
 
-          response = ::Ci::RetryJobService.new(@project, current_user).execute(job)
+          inputs = params[:inputs] || {}
+
+          if inputs.present? && !Feature.enabled?(:ci_job_inputs, @project)
+            forbidden!('The inputs parameter is not available')
+          end
+
+          response = ::Ci::RetryJobService.new(@project, current_user).execute(job, inputs: inputs)
 
           if response.success?
             present response[:job], with: Entities::Ci::Job
-          else
+          elsif response.payload[:reason] == :not_retryable
             forbidden!('Job is not retryable')
+          else
+            bad_request!(response.message)
           end
         end
 

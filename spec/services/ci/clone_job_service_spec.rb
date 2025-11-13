@@ -320,6 +320,27 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
       end
 
+      context 'when given new job inputs' do
+        let(:new_job) do
+          described_class
+            .new(job, current_user: user)
+            .execute(new_job_inputs: { 'environment' => 'production', 'debug' => true })
+            .tap(&:save!)
+        end
+
+        it 'applies the new job inputs' do
+          expect(new_job.inputs.count).to eq(2)
+
+          environment_input = new_job.inputs.find_by(name: 'environment')
+          expect(environment_input.value).to eq('production')
+          expect(environment_input.project_id).to eq(project.id)
+
+          debug_input = new_job.inputs.find_by(name: 'debug')
+          expect(debug_input.value).to be(true)
+          expect(debug_input.project_id).to eq(project.id)
+        end
+      end
+
       context 'when given new job variables' do
         context 'when the cloned job has an action' do
           before do

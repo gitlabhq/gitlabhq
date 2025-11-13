@@ -12,7 +12,6 @@ import {
 } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -946,14 +945,8 @@ export default {
           },
         });
 
-        // We can get user-facing errors here. Show them in page alert
-        // because if we're in a modal the modal closes after submission.
         if (data.workItemCreate.errors.length) {
-          createAlert({
-            message: data.workItemCreate.errors.join(' '),
-            error: data.workItemCreate.errors,
-            captureError: true,
-          });
+          throw new Error(data.workItemCreate.errors);
         }
 
         this.$emit('workItemCreated', {
@@ -962,9 +955,10 @@ export default {
         });
 
         this.clearAutosaveDraft();
-      } catch {
-        this.error = this.createErrorText;
+      } catch (error) {
+        this.error = error.message || this.createErrorText;
         this.loading = false;
+        Sentry.captureException(error);
       }
     },
     async handleUpdateWidgetDraft(input) {

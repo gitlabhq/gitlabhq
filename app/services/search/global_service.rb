@@ -35,9 +35,19 @@ module Search
     end
 
     def scope
-      strong_memoize(:scope) do
-        allowed_scopes.include?(params[:scope]) ? params[:scope] : DEFAULT_SCOPE
+      allowed_scopes.include?(params[:scope]) ? params[:scope] : default_search_scope
+    end
+    strong_memoize_attr :scope
+
+    private
+
+    def default_search_scope
+      if ::Gitlab::CurrentSettings.custom_default_search_scope_set? &&
+          allowed_scopes.include?(::Gitlab::CurrentSettings.default_search_scope)
+        return ::Gitlab::CurrentSettings.default_search_scope
       end
+
+      DEFAULT_SCOPE
     end
   end
 end

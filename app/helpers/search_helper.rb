@@ -245,6 +245,8 @@ module SearchHelper
   end
 
   def search_scope
+    return if ::Gitlab::CurrentSettings.custom_default_search_scope_set?
+
     if current_controller?(:issues)
       'issues'
     elsif current_controller?(:merge_requests)

@@ -148,7 +148,7 @@ RSpec.describe 'Creating a pipeline that includes CI components', feature_catego
               ---
               test-my-job:
                 stage: $[[ inputs.stage ]]
-                script: echo $[[ inputs.stage | posix_quote ]]
+                script: echo $[[ inputs.stage | posix_escape ]]
         YAML
       end
 

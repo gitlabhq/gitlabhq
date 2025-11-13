@@ -496,7 +496,7 @@ $[[ inputs.test | truncate(3,5) ]]
 
 Assuming the value of `inputs.test` is `0123456789`, then the output would be `34567`.
 
-#### `posix_quote`
+#### `posix_escape`
 
 {{< history >}}
 
@@ -504,8 +504,8 @@ Assuming the value of `inputs.test` is `0123456789`, then the output would be `3
 
 {{< /history >}}
 
-Use `posix_quote` to escape any POSIX _Bourne shell_ control or meta characters that might be included in input values.
-`posix_quote` escapes the characters by inserting ` \ ` before any problematic characters in the input.
+Use `posix_escape` to escape any POSIX _Bourne shell_ control or meta characters that might be included in input values.
+`posix_escape` escapes the characters by inserting ` \ ` before any problematic characters in the input.
 
 Example:
 
@@ -518,10 +518,10 @@ spec:
 ---
 
 test-job:
-  script: printf '%s\n' $[[ inputs.test | posix_quote ]]
+  script: printf '%s\n' $[[ inputs.test | posix_escape ]]
 ```
 
-In this example, `posix_quote` escapes all the characters that could be shell control or metadata characters:
+In this example, `posix_escape` escapes all the characters that could be shell control or metadata characters:
 
 ```console
 $ printf '%s\n' A\ string\ with\ single\ \'\ and\ double\ \"\ quotes\ and\ \ \ blanks
@@ -532,7 +532,7 @@ The escaped input preserves all special characters and spacing exactly as provid
 
 {{< alert type="warning" >}}
 
-Not using `posix_quote` can be a security risk if the input contains untrusted input.
+Not using `posix_escape` can be a security risk if the input contains untrusted input.
 
 {{< /alert >}}
 
@@ -550,13 +550,13 @@ Escaping might be unnecessary if:
 - The input value is validated with [`spec:input:regex`](../yaml/_index.md#specinputsregex) to prevent problematic input.
 - The input value is from a trusted source.
 
-If you combine `posix_quote` with `expand_vars`, you must set `expand_vars` first.
-Otherwise `posix_quote` would escape the `$` in the variable, preventing expansion.
+If you combine `posix_escape` with `expand_vars`, you must set `expand_vars` first.
+Otherwise `posix_escape` would escape the `$` in the variable, preventing expansion.
 For example:
 
 ```yaml
 test-job:
-  script: echo $[[ inputs.test | expand_vars | posix_quote ]]
+  script: echo $[[ inputs.test | expand_vars | posix_escape ]]
 ```
 
 ## Troubleshooting

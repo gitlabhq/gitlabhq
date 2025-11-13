@@ -63,6 +63,10 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## Geo installations 18.5.2
+
+- The missing Geo [migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210512) that prevents Geo log cursor on the secondary site to start is fixed.
+
 ## 18.5.0
 
 - A [post deployment migration](../../development/database/post_deployment_migrations.md)
@@ -77,16 +81,20 @@ required upgrade stops occur at versions:
 
 - NGINX routing changes introduced in GitLab 18.5.0 can cause services to become inaccessible when using non-matching hostnames such as `localhost` or alternative domain names.
   This issue causes:
- 
+
   - Health check endpoints such as `/-/health` to return `404` errors instead of proper responses.
   - GitLab web interface showing `404` error pages when accessed with hostnames other than the configured FQDN.
   - GitLab Pages potentially receiving traffic intended for other services.
   - Problems with any requests using alternative hostnames that previously worked.
 
-  This issue is resolved in the Linux package by [merge request 8805](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8805), and the fix will be 
+  This issue is resolved in the Linux package by [merge request 8805](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8805), and the fix will be
   available in GitLab 18.5.2 and 18.6.0.
 
   Git operations such clone, push, and pull are unaffected by this issue.
+
+## Geo installations 18.4.4
+
+- The missing Geo [migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210512) that prevents Geo log cursor on the secondary site to start is fixed.
 
 ## 18.4.2
 

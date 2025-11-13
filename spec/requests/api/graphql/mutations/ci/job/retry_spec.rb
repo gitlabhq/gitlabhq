@@ -100,7 +100,102 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
       post_graphql_mutation(mutation, current_user: user)
 
       expect(mutation_response['job']).to be_nil
-      expect(mutation_response['errors']).to match_array(['Job cannot be retried'])
+      expect(mutation_response['errors']).to match_array(['Job is not retryable'])
+    end
+  end
+
+  context 'when given job inputs' do
+    let(:inputs_spec) do
+      {
+        'environment' => { 'type' => 'string', 'default' => 'staging', 'options' => %w[staging production] },
+        'debug' => { 'type' => 'boolean', 'default' => false }
+      }
+    end
+
+    let(:job) do
+      create(:ci_build, :success, pipeline: pipeline, name: 'build', options: { inputs: inputs_spec })
+    end
+
+    let(:mutation) do
+      variables = {
+        id: job.to_global_id.to_s,
+        inputs: [
+          { name: 'environment', value: 'production' },
+          { name: 'debug', value: true }
+        ]
+      }
+
+      graphql_mutation(:job_retry, variables,
+        <<-QL
+                        errors
+                        job {
+                          id
+                        }
+      QL
+      )
+    end
+
+    it 'applies them to the retried job' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['errors']).to be_empty
+
+      new_job_id = GitlabSchema.object_from_id(mutation_response['job']['id']).sync.id
+      new_job = ::Ci::Build.find(new_job_id)
+      expect(new_job.inputs.count).to be(2)
+
+      environment_input = new_job.inputs.find_by(name: 'environment')
+      expect(environment_input.value).to eq('production')
+      expect(environment_input.project_id).to eq(project.id)
+
+      debug_input = new_job.inputs.find_by(name: 'debug')
+      expect(debug_input.value).to be true
+      expect(debug_input.project_id).to eq(project.id)
+    end
+
+    context 'when inputs are invalid' do
+      let(:mutation) do
+        variables = {
+          id: job.to_global_id.to_s,
+          inputs: [
+            { name: 'environment', value: 'development' }
+          ]
+        }
+
+        graphql_mutation(:job_retry, variables,
+          <<-QL
+                          errors
+                          job {
+                            id
+                          }
+        QL
+        )
+      end
+
+      it 'returns validation errors' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['job']).to be_nil
+        expect(mutation_response['errors']).to contain_exactly(
+          '`environment` input: `development` cannot be used because it is not in the list of allowed options'
+        )
+      end
+    end
+
+    context 'when the ci_job_inputs feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_job_inputs: false)
+      end
+
+      it 'returns an error when inputs are provided' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['job']).to be_nil
+        expect(mutation_response['errors']).to eq(['The inputs argument is not available'])
+      end
     end
   end
 end

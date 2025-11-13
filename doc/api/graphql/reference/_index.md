@@ -8749,6 +8749,7 @@ Input type: `JobRetryInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjobretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobretryid"></a>`id` | [`CiProcessableID!`](#ciprocessableid) | ID of the job to mutate. |
+| <a id="mutationjobretryinputs"></a>`inputs` | [`[CiInputsInput!]`](#ciinputsinput) | Inputs to use when retrying the job. |
 | <a id="mutationjobretryvariables"></a>`variables` | [`[CiVariableInput!]`](#civariableinput) | Variables to use when retrying a manual job. |
 
 #### Fields

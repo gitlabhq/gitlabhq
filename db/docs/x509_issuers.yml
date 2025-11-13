@@ -9,4 +9,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17773
 milestone: '12.8'
 gitlab_schema: gitlab_main_org
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553481
+sharding_key:
+  project_id: projects

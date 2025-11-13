@@ -129,12 +129,6 @@ When using a GitLab Duo feature with a selected LLM, you might get an error that
 - GitLab Duo Code Suggestions, you might get `Error 422: No default Duo group found. Select a default Duo group in your user preferences and try again.`
 - GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
 
-This issue occurs when:
+This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
 
-- The `ai_user_default_duo_namespace` feature flag is enabled.
-- You belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
-
-To resolve this, you can do either of the following:
-
-- [Assign a default GitLab Duo namespace](#assign-a-default-gitlab-duo-namespace).
-- To opt out of this requirement whilst the model selection feature is in beta, ask [GitLab Support](https://about.gitlab.com/support/) to disable the `ai_user_default_duo_namespace` feature flag.
+To resolve this, [assign a default GitLab Duo namespace](#assign-a-default-gitlab-duo-namespace).

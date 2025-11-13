@@ -621,6 +621,34 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       end
     end
 
+    context 'when wildcard pattern matches a file that includes itself' do
+      let(:values) do
+        { include: 'includes/all.yml', image: 'image:1.0' }
+      end
+
+      let(:project_files) do
+        {
+          'includes/all.yml' => <<~YAML,
+          include:
+            - local: 'includes/**/*.yml'
+          YAML
+          'includes/d1/job1.yml' => <<~YAML,
+          job_1:
+            script: env
+          YAML
+          'includes/d2/job2.yml' => <<~YAML
+          job_2:
+            script: env
+          YAML
+        }
+      end
+
+      it 'does not cause infinite recursion' do
+        output = processor.perform
+        expect(output.keys).to match_array([:image, :job_1, :job_2])
+      end
+    end
+
     context 'when rules defined' do
       context 'when a rule is invalid' do
         let(:values) do

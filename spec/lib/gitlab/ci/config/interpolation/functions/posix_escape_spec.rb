@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::PosixQuote, feature_category: :pipeline_composition do
+RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::PosixEscape, feature_category: :pipeline_composition do
   it 'validates function syntax in CI config context' do
-    # Valid: $[[  inputs.user_file | posix_quote ]]
-    expect(described_class.matches?('posix_quote')).to be_truthy
+    # Valid: $[[  inputs.user_file | posix_escape ]]
+    expect(described_class.matches?('posix_escape')).to be_truthy
 
-    # Invalid: posix_quote doesn't accept arguments
-    expect(described_class.matches?('posix_quote()')).to be_falsey
-    expect(described_class.matches?('posix_quote(1)')).to be_falsey
+    # Invalid: posix_escape doesn't accept arguments
+    expect(described_class.matches?('posix_escape()')).to be_falsey
+    expect(described_class.matches?('posix_escape(1)')).to be_falsey
   end
 
   it 'escapes the given input' do
-    function = described_class.new('posix_quote', nil)
+    function = described_class.new('posix_escape', nil)
 
     output = function.execute('String with " and \' and  blanks')
 
@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::PosixQuote, feature
   end
 
   context 'when given a shell fragment with meta/control characters' do
-    let(:function) { described_class.new('posix_quote', nil) }
+    let(:function) { described_class.new('posix_escape', nil) }
 
     it 'prevents argument splitting on blanks' do
       input = 'Blank space'
@@ -107,13 +107,13 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Functions::PosixQuote, feature
 
   context 'when given a non-string input' do
     it 'returns an error' do
-      function = described_class.new('posix_quote', nil)
+      function = described_class.new('posix_escape', nil)
 
       function.execute(100)
 
       expect(function).not_to be_valid
       expect(function.errors).to contain_exactly(
-        'error in `posix_quote` function: invalid input type: posix_quote can only be used with string inputs'
+        'error in `posix_escape` function: invalid input type: posix_escape can only be used with string inputs'
       )
     end
   end

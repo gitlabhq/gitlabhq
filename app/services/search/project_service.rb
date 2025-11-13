@@ -31,16 +31,21 @@ module Search
     end
 
     def scope
-      strong_memoize(:scope) do
-        search_navigation = Search::Navigation.new(user: current_user, project: project)
-        scope = params[:scope]
-        next scope if allowed_scopes.include?(scope) && search_navigation.tab_enabled_for_project?(scope.to_sym)
+      search_navigation = Search::Navigation.new(user: current_user, project: project)
+      scope = params[:scope]
+      return scope if allowed_scopes.include?(scope) && search_navigation.tab_enabled_for_project?(scope.to_sym)
 
-        allowed_scopes.find do |s|
-          search_navigation.tab_enabled_for_project?(s.to_sym)
-        end
+      if ::Gitlab::CurrentSettings.custom_default_search_scope_set? &&
+          allowed_scopes.include?(::Gitlab::CurrentSettings.default_search_scope) &&
+          search_navigation.tab_enabled_for_project?(::Gitlab::CurrentSettings.default_search_scope.to_sym)
+        return ::Gitlab::CurrentSettings.default_search_scope
+      end
+
+      allowed_scopes.find do |s|
+        search_navigation.tab_enabled_for_project?(s.to_sym)
       end
     end
+    strong_memoize_attr :scope
   end
 end
 

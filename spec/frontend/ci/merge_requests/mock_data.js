@@ -52,6 +52,13 @@ const createMergeRequestPipelines = ({ mergeRequestEventType = 'MERGE_TRAIN', co
   return {
     count,
     nodes: pipelines,
+    pageInfo: {
+      hasNextPage: true,
+      hasPreviousPage: false,
+      startCursor: 'eyJpZCI6IjcwMSJ9',
+      endCursor: 'eyJpZCI6IjY3NSJ9',
+      __typename: 'PageInfo',
+    },
   };
 };
 
