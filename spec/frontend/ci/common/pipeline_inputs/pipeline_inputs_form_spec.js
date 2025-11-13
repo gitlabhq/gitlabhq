@@ -18,6 +18,8 @@ import {
   mockPipelineInputsResponse,
   mockEmptyInputsResponse,
   mockPipelineInputsErrorResponse,
+  mockPipelineInputsWithRules,
+  mockPipelineInputsWithComplexRules,
 } from './mock_data';
 
 Vue.use(VueApollo);
@@ -41,7 +43,9 @@ const expectedInputs = [
     required: false,
     options: ['staging', 'production'],
     regex: '^(staging|production)$',
+    rules: null,
     isSelected: false,
+    hasRules: false,
   },
   {
     name: 'api_token',
@@ -52,7 +56,9 @@ const expectedInputs = [
     required: true,
     options: [],
     regex: null,
+    rules: null,
     isSelected: false,
+    hasRules: false,
   },
   {
     name: 'tags',
@@ -63,7 +69,9 @@ const expectedInputs = [
     required: false,
     options: [],
     regex: null,
+    rules: null,
     isSelected: false,
+    hasRules: false,
   },
 ];
 
@@ -73,7 +81,24 @@ describe('PipelineInputsForm', () => {
 
   const createComponent = async ({ props = {}, provide = {} } = {}) => {
     const handlers = [[getPipelineInputsQuery, pipelineInputsHandler]];
-    const mockApollo = createMockApollo(handlers);
+    // Use cacheOptions, not resolvers!
+    const cacheOptions = {
+      typePolicies: {
+        CiPipelineCreationInput: {
+          fields: {
+            rules: {
+              read(existing) {
+                // Return existing value or null
+                return existing || null;
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const mockApollo = createMockApollo(handlers, {}, cacheOptions); // Note: empty resolvers, cacheOptions as 3rd param
+
     wrapper = shallowMountExtended(PipelineInputsForm, {
       propsData: {
         ...defaultProps,
@@ -100,6 +125,9 @@ describe('PipelineInputsForm', () => {
   const findPreviewButton = () => wrapper.findComponent(GlButton);
   const findPreviewDrawer = () => wrapper.findComponent(PipelineInputsPreviewDrawer);
   const findHelpPageLink = () => wrapper.findComponent(HelpPageLink);
+
+  const getTableInputs = () => findInputsTable().props('inputs');
+  const getInputByName = (name) => getTableInputs().find((i) => i.name === name);
 
   const selectInputs = async (inputs = ['deploy_environment', 'api_token', 'tags']) => {
     findInputsSelector().vm.$emit('select', inputs);
@@ -233,7 +261,7 @@ describe('PipelineInputsForm', () => {
             { ...expectedInputs[1], isSelected: true },
             { ...expectedInputs[2], isSelected: true },
           ];
-          expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+          expect(getTableInputs()).toEqual(updatedSelection);
         });
 
         it('removes isSelected property when deselected', async () => {
@@ -243,7 +271,7 @@ describe('PipelineInputsForm', () => {
             { ...expectedInputs[1], isSelected: true },
             { ...expectedInputs[2], isSelected: true },
           ];
-          expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+          expect(getTableInputs()).toEqual(updatedSelection);
         });
 
         it('updates a group for selected inputs in the listbox on change', async () => {
@@ -281,7 +309,7 @@ describe('PipelineInputsForm', () => {
             { ...expectedInputs[1], isSelected: true },
             { ...expectedInputs[2], isSelected: true },
           ];
-          expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+          expect(getTableInputs()).toEqual(updatedSelection);
         });
 
         it('selects only filtered inputs when search is active', async () => {
@@ -291,9 +319,8 @@ describe('PipelineInputsForm', () => {
           findInputsSelector().vm.$emit('select-all');
           await nextTick();
 
-          const updatedSelection = findInputsTable().props('inputs');
-          const apiTokenInput = updatedSelection.find((i) => i.name === 'api_token');
-          const otherInputs = updatedSelection.filter((i) => i.name !== 'api_token');
+          const apiTokenInput = getTableInputs().find((i) => i.name === 'api_token');
+          const otherInputs = getTableInputs().filter((i) => i.name !== 'api_token');
 
           expect(apiTokenInput.isSelected).toBe(true);
           expect(otherInputs.every((i) => !i.isSelected)).toBe(true);
@@ -406,7 +433,7 @@ describe('PipelineInputsForm', () => {
         { ...expectedInputs[1], isSelected: true },
         { ...expectedInputs[2], isSelected: true },
       ];
-      expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+      expect(getTableInputs()).toEqual(updatedSelection);
     });
   });
 
@@ -433,7 +460,7 @@ describe('PipelineInputsForm', () => {
         { ...expectedInputs[1], isSelected: false },
         { ...expectedInputs[2], isSelected: false },
       ];
-      expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+      expect(getTableInputs()).toEqual(updatedSelection);
     });
   });
 
@@ -465,7 +492,7 @@ describe('PipelineInputsForm', () => {
       await createComponent({ props: { emitModifiedOnly: true } });
       await selectInputs();
 
-      const inputs = findInputsTable().props('inputs');
+      const inputs = getTableInputs();
       const totalInputsCount = inputs.length;
       const inputToModify = { ...inputs[0], value: 'modified-value', isSelected: true };
 
@@ -497,8 +524,7 @@ describe('PipelineInputsForm', () => {
       await selectInputs();
 
       // Get the array input from the current inputs prop of the table
-      const inputs = findInputsTable().props('inputs');
-      const arrayInput = inputs.find((input) => input.type === 'ARRAY');
+      const arrayInput = getTableInputs().find((input) => input.type === 'ARRAY');
 
       const updatedInput = {
         ...arrayInput,
@@ -520,8 +546,7 @@ describe('PipelineInputsForm', () => {
       await createComponent();
       await selectInputs();
 
-      const inputs = findInputsTable().props('inputs');
-      const arrayInput = inputs.find((input) => input.type === 'ARRAY');
+      const arrayInput = getTableInputs().find((input) => input.type === 'ARRAY');
 
       const updatedInput = {
         ...arrayInput,
@@ -581,7 +606,7 @@ describe('PipelineInputsForm', () => {
     });
 
     it('emits updated metadata values when inputs are updated', () => {
-      const inputs = findInputsTable().props('inputs');
+      const inputs = getTableInputs();
       const updatedInput = { ...inputs[0], savedValue: 'saved-value', value: 'new-updated-value' };
       findInputsTable().vm.$emit('update', updatedInput);
 
@@ -590,6 +615,158 @@ describe('PipelineInputsForm', () => {
         totalModified: 1,
         newlyModified: 1,
       });
+    });
+  });
+
+  describe('dynamic rules', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsWithRules);
+      await createComponent();
+    });
+
+    it('excludes inputs with rules from the inputs selector', () => {
+      expect(findInputsSelector().props('items')).toEqual([
+        { text: 'cloud_provider', value: 'cloud_provider' },
+        { text: 'environment', value: 'environment' },
+      ]);
+    });
+
+    it('auto-selects child when parents are selected', async () => {
+      await selectInputs(['cloud_provider', 'environment']);
+
+      const instanceType = getInputByName('instance_type');
+
+      expect(instanceType.isSelected).toBe(true);
+      expect(instanceType.options).toEqual(['t3.micro', 't3.small']);
+    });
+
+    it('maintains child selection when partial parent conditions still match a rule', async () => {
+      await selectInputs(['cloud_provider', 'environment']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'cloud_provider',
+        value: 'gcp',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').isSelected).toBe(true);
+      expect(getInputByName('instance_type').options).toEqual(['e2-small', 'e2-medium']);
+      expect(getInputByName('instance_type').value).toBe('e2-small');
+
+      await selectInputs(['cloud_provider']); // Unselecting input restores the default value
+
+      expect(getInputByName('instance_type').isSelected).toBe(true);
+      expect(getInputByName('instance_type').options).toEqual(['e2-small', 'e2-medium']);
+    });
+
+    it('updates child options and preserves value if still valid', async () => {
+      await selectInputs(['cloud_provider', 'environment']);
+
+      expect(getInputByName('instance_type').options).toEqual(['t3.micro', 't3.small']);
+      expect(getInputByName('instance_type').value).toBe('t3.micro');
+
+      findInputsTable().vm.$emit('update', {
+        name: 'environment',
+        value: 'prod',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').options).toEqual(['m5.large', 'm5.xlarge']);
+      expect(getInputByName('instance_type').value).toBe('m5.large');
+    });
+
+    it('deselects child and clears options when no rules match after parent update', async () => {
+      await selectInputs(['cloud_provider', 'environment']);
+
+      expect(getInputByName('instance_type').isSelected).toBe(true);
+      expect(getInputByName('instance_type').options).toEqual(['t3.micro', 't3.small']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'environment',
+        value: 'test',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').isSelected).toBe(false);
+      expect(getInputByName('instance_type').options).toEqual([]);
+      expect(getInputByName('instance_type').value).toBe('');
+    });
+  });
+
+  describe('dynamic rules with complex nested conditions', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsWithComplexRules);
+      await createComponent();
+    });
+
+    it('evaluates OR conditions correctly - first branch (AND condition)', async () => {
+      // Test: (aws && prod) || azure
+      // This tests the first branch: aws && prod
+      await selectInputs(['cloud_provider', 'environment']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'environment',
+        value: 'prod',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('special_feature').isSelected).toBe(true);
+      expect(getInputByName('special_feature').options).toEqual([
+        'premium-feature',
+        'enterprise-feature',
+      ]);
+    });
+
+    it('evaluates OR conditions correctly - second branch (single condition)', async () => {
+      // Test: (aws && prod) || azure
+      // This tests the second branch: just azure
+      await selectInputs(['cloud_provider', 'environment']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'cloud_provider',
+        value: 'azure',
+        isSelected: true,
+        hasRules: false,
+      });
+
+      findInputsTable().vm.$emit('update', {
+        name: 'environment',
+        value: 'dev', // Explicitly set to dev to ensure it's not prod
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('special_feature').isSelected).toBe(true);
+      expect(getInputByName('special_feature').options).toEqual([
+        'premium-feature',
+        'enterprise-feature',
+      ]);
+    });
+
+    it('does not match OR condition when neither branch is satisfied', async () => {
+      // Test: (aws && prod) || azure
+      // Neither condition is met: gcp && dev
+      await selectInputs(['cloud_provider', 'environment']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'cloud_provider',
+        value: 'gcp',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('special_feature').isSelected).toBe(false);
+      expect(getInputByName('special_feature').options).toEqual([]);
     });
   });
 });

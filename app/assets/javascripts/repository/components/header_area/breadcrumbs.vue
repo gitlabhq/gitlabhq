@@ -10,7 +10,6 @@ import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 import projectShortPathQuery from '~/repository/queries/project_short_path.query.graphql';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { logError } from '~/lib/logger';
 
@@ -19,7 +18,6 @@ const NEW_DIRECTORY_MODAL_ID = 'modal-new-directory';
 
 export default {
   components: {
-    ClipboardButton,
     GlBreadcrumb,
     GlDisclosureDropdown,
     UploadBlobModal,
@@ -292,11 +290,8 @@ export default {
     newDirectoryPath() {
       return joinPaths(this.newDirPath, this.currentPath);
     },
-    gfmCopyText() {
-      return `\`${this.currentPath}\``;
-    },
-    doesCurrentPathExist() {
-      return this.currentPath?.trim().length;
+    hasCurrentPath() {
+      return Boolean(this.currentPath?.trim().length);
     },
     crumbs() {
       return this.pathLinks.map(({ name, url, ...rest }) => ({ text: name, href: url, ...rest }));
@@ -355,21 +350,16 @@ export default {
       :path="newDirectoryPath"
     />
   </nav>
-  <div v-else class="repo-breadcrumb gl-flex gl-w-full gl-justify-between @sm/panel:gl-w-auto">
+  <div v-else class="repo-breadcrumb gl-flex-grow">
     <gl-breadcrumb
       :items="crumbs"
       :data-current-path="currentDirectoryPath"
       :aria-label="__('Files breadcrumb')"
+      :show-clipboard-button="hasCurrentPath"
+      :path-to-copy="currentPath"
+      :clipboard-tooltip-text="__('Copy file path')"
       size="md"
       class="breadcrumb-item"
-    />
-    <clipboard-button
-      v-if="doesCurrentPathExist"
-      :text="currentPath"
-      :gfm="gfmCopyText"
-      :title="__('Copy file path')"
-      category="tertiary"
-      css-class="gl-mx-2"
     />
   </div>
 </template>

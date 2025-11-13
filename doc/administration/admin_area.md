@@ -336,11 +336,11 @@ To delete a group:
 
 ## Administering topics
 
-{{< history >}}
+{{< details >}}
 
-- Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
+- Status: Beta
 
-{{< /history >}}
+{{< /details >}}
 
 Categorize and find similar projects with [topics](../user/project/project_topics.md).
 

@@ -40,9 +40,18 @@ The top section shows important information about your tenant, including:
 - Current GitLab version
 - Reference architecture
 - Maintenance window
+- Instance status
 - Primary and secondary AWS regions for data storage, with their availability zone IDs
 - Backup AWS region
 - AWS account IDs for the tenant and hosted runners
+
+### Instance status indicators
+
+The status indicates whether any incidents are currently impacting your GitLab Dedicated instance:
+
+- `Normal`: There are no active incidents. Your instance is working as expected.
+- `Service disruption. GitLab services may be unavailable for users.`: A critical (S1) incident is affecting your instance.
+- `Degraded performance. GitLab services may be slow or unresponsive for users.`: A high-severity (S2) incident is affecting your instance.
 
 ## Maintenance windows
 

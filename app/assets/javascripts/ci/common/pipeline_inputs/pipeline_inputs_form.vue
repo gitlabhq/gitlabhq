@@ -12,6 +12,7 @@ import InputsTableSkeletonLoader from './pipeline_inputs_table/inputs_table_skel
 import PipelineInputsTable from './pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from './graphql/queries/pipeline_creation_inputs.query.graphql';
 import PipelineInputsPreviewDrawer from './pipeline_inputs_preview_drawer.vue';
+import { findMatchingRule, processQueryInputs } from './utils';
 
 const ARRAY_TYPE = 'ARRAY';
 
@@ -55,14 +56,16 @@ export default {
   emits: ['update-inputs', 'update-inputs-metadata'],
   data() {
     return {
+      sourceInputs: [],
       inputs: [],
       selectedInputNames: [],
       searchTerm: '',
       showPreviewDrawer: false,
+      hasDynamicRules: false,
     };
   },
   apollo: {
-    inputs: {
+    sourceInputs: {
       query: getPipelineInputsQuery,
       variables() {
         return {
@@ -75,34 +78,27 @@ export default {
       },
       update({ project }) {
         const queryInputs = project?.ciPipelineCreationInputs || [];
-
-        // if there are any saved inputs, overwrite the values
-        const savedInputsMap = Object.fromEntries(
-          this.savedInputs.map(({ name, value }) => [name, value]),
+        const { processedInputs, hasDynamicRules } = processQueryInputs(
+          queryInputs,
+          this.savedInputs,
+          this.preselectAllInputs,
         );
 
-        const processedInputs = queryInputs.map((input) => {
-          const savedValue = savedInputsMap[input.name];
-          const hasSavedValue = savedValue !== undefined;
+        this.hasDynamicRules = hasDynamicRules;
 
-          return {
-            ...input,
-            savedValue,
-            value: hasSavedValue ? savedValue : input.default,
-            isSelected: hasSavedValue || this.preselectAllInputs,
-          };
-        });
+        return processedInputs;
+      },
+      result() {
+        this.inputs = structuredClone(this.sourceInputs);
 
-        this.selectedInputNames = processedInputs
-          .filter((input) => input.isSelected)
+        this.selectedInputNames = this.inputs
+          .filter((input) => input.isSelected && !input.hasRules)
           .map((input) => input.name);
 
         this.$emit('update-inputs-metadata', {
-          totalAvailable: processedInputs.length,
+          totalAvailable: this.inputs.length,
           totalModified: this.modifiedInputs.length,
         });
-
-        return processedInputs;
       },
       error(error) {
         this.createErrorAlert(error);
@@ -118,16 +114,16 @@ export default {
       return Boolean(this.selectedInputNames.length);
     },
     inputsToEmit() {
-      return this.emitModifiedOnly ? this.modifiedInputs : this.inputs;
+      return this.emitModifiedOnly ? this.modifiedInputs : this.processedInputs;
     },
     isLoading() {
-      return this.$apollo.queries.inputs.loading;
+      return this.$apollo.queries.sourceInputs.loading;
     },
     modifiedInputs() {
-      return this.inputs.filter((input) => !isEqual(input.value, input.default));
+      return this.processedInputs.filter((input) => !isEqual(input.value, input.default));
     },
     newlyModifiedInputs() {
-      return this.inputs.filter((input) => {
+      return this.processedInputs.filter((input) => {
         if (input.savedValue === undefined) return false;
 
         return !isEqual(input.value, input.savedValue) && !isEqual(input.value, input.default);
@@ -150,7 +146,9 @@ export default {
       });
     },
     inputsList() {
-      return this.inputs.map((input) => ({ text: input.name, value: input.name }));
+      return this.inputs
+        .filter((input) => !input.hasRules)
+        .map((input) => ({ text: input.name, value: input.name }));
     },
     selectedInputsList() {
       return this.selectedInputNames.map((name) => ({ text: name, value: name }));
@@ -188,6 +186,34 @@ export default {
       }
 
       return items;
+    },
+    processedInputs() {
+      if (!this.hasDynamicRules) return this.inputs;
+
+      return this.inputs.map((input) => {
+        if (!input.hasRules) return input;
+
+        const matchingRule = findMatchingRule(input.rules, this.inputs);
+
+        if (matchingRule) {
+          const options = matchingRule.options || [];
+          const isValueValid = Array.isArray(options) && options.includes(input.value);
+
+          return {
+            ...input,
+            options,
+            value: isValueValid ? input.value : matchingRule.default || '',
+            isSelected: true,
+          };
+        }
+
+        return {
+          ...input,
+          options: [],
+          value: '',
+          isSelected: false,
+        };
+      });
     },
   },
   created() {
@@ -318,7 +344,7 @@ export default {
 
       <pipeline-inputs-preview-drawer
         :open="showPreviewDrawer"
-        :inputs="inputs"
+        :inputs="processedInputs"
         @close="showPreviewDrawer = false"
       />
     </template>
@@ -326,7 +352,7 @@ export default {
     <inputs-table-skeleton-loader v-if="isLoading" />
     <pipeline-inputs-table
       v-else-if="hasSelectedInputs"
-      :inputs="inputs"
+      :inputs="processedInputs"
       @update="handleInputsUpdated"
     />
     <template v-if="!hasSelectedInputs && !isLoading" #empty>

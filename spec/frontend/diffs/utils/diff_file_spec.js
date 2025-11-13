@@ -361,8 +361,16 @@ describe('diff_file utilities', () => {
       expect(lineExists([{ old_line: 15, new_line: 16 }], 15, 16)).toBe(true);
     });
 
+    it('returns true for existing new line', () => {
+      expect(lineExists([{ old_line: null, new_line: 16 }], 15, 16)).toBe(true);
+    });
+
+    it('returns true for existing old line', () => {
+      expect(lineExists([{ old_line: 15, new_line: null }], 15, 16)).toBe(true);
+    });
+
     it('returns false for non-existing line', () => {
-      expect(lineExists([{ old_line: 15, new_line: 16 }], 16, 16)).toBe(false);
+      expect(lineExists([{ old_line: 15, new_line: 16 }], 20, 20)).toBe(false);
     });
   });
 });

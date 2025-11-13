@@ -61386,13 +61386,16 @@ msgstr ""
 msgid "SecurityReports|%{supStart}*%{supEnd}Base score (associated with severity level) + EPSS modifier + KEV modifier"
 msgstr ""
 
+msgid "SecurityReports|%{supStart}§%{supEnd}Diversity factor = 0.4"
+msgstr ""
+
 msgid "SecurityReports|%{supStart}†%{supEnd}Sum of vulnerability ages in months * 0.005"
 msgstr ""
 
 msgid "SecurityReports|%{supStart}‡%{supEnd}Diminishing factor = 1.0 / √(vulnerability count)"
 msgstr ""
 
-msgid "SecurityReports|(Sum of open vulnerability scores%{supStart}*%{supEnd} + Age penalty%{supStart}†%{supEnd}) * Diminishing factor%{supStart}‡%{supEnd}"
+msgid "SecurityReports|(Sum of open vulnerability scores%{supStart}*%{supEnd} + Age penalty%{supStart}†%{supEnd}) * Diminishing factor%{supStart}‡%{supEnd} * Diversity factor%{supStart}§%{supEnd}"
 msgstr ""
 
 msgid "SecurityReports|1 vulnerability attached to %{nrIssues} issues"
