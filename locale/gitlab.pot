@@ -2511,9 +2511,6 @@ msgstr ""
 msgid "AICatalog|Agents"
 msgstr ""
 
-msgid "AICatalog|Allows %{itemType} to be enabled in projects."
-msgstr ""
-
 msgid "AICatalog|Anyone can see your prompts and settings. Don't include sensitive data or reference internal systems."
 msgstr ""
 
@@ -2670,9 +2667,6 @@ msgstr ""
 msgid "AICatalog|Enable flow from group"
 msgstr ""
 
-msgid "AICatalog|Enable flow in project"
-msgstr ""
-
 msgid "AICatalog|Enable in group"
 msgstr ""
 
@@ -2748,7 +2742,7 @@ msgstr ""
 msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
 msgstr ""
 
-msgid "AICatalog|Is visible only to users with at least the Developer role in this project."
+msgid "AICatalog|Is visible only to users with at least the Developer role for this project, and to users with the Owner role for the top-level group."
 msgstr ""
 
 msgid "AICatalog|Is visible to all users."
@@ -2775,13 +2769,7 @@ msgstr ""
 msgid "AICatalog|New flow"
 msgstr ""
 
-msgid "AICatalog|Only flows enabled in your group will be shown here."
-msgstr ""
-
-msgid "AICatalog|Only members of this project can view this agent. This agent can't be shared with other projects."
-msgstr ""
-
-msgid "AICatalog|Only members of this project can view this flow. This flow can't be shared with other projects."
+msgid "AICatalog|Only flows enabled in your top-level group are shown."
 msgstr ""
 
 msgid "AICatalog|Open source projects."
@@ -2793,7 +2781,10 @@ msgstr ""
 msgid "AICatalog|Project is required."
 msgstr ""
 
-msgid "AICatalog|Project members will be able to use this %{itemType}."
+msgid "AICatalog|Project members can use this agent. You must have at least the Maintainer role to add an agent to a project."
+msgstr ""
+
+msgid "AICatalog|Project members can use this flow. You must have at least the Maintainer role to add a flow to a project."
 msgstr ""
 
 msgid "AICatalog|Project-specific automation."
@@ -2868,10 +2859,16 @@ msgstr ""
 msgid "AICatalog|This agent can be made private if it is not used."
 msgstr ""
 
+msgid "AICatalog|This agent can be viewed only by members of this project, or by users with the Owner role for the top-level group. This agent can't be shared with other projects."
+msgstr ""
+
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
 msgstr ""
 
 msgid "AICatalog|This flow can be made private if it is not used."
+msgstr ""
+
+msgid "AICatalog|This flow can be viewed only by members of this project, or by users with the Owner role for the top-level group. This flow can't be shared with other projects."
 msgstr ""
 
 msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
@@ -2911,6 +2908,12 @@ msgid "AICatalog|Working with sensitive data."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
+msgstr ""
+
+msgid "AICatalog|You must have the Owner role to add a flow to a group. Only top-level groups are shown."
+msgstr ""
+
+msgid "AICatalog|You must have the Owner role to add an agent to a group. Only top-level groups are shown."
 msgstr ""
 
 msgid "AICatalog|agent"
@@ -34005,6 +34008,9 @@ msgid "IdentityVerification|A new code has been sent."
 msgstr ""
 
 msgid "IdentityVerification|Before you can create additional groups, we need to verify your account."
+msgstr ""
+
+msgid "IdentityVerification|Before you can create service accounts, we need to verify your account."
 msgstr ""
 
 msgid "IdentityVerification|Before you can run pipelines, we need to verify your account."
@@ -79337,6 +79343,11 @@ msgstr ""
 
 msgid "fork"
 msgstr ""
+
+msgid "framework"
+msgid_plural "frameworks"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "from"
 msgstr ""

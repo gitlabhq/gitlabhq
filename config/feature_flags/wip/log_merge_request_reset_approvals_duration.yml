@@ -3,7 +3,7 @@ name: log_merge_request_reset_approvals_duration
 description: Log the duration of methods in the MergeRequests::ResetApprovalsService
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548046
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210830
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548046
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579591
 milestone: '18.6'
 group: group::code review
 type: wip

@@ -51,7 +51,7 @@ module TwCodeowners
     CodeOwnerRule.new('Gitaly', '@eread'),
     CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
     # CodeOwnerRule.new('Remote Development', ''),
-    CodeOwnerRule.new('Import', '@ashrafkhamis'),
+    CodeOwnerRule.new('Import', '@eread'),
     CodeOwnerRule.new('Knowledge', '@brendan777'),
     # CodeOwnerRule.new('MLOps', ''),
     # CodeOwnerRule.new('Mobile Devops', ''),

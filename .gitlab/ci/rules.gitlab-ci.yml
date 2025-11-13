@@ -1886,7 +1886,11 @@
       changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
-    - *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        E2E_RUNTIME_COEFFICIENT_GDK: "1.2"
+        # calculate_parallel_jobs_count method in qa/qa/tools/ci/pipeline_creator.rb
+        # uses this coefficient to determine the number of parallel job instances
     - *if-default-branch-schedule-nightly
     # Rules to support e2e test execution
     - <<: *if-merge-request
