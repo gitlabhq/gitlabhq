@@ -73826,16 +73826,10 @@ msgstr ""
 msgid "Vulnerability|AI Confidence Score"
 msgstr ""
 
-msgid "Vulnerability|AI Generating Fix"
-msgstr ""
-
 msgid "Vulnerability|AI detected false positive"
 msgstr ""
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
-msgstr ""
-
-msgid "Vulnerability|AI is currently working to resolve this vulnerability"
 msgstr ""
 
 msgid "Vulnerability|Active secret"
@@ -73917,6 +73911,18 @@ msgid "Vulnerability|Detection method"
 msgstr ""
 
 msgid "Vulnerability|Dismissed as false positive detected by Duo AI"
+msgstr ""
+
+msgid "Vulnerability|Duo Generating Fix"
+msgstr ""
+
+msgid "Vulnerability|Duo Verifying"
+msgstr ""
+
+msgid "Vulnerability|Duo is currently working to resolve this vulnerability"
+msgstr ""
+
+msgid "Vulnerability|Duo is determining if this is a false positive"
 msgstr ""
 
 msgid "Vulnerability|Enter the associated CVE or CWE entries for this vulnerability."

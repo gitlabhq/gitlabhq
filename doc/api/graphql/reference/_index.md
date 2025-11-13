@@ -2837,6 +2837,31 @@ Input type: `AiCatalogItemConsumerUpdateInput`
 | <a id="mutationaicatalogitemconsumerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogitemconsumerupdateitemconsumer"></a>`itemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Item consumer that was updated. |
 
+### `Mutation.aiCatalogItemReport`
+
+{{< details >}}
+**Introduced** in GitLab 18.7.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogItemReportInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemreportbody"></a>`body` | [`String`](#string) | Additional details about the report. Limited to 1000 characters. |
+| <a id="mutationaicatalogitemreportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemreportid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to report. |
+| <a id="mutationaicatalogitemreportreason"></a>`reason` | [`AiCatalogItemReportReason!`](#aicatalogitemreportreason) | Reason for reporting the catalog item. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogitemreportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogitemreporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.aiCatalogThirdPartyFlowCreate`
 
 {{< details >}}
@@ -48411,6 +48436,18 @@ Possible flow configuration types for AI Catalog agents.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aicatalogflowconfigtypechat"></a>`CHAT` | Chat flow configuration. |
+
+### `AiCatalogItemReportReason`
+
+Possible reasons for reporting an AI catalog item.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogitemreportreasonexcessive_resource_usage"></a>`EXCESSIVE_RESOURCE_USAGE` | Wasting compute or causing performance issues. |
+| <a id="aicatalogitemreportreasonimmediate_security_threat"></a>`IMMEDIATE_SECURITY_THREAT` | Contains dangerous code, exploits, or harmful actions. |
+| <a id="aicatalogitemreportreasonother"></a>`OTHER` | Please describe below. |
+| <a id="aicatalogitemreportreasonpotential_security_threat"></a>`POTENTIAL_SECURITY_THREAT` | Hypothetical or low risk security flaws that could be exploited. |
+| <a id="aicatalogitemreportreasonspam_or_low_quality"></a>`SPAM_OR_LOW_QUALITY` | Frequently failing or nuisance activity. |
 
 ### `AiCatalogItemType`
 

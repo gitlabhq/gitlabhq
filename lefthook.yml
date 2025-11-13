@@ -258,3 +258,9 @@ auto-fix:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '{,ee/}app/graphql/*.rb'
       run: bundle exec rake gitlab:graphql:compile_docs
+    markdownlint:
+      tags: documentation style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      exclude: 'doc/api/graphql/reference/_index.md'
+      glob: 'doc/*.md'
+      run: markdownlint-cli2 --fix {files}

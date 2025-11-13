@@ -302,4 +302,4 @@ curl --user <username>:<personal_access_token> \
   --url "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab" >> package.zip
 ```
 
-This writes the downloaded file to `package.tar.gz` in the current directory.
+This writes the downloaded file to `package.zip` in the current directory.
