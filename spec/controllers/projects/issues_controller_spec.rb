@@ -200,10 +200,32 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'when issue is not a task and work items feature flag is enabled' do
-      it 'does not redirect to work items route' do
-        get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+      before do
+        stub_feature_flags(work_item_view_for_issues: true)
+      end
 
-        expect(response).to render_template(:show)
+      context 'when work_item_planning_view is enabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        it 'redirects to work items route' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+          expect(response).to redirect_to project_work_item_path(project, issue.iid)
+        end
+      end
+
+      context 'when work_item_planning_view is disabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        it 'does not redirect to work items route' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+          expect(response).to render_template(:show)
+        end
       end
     end
 

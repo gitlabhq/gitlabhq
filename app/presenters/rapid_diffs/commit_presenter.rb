@@ -42,5 +42,17 @@ module RapidDiffs
         can_create_note: can?(@current_user, :create_note, resource.project)
       }
     end
+
+    def noteable_type
+      resource.base_class_name
+    end
+
+    def preview_markdown_endpoint
+      project_preview_markdown_path(resource.project)
+    end
+
+    def markdown_docs_path
+      help_page_path('user/markdown.md')
+    end
   end
 end

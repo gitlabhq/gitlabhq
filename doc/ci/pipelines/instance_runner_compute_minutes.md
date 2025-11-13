@@ -63,7 +63,7 @@ Project and group runners are not affected by the compute quota and continue pro
 
 ## View usage
 
-You can view the compute usage for a group or personal namespace to understand
+You can view the compute usage (including [additional minutes](../../subscriptions/gitlab_com/compute_minutes.md)) for a group or personal namespace to understand
 compute usage trends and how many compute minutes remain.
 
 In some cases, the quota limit is replaced by one of the following labels:

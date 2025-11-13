@@ -12,7 +12,11 @@ function mountVueApp(el, id, appData) {
     provide() {
       return {
         userPermissions: appData.userPermissions,
-        endpoints: {},
+        endpoints: {
+          previewMarkdown: appData.previewMarkdownEndpoint,
+          markdownDocs: appData.markdownDocsEndpoint,
+        },
+        noteableType: appData.noteableType,
       };
     },
     computed: {

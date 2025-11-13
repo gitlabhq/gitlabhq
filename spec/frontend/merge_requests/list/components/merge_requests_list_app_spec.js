@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -765,6 +765,28 @@ describe('Merge requests list app', () => {
       await nextTick();
 
       expect(findIssuableList().props('error')).toBeNull();
+    });
+  });
+
+  describe('when search times out', () => {
+    it('renders search timeout empty state', async () => {
+      const error503 = {
+        statusCode: HTTP_STATUS_SERVICE_UNAVAILABLE,
+        result: {
+          errors: [{ message: 'Service temporarily unavailable' }],
+        },
+      };
+
+      createComponent({
+        mountFn: mountExtended,
+        queryResponse: jest.fn().mockRejectedValue(error503),
+      });
+
+      await waitForPromises();
+
+      expect(findIssuableList().props('searchTimeout')).toBe(true);
+      expect(wrapper.html()).toContain('Too many results to display');
+      expect(wrapper.html()).toContain('Edit your search or add a filter.');
     });
   });
 });

@@ -235,6 +235,11 @@ export default {
       required: false,
       default: false,
     },
+    searchTimeout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -368,7 +373,7 @@ export default {
       </template>
     </filtered-search-bar>
     <gl-alert
-      v-if="error"
+      v-if="error && !searchTimeout"
       variant="danger"
       :class="{ 'gl-mt-5': !hasItems && !issuablesLoading }"
       :dismissible="hasItems"
@@ -463,6 +468,7 @@ export default {
         </issuable-item>
       </component>
       <empty-result v-else-if="!alwaysAllowCustomEmptyState && initialFilterValue.length > 0" />
+      <slot v-else-if="searchTimeout" name="search-timeout"></slot>
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 

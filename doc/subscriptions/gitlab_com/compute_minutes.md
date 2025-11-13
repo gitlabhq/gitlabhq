@@ -74,6 +74,7 @@ To purchase compute minutes for a group:
 
 After your payment is processed, the additional compute minutes are added to your group
 namespace.
+The additional compute minutes are displayed as **Additional units** on the [**Usage quotas** page](../../ci/pipelines/instance_runner_compute_minutes.md#view-usage-for-a-group).
 
 ## Purchase compute minutes for a personal namespace
 
@@ -93,6 +94,7 @@ To purchase additional compute minutes for your personal namespace:
 
 After your payment is processed, the additional compute minutes are added to your personal
 namespace.
+The additional compute minutes are displayed as **Additional units** on the [**Usage quotas** page](../../ci/pipelines/instance_runner_compute_minutes.md#view-usage-for-a-personal-namespace).
 
 ## Monthly rollover of purchased compute minutes
 

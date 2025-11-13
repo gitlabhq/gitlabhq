@@ -15,6 +15,8 @@ rspec:
         REDIS_VERSION: ["6.0", "6.2", "7.0"]
 
 .with_redis:
+  extends:
+    - .repo-from-artifacts
   services:
     - redis:${REDIS_VERSION}-alpine
   variables:

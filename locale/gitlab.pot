@@ -2853,7 +2853,7 @@ msgstr ""
 msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"
 msgstr ""
 
-msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: version, environment, components, routers, flow, prompts."
+msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: version, environment, components, prompts, routers, flow."
 msgstr ""
 
 msgid "AICatalog|This agent can be made private if it is not used."
@@ -25894,6 +25894,9 @@ msgid "Edit your search and try again."
 msgstr ""
 
 msgid "Edit your search filter and try again."
+msgstr ""
+
+msgid "Edit your search or add a filter."
 msgstr ""
 
 msgid "Edit, lint, and visualize your pipeline."
@@ -69515,6 +69518,9 @@ msgid "Too many projects enabled. Manage them through the console or the API."
 msgstr ""
 
 msgid "Too many references. Quick actions are limited to at most %{max_count} user references"
+msgstr ""
+
+msgid "Too many results to display"
 msgstr ""
 
 msgid "Too many results to display. Edit your search or add a filter."

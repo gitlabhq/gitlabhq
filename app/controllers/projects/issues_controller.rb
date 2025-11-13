@@ -133,12 +133,22 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    return super unless show_work_item? && request.format.html?
+    return super unless issue.show_as_work_item? && request.format.html?
 
-    @right_sidebar = false
-    @work_item = issue.becomes(::WorkItem) # rubocop:disable Cop/AvoidBecomes -- We need the instance to be a work item
+    if project&.work_items_consolidated_list_enabled?(current_user)
+      if params[:vueroute].present? && request.path.include?('/designs/')
+        # Only redirect to designs path if both vueroute param exists and path contains /designs/
+        # Needed since designs are aliased to show in this controller
+        redirect_to designs_project_work_item_path(project, issue.iid, vueroute: params[:vueroute], params: request.query_parameters)
+      else
+        redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
+      end
+    else
+      @right_sidebar = false
+      @work_item = issue.becomes(::WorkItem) # rubocop:disable Cop/AvoidBecomes -- We need the instance to be a work item
 
-    render 'projects/work_items/show'
+      render 'projects/work_items/show'
+    end
   end
 
   alias_method :designs, :show
@@ -409,13 +419,6 @@ class Projects::IssuesController < Projects::ApplicationController
     # TODO: Investigate threshold after epic-work item sync
     # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/438295
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546668', new_threshold: 150)
-  end
-
-  def show_work_item?
-    # Service Desk issues and incidents should not use the work item view
-    !issue.from_service_desk? &&
-      !issue.work_item_type&.incident? &&
-      Feature.enabled?(:work_item_view_for_issues, project&.group)
   end
 
   def work_item_redirect_except_actions

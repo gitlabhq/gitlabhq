@@ -23216,6 +23216,8 @@ Permission that belongs to a granular scope.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="accesstokenpermissionaction"></a>`action` | [`String!`](#string) | Action of the permission. |
+| <a id="accesstokenpermissionboundaries"></a>`boundaries` | [`[PermissionBoundary!]`](#permissionboundary) | List of resource types that the permission can be applied to. |
+| <a id="accesstokenpermissioncategory"></a>`category` | [`String!`](#string) | Permission category. |
 | <a id="accesstokenpermissiondescription"></a>`description` | [`String!`](#string) | Description of the permission. |
 | <a id="accesstokenpermissionname"></a>`name` | [`String!`](#string) | Name of the permission. |
 | <a id="accesstokenpermissionresource"></a>`resource` | [`String!`](#string) | Resource of the permission. |
@@ -51260,6 +51262,17 @@ Package type of a package protection rule resource.
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
 | <a id="packagesprotectionrulepackagetypenuget"></a>`NUGET` | Packages of the NuGet format. |
 | <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` | Packages of the PyPI format. |
+
+### `PermissionBoundary`
+
+Type of resource that the permission can be applied to.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="permissionboundarygroup"></a>`GROUP` | Group. |
+| <a id="permissionboundaryinstance"></a>`INSTANCE` | Instance. |
+| <a id="permissionboundaryproject"></a>`PROJECT` | Project. |
+| <a id="permissionboundaryuser"></a>`USER` | User. |
 
 ### `PipelineAnalyticsJobStatus`
 

@@ -9,7 +9,7 @@ RSpec.describe Branches::DivergingCommitCountsService, feature_category: :source
   describe '#call' do
     let(:diverged_branch) { repository.find_branch('fix') }
     let(:root_ref_sha) { repository.raw_repository.commit(repository.root_ref).id }
-    let(:diverged_branch_sha) { diverged_branch.dereferenced_target.sha }
+    let(:diverged_branch_sha) { diverged_branch.target }
 
     let(:service) { described_class.new(repository) }
 

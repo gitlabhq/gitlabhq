@@ -10,8 +10,8 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { createNoteErrorMessages } from '~/notes/utils';
-import NoteForm from '~/notes/components/note_form.vue';
 import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
+import NoteForm from './note_form.vue';
 import DiscussionNotes from './discussion_notes.vue';
 
 export default {
@@ -34,6 +34,10 @@ export default {
   props: {
     discussion: {
       type: Object,
+      required: true,
+    },
+    requestLastNoteEditing: {
+      type: Function,
       required: true,
     },
   },
@@ -175,12 +179,13 @@ export default {
                   <note-form
                     v-else-if="isReplying"
                     ref="noteForm"
-                    :discussion="discussion"
+                    :internal="discussion.internal"
                     :save-button-title="saveButtonTitle"
                     :save-note="saveReply"
+                    :request-last-note-editing="() => requestLastNoteEditing(discussion)"
                     autofocus
                     :autosave-key="autosaveKey"
-                    @cancelForm="cancelReplyForm"
+                    @cancel="cancelReplyForm"
                   />
                   <div
                     v-else-if="userPermissions.can_create_note"

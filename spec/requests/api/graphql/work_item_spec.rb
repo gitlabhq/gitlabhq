@@ -12,6 +12,10 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
   let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
   let_it_be(:child_link2) { create(:parent_link, work_item_parent: work_item, work_item: child_item2) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   context 'when project is archived' do
     before do
       project.update!(archived: true)
@@ -73,7 +77,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         'description' => work_item.description,
         'id' => work_item.to_gid.to_s,
         'iid' => work_item.iid.to_s,
-        'webPath' => Gitlab::UrlBuilder.build(work_item, only_path: true).to_s,
+        'webPath' => Gitlab::Routing.url_helpers.project_work_item_path(work_item.project, work_item.iid).to_s,
         'lockVersion' => work_item.lock_version,
         'state' => "OPEN",
         'title' => work_item.title,
@@ -101,6 +105,29 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         ),
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
+    end
+
+    context 'when work_item_planning_view is disabled' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'uses the issues path for webPath and webUrl' do
+        expect(work_item_data).to include(
+          'webPath' => Gitlab::UrlBuilder.build(work_item, only_path: true).to_s,
+          'webUrl' => Gitlab::UrlBuilder.build(work_item, only_path: false).to_s
+        )
+      end
+    end
+
+    context 'when work_item_planning_view is enabled' do
+      it 'uses the work items path for webPath and webUrl' do
+        expect(work_item_data).to include(
+          'webPath' => Gitlab::Routing.url_helpers.project_work_item_path(work_item.project, work_item.iid).to_s,
+          'webUrl' => Gitlab::Routing.url_helpers.project_work_item_url(work_item.project, work_item.iid).to_s
+        )
+      end
     end
 
     context 'when querying work item type information' do

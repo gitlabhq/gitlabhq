@@ -9,10 +9,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
 
   subject(:strategy) { Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies.for(strategy_name).new(fake_duplicate_job) }
 
-  before do
-    stub_env('REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE', 'true')
-  end
-
   describe '#schedule' do
     before do
       allow(Gitlab::SidekiqLogging::DeduplicationLogger.instance).to receive(:deduplicated_log)
@@ -135,21 +131,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         expect(fake_duplicate_job).to receive(:clear_signaling_key).ordered
 
         expect { |b| strategy.schedule({}, &b) }.to yield_control
-      end
-
-      context 'when REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE is false' do
-        before do
-          stub_env('REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE', 'false')
-        end
-
-        it 'checks for duplicate' do
-          expect(fake_duplicate_job).to receive(:scheduled?).ordered.and_return(false).thrice
-          expect(fake_duplicate_job).to receive(:check!).ordered.and_return('a jid')
-          expect(fake_duplicate_job).to receive(:duplicate?).ordered.and_return(false)
-          expect(fake_duplicate_job).to receive(:clear_signaling_key).ordered
-
-          expect { |b| strategy.schedule({}, &b) }.to yield_control
-        end
       end
     end
 

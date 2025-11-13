@@ -30,9 +30,18 @@ export default {
       required: false,
       default: true,
     },
+    searchTimeout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     title() {
+      if (this.searchTimeout) {
+        return __('Too many results to display');
+      }
+
       if (this.hasSearch) {
         return __('No results found');
       }
@@ -48,6 +57,10 @@ export default {
       return __('There are no closed merge requests');
     },
     description() {
+      if (this.searchTimeout) {
+        return __('Edit your search or add a filter.');
+      }
+
       if (this.hasSearch) {
         return __('To widen your search, change or remove filters above.');
       }
@@ -77,7 +90,7 @@ export default {
   >
     <template #actions>
       <gl-button
-        v-if="newMergeRequestPath"
+        v-if="newMergeRequestPath && !searchTimeout"
         :href="newMergeRequestPath"
         variant="confirm"
         data-event-tracking="click_new_merge_request_empty_list"

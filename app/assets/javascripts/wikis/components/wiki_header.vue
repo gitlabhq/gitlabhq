@@ -34,8 +34,8 @@ export default {
   inject: {
     pageHeading: { default: null },
     showEditButton: { default: null },
+    showRestoreVersionButton: { default: null },
     isPageTemplate: { default: null },
-    isPageHistorical: { default: null },
     editButtonUrl: { default: null },
     lastVersion: { default: null },
     pageVersion: { default: null },
@@ -202,7 +202,7 @@ export default {
       </template>
       <template v-if="!isEditingPath" #actions>
         <gl-button
-          v-if="isPageHistorical"
+          v-if="showRestoreVersionButton"
           v-gl-modal="$options.modal.restoreVersionModalId"
           data-testid="wiki-restore-version-button"
         >

@@ -22,11 +22,8 @@ workflow:
 variables:
   BUNDLE_PATH: "vendor"
   BUNDLE_FROZEN: "true"
-  GIT_DEPTH: "20"
-  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
-  GIT_STRATEGY: "clone"
-  GIT_SUBMODULE_STRATEGY: "none"
-  GET_SOURCES_ATTEMPTS: "3"
+  # Download repo from artifacts. See .repo-from-artifacts
+  GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
   # Default Ruby version for jobs that don't use .ruby_matrix
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
 
@@ -55,12 +52,19 @@ default:
   after_script:
     - source $CI_PROJECT_DIR/scripts/utils.sh
 
+.repo-from-artifacts:
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+
 .ruby_matrix:
+  extends: .repo-from-artifacts
   parallel:
     matrix:
       - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
 
 .ruby_and_postgres_matrix:
+  extends: .repo-from-artifacts
   services:
     - name: postgres:${POSTGRES_VERSION}
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -70,6 +74,7 @@ default:
         POSTGRES_VERSION: ["14", "15", "16"]
 
 validate-gem:
+  extends: .repo-from-artifacts
   rules:
     - if: "'$[[inputs.skip_gem_validation]]' == 'true'"
       when: never
@@ -79,20 +84,18 @@ validate-gem:
     - $CI_PROJECT_DIR/scripts/validate-monorepo-gem "$[[inputs.gem_name]]"
 
 validate-gemfile-lock:
+  extends: .ruby_matrix
   rules:
     # Validate all Gemfile.lock stored in `gems/`.
     - if: "'$[[inputs.gem_path_prefix]]' == 'gems/'"
       exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/Gemfile.lock"]
-  extends:
-    - .ruby_matrix
   script:
     - bundle lock --add-checksums
 
 rubocop:
+  extends: .ruby_matrix
   rules:
     - exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.rubocop.yml"]
-  extends:
-    - .ruby_matrix
   script:
     - bundle exec rubocop
 

@@ -215,7 +215,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
       page.within '.description.md' do
         click_link 'test link'
 
-        expect(page).to have_current_path(project_issue_path(project, issue))
+        expect(page).to have_current_path(project_work_item_path(project, issue))
       end
     end
 
@@ -229,7 +229,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :markdown do
       page.within '.description.md' do
         click_link 'test link'
 
-        expect(page).to have_current_path(project_issue_path(project, issue))
+        expect(page).to have_current_path(project_work_item_path(project, issue))
       end
     end
   end

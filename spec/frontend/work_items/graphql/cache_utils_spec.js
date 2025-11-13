@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
+import { WIDGET_TYPE_HIERARCHY, STATE_CLOSED } from '~/work_items/constants';
 import {
   addHierarchyChild,
   removeHierarchyChild,
@@ -131,33 +131,23 @@ describe('work items graphql cache utils', () => {
       });
 
       const { fields } = mockCache.modify.mock.calls[0][0];
-      const result = fields.widgets(
-        [
-          {
-            __typename: 'WorkItemWidgetHierarchy',
-            children: { nodes: [{ __typename: 'WorkItem', id: 'gid://gitlab/WorkItem/99' }] },
-            count: 1,
-            hasChildren: true,
-          },
-        ],
+      const result = fields.widgets([
         {
-          readField: (field, ref) => {
-            // eslint-disable-next-line no-underscore-dangle
-            if (field === '__typename') return ref.__typename;
-            if (field === 'children') return ref.children;
-            if (field === 'count') return ref.count;
-            if (field === 'hasChildren') return ref.hasChildren;
-            return undefined;
+          __typename: 'WorkItemWidgetHierarchy',
+          type: 'HIERARCHY',
+          children: {
+            nodes: [{ __typename: 'WorkItem', id: 'gid://gitlab/WorkItem/99', state: 'OPEN' }],
           },
-          toReference: (obj) => obj,
+          count: 1,
+          hasChildren: true,
         },
-      );
+      ]);
 
-      expect(result[0]).toEqual(
+      const updated = result.find((w) => w.type === 'HIERARCHY');
+
+      expect(updated).toEqual(
         expect.objectContaining({
           __typename: 'WorkItemWidgetHierarchy',
-          hasChildren: true,
-          count: 3,
           children: expect.objectContaining({
             nodes: expect.arrayContaining([
               expect.objectContaining({ id: childrenWorkItems[0].id }),
@@ -165,42 +155,35 @@ describe('work items graphql cache utils', () => {
               expect.objectContaining({ id: childrenWorkItems[1].id }),
             ]),
           }),
+          hasChildren: true,
+          count: 3,
         }),
       );
+
+      // Optional: ensure open children come before closed ones
+      const openIndex = updated.children.nodes.findIndex((n) => n.state !== STATE_CLOSED);
+      const closedIndex = updated.children.nodes.findIndex((n) => n.state === STATE_CLOSED);
+      if (closedIndex !== -1) expect(openIndex).toBeLessThan(closedIndex);
     });
 
     it('does not update the work item when there is no cache data', () => {
       const mockCache = {
-        identify: jest.fn().mockReturnValue(`WorkItem:${id}`),
+        identify: jest.fn().mockReturnValue(undefined), // simulate missing cache entity
         modify: jest.fn(),
       };
 
-      const workItem = {
-        id: 'gid://gitlab/WorkItem/10',
-        widgets: [{ __typename: 'WorkItemWidgetHierarchy' }],
-      };
+      // Should not throw
+      expect(() =>
+        addHierarchyChildren({
+          cache: mockCache,
+          id,
+          workItem: workItemHierarchyResponse.data.workspace.workItem,
+          childrenIds: [childrenWorkItems[1].id, childrenWorkItems[0].id],
+        }),
+      ).not.toThrow();
 
-      addHierarchyChildren({
-        cache: mockCache,
-        id,
-        workItem,
-        childrenIds: [],
-      });
-
-      const { fields } = mockCache.modify.mock.calls[0][0];
-      const result = fields.widgets([{ __typename: 'WorkItemWidgetHierarchy' }], {
-        readField: (field) => {
-          if (field === 'count') return 0;
-          if (field === 'children') return { nodes: [] };
-          if (field === 'hasChildren') return false;
-          if (field === '__typename') return 'WorkItemWidgetHierarchy';
-          return undefined;
-        },
-        toReference: () => null,
-      });
-
-      expect(result[0].children?.nodes ?? []).toHaveLength(0);
-      expect(result[0].count).toBe(0);
+      // Should not modify cache at all
+      expect(mockCache.modify).not.toHaveBeenCalled();
     });
   });
 

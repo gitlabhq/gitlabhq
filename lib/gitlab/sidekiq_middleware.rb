@@ -15,11 +15,13 @@ module Gitlab
           # so we can store WAL location before we deduplicate the job.
           ::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware,
           ::Gitlab::SidekiqMiddleware::PauseControl::Client,
-          ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client,
           # NOTE: Everything from DuplicateJobs::Client to DuplicateJobs::Server must yield
           # no returning or job interception as it will leave the duplicate job redis key
           # dangling and errorneously deduplicating future jobs until key expires.
           ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client,
+          # ConcurrencyLimit::Client runs after DuplicateJobs::Client so that subsequent duplicate jobs
+          # are properly deduplicated even while the original job waits in the concurrency limit queue.
+          ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client,
           ::Gitlab::SidekiqStatus::ClientMiddleware,
           ::Gitlab::SidekiqMiddleware::AdminMode::Client,
           # Size limiter should be placed at the bottom, but before the metrics middleware
@@ -37,12 +39,6 @@ module Gitlab
       def self.configurator
         ->(chain) do
           middlewares.each { |middleware| chain.add(middleware) }
-
-          if Gitlab::Utils.to_boolean(ENV.fetch('REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE', 'false'))
-            chain.insert_after(
-              ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client,
-              ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client)
-          end
         end
       end
     end
@@ -78,6 +74,9 @@ module Gitlab
           ::Gitlab::SidekiqStatus::ServerMiddleware,
           ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
           ::ClickHouse::MigrationSupport::SidekiqMiddleware,
+          # ConcurrencyLimit::Server runs before DuplicateJobs::Server so that subsequent duplicate jobs
+          # are properly deduplicated even while the original job waits in the limit queue.
+          ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server,
           # DuplicateJobs::Server should be placed at the bottom, but before the SidekiqServerMiddleware,
           # so we can compare the latest WAL location against replica
           # NOTE: Everything from DuplicateJobs::Client to DuplicateJobs::Server must yield
@@ -87,7 +86,6 @@ module Gitlab
           ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
           ::Gitlab::SidekiqMiddleware::PauseControl::Server,
           ::Gitlab::SidekiqMiddleware::Throttling::Server,
-          ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server,
           skip_jobs ? ::Gitlab::SidekiqMiddleware::SkipJobs : nil,
           ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
           ::Gitlab::SidekiqMiddleware::ResourceUsageLimit::Server,
@@ -102,12 +100,6 @@ module Gitlab
         ->(chain) do
           middlewares(metrics: metrics, arguments_logger: arguments_logger, skip_jobs: skip_jobs).each do |middleware|
             chain.add(middleware)
-          end
-
-          if Gitlab::Utils.to_boolean(ENV.fetch('REORDER_DUPLICATE_JOBS_AND_CONCURRENCY_LIMIT_MIDDLEWARE', 'false'))
-            chain.insert_before(
-              ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
-              ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server)
           end
 
           ::Gitlab::SidekiqMiddleware::ServerMetrics.initialize_process_metrics if metrics

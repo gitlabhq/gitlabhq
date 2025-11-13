@@ -101,4 +101,22 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
       it { is_expected.to include({ can_create_note: true }) }
     end
   end
+
+  describe '#noteable_type' do
+    subject(:method) { presenter.noteable_type }
+
+    it { is_expected.to eq('Commit') }
+  end
+
+  describe '#preview_markdown_endpoint' do
+    subject(:method) { presenter.preview_markdown_endpoint }
+
+    it { is_expected.to eq("/#{namespace.to_param}/#{project.to_param}/-/preview_markdown") }
+  end
+
+  describe '#markdown_docs_path' do
+    subject(:method) { presenter.markdown_docs_path }
+
+    it { is_expected.to eq('/help/user/markdown.md') }
+  end
 end

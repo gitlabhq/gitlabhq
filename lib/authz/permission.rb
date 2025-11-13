@@ -73,6 +73,10 @@ module Authz
       name.split('_', 2)[1]
     end
 
+    def boundaries
+      definition[:boundaries] || []
+    end
+
     def feature_category
       definition[:feature_category]
     end

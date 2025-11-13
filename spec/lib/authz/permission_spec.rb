@@ -4,11 +4,11 @@
 require 'spec_helper'
 
 RSpec.describe Authz::Permission, feature_category: :permissions do
-  let(:scopes) { ['project'] }
   let(:source_file) { 'config/authz/permissions/permission/test.yml' }
   let(:name) { 'test_permission' }
   let(:action) { nil }
   let(:resource) { nil }
+  let(:boundaries) { %w[project] }
   let(:available_for_tokens) { true }
   let(:definition) do
     {
@@ -17,6 +17,7 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       feature_category: 'team_planning',
       action: action,
       resource: resource,
+      boundaries: boundaries,
       available_for_tokens: available_for_tokens
     }
   end
@@ -164,6 +165,18 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       it 'is expected use the defined resource' do
         is_expected.to eq('test_permission')
       end
+    end
+  end
+
+  describe '#boundaries' do
+    subject { permission.boundaries }
+
+    it { is_expected.to eq(boundaries) }
+
+    context 'when boundaries are not defined' do
+      let(:boundaries) { nil }
+
+      it { is_expected.to eq([]) }
     end
   end
 

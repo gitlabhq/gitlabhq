@@ -7,6 +7,7 @@
 # - `#redirect_uri` return the redirect URI for the OAuth flow
 # - `#find_or_create_integration` find or create the Integrations::GitlabSlackApplication record
 # - `#installation_alias` return the alias property for the SlackIntegration record
+
 module Integrations
   module SlackInstallation
     class BaseService
@@ -52,18 +53,7 @@ module Integrations
         integration = find_or_create_integration!
         installation = integration.slack_integration || integration.build_slack_integration
 
-        installation.update!(
-          bot_user_id: slack_data['bot_user_id'],
-          bot_access_token: slack_data['access_token'],
-          team_id: slack_data.dig('team', 'id'),
-          team_name: slack_data.dig('team', 'name'),
-          alias: installation_alias,
-          user_id: slack_data.dig('authed_user', 'id'),
-          authorized_scope_names: slack_data['scope'],
-          organization_id: integration.organization_id,
-          group_id: integration.group_id,
-          project_id: integration.project_id
-        )
+        update_installation!(integration, installation, slack_data)
 
         update_other_installations!(installation)
 
@@ -75,6 +65,33 @@ module Integrations
       private
 
       attr_reader :current_user, :params
+
+      def update_installation!(integration, installation, slack_data)
+        attributes = {
+          bot_user_id: slack_data['bot_user_id'],
+          bot_access_token: slack_data['access_token'],
+          team_id: slack_data.dig('team', 'id'),
+          team_name: slack_data.dig('team', 'name'),
+          alias: installation_alias,
+          user_id: slack_data.dig('authed_user', 'id'),
+          authorized_scope_names: slack_data['scope'],
+          organization_id: integration.organization_id,
+          group_id: integration.group_id,
+          project_id: integration.project_id
+        }
+
+        installation.update!(attributes)
+
+      rescue ActiveRecord::RecordInvalid => e
+        raise unless duplicate_alias_error?(e) && fallback_alias
+
+        attributes[:alias] = fallback_alias
+        installation.update!(attributes)
+      end
+
+      def duplicate_alias_error?(exception)
+        exception.record.errors.of_kind?(:alias, :taken)
+      end
 
       def exchange_slack_token
         query = {

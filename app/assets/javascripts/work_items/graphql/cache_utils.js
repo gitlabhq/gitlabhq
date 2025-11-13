@@ -207,40 +207,44 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
 };
 
 export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
-  const newChildren = findHierarchyWidgetChildren(workItem);
+  const hierarchyWidget = findHierarchyWidget(workItem);
+  if (!hierarchyWidget) return;
+
+  const cacheId = cache.identify({ __typename: 'WorkItem', id });
+  if (!cacheId) return;
+
+  const newChildren =
+    hierarchyWidget.children?.nodes?.filter((child) => childrenIds.includes(child.id)) || [];
 
   cache.modify({
-    id: cache.identify({ __typename: 'WorkItem', id }),
+    id: cacheId,
     fields: {
-      widgets(existingWidgets = [], { readField, toReference }) {
-        return existingWidgets.map((widgetRef) => {
-          if (readField('__typename', widgetRef) !== 'WorkItemWidgetHierarchy') {
-            return widgetRef;
-          }
+      widgets(existing = []) {
+        return existing.map((widget) => {
+          if (widget.type !== WIDGET_TYPE_HIERARCHY) return widget;
 
-          const existingChildrenConnection = readField('children', widgetRef) || {};
-          const existingNodes = existingChildrenConnection.nodes || [];
+          const existingChildren = widget.children || {};
+          const existingNodes = existingChildren.nodes || [];
 
-          const childrenToAdd = newChildren.filter((child) => childrenIds.includes(child.id));
+          const existingIds = existingNodes.map((n) => n.id);
 
-          const openRefs = [];
-          const closedRefs = [];
+          // Avoid duplicates
+          const uniqueNewChildren = newChildren.filter((child) => !existingIds.includes(child.id));
 
-          for (const child of childrenToAdd) {
-            // eslint-disable-next-line no-underscore-dangle
-            const ref = toReference({ __typename: child.__typename || 'WorkItem', id: child.id });
-            // eslint-disable-next-line no-continue
-            if (!ref) continue;
-            (child.state === STATE_CLOSED ? closedRefs : openRefs).push(ref);
-          }
+          // Separate open/closed
+          const openChildren = uniqueNewChildren.filter((child) => child.state !== STATE_CLOSED);
+          const closedChildren = uniqueNewChildren.filter((child) => child.state === STATE_CLOSED);
 
-          const mergedNodes = [...openRefs, ...existingNodes, ...closedRefs];
-
+          // Open first, then existing, then closed
+          const mergedNodes = [...openChildren, ...existingNodes, ...closedChildren];
           return {
-            ...widgetRef,
-            children: { ...existingChildrenConnection, nodes: mergedNodes },
-            hasChildren: readField('hasChildren', widgetRef) || mergedNodes.length > 0,
-            count: (readField('count', widgetRef) || 0) + childrenToAdd.length,
+            ...widget,
+            children: {
+              ...existingChildren,
+              nodes: mergedNodes,
+            },
+            count: mergedNodes.length,
+            hasChildren: mergedNodes.length > 0,
           };
         });
       },

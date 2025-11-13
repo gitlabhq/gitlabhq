@@ -9,6 +9,10 @@
   // Scroll bars styles
   * {
     scrollbar-color: var(--gl-color-neutral-400) transparent;
+
+    @media (forced-colors: active) {
+      scrollbar-color: var(--gl-color-neutral-950) transparent;
+    }
   }
 
   // Variable overrides
@@ -68,6 +72,10 @@
 
       kbd {
         @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
+      }
+
+      @media (forced-colors: active) {
+        border: 1px solid !important;
       }
     }
 
@@ -327,9 +335,14 @@
     }
   }
 
-  // Static panel
-  .paneled-view.static-panel {
-    // Specifics here
+  // All panels
+  .paneled-view.static-panel,
+  .paneled-view.contextual-panel,
+  .paneled-view.ai-panels .ai-panel
+  {
+    @media (forced-colors: active) {
+      border: 1px solid;
+    }
   }
 
   // Contextual panel

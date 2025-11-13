@@ -169,7 +169,7 @@ module Gitlab
       def generate_definition_config(job, metadata, tag_list, run_steps)
         config = {}
         config[:options] = metadata&.config_options || job.options
-        config[:yaml_variables] = metadata&.config_variables || job.yaml_variables.to_h.transform_values(&:to_s)
+        config[:yaml_variables] = ensure_string_format(metadata&.config_variables.presence || job.yaml_variables)
 
         if metadata
           config[:id_tokens] = metadata.id_tokens if metadata.id_tokens.present?
@@ -294,6 +294,15 @@ module Gitlab
         SQL
 
         ApplicationRecord.connection.execute(command)
+      end
+
+      def ensure_string_format(variables)
+        (variables || []).map do |var|
+          var.deep_stringify_keys!
+          var['key'] = var['key'].to_s
+          var['value'] = var['value'].to_s
+          var
+        end
       end
     end
   end

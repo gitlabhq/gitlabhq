@@ -56,7 +56,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
   let(:duplicate_configs) do
     {
       config_options: { image: 'ruby', script: 'rspec' },
-      config_variables: { 'HOME' => '~' },
+      config_variables: [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }],
       id_tokens: { 'VAULT_ID_TOKEN' => { aud: 'https://gitlab.test' } },
       secrets: { DATABASE_PASSWORD: { vault: 'production/db/password' } },
       interruptible: true
@@ -122,7 +122,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         'secrets' => { 'DATABASE_PASSWORD' => { 'vault' => 'production/db/password' } },
         'id_tokens' => { 'VAULT_ID_TOKEN' => { 'aud' => 'https://gitlab.test' } },
         'interruptible' => true,
-        'yaml_variables' => { 'HOME' => '~' }
+        'yaml_variables' => [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }]
       })
     end
 
@@ -130,7 +130,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
       let(:duplicate_configs) do
         {
           config_options: { image: 'ruby', script: 'rspec' },
-          config_variables: { 'HOME' => '~' },
+          config_variables: [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }],
           id_tokens: { 'VAULT_ID_TOKEN' => { aud: 'https://gitlab.test' } }
         }
       end
@@ -149,7 +149,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         expect(job_definition.config).to match({
           'options' => { 'image' => 'ruby', 'script' => 'rspec' },
           'id_tokens' => { 'VAULT_ID_TOKEN' => { 'aud' => 'https://gitlab.test' } },
-          'yaml_variables' => { 'HOME' => '~' }
+          'yaml_variables' => [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }]
         })
       end
     end
@@ -158,7 +158,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
       let(:duplicate_configs) do
         {
           config_options: { image: 'ruby', script: 'rspec' },
-          config_variables: { 'HOME' => '~' },
+          config_variables: [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }],
           secrets: { DATABASE_PASSWORD: { vault: 'production/db/password' } }
         }
       end
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         expect(job_definition.config).to match({
           'options' => { 'image' => 'ruby', 'script' => 'rspec' },
           'secrets' => { 'DATABASE_PASSWORD' => { 'vault' => 'production/db/password' } },
-          'yaml_variables' => { 'HOME' => '~' }
+          'yaml_variables' => [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }]
         })
       end
     end
@@ -228,12 +228,13 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
 
         job_a.update!(
           options: { 'image' => 'ruby', 'script' => 'rspec' },
-          yaml_variables: { 'HOME' => '~' }
+          yaml_variables: [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }]
         )
 
         job_b.update!(
           options: { 'image' => 'ruby', 'script' => 'rspec' },
-          yaml_variables: { 'HOME' => '~', CI: 1 }
+          yaml_variables: [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" },
+            { "key" => "DEBUG", "value" => true }]
         )
 
         builds_metadata_table.where(build_id: job_b.id).delete_all
@@ -248,13 +249,14 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
         expect(job_definition_a.config).to match({
           'options' => { 'image' => 'ruby', 'script' => 'rspec' },
           'interruptible' => true,
-          'yaml_variables' => { 'HOME' => '~' },
+          'yaml_variables' => [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }],
           'tag_list' => %w[postgresql ruby]
         })
 
         expect(job_definition_b.config).to match({
           'options' => { 'image' => 'ruby', 'script' => 'rspec' },
-          'yaml_variables' => { 'HOME' => '~', 'CI' => '1' },
+          'yaml_variables' => [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" },
+            { "key" => "DEBUG", "value" => "true" }],
           'tag_list' => %w[docker rails]
         })
       end
@@ -693,6 +695,105 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
             expanded_environment_name: staging_a.name,
             options: {}
           )
+        end
+      end
+    end
+
+    context 'for yaml_variables' do
+      context 'when config_variables is empty' do
+        let(:duplicate_configs) do
+          {
+            config_options: { image: 'ruby', script: 'rspec' },
+            config_variables: [],
+            id_tokens: { 'VAULT_ID_TOKEN' => { aud: 'https://gitlab.test' } }
+          }
+        end
+
+        context 'when job yaml_variables is empty' do
+          it 'creates job definition with empty yaml_variables' do
+            expect { migration.perform }
+              .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(2)
+              .and change { definitions_table.count }.by(1)
+
+            job_definition = find_definition(job_a)
+
+            expect(job_definition.checksum).to be_present
+            expect(job_definition.project_id).to eq(job_a.project_id)
+            expect(job_definition.partition_id).to eq(job_a.partition_id)
+
+            expect(job_definition.config['yaml_variables']).to eq([])
+          end
+        end
+
+        context 'when job yaml_variables is not empty' do
+          before do
+            job_a.update!(
+              yaml_variables: [{ key: "ENVIRONMENT", value: "${ENVIRONMENT}" }]
+            )
+          end
+
+          it 'creates job definition with yaml_variables' do
+            expect { migration.perform }
+              .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(2)
+              .and change { definitions_table.count }.by(2)
+
+            job_definition = find_definition(job_a)
+
+            expect(job_definition.checksum).to be_present
+            expect(job_definition.project_id).to eq(job_a.project_id)
+            expect(job_definition.partition_id).to eq(job_a.partition_id)
+
+            expect(job_definition.config['yaml_variables']).to eq([{ "key" => "ENVIRONMENT",
+                                                                     "value" => "${ENVIRONMENT}" }])
+          end
+        end
+      end
+
+      context 'when config_variables is not empty' do
+        let(:duplicate_configs) do
+          {
+            config_variables: [{ key: "ENVIRONMENT", value: "${ENVIRONMENT}" }]
+          }
+        end
+
+        context 'when job yaml_variables is empty' do
+          it 'creates job definition with yaml_variables' do
+            expect { migration.perform }
+              .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(2)
+              .and change { definitions_table.count }.by(1)
+
+            job_definition = find_definition(job_a)
+
+            expect(job_definition.checksum).to be_present
+            expect(job_definition.project_id).to eq(job_a.project_id)
+            expect(job_definition.partition_id).to eq(job_a.partition_id)
+
+            expect(job_definition.config['yaml_variables']).to eq([{ "key" => "ENVIRONMENT",
+                                                                     "value" => "${ENVIRONMENT}" }])
+          end
+        end
+
+        context 'when job yaml_variables is not empty' do
+          before do
+            job_a.update!(
+              yaml_variables: [{ key: "ENVIRONMENT", value: "DIFFERENT_ENV" }]
+            )
+          end
+
+          it 'creates job definition with yaml_variables' do
+            expect { migration.perform }
+              .to change { definition_instances_table.where(job_id: [job_a.id, job_b.id]).count }.by(2)
+              .and change { definitions_table.count }.by(1)
+
+            job_definition = find_definition(job_a)
+
+            expect(job_definition.checksum).to be_present
+            expect(job_definition.project_id).to eq(job_a.project_id)
+            expect(job_definition.partition_id).to eq(job_a.partition_id)
+
+            expect(job_definition.config['yaml_variables']).to eq([{ "key" => "ENVIRONMENT",
+                                                                     "value" => "${ENVIRONMENT}" }])
+          end
         end
       end
     end

@@ -11,6 +11,7 @@ describe('diffDiscussions store', () => {
       const discussions = [{ id: 'abc', notes: [{ id: 'bcd' }] }];
       useDiffDiscussions().setInitialDiscussions(discussions);
       expect(useDiffDiscussions().discussions[0].repliesExpanded).toBe(true);
+      expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(false);
     });
   });
 
@@ -76,6 +77,61 @@ describe('diffDiscussions store', () => {
       expect(useDiffDiscussions().getDiscussionById(targetDiscussion.id)).toStrictEqual(
         targetDiscussion,
       );
+    });
+  });
+
+  describe('setEditingMode', () => {
+    it('sets editing mode', () => {
+      const note = { id: 'foo' };
+      const discussion = { id: 'efg', notes: [note] };
+      useDiffDiscussions().discussions = [discussion];
+      useDiffDiscussions().setEditingMode(useDiffDiscussions().discussions[0].notes[0], true);
+      expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(true);
+    });
+  });
+
+  describe('requestLastNoteEditing', () => {
+    const createOwnedNote = (canEdit = true) => ({
+      id: '',
+      author: { id: window.gon.current_user_id },
+      current_user: { can_edit: canEdit },
+    });
+    const createForeignNote = (canEdit = true) => ({
+      id: '',
+      author: { id: 100 },
+      current_user: { can_edit: canEdit },
+    });
+
+    beforeEach(() => {
+      window.gon.current_user_id = 1;
+    });
+
+    it('turns editing on for own last note in a discussion', () => {
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [createOwnedNote(), createForeignNote()] },
+      ];
+      expect(useDiffDiscussions().requestLastNoteEditing(useDiffDiscussions().discussions[0])).toBe(
+        true,
+      );
+      expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(true);
+    });
+
+    it('returns false when no notes are editable in a discussion', () => {
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [createOwnedNote(false), createForeignNote(false)] },
+      ];
+      expect(useDiffDiscussions().requestLastNoteEditing(useDiffDiscussions().discussions[0])).toBe(
+        false,
+      );
+      expect(useDiffDiscussions().discussions[0].notes[0].isEditing).not.toBe(true);
+    });
+
+    it('returns false when no notes are owned in a discussion', () => {
+      useDiffDiscussions().discussions = [{ id: 'abc', notes: [createForeignNote()] }];
+      expect(useDiffDiscussions().requestLastNoteEditing(useDiffDiscussions().discussions[0])).toBe(
+        false,
+      );
+      expect(useDiffDiscussions().discussions[0].notes[0].isEditing).not.toBe(true);
     });
   });
 

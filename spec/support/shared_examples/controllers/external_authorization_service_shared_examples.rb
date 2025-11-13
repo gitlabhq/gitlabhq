@@ -6,7 +6,9 @@ RSpec.shared_examples 'disabled when using an external authorization service' do
   it 'works when the feature is not enabled' do
     subject
 
-    expect(response).to be_successful
+    expect(response).to satisfy('be successful or redirect') do |response|
+      response.successful? || response.redirect?
+    end
   end
 
   it 'renders a 404 with a message when the feature is enabled' do

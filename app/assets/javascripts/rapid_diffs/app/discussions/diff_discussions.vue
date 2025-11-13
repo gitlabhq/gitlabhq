@@ -21,6 +21,7 @@ export default {
       'deleteNote',
       'expandDiscussionReplies',
       'toggleDiscussionReplies',
+      'requestLastNoteEditing',
     ]),
   },
 };
@@ -36,6 +37,7 @@ export default {
       <ul class="notes">
         <noteable-discussion
           :discussion="discussion"
+          :request-last-note-editing="requestLastNoteEditing"
           @showReplyForm="expandDiscussionReplies(discussion)"
           @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
           @replyAdded="addNote"

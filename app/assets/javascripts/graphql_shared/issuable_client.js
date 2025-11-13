@@ -80,6 +80,16 @@ export const config = {
           },
         },
       },
+      WorkItemPermissions: {
+        merge(existing = {}, incoming = {}) {
+          return { ...existing, ...incoming };
+        },
+      },
+      NamespacePermissions: {
+        merge(existing = {}, incoming = {}) {
+          return { ...existing, ...incoming };
+        },
+      },
       WorkItemWidgetDescription: {
         fields: {
           descriptionHtml: {

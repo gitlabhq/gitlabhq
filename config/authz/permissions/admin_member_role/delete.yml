@@ -2,3 +2,6 @@
 name: delete_admin_member_role
 description: Grants the ability to delete admin member roles
 feature_category: permissions
+boundaries:
+  - instance
+available_for_tokens: true

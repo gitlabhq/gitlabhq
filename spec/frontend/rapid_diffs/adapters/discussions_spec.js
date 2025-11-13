@@ -12,7 +12,7 @@ import { pinia } from '~/pinia/instance';
 jest.mock('~/rapid_diffs/app/discussions/diff_discussions.vue', () => {
   return {
     props: jest.requireActual('~/rapid_diffs/app/discussions/diff_discussions.vue').default.props,
-    inject: ['userPermissions', 'endpoints'],
+    inject: ['userPermissions', 'endpoints', 'noteableType'],
     render(h) {
       if (this.discussions.length === 0) return null;
       const discussions = this.discussions.map((discussion) => {
@@ -28,6 +28,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_discussions.vue', () => {
       const injected = [
         renderAsDataAttr('user-permissions', this.userPermissions),
         renderAsDataAttr('endpoints', this.endpoints),
+        renderAsDataAttr('noteable-type', this.noteableType),
       ];
       return h('div', undefined, [...discussions, ...injected]);
     },
@@ -38,7 +39,16 @@ describe('discussions adapters', () => {
   const oldPath = 'old';
   const newPath = 'new';
   const userPermissions = { can_create_note: true };
-  const endpoints = {};
+  const endpoints = {
+    previewMarkdown: 'previewMarkdownEndpoint',
+    markdownDocs: 'markdownDocsEndpoint',
+  };
+  const appData = {
+    userPermissions,
+    previewMarkdownEndpoint: 'previewMarkdownEndpoint',
+    markdownDocsEndpoint: 'markdownDocsEndpoint',
+    noteableType: 'Commit',
+  };
 
   const getDiffFile = () => document.querySelector('diff-file');
   const getDiscussionRows = () => getDiffFile().querySelectorAll('[data-discussion-row]');
@@ -84,10 +94,7 @@ describe('discussions adapters', () => {
       `);
       getDiffFile().mount({
         adapterConfig: { text_inline: [inlineDiscussionsAdapter] },
-        appData: {
-          userPermissions,
-          endpoints,
-        },
+        appData,
         unobserve: jest.fn(),
       });
     });
@@ -125,6 +132,12 @@ describe('discussions adapters', () => {
       expect(
         JSON.parse(document.querySelector('[data-user-permissions]').dataset.userPermissions),
       ).toStrictEqual(userPermissions);
+      expect(
+        JSON.parse(document.querySelector('[data-endpoints]').dataset.endpoints),
+      ).toStrictEqual(endpoints);
+      expect(
+        JSON.parse(document.querySelector('[data-noteable-type]').dataset.noteableType),
+      ).toStrictEqual('Commit');
     });
 
     it('does not render discussions for different paths', async () => {

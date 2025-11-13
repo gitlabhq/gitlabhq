@@ -25,11 +25,8 @@ workflow:
 variables:
   BUNDLE_PATH: "vendor"
   BUNDLE_FROZEN: "true"
-  GIT_DEPTH: "20"
-  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
-  GIT_STRATEGY: "clone"
-  GIT_SUBMODULE_STRATEGY: "none"
-  GET_SOURCES_ATTEMPTS: "3"
+  # Download repo from artifacts. See .repo-from-artifacts
+  GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
   # Default Ruby version for jobs that don't use .ruby_matrix
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
 
@@ -55,21 +52,29 @@ include:
   after_script:
     - source $CI_PROJECT_DIR/scripts/utils.sh
 
+.repo-from-artifacts:
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+
 default:
   <<: *default
 
 .ruby_matrix:
+  extends: .repo-from-artifacts
   parallel:
     matrix:
       - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
 
 .ruby_on_rails_matrix:
+  extends: .repo-from-artifacts
   parallel:
     matrix:
       - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
       - BUNDLE_GEMFILE: $[[inputs.bundle_gemfiles]]
 
 validate-gem:
+  extends: .repo-from-artifacts
   rules:
     - if: "'$[[inputs.skip_gem_validation]]' == 'true'"
       when: never

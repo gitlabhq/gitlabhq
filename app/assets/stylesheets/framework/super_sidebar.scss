@@ -217,6 +217,12 @@ $command-palette-spacing: px-to-rem(14px);
   --theme-notification-color: var(--gl-color-blue-500);
 }
 
+html:not(.application-chrome) .super-sidebar {
+  @media (forced-colors: active) {
+    border-right: 1px solid;
+  }
+}
+
 .super-sidebar {
   display: flex;
   flex-direction: column;
@@ -230,10 +236,6 @@ $command-palette-spacing: px-to-rem(14px);
 
   &:not(.super-sidebar-is-icon-only) {
     width: $super-sidebar-width;
-  }
-
-  @media (forced-colors: active) {
-    border-right: 1px solid;
   }
 
   &.super-sidebar-loading {

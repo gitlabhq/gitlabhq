@@ -30,6 +30,15 @@ describe('DiffDiscussions', () => {
     ).toStrictEqual([discussion1, discussion2]);
   });
 
+  it('provides data', () => {
+    const discussion = { id: '1' };
+    createComponent({ discussions: [discussion] });
+    const props = wrapper.findComponent(NoteableDiscussion).props();
+    props.requestLastNoteEditing();
+    expect(props.discussion).toBe(discussion);
+    expect(useDiffDiscussions().requestLastNoteEditing).toHaveBeenCalled();
+  });
+
   it('expands replies on showReplyForm', () => {
     const discussion = { id: '1' };
     createComponent({ discussions: [discussion] });

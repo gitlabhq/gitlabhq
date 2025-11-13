@@ -24,6 +24,20 @@
       "type": "string",
       "description": "Override for the generated resource name"
     },
+    "boundaries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "instance",
+          "group",
+          "project",
+          "user"
+        ]
+      },
+      "minItems": 1,
+      "description": "List of resource types that the permission can be applied to"
+    },
     "available_for_tokens": {
       "type": "boolean",
       "description": "If set to `true`, allows the permission to be added to granular scopes for tokens"

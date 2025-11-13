@@ -56,6 +56,11 @@ export const COMMENT_FORM = {
   startReview: __('Start review'),
   addCommentNow: __('Add comment now'),
   addThreadNow: __('Add thread now'),
+  editingConflictMessage: __(
+    'This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost.',
+  ),
+  editingConflictPlaceholder: { link: ['startTag', 'endTag'] },
+  cancel: __('Cancel'),
 };
 
 export const EDITED_TEXT = {

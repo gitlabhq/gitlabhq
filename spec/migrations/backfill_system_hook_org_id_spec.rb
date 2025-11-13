@@ -26,6 +26,18 @@ RSpec.describe BackfillSystemHookOrgId, feature_category: :webhooks do
     }
   end
 
+  before do
+    ApplicationRecord.connection.execute(
+      'ALTER TABLE web_hooks DROP CONSTRAINT IF EXISTS check_95b85171f8;')
+  end
+
+  after do
+    ApplicationRecord.connection.execute(
+      'ALTER TABLE web_hooks ADD CONSTRAINT check_95b85171f8 ' \
+        'CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1));'
+    )
+  end
+
   context 'when SystemHooks are present' do
     let!(:system_hook_with_org_id) do
       ActiveRecord::Base.connection.execute(

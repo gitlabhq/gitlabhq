@@ -13,7 +13,8 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
       name: 'read_member_role',
       description: 'Grants the ability to read member roles',
       feature_category: 'system_access',
-      available_for_tokens: true
+      available_for_tokens: true,
+      boundaries: %w[project group]
     }
   end
 
@@ -27,6 +28,8 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
           description
           action
           resource
+          category
+          boundaries
         }
       }
     GQL
@@ -46,7 +49,9 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
         'name' => 'read_member_role',
         'description' => 'Grants the ability to read member roles',
         'action' => 'read',
-        'resource' => 'member_role'
+        'resource' => 'member_role',
+        'category' => 'system_access',
+        'boundaries' => %w[PROJECT GROUP]
       }])
     end
   end

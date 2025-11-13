@@ -797,3 +797,13 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_feature_wiki_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's wiki access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369292) | Project |
+
+### Workflow catalog
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`create_ai_catalog_agent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212259) | A user creates an AI Catalog agent. | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project |
+| [`delete_ai_catalog_agent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212259) | A user deletes an AI Catalog agent. | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project |
+| [`disable_ai_catalog_agent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212259) | A user disables an AI Catalog agent in a project or group. | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project, Group |
+| [`enable_ai_catalog_agent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212259) | A user enables an AI Catalog agent in a project or group. | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project, Group |
+| [`update_ai_catalog_agent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212259) | A user updates an AI Catalog agent. | {{< icon name="check-circle" >}} Yes | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/566901) | Project |

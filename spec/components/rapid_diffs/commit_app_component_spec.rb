@@ -11,6 +11,9 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
   let(:diffs_stats_endpoint) { '/diffs_stats' }
   let(:diff_files_endpoint) { '/diff_files_metadata' }
   let(:diff_file_endpoint) { '/diff_file' }
+  let(:noteable_type) { 'Commit' }
+  let(:preview_markdown_endpoint) { '/preview_markdown_endpoint' }
+  let(:markdown_docs_path) { '/markdown_docs_path' }
   let(:user_permissions) { { can_create_note: true } }
   let(:diff_view) { :inline }
   let(:should_sort_metadata_files) { false }
@@ -29,6 +32,9 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
       diff_file_endpoint: diff_file_endpoint,
       should_sort_metadata_files?: should_sort_metadata_files,
       user_permissions: user_permissions,
+      noteable_type: noteable_type,
+      preview_markdown_endpoint: preview_markdown_endpoint,
+      markdown_docs_path: markdown_docs_path,
       lazy?: lazy
     )
   end
@@ -53,6 +59,9 @@ RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_wo
     data = Gitlab::Json.parse(app['data-app-data'])
     expect(data['discussions_endpoint']).to eq(discussions_endpoint)
     expect(data['user_permissions']).to eq(user_permissions.stringify_keys)
+    expect(data['noteable_type']).to eq(noteable_type)
+    expect(data['preview_markdown_endpoint']).to eq(preview_markdown_endpoint)
+    expect(data['markdown_docs_path']).to eq(markdown_docs_path)
   end
 
   it 'preloads discussions_endpoint' do

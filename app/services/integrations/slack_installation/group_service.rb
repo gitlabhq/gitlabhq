@@ -21,6 +21,11 @@ module Integrations
         group.full_path
       end
 
+      # Returns a fallback alias for the group when the default alias (full_path) is already taken.
+      def fallback_alias
+        "#{group.full_path}/g-#{group.id}"
+      end
+
       def authorized?
         current_user.can?(:admin_group, group)
       end

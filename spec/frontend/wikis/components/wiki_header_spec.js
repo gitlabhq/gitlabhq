@@ -47,6 +47,7 @@ describe('wikis/components/wiki_header', () => {
         isPageTemplate: false,
         isEditingPath: false,
         showEditButton: true,
+        showRestoreVersionButton: false,
         wikiUrl: 'http://wiki.url',
         editButtonUrl: 'http://edit.url',
         lastVersion: '2024-06-03T01:53:28.000Z',
@@ -84,20 +85,20 @@ describe('wikis/components/wiki_header', () => {
   const findRestoreVersionButton = () => wrapper.findByTestId('wiki-restore-version-button');
 
   describe('restore version functionality', () => {
-    it('renders restore version button if it is a historical page', () => {
-      buildWrapper({ isPageHistorical: true });
+    it('renders restore version button if user has permission', () => {
+      buildWrapper({ showRestoreVersionButton: true });
 
       expect(findRestoreVersionButton().exists()).toBe(true);
     });
 
-    it('does not render restore version button if it is not a historical page', () => {
-      buildWrapper({ isPageHistorical: false });
+    it('does not render restore version button if user does not have permission', () => {
+      buildWrapper({ showRestoreVersionButton: false });
 
       expect(findRestoreVersionButton().exists()).toBe(false);
     });
 
     it('renders the restoreVersionModal with valid modalId and calls glModalDirective correctly', () => {
-      buildWrapper({ isPageHistorical: true });
+      buildWrapper({ showRestoreVersionButton: true });
 
       const restoreVersionModal = wrapper.findComponent({ name: 'RestoreVersionModal' });
 

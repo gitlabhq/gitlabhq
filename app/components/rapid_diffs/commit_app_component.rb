@@ -2,7 +2,8 @@
 
 module RapidDiffs
   class CommitAppComponent < AppComponent
-    delegate :discussions_endpoint, :user_permissions, to: :presenter
+    delegate :discussions_endpoint, :user_permissions, :noteable_type, :preview_markdown_endpoint, :markdown_docs_path,
+      to: :presenter
 
     protected
 
@@ -10,7 +11,10 @@ module RapidDiffs
       {
         **super,
         user_permissions: user_permissions,
-        discussions_endpoint: discussions_endpoint
+        discussions_endpoint: discussions_endpoint,
+        noteable_type: noteable_type,
+        preview_markdown_endpoint: preview_markdown_endpoint,
+        markdown_docs_path: markdown_docs_path
       }
     end
 

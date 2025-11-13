@@ -179,7 +179,8 @@ end
 RSpec.shared_examples 'work items labels' do |namespace_type|
   it 'shows a label with a link pointing to filtered work items list' do
     within_testid 'work-item-labels' do
-      expect(page).to have_link(label.title, href: "#{list_path}?label_name[]=#{label.title}")
+      link = find_link(label.title)
+      expect(link[:href]).to include("label_name[]=#{label.title}")
     end
   end
 
