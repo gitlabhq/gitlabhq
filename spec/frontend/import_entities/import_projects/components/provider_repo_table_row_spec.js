@@ -55,10 +55,7 @@ describe('ProviderRepoTableRow', () => {
     return buttons.length ? buttons.at(0) : buttons;
   };
 
-  function mountComponent(
-    props,
-    { storeOptions = {}, userMappingToPersonalNamespaceOwner = true } = {},
-  ) {
+  function mountComponent(props, { storeOptions = {} } = {}) {
     Vue.use(Vuex);
 
     const store = initStore(storeOptions);
@@ -68,9 +65,6 @@ describe('ProviderRepoTableRow', () => {
       propsData: { optionalStages: {}, ...props },
       provide: {
         userNamespace,
-        glFeatures: {
-          userMappingToPersonalNamespaceOwner,
-        },
       },
     });
   }
@@ -137,28 +131,6 @@ describe('ProviderRepoTableRow', () => {
         expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
           repoId: repo.importSource.id,
           optionalStages: {},
-        });
-      });
-
-      describe('when user_mapping_to_personal_namespace_owner feature flag is disabled', () => {
-        beforeEach(() => {
-          mountComponent(
-            { repo },
-            {
-              storeOptions: { importTarget: { targetNamespace: userNamespace } },
-              userMappingToPersonalNamespaceOwner: false,
-            },
-          );
-        });
-
-        it('shows message warning user about mapping to import user', async () => {
-          findImportButton().vm.$emit('click');
-          await nextTick();
-
-          const modal = findGlModal();
-          expect(modal.text()).toContain(
-            'When you import to a personal namespace, all contributions are assigned to a single non-functional user and they cannot be reassigned. To map contributions to real users, import to a group instead.',
-          );
         });
       });
     });

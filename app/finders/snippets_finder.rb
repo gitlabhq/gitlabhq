@@ -9,27 +9,37 @@
 #
 #     SnippetsFinder.new(user).execute
 #
+# To scope snippets to a specific organization:
+#
+#     user = User.find(1)
+#     organization = Organization.find(1)
+#
+#     SnippetsFinder.new(user, organization_id: organization.id).execute
+#
 # To limit the snippets to a specific project, supply the `project:` option:
 #
 #     user = User.find(1)
 #     project = Project.find(1)
+#     organization_id = project.organization_id # Every project belongs to an organization
 #
-#     SnippetsFinder.new(user, project: project).execute
+#     SnippetsFinder.new(user, project: project, organization_id: organization_id).execute
 #
 # Limiting snippets to an author can be done by supplying the `author:` option:
 #
 #     user = User.find(1)
 #     project = Project.find(1)
+#     organization_id = project.organization_id # Every project belongs to an organization
 #
-#     SnippetsFinder.new(user, author: user).execute
+#     SnippetsFinder.new(user, author: user, organization_id: organization_id).execute
 #
 # To filter snippets using a specific visibility level, you can provide the
 # `scope:` option:
 #
 #     user = User.find(1)
 #     project = Project.find(1)
+#     organization_id = project.organization_id # Every project belongs to an organization
 #
-#     SnippetsFinder.new(user, author: user, scope: :are_public).execute
+#     SnippetsFinder.new(user, author: user, scope: :are_public, organization_id: organization_id).execute
 #
 # Valid `scope:` values are:
 #
@@ -44,11 +54,12 @@ class SnippetsFinder < UnionFinder
   include CreatedAtFilter
   include Gitlab::Allowable
 
-  attr_reader :current_user, :params
+  attr_reader :current_user, :params, :organization_id
 
   def initialize(current_user = nil, params = {})
     @current_user = current_user
     @params = params
+    @organization_id = params.delete(:organization_id)
 
     if project && author
       raise(
@@ -74,19 +85,20 @@ class SnippetsFinder < UnionFinder
   private
 
   def filter_snippets
-    if return_all_available_and_permited?
+    if return_all_available_and_permitted?
       snippets = all_snippets_for_admin
     else
       snippets = all_snippets
       snippets = by_ids(snippets)
       snippets = snippets.with_optional_visibility(visibility_from_scope)
       snippets = hide_created_by_banned_user(snippets)
+      snippets = by_organization(snippets)
     end
 
     by_created_at(snippets)
   end
 
-  def return_all_available_and_permited?
+  def return_all_available_and_permitted?
     # Currently limited to access_levels `admin` and `auditor`
     # See policies/base_policy.rb files for specifics.
     params[:all_available] && can?(current_user, :read_all_resources)
@@ -207,6 +219,18 @@ class SnippetsFinder < UnionFinder
     return snippets unless params[:ids].present?
 
     snippets.id_in(params[:ids])
+  end
+
+  def by_organization(snippets)
+    return snippets unless should_apply_organization_filter?
+
+    snippets.for_user_organization(organization_id)
+  end
+
+  def should_apply_organization_filter?
+    organization_id.present? &&
+      project.blank? &&
+      !return_all_available_and_permitted?
   end
 
   def hide_created_by_banned_user(snippets)

@@ -144,10 +144,6 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
     end
 
     it 'processes the pipelines' do
-      expect_next_instance_of(Gitlab::Pagination::Keyset::Iterator) do |iterator|
-        expect(iterator).to receive(:each_batch).once.with(of: described_class::PIPELINES_BATCH_SIZE).and_call_original
-      end
-
       expect(ClickHouse::Client).to receive(:insert_csv).twice.and_call_original
 
       expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
@@ -190,9 +186,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
 
   context 'with multiple calls to service' do
     it 'processes the pipelines' do
-      expect_next_instances_of(Gitlab::Pagination::Keyset::Iterator, 2) do |iterator|
-        expect(iterator).to receive(:each_batch).once.with(of: described_class::PIPELINES_BATCH_SIZE).and_call_original
-      end
+      expect(Ci::Pipeline).to receive(:id_in).twice.and_call_original
 
       expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
       expect(execute).to have_attributes({
@@ -271,6 +265,135 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
         expect(execute).to have_attributes({
           status: :error, reason: :skipped, payload: { worker_index: 2, total_workers: 3 }
         })
+      end
+    end
+  end
+
+  describe 'query selector logic' do
+    context 'with single worker' do
+      let(:service) { described_class.new(worker_index: 0, total_workers: 1) }
+
+      it 'uses simplified query with EachBatch' do
+        # Verify that the simplified query path is used by checking that
+        # Keyset::Iterator is NOT instantiated (used in complex query)
+        expect(Gitlab::Pagination::Keyset::Iterator).not_to receive(:new)
+
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        expect(execute).to have_attributes(
+          payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
+        )
+      end
+
+      it 'processes pipelines correctly with simplified query' do
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+
+        records = ci_finished_pipelines
+        expect(records.count).to eq 5
+        expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name)
+      end
+
+      context 'with multiple batches' do
+        before do
+          stub_const("#{described_class}::PIPELINES_BATCH_SIZE", 2)
+        end
+
+        it 'processes all batches with simplified query' do
+          expect(Gitlab::Pagination::Keyset::Iterator).not_to receive(:new)
+
+          expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+          expect(execute).to have_attributes(
+            payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
+          )
+        end
+      end
+    end
+
+    context 'with multiple workers' do
+      let(:service) { described_class.new(worker_index: 0, total_workers: 2) }
+
+      it 'uses keyset iterator query' do
+        # With multiple workers, even with feature flag enabled, it should use the complex query path
+        expect(Gitlab::Pagination::Keyset::Iterator).to receive(:new).and_call_original
+
+        # With multiple workers, only a subset of pipelines will be processed by this worker
+        expect { execute }.to change { ci_finished_pipelines_row_count }
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(use_simplified_query_for_ch_pipeline_ingestion: false)
+      end
+
+      context 'with single worker' do
+        let(:service) { described_class.new(worker_index: 0, total_workers: 1) }
+
+        it 'uses keyset iterator query' do
+          # Verify that keyset_iterator_scope is called (complex query path)
+          expect(Gitlab::Pagination::Keyset::Iterator).to receive(:new).and_call_original
+
+          expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+          expect(execute).to have_attributes(
+            payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
+          )
+        end
+
+        it 'processes pipelines correctly with complex query' do
+          expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+
+          records = ci_finished_pipelines
+          expect(records.count).to eq 5
+          expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name)
+        end
+
+        context 'with multiple batches' do
+          before do
+            stub_const("#{described_class}::PIPELINES_BATCH_SIZE", 2)
+          end
+
+          it 'processes all batches with complex query' do
+            expect(Gitlab::Pagination::Keyset::Iterator).to receive(:new).and_call_original
+
+            expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+            expect(execute).to have_attributes(
+              payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
+            )
+          end
+        end
+      end
+
+      context 'with multiple workers' do
+        let(:service) { described_class.new(worker_index: 0, total_workers: 3) }
+
+        it 'uses complex query with Keyset Iterator' do
+          expect(Gitlab::Pagination::Keyset::Iterator).to receive(:new).and_call_original
+
+          # With multiple workers, only a subset of pipelines will be processed by this worker
+          expect { execute }.to change { ci_finished_pipelines_row_count }
+        end
+      end
+    end
+
+    context 'when verifying feature flag behavior' do
+      let(:service) { described_class.new(worker_index: 0, total_workers: 1) }
+
+      it 'produces the same results regardless of feature flag state' do
+        stub_feature_flags(use_simplified_query_for_ch_pipeline_ingestion: false)
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        records_with_ff_disabled = ci_finished_pipelines.sort_by { |r| r[:id] }
+
+        # Clear the ClickHouse table
+        ClickHouse::Client.execute('TRUNCATE TABLE ci_finished_pipelines', :main)
+
+        # Reset sync events
+        Ci::FinishedPipelineChSyncEvent.update_all(processed: false)
+
+        stub_feature_flags(use_simplified_query_for_ch_pipeline_ingestion: true)
+        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        records_with_ff_enabled = ci_finished_pipelines.sort_by { |r| r[:id] }
+
+        # Verify both approaches produce identical results
+        expect(records_with_ff_enabled).to eq(records_with_ff_disabled)
       end
     end
   end

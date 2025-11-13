@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import * as urlUtils from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -133,6 +134,8 @@ describe('WikiForm', () => {
   }
 
   beforeEach(() => {
+    jest.spyOn(urlUtils, 'getParameterByName').mockReturnValue(null);
+
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
     mock = new MockAdapter(axios);
   });

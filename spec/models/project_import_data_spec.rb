@@ -61,26 +61,4 @@ RSpec.describe ProjectImportData do
       expect(import_data.user_mapping_enabled?).to be(false)
     end
   end
-
-  describe '#user_mapping_to_personal_namespace_owner_enabled?' do
-    it 'returns user_mapping_to_personal_namespace_owner_enabled when present in data', :aggregate_failures do
-      import_data_enabled = described_class.new(data: { 'user_mapping_to_personal_namespace_owner_enabled' => true })
-      import_data_disabled = described_class.new(data: { 'user_mapping_to_personal_namespace_owner_enabled' => false })
-
-      expect(import_data_enabled.user_mapping_to_personal_namespace_owner_enabled?).to be(true)
-      expect(import_data_disabled.user_mapping_to_personal_namespace_owner_enabled?).to be(false)
-    end
-
-    it 'returns false when user_mapping_to_personal_namespace_owner_enabled is not present in data' do
-      import_data = described_class.new(data: { 'number' => 10 })
-
-      expect(import_data.user_mapping_to_personal_namespace_owner_enabled?).to be(false)
-    end
-
-    it 'returns false when data is nil' do
-      import_data = described_class.new
-
-      expect(import_data.user_mapping_to_personal_namespace_owner_enabled?).to be(false)
-    end
-  end
 end

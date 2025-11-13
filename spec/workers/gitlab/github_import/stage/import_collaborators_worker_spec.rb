@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project, :in_group, :github_import, :user_mapping_to_personal_namespace_owner_enabled) }
+  let_it_be(:project) { create(:project, :in_group, :github_import) }
 
   let(:settings) { Gitlab::GithubImport::Settings.new(project) }
   let(:stage_enabled) { true }
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
     end
 
     context 'when importing into a personal namespace' do
-      let_it_be(:project) { create(:project, :github_import, :user_mapping_to_personal_namespace_owner_enabled) }
+      let_it_be(:project) { create(:project, :github_import) }
 
       it 'skips collaborators import and calls next stage' do
         expect(Gitlab::GithubImport::Importer::CollaboratorsImporter).not_to receive(:new)
@@ -88,30 +88,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
           .with(project.id, {}, 'issues_and_diff_notes')
 
         worker.import(client, project)
-      end
-
-      context 'and user_mapping_to_personal_namespace_owner is disabled' do
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'imports all collaborators' do
-          waiter = Gitlab::JobWaiter.new(2, '123')
-
-          expect(Gitlab::GithubImport::Importer::CollaboratorsImporter)
-            .to receive(:new)
-            .with(project, client)
-            .and_return(importer)
-          expect(importer).to receive(:execute).and_return(waiter)
-
-          expect(Gitlab::GithubImport::AdvanceStageWorker)
-            .to receive(:perform_async)
-            .with(project.id, { '123' => 2 }, 'issues_and_diff_notes')
-
-          worker.import(client, project)
-        end
       end
     end
   end

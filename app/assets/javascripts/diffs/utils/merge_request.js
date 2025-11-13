@@ -16,14 +16,51 @@ function getVersionInfo({ endpoint } = {}) {
   };
 }
 
+function findFirstText(el) {
+  let txt;
+
+  el.childNodes.forEach((node) => {
+    if (node.nodeType === 3) {
+      if (!txt) {
+        txt = node;
+      }
+    } else {
+      txt = findFirstText(node);
+    }
+  });
+
+  return txt;
+}
+
 export function updateChangesTabCount({
   count,
   badge = document.querySelector('.js-diffs-tab .gl-badge'),
 } = {}) {
-  if (badge) {
+  const setters = {
     // The purpose of this function is to assign to this parameter
-    /* eslint-disable-next-line no-param-reassign */
-    badge.textContent = count || ZERO_CHANGES_ALT_DISPLAY;
+    /* eslint-disable no-param-reassign */
+    TEXT: (node, val) => {
+      node.nodeValue = val;
+    },
+    ELEMENT: (node, val) => {
+      node.textContent = val;
+    },
+    /* eslint-enable no-param-reassign */
+  };
+
+  if (badge) {
+    const txt = findFirstText(badge);
+    let el = badge;
+    let setter;
+
+    if (txt) {
+      setter = setters.TEXT;
+      el = txt;
+    } else {
+      setter = setters.ELEMENT;
+    }
+
+    setter(el, count || ZERO_CHANGES_ALT_DISPLAY);
   }
 }
 

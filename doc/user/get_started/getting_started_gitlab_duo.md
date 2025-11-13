@@ -63,7 +63,8 @@ For example, if you have access to:
 
 For more information, see:
 
-- [The complete list of GitLab Duo features](../gitlab_duo/_index.md).
+- [A decision tree, to help you decide which GitLab Duo features match your workflow](../gitlab_duo/_index.md).
+- [The complete list of GitLab Duo features by add-on](../gitlab_duo/feature_summary.md).
 - [Turn on GitLab Duo features that are still in development](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 ## Step 4: Prepare to use GitLab Duo in your IDE

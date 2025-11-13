@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -77,32 +77,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
         subject.execute
 
         expect(merge_request.metrics.reload.merged_by_id).to eq(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        let_it_be(:merger_source_user) { generate_source_user(project, 999) }
-
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references' do
-          subject.execute
-
-          metrics = merge_request.metrics.reload
-
-          expect(cached_references).to match_array([
-            ['MergeRequest::Metrics', metrics.id, 'merged_by_id', merger_source_user.id]
-          ])
-        end
-
-        it 'imports the merged_by mapped to the placeholder user' do
-          subject.execute
-
-          expect(merge_request.metrics.reload.merged_by_id).to eq(merger_source_user.mapped_user_id)
-        end
       end
     end
 

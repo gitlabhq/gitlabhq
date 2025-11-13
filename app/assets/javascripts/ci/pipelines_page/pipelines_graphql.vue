@@ -10,6 +10,7 @@ import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
+import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -225,6 +226,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.pipelines.loading;
     },
+    isCountLoading() {
+      return this.$apollo.queries.pipelinesCount.loading;
+    },
     hasPipelines() {
       return this.pipelines.list.length > 0;
     },
@@ -264,8 +268,9 @@ export default {
         {
           name: __('All'),
           scope: scopes.all,
-          count: this.pipelinesCount,
+          count: limitedCounterWithDelimiter(this.pipelinesCount),
           isActive: this.scope === scopes.all,
+          isLoading: this.isCountLoading,
         },
         {
           name: __('Finished'),

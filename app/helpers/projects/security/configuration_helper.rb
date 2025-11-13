@@ -13,6 +13,9 @@ module Projects
           anchor: 'enable-security-training-for-vulnerabilities'
         )
       end
+
+      # Overridden in EE
+      def group_configuration_path; end
     end
   end
 end

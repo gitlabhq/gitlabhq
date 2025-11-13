@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::FinishImportWorker, feature_category: :importers do
   let_it_be_with_reload(:project) do
-    create(:project, :in_group, :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled)
+    create(:project, :in_group, :import_user_mapping_enabled)
   end
 
   let_it_be(:import_state) { create(:import_state, :started, project: project) }
@@ -90,37 +90,6 @@ RSpec.describe Gitlab::GithubImport::Stage::FinishImportWorker, feature_category
           worker.import(double(:client), project)
 
           expect(described_class).not_to have_received(:perform_in)
-        end
-
-        context 'and user_mapping_to_personal_namespace_owner is disabled' do
-          before do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          it 'checks the reference store, queues LoadPlaceholderReferencesWorker, and requeues itself' do
-            allow(described_class).to receive(:perform_in)
-            allow(worker).to receive_message_chain(:placeholder_reference_store, :any?).and_return(true)
-            allow(worker).to receive_message_chain(:placeholder_reference_store, :count).and_return(1)
-
-            expect(Import::LoadPlaceholderReferencesWorker).to receive(:perform_async)
-
-            expect(Gitlab::GithubImport::Logger)
-              .to receive(:info)
-              .with(
-                {
-                  message: 'Delaying finalization as placeholder references are pending',
-                  import_stage: 'Gitlab::GithubImport::Stage::FinishImportWorker',
-                  placeholder_store_count: 1,
-                  project_id: project.id
-                }
-              )
-
-            worker.import(double(:client), project)
-
-            expect(described_class).to have_received(:perform_in).with(30.seconds, project.id)
-          end
         end
       end
     end

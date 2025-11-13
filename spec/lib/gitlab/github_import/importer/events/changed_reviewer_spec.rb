@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, :clean_g
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -164,20 +164,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, :clean_g
 
         it_behaves_like 'process review_requested & review_request_removed MR events'
         it_behaves_like 'do not push placeholder reference'
-
-        context 'when user_mapping_to_personal_namespace_owner is disabled' do
-          let_it_be(:source_user) { generate_source_user(project, 1000) }
-          let(:mapped_user_id) { source_user.mapped_user_id }
-
-          before_all do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          it_behaves_like 'process review_requested & review_request_removed MR events'
-          it_behaves_like 'push placeholder reference'
-        end
       end
     end
 

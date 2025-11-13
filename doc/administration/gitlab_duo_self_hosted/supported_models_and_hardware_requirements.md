@@ -105,7 +105,7 @@ This feature is in beta and is therefore subject to change as we gather feedback
 
 **Footnotes**:
 
-1. Support for this model was removed in GitLab 18.5. You should use Mistral Small 24B Instruct 2506 instead.
+1. This model was [deprecated](../../update/deprecations.md#early-mistral-models-deprecated-for-gitlab-duo-self-hosted) in GitLab 18.3. You should use Mistral Small 24B Instruct 2506 instead.
 
 <!-- vale gitlab_base.Spelling = YES -->
 

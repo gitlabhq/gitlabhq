@@ -20,9 +20,6 @@ module Gitlab
         user_contribution_mapping_enabled =
           Feature.enabled?(:bitbucket_server_user_mapping, current_user)
 
-        user_mapping_to_personal_namespace_owner_enabled = user_contribution_mapping_enabled &&
-          Feature.enabled?(:user_mapping_to_personal_namespace_owner, current_user)
-
         ::Projects::CreateService.new(
           current_user,
           name: name,
@@ -40,8 +37,7 @@ module Gitlab
               project_key: project_key,
               repo_slug: repo_slug,
               timeout_strategy: timeout_strategy,
-              user_contribution_mapping_enabled: user_contribution_mapping_enabled,
-              user_mapping_to_personal_namespace_owner_enabled: user_mapping_to_personal_namespace_owner_enabled
+              user_contribution_mapping_enabled: user_contribution_mapping_enabled
             }
           },
           skip_wiki: true

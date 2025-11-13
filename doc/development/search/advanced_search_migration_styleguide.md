@@ -555,6 +555,19 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+You can test this migration with the `'migration reindexes all data'` shared examples.
+If the factory name differs from `DOCUMENT_TYPE`, override `factory_to_create_objects`
+with the correct factory name.
+
+```ruby
+include_examples 'migration reindexes all data' do
+  let(:objects) { create_list(:issue, 3) }
+  let(:factory_to_create_objects) { :work_item }
+  let(:expected_throttle_delay) { 30.seconds }
+  let(:expected_batch_size) { 30_000 }
+end
+```
+
 #### `Search::Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.

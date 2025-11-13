@@ -16,34 +16,6 @@ RSpec.describe Gitlab::Middleware::RackAttackHeaders, feature_category: :rate_li
   end
 
   describe '#call' do
-    context 'when feature flag is disabled' do
-      let(:env) do
-        {
-          'rack.attack.throttle_data' => {
-            'throttle_unauthenticated_api' => {
-              discriminator: '127.0.0.1',
-              count: 5,
-              period: 60,
-              limit: 10,
-              epoch_time: Time.now.to_i
-            }
-          }
-        }
-      end
-
-      before do
-        stub_feature_flags(rate_limiting_headers_for_unthrottled_requests: false)
-      end
-
-      it 'does not add rate limit headers' do
-        result_status, result_headers, result_body = middleware.call(env)
-
-        expect(result_status).to eq(200)
-        expect(result_headers).to be_empty
-        expect(result_body).to eq(['OK'])
-      end
-    end
-
     context 'when no throttle data is present' do
       it 'returns the response without adding headers' do
         result_status, result_headers, result_body = middleware.call(env)

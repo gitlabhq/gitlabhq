@@ -399,6 +399,15 @@ With the `concurrency_limit` property, you can limit the worker's concurrency. I
 a separate `LIST` and re-enqueued when it falls under the limit. `ConcurrencyLimit::ResumeWorker` is a cron
 worker that checks if any throttled jobs should be re-enqueued.
 
+{{< alert type="note" >}}
+
+The `ops` feature flag `concurrency_limit_eager_resume_processing` can be enabled to increase the jobs resumption
+throughput of `ConcurrencyLimit::ResumeWorker`. However, this comes with a risk whereby resumed jobs could surpass
+the concurrency limit when the Sidekiq queue is also backlogged.
+See [issue 579350](https://gitlab.com/gitlab-org/gitlab/-/issues/579350) for more details.
+
+{{< /alert >}}
+
 The first job that crosses the defined concurrency limit initiates the throttling process for all other jobs of this class.
 Until this happens, jobs are scheduled and executed as usual.
 

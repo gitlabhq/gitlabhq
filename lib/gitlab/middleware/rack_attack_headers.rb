@@ -10,8 +10,7 @@ module Gitlab
     # This enables clients to proactively adjust their request rates before hitting limits,
     # improving the overall user experience and reducing unnecessary 429 errors.
     #
-    # The middleware is controlled by the `rate_limiting_headers_for_unthrottled_requests`
-    # feature flag and integrates with {Gitlab::RackAttack::RequestThrottleData} to generate
+    # Integrates with {Gitlab::RackAttack::RequestThrottleData} to generate
     # standardized rate limit headers.
     #
     # @example Typical request flow
@@ -42,8 +41,6 @@ module Gitlab
       def call(env)
         status, headers, body = @app.call(env)
 
-        return [status, headers, body] unless feature_enabled?
-
         # Add rate limit headers if Rack::Attack has throttle data
         if should_add_headers?(env, status)
           rate_limit_headers = generate_headers(env)
@@ -54,13 +51,6 @@ module Gitlab
       end
 
       private
-
-      def feature_enabled?
-        Feature.enabled?(
-          :rate_limiting_headers_for_unthrottled_requests,
-          Feature.current_request
-        )
-      end
 
       # Determine whether rate limit headers should be added to this response
       #

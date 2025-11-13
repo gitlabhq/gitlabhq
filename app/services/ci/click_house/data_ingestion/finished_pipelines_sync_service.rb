@@ -108,10 +108,19 @@ module Ci
           }
         end
 
+        def use_simplified_query_for_ch_pipeline_ingestion?
+          @total_workers == 1 && Feature.enabled?(:use_simplified_query_for_ch_pipeline_ingestion, :instance)
+        end
+
         def csv_batches
           events_batches_enumerator = Enumerator.new do |small_batches_yielder|
             # Main loop to page through the events
-            keyset_iterator_scope.each_batch(of: PIPELINES_BATCH_SIZE) { |batch| small_batches_yielder << batch }
+            if use_simplified_query_for_ch_pipeline_ingestion?
+              scope.each_batch(of: PIPELINES_BATCH_SIZE) { |batch| small_batches_yielder << batch }
+            else
+              keyset_iterator_scope.each_batch(of: PIPELINES_BATCH_SIZE) { |batch| small_batches_yielder << batch }
+            end
+
             @reached_end_of_table = true
           end
 
@@ -191,6 +200,10 @@ module Ci
         end
         strong_memoize_attr :finished_pipeline_projections
 
+        def scope
+          Ci::FinishedPipelineChSyncEvent.pending.order_by_pipeline_id
+        end
+
         def keyset_iterator_scope
           lower_bound = (@worker_index * PIPELINE_ID_PARTITIONS / @total_workers).to_i
           upper_bound = ((@worker_index + 1) * PIPELINE_ID_PARTITIONS / @total_workers).to_i - 1
@@ -210,8 +223,7 @@ module Ci
             }
           }
 
-          Gitlab::Pagination::Keyset::Iterator.new(
-            scope: Ci::FinishedPipelineChSyncEvent.pending.order_by_pipeline_id, **opts)
+          Gitlab::Pagination::Keyset::Iterator.new(scope: scope, **opts)
         end
       end
     end

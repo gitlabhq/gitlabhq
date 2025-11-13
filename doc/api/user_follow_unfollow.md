@@ -31,7 +31,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/users/3/follow"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/users/3/follow"
 ```
 
 Example response:
@@ -65,7 +67,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/users/3/unfollow"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/users/3/unfollow"
 ```
 
 ## List all accounts that follow a user
@@ -85,7 +89,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>"  "https://gitlab.example.com/users/3/followers"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/users/3/followers"
 ```
 
 Example response:
@@ -130,5 +136,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>"  "https://gitlab.example.com/users/3/following"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/users/3/following"
 ```

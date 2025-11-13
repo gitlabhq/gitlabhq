@@ -13,8 +13,6 @@ RSpec.describe Members::Projects::CreatorService, feature_category: :groups_and_
     end
   end
 
-  it_behaves_like 'owner management'
-
   describe '.add_members' do
     it_behaves_like 'bulk member creation' do
       let_it_be(:source_type) { Project }

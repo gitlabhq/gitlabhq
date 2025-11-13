@@ -287,6 +287,7 @@ describe('Pipelines app', () => {
         isActive: true,
         name: 'All',
         scope: 'all',
+        isLoading: false,
       });
     });
 

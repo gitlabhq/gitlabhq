@@ -25,7 +25,6 @@ RSpec.describe 'Rack Attack Headers', :use_clean_rails_memory_store_caching,
 
   before do
     settings.update!(settings_to_set)
-    stub_feature_flags(rate_limiting_headers_for_unthrottled_requests: true)
   end
 
   describe 'rate limit headers for unthrottled requests' do
@@ -97,23 +96,6 @@ RSpec.describe 'Rack Attack Headers', :use_clean_rails_memory_store_caching,
         expect(response.headers['RateLimit-Name']).to eq('throttle_authenticated_api')
         expect(response.headers).to include('RateLimit-Limit')
         expect(response.headers).to include('RateLimit-Remaining')
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limiting_headers_for_unthrottled_requests: false)
-      end
-
-      it 'does not include rate limit headers' do
-        get '/api/v4/projects'
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers).not_to include('RateLimit-Name')
-        expect(response.headers).not_to include('RateLimit-Limit')
-        expect(response.headers).not_to include('RateLimit-Observed')
-        expect(response.headers).not_to include('RateLimit-Remaining')
-        expect(response.headers).not_to include('RateLimit-Reset')
       end
     end
 

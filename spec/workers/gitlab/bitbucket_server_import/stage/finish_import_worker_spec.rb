@@ -6,7 +6,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::FinishImportWorker, feature
   let_it_be_with_reload(:project) do
     create(
       :project, :import_started, :in_group,
-      :user_mapping_to_personal_namespace_owner_enabled,
       import_type: :bitbucket_server
     )
   end

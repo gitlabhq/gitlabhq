@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled,
+      :import_user_mapping_enabled,
       group: group
     )
   end
@@ -313,34 +313,6 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
 
               imported_push_access_level = project.protected_branches.first.push_access_levels.first
               expect(imported_push_access_level.user_id).to eq(user_namespace.owner_id)
-            end
-
-            context 'when user_mapping_to_personal_namespace_owner is disabled' do
-              before_all do
-                project.build_or_assign_import_data(
-                  data: { user_mapping_to_personal_namespace_owner_enabled: false }
-                ).save!
-              end
-
-              it 'pushes placeholder references' do
-                importer.execute
-
-                imported_push_access_level = project.protected_branches.first.push_access_levels.first
-                source_user = Import::SourceUser.last
-
-                expect(user_references).to match_array([
-                  ['ProtectedBranch::PushAccessLevel', imported_push_access_level.id, 'user_id', source_user.id]
-                ])
-              end
-
-              it 'creates protected branch mapped to the placeholder user' do
-                importer.execute
-
-                imported_push_access_level = project.protected_branches.first.push_access_levels.first
-                source_user = Import::SourceUser.last
-
-                expect(imported_push_access_level.user_id).to eq(source_user.mapped_user_id)
-              end
             end
           end
 

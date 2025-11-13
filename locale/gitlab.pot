@@ -20026,6 +20026,9 @@ msgstr ""
 msgid "Create a new repository"
 msgstr ""
 
+msgid "Create a new wiki page using this template"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -20066,6 +20069,9 @@ msgid "Create epic"
 msgstr ""
 
 msgid "Create from"
+msgstr ""
+
+msgid "Create from template"
 msgstr ""
 
 msgid "Create group"
@@ -34660,9 +34666,6 @@ msgid "ImportProjects|To import collaborators, or if your project has Git LFS fi
 msgstr ""
 
 msgid "ImportProjects|Update of imported projects with realtime changes failed"
-msgstr ""
-
-msgid "ImportProjects|When you import to a personal namespace, all contributions are assigned to a single non-functional user and they cannot be reassigned. To map contributions to real users, import to a group instead."
 msgstr ""
 
 msgid "ImportProjects|When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned. To map contributions to real users, import to a group instead."
@@ -75070,6 +75073,12 @@ msgid "Wiki|Could not access the Wiki Repository at this time."
 msgstr ""
 
 msgid "Wiki|Create a new page under \"%{page_title}\""
+msgstr ""
+
+msgid "Wiki|Create a new wiki page using this template"
+msgstr ""
+
+msgid "Wiki|Create from template"
 msgstr ""
 
 msgid "Wiki|Edit custom sidebar"

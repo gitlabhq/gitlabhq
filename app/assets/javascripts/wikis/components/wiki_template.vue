@@ -5,6 +5,7 @@ import { __, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { InternalEvents } from '~/tracking';
+import { getParameterByName } from '~/lib/utils/url_utility';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -31,7 +32,7 @@ export default {
   data() {
     return {
       searchTerm: '',
-      selectedTemplate: null,
+      selectedTemplatePath: null,
     };
   },
   computed: {
@@ -46,7 +47,7 @@ export default {
     },
     toggleText() {
       const selectedTemplateLabel = this.templatesList.find(
-        ({ value }) => value === this.selectedTemplate,
+        ({ value }) => value === this.selectedTemplatePath,
       )?.text;
 
       return selectedTemplateLabel
@@ -54,11 +55,26 @@ export default {
         : __('Choose a template');
     },
   },
+  mounted() {
+    this.autoSelectTemplate();
+  },
   methods: {
+    autoSelectTemplate() {
+      const selectedTemplateSlug = getParameterByName('selected_template_slug');
+      if (!selectedTemplateSlug) return;
+
+      const selected = this.templates.find((template) => template.slug === selectedTemplateSlug);
+      if (!selected) return;
+
+      const selectedTemplatePath = `${selected.path}/raw`;
+      this.selectTemplate(selectedTemplatePath);
+    },
     filterTemplates(searchTerm) {
       this.searchTerm = searchTerm;
     },
     async selectTemplate(templatePath) {
+      this.selectedTemplatePath = templatePath;
+
       const template = await axios.get(templatePath);
       this.trackEvent('apply_wiki_template');
       this.$emit('input', template.data);
@@ -83,7 +99,7 @@ export default {
 
 <template>
   <gl-collapsible-listbox
-    v-model="selectedTemplate"
+    v-model="selectedTemplatePath"
     :items="templatesList"
     searchable
     block

@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :bitbucket_server_import, :in_group,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -221,33 +221,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
         reply_note = notes.last
         expect(start_note.author_id).to eq(user_namespace.owner_id)
         expect(reply_note.author_id).to eq(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references' do
-          importer.execute(pr_inline_comment)
-
-          expect(cached_references).to contain_exactly(
-            ['DiffNote', instance_of(Integer), 'author_id', note_source_user.id],
-            ['DiffNote', instance_of(Integer), 'author_id', reply_source_user.id]
-          )
-        end
-
-        it 'imports the threaded discussion mapped to the placeholder user' do
-          importer.execute(pr_inline_comment)
-
-          notes = merge_request.notes.order(:id).to_a
-          start_note = notes.first
-          reply_note = notes.last
-          expect(start_note.author_id).to eq(note_source_user.mapped_user_id)
-          expect(reply_note.author_id).to eq(reply_source_user.mapped_user_id)
-        end
       end
     end
 

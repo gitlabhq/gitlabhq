@@ -9,7 +9,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :bitbucket_server_import, :in_group,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -189,34 +189,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
 
         expect(merge_request.author_id).to eq(user_namespace.owner_id)
         expect(merge_request.reviewer_ids).to contain_exactly(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references' do
-          importer.execute
-
-          expect(cached_references).to contain_exactly(
-            ['MergeRequestReviewer', instance_of(Integer), 'user_id', reviewer_1_source_user.id],
-            ['MergeRequestReviewer', instance_of(Integer), 'user_id', reviewer_2_source_user.id],
-            ['MergeRequest', instance_of(Integer), 'author_id', author_source_user.id]
-          )
-        end
-
-        it 'creates the merge request mapped to the placeholder user' do
-          importer.execute
-
-          merge_request = project.merge_requests.find_by_iid(pull_request.iid)
-
-          expect(merge_request.author_id).to eq(author_source_user.mapped_user_id)
-          expect(merge_request.reviewer_ids).to match_array([reviewer_1_source_user.mapped_user_id,
-            reviewer_2_source_user.mapped_user_id])
-        end
       end
     end
 

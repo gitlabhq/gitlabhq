@@ -101,5 +101,50 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageService,
         end
       end
     end
+
+    context 'for large number of components', :request_store do
+      let_it_be(:test_resource) { create(:ci_catalog_resource) }
+      let_it_be(:test_projects) { create_list(:project, 3) }
+
+      it 'executes queries efficiently without N+1' do
+        # Create 5 components with usage
+        components_batch1 = create_list(:ci_catalog_resource_component, 5, catalog_resource: test_resource)
+        components_batch1.each do |component|
+          test_projects.sample(2).each do |project|
+            create(:catalog_resource_component_last_usage,
+              component: component,
+              catalog_resource: test_resource,
+              component_project: component.project,
+              used_by_project_id: project.id,
+              last_used_date: rand(1..29).days.ago.to_date
+            )
+          end
+        end
+
+        # Measure query count with 5 components
+        query_count_5 = ActiveRecord::QueryRecorder.new { service.execute }.count
+
+        # Add 5 more components with usage (total now 10)
+        components_batch2 = create_list(:ci_catalog_resource_component, 5, catalog_resource: test_resource)
+        components_batch2.each do |component|
+          test_projects.sample(2).each do |project|
+            create(:catalog_resource_component_last_usage,
+              component: component,
+              catalog_resource: test_resource,
+              component_project: component.project,
+              used_by_project_id: project.id,
+              last_used_date: rand(1..29).days.ago.to_date
+            )
+          end
+        end
+
+        # Measure query count with 10 components
+        query_count_10 = ActiveRecord::QueryRecorder.new { service.execute }.count
+
+        # With optimization: both should use same number of queries (1 batch)
+        # Without optimization: query_count_10 would be ~2x query_count_5 (N+1)
+        expect(query_count_10).to eq(query_count_5)
+      end
+    end
   end
 end

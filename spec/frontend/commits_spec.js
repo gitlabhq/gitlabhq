@@ -30,10 +30,18 @@ describe('Commits List', () => {
       <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main">
         <input id="commits-search">
       </form>
-      <ol id="commits-list">
-        <button class="js-toggle-button" data-commit-id="123">Toggle</button>
-        <div class="js-toggle-content" data-commit-id="123"></div>
-      </ol>
+      <div id="commits-list" class="js-infinite-scrolling-root">
+        <ol class="content_list">
+          <li>
+            Commit
+            <button class="js-toggle-button" data-commit-id="123">Toggle</button>
+            <div class="js-toggle-content" data-commit-id="123"></div>
+          </li>
+        </ol>
+        <div class="js-infinite-scrolling-page-end">
+          <div class="js-infinite-scrolling-loading"></div>
+        </div>
+      </div>
     `);
     commitsList = new CommitsList(25);
   });

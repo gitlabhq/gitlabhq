@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -252,33 +252,6 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
               note = project.notes.diff_notes.take
               expect(note.author_id).to eq(user_namespace.owner_id)
             end
-
-            context 'when user_mapping_to_personal_namespace_owner is disabled' do
-              let_it_be(:source_user) { generate_source_user(project, user.id) }
-
-              before_all do
-                project.build_or_assign_import_data(
-                  data: { user_mapping_to_personal_namespace_owner_enabled: false }
-                ).save!
-              end
-
-              it 'pushes placeholder references' do
-                subject.execute
-
-                expect(cached_references).to contain_exactly(
-                  ['DiffNote', instance_of(Integer), 'author_id', source_user.id]
-                )
-              end
-
-              it 'imports the diff note mapped to the placeholder user' do
-                expect { subject.execute }
-                  .to change(DiffNote, :count)
-                  .by(1)
-
-                note = project.notes.diff_notes.take
-                expect(note.author_id).to eq(source_user.mapped_user_id)
-              end
-            end
           end
         end
 
@@ -310,33 +283,6 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
             note = project.notes.diff_notes.take
             expect(note.author_id).to eq(user_namespace.owner_id)
-          end
-
-          context 'when user_mapping_to_personal_namespace_owner is disabled' do
-            let_it_be(:source_user) { generate_source_user(project, user.id) }
-
-            before_all do
-              project.build_or_assign_import_data(
-                data: { user_mapping_to_personal_namespace_owner_enabled: false }
-              ).save!
-            end
-
-            it 'pushes placeholder references' do
-              subject.execute
-
-              expect(cached_references).to contain_exactly(
-                ['LegacyDiffNote', instance_of(Integer), 'author_id', source_user.id]
-              )
-            end
-
-            it 'imports the legacy diff note mapped to the placeholder user' do
-              expect { subject.execute }
-                .to change(LegacyDiffNote, :count)
-                .by(1)
-
-              note = project.notes.diff_notes.take
-              expect(note.author_id).to eq(source_user.mapped_user_id)
-            end
           end
         end
       end

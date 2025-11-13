@@ -4,7 +4,8 @@ require 'spec_helper'
 require 'sentry/transport/dummy_transport'
 
 RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
-  let(:exception) { RuntimeError.new('boom') }
+  let(:exception_backtrace) { ['lib/gitlab/error_tracking.rb:123'] }
+  let(:exception) { RuntimeError.new('boom').tap { |e| e.set_backtrace(exception_backtrace) } }
   let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
   let(:extra) { { issue_url: issue_url, some_other_info: 'info' } }
 
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
     {
       'exception.class' => 'RuntimeError',
       'exception.message' => 'boom',
+      'exception.backtrace' => exception_backtrace,
       'tags.program' => 'test',
       'tags.locale' => 'en',
       'tags.feature_category' => 'feature_a',
@@ -44,6 +46,38 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
 
   let(:sentry_event) do
     Sentry.get_current_client.transport.events.last
+  end
+
+  shared_examples 'ensures backtrace for exception' do
+    context 'when exception has no backtrace' do
+      let(:exception) { RuntimeError.new('boom') }
+
+      it 'sets backtrace before processing' do
+        expect(exception.backtrace).to be_nil
+
+        begin
+          process_exception
+        rescue StandardError
+          nil
+        end
+
+        expect(exception.backtrace).to be_present
+      end
+    end
+
+    context 'when exception already has backtrace' do
+      it 'does not override existing backtrace' do
+        original_backtrace = exception.backtrace.dup
+
+        begin
+          process_exception
+        rescue StandardError
+          nil
+        end
+
+        expect(exception.backtrace).to eq(original_backtrace)
+      end
+    end
   end
 
   before do
@@ -133,6 +167,10 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
           some_other_info: 'info'
         )
       end
+
+      it_behaves_like 'ensures backtrace for exception' do
+        let(:process_exception) { described_class.track_and_raise_for_dev_exception(exception) }
+      end
     end
   end
 
@@ -174,6 +212,10 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
         end
       end.to raise_error(RuntimeError, /boom/)
     end
+
+    it_behaves_like 'ensures backtrace for exception' do
+      let(:process_exception) { described_class.track_and_raise_exception(exception) }
+    end
   end
 
   describe '.log_and_raise_exception' do
@@ -208,6 +250,10 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
 
         expect { log_and_raise_exception }.to raise_error(RuntimeError)
       end
+    end
+
+    it_behaves_like 'ensures backtrace for exception' do
+      let(:process_exception) { log_and_raise_exception }
     end
   end
 
@@ -298,6 +344,10 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
           exception, a_hash_including(extra: a_hash_including(extra))
         )
       end
+    end
+
+    it_behaves_like 'ensures backtrace for exception' do
+      let(:process_exception) { track_exception }
     end
   end
 

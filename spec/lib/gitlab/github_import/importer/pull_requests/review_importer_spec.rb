@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -330,19 +330,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
       end
 
       it_behaves_like 'importing a review', push_placeholder_references: false
-
-      context 'and user_mapping_to_personal_namespace_owner is disabled' do
-        let_it_be(:source_user) { generate_source_user(project, 999) }
-        let_it_be(:author) { source_user.mapped_user }
-
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it_behaves_like 'importing a review', push_placeholder_references: true
-      end
     end
   end
 

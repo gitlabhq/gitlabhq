@@ -10,7 +10,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :wiki_disabled, :in_group,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled,
+      :import_user_mapping_enabled,
       import_url: "#{repo_root}/foo/group/project.git",
       import_type: ::Import::SOURCE_GITEA
     )
@@ -270,39 +270,6 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
           expect(Kernel).not_to receive(:sleep)
 
           importer.execute
-        end
-
-        context 'when user_mapping_to_personal_namespace_owner is disabled' do
-          before_all do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          it 'loads placeholder references after each relevant stage' do
-            stages_that_push_placeholder_references = [
-              :import_pull_requests, :import_issues, :import_comments
-            ]
-
-            expect(::Import::LoadPlaceholderReferencesWorker).to receive(:perform_async).exactly(
-              stages_that_push_placeholder_references.length
-            ).times.with(
-              project.import_type,
-              project.import_state.id
-            )
-
-            importer.execute
-          end
-
-          it 'waits for the placeholder references to be loaded from the store without error' do
-            allow(store).to receive(:empty?).and_return(false, false, false, false, true)
-
-            expect(Kernel).to receive(:sleep).with(0.01).exactly(4).times
-
-            importer.execute
-
-            expect(Gitlab::Json.parse(project.import_state.last_error)).to be_nil
-          end
         end
       end
 

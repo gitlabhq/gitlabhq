@@ -703,11 +703,4 @@ FactoryBot.define do
       project.import_data.merge_data({ user_contribution_mapping_enabled: true })
     end
   end
-
-  trait :user_mapping_to_personal_namespace_owner_enabled do
-    after(:build) do |project|
-      project.import_data ||= project.build_import_data
-      project.import_data.merge_data({ user_mapping_to_personal_namespace_owner_enabled: true })
-    end
-  end
 end

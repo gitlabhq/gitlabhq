@@ -5,14 +5,12 @@
  * Application chrome
  */
 
-:where(.application-chrome) {
+.application-chrome {
   // Scroll bars styles
-  * {
-    scrollbar-color: var(--gl-color-neutral-400) transparent;
+  scrollbar-color: var(--gl-color-neutral-400) transparent;
 
-    @media (forced-colors: active) {
-      scrollbar-color: var(--gl-color-neutral-950) transparent;
-    }
+  @media (forced-colors: active) {
+    scrollbar-color: var(--gl-color-neutral-950) transparent;
   }
 
   // Variable overrides
@@ -84,12 +82,9 @@
     }
   }
 
-  .header-message + .super-topbar {
-    @apply gl-mt-5;
-  }
-
-  &.page-with-panels:has(.footer-message) .layout-page {
-    @apply gl-mb-5;
+  .header-message,
+  .footer-message {
+    position: static !important;
   }
 
   // Quick search overlay
@@ -243,7 +238,7 @@
  * Panels
  */
 
-:where(.page-with-panels) {
+.page-with-panels {
   --ai-panel-height: 3rem; //= 48px
 
   @include media-breakpoint-up(lg) {
@@ -682,7 +677,7 @@
  * Duo chat
  */
 
- :where(.application-chrome) {
+ .application-chrome {
 
   // Your messages
   .duo-chat-message-container:has(.duo-chat-message .gl-avatar) {
@@ -882,7 +877,7 @@
  * Animations
  */
 
-:where(.application-chrome) {
+.application-chrome {
   .nav-flyout-menu {
     @include gl-prefers-reduced-motion-transition;
     transition: opacity .2s .1s $gl-easing-out-cubic;
@@ -949,7 +944,7 @@
 
 // Issue sidebar
 @include gl-container-width-up(md) {
-  &:where(.application-chrome) {
+  &.application-chrome {
     .work-item-attributes-wrapper {
       top: calc(#{$work-item-sticky-header-height} + #{$gl-spacing-scale-3}) !important;
       height: calc(var(--panel-content-inner-height) - var(--work-item-sticky-header-height) - 1.5rem + 1px) !important; // 1.5rem is to account for padding, the +1px is to account for a border
@@ -962,7 +957,7 @@
 }
 
 @include gl-container-width-up(xl) {
-  &:where(.application-chrome) {
+  &.application-chrome {
     .boards-app.boards-app .issues-details-filters {
       @apply gl-px-5;
     }
@@ -970,7 +965,7 @@
 }
 
 @include gl-container-width-down(xl) {
-  &:where(.application-chrome) {
+  &.application-chrome {
     .board-content {
       @apply gl-pt-3;
       @apply gl-px-3;

@@ -55,7 +55,6 @@ module Gitlab
             optional_stages: optional_stages,
             timeout_strategy: user_settings[:timeout_strategy],
             user_contribution_mapping_enabled: user_contribution_mapping_enabled?,
-            user_mapping_to_personal_namespace_owner_enabled: user_mapping_to_personal_namespace_owner_flag_enabled?,
             pagination_limit: user_settings[:pagination_limit]
           },
           credentials: project.import_data&.credentials
@@ -77,9 +76,7 @@ module Gitlab
       end
 
       def map_to_personal_namespace_owner?
-        return false unless project.root_ancestor.user_namespace?
-
-        project.import_data&.data&.dig('user_mapping_to_personal_namespace_owner_enabled') || false
+        project.root_ancestor.user_namespace?
       end
 
       private
@@ -106,15 +103,6 @@ module Gitlab
                        end
 
         !!flag_by_type
-      end
-
-      def user_mapping_to_personal_namespace_owner_flag_enabled?
-        return false unless user_contribution_mapping_enabled?
-
-        Feature.enabled?(
-          :user_mapping_to_personal_namespace_owner,
-          User.actor_from_id(project.creator_id)
-        )
       end
     end
   end

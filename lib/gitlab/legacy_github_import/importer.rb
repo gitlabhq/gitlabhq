@@ -379,8 +379,7 @@ module Gitlab
       def should_map_users?
         return false unless project.import_data.user_mapping_enabled?
 
-        return false if project.root_ancestor.user_namespace? &&
-          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
+        return false if project.root_ancestor.user_namespace?
 
         true
       end

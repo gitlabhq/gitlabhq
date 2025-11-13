@@ -32,6 +32,7 @@
       author_url: wiki_page_version_author_url(@page.historical? ? @page.version.commit : @page.last_version),
       history_url: page_history,
       templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+      create_from_template_url: @page.template? ? wiki_path(@wiki, action: :new, selected_template_slug: @page.slug) : nil,
       format_options: wiki_markup_hash_by_name_id.to_json,
       templates: templates.to_json,
       current_user_data: UserSerializer.new.represent(current_user, {only_path: false}, CurrentUserEntity).to_json,

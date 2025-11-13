@@ -52824,8 +52824,8 @@ The environment of a workflow.
 | <a id="workflowenvironmentambient"></a>`AMBIENT` | Ambient environment. |
 | <a id="workflowenvironmentchat"></a>`CHAT` | Chat environment. |
 | <a id="workflowenvironmentchat_partial"></a>`CHAT_PARTIAL` | Chat Partial environment. |
-| <a id="workflowenvironmentide"></a>`IDE` | Ide environment. |
-| <a id="workflowenvironmentweb"></a>`WEB` | Web environment. |
+| <a id="workflowenvironmentide"></a>`IDE` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 18.6. This was renamed. Use: `CHAT`. |
+| <a id="workflowenvironmentweb"></a>`WEB` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 18.6. This was renamed. Use: `AMBIENT`. |
 
 ### `WorkspaceVariableInputType`
 

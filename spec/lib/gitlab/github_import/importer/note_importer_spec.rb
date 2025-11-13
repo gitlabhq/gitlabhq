@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
   let_it_be_with_reload(:project) do
     create(
       :project, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -126,36 +126,6 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
               .and_call_original
 
             importer.execute
-          end
-
-          context 'when user_mapping_to_personal_namespace_owner is disabled' do
-            let_it_be(:source_user) { generate_source_user(project, '4') }
-
-            before_all do
-              project.build_or_assign_import_data(
-                data: { user_mapping_to_personal_namespace_owner_enabled: false }
-              ).save!
-            end
-
-            it 'pushes placeholder references' do
-              importer.execute
-
-              expect(cached_references).to contain_exactly(
-                ['Note', instance_of(Integer), 'author_id', source_user.id]
-              )
-            end
-
-            it 'imports the note mapped to the placeholder user' do
-              expect(ApplicationRecord)
-                .to receive(:legacy_bulk_insert)
-                .with(
-                  Note.table_name,
-                  [a_hash_including(author_id: source_user.mapped_user_id)],
-                  { return_ids: true }
-                ).and_call_original
-
-              importer.execute
-            end
           end
         end
       end

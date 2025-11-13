@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
   let_it_be_with_reload(:project) do
     create(
       :project, :repository, :in_group, :github_import,
-      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+      :import_user_mapping_enabled
     )
   end
 
@@ -137,37 +137,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         created_merge_request = MergeRequest.last
         expect(created_merge_request.author_id).to eq(user_namespace.owner_id)
         expect(created_merge_request.assignee_ids).to contain_exactly(user_namespace.owner_id)
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        let_it_be(:source_user_1) { generate_source_user(project, user_representation_1.id) }
-        let_it_be(:source_user_2) { generate_source_user(project, user_representation_2.id) }
-
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references' do
-          importer.execute
-
-          created_merge_request = MergeRequest.last
-          created_mr_assignee = created_merge_request.merge_request_assignees.first
-
-          expect(user_references).to match_array([
-            ['MergeRequest', created_merge_request.id, 'author_id', source_user_1.id],
-            ['MergeRequestAssignee', created_mr_assignee.id, 'user_id', source_user_2.id]
-          ])
-        end
-
-        it 'imports the pull request mapped to the placeholder users' do
-          expect { importer.execute }.to change { MergeRequest.count }.from(0).to(1)
-
-          created_merge_request = MergeRequest.last
-          expect(created_merge_request.author_id).to eq(source_user_1.mapped_user_id)
-          expect(created_merge_request.assignee_ids).to contain_exactly(source_user_2.mapped_user_id)
-        end
       end
     end
 

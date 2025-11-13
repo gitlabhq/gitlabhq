@@ -42,6 +42,7 @@ export default {
     authorUrl: { default: null },
     isEditingPath: { default: null },
     wikiUrl: { default: null },
+    createFromTemplateUrl: { default: null },
     pagePersisted: { default: null },
     queryVariables: { default: null },
   },
@@ -60,6 +61,9 @@ export default {
     };
   },
   computed: {
+    showCreateFromTemplateButton() {
+      return this.showEditButton && this.isPageTemplate && this.createFromTemplateUrl;
+    },
     pageHeadingComputed() {
       let { pageHeading } = this;
 
@@ -175,6 +179,8 @@ export default {
     newSidebar: s__('Wiki|New custom sidebar'),
     editSidebar: s__('Wiki|Edit custom sidebar'),
     lastEdited: s__('Wiki|Last edited by %{author} %{timeago}'),
+    createFromTemplate: s__('Wiki|Create from template'),
+    createFromTemplateTitle: s__('Wiki|Create a new wiki page using this template'),
   },
   modal: {
     restoreVersionModalId: 'wiki-restore-version-modal',
@@ -201,6 +207,16 @@ export default {
         </span>
       </template>
       <template v-if="!isEditingPath" #actions>
+        <gl-button
+          v-if="showCreateFromTemplateButton"
+          v-gl-tooltip.html
+          :title="$options.i18n.createFromTemplateTitle"
+          data-testid="wiki-create-from-template-button"
+          :href="createFromTemplateUrl"
+        >
+          {{ $options.i18n.createFromTemplate }}
+        </gl-button>
+
         <gl-button
           v-if="showRestoreVersionButton"
           v-gl-modal="$options.modal.restoreVersionModalId"

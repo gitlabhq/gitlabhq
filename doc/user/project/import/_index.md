@@ -112,6 +112,7 @@ difficult, but several tools exist including:
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
 - Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag `gitea_user_mapping` removed.
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
 
 {{< /history >}}
 
@@ -174,10 +175,8 @@ This feature is meant to prevent accidental reassignment to users outside your o
 When you use a supported method to import projects to a
 [personal namespace](../../namespace/_index.md#types-of-namespaces),
 user contribution mapping is not supported.
-When you import to a personal namespace and the `user_mapping_to_personal_namespace_owner` feature flag
-is enabled, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
-When the `user_mapping_to_personal_namespace_owner` feature flag is disabled, all contributions are
-assigned to a single non-functional user called `Import User` and they cannot be reassigned.
+When you import to a personal namespace, all contributions are assigned to the
+personal namespace owner and they cannot be reassigned.
 
 {{< /alert >}}
 
@@ -214,10 +213,7 @@ A placeholder user is created for each user on the source instance, except in th
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.
 - You're importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces)
-  and the `user_mapping_to_personal_namespace_owner` feature flag is enabled.
   Contributions are assigned to the personal namespace owner.
-  When the `user_mapping_to_personal_namespace_owner` is disabled,
-  contributions are assigned to a single non-functional user called `Import User`.
 
 #### Placeholder user attributes
 

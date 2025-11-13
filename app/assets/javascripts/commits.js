@@ -39,9 +39,10 @@ export default class CommitsList {
     this.timer = null;
 
     this.$contentList = $('.content_list');
+    const root = document.querySelector('.js-infinite-scrolling-root');
 
     const scroller = new InfiniteScroller({
-      root: document.querySelector('.js-infinite-scrolling-root'),
+      root,
       fetchNextPage: async (offset, signal) => {
         return axios
           .get(removeParams(['limit', 'offset']), {
@@ -60,9 +61,12 @@ export default class CommitsList {
       limit,
       startingOffset: parseInt(getParameterByName('offset'), 10) || limit,
     });
-    scroller.initialize();
+    if (this.$contentList.find('[data-empty-list]')) {
+      root.querySelector('.js-infinite-scrolling-loading').hidden = true;
+    } else {
+      scroller.initialize();
+    }
 
-    this.content = $('#commits-list');
     this.searchField = $('#commits-search');
     this.lastSearch = this.searchField.val();
     this.initSearch();
@@ -78,13 +82,15 @@ export default class CommitsList {
   }
 
   initCommitDetails() {
-    this.content.on('click', '.js-toggle-button', ({ currentTarget }) =>
+    this.$contentList.on('click', '.js-toggle-button', ({ currentTarget }) =>
       this.handleToggleCommitDetails(currentTarget.dataset),
     );
   }
 
   async handleToggleCommitDetails({ commitId }) {
-    const contentElement = this.content.find(`.js-toggle-content[data-commit-id="${commitId}"]`);
+    const contentElement = this.$contentList.find(
+      `.js-toggle-content[data-commit-id="${commitId}"]`,
+    );
     if (!contentElement || contentElement.data('content-loaded')) return;
     contentElement.html(loadingIconForLegacyJS({ inline: true, size: 'sm' }));
 
@@ -107,7 +113,7 @@ export default class CommitsList {
     const search = this.searchField.val();
     if (search === this.lastSearch) return Promise.resolve();
     const commitsUrl = `${form.attr('action')}?${form.serialize()}`;
-    this.content.addClass('gl-opacity-5');
+    this.$contentList.addClass('gl-opacity-5');
     const params = form.serializeArray().reduce(
       (acc, obj) =>
         Object.assign(acc, {
@@ -122,8 +128,8 @@ export default class CommitsList {
       })
       .then(({ data }) => {
         this.lastSearch = search;
-        this.content.html(data.html);
-        this.content.removeClass('gl-opacity-5');
+        this.$contentList.html(data.html);
+        this.$contentList.removeClass('gl-opacity-5');
 
         // Change url so if user reload a page - search results are saved
         window.history.replaceState(
@@ -135,7 +141,7 @@ export default class CommitsList {
         );
       })
       .catch(() => {
-        this.content.removeClass('gl-opacity-5');
+        this.$contentList.removeClass('gl-opacity-5');
         this.lastSearch = null;
       });
   }

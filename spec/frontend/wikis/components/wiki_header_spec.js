@@ -83,6 +83,31 @@ describe('wikis/components/wiki_header', () => {
   const findLastVersion = () => wrapper.findByTestId('wiki-page-last-version');
   const findSidebarToggle = () => wrapper.findByTestId('wiki-sidebar-toggle');
   const findRestoreVersionButton = () => wrapper.findByTestId('wiki-restore-version-button');
+  const findCreateFromTemplateButton = () =>
+    wrapper.findByTestId('wiki-create-from-template-button');
+
+  describe('create from template functionality', () => {
+    it('renders create from template button if it is a template page', () => {
+      const createFromTemplateUrl =
+        'http://gdk.local/gitlab-org/gitlab/wiki/template/new?template_id=3';
+      buildWrapper({ isPageTemplate: true, createFromTemplateUrl });
+
+      expect(findCreateFromTemplateButton().exists()).toBe(true);
+      expect(findCreateFromTemplateButton().attributes('href')).toBe(createFromTemplateUrl);
+    });
+
+    it('does not render create from template button if it is not a template page', () => {
+      buildWrapper({ isPageTemplate: false, createFromTemplateUrl: 'http://some-url.com' });
+
+      expect(findCreateFromTemplateButton().exists()).toBe(false);
+    });
+
+    it('does not render create from template button if user has no permission', () => {
+      buildWrapper({ showEditButton: false });
+
+      expect(findCreateFromTemplateButton().exists()).toBe(false);
+    });
+  });
 
   describe('restore version functionality', () => {
     it('renders restore version button if user has permission', () => {

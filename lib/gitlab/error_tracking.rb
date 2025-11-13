@@ -133,6 +133,10 @@ module Gitlab
       end
 
       def process_exception(exception, extra:, tags: {}, trackers: default_trackers)
+        # Manually set backtrace for exceptions created with ErrorClass.new since they don't have one until they're
+        # raised
+        exception.set_backtrace(caller) unless exception.backtrace
+
         Gitlab::Utils.allow_within_concurrent_ruby do
           context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra, tags)
 

@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillEmptyProjectsInSecurityInventoryFilters
+description: Fills security_inventory_filters table with data for projects without vulnerabilities or security scans
+feature_category: security_asset_inventories
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210976
+milestone: '18.6'
+queued_migration_version: 20251029182154
+finalized_by:

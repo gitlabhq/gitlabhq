@@ -89,8 +89,7 @@ module Gitlab
       strong_memoize_attr :user_mapping_enabled?
 
       def map_to_personal_namespace_owner?
-        project.root_ancestor.user_namespace? &&
-          project.import_data.user_mapping_to_personal_namespace_owner_enabled?
+        project.root_ancestor.user_namespace?
       end
       strong_memoize_attr :map_to_personal_namespace_owner?
     end

@@ -13,7 +13,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       :with_import_url,
       :in_group,
       :import_user_mapping_enabled,
-      :user_mapping_to_personal_namespace_owner_enabled,
       import_type: ::Import::SOURCE_GITEA
     )
   end
@@ -205,20 +204,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         it 'maps the assignee to the personal namespace owner' do
           expect(pull_request.attributes.fetch(:assignee_id)).to eq(user_namespace.owner_id)
         end
-
-        context 'when user_mapping_to_personal_namespace_owner is disabled' do
-          before_all do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          it 'maps the assignee to the import user' do
-            expect(pull_request.attributes.fetch(:assignee_id)).to eq(
-              user_namespace.namespace_import_user.user_id
-            )
-          end
-        end
       end
 
       context 'and user contribution mapping is disabled' do
@@ -278,20 +263,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
         it 'maps the author to the personal namespace owner' do
           expect(pull_request.attributes.fetch(:author_id)).to eq(user_namespace.owner_id)
-        end
-
-        context 'when user_mapping_to_personal_namespace_owner is disabled' do
-          before_all do
-            project.build_or_assign_import_data(
-              data: { user_mapping_to_personal_namespace_owner_enabled: false }
-            ).save!
-          end
-
-          it 'maps the assignee to the import user' do
-            expect(pull_request.attributes.fetch(:author_id)).to eq(
-              user_namespace.namespace_import_user.user_id
-            )
-          end
         end
       end
 
@@ -411,7 +382,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         :with_import_url,
         :in_group,
         :import_user_mapping_enabled,
-        :user_mapping_to_personal_namespace_owner_enabled,
         import_type: ::Import::SOURCE_GITHUB
       )
     end
@@ -590,30 +560,6 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       it 'does not push any placeholder references' do
         pull_request.create!
         expect(cached_references).to be_empty
-      end
-
-      context 'when user_mapping_to_personal_namespace_owner is disabled' do
-        before_all do
-          project.build_or_assign_import_data(
-            data: { user_mapping_to_personal_namespace_owner_enabled: false }
-          ).save!
-        end
-
-        it 'pushes placeholder references for the pull request and assignees' do
-          pull_request.create!
-
-          import_source_user = Import::SourceUser.find_source_user(
-            source_user_identifier: octocat[:id],
-            namespace: project.root_ancestor,
-            source_hostname: 'https://gitea.com',
-            import_type: ::Import::SOURCE_GITEA
-          )
-
-          expect(cached_references).to match_array([
-            ['MergeRequest', an_instance_of(Integer), 'author_id', import_source_user.id],
-            ['MergeRequestAssignee', an_instance_of(Integer), 'user_id', import_source_user.id]
-          ])
-        end
       end
     end
 

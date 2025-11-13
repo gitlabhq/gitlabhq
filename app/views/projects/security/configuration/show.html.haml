@@ -8,4 +8,4 @@
   group_full_path: @project.root_ancestor.full_path,
   can_read_attributes: can?(current_user, :read_security_attribute, @project.root_ancestor).to_s,
   can_manage_attributes: can?(current_user, :admin_security_attributes, @project.root_ancestor).to_s,
-  group_manage_attributes_path: group_security_configuration_path(@project.root_ancestor) } }
+  group_manage_attributes_path: group_configuration_path } }
