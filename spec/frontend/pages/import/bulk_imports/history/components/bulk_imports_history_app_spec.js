@@ -128,7 +128,7 @@ describe('BulkImportsHistoryApp', () => {
       const table = wrapper.findComponent(GlTableLite);
       expect(table.exists()).toBe(true);
       // can't use .props() or .attributes() here
-      expect(table.vm.$attrs.items).toHaveLength(DUMMY_RESPONSE.length);
+      expect(table.props('items')).toHaveLength(DUMMY_RESPONSE.length);
     });
 
     it('changes page when requested by pagination bar', async () => {

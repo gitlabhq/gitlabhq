@@ -24,7 +24,7 @@ to a regular user.
 
 Internal users:
 
-- Are created programmatically and do not count towards a license limit.
+- Are created automatically by GitLab and do not count towards a license limit. You cannot create internal users manually.
 - Are used when a traditional user account isn't applicable. For example, when generating alerts or automatic review
   feedback.
 - Have reduced access and a very specific purpose. They cannot be used for regular user actions, such as authentication

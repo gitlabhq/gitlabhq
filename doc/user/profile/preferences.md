@@ -361,45 +361,12 @@ To customize the time format:
 1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
 
-<!--- start_remove The following content will be removed on remove_date: '2026-02-20' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-02-19' -->
 
-## Disable exact code search (deprecated)
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags/_index.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
-- Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
+## Disable exact code search (removed)
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
-and is planned for removal in 18.6.
-
-{{< /alert >}}
-
-Prerequisites:
-
-- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
-  [enable exact code search](../../integration/zoekt/_index.md#enable-exact-code-search).
-
-To disable [exact code search](../search/exact_code_search.md) in user preferences:
-
-1. On the left sidebar, select your avatar. If you've [turned on the new navigation](../interface_redesign.md#turn-new-navigation-on-or-off), this button is in the upper-right corner.
-1. Select **Preferences**.
-1. Go to the **Exact code search** section.
-1. Clear the **Enable exact code search** checkbox.
-1. Select **Save changes**.
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210974) in 18.6.
 
 <!--- end_remove -->
 

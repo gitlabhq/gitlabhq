@@ -1435,7 +1435,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/gitlab/llm/chain/tools/summarize_comments/executor.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'ee/lib/gitlab/root_excess_size_error_message.rb'
-    - 'ee/lib/gitlab/search/zoekt/client.rb'
     - 'ee/lib/gitlab/status_page/storage/s3_multipart_upload.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/license_metric.rb'
     - 'ee/lib/gitlab/vulnerability_scanning/advisory.rb'

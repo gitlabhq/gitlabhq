@@ -415,7 +415,6 @@ override_group_member
 owner_access
 pages_multiple_versions
 planner_access
-play_job
 project_bot_access
 promote_to_epic
 provide_status_check_response
@@ -739,7 +738,6 @@ reset_merge_request_approvals
 resolve_note
 resolve_vulnerability_with_ai
 retry_failed_status_checks
-retry_job
 revoke_token
 rollover_issues
 rotate_token

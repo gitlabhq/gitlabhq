@@ -18,7 +18,6 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to belong_to(:user).inverse_of(:abuse_reports) }
     it { is_expected.to belong_to(:organization).required }
     it { is_expected.to have_many(:events).class_name('ResourceEvents::AbuseReportEvent').inverse_of(:abuse_report) }
-    it { is_expected.to have_many(:notes) }
     it { is_expected.to have_many(:user_mentions).class_name('AntiAbuse::Reports::UserMention') }
 
     it "aliases reporter to author" do

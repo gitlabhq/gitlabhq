@@ -469,7 +469,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @note = @project.notes.new(noteable: @merge_request)
 
     @noteable = @merge_request
-    @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
+
+    @commits_count = if @merge_request.preparing?
+                       0
+                     else
+                       @merge_request.commits_count.to_i + @merge_request.context_commits_count.to_i
+                     end
+
     @diffs_count = get_diffs_count
     @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
     @current_user_data = Gitlab::Json

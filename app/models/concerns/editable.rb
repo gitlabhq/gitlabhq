@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# currently included in Note, Snippet, AntiAbuse::Reports::Note
+# currently included in Note, Snippet
 # via Issuable: Issue, MergeRequest
 module Editable
   extend ActiveSupport::Concern

@@ -41,8 +41,6 @@ module Gitlab
           instance.milestone_url(object, **options)
         when Note
           note_url(object, **options)
-        when AntiAbuse::Reports::Note
-          abuse_report_note_url(object, **options)
         when Release
           instance.release_url(object, **options)
         when ::Organizations::Organization

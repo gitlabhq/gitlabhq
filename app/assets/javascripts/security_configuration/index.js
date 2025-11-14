@@ -66,6 +66,9 @@ export const initSecurityConfiguration = (el) => {
         'validityChecksAvailable',
         'validityChecksEnabled',
         'userIsProjectAdmin',
+        'secretPushProtectionLicensed',
+        'canEnableSpp',
+        'isGitlabCom',
       ]),
     },
     render(createElement) {

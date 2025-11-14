@@ -128,6 +128,7 @@ Search/NamespacedClass:
     - 'ee/lib/gitlab/search/aggregation_parser.rb'
     - 'ee/lib/gitlab/search/client.rb'
     - 'ee/lib/gitlab/search/recent_epics.rb'
+    - 'ee/lib/gitlab/search/zoekt/client.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
     - 'ee/lib/system_check/app/search_check.rb'
     - 'ee/spec/support/elastic.rb'

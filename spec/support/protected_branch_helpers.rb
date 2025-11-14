@@ -39,12 +39,15 @@ module ProtectedBranchHelpers
   end
 
   def within_select(selector, &block)
-    select_input = find(selector)
+    # Wait for dropdown to be enabled before any interaction
+    select_input = find("#{selector}:not([aria-disabled='true'])")
+
     select_input.click
     wait_for_requests
 
-    # Wait for the dropdown to become visible
-    within('.dropdown .dropdown-menu.show', visible: true, &block)
+    # Explicitly wait for dropdown to exist before using within
+    dropdown_menu = find('.dropdown .dropdown-menu.show', visible: true)
+    within(dropdown_menu, &block)
 
     # In CE, the dropdown is closed automatically when an element is selected.
     # Enhanced select is used in EE, therefore we escape to close the dropdown.

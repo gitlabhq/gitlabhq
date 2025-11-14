@@ -49979,9 +49979,6 @@ msgstr ""
 msgid "Preferences|Enable default text editor"
 msgstr ""
 
-msgid "Preferences|Enable exact code search"
-msgstr ""
-
 msgid "Preferences|Enable extension marketplace"
 msgstr ""
 
@@ -49995,9 +49992,6 @@ msgid "Preferences|Enable integrated code intelligence on code views"
 msgstr ""
 
 msgid "Preferences|Enable keyboard shortcuts"
-msgstr ""
-
-msgid "Preferences|Exact code search"
 msgstr ""
 
 msgid "Preferences|Failed to save preferences."
@@ -50097,9 +50091,6 @@ msgid "Preferences|Type in plain text, using Markdown."
 msgstr ""
 
 msgid "Preferences|Type in rich text, as you see it."
-msgstr ""
-
-msgid "Preferences|Use exact code search instead of advanced search to search for code in GitLab."
 msgstr ""
 
 msgid "Preferences|Use relative times"
@@ -59250,6 +59241,9 @@ msgid "SecurityConfiguration|An error occurred while creating the merge request.
 msgstr ""
 
 msgid "SecurityConfiguration|Available with Ultimate"
+msgstr ""
+
+msgid "SecurityConfiguration|Available with Ultimate. Enabled by default for all public projects."
 msgstr ""
 
 msgid "SecurityConfiguration|Configuration guide"

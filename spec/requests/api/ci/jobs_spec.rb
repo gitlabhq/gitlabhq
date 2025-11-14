@@ -592,6 +592,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         get api("/projects/#{project.id}/jobs"), params: { job_token: target_job.token }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/jobs", personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/jobs offset pagination' do
@@ -740,6 +746,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect(json_response['artifacts'][0]['filename']).to eq('job.log')
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}", personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
@@ -883,6 +895,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       it_behaves_like "additional access criteria"
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/trace", personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/jobs/:job_id/cancel' do
@@ -915,6 +933,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :cancel_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{running_job.id}/cancel", personal_access_token: pat) }
+    end
   end
 
   describe "POST /projects/:id/jobs/:job_id/cancel?force" do
@@ -946,6 +970,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/retry' do
+    let(:skip_before) { false }
     let!(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
     let(:retry_inputs) { {} }
     let(:ci_job_inputs_flag) { true }
@@ -957,6 +982,8 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
 
     before do
+      next if skip_before
+
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
       stub_feature_flags(ci_job_inputs: ci_job_inputs_flag)
       call_retry_job
@@ -1114,6 +1141,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :retry_job do
+      let(:skip_before) { true }
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{job.id}/retry", personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
@@ -1197,6 +1231,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :erase_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{job.id}/erase", personal_access_token: pat) }
+    end
   end
 
   describe 'POST /projects/:id/jobs/:job_id/play' do
@@ -1205,6 +1246,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     before do
       project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user), params: params
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :play_job do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let_it_be(:playable_job) { create(:ci_build, :manual, pipeline: pipeline, project: project) }
+      let(:request) { post api("/projects/#{project.id}/jobs/#{playable_job.id}/play", personal_access_token: pat) }
     end
 
     context 'on a playable job' do

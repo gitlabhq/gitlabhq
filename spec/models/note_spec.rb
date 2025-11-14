@@ -109,14 +109,6 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
-    context 'when noteable is an abuse report' do
-      subject { build(:note, noteable: build_stubbed(:abuse_report), project: nil, namespace: nil) }
-
-      it 'is not valid without project or namespace' do
-        is_expected.to be_invalid
-      end
-    end
-
     context 'when noteable is a wiki page' do
       subject { build(:note, noteable: build_stubbed(:wiki_page_meta), project: nil, namespace: nil) }
 
