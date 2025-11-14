@@ -627,7 +627,7 @@ Gitlab/RSpec/AvoidSetup:
 Gitlab/RSpec/MisplacedEeSpecFile:
   Enabled: true
   Include:
-    - 'spec/**/*_spec.rb'
+    - 'ee/spec/**/*_spec.rb'
   Exclude:
     - 'ee/spec/**/ee/**/*_spec.rb'
     - 'ee/spec/lib/remote_development/**/*_spec.rb'

@@ -534,13 +534,13 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       it 'redirects to work items path with issue type filter' do
         get :issues, params: { id: group.to_param }
 
-        expect(response).to redirect_to(group_work_items_path(group, params: { 'type[]' => 'issue' }))
+        expect(response).to redirect_to(group_work_items_path(group, params: { 'not[type][]' => 'epic' }))
       end
 
       it 'preserves query parameters except type when redirecting' do
         get :issues, params: { id: group.to_param, search: 'bug', sort: 'created_desc', type: 'old_type' }
 
-        expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc', 'type[]' => 'issue' }))
+        expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc', 'not[type][]' => 'epic' }))
       end
     end
 

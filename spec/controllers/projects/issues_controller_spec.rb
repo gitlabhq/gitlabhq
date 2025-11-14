@@ -41,7 +41,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         it 'redirects to work items index page' do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
-          expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+          expect(response).to redirect_to(project_work_items_path(project))
         end
 
         context 'when work_item_planning_view: false' do
@@ -93,7 +93,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       it 'redirects to work items index page' do
         get :index, params: { namespace_id: project.namespace, project_id: project }
 
-        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+        expect(response).to redirect_to(project_work_items_path(project))
       end
 
       context 'when work_item_planning_view: false' do

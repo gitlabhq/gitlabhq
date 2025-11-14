@@ -80,6 +80,9 @@ export default {
     isEmpty() {
       return !this.isLoading && !this.exclusions.length;
     },
+    canRemoveExclusion() {
+      return this.exclusionToRemove && this.isConfirmRemovalModalOpen;
+    },
   },
   methods: {
     async handleAddExclusions(exclusions) {
@@ -229,7 +232,7 @@ export default {
     />
 
     <confirm-removal-modal
-      v-if="exclusionToRemove && isConfirmRemovalModalOpen"
+      v-if="canRemoveExclusion"
       :visible="isConfirmRemovalModalOpen"
       :name="exclusionToRemove.name"
       :type="exclusionToRemove.type"

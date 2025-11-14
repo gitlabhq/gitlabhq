@@ -39,14 +39,14 @@ RSpec.describe 'Redirect from issues', :js, feature_category: :team_planning do
       it 'redirects to work items', :aggregate_failures do
         visit project_issues_path(project)
 
-        expect(page).to have_current_path(project_work_items_path(project, 'type[]': 'issue'))
+        expect(page).to have_current_path(project_work_items_path(project))
       end
 
       context 'and the original request has a sorting parameter' do
         it 'redirects to work items', :aggregate_failures do
           visit project_issues_path(project, sort: 'updated_desc')
 
-          expect(page).to have_current_path(project_work_items_path(project, 'type[]': 'issue', sort: 'updated_desc'))
+          expect(page).to have_current_path(project_work_items_path(project, sort: 'updated_desc'))
         end
       end
     end

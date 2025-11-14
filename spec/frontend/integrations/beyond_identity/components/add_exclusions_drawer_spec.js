@@ -55,7 +55,7 @@ describe('AddExclusionsDrawer component', () => {
 
   describe('when open', () => {
     beforeEach(() => {
-      wrapper = createComponent({ isOpen: true });
+      wrapper = createComponent();
     });
 
     it('opens the drawer', () => {
@@ -94,6 +94,7 @@ describe('AddExclusionsDrawer component', () => {
     findSelector().vm.$emit('select', mockData[1]);
     await nextTick();
 
+    expect(findSelector().props('selectedItems')).toHaveLength(2);
     expect(findSelector().props('selectedItems')).toEqual(mockData);
 
     findAddExclusionsButton().vm.$emit('click');

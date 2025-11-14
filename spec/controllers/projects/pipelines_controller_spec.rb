@@ -724,30 +724,11 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
   describe 'GET #charts' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
-    [
-      {
-        chart_param: 'time-to-restore-service',
-        event: 'visit_ci_cd_time_to_restore_service_tab'
-      },
-      {
-        chart_param: 'change-failure-rate',
-        event: 'visit_ci_cd_failure_rate_tab'
-      }
-    ].each do |tab|
-      it 'tracks internal events' do
-        request_params = { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] }
-
-        expect { get :charts, params: request_params, format: :html }.to trigger_internal_events(tab[:event])
-      end
-    end
-
     using RSpec::Parameterized::TableSyntax
 
     where(:chart, :event, :additional_metrics) do
       ''                        | 'p_analytics_ci_cd_pipelines'               | ['analytics_unique_visits.p_analytics_ci_cd_pipelines']
       'pipelines'               | 'p_analytics_ci_cd_pipelines'               | ['analytics_unique_visits.p_analytics_ci_cd_pipelines']
-      'deployment-frequency'    | 'p_analytics_ci_cd_deployment_frequency'    | []
-      'lead-time'               | 'p_analytics_ci_cd_lead_time'               | []
     end
 
     with_them do

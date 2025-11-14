@@ -1,6 +1,8 @@
 ---
 Gitlab/RSpec/MisplacedEeSpecFile:
+  Details: grace period
   Exclude:
+    - 'ee/spec/channels/graphql_channel_spec.rb'
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/applications_controller_spec.rb'
     - 'ee/spec/controllers/admin/dashboard_controller_spec.rb'

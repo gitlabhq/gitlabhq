@@ -9,7 +9,7 @@ title: Foundational agents
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
 {{< /details >}}
@@ -44,9 +44,54 @@ actionable, and contextually appropriate responses compared to general-purpose A
 
 ## Available foundational agents
 
-The following foundational agents are available in GitLab 18.6:
+The following foundational agents are available:
 
 - [GitLab Duo Planner](planner.md), for product management and
   planning workflows.
 - [GitLab Security Analyst Agent](security_analyst_agent.md), for
   security analysis and vulnerability management.
+
+## Turn foundational agents on or off
+
+By default, foundational agents are turned on.
+You can turn them on or off for a top-level group (namespace) or for an instance.
+
+If you turn foundational agents off, you can still use the default GitLab Duo agent.
+
+{{< tabs >}}
+
+{{< tab title="For GitLab.com" >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Foundational agents**, select either:
+   - **On by default**
+   - **Off by default**
+1. Select **Save changes**.
+
+If you turn off foundational agents for a top-level group, users with that group as their default GitLab Duo namespace can't access foundational agents in any namespace.
+
+{{< /tab >}}
+
+{{< tab title="For an instance" >}}
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. On the left sidebar, at the bottom, select **Admin**. If you've [turned on the new navigation](../../../interface_redesign.md#turn-new-navigation-on-or-off), in the upper-right corner, select **Admin**.
+1. Select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Foundational agents**, select either:
+   - **On by default**
+   - **Off by default**
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}

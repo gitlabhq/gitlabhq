@@ -183,6 +183,7 @@ The following settings pages are available for configuring GitLab Duo on GitLab.
 - `/groups/$GROUP_PATH/-/settings/gitlab_duo/configuration`
   - Configure GitLab Duo availability ("On by default", "Off by default", or "Always off")
   - Enable experimental and beta GitLab Duo features
+  - Configure foundational agents availability ("On by default", "Off by default").
 
 ##### Subgroup Settings
 

@@ -44,7 +44,7 @@ Please leave feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/i
 Prerequisites:
 
 - You must be working in a project, not a group.
-- The GitLab Duo Planner agent is [enabled for your project](../../../duo_agent_platform/agents/_index.md#enable-an-agent).
+- Foundational agents must be [turned on](../foundational_agents#controlling-foundational-agents-availability).
 - During the beta, GitLab Duo Planner is in read-only mode.
 
 1. On the left sidebar, select **Search or go to** and find your project.

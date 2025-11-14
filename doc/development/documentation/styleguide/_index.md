@@ -1500,12 +1500,19 @@ run the following commands as needed:
 
 ##### Convert image files to PNG format
 
-If the compression script creates files with `.compressed` extensions instead of compressing
-the original files in place, the files likely have PNG extensions but are actually other
-image formats.
+If the compression script creates `.compressed` files instead of compressing in place,
+the files likely have PNG extensions but are other image formats (like JPEG).
 
-This issue occurs when the `png_quantizator` gem crashes trying to process files that aren't
-actual PNG format, preventing the script from completing its workflow.
+The `png_quantizator` gem crashes on non-PNG files, preventing the script from completing.
+
+Prerequisites:
+
+- Install GraphicsMagick:
+
+  ```shell
+  # macOS: 
+  brew install graphicsmagick
+  ```
 
 To convert image files to PNG format:
 
@@ -1515,14 +1522,14 @@ To convert image files to PNG format:
    file doc/user/img/problematic_file.png
    ```
 
-   The `file` command examines the actual file contents (magic bytes/headers) rather than
+   The `file` command examines the file contents (magic bytes/headers) rather than
    the extension. A misnamed JPEG file shows:
 
    ```shell
    doc/user/img/problematic_file.png: JPEG image data, JFIF standard 1.01...
    ```
 
-1. Convert the file to actual PNG format:
+1. Convert the file to PNG format using GraphicsMagick:
 
    ```shell
    gm convert problematic_file.png corrected_file.png

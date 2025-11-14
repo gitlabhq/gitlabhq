@@ -44,6 +44,7 @@ CVE data, and reachability analysis to provide contextual security guidance.
 Prerequisites:
 
 - You must be working in a GitLab project with security scanning enabled.
+- Foundational agents must be [turned on](../foundational_agents#controlling-foundational-agents-availability).
 
 1. On the left sidebar, select **Search or go to** and find your project.
 

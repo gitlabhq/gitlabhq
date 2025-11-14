@@ -3,7 +3,6 @@ key_path: redis_hll_counters.analytics.p_analytics_ci_cd_lead_time_monthly
 description: Count of unique visits to the project level CI CD Analytics lead time tab
 product_group: optimize
 value_type: number
-status: active
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75187
 time_frame: 28d
@@ -18,3 +17,6 @@ tiers:
   - free
   - premium
   - ultimate
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212364
+milestone_removed: '18.7'

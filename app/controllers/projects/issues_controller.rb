@@ -487,7 +487,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Overridden in EE
   def work_items_redirect_params(params)
-    params.except("type").merge('type[]' => 'issue')
+    params.except("type", "type[]")
   end
 
   def require_incident_for_incident_routes
