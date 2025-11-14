@@ -653,7 +653,8 @@ module Trigger
       {
         "BRANCH_#{project_slug.upcase}" => ENV['CI_COMMIT_REF_NAME'],
         "MERGE_REQUEST_IID_#{project_slug.upcase}" => ENV['CI_MERGE_REQUEST_IID'],
-        "REVIEW_SLUG" => review_slug
+        "REVIEW_SLUG" => review_slug,
+        "HUGO_ENVIRONMENT" => ENV['HUGO_ENVIRONMENT']
       }
     end
 

@@ -152,6 +152,7 @@ module QA
 
             break true unless signed_in?
 
+            dismiss_welcome_modal_if_present
             within_user_menu do
               click_element 'sign-out-link'
             end
