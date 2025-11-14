@@ -9,27 +9,23 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
 
   describe '#enabled?' do
     context 'when user is nil' do
-      context 'without studio_cookie' do
-        it 'returns false' do
+      context 'when the Project Studio is not available' do
+        before do
+          stub_feature_flags(paneled_view: false)
+        end
+
+        it 'returns `false`' do
           expect(described_class.new(nil).enabled?).to be false
         end
       end
 
-      context 'with studio_cookie set to true' do
-        it 'returns true' do
-          expect(described_class.new(nil, studio_cookie: 'true').enabled?).to be true
+      context 'when the Project Studio is available' do
+        before do
+          stub_feature_flags(paneled_view: true)
         end
-      end
 
-      context 'with studio_cookie set to false' do
-        it 'returns false' do
-          expect(described_class.new(nil, studio_cookie: 'false').enabled?).to be false
-        end
-      end
-
-      context 'with studio_cookie set to nil' do
-        it 'returns false' do
-          expect(described_class.new(nil, studio_cookie: nil).enabled?).to be false
+        it 'returns `true`' do
+          expect(described_class.new(nil).enabled?).to be true
         end
       end
     end
@@ -39,7 +35,7 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
 
       context 'when the Project Studio is not available' do
         before do
-          stub_feature_flags(paneled_view: false, project_studio_early_access: false)
+          stub_feature_flags(paneled_view: false)
           stub_env('GLCI_OVERRIDE_PROJECT_STUDIO_ENABLED', 'false')
           user.user_preference.update!(project_studio_enabled: true)
         end
@@ -72,25 +68,10 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
           context "when the user hasn't updated their setting yet" do
             before do
               user.user_preference.update!(new_ui_enabled: nil)
-              allow(Gitlab).to receive(:com?).and_return(com?)
-              stub_feature_flags(new_ui_dot_com_rollout: new_ui_dot_com_rollout_flag)
             end
 
-            where(
-              :new_ui_dot_com_rollout_flag,
-              :com?,
-              :expected_result
-            ) do
-              false | false | false
-              true  | true  | true  # On .com, when new_ui_dot_com_rollout is enabled, the new UI is default-enabled
-              true  | false | false # Outside of .com, the new UI is default-disabled
-              false | true  | false # On .com, when new_ui_dot_com_rollout is disabled, the new UI is default-disabled
-            end
-
-            with_them do
-              it 'returns expected result' do
-                expect(project_studio.enabled?).to be expected_result
-              end
+            it 'returns true' do
+              expect(project_studio.enabled?).to be true
             end
           end
 
@@ -129,48 +110,22 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
       end
     end
 
-    context 'when user is nil with cookie set to false' do
-      it 'ENV override takes precedence over cookie' do
-        expect(described_class.new(nil, studio_cookie: 'false').enabled?).to be true
-      end
-    end
-
     context 'when user is present' do
       where(
-        :early_access_participant,
-        :project_studio_early_access_flag,
         :paneled_view_flag,
         :project_studio_enabled,
         :expected_result
       ) do
-        false | false | false | false | true
-        false | false | false | true  | true
-        false | false | true  | false | true
-        false | false | true  | true  | true
-        false | true  | false | false | true
-        false | true  | false | true  | true
-        false | true  | true  | false | true
-        false | true  | true  | true  | true
-        true  | false | false | false | true
-        true  | false | false | true  | true
-        true  | false | true  | false | true
-        true  | false | true  | true  | true
-        true  | true  | false | false | true
-        true  | true  | false | true  | true
-        true  | true  | true  | false | true
-        true  | true  | true  | true  | true
+        false | false | true
+        true | false | true
+        false | true | true
+        true | true | true
       end
 
       with_them do
         before do
-          user.user_preference.update!(
-            early_access_studio_participant: early_access_participant,
-            new_ui_enabled: project_studio_enabled
-          )
-          stub_feature_flags(
-            project_studio_early_access: project_studio_early_access_flag,
-            paneled_view: paneled_view_flag
-          )
+          user.user_preference.update!(new_ui_enabled: project_studio_enabled)
+          stub_feature_flags(paneled_view: paneled_view_flag)
         end
 
         it 'returns expected result' do
@@ -182,68 +137,35 @@ RSpec.describe Users::ProjectStudio, feature_category: :user_profile do
 
   describe '#available?' do
     context 'when user is nil' do
-      context 'without studio_cookie' do
-        it 'returns false' do
-          expect(described_class.new(nil).available?).to be false
-        end
+      where(:paneled_view_flag, :expected_result) do
+        false | false
+        true  | true
       end
 
-      context 'with studio_cookie set to true' do
-        it 'returns true' do
-          expect(described_class.new(nil, studio_cookie: 'true').available?).to be true
+      with_them do
+        before do
+          stub_feature_flags(paneled_view: paneled_view_flag)
         end
-      end
 
-      context 'with studio_cookie set to false' do
-        it 'returns false' do
-          expect(described_class.new(nil, studio_cookie: 'false').available?).to be false
-        end
-      end
-
-      context 'with studio_cookie set to nil' do
-        it 'returns false' do
-          expect(described_class.new(nil, studio_cookie: nil).available?).to be false
+        it 'returns expected result' do
+          expect(described_class.new(nil).available?).to be expected_result
         end
       end
     end
 
     context 'when user is present' do
-      where(:early_access_participant, :project_studio_early_access_flag, :paneled_view_flag, :expected_result) do
-        false | false | false | false
-        false | false | true  | true
-        false | true  | false | false
-        false | true  | true  | true
-        true  | false | false | false
-        true  | false | true  | true
-        true  | true  | false | true
-        true  | true  | true  | true
+      where(:paneled_view_flag, :expected_result) do
+        false | false
+        true  | true
       end
 
       with_them do
         before do
-          user.user_preference.update!(early_access_studio_participant: early_access_participant)
-          stub_feature_flags(
-            project_studio_early_access: project_studio_early_access_flag,
-            paneled_view: paneled_view_flag
-          )
+          stub_feature_flags(paneled_view: paneled_view_flag)
         end
 
         it 'returns expected result' do
           expect(described_class.new(user).available?).to be expected_result
-        end
-      end
-
-      context 'when user is present, ignores cookie value' do
-        before do
-          user.user_preference.update!(early_access_studio_participant: false)
-          stub_feature_flags(
-            project_studio_early_access: false,
-            paneled_view: false
-          )
-        end
-
-        it 'uses user settings instead of cookie' do
-          expect(described_class.new(user, studio_cookie: 'true').available?).to be false
         end
       end
     end

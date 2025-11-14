@@ -116,7 +116,7 @@ module InternalEventsCli
     end
 
     def key_path
-      event_metric? ? key.full_path : self[:key_path]
+      event_metric? ? key.full_path : self[:key]
     end
 
     def time_frame
@@ -198,22 +198,26 @@ module InternalEventsCli
     # ex) Weekly/Monthly count of unique
     # ex) Count of
     def description_prefix
+      return unless event_metric?
+
       [
         (time_frame.description if time_frame.single?),
-        (operator.description if event_metric?),
-        *(identifier.plural if identifier.default? && event_metric?)
+        operator.description,
+        *(identifier.plural if identifier.default?)
       ].compact.join(' ').capitalize
     end
 
     # Provides simplified but technically accurate description
     # to be used before the user has provided a description
     def technical_description
+      return unless event_metric?
+
       event_name = actions.first if events.length == 1 && !filtered?
       event_name ||= 'the selected events'
       [
         (time_frame.description if time_frame.single?),
-        (operator.description if event_metric?),
-        ((identifier.description % event_name).to_s if event_metric?)
+        operator.description,
+        (identifier.description % event_name).to_s
       ].compact.join(' ').capitalize
     end
 

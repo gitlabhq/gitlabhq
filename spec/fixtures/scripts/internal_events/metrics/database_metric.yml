@@ -1,6 +1,6 @@
 ---
 key_path: issues_count
-description: " Count of issues"
+description: Count of issues
 product_group: analytics_instrumentation
 product_categories:
 - service_ping

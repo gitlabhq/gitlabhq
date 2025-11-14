@@ -24300,6 +24300,7 @@ Returns [`codeSuggestionMetrics`](#codesuggestionmetrics).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aimetricscodesuggestionsidenames"></a>`ideNames` | [`[String!]`](#string) | Filter code suggestion metrics by one or more IDE names. |
 | <a id="aimetricscodesuggestionslanguages"></a>`languages` | [`[String!]`](#string) | Filter code suggestion metrics by one or more languages. |
 
 ### `AiMetricsBasic`
@@ -48366,6 +48367,7 @@ Requires ClickHouse. Premium and Ultimate with GitLab Duo Pro and Enterprise onl
 | <a id="codesuggestionmetricsacceptedcount"></a>`acceptedCount` | [`Int`](#int) | Total count of code suggestions accepted. |
 | <a id="codesuggestionmetricsacceptedlinesofcode"></a>`acceptedLinesOfCode` | [`Int`](#int) | Sum of lines of code from code suggestions accepted. |
 | <a id="codesuggestionmetricscontributorscount"></a>`contributorsCount` | [`Int`](#int) | Number of code contributors who used GitLab Duo Code Suggestions features. |
+| <a id="codesuggestionmetricsidenames"></a>`ideNames` | [`[String!]`](#string) | List of IDE names with at least one suggestion shown or accepted. |
 | <a id="codesuggestionmetricslanguages"></a>`languages` | [`[String!]`](#string) | List of languages with at least one suggestion shown or accepted. |
 | <a id="codesuggestionmetricsshowncount"></a>`shownCount` | [`Int`](#int) | Total count of code suggestions shown. |
 | <a id="codesuggestionmetricsshownlinesofcode"></a>`shownLinesOfCode` | [`Int`](#int) | Sum of lines of code from code suggestions shown. |

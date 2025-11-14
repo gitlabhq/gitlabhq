@@ -61,8 +61,13 @@ Or using a CI/CD component:
      - component: gitlab.com/components/sast/iac-sast@main
    ```
 
-At this point, IaC scanning is enabled in your pipeline.
-If supported IaC source code is present, the default rules automatically scan for vulnerabilities when a pipeline runs.
+At this point, IaC scanning is enabled in your pipeline:
+
+- The IaC scanning job runs on every pipeline and executes the KICS analyzer.
+- The analyzer determines whether the project contains supported IaC files.
+- If supported files are found, the analyzer scans for vulnerabilities.
+- If no supported files are found, the job completes with no findings.
+
 The corresponding job appears under the test stage in your pipeline.
 
 You can see a working example in

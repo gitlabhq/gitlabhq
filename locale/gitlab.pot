@@ -34367,6 +34367,9 @@ msgstr ""
 msgid "If this was a mistake, you can retain the project before %{deletion_date}: %{retention_url}"
 msgstr ""
 
+msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{linkStart}More info%{linkEnd}"
+msgstr ""
+
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
 msgstr ""
 
@@ -34609,6 +34612,9 @@ msgid "ImportAProjectModal|You're importing members to the %{strongStart}%{name}
 msgstr ""
 
 msgid "ImportButtons|Connect repositories from"
+msgstr ""
+
+msgid "ImportButtons|Connect repositories from GitHub"
 msgstr ""
 
 msgid "ImportHistory|%{groupName} import history"
@@ -51555,6 +51561,9 @@ msgid "ProjectFileTree|Show more"
 msgstr ""
 
 msgid "ProjectImportByURL|Check connection"
+msgstr ""
+
+msgid "ProjectImportByURL|Connection failed"
 msgstr ""
 
 msgid "ProjectImportByURL|Connection failed: %{error}"

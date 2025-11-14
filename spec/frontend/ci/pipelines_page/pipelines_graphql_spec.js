@@ -210,6 +210,9 @@ describe('Pipelines app', () => {
 
       expect(findNoCiEmptyState().exists()).toBe(true);
       expect(findTable().exists()).toBe(false);
+      expect(findFilteredSearch().exists()).toBe(false);
+      expect(findTabs().exists()).toBe(false);
+      expect(findNavControls().exists()).toBe(false);
     });
 
     it('does not render external config empty state', async () => {

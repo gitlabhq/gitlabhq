@@ -142,6 +142,11 @@ export default {
           pageInfo: data?.project?.pipelines?.pageInfo || {},
         };
       },
+      result() {
+        if (!this.hasInitiallyLoaded) {
+          this.hasInitiallyLoaded = true;
+        }
+      },
       error() {
         this.pipelinesError = true;
         createAlert({
@@ -211,6 +216,7 @@ export default {
         list: [],
         pageInfo: {},
       },
+      hasInitiallyLoaded: false,
       pipelinesCount: 0,
       pipelinesError: false,
       clearCacheLoading: false,
@@ -305,6 +311,9 @@ export default {
     },
     showExternalConfigEmptyState() {
       return this.usesExternalConfig && this.showEmptyState;
+    },
+    showControls() {
+      return this.hasInitiallyLoaded && !this.showEmptyState;
     },
   },
   methods: {
@@ -496,40 +505,42 @@ export default {
   <div class="pipelines-container gl-mt-2">
     <pipeline-account-verification-alert class="gl-mt-5" />
 
-    <div
-      v-if="shouldRenderButtons"
-      class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-none"
-    >
-      <!-- Navigation -->
-      <navigation-tabs :tabs="tabs" scope="pipelines" @onChangeTab="onChangeTab" />
-
-      <navigation-controls
-        :new-pipeline-path="newPipelinePath"
-        :reset-cache-path="resetCachePath"
-        :is-reset-cache-button-loading="clearCacheLoading"
-        @resetRunnersCache="clearRunnerCache"
-      />
-    </div>
-
-    <div class="gl-flex">
+    <div v-if="showControls">
       <div
-        class="row-content-block gl-flex gl-max-w-full gl-flex-grow gl-flex-wrap gl-gap-4 gl-border-b-0 @sm/panel:gl-flex-nowrap"
+        v-if="shouldRenderButtons"
+        class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-none"
       >
-        <!-- Filtered search -->
-        <pipelines-filtered-search
-          class="gl-flex gl-max-w-full gl-flex-grow"
-          :params="filterParams"
-          @filterPipelines="filterPipelines"
-        />
+        <!-- Navigation -->
+        <navigation-tabs :tabs="tabs" scope="pipelines" @onChangeTab="onChangeTab" />
 
-        <gl-collapsible-listbox
-          v-model="visibilityPipelineIdType"
-          class="gl-grow @sm/panel:gl-grow-0"
-          toggle-class="gl-grow"
-          :toggle-text="selectedPipelineKeyOption.text"
-          :items="$options.pipelineKeyOptions"
-          @select="changeVisibilityPipelineIDType"
+        <navigation-controls
+          :new-pipeline-path="newPipelinePath"
+          :reset-cache-path="resetCachePath"
+          :is-reset-cache-button-loading="clearCacheLoading"
+          @resetRunnersCache="clearRunnerCache"
         />
+      </div>
+
+      <div class="gl-flex">
+        <div
+          class="row-content-block gl-flex gl-max-w-full gl-flex-grow gl-flex-wrap gl-gap-4 gl-border-b-0 @sm/panel:gl-flex-nowrap"
+        >
+          <!-- Filtered search -->
+          <pipelines-filtered-search
+            class="gl-flex gl-max-w-full gl-flex-grow"
+            :params="filterParams"
+            @filterPipelines="filterPipelines"
+          />
+
+          <gl-collapsible-listbox
+            v-model="visibilityPipelineIdType"
+            class="gl-grow @sm/panel:gl-grow-0"
+            toggle-class="gl-grow"
+            :toggle-text="selectedPipelineKeyOption.text"
+            :items="$options.pipelineKeyOptions"
+            @select="changeVisibilityPipelineIDType"
+          />
+        </div>
       </div>
     </div>
 

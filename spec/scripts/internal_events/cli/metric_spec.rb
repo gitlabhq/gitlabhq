@@ -119,16 +119,16 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
     let(:data_source) { 'database' }
 
     it 'has expected description content' do
-      expect(metric.description_prefix).to eq('Weekly')
-      expect(metric.technical_description).to eq('Weekly')
+      expect(metric.description_prefix).to eq(nil)
+      expect(metric.technical_description).to eq(nil)
     end
 
     context "with non-singular time frame" do
       let(:time_frame) { %w[7d all] }
 
       it 'has expected description content' do
-        expect(metric.description_prefix).to eq('')
-        expect(metric.technical_description).to eq('')
+        expect(metric.description_prefix).to eq(nil)
+        expect(metric.technical_description).to eq(nil)
       end
     end
   end

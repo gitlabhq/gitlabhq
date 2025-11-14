@@ -20,19 +20,31 @@ module InternalEventsCli
         Check out https://metrics.gitlab.com/ for improved event/metric search capabilities.
       TEXT
 
-      DESCRIPTION_INTRO = <<~TEXT.freeze
+      EVENT_METRIC_DESCRIPTION_INTRO = <<~TEXT.freeze
         #{format_info('METRIC DESCRIPTION')}
         Describes which occurrences of an event are tracked in the metric and how they're grouped.
 
         The description field is critical for helping others find & reuse this event. This will be used by Engineering, Product, Data team, Support -- and also GitLab customers directly. Be specific and explicit.
 
         #{format_info('GOOD EXAMPLES:')}
-        - Total count of analytics dashboard list views
-        - Weekly count of unique users who viewed the analytics dashboard list
+        - Count of analytics dashboard list views
+        - Count of unique users who viewed the analytics dashboard list
         - Monthly count of unique projects where the analytics dashboard list was viewed
         - Total count of issue updates
 
         #{format_info('SELECTED EVENT(S):')}
+      TEXT
+
+      DATABASE_METRIC_DESCRIPTION_INTRO = <<~TEXT.freeze
+        #{format_info('METRIC DESCRIPTION')}
+        Describes what is calculated in the metric.
+
+        The description field is critical for helping others find this metric. This will be used by Engineering, Product, Data team, Support -- and also GitLab customers directly. Be specific and explicit.
+
+        #{format_info('GOOD EXAMPLES:')}
+        - Count of merge requests
+        - Count of users with admin permissions
+        - Gitlab version of the instance
       TEXT
 
       DESCRIPTION_HELP = <<~TEXT.freeze
@@ -69,6 +81,12 @@ module InternalEventsCli
         If needed, you can modify the key path and filename further after saving.
       TEXT
 
+      DATABASE_METRIC_NAME_HELP = <<~TEXT.freeze
+        #{format_warning('Required. Max %{count} characters. Only lowercase/numbers/underscores allowed.')}
+
+        Choose a name considering that it should be clear and discoverable.
+      TEXT
+
       NAME_REQUIREMENT_REASONS = {
         filters: {
           text: 'Metrics using filters are too complex for default naming.',
@@ -81,11 +99,40 @@ module InternalEventsCli
         conflict: {
           text: 'The default key path is already in use.',
           help: NAME_CONFLICT_HELP
+        },
+        database_metric: {
+          text: 'Database metrics have no default name.',
+          help: DATABASE_METRIC_NAME_HELP
         }
       }.freeze
 
       NAME_ERROR = <<~TEXT.freeze
         #{format_warning('Input is invalid. Max %{count} characters. Only lowercase/numbers/underscores allowed. Ensure this key path (ID) is not already in use.')}
+      TEXT
+
+      INSTRUMENTATION_CLASS_INTRO = <<~TEXT.freeze
+        #{format_info('METRIC INSTRUMENATION CLASS')}
+        Choose a name for the Ruby class that will be used to calculate the metric.
+
+        #{format_info('GOOD EXAMPLES:')}
+        - CountSnippetsMetric
+        - UniqueInstanceIdMetric
+        - SnowplowEnabledMetric
+      TEXT
+
+      INSTRUMENTATION_CLASS_HELP = <<~TEXT.freeze
+        #{format_warning('Required.')}
+
+          An instrumentation class is the Ruby class that will be used for calculating the metric.
+
+          ex) IssuesCountMetric
+              CountSlackAppInstallationsMetric
+
+          Look at the `lib/gitlab/usage/metrics/instrumentations/` folder to get ideas!
+      TEXT
+
+      INSTRUMENTATION_CLASS_ERROR = <<~TEXT.freeze
+        #{format_warning('Input is invalid. Only lowercase/uppercase letters are allowed.')}
       TEXT
     end
   end

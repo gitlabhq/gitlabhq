@@ -92,32 +92,6 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
           expect(response.cookies['studio']).not_to be_present
         end
       end
-
-      context 'when user is not logged in' do
-        context 'when the force_studio_true_for_anonymous cookie is set to true' do
-          before do
-            cookies['force_studio_true_for_anonymous'] = 'true'
-          end
-
-          it 'sets the studio cookie to true' do
-            get root_path
-
-            expect(response.cookies['studio']).to eq('true')
-          end
-        end
-
-        context 'when the force_studio_true_for_anonymous cookie is not set to true' do
-          before do
-            cookies['force_studio_true_for_anonymous'] = 'false'
-          end
-
-          it 'sets the studio cookie to the default value for anonymous users' do
-            get root_path
-
-            expect(response.cookies['studio']).to eq(default_value_for_anonymous_users)
-          end
-        end
-      end
     end
   end
 

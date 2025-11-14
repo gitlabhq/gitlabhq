@@ -713,7 +713,7 @@ module QA
       #
       # @return [Boolean]
       def project_studio_enabled?
-        enabled?(ENV["QA_PROJECT_STUDIO"], default: false)
+        enabled?(ENV["QA_PROJECT_STUDIO"], default: true)
       end
 
       private

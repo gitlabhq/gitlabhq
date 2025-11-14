@@ -92,23 +92,12 @@ gdk-instance:
     - .with-parallel
   variables:
     QA_SCENARIO: Test::Instance::All
-  rules:
-    - when: manual  # Make this job manual as is covered against CNG
-      allow_failure: true
-
-# Run E2E tests with Project Studio UI
-gdk-instance-project-studio:
-  extends: gdk-instance
-  variables:
-    QA_FEATURE_FLAGS: "paneled_view=enabled"
-    QA_PROJECT_STUDIO: true
-  rules:
-    - when: on_success  # Override extended job's manual rule
 
 gdk-instance-ff-inverse:
   extends: gdk-instance
   variables:
     QA_FEATURE_FLAGS: $FEATURE_FLAGS
+    QA_PROJECT_STUDIO: false
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
 

@@ -520,7 +520,7 @@ RSpec.describe ApplicationHelper do
     end
 
     it 'calls ProjectStudio#available?' do
-      expect_next_instance_of(Users::ProjectStudio, user, studio_cookie: 'true') do |studio|
+      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
         expect(studio).to receive(:available?)
       end
 
@@ -536,7 +536,7 @@ RSpec.describe ApplicationHelper do
     end
 
     it 'calls ProjectStudio#enabled?' do
-      expect_next_instance_of(Users::ProjectStudio, user, studio_cookie: 'true') do |studio|
+      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
         expect(studio).to receive(:enabled?)
       end
 

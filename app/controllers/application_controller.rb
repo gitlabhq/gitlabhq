@@ -34,7 +34,6 @@ class ApplicationController < BaseActionController
   around_action :set_current_ip_address
 
   before_action :authenticate_user!, except: [:route_not_found]
-  before_action :set_project_studio_for_anonymous_users
   before_action :set_current_organization
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :check_password_expiration, if: :html_request?
@@ -548,31 +547,6 @@ class ApplicationController < BaseActionController
   def organization_params
     params.permit(
       :controller, :namespace_id, :group_id, :id, :organization_path
-    )
-  end
-
-  # Used for Project Studio roll-out for anonymous users,
-  # remove this once new UI is default & enforced for everyone
-  def set_project_studio_for_anonymous_users
-    return unless Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- We need this check to enable the new UI by default for anonymous users on .com only
-
-    return if current_user.present?
-
-    # NOTE: Change this to "true" to make project studio default enabled for anonymous users
-    default_value_for_anonymous_users = 'false'
-
-    cookie_value =
-      if cookies[:force_studio_true_for_anonymous] == 'true'
-        'true'
-      else
-        default_value_for_anonymous_users
-      end
-
-    set_secure_cookie(
-      :studio,
-      cookie_value,
-      httponly: true,
-      expires: 30.days.from_now
     )
   end
 end

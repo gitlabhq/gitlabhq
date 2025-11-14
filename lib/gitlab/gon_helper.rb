@@ -108,10 +108,7 @@ module Gitlab
       push_frontend_feature_flag(:accessible_loading_button, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag
-      push_force_frontend_feature_flag(
-        :project_studio_enabled,
-        Users::ProjectStudio.new(current_user, studio_cookie: defined?(cookies) ? cookies[:studio] : nil).enabled?
-      )
+      push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)
     end
 
     # Exposes the state of a feature flag to the frontend code.
