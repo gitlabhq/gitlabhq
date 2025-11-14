@@ -1756,21 +1756,26 @@ has more options.
 
 {{< /alert >}}
 
-Use `artifacts:public` to determine whether the job artifacts should be
-publicly available.
+Use `artifacts:public` to control whether job artifacts in public pipelines are available for download
+with the GitLab UI and API by anonymous users, or Guest and Reporter roles.
 
-When `artifacts:public` is `true` (default), the artifacts in
-public pipelines are available for download by anonymous, guest, and reporter users.
+{{< alert type="warning" >}}
 
-To deny read access to artifacts in public
-pipelines for anonymous, guest, and reporter users, set `artifacts:public` to `false`:
+This option only affects GitLab UI and API access. CI/CD jobs using job tokens
+could still access artifacts with the runner API, regardless of this setting. To restrict
+job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
+to **Only project members**.
+
+{{< /alert >}}
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
 **Supported values**:
 
-- `true` (default if not defined) or `false`.
+- `true` (default): Artifacts in a job in public pipelines are available for download by anyone,
+  including anonymous users, or Guest and Reporter roles.
+- `false`: Artifacts in the job are only available for download by users with at least the Developer role.
 
 **Example of `artifacts:public`**:
 
@@ -1795,6 +1800,15 @@ Use `artifacts:access` to determine who can access the job artifacts from the Gi
 or API. This option does not prevent you from forwarding artifacts to downstream pipelines.
 
 You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in the same job.
+
+{{< alert type="warning" >}}
+
+This option only affects GitLab UI and API access. CI/CD jobs using job tokens
+could still access artifacts with the runner API, regardless of this setting. To restrict
+job token access, configure your project's [CI/CD visibility settings](../../user/project/settings/_index.md#configure-project-features-and-permissions)
+to **Only project members**.
+
+{{< /alert >}}
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

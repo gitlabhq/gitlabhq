@@ -73955,7 +73955,13 @@ msgstr ""
 msgid "Vulnerability|Detection method"
 msgstr ""
 
-msgid "Vulnerability|Dismissed as false positive detected by Duo AI"
+msgid "Vulnerability|Dismiss False Positive Flag"
+msgstr ""
+
+msgid "Vulnerability|Dismiss as False Positive"
+msgstr ""
+
+msgid "Vulnerability|Dismiss false positive flag for this vulnerability?"
 msgstr ""
 
 msgid "Vulnerability|Duo Generating Fix"
@@ -73986,6 +73992,9 @@ msgid "Vulnerability|External Security Report"
 msgstr ""
 
 msgid "Vulnerability|False positive detected"
+msgstr ""
+
+msgid "Vulnerability|False positive flag dismissed successfully."
 msgstr ""
 
 msgid "Vulnerability|File:"

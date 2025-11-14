@@ -431,7 +431,8 @@ Project Owners can perform any listed action, and can delete pipelines:
    and [`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic) is not set on the job.
    <br>Guests: Only if **Project-based pipeline visibility** is enabled and
    `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false`
-   is not set on the job.
+   is not set on the job.<br>The `artifacts:public` setting only affects GitLab UI and API access.
+   CI/CD job tokens can still access artifacts with the runner API.
 4. Guests: Only if **Project-based pipeline visibility** is enabled.
 5. Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
    <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).

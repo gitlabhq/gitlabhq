@@ -836,7 +836,7 @@ lib/gitlab/checks/
 /doc/api/project_push_rules.md @brendan777
 /doc/api/project_relations_export.md @eread
 /doc/api/project_repository_storage_moves.md @eread
-/doc/api/project_security_settings.md @phillipwells
+/doc/api/project_security_settings.md @rsarangadharan
 /doc/api/project_snippets.md @brendan777
 /doc/api/project_starring.md @z_painter
 /doc/api/project_statistics.md @brendan777
@@ -851,6 +851,7 @@ lib/gitlab/checks/
 /doc/api/repository_files.md @brendan777
 /doc/api/repository_submodules.md @brendan777
 /doc/api/resource_iteration_events.md @msedlakjakubowski
+/doc/api/resource_label_events.md @msedlakjakubowski
 /doc/api/resource_milestone_events.md @msedlakjakubowski
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
@@ -1018,6 +1019,7 @@ lib/gitlab/checks/
 /doc/topics/offline/ @axil @eread
 /doc/topics/runner_fleet_design_guides/ @rsarangadharan
 /doc/tutorials/ @gl-docsteam
+/doc/tutorials/auth/ @idurham
 /doc/tutorials/boards_for_standups/ @msedlakjakubowski
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/configure_gitlab_runner_to_use_gke/ @rsarangadharan
@@ -1026,7 +1028,7 @@ lib/gitlab/checks/
 /doc/tutorials/create_register_first_runner/ @rsarangadharan
 /doc/tutorials/dependency_scanning.md @rdickenson
 /doc/tutorials/export_sbom.md @rdickenson
-/doc/tutorials/fuzz_testing/ @phillipwells
+/doc/tutorials/fuzz_testing/ @rsarangadharan
 /doc/tutorials/hugo/ @brendan777
 /doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil @eread
@@ -1051,24 +1053,24 @@ lib/gitlab/checks/
 /doc/update/ @axil @eread
 /doc/user/analytics/ @lciutacu
 /doc/user/application_security/ @rdickenson
-/doc/user/application_security/api_fuzzing/ @phillipwells
-/doc/user/application_security/api_security/ @phillipwells
-/doc/user/application_security/api_security_testing/ @phillipwells
-/doc/user/application_security/coverage_fuzzing/ @phillipwells
+/doc/user/application_security/api_fuzzing/ @rsarangadharan
+/doc/user/application_security/api_security/ @rsarangadharan
+/doc/user/application_security/api_security_testing/ @rsarangadharan
+/doc/user/application_security/coverage_fuzzing/ @rsarangadharan
 /doc/user/application_security/cve_id_request.md @rlehmann1
-/doc/user/application_security/dast/ @phillipwells
+/doc/user/application_security/dast/ @rsarangadharan
 /doc/user/application_security/dependency_list/ @rlehmann1
 /doc/user/application_security/detect/security_configuration.md @rlehmann1
 /doc/user/application_security/detect/security_scanning_results.md @rlehmann1
-/doc/user/application_security/get-started-security.md @phillipwells
+/doc/user/application_security/get-started-security.md @rsarangadharan
 /doc/user/application_security/policies/ @rlehmann1
-/doc/user/application_security/secret_detection/ @phillipwells
+/doc/user/application_security/secret_detection/ @rsarangadharan
 /doc/user/application_security/security_dashboard/ @rlehmann1
 /doc/user/application_security/security_inventory/ @rlehmann1
 /doc/user/application_security/vulnerabilities/_index.md @rlehmann1
 /doc/user/application_security/vulnerabilities/risk_assessment_data.md @rdickenson
 /doc/user/application_security/vulnerabilities/severities.md @rlehmann1
-/doc/user/application_security/vulnerabilities/validity_check.md @phillipwells
+/doc/user/application_security/vulnerabilities/validity_check.md @rsarangadharan
 /doc/user/application_security/vulnerability_archival/ @rlehmann1
 /doc/user/application_security/vulnerability_report/ @rlehmann1
 /doc/user/asciidoc.md @brendan777

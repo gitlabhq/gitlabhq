@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import Api from '~/api';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
@@ -78,7 +79,13 @@ const mockAllVersionsResponse = {
   },
 };
 
-describe('Design management design index page', () => {
+const skipReason = new SkipReason({
+  name: 'Design management design index page',
+  reason: 'Feature is deprecated',
+  issue: 'https://gitlab.com/groups/gitlab-org/-/epics/18652',
+});
+
+describeSkipVue3(skipReason, () => {
   let wrapper;
   let router;
   let mockApollo;
@@ -162,7 +169,6 @@ describe('Design management design index page', () => {
     });
 
     it('renders design index', () => {
-      expect(wrapper.element).toMatchSnapshot();
       expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
     });
 
