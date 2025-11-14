@@ -2,6 +2,7 @@
 
 module RapidDiffs
   class AppComponent < ViewComponent::Base
+    renders_one :before_diffs_list
     renders_one :diffs_list
 
     attr_reader :presenter
@@ -11,8 +12,10 @@ module RapidDiffs
 
     delegate :diff_view, :current_user, to: :helpers
 
-    def initialize(presenter)
+    def initialize(presenter, extra_app_data: nil, extra_prefetch_endpoints: [])
       @presenter = presenter
+      @extra_app_data = extra_app_data
+      @extra_prefetch_endpoints = extra_prefetch_endpoints
     end
 
     protected
@@ -29,11 +32,11 @@ module RapidDiffs
         diff_file_endpoint: diff_file_endpoint,
         update_user_endpoint: update_user_endpoint,
         lazy: lazy?
-      }
+      }.merge(@extra_app_data || {})
     end
 
     def prefetch_endpoints
-      [diffs_stats_endpoint, diff_files_endpoint]
+      [diffs_stats_endpoint, diff_files_endpoint, *@extra_prefetch_endpoints]
     end
 
     def update_user_endpoint

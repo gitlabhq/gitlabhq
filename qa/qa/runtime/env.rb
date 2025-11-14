@@ -101,7 +101,7 @@ module QA
       end
 
       def istanbul_coverage_enabled?
-        ENV['BABEL_ENV'] == 'istanbul'
+        ENV['GLCI_E2E_FRONTEND_COVERAGE_TRACKING'] == 'true'
       end
 
       def selective_execution_improved_enabled?

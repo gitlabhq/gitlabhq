@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlDisclosureDropdown } from '@gitlab/ui';
+import DiffFileOptionsMenuItem from '~/rapid_diffs/app/components/diff_file_options_menu_item.vue';
 import { s__ } from '~/locale';
 
 function getMenuItems(container) {
@@ -26,21 +27,29 @@ export const optionsMenuAdapter = {
           });
         },
         render(h) {
-          return h(GlDisclosureDropdown, {
-            props: {
-              icon: 'ellipsis_v',
-              startOpened: true,
-              noCaret: true,
-              category: 'tertiary',
-              size: 'small',
-              items,
-              toggleText: s__('RapidDiffs|Show options'),
-              textSrOnly: true,
+          return h(
+            GlDisclosureDropdown,
+            {
+              props: {
+                icon: 'ellipsis_v',
+                startOpened: true,
+                noCaret: true,
+                category: 'tertiary',
+                size: 'small',
+                toggleText: s__('RapidDiffs|Show options'),
+                textSrOnly: true,
+              },
+              attrs: {
+                'data-options-toggle': true,
+              },
             },
-            attrs: {
-              'data-options-toggle': true,
-            },
-          });
+            items.map((item) =>
+              h(DiffFileOptionsMenuItem, {
+                props: { item },
+                key: item.text,
+              }),
+            ),
+          );
         },
       });
     },

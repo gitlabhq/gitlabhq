@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_category: :system_access do
+RSpec.describe 'Two factor auths', feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
   include Features::TwoFactorHelpers
 

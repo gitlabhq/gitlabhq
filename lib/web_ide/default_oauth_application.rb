@@ -64,7 +64,8 @@ module WebIde
           "redirect_uri" => oauth_callback_url,
           "scopes" => ['api'],
           "trusted" => true,
-          "confidential" => false
+          "confidential" => false,
+          "organization" => Organizations::Organization.first # rubocop:disable Gitlab/PreventOrganizationFirst -- We need to assign this to first available organization for now
         }.freeze
       end
     end

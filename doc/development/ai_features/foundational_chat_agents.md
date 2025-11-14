@@ -46,15 +46,7 @@ more flexibility for complex cases.
    }
    ```
 
-It is possible to test the setup locally. To do so, create the agent in your GDK. Then, on `$GDK/gitlab-ai-gateway`, run the following command:
-
-```shell
-poetry run fetch-foundational-agents "http://gdk.test:3000" "<TOKEN TO YOUR GDK>" \
-  "<ID OF AGENT IN YOUR GDK>" \
-  --output-path duo_workflow_service/agent_platform/experimental/flows/configs
-```
-
-With the changes to `FoundationalChatAgentsDefinitions.rb`, it is possible now to select your foundational agent in the web chat locally.
+1. Update [user facing documentation](../../user/duo_agent_platform/agents/foundational_agents/_index.md).
 
 ### Using Duo workflow service
 
@@ -127,13 +119,15 @@ With the changes to `FoundationalChatAgentsDefinitions.rb`, it is possible now t
    end
    ```
 
+1. Update [user facing documentation](../../user/duo_agent_platform/agents/foundational_agents/_index.md).
+
 Tips:
 
 1. You can use the AI Catalog to test foundational agents, even before you add them to the codebase.
    Create a new private agent in the AI Catalog with the same prompt and same tools, and enable it on your test project.
    Once results reach desired levels, add to Duo Workflow Service.
 1. Add prompts to the Duo Workflow Service to enable testing the agent in your local GDK.
-1. When using AI catalog, the version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `experimental`. 
+1. When using AI catalog, the version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `experimental`.
    When creating the definition in Duo workflow service, the version should be `v1`.
 
 ## Use feature flags for releasing chat agents
@@ -164,10 +158,31 @@ Not every agent is useful in every area. For example, some agents operate in pro
 
 ## Triggers
 
-Triggers are not supported for foundational chat agents by default, but if they are defined on AI Catalog, users can
+Triggers are not supported for foundational chat agents. However, if they are defined on AI Catalog, users can
 still add it to their project at which point they can be used through triggers.
 
 ## Versioning
 
 Versioning of agents is not yet supported. Consider potential breaking changes to older GitLab versions
 before doing changes to an agent.
+
+## Local testing
+
+It is possible to test the setup locally.
+
+1. For AI catalog created agents, you need to sync the agents locally. To do so, either create the agent in the local AI
+   Catalog or on GitLab.com AI Catalog. Then, on `$GDK/gitlab-ai-gateway`, run the following command:
+
+   ```shell
+   poetry run fetch-foundational-agents "http://gdk.test:3000 or https://gitlab.com" "<TOKEN TO YOUR GDK OR GITLAB>" \
+     "<ID OF AGENT IN YOUR GDK>" \
+     --output-path duo_workflow_service/agent_platform/experimental/flows/configs
+   ```
+
+1. Restart duo workflow service.
+
+   ```shell
+   gdk restart duo-workflow-service
+   ```
+
+1. With the changes to `FoundationalChatAgentsDefinitions.rb`, you can now select your foundational agent in the web chat locally.

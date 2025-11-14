@@ -266,7 +266,7 @@ The available scanning options depend on the GitLab tier:
 - In Ultimate, GitLab Advanced SAST provides more accurate results. You should use it for the languages it supports.
 - In all tiers, you can use GitLab-provided analyzers, based on open-source scanners, to scan your code.
 
-For more information about our plans for language support in SAST, see the [category direction page](https://about.gitlab.com/direction/application_security_testing/static-analysis/sast/#language-support).
+For more information about language support plans in SAST, see the [category direction page](https://about.gitlab.com/direction/application_security_testing/static-analysis/sast/#language-support).
 
 ### Languages with full support
 
@@ -391,7 +391,7 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities when:
 
 - You [disable a predefined rule](customize_rulesets.md#disable-predefined-rules).
-- We remove a rule from the default ruleset.
+- A rule is removed from the default ruleset.
 
 Automatic resolution is available only for findings from the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 The Vulnerability Management system leaves a comment on automatically-resolved vulnerabilities so you still have a historical record of the vulnerability.
@@ -1016,7 +1016,7 @@ Some analyzers can be customized with CI/CD variables.
 
 #### Security scanner configuration
 
-SAST analyzers internally use OSS security scanners to perform the analysis. We set the recommended
+SAST analyzers internally use OSS security scanners to perform the analysis. GitLab sets the recommended
 configuration for the security scanner so that you need not to worry about tuning them. However,
 there can be some rare cases where our default scanner configuration does not suit your
 requirements.
@@ -1173,8 +1173,8 @@ To use SAST in an offline environment, you need:
 GitLab Runner has a [default `pull_policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images. However, we
-recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+in an offline environment if you prefer using only locally available Docker images. However,
+keep the pull policy setting to `always` if not in an offline environment. This setting
 enables the use of updated scanners in your CI/CD pipelines.
 
 ### Make GitLab SAST analyzer images available inside your Docker registry

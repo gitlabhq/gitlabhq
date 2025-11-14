@@ -49,8 +49,7 @@ For more information, see:
 
 ## Pipeline execution policies migration
 
-To consolidate and simplify scan and pipeline enforcement, we have introduced pipeline execution policies. We deprecated
-compliance pipelines in GitLab 17.3 and will remove compliance pipelines in GitLab 19.0.
+Pipeline execution policies aim to consolidate and simplify scan and pipeline enforcement. Compliance pipelines were deprecated in GitLab 17.3 and will be removed in GitLab 19.0.
 
 Pipeline execution policies extend a project's `.gitlab-ci.yml` file with the configuration provided in separate YAML file
 (for example, `pipeline-execution.yml`) linked in the pipeline execution policy.
@@ -124,8 +123,8 @@ framework label, the compliance pipeline configuration is run instead of the lab
 The user running the pipeline in the labeled project must at least have the Reporter role on the compliance project.
 
 When used to enforce scan execution, this feature has some overlap with
-[scan execution policies](../application_security/policies/scan_execution_policies.md). We have not
-[unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
+[scan execution policies](../application_security/policies/scan_execution_policies.md).
+The user experience for these two features [have not been unified](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 
 ### Example configuration
 

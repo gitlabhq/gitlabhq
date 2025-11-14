@@ -2,35 +2,6 @@
 
 get '/o', to: 'organizations/organizations#index', as: 'organizations_scope'
 
-scope(
-  path: '/o/:organization_path',
-  constraints: { organization_path: Gitlab::PathRegex.organization_route_regex },
-  as: :organization
-) do
-  root 'root#index'
-
-  resources :projects, only: [:new, :create]
-  resources :groups, only: [:new, :create]
-
-  resource :dashboard, controller: 'dashboard', only: [] do
-    scope module: :dashboard do
-      resources :projects, only: [:index] do
-        collection do
-          get :contributed, :starred, :personal, :member, :inactive, to: 'projects#index'
-        end
-      end
-
-      resources :groups, only: [:index] do
-        collection do
-          get :member, :inactive, to: 'groups#index'
-        end
-      end
-    end
-
-    root to: "dashboard/projects#index"
-  end
-end
-
 scope path: '-' do
   resources(:organizations, only: [:show, :index, :new], param: :organization_path, module: :organizations) do
     collection do

@@ -39,19 +39,18 @@ The `Pajamas::AlertComponent` follows the [Pajamas Alert](https://design.gitlab.
 
 **Examples**:
 
-By default this creates a dismissible info alert with icon:
+By default this creates a dismissible info alert:
 
 ```ruby
 = render Pajamas::AlertComponent.new(title: "Almost done!")
 ```
 
-You can set variant, hide the icons and more:
+You can set the variant, persistence, and more:
 
 ```ruby
 = render Pajamas::AlertComponent.new(title: "All done!",
   variant: :success,
-  dismissible: :false,
-  show_icon: false)
+  dismissible: :false)
 ```
 
 For the full list of options, see its

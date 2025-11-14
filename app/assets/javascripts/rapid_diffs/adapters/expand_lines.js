@@ -13,6 +13,18 @@ const getSurroundingLines = (hunkHeaderRow) => {
   return [lineBefore, lineAfter].map((lineRow) => (lineRow ? new DiffLineRow(lineRow) : null));
 };
 
+// Prevent new discussion toggle from appearing when we focus line link after expansion
+const focusWithoutPropagation = (element) => {
+  element.addEventListener(
+    'focusin',
+    (event) => {
+      event.stopPropagation();
+    },
+    { once: true },
+  );
+  element.focus();
+};
+
 export const expandLinesAdapter = {
   clicks: {
     async expandLines(event, button) {
@@ -45,11 +57,15 @@ export const expandLinesAdapter = {
       if (expandDirection === 'up') {
         // eslint-disable-next-line no-unsanitized/method
         hunkHeaderRow.insertAdjacentHTML('beforebegin', lines);
-        hunkHeaderRow.previousElementSibling.querySelector('[data-line-number]').focus();
+        focusWithoutPropagation(
+          hunkHeaderRow.previousElementSibling.querySelector('[data-line-number]'),
+        );
       } else {
         // eslint-disable-next-line no-unsanitized/method
         hunkHeaderRow.insertAdjacentHTML('afterend', lines);
-        hunkHeaderRow.nextElementSibling.querySelector('[data-line-number]').focus();
+        focusWithoutPropagation(
+          hunkHeaderRow.nextElementSibling.querySelector('[data-line-number]'),
+        );
       }
       hunkHeaderRow.remove();
       const totalRows = this.diffElement.querySelectorAll('[data-file-body] tbody tr').length;

@@ -1,0 +1,5 @@
+= render RapidDiffs::AppComponent.new(@presenter, extra_app_data:, extra_prefetch_endpoints:) do |c|
+  - if user_permissions[:can_create_note]
+    - c.with_before_diffs_list do
+      %button.rd-new-discussion-toggle{ data: { new_discussion_toggle: true }, hidden: 'true' }
+        = helpers.sprite_icon('comment', size: 12)

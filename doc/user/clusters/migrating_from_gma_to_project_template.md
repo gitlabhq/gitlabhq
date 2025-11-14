@@ -95,14 +95,14 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
      Another approach,could be to collect these IPs by running `kubectl get services -n gitlab-managed-apps`
      and then overwriting each `ClusterIP` that it complains about with the value you got from that command.
 
-   - Vault: This application introduces a breaking change from the chart we used in Helm v2 to the chart
+   - Vault: This application introduces a breaking change from the chart used in Helm v2 to the chart
      used in Helm v3. So, the only way to integrate it with this Cluster Management Project is to actually uninstall this app and accept the
      chart version proposed in `applications/vault/values.yaml`.
 
    - Cert-manager:
 
      - For users on Kubernetes version 1.20 or later, the deprecated cert-manager v0.10 is no longer valid
-       and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010),
+       and the upgrade includes a breaking change. So you should [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010),
        and install the latest cert-manager instead. To install this version, uncomment `applications/cert-manager/helmfile.yaml`
        from [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file).
        This triggers a pipeline to install the new version.

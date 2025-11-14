@@ -78,6 +78,26 @@ gitlab-org/gitlab/-/settings/repository
 gitlab-org/serverless/runtimes/-/settings/repository
 ```
 
+## Organization routes
+
+Organization-scoped routes use the `/o/:organization_path/*path` pattern. These routes are created by redrawing all existing routes within an organization scope in `config/routes.rb`.
+
+Examples:
+
+```plaintext
+/o/my-org/projects
+/o/my-org/groups
+/o/my-org/-/settings
+```
+
+All routes are redrawn under the `/o/:organization_path` prefix using a scope block in `config/routes.rb`. For example, `/o/my-org/projects` routes to the same controller as `/projects`, with organization context preserved throughout the request.
+
+This approach creates organization-scoped versions of all routes without requiring separate controller or route definitions.
+
+**Note:** Some routes are not yet organization-scoped, including Devise OmniAuth callbacks (which cannot be scoped under a dynamic segment) and API routes.
+
+For more details on organization routing implementation, see the [Organization development documentation](organization/_index.md#organization-routing).
+
 ## Changing existing routes
 
 Don't change a URL to an existing page, unless it's necessary. If you must make a change,

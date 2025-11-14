@@ -143,6 +143,41 @@ module Ci
         end
 
         def yield_pipelines(events_batch, records_yielder)
+          if Feature.disabled?(:discard_project_mirrors_join_for_ch_pipeline_ingestion, :instance)
+            return yield_pipelines_legacy(events_batch, records_yielder)
+          end
+
+          # NOTE: The `.to_a` call is necessary here to materialize the ActiveRecord relationship, so that the call
+          # to `.last` in `.each_batch` (see https://gitlab.com/gitlab-org/gitlab/-/blob/a38c93c792cc0d2536018ed464862076acb8d3d7/lib/gitlab/pagination/keyset/iterator.rb#L27)
+          # doesn't mess it up and cause duplicates (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138066)
+          # rubocop: disable CodeReuse/ActiveRecord -- this is an expression that is specific to this service
+          # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- the batch is already limited by definition
+          events_batch = events_batch.to_a
+          pipeline_ids_to_proj_namespace_ids = events_batch.pluck(:pipeline_id, :project_namespace_id).to_h
+          project_namespace_ids_to_paths =
+            Ci::NamespaceMirror.by_namespace_id(pipeline_ids_to_proj_namespace_ids.values)
+              .pluck(:namespace_id, :traversal_ids).to_h
+          # rubocop: enable Database/AvoidUsingPluckWithoutLimit
+          # rubocop: enable CodeReuse/ActiveRecord
+
+          Ci::Pipeline.id_in(pipeline_ids_to_proj_namespace_ids.keys)
+            .left_outer_joins(pipeline_metadata: [])
+            .select(:finished_at, *finished_pipeline_projections)
+            .map { |pipeline| pipeline.attributes.symbolize_keys }
+            .each do |pipeline_attrs|
+              fixup_pipeline_attrs(pipeline_attrs, pipeline_ids_to_proj_namespace_ids, project_namespace_ids_to_paths)
+
+              if check_pipeline_errors(pipeline_attrs)
+                next pipeline_ids_to_proj_namespace_ids.delete(pipeline_attrs[:id])
+              end
+
+              records_yielder << pipeline_attrs
+            end
+
+          @processed_record_ids += pipeline_ids_to_proj_namespace_ids.keys
+        end
+
+        def yield_pipelines_legacy(events_batch, records_yielder)
           # NOTE: The `.to_a` call is necessary here to materialize the ActiveRecord relationship, so that the call
           # to `.last` in `.each_batch` (see https://gitlab.com/gitlab-org/gitlab/-/blob/a38c93c792cc0d2536018ed464862076acb8d3d7/lib/gitlab/pagination/keyset/iterator.rb#L27)
           # doesn't mess it up and cause duplicates (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138066)
@@ -160,12 +195,8 @@ module Ci
             .select(:finished_at, *finished_pipeline_projections)
             .each do |pipeline|
               pipeline_attrs = pipeline.attributes.symbolize_keys
-              err_reason = pipeline_attrs_error(pipeline_attrs)
-              if err_reason.present?
-                log_pipeline_problem(pipeline, err_reason)
-                pipeline_ids -= [pipeline.id]
-                next
-              end
+
+              next pipeline_ids -= [pipeline.id] if check_pipeline_errors(pipeline_attrs)
 
               # append the project namespace ID segment to the path selected in the query
               pipeline_attrs[:path] += "#{project_namespace_ids[pipeline_attrs[:id]]}/"
@@ -177,16 +208,36 @@ module Ci
           @processed_record_ids += pipeline_ids
         end
 
-        def pipeline_attrs_error(pipeline_attrs)
-          'Missing namespace traversal path' unless pipeline_attrs[:path].present?
+        def fixup_pipeline_attrs(pipeline_attrs, pipeline_ids_to_project_namespace_ids, project_namespace_ids_to_paths)
+          project_namespace_id = pipeline_ids_to_project_namespace_ids[pipeline_attrs[:id]]
+          traversal_ids = project_namespace_ids_to_paths[project_namespace_id]
+
+          # populate the path as the full project namespace path
+          pipeline_attrs[:path] = to_traversal_path(traversal_ids)
+
+          pipeline_attrs[:duration] = 0 if pipeline_attrs[:duration].nil? || pipeline_attrs[:duration] < 0
         end
 
-        def log_pipeline_problem(pipeline, reason)
+        def check_pipeline_errors(pipeline_attrs)
+          pipeline_attrs_error(pipeline_attrs).tap do |err_reason|
+            log_pipeline_problem(pipeline_attrs[:id], err_reason) if err_reason.present?
+          end.present?
+        end
+
+        def pipeline_attrs_error(pipeline_attrs)
+          'Missing namespace traversal path' unless pipeline_attrs[:path].present? && pipeline_attrs[:path] != '/'
+        end
+
+        def log_pipeline_problem(pipeline_id, reason)
           logger.warn(
             message: 'A problematic pipeline sync event has been encountered',
             reason: reason,
-            pipeline_id: pipeline.id
+            pipeline_id: pipeline_id
           )
+        end
+
+        def to_traversal_path(traversal_ids)
+          traversal_ids.present? ? "#{traversal_ids.join('/')}/" : '/'
         end
 
         def finished_pipeline_projections
@@ -194,9 +245,12 @@ module Ci
             *PIPELINE_FIELD_NAMES.map { |n| "#{::Ci::Pipeline.table_name}.#{n}" },
             *PIPELINE_EPOCH_FIELD_NAMES
                .map { |n| "COALESCE(EXTRACT(epoch FROM #{::Ci::Pipeline.table_name}.#{n}), 0) AS casted_#{n}" },
-            "ARRAY_TO_STRING(#{::Ci::NamespaceMirror.table_name}.traversal_ids, '/') || '/' AS path",
             *PIPELINE_META_FIELD_NAMES.map { |n| "#{::Ci::PipelineMetadata.table_name}.#{n} AS #{n}" }
-          ]
+          ].tap do |projections|
+            if Feature.disabled?(:discard_project_mirrors_join_for_ch_pipeline_ingestion, :instance)
+              projections << "ARRAY_TO_STRING(#{::Ci::NamespaceMirror.table_name}.traversal_ids, '/') || '/' AS path"
+            end
+          end
         end
         strong_memoize_attr :finished_pipeline_projections
 

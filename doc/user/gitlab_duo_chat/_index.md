@@ -461,8 +461,8 @@ For each Chat conversation, input and output length is limited:
 
 ## Give feedback
 
-Your feedback is important to us as we continually enhance the GitLab Duo Chat experience.
-Leaving feedback helps us customize the Chat for your needs and improve its performance for everyone.
+Your feedback is important as GitLab continually enhances the GitLab Duo Chat experience.
+Feedback helps customize Chat for your needs and improve its performance for everyone.
 
 To give feedback about a specific response, use the feedback buttons in the response message.
 Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430124).

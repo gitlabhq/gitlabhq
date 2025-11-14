@@ -17,14 +17,10 @@ module MergeRequests
         prepare_merge_request(merge_request)
       end
 
-      measure_duration(:mark_merge_request_as_prepared) do
-        mark_merge_request_as_prepared(merge_request)
-      end
+      mark_merge_request_as_prepared(merge_request)
 
       logger.info(**log_payload(merge_request, 'Executing hooks'))
-      measure_duration(:execute_hooks) do
-        execute_hooks(merge_request)
-      end
+      execute_hooks(merge_request)
       logger.info(**log_payload(merge_request, 'Executed hooks'))
 
       return unless log_after_create_duration_enabled?
@@ -36,34 +32,61 @@ module MergeRequests
 
     def prepare_for_mergeability(merge_request)
       logger.info(**log_payload(merge_request, 'Creating pipeline'))
-      create_pipeline_for(merge_request, current_user)
+      measure_duration(:create_pipeline) do
+        create_pipeline_for(merge_request, current_user)
+      end
       logger.info(**log_payload(merge_request, 'Pipeline created'))
 
-      merge_request.update_head_pipeline
-      check_mergeability(merge_request)
+      measure_duration(:update_head_pipeline) do
+        merge_request.update_head_pipeline
+      end
+
+      measure_duration(:check_mergeability) do
+        check_mergeability(merge_request)
+      end
     end
 
     def prepare_merge_request(merge_request)
-      event_service.open_mr(merge_request, current_user)
+      measure_duration(:event_service_open_mr) do
+        event_service.open_mr(merge_request, current_user)
+      end
 
-      merge_request_activity_counter.track_create_mr_action(user: current_user, merge_request: merge_request)
-      merge_request_activity_counter.track_mr_including_ci_config(user: current_user, merge_request: merge_request)
+      measure_duration(:track_mr_actions) do
+        merge_request_activity_counter.track_create_mr_action(user: current_user, merge_request: merge_request)
+        merge_request_activity_counter.track_mr_including_ci_config(user: current_user, merge_request: merge_request)
+      end
 
-      notification_service.new_merge_request(merge_request, current_user)
+      measure_duration(:notification_service) do
+        notification_service.new_merge_request(merge_request, current_user)
+      end
 
-      merge_request.diffs(include_stats: false).write_cache
-      merge_request.create_cross_references!(current_user)
+      measure_duration(:write_diffs_cache) do
+        merge_request.diffs(include_stats: false).write_cache
+      end
 
-      todo_service.new_merge_request(merge_request, current_user)
-      merge_request.cache_merge_request_closes_issues!(current_user)
+      measure_duration(:create_cross_references) do
+        merge_request.create_cross_references!(current_user)
+      end
 
-      Gitlab::InternalEvents.track_event(
-        'create_merge_request',
-        user: current_user,
-        project: merge_request.target_project
-      )
+      measure_duration(:todo_service) do
+        todo_service.new_merge_request(merge_request, current_user)
+      end
 
-      link_lfs_objects(merge_request)
+      measure_duration(:cache_closes_issues) do
+        merge_request.cache_merge_request_closes_issues!(current_user)
+      end
+
+      measure_duration(:track_internal_event) do
+        Gitlab::InternalEvents.track_event(
+          'create_merge_request',
+          user: current_user,
+          project: merge_request.target_project
+        )
+      end
+
+      measure_duration(:link_lfs_objects) do
+        link_lfs_objects(merge_request)
+      end
     end
 
     def link_lfs_objects(merge_request)

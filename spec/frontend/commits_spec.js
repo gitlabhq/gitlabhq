@@ -6,6 +6,7 @@ import CommitsList from '~/commits';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { sanitize } from '~/lib/dompurify';
+import { InfiniteScroller } from '~/infinite_scroller';
 
 jest.mock('~/infinite_scroller');
 jest.mock('~/lib/dompurify', () => ({
@@ -26,6 +27,7 @@ describe('Commits List', () => {
   let commitsList;
 
   beforeEach(() => {
+    jest.spyOn(InfiniteScroller.prototype, 'initialize');
     setHTMLFixture(`
       <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main">
         <input id="commits-search">
@@ -52,6 +54,10 @@ describe('Commits List', () => {
 
   it('should be defined', () => {
     expect(CommitsList).toBeDefined();
+  });
+
+  it('should initialize infinite scroller', () => {
+    expect(InfiniteScroller.prototype.initialize).toHaveBeenCalled();
   });
 
   describe('processCommits', () => {

@@ -77,6 +77,15 @@ RSpec.configure do |config|
         exporter_config.custom_metrics_proc = ->(example) {
           default_branch = ENV["CI_COMMIT_REF_NAME"] == ENV["CI_DEFAULT_BRANCH"]
           feature_category = example.metadata[:feature_category]
+          pipeline_type = if default_branch && ENV["SCHEDULE_TYPE"].present?
+                            "default_branch_scheduled_pipeline"
+                          elsif default_branch
+                            "default_branch_pipeline"
+                          elsif ENV["CI_MERGE_REQUEST_IID"].present?
+                            "merge_request_pipeline"
+                          else
+                            "any"
+                          end
 
           owners = begin
             feature_category ? owners_table.owners(feature_category.to_s) : {}
@@ -92,6 +101,8 @@ RSpec.configure do |config|
           end
 
           {
+            pipeline_type: pipeline_type,
+            # TODO: remove boolean fields once schemas and dashboards are updated
             default_branch_pipeline: default_branch,
             default_branch_scheduled_pipeline: default_branch && ENV["SCHEDULE_TYPE"].present?,
             merge_request_pipeline: ENV["CI_MERGE_REQUEST_IID"].present?,

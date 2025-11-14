@@ -4,6 +4,8 @@ module Authn
   class OauthApplication < Doorkeeper::Application
     include Doorkeeper::Concerns::TokenFallback
 
+    belongs_to :organization, class_name: 'Organizations::Organization'
+
     # Check whether the given plain text secret matches our stored secret
     #
     # @param input [#to_s] Plain secret provided by user

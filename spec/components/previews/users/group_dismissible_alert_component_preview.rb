@@ -8,19 +8,16 @@ module Users
     # @param title text "Alert title (optional)"
     # @param body text "Alert message goes here."
     # @param variant select {{ Pajamas::AlertComponent::VARIANT_ICONS.keys }}
-    # @param show_icon toggle true
     # @param feature_id select {{ Users::GroupCallout.feature_names.keys }}
     def default(
       title: 'Alert title (optional)',
       body: 'Alert message goes here.',
       variant: :info,
-      show_icon: true,
       feature_id: :invite_members_banner
     )
       render(Users::GroupDismissibleAlertComponent.new(
         title: title,
         variant: variant.to_sym,
-        show_icon: show_icon,
         dismiss_options: {
           feature_id: feature_id.to_sym, group: FactoryBot.build_stubbed(:group), user: FactoryBot.build_stubbed(:user)
         }

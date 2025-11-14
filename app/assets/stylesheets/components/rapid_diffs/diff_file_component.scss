@@ -60,6 +60,7 @@
 .rd-diff-file[data-virtual]:has(button[aria-controls*='base-dropdown'][aria-expanded='true']),
 // discussions change the dimensions of a diff file, virtual dimensions are no longer relevant,
 // switch into Fine-grained mode
+.rd-diff-file[data-virtual]:has([data-new-discussion-toggle]),
 .rd-diff-file[data-virtual]:has([data-discussion-row]),
 .rd-diff-file[data-virtual]:has(.zen-backdrop.fullscreen) {
   --rd-content-visibility-auto: visible;

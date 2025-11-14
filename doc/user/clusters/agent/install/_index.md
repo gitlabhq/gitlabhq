@@ -295,7 +295,7 @@ and the domain DNS can't be resolved.
 
 {{< alert type="note" >}}
 
-In most cases, you should run one agent per cluster and use the agent impersonation features (Premium and Ultimate only) to support multi-tenancy. If you must run multiple agents, we would love to hear from you about any issues you encounter. You can provide your feedback in [issue 454110](https://gitlab.com/gitlab-org/gitlab/-/issues/454110).
+In most cases, you should run one agent per cluster and use the agent impersonation features (Premium and Ultimate only) to support multi-tenancy. If you must run multiple agents, share any issues you encounter. You can provide your feedback in [issue 454110](https://gitlab.com/gitlab-org/gitlab/-/issues/454110).
 
 {{< /alert >}}
 

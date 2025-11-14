@@ -97,7 +97,7 @@ To explain the vulnerability:
 The response is shown on the right side of the page.
 
 On GitLab.com this feature is available. By default, it is powered by the Anthropic [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
-model. We cannot guarantee that the large language model produces results that are correct. Use the
+model. GitLab cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 
 ### Data shared with third-party AI APIs for Vulnerability Explanation
@@ -138,7 +138,7 @@ The following data is shared with third-party AI APIs:
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
 
-We can't guarantee that the large language model produces correct results.
+GitLab cannot guarantee that the large language model produces correct results.
 You should always review the proposed change before merging it. When reviewing, check that:
 
 - Your application's existing functionality is preserved.
@@ -182,8 +182,8 @@ Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org
 To ensure that suggested resolutions are high-quality, Vulnerability Resolution is available for a specific set of vulnerabilities.
 The system decides whether to offer Vulnerability Resolution based on the vulnerability's Common Weakness Enumeration (CWE) identifier.
 
-We selected the current set of vulnerabilities based on testing by automated systems and security experts.
-We are actively working to expand coverage to more types of vulnerabilities.
+The current set of vulnerabilities are selected based on testing by automated systems and security experts.
+GitLab is actively working to expand coverage to more types of vulnerabilities.
 
 <details><summary style="color:#5943b6; margin-top: 1em;"><a>View the complete list of supported CWEs for Vulnerability Resolution</a></summary>
 
@@ -561,7 +561,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a free account. Sign up for an account by going to
 any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/index.html).
-GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
+GitLab does not send any user information to these third-party vendors; GitLab does send the CWE or OWASP identifier and the language name of the file extension.
 
 {{< /alert >}}
 

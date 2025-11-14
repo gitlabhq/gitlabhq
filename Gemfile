@@ -50,7 +50,7 @@ else
   gem 'ffi', '~> 1.17.2', force_ruby_platform: true, feature_category: :shared
 end
 
-gem 'openssl', '~> 3.0', feature_category: :shared
+gem 'openssl', '~> 3.3.2', feature_category: :shared
 
 gem 'gitlab-safe_request_store', path: 'gems/gitlab-safe_request_store', feature_category: :shared
 

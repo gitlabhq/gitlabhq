@@ -202,6 +202,28 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   context 'when using scopes' do
+    describe '.by_path' do
+      let_it_be(:other_organization) { create(:organization, path: 'other-org') }
+
+      subject(:match) { described_class.by_path(path) }
+
+      context 'when path matches an organization' do
+        let(:path) { organization.path }
+
+        it 'returns the organization with matching path' do
+          expect(match).to contain_exactly(organization)
+        end
+      end
+
+      context 'when path does not match any organization' do
+        let(:path) { 'non-existent-path' }
+
+        it 'returns empty result' do
+          expect(match).to be_empty
+        end
+      end
+    end
+
     describe '.with_namespace_path' do
       let_it_be(:group) { create(:group, organization: organization) }
       let(:path) { group.path }

@@ -61,7 +61,7 @@ export default class CommitsList {
       limit,
       startingOffset: parseInt(getParameterByName('offset'), 10) || limit,
     });
-    if (this.$contentList.find('[data-empty-list]')) {
+    if (this.$contentList.find('[data-empty-list]').length) {
       root.querySelector('.js-infinite-scrolling-loading').hidden = true;
     } else {
       scroller.initialize();

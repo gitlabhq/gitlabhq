@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :system_access do
+RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organization, feature_category: :system_access do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:scopes) { 'api' }
   let_it_be(:path) { "/applications" }
-  let!(:application) { create(:application, name: 'another_application', owner: nil, redirect_uri: 'http://other_application.url', scopes: scopes) }
+  let!(:application) { create(:application, name: 'another_application', owner: nil, redirect_uri: 'http://other_application.url', scopes: scopes, organization: current_organization) }
 
   describe 'POST /applications' do
     it_behaves_like 'POST request permissions for admin mode' do
@@ -28,6 +28,13 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
         expect(json_response['callback_url']).to eq application.redirect_uri
         expect(json_response['confidential']).to eq application.confidential
         expect(application.scopes.to_s).to eq('api')
+      end
+
+      it 'sets organization_id from Current.organization' do
+        post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
+
+        application = Authn::OauthApplication.find_by(name: 'application_name', redirect_uri: 'http://application.url')
+        expect(application.organization_id).to eq(current_organization.id)
       end
 
       it 'does not allow creating an application with the wrong redirect_uri format' do

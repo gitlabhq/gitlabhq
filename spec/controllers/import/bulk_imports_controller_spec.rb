@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BulkImportsController, :with_organization_url_helpers, feature_category: :importers do
+RSpec.describe Import::BulkImportsController, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:current_organization) { user.organization }
 

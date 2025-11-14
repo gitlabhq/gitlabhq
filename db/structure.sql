@@ -774,14 +774,17 @@ CREATE FUNCTION set_has_issues_on_vulnerability_reads() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-UPDATE
-  vulnerability_reads
-SET
-  has_issues = true
-WHERE
-  vulnerability_id = NEW.vulnerability_id AND has_issues IS FALSE;
-RETURN NULL;
+  IF (SELECT current_setting('vulnerability_management.dont_execute_db_trigger', true) = 'true') THEN
+    RETURN NULL;
+  END IF;
 
+  UPDATE
+    vulnerability_reads
+  SET
+    has_issues = true
+  WHERE
+    vulnerability_id = NEW.vulnerability_id AND has_issues IS FALSE;
+  RETURN NULL;
 END
 $$;
 
@@ -789,14 +792,17 @@ CREATE FUNCTION set_has_merge_request_on_vulnerability_reads() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-UPDATE
-  vulnerability_reads
-SET
-  has_merge_request = true
-WHERE
-  vulnerability_id = NEW.vulnerability_id AND has_merge_request IS FALSE;
-RETURN NULL;
+  IF (SELECT current_setting('vulnerability_management.dont_execute_db_trigger', true) = 'true') THEN
+    RETURN NULL;
+  END IF;
 
+  UPDATE
+    vulnerability_reads
+  SET
+    has_merge_request = true
+  WHERE
+    vulnerability_id = NEW.vulnerability_id AND has_merge_request IS FALSE;
+  RETURN NULL;
 END
 $$;
 

@@ -61,7 +61,7 @@ To check the results of the most recent scan:
 
 ## Enable merge request pipelines
 
-So far, we've used pipeline secret detection to scan commits in the
+So far, you have used pipeline secret detection to scan commits in the
 default branch. But to analyze commits in merge requests before you
 merge them to the default branch, you need to enable merge request
 pipelines.

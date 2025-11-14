@@ -152,6 +152,13 @@ RSpec.configure do |config|
     metadata[:ci_config_validation] = true
   end
 
+  # Auto-include organization URL helpers for spec types that need organization-scoped paths
+  [:feature, :request, :controller].each do |spec_type|
+    config.define_derived_metadata(type: spec_type) do |metadata|
+      metadata[:with_organization_url_helpers] = true
+    end
+  end
+
   config.include LicenseHelpers
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers

@@ -181,8 +181,8 @@ Compliance and security policy frameworks can only be modified from the complian
 
 ## Feedback and support
 
-Because this feature is in [beta](../../../policy/development_stages_support.md#beta), we actively seek feedback from users.
-Share your experience, suggestions, and any issues through:
+Because this feature is in [beta](../../../policy/development_stages_support.md#beta), user feedback is actively
+encouraged. Share your experience, suggestions, and any issues through:
 
 - [GitLab issues](https://gitlab.com/gitlab-org/gitlab/-/issues).
 - Your regular GitLab support channels.

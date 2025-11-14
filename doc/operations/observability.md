@@ -77,8 +77,6 @@ If GitLab Observability is not yet enabled for your group:
 
 The email includes your OpenTelemetry (`OTEL`) endpoint URL for instrumenting your applications.
 
-![Enable Observability Button](img/gitLab_o11y_enable_button_v18_1.png "Enable Observability Button")
-
 ## Access GitLab Observability
 
 Once access is granted:

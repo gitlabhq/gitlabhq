@@ -44,7 +44,7 @@ module Gitlab
         when Release
           instance.release_url(object, **options)
         when ::Organizations::Organization
-          instance.root_url(organization_path: object.path, **options)
+          instance.organization_root_url(object.path, **options)
         when Project
           instance.project_url(object, **options)
         when Snippet

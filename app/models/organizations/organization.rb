@@ -24,6 +24,7 @@ module Organizations
       joins(:organization_users).merge(Organizations::OrganizationUser.by_user(user))
                                 .order(:id)
     }
+    scope :by_path, ->(path) { where(path: path) }
 
     before_destroy :check_if_default_organization
 

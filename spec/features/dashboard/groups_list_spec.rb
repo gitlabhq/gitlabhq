@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, feature_category: :groups_and_projects do
+RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
 
   let_it_be(:user) { create(:user) }

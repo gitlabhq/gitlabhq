@@ -25,7 +25,7 @@ module Packages
 
     attr_reader :current_user, :group, :params
 
-    def packages_for_group_projects(installable_only: false)
+    def packages_for_group_projects
       packages = packages_class
         .including_project_namespace_route
         .including_tags
@@ -36,7 +36,7 @@ module Packages
       packages = packages.without_package_type(:terraform_module) unless package_type
       packages = (params[:exact_name] ? filter_by_exact_package_name(packages) : filter_by_package_name(packages))
       packages = filter_by_package_version(packages)
-      installable_only ? packages.installable : filter_by_status(packages)
+      filter_by_status(packages)
     end
 
     def group_projects_visible_to_current_user

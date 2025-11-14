@@ -76,6 +76,41 @@ When working on settings, we need to make sure that:
 - Updating settings is taken into consideration.
 - If we want to move from project to project namespace, we follow a similar database process to the one described in Phase 1.
 
+## Organization routing
+
+Organization-scoped routes use the `/o/:organization_path/*path` pattern. These routes are created by redrawing all existing routes within an organization scope in `config/routes.rb`.
+
+### How it works
+
+In `config/routes.rb`, all routes are defined within a scope block:
+
+```ruby
+scope(
+  path: '/o/:organization_path',
+  constraints: { organization_path: Gitlab::PathRegex.organization_route_regex },
+  as: :organization
+) do
+  draw_all_routes
+end
+```
+
+This approach:
+
+1. Redraws all existing routes under the `/o/:organization_path` prefix
+1. Validates the organization path using a regex constraint
+1. Preserves organization context throughout the request lifecycle
+
+For example, `GET /o/my-org/projects` routes to `ProjectsController#index` (same as `/projects`) with the organization context available via `Current.organization`.
+
+This creates organization-scoped versions of all routes without requiring separate controller or route definitions.
+
+### Routes not yet organization-scoped
+
+Some routes are not currently available under the organization scope:
+
+- **Devise OmniAuth callbacks** - Devise does not support scoping OmniAuth callbacks under a dynamic segment, so these remain at the global level
+- **API routes** - API endpoints are not yet organization-scoped
+
 ## Organizations & cells
 
 For the [Cells](../cells) project, GitLab will rely on organizations. A cell will host one or more organizations. When a request is made, the [HTTP Router Service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/http_routing_service/) will route it to the correct cell.

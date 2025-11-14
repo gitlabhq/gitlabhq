@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Active user sessions', :with_organization_url_helpers, :clean_gitlab_redis_sessions, feature_category: :system_access do
+RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_category: :system_access do
   let(:user) { create(:user) }
   let(:current_organization) { user.organization }
 

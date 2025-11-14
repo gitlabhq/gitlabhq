@@ -462,7 +462,7 @@ module SidebarsHelper
   end
 
   def terms_link
-    Gitlab::CurrentSettings.terms ? '/-/users/terms' : nil
+    Gitlab::CurrentSettings.terms ? terms_path : nil
   end
 
   def admin_area_link

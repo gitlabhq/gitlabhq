@@ -171,6 +171,21 @@ module API
       rack_response({ 'message' => exception.message }.to_json, 503, exception.headers)
     end
 
+    rescue_from GRPC::Unavailable, GRPC::DeadlineExceeded do |e|
+      Gitlab::ErrorTracking.track_exception(e)
+      rack_response({ 'message' => 'Gitaly service temporarily unavailable' }.to_json, 503)
+    end
+
+    rescue_from Gitlab::Git::CommandError do |e|
+      # Check if this is a Gitaly connection issue (wrapped GRPC errors)
+      if e.cause.is_a?(GRPC::Unavailable) || e.cause.is_a?(GRPC::DeadlineExceeded)
+        Gitlab::ErrorTracking.track_exception(e)
+        rack_response({ 'message' => 'Gitaly service temporarily unavailable' }.to_json, 503)
+      else
+        handle_api_exception(e)
+      end
+    end
+
     rescue_from :all do |exception|
       handle_api_exception(exception)
     end

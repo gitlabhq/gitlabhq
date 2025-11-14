@@ -129,7 +129,7 @@ stages:
   script:
     - bundle exec rake "ci:export_frontend_code_paths_mapping[$QA_FRONTEND_PATHS_MAPPING_FILE_PATTERN]"
   rules:
-    - if: '$BABEL_ENV == "istanbul"'
+    - if: '$GLCI_E2E_FRONTEND_COVERAGE_TRACKING == "true"'
 
 .notify-slack:
   extends:

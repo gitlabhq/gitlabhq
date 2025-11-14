@@ -55,8 +55,8 @@ Let's simulate accidentally committing a secret:
    git commit -m "Add fake secret"
    ```
 
-We've created a problematic situation: if we push our changes, the personal access token we committed to our text file
-will be leaked! We need to remove the secret from the commit history before we can proceed.
+This creates a problem: if the changes are pushed, the personal access token in the text file
+is leaked! The secret must be removed from the commit history before you can proceed.
 
 ## Remove the secret from the history
 
@@ -101,7 +101,7 @@ to every commit after the secret was added:
    ...
    ```
 
-   Even if we remove the secret from commit `456def`, it still exists in the history and will be exposed if we push our changes now.
+   Even if the secret is removed from commit `456def`, it still exists in the history and is exposed if the changes are pushed now.
 
 1. To fix the history, start an interactive rebase from the commit that introduced the secret:
 

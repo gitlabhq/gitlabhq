@@ -18,6 +18,11 @@ RSpec.describe Ci::ClickHouse::FinishedPipelinesSyncWorker, :click_house, :freez
 
   subject(:perform) { worker.perform }
 
+  before_all do
+    # Ensure NamespaceMirrors are created
+    Namespace.all.flat_map(&:sync_events).each { |event| ::Ci::NamespaceMirror.sync!(event) }
+  end
+
   before do
     create_sync_events pipeline1
   end

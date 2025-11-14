@@ -79,6 +79,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   def application_params
     super.tap do |params|
       params[:owner] = nil
+      params[:organization] = Current.organization
     end
   end
 end

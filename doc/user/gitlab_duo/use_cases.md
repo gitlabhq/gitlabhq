@@ -347,7 +347,7 @@ fun main() {
    ```markdown
    /tests
 
-   To test the code, we can use JUnit for Kotlin. Here are some tests you can write:
+   To test the code, you can use JUnit for Kotlin. Here are some tests you can write:
 
      import org.junit.jupiter.api.Test
      import java.io.ByteArrayInputStream

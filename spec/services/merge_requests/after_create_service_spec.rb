@@ -292,8 +292,18 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
             ensure_merge_request_diff_duration_s: be_a(Float),
             prepare_for_mergeability_duration_s: be_a(Float),
             prepare_merge_request_duration_s: be_a(Float),
-            mark_merge_request_as_prepared_duration_s: be_a(Float),
-            execute_hooks_duration_s: be_a(Float),
+            create_pipeline_duration_s: be_a(Float),
+            update_head_pipeline_duration_s: be_a(Float),
+            check_mergeability_duration_s: be_a(Float),
+            event_service_open_mr_duration_s: be_a(Float),
+            track_mr_actions_duration_s: be_a(Float),
+            notification_service_duration_s: be_a(Float),
+            write_diffs_cache_duration_s: be_a(Float),
+            create_cross_references_duration_s: be_a(Float),
+            todo_service_duration_s: be_a(Float),
+            cache_closes_issues_duration_s: be_a(Float),
+            track_internal_event_duration_s: be_a(Float),
+            link_lfs_objects_duration_s: be_a(Float),
             after_create_service_total_duration_s: be_a(Float)
           )
         ).and_call_original

@@ -3,70 +3,66 @@
 require "spec_helper"
 
 RSpec.describe RapidDiffs::CommitAppComponent, feature_category: :code_review_workflow do
-  let_it_be(:diffs_slice) { Array.new(2, build(:diff_file)) }
+  let(:app_component) { instance_double(RapidDiffs::AppComponent) }
   let(:discussions_endpoint) { '/discussions' }
-  let(:diffs_stream_url) { '/stream' }
-  let(:reload_stream_url) { '/reload_stream' }
-  let(:update_user_endpoint) { '/update_user' }
-  let(:diffs_stats_endpoint) { '/diffs_stats' }
-  let(:diff_files_endpoint) { '/diff_files_metadata' }
-  let(:diff_file_endpoint) { '/diff_file' }
+  let(:user_permissions) { { can_create_note: true } }
   let(:noteable_type) { 'Commit' }
   let(:preview_markdown_endpoint) { '/preview_markdown_endpoint' }
   let(:markdown_docs_path) { '/markdown_docs_path' }
-  let(:user_permissions) { { can_create_note: true } }
-  let(:diff_view) { :inline }
-  let(:should_sort_metadata_files) { false }
-  let(:show_whitespace) { true }
-  let(:lazy) { false }
 
-  let(:diff_presenter) do
+  let(:presenter) do
     instance_double(
       ::RapidDiffs::CommitPresenter,
-      diffs_slice: diffs_slice,
       discussions_endpoint: discussions_endpoint,
-      diffs_stream_url: diffs_stream_url,
-      reload_stream_url: reload_stream_url,
-      diffs_stats_endpoint: diffs_stats_endpoint,
-      diff_files_endpoint: diff_files_endpoint,
-      diff_file_endpoint: diff_file_endpoint,
-      should_sort_metadata_files?: should_sort_metadata_files,
       user_permissions: user_permissions,
       noteable_type: noteable_type,
       preview_markdown_endpoint: preview_markdown_endpoint,
-      markdown_docs_path: markdown_docs_path,
-      lazy?: lazy
+      markdown_docs_path: markdown_docs_path
     )
   end
 
-  subject(:component) { described_class.new(diff_presenter) }
+  subject(:component) { described_class.new(presenter) }
 
   before do
-    allow(component).to receive(:helpers).and_wrap_original do |original_method, *args|
-      helpers = original_method.call(*args)
-      allow(helpers).to receive_messages(
-        hide_whitespace?: !show_whitespace,
-        diff_view: diff_view,
-        api_v4_user_preferences_path: update_user_endpoint
-      )
-      helpers
+    allow(RapidDiffs::AppComponent).to receive(:new).and_return(app_component)
+    allow(app_component).to receive(:render_in).and_yield(app_component)
+    allow(app_component).to receive(:with_before_diffs_list).and_yield
+  end
+
+  it "renders app with correct arguments" do
+    expect(RapidDiffs::AppComponent).to receive(:new).with(
+      presenter,
+      extra_app_data: {
+        discussions_endpoint: discussions_endpoint,
+        user_permissions: user_permissions,
+        noteable_type: noteable_type,
+        preview_markdown_endpoint: preview_markdown_endpoint,
+        markdown_docs_path: markdown_docs_path
+      },
+      extra_prefetch_endpoints: [discussions_endpoint]
+    )
+
+    render_component
+  end
+
+  context "when user has permission to create notes" do
+    let(:user_permissions) { { can_create_note: true } }
+
+    it "renders before_diffs_list slot with new discussion toggle" do
+      render_component
+
+      expect(page).to have_selector('[data-new-discussion-toggle][hidden]', visible: :all)
     end
   end
 
-  it "provides app data" do
-    render_component
-    app = page.find('[data-rapid-diffs]')
-    data = Gitlab::Json.parse(app['data-app-data'])
-    expect(data['discussions_endpoint']).to eq(discussions_endpoint)
-    expect(data['user_permissions']).to eq(user_permissions.stringify_keys)
-    expect(data['noteable_type']).to eq(noteable_type)
-    expect(data['preview_markdown_endpoint']).to eq(preview_markdown_endpoint)
-    expect(data['markdown_docs_path']).to eq(markdown_docs_path)
-  end
+  context "when user does not have permission to create notes" do
+    let(:user_permissions) { { can_create_note: false } }
 
-  it 'preloads discussions_endpoint' do
-    render_component
-    expect(component.helpers.page_startup_api_calls).to include(discussions_endpoint)
+    it "does not render before_diffs_list slot" do
+      render_component
+
+      expect(page).not_to have_selector('[data-new-discussion-toggle]', visible: :all)
+    end
   end
 
   def render_component

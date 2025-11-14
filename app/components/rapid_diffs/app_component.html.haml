@@ -29,6 +29,7 @@
         = render RapidDiffs::EmptyStateComponent.new
       .rd-app-code-theme.code.code-syntax-highlight-theme
         .rd-app-diffs-list
+          = before_diffs_list
           -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
           .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
           %div{ data: { diffs_list: true } }

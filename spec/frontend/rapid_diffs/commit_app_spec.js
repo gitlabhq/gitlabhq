@@ -8,6 +8,7 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { createAlert } from '~/alert';
+import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
 
 jest.mock('~/alert');
 jest.mock('~/lib/graphql');
@@ -16,6 +17,7 @@ jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
 jest.mock('~/rapid_diffs/app/file_browser');
 jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
+jest.mock('~/rapid_diffs/app/init_new_discussions_toggle');
 
 describe('Commit Rapid Diffs app', () => {
   let axiosMock;
@@ -74,6 +76,7 @@ describe('Commit Rapid Diffs app', () => {
     app.init();
     await app.initDiscussions();
     expect(useDiffDiscussions().setInitialDiscussions).toHaveBeenCalledWith(discussions);
+    expect(initNewDiscussionToggle).toHaveBeenCalledWith(app.root);
   });
 
   it('shows alert when failed to init discussions', async () => {

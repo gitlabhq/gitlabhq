@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::SourceUsersController, :with_organization_url_helpers, feature_category: :importers do
+RSpec.describe Import::SourceUsersController, feature_category: :importers do
   shared_examples 'it requires the user to be signed in' do
     context 'when the user is not signed in' do
       it 'redirects to the login screen' do

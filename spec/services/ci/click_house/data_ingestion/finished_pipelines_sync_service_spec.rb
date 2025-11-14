@@ -39,234 +39,252 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
 
   before_all do
     create_sync_events(*Ci::Pipeline.finished.order(id: :desc))
+
+    # Ensure NamespaceMirrors are created
+    Namespace.all.flat_map(&:sync_events).each { |event| ::Ci::NamespaceMirror.sync!(event) }
   end
 
-  context 'when all pipelines fit in a single batch' do
-    it 'processes the pipelines' do
-      expect(ClickHouse::Client).to receive(:insert_csv).once.and_call_original
+  shared_examples 'a service ingesting pipelines through pipeline sync events' do
+    context 'when all pipelines fit in a single batch' do
+      it 'processes the pipelines' do
+        expect(ClickHouse::Client).to receive(:insert_csv).once.and_call_original
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
-      expect(execute).to have_attributes({
-        payload: {
-          reached_end_of_table: true,
-          records_inserted: 5,
-          worker_index: 0, total_workers: 1
-        }
-      })
-
-      records = ci_finished_pipelines
-      expect(records.count).to eq 5
-      expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name)
-    end
-
-    it 'processes only pipelines from Ci::FinishedPipelineChSyncEvent' do
-      pipeline = create(:ci_pipeline, :failed, finished_at: 1.minute.ago)
-
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
-      expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
-      })
-
-      create_sync_events(pipeline)
-      expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(1)
-    end
-
-    context 'when a finished pipeline has been deleted' do
-      it 'marks the sync event as processed' do
-        sync_event = Ci::FinishedPipelineChSyncEvent
-          .new(pipeline_id: non_existing_record_id, pipeline_finished_at: Time.current, project_namespace_id: 1)
-          .tap(&:save!)
-
-        expect { execute }
-          .to change { ci_finished_pipelines_row_count }.by(5)
-          .and change { sync_event.reload.processed }.to(true)
-      end
-    end
-
-    context 'when one of the finished pipelines has invalid attributes' do
-      let_it_be(:group2) { create(:group) }
-      let_it_be(:project3) { create(:project, group: group2) }
-
-      # Create a pipeline with a project that has no namespace traversal path
-      # This will cause the pipeline to be considered invalid and be skipped
-      let!(:pipeline_with_invalid_mirror) do
-        create(:ci_pipeline, :failed, project: project3, finished_at: 1.minute.ago)
-      end
-
-      before_all do
-        group2.ci_namespace_mirror.destroy!
-      end
-
-      before do
-        create_sync_events(pipeline_with_invalid_mirror)
-      end
-
-      specify { expect(group2.reload.ci_namespace_mirror).to be_nil }
-
-      it 'skips the invalid pipeline and does not mark the sync event as processed' do
-        expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-          message: 'A problematic pipeline sync event has been encountered',
-          reason: 'Missing namespace traversal path',
-          pipeline_id: pipeline_with_invalid_mirror.id
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        expect(execute).to have_attributes(
+          payload: {
+            reached_end_of_table: true,
+            records_inserted: 5,
+            worker_index: 0, total_workers: 1
+          }
         )
 
-        expect { execute }
-          .to change { ci_finished_pipelines_row_count }.by(5)
-          .and change { Ci::FinishedPipelineChSyncEvent.pending.count }.to(1)
-
-        # Verify the invalid pipeline was not inserted
         records = ci_finished_pipelines
         expect(records.count).to eq 5
-        expect(records.pluck(:id)).not_to include(pipeline_with_invalid_mirror.id)
+        expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name)
       end
-    end
-  end
 
-  context 'when multiple batches are required' do
-    before do
-      stub_const("#{described_class}::PIPELINES_BATCH_SIZE", 2)
-    end
+      it 'processes only pipelines from Ci::FinishedPipelineChSyncEvent' do
+        pipeline = create(:ci_pipeline, :failed, project: project2, finished_at: 1.minute.ago)
 
-    it 'processes the pipelines' do
-      expect(ClickHouse::Client).to receive(:insert_csv).once.and_call_original
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        expect(execute).to have_attributes(
+          payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
+        )
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
-      expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
-      })
-    end
-  end
+        create_sync_events(pipeline)
+        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(1)
+      end
 
-  context 'when multiple CSV uploads are required' do
-    before do
-      stub_const("#{described_class}::PIPELINES_BATCH_SIZE", 1)
-      stub_const("#{described_class}::PIPELINES_BATCH_COUNT", 3)
-    end
+      context 'when a finished pipeline has been deleted' do
+        it 'marks the sync event as processed' do
+          sync_event = Ci::FinishedPipelineChSyncEvent
+            .new(pipeline_id: non_existing_record_id, pipeline_finished_at: Time.current, project_namespace_id: 1)
+            .tap(&:save!)
 
-    it 'processes the pipelines' do
-      expect(ClickHouse::Client).to receive(:insert_csv).twice.and_call_original
+          expect { execute }
+            .to change { ci_finished_pipelines_row_count }.by(5)
+            .and change { sync_event.reload.processed }.to(true)
+        end
+      end
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
-      expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
-      })
-    end
+      context 'when one of the finished pipelines has invalid attributes' do
+        let_it_be(:group2) { create(:group) }
+        let_it_be(:project3) { create(:project, group: group2) }
 
-    context 'with time limit being reached' do
-      it 'processes the pipelines of the first batch' do
-        over_time = false
-
-        expect_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |limiter|
-          expect(limiter).to receive(:over_time?).at_least(1) { over_time }
+        # Create a pipeline with a project that has no namespace traversal path
+        # This will cause the pipeline to be considered invalid and be skipped
+        let!(:pipeline_with_invalid_mirror) do
+          create(:ci_pipeline, :failed, project: project3, finished_at: 1.minute.ago)
         end
 
-        expect(service).to receive(:yield_pipelines).and_wrap_original do |original, *args|
-          over_time = true
-          original.call(*args)
+        before_all do
+          group2.ci_namespace_mirror.destroy!
         end
 
-        expect { execute }.to change { ci_finished_pipelines_row_count }.by(described_class::PIPELINES_BATCH_SIZE)
-        expect(execute).to have_attributes({
-          payload: a_hash_including(
-            reached_end_of_table: false, records_inserted: described_class::PIPELINES_BATCH_SIZE
+        before do
+          create_sync_events(pipeline_with_invalid_mirror)
+        end
+
+        specify { expect(group2.reload.ci_namespace_mirror).to be_nil }
+
+        it 'skips the invalid pipeline and does not mark the sync event as processed' do
+          expect(Gitlab::AppJsonLogger).to receive(:warn).with(
+            message: 'A problematic pipeline sync event has been encountered',
+            reason: 'Missing namespace traversal path',
+            pipeline_id: pipeline_with_invalid_mirror.id
           )
-        })
+
+          expect { execute }
+            .to change { ci_finished_pipelines_row_count }.by(5)
+            .and change { Ci::FinishedPipelineChSyncEvent.pending.count }.to(1)
+
+          # Verify the invalid pipeline was not inserted
+          records = ci_finished_pipelines
+          expect(records.count).to eq 5
+          expect(records.pluck(:id)).not_to include(pipeline_with_invalid_mirror.id)
+        end
       end
     end
 
-    context 'when batches fail to be written to ClickHouse' do
-      it 'does not mark any records as processed' do
-        expect(ClickHouse::Client).to receive(:insert_csv) { raise ClickHouse::Client::DatabaseError }
-
-        expect { execute }.to raise_error(ClickHouse::Client::DatabaseError)
-          .and not_change { Ci::FinishedPipelineChSyncEvent.pending.count }
+    context 'when multiple batches are required' do
+      before do
+        stub_const("#{described_class}::PIPELINES_BATCH_SIZE", 2)
       end
-    end
-  end
 
-  context 'with multiple calls to service' do
-    it 'processes the pipelines' do
-      expect(Ci::Pipeline).to receive(:id_in).twice.and_call_original
-
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
-      expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
-      })
-
-      pipeline6 = create(:ci_pipeline, :failed, finished_at: 1.minute.ago)
-      create_sync_events(pipeline6)
-
-      expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(1)
-      records = ci_finished_pipelines
-      expect(records.count).to eq 6
-      expect(records).to contain_exactly_pipelines(
-        pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name, pipeline6
-      )
-    end
-
-    context 'with same updated_at value' do
       it 'processes the pipelines' do
-        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        expect(ClickHouse::Client).to receive(:insert_csv).once.and_call_original
 
-        pipeline6 = create(:ci_pipeline, :failed, finished_at: 1.second.ago, updated_at: 1.second.ago)
-        pipeline7 = create(:ci_pipeline, :failed, finished_at: 1.second.ago, updated_at: 1.second.ago)
-        create_sync_events(pipeline6, pipeline7)
-
-        expect { execute }.to change { ci_finished_pipelines_row_count }.by(2)
-
-        records = ci_finished_pipelines
-        expect(records.count).to eq 7
-        expect(records).to contain_exactly_pipelines(
-          pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name,
-          pipeline6, pipeline7
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        expect(execute).to have_attributes(
+          payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
         )
       end
     end
 
-    context 'with older finished_at value' do
-      it 'does not process the pipeline' do
-        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(5)
-
-        create(:ci_pipeline, :failed, finished_at: 2.days.ago)
-
-        expect { service.execute }.not_to change { ci_finished_pipelines_row_count }
-      end
-    end
-  end
-
-  context 'when no ClickHouse databases are configured' do
-    before do
-      allow(Gitlab::ClickHouse).to receive(:configured?).and_return(false)
-    end
-
-    it 'skips execution' do
-      is_expected.to have_attributes({
-        status: :error,
-        message: 'Disabled: ClickHouse database is not configured.',
-        reason: :db_not_configured,
-        payload: { worker_index: 0, total_workers: 1 }
-      })
-    end
-  end
-
-  context 'when exclusive lease error happens' do
-    context 'when the exclusive lease is already locked for the worker' do
-      let(:service) { described_class.new(worker_index: 2, total_workers: 3) }
-
+    context 'when multiple CSV uploads are required' do
       before do
-        lock_name = "#{described_class.name.underscore}/worker/2"
-        allow(service).to receive(:in_lock).with(lock_name, retries: 0, ttl: 360)
-          .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+        stub_const("#{described_class}::PIPELINES_BATCH_SIZE", 1)
+        stub_const("#{described_class}::PIPELINES_BATCH_COUNT", 3)
       end
 
-      it 'does nothing' do
-        expect { execute }.not_to change { ci_finished_pipelines_row_count }
+      it 'processes the pipelines' do
+        expect(ClickHouse::Client).to receive(:insert_csv).twice.and_call_original
 
-        expect(execute).to have_attributes({
-          status: :error, reason: :skipped, payload: { worker_index: 2, total_workers: 3 }
-        })
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        expect(execute).to have_attributes(
+          payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
+        )
+      end
+
+      context 'with time limit being reached' do
+        it 'processes the pipelines of the first batch' do
+          over_time = false
+
+          expect_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |limiter|
+            expect(limiter).to receive(:over_time?).at_least(1) { over_time }
+          end
+
+          expect(service).to receive(:yield_pipelines).and_wrap_original do |original, *args|
+            over_time = true
+            original.call(*args)
+          end
+
+          expect { execute }.to change { ci_finished_pipelines_row_count }.by(described_class::PIPELINES_BATCH_SIZE)
+          expect(execute).to have_attributes(
+            payload: a_hash_including(
+              reached_end_of_table: false, records_inserted: described_class::PIPELINES_BATCH_SIZE
+            )
+          )
+        end
+      end
+
+      context 'when batches fail to be written to ClickHouse' do
+        it 'does not mark any records as processed' do
+          expect(ClickHouse::Client).to receive(:insert_csv) { raise ClickHouse::Client::DatabaseError }
+
+          expect { execute }.to raise_error(ClickHouse::Client::DatabaseError)
+            .and not_change { Ci::FinishedPipelineChSyncEvent.pending.count }
+        end
       end
     end
+
+    context 'with multiple calls to service' do
+      it 'processes the pipelines' do
+        expect(Ci::Pipeline).to receive(:id_in).twice.and_call_original
+
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(5)
+        expect(execute).to have_attributes(
+          payload: a_hash_including(reached_end_of_table: true, records_inserted: 5)
+        )
+
+        pipeline6 = create(:ci_pipeline, :failed, project: project2, finished_at: 1.minute.ago)
+        create_sync_events(pipeline6)
+
+        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(1)
+        records = ci_finished_pipelines
+        expect(records.count).to eq 6
+        expect(records).to contain_exactly_pipelines(
+          pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name, pipeline6
+        )
+      end
+
+      context 'with same updated_at value' do
+        it 'processes the pipelines' do
+          expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(5)
+
+          pipeline6 = create(:ci_pipeline, :failed, project: project2, finished_at: 1.day.ago, updated_at: 1.second.ago)
+          pipeline7 = create(:ci_pipeline, :failed, project: project1, finished_at: 1.day.ago, updated_at: 1.second.ago)
+          create_sync_events(pipeline6, pipeline7)
+
+          expect { execute }.to change { ci_finished_pipelines_row_count }.by(2)
+
+          records = ci_finished_pipelines
+          expect(records.count).to eq 7
+          expect(records).to contain_exactly_pipelines(
+            pipeline1, pipeline2, pipeline3, pipeline4, pipeline_with_name,
+            pipeline6, pipeline7
+          )
+        end
+      end
+
+      context 'with older finished_at value' do
+        it 'does not process the pipeline' do
+          expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(5)
+
+          create(:ci_pipeline, :failed, project: project2, finished_at: 2.days.ago)
+
+          expect { service.execute }.not_to change { ci_finished_pipelines_row_count }
+        end
+      end
+    end
+
+    context 'when no ClickHouse databases are configured' do
+      before do
+        allow(Gitlab::ClickHouse).to receive(:configured?).and_return(false)
+      end
+
+      it 'skips execution' do
+        is_expected.to have_attributes(
+          status: :error,
+          message: 'Disabled: ClickHouse database is not configured.',
+          reason: :db_not_configured,
+          payload: { worker_index: 0, total_workers: 1 }
+        )
+      end
+    end
+
+    context 'when exclusive lease error happens' do
+      context 'when the exclusive lease is already locked for the worker' do
+        let(:service) { described_class.new(worker_index: 2, total_workers: 3) }
+
+        before do
+          lock_name = "#{described_class.name.underscore}/worker/2"
+          allow(service).to receive(:in_lock).with(lock_name, retries: 0, ttl: 360)
+            .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+        end
+
+        it 'does nothing' do
+          expect { execute }.not_to change { ci_finished_pipelines_row_count }
+
+          expect(execute).to have_attributes(
+            status: :error, reason: :skipped, payload: { worker_index: 2, total_workers: 3 }
+          )
+        end
+      end
+    end
+  end
+
+  it_behaves_like 'a service ingesting pipelines through pipeline sync events'
+
+  context 'when discard_project_mirrors_join_for_ch_pipeline_ingestion FF is disabled' do
+    before do
+      stub_feature_flags(discard_project_mirrors_join_for_ch_pipeline_ingestion: false)
+
+      # Ensure NamespaceMirror is not queried directly, as in the new query
+      allow(Ci::NamespaceMirror).to receive(:by_namespace_id).and_return(nil)
+    end
+
+    it_behaves_like 'a service ingesting pipelines through pipeline sync events'
   end
 
   describe 'query selector logic' do

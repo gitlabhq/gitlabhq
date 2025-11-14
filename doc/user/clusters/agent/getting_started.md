@@ -148,7 +148,7 @@ To view your dashboard:
 
 {{< /details >}}
 
-So far, we've deployed an agent using the `.gitlab/agents/testing/config.yaml` file.
+So far, you have deployed an agent using the `.gitlab/agents/testing/config.yaml` file.
 This configuration enables user access using the service account configured for the agent deployment. User access is used by the dashboard for Kubernetes, and for local access.
 
 To keep your deployments secure, you should change this setup to impersonate a GitLab user.

@@ -41,7 +41,7 @@ The security inventory shows:
   - Infrastructure-as-code (IaC) scanning
 - The number of vulnerabilities in each group or project, sorted by severity level.
 
-This feature is in beta. Track the development of the security inventory in [epic 16484](https://gitlab.com/groups/gitlab-org/-/epics/16484). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) with us as we continue to develop this feature. The security inventory is enabled by default.
+This feature is in beta. Track the development of the security inventory in [epic 16484](https://gitlab.com/groups/gitlab-org/-/epics/16484). Share [your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/553062) as development continues on this feature. The security inventory is enabled by default.
 
 ## View the security inventory
 

@@ -89,7 +89,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     it 'returns terms if defined' do
       stub_application_setting(terms: "My custom Terms of Use")
 
-      is_expected.to include({ terms: "/-/users/terms" })
+      is_expected.to include({ terms: terms_path })
     end
 
     it 'does not return terms if not set' do
@@ -315,190 +315,92 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           end
         end
 
-        context 'when current Organization has scoped paths' do
-          let(:expected_menu_item_groups) do
-            [
-              menu_item(
-                href: "/o/#{current_organization.path}/projects/new",
-                text: "New project/repository",
-                id: "general_new_project"
-              ),
-              menu_item(
-                href: "/o/#{current_organization.path}/groups/new",
-                text: "New group",
-                id: "general_new_group"
-              ),
-              menu_item(
-                href: "/-/organizations/new",
-                text: s_('Organization|New organization'),
-                id: "general_new_organization"
-              ),
-              menu_item(
-                href: "/-/snippets/new",
-                text: "New snippet",
-                id: "general_new_snippet"
-              )
-            ]
-          end
-
-          before do
-            allow(current_organization).to receive(:scoped_paths?).and_return(true)
-          end
-
-          include_examples '"Create new" menu groups without headers'
+        let(:expected_menu_item_groups) do
+          [
+            menu_item(
+              href: new_project_path,
+              text: "New project/repository",
+              id: "general_new_project"
+            ),
+            menu_item(
+              href: new_group_path,
+              text: "New group",
+              id: "general_new_group"
+            ),
+            menu_item(
+              href: new_organization_path,
+              text: s_('Organization|New organization'),
+              id: "general_new_organization"
+            ),
+            menu_item(
+              href: new_snippet_path,
+              text: "New snippet",
+              id: "general_new_snippet"
+            )
+          ]
         end
 
-        context 'when current Organization does not have scoped paths' do
-          let(:expected_menu_item_groups) do
-            [
-              menu_item(
-                href: "/projects/new",
-                text: "New project/repository",
-                id: "general_new_project"
-              ),
-              menu_item(
-                href: "/groups/new",
-                text: "New group",
-                id: "general_new_group"
-              ),
-              menu_item(
-                href: "/-/organizations/new",
-                text: s_('Organization|New organization'),
-                id: "general_new_organization"
-              ),
-              menu_item(
-                href: "/-/snippets/new",
-                text: "New snippet",
-                id: "general_new_snippet"
-              )
-            ]
-          end
-
-          before do
-            allow(current_organization).to receive(:scoped_paths?).and_return(false)
-          end
-
-          include_examples '"Create new" menu groups without headers'
-        end
+        include_examples '"Create new" menu groups without headers'
       end
 
       context 'with headers' do
+        let(:in_this_group_menu_items) do
+          [
+            menu_item(
+              href: new_project_path,
+              text: "New project/repository",
+              id: "new_project"
+            ),
+            menu_item(
+              href: new_group_path(anchor: 'create-group-pane'),
+              text: "New subgroup",
+              id: "new_subgroup"
+            ),
+            menu_item(
+              href: nil,
+              text: "Invite members",
+              component: 'invite_members',
+              id: "invite"
+            )
+          ]
+        end
+
+        let(:in_gitlab_menu_items) do
+          [
+            menu_item(
+              href: new_project_path,
+              text: "New project/repository",
+              id: "general_new_project"
+            ),
+            menu_item(
+              href: new_group_path,
+              text: "New group",
+              id: "general_new_group"
+            ),
+            menu_item(
+              href: new_snippet_path,
+              text: "New snippet",
+              id: "general_new_snippet"
+            )
+          ]
+        end
+
         before do
           allow(group).to receive(:persisted?).and_return(true)
           allow(helper).to receive(:can?).and_return(true)
         end
 
-        shared_examples '"Create new" menu groups with headers' do
-          it 'returns "Create new" menu groups with headers' do
-            expect(subject[:create_new_menu_groups]).to contain_exactly(
-              a_hash_including(
-                name: "In this group",
-                items: array_including(*in_this_group_menu_items)
-              ),
-              a_hash_including(
-                name: "In GitLab",
-                items: array_including(*in_gitlab_menu_items)
-              )
+        it 'returns "Create new" menu groups with headers' do
+          expect(subject[:create_new_menu_groups]).to contain_exactly(
+            a_hash_including(
+              name: "In this group",
+              items: array_including(*in_this_group_menu_items)
+            ),
+            a_hash_including(
+              name: "In GitLab",
+              items: array_including(*in_gitlab_menu_items)
             )
-          end
-        end
-
-        context 'when current Organization has scoped paths' do
-          let(:in_this_group_menu_items) do
-            [
-              menu_item(
-                href: "/o/#{current_organization.path}/projects/new",
-                text: "New project/repository",
-                id: "new_project"
-              ),
-              menu_item(
-                href: "/o/#{current_organization.path}/groups/new#create-group-pane",
-                text: "New subgroup",
-                id: "new_subgroup"
-              ),
-              menu_item(
-                href: nil,
-                text: "Invite members",
-                component: 'invite_members',
-                id: "invite"
-              )
-            ]
-          end
-
-          let(:in_gitlab_menu_items) do
-            [
-              menu_item(
-                href: "/o/#{current_organization.path}/projects/new",
-                text: "New project/repository",
-                id: "general_new_project"
-              ),
-              menu_item(
-                href: "/o/#{current_organization.path}/groups/new",
-                text: "New group",
-                id: "general_new_group"
-              ),
-              menu_item(
-                href: "/-/snippets/new",
-                text: "New snippet",
-                id: "general_new_snippet"
-              )
-            ]
-          end
-
-          before do
-            allow(current_organization).to receive(:scoped_paths?).and_return(true)
-          end
-
-          include_examples '"Create new" menu groups with headers'
-        end
-
-        context 'when current Organization does not have scoped paths' do
-          let(:in_this_group_menu_items) do
-            [
-              menu_item(
-                href: "/projects/new",
-                text: "New project/repository",
-                id: "new_project"
-              ),
-              menu_item(
-                href: "/groups/new#create-group-pane",
-                text: "New subgroup",
-                id: "new_subgroup"
-              ),
-              menu_item(
-                href: nil,
-                text: "Invite members",
-                component: 'invite_members',
-                id: "invite"
-              )
-            ]
-          end
-
-          let(:in_gitlab_menu_items) do
-            [
-              menu_item(
-                href: "/projects/new",
-                text: "New project/repository",
-                id: "general_new_project"
-              ),
-              menu_item(
-                href: "/groups/new",
-                text: "New group",
-                id: "general_new_group"
-              ),
-              menu_item(
-                href: "/-/snippets/new",
-                text: "New snippet",
-                id: "general_new_snippet"
-              )
-            ]
-          end
-
-          before do
-            allow(current_organization).to receive(:scoped_paths?).and_return(false)
-          end
-
-          include_examples '"Create new" menu groups with headers'
+          )
         end
       end
     end
@@ -567,27 +469,23 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     describe 'Context switcher persistent links' do
       shared_examples 'context switcher with persistent links' do
-        let_it_be(:public_link) do
-          { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
+        let(:public_link) do
+          { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' }
         end
 
         let(:public_links_for_user) do
-          your_work_link = if current_organization&.scoped_paths?
-                             "/o/#{current_organization.path}"
-                           else
-                             '/'
-                           end
+          your_work_link = root_path
 
           [
             { title: s_('Navigation|Your work'), link: your_work_link, icon: 'work' },
             public_link,
-            { title: s_('Navigation|Profile'), link: '/-/user_settings/profile', icon: 'profile' },
-            { title: s_('Navigation|Preferences'), link: '/-/profile/preferences', icon: 'preferences' }
+            { title: s_('Navigation|Profile'), link: user_settings_profile_path, icon: 'profile' },
+            { title: s_('Navigation|Preferences'), link: profile_preferences_path, icon: 'preferences' }
           ]
         end
 
-        let_it_be(:admin_area_link) do
-          { title: s_('Navigation|Admin area'), link: '/admin', icon: 'admin' }
+        let(:admin_area_link) do
+          { title: s_('Navigation|Admin area'), link: admin_root_path, icon: 'admin' }
         end
 
         subject do
@@ -657,21 +555,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         end
       end
 
-      context 'when Organization has scoped paths' do
-        before do
-          allow(current_organization).to receive(:scoped_paths?).and_return(true)
-        end
-
-        include_examples 'context switcher with persistent links'
-      end
-
-      context 'when Organization does not have scoped paths' do
-        before do
-          allow(current_organization).to receive(:scoped_paths?).and_return(false)
-        end
-
-        include_examples 'context switcher with persistent links'
-      end
+      include_examples 'context switcher with persistent links'
     end
 
     describe 'impersonation data' do

@@ -85,7 +85,7 @@ module RapidDiffs
       {
         text: helpers.safe_format(
           s_('RapidDiffs|View file at %{commitId}'),
-          commitId: @diff_file.content_sha[0..7]
+          commitId: helpers.tag.code(@diff_file.content_sha[0..7])
         ),
         href: view_path,
         extraAttrs: { target: '_blank' },

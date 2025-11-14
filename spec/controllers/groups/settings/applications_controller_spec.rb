@@ -198,6 +198,15 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         expect(application).to have_attributes(create_params.except(:uid, :owner_type))
       end
 
+      it 'sets organization_id from Current.organization', :with_current_organization do
+        create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
+
+        post :create, params: { group_id: group, authn_oauth_application: create_params }
+
+        application = Authn::OauthApplication.last
+        expect(application.organization_id).to eq(current_organization.id)
+      end
+
       it 'renders the application form on errors' do
         expect do
           post :create, params: { group_id: group, authn_oauth_application: attributes_for(:application).merge(redirect_uri: nil) }
