@@ -942,7 +942,7 @@ end
 
 ```ruby
 failed_container_repos = Geo::ContainerRepositoryRegistry.failed.limit(100)
-failed_repos.each do |repo|
+failed_container_repos.each do |repo|
   puts "Container Repo Id: #{repo.model_record_id}"
   puts "Primary checksum: #{repo.verification_checksum_mismatched}"
   puts "Secondary checksum: #{repo.verification_checksum}"

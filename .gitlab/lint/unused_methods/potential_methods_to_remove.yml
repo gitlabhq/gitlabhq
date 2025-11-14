@@ -467,5 +467,3 @@ will_save_change_to_login?:
   file: app/models/user.rb
 can_leave_project?:
   file: app/models/user.rb
-early_access_event_tracking?:
-  file: app/models/user_preference.rb

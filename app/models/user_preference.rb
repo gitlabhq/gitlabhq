@@ -101,10 +101,6 @@ class UserPreference < ApplicationRecord
     end
   end
 
-  def early_access_event_tracking?
-    early_access_program_participant? && early_access_program_tracking?
-  end
-
   def extensions_marketplace_opt_in_url
     # To support existing records, this can be `nil` and it defaults to `https://open-vsx.org`
     super || 'https://open-vsx.org'

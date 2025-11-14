@@ -9,6 +9,7 @@ import {
 import { isEmpty } from 'lodash';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
+import { RSS_FILTER_EXCLUDE_EPIC, RSS_FILTER_EPIC_ONLY } from '~/work_items/constants';
 import WorkItemByEmail from './work_item_by_email.vue';
 import WorkItemCsvExportModal from './work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from './work_items_csv_import_modal.vue';
@@ -88,6 +89,16 @@ export default {
       required: false,
       default: () => ({}),
     },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroupIssuesList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -117,10 +128,13 @@ export default {
     filteredRssPath() {
       if (!this.rssPath) return null;
 
-      if (isEmpty(this.urlParams)) return this.rssPath;
+      const defaultTypeParams = this.getDefaultTypeParams();
+      const combinedParams = { ...defaultTypeParams, ...this.urlParams };
+
+      if (isEmpty(combinedParams)) return this.rssPath;
 
       try {
-        return mergeUrlParams(this.urlParams, this.rssPath);
+        return mergeUrlParams(combinedParams, this.rssPath);
       } catch (error) {
         this.$emit('error', this.$options.i18n.rssLinkUpdateError);
 
@@ -168,6 +182,19 @@ export default {
     },
     hideDropdown() {
       this.showTooltip = false;
+    },
+    getDefaultTypeParams() {
+      // For group issues page, exclude epics by using negative filter
+      if (this.isGroupIssuesList) {
+        return RSS_FILTER_EXCLUDE_EPIC;
+      }
+
+      // For group epics page, add 'epic' as default type filter
+      if (this.isEpicsList) {
+        return RSS_FILTER_EPIC_ONLY;
+      }
+
+      return {};
     },
   },
 };

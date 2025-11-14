@@ -2493,6 +2493,9 @@ msgstr ""
 msgid "AICatalog|Agent deleted."
 msgstr ""
 
+msgid "AICatalog|Agent disabled in this project."
+msgstr ""
+
 msgid "AICatalog|Agent does not exist"
 msgstr ""
 
@@ -2524,6 +2527,9 @@ msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to delete flow %{name}?"
+msgstr ""
+
+msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent and any associated flows and triggers will no longer work in this project."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to remove agent %{name}?"
@@ -2637,6 +2643,9 @@ msgstr ""
 msgid "AICatalog|Description is required."
 msgstr ""
 
+msgid "AICatalog|Disable agent"
+msgstr ""
+
 msgid "AICatalog|Display name"
 msgstr ""
 
@@ -2683,6 +2692,9 @@ msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to delete flow. %{error}"
+msgstr ""
+
+msgid "AICatalog|Failed to disable agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to load group flows"
@@ -25189,7 +25201,7 @@ msgstr ""
 msgid "DuoChat|AI features are now available"
 msgstr ""
 
-msgid "DuoChat|Agentic mode"
+msgid "DuoChat|Agentic mode (Beta)"
 msgstr ""
 
 msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
@@ -33161,6 +33173,9 @@ msgstr ""
 msgid "Groups|Checking group URL availability…"
 msgstr ""
 
+msgid "Groups|Copy group ID: %{id}"
+msgstr ""
+
 msgid "Groups|Create and add README"
 msgstr ""
 
@@ -33174,6 +33189,9 @@ msgid "Groups|Enter a path for your group."
 msgstr ""
 
 msgid "Groups|Group ID"
+msgstr ""
+
+msgid "Groups|Group ID copied to clipboard."
 msgstr ""
 
 msgid "Groups|Group README"
@@ -52990,10 +53008,16 @@ msgstr ""
 msgid "Projects|An error occurred unarchiving the project. Please refresh the page to try again."
 msgstr ""
 
+msgid "Projects|Copy project ID: %{id}"
+msgstr ""
+
 msgid "Projects|Delete %{nameWithNamespace}"
 msgstr ""
 
 msgid "Projects|No projects found."
+msgstr ""
+
+msgid "Projects|Project ID copied to clipboard."
 msgstr ""
 
 msgid "Projects|Projects that are archived or pending deletion will appear here."
@@ -70987,9 +71011,6 @@ msgstr ""
 msgid "UsageBilling|An error occurred while fetching data"
 msgstr ""
 
-msgid "UsageBilling|Billing period:"
-msgstr ""
-
 msgid "UsageBilling|Credit amount"
 msgstr ""
 
@@ -71059,14 +71080,14 @@ msgstr ""
 msgid "UsageBilling|Unlock more discounts for your GitLab usage. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs. %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
-msgid "UsageBilling|Used in this billing period"
+msgid "UsageBilling|Usage period:"
 msgstr ""
 
-msgid "UsageBilling|Used this billing period"
+msgid "UsageBilling|Used this month"
 msgstr ""
 
-msgid "UsageBilling|Used this billing period, resets in %{days} day"
-msgid_plural "UsageBilling|Used this billing period, resets in %{days} days"
+msgid "UsageBilling|Used this month, resets in %{days} day"
+msgid_plural "UsageBilling|Used this month, resets in %{days} days"
 msgstr[0] ""
 msgstr[1] ""
 

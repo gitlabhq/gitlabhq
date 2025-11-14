@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Workflow Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duo Planner
+title: Planner Agent
 ---
 
 {{< details >}}
@@ -20,14 +20,14 @@ title: GitLab Duo Planner
 
 {{< /history >}}
 
-GitLab Duo Planner is a specialized AI agent that assists with product management
+Planner Agent is a specialized AI agent that assists with product management
 and planning workflows in GitLab. It helps you organize, prioritize, and track work more effectively
 because it combines:
 
 - Product management expertise.
 - Awareness of GitLab planning objects, like issues and epics.
 
-Use GitLab Duo Planner when you need help with:
+Use Planner Agent when you need help with:
 
 - Prioritization: Applying frameworks like RICE, MoSCoW, or WSJF to rank work items.
 - Work breakdown: Decomposing initiatives into epics, features, and user stories.
@@ -39,13 +39,13 @@ Use GitLab Duo Planner when you need help with:
 
 Please leave feedback in [issue 576622](https://gitlab.com/gitlab-org/gitlab/-/issues/576622).
 
-## Access GitLab Duo Planner
+## Access Planner Agent
 
 Prerequisites:
 
 - You must be working in a project, not a group.
 - Foundational agents must be [turned on](../foundational_agents#controlling-foundational-agents-availability).
-- During the beta, GitLab Duo Planner is in read-only mode.
+- During the beta, Planner Agent is in read-only mode.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 
@@ -75,7 +75,7 @@ Prerequisites:
 
    {{< /tabs >}}
 
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Duo Planner**.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner Agent**.
 1. Enter your planning-related question or request. To get the best results from your request:
 
    - Provide context about your request, like URLs, filter criteria, or scope.

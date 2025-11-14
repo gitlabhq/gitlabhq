@@ -14,6 +14,7 @@ import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
+  ACTION_COPY_ID,
   ACTION_EDIT,
   ACTION_RESTORE,
   ACTION_DELETE,
@@ -21,12 +22,18 @@ import {
   ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { projects } from './mock_data';
 
 const MOCK_DELETE_PARAMS = {
   testParam: true,
+};
+
+const mockToast = {
+  show: jest.fn(),
 };
 
 jest.mock('~/vue_shared/components/projects_list/utils', () => ({
@@ -39,6 +46,8 @@ jest.mock('~/vue_shared/components/projects_list/utils', () => ({
 }));
 jest.mock('~/alert');
 jest.mock('~/api/projects_api');
+jest.mock('~/lib/utils/copy_to_clipboard');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('ProjectListItemActions', () => {
   let wrapper;
@@ -59,6 +68,9 @@ describe('ProjectListItemActions', () => {
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(ProjectListItemActions, {
       propsData: { ...defaultProps, ...props },
+      mocks: {
+        $toast: mockToast,
+      },
     });
   };
 
@@ -82,6 +94,10 @@ describe('ProjectListItemActions', () => {
     it('displays actions dropdown', () => {
       expect(findListActions().props()).toMatchObject({
         actions: {
+          [ACTION_COPY_ID]: {
+            text: `Copy project ID: ${defaultProps.project.id}`,
+            action: expect.any(Function),
+          },
           [ACTION_EDIT]: {
             href: editPath,
           },
@@ -99,6 +115,47 @@ describe('ProjectListItemActions', () => {
           },
         },
         availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE],
+      });
+    });
+  });
+
+  describe('when copy ID action is fired', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('tracks event', async () => {
+      copyToClipboard.mockResolvedValueOnce();
+      createComponent();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      await fireAction(ACTION_COPY_ID);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_copy_id_in_project_quick_actions',
+        {},
+        undefined,
+      );
+    });
+
+    describe('when copy to clipboard is successful', () => {
+      it('shows toast', async () => {
+        copyToClipboard.mockResolvedValueOnce();
+        createComponent();
+        await fireAction(ACTION_COPY_ID);
+        await waitForPromises();
+
+        expect(copyToClipboard).toHaveBeenCalledWith(defaultProps.project.id);
+        expect(mockToast.show).toHaveBeenCalledWith('Project ID copied to clipboard.');
+      });
+    });
+
+    describe('when copy to clipboard is not successful', () => {
+      it('logs error in Sentry', async () => {
+        const error = new Error('Copy command failed');
+        copyToClipboard.mockRejectedValueOnce(error);
+        createComponent();
+        await fireAction(ACTION_COPY_ID);
+        await waitForPromises();
+
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
       });
     });
   });

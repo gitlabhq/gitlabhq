@@ -103,6 +103,67 @@ Prerequisites:
    if you don't enter one yourself.
 1. Select **Create page**.
 
+### From a template
+
+{{< history >}}
+
+- Create a new wiki page directly from a template [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474328) in GitLab 18.6.
+
+{{< /history >}}
+
+You can create a new wiki page from a [template](#create-a-template) if you have at least one
+template in your project.
+
+Prerequisites:
+
+- You must have [created](#create-a-template) at least one template already.
+
+{{< tabs >}}
+
+{{< tab title="From template list" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **Templates** to view all available templates.
+1. Next to the template you want to use, select **Create from template**.
+1. The new page form opens with:
+   - The template content pre-filled in the content area.
+   - The template selected in the template dropdown list.
+1. Enter a title for your new page.
+1. Modify the content as needed.
+1. Select **Create page**.
+
+{{< /tab >}}
+
+{{< tab title="From template page" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **Templates** to view all available templates.
+1. Choose and select the template you want to use.
+1. In the page header, select **Create from template**.
+1. The new page form opens with the current template pre-selected and its content loaded.
+1. Enter a title for your new page.
+1. Modify the content as needed.
+1. Select **Create page**.
+
+{{< /tab >}}
+
+{{< tab title="From new page form" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project or group. If you've [turned on the new navigation](../../interface_redesign.md#turn-new-navigation-on-or-off), this field is on the top bar.
+1. Select **Plan** > **Wiki**.
+1. Select **New page**.
+1. In the **Choose a template** dropdown list, select your desired template.
+1. The template content is automatically loaded into the content area.
+1. Enter a title for your page.
+1. Modify the content as needed.
+1. Select **Create page**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Create or edit wiki pages locally
 
 Wikis are based on Git repositories, so you can clone them locally and edit

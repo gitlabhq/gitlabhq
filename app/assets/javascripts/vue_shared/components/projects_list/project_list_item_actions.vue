@@ -1,11 +1,14 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { archiveProject, restoreProject, unarchiveProject, deleteProject } from '~/rest_api';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
+  ACTION_COPY_ID,
   ACTION_ARCHIVE,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
@@ -50,6 +53,10 @@ export default {
   computed: {
     actions() {
       return {
+        [ACTION_COPY_ID]: {
+          text: sprintf(s__('Projects|Copy project ID: %{id}'), { id: this.project.id }),
+          action: this.onCopyId,
+        },
         [ACTION_EDIT]: {
           href: this.project.editPath,
         },
@@ -130,6 +137,16 @@ export default {
         createAlert({ message: errorMessage, error, captureError: true });
       } finally {
         this.actionsLoading = false;
+      }
+    },
+    async onCopyId() {
+      this.trackEvent('click_copy_id_in_project_quick_actions');
+
+      try {
+        await copyToClipboard(this.project.id);
+        this.$toast.show(s__('Projects|Project ID copied to clipboard.'));
+      } catch (error) {
+        Sentry.captureException(error);
       }
     },
     onActionDelete() {

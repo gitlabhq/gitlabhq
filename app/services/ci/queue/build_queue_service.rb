@@ -28,7 +28,7 @@ module Ci
         candidates = builds_for_protected_runner(candidates) if runner.ref_protected?
 
         # pick builds that does not have other tags than runner's one
-        candidates = builds_matching_tag_ids(candidates, runner.tag_ids)
+        candidates = builds_matching_tag_ids(candidates, runner.tagging_tag_ids)
 
         # pick builds that have at least one tag
         candidates = builds_with_any_tags(candidates) unless runner.run_untagged?

@@ -24082,6 +24082,7 @@ An AI catalog item configuration.
 | <a id="aicatalogitemconsumeritem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Configuration catalog item. |
 | <a id="aicatalogitemconsumerorganization"></a>`organization` | [`Organization`](#organization) | Organization in which the catalog item is configured. |
 | <a id="aicatalogitemconsumerparentitemconsumer"></a>`parentItemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Parent item consumer associated with the configured catalog item. |
+| <a id="aicatalogitemconsumerpinneditemversion"></a>`pinnedItemVersion` | [`AiCatalogItemVersion`](#aicatalogitemversion) | Resolved item version according to the `pinnedVersionPrefix`.This field can only be resolved for 20 AiCatalogItemConsumers in any single request. |
 | <a id="aicatalogitemconsumerpinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch item is pinned to. |
 | <a id="aicatalogitemconsumerproject"></a>`project` | [`Project`](#project) | Project in which the catalog item is configured. |
 | <a id="aicatalogitemconsumerserviceaccount"></a>`serviceAccount` | [`UserCore`](#usercore) | Service account associated with the item consumer. |

@@ -69,7 +69,9 @@ module WorkItemsCollections
     elsif @group
       options[:group_id] = @group.id
       options[:include_descendants] = true
-      options[:exclude_group_work_items] = true
+      # If the request is from the group issues list (excluding epics), set exclude_group_work_items to true
+      options[:exclude_group_work_items] = work_items_collection_params.dig(:not, :issue_types)&.include?('epic')
+
       options[:attempt_group_search_optimizations] = true
     end
 

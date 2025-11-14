@@ -2693,4 +2693,23 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       end
     end
   end
+
+  describe '#tagging_tag_ids' do
+    subject(:tagging_tag_ids) { runner.tagging_tag_ids }
+
+    context 'when runner has tags' do
+      let(:runner) { create(:ci_runner, :instance, tag_list: %w[ruby postgres docker]) }
+
+      it 'returns tag_ids from taggings' do
+        is_expected.to eq(runner.taggings.pluck(:tag_id))
+        expect(tagging_tag_ids.size).to eq(3)
+      end
+    end
+
+    context 'when runner has no tags' do
+      let(:runner) { create(:ci_runner, :instance) }
+
+      it { is_expected.to eq([]) }
+    end
+  end
 end

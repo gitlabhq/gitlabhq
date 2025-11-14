@@ -1958,3 +1958,6 @@ frontend/**/geo_* @zcuddy
 
 [API Team]
 /gems/gitlab-grape-openapi/**/*.rb @cfeick @mwoolf @vwolanyk
+
+[Source Code Backend] @gitlab-com/create-team/source-code/backend
+/app/workers/authorized_keys_worker.rb

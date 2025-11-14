@@ -471,6 +471,10 @@ module Ci
       tag_list.any?
     end
 
+    def tagging_tag_ids
+      taggings.pluck(:tag_id)
+    end
+
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_RUNNER_ID', value: id.to_s)

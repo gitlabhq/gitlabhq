@@ -1531,6 +1531,8 @@ export default {
               :query-variables="csvExportQueryVariables"
               :full-path="rootPageFullPath"
               :url-params="urlParams"
+              :is-epics-list="isEpicsList"
+              :is-group-issues-list="isGroupIssuesList"
             />
           </div>
         </template>
@@ -1578,6 +1580,8 @@ export default {
                 :query-variables="csvExportQueryVariables"
                 :full-path="rootPageFullPath"
                 :url-params="urlParams"
+                :is-epics-list="isEpicsList"
+                :is-group-issues-list="isGroupIssuesList"
               />
             </div>
           </work-item-list-heading>

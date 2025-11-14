@@ -1,6 +1,8 @@
 import { makeContainer } from 'storybook_addons/make_container';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import ListActions from './list_actions.vue';
 import {
+  ACTION_COPY_ID,
   ACTION_ARCHIVE,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
@@ -39,6 +41,18 @@ const Template = (args, { argTypes }) => ({
 export const Default = Template.bind({});
 Default.args = {
   actions: {
+    [ACTION_COPY_ID]: {
+      action: async () => {
+        try {
+          await copyToClipboard('1');
+          // eslint-disable-next-line no-alert
+          alert('ID copied to clipboard.');
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error);
+        }
+      },
+    },
     [ACTION_EDIT]: {
       href: '/?path=/story/vue-shared-list-actions--default',
     },
@@ -69,6 +83,7 @@ Default.args = {
     },
   },
   availableActions: [
+    ACTION_COPY_ID,
     ACTION_ARCHIVE,
     ACTION_DELETE,
     ACTION_DELETE_IMMEDIATELY,

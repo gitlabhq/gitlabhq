@@ -638,6 +638,15 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_ci_config do
+      let(:user) { create(:user) }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/ci/lint", personal_access_token: pat) }
+      before do
+        project.add_developer(user)
+      end
+    end
   end
 
   describe 'POST /projects/:id/ci/lint' do
@@ -977,6 +986,21 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             expect(json_response).to have_key('jobs')
           end
         end
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :validate_ci_config do
+      let(:user) { create(:user) }
+      let_it_be(:yaml_content) do
+        {
+          include: { remote: 'https://test.example.com/${SECRET_TOKEN}.yml' }
+        }.to_yaml
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/ci/lint", personal_access_token: pat), params: { content: yaml_content } }
+      before do
+        project.add_developer(user)
       end
     end
   end

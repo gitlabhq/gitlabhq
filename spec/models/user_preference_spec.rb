@@ -256,30 +256,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
   end
 
-  describe '#early_access_event_tracking?' do
-    let(:participant) { true }
-    let(:tracking) { true }
-    let(:user_preference) do
-      build(:user_preference, early_access_program_participant: participant, early_access_program_tracking: tracking)
-    end
-
-    context 'when user participate in beta and agreed on tracking' do
-      it { expect(user_preference.early_access_event_tracking?).to be true }
-    end
-
-    context 'when user does not participate' do
-      let(:participant) { false }
-
-      it { expect(user_preference.early_access_event_tracking?).to be false }
-    end
-
-    context 'when user did not agree on tracking' do
-      let(:tracking) { false }
-
-      it { expect(user_preference.early_access_event_tracking?).to be false }
-    end
-  end
-
   describe '#extensions_marketplace_opt_in_url' do
     where(:opt_in_url, :expectation) do
       [

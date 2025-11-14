@@ -469,18 +469,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
-
-        context 'when feature flag fix_jobs_api_gitaly_n_plus_1 is disabled' do
-          before do
-            stub_feature_flags(fix_jobs_api_gitaly_n_plus_1: false)
-          end
-
-          it 'there is a gitaly N+1' do
-            get(api("/projects/#{project.id}/jobs", api_user), params: { per_page: commit_count })
-
-            expect(response).to have_gitlab_http_status(:internal_server_error)
-          end
-        end
       end
 
       it 'returns correct values' do

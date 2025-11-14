@@ -1,6 +1,7 @@
 import toast from '~/vue_shared/plugins/global_toast';
 import { sprintf, __ } from '~/locale';
 import {
+  ACTION_COPY_ID,
   ACTION_EDIT,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
@@ -39,6 +40,7 @@ export const availableGraphQLGroupActions = ({
 
   // Actions mapped to rules
   const actions = {
+    [ACTION_COPY_ID]: true,
     [ACTION_EDIT]: canEdit,
     [ACTION_ARCHIVE]: canArchive,
     [ACTION_UNARCHIVE]: canUnarchive,

@@ -1,6 +1,12 @@
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
-import { formatDate, getTimeago, newDate, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
+import {
+  formatDate,
+  getTimeago,
+  localeDateFormat,
+  newDate,
+  timeagoLanguageCode,
+} from '~/lib/utils/datetime_utility';
 import { machine } from '~/lib/utils/finite_state_machine';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { badgeState } from '~/merge_requests/badge_state';
@@ -324,8 +330,8 @@ export default class MergeRequestStore {
     return {
       mergedBy: MergeRequestStore.formatUserObject(metrics.merged_by),
       closedBy: MergeRequestStore.formatUserObject(metrics.closed_by),
-      mergedAt: formatDate(metrics.merged_at),
       closedAt: formatDate(metrics.closed_at),
+      mergedAt: localeDateFormat.asDateTimeFull.format(newDate(metrics.merged_at)),
       readableMergedAt: MergeRequestStore.getReadableDate(metrics.merged_at),
       readableClosedAt: MergeRequestStore.getReadableDate(metrics.closed_at),
     };

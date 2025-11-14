@@ -300,7 +300,7 @@ export default {
         </scroll-scrim>
         <div v-if="showTrialWidget && !isIconOnly" class="gl-p-2">
           <trial-widget
-            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
+            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-[.75rem] gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
         <duo-agent-platform-widget v-if="showDuoAgentPlatformWidget && !isIconOnly" />

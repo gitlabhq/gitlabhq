@@ -5,7 +5,11 @@ import {
 } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import {
+  ACTION_COPY_ID,
+  ACTION_EDIT,
+  ACTION_DELETE,
+} from '~/vue_shared/components/list_actions/constants';
 
 describe('ListActions', () => {
   let wrapper;
@@ -19,7 +23,7 @@ describe('ListActions', () => {
         action: () => {},
       },
     },
-    availableActions: [ACTION_EDIT, ACTION_DELETE],
+    availableActions: [ACTION_COPY_ID, ACTION_EDIT, ACTION_DELETE],
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -41,6 +45,9 @@ describe('ListActions', () => {
     createComponent();
 
     expect(getDropdownItems()).toEqual([
+      {
+        text: 'Copy ID',
+      },
       {
         text: 'Edit',
         href: '/-/edit',

@@ -224,8 +224,10 @@ RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, fea
       end
 
       it 'cannot remove parent group' do
+        click_options_menu(group)
+
         within_testid("groups-list-item-#{group.id}") do
-          expect(has_testid?('groups-list-item-actions')).to be false
+          expect(page).not_to have_button('Delete')
         end
       end
     end

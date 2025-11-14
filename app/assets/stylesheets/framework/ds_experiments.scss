@@ -4,22 +4,9 @@
 
  // Increased border radii
 
- :where(.application-chrome) {
-
-  // Form elements and buttons
-  .gl-button,
-  .gl-button.gl-button,
-  .form-control:not(.gl-search-box-by-type-input-borderless),
-  .gl-form-input,
-  .gl-form-input.form-control:not(.gl-search-box-by-type-input-borderless):not(.input-group-prepend + .gl-form-input):not(.gl-search-box-by-click-input),
-  .gl-form-select,
-  .input-group-text,
-  &.application-chrome .filtered-search-box {
-    @apply gl-rounded-lg;
-  }
-
+ .application-chrome {
   // Remove input border radius if next to button
-  .input-group:not(.has-validation)>.form-control:not(:last-child) {
+  .input-group:not(.has-validation) > .form-control:not(:last-child) {
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
   }

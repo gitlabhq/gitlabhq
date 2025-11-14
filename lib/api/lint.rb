@@ -33,6 +33,7 @@ module API
         mutually_exclusive :ref, :dry_run_ref
       end
 
+      route_setting :authorization, permissions: :read_ci_config, boundary_type: :project
       get ':id/ci/lint', urgency: :low do
         authorize_read_code!
 
@@ -69,6 +70,7 @@ module API
         optional :ref, type: String, desc: 'When dry_run is true, sets the branch or tag to use. Defaults to the project’s default branch when not set'
       end
 
+      route_setting :authorization, permissions: :validate_ci_config, boundary_type: :project
       post ':id/ci/lint', urgency: :low do
         authorize! :create_pipeline, user_project
 

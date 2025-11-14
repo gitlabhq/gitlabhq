@@ -64,6 +64,9 @@ export const WORK_ITEM_TYPE_NAME_TASK = 'Task';
 export const WORK_ITEM_TYPE_NAME_TEST_CASE = 'Test Case';
 export const WORK_ITEM_TYPE_NAME_TICKET = 'Ticket';
 
+export const RSS_FILTER_EXCLUDE_EPIC = { 'not[type][]': 'epic' };
+export const RSS_FILTER_EPIC_ONLY = { 'type[]': 'epic' };
+
 export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED = 'hierarchy_widget_collapsed';
 export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED = 'hierarchy_widget_expanded';
 export const WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED =
