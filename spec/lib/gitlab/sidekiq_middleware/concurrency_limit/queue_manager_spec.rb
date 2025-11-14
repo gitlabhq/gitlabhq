@@ -234,5 +234,23 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         service.resume_processing!
       end
     end
+
+    context 'when concurrency_limit_eager_resume_processing FF is disabled' do
+      before do
+        stub_feature_flags(concurrency_limit_eager_resume_processing: false)
+      end
+
+      it 'resumes processing once' do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+          expect(el).to receive(:try_obtain).and_call_original
+        end
+        expect(worker_class).to receive(:bulk_perform_async).once.and_call_original
+
+        resumed = service.resume_processing!
+
+        expect(resumed).to eq(2)
+        expect(service.queue_size).to eq(1)
+      end
+    end
   end
 end
